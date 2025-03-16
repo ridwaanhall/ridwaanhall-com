@@ -1,5 +1,5 @@
 """
-URL configuration for RIDWAANHALL project.
+URL configuration for ridwaanhall_dev project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/

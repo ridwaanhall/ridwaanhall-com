@@ -23,8 +23,6 @@ ridwaanhall_dev/              # Root project
 │   │   │   │── home.html
 │   │   │   │── about.html
 │   │   │   │── contact.html
-│   │   │── static/core/css/  # Tailwind Compiled CSS
-│   │   │   │── styles.css    # Tailwind CSS output
 │   │   │── __init__.py
 │   │   │── admin.py
 │   │   │── apps.py
@@ -47,16 +45,9 @@ ridwaanhall_dev/              # Root project
 │   │   │── models.py
 │   │   │── views.py
 │   │   │── urls.py
-│── static/                   # Global static files (Tailwind source)
+│── static/                   # Global static files
 │   │── css/
-│   │   │── input.css         # Tailwind source file
-│   │   │── output.css        # Tailwind compiled file
 │   │── js/
 │── templates/
 │   │── base.html
-│── tailwind.config.js         # Tailwind config
-│── postcss.config.js          # PostCSS config
-│── package.json               # Node dependencies
-│── package-lock.json          # Lock file
-│── node_modules/              # Tailwind dependencies
 ```

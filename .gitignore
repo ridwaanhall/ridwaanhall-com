@@ -116,3 +116,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# add by me
+*.zip

@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ project.title }} - Ridwaan Hall{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'core:home' %}">Home</a></li>
+        <li><a href="{% url 'projects:list' %}">Projects</a></li>
+        <li class="is-active"><a href="#" aria-current="page">{{ project.title }}</a></li>
+    </ul>
+</nav>
+
+<div class="columns">
+    <div class="column is-8">
+        <h1 class="title is-1">{{ project.title }}</h1>
+        
+        <figure class="image is-16by9 mb-5">
+            <img src="/static/images/projects/{{ project.image }}" alt="{{ project.title }}" 
+                 onerror="this.src='https://via.placeholder.com/1200x675?text={{ project.title }}'">
+        </figure>
+        
+        <div class="content is-medium">
+            <p>{{ project.description }}</p>
+            
+            <h2 class="title is-3 mt-5">Project Features</h2>
+            <ul>
+                <li>Feature one description</li>
+                <li>Feature two description</li>
+                <li>Feature three description</li>
+                <li>Feature four description</li>
+            </ul>
+            
+            <h2 class="title is-3 mt-5">Development Process</h2>
+            <p>This is a placeholder for the development process description. In a real implementation, you would have more detailed information about how the project was planned, developed, and deployed.</p>
+            
+            <h2 class="title is-3 mt-5">Challenges and Solutions</h2>
+            <p>This is a placeholder for challenges and solutions. In a real implementation, you would discuss specific technical challenges faced during development and how they were overcome.</p>
+        </div>
+    </div>
+    
+    <div class="column is-4">
+        <div class="card">
+            <div class="card-content">
+                <h3 class="title is-4">Project Details</h3>
+                
+                <div class="content">
+                    <p><strong>Tech Stack:</strong></p>
+                    <div class="mb-4">
+                        {% for tech in project.tech_stack %}
+                        <span class="tech-badge">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="buttons mt-5">
+                        {% if project.github_url %}
+                        <a href="{{ project.github_url }}" target="_blank" class="button is-link is-fullwidth">
+                            <span class="icon"><i class="fab fa-github"></i></span>
+                            <span>View on GitHub</span>
+                        </a>
+                        {% endif %}
+                        
+                        {% if project.live_url %}
+                        <a href="{{ project.live_url }}" target="_blank" class="button is-primary is-fullwidth">
+                            <span class="icon"><i class="fas fa-external-link-alt"></i></span>
+                            <span>View Live Demo</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-5">
+            <div class="card-content">
+                <h3 class="title is-4">Related Projects</h3>
+                
+                <div class="content">
+                    <ul>
+                        <li><a href="#">Project One</a></li>
+                        <li><a href="#">Project Two</a></li>
+                        <li><a href="#">Project Three</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

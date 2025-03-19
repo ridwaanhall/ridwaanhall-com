@@ -1,0 +1,32 @@
+[
+    {
+      "id": 1,
+      "title": "E-commerce Platform",
+      "description": "A full-featured e-commerce platform built with Django and React",
+      "image": "ecommerce.jpg",
+      "tech_stack": ["Django", "React", "PostgreSQL", "AWS"],
+      "github_url": "https://github.com/ridwaanhall/ecommerce",
+      "live_url": "https://ecommerce-demo.ridwaanhall.dev",
+      "featured": true
+    },
+    {
+      "id": 2,
+      "title": "Task Management System",
+      "description": "A collaborative task management system for teams",
+      "image": "taskmanager.jpg",
+      "tech_stack": ["Django", "Vue.js", "Redis", "Docker"],
+      "github_url": "https://github.com/ridwaanhall/taskmanager",
+      "live_url": "https://tasks.ridwaanhall.dev",
+      "featured": true
+    },
+    {
+      "id": 3, 
+      "title": "Portfolio Website",
+      "description": "Personal portfolio website built with Django and Bulma CSS",
+      "image": "portfolio.jpg",
+      "tech_stack": ["Django", "Bulma CSS", "JavaScript", "Heroku"],
+      "github_url": "https://github.com/ridwaanhall/portfolio",
+      "live_url": "https://ridwaanhall.dev",
+      "featured": false
+    }
+  ]

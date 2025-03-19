@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Ridwaan Hall - Developer Portfolio{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="columns is-gapless min-height-100vh">
+        <!-- Sidebar -->
+        <div class="column is-narrow sidebar">
+            <aside class="menu p-4">
+                <div class="has-text-centered mb-5">
+                    <figure class="image is-96x96 is-inline-block">
+                        <img class="is-rounded" src="https://via.placeholder.com/96" alt="Profile">
+                    </figure>
+                    <h1 class="title is-5 mt-2 has-text-white">Ridwaan Hall</h1>
+                    <h2 class="subtitle is-6 has-text-grey-light">Full Stack Developer</h2>
+                </div>
+                
+                <ul class="menu-list">
+                    <li><a href="{% url 'core:home' %}" class="{% if request.path == '/' %}is-active{% endif %}">
+                        <span class="icon"><i class="fas fa-home"></i></span> Home
+                    </a></li>
+                    <li><a href="{% url 'core:about' %}" class="{% if 'about' in request.path %}is-active{% endif %}">
+                        <span class="icon"><i class="fas fa-user"></i></span> About
+                    </a></li>
+                    <li><a href="{% url 'projects:list' %}" class="{% if 'projects' in request.path %}is-active{% endif %}">
+                        <span class="icon"><i class="fas fa-code"></i></span> Projects
+                    </a></li>
+                    <li><a href="{% url 'career:list' %}" class="{% if 'career' in request.path %}is-active{% endif %}">
+                        <span class="icon"><i class="fas fa-briefcase"></i></span> Career
+                    </a></li>
+                    <li><a href="{% url 'lic_certs:list' %}" class="{% if 'licenses-certifications' in request.path %}is-active{% endif %}">
+                        <span class="icon"><i class="fas fa-certificate"></i></span> Certifications
+                    </a></li>
+                    <li><a href="{% url 'blog:list' %}" class="{% if 'blog' in request.path %}is-active{% endif %}">
+                        <span class="icon"><i class="fas fa-blog"></i></span> Blog
+                    </a></li>
+                    <li><a href="{% url 'dashboard:index' %}" class="{% if 'dashboard' in request.path %}is-active{% endif %}">
+                        <span class="icon"><i class="fas fa-chart-line"></i></span> Dashboard
+                    </a></li>
+                    <li><a href="{% url 'playground:index' %}" class="{% if 'playground' in request.path %}is-active{% endif %}">
+                        <span class="icon"><i class="fas fa-flask"></i></span> Playground
+                    </a></li>
+                    <li><a href="{% url 'core:contact' %}" class="{% if 'contact' in request.path %}is-active{% endif %}">
+                        <span class="icon"><i class="fas fa-envelope"></i></span> Contact
+                    </a></li>
+                </ul>
+                
+                <div class="social-icons has-text-centered mt-6">
+                    <a href="https://github.com/ridwaanhall" target="_blank" class="icon is-medium has-text-grey-light">
+                        <i class="fab fa-github fa-lg"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/ridwaanhall" target="_blank" class="icon is-medium has-text-grey-light">
+                        <i class="fab fa-linkedin fa-lg"></i>
+                    </a>
+                    <a href="https://twitter.com/ridwaanhall" target="_blank" class="icon is-medium has-text-grey-light">
+                        <i class="fab fa-twitter fa-lg"></i>
+                    </a>
+                </div>
+            </aside>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="column main-content p-0">
+            <div class="container">
+                <div class="section">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>
+                        <strong>Ridwaan Hall</strong> © {% now "Y" %} | Made with Django & Bulma CSS
+                    </p>
+                </div>
+            </footer>
+        </div>
+    </div>
+    
+    <script src="/static/js/main.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

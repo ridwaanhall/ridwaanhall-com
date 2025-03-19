@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}About - {{ personal_info.name }}{% endblock %}
+
+{% block content %}
+<h1 class="title is-1">About Me</h1>
+
+<div class="columns">
+    <div class="column is-8">
+        <div class="content is-medium">
+            <p>{{ personal_info.bio }}</p>
+            
+            <h2 class="title is-3 mt-6">Skills & Expertise</h2>
+            
+            <div class="columns is-multiline">
+                <div class="column is-6">
+                    <div class="box">
+                        <h3 class="title is-4">Frontend Development</h3>
+                        <ul>
+                            <li>HTML5, CSS3, JavaScript</li>
+                            <li>React.js, Vue.js</li>
+                            <li>Bulma, Bootstrap, Tailwind CSS</li>
+                            <li>Responsive Design</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="column is-6">
+                    <div class="box">
+                        <h3 class="title is-4">Backend Development</h3>
+                        <ul>
+                            <li>Python, Django, Flask</li>
+                            <li>RESTful API Design</li>
+                            <li>Database Design</li>
+                            <li>Authentication & Authorization</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="column is-6">
+                    <div class="box">
+                        <h3 class="title is-4">DevOps & Cloud</h3>
+                        <ul>
+                            <li>Docker, Kubernetes</li>
+                            <li>CI/CD Pipelines</li>
+                            <li>AWS, Digital Ocean</li>
+                            <li>Server Management</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="column is-6">
+                    <div class="box">
+                        <h3 class="title is-4">Tools & Others</h3>
+                        <ul>
+                            <li>Git, GitHub</li>
+                            <li>Agile Methodologies</li>
+                            <li>Performance Optimization</li>
+                            <li>Problem Solving</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <h2 class="title is-3 mt-6">Education</h2>
+            <div class="box">
+                <h4 class="title is-4">Bachelor of Computer Science</h4>
+                <h5 class="subtitle is-5">University of Technology</h5>
+                <p>Graduated with honors, focusing on web technologies and software engineering</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="column is-4">
+        <div class="card">
+            <div class="card-image">
+                <figure class="image is-4by3">
+                    <img src="https://via.placeholder.com/600x450" alt="Profile photo">
+                </figure>
+            </div>
+            <div class="card-content">
+                <div class="content">
+                    <h3 class="title is-4">Contact Information</h3>
+                    <ul class="fa-ul">
+                        <li>
+                            <span class="fa-li"><i class="fas fa-envelope"></i></span>
+                            {{ personal_info.email }}
+                        </li>
+                        <li>
+                            <span class="fa-li"><i class="fab fa-github"></i></span>
+                            <a href="{{ personal_info.github }}" target="_blank">GitHub</a>
+                        </li>
+                        <li>
+                            <span class="fa-li"><i class="fab fa-linkedin"></i></span>
+                            <a href="{{ personal_info.linkedin }}" target="_blank">LinkedIn</a>
+                        </li>
+                        <li>
+                            <span class="fa-li"><i class="fab fa-twitter"></i></span>
+                            <a href="{{ personal_info.twitter }}" target="_blank">Twitter</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-5">
+            <div class="card-content">
+                <div class="content">
+                    <h3 class="title is-4">Personal Interests</h3>
+                    <p>When I'm not coding, I enjoy:</p>
+                    <ul>
+                        <li>Open-source contributions</li>
+                        <li>

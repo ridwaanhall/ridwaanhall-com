@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Ridwaan Hall - Full Stack Developer{% endblock %}
+
+{% block content %}
+<div class="hero is-medium">
+    <div class="hero-body">
+        <div class="container">
+            <div class="columns is-vcentered">
+                <div class="column is-8">
+                    <h1 class="title is-1 has-text-weight-bold">
+                        Hi, I'm {{ personal_info.name }}
+                    </h1>
+                    <h2 class="subtitle is-3 mb-4">
+                        {{ personal_info.title }}
+                    </h2>
+                    <p class="is-size-5 mb-5">
+                        {{ personal_info.bio }}
+                    </p>
+                    <div class="buttons">
+                        <a href="{% url 'core:about' %}" class="button is-link is-medium">
+                            About Me
+                        </a>
+                        <a href="{% url 'projects:list' %}" class="button is-link is-light is-medium">
+                            View Projects
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if featured_projects %}
+<section class="section has-background-white-ter">
+    <div class="container">
+        <h2 class="title is-2 mb-5">Featured Projects</h2>
+        
+        <div class="columns is-multiline">
+            {% for project in featured_projects %}
+            <div class="column is-4">
+                <div class="card">
+                    <div class="card-image">
+                        <figure class="image is-4by3">
+                            <img src="/static/images/projects/{{ project.image }}" alt="{{ project.title }}" 
+                                 onerror="this.src='https://via.placeholder.com/400x300?text={{ project.title }}'">
+                        </figure>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="title is-4">{{ project.title }}</h3>
+                        <p class="mb-3">{{ project.description }}</p>
+                        
+                        <div class="mb-4">
+                            {% for tech in project.tech_stack %}
+                            <span class="tech-badge">{{ tech }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="buttons">
+                            {% if project.github_url %}
+                            <a href="{{ project.github_url }}" target="_blank" class="button is-small">
+                                <span class="icon"><i class="fab fa-github"></i></span>
+                                <span>Code</span>
+                            </a>
+                            {% endif %}
+                            
+                            {% if project.live_url %}
+                            <a href="{{ project.live_url }}" target="_blank" class="button is-primary is-small">
+                                <span class="icon"><i class="fas fa-external-link-alt"></i></span>
+                                <span>Live Demo</span>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="has-text-centered mt-5">
+            <a href="{% url 'projects:list' %}" class="button is-link">
+                View All Projects
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

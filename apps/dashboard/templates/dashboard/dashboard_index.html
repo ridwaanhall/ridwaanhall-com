@@ -102,4 +102,17 @@
                     <div class="level-right">
                         <div class="level-item">
                             <p>{{ skill.level }}%</p>
-                        </div
+                        </div>
+                    </div>
+                </div>
+                <progress class="progress is-link" 
+                          value="{{ skill.level }}" 
+                          max="100">{{ skill.level }}%
+                </progress>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Projects - Ridwaan Hall{% endblock %}
+
+{% block content %}
+<h1 class="title is-1">Projects</h1>
+<p class="subtitle">A collection of my work and side projects</p>
+
+<div class="columns is-multiline">
+    {% for project in projects %}
+    <div class="column is-4">
+        <div class="card">
+            <div class="card-image">
+                <figure class="image is-4by3">
+                    <img src="/static/images/projects/{{ project.image }}" alt="{{ project.title }}" 
+                         onerror="this.src='https://via.placeholder.com/400x300?text={{ project.title }}'">
+                </figure>
+            </div>
+            <div class="card-content">
+                <h3 class="title is-4">{{ project.title }}</h3>
+                <p class="mb-3">{{ project.description }}</p>
+                
+                <div class="mb-4">
+                    {% for tech in project.tech_stack %}
+                    <span class="tech-badge">{{ tech }}</span>
+                    {% endfor %}
+                </div>
+                
+                <div class="buttons">
+                    <a href="{% url 'projects:detail' project.id %}" class="button is-small">
+                        View Details
+                    </a>
+                    
+                    {% if project.github_url %}
+                    <a href="{{ project.github_url }}" target="_blank" class="button is-small">
+                        <span class="icon"><i class="fab fa-github"></i></span>
+                        <span>Code</span>
+                    </a>
+                    {% endif %}
+                    
+                    {% if project.live_url %}
+                    <a href="{{ project.live_url }}" target="_blank" class="button is-primary is-small">
+                        <span class="icon"><i class="fas fa-external-link-alt"></i></span>
+                        <span>Live Demo</span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="column is-12">
+        <div class="notification is-info">
+            No projects available yet.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

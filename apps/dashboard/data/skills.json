@@ -1,0 +1,14 @@
+[
+    {"category": "Programming Languages", "skill": "Python", "level": 90},
+    {"category": "Programming Languages", "skill": "JavaScript", "level": 85},
+    {"category": "Programming Languages", "skill": "PHP", "level": 70},
+    {"category": "Frameworks", "skill": "Django", "level": 95},
+    {"category": "Frameworks", "skill": "React", "level": 80},
+    {"category": "Frameworks", "skill": "Vue.js", "level": 75},
+    {"category": "Databases", "skill": "PostgreSQL", "level": 85},
+    {"category": "Databases", "skill": "MySQL", "level": 80},
+    {"category": "Databases", "skill": "MongoDB", "level": 70},
+    {"category": "DevOps", "skill": "Docker", "level": 75},
+    {"category": "DevOps", "skill": "AWS", "level": 70},
+    {"category": "DevOps", "skill": "CI/CD", "level": 65}
+  ]

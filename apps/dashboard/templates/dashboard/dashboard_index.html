@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Ridwaan Hall{% endblock %}
+
+{% block content %}
+<h1 class="title is-1">Dashboard</h1>
+<p class="subtitle">Visual representation of skills and portfolio metrics</p>
+
+<div class="columns is-multiline">
+    <div class="column is-6">
+        <div class="box">
+            <h3 class="title is-4">Portfolio Summary</h3>
+            
+            <div class="columns is-multiline">
+                <div class="column is-6">
+                    <div class="notification is-link has-text-centered">
+                        <span class="icon is-large">
+                            <i class="fas fa-code fa-2x"></i>
+                        </span>
+                        <p class="title is-1">{{ project_count }}</p>
+                        <p class="heading">Projects</p>
+                    </div>
+                </div>
+                
+                <div class="column is-6">
+                    <div class="notification is-primary has-text-centered">
+                        <span class="icon is-large">
+                            <i class="fas fa-blog fa-2x"></i>
+                        </span>
+                        <p class="title is-1">{{ blog_count }}</p>
+                        <p class="heading">Blog Posts</p>
+                    </div>
+                </div>
+                
+                <div class="column is-6">
+                    <div class="notification is-info has-text-centered">
+                        <span class="icon is-large">
+                            <i class="fas fa-certificate fa-2x"></i>
+                        </span>
+                        <p class="title is-1">3</p>
+                        <p class="heading">Certifications</p>
+                    </div>
+                </div>
+                
+                <div class="column is-6">
+                    <div class="notification is-success has-text-centered">
+                        <span class="icon is-large">
+                            <i class="fas fa-briefcase fa-2x"></i>
+                        </span>
+                        <p class="title is-1">3</p>
+                        <p class="heading">Work Experiences</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="column is-6">
+        <div class="box">
+            <h3 class="title is-4">Technologies Used in Projects</h3>
+            
+            <table class="table is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Technology</th>
+                        <th>Projects</th>
+                        <th>Usage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tech, count in tech_stack_counts.items %}
+                    <tr>
+                        <td>{{ tech }}</td>
+                        <td>{{ count }}</td>
+                        <td>
+                            <progress class="progress is-link" 
+                                      value="{{ count }}" 
+                                      max="{{ project_count }}">
+                                {{ count }}/{{ project_count }}
+                            </progress>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    {% for category, skills in skill_categories.items %}
+    <div class="column is-6">
+        <div class="box">
+            <h3 class="title is-4">{{ category }} Skills</h3>
+            
+            {% for skill in skills %}
+            <div class="mb-4">
+                <div class="level is-mobile mb-1">
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p>{{ skill.skill }}</p>
+                        </div>
+                    </div>
+                    <div class="level-right">
+                        <div class="level-item">
+                            <p>{{ skill.level }}%</p>
+                        </div

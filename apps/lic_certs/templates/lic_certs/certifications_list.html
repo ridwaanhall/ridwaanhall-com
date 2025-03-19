@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Licenses & Certifications - Ridwaan Hall{% endblock %}
+
+{% block content %}
+<h1 class="title is-1">Licenses & Certifications</h1>
+<p class="subtitle">Professional credentials and qualifications</p>
+
+<div class="columns is-multiline">
+    {% for cert in certifications %}
+    <div class="column is-4">
+        <div class="card">
+            <div class="card-content">
+                <div class="media">
+                    <div class="media-left">
+                        <figure class="image is-48x48">
+                            <img src="https://via.placeholder.com/48" alt="{{ cert.issuer }} logo">
+                        </figure>
+                    </div>
+                    <div class="media-content">
+                        <p class="title is-4">{{ cert.name }}</p>
+                        <p class="subtitle is-6">{{ cert.issuer }}</p>
+                    </div>
+                </div>
+                
+                <div class="content">
+                    <p><strong>Issue Date:</strong> {{ cert.date }}</p>
+                    <p><strong>Credential ID:</strong> {{ cert.credential_id }}</p>
+                    
+                    {% if cert.url %}
+                    <div class="mt-4">
+                        <a href="{{ cert.url }}" target="_blank" class="button is-small is-link">
+                            <span class="icon"><i class="fas fa-external-link-alt"></i></span>
+                            <span>Verify</span>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="column is-12">
+        <div class="notification is-info">
+            No certifications available yet.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

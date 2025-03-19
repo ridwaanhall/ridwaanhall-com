@@ -1,0 +1,26 @@
+[
+    {
+      "id": 1,
+      "name": "AWS Certified Developer Associate",
+      "issuer": "Amazon Web Services",
+      "date": "2024-05",
+      "credential_id": "AWS-DEV-123456",
+      "url": "https://aws.amazon.com/certification/"
+    },
+    {
+      "id": 2,
+      "name": "Python Professional Certification",
+      "issuer": "Python Institute",
+      "date": "2023-10",
+      "credential_id": "PCPP-123456",
+      "url": "https://pythoninstitute.org/certification/"
+    },
+    {
+      "id": 3,
+      "name": "Full Stack Web Development",
+      "issuer": "Udacity",
+      "date": "2022-08",
+      "credential_id": "UD-FSWD-123456",
+      "url": "https://www.udacity.com/"
+    }
+  ]

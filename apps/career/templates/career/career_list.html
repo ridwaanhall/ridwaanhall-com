@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Career - Ridwaan Hall{% endblock %}
+
+{% block content %}
+<h1 class="title is-1">Career Journey</h1>
+<p class="subtitle">My professional experience and growth</p>
+
+<div class="timeline">
+    {% for job in jobs %}
+    <div class="timeline-item">
+        <div class="box">
+            <div class="columns">
+                <div class="column">
+                    <h3 class="title is-4">{{ job.title }}</h3>
+                    <h4 class="subtitle is-5">{{ job.company }}</h4>
+                </div>
+                <div class="column is-narrow">
+                    <span class="tag is-medium is-link">{{ job.period }}</span>
+                </div>
+            </div>
+            
+            <div class="content">
+                <p>{{ job.description }}</p>
+                
+                <div class="mt-4">
+                    {% for tech in job.technologies %}
+                    <span class="tech-badge">{{ tech }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="notification is-info">
+        No career information available yet.
+    </div>
+    {% endfor %}
+</div>
+
+<div class="box mt-6">
+    <h2 class="title is-3">Additional Experience</h2>
+    
+    <div class="content">
+        <h4 class="title is-5">Freelance Web Developer</h4>
+        <p>In addition to my full-time roles, I've worked on various freelance projects:</p>
+        
+        <ul>
+            <li>Developed e-commerce solutions for small businesses</li>
+            <li>Created custom content management systems</li>
+            <li>Implemented performance optimizations for existing websites</li>
+            <li>Designed and developed personal and business websites</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

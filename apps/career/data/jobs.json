@@ -1,0 +1,26 @@
+[
+    {
+      "id": 1,
+      "company": "Tech Innovations Inc.",
+      "title": "Senior Full Stack Developer",
+      "period": "2023 - Present",
+      "description": "Leading development of enterprise web applications using Django, React and cloud technologies. Implemented CI/CD pipelines and improved infrastructure reliability.",
+      "technologies": ["Django", "React", "AWS", "Docker", "PostgreSQL"]
+    },
+    {
+      "id": 2,
+      "company": "WebSolutions Group",
+      "title": "Full Stack Developer",
+      "period": "2020 - 2023",
+      "description": "Built and maintained e-commerce platforms and content management systems for clients across various industries.",
+      "technologies": ["Django", "Vue.js", "MySQL", "Redis", "Nginx"]
+    },
+    {
+      "id": 3,
+      "company": "StartupX",
+      "title": "Web Developer",
+      "period": "2018 - 2020",
+      "description": "Developed and maintained company website and internal tools using Django and JavaScript.",
+      "technologies": ["Django", "JavaScript", "Bootstrap", "SQLite"]
+    }
+  ]

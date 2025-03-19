@@ -24,6 +24,6 @@ urlpatterns = [
     path('dashboard/', include('apps.dashboard.urls')),
     path('projects/', include('apps.projects.urls')),
     path('licenses-certifications/', include('apps.lic_certs.urls')),
-    path('playground/', include('apps.playground.urls')),
+    # path('playground/', include('apps.playground.urls')),
     path('blog/', include('apps.blog.urls')),
 ]

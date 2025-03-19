@@ -44,9 +44,6 @@
                     <li><a href="{% url 'dashboard:index' %}" class="{% if 'dashboard' in request.path %}is-active{% endif %}">
                         <span class="icon"><i class="fas fa-chart-line"></i></span> Dashboard
                     </a></li>
-                    <li><a href="{% url 'playground:index' %}" class="{% if 'playground' in request.path %}is-active{% endif %}">
-                        <span class="icon"><i class="fas fa-flask"></i></span> Playground
-                    </a></li>
                     <li><a href="{% url 'core:contact' %}" class="{% if 'contact' in request.path %}is-active{% endif %}">
                         <span class="icon"><i class="fas fa-envelope"></i></span> Contact
                     </a></li>

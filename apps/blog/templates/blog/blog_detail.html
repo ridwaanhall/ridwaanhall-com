@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} - Ridwaan Hall{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'core:home' %}">Home</a></li>
+        <li><a href="{% url 'blog:list' %}">Blog</a></li>
+        <li class="is-active"><a href="#" aria-current="page">{{ post.title }}</a></li>
+    </ul>
+</nav>
+
+<div class="columns">
+    <div class="column is-8 is-offset-2">
+        <article class="blog-post">
+            <h1 class="title is-1">{{ post.title }}</h1>
+            
+            <div class="mb-5">
+                <span class="tag is-medium is-link">{{ post.date_published }}</span>
+                {% for tag in post.tags %}
+                <span class="tag is-medium">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            
+            <figure class="image is-16by9 mb-5">
+                <img src="/static/images/blog/{{ post.image }}" alt="{{ post.title }}" 
+                     onerror="this.src='https://via.placeholder.com/1200x675?text={{ post.title }}'">
+            </figure>
+            
+            <div class="content is-medium blog-content">
+                {{ post.content|linebreaks }}
+            </div>
+            
+            <div class="divider my-6"></div>
+            
+            <div class="level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <a href="{% url 'blog:list' %}" class="button">
+                            <span class="icon"><i class="fas fa-arrow-left"></i></span>
+                            <span>Back to Blog</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="level-right">
+                    <div class="level-item">
+                        <div class="buttons">
+                            <a href="https://twitter.com/intent/tweet?text={{ post.title|urlencode }}&url={{ request.build_absolute_uri }}" 
+                               target="_blank" class="button is-info">
+                                <span class="icon"><i class="fab fa-twitter"></i></span>
+                                <span>Tweet</span>
+                            </a>
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" 
+                               target="_blank" class="button is-link">
+                                <span class="icon"><i class="fab fa-linkedin"></i></span>
+                                <span>Share</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+{% endblock %}

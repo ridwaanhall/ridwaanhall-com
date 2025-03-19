@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Blog - Ridwaan Hall{% endblock %}
+
+{% block content %}
+<h1 class="title is-1">Blog</h1>
+<p class="subtitle">Thoughts, tutorials, and insights</p>
+
+<div class="columns is-multiline">
+    {% for post in posts %}
+    <div class="column is-4">
+        <div class="card blog-card">
+            <div class="card-image">
+                <figure class="image is-4by3">
+                    <img src="/static/images/blog/{{ post.image }}" alt="{{ post.title }}" 
+                         onerror="this.src='https://via.placeholder.com/400x300?text={{ post.title }}'">
+                </figure>
+            </div>
+            <div class="card-content">
+                <div class="mb-3">
+                    <span class="tag is-link">{{ post.date_published }}</span>
+                    {% for tag in post.tags %}
+                    <span class="tag">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                
+                <h3 class="title is-4">{{ post.title }}</h3>
+                <p>{{ post.content|truncatewords:25 }}</p>
+                
+                <div class="mt-4">
+                    <a href="{% url 'blog:detail' post.slug %}" class="button is-link">
+                        Read More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="column is-12">
+        <div class="notification is-info">
+            No blog posts available yet.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

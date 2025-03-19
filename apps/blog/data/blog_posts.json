@@ -1,0 +1,29 @@
+[
+    {
+      "id": 1,
+      "title": "Getting Started with Django",
+      "slug": "getting-started-with-django",
+      "content": "Django is a high-level Python web framework that enables rapid development of secure and maintainable websites. Built by experienced developers, Django takes care of much of the hassle of web development, so you can focus on writing your app without needing to reinvent the wheel.\n\nIn this post, we'll explore how to set up a Django project from scratch and build a simple application...",
+      "image": "django-start.jpg",
+      "date_published": "2025-02-15",
+      "tags": ["Django", "Python", "Web Development"]
+    },
+    {
+      "id": 2,
+      "title": "Working with Bulma CSS Framework",
+      "slug": "working-with-bulma-css",
+      "content": "Bulma is a free, open source CSS framework based on Flexbox. It's 100% responsive, fully modular, and comes with a beautiful set of built-in features...",
+      "image": "bulma-css.jpg",
+      "date_published": "2025-03-01",
+      "tags": ["CSS", "Bulma", "Frontend"]
+    },
+    {
+      "id": 3,
+      "title": "Django and JSON: A Database Alternative",
+      "slug": "django-and-json-database-alternative",
+      "content": "While Django is typically used with relational databases like PostgreSQL or MySQL, there are scenarios where using a JSON file as a data store might make sense...",
+      "image": "json-data.jpg",
+      "date_published": "2025-03-10",
+      "tags": ["Django", "JSON", "Database"]
+    }
+  ]

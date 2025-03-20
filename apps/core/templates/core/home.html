@@ -260,5 +260,22 @@
             </main>
         </div>
     </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileSidebar = document.getElementById('mobile-sidebar');
+        const closeSidebarButton = document.getElementById('close-sidebar');
+
+        mobileMenuButton.addEventListener('click', function () {
+            mobileSidebar.classList.toggle('hidden');
+            mobileSidebar.classList.toggle('-translate-x-full');
+        });
+
+        closeSidebarButton.addEventListener('click', function () {
+            mobileSidebar.classList.add('hidden');
+            mobileSidebar.classList.add('-translate-x-full');
+        });
+    });
+</script>
 </body>
 </html>

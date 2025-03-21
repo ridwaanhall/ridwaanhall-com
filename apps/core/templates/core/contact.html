@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Website</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-900 text-gray-300 transition-colors duration-200">
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <div id="mobile-sidebar" class="fixed inset-0 z-40 bg-gray-800 bg-opacity-50 hidden md:hidden" aria-hidden="true">
+            <div class="fixed inset-y-0 left-0 w-64 bg-gray-800 transition-all duration-300 transform -translate-x-full" id="mobile-menu">
+                <div class="flex items-center justify-between p-4 border-b border-gray-700">
+                    <div class="flex items-center">
+                        <span class="text-xl font-semibold text-white">Portfolio</span>
+                    </div>
+                    <button id="close-sidebar" class="text-gray-400 hover:text-gray-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <nav class="mt-5 px-2">
+                    <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md bg-gray-700 text-white">
+                        <svg class="mr-4 h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        Home
+                    </a>
+                    <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-300 hover:bg-gray-700 hover:text-white mt-1">
+                        <svg class="mr-4 h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        About
+                    </a>
+                    <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-300 hover:bg-gray-700 hover:text-white mt-1">
+                        <svg class="mr-4 h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        Career
+                    </a>
+                    <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-300 hover:bg-gray-700 hover:text-white mt-1">
+                        <svg class="mr-4 h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        Dashboard
+                    </a>
+                    <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-300 hover:bg-gray-700 hover:text-white mt-1">
+                        <svg class="mr-4 h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                        </svg>
+                        Projects
+                    </a>
+                    <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-300 hover:bg-gray-700 hover:text-white mt-1">
+                        <svg class="mr-4 h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                        </svg>
+                        Blog
+                    </a>
+                </nav>
+                <div class="absolute bottom-0 w-full p-4 border-t border-gray-700">
+                </div>
+            </div>
+        </div>
+
+        <div class="hidden md:flex md:flex-col md:w-64 md:fixed md:inset-y-0 bg-gray-800 border-r border-gray-700">
+            <div class="flex items-center justify-between p-4 border-b border-gray-700">
+                <div class="flex items-center">
+                    <span class="text-xl font-semibold text-white">Portfolio</span>
+                </div>
+            </div>
+            <nav class="mt-5 px-2 flex-grow">
+                <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md bg-gray-700 text-white">
+                    <svg class="mr-4 h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    Home
+                </a>
+                <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-300 hover:bg-gray-700 hover:text-white mt-1">
+                    <svg class="mr-4 h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    About
+                </a>
+                <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-300 hover:bg-gray-700 hover:text-white mt-1">
+                    <svg class="mr-4 h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Career
+                </a>
+                <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-300 hover:bg-gray-700 hover:text-white mt-1">
+                    <svg class="mr-4 h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-300 hover:bg-gray-700 hover:text-white mt-1">
+                    <svg class="mr-4 h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                    </svg>
+                    Projects
+                </a>
+                <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-300 hover:bg-gray-700 hover:text-white mt-1">
+                    <svg class="mr-4 h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                    </svg>
+                    Blog
+                </a>
+            </nav>
+            <div class="p-4 border-t border-gray-700">
+            </div>
+        </div>
+
+        <div class="md:hidden flex items-center justify-between p-4 bg-gray-800 border-b border-gray-700">
+            <div class="flex items-center">
+                <button id="mobile-menu-button" class="text-gray-400 hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <span class="ml-2 text-xl font-semibold text-white">Portfolio</span>
+            </div>
+        </div>
+
+        <div class="flex-1 md:ml-64">
+            <main class="p-6">
+                <div class="max-w-7xl mx-auto">
+                    <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                            <div class="mb-4 md:mb-0">
+                                <h1 class="text-3xl font-bold text-white">Welcome to My Portfolio</h1>
+                                <p class="mt-2 text-lg text-gray-300">Frontend Developer & UI/UX Designer</p>
+                            </div>
+                            <div>
+                                <a href="#" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    Download CV
+                                </a>
+                                <a href="#" class="ml-3 inline-flex items-center px-4 py-2 border border-gray-600 text-sm font-medium rounded-md text-gray-200 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    Contact Me
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
+                        <h2 class="text-2xl font-bold text-white mb-4">About Me</h2>
+                        <div class="flex flex-col md:flex-row">
+                            <div class="md:w-1/3 mb-4 md:mb-0">
+                                <div class="bg-gray-700 rounded-lg p-4 flex items-center justify-center">
+                                    <div class="w-40 h-40 bg-gray-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-20 h-20 text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-2/3 md:pl-6">
+                                <p class="text-gray-300 mb-4">
+                                    I am a passionate frontend developer and UI/UX designer with over 5 years of experience creating beautiful, responsive, and user-friendly websites and applications. I specialize in modern web technologies and frameworks, with a focus on creating exceptional user experiences.
+                                </p>
+                                <p class="text-gray-300">
+                                    When I'm not coding, you can find me exploring new design trends, contributing to open-source projects, or enjoying outdoor activities with friends and family.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
+                        <h2 class="text-2xl font-bold text-white mb-4">Skills</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center">
+                                <svg class="w-10 h-10 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                </svg>
+                                <span class="mt-2 text-center text-gray-300">HTML/CSS</span>
+                            </div>
+                            <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center">
+                                <svg class="w-10 h-10 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
+                                <span class="mt-2 text-center text-gray-300">JavaScript</span>
+                            </div>
+                            <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center">
+                                <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                                <span class="mt-2 text-center text-gray-300">React.js</span>
+                            </div>
+                            <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center">
+                                <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path>
+                                </svg>
+                                <span class="mt-2 text-center text-gray-300">UI/UX Design</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
+                        <h2 class="text-2xl font-bold text-white mb-4">Featured Projects</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                            <div class="bg-gray-700 rounded-lg p-4">
+                                <img src="https://source.unsplash.com/random/800x600" alt="Project 1" class="w-full h-40 object-cover rounded-lg mb-4">
+                                <h3 class="text-lg font-semibold text-white">Project 1</h3>
+                                <p class="text-gray-300">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In hac habitasse platea dictumst.</p>
+                            </div>
+                            <div class="bg-gray-700 rounded-lg p-4">
+                                <img src="https://source.unsplash.com/random/800x601" alt="Project 2" class="w-full h-40 object-cover rounded-lg mb-4">
+                                <h3 class="text-lg font-semibold text-white">Project 2</h3>
+                                <p class="text-gray-300">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In hac habitasse platea dictumst.</p>
+                            </div>
+                            <div class="bg-gray-700 rounded-lg p-4">
+                                <img src="https://source.unsplash.com/random/800x602" alt="Project 3" class="w-full h-40 object-cover rounded-lg mb-4">
+                                <h3 class="text-lg font-semibold text-white">Project 3</h3>
+                                <p class="text-gray-300">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In hac habitasse platea dictumst.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
+                        <h2 class="text-2xl font-bold text-white mb-4">Blog Posts</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                            <div class="bg-gray-700 rounded-lg p-4">
+                                <img src="https://source.unsplash.com/random/800x603" alt="Blog Post 1" class="w-full h-40 object-cover rounded-lg mb-4">
+                                <h3 class="text-lg font-semibold text-white">Blog Post 1</h3>
+                                <p class="text-gray-300">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In hac habitasse platea dictumst.</p>
+                            </div>
+                            <div class="bg-gray-700 rounded-lg p-4">
+                                <img src="https://source.unsplash.com/random/800x604" alt="Blog Post 2" class="w-full h-40 object-cover rounded-lg mb-4">
+                                <h3 class="text-lg font-semibold text-white">Blog Post 2</h3>
+                                <p class="text-gray-300">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In hac habitasse platea dictumst.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
+                        <h2 class="text-2xl font-bold text-white mb-4">Contact Me</h2>
+                        <form action="#" method="POST">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-300">Name</label>
+                                    <input type="text" id="name" name="name" class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-300">
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
+                                    <input type="email" id="email" name="email" class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-300">
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <label for="message" class="block text-sm font-medium text-gray-300">Message</label>
+                                <textarea id="message" name="message" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-300"></textarea>
+                            </div>
+                            <div class="mt-4">
+                                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    Send Message
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileSidebar = document.getElementById('mobile-sidebar');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeSidebarButton = document.getElementById('close-sidebar');
+
+        mobileMenuButton.addEventListener('click', function () {
+            mobileSidebar.classList.toggle('hidden');
+            mobileMenu.classList.toggle('-translate-x-full');
+        });
+
+        closeSidebarButton.addEventListener('click', function () {
+            mobileSidebar.classList.add('hidden');
+            mobileMenu.classList.add('-translate-x-full');
+        });
+    });
+</script>
+</body>
+</html>

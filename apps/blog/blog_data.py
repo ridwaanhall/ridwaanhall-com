@@ -1,7 +1,3 @@
-# blog_data.py
-
-from django.utils.text import slugify
-
 class BlogData:
     blogs = [
         {

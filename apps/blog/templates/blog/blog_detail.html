@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Sample Blog Post{% endblock %}
+{% block title %}{{ blog.title }}{% endblock %}
 
 {% block content %}
 <div class="flex-1 md:ml-64">
@@ -10,19 +10,20 @@
             <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                     <div class="mb-4 md:mb-0">
-                        <h1 class="text-3xl font-bold text-white">Sample Blog Post</h1>
-                        <p class="mt-2 text-lg text-gray-300">January 1, 2023</p>
-                        <p class="mt-1 text-md text-gray-400">Posted by John Doe</p>
+                        <h1 class="text-3xl font-bold text-white">{{ blog.title }}</h1>
+                        <p class="mt-2 text-lg text-gray-300">{{ blog.date }}</p>
+                        <p class="mt-1 text-md text-gray-400">Posted by {{ blog.author }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Blog Image and Content -->
             <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
-                <img src="https://api.slingacademy.com/public/sample-photos/1.jpeg" alt="Sample Blog Post" class="w-full h-80 object-cover rounded-lg mb-4">
+                <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-80 object-cover rounded-lg mb-4">
                 <div class="prose prose-lg text-gray-300">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam non urna vitae odio cursus tincidunt. Sed sit amet sapien nec arcu vehicula fermentum. Integer nec libero nec nulla tincidunt tincidunt. Curabitur ac orci nec lorem tincidunt tincidunt. Donec vel sapien nec arcu vehicula fermentum.</p>
-                    <p>Phasellus sit amet sapien nec arcu vehicula fermentum. Integer nec libero nec nulla tincidunt tincidunt. Curabitur ac orci nec lorem tincidunt tincidunt. Donec vel sapien nec arcu vehicula fermentum.</p>
+                    {% for paragraph in blog.content %}
+                        <p>{{ paragraph }}</p>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -30,9 +31,9 @@
             <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
                 <h2 class="text-2xl font-bold text-white mb-4">Tags</h2>
                 <div class="flex flex-wrap">
-                    <span class="bg-gray-700 text-gray-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Tag1</span>
-                    <span class="bg-gray-700 text-gray-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Tag2</span>
-                    <span class="bg-gray-700 text-gray-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Tag3</span>
+                    {% for tag in blog.tags %}
+                        <span class="bg-gray-700 text-gray-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">{{ tag }}</span>
+                    {% endfor %}
                 </div>
             </div>
         </div>

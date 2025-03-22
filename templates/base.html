@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{% endblock %}</title>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    </head>
+    <body class="bg-gray-900 text-gray-300 transition-colors duration-200">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row min-h-screen">
+                {% include 'sidebar.html' %}
+                
+                {% block content %}
+
+                {% endblock %}
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const mobileMenuButton = document.getElementById('mobile-menu-button');
+                const mobileSidebar = document.getElementById('mobile-sidebar');
+                const mobileMenu = document.getElementById('mobile-menu');
+                const closeSidebarButton = document.getElementById('close-sidebar');
+
+                mobileMenuButton.addEventListener('click', function () {
+                    mobileSidebar.classList.toggle('hidden');
+                    mobileMenu.classList.toggle('-translate-x-full');
+                });
+
+                closeSidebarButton.addEventListener('click', function () {
+                    mobileSidebar.classList.add('hidden');
+                    mobileMenu.classList.add('-translate-x-full');
+                });
+            });
+        </script>
+    </body>
+</html>

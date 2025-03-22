@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="flex-1 md:ml-64">
+    <main class="p-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div class="mb-4 md:mb-0">
+                        <h1 class="text-3xl font-bold text-white">Dashboard</h1>
+                        <p class="mt-2 text-lg text-gray-400">Overview of your professional activities</p>
+                    </div>
+                    <div>
+                        <a href="#" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Download CV
+                        </a>
+                        <a href="#" class="ml-3 inline-flex items-center px-4 py-2 border border-gray-600 text-sm font-medium rounded-md text-gray-200 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Contact Me
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-white mb-4">Recent Activities</h2>
+                <div class="space-y-4">
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-xl font-bold text-white">Project Management</h3>
+                            <p class="text-gray-400 text-right">Updated 2 hours ago</p>
+                        </div>
+                        <ul class="list-disc list-inside text-gray-400 mt-2">
+                            <li>Reviewed project milestones and deadlines.</li>
+                            <li>Coordinated with team members for upcoming tasks.</li>
+                            <li>Updated project documentation.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-xl font-bold text-white">Client Meeting</h3>
+                            <p class="text-gray-400 text-right">Yesterday</p>
+                        </div>
+                        <ul class="list-disc list-inside text-gray-400 mt-2">
+                            <li>Discussed project requirements and deliverables.</li>
+                            <li>Presented project progress and received feedback.</li>
+                            <li>Outlined next steps and action items.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-white mb-4">Statistics</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center">
+                        <span class="text-3xl font-bold text-white">75%</span>
+                        <span class="mt-2 text-center text-gray-400">Project Completion</span>
+                    </div>
+                    <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center">
+                        <span class="text-3xl font-bold text-white">120</span>
+                        <span class="mt-2 text-center text-gray-400">Tasks Completed</span>
+                    </div>
+                    <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center">
+                        <span class="text-3xl font-bold text-white">8</span>
+                        <span class="mt-2 text-center text-gray-400">Active Projects</span>
+                    </div>
+                    <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center">
+                        <span class="text-3xl font-bold text-white">15</span>
+                        <span class="mt-2 text-center text-gray-400">Team Members</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-white mb-4">Upcoming Deadlines</h2>
+                <div class="space-y-4">
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-xl font-bold text-white">Website Redesign</h3>
+                            <p class="text-gray-400 text-right">Due in 3 days</p>
+                        </div>
+                        <ul class="list-disc list-inside text-gray-400 mt-2">
+                            <li>Finalize design mockups.</li>
+                            <li>Implement feedback from stakeholders.</li>
+                            <li>Prepare for launch.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-xl font-bold text-white">Marketing Campaign</h3>
+                            <p class="text-gray-400 text-right">Due in 1 week</p>
+                        </div>
+                        <ul class="list-disc list-inside text-gray-400 mt-2">
+                            <li>Develop campaign strategy.</li>
+                            <li>Create marketing materials.</li>
+                            <li>Schedule social media posts.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Blog{% endblock %}
+{% block title %}Projects{% endblock %}
 
 {% block content %}
 <div class="flex-1 md:ml-64">
@@ -9,33 +9,32 @@
             <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                     <div class="mb-4 md:mb-0">
-                        <h1 class="text-3xl font-bold text-white">Blog</h1>
-                        <p class="mt-2 text-lg text-gray-300">A list of my recent blog posts</p>
+                        <h1 class="text-3xl font-bold text-white">Projects</h1>
+                        <p class="mt-2 text-lg text-gray-300">A list of my recent projects</p>
                     </div>
                 </div>
             </div>
 
             <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
-                <h2 class="text-2xl font-bold text-white mb-4">Blog List</h2>
+                <h2 class="text-2xl font-bold text-white mb-4">Project List</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-                    {% for post in posts %}
+                    {% for project in projects %}
                     <div class="bg-gray-700 rounded-lg p-4">
-                        <img src="{{ post.image_url }}" alt="{{ post.title }}" class="w-full h-40 object-cover rounded-lg mb-4">
-                        <h3 class="text-lg font-semibold text-white">{{ post.title }}</h3>
-                        <p class="text-gray-300">{{ post.excerpt }}</p>
-                        <a href="{{ post.get_absolute_url }}" class="text-indigo-400 hover:text-indigo-300">Read more</a>
+                        <img src="{{ project.image_url }}" alt="{{ project.title }}" class="w-full h-40 object-cover rounded-lg mb-4">
+                        <h3 class="text-lg font-semibold text-white">{{ project.title }}</h3>
+                        <p class="text-gray-300">{{ project.description }}</p>
                     </div>
                     {% empty %}
                     <div class="bg-gray-700 rounded-lg p-4">
-                        <img src="https://via.placeholder.com/150" alt="Dummy Post" class="w-full h-40 object-cover rounded-lg mb-4">
-                        <h3 class="text-lg font-semibold text-white">Dummy Post</h3>
-                        <p class="text-gray-300">This is a dummy post description.</p>
+                        <img src="https://via.placeholder.com/150" alt="Dummy Project" class="w-full h-40 object-cover rounded-lg mb-4">
+                        <h3 class="text-lg font-semibold text-white">Dummy Project</h3>
+                        <p class="text-gray-300">This is a dummy project description.</p>
                     </div>
                     {% endfor %}
                 </div>
                 <div class="mt-4 text-center">
                     <a href="#" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        More Posts
+                        More Projects
                     </a>
                 </div>
             </div>

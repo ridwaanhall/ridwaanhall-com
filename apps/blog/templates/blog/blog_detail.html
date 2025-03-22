@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Sample Blog Post{% endblock %}
+
+{% block content %}
+<div class="flex-1 md:ml-64">
+    <main class="p-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div class="mb-4 md:mb-0">
+                        <h1 class="text-3xl font-bold text-white">Sample Blog Post</h1>
+                        <p class="mt-2 text-lg text-gray-300">January 1, 2023</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
+                <img src="https://via.placeholder.com/800x400" alt="Sample Blog Post" class="w-full h-80 object-cover rounded-lg mb-4">
+                <div class="prose prose-lg text-gray-300">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam non urna vitae odio cursus tincidunt. Sed sit amet sapien nec arcu vehicula fermentum. Integer nec libero nec nulla tincidunt tincidunt. Curabitur ac orci nec lorem tincidunt tincidunt. Donec vel sapien nec arcu vehicula fermentum.</p>
+                    <p>Phasellus sit amet sapien nec arcu vehicula fermentum. Integer nec libero nec nulla tincidunt tincidunt. Curabitur ac orci nec lorem tincidunt tincidunt. Donec vel sapien nec arcu vehicula fermentum.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

@@ -18,7 +18,7 @@ class BlogData:
             'id': 2,
             'title': 'Dummy Post 2',
             'description': 'This is a dummy post description for post 2.',
-            'image_url': 'https://api.slingacademy.com/public/sample-photos/1.jpeg',
+            'image_url': 'https://api.slingacademy.com/public/sample-photos/2.jpeg',
             'date': 'February 15, 2023',
             'author': 'Peter Jones',
             'content': [
@@ -32,7 +32,7 @@ class BlogData:
             'id': 3,
             'title': 'Dummy Post 3',
             'description': 'This is a dummy post description for post 3.',
-            'image_url': 'https://api.slingacademy.com/public/sample-photos/1.jpeg',
+            'image_url': 'https://api.slingacademy.com/public/sample-photos/3.jpeg',
             'date': 'March 22, 2023',
             'author': 'John Doe',
             'content': [
@@ -46,7 +46,7 @@ class BlogData:
             'id': 4,
             'title': 'Dummy Post 4',
             'description': 'This is a dummy post description for post 4.',
-            'image_url': 'https://api.slingacademy.com/public/sample-photos/1.jpeg',
+            'image_url': 'https://api.slingacademy.com/public/sample-photos/4.jpeg',
             'date': 'April 01, 2023',
             'author': 'Jane Smith',
             'content': [

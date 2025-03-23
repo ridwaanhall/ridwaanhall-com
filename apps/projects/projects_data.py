@@ -1,59 +1,45 @@
 class ProjectsData:
-    Projectss = [
+    projects = [
         {
             'id': 1,
-            'title': 'Dummy Post 1',
-            'description': 'This is a dummy post description for post 1.',
-            'image_url': 'https://api.slingacademy.com/public/sample-photos/1.jpeg',
-            'date': 'January 10, 2023',
-            'author': 'Jane Smith',
-            'content': [
-                "This is the content for Dummy Post 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            'title': 'AI-Powered Chatbot',
+            'description': 'An advanced chatbot that uses AI to provide intelligent responses and automate customer support.',
+            'github_url': 'https://github.com/example/repo',
+            'demo_url': 'https://example.com/demo',
+            'image_url': 'https://api.slingacademy.com/public/sample-photos/3.jpeg',
+            'is_featured': True,
+            'features': [
+                {
+                    'title': 'Natural Language Processing',
+                    'description': 'Utilizes state-of-the-art NLP techniques to understand and respond to user queries with remarkable accuracy.',
+                    'image_url': 'https://api.slingacademy.com/public/sample-photos/2.jpeg',
+                    'icon': 'chat'
+                },
+                {
+                    'title': 'Machine Learning',
+                    'description': 'Learns from interactions to improve its responses over time, providing an increasingly personalized user experience.',
+                    'image_url': 'https://api.slingacademy.com/public/sample-photos/3.jpeg',
+                    'icon': 'light-bulb'
+                },
+                {
+                    'title': 'Integration Ready',
+                    'description': 'Easily integrates with existing systems through well-documented APIs and webhook support for seamless deployment.',
+                    'image_url': '',  # This will use the placeholder icon
+                    'icon': 'settings'
+                }
             ],
-            'tags': ['TagA', 'TagB'],
-            'is_featured': False
+            'tech_stack': ['Python', 'Flask', 'TensorFlow', 'React', 'Docker'],
+            'code_sample': 'import openai\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\n@app.route(\'/chat\', methods=[\'POST\'])\ndef chat():\n    user_message = request.json.get(\'message\')\n    response = generate_response(user_message)\n    return {\'response\': response}',
+            'setup_instructions': 'git clone https://github.com/example/repo\ncd repo\npip install -r requirements.txt\npython app.py'
         },
         {
             'id': 2,
-            'title': 'Dummy Post featured',
-            'description': 'This is a dummy post description for post 2.',
-            'image_url': 'https://api.slingacademy.com/public/sample-photos/2.jpeg',
-            'date': 'February 15, 2023',
-            'author': 'Peter Jones',
-            'content': [
-                "Content of Dummy Post 2. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-                "Nisi ut aliquip ex ea commodo consequat."
-            ],
-            'tags': ['TagC', 'TagD', 'TagE'],
-            'is_featured': True
-        },
-        {
-            'id': 3,
-            'title': 'Dummy Post 3',
-            'description': 'This is a dummy post description for post 3.',
-            'image_url': 'https://api.slingacademy.com/public/sample-photos/3.jpeg',
-            'date': 'March 22, 2023',
-            'author': 'John Doe',
-            'content': [
-                "Dummy Post 3 content goes here. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.",
-                "Eu fugiat nulla pariatur."
-            ],
-            'tags': ['TagF'],
-            'is_featured': False
-        },
-        {
-            'id': 4,
-            'title': 'Dummy Post 4',
-            'description': 'This is a dummy post description for post 4.',
-            'image_url': 'https://api.slingacademy.com/public/sample-photos/4.jpeg',
-            'date': 'April 01, 2023',
-            'author': 'Jane Smith',
-            'content': [
-                "This is the fourth dummy post's content. Excepteur sint occaecat cupidatat non proident.",
-                "Sunt in culpa qui officia deserunt mollit anim id est laborum."
-            ],
-            'tags': ['TagG', 'TagH', 'TagI', 'TagJ'],
-            'is_featured': True
-        },
+            'title': 'E-commerce Platform',
+            'description': 'A fully-featured e-commerce solution with payment processing and inventory management.',
+            'github_url': 'https://github.com/example/ecommerce',
+            'demo_url': 'https://example.com/ecommerce-demo',
+            'image_url': 'https://api.slingacademy.com/public/sample-photos/5.jpeg',
+            # Additional fields would follow the same pattern
+        }
+        # More projects would be added here
     ]

@@ -62,7 +62,7 @@ class ProjectsData:
             'github_url': 'https://github.com/example/social-media-analytics',
             'demo_url': 'https://example.com/social-media-analytics-demo',
             'image_url': 'https://api.slingacademy.com/public/sample-photos/6.jpeg',
-            'is_featured': False,
+            'is_featured': True,
             'features': [
                 {
                     'title': 'Sentiment Analysis',

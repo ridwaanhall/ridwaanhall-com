@@ -16,21 +16,40 @@
                 {% endblock %}
             </div>
         </div>
+        <!-- JavaScript for mobile sidebar -->
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const mobileMenuButton = document.getElementById('mobile-menu-button');
+            // Mobile sidebar toggle functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const openSidebarBtn = document.getElementById('open-sidebar');
+                const closeSidebarBtn = document.getElementById('close-sidebar');
                 const mobileSidebar = document.getElementById('mobile-sidebar');
                 const mobileMenu = document.getElementById('mobile-menu');
-                const closeSidebarButton = document.getElementById('close-sidebar');
-
-                mobileMenuButton.addEventListener('click', function () {
-                    mobileSidebar.classList.toggle('hidden');
-                    mobileMenu.classList.toggle('-translate-x-full');
-                });
-
-                closeSidebarButton.addEventListener('click', function () {
-                    mobileSidebar.classList.add('hidden');
+                
+                // Function to open sidebar
+                const openSidebar = () => {
+                    mobileSidebar.classList.remove('hidden');
+                    setTimeout(() => {
+                        mobileMenu.classList.remove('-translate-x-full');
+                    }, 50);
+                };
+                
+                // Function to close sidebar
+                const closeSidebar = () => {
                     mobileMenu.classList.add('-translate-x-full');
+                    setTimeout(() => {
+                        mobileSidebar.classList.add('hidden');
+                    }, 300);
+                };
+                
+                // Add event listeners
+                openSidebarBtn.addEventListener('click', openSidebar);
+                closeSidebarBtn.addEventListener('click', closeSidebar);
+                
+                // Close sidebar when clicking outside
+                mobileSidebar.addEventListener('click', function(e) {
+                    if (e.target === mobileSidebar) {
+                        closeSidebar();
+                    }
                 });
             });
         </script>

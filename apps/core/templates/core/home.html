@@ -70,16 +70,14 @@
             <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
                 <h2 class="text-2xl font-bold text-white mb-4">Featured Projects</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                    <a href="{% url 'projects_detail' %}" class="bg-gray-700 rounded-lg p-4 hover:bg-gray-600">
-                        <img src="https://api.slingacademy.com/public/sample-photos/1.jpeg" alt="Project 1" class="w-full h-40 object-cover rounded-lg mb-4">
-                        <h3 class="text-lg font-semibold text-white">Project 1</h3>
-                        <p class="text-gray-300">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In hac habitasse platea dictumst.</p>
-                    </a>
-                    <a href="{% url 'projects_detail' %}" class="bg-gray-700 rounded-lg p-4 hover:bg-gray-600">
-                        <img src="https://api.slingacademy.com/public/sample-photos/2.jpeg" alt="Project 2" class="w-full h-40 object-cover rounded-lg mb-4">
-                        <h3 class="text-lg font-semibold text-white">Project 2</h3>
-                        <p class="text-gray-300">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In hac habitasse platea dictumst.</p>
-                    </a>
+                    {% for project in featured_projects %}
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <img src="{{ project.image_url }}" alt="{{ project.title }}" class="w-full h-40 object-cover rounded-lg mb-4">
+                        <h3 class="text-lg font-semibold text-white">{{ project.title }}</h3>
+                        <p class="text-gray-300">{{ project.description }}</p>
+                        <a href="{% url 'projects' %}{{ project.title|slugify }}" class="text-indigo-400 hover:text-indigo-300">Read more</a>
+                    </div>
+                    {% endfor %}
                 </div>
                 <div class="mt-4 text-center">
                     <a href="{% url 'projects' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">

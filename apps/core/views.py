@@ -1,13 +1,16 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render
 from apps.blog import blog_data
+from apps.projects import projects_data
 
 class HomeView(TemplateView):
     def get(self, request):
         try:
             blogs = [blog for blog in blog_data.BlogData.blogs if blog.get('is_featured')]
+            projects = [project for project in projects_data.ProjectsData.projects if project.get('is_featured')]
             context = {
-                'blogs': blogs
+                'blogs': blogs,
+                'featured_projects': projects
             }
             return render(request, 'core/home.html', context)
 

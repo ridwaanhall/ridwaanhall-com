@@ -88,7 +88,7 @@ class ProjectsData:
             'github_url': 'https://github.com/example/project-management',
             'demo_url': 'https://example.com/project-management-demo',
             'image_url': 'https://api.slingacademy.com/public/sample-photos/9.jpeg',
-            'is_featured': True,
+            'is_featured': False,
             'features': [
                 {
                     'title': 'Task Management',

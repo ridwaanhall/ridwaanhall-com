@@ -16,7 +16,7 @@ class BlogData:
         },
         {
             'id': 2,
-            'title': 'Dummy Post 2',
+            'title': 'Dummy Post featured',
             'description': 'This is a dummy post description for post 2.',
             'image_url': 'https://api.slingacademy.com/public/sample-photos/2.jpeg',
             'date': 'February 15, 2023',

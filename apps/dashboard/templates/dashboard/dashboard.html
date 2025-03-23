@@ -4,14 +4,15 @@
 
 {% block content %}
 <div class="flex-1 md:ml-72">
-    <main class="p-6">
+    <main class="p-6 bg-gray-900">
         <div class="max-w-7xl mx-auto">
+            <!-- Hero section preserved as requested -->
             <div class="bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg rounded-xl overflow-hidden mb-8">
                 <div class="p-6 md:p-8">
                     <div class="flex flex-col md:flex-row md:items-center justify-between">
                         <div class="mb-6 md:mb-0">
                             <h1 class="text-3xl font-bold text-white">Dashboard</h1>
-                        <p class="mt-2 text-lg text-gray-400">Overview of your professional activities</p>
+                            <p class="mt-2 text-lg text-gray-400">Overview of your professional activities</p>
                         </div>
                         <div>
                             <a href="#" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -25,80 +26,280 @@
                 </div>
             </div>
 
-            <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
-                <h2 class="text-2xl font-bold text-white mb-6 border-b border-gray-700 pb-2">Recent Activities</h2>
-                <div class="space-y-4">
-                    <div class="bg-gray-700 rounded-lg p-4">
-                        <div class="flex justify-between items-center">
-                            <h3 class="text-xl font-bold text-white">Project Management</h3>
-                            <p class="text-gray-400 text-right">Updated 2 hours ago</p>
+            <!-- Statistics Cards -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-gray-300 mb-4">Key Metrics</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Statistic Card 1 -->
+                    <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                </svg>
+                            </div>
+                            <span class="text-xs font-medium py-1 px-2 rounded-full bg-green-500 bg-opacity-10 text-green-400">+5%</span>
                         </div>
-                        <ul class="list-disc list-inside text-gray-400 mt-2">
-                            <li>Reviewed project milestones and deadlines.</li>
-                            <li>Coordinated with team members for upcoming tasks.</li>
-                            <li>Updated project documentation.</li>
-                        </ul>
+                        <h3 class="text-gray-400 font-medium text-sm">Project Completion</h3>
+                        <p class="text-white text-3xl font-bold mt-1">75%</p>
+                        <div class="w-full bg-gray-700 rounded-full h-1 mt-3">
+                            <div class="bg-gradient-to-r from-green-400 to-green-600 h-1 rounded-full" style="width: 75%"></div>
+                        </div>
                     </div>
-                    <div class="bg-gray-700 rounded-lg p-4">
-                        <div class="flex justify-between items-center">
-                            <h3 class="text-xl font-bold text-white">Client Meeting</h3>
-                            <p class="text-gray-400 text-right">Yesterday</p>
+                    
+                    <!-- Statistic Card 2 -->
+                    <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                            </div>
+                            <span class="text-xs font-medium py-1 px-2 rounded-full bg-blue-500 bg-opacity-10 text-blue-400">+12</span>
                         </div>
-                        <ul class="list-disc list-inside text-gray-400 mt-2">
-                            <li>Discussed project requirements and deliverables.</li>
-                            <li>Presented project progress and received feedback.</li>
-                            <li>Outlined next steps and action items.</li>
-                        </ul>
+                        <h3 class="text-gray-400 font-medium text-sm">Tasks Completed</h3>
+                        <p class="text-white text-3xl font-bold mt-1">120</p>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-xs text-gray-400">Last month: 108</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistic Card 3 -->
+                    <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                            </div>
+                            <span class="text-xs font-medium py-1 px-2 rounded-full bg-purple-500 bg-opacity-10 text-purple-400">+2</span>
+                        </div>
+                        <h3 class="text-gray-400 font-medium text-sm">Active Projects</h3>
+                        <p class="text-white text-3xl font-bold mt-1">8</p>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-xs text-gray-400">3 high priority</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistic Card 4 -->
+                    <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                            </div>
+                            <span class="text-xs font-medium py-1 px-2 rounded-full bg-yellow-500 bg-opacity-10 text-yellow-400">+3</span>
+                        </div>
+                        <h3 class="text-gray-400 font-medium text-sm">Team Members</h3>
+                        <p class="text-white text-3xl font-bold mt-1">15</p>
+                        <div class="mt-4 flex -space-x-2 overflow-hidden">
+                            <div class="w-6 h-6 rounded-full bg-indigo-500 border border-gray-800"></div>
+                            <div class="w-6 h-6 rounded-full bg-pink-500 border border-gray-800"></div>
+                            <div class="w-6 h-6 rounded-full bg-green-500 border border-gray-800"></div>
+                            <div class="w-6 h-6 rounded-full bg-gray-500 border border-gray-800 flex items-center justify-center text-xs text-white">+12</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
-                <h2 class="text-2xl font-bold text-white mb-6 border-b border-gray-700 pb-2">Statistics</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center">
-                        <span class="text-3xl font-bold text-white">75%</span>
-                        <span class="mt-2 text-center text-gray-400">Project Completion</span>
-                    </div>
-                    <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center">
-                        <span class="text-3xl font-bold text-white">120</span>
-                        <span class="mt-2 text-center text-gray-400">Tasks Completed</span>
-                    </div>
-                    <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center">
-                        <span class="text-3xl font-bold text-white">8</span>
-                        <span class="mt-2 text-center text-gray-400">Active Projects</span>
-                    </div>
-                    <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center">
-                        <span class="text-3xl font-bold text-white">15</span>
-                        <span class="mt-2 text-center text-gray-400">Team Members</span>
+            <!-- Recent Activities & Deadlines -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Recent Activities -->
+                <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-bold text-white">Recent Activities</h2>
+                            <button class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center transition-colors">
+                                View All
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <!-- Activity Card 1 -->
+                            <div class="relative pl-8 before:content-[''] before:absolute before:left-3 before:top-0 before:bottom-0 before:w-px before:bg-indigo-500">
+                                <div class="absolute left-0 top-0 w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                    </svg>
+                                </div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 class="text-lg font-medium text-white">Project Management</h3>
+                                    <span class="text-xs text-gray-400">2 hours ago</span>
+                                </div>
+                                <div class="bg-gray-700 bg-opacity-30 p-4 rounded-lg">
+                                    <ul class="space-y-2 text-gray-400 text-sm">
+                                        <li class="flex items-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-green-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            <span>Reviewed project milestones and deadlines.</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-green-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            <span>Coordinated with team members for upcoming tasks.</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-green-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            <span>Updated project documentation.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Activity Card 2 -->
+                            <div class="relative pl-8 before:content-[''] before:absolute before:left-3 before:top-0 before:bottom-0 before:w-px before:bg-blue-500">
+                                <div class="absolute left-0 top-0 w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                </div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 class="text-lg font-medium text-white">Client Meeting</h3>
+                                    <span class="text-xs text-gray-400">Yesterday</span>
+                                </div>
+                                <div class="bg-gray-700 bg-opacity-30 p-4 rounded-lg">
+                                    <ul class="space-y-2 text-gray-400 text-sm">
+                                        <li class="flex items-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-green-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            <span>Discussed project requirements and deliverables.</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-green-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            <span>Presented project progress and received feedback.</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-green-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            <span>Outlined next steps and action items.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
-                <h2 class="text-2xl font-bold text-white mb-6 border-b border-gray-700 pb-2">Upcoming Deadlines</h2>
-                <div class="space-y-4">
-                    <div class="bg-gray-700 rounded-lg p-4">
-                        <div class="flex justify-between items-center">
-                            <h3 class="text-xl font-bold text-white">Website Redesign</h3>
-                            <p class="text-gray-400 text-right">Due in 3 days</p>
+                
+                <!-- Upcoming Deadlines -->
+                <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-bold text-white">Upcoming Deadlines</h2>
+                            <button class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center transition-colors">
+                                View All
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
                         </div>
-                        <ul class="list-disc list-inside text-gray-400 mt-2">
-                            <li>Finalize design mockups.</li>
-                            <li>Implement feedback from stakeholders.</li>
-                            <li>Prepare for launch.</li>
-                        </ul>
-                    </div>
-                    <div class="bg-gray-700 rounded-lg p-4">
-                        <div class="flex justify-between items-center">
-                            <h3 class="text-xl font-bold text-white">Marketing Campaign</h3>
-                            <p class="text-gray-400 text-right">Due in 1 week</p>
+                        
+                        <div class="space-y-6">
+                            <!-- Deadline Card 1 -->
+                            <div class="bg-gray-700 bg-opacity-30 rounded-xl overflow-hidden">
+                                <div class="px-6 py-4 border-l-4 border-red-500">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <h3 class="text-lg font-medium text-white">Website Redesign</h3>
+                                        <span class="text-xs py-1 px-2 bg-red-500 bg-opacity-20 text-red-100 rounded-full font-medium">Due in 3 days</span>
+                                    </div>
+                                    <div class="flex items-center text-xs text-gray-400 mb-3">
+                                        <div class="flex items-center mr-4">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>March 27, 2025</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>2 of 3 tasks completed</span>
+                                        </div>
+                                    </div>
+                                    <div class="w-full bg-gray-700 rounded-full h-1.5 mb-4">
+                                        <div class="bg-gradient-to-r from-red-400 to-red-600 h-1.5 rounded-full" style="width: 66%"></div>
+                                    </div>
+                                    <ul class="space-y-2 text-gray-400 text-sm">
+                                        <li class="flex items-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-green-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            <span>Finalize design mockups.</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-green-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            <span>Implement feedback from stakeholders.</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                            <span>Prepare for launch.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Deadline Card 2 -->
+                            <div class="bg-gray-700 bg-opacity-30 rounded-xl overflow-hidden">
+                                <div class="px-6 py-4 border-l-4 border-yellow-500">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <h3 class="text-lg font-medium text-white">Marketing Campaign</h3>
+                                        <span class="text-xs py-1 px-2 bg-yellow-500 bg-opacity-20 text-yellow-100 rounded-full font-medium">Due in 1 week</span>
+                                    </div>
+                                    <div class="flex items-center text-xs text-gray-400 mb-3">
+                                        <div class="flex items-center mr-4">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>March 31, 2025</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>1 of 3 tasks completed</span>
+                                        </div>
+                                    </div>
+                                    <div class="w-full bg-gray-700 rounded-full h-1.5 mb-4">
+                                        <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 h-1.5 rounded-full" style="width: 33%"></div>
+                                    </div>
+                                    <ul class="space-y-2 text-gray-400 text-sm">
+                                        <li class="flex items-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-green-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            <span>Develop campaign strategy.</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                            <span>Create marketing materials.</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                            <span>Schedule social media posts.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        <ul class="list-disc list-inside text-gray-400 mt-2">
-                            <li>Develop campaign strategy.</li>
-                            <li>Create marketing materials.</li>
-                            <li>Schedule social media posts.</li>
-                        </ul>
                     </div>
                 </div>
             </div>

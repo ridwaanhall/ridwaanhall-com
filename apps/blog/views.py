@@ -3,7 +3,7 @@ from django.views import View
 from django.utils.text import slugify
 from django.core.exceptions import SuspiciousOperation
 
-from . import blog_data
+from apps.data import blog_data
 
 
 class BlogView(View):

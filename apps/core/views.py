@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render
-from apps.blog import blog_data
-from apps.projects import projects_data
+from apps.data import blog_data
+from apps.data import projects_data
 
 class HomeView(TemplateView):
     def get(self, request):

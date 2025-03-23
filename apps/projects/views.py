@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.core.exceptions import SuspiciousOperation
 from django.utils.text import slugify
 
-from . import projects_data
+from apps.data import projects_data
 
 class ProjectsView(TemplateView):
     def get(self, request):

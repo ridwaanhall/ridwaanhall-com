@@ -156,30 +156,54 @@
                 </div>
             </div>
 
-            <div class="bg-gray-800 shadow rounded-lg p-6 mb-8">
-                <h2 class="text-2xl font-bold text-white mb-6 border-b border-gray-700 pb-2">Contact Me</h2>
-                <form action="#" method="POST">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-gray-300">Name</label>
-                            <input type="text" id="name" name="name" class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-300">
+            <!-- Education with Card Design -->
+            <div class="bg-gray-800 shadow-lg rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-white mb-6 border-b border-gray-700 pb-2">Education</h2>
+                
+                <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-6 hover:shadow-xl transition-all duration-300">
+                    <div class="flex flex-col md:flex-row md:items-start">
+                        <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                            <div class="w-16 h-16 bg-indigo-900/40 rounded-xl flex items-center justify-center">
+                                <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                                    <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path>
+                                </svg>
+                            </div>
                         </div>
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
-                            <input type="email" id="email" name="email" class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-300">
+                        <div class="flex-grow">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
+                                <h3 class="text-xl font-bold text-white">B.Sc. in Informatics (specializing in AI)</h3>
+                                <span class="text-indigo-300 text-sm">2018 - 2022</span>
+                            </div>
+                            <p class="text-gray-300 mb-4">University of Technology Yogyakarta</p>
+                            <div class="bg-gray-700/50 rounded-lg p-4">
+                                <ul class="space-y-2 text-gray-300">
+                                    <li class="flex items-start">
+                                        <svg class="w-5 h-5 text-indigo-400 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        Conducted research in artificial intelligence and machine learning
+                                    </li>
+                                    <li class="flex items-start">
+                                        <svg class="w-5 h-5 text-indigo-400 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        Developed various projects using Python, Django, and TensorFlow
+                                    </li>
+                                    <li class="flex items-start">
+                                        <svg class="w-5 h-5 text-indigo-400 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        Graduated with honors, achieving a high GPA
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                    <div class="mt-4">
-                        <label for="message" class="block text-sm font-medium text-gray-300">Message</label>
-                        <textarea id="message" name="message" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-300"></textarea>
-                    </div>
-                    <div class="mt-4">
-                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Send Message
-                        </button>
-                    </div>
-                </form>
+                </div>
             </div>
+
         </div>
     </main>
 </div>

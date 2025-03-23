@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     
     'apps.core',
     'apps.career',
+    'apps.data',
     'apps.dashboard',
     'apps.projects',
     'apps.lic_certs',

@@ -24,9 +24,13 @@
             <div class="flex flex-col md:flex-row min-h-screen">
                 {% include 'sidebar.html' %}
 
-                {% block content %}
+                <div class="flex-1 md:ml-72">
+                    <main class="p-4 md:p-6">
+                        {% block content %}
 
-                {% endblock %}
+                        {% endblock %}
+                    </main>
+                </div>
             </div>
         </div>
         <!-- JavaScript for mobile sidebar -->

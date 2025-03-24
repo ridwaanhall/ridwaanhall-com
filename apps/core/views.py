@@ -16,6 +16,7 @@ class HomeView(TemplateView):
             experiences = [experience for experience in ExperiencesData.experiences if experience.get('is_current')]
             
             context = {
+                'view': True,
                 'blogs': blogs,
                 'projects': projects,
                 'education': education,

@@ -1,18 +1,21 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render
 
+from apps.data.experiences_data import ExperiencesData
 from apps.data.certifications_data import CertificationsData
 from apps.data.education_data import EducationData
 
 class CareerView(TemplateView):
     def get(self, request):
         try:
+            experiences = [experience for experience in ExperiencesData.experiences]
             education = [education for education in EducationData.education]
             certifications = [certification for certification in CertificationsData.certifications]
             
             context = {
+                'experiences': experiences,
                 'education': education,
-                'certifications': certifications
+                'certifications': certifications,
             }
             return render(request, 'career/career.html', context)
 

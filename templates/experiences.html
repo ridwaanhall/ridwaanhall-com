@@ -2,14 +2,16 @@
     <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-600/10 rounded-full -ml-32 -mb-32 blur-3xl"></div>
 
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-700 pb-4 relative z-10">
-        <h2 class="text-2xl font-bold text-white">Professional Experience</h2>
         {% if view %}
+        <h2 class="text-2xl font-bold text-white">Current Experience</h2>
         <a href="{% url 'career' %}" class="mt-2 md:mt-0 group flex items-center text-indigo-400 hover:text-indigo-300 transition-colors duration-300">
             <span>View More</span>
             <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
         </a>
+        {% else %}
+        <h2 class="text-2xl font-bold text-white">Professional Experience</h2>
         {% endif %}
     </div>
     

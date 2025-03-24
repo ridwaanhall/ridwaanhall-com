@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}About Me | Ridwan Halim{% endblock %}
+{% block title %}About Me | {{ about.name }}{% endblock %}
 
 {% block content %}
 <div class="flex-1 md:ml-72">
@@ -27,14 +27,14 @@
                                 <div class="bg-gradient-to-r from-indigo-600/20 to-purple-600/20 h-32"></div>
                                 <div class="absolute -bottom-16 left-1/2 transform -translate-x-1/2">
                                     <div class="w-32 h-32 rounded-full border-4 border-gray-800 overflow-hidden ring-4 ring-indigo-500/20">
-                                        <img src="https://api.slingacademy.com/public/sample-photos/9.jpeg" alt="Ridwan Halim" class="w-full h-full object-cover">
+                                        <img src="https://api.slingacademy.com/public/sample-photos/9.jpeg" alt="{{ about.name }}" class="w-full h-full object-cover">
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="pt-20 px-6 pb-6">
-                                <h2 class="text-2xl font-bold text-white text-center mb-1">Ridwan Halim</h2>
-                                <p class="text-indigo-300 text-center mb-4">Machine Learning Mentor</p>
+                                <h2 class="text-2xl font-bold text-white text-center mb-1">{{ about.name }}</h2>
+                                <p class="text-indigo-300 text-center mb-4">{{ about.role }}</p>
                                 
                                 <div class="flex flex-col space-y-4 mt-6">
                                     
@@ -42,7 +42,7 @@
                                         <svg class="w-5 h-5 text-indigo-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                                         </svg>
-                                        <span class="ml-3 text-gray-300">Yogyakarta, Indonesia</span>
+                                        <span class="ml-3 text-gray-300">{{ about.location }}</span>
                                     </div>
                                     
                                 </div>
@@ -81,7 +81,7 @@
                                     </div>
                                     
                                     <p class="leading-relaxed pl-5 border-l-2 border-indigo-500/30">
-                                        I'm <span class="text-indigo-400 font-medium">Ridwan Halim</span> (professionally known as ridwaanhall), a Python Developer specializing in Machine Learning and Web Development. Based in Yogyakarta, Indonesia, I have completed 30+ projects using Django, Flask, scikit-learn, PyTorch, and TensorFlow.
+                                        I'm <span class="text-indigo-400 font-medium">{{ about.name }}</span> (professionally known as {{ about.username }}), a Python Developer specializing in Machine Learning and Web Development. Based in Yogyakarta, Indonesia, I have completed 30+ projects using Django, Flask, scikit-learn, PyTorch, and TensorFlow.
                                     </p>
                                     
                                     <div class="bg-gray-800/50 rounded-xl p-5">

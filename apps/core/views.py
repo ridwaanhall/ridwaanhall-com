@@ -1,17 +1,19 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render
 
+from apps.data.about_data import AboutData
 from apps.data.experiences_data import ExperiencesData
-from apps.data import blog_data
-from apps.data import projects_data
+from apps.data.blog_data import BlogData
+from apps.data.projects_data import ProjectsData
 from apps.data.education_data import EducationData
 from apps.data.experiences_data import ExperiencesData
 
 class HomeView(TemplateView):
     def get(self, request):
         try:
-            blogs = [blog for blog in blog_data.BlogData.blogs if blog.get('is_featured')]
-            projects = [project for project in projects_data.ProjectsData.projects if project.get('is_featured')]
+            about = AboutData.get_about_data()
+            blogs = [blog for blog in BlogData.blogs if blog.get('is_featured')]
+            projects = [project for project in ProjectsData.projects if project.get('is_featured')]
             education = [education for education in EducationData.education if education.get('is_last')]
             experiences = [experience for experience in ExperiencesData.experiences if experience.get('is_current')]
             
@@ -20,7 +22,8 @@ class HomeView(TemplateView):
                 'blogs': blogs,
                 'projects': projects,
                 'education': education,
-                'experiences': experiences
+                'experiences': experiences,
+                'about': about[0],
             }
             
             return render(request, 'core/home.html', context)
@@ -53,6 +56,7 @@ class HomeView(TemplateView):
 class AboutView(TemplateView):
     def get(self, request):
         try:
+            about = AboutData.get_about_data()
             experiences = [experience for experience in ExperiencesData.experiences if experience.get('is_current')]
             education = [education for education in EducationData.education if education.get('is_last')]
             
@@ -60,6 +64,7 @@ class AboutView(TemplateView):
                 'view': True,
                 'experiences': experiences,
                 'education': education,
+                'about': about[0],
             }
             
             return render(request, 'core/about.html', context)
@@ -91,3 +96,9 @@ class AboutView(TemplateView):
     
 class ContactView(TemplateView):
     template_name = 'core/contact.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        about = AboutData.get_about_data()
+        context['about'] = about[0]
+        return context

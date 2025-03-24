@@ -4,10 +4,12 @@ from django.shortcuts import render
 from apps.data.experiences_data import ExperiencesData
 from apps.data.certifications_data import CertificationsData
 from apps.data.education_data import EducationData
+from apps.data.about_data import AboutData
 
 class CareerView(TemplateView):
     def get(self, request):
         try:
+            about = AboutData.get_about_data()
             experiences = [experience for experience in ExperiencesData.experiences]
             education = [education for education in EducationData.education]
             certifications = [certification for certification in CertificationsData.certifications]
@@ -16,6 +18,7 @@ class CareerView(TemplateView):
                 'experiences': experiences,
                 'education': education,
                 'certifications': certifications,
+                'about': about[0],
             }
             return render(request, 'career/career.html', context)
 

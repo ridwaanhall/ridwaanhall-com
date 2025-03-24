@@ -3,14 +3,18 @@ from django.shortcuts import render
 from django.core.exceptions import SuspiciousOperation
 from django.utils.text import slugify
 
-from apps.data import projects_data
+from apps.data.projects_data import ProjectsData
+from apps.data.about_data import AboutData
 
 class ProjectsView(TemplateView):
     def get(self, request):
         try:
-            projects = projects_data.ProjectsData.projects
+            projects = ProjectsData.projects
+            about = AboutData.get_about_data()
+            
             context = {
-                'projects': projects
+                'projects': projects,
+                'about': about[0]
             }
             return render(request, 'projects/projects.html', context)
 
@@ -41,19 +45,21 @@ class ProjectsView(TemplateView):
     
 class ProjectsDetailView(View):
     def get(self, request, title):
-        projects = projects_data.ProjectsData.projects
+        projects = ProjectsData.projects
+        about = AboutData.get_about_data()
 
         try:
             if not isinstance(title, str):
                 raise SuspiciousOperation("Invalid title format")
 
             projects_post = next((item for item in projects if slugify(item['title']) == title), None)
-            other_projects = [item for item in projects if slugify(item['title']) != title]
+            # other_projects = [item for item in projects if slugify(item['title']) != title]
 
             if projects_post:
                 context = {
                     'project': projects_post,
-                    'other_projects': other_projects
+                    'about': about[0],
+                    # 'other_projects': other_projects
                 }
                 return render(request, 'projects/projects_detail.html', context)
             else:

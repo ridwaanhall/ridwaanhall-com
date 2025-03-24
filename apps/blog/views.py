@@ -3,16 +3,20 @@ from django.views import View
 from django.utils.text import slugify
 from django.core.exceptions import SuspiciousOperation
 
-from apps.data import blog_data
-
+from apps.data.blog_data import BlogData
+from apps.data.about_data import AboutData
 
 class BlogView(View):
     def get(self, request):
         try:
-            blogs = blog_data.BlogData.blogs
+            blogs = BlogData.blogs
+            about = AboutData.get_about_data()
+            
             context = {
-                'blogs': blogs
+                'blogs': blogs,
+                'about': about[0]
             }
+            
             return render(request, 'blog/blog.html', context)
 
         except AttributeError:
@@ -42,18 +46,20 @@ class BlogView(View):
 
 class BlogDetailView(View):
     def get(self, request, title):
-        blogs = blog_data.BlogData.blogs
+        blogs = BlogData.blogs
+        about = AboutData.get_about_data()
 
         try:
             if not isinstance(title, str):
                 raise SuspiciousOperation("Invalid title format")
 
             blog_post = next((item for item in blogs if slugify(item['title']) == title), None)
-            other_blogs = [item for item in blogs if slugify(item['title']) != title]
+            # other_blogs = [item for item in blogs if slugify(item['title']) != title]
 
             if blog_post:
                 context = {
                     'blog': blog_post,
+                    'about': about[0],
                     # 'other_blogs': other_blogs
                 }
                 return render(request, 'blog/blog_detail.html', context)

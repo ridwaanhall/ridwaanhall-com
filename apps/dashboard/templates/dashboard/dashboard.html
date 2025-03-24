@@ -55,44 +55,38 @@
                 </div>
             </div>
 
-            <!-- Statistics Cards - Updated to GitHub Contribution Statistics -->
             <div class="">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-bold text-gray-300">Contribution Statistics on Github</h2>
                     <p class="text-sm text-gray-400">Last update at <span id="last-update-time">March 24, 2025 10:30 AM</span></p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-                    <!-- Total -->
+
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
                         <p class="text-white text-3xl font-bold">0</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">Total</h3>
                     </div>
                     
-                    <!-- This Week -->
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
                         <p class="text-white text-3xl font-bold">0</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">This Week</h3>
                     </div>
                     
-                    <!-- Best Day -->
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
                         <p class="text-white text-3xl font-bold">0</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">Best Day</h3>
                     </div>
                     
-                    <!-- Average -->
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
                         <p class="text-white text-3xl font-bold">0 / day</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">Average</h3>
                     </div>
                     
-                    <!-- Longest Streak -->
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
                         <p class="text-white text-3xl font-bold">0</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">Longest Streak</h3>
                     </div>
                     
-                    <!-- Current Streak -->
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
                         <p class="text-white text-3xl font-bold">0</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">Current Streak</h3>
@@ -105,7 +99,7 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- Add JavaScript for the heat map -->
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const contributionGrid = document.getElementById('contribution-grid');

@@ -24,25 +24,19 @@
             <div class="flex flex-col md:flex-row min-h-screen">
                 {% include 'sidebar.html' %}
 
-                <div class="flex-1 md:ml-72">
-                    <main class="p-4 md:p-6">
-                        {% block content %}
+                {% block content %}
 
-                        {% endblock %}
-                    </main>
-                </div>
+                {% endblock %}
             </div>
         </div>
-        <!-- JavaScript for mobile sidebar -->
+
         <script>
-            // Mobile sidebar toggle functionality
             document.addEventListener('DOMContentLoaded', function() {
                 const openSidebarBtn = document.getElementById('open-sidebar');
                 const closeSidebarBtn = document.getElementById('close-sidebar');
                 const mobileSidebar = document.getElementById('mobile-sidebar');
                 const mobileMenu = document.getElementById('mobile-menu');
                 
-                // Function to open sidebar
                 const openSidebar = () => {
                     mobileSidebar.classList.remove('hidden');
                     setTimeout(() => {
@@ -50,7 +44,6 @@
                     }, 50);
                 };
                 
-                // Function to close sidebar
                 const closeSidebar = () => {
                     mobileMenu.classList.add('-translate-x-full');
                     setTimeout(() => {
@@ -58,11 +51,9 @@
                     }, 300);
                 };
                 
-                // Add event listeners
                 openSidebarBtn.addEventListener('click', openSidebar);
                 closeSidebarBtn.addEventListener('click', closeSidebar);
                 
-                // Close sidebar when clicking outside
                 mobileSidebar.addEventListener('click', function(e) {
                     if (e.target === mobileSidebar) {
                         closeSidebar();
@@ -70,8 +61,8 @@
                 });
             });
         </script>
-        {% block scripts %}
 
+        {% block scripts %}
         {% endblock %}
     </body>
 </html>

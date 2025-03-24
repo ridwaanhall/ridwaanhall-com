@@ -1,13 +1,18 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render
-from apps.data import certifications_data
+
+from apps.data.certifications_data import CertificationsData
+from apps.data.education_data import EducationData
 
 class CareerView(TemplateView):
     def get(self, request):
         try:
-            certifications = [certification for certification in certifications_data.CertificationsData.certifications if certification.get('is_featured')]
+            education = [education for education in EducationData.education]
+            certifications = [certification for certification in CertificationsData.certifications]
+            
             context = {
-                'certifications': certifications,
+                'education': education,
+                'certifications': certifications
             }
             return render(request, 'career/career.html', context)
 

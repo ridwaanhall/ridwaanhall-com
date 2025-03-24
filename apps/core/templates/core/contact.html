@@ -4,56 +4,29 @@
 
 {% block content %}
 <div class="flex-1 md:ml-72">
-    <main class="p-6">
-        <div class="max-w-7xl mx-auto">
+    <main class="p-4 md:p-6">
+        <div class="max-w-6xl mx-auto">
 
-            <!-- Hero section remains unchanged -->
-            <div class="bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg rounded-xl overflow-hidden mb-8">
-                <div class="p-6 md:p-8">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between">
-                        <div class="mb-6 md:mb-0">
-                            <h1 class="text-3xl font-bold text-white">Contact Me</h1>
-                            <p class="mt-2 text-lg text-gray-300">I'd love to hear from you! Feel free to reach out via email or connect with me on social media.</p>
-                        </div>
-                    </div>
+            <div class="bg-gradient-to-r from-indigo-900 to-gray-800 shadow-xl rounded-xl overflow-hidden mb-8">
+                <div class="p-5 md:p-8">
+                    <h1 class="text-2xl md:text-3xl font-bold text-white">Contact Me</h1>
+                    <p class="mt-2 text-base text-gray-200 max-w-2xl">Have a question or want to work together? Feel free to reach out through any of the channels below.</p>
                 </div>
             </div>
 
-            <!-- Redesigned content -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Column 1: Contact form -->
-                <div class="lg:col-span-2">
-                    <div class="bg-gray-800 shadow rounded-lg p-6">
-                        <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                            Find Me
-                        </h2>
-                        <div class="w-full h-48 mb-3 rounded-md overflow-hidden">
-                            <iframe class="w-full h-full" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.019112484882!2d144.9630579153169!3d-37.81410797975195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0xf577d9f0b1c2b1e!2sFederation%20Square!5e0!3m2!1sen!2sau!4v1633071234567!5m2!1sen!2sau" allowfullscreen="" loading="lazy"></iframe>
-                        </div>
-                        <div class="text-sm text-gray-300">
-                            <p class="font-medium">Federation Square</p>
-                            <p class="text-gray-400">Melbourne, Victoria, Australia</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8">
 
-                <!-- Column 2: Contact info and map -->
-                <div class="lg:col-span-1 space-y-8">
-                    <!-- Connect with me card -->
-                    <div class="bg-gray-800 shadow rounded-lg p-6">
-                        <h2 class="text-xl font-bold text-white mb-4 flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <div class="lg:col-span-5 order-2 lg:order-1">
+                    <div class="bg-gray-800 shadow-lg rounded-xl p-5 md:p-6 h-full">
+                        <h2 class="text-xl font-bold text-white mb-5 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                             </svg>
-                            Get Connected
+                            Connect With Me
                         </h2>
-                        <div class="space-y-4">
-                            <a href="mailto:contact@ridwaanhall.com" class="flex items-center p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition duration-150">
-                                <div class="flex-shrink-0 bg-indigo-500 p-2 rounded-md">
+                        <div class="space-y-3">
+                            <a href="mailto:contact@ridwaanhall.com" class="flex items-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-all duration-200 transform hover:-translate-y-1">
+                                <div class="flex-shrink-0 bg-indigo-500 p-2.5 rounded-md">
                                     <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                                         <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
@@ -61,60 +34,80 @@
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm font-medium text-white">Email</p>
-                                    <p class="text-xs text-gray-400">contact@ridwaanhall.com</p>
+                                    <p class="text-xs text-gray-300">contact@ridwaanhall.com</p>
                                 </div>
                             </a>
-                            <a href="https://github.com/ridwaanhall" class="flex items-center p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition duration-150">
-                                <div class="flex-shrink-0 bg-gray-900 p-2 rounded-md">
+                            <a href="https://github.com/ridwaanhall" target="_blank" rel="noopener" class="flex items-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-all duration-200 transform hover:-translate-y-1">
+                                <div class="flex-shrink-0 bg-gray-900 p-2.5 rounded-md">
                                     <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.11.82-.26.82-.577v-2.165c-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.997.108-.775.42-1.305.763-1.605-2.665-.305-5.466-1.335-5.466-5.93 0-1.31.467-2.38 1.235-3.22-.123-.303-.535-1.527.117-3.176 0 0 1.008-.322 3.3 1.23.957-.266 1.98-.398 3-.403 1.02.005 2.043.137 3 .403 2.29-1.552 3.297-1.23 3.297-1.23.653 1.65.24 2.873.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.803 5.62-5.475 5.92.43.37.823 1.1.823 2.22v3.293c0 .32.217.694.825.577C20.565 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/>
                                     </svg>
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm font-medium text-white">GitHub</p>
-                                    <p class="text-xs text-gray-400">github.com/ridwaanhall</p>
+                                    <p class="text-xs text-gray-300">github.com/ridwaanhall</p>
                                 </div>
                             </a>
-                            <a href="https://linkedin.com/in/ridwaanhall" class="flex items-center p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition duration-150">
-                                <div class="flex-shrink-0 bg-blue-600 p-2 rounded-md">
+                            <a href="https://linkedin.com/in/ridwaanhall" target="_blank" rel="noopener" class="flex items-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-all duration-200 transform hover:-translate-y-1">
+                                <div class="flex-shrink-0 bg-blue-600 p-2.5 rounded-md">
                                     <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.5c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.5h-3v-5.5c0-1.38-1.12-2.5-2.5-2.5s-2.5 1.12-2.5 2.5v5.5h-3v-10h3v1.5c.88-1.32 2.5-1.5 3.5-1.5 2.48 0 4.5 2.02 4.5 4.5v5.5z"/>
                                     </svg>
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm font-medium text-white">LinkedIn</p>
-                                    <p class="text-xs text-gray-400">linkedin.com/in/ridwaanhall</p>
+                                    <p class="text-xs text-gray-300">linkedin.com/in/ridwaanhall</p>
                                 </div>
                             </a>
                         </div>
-                    </div>
-
-                    <!-- FAQ or availability card -->
-                    <div class="bg-gray-800 shadow rounded-lg p-6">
-                        <h2 class="text-xl font-bold text-white mb-4 flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        
+                        <h2 class="text-xl font-bold text-white mt-8 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                             Availability
                         </h2>
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-center text-sm">
-                                <span class="text-gray-300">Monday - Friday</span>
-                                <span class="text-gray-400">9:00 AM - 5:00 PM</span>
+                        <div class="bg-gray-700 rounded-lg p-4">
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-200">Monday - Friday</span>
+                                    <span class="text-indigo-300 font-medium">9:00 AM - 5:00 PM</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-200">Saturday</span>
+                                    <span class="text-indigo-300 font-medium">By appointment</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-200">Sunday</span>
+                                    <span class="text-indigo-300 font-medium">Closed</span>
+                                </div>
                             </div>
-                            <div class="flex justify-between items-center text-sm">
-                                <span class="text-gray-300">Saturday</span>
-                                <span class="text-gray-400">By appointment</span>
-                            </div>
-                            <div class="flex justify-between items-center text-sm">
-                                <span class="text-gray-300">Sunday</span>
-                                <span class="text-gray-400">Closed</span>
+                            <div class="mt-4 p-3 bg-indigo-800 bg-opacity-40 rounded-lg">
+                                <p class="text-sm text-indigo-100">
+                                    <span class="font-semibold">Response time:</span> I typically respond within 24-48 hours.
+                                </p>
                             </div>
                         </div>
-                        <div class="mt-4 p-3 bg-indigo-900 bg-opacity-50 rounded-lg">
-                            <p class="text-xs text-indigo-200">
-                                <span class="font-semibold">Response time:</span> I typically respond to all inquiries within 24-48 business hours.
-                            </p>
+                    </div>
+                </div>
+                
+                <div class="lg:col-span-7 order-1 lg:order-2">
+                    <div class="bg-gray-800 shadow-lg rounded-xl p-5 md:p-6">
+                        <h2 class="text-xl font-bold text-white mb-5 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            Find Me
+                        </h2>
+
+                        <div class="w-full h-64 md:h-80 mb-4 rounded-lg overflow-hidden">
+                            <iframe class="w-full h-full" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.019112484882!2d144.9630579153169!3d-37.81410797975195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0xf577d9f0b1c2b1e!2sFederation%20Square!5e0!3m2!1sen!2sau!4v1633071234567!5m2!1sen!2sau" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                        
+                        <div class="text-sm">
+                            <p class="font-medium text-white">Federation Square</p>
+                            <p class="text-gray-300">Melbourne, Victoria, Australia</p>
                         </div>
                     </div>
                 </div>

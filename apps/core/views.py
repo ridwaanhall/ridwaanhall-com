@@ -1,17 +1,23 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render
+
 from apps.data import blog_data
 from apps.data import projects_data
+from apps.data.education_data import EducationData
 
 class HomeView(TemplateView):
     def get(self, request):
         try:
             blogs = [blog for blog in blog_data.BlogData.blogs if blog.get('is_featured')]
             projects = [project for project in projects_data.ProjectsData.projects if project.get('is_featured')]
+            education = [education for education in EducationData.education]
+            
             context = {
                 'blogs': blogs,
-                'featured_projects': projects
+                'featured_projects': projects,
+                'education': education,
             }
+            
             return render(request, 'core/home.html', context)
 
         except AttributeError as e:

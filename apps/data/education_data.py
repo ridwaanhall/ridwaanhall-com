@@ -7,7 +7,7 @@ class EducationData:
             "achievements": [
                 "Conducted research in artificial intelligence and machine learning",
                 "Developed various projects using Python, Django, and TensorFlow",
-                "Graduated with honors, achieving a high GPA"
+                "Graduated with honors, achieving a high GPA 4.00/4.00"
             ]
         }
     ]

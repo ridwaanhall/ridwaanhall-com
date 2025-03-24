@@ -6,7 +6,7 @@ class BlogData:
             'description': 'This is a dummy post description for post 1.',
             'image_url': 'https://api.slingacademy.com/public/sample-photos/1.jpeg',
             'date': 'January 10, 2023',
-            'author': 'Jane Smith',
+            'author': 'Ridwan Halim',
             'content': [
                 "This is the content for Dummy Post 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                 "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
@@ -20,7 +20,7 @@ class BlogData:
             'description': 'This is a dummy post description for post 2.',
             'image_url': 'https://api.slingacademy.com/public/sample-photos/2.jpeg',
             'date': 'February 15, 2023',
-            'author': 'Peter Jones',
+            'author': 'Ridwan Halim',
             'content': [
                 "Content of Dummy Post 2. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
                 "Nisi ut aliquip ex ea commodo consequat."
@@ -34,7 +34,7 @@ class BlogData:
             'description': 'This is a dummy post description for post 3.',
             'image_url': 'https://api.slingacademy.com/public/sample-photos/3.jpeg',
             'date': 'March 22, 2023',
-            'author': 'John Doe',
+            'author': 'Ridwan Halim',
             'content': [
                 "Dummy Post 3 content goes here. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.",
                 "Eu fugiat nulla pariatur."
@@ -48,7 +48,7 @@ class BlogData:
             'description': 'This is a dummy post description for post 4.',
             'image_url': 'https://api.slingacademy.com/public/sample-photos/4.jpeg',
             'date': 'April 01, 2023',
-            'author': 'Jane Smith',
+            'author': 'Ridwan Halim',
             'content': [
                 "This is the fourth dummy post's content. Excepteur sint occaecat cupidatat non proident.",
                 "Sunt in culpa qui officia deserunt mollit anim id est laborum."

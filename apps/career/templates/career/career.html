@@ -187,71 +187,30 @@
             <div class="bg-gray-800 shadow-lg rounded-xl p-6 mb-8">
                 <h2 class="text-2xl font-bold text-white mb-6 border-b border-gray-700 pb-2">Certifications</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Certification 1 -->
+                    {% for certification in certifications %}
+                    <!-- Certification Item -->
                     <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-3">
-                                <h3 class="text-xl font-bold text-white">Certified Machine Learning Specialist</h3>
-                                <span class="text-gray-300 text-sm">2024</span>
+                                <h3 class="text-xl font-bold text-white">{{ certification.title }}</h3>
+                                <span class="text-gray-300 text-sm">{{ certification.year }}</span>
                             </div>
-                            <p class="text-gray-300 mb-4">Machine Learning Institute</p>
+                            <p class="text-gray-300 mb-4">{{ certification.institution }}</p>
                             <div class="bg-gray-700/50 rounded-lg p-4">
                                 <ul class="space-y-2 text-gray-300">
+                                    {% for achievement in certification.achievements %}
                                     <li class="flex items-start">
                                         <svg class="w-5 h-5 text-indigo-400 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
-                                        Completed advanced coursework in machine learning algorithms.
+                                        {{ achievement }}
                                     </li>
-                                    <li class="flex items-start">
-                                        <svg class="w-5 h-5 text-indigo-400 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        Developed and deployed machine learning models.
-                                    </li>
-                                    <li class="flex items-start">
-                                        <svg class="w-5 h-5 text-indigo-400 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        Participated in hands-on projects and case studies.
-                                    </li>
+                                    {% endfor %}
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Certification 2 -->
-                    <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                        <div class="flex flex-col">
-                            <div class="flex justify-between items-center mb-3">
-                                <h3 class="text-xl font-bold text-white">Certified Python Developer</h3>
-                                <span class="text-gray-300 text-sm">2023</span>
-                            </div>
-                            <p class="text-gray-300 mb-4">Python Institute</p>
-                            <div class="bg-gray-700/50 rounded-lg p-4">
-                                <ul class="space-y-2 text-gray-300">
-                                    <li class="flex items-start">
-                                        <svg class="w-5 h-5 text-indigo-400 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        Mastered Python programming language.
-                                    </li>
-                                    <li class="flex items-start">
-                                        <svg class="w-5 h-5 text-indigo-400 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        Developed applications using Python frameworks.
-                                    </li>
-                                    <li class="flex items-start">
-                                        <svg class="w-5 h-5 text-indigo-400 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        Completed projects involving data analysis and web development.
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
 

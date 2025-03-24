@@ -55,7 +55,9 @@ class AboutView(TemplateView):
         try:
             experiences = [experience for experience in ExperiencesData.experiences if experience.get('is_current')]
             education = [education for education in EducationData.education if education.get('is_last')]
+            
             context = {
+                'view': True,
                 'experiences': experiences,
                 'education': education,
             }

@@ -15,28 +15,28 @@ class BlogView(View):
             }
             return render(request, 'blog/blog.html', context)
 
-        except AttributeError as e:
+        except AttributeError:
             context = {
                 'error_code': 500,
-                'error_message': f'AttributeError: {e}'
+                'error_message': 'Internal server error occurred. Please try again later.'
             }
             return render(request, 'error.html', context, status=500)
-        except (TypeError, KeyError) as e:
+        except (TypeError, KeyError):
             context = {
                 'error_code': 500,
-                'error_message': f'Data Error: {e}'
+                'error_message': 'Data processing error occurred. Please try again later.'
             }
             return render(request, 'error.html', context, status=500)
-        except (FileNotFoundError, ImportError) as e:
+        except (FileNotFoundError, ImportError):
             context = {
                 'error_code': 500,
-                'error_message': f'Module Error: {e}'
+                'error_message': 'Resource loading error occurred. Please try again later.'
             }
             return render(request, 'error.html', context, status=500)
-        except Exception as e:
+        except Exception:
             context = {
                 'error_code': 500,
-                'error_message': f'Unexpected Error: {e}'
+                'error_message': 'An unexpected error occurred. Please try again later.'
             }
             return render(request, 'error.html', context, status=500)
 
@@ -54,7 +54,7 @@ class BlogDetailView(View):
             if blog_post:
                 context = {
                     'blog': blog_post,
-                    'other_blogs': other_blogs
+                    # 'other_blogs': other_blogs
                 }
                 return render(request, 'blog/blog_detail.html', context)
             else:

@@ -27,7 +27,8 @@
             </div>
 
             <!-- GitHub-style Activity Heat Map -->
-            <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg mb-8">
+            <div class="bg-gradient-to-br from-gray-900 to-gray-800 shadow-lg rounded-xl mb-8 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-64 h-64 bg-blue-600/10 rounded-full -ml-32 -mt-32 blur-3xl"></div>
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-xl font-semibold text-white">Activity Contributions</h2>
@@ -66,79 +67,47 @@
                 </div>
             </div>
 
-            <!-- Statistics Cards -->
+            <!-- Statistics Cards - Updated to GitHub Contribution Statistics -->
             <div class="">
-                <h2 class="text-xl font-bold text-gray-300 mb-4">Key Metrics</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <!-- Statistic Card 1 -->
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-300">Contribution Statistics on Github</h2>
+                    <p class="text-sm text-gray-400">Last update at <span id="last-update-time">March 24, 2025 10:30 AM</span></p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                    <!-- Total -->
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                </svg>
-                            </div>
-                            <span class="text-xs font-medium py-1 px-2 rounded-full bg-green-500 bg-opacity-10 text-green-400">+5%</span>
-                        </div>
-                        <h3 class="text-gray-400 font-medium text-sm">Project Completion</h3>
-                        <p class="text-white text-3xl font-bold mt-1">75%</p>
-                        <div class="w-full bg-gray-700 rounded-full h-1 mt-3">
-                            <div class="bg-gradient-to-r from-green-400 to-green-600 h-1 rounded-full" style="width: 75%"></div>
-                        </div>
+                        <p class="text-white text-3xl font-bold">0</p>
+                        <h3 class="text-gray-400 font-medium text-sm mt-1">Total</h3>
                     </div>
                     
-                    <!-- Statistic Card 2 -->
+                    <!-- This Week -->
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                </svg>
-                            </div>
-                            <span class="text-xs font-medium py-1 px-2 rounded-full bg-blue-500 bg-opacity-10 text-blue-400">+12</span>
-                        </div>
-                        <h3 class="text-gray-400 font-medium text-sm">Tasks Completed</h3>
-                        <p class="text-white text-3xl font-bold mt-1">120</p>
-                        <div class="mt-4 flex items-center">
-                            <span class="text-xs text-gray-400">Last month: 108</span>
-                        </div>
+                        <p class="text-white text-3xl font-bold">0</p>
+                        <h3 class="text-gray-400 font-medium text-sm mt-1">This Week</h3>
                     </div>
                     
-                    <!-- Statistic Card 3 -->
+                    <!-- Best Day -->
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                </svg>
-                            </div>
-                            <span class="text-xs font-medium py-1 px-2 rounded-full bg-purple-500 bg-opacity-10 text-purple-400">+2</span>
-                        </div>
-                        <h3 class="text-gray-400 font-medium text-sm">Active Projects</h3>
-                        <p class="text-white text-3xl font-bold mt-1">8</p>
-                        <div class="mt-4 flex items-center">
-                            <span class="text-xs text-gray-400">3 high priority</span>
-                        </div>
+                        <p class="text-white text-3xl font-bold">0</p>
+                        <h3 class="text-gray-400 font-medium text-sm mt-1">Best Day</h3>
                     </div>
                     
-                    <!-- Statistic Card 4 -->
+                    <!-- Average -->
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>
-                            </div>
-                            <span class="text-xs font-medium py-1 px-2 rounded-full bg-yellow-500 bg-opacity-10 text-yellow-400">+3</span>
-                        </div>
-                        <h3 class="text-gray-400 font-medium text-sm">Team Members</h3>
-                        <p class="text-white text-3xl font-bold mt-1">15</p>
-                        <div class="mt-4 flex -space-x-2 overflow-hidden">
-                            <div class="w-6 h-6 rounded-full bg-indigo-500 border border-gray-800"></div>
-                            <div class="w-6 h-6 rounded-full bg-pink-500 border border-gray-800"></div>
-                            <div class="w-6 h-6 rounded-full bg-green-500 border border-gray-800"></div>
-                            <div class="w-6 h-6 rounded-full bg-gray-500 border border-gray-800 flex items-center justify-center text-xs text-white">+12</div>
-                        </div>
+                        <p class="text-white text-3xl font-bold">0 / day</p>
+                        <h3 class="text-gray-400 font-medium text-sm mt-1">Average</h3>
+                    </div>
+                    
+                    <!-- Longest Streak -->
+                    <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
+                        <p class="text-white text-3xl font-bold">0</p>
+                        <h3 class="text-gray-400 font-medium text-sm mt-1">Longest Streak</h3>
+                    </div>
+                    
+                    <!-- Current Streak -->
+                    <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
+                        <p class="text-white text-3xl font-bold">0</p>
+                        <h3 class="text-gray-400 font-medium text-sm mt-1">Current Streak</h3>
                     </div>
                 </div>
             </div>
@@ -229,6 +198,17 @@
                 this.setAttribute('title', `${contributions} contributions on ${formattedDate}`);
             });
         });
+        
+        // Update the last update time with the current time
+        const now = new Date();
+        const options = { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric'
+        };
+        document.getElementById('last-update-time').textContent = now.toLocaleDateString('en-US', options);
     });
 </script>
 {% endblock %}

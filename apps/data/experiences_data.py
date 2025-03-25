@@ -13,7 +13,7 @@ class ExperiencesData:
             ]
         },
         {
-            "title": "ML Ops Cohort",
+            "title": "Machine Learning Ops Cohort",
             "company": "Coding Camp powered by DBS Foundation",
             "period": "Dec 2024 - Jan 2025",
             "is_current": False,
@@ -81,6 +81,40 @@ class ExperiencesData:
             ]
         },
         {
+            "title": "Assistant Squad Leader of Web Developer Intern",
+            "company": "GAOTek Inc.",
+            "period": "Apr 2024 - May 2024",
+            "is_current": False,
+            "responsibilities": [
+                "Guided over 100 interns and ensured timely progress tracking.",
+                "Facilitated daily meetings and communication among teams.",
+                "Assisted interns with technical and project challenges."
+            ]
+        },
+        {
+            "title": "Main Team of Web Developer Intern",
+            "company": "GAOTek Inc.",
+            "period": "Apr 2024 - May 2024",
+            "is_current": False,
+            "responsibilities": [
+                "Collaborating with the team in weekly meetings to discuss project strategies and updates.",
+                "Enhancing skills in Google Search Console, Google Analytics, and Google Tag Manager by completing 3 tasks.",
+                "Making reports every Monday to Friday (EST time) for a full 1 month."
+            ]
+        },
+        {
+            "title": "Web Developer Intern",
+            "company": "GAOTek Inc.",
+            "period": "Feb 2024 - Mar 2024",
+            "is_current": False,
+            "responsibilities": [
+                "Actively contribute in team meetings every Monday to Friday at 11.30 PM EST to troubleshoot and update.",
+                "Working with WooCommerce on WordPress; adding 30+ products, creating 1 contact form page, 30+ single product pages, and more.",
+                "Actively completing 7+ tasks and assignments with faster than other interns in 2 months.",
+                "Making reports every Monday to Friday (EST time) for a full 2 months."
+            ]
+        },
+        {
             "title": "Machine Learning Intern",
             "company": "YoungDev",
             "period": "Apr 2024 - May 2024",
@@ -98,17 +132,6 @@ class ExperiencesData:
             "responsibilities": [
                 "Focused on a project related to phishing domain detection.",
                 "Applied machine learning principles to enhance cybersecurity solutions."
-            ]
-        },
-        {
-            "title": "Assistant Squad Leader of Web Developer Intern",
-            "company": "GAOTek Inc.",
-            "period": "Apr 2024 - May 2024",
-            "is_current": False,
-            "responsibilities": [
-                "Guided over 100 interns and ensured timely progress tracking.",
-                "Facilitated daily meetings and communication among teams.",
-                "Assisted interns with technical and project challenges."
             ]
         },
         {

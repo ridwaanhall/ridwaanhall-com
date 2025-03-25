@@ -1,6 +1,161 @@
 {% extends 'base.html' %}
 
-{% block title %}Home{% endblock %}
+{% block head_seo %}
+<!-- Home Page SEO -->
+<title>{{ seo.title }}</title>
+
+<meta name="author" content="{{ about.name }}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<meta name="description" content="{{ seo.description }}">
+<meta name="keywords" content="{{ seo.keywords }}">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="{{ seo.og_type }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:title" content="{{ seo.title }}">
+<meta property="og:description" content="{{ seo.description }}">
+<meta property="og:image" content="{{ seo.og_image }}">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="{{ seo.twitter_card }}">
+<meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+<meta property="twitter:title" content="{{ seo.title }}">
+<meta property="twitter:description" content="{{ seo.description }}">
+<meta property="twitter:image" content="{{ seo.og_image }}">
+
+<!-- Schema.org structured data -->
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ProfilePage",
+        "mainEntity": {
+            "@type": "Person",
+            "name": "{{ about.name }}",
+            "givenName": "{{ about.first_name }}",
+            "description": "{{ seo.description }}",
+            "image": "{{ about.image_url }}",
+            "url": "{{ request.build_absolute_uri }}",
+            "email": "{{ about.social_media.email }}",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "{{ about.location.regency }}",
+                "addressRegion": "{{ about.location.province }}",
+                "addressCountry": "{{ about.location.country }}"
+            },
+            "alumniOf": [
+                {% for edu in education %}
+                {
+                    "@type": "EducationalOrganization",
+                    "name": "{{ edu.institution }}",
+                    "url": "{{ edu.website }}"
+                }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ],
+            "workExperience": [
+                {% for experience in experiences %}
+                {
+                    "@type": "OrganizationRole",
+                    "roleName": "{{ experience.title }}",
+                    "worksFor": {
+                        "@type": "Organization",
+                        "name": "{{ experience.company }}"
+                    },
+                    "startDate": "{{ experience.period }}",
+                    "description": "{% for resp in experience.responsibilities %}{{ resp }}{% if not forloop.last %} {% endif %}{% endfor %}"
+                }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ],
+            "knowsAbout": [
+                {% for skill in about.skills %}"{{ skill }}"{% if not forloop.last %},{% endif %}{% endfor %}
+            ],
+            "sameAs": [
+                "{{ about.social_media.github }}",
+                "{{ about.social_media.linkedin }}",
+                "{{ about.social_media.x }}",
+                "{{ about.social_media.medium }}",
+                "{{ about.social_media.instagram }}"
+            ]
+        },
+        "url": "{{ request.build_absolute_uri }}"
+    }
+</script>
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Featured Projects by {{ about.name }}",
+        "description": "Highlighted projects and applications developed by {{ about.ridwaanhall }}",
+        "numberOfItems": {{ projects|length }},
+        "itemListOrder": "https://schema.org/ItemListOrderDescending",
+        "itemListElement": [
+            {% for project in projects %}
+            {
+                "@type": "ListItem",
+                "position": {{ forloop.counter }},
+                "item": {
+                    "@type": "SoftwareSourceCode",
+                    "name": "{{ project.title }}",
+                    "description": "{{ project.description }}",
+                    "programmingLanguage": "{{ project.tech_stack|join:', ' }}",
+                    "image": "{{ project.image_url }}",
+                    "codeRepository": "{{ project.github_url }}",
+                    "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'projects' %}{{ project.title|slugify }}",
+                    "author": {
+                        "@type": "Person",
+                        "name": "{{ about.name }}"
+                    },
+                    "keywords": "featured project{{ project.category }}, {{ project.tech_stack|join:', ' }}"
+                }
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ]
+    }
+</script>
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Featured Blog Posts by {{ about.name }}",
+        "description": "Latest insights and tutorials from {{ about.name }}",
+        "numberOfItems": {{ blogs|length }},
+        "itemListOrder": "https://schema.org/ItemListOrderDescending",
+        "itemListElement": [
+            {% for blog in blogs %}
+            {
+                "@type": "ListItem",
+                "position": {{ forloop.counter }},
+                "item": {
+                    "@type": "BlogPosting",
+                    "headline": "{{ blog.title }}",
+                    "description": "{{ blog.description }}",
+                    "image": "{{ blog.image_url }}",
+                    "datePublished": "{{ blog.date }}",
+                    "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'blog' %}{{ blog.title|slugify }}",
+                    "author": {
+                        "@type": "Person",
+                        "name": "{{ blog.author }}"
+                    },
+                    "keywords": "{% for tag in blog.tags %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}",
+                    "publisher": {
+                        "@type": "Person",
+                        "name": "{{ about.name }}",
+                        "logo": {
+                            "@type": "ImageObject",
+                            "url": "{{ about.image_url }}"
+                        }
+                    }
+                }
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ]
+    }
+</script>
+
+{% endblock %}
 
 {% block content %}
 <div class="flex-1 md:ml-72">

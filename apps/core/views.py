@@ -19,6 +19,16 @@ class HomeView(TemplateView):
             experiences = [experience for experience in ExperiencesData.experiences if experience.get('is_current')]
             certifications = [certification for certification in CertificationsData.certifications]
             
+            # Home page specific SEO
+            seo = {
+                'title': f"{about[0]['name']} - Portfolio and Personal Website",
+                'description': f"Portfolio and personal website of {about[0]['name']}. {about[0].get('short_description', '')}",
+                'keywords': f"{about[0]['name']}, portfolio, developer, projects, blogs, certifications, education, experiences, ridwaanhall",
+                'og_image': about[0].get('image_url', ''),
+                'og_type': 'website',
+                'twitter_card': 'summary_large_image',
+            }
+            
             context = {
                 'view': True,
                 'blogs': blogs,
@@ -27,6 +37,7 @@ class HomeView(TemplateView):
                 'experiences': experiences,
                 'about': about[0],
                 'certifications': certifications,
+                'seo': seo,
             }
             
             return render(request, 'core/home.html', context)

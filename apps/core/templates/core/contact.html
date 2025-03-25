@@ -14,77 +14,38 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8">
+            {% include 'social.html' %}
 
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-8">
                 <div class="lg:col-span-5 order-2 lg:order-1">
-                    <div class="bg-gray-800 shadow-lg rounded-xl p-5 md:p-6 h-full">
+                    <div class="bg-gray-800 hover:bg-gray-750 transition-colors duration-300 shadow-lg rounded-xl p-6">
                         <h2 class="text-xl font-bold text-white mb-5 flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                            </svg>
-                            Connect With Me
-                        </h2>
-                        <div class="space-y-3">
-                            <a href="mailto:{{ about.social_media.email }}" class="flex items-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-all duration-200 transform hover:-translate-y-1">
-                                <div class="flex-shrink-0 bg-indigo-500 p-2.5 rounded-md">
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                                    </svg>
-                                </div>
-                                <div class="ml-4">
-                                    <p class="text-sm font-medium text-white">Email</p>
-                                    <p class="text-xs text-gray-300">{{ about.social_media.email }}</p>
-                                </div>
-                            </a>
-                            <a href="{{ about.social_media.github }}" target="_blank" rel="noopener" class="flex items-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-all duration-200 transform hover:-translate-y-1">
-                                <div class="flex-shrink-0 bg-gray-900 p-2.5 rounded-md">
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.11.82-.26.82-.577v-2.165c-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.997.108-.775.42-1.305.763-1.605-2.665-.305-5.466-1.335-5.466-5.93 0-1.31.467-2.38 1.235-3.22-.123-.303-.535-1.527.117-3.176 0 0 1.008-.322 3.3 1.23.957-.266 1.98-.398 3-.403 1.02.005 2.043.137 3 .403 2.29-1.552 3.297-1.23 3.297-1.23.653 1.65.24 2.873.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.803 5.62-5.475 5.92.43.37.823 1.1.823 2.22v3.293c0 .32.217.694.825.577C20.565 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/>
-                                    </svg>
-                                </div>
-                                <div class="ml-4">
-                                    <p class="text-sm font-medium text-white">GitHub</p>
-                                    <p class="text-xs text-gray-300">github.com/{{ about.username }}</p>
-                                </div>
-                            </a>
-                            <a href="{{ about.social_media.linkedin }}" target="_blank" rel="noopener" class="flex items-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-all duration-200 transform hover:-translate-y-1">
-                                <div class="flex-shrink-0 bg-blue-600 p-2.5 rounded-md">
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.5c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.5h-3v-5.5c0-1.38-1.12-2.5-2.5-2.5s-2.5 1.12-2.5 2.5v5.5h-3v-10h3v1.5c.88-1.32 2.5-1.5 3.5-1.5 2.48 0 4.5 2.02 4.5 4.5v5.5z"/>
-                                    </svg>
-                                </div>
-                                <div class="ml-4">
-                                    <p class="text-sm font-medium text-white">LinkedIn</p>
-                                    <p class="text-xs text-gray-300">linkedin.com/in/{{ about.username }}</p>
-                                </div>
-                            </a>
-                        </div>
-                        
-                        <h2 class="text-xl font-bold text-white mt-8 mb-4 flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-6 h-6 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                             Availability
                         </h2>
-                        <div class="bg-gray-700 rounded-lg p-4">
-                            <div class="space-y-3">
-                                <div class="flex justify-between items-center text-sm">
+                        <div class="bg-gray-700/70 rounded-lg p-5">
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
                                     <span class="text-gray-200">Monday - Friday</span>
-                                    <span class="text-indigo-300 font-medium">9:00 AM - 5:00 PM</span>
+                                    <span class="text-indigo-300 font-medium px-3 py-1 bg-indigo-900/40 rounded-full">9:00 AM - 3:00 PM</span>
                                 </div>
-                                <div class="flex justify-between items-center text-sm">
+                                <div class="flex justify-between items-center">
                                     <span class="text-gray-200">Saturday</span>
-                                    <span class="text-indigo-300 font-medium">By appointment</span>
+                                    <span class="text-indigo-300 font-medium px-3 py-1 bg-indigo-900/40 rounded-full">By appointment</span>
                                 </div>
-                                <div class="flex justify-between items-center text-sm">
+                                <div class="flex justify-between items-center">
                                     <span class="text-gray-200">Sunday</span>
-                                    <span class="text-indigo-300 font-medium">Closed</span>
+                                    <span class="text-indigo-300 font-medium px-3 py-1 bg-indigo-900/40 rounded-full">Closed</span>
                                 </div>
                             </div>
-                            <div class="mt-4 p-3 bg-indigo-800 bg-opacity-40 rounded-lg">
-                                <p class="text-sm text-indigo-100">
-                                    <span class="font-semibold">Response time:</span> I typically respond within 24-48 hours.
+                            <div class="mt-6 p-4 bg-indigo-800/50 rounded-lg border border-indigo-700/50">
+                                <p class="text-indigo-100 flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span><span class="font-semibold">Response time:</span> I typically respond within 24-48 hours.</span>
                                 </p>
                             </div>
                         </div>
@@ -92,22 +53,27 @@
                 </div>
                 
                 <div class="lg:col-span-7 order-1 lg:order-2">
-                    <div class="bg-gray-800 shadow-lg rounded-xl p-5 md:p-6">
+                    <div class="bg-gray-800 hover:bg-gray-750 transition-colors duration-300 shadow-lg rounded-xl p-6">
                         <h2 class="text-xl font-bold text-white mb-5 flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-6 h-6 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
                             Find Me
                         </h2>
 
-                        <div class="w-full h-64 md:h-80 mb-4 rounded-lg overflow-hidden">
-                            <iframe class="w-full h-full" src="{{ about.location.map_url }}" allowfullscreen="" loading="lazy"></iframe>
+                        <div class="w-full h-72 md:h-80 mb-5 rounded-lg overflow-hidden shadow-md transform hover:scale-[1.01] transition-transform duration-300">
+                            <iframe class="w-full h-full" src="{{ about.location.map_url }}" allowfullscreen="" loading="lazy" title="Location map"></iframe>
                         </div>
                         
-                        <div class="text-sm">
-                            <p class="font-medium text-white">{{ about.location.regency }} Regency</p>
-                            <p class="text-gray-300">{{ about.location.province }}, {{ about.location.country }}</p>
+                        <div class="flex items-center bg-gray-700/50 p-4 rounded-lg">
+                            <svg class="w-8 h-8 text-indigo-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            </svg>
+                            <div>
+                                <p class="font-medium text-white text-lg">{{ about.location.regency }} Regency</p>
+                                <p class="text-gray-300">{{ about.location.province }}, {{ about.location.country }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>

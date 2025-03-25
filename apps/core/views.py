@@ -125,5 +125,19 @@ class ContactView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         about = AboutData.get_about_data()
+        
+        # Contact page specific SEO
+        seo = {
+            'title': f"Contact {about[0]['name']} - Get in Touch",
+            'description': f"Contact {about[0]['name']} for collaboration, job opportunities, or consulting. Get in touch today!",
+            'keywords': f"{about[0]['name']}, contact, get in touch, email, message, connect",
+            'og_image': about[0].get('image_url', ''),
+            'og_type': 'website',
+            'twitter_card': 'summary',
+        }
+        
         context['about'] = about[0]
+        context['seo'] = seo  # Add SEO data
+        context['view'] = True
+        
         return context

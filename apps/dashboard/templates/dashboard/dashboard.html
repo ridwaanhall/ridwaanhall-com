@@ -62,8 +62,7 @@
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-white text-xl font-bold">{{ wakatime_stats.best_day_coding }}</p>
-                                <p class="text-indigo-400 text-xs mt-1">{{ wakatime_stats.best_day_date }}</p>
+                                <p class="text-white text-xl font-bold">{{ wakatime_stats.best_day_date }} ({{ wakatime_stats.best_day_coding }})</p>
                             </div>
                         </div>
                         <h3 class="text-gray-400 font-medium text-sm mt-2">Best Day Coding Time</h3>
@@ -91,7 +90,7 @@
                         <div class="flex items-center justify-between">
                             <p class="text-white text-3xl font-bold">{{ total_contributions }}</p>
                         </div>
-                        <h3 class="text-gray-400 font-medium text-sm mt-2">Total Contributions</h3>
+                        <h3 class="text-gray-400 font-medium text-sm mt-2">Contributions</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">

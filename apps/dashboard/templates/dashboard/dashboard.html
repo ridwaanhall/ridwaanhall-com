@@ -243,7 +243,7 @@
                 
                 const date = cellData.date;
                 const contributions = cellData.contributions;
-                const isFutureDate = date > today;
+                const isFutureDate = date > today + 1;
                 
                 let bgColor = 'bg-gray-700'; // Default/empty
                 if (isFutureDate) {

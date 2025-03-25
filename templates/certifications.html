@@ -1,5 +1,5 @@
 <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-700 pb-4 relative z-10">
-    {% if view %}
+    {% if view_certs %}
     <h2 class="text-2xl font-bold text-white">Featured Certifications</h2>
     <a href="https://www.linkedin.com/in/ridwaanhall/details/certifications/" class="mt-2 md:mt-0 group flex items-center text-indigo-400 hover:text-indigo-300 transition-colors duration-300">
         <span>View More</span>
@@ -57,7 +57,7 @@
     {% endfor %}
 </div>
 
-{% if view %}
+{% if view_certs %}
 <div class="mt-8 text-center relative z-10 md:hidden">
     <a href="https://www.linkedin.com/in/ridwaanhall/details/certifications/" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-300">
         View More

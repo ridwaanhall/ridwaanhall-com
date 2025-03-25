@@ -8,9 +8,9 @@ class CertificationsData:
             "institution": "LinkedIn",
             "is_featured": True,
             "achievements": [
-                "Learned to create comprehensive and scalable RESTful APIs using Django REST Framework with industry best practices and standards.",
-                "Gained in-depth knowledge in serializers, renderers, filtering mechanisms, pagination strategies, and efficient router implementations.",
-                "Built, tested, and deployed fully functional APIs for data-driven web applications with authentication and authorization systems."
+                "Created RESTful APIs using Django REST Framework with best practices",
+                "Mastered serializers, filtering, pagination, and router implementations",
+                "Deployed functional APIs with authentication and authorization"
             ]
         },
         {
@@ -21,9 +21,9 @@ class CertificationsData:
             "institution": "Dicoding Indonesia",
             "is_featured": True,
             "achievements": [
-                "Studied machine learning system design and predictive analytics using algorithms like k-NN and Random Forest.",
-                "Developed sentiment analysis models with Deep Learning and Support Vector Machine techniques.",
-                "Created recommendation systems using Content-based Filtering and Collaborative Filtering approaches."
+                "Learned ML system design using k-NN and Random Forest algorithms",
+                "Built sentiment analysis models with Deep Learning and SVM",
+                "Developed recommendation systems with Content-based and Collaborative Filtering"
             ]
         }
     ]

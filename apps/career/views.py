@@ -15,7 +15,7 @@ class CareerView(TemplateView):
             certifications = [certification for certification in CertificationsData.certifications]
             
             context = {
-                'view': 'true',
+                'view_certs': 'true',
                 'experiences': experiences,
                 'education': education,
                 'certifications': certifications,

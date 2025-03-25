@@ -46,16 +46,6 @@ def fetch_github_activity():
     else:
         return None
     
-def fetch_wakatime_activity():
-    wakatime_api_key = config("WAKATIME_API_KEY")
-    api_url = "https://wakatime.com/api/v1/users/current/stats/last_7_days?api_key=%s" % wakatime_api_key
-    
-    response = requests.get(api_url)
-    if response.status_code == 200:
-        return response.json()
-    else:
-        return None
-
 def calculate_github_stats(contribution_weeks, total_contributions):
     """Calculate GitHub contribution statistics."""
     today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
@@ -121,6 +111,52 @@ def calculate_github_stats(contribution_weeks, total_contributions):
         'current_streak': current_streak
     }
 
+def fetch_wakatime_activity():
+    wakatime_api_key = config("WAKATIME_API_KEY")
+    last_7_days_api = "https://wakatime.com/api/v1/users/current/stats/last_7_days?api_key=%s" % wakatime_api_key
+    all_time_since_today_api = "https://wakatime.com/api/v1/users/current/all_time_since_today?api_key=%s" % wakatime_api_key
+    
+    last_7_days_response = requests.get(last_7_days_api)
+    all_time_response = requests.get(all_time_since_today_api)
+    
+    if last_7_days_response.status_code == 200 and all_time_response.status_code == 200:
+        return {
+            'last_7_days': last_7_days_response.json(),
+            'all_time': all_time_response.json()
+        }
+    else:
+        return None
+
+def calculate_wakatime_stats(data):
+    """Calculate Wakatime statistics."""
+    if not data:
+        return None
+    
+    last_7_days = data['last_7_days']['data']
+    all_time = data['all_time']['data']
+    
+    # Format time durations
+    def format_time(seconds):
+        hours = int(seconds // 3600)
+        minutes = int((seconds % 3600) // 60)
+        return f"{hours} hrs {minutes} mins"
+    
+    # Extract required data
+    waka_stats = {
+        'start_date': datetime.fromisoformat(last_7_days['start'].replace('Z', '+00:00')),
+        'end_date': datetime.fromisoformat(last_7_days['end'].replace('Z', '+00:00')),
+        'daily_average': format_time(last_7_days['daily_average']),
+        'this_week_coding': format_time(last_7_days['total_seconds']),
+        'best_day_date': last_7_days['best_day']['date'],
+        'best_day_coding': last_7_days['best_day']['text'],
+        'all_time_coding': all_time['text'],
+        'all_time_start': datetime.fromisoformat(all_time['range']['start'].replace('Z', '+00:00')),
+        'all_time_end': datetime.fromisoformat(all_time['range']['end'].replace('Z', '+00:00')),
+        'last_update_time': datetime.now().strftime('%B %d, %Y %I:%M %p')
+    }
+    
+    return waka_stats
+
 class DashboardView(TemplateView):
     template_name = 'dashboard/dashboard.html'
     
@@ -137,14 +173,14 @@ class DashboardView(TemplateView):
             contribution_weeks = calendar_data['weeks']
             total_contributions = calendar_data['totalContributions']
             
-            stats = calculate_github_stats(contribution_weeks, total_contributions)
+            github_stats = calculate_github_stats(contribution_weeks, total_contributions)
             
             context['total_contributions'] = total_contributions
-            context['this_week'] = stats['this_week']
-            context['best_day'] = stats['best_day']
-            context['average'] = f"{stats['average']} / day"
-            context['longest_streak'] = stats['longest_streak']
-            context['current_streak'] = stats['current_streak']
+            context['this_week'] = github_stats['this_week']
+            context['best_day'] = github_stats['best_day']
+            context['average'] = f"{github_stats['average']} / day"
+            context['longest_streak'] = github_stats['longest_streak']
+            context['current_streak'] = github_stats['current_streak']
             context['last_update_time'] = datetime.now().strftime('%B %d, %Y %I:%M %p')
         
         return context

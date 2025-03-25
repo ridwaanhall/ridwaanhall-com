@@ -194,9 +194,17 @@
                 </div>
             </div>
             
-            {% include 'experiences.html' %}
+            {% if experiences %}
+                {% include 'experiences.html' %}
+            {% endif %}
 
-            {% include 'education.html' %}
+            {% if certifications %}
+                {% include 'certifications.html' %}
+            {% endif %}
+
+            {% if education %}
+                {% include 'education.html' %}
+            {% endif %}
         </div>
     </main>
 </div>

@@ -7,6 +7,7 @@ from apps.data.blog_data import BlogData
 from apps.data.projects_data import ProjectsData
 from apps.data.education_data import EducationData
 from apps.data.experiences_data import ExperiencesData
+from apps.data.certifications_data import CertificationsData
 
 class HomeView(TemplateView):
     def get(self, request):
@@ -16,6 +17,7 @@ class HomeView(TemplateView):
             projects = [project for project in ProjectsData.projects if project.get('is_featured')]
             education = [education for education in EducationData.education if education.get('is_last')]
             experiences = [experience for experience in ExperiencesData.experiences if experience.get('is_current')]
+            certifications = [certification for certification in CertificationsData.certifications]
             
             context = {
                 'view': True,
@@ -24,6 +26,7 @@ class HomeView(TemplateView):
                 'education': education,
                 'experiences': experiences,
                 'about': about[0],
+                'certifications': certifications,
             }
             
             return render(request, 'core/home.html', context)

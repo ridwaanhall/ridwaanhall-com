@@ -18,11 +18,17 @@
                 </div>
             </div>
 
-            {% include 'experiences.html' %}
+            {% if experiences %}
+                {% include 'experiences.html' %}
+            {% endif %}
 
-            {% include 'education.html' %}
+            {% if education %}
+                {% include 'education.html' %}
+            {% endif %}
 
-            {% include 'certifications.html' %}
+            {% if certifications %}
+                {% include 'certifications.html' %}
+            {% endif %}
 
             {% include 'tech_skills.html' %}
         </div>

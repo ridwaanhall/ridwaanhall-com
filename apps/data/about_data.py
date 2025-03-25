@@ -4,12 +4,11 @@ import datetime
 class AboutData:
     @staticmethod
     def is_working_hours():
-        # Get current time in the timezone configured in Django settings
+
         now = timezone.localtime()
         
-        # Define working hours (9 AM to 3 PM, Monday to Friday)
-        is_weekday = now.weekday() < 5  # 0-4 are Monday to Friday
-        is_work_hour = 9 <= now.hour < 15  # Changed from 17 to 15 (3 PM)
+        is_weekday = now.weekday() < 5
+        is_work_hour = 9 <= now.hour < 15
 
         return is_weekday and is_work_hour
 

@@ -50,11 +50,9 @@
                                 <div class="mt-8 pt-6 border-t border-gray-700">
                                     <h3 class="text-lg font-medium text-white mb-4">Core Skills</h3>
                                     <div class="flex flex-wrap gap-2">
-                                        <span class="px-3 py-1 bg-indigo-900/50 text-indigo-300 text-sm rounded-full">Python</span>
-                                        <span class="px-3 py-1 bg-indigo-900/50 text-indigo-300 text-sm rounded-full">Django</span>
-                                        <span class="px-3 py-1 bg-indigo-900/50 text-indigo-300 text-sm rounded-full">Flask</span>
-                                        <span class="px-3 py-1 bg-indigo-900/50 text-indigo-300 text-sm rounded-full">TensorFlow</span>
-                                        <span class="px-3 py-1 bg-indigo-900/50 text-indigo-300 text-sm rounded-full">PyTorch</span>
+                                        {% for skill in about.skills %}
+                                        <span class="px-3 py-1 bg-indigo-900/50 text-indigo-300 text-sm rounded-full">{{ skill }}</span>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>

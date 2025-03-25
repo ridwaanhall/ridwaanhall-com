@@ -22,34 +22,7 @@
 
             {% include 'education.html' %}
 
-            <div class="bg-gray-800 shadow-lg rounded-xl p-5 md:p-6 mb-6 md:mb-8 transition-all duration-300 hover:shadow-xl">
-                <h2 class="text-xl md:text-2xl font-bold text-white mb-4 md:mb-6 border-b border-gray-700 pb-2">Certifications</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                    {% for certification in certifications %}
-                    <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-4 shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 focus-within:ring-2 focus-within:ring-indigo-400">
-                        <div class="flex flex-col h-full">
-                            <div class="flex justify-between items-center mb-2">
-                                <h3 class="text-lg md:text-xl font-bold text-white">{{ certification.title }}</h3>
-                                <span class="text-gray-300 text-sm px-2 py-1 bg-gray-700/40 rounded-md">{{ certification.year }}</span>
-                            </div>
-                            <p class="text-gray-300 mb-3">{{ certification.institution }}</p>
-                            <div class="bg-gray-700/50 rounded-lg p-3 mt-auto">
-                                <ul class="space-y-2 text-gray-300">
-                                    {% for achievement in certification.achievements %}
-                                    <li class="flex items-start">
-                                        <svg class="w-5 h-5 text-indigo-400 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        <span>{{ achievement }}</span>
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
+            {% include 'certifications.html' %}
 
             {% include 'tech_skills.html' %}
         </div>

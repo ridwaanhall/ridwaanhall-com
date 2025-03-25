@@ -206,10 +206,6 @@
             currentStreak = 0;
         }
         
-        // Calculate average (contributions per day)
-        const totalDays = allDays.length;
-        const averageContributions = totalDays > 0 ? (totalContributions / totalDays).toFixed(1) : 0;
-        
         // Render the contribution grid
         contributionGrid.innerHTML = '';
         
@@ -303,16 +299,6 @@
             monthLabel.style.left = `${(pos.week / weeks) * 100}%`;
             monthLabelsContainer.appendChild(monthLabel);
         });
-
-        // Update the last update time
-        const now = new Date();
-        const options = { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric'
-        };
     });
 </script>
 {% endblock %}

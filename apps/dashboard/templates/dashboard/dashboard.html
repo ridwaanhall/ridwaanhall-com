@@ -19,17 +19,17 @@
             </div>
 
             <!-- Weekly Wakatime Summary Statistics -->
-            <div class="bg-gray-800/30 rounded-xl p-6 border border-gray-700/50 mb-10">
+            <div class="mb-10">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-bold text-white">Weekly <span class="text-indigo-400">Statistics</span></h2>
-                    <p class="text-sm text-gray-400">Last update: <span class="text-indigo-400 font-medium">{{ waka_update_time }}</span></p>
+                    <p class="text-sm text-gray-400">Last update: <span class="text-indigo-400 font-medium">{{ wakatime_stats.last_update_time }}</span></p>
                 </div>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <!-- Start Date -->
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-xl font-bold">{{ waka_start_date }}</p>
+                            <p class="text-white text-xl font-bold">{{ wakatime_stats.start_date }}</p>
                             <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
@@ -42,7 +42,7 @@
                     <!-- End Date -->
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-xl font-bold">{{ waka_end_date }}</p>
+                            <p class="text-white text-xl font-bold">{{ wakatime_stats.end_date }}</p>
                             <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
@@ -55,7 +55,7 @@
                     <!-- Daily Coding Average -->
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-xl font-bold">{{ waka_daily_coding_average }}</p>
+                            <p class="text-white text-xl font-bold">{{ wakatime_stats.daily_average }}</p>
                             <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
                                     <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
@@ -68,7 +68,7 @@
                     <!-- This Week Coding Time -->
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-xl font-bold">{{ waka_week_coding_time }}</p>
+                            <p class="text-white text-xl font-bold">{{ wakatime_stats.this_week_coding }}</p>
                             <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
@@ -82,8 +82,8 @@
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-white text-xl font-bold">{{ waka_best_day_time }}</p>
-                                <p class="text-indigo-400 text-xs mt-1">{{ waka_best_day_date }}</p>
+                                <p class="text-white text-xl font-bold">{{ wakatime_stats.best_day_coding }}</p>
+                                <p class="text-indigo-400 text-xs mt-1">{{ wakatime_stats.best_day_date }}</p>
                             </div>
                             <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
@@ -97,7 +97,7 @@
                     <!-- All Time Since Today -->
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-xl font-bold">{{ waka_all_time }}</p>
+                            <p class="text-white text-xl font-bold">{{ wakatime_stats.all_time_coding }}</p>
                             <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
@@ -113,7 +113,7 @@
             <div class="mb-10">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-bold text-white">GitHub <span class="text-indigo-400">Statistics</span></h2>
-                    <p class="text-sm text-gray-400">Updated: <span class="text-indigo-400 font-medium">{{ last_update_time }}</span></p>
+                    <p class="text-sm text-gray-400">Updated: <span class="text-indigo-400 font-medium">{{ github_last_update }}</span></p>
                 </div>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">

@@ -142,17 +142,24 @@ def calculate_wakatime_stats(data):
         return f"{hours} hrs {minutes} mins"
     
     # Extract required data
+    # Calculate the time difference for "X hours ago"
+    end_date = datetime.fromisoformat(last_7_days['end'].replace('Z', '+00:00'))
+    now = datetime.now().astimezone() # Get current time with timezone
+    time_diff = now - end_date
+    hours_ago = int(time_diff.total_seconds() / 3600)
+    last_update = f"{hours_ago} hours ago"
+    
     waka_stats = {
-        'start_date': datetime.fromisoformat(last_7_days['start'].replace('Z', '+00:00')),
-        'end_date': datetime.fromisoformat(last_7_days['end'].replace('Z', '+00:00')),
+        'start_date': datetime.fromisoformat(last_7_days['start'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
+        'end_date': datetime.fromisoformat(last_7_days['end'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
         'daily_average': format_time(last_7_days['daily_average']),
         'this_week_coding': format_time(last_7_days['total_seconds']),
-        'best_day_date': last_7_days['best_day']['date'],
+        'best_day_date': datetime.fromisoformat(last_7_days['best_day']['date']).strftime('%B %d, %Y'),
         'best_day_coding': last_7_days['best_day']['text'],
         'all_time_coding': all_time['text'],
-        'all_time_start': datetime.fromisoformat(all_time['range']['start'].replace('Z', '+00:00')),
-        'all_time_end': datetime.fromisoformat(all_time['range']['end'].replace('Z', '+00:00')),
-        'last_update_time': datetime.now().strftime('%B %d, %Y %I:%M %p')
+        'all_time_start': datetime.fromisoformat(all_time['range']['start'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
+        'all_time_end': datetime.fromisoformat(all_time['range']['end'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
+        'last_update_time': last_update
     }
     
     return waka_stats
@@ -165,6 +172,7 @@ class DashboardView(TemplateView):
         about = AboutData.get_about_data()
         context['about'] = about[0]
         
+        # GitHub data
         github_activity = fetch_github_activity()
         context['github_activity'] = github_activity
         
@@ -181,6 +189,12 @@ class DashboardView(TemplateView):
             context['average'] = f"{github_stats['average']} / day"
             context['longest_streak'] = github_stats['longest_streak']
             context['current_streak'] = github_stats['current_streak']
-            context['last_update_time'] = datetime.now().strftime('%B %d, %Y %I:%M %p')
+            context['github_last_update'] = datetime.now().strftime('%B %d, %Y %I:%M %p')
+        
+        # WakaTime data
+        wakatime_activity = fetch_wakatime_activity()
+        if wakatime_activity:
+            wakatime_stats = calculate_wakatime_stats(wakatime_activity)
+            context['wakatime_stats'] = wakatime_stats
         
         return context

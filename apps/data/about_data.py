@@ -18,7 +18,7 @@ class AboutData:
             {
                 "name": "Ridwan Halim",
                 "username": "ridwaanhall",
-                "image_url": "https://api.slingacademy.com/public/sample-photos/9.jpeg",
+                "image_url": "https://ridwaanhall-dev.vercel.app/static/img/ridwaanhall.webp",
                 "cv": "https://bit.ly/cv-ridwaanhall",
                 "role": "Machine Learning Mentor",
                 "location": {

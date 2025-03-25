@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Blog{% endblock %}
+
+{% block content %}
+<div class="flex-1 md:ml-72">
+    <main class="p-4 md:p-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="bg-gradient-to-r from-gray-900 via-indigo-950 to-gray-800 shadow-xl rounded-2xl overflow-hidden mb-10 transform hover:shadow-indigo-500/20 transition-all duration-300">
+                <div class="p-6 md:p-10">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div>
+                            <h1 class="text-4xl font-bold text-white mb-2 tracking-tight">Blog <span class="text-indigo-400">Posts</span></h1>
+                            <p class="mt-2 text-lg text-gray-300 leading-relaxed">Explore my collection of articles, tutorials, and thoughts on various tech topics.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-10">
+                {% for blog in blogs %}
+                <div class="flex flex-col md:flex-row bg-gray-800 rounded-xl overflow-hidden hover:bg-gray-700 transition-all duration-300 shadow-lg transform hover:-translate-y-1">
+                    <div class="md:w-2/5 relative">
+                        <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-48 md:h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900/70 to-transparent opacity-50 md:opacity-80"></div>
+                        <div class="absolute top-4 left-4 bg-indigo-600 bg-opacity-80 backdrop-blur-sm text-white text-xs font-medium rounded-full px-3 py-1">
+                            {{ blog.category }}
+                        </div>
+                        <div class="absolute bottom-4 left-4 text-white text-xs">
+                            {{ blog.date }}
+                        </div>
+                    </div>
+                    <div class="md:w-3/5 p-5">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">{{ blog.author|slice:":1" }}</span>
+                            </div>
+                            <span class="text-gray-300 text-sm">{{ blog.author }}</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">{{ blog.title }}</h3>
+                        <p class="text-gray-400 text-sm line-clamp-3 mb-4">{{ blog.description }}</p>
+                        <div class="flex items-center justify-between">
+                            <a href="{% url 'blog' %}{{ blog.title|slugify }}" class="text-indigo-400 hover:text-indigo-300 transition-colors duration-300 flex items-center text-sm font-medium">
+                                <span>Read Article</span>
+                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </a>
+                            <div class="flex items-center space-x-2 text-gray-400 text-xs">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                                <span>{{ blog.views }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

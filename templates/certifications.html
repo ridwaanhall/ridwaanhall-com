@@ -1,0 +1,66 @@
+<div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-700 pb-4 relative z-10">
+    {% if view_certs %}
+    <h2 class="text-2xl font-bold text-white">Featured Certifications</h2>
+    <a href="https://www.linkedin.com/in/ridwaanhall/details/certifications/" class="mt-2 md:mt-0 group flex items-center text-indigo-400 hover:text-indigo-300 transition-colors duration-300">
+        <span>View More</span>
+        <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+        </svg>
+    </a>
+    {% else %}
+    <h2 class="text-2xl font-bold text-white">Certifications</h2>
+    {% endif %}
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+    {% for certification in certifications %}
+    <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-5 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-700/30 hover:border-indigo-500/30">
+        <div class="flex flex-col h-full">
+            <div class="flex justify-between items-start mb-3">
+                <h3 class="text-lg md:text-xl font-bold text-white leading-tight">{{ certification.title }}</h3>
+                <span class="text-xs font-medium text-indigo-300 px-2.5 py-1 bg-indigo-900/30 rounded-full ml-2 flex-shrink-0">{{ certification.year }}</span>
+            </div>
+            
+            <p class="text-gray-300 text-sm mb-4 flex items-center">
+                <svg class="w-4 h-4 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+                {{ certification.institution }}
+            </p>
+            
+            <div class="bg-gray-800/50 backdrop-blur-sm rounded-lg p-3.5 mt-auto border border-gray-700/30">
+                <ul class="space-y-2 text-gray-300 text-sm">
+                    {% for achievement in certification.achievements %}
+                    <li class="flex items-start">
+                        <svg class="w-4 h-4 text-indigo-400 mr-2 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>{{ achievement }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            {% if certification.credential_url %}
+            <div class="mt-4 text-center">
+                <a href="{{ certification.credential_url }}" target="_blank" rel="noopener noreferrer" 
+                    class="group inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg text-white bg-indigo-600/80 hover:bg-indigo-500 transition-all duration-300">
+                    <span>View Credential</span>
+                    <svg class="w-3.5 h-3.5 ml-1.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    </svg>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if view_certs %}
+<div class="mt-8 text-center relative z-10 md:hidden">
+    <a href="https://www.linkedin.com/in/ridwaanhall/details/certifications/" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-300">
+        View More
+    </a>
+</div>
+{% endif %}

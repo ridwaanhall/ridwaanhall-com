@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{% endblock %}</title>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.0.15/dist/index.global.js"></script>
+    </head>
+    <body class="bg-gray-900 text-gray-300 transition-colors duration-200">
+        <header class="md:hidden bg-gradient-to-b from-gray-900 to-gray-800 shadow-sm">
+            <div class="flex items-center justify-between p-4">
+                <button id="open-sidebar" class="text-gray-600 hover:text-gray-900 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <div class="text-xl font-bold text-gray-200">{{ about.name }}</div>
+                <div class="relative">
+                    <img src="{{ about.image_url }}" alt="{{ about.name }} Profile Photo" class="w-8 h-8 rounded-full object-cover border-2 border-indigo-500">
+                </div>
+            </div>
+        </header>
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row min-h-screen">
+                {% include 'sidebar.html' %}
+
+                {% block content %}
+
+                {% endblock %}
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const openSidebarBtn = document.getElementById('open-sidebar');
+                const closeSidebarBtn = document.getElementById('close-sidebar');
+                const mobileSidebar = document.getElementById('mobile-sidebar');
+                const mobileMenu = document.getElementById('mobile-menu');
+                
+                const openSidebar = () => {
+                    mobileSidebar.classList.remove('hidden');
+                    setTimeout(() => {
+                        mobileMenu.classList.remove('-translate-x-full');
+                    }, 50);
+                };
+                
+                const closeSidebar = () => {
+                    mobileMenu.classList.add('-translate-x-full');
+                    setTimeout(() => {
+                        mobileSidebar.classList.add('hidden');
+                    }, 300);
+                };
+                
+                openSidebarBtn.addEventListener('click', openSidebar);
+                closeSidebarBtn.addEventListener('click', closeSidebar);
+                
+                mobileSidebar.addEventListener('click', function(e) {
+                    if (e.target === mobileSidebar) {
+                        closeSidebar();
+                    }
+                });
+            });
+        </script>
+
+        {% block scripts %}
+        {% endblock %}
+    </body>
+</html>

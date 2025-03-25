@@ -1,0 +1,60 @@
+<div class="relative bg-gradient-to-br from-gray-900 to-gray-800 shadow-lg rounded-xl p-6 mb-8 overflow-hidden">
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-600/10 rounded-full -ml-32 -mb-32 blur-3xl"></div>
+
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-700 pb-4 relative z-10">
+        {% if view %}
+        <h2 class="text-2xl font-bold text-white">Current Experience</h2>
+        <a href="{% url 'career' %}" class="mt-2 md:mt-0 group flex items-center text-indigo-400 hover:text-indigo-300 transition-colors duration-300">
+            <span>View More</span>
+            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+        </a>
+        {% else %}
+        <h2 class="text-2xl font-bold text-white">Professional Experience</h2>
+        {% endif %}
+    </div>
+    
+    <div class="relative border-l-2 border-indigo-500 pl-8 ml-4 space-y-10">
+        {% for experience in experiences %}
+        <div class="relative">
+            <div class="absolute -left-11 top-0 w-6 h-6 rounded-full bg-{% if experience.is_current %}indigo-500{% else %}gray-600{% endif %} shadow"></div>
+            {% if experience.is_current %}
+            <div class="absolute -left-11 top-0 w-6 h-6 rounded-full bg-indigo-300 animate-ping"></div>
+            {% endif %}
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
+                <h3 class="text-xl font-bold text-white flex items-center">
+                    {{ experience.title }}
+                    {% if experience.is_current %}
+                    <span class="ml-2 px-2 py-1 text-xs font-medium bg-indigo-900/50 text-indigo-300 rounded-full">Current</span>
+                    {% endif %}
+                </h3>
+                <p class="text-{% if experience.is_current %}indigo{% else %}gray{% endif %}-300 text-sm">{{ experience.company }}</p>
+            </div>
+            <p class="text-gray-400 text-sm mb-3">{{ experience.period }}</p>
+            <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-4 hover:shadow-xl transition-all duration-300">
+                <ul class="space-y-2 text-gray-300">
+                    {% for responsibility in experience.responsibilities %}
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-{% if experience.is_current %}indigo{% else %}gray{% endif %}-400 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        {{ responsibility }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if view %}
+    <div class="mt-8 text-center relative z-10 md:hidden">
+        <a href="{% url 'career' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-300">
+            View More
+        </a>
+    </div>
+    {% endif %}
+
+</div>

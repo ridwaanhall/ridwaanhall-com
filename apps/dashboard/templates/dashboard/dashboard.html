@@ -37,19 +37,8 @@
                     <div class="min-w-max">
                         <div class="grid grid-cols-53 gap-1" id="contribution-grid">
                         </div>
-                        <div class="flex justify-between mt-2 text-xs text-gray-500">
-                            <span>Jan</span>
-                            <span>Feb</span>
-                            <span>Mar</span>
-                            <span>Apr</span>
-                            <span>May</span>
-                            <span>Jun</span>
-                            <span>Jul</span>
-                            <span>Aug</span>
-                            <span>Sep</span>
-                            <span>Oct</span>
-                            <span>Nov</span>
-                            <span>Dec</span>
+                        <div class="relative mt-2 h-5">
+                            <div id="month-labels" class="text-xs text-gray-500"></div>
                         </div>
                     </div>
                 </div>
@@ -103,7 +92,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const contributionGrid = document.getElementById('contribution-grid');
         const days = 7; // 7 days per week
-        const weeks = 52; // 52 weeks per year
+        const weeks = 53; // 53 weeks per year
         const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         
         // Parse the GitHub activity data
@@ -117,12 +106,12 @@
         
         // Process the contribution data
         const formatDatesIntoGrid = () => {
-            const grid = Array(52).fill().map(() => Array(7).fill(null));
+            const grid = Array(53).fill().map(() => Array(7).fill(null));
             
             // Map GitHub data to our grid format
             let weekCount = 0;
             contributionWeeks.forEach(week => {
-                if (weekCount >= 52) return; // Only use up to 52 weeks
+                if (weekCount >= 53) return; // Only use up to 53 weeks
                 
                 week.contributionDays.forEach(day => {
                     const date = new Date(day.date);
@@ -288,6 +277,42 @@
                 contributionGrid.appendChild(cell);
             }
         }
+
+        // Generate month labels in the correct positions
+        const monthLabelsContainer = document.getElementById('month-labels');
+        monthLabelsContainer.innerHTML = '';
+
+        // Find the first day of each month in our grid
+        const monthPositions = [];
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        let currentMonth = -1;
+
+        // Scan through the grid to find where each month starts
+        for (let week = 0; week < weeks; week++) {
+            for (let day = 0; day < days; day++) {
+                if (grid[week] && grid[week][day] && grid[week][day].date) {
+                    const date = grid[week][day].date;
+                    const month = date.getMonth();
+                    
+                    if (month !== currentMonth) {
+                        currentMonth = month;
+                        monthPositions.push({
+                            month: month,
+                            week: week
+                        });
+                    }
+                }
+            }
+        }
+
+        // Create and position month labels
+        monthPositions.forEach(pos => {
+            const monthLabel = document.createElement('span');
+            monthLabel.textContent = monthNames[pos.month];
+            monthLabel.className = 'absolute text-xs text-gray-500';
+            monthLabel.style.left = `${(pos.week / weeks) * 100}%`;
+            monthLabelsContainer.appendChild(monthLabel);
+        });
 
         // Update the last update time
         const now = new Date();

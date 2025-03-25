@@ -172,6 +172,16 @@ class DashboardView(TemplateView):
         about = AboutData.get_about_data()
         context['about'] = about[0]
         
+        seo = {
+            'title': f"Developer Dashboard | {about[0]['name']} - Coding Activity",
+            'description': f"Track {about[0]['name']}'s coding activity, GitHub contributions, and development metrics. See real-time stats and productivity measures.",
+            'keywords': f"{about[0]['name']}, developer dashboard, github contributions, coding metrics, programming activity, wakatime stats",
+            'og_image': about[0].get('image_url', ''),
+            'og_type': 'website',
+            'twitter_card': 'summary_large_image',
+        }
+        context['seo'] = seo
+        
         # GitHub data
         github_activity = fetch_github_activity()
         context['github_activity'] = github_activity

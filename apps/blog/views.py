@@ -12,9 +12,20 @@ class BlogView(View):
             blogs = BlogData.blogs
             about = AboutData.get_about_data()
             
+            # Blog listing page SEO
+            seo = {
+                'title': f"Blog | {about[0]['name']} - Articles and Insights",
+                'description': f"Explore articles, tutorials, and insights by {about[0]['name']} about technology, development, and programming.",
+                'keywords': f"blog, articles, tech blog, programming, tutorials, {about[0]['name']}, developer insights",
+                'og_image': about[0].get('image_url', ''),
+                'og_type': 'website',
+                'twitter_card': 'summary_large_image',
+            }
+            
             context = {
                 'blogs': blogs,
-                'about': about[0]
+                'about': about[0],
+                'seo': seo,  # Add SEO data
             }
             
             return render(request, 'blog/blog.html', context)
@@ -57,10 +68,24 @@ class BlogDetailView(View):
             # other_blogs = [item for item in blogs if slugify(item['title']) != title]
 
             if blog_post:
+                # Individual blog post SEO
+                seo = {
+                    'title': f"{blog_post['title']} | {about[0]['name']}",
+                    'description': blog_post['description'],
+                    'keywords': f"{', '.join(blog_post['tags'])}, {about[0]['name']}, blog, article",
+                    'og_image': blog_post.get('image_url', about[0].get('image_url', '')),
+                    'og_type': 'article',
+                    'twitter_card': 'summary_large_image',
+                    'published_date': blog_post.get('date', ''),
+                    'author': blog_post.get('author', about[0]['name']),
+                    'tags': blog_post.get('tags', []),
+                }
+                
                 context = {
                     'blog': blog_post,
                     'about': about[0],
-                    # 'other_blogs': other_blogs
+                    # 'other_blogs': other_blogs,
+                    'seo': seo,
                 }
                 return render(request, 'blog/blog_detail.html', context)
             else:

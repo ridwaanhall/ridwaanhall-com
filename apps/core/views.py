@@ -74,11 +74,22 @@ class AboutView(TemplateView):
             experiences = [experience for experience in ExperiencesData.experiences if experience.get('is_current')]
             education = [education for education in EducationData.education if education.get('is_last')]
             
+            # About page specific SEO
+            seo = {
+                'title': f"About {about[0]['name']} - Background and Experience",
+                'description': f"Learn about {about[0]['name']}'s professional background, skills, and experience. {about[0].get('short_description', '')}",
+                'keywords': f"{about[0]['name']}, about, background, skills, experience, education, career",
+                'og_image': about[0].get('image_url', ''),
+                'og_type': 'profile',
+                'twitter_card': 'summary',
+            }
+            
             context = {
                 'view': True,
                 'experiences': experiences,
                 'education': education,
                 'about': about[0],
+                'seo': seo,  # Add SEO data
             }
             
             return render(request, 'core/about.html', context)
@@ -114,5 +125,19 @@ class ContactView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         about = AboutData.get_about_data()
+        
+        # Contact page specific SEO
+        seo = {
+            'title': f"Contact {about[0]['name']} - Get in Touch",
+            'description': f"Contact {about[0]['name']} for collaboration, job opportunities, or consulting. Get in touch today!",
+            'keywords': f"{about[0]['name']}, contact, get in touch, email, message, connect",
+            'og_image': about[0].get('image_url', ''),
+            'og_type': 'website',
+            'twitter_card': 'summary',
+        }
+        
         context['about'] = about[0]
+        context['seo'] = seo  # Add SEO data
+        context['view'] = True
+        
         return context

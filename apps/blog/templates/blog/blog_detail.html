@@ -1,7 +1,94 @@
 {% extends 'base.html' %}
 
-{% block title %}
-{{ blog.title }}
+{% block head_seo %}
+<!-- Blog Detail Page SEO -->
+<title>{{ seo.title }}</title>
+
+<meta name="author" content="{{ seo.author }}">
+<meta name="robots" content="index, follow">
+<meta name="keywords" content="{{ seo.keywords }}">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<meta name="description" content="{{ seo.description }}">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="{{ seo.og_type }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:title" content="{{ seo.title }}">
+<meta property="og:description" content="{{ seo.description }}">
+<meta property="og:image" content="{{ seo.og_image }}">
+<meta property="article:published_time" content="{{ seo.published_date }}">
+<meta property="article:author" content="{{ seo.author }}">
+{% for tag in seo.tags %}
+<meta property="article:tag" content="{{ tag }}">
+{% endfor %}
+
+<!-- Twitter -->
+<meta property="twitter:card" content="{{ seo.twitter_card }}">
+<meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+<meta property="twitter:title" content="{{ seo.title }}">
+<meta property="twitter:description" content="{{ seo.description }}">
+<meta property="twitter:image" content="{{ seo.og_image }}">
+
+<!-- Schema.org structured data for Blog Post -->
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "{{ request.build_absolute_uri }}"
+        },
+        "headline": "{{ blog.title }}",
+        "description": "{{ blog.description }}",
+        "image": "{{ blog.image_url }}",
+        "datePublished": "{{ blog.date }}",
+        "dateModified": "{{ blog.date }}",
+        "author": {
+            "@type": "Person",
+            "name": "{{ blog.author }}",
+            "url": "{{ request.scheme }}://{{ request.get_host }}/"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "{{ about.name }}",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "{{ about.image_url }}"
+            }
+        },
+        "articleBody": "{% for paragraph in blog.content %}{{ paragraph }} {% endfor %}",
+        "keywords": "{% for tag in blog.tags %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}"
+    }
+</script>
+
+<!-- Breadcrumb navigation -->
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ request.scheme }}://{{ request.get_host }}/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Blog",
+                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'blog' %}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "{{ blog.title }}",
+                "item": "{{ request.build_absolute_uri }}"
+            }
+        ]
+    }
+</script>
 {% endblock %}
 
 {% block content %}

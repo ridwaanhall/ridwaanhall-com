@@ -14,12 +14,23 @@ class CareerView(TemplateView):
             education = [education for education in EducationData.education]
             certifications = [certification for certification in CertificationsData.certifications]
             
+            # Career page specific SEO
+            seo = {
+                'title': f"Career & Resume | {about[0]['name']} - Professional Experience",
+                'description': f"Explore {about[0]['name']}'s professional journey, education, work experience, and certifications. View full resume and career highlights.",
+                'keywords': f"{about[0]['name']}, resume, CV, career, professional experience, certifications, education, work history",
+                'og_image': about[0].get('image_url', ''),
+                'og_type': 'profile',
+                'twitter_card': 'summary',
+            }
+            
             context = {
                 'view_certs': 'true',
                 'experiences': experiences,
                 'education': education,
                 'certifications': certifications,
                 'about': about[0],
+                'seo': seo,
             }
             return render(request, 'career/career.html', context)
 

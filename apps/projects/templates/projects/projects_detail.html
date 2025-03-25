@@ -1,6 +1,129 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ project.title }} | Project Detail{% endblock %}
+{% block head_seo %}
+<!-- Project Detail Page SEO -->
+<title>{{ seo.title }}</title>
+
+<meta name="author" content="{{ about.name }}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<meta name="description" content="{{ seo.description }}">
+<meta name="keywords" content="{{ seo.keywords }}">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="{{ seo.og_type }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:title" content="{{ seo.title }}">
+<meta property="og:description" content="{{ seo.description }}">
+<meta property="og:image" content="{{ seo.og_image }}">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="{{ seo.twitter_card }}">
+<meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+<meta property="twitter:title" content="{{ seo.title }}">
+<meta property="twitter:description" content="{{ seo.description }}">
+<meta property="twitter:image" content="{{ seo.og_image }}">
+
+<!-- Schema.org structured data for Project Detail -->
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        "name": "{{ project.title }}",
+        "description": "{{ project.description }}",
+        "codeRepository": "{{ project.github_url }}",
+        "url": "{{ request.build_absolute_uri }}",
+        "programmingLanguage": "{{ project.tech_stack|join:', ' }}",
+        "image": "{{ project.image_url }}",
+        "author": {
+            "@type": "Person",
+            "name": "{{ about.name }}",
+            "url": "{{ request.scheme }}://{{ request.get_host }}/"
+        },
+        "codeExample": "{{ project.code_sample|escapejs }}",
+        "runtimePlatform": "{{ project.tech_stack|join:', ' }}",
+        "contentUrl": "{{ project.demo_url }}",
+        "potentialAction": [
+            {
+                "@type": "ViewAction",
+                "target": "{{ project.demo_url }}",
+                "name": "View Demo"
+            },
+            {
+                "@type": "ViewAction",
+                "target": "{{ project.github_url }}",
+                "name": "View Source Code"
+            }
+        ]
+    }
+</script>
+
+<!-- Project Features as HowTo Schema -->
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How to use {{ project.title }}",
+        "description": "{{ project.description }}",
+        "step": [
+            {% for feature in project.features %}
+            {
+                "@type": "HowToStep",
+                "name": "{{ feature.title }}",
+                "text": "{{ feature.description }}",
+                "image": "{{ feature.image_url }}"
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        "supply": [
+            {% for tech in project.tech_stack %}
+            "{{ tech }}"{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        "tool": [
+            {% for tech in project.tech_stack %}
+            "{{ tech }}"{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        "step": [
+            {
+                "@type": "HowToStep",
+                "name": "Setup & Installation",
+                "text": "{{ project.setup_instructions|linebreaks|escapejs }}"
+            }
+        ]
+    }
+</script>
+
+<!-- Breadcrumb navigation -->
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ request.scheme }}://{{ request.get_host }}/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'projects' %}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "{{ project.title }}",
+                "item": "{{ request.build_absolute_uri }}"
+            }
+        ]
+    }
+</script>
+{% endblock %}
 
 {% block content %}
 <div class="flex-1 md:ml-72">

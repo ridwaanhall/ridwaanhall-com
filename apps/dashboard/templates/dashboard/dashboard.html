@@ -63,32 +63,32 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
 
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <p class="text-white text-3xl font-bold">0</p>
+                        <p class="text-white text-3xl font-bold" id="total-contributions">0</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">Total</h3>
                     </div>
                     
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <p class="text-white text-3xl font-bold">0</p>
+                        <p class="text-white text-3xl font-bold" id="this-week">0</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">This Week</h3>
                     </div>
                     
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <p class="text-white text-3xl font-bold">0</p>
+                        <p class="text-white text-3xl font-bold" id="best-day">0</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">Best Day</h3>
                     </div>
                     
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <p class="text-white text-3xl font-bold">0 / day</p>
+                        <p class="text-white text-3xl font-bold" id="average">0 / day</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">Average</h3>
                     </div>
                     
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <p class="text-white text-3xl font-bold">0</p>
+                        <p class="text-white text-3xl font-bold" id="longest-streak">0</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">Longest Streak</h3>
                     </div>
                     
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <p class="text-white text-3xl font-bold">0</p>
+                        <p class="text-white text-3xl font-bold" id="current-streak">0</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">Current Streak</h3>
                     </div>
                 </div>
@@ -104,82 +104,134 @@
         const contributionGrid = document.getElementById('contribution-grid');
         const days = 7; // 7 days per week
         const weeks = 52; // 52 weeks per year
-        
         const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         
-        const generateDates = () => {
-            const dates = [];
-            const today = new Date();
-            today.setHours(0, 0, 0, 0); // Normalize to start of day
-            
-            const startDate = new Date(today);
-            startDate.setFullYear(today.getFullYear() - 1);
-            
-            for (let i = 0; i < 365; i++) {
-                const currentDate = new Date(startDate);
-                currentDate.setDate(startDate.getDate() + i);
-                dates.push(currentDate);
-            }
-            
-            return dates;
-        };
+        // Parse the GitHub activity data
+        const githubData = {{ github_activity|safe }};
+        const calendarData = githubData.data.user.contributionsCollection.contributionCalendar;
+        const totalContributions = calendarData.totalContributions;
+        const contributionWeeks = calendarData.weeks;
         
-        const dateDates = generateDates();
+        // Update total contributions stat
+        document.getElementById('total-contributions').textContent = totalContributions;
         
+        // Process the contribution data
         const formatDatesIntoGrid = () => {
             const grid = Array(52).fill().map(() => Array(7).fill(null));
             
-            const firstDayOfWeek = dateDates[0].getDay();
-            
-            let dateIndex = 0;
-            for (let week = 0; week < 52; week++) {
-                for (let day = 0; day < 7; day++) {
-                    if (week === 0 && day < firstDayOfWeek) {
-                        grid[week][day] = {
-                            date: null,
-                            contributions: 0
-                        };
-                        continue;
-                    }
+            // Map GitHub data to our grid format
+            let weekCount = 0;
+            contributionWeeks.forEach(week => {
+                if (weekCount >= 52) return; // Only use up to 52 weeks
+                
+                week.contributionDays.forEach(day => {
+                    const date = new Date(day.date);
+                    const dayOfWeek = date.getDay();
                     
-                    if (dateIndex >= dateDates.length) {
-                        grid[week][day] = {
-                            date: null,
-                            contributions: 0
-                        };
-                        continue;
-                    }
-                    
-                    const date = dateDates[dateIndex];
-                    let contributions = 0;
-                    
-                    // Random contribution data generation
-                    const rnd = Math.random();
-                    if (rnd < 0.7) {
-                        contributions = 0;
-                    } else if (rnd < 0.85) {
-                        contributions = 1;
-                    } else if (rnd < 0.95) {
-                        contributions = 2;
-                    } else if (rnd < 0.98) {
-                        contributions = 3;
-                    } else {
-                        contributions = 4;
-                    }
-                    
-                    grid[week][day] = {
-                        date,
-                        contributions
+                    grid[weekCount][dayOfWeek] = {
+                        date: date,
+                        contributions: day.contributionCount
                     };
-                    
-                    dateIndex++;
-                }
-            }
+                });
+                
+                weekCount++;
+            });
+            
             return grid;
         };
         
         const grid = formatDatesIntoGrid();
         
+        // Calculate statistics
+        let thisWeekContributions = 0;
+        let bestDayCount = 0;
+        let totalDaysWithContributions = 0;
+        let currentStreak = 0;
+        let longestStreak = 0;
+        let tempStreak = 0;
+        
+        // Process the weeks in reverse to calculate streaks and current week
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Get first day of current week (Sunday)
+        const firstDayOfCurrentWeek = new Date(today);
+        const daysSinceWeekStart = today.getDay();
+        firstDayOfCurrentWeek.setDate(today.getDate() - daysSinceWeekStart);
+        
+        // Calculate stats from raw contribution data
+        let allDays = [];
+        contributionWeeks.forEach(week => {
+            week.contributionDays.forEach(day => {
+                const date = new Date(day.date);
+                const count = day.contributionCount;
+                
+                allDays.push({date, count});
+                
+                // Calculate best day
+                if (count > bestDayCount) {
+                    bestDayCount = count;
+                }
+                
+                // Calculate this week's contributions
+                if (date >= firstDayOfCurrentWeek && date <= today) {
+                    thisWeekContributions += count;
+                }
+                
+                // Count days with contributions for average calculation
+                if (count > 0) {
+                    totalDaysWithContributions++;
+                }
+            });
+        });
+        
+        // Sort days chronologically
+        allDays.sort((a, b) => a.date - b.date);
+        
+        // Calculate streaks
+        for (let i = 0; i < allDays.length; i++) {
+            if (allDays[i].count > 0) {
+                tempStreak++;
+                
+                // Update current streak if the date is today or yesterday
+                const dayDiff = Math.floor((today - allDays[i].date) / (1000 * 60 * 60 * 24));
+                if (dayDiff <= 1) {
+                    currentStreak = tempStreak;
+                }
+            } else {
+                // Update longest streak
+                if (tempStreak > longestStreak) {
+                    longestStreak = tempStreak;
+                }
+                tempStreak = 0;
+            }
+        }
+        
+        // Check if the final streak is the longest
+        if (tempStreak > longestStreak) {
+            longestStreak = tempStreak;
+        }
+        
+        // If current streak was broken (no contributions today or yesterday)
+        // we reset it to 0
+        const lastDay = allDays[allDays.length - 1];
+        const daysSinceLastContribution = Math.floor((today - lastDay.date) / (1000 * 60 * 60 * 24));
+        if (daysSinceLastContribution > 1 || lastDay.count === 0) {
+            currentStreak = 0;
+        }
+        
+        // Calculate average (contributions per day)
+        const totalDays = allDays.length;
+        const averageContributions = totalDays > 0 ? (totalContributions / totalDays).toFixed(1) : 0;
+        
+        // Update stats
+        document.getElementById('this-week').textContent = thisWeekContributions;
+        document.getElementById('best-day').textContent = bestDayCount;
+        document.getElementById('average').textContent = `${averageContributions} / day`;
+        document.getElementById('longest-streak').textContent = longestStreak;
+        document.getElementById('current-streak').textContent = currentStreak;
+        
+        // Render the contribution grid
         contributionGrid.innerHTML = '';
         
         contributionGrid.style.display = 'grid';
@@ -187,16 +239,11 @@
         contributionGrid.style.gridTemplateRows = `repeat(${days}, minmax(0, 1fr))`;
         contributionGrid.style.gap = '1px';
         
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
         for (let week = 0; week < weeks; week++) {
             for (let day = 0; day < days; day++) {
-                const cellData = grid[week][day];
-                const date = cellData.date;
-                const contributions = cellData.contributions;
+                const cellData = grid[week] && grid[week][day];
                 
-                if (!date) {
+                if (!cellData || !cellData.date) {
                     const emptyCell = document.createElement('div');
                     emptyCell.className = 'w-3 h-3 rounded-sm bg-gray-800 opacity-30';
                     emptyCell.style.gridRow = `${day + 1}`;
@@ -205,23 +252,25 @@
                     continue;
                 }
                 
+                const date = cellData.date;
+                const contributions = cellData.contributions;
                 const isFutureDate = date > today;
                 
                 let bgColor = 'bg-gray-700'; // Default/empty
                 if (isFutureDate) {
                     bgColor = 'bg-gray-800'; // Darker gray for future dates
                 } else {
-                    if (contributions === 1) bgColor = 'bg-indigo-300';
-                    if (contributions === 2) bgColor = 'bg-indigo-500';
-                    if (contributions === 3) bgColor = 'bg-indigo-700';
-                    if (contributions >= 4) bgColor = 'bg-indigo-900';
+                    if (contributions === 0) bgColor = 'bg-gray-700';
+                    else if (contributions === 1) bgColor = 'bg-indigo-300';
+                    else if (contributions === 2) bgColor = 'bg-indigo-500';
+                    else if (contributions === 3) bgColor = 'bg-indigo-700';
+                    else bgColor = 'bg-indigo-900';
                 }
                 
                 const cell = document.createElement('div');
                 cell.className = `w-3 h-3 rounded-sm ${bgColor} hover:ring-2 hover:ring-gray-400`;
                 cell.setAttribute('data-contributions', isFutureDate ? 'future' : contributions);
                 
-
                 const dayOfWeek = dayNames[date.getDay()];
                 const options = { year: 'numeric', month: 'short', day: 'numeric' };
                 const formattedDate = date.toLocaleDateString('en-US', options);
@@ -240,6 +289,7 @@
             }
         }
 
+        // Update the last update time
         const now = new Date();
         const options = { 
             year: 'numeric', 

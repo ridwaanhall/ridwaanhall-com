@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Error{% endblock %} - Ridwan Halim</title>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.0.15/dist/index.global.js"></script>
+    </head>
+    <body class="bg-gray-900 text-gray-300 transition-colors duration-200">
+        <div class="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+            <div class="text-center">
+                <h1 class="text-6xl font-bold text-red-500 mb-4">
+                    {% block error_code %}404{% endblock %}
+                </h1>
+                <div class="mb-8">
+                    <svg class="w-24 h-24 mx-auto text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-semibold mb-4 text-gray-200">
+                    {% block error_title %}Page Not Found{% endblock %}
+                </h2>
+                <p class="text-gray-400 max-w-md mx-auto mb-8">
+                    {% block error_message %}The page you are looking for doesn't exist or has been moved.{% endblock %}
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="{% url 'home' %}" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium transition-colors duration-200">
+                        Go to Homepage
+                    </a>
+                </div>
+            </div>
+            
+            <div class="mt-16 text-gray-500 text-sm">
+                <p>© {% now "Y" %} Ridwan Halim. All rights reserved.</p>
+            </div>
+        </div>
+        
+        {% block scripts %}
+        {% endblock %}
+    </body>
+</html>

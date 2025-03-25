@@ -2,26 +2,28 @@ class CertificationsData:
     certifications = [
         {
             "id": 1,
-            "title": "Certified Machine Learning Specialist",
+            "title": "RESTful Web APIs with Django",
+            "credential_url": "https://www.linkedin.com/learning/certificates/75dfc2562365bbe8c92e2d79c8c8b2ddd5313f935086a44ca98c31d2ce5ef43a",
             "year": "2024",
-            "institution": "Machine Learning Univ",
+            "institution": "LinkedIn",
             "is_featured": True,
             "achievements": [
-                "Completed advanced coursework in machine learning algorithms.",
-                "Developed and deployed machine learning models.",
-                "Participated in hands-on projects and case studies."
+                "Learned to create comprehensive and scalable RESTful APIs using Django REST Framework with industry best practices and standards.",
+                "Gained in-depth knowledge in serializers, renderers, filtering mechanisms, pagination strategies, and efficient router implementations.",
+                "Built, tested, and deployed fully functional APIs for data-driven web applications with authentication and authorization systems."
             ]
         },
         {
             "id": 2,
-            "title": "Certified Python Developer",
-            "year": "2023",
-            "institution": "Python Institute",
+            "title": "Applied Machine Learning",
+            "credential_url": "https://www.dicoding.com/certificates/NVP74VLKRPR0",
+            "year": "2024",
+            "institution": "Dicoding Indonesia",
             "is_featured": True,
             "achievements": [
-                "Mastered Python programming language.",
-                "Developed applications using Python frameworks.",
-                "Completed projects involving data analysis and web development."
+                "Studied machine learning system design and predictive analytics using algorithms like k-NN and Random Forest.",
+                "Developed sentiment analysis models with Deep Learning and Support Vector Machine techniques.",
+                "Created recommendation systems using Content-based Filtering and Collaborative Filtering approaches."
             ]
         }
     ]

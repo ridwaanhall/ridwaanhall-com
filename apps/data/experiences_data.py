@@ -1,7 +1,7 @@
 class ExperiencesData:
     experiences = [
         {
-            "title": "Machine Learning Engineer Mentor",
+            "title": "Machine Learning Mentor",
             "company": "Coding Camp powered by DBS Foundation",
             "period": "Feb 2025 - Present",
             "is_current": True,
@@ -13,7 +13,7 @@ class ExperiencesData:
             ]
         },
         {
-            "title": "MLOps Scholarship Awardee",
+            "title": "ML Ops Cohort",
             "company": "Coding Camp powered by DBS Foundation",
             "period": "Dec 2024 - Jan 2025",
             "is_current": False,
@@ -23,7 +23,7 @@ class ExperiencesData:
             ]
         },
         {
-            "title": "Applied ML Expert Level Apprentice",
+            "title": "Machine Learning Expert Cohort",
             "company": "Coding Camp powered by DBS Foundation",
             "period": "Oct 2024 - Dec 2024",
             "is_current": False,
@@ -36,7 +36,7 @@ class ExperiencesData:
             ]
         },
         {
-            "title": "Machine Learning Intermediate Scholarship Apprentice",
+            "title": "Machine Learning Intermediate Cohort",
             "company": "Coding Camp powered by DBS Foundation",
             "period": "Jul 2024 - Sep 2024",
             "is_current": False,
@@ -49,7 +49,7 @@ class ExperiencesData:
             ]
         },
         {
-            "title": "Machine Learning Beginner Scholarship Apprentice",
+            "title": "Machine Learning Beginner Cohort",
             "company": "Coding Camp powered by DBS Foundation",
             "period": "Jan 2024 - Jun 2024",
             "is_current": False,

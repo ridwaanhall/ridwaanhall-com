@@ -53,8 +53,6 @@ INSTALLED_APPS = [
     'apps.data',
     'apps.dashboard',
     'apps.projects',
-    # 'apps.lic_certs',
-    # 'apps.playground',
     'apps.blog',
 ]
 

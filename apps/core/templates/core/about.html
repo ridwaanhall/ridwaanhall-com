@@ -42,7 +42,7 @@
                                         <svg class="w-5 h-5 text-indigo-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                                         </svg>
-                                        <span class="ml-3 text-gray-300">{{ about.location }}</span>
+                                        <span class="ml-3 text-gray-300">{{ about.location.prov }}, {{ about.location.country }}</span>
                                     </div>
                                     
                                 </div>
@@ -79,7 +79,7 @@
                                     </div>
                                     
                                     <p class="leading-relaxed pl-5 border-l-2 border-indigo-500/30">
-                                        I'm <span class="text-indigo-400 font-medium">{{ about.name }}</span> (professionally known as {{ about.username }}), a Python Developer specializing in Machine Learning and Web Development. Based in Yogyakarta, Indonesia, I have completed 30+ projects using Django, Flask, scikit-learn, PyTorch, and TensorFlow.
+                                        I'm <span class="text-indigo-400 font-medium">{{ about.name }}</span> (professionally known as {{ about.username }}), a Python Developer specializing in Machine Learning and Web Development. Based in {{ about.location.province }}, {{ about.location.country }}. I have completed 30+ projects using Django, Flask, scikit-learn, PyTorch, and TensorFlow.
                                     </p>
                                     
                                     <div class="bg-gray-800/50 rounded-xl p-5">

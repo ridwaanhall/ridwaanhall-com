@@ -102,12 +102,12 @@
                         </h2>
 
                         <div class="w-full h-64 md:h-80 mb-4 rounded-lg overflow-hidden">
-                            <iframe class="w-full h-full" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126585.91904713991!2d110.29942949999999!3d-7.732935699999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59bd800eed9d%3A0x8da2a5bd43977a33!2sSleman%20Regency%2C%20Special%20Region%20of%20Yogyakarta!5e0!3m2!1sen!2sid!4v1693559291713!5m2!1sen!2sid" allowfullscreen="" loading="lazy"></iframe>
+                            <iframe class="w-full h-full" src="{{ about.location.map_url }}" allowfullscreen="" loading="lazy"></iframe>
                         </div>
                         
                         <div class="text-sm">
-                            <p class="font-medium text-white">Sleman</p>
-                            <p class="text-gray-300">Special Region of Yogyakarta, Indonesia</p>
+                            <p class="font-medium text-white">{{ about.location.regency }} Regency</p>
+                            <p class="text-gray-300">{{ about.location.province }}, {{ about.location.country }}</p>
                         </div>
                     </div>
                 </div>

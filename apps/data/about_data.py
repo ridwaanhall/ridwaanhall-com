@@ -21,7 +21,13 @@ class AboutData:
                 "image_url": "https://api.slingacademy.com/public/sample-photos/9.jpeg",
                 "cv": "https://bit.ly/cv-ridwaanhall",
                 "role": "Machine Learning Mentor",
-                "location": "Yogyakarta, Indonesia",
+                "location": {
+                    "regency": "Sleman",
+                    "province": "Special Region of Yogyakarta",
+                    "prov": "Yogyakarta",
+                    "country": "Indonesia",
+                    "map_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126585.91904713991!2d110.29942949999999!3d-7.732935699999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59bd800eed9d%3A0x8da2a5bd43977a33!2sSleman%20Regency%2C%20Special%20Region%20of%20Yogyakarta!5e0!3m2!1sen!2sid!4v1693559291713!5m2!1sen!2sid"
+                },
                 # "is_active": cls.is_working_hours(),
                 "social_media": {
                     "github": "https://github.com/ridwaanhall",

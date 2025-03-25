@@ -99,89 +99,147 @@
 {% endblock %}
 
 {% block scripts %}
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const contributionGrid = document.getElementById('contribution-grid');
         const days = 7; // 7 days per week
         const weeks = 52; // 52 weeks per year
         
-        // Generate fictional data
-        const generateData = () => {
-            const data = [];
-            let streakChance = 0.2; // Initial chance of a streak
-            let currentStreak = 0;
+        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        
+        const generateDates = () => {
+            const dates = [];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Normalize to start of day
             
-            for (let i = 0; i < days * weeks; i++) {
-                // Create patterns in the data
-                if (Math.random() < streakChance && currentStreak < 5) {
-                    // Continue or start a streak
-                    currentStreak++;
-                    data.push(Math.floor(Math.random() * 3) + 2); // 2-4 contributions
-                    streakChance = 0.8; // High chance to continue streak
-                } else {
-                    // End or don't start a streak
-                    currentStreak = 0;
-                    streakChance = 0.2; // Reset streak chance
-                    
-                    // Add some randomness - 70% chance of 0, 30% chance of 1
-                    data.push(Math.random() < 0.7 ? 0 : 1);
-                }
-                
-                // Create special patterns - busier months
-                const dayOfYear = i % (days * weeks);
-                // More activity in months 2-3 (spring projects) and 8-9 (fall projects)
-                if ((dayOfYear > weeks * 8 && dayOfYear < weeks * 16) || 
-                    (dayOfYear > weeks * 32 && dayOfYear < weeks * 40)) {
-                    if (data[i] === 0 && Math.random() < 0.4) {
-                        data[i] = Math.floor(Math.random() * 2) + 1; // 1-2 contributions
-                    }
-                }
+            const startDate = new Date(today);
+            startDate.setFullYear(today.getFullYear() - 1);
+            
+            for (let i = 0; i < 365; i++) {
+                const currentDate = new Date(startDate);
+                currentDate.setDate(startDate.getDate() + i);
+                dates.push(currentDate);
             }
             
-            return data;
+            return dates;
         };
         
-        const contributionData = generateData();
+        const dateDates = generateDates();
         
-        // Create the grid
+        const formatDatesIntoGrid = () => {
+            const grid = Array(52).fill().map(() => Array(7).fill(null));
+            
+            const firstDayOfWeek = dateDates[0].getDay();
+            
+            let dateIndex = 0;
+            for (let week = 0; week < 52; week++) {
+                for (let day = 0; day < 7; day++) {
+                    if (week === 0 && day < firstDayOfWeek) {
+                        grid[week][day] = {
+                            date: null,
+                            contributions: 0
+                        };
+                        continue;
+                    }
+                    
+                    if (dateIndex >= dateDates.length) {
+                        grid[week][day] = {
+                            date: null,
+                            contributions: 0
+                        };
+                        continue;
+                    }
+                    
+                    const date = dateDates[dateIndex];
+                    let contributions = 0;
+                    
+                    // Random contribution data generation
+                    const rnd = Math.random();
+                    if (rnd < 0.7) {
+                        contributions = 0;
+                    } else if (rnd < 0.85) {
+                        contributions = 1;
+                    } else if (rnd < 0.95) {
+                        contributions = 2;
+                    } else if (rnd < 0.98) {
+                        contributions = 3;
+                    } else {
+                        contributions = 4;
+                    }
+                    
+                    grid[week][day] = {
+                        date,
+                        contributions
+                    };
+                    
+                    dateIndex++;
+                }
+            }
+            return grid;
+        };
+        
+        const grid = formatDatesIntoGrid();
+        
+        contributionGrid.innerHTML = '';
+        
+        contributionGrid.style.display = 'grid';
+        contributionGrid.style.gridTemplateColumns = `repeat(${weeks}, minmax(0, 1fr))`;
+        contributionGrid.style.gridTemplateRows = `repeat(${days}, minmax(0, 1fr))`;
+        contributionGrid.style.gap = '1px';
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
         for (let week = 0; week < weeks; week++) {
             for (let day = 0; day < days; day++) {
-                const index = week * days + day;
-                const contributions = contributionData[index];
+                const cellData = grid[week][day];
+                const date = cellData.date;
+                const contributions = cellData.contributions;
                 
-                // Determine color based on contribution count
+                if (!date) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.className = 'w-3 h-3 rounded-sm bg-gray-800 opacity-30';
+                    emptyCell.style.gridRow = `${day + 1}`;
+                    emptyCell.style.gridColumn = `${week + 1}`;
+                    contributionGrid.appendChild(emptyCell);
+                    continue;
+                }
+                
+                const isFutureDate = date > today;
+                
                 let bgColor = 'bg-gray-700'; // Default/empty
-                if (contributions === 1) bgColor = 'bg-indigo-300';
-                if (contributions === 2) bgColor = 'bg-indigo-500';
-                if (contributions === 3) bgColor = 'bg-indigo-700';
-                if (contributions >= 4) bgColor = 'bg-indigo-900';
+                if (isFutureDate) {
+                    bgColor = 'bg-gray-800'; // Darker gray for future dates
+                } else {
+                    if (contributions === 1) bgColor = 'bg-indigo-300';
+                    if (contributions === 2) bgColor = 'bg-indigo-500';
+                    if (contributions === 3) bgColor = 'bg-indigo-700';
+                    if (contributions >= 4) bgColor = 'bg-indigo-900';
+                }
                 
                 const cell = document.createElement('div');
                 cell.className = `w-3 h-3 rounded-sm ${bgColor} hover:ring-2 hover:ring-gray-400`;
-                cell.setAttribute('data-contributions', contributions);
-                cell.setAttribute('title', `${contributions} contributions`);
+                cell.setAttribute('data-contributions', isFutureDate ? 'future' : contributions);
+                
+
+                const dayOfWeek = dayNames[date.getDay()];
+                const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                const formattedDate = date.toLocaleDateString('en-US', options);
+                
+                if (isFutureDate) {
+                    cell.setAttribute('title', `Future date: ${dayOfWeek}, ${formattedDate}`);
+                } else {
+                    cell.setAttribute('title', `${contributions} contributions on ${dayOfWeek}, ${formattedDate}`);
+                }
+
+                const dayOfWeekIndex = date.getDay(); // 0 for Sunday, 6 for Saturday
+                cell.style.gridRow = `${dayOfWeekIndex + 1}`;
+                cell.style.gridColumn = `${week + 1}`;
                 
                 contributionGrid.appendChild(cell);
             }
         }
-        
-        // Add tooltip functionality
-        const cells = document.querySelectorAll('#contribution-grid div');
-        cells.forEach(cell => {
-            cell.addEventListener('mouseover', function() {
-                const contributions = this.getAttribute('data-contributions');
-                const date = new Date();
-                date.setDate(date.getDate() - Math.floor(Math.random() * 365));
-                
-                const options = { year: 'numeric', month: 'short', day: 'numeric' };
-                const formattedDate = date.toLocaleDateString('en-US', options);
-                
-                this.setAttribute('title', `${contributions} contributions on ${formattedDate}`);
-            });
-        });
-        
-        // Update the last update time with the current time
+
         const now = new Date();
         const options = { 
             year: 'numeric', 

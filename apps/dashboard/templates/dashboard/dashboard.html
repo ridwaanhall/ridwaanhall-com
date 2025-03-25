@@ -47,37 +47,37 @@
             <div class="">
                 <div class="flex items-center justify-between mt-8">
                     <h2 class="text-xl font-bold text-gray-300">Contribution Statistics on Github</h2>
-                    <p class="text-sm text-gray-400">Last update at <span id="last-update-time">March 24, 2025 10:30 AM</span></p>
+                    <p class="text-sm text-gray-400">Last update at <span>{{ last_update_time }}</span></p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
 
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <p class="text-white text-3xl font-bold" id="total-contributions">0</p>
+                        <p class="text-white text-3xl font-bold">{{ total_contributions }}</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">Total</h3>
                     </div>
                     
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <p class="text-white text-3xl font-bold" id="this-week">0</p>
+                        <p class="text-white text-3xl font-bold">{{ this_week }}</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">This Week</h3>
                     </div>
                     
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <p class="text-white text-3xl font-bold" id="best-day">0</p>
+                        <p class="text-white text-3xl font-bold">{{ best_day }}</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">Best Day</h3>
                     </div>
                     
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <p class="text-white text-3xl font-bold" id="average">0 / day</p>
+                        <p class="text-white text-3xl font-bold">{{ average }}</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">Average</h3>
                     </div>
                     
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <p class="text-white text-3xl font-bold" id="longest-streak">0</p>
+                        <p class="text-white text-3xl font-bold">{{ longest_streak }}</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">Longest Streak</h3>
                     </div>
                     
                     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:translate-y-1">
-                        <p class="text-white text-3xl font-bold" id="current-streak">0</p>
+                        <p class="text-white text-3xl font-bold">{{ current_streak }}</p>
                         <h3 class="text-gray-400 font-medium text-sm mt-1">Current Streak</h3>
                     </div>
                 </div>
@@ -100,9 +100,6 @@
         const calendarData = githubData.data.user.contributionsCollection.contributionCalendar;
         const totalContributions = calendarData.totalContributions;
         const contributionWeeks = calendarData.weeks;
-        
-        // Update total contributions stat
-        document.getElementById('total-contributions').textContent = totalContributions;
         
         // Process the contribution data
         const formatDatesIntoGrid = () => {
@@ -213,13 +210,6 @@
         const totalDays = allDays.length;
         const averageContributions = totalDays > 0 ? (totalContributions / totalDays).toFixed(1) : 0;
         
-        // Update stats
-        document.getElementById('this-week').textContent = thisWeekContributions;
-        document.getElementById('best-day').textContent = bestDayCount;
-        document.getElementById('average').textContent = `${averageContributions} / day`;
-        document.getElementById('longest-streak').textContent = longestStreak;
-        document.getElementById('current-streak').textContent = currentStreak;
-        
         // Render the contribution grid
         contributionGrid.innerHTML = '';
         
@@ -323,7 +313,6 @@
             hour: 'numeric',
             minute: 'numeric'
         };
-        document.getElementById('last-update-time').textContent = now.toLocaleDateString('en-US', options);
     });
 </script>
 {% endblock %}

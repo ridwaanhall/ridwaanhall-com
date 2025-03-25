@@ -1,6 +1,131 @@
 {% extends 'base.html' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block head_seo %}
+<!-- Dashboard Page SEO -->
+<title>{{ seo.title }}</title>
+
+<meta name="author" content="{{ about.name }}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<meta name="description" content="{{ seo.description }}">
+<meta name="keywords" content="{{ seo.keywords }}">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="{{ seo.og_type }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:title" content="{{ seo.title }}">
+<meta property="og:description" content="{{ seo.description }}">
+<meta property="og:image" content="{{ seo.og_image }}">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="{{ seo.twitter_card }}">
+<meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+<meta property="twitter:title" content="{{ seo.title }}">
+<meta property="twitter:description" content="{{ seo.description }}">
+<meta property="twitter:image" content="{{ seo.og_image }}">
+
+<!-- Schema.org structured data for Dashboard -->
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "{{ seo.title }}",
+        "description": "{{ seo.description }}",
+        "url": "{{ request.build_absolute_uri }}",
+        "author": {
+            "@type": "Person", 
+            "name": "{{ about.name }}",
+            "url": "{{ request.scheme }}://{{ request.get_host }}/"
+        },
+        "primaryImageOfPage": {
+            "@type": "ImageObject",
+            "url": "{{ seo.og_image }}"
+        },
+        "dateModified": "{{ github_last_update }}",
+        "specialty": "Developer Metrics",
+        "mainContentOfPage": {
+            "@type": "Dataset",
+            "name": "Developer Activity Metrics",
+            "description": "GitHub contributions and WakaTime coding statistics for {{ about.name }}",
+            "keywords": "GitHub, WakaTime, coding, contributions, programming, developer metrics",
+            "temporalCoverage": "{{ wakatime_stats.start_date }} to {{ wakatime_stats.end_date }}",
+            "creator": {
+                "@type": "Person",
+                "name": "{{ about.name }}"
+            }
+        }
+    }
+</script>
+
+<!-- Breadcrumb navigation -->
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ request.scheme }}://{{ request.get_host }}/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Dashboard",
+                "item": "{{ request.build_absolute_uri }}"
+            }
+        ]
+    }
+</script>
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Dataset",
+        "name": "GitHub Activity Metrics",
+        "description": "GitHub contribution statistics for {{ about.name }}",
+        "creator": {
+            "@type": "Person",
+            "name": "{{ about.name }}"
+        },
+        "dateModified": "{{ github_last_update }}",
+        "variableMeasured": [
+            {
+                "@type": "PropertyValue",
+                "name": "Total Contributions",
+                "value": "{{ total_contributions }}"
+            },
+            {
+                "@type": "PropertyValue",
+                "name": "This Week's Contributions",
+                "value": "{{ this_week }}"
+            },
+            {
+                "@type": "PropertyValue",
+                "name": "Best Day",
+                "value": "{{ best_day }} contributions"
+            },
+            {
+                "@type": "PropertyValue",
+                "name": "Daily Average",
+                "value": "{{ average }}"
+            },
+            {
+                "@type": "PropertyValue",
+                "name": "Longest Streak",
+                "value": "{{ longest_streak }} days"
+            },
+            {
+                "@type": "PropertyValue",
+                "name": "Current Streak",
+                "value": "{{ current_streak }} days"
+            }
+        ]
+    }
+</script>
+{% endblock %}
 
 {% block content %}
 <div class="flex-1 md:ml-72">

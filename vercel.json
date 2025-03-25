@@ -1,0 +1,22 @@
+{
+	"builds": [
+            {
+            "src": "ridwaanhall_dev/wsgi.py",
+            "use": "@vercel/python",
+            "config": {
+                "maxLambdaSize": "15mb",
+                "runtime": "python3.12.0"
+            }
+        }
+    ],
+	"routes": [
+		{
+			"src": "static/(.*)",
+			"dest": "staticfiles/$1"
+		},
+		{
+			"src": "/(.*)",
+			"dest": "ridwaanhall_dev/wsgi.py"
+		}
+	]
+}

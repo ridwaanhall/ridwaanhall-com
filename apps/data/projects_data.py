@@ -123,4 +123,66 @@ class ProjectsData:
             ],
             'tech_stack': ['Python', 'Django', 'JavaScript', 'CSS'],
         },
+        {
+            'id': 6,
+            'title': 'Bike Sharing Analysis Dashboard',
+            "headline": "Explore the relationship between weather conditions and bike rentals with an interactive dashboard.",
+            'description': 'This project explores the relationship between weather conditions and bike rentals. It includes a dashboard to visualize trends, such as popular seasons, working days vs weekends, and the impact of weather on bike rental patterns.',
+            'demo_url': "https://ridwaanhall-bike-sharing-analytics.streamlit.app/",
+            'github_url': "https://github.com/ridwaanhall/dicoding-bike-sharing-analysis",
+            'image_url': 'https://ridwaanhall-dev.vercel.app/static/img/project/bike_sharing_analysis_dashboard.webp',
+            'is_featured': False,
+            'features': [
+                {
+                    'title': 'Seasonal Analysis',
+                    'description': 'Analysis of bike rentals to determine the most and least popular seasons.',
+                },
+                {
+                    'title': 'Weather Correlation',
+                    'description': 'Examination of how weather conditions affect the total bike rentals.',
+                },
+                {
+                    'title': 'Working Days vs Holidays',
+                    'description': 'Comparison of bike rental trends between weekdays and weekends/holidays.',
+                },
+                {
+                    'title': 'Streamlit Dashboard',
+                    'description': 'Interactive visualization of the analysis results using Streamlit.',
+                }
+            ],
+            'tech_stack': ['Python', 'Streamlit', 'Data Analysis', 'TensorFlow'],
+        },
+        {
+            'id': 7,
+            'title': 'Sentiment Analysis Tokopedia App Using Machine Learning Techniques',
+            "headline": "Comprehensive pipeline for sentiment analysis of Google Play Store reviews for the Tokopedia app.",
+            'description': 'This project implements a comprehensive pipeline for sentiment analysis of Google Play Store reviews for the Tokopedia app. It includes data scraping, preprocessing, feature extraction, and evaluation using various machine learning models.',
+            'github_url': "https://github.com/ridwaanhall/Dicoding-Machine-Learning-Intermediate/tree/main/01_project",
+            "image_url": "https://ridwaanhall-dev.vercel.app/static/img/project/sentiment_analysis_tokopedia_app.webp",
+            'is_featured': False,
+            'features': [
+                {
+                    'title': 'Data Scraping',
+                    'description': 'Scrapes user reviews from the Google Play Store using a custom scraper.',
+                },
+                {
+                    'title': 'Text Preprocessing',
+                    'description': 'Includes cleaning, case folding, tokenizing, stopword removal, and stemming.',
+                },
+                {
+                    'title': 'Feature Extraction',
+                    'description': 'Utilizes TF-IDF, Count Vectorization, and Word2Vec for feature representation.',
+                },
+                {
+                    'title': 'Model Evaluation',
+                    'description': 'Evaluates models like Logistic Regression, XGBoost, and Random Forest to determine the best-performing algorithm.',
+                },
+                {
+                    'title': 'Sentiment Prediction',
+                    'description': 'Provides percentage-based sentiment analysis results for new user reviews.',
+                }
+            ],
+            'tech_stack': ['Python', 'Machine Learning', 'Text Processing'],
+        }
+
     ]

@@ -6,6 +6,7 @@ class ProjectsData:
         {
             'id': 1,
             'title': 'ridwaanhall_dev',
+            "headline": "Personal portfolio website built with Django and TailwindCSS, deployed as serverless using Vercel.",
             'description': 'A personal portfolio website built with Django and TailwindCSS, deployed as serverless using Vercel. Features sections for about, projects, blogs, education, experience, and a dynamic dashboard.',
             'github_url': 'https://github.com/ridwaanhall/ridwaanhall_dev',
             'demo_url': 'https://ridwaanhall-dev.vercel.app',
@@ -31,6 +32,7 @@ class ProjectsData:
         {
             'id': 2,
             'title': 'My Lovely Honey',
+            "headline": "E-commerce website for honey products built with Django and Bootstrap, deployed using Vercel.",
             'description': 'An e-commerce website for honey products built with Django and Bootstrap, deployed using Vercel. Features product catalog, articles about honey benefits, WhatsApp integration for direct orders, and monthly special offers.',
             'demo_url': 'https://belimadu.com',
             'image_url': 'https://ridwaanhall-dev.vercel.app/static/img/project/belimadu_com.webp',
@@ -55,8 +57,8 @@ class ProjectsData:
         {
             'id': 3,
             'title': 'Gold Price Prediction and Music Recommendation System',
+            'headline': 'Predict gold prices and recommend music tracks using machine learning algorithms.',
             'description': 'This project focuses on predicting gold prices using machine learning to help investors and analysts make informed decisions. Additionally, it includes a music recommendation system to suggest tracks, artists, and albums based on user preferences and listening habits.',
-            # 'demo_url': null,
             'github_url': "https://github.com/ridwaanhall/applied-machine-learning",
             'is_featured': True,
             'features': [
@@ -70,32 +72,55 @@ class ProjectsData:
                 }
             ],
             'tech_stack': ['Machine Learning', 'Music Recommendation Algorithms'],
-            # 'setup_instructions': null
         },
-        # {
-        #     'id': 4,
-        #     'title': 'MERN Task Manager',
-        #     'description': 'A responsive task management application built with the MERN stack (MongoDB, Express, React, Node.js).',
-        #     'github_url': 'https://github.com/ridwaanhall/mern-task-manager',
-        #     'demo_url': 'https://mern-task-manager-demo.netlify.app',
-        #     'image_url': 'https://api.slingacademy.com/public/sample-photos/9.jpeg',
-        #     'is_featured': False,
-        #     'features': [
-        #         {
-        #             'title': 'Drag-and-Drop Interface',
-        #             'description': 'Intuitive drag-and-drop interface for organizing tasks across different status categories.',
-        #             'image_url': 'https://api.slingacademy.com/public/sample-photos/10.jpeg',
-        #             'icon': 'tasks'
-        #         },
-        #         {
-        #             'title': 'Real-time Collaboration',
-        #             'description': 'Socket.io integration for real-time updates when team members modify tasks.',
-        #             'image_url': 'https://api.slingacademy.com/public/sample-photos/11.jpeg',
-        #             'icon': 'users'
-        #         }
-        #     ],
-        #     'tech_stack': ['JavaScript', 'React', 'Node.js', 'Express', 'MongoDB', 'Socket.io'],
-        #     'code_sample': 'const express = require(\'express\');\nconst mongoose = require(\'mongoose\');\nconst Task = require(\'./models/Task\');\n\nconst app = express();\napp.use(express.json());\n\napp.get(\'/api/tasks\', async (req, res) => {\n    try {\n        const tasks = await Task.find();\n        res.json(tasks);\n    } catch (err) {\n        res.status(500).json({ message: err.message });\n    }\n});',
-        #     'setup_instructions': 'git clone https://github.com/ridwaanhall/mern-task-manager\ncd mern-task-manager\nnpm install\nnpm run dev'
-        # }
+        {
+            'id': 4,
+            'title': 'Mobile Legends: Bang Bang API and Website',
+            'headline': 'RESTful API and website interface for Mobile Legends: Bang Bang data.',
+            'description': 'A comprehensive project that includes a RESTful API for Mobile Legends: Bang Bang data, interactive API documentation for developers, and a website interface for users to explore hero analytics, rankings, and game data.',
+            'image_url': 'https://ridwaanhall-dev.vercel.app/static/img/project/mobile_legends_bang_bang_api_and_website.webp',
+            'demo_url': "https://api-mobilelegends.vercel.app/",
+            'github_url': "https://github.com/ridwaanhall/api-mobilelegends",
+            'is_featured': False,
+            'features': [
+                {
+                    'title': 'RESTful API',
+                    'description': 'Provides read-only endpoints using GET methods for hero data, rankings, skills, and compatibility metrics.',
+                },
+                {
+                    'title': 'API Documentation',
+                    'description': 'Interactive documentation built with Next.js and Shadcn UI for a modern, user-friendly developer experience.',
+                },
+                {
+                    'title': 'User-friendly Website',
+                    'description': 'Web interface for casual users to browse hero statistics and game data without technical knowledge.',
+                }
+            ],
+            'tech_stack': ['Django', 'Python', 'REST API', 'Next.js', 'Shadcn UI', 'Vercel'],
+        },
+        {
+            'id': 5,
+            'title': 'API PDDikti KEMENDIKSAINTEK',
+            'headline': 'API for accessing updated data from PDDikti KEMENDIKSAINTEK.',
+            'description': 'This project provides an easy-to-use API for accessing updated data from PDDikti KEMENDIKSAINTEK. It includes API endpoints for educational institution data and other related resources.',
+            "image_url": "https://ridwaanhall-dev.vercel.app/static/img/project/api_pddikti_kemendiksaintek.webp",
+            'demo_url': "https://pddikti-docs.vercel.app/",
+            'github_url': "https://github.com/ridwaanhall/api-pddikti",
+            'is_featured': False,
+            'features': [
+                {
+                    'title': 'Easy Access to PDDikti Data',
+                    'description': 'API endpoints for retrieving data on educational institutions and more from PDDikti KEMENDIKSAINTEK.',
+                },
+                {
+                    'title': 'User-Friendly API',
+                    'description': 'Designed with simplicity and ease of use in mind for developers.',
+                },
+                {
+                    'title': 'Updated Data Integration',
+                    'description': 'Supports updated datasets from PDDikti for accuracy and relevance.',
+                }
+            ],
+            'tech_stack': ['Python', 'Django', 'JavaScript', 'CSS'],
+        },
     ]

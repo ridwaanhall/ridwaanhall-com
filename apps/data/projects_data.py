@@ -60,6 +60,7 @@ class ProjectsData:
             'headline': 'Predict gold prices and recommend music tracks using machine learning algorithms.',
             'description': 'This project focuses on predicting gold prices using machine learning to help investors and analysts make informed decisions. Additionally, it includes a music recommendation system to suggest tracks, artists, and albums based on user preferences and listening habits.',
             'github_url': "https://github.com/ridwaanhall/applied-machine-learning",
+            "image_url": "https://ridwaanhall-dev.vercel.app/static/img/project/gold_price_prediction_and_music_recommendation_system.webp",
             'is_featured': True,
             'features': [
                 {

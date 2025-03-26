@@ -2,103 +2,88 @@ from django.shortcuts import render
 from django.views import View
 from django.utils.text import slugify
 from django.core.exceptions import SuspiciousOperation
+from functools import wraps
 
 from apps.data.blog_data import BlogData
 from apps.data.about_data import AboutData
 
-class BlogView(View):
-    def get(self, request):
+def handle_exceptions(view_method):
+    @wraps(view_method)
+    def wrapper(self, request, *args, **kwargs):
         try:
-            blogs = BlogData.blogs
-            about = AboutData.get_about_data()
-            
-            seo = {
-                'title': f"Blog | {about[0]['name']} - Articles and Insights",
-                'description': f"Explore articles, tutorials, and insights by {about[0]['name']} about technology, development, and programming.",
-                'keywords': f"blog, articles, tech blog, programming, tutorials, {about[0]['name']}, developer insights",
-                'og_image': about[0].get('image_url', ''),
-                'og_type': 'website',
-                'twitter_card': 'summary_large_image',
-            }
-            
-            context = {
-                'blogs': blogs,
-                'about': about[0],
-                'seo': seo,
-            }
-            
-            return render(request, 'blog/blog.html', context)
-
-        except AttributeError:
-            context = {
-                'error_code': 500,
-                'error_message': 'Internal server error occurred. Please try again later.'
-            }
-            return render(request, 'error.html', context, status=500)
-        except (TypeError, KeyError):
-            context = {
-                'error_code': 500,
-                'error_message': 'Data processing error occurred. Please try again later.'
-            }
-            return render(request, 'error.html', context, status=500)
+            return view_method(self, request, *args, **kwargs)
+        except SuspiciousOperation:
+            return self.render_error(request, 400)
+        except (AttributeError, TypeError, KeyError):
+            return self.render_error(request, 500, 'Data processing error occurred.')
         except (FileNotFoundError, ImportError):
-            context = {
-                'error_code': 500,
-                'error_message': 'Resource loading error occurred. Please try again later.'
-            }
-            return render(request, 'error.html', context, status=500)
+            return self.render_error(request, 500, 'Resource loading error occurred.')
         except Exception:
-            context = {
-                'error_code': 500,
-                'error_message': 'An unexpected error occurred. Please try again later.'
-            }
-            return render(request, 'error.html', context, status=500)
+            return self.render_error(request, 500, 'An unexpected error occurred.')
+    return wrapper
 
-class BlogDetailView(View):
+class BaseBlogView(View):
+    def get_common_data(self):
+        return {
+            'blogs': BlogData.blogs,
+            'about': AboutData.get_about_data()[0]
+        }
+    
+    def render_error(self, request, code, message=None):
+        context = {'error_code': code}
+        if message:
+            context['error_message'] = message
+        return render(request, 'error.html', context, status=code)
+
+class BlogView(BaseBlogView):
+    @handle_exceptions
+    def get(self, request):
+        data = self.get_common_data()
+        
+        seo = {
+            'title': f"Blog | {data['about']['name']} - Articles and Insights",
+            'description': f"Explore articles, tutorials, and insights by {data['about']['name']} about technology, development, and programming.",
+            'keywords': f"blog, articles, tech blog, programming, tutorials, {data['about']['name']}, developer insights",
+            'og_image': data['about'].get('image_url', ''),
+            'og_type': 'website',
+            'twitter_card': 'summary_large_image',
+        }
+        
+        context = {
+            'blogs': data['blogs'],
+            'about': data['about'],
+            'seo': seo,
+        }
+        
+        return render(request, 'blog/blog.html', context)
+
+class BlogDetailView(BaseBlogView):
+    @handle_exceptions
     def get(self, request, title):
-        blogs = BlogData.blogs
-        about = AboutData.get_about_data()
-
-        try:
-            if not isinstance(title, str):
-                raise SuspiciousOperation("Invalid title format")
-
-            blog_post = next((item for item in blogs if slugify(item['title']) == title), None)
-            # other_blogs = [item for item in blogs if slugify(item['title']) != title]
-
-            if blog_post:
-                seo = {
-                    'title': f"{blog_post['title']} | {about[0]['name']}",
-                    'description': blog_post['description'],
-                    'keywords': f"{', '.join(blog_post['tags'])}, {about[0]['name']}, blog, article",
-                    'og_image': blog_post.get('image_url', about[0].get('image_url', '')),
-                    'og_type': 'article',
-                    'twitter_card': 'summary_large_image',
-                    'published_date': blog_post.get('date', ''),
-                    'author': blog_post.get('author', about[0]['name']),
-                    'tags': blog_post.get('tags', []),
-                }
-                
-                context = {
-                    'blog': blog_post,
-                    'about': about[0],
-                    # 'other_blogs': other_blogs,
-                    'seo': seo,
-                }
-                return render(request, 'blog/blog_detail.html', context)
-            else:
-                context = {
-                    'error_code': 404
-                }
-                return render(request, 'error.html', context, status=404)
-
-        except SuspiciousOperation as e:
-            context = {
-                'error_code': 400
-            }
-            return render(request, 'error.html', context, status=400)
-        except Exception as e:
-            context = {
-                'error_code': 500
-            }
-            return render(request, 'error.html', context, status=500)
+        if not isinstance(title, str):
+            raise SuspiciousOperation("Invalid title format")
+            
+        data = self.get_common_data()
+        blog_post = next((item for item in data['blogs'] if slugify(item['title']) == title), None)
+        
+        if not blog_post:
+            return self.render_error(request, 404)
+            
+        seo = {
+            'title': f"{blog_post['title']} | {data['about']['name']}",
+            'description': blog_post['description'],
+            'keywords': f"{', '.join(blog_post['tags'])}, {data['about']['name']}, blog, article",
+            'og_image': blog_post.get('image_url', data['about'].get('image_url', '')),
+            'og_type': 'article',
+            'twitter_card': 'summary_large_image',
+            'published_date': blog_post.get('date', ''),
+            'author': blog_post.get('author', data['about']['name']),
+            'tags': blog_post.get('tags', []),
+        }
+        
+        context = {
+            'blog': blog_post,
+            'about': data['about'],
+            'seo': seo,
+        }
+        return render(request, 'blog/blog_detail.html', context)

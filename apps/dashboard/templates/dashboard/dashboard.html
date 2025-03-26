@@ -156,7 +156,7 @@
                         <div class="flex items-center justify-between">
                             <p class="text-white text-xl font-bold">{{ wakatime_stats.start_date }}</p>
                         </div>
-                        <h3 class="text-gray-400 font-medium text-sm mt-2">Start Date</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Start Date</h3>
                     </div>
                     
                     <!-- End Date -->
@@ -164,7 +164,7 @@
                         <div class="flex items-center justify-between">
                             <p class="text-white text-xl font-bold">{{ wakatime_stats.end_date }}</p>
                         </div>
-                        <h3 class="text-gray-400 font-medium text-sm mt-2">End Date</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">End Date</h3>
                     </div>
                     
                     <!-- Daily Coding Average -->
@@ -172,7 +172,7 @@
                         <div class="flex items-center justify-between">
                             <p class="text-white text-xl font-bold">{{ wakatime_stats.daily_average }}</p>
                         </div>
-                        <h3 class="text-gray-400 font-medium text-sm mt-2">Daily Coding Average</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Daily Coding Average</h3>
                     </div>
                     
                     <!-- This Week Coding Time -->
@@ -180,7 +180,7 @@
                         <div class="flex items-center justify-between">
                             <p class="text-white text-xl font-bold">{{ wakatime_stats.this_week_coding }}</p>
                         </div>
-                        <h3 class="text-gray-400 font-medium text-sm mt-2">This Week Coding Time</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">This Week Coding Time</h3>
                     </div>
                     
                     <!-- Best Day Coding Time -->
@@ -190,7 +190,7 @@
                                 <p class="text-white text-xl font-bold">{{ wakatime_stats.best_day_date }} ({{ wakatime_stats.best_day_coding }})</p>
                             </div>
                         </div>
-                        <h3 class="text-gray-400 font-medium text-sm mt-2">Best Day Coding Time</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Best Day Coding Time</h3>
                     </div>
                     
                     <!-- All Time Since Today -->
@@ -198,7 +198,7 @@
                         <div class="flex items-center justify-between">
                             <p class="text-white text-xl font-bold">{{ wakatime_stats.all_time_coding }}</p>
                         </div>
-                        <h3 class="text-gray-400 font-medium text-sm mt-2">All Time Since Today</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">All Time Since Today</h3>
                     </div>
                 </div>
             </div>
@@ -207,7 +207,7 @@
             <div class="mb-10">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-bold text-white">GitHub <span class="text-indigo-400">Statistics</span></h2>
-                    <p class="text-sm text-gray-400">Updated: <span class="text-indigo-400 font-medium">{{ github_last_update }}</span></p>
+                    {% comment %} <p class="text-sm text-gray-400">Updated: <span class="text-indigo-400 font-medium">{{ github_last_update }}</span></p> {% endcomment %}
                 </div>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
@@ -215,42 +215,42 @@
                         <div class="flex items-center justify-between">
                             <p class="text-white text-3xl font-bold">{{ total_contributions }}</p>
                         </div>
-                        <h3 class="text-gray-400 font-medium text-sm mt-2">Contributions</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Contributions</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
                             <p class="text-white text-3xl font-bold">{{ this_week }}</p>
                         </div>
-                        <h3 class="text-gray-400 font-medium text-sm mt-2">This Week</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">This Week</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
                             <p class="text-white text-3xl font-bold">{{ best_day }}</p>
                         </div>
-                        <h3 class="text-gray-400 font-medium text-sm mt-2">Best Day</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Best Day</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
                             <p class="text-white text-3xl font-bold">{{ average }}</p>
                         </div>
-                        <h3 class="text-gray-400 font-medium text-sm mt-2">Average</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Average</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
                             <p class="text-white text-3xl font-bold">{{ longest_streak }}</p>
                         </div>
-                        <h3 class="text-gray-400 font-medium text-sm mt-2">Longest Streak</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Longest Streak</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
                             <p class="text-white text-3xl font-bold">{{ current_streak }}</p>
                         </div>
-                        <h3 class="text-gray-400 font-medium text-sm mt-2">Current Streak</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Current Streak</h3>
                     </div>
                 </div>
             </div>

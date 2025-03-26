@@ -2,5 +2,5 @@
 
 ## to do
 
-- fix all image in projects and blogs
+- [x] fix all image in projects and blogs
 - add sitemap.xml

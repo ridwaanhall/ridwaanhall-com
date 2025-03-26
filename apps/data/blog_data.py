@@ -7,7 +7,7 @@ class BlogData:
             'id': 1,
             'title': 'Getting Started with Python: A Beginner\'s Guide',
             'description': 'Learn the basics of Python programming and why it\'s an excellent language for beginners.',
-            'image_url': 'https://ridwaanhall-dev.vercel.app/static/img/blog/start_with_python1.webp',
+            'image_url': 'https://ridwaanhall.vercel.app/static/img/blog/start_with_python1.webp',
             'date': 'March 24, 2025',
             'author': 'Ridwan Halim',
             'content': [
@@ -21,7 +21,7 @@ class BlogData:
             'id': 2,
             'title': 'Building Web Applications with Django',
             'description': 'Discover how Django makes web development faster and more secure with its batteries-included philosophy.',
-            'image_url': 'https://ridwaanhall-dev.vercel.app/static/img/blog/building_web_applictions_with_django.webp',
+            'image_url': 'https://ridwaanhall.vercel.app/static/img/blog/building_web_applictions_with_django.webp',
             'date': 'March 24, 2025',
             'author': 'Ridwan Halim',
             'content': [
@@ -35,7 +35,7 @@ class BlogData:
             'id': 3,
             'title': 'Deep Learning with TensorFlow and Keras',
             'description': 'An introduction to building neural networks using TensorFlow and Keras for machine learning projects.',
-            'image_url': 'https://ridwaanhall-dev.vercel.app/static/img/blog/deep_learning_with_tensorflow_and_keras.webp',
+            'image_url': 'https://ridwaanhall.vercel.app/static/img/blog/deep_learning_with_tensorflow_and_keras.webp',
             'date': 'March 24, 2025',
             'author': 'Ridwan Halim',
             'content': [
@@ -49,7 +49,7 @@ class BlogData:
             'id': 4,
             'title': 'Effective Time Management for Developers',
             'description': 'Practical strategies to boost productivity and maintain work-life balance as a software developer.',
-            'image_url': 'https://ridwaanhall-dev.vercel.app/static/img/blog/effective_time_management_for_developers.webp',
+            'image_url': 'https://ridwaanhall.vercel.app/static/img/blog/effective_time_management_for_developers.webp',
             'date': 'March 24, 2025',
             'author': 'Ridwan Halim',
             'content': [

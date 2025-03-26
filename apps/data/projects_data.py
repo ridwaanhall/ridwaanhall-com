@@ -9,8 +9,8 @@ class ProjectsData:
             "headline": "Personal portfolio website built with Django and TailwindCSS, deployed as serverless using Vercel.",
             'description': 'A personal portfolio website built with Django and TailwindCSS, deployed as serverless using Vercel. Features sections for about, projects, blogs, education, experience, and a dynamic dashboard.',
             'github_url': 'https://github.com/ridwaanhall/ridwaanhall_dev',
-            'demo_url': 'https://ridwaanhall-dev.vercel.app',
-            'image_url': 'https://ridwaanhall-dev.vercel.app/static/img/project/ridwaanhall_dev.webp',
+            'demo_url': 'https://ridwaanhall.vercel.app',
+            'image_url': 'https://ridwaanhall.vercel.app/static/img/project/ridwaanhall_dev.webp',
             'is_featured': True,
             'features': [
                 {
@@ -35,7 +35,7 @@ class ProjectsData:
             "headline": "E-commerce website for honey products built with Django and Bootstrap, deployed using Vercel.",
             'description': 'An e-commerce website for honey products built with Django and Bootstrap, deployed using Vercel. Features product catalog, articles about honey benefits, WhatsApp integration for direct orders, and monthly special offers.',
             'demo_url': 'https://belimadu.com',
-            'image_url': 'https://ridwaanhall-dev.vercel.app/static/img/project/belimadu_com.webp',
+            'image_url': 'https://ridwaanhall.vercel.app/static/img/project/belimadu_com.webp',
             'is_featured': True,
             'features': [
                 {
@@ -60,7 +60,7 @@ class ProjectsData:
             'headline': 'Predict gold prices and recommend music tracks using machine learning algorithms.',
             'description': 'This project focuses on predicting gold prices using machine learning to help investors and analysts make informed decisions. Additionally, it includes a music recommendation system to suggest tracks, artists, and albums based on user preferences and listening habits.',
             'github_url': "https://github.com/ridwaanhall/applied-machine-learning",
-            "image_url": "https://ridwaanhall-dev.vercel.app/static/img/project/gold_price_prediction_and_music_recommendation_system.webp",
+            "image_url": "https://ridwaanhall.vercel.app/static/img/project/gold_price_prediction_and_music_recommendation_system.webp",
             'is_featured': True,
             'features': [
                 {
@@ -79,7 +79,7 @@ class ProjectsData:
             'title': 'Mobile Legends: Bang Bang API and Website',
             'headline': 'RESTful API and website interface for Mobile Legends: Bang Bang data.',
             'description': 'A comprehensive project that includes a RESTful API for Mobile Legends: Bang Bang data, interactive API documentation for developers, and a website interface for users to explore hero analytics, rankings, and game data.',
-            'image_url': 'https://ridwaanhall-dev.vercel.app/static/img/project/mobile_legends_bang_bang_api_and_website.webp',
+            'image_url': 'https://ridwaanhall.vercel.app/static/img/project/mobile_legends_bang_bang_api_and_website.webp',
             'demo_url': "https://api-mobilelegends.vercel.app/",
             'github_url': "https://github.com/ridwaanhall/api-mobilelegends",
             'is_featured': False,
@@ -104,7 +104,7 @@ class ProjectsData:
             'title': 'API PDDikti KEMENDIKSAINTEK',
             'headline': 'API for accessing updated data from PDDikti KEMENDIKSAINTEK.',
             'description': 'This project provides an easy-to-use API for accessing updated data from PDDikti KEMENDIKSAINTEK. It includes API endpoints for educational institution data and other related resources.',
-            "image_url": "https://ridwaanhall-dev.vercel.app/static/img/project/api_pddikti_kemendiksaintek.webp",
+            "image_url": "https://ridwaanhall.vercel.app/static/img/project/api_pddikti_kemendiksaintek.webp",
             'demo_url': "https://pddikti-docs.vercel.app/",
             'github_url': "https://github.com/ridwaanhall/api-pddikti",
             'is_featured': False,
@@ -131,7 +131,7 @@ class ProjectsData:
             'description': 'This project explores the relationship between weather conditions and bike rentals. It includes a dashboard to visualize trends, such as popular seasons, working days vs weekends, and the impact of weather on bike rental patterns.',
             'demo_url': "https://ridwaanhall-bike-sharing-analytics.streamlit.app/",
             'github_url': "https://github.com/ridwaanhall/dicoding-bike-sharing-analysis",
-            'image_url': 'https://ridwaanhall-dev.vercel.app/static/img/project/bike_sharing_analysis_dashboard.webp',
+            'image_url': 'https://ridwaanhall.vercel.app/static/img/project/bike_sharing_analysis_dashboard.webp',
             'is_featured': False,
             'features': [
                 {
@@ -159,7 +159,7 @@ class ProjectsData:
             "headline": "Comprehensive pipeline for sentiment analysis of Google Play Store reviews for the Tokopedia app.",
             'description': 'This project implements a comprehensive pipeline for sentiment analysis of Google Play Store reviews for the Tokopedia app. It includes data scraping, preprocessing, feature extraction, and evaluation using various machine learning models.',
             'github_url': "https://github.com/ridwaanhall/Dicoding-Machine-Learning-Intermediate/tree/main/01_project",
-            "image_url": "https://ridwaanhall-dev.vercel.app/static/img/project/sentiment_analysis_tokopedia_app.webp",
+            "image_url": "https://ridwaanhall.vercel.app/static/img/project/sentiment_analysis_tokopedia_app.webp",
             'is_featured': False,
             'features': [
                 {

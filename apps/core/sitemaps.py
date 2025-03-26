@@ -29,9 +29,7 @@ class BlogSitemap(Sitemap):
         return reverse('blog_detail', kwargs={'title': slugify(obj['title'])})
     
     def lastmod(self, obj):
-        # If you have a 'date' or 'updated_at' field in your blog data
         if 'date' in obj:
-            # Convert string date to datetime if needed
             try:
                 from datetime import datetime
                 return datetime.strptime(obj['date'], '%B %d, %Y')

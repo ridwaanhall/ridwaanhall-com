@@ -14,7 +14,6 @@ class CareerView(TemplateView):
             education = [education for education in EducationData.education]
             certifications = [certification for certification in CertificationsData.certifications]
             
-            # Career page specific SEO
             seo = {
                 'title': f"Career & Resume | {about[0]['name']} - Professional Experience",
                 'description': f"Explore {about[0]['name']}'s professional journey, education, work experience, and certifications. View full resume and career highlights.",

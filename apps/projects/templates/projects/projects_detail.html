@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block head_seo %}
-<!-- Project Detail Page SEO -->
+
 <title>{{ seo.title }}</title>
 
 <meta name="author" content="{{ about.name }}">
@@ -11,21 +11,18 @@
 <meta name="description" content="{{ seo.description }}">
 <meta name="keywords" content="{{ seo.keywords }}">
 
-<!-- Open Graph / Facebook -->
 <meta property="og:type" content="{{ seo.og_type }}">
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
 <meta property="og:title" content="{{ seo.title }}">
 <meta property="og:description" content="{{ seo.description }}">
 <meta property="og:image" content="{{ seo.og_image }}">
 
-<!-- Twitter -->
 <meta property="twitter:card" content="{{ seo.twitter_card }}">
 <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
 <meta property="twitter:title" content="{{ seo.title }}">
 <meta property="twitter:description" content="{{ seo.description }}">
 <meta property="twitter:image" content="{{ seo.og_image }}">
 
-<!-- Schema.org structured data for Project Detail -->
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -59,7 +56,6 @@
     }
 </script>
 
-<!-- Project Features as HowTo Schema -->
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -96,7 +92,6 @@
     }
 </script>
 
-<!-- Breadcrumb navigation -->
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -207,7 +202,7 @@
             
             {% if project.tech_stack %}
             <div class="relative bg-gradient-to-br from-gray-900 to-gray-800 shadow-lg rounded-xl p-6 md:p-8 mb-8 mt-6 overflow-hidden transform transition-all duration-300 hover:shadow-2xl">
-                <!-- Background gradient effects -->
+
                 <div class="absolute top-0 left-0 w-64 h-64 bg-blue-600/10 rounded-full -ml-32 -mt-32 blur-3xl"></div>
                 <div class="absolute bottom-0 right-0 w-80 h-80 bg-indigo-500/5 rounded-full -mr-40 -mb-40 blur-3xl"></div>
                 <h2 class="text-2xl font-bold text-white mb-6 flex items-center border-b border-gray-700 pb-2">

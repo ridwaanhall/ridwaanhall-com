@@ -19,7 +19,6 @@ class HomeView(TemplateView):
             experiences = [experience for experience in ExperiencesData.experiences if experience.get('is_current')]
             certifications = [certification for certification in CertificationsData.certifications]
             
-            # Home page specific SEO
             seo = {
                 'title': f"{about[0]['name']} - Portfolio and Personal Website",
                 'description': f"Portfolio and personal website of {about[0]['name']}. {about[0].get('short_description', '')}",
@@ -75,7 +74,6 @@ class AboutView(TemplateView):
             experiences = [experience for experience in ExperiencesData.experiences if experience.get('is_current')]
             education = [education for education in EducationData.education if education.get('is_last')]
             
-            # About page specific SEO
             seo = {
                 'title': f"About {about[0]['name']} - Background and Experience",
                 'description': f"Learn about {about[0]['name']}'s professional background, skills, and experience. {about[0].get('short_description', '')}",
@@ -90,7 +88,7 @@ class AboutView(TemplateView):
                 'experiences': experiences,
                 'education': education,
                 'about': about[0],
-                'seo': seo,  # Add SEO data
+                'seo': seo,
             }
             
             return render(request, 'core/about.html', context)
@@ -127,7 +125,6 @@ class ContactView(TemplateView):
         context = super().get_context_data(**kwargs)
         about = AboutData.get_about_data()
         
-        # Contact page specific SEO
         seo = {
             'title': f"Contact {about[0]['name']} - Get in Touch",
             'description': f"Contact {about[0]['name']} for collaboration, job opportunities, or consulting. Get in touch today!",
@@ -138,7 +135,7 @@ class ContactView(TemplateView):
         }
         
         context['about'] = about[0]
-        context['seo'] = seo  # Add SEO data
+        context['seo'] = seo
         context['view'] = True
         
         return context

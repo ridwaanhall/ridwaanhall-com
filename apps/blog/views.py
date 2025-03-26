@@ -12,7 +12,6 @@ class BlogView(View):
             blogs = BlogData.blogs
             about = AboutData.get_about_data()
             
-            # Blog listing page SEO
             seo = {
                 'title': f"Blog | {about[0]['name']} - Articles and Insights",
                 'description': f"Explore articles, tutorials, and insights by {about[0]['name']} about technology, development, and programming.",
@@ -25,7 +24,7 @@ class BlogView(View):
             context = {
                 'blogs': blogs,
                 'about': about[0],
-                'seo': seo,  # Add SEO data
+                'seo': seo,
             }
             
             return render(request, 'blog/blog.html', context)
@@ -68,7 +67,6 @@ class BlogDetailView(View):
             # other_blogs = [item for item in blogs if slugify(item['title']) != title]
 
             if blog_post:
-                # Individual blog post SEO
                 seo = {
                     'title': f"{blog_post['title']} | {about[0]['name']}",
                     'description': blog_post['description'],

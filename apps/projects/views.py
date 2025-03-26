@@ -11,7 +11,6 @@ class ProjectsView(TemplateView):
         projects = ProjectsData.projects
         about = AboutData.get_about_data()
         
-        # Projects listing page SEO
         seo = {
             'title': f"Projects & Portfolio | {about[0]['name']} - Developer Showcase",
             'description': f"Explore {about[0]['name']}'s development projects, applications, and coding portfolio. View demos and source code.",
@@ -24,7 +23,7 @@ class ProjectsView(TemplateView):
         context = {
             'projects': projects,
             'about': about[0],
-            'seo': seo,  # Add SEO data
+            'seo': seo,
         }
         return render(request, 'projects/projects.html', context)
     
@@ -41,7 +40,6 @@ class ProjectsDetailView(View):
             # other_projects = [item for item in projects if slugify(item['title']) != title]
 
             if project:
-                # Project detail page SEO
                 seo = {
                     'title': f"{project['title']} | {about[0]['name']} - Project Details",
                     'description': project['description'],
@@ -55,7 +53,7 @@ class ProjectsDetailView(View):
                     'project': project,
                     'about': about[0],
                     # 'other_projects': other_projects
-                    'seo': seo,  # Add SEO data
+                    'seo': seo,
                 }
                 return render(request, 'projects/projects_detail.html', context)
             else:

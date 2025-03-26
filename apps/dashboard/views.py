@@ -135,16 +135,13 @@ def calculate_wakatime_stats(data):
     last_7_days = data['last_7_days']['data']
     all_time = data['all_time']['data']
     
-    # Format time durations
     def format_time(seconds):
         hours = int(seconds // 3600)
         minutes = int((seconds % 3600) // 60)
         return f"{hours} hrs {minutes} mins"
-    
-    # Extract required data
-    # Calculate the time difference for "X hours ago"
+
     end_date = datetime.fromisoformat(last_7_days['end'].replace('Z', '+00:00'))
-    now = datetime.now().astimezone() # Get current time with timezone
+    now = datetime.now().astimezone()
     time_diff = now - end_date
     hours_ago = int(time_diff.total_seconds() / 3600)
     last_update = f"{hours_ago} hours ago"
@@ -182,7 +179,6 @@ class DashboardView(TemplateView):
         }
         context['seo'] = seo
         
-        # GitHub data
         github_activity = fetch_github_activity()
         context['github_activity'] = github_activity
         
@@ -201,7 +197,6 @@ class DashboardView(TemplateView):
             context['current_streak'] = github_stats['current_streak']
             context['github_last_update'] = datetime.now().strftime('%B %d, %Y %I:%M %p')
         
-        # WakaTime data
         wakatime_activity = fetch_wakatime_activity()
         if wakatime_activity:
             wakatime_stats = calculate_wakatime_stats(wakatime_activity)

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block head_seo %}
-<!-- Blog Detail Page SEO -->
+
 <title>{{ seo.title }}</title>
 
 <meta name="author" content="{{ seo.author }}">
@@ -11,7 +11,6 @@
 
 <meta name="description" content="{{ seo.description }}">
 
-<!-- Open Graph / Facebook -->
 <meta property="og:type" content="{{ seo.og_type }}">
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
 <meta property="og:title" content="{{ seo.title }}">
@@ -23,14 +22,12 @@
 <meta property="article:tag" content="{{ tag }}">
 {% endfor %}
 
-<!-- Twitter -->
 <meta property="twitter:card" content="{{ seo.twitter_card }}">
 <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
 <meta property="twitter:title" content="{{ seo.title }}">
 <meta property="twitter:description" content="{{ seo.description }}">
 <meta property="twitter:image" content="{{ seo.og_image }}">
 
-<!-- Schema.org structured data for Blog Post -->
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -62,7 +59,6 @@
     }
 </script>
 
-<!-- Breadcrumb navigation -->
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",

@@ -11,21 +11,18 @@
 <meta name="description" content="{{ seo.description }}">
 <meta name="keywords" content="{{ seo.keywords }}">
 
-<!-- Open Graph / Facebook -->
 <meta property="og:type" content="{{ seo.og_type }}">
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
 <meta property="og:title" content="{{ seo.title }}">
 <meta property="og:description" content="{{ seo.description }}">
 <meta property="og:image" content="{{ seo.og_image }}">
 
-<!-- Twitter -->
 <meta property="twitter:card" content="{{ seo.twitter_card }}">
 <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
 <meta property="twitter:title" content="{{ seo.title }}">
 <meta property="twitter:description" content="{{ seo.description }}">
 <meta property="twitter:image" content="{{ seo.og_image }}">
 
-<!-- Schema.org structured data -->
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -67,7 +64,7 @@
 
             <div class="mb-12">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    <!-- Profile sidebar -->
+
                     <div class="lg:col-span-4">
                         <div class="sticky top-8 bg-gradient-to-b from-gray-800 to-gray-900 rounded-2xl shadow-xl overflow-hidden transform transition-all duration-300 hover:shadow-indigo-500/30">
                             <div class="relative">
@@ -106,7 +103,6 @@
                         </div>
                     </div>
                     
-                    <!-- Bio content -->
                     <div class="lg:col-span-8">
                         <div class="h-full">
                             <div class="">

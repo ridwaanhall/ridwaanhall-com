@@ -57,6 +57,20 @@ class BlogData:
                 "Other effective strategies include timeboxing tasks, minimizing context switching, and setting clear boundaries between work and personal time. Learn how to implement these practices to become more efficient while maintaining creativity and problem-solving abilities."
             ],
             'tags': ['Productivity', 'Time Management', 'Developer Tips'],
+            'is_featured': False
+        },
+        {
+            'id': 5,
+            'title': 'Understanding Lailatul Qadr: The Night of Power',
+            'description': 'Learn about the significance of Lailatul Qadr in Islam and why it\'s considered the most blessed night of the year.',
+            'image_url': 'https://ridwaanhall.vercel.app/static/img/blog/lailatul_qadr_night.webp',
+            'date': 'March 27, 2025',
+            'author': 'Ridwan Halim',
+            'content': [
+                "Lailatul Qadr, often translated as 'The Night of Power' or 'The Night of Decree', is considered the holiest night in the Islamic calendar. It is believed to be the night when the first verses of the Quran were revealed to Prophet Muhammad.",
+                "The Quran states that this night is 'better than a thousand months', meaning that worship during this night is rewarded more than worship performed for over 83 years. Many Muslims devote themselves to prayer, Quran recitation, and spiritual reflection during this blessed night."
+            ],
+            'tags': ['Islam', 'Ramadan', 'Lailatul Qadr', 'Spirituality'],
             'is_featured': True
         },
     ]

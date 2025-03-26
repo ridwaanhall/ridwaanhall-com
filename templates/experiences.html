@@ -33,14 +33,17 @@
                 <p class="text-{% if experience.is_current %}indigo{% else %}gray{% endif %}-300 text-sm">{{ experience.company }}</p>
             </div>
             <p class="text-gray-400 text-sm mb-3">{{ experience.period }}</p>
-            <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-4 hover:shadow-xl transition-all duration-300">
-                <ul class="space-y-2 text-gray-300">
+            <div class="group bg-gradient-to-br from-gray-800/80 to-gray-900/90 backdrop-blur-sm rounded-xl p-5 hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-0.5 transition-all duration-300 border border-gray-700/50">
+                <h4 class="text-sm font-medium text-gray-200 mb-3 uppercase tracking-wide">Responsibilities</h4>
+                <ul class="space-y-3 text-gray-300">
                     {% for responsibility in experience.responsibilities %}
-                    <li class="flex items-start">
-                        <svg class="w-5 h-5 text-{% if experience.is_current %}indigo{% else %}gray{% endif %}-400 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        {{ responsibility }}
+                    <li class="flex items-start group-hover:translate-x-0.5 transition-transform duration-200">
+                        <span class="flex-shrink-0 inline-flex items-center justify-center w-6 h-6 mr-3 rounded-full bg-{% if experience.is_current %}indigo{% else %}gray{% endif %}-800/50 text-{% if experience.is_current %}indigo{% else %}gray{% endif %}-300">
+                            <svg class="w-4 h-4 text-{% if experience.is_current %}indigo{% else %}gray{% endif %}-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </span>
+                        <span class="text-sm">{{ responsibility }}</span>
                     </li>
                     {% endfor %}
                 </ul>

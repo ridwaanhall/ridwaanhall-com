@@ -165,14 +165,14 @@
                         <div class="flex items-center justify-between">
                             <p class="text-white text-xl font-bold">{{ wakatime_stats.daily_average }}</p>
                         </div>
-                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Daily Coding Average</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Coding Average</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
                             <p class="text-white text-xl font-bold">{{ wakatime_stats.this_week_coding }}</p>
                         </div>
-                        <h3 class="text-indigo-400 font-medium text-sm mt-2">This Week Coding Time</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Coding Time</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
@@ -181,14 +181,14 @@
                                 <p class="text-white text-xl font-bold">{{ wakatime_stats.best_day_date }} ({{ wakatime_stats.best_day_coding }})</p>
                             </div>
                         </div>
-                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Best Day Coding Time</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Best Day</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
                             <p class="text-white text-xl font-bold">{{ wakatime_stats.all_time_coding }}</p>
                         </div>
-                        <h3 class="text-indigo-400 font-medium text-sm mt-2">All Time Since Today</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">All Time</h3>
                     </div>
 
                 </div>
@@ -223,7 +223,7 @@
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-3xl font-bold">{{ average }}</p>
+                            <p class="text-white text-3xl font-bold">{{ average }}/<span class="text-xl">day</span></p>
                         </div>
                         <h3 class="text-indigo-400 font-medium text-sm mt-2">Average</h3>
                     </div>
@@ -283,131 +283,159 @@
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Constants
+        const DAYS_IN_WEEK = 7;
+        const WEEKS_IN_YEAR = 53;
+        const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        // DOM elements
         const contributionGrid = document.getElementById('contribution-grid');
-        const days = 7;
-        const weeks = 53;
-        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const monthLabelsContainer = document.getElementById('month-labels');
         
+        // Process GitHub contribution data
         const githubData = {{ github_activity|safe }};
-        const calendarData = githubData.data.user.contributionsCollection.contributionCalendar;
-        const contributionWeeks = calendarData.weeks;
+        const contributionWeeks = githubData.data.user.contributionsCollection.contributionCalendar.weeks;
         
-        const formatDatesIntoGrid = () => {
-            const grid = Array(53).fill().map(() => Array(7).fill(null));
+        // Initialize
+        initializeContributionGrid();
+        renderMonthLabels();
+        
+        /**
+         * Formats contribution data into a 2D grid array
+         */
+        function formatDatesIntoGrid() {
+            const grid = Array(WEEKS_IN_YEAR).fill().map(() => Array(DAYS_IN_WEEK).fill(null));
             
-            let weekCount = 0;
-            contributionWeeks.forEach(week => {
-                if (weekCount >= 53) return;
-                
+            contributionWeeks.slice(0, WEEKS_IN_YEAR).forEach((week, weekIndex) => {
                 week.contributionDays.forEach(day => {
                     const date = new Date(day.date);
                     const dayOfWeek = date.getDay();
                     
-                    grid[weekCount][dayOfWeek] = {
+                    grid[weekIndex][dayOfWeek] = {
                         date: date,
                         contributions: day.contributionCount
                     };
                 });
-                
-                weekCount++;
             });
             
             return grid;
-        };
+        }
         
-        const grid = formatDatesIntoGrid();
+        /**
+         * Determines the background color based on contribution count
+         */
+        function getContributionColor(contributions, isFuture) {
+            if (isFuture) return 'bg-gray-800';
+            
+            if (contributions === 0) return 'bg-gray-700';
+            if (contributions >= 1 && contributions <= 3) return 'bg-indigo-300';
+            if (contributions >= 4 && contributions <= 9) return 'bg-indigo-500';
+            if (contributions >= 10 && contributions <= 15) return 'bg-indigo-700';
+            return 'bg-indigo-900';
+        }
         
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        contributionGrid.innerHTML = '';
-        
-        contributionGrid.style.display = 'grid';
-        contributionGrid.style.gridTemplateColumns = `repeat(${weeks}, minmax(0, 1fr))`;
-        contributionGrid.style.gridTemplateRows = `repeat(${days}, minmax(0, 1fr))`;
-        contributionGrid.style.gap = '1px';
-        
-        for (let week = 0; week < weeks; week++) {
-            for (let day = 0; day < days; day++) {
-                const cellData = grid[week] && grid[week][day];
-                
-                if (!cellData || !cellData.date) {
-                    const emptyCell = document.createElement('div');
-                    emptyCell.className = 'w-3 h-3 rounded-sm bg-gray-800 opacity-30';
-                    emptyCell.style.gridRow = `${day + 1}`;
-                    emptyCell.style.gridColumn = `${week + 1}`;
-                    contributionGrid.appendChild(emptyCell);
-                    continue;
-                }
-                
-                const date = cellData.date;
-                const contributions = cellData.contributions;
-                const isFutureDate = date > today + 1;
-                
-                let bgColor = 'bg-gray-700';
-                if (isFutureDate) {
-                    bgColor = 'bg-gray-800';
+        /**
+         * Creates and returns a cell for the contribution grid
+         */
+        function createGridCell(cellData, weekIndex, dayIndex) {
+            const cell = document.createElement('div');
+            cell.className = 'w-3 h-3 rounded-sm hover:ring-2 hover:ring-gray-400';
+            cell.style.gridRow = `${dayIndex + 1}`;
+            cell.style.gridColumn = `${weekIndex + 1}`;
+            
+            if (!cellData || !cellData.date) {
+                cell.className += ' bg-gray-800 opacity-30';
+                return cell;
+            }
+            
+            const date = cellData.date;
+            const contributions = cellData.contributions;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const isFuture = date > today + 1;
+            
+            // Set appropriate background color
+            cell.className += ` ${getContributionColor(contributions, isFuture)}`;
+            
+            // Set tooltip data
+            const dayName = DAY_NAMES[date.getDay()];
+            const formattedDate = date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+            
+            if (isFuture) {
+                cell.setAttribute('title', `Future date: ${dayName}, ${formattedDate}`);
+                cell.setAttribute('data-contributions', 'future');
+            } else {
+                let contribText;
+                if (contributions === 0) {
+                    contribText = 'No contributions';
                 } else {
-                    if (contributions === 0) bgColor = 'bg-gray-700';
-                    else if (contributions >= 1 && contributions <= 3) bgColor = 'bg-indigo-300';
-                    else if (contributions >= 4 && contributions <= 9) bgColor = 'bg-indigo-500';
-                    else if (contributions >= 10 && contributions <= 15) bgColor = 'bg-indigo-700';
-                    else bgColor = 'bg-indigo-900';
+                    contribText = contributions === 1 ? '1 contribution' : `${contributions} contributions`;
                 }
-                
-                const cell = document.createElement('div');
-                cell.className = `w-3 h-3 rounded-sm ${bgColor} hover:ring-2 hover:ring-gray-400`;
-                cell.setAttribute('data-contributions', isFutureDate ? 'future' : contributions);
-                
-                const dayOfWeek = dayNames[date.getDay()];
-                const options = { year: 'numeric', month: 'short', day: 'numeric' };
-                const formattedDate = date.toLocaleDateString('en-US', options);
-                
-                if (isFutureDate) {
-                    cell.setAttribute('title', `Future date: ${dayOfWeek}, ${formattedDate}`);
-                } else {
-                    cell.setAttribute('title', `${contributions} ${contributions === 1 ? 'contribution' : 'contributions'} on ${dayOfWeek}, ${formattedDate}`);
+                cell.setAttribute('title', `${contribText} on ${dayName}, ${formattedDate}`);
+                cell.setAttribute('data-contributions', contributions);
+            }
+            
+            return cell;
+        }
+        
+        /**
+         * Initializes and renders the contribution grid
+         */
+        function initializeContributionGrid() {
+            const grid = formatDatesIntoGrid();
+            
+            contributionGrid.innerHTML = '';
+            contributionGrid.style.display = 'grid';
+            contributionGrid.style.gridTemplateColumns = `repeat(${WEEKS_IN_YEAR}, minmax(0, 1fr))`;
+            contributionGrid.style.gridTemplateRows = `repeat(${DAYS_IN_WEEK}, minmax(0, 1fr))`;
+            contributionGrid.style.gap = '1px';
+            
+            for (let week = 0; week < WEEKS_IN_YEAR; week++) {
+                for (let day = 0; day < DAYS_IN_WEEK; day++) {
+                    const cellData = grid[week] && grid[week][day];
+                    const cell = createGridCell(cellData, week, day);
+                    contributionGrid.appendChild(cell);
                 }
-
-                const dayOfWeekIndex = date.getDay();
-                cell.style.gridRow = `${dayOfWeekIndex + 1}`;
-                cell.style.gridColumn = `${week + 1}`;
-                
-                contributionGrid.appendChild(cell);
             }
         }
-
-        const monthLabelsContainer = document.getElementById('month-labels');
-        monthLabelsContainer.innerHTML = '';
-
-        const monthPositions = [];
-        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        let currentMonth = -1;
-
-        for (let week = 0; week < weeks; week++) {
-            for (let day = 0; day < days; day++) {
-                if (grid[week] && grid[week][day] && grid[week][day].date) {
-                    const date = grid[week][day].date;
-                    const month = date.getMonth();
-                    
-                    if (month !== currentMonth) {
-                        currentMonth = month;
-                        monthPositions.push({
-                            month: month,
-                            week: week
-                        });
+        
+        /**
+         * Renders month labels beneath the contribution grid
+         */
+        function renderMonthLabels() {
+            monthLabelsContainer.innerHTML = '';
+            const grid = formatDatesIntoGrid();
+            const monthPositions = [];
+            let currentMonth = -1;
+            
+            // Find positions where months change
+            for (let week = 0; week < WEEKS_IN_YEAR; week++) {
+                for (let day = 0; day < DAYS_IN_WEEK; day++) {
+                    if (grid[week] && grid[week][day] && grid[week][day].date) {
+                        const month = grid[week][day].date.getMonth();
+                        
+                        if (month !== currentMonth) {
+                            monthPositions.push({ month, week });
+                            currentMonth = month;
+                        }
                     }
                 }
             }
+            
+            // Create and position month labels
+            monthPositions.forEach(pos => {
+                const label = document.createElement('span');
+                label.textContent = MONTH_NAMES[pos.month];
+                label.className = 'absolute text-xs text-gray-500';
+                label.style.left = `${(pos.week / WEEKS_IN_YEAR) * 100}%`;
+                monthLabelsContainer.appendChild(label);
+            });
         }
-
-        monthPositions.forEach(pos => {
-            const monthLabel = document.createElement('span');
-            monthLabel.textContent = monthNames[pos.month];
-            monthLabel.className = 'absolute text-xs text-gray-500';
-            monthLabel.style.left = `${(pos.week / weeks) * 100}%`;
-            monthLabelsContainer.appendChild(monthLabel);
-        });
     });
 </script>
 {% endblock %}

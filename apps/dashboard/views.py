@@ -265,7 +265,7 @@ class DashboardView(TemplateView):
                     'total_contributions': total_contributions,
                     'this_week': github_stats['this_week'],
                     'best_day': github_stats['best_day'],
-                    'average': f"{github_stats['average']} / day",
+                    'average': f"{github_stats['average']}",
                     'longest_streak': github_stats['longest_streak'],
                     'current_streak': github_stats['current_streak'],
                     'github_last_update': timezone.now().strftime('%B %d, %Y %I:%M %p')

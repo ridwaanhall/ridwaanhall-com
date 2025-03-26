@@ -6,69 +6,66 @@ from django.utils.text import slugify
 from apps.data.projects_data import ProjectsData
 from apps.data.about_data import AboutData
 
+def create_seo_dict(title, description, keywords, image_url, og_type='website'):
+    """Helper function to create SEO dictionary"""
+    return {
+        'title': title,
+        'description': description,
+        'keywords': keywords,
+        'og_image': image_url,
+        'og_type': og_type,
+        'twitter_card': 'summary_large_image',
+    }
+
 class ProjectsView(TemplateView):
-    def get(self, request):
-        projects = ProjectsData.projects
-        about = AboutData.get_about_data()
-        
-        seo = {
-            'title': f"Projects & Portfolio | {about[0]['name']} - Developer Showcase",
-            'description': f"Explore {about[0]['name']}'s development projects, applications, and coding portfolio. View demos and source code.",
-            'keywords': f"{about[0]['name']}, projects, portfolio, developer, applications, demos, github, code samples, {', '.join(list(set([tech for project in projects for tech in project.get('tech_stack', [])]))[:10])}",
-            'og_image': projects[0].get('image_url') if projects else about[0].get('image_url', ''),
-            'og_type': 'website',
-            'twitter_card': 'summary_large_image',
-        }
-        
-        context = {
-            'projects': projects,
-            'about': about[0],
-            'seo': seo,
-        }
-        return render(request, 'projects/projects.html', context)
+    template_name = 'projects/projects.html'
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        projects = ProjectsData.projects
+        about = AboutData.get_about_data()[0]
+        
+        # Extract unique tech stack items
+        tech_stack_keywords = list(set([
+            tech for project in projects 
+            for tech in project.get('tech_stack', [])
+        ]))[:10]
+        
+        seo = create_seo_dict(
+            title=f"Projects & Portfolio | {about['name']} - Developer Showcase",
+            description=f"Explore {about['name']}'s development projects, applications, and coding portfolio. View demos and source code.",
+            keywords=f"{about['name']}, projects, portfolio, developer, applications, demos, github, code samples, {', '.join(tech_stack_keywords)}",
+            image_url=projects[0].get('image_url') if projects else about.get('image_url', '')
+        )
+        
+        return {'projects': projects, 'about': about, 'seo': seo}
+
 class ProjectsDetailView(View):
     def get(self, request, title):
-        projects = ProjectsData.projects
-        about = AboutData.get_about_data()
-
         try:
-            if not isinstance(title, str):
-                raise SuspiciousOperation("Invalid title format")
-
+            projects = ProjectsData.projects
+            about = AboutData.get_about_data()[0]
+            
             project = next((item for item in projects if slugify(item['title']) == title), None)
-            # other_projects = [item for item in projects if slugify(item['title']) != title]
-
-            if project:
-                seo = {
-                    'title': f"{project['title']} | {about[0]['name']} - Project Details",
-                    'description': project['description'],
-                    'keywords': f"{project['title']}, {about[0]['name']}, {', '.join(project.get('tech_stack', []))}",
-                    'og_image': project.get('image_url', about[0].get('image_url', '')),
-                    'og_type': 'article',
-                    'twitter_card': 'summary_large_image',
-                }
+            
+            if not project:
+                return render(request, 'error.html', {'error_code': 404}, status=404)
                 
-                context = {
-                    'project': project,
-                    'about': about[0],
-                    # 'other_projects': other_projects
-                    'seo': seo,
-                }
-                return render(request, 'projects/projects_detail.html', context)
-            else:
-                context = {
-                    'error_code': 404
-                }
-                return render(request, 'error.html', context, status=404)
-
-        except SuspiciousOperation as e:
-            context = {
-                'error_code': 400
-            }
-            return render(request, 'error.html', context, status=400)
-        except Exception as e:
-            context = {
-                'error_code': 500
-            }
-            return render(request, 'error.html', context, status=500)
+            seo = create_seo_dict(
+                title=f"{project['title']} | {about['name']} - Project Details",
+                description=project['description'],
+                keywords=f"{project['title']}, {about['name']}, {', '.join(project.get('tech_stack', []))}",
+                image_url=project.get('image_url', about.get('image_url', '')),
+                og_type='article'
+            )
+            
+            return render(request, 'projects/projects_detail.html', {
+                'project': project,
+                'about': about,
+                'seo': seo,
+            })
+            
+        except SuspiciousOperation:
+            return render(request, 'error.html', {'error_code': 400}, status=400)
+        except Exception:
+            return render(request, 'error.html', {'error_code': 500}, status=500)

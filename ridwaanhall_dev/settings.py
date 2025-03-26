@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'apps.dashboard',
     'apps.projects',
     'apps.blog',
+    
+    'django.contrib.sitemaps',
 ]
 
 MIDDLEWARE = [

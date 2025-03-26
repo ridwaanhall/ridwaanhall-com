@@ -31,6 +31,7 @@ class HomeView(TemplateView):
             
             context = {
                 'view': True,
+                'view_certs': True,
                 'blogs': blogs,
                 'projects': projects,
                 'education': education,

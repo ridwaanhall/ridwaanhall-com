@@ -102,7 +102,6 @@ class GitHubStatsCalculator:
         best_day_count = 0
         total_days_with_contributions = 0
         longest_streak = 0
-        temp_streak = 0
         
         all_days = []
         for week in contribution_weeks:
@@ -124,13 +123,13 @@ class GitHubStatsCalculator:
                     total_days_with_contributions += 1
         
         all_days.sort(key=lambda x: x['date'])
+        all_days.sort(key=lambda x: x['date'])
         
         # Calculate streaks
-        current_streak = GitHubStatsCalculator._calculate_streaks(all_days, today, longest_streak)
+        current_streak, longest_streak = GitHubStatsCalculator._calculate_streaks(all_days, today)
         
         total_days = len(all_days)
         average_contributions = round(total_contributions / total_days, 1) if total_days > 0 else 0
-        
         return {
             'this_week': this_week_contributions,
             'best_day': best_day_count,
@@ -140,10 +139,12 @@ class GitHubStatsCalculator:
         }
     
     @staticmethod
-    def _calculate_streaks(all_days: List[Dict], today: datetime, longest_streak: int) -> int:
-        """Helper method to calculate contribution streaks."""
+    @staticmethod
+    def _calculate_streaks(all_days: List[Dict], today: datetime) -> tuple:
+        """Helper method to calculate contribution streaks. Returns (current_streak, longest_streak)."""
         temp_streak = 0
         current_streak = 0
+        longest_streak = 0
         
         for day_data in all_days:
             if day_data['count'] > 0:
@@ -166,8 +167,7 @@ class GitHubStatsCalculator:
             if days_since_last_contribution > 1 or last_day['count'] == 0:
                 current_streak = 0
                 
-        return current_streak
-
+        return current_streak, longest_streak
 
 class WakatimeStatsCalculator:
     @staticmethod

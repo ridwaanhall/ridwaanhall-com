@@ -7,8 +7,8 @@ class BlogData:
             'id': 1,
             'title': 'Getting Started with Python: A Beginner\'s Guide',
             'description': 'Learn the basics of Python programming and why it\'s an excellent language for beginners.',
-            'image_url': 'https://api.slingacademy.com/public/sample-photos/1.jpeg',
-            'date': 'January 10, 2023',
+            'image_url': 'https://ridwaanhall-dev.vercel.app/static/img/blog/start_with_python1.webp',
+            'date': 'March 24, 2025',
             'author': 'Ridwan Halim',
             'content': [
                 "Python has become one of the most popular programming languages in the world due to its simplicity and versatility. Whether you're interested in web development, data science, or automation, Python provides a gentle learning curve and powerful capabilities.",
@@ -21,8 +21,8 @@ class BlogData:
             'id': 2,
             'title': 'Building Web Applications with Django',
             'description': 'Discover how Django makes web development faster and more secure with its batteries-included philosophy.',
-            'image_url': 'https://api.slingacademy.com/public/sample-photos/2.jpeg',
-            'date': 'February 15, 2023',
+            'image_url': 'https://ridwaanhall-dev.vercel.app/static/img/blog/building_web_applictions_with_django.webp',
+            'date': 'March 24, 2025',
             'author': 'Ridwan Halim',
             'content': [
                 "Django is a high-level Python web framework that encourages rapid development and clean, pragmatic design. Built by experienced developers, Django takes care of much of the hassle of web development, so you can focus on writing your app without needing to reinvent the wheel.",
@@ -35,8 +35,8 @@ class BlogData:
             'id': 3,
             'title': 'Deep Learning with TensorFlow and Keras',
             'description': 'An introduction to building neural networks using TensorFlow and Keras for machine learning projects.',
-            'image_url': 'https://api.slingacademy.com/public/sample-photos/3.jpeg',
-            'date': 'March 22, 2023',
+            'image_url': 'https://ridwaanhall-dev.vercel.app/static/img/blog/deep_learning_with_tensorflow_and_keras.webp',
+            'date': 'March 24, 2025',
             'author': 'Ridwan Halim',
             'content': [
                 "TensorFlow and Keras have revolutionized deep learning by making neural networks more accessible to developers. TensorFlow provides the backbone computational engine, while Keras offers a user-friendly API that simplifies the process of building and training models.",
@@ -49,8 +49,8 @@ class BlogData:
             'id': 4,
             'title': 'Effective Time Management for Developers',
             'description': 'Practical strategies to boost productivity and maintain work-life balance as a software developer.',
-            'image_url': 'https://api.slingacademy.com/public/sample-photos/4.jpeg',
-            'date': 'April 01, 2023',
+            'image_url': 'https://ridwaanhall-dev.vercel.app/static/img/blog/effective_time_management_for_developers.webp',
+            'date': 'March 24, 2025',
             'author': 'Ridwan Halim',
             'content': [
                 "Time management is crucial for developers facing complex projects and tight deadlines. Techniques like the Pomodoro method (25 minutes of focused work followed by a short break) can significantly improve productivity while preventing burnout.",

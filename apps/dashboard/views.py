@@ -247,7 +247,7 @@ class DashboardView(TemplateView):
         
         if not github_data:
             github_client = GitHubClient(
-                username="ridwaanhall",
+                username=AboutData.get_about_data()[0]['username'],
                 access_token=config("ACCESS_TOKEN")
             )
             github_activity = github_client.get_contribution_data()

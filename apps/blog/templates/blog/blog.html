@@ -101,6 +101,14 @@
                         <div class="absolute top-4 left-4 bg-indigo-600 bg-opacity-80 backdrop-blur-sm text-white text-xs font-medium rounded-full px-3 py-1">
                             {{ blog.category }}
                         </div>
+                        {% if blog.is_featured %}
+                        <div class="absolute top-4 right-4 bg-indigo-500 bg-opacity-90 backdrop-blur-sm text-white text-xs font-medium rounded-full px-3 py-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"></path>
+                            </svg>
+                            Featured
+                        </div>
+                        {% endif %}
                         <div class="absolute bottom-4 left-4 text-white text-xs">
                             {{ blog.date }}
                         </div>

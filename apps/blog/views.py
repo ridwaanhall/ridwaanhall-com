@@ -24,8 +24,13 @@ def handle_exceptions(view_method):
 
 class BaseBlogView(View):
     def get_common_data(self):
+
+        all_blogs = BlogData.blogs
+        
+        all_blogs.sort(key=lambda blog: (not blog.get('is_featured', False), -blog.get('id', 0)))
+        
         return {
-            'blogs': BlogData.blogs,
+            'blogs': all_blogs,
             'about': AboutData.get_about_data()[0]
         }
     

@@ -60,7 +60,7 @@ class ExperiencesData:
             ]
         },
         {
-            "title": "Founder & CEO",
+            "title": "Founder",
             "company": "Copilot ID",
             "period": "Jan 2023 - Present",
             "is_current": True,
@@ -135,7 +135,7 @@ class ExperiencesData:
             ]
         },
         {
-            "title": "Deputy of Da’wah",
+            "title": "Deputy of Da'wah",
             "company": "IST (Student Organization of Al Mukmin Islamic Boarding School)",
             "period": "Sep 2019 - Sep 2020",
             "is_current": False,

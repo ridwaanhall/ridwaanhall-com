@@ -130,6 +130,20 @@
                                 </p>
                             </div>
                         </div>
+                        
+                        <!-- Current Time Section -->
+                        <div class="mt-5 bg-gray-700/70 rounded-lg p-5">
+                            <h3 class="text-white font-medium mb-2 flex items-center">
+                                <svg class="w-5 h-5 mr-2 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Current Local Time
+                            </h3>
+                            <div class="text-xl text-indigo-300 font-mono py-2 px-4 bg-gray-800 rounded-md" id="localTime">
+                                <span id="current-time"></span>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
                 
@@ -162,4 +176,21 @@
         </div>
     </main>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function updateTime() {
+        const now = new Date();
+        const options = { 
+            year: 'numeric', month: 'long', day: 'numeric', 
+            hour: 'numeric', minute: 'numeric', second: 'numeric', 
+            hour12: true 
+        };
+        document.getElementById('current-time').textContent = now.toLocaleString('en-US', options);
+    }
+
+    updateTime(); // Update immediately
+    setInterval(updateTime, 1000); // Update every second
+</script>
 {% endblock %}

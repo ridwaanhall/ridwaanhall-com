@@ -1,5 +1,6 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render
+from django.utils import timezone
 
 from apps.data.about_data import AboutData
 from apps.data.experiences_data import ExperiencesData
@@ -108,6 +109,7 @@ class ContactView(BasePortfolioView):
         context.update({
             'view': True,
             'about': about,
+            'current_time': timezone.localtime(timezone.now()),
             'seo': self.get_seo_data(
                 title=f"Contact {about['name']} - Get in Touch",
                 description=f"Contact {about['name']} for collaboration, job opportunities, or consulting. Get in touch today!",

@@ -97,6 +97,8 @@
 
             {% include 'social.html' %}
 
+            <span id="current-time"></span>
+
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-8">
                 <div class="lg:col-span-5 order-2 lg:order-1">
                     <div class="bg-gray-800 hover:bg-gray-750 transition-colors duration-300 shadow-lg rounded-xl p-6">
@@ -140,7 +142,7 @@
                                 Current Local Time
                             </h3>
                             <div class="text-xl text-indigo-300 font-mono py-2 px-4 bg-gray-800 rounded-md" id="localTime">
-                                <span id="current-time"></span>
+                                
                             </div>
                         </div>
                         
@@ -190,7 +192,7 @@
         document.getElementById('current-time').textContent = now.toLocaleString('en-US', options);
     }
 
-    updateTime(); // Update immediately
-    setInterval(updateTime, 1000); // Update every second
+    updateTime();
+    setInterval(updateTime, 1000);
 </script>
 {% endblock %}

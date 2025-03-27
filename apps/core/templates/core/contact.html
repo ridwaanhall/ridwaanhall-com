@@ -97,8 +97,6 @@
 
             {% include 'social.html' %}
 
-            <span id="current-time"></span>
-
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-8">
                 <div class="lg:col-span-5 order-2 lg:order-1">
                     <div class="bg-gray-800 hover:bg-gray-750 transition-colors duration-300 shadow-lg rounded-xl p-6">
@@ -139,10 +137,10 @@
                                 <svg class="w-5 h-5 mr-2 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                Current Local Time
+                                Jakarta Time
                             </h3>
-                            <div class="text-xl text-indigo-300 font-mono py-2 px-4 bg-gray-800 rounded-md" id="localTime">
-                                
+                            <div class="text-xl text-indigo-300 font-mono py-2 px-4 bg-gray-800 rounded-md text-center">
+                                <span id="current-time"></span>
                             </div>
                         </div>
                         
@@ -187,7 +185,8 @@
         const options = { 
             year: 'numeric', month: 'long', day: 'numeric', 
             hour: 'numeric', minute: 'numeric', second: 'numeric', 
-            hour12: true 
+            hour12: true,
+            timeZone: 'Asia/Jakarta'
         };
         document.getElementById('current-time').textContent = now.toLocaleString('en-US', options);
     }

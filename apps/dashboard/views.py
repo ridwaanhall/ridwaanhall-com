@@ -139,7 +139,6 @@ class GitHubStatsCalculator:
         }
     
     @staticmethod
-    @staticmethod
     def _calculate_streaks(all_days: List[Dict], today: datetime) -> tuple:
         """Helper method to calculate contribution streaks. Returns (current_streak, longest_streak)."""
         temp_streak = 0

@@ -22,7 +22,8 @@ class ProjectsView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        projects = ProjectsData.projects
+        # Get all projects and sort them with featured projects first
+        projects = sorted(ProjectsData.projects, key=lambda x: not x.get('is_featured', False))
         about = AboutData.get_about_data()[0]
         
         # Extract unique tech stack items

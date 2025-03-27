@@ -2,7 +2,7 @@
 
 🔥 Personal website was built originally from scratch using Django, Tailwind CSS, and HTML.
 
-![Ridwaan Hall](staticfiles/img/project/ridwaanhall_dev.webp)
+![ridwaanhal](staticfiles/img/project/ridwaanhall_dev.webp)
 
 ---
 
@@ -34,8 +34,6 @@ This project demonstrates my web development skills and provides visitors with i
 - **SEO Optimization**: Enhanced discoverability through search engines
 
 ## Getting Started
-
-### How to Use This Project
 
 1. **Clone the Repository**
 
@@ -79,3 +77,43 @@ This project demonstrates my web development skills and provides visitors with i
 
 6. **Customize Content**
     You can modify the website content by editing the data files located in `apps/data/appsname_data.py`. This allows you to update information without changing the core application code.
+
+## Project Structure
+
+```txt
+ridwaanhall_dev/
+├── apps/              # Django apps containing specific features
+│   ├── data/          # Data files for content
+│   ├── ...
+├── static/            # Static files (CSS, JS, images)
+├── templates/         # HTML templates
+├── manage.py          # Django management script
+└── ...
+```
+
+## Deployment
+
+This site is deployed on Vercel. To deploy your own version:
+
+1. Fork this repository
+2. Create a Vercel account if you don't have one
+3. Create a new project in Vercel and connect your forked repository
+4. Configure environment variables in Vercel dashboard
+5. Deploy!
+
+## Contributing
+
+Contributions are welcome! If you'd like to contribute:
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/improvement`)
+3. Make your changes
+4. Commit your changes (`git commit -m 'Add some feature'`)
+5. Push to the branch (`git push origin feature/improvement`)
+6. Open a Pull Request
+
+## Contact
+
+- Website: [ridwaanhall.me](https://ridwaanhall.me)
+- GitHub: [@ridwaanhall](https://github.com/ridwaanhall)
+- Twitter/X: [@ridwaanhall](https://x.com/ridwaanhall)

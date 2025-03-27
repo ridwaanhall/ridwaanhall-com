@@ -4,7 +4,7 @@
 
 <title>{{ seo.title }}</title>
 
-<meta name="author" content="{{ about.name }}">
+<meta name="author" content="{{ about.username }}">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
@@ -101,8 +101,11 @@
                     "codeRepository": "{{ project.github_url }}",
                     "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'projects' %}{{ project.title|slugify }}",
                     "author": {
-                        "@type": "Person",
-                        "name": "{{ about.name }}"
+                        "@type": "Person", 
+                        "name": "{{ about.name|default:"N/A" }}",
+                        "username": "{{ about.username|default:"N/A" }}",
+                        "image": "{{ about.image_url|default:"N/A" }}",
+                        "url": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/"
                     },
                     "keywords": "featured project{{ project.category }}, {{ project.tech_stack|join:', ' }}"
                 }
@@ -133,8 +136,11 @@
                     "datePublished": "{{ blog.date }}",
                     "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'blog' %}{{ blog.title|slugify }}",
                     "author": {
-                        "@type": "Person",
-                        "name": "{{ blog.author }}"
+                        "@type": "Person", 
+                        "name": "{{ about.name|default:"N/A" }}",
+                        "username": "{{ about.username|default:"N/A" }}",
+                        "image": "{{ about.image_url|default:"N/A" }}",
+                        "url": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/"
                     },
                     "keywords": "{% for tag in blog.tags %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}",
                     "publisher": {

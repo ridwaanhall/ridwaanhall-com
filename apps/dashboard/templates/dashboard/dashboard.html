@@ -4,7 +4,7 @@
 
 <title>{{ seo.title|default:"N/A" }}</title>
 
-<meta name="author" content="{{ about.name|default:"N/A" }}">
+<meta name="author" content="{{ about.username|default:"N/A" }}">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="{{ request.build_absolute_uri|default:"N/A" }}">
 
@@ -33,6 +33,8 @@
         "author": {
             "@type": "Person", 
             "name": "{{ about.name|default:"N/A" }}",
+            "username": "{{ about.username|default:"N/A" }}",
+            "image": "{{ about.image_url|default:"N/A" }}",
             "url": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/"
         },
         "primaryImageOfPage": {

@@ -4,7 +4,7 @@
 
 <title>{{ seo.title }}</title>
 
-<meta name="author" content="{{ about.name }}">
+<meta name="author" content="{{ about.username }}">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
@@ -31,9 +31,11 @@
         "description": "{{ seo.description }}",
         "url": "{{ request.build_absolute_uri }}",
         "author": {
-            "@type": "Person",
-            "name": "{{ about.name }}",
-            "url": "{{ request.scheme }}://{{ request.get_host }}/"
+            "@type": "Person", 
+            "name": "{{ about.name|default:"N/A" }}",
+            "username": "{{ about.username|default:"N/A" }}",
+            "image": "{{ about.image_url|default:"N/A" }}",
+            "url": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/"
         },
         "blogPost": [
             {% for blog in blogs %}
@@ -45,8 +47,11 @@
                 "datePublished": "{{ blog.date }}",
                 "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'blog_detail' title=blog.title|slugify %}",
                 "author": {
-                    "@type": "Person",
-                    "name": "{{ blog.author }}"
+                    "@type": "Person", 
+                    "name": "{{ about.name|default:"N/A" }}",
+                    "username": "{{ about.username|default:"N/A" }}",
+                    "image": "{{ about.image_url|default:"N/A" }}",
+                    "url": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/"
                 },
                 "keywords": "{% for tag in blog.tags %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}"
             }{% if not forloop.last %},{% endif %}

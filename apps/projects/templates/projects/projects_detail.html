@@ -4,7 +4,7 @@
 
 <title>{{ seo.title }}</title>
 
-<meta name="author" content="{{ about.name }}">
+<meta name="author" content="{{ about.username }}">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
@@ -34,9 +34,11 @@
         "programmingLanguage": "{{ project.tech_stack|join:', ' }}",
         "image": "{{ project.image_url }}",
         "author": {
-            "@type": "Person",
-            "name": "{{ about.name }}",
-            "url": "{{ request.scheme }}://{{ request.get_host }}/"
+            "@type": "Person", 
+            "name": "{{ about.name|default:"N/A" }}",
+            "username": "{{ about.username|default:"N/A" }}",
+            "image": "{{ about.image_url|default:"N/A" }}",
+            "url": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/"
         },
         "codeExample": "{{ project.code_sample|escapejs }}",
         "runtimePlatform": "{{ project.tech_stack|join:', ' }}",

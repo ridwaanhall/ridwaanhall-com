@@ -29,7 +29,7 @@ class BlogData:
                 "With its robust ORM, built-in admin interface, and emphasis on security, Django is perfect for projects of any size. This article explores how to set up a Django project, create models, and build views to create a fully functional web application."
             ],
             "tags": ["Django", "Web Development", "Python"],
-            "is_featured": True
+            "is_featured": False
         },
         {
             "id": 3,
@@ -89,7 +89,7 @@ class BlogData:
                 "Choosing the right framework depends on your project's requirements: opt for TensorFlow for production and scalability, or PyTorch for research and experimentation."
             ],
             "tags": ["PyTorch", "TensorFlow", "Deep Learning", "AI", "Machine Learning"],
-            "is_featured": False
+            "is_featured": True
         }
 
     ]

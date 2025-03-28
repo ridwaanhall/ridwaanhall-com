@@ -20,6 +20,7 @@ class CareerView(TemplateView):
         
         context.update({
             'view_certs': 'true',
+            'view': False,
             'experiences': ExperiencesData.experiences,
             'education': EducationData.education,
             'certifications': CertificationsData.certifications,

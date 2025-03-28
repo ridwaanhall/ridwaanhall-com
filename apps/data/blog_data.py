@@ -73,4 +73,23 @@ class BlogData:
             "tags": ["Islam", "Ramadan", "Lailatul Qadr", "Spirituality"],
             "is_featured": True
         },
+        {
+            "id": 6,
+            "title": "PyTorch vs TensorFlow: Choosing the Right Deep Learning Framework",
+            "description": "A straightforward comparison of the two most popular deep learning frameworks and their core differences.",
+            "image_url": "https://ridwaanhall.me/static/img/blog/pytorch_vs_tensorflow.webp",
+            "date": "March 28, 2025",
+            "author": "Ridwan Halim",
+            "content": [
+                "PyTorch and TensorFlow represent two distinct approaches to deep learning. TensorFlow, developed by Google, uses a static computational graph approach and excels in production environments with its deployment tools like TensorFlow Serving. It offers excellent scalability and has strong support for mobile and edge devices.",
+                "PyTorch, developed by Facebook (Meta), uses a dynamic computational graph that allows for more intuitive debugging and greater flexibility during model development. Its Python-like syntax and eager execution mode make it particularly popular in research settings. While TensorFlow is more mature in production settings, PyTorch is gaining ground with tools like TorchServe.",
+                "TensorFlow boasts an expansive ecosystem, including TensorBoard for visualization, TensorFlow Lite for mobile, and TensorFlow.js for JavaScript-based applications. These tools streamline the development process and offer versatility across platforms.",
+                "PyTorch, on the other hand, has steadily built a competitive ecosystem. TorchServe provides streamlined model serving capabilities, and the integration with libraries like fastai accelerates the development of high-performance models.",
+                "Both frameworks support hardware acceleration with GPUs and TPUs, ensuring high performance for complex models. TensorFlow often leads in performance benchmarks, thanks to optimizations tailored for specific hardware. PyTorch’s simplicity in leveraging GPUs and its seamless debugging experience give it an edge for iterative experiments.",
+                "Choosing the right framework depends on your project's requirements: opt for TensorFlow for production and scalability, or PyTorch for research and experimentation."
+            ],
+            "tags": ["PyTorch", "TensorFlow", "Deep Learning", "AI", "Machine Learning"],
+            "is_featured": False
+        }
+
     ]

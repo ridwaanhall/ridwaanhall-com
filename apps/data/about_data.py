@@ -40,7 +40,7 @@ class AboutData:
                     "Django",
                     "TensorFlow",
                     "PyTorch",
-                    "Flask"
+                    # "Flask"
                 ],
             }
         ]

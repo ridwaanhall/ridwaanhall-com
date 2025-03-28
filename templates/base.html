@@ -18,6 +18,36 @@
 
         {% comment %} <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.0.15/dist/index.global.js"></script> {% endcomment %}
         <script src="{% static 'tailwind/index.global.js' %}"></script>
+
+        <style>
+            @keyframes loop {
+              0% {
+                transform: translateX(0);
+              }
+              100% {
+                transform: translateX(-50%);  /* This assumes you've duplicated your items */
+              }
+            }
+          
+            .animate-looping-tag {
+              animation: loop 97s linear infinite;
+              display: flex;
+              width: fit-content;
+            }
+          
+        
+        </style>
+
+        <style>
+            @keyframes scroll {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(-50%);
+                }
+            }
+        </style>
     </head>
     <body class="bg-gray-900 text-gray-300 transition-colors duration-200">
         <header class="md:hidden bg-gradient-to-b from-gray-900 to-gray-800 shadow-sm">

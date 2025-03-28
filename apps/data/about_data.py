@@ -16,6 +16,8 @@ class AboutData:
             {
                 "name": "Ridwan Halim",
                 "username": "ridwaanhall",
+                "short_bio": "A passionate machine learning engineer and mentor with a focus on practical applications of AI.",
+                "short_description": "Driven by a passion for Python-powered machine learning, web development, and leadership. Let's innovate and inspire together.",
                 "image_url": "https://ridwaanhall.me/static/img/ridwaanhall.webp",
                 "cv": "https://bit.ly/cv-ridwaanhall",
                 "role": "Machine Learning Mentor",

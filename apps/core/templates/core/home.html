@@ -238,22 +238,22 @@
                     </div>
                 </div>
             </div>
-
-            {% include 'donate.html' %}
-
+            
             {% include 'featured_projects.html' %}
-
-            {% include 'featured_posts.html' %}
-
+            
+            {% comment %} {% include 'featured_posts.html' %} {% endcomment %}
+            
             {% include 'tech_skills.html' %}
             
-            {% if experiences %}
-                {% include 'experiences.html' %}
-            {% endif %}
-
-            {% if certifications %}
+            {% comment %} {% if experiences %}
+            {% include 'experiences.html' %}
+            {% endif %} {% endcomment %}
+            
+            {% comment %} {% if certifications %}
                 {% include 'certifications.html' %}
-            {% endif %}
+            {% endif %} {% endcomment %}
+            
+            {% include 'donate.html' %}
 
             {% include 'work_together.html' %}
         </div>

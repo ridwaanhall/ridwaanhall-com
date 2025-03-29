@@ -40,7 +40,7 @@ class AboutData:
                 "donate": [
                     {
                         "github_sponsor": "https://github.com/sponsors/ridwaanhall",
-                        "donate_text": "Sponsor me on GitHub"
+                        "donate_text": "Support my open source work through GitHub Sponsors"
                     },
                     {
                         "sociabuzz": "https://sociabuzz.com/ridwaanhall/support",

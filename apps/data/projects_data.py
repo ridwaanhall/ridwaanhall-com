@@ -5,7 +5,7 @@ class ProjectsData:
     projects = [
         {
             "id": 1,
-            "title": "ridwaanhall_dev",
+            "title": "ridwaanhall.dev",
             "headline": "Personal portfolio website built with Django and TailwindCSS, deployed as serverless using Vercel.",
             "description": "A personal portfolio website built with Django and TailwindCSS, deployed as serverless using Vercel. Features sections for about, projects, blogs, education, experience, and a dynamic dashboard.",
             "github_url": "https://github.com/ridwaanhall/ridwaanhall_dev",
@@ -31,7 +31,7 @@ class ProjectsData:
         },
         {
             "id": 2,
-            "title": "My Lovely Honey",
+            "title": "belimadu.com",
             "headline": "E-commerce website for honey products built with Django and Bootstrap, deployed using Vercel.",
             "description": "An e-commerce website for honey products built with Django and Bootstrap, deployed using Vercel. Features product catalog, articles about honey benefits, WhatsApp integration for direct orders, and monthly special offers.",
             "demo_url": "https://belimadu.com",

@@ -37,6 +37,24 @@ class AboutData:
                     "medium": "https://medium.com/@ridwaanhall",
                     "email": "ridwaanhall.dev@gmail.com"
                 },
+                "donate": [
+                    {
+                        "github_sponsor": "https://github.com/sponsors/ridwaanhall",
+                        "donate_text": "Sponsor me on GitHub"
+                    },
+                    {
+                        "sociabuzz": "https://sociabuzz.com/ridwaanhall/support",
+                        "donate_text": "Support me on Sociabuzz"
+                    },
+                    {
+                        "buy_me_a_coffee": "https://www.buymeacoffee.com/ridwaanhall",
+                        "donate_text": "Buy me a coffee"
+                    },
+                    {
+                        "saweria": "https://saweria.co/ridwaanhall",
+                        "donate_text": "Support my work on Saweria"
+                    },
+                ],
                 "skills": [
                     "Python",
                     "Django",

@@ -40,19 +40,19 @@ class AboutData:
                 "donate": [
                     {
                         "github_sponsor": "https://github.com/sponsors/ridwaanhall",
-                        "donate_text": "Support my open source work through GitHub Sponsors"
+                        "donate_text": "Back me on GitHub Sponsors"
                     },
                     {
                         "sociabuzz": "https://sociabuzz.com/ridwaanhall/support",
-                        "donate_text": "Support me on Sociabuzz"
+                        "donate_text": "Become a patron through Sociabuzz"
                     },
                     {
                         "buy_me_a_coffee": "https://www.buymeacoffee.com/ridwaanhall",
-                        "donate_text": "Buy me a coffee"
+                        "donate_text": "Support my work with a coffee"
                     },
                     {
                         "saweria": "https://saweria.co/ridwaanhall",
-                        "donate_text": "Support my work on Saweria"
+                        "donate_text": "Support my journey on Saweria"
                     },
                 ],
                 "skills": [

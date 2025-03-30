@@ -2,56 +2,56 @@
 
 {% block head_seo %}
 
-<title>{{ seo.title|default:"N/A" }}</title>
+<title>{{ seo.title }}</title>
 
-<meta name="author" content="{{ about.username|default:"N/A" }}">
+<meta name="author" content="{{ about.username }}">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="{{ request.build_absolute_uri|default:"N/A" }}">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
 
-<meta name="description" content="{{ seo.description|default:"N/A" }}">
-<meta name="keywords" content="{{ seo.keywords|default:"N/A" }}">
+<meta name="description" content="{{ seo.description }}">
+<meta name="keywords" content="{{ seo.keywords }}">
 
-<meta property="og:type" content="{{ seo.og_type|default:"N/A" }}">
-<meta property="og:url" content="{{ request.build_absolute_uri|default:"N/A" }}">
-<meta property="og:title" content="{{ seo.title|default:"N/A" }}">
-<meta property="og:description" content="{{ seo.description|default:"N/A" }}">
-<meta property="og:image" content="{{ seo.og_image|default:"N/A" }}">
+<meta property="og:type" content="{{ seo.og_type }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:title" content="{{ seo.title }}">
+<meta property="og:description" content="{{ seo.description }}">
+<meta property="og:image" content="{{ seo.og_image }}">
 
-<meta property="twitter:card" content="{{ seo.twitter_card|default:"N/A" }}">
-<meta property="twitter:url" content="{{ request.build_absolute_uri|default:"N/A" }}">
-<meta property="twitter:title" content="{{ seo.title|default:"N/A" }}">
-<meta property="twitter:description" content="{{ seo.description|default:"N/A" }}">
-<meta property="twitter:image" content="{{ seo.og_image|default:"N/A" }}">
+<meta property="twitter:card" content="{{ seo.twitter_card }}">
+<meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+<meta property="twitter:title" content="{{ seo.title }}">
+<meta property="twitter:description" content="{{ seo.description }}">
+<meta property="twitter:image" content="{{ seo.og_image }}">
 
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "WebPage",
-        "name": "{{ seo.title|default:"N/A" }}",
-        "description": "{{ seo.description|default:"N/A" }}",
-        "url": "{{ request.build_absolute_uri|default:"N/A" }}",
+        "name": "{{ seo.title }}",
+        "description": "{{ seo.description }}",
+        "url": "{{ request.build_absolute_uri }}",
         "author": {
             "@type": "Person", 
-            "name": "{{ about.name|default:"N/A" }}",
-            "username": "{{ about.username|default:"N/A" }}",
-            "image": "{{ about.image_url|default:"N/A" }}",
-            "url": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/"
+            "name": "{{ about.name }}",
+            "username": "{{ about.username }}",
+            "image": "{{ about.image_url }}",
+            "url": "{{ request.scheme }}://{{ request.get_host }}/"
         },
         "primaryImageOfPage": {
             "@type": "ImageObject",
-            "url": "{{ seo.og_image|default:"N/A" }}"
+            "url": "{{ seo.og_image }}"
         },
-        "dateModified": "{{ github_last_update|default:"N/A" }}",
+        "dateModified": "{{ github_last_update }}",
         "specialty": "Developer Metrics",
         "mainContentOfPage": {
             "@type": "Dataset",
             "name": "Developer Activity Metrics",
-            "description": "GitHub contributions and WakaTime coding statistics for {{ about.name|default:"N/A" }}",
+            "description": "GitHub contributions and WakaTime coding statistics for {{ about.name }}",
             "keywords": "GitHub, WakaTime, coding, contributions, programming, developer metrics",
-            "temporalCoverage": "{{ wakatime_stats.start_date|default:"N/A" }} to {{ wakatime_stats.end_date|default:"N/A" }}",
+            "temporalCoverage": "{{ wakatime_stats.start_date }} to {{ wakatime_stats.end_date }}",
             "creator": {
                 "@type": "Person",
-                "name": "{{ about.name|default:"N/A" }}"
+                "name": "{{ about.name }}"
             }
         }
     }
@@ -66,13 +66,13 @@
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/"
+                "item": "{{ request.scheme }}://{{ request.get_host }}/"
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Dashboard",
-                "item": "{{ request.build_absolute_uri|default:"N/A" }}"
+                "item": "{{ request.build_absolute_uri }}"
             }
         ]
     }
@@ -83,42 +83,42 @@
         "@context": "https://schema.org",
         "@type": "Dataset",
         "name": "GitHub Activity Metrics",
-        "description": "GitHub contribution statistics for {{ about.name|default:"N/A" }}",
+        "description": "GitHub contribution statistics for {{ about.name }}",
         "creator": {
             "@type": "Person",
-            "name": "{{ about.name|default:"N/A" }}"
+            "name": "{{ about.name }}"
         },
-        "dateModified": "{{ github_last_update|default:"N/A" }}",
+        "dateModified": "{{ github_last_update }}",
         "variableMeasured": [
             {
                 "@type": "PropertyValue",
                 "name": "Total Contributions",
-                "value": "{{ total_contributions|default:"N/A" }}"
+                "value": "{{ total_contributions }}"
             },
             {
                 "@type": "PropertyValue",
                 "name": "This Week's Contributions",
-                "value": "{{ this_week|default:"N/A" }}"
+                "value": "{{ this_week }}"
             },
             {
                 "@type": "PropertyValue",
                 "name": "Best Day",
-                "value": "{{ best_day|default:"N/A" }} contributions"
+                "value": "{{ best_day }} contributions"
             },
             {
                 "@type": "PropertyValue",
                 "name": "Daily Average",
-                "value": "{{ average|default:"N/A" }}"
+                "value": "{{ average }}"
             },
             {
                 "@type": "PropertyValue",
                 "name": "Longest Streak",
-                "value": "{{ longest_streak|default:"N/A" }} days"
+                "value": "{{ longest_streak }} days"
             },
             {
                 "@type": "PropertyValue",
                 "name": "Current Streak",
-                "value": "{{ current_streak|default:"N/A" }} days"
+                "value": "{{ current_streak }} days"
             }
         ]
     }
@@ -144,35 +144,35 @@
             <div class="mb-10">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-bold text-white">Wakatime <span class="text-indigo-400">Statistics</span></h2>
-                    <p class="text-sm text-gray-400">Last update: <span class="text-indigo-400 font-medium">{{ wakatime_stats.last_update_time|default:"N/A" }}</span></p>
+                    <p class="text-sm text-gray-400">Last update: <span class="text-indigo-400 font-medium">{{ wakatime_stats.last_update_time }}</span></p>
                 </div>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-xl font-bold">{{ wakatime_stats.start_date|default:"N/A" }}</p>
+                            <p class="text-white text-xl font-bold">{{ wakatime_stats.start_date }}</p>
                         </div>
                         <h3 class="text-indigo-400 font-medium text-sm mt-2">Start Date</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-xl font-bold">{{ wakatime_stats.end_date|default:"N/A" }}</p>
+                            <p class="text-white text-xl font-bold">{{ wakatime_stats.end_date }}</p>
                         </div>
                         <h3 class="text-indigo-400 font-medium text-sm mt-2">End Date</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-xl font-bold">{{ wakatime_stats.daily_average|default:"N/A" }}</p>
+                            <p class="text-white text-xl font-bold">{{ wakatime_stats.daily_average }}</p>
                         </div>
                         <h3 class="text-indigo-400 font-medium text-sm mt-2">Coding Average</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-xl font-bold">{{ wakatime_stats.this_week_coding|default:"N/A" }}</p>
+                            <p class="text-white text-xl font-bold">{{ wakatime_stats.this_week_coding }}</p>
                         </div>
                         <h3 class="text-indigo-400 font-medium text-sm mt-2">Coding Time</h3>
                     </div>
@@ -180,7 +180,7 @@
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-white text-xl font-bold">{{ wakatime_stats.best_day_date|default:"N/A" }} ({{ wakatime_stats.best_day_coding|default:"N/A" }})</p>
+                                <p class="text-white text-xl font-bold">{{ wakatime_stats.best_day_date }} ({{ wakatime_stats.best_day_coding }})</p>
                             </div>
                         </div>
                         <h3 class="text-indigo-400 font-medium text-sm mt-2">Best Day</h3>
@@ -188,9 +188,9 @@
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-xl font-bold">{{ wakatime_stats.all_time_coding|default:"N/A" }}</p>
+                            <p class="text-white text-xl font-bold">{{ wakatime_stats.all_time_coding }}</p>
                         </div>
-                        <h3 class="text-indigo-400 font-medium text-sm mt-2">All Time Since {{ wakatime_stats.all_time_start|default:"N/A" }}</h3>
+                        <h3 class="text-indigo-400 font-medium text-sm mt-2">All Time Since {{ wakatime_stats.all_time_start }}</h3>
                     </div>
 
                 </div>
@@ -205,42 +205,42 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-3xl font-bold">{{ total_contributions|default:"N/A" }}</p>
+                            <p class="text-white text-3xl font-bold">{{ total_contributions }}</p>
                         </div>
                         <h3 class="text-indigo-400 font-medium text-sm mt-2">Contributions</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-3xl font-bold">{{ this_week|default:"N/A" }}</p>
+                            <p class="text-white text-3xl font-bold">{{ this_week }}</p>
                         </div>
                         <h3 class="text-indigo-400 font-medium text-sm mt-2">This Week</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-3xl font-bold">{{ best_day|default:"N/A" }}</p>
+                            <p class="text-white text-3xl font-bold">{{ best_day }}</p>
                         </div>
                         <h3 class="text-indigo-400 font-medium text-sm mt-2">Best Day</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-3xl font-bold">{{ average|default:"N/A" }}/<span class="text-xl">day</span></p>
+                            <p class="text-white text-3xl font-bold">{{ average }}/<span class="text-xl">day</span></p>
                         </div>
                         <h3 class="text-indigo-400 font-medium text-sm mt-2">Average</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-3xl font-bold">{{ longest_streak|default:"N/A" }}</p>
+                            <p class="text-white text-3xl font-bold">{{ longest_streak }}</p>
                         </div>
                         <h3 class="text-indigo-400 font-medium text-sm mt-2">Longest Streak</h3>
                     </div>
                     
                     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-3xl font-bold">{{ current_streak|default:"N/A" }}</p>
+                            <p class="text-white text-3xl font-bold">{{ current_streak }}</p>
                         </div>
                         <h3 class="text-indigo-400 font-medium text-sm mt-2">Current Streak</h3>
                     </div>
@@ -297,7 +297,7 @@
         const monthLabelsContainer = document.getElementById('month-labels');
         
         // Process GitHub contribution data
-        const githubData = {{ github_activity|safe|default:"N/A" }};
+        const githubData = {{ github_activity|safe }};
         const contributionWeeks = githubData.data.user.contributionsCollection.contributionCalendar.weeks;
         
         // Initialize

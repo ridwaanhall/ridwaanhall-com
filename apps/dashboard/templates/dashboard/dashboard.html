@@ -143,7 +143,7 @@
 
             <div class="mb-10">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-2xl font-bold text-white">Weekly <span class="text-indigo-400">Statistics</span></h2>
+                    <h2 class="text-2xl font-bold text-white">Wakatime <span class="text-indigo-400">Statistics</span></h2>
                     <p class="text-sm text-gray-400">Last update: <span class="text-indigo-400 font-medium">{{ wakatime_stats.last_update_time|default:"N/A" }}</span></p>
                 </div>
                 
@@ -199,6 +199,7 @@
             <div class="mb-10">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-bold text-white">GitHub <span class="text-indigo-400">Statistics</span></h2>
+                    <p class="text-sm text-gray-400">@<a href="{{ about.social_media.github }}" class="text-indigo-400 font-medium">{{ about.username }}</a></p>
                 </div>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">

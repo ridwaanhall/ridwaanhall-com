@@ -95,19 +95,26 @@ class GitHubStatsCalculator:
         """Calculate GitHub contribution statistics."""
         today = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
         
-        day_of_week = today.weekday()
-        first_day_of_current_week = today - timedelta(days=(day_of_week + 1) % 7)
-        
         this_week_contributions = 0
         best_day_count = 0
         total_days_with_contributions = 0
         longest_streak = 0
         
         all_days = []
+        current_week = None
+        
+        # Find current week and process all days
         for week in contribution_weeks:
+            first_day = datetime.fromisoformat(week['firstDay'])
+            first_day = timezone.make_aware(first_day) if timezone.is_naive(first_day) else first_day
+            
+            # Determine if this is the current week
+            last_day = first_day + timedelta(days=6)
+            if first_day <= today <= last_day:
+                current_week = week
+            
             for day in week['contributionDays']:
                 date = datetime.fromisoformat(day['date'])
-                # Make date timezone-aware to match today
                 date = timezone.make_aware(date) if timezone.is_naive(date) else date
                 count = day['contributionCount']
                 
@@ -116,13 +123,14 @@ class GitHubStatsCalculator:
                 if count > best_day_count:
                     best_day_count = count
                 
-                if first_day_of_current_week <= date <= today:
-                    this_week_contributions += count
-                
                 if count > 0:
                     total_days_with_contributions += 1
         
-        all_days.sort(key=lambda x: x['date'])
+        # Calculate this week's contributions if current week was found
+        if current_week:
+            for day in current_week['contributionDays']:
+                this_week_contributions += day['contributionCount']
+        
         all_days.sort(key=lambda x: x['date'])
         
         # Calculate streaks

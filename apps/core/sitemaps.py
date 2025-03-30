@@ -6,7 +6,6 @@ from apps.data.blog_data import BlogData
 from apps.data.projects_data import ProjectsData
 
 class StaticViewSitemap(Sitemap):
-    priority = 0.5
     changefreq = 'weekly'
 
     def items(self):
@@ -14,6 +13,12 @@ class StaticViewSitemap(Sitemap):
 
     def location(self, item):
         return reverse(item)
+    
+    def priority(self, item):
+        if item == 'home':
+            return 1.00
+        else:
+            return 0.80
     
     def lastmod(self, item):
         return timezone.now()

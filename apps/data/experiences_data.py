@@ -146,7 +146,7 @@ class ExperiencesData:
             ]
         },
         {
-            "title": "Machine Learning for Cyber Security Intern",
+            "title": "Machine Learning Intern",
             "company": "iNeuron.ai",
             "website": "https://ineuron.ai",
             "logo": "https://ridwaanhall.me/static/img/logo/ineuron.webp",

@@ -3,6 +3,8 @@ class ExperiencesData:
         {
             "title": "Machine Learning Mentor",
             "company": "Coding Camp powered by DBS Foundation",
+            "website": "https://www.dbs.com/spark/index/id_id/site/codingcamp/index.html",
+            "logo": "https://ridwaanhall.me/static/img/logo/coding_camp_dbs_foundation.webp",
             "period": "Feb 2025 - Present",
             "is_current": True,
             "responsibilities": [
@@ -15,6 +17,8 @@ class ExperiencesData:
         {
             "title": "Machine Learning Ops Cohort",
             "company": "Coding Camp powered by DBS Foundation",
+            "website": "https://www.dbs.com/spark/index/id_id/site/codingcamp/index.html",
+            "logo": "https://ridwaanhall.me/static/img/logo/coding_camp_dbs_foundation.webp",
             "period": "Dec 2024 - Jan 2025",
             "is_current": False,
             "responsibilities": [
@@ -25,6 +29,8 @@ class ExperiencesData:
         {
             "title": "Machine Learning Expert Cohort",
             "company": "Coding Camp powered by DBS Foundation",
+            "website": "https://www.dbs.com/spark/index/id_id/site/codingcamp/index.html",
+            "logo": "https://ridwaanhall.me/static/img/logo/coding_camp_dbs_foundation.webp",
             "period": "Oct 2024 - Dec 2024",
             "is_current": False,
             "responsibilities": [
@@ -38,6 +44,8 @@ class ExperiencesData:
         {
             "title": "Machine Learning Intermediate Cohort",
             "company": "Coding Camp powered by DBS Foundation",
+            "website": "https://www.dbs.com/spark/index/id_id/site/codingcamp/index.html",
+            "logo": "https://ridwaanhall.me/static/img/logo/coding_camp_dbs_foundation.webp",
             "period": "Jul 2024 - Sep 2024",
             "is_current": False,
             "responsibilities": [
@@ -51,6 +59,8 @@ class ExperiencesData:
         {
             "title": "Machine Learning Beginner Cohort",
             "company": "Coding Camp powered by DBS Foundation",
+            "website": "https://www.dbs.com/spark/index/id_id/site/codingcamp/index.html",
+            "logo": "https://ridwaanhall.me/static/img/logo/coding_camp_dbs_foundation.webp",
             "period": "Jan 2024 - Jun 2024",
             "is_current": False,
             "responsibilities": [
@@ -62,6 +72,8 @@ class ExperiencesData:
         {
             "title": "Founder",
             "company": "Copilot ID",
+            "website": "https://copilotid.com",
+            "logo": "https://ridwaanhall.me/static/img/logo/copilot_id.webp",
             "period": "Jan 2023 - Present",
             "is_current": True,
             "responsibilities": [
@@ -72,6 +84,7 @@ class ExperiencesData:
         {
             "title": "Chief Secretary",
             "company": "IKA-PPIM 2021",
+            "logo": "https://ridwaanhall.me/static/img/logo/ikappim_21.webp",
             "period": "Sep 2021 - Present",
             "is_current": True,
             "responsibilities": [
@@ -83,6 +96,8 @@ class ExperiencesData:
         {
             "title": "Assistant Squad Leader of Web Developer Intern",
             "company": "GAOTek Inc.",
+            "website": "https://gaotek.com",
+            "logo": "https://ridwaanhall.me/static/img/logo/gaotek_inc.webp",
             "period": "Apr 2024 - May 2024",
             "is_current": False,
             "responsibilities": [
@@ -94,6 +109,8 @@ class ExperiencesData:
         {
             "title": "Main Team of Web Developer Intern",
             "company": "GAOTek Inc.",
+            "website": "https://gaotek.com",
+            "logo": "https://ridwaanhall.me/static/img/logo/gaotek_inc.webp",
             "period": "Apr 2024 - May 2024",
             "is_current": False,
             "responsibilities": [
@@ -105,6 +122,8 @@ class ExperiencesData:
         {
             "title": "Web Developer Intern",
             "company": "GAOTek Inc.",
+            "website": "https://gaotek.com",
+            "logo": "https://ridwaanhall.me/static/img/logo/gaotek_inc.webp",
             "period": "Feb 2024 - Mar 2024",
             "is_current": False,
             "responsibilities": [
@@ -117,6 +136,8 @@ class ExperiencesData:
         {
             "title": "Machine Learning Intern",
             "company": "YoungDev",
+            "website": "https://youngdevinterns.net",
+            "logo": "https://ridwaanhall.me/static/img/logo/youngdev.webp",
             "period": "Apr 2024 - May 2024",
             "is_current": False,
             "responsibilities": [
@@ -127,6 +148,8 @@ class ExperiencesData:
         {
             "title": "Machine Learning for Cyber Security Intern",
             "company": "iNeuron.ai",
+            "website": "https://ineuron.ai",
+            "logo": "https://ridwaanhall.me/static/img/logo/ineuron.webp",
             "period": "Jan 2024 - Jan 2024",
             "is_current": False,
             "responsibilities": [
@@ -136,7 +159,9 @@ class ExperiencesData:
         },
         {
             "title": "Deputy of Da'wah",
-            "company": "IST (Student Organization of Al Mukmin Islamic Boarding School)",
+            "company": "Imaarotu Syu'unith Tholabah",
+            "website": "https://istngruki.org",
+            "logo": "https://ridwaanhall.me/static/img/logo/ist.webp",
             "period": "Sep 2019 - Sep 2020",
             "is_current": False,
             "responsibilities": [

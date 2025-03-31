@@ -71,7 +71,7 @@ class BlogData:
                 "The Quran states that this night is 'better than a thousand months', meaning that worship during this night is rewarded more than worship performed for over 83 years. Many Muslims devote themselves to prayer, Quran recitation, and spiritual reflection during this blessed night."
             ],
             "tags": ["Islam", "Ramadan", "Lailatul Qadr", "Spirituality"],
-            "is_featured": True
+            "is_featured": False
         },
         {
             "id": 6,
@@ -90,6 +90,23 @@ class BlogData:
             ],
             "tags": ["PyTorch", "TensorFlow", "Deep Learning", "AI", "Machine Learning"],
             "is_featured": True
+        },
+        {
+            "id": 7,
+            "title": "The Prophetic Way to Celebrate Eid al-Fitr",
+            "description": "Explore the traditions and practices of Eid al-Fitr as exemplified by Prophet Muhammad (PBUH).",
+            "image_url": "https://ridwaanhall.me/static/img/blog/eid_al_fitr_prophetic_way.webp",
+            "date": "March 31, 2025",
+            "author": "Ridwan Halim",
+            "content": [
+                "Eid al-Fitr during the time of Prophet Muhammad (PBUH) was marked by joy, gratitude, and the strengthening of community bonds. The celebration began with the congregational Eid prayer in an open space, followed by an uplifting sermon filled with reminders of faith and unity.",
+                "The Prophet (PBUH) encouraged Muslims to glorify Allah through takbir, starting from the night of Eid until the prayer. Takbir reflected gratitude and reverence for completing the month of fasting and seeking Allah's blessings.",
+                "Zakat al-Fitr was a crucial aspect of Eid, as it ensured that the less fortunate could celebrate joyfully. The Prophet (PBUH) emphasized giving zakat before the Eid prayer to purify the fasting Muslims and assist those in need.",
+                "Before heading to the Eid prayer, Prophet Muhammad (PBUH) advised eating, typically dates, to signify the end of fasting. This small but meaningful act underscored the transition to celebration and gratitude.",
+                "The Prophet (PBUH) embraced Eid as a time for reconciliation and fellowship. He encouraged Muslims to strengthen familial and social ties, asking for forgiveness, and offering kind words and deeds to one another.",
+                "Eid al-Fitr was also a day of sharing happiness. Prophet Muhammad (PBUH) set an example by showing generosity, kindness, and care, ensuring that every member of the community felt included in the celebration."
+            ],
+            "tags": ["Eid al-Fitr", "Prophet Muhammad", "Islam", "Traditions", "Community"],
+            "is_featured": True
         }
-
     ]

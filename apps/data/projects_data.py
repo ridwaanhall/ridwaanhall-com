@@ -27,7 +27,6 @@ class ProjectsData:
                 }
             ],
             "tech_stack": ["Python", "Django", "TailwindCSS", "Vercel", "GitHub API", "WakaTime API"],
-            "setup_instructions": "git clone https://github.com/ridwaanhall/ridwaanhall_dev\ncd ridwaanhall_dev\npip install -r requirements.txt\npython manage.py migrate\npython manage.py runserver"
         },
         {
             "id": 2,
@@ -52,7 +51,6 @@ class ProjectsData:
                 }
             ],
             "tech_stack": ["Python", "Django", "Bootstrap", "Vercel", "WhatsApp API"],
-            "setup_instructions": "git clone https://github.com/ridwaanhall/my-lovely-honey\ncd my-lovely-honey\npip install -r requirements.txt\npython manage.py migrate\npython manage.py runserver"
         },
         {
             "id": 3,
@@ -184,5 +182,69 @@ class ProjectsData:
                 }
             ],
             "tech_stack": ["Python", "Machine Learning", "Text Processing"],
+        },
+        {
+            "id": 8,
+            "title": "ridwaanhall.pythonanywhere.com",
+            "headline": "Personal portfolio website built with Vuexy HTML and Django, showcasing yearly stats via GitHub API.",
+            "description": "A personal portfolio website crafted with Vuexy HTML and Django. Features sections for about, projects, blogs, education, experience, and a dynamic dashboard integrating yearly statistics through GitHub API.",
+            "image_url": "https://ridwaanhall.me/static/img/project/ridwaanhall_pythonanywhere_com.webp",
+            "is_featured": False,
+            "features": [
+                {
+                    "title": "Website Pages",
+                    "description": "Includes pages such as About, Career, Contact, Projects, Dashboard, Attendance, Playground, Decrypt, Login, Certificate, Coming Soon, Error, and Home, each with unique purposes and functionalities."
+                },
+                {
+                    "title": "Professional Interface",
+                    "description": "Built with Vuexy HTML for a modern and visually appealing design."
+                },
+                {
+                    "title": "Yearly Stats Dashboard",
+                    "description": "Integrated with GitHub API for yearly statistics."
+                },
+                {
+                    "title": "Responsive Design",
+                    "description": "Optimized for seamless viewing across all devices."
+                }
+            ],
+            "tech_stack": ["Python", "Django", "Vuexy HTML", "GitHub API"],
+        },
+        {
+            "id": 9,
+            "title": "ridwaanhall.me",
+            "headline": "Personal portfolio website built using the Once UI framework on Next.js.",
+            "description": "A personal portfolio website leveraging the Once UI framework on Next.js, featuring responsive design, SEO optimization, customization options, and localization support.",
+            "image_url": "https://ridwaanhall.me/static/img/project/ridwaanhall_me.webp",
+            "is_featured": False,
+            "github_url": "https://github.com/ridwaanhall/ridwaanhall.me",
+            "features": [
+                {
+                    "title": "Once UI Framework",
+                    "description": "Includes all tokens, components, and features of the Once UI framework."
+                },
+                {
+                    "title": "SEO Optimization",
+                    "description": "Automatic open-graph, X image generation, and metadata generation for better search engine visibility."
+                },
+                {
+                    "title": "Responsive Design",
+                    "description": "A responsive layout optimized for all screen sizes and timeless design."
+                },
+                {
+                    "title": "Extensive Customization",
+                    "description": "Endless customization options through data attributes."
+                },
+                {
+                    "title": "Content Management",
+                    "description": "Render sections conditionally, manage social links, and password-protect specific URLs."
+                },
+                {
+                    "title": "Localization",
+                    "description": "Supports multilingual content using the next-intl library for a wider audience reach."
+                }
+            ],
+            "tech_stack": ["Next.js", "Once UI", "TypeScript", "SCSS", "MDX", "JavaScript"],
+            "setup_instructions": "Refer to the repository README for detailed setup instructions and deployment processes."
         }
     ]

@@ -183,7 +183,7 @@
                     Key Features
                 </h2>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-{{ project.features|length|default:3 }} gap-6 mt-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-{{ project.features|default:3 }} gap-6 mt-6">
                     {% for feature in project.features %}
                     <div class="bg-gray-800/80 backdrop-blur rounded-xl p-6 transition-all duration-300 hover:bg-gray-700 hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-1 border border-gray-700 group">
                         {% if feature.image_url %}

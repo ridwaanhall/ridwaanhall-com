@@ -30,7 +30,26 @@
                     <span class="ml-2 px-2 py-1 text-xs font-medium bg-indigo-900/50 text-indigo-300 rounded-full">Current</span>
                     {% endif %}
                 </h3>
-                <p class="text-{% if experience.is_current %}indigo{% else %}gray{% endif %}-300 text-sm">{{ experience.company }}</p>
+                <div class="flex items-center">
+                    {% if experience.logo %}
+                    <div class="w-8 h-8 mr-2 rounded bg-white/10 p-1 flex items-center justify-center">
+                        <img src="{{ experience.logo }}" alt="{{ experience.company }} logo" class="max-h-full max-w-full object-contain" 
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                        <div class="hidden w-full h-full bg-gray-700 rounded flex items-center justify-center text-xs text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="w-8 h-8 mr-2 bg-gray-700 rounded flex items-center justify-center text-xs text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    {% endif %}
+                    <p class="text-{% if experience.is_current %}indigo{% else %}gray{% endif %}-300 text-sm">{{ experience.company }}</p>
+                </div>
             </div>
             <p class="text-gray-400 text-sm mb-3">{{ experience.period }}</p>
             <div class="group bg-gradient-to-br from-gray-800/80 to-gray-900/90 backdrop-blur-sm rounded-xl p-5 hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-0.5 transition-all duration-300 border border-gray-700/50">

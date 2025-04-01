@@ -1,6 +1,4 @@
-<div class="relative bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 shadow-xl rounded-xl p-6 md:p-6 mb-8 mt-6 overflow-hidden transform transition-all duration-300 hover:shadow-2xl">
-    <div class="absolute top-0 left-0 w-64 h-64 bg-violet-600/15 rounded-full -ml-32 -mt-32 blur-3xl"></div>
-    <div class="absolute bottom-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full -mr-40 -mb-40 blur-3xl"></div>
+<div class="mb-8 mt-6">
     
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-700/50 pb-5 relative z-10">
         {% if view %}
@@ -60,7 +58,7 @@
                         {{ edu.institution }}
                     {% endif %}
                 </p>
-                <div class="group bg-gradient-to-br from-slate-800/90 to-gray-900/90 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:-translate-y-1 hover:border-violet-500/50 hover:shadow-violet-500/20">
+                <div class="group rounded-xl shadow-lg overflow-hidden p-6 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                     <ul class="space-y-3 text-gray-200">
                         {% for achievement in edu.achievements %}
                         <li class="flex items-start group">

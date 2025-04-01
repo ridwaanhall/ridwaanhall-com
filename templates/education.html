@@ -1,6 +1,4 @@
-<div class="relative bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 shadow-xl rounded-xl p-6 md:p-6 mb-8 mt-6 overflow-hidden transform transition-all duration-300 hover:shadow-2xl">
-    <div class="absolute top-0 left-0 w-64 h-64 bg-violet-600/15 rounded-full -ml-32 -mt-32 blur-3xl"></div>
-    <div class="absolute bottom-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full -mr-40 -mb-40 blur-3xl"></div>
+<div class="mb-8 mt-6">
     
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-700/50 pb-5 relative z-10">
         {% if view %}
@@ -32,14 +30,14 @@
                     {% else %}
                         {% if edu.website %}
                             <a href="{{ edu.website }}" target="_blank" title="Visit {{ edu.institution }}" class="hover:scale-110 transition-transform duration-300">
-                                <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
                                     <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path>
                                 </svg>
                             </a>
                         {% else %}
-                            <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
                                 <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path>
@@ -55,16 +53,16 @@
                 </div>
                 <p class="text-blue-200 mb-4 italic">
                     {% if edu.website %}
-                        <a class="text-cyan-300 hover:text-cyan-200 transition-colors duration-200" href="{{ edu.website }}" target="_blank">{{ edu.institution }}</a>
+                        <a class="text-indigo-300 hover:text-indigo-200 transition-colors duration-200" href="{{ edu.website }}" target="_blank">{{ edu.institution }}</a>
                     {% else %}
                         {{ edu.institution }}
                     {% endif %}
                 </p>
-                <div class="group bg-gradient-to-br from-slate-800/90 to-gray-900/90 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:-translate-y-1 hover:border-violet-500/50 hover:shadow-violet-500/20">
+                <div class="group rounded-xl shadow-lg overflow-hidden p-6 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                     <ul class="space-y-3 text-gray-200">
                         {% for achievement in edu.achievements %}
                         <li class="flex items-start group">
-                            <svg class="w-5 h-5 text-cyan-400 mr-2.5 mt-0.5 flex-shrink-0 group-hover:text-cyan-300 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="w-5 h-5 text-indigo-400 mr-2.5 mt-0.5 flex-shrink-0 group-hover:text-indigo-300 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                             <span class="group-hover:text-white transition-colors duration-200">{{ achievement }}</span>

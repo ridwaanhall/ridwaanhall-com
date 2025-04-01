@@ -1,5 +1,4 @@
-<div class="relative bg-gradient-to-br from-gray-900 to-gray-800 shadow-lg rounded-xl p-6 mb-8 overflow-hidden">
-    <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-600/10 rounded-full -ml-32 -mb-32 blur-3xl"></div>
+<div class="relative mb-8 overflow-hidden">
     
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-700 pb-4 relative z-10">
         <h2 class="text-2xl font-bold text-white">Featured Projects</h2>
@@ -13,7 +12,7 @@
     
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
         {% for project in projects %}
-        <div class="group rounded-xl overflow-hidden bg-gray-800 hover:bg-gray-700 transition-all duration-300 shadow-lg transform hover:-translate-y-2">
+        <div class="group rounded-xl shadow-lg overflow-hidden border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
             <div class="relative h-48 overflow-hidden">
                 <img src="{{ project.image_url }}" alt="{{ project.title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                 <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent opacity-50 group-hover:opacity-30 transition-opacity duration-300"></div>

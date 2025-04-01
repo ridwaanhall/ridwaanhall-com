@@ -12,6 +12,10 @@ Welcome to my personal website repository! This site serves as my digital portfo
 
 This project demonstrates my web development skills and provides visitors with information about my work, projects, and professional background. Feel free to explore the codebase to see how I've implemented various features and optimized the site for performance.
 
+## Theme
+
+black no border and card.
+
 ## Tech Stack
 
 - **Backend**: Django (Python web framework)

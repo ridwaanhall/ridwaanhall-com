@@ -1,11 +1,8 @@
-<div class="relative bg-gradient-to-br from-gray-900 to-gray-900/95 shadow-xl rounded-xl p-6 mt-8 mb-8 overflow-hidden transition-all duration-500 hover:shadow-indigo-500/10">
-    <!-- Enhanced decorative elements -->
-    <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-600/10 rounded-full -ml-32 -mb-32 blur-3xl"></div>
-    <div class="absolute top-0 right-0 w-48 h-48 bg-indigo-500/5 rounded-full -mr-20 -mt-20 blur-2xl"></div>
+<div class="mt-8 mb-8">
 
-    <div class="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-gray-700/80 pb-6 relative z-10">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-700/80 pb-5 relative z-10">
         {% if view %}
-        <h2 class="text-3xl font-extrabold text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">Current Experience</h2>
+        <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-indigo-200">Current Experience</h2>
         <a href="{% url 'career' %}" class="mt-3 md:mt-0 group flex items-center text-indigo-400 hover:text-indigo-300 transition-all duration-300 px-4 py-2 rounded-lg hover:bg-indigo-900/20">
             <span>View More</span>
             <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -13,11 +10,11 @@
             </svg>
         </a>
         {% else %}
-        <h2 class="text-3xl font-extrabold text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">Professional Experience</h2>
+        <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-indigo-200">Professional Experience</h2>
         {% endif %}
     </div>
     
-    <div class="relative border-l-2 border-indigo-500/70 pl-8 ml-4 space-y-12">
+    <div class="relative border-l-2 border-indigo-500/70 pl-8 ml-4 space-y-8">
         {% for experience in experiences %}
         <div class="relative group">
             <!-- Enhanced timeline dot with animation -->

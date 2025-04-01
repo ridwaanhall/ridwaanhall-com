@@ -1,45 +1,45 @@
-<div class="relative bg-gradient-to-br from-gray-900 to-gray-800 shadow-lg rounded-xl p-6 md:p-6 mb-8 mt-6 overflow-hidden transform transition-all duration-300 hover:shadow-2xl">
-    <div class="absolute top-0 left-0 w-64 h-64 bg-blue-600/10 rounded-full -ml-32 -mt-32 blur-3xl"></div>
-    <div class="absolute bottom-0 right-0 w-80 h-80 bg-indigo-500/5 rounded-full -mr-40 -mb-40 blur-3xl"></div>
+<div class="relative bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 shadow-xl rounded-xl p-6 md:p-6 mb-8 mt-6 overflow-hidden transform transition-all duration-300 hover:shadow-2xl">
+    <div class="absolute top-0 left-0 w-64 h-64 bg-violet-600/15 rounded-full -ml-32 -mt-32 blur-3xl"></div>
+    <div class="absolute bottom-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full -mr-40 -mb-40 blur-3xl"></div>
     
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-700/50 pb-5 relative z-10">
         {% if view %}
-        <h2 class="text-2xl font-bold text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-200">Educational background</h2>
-        <a href="{% url 'career' %}" class="mt-3 md:mt-0 group flex items-center text-indigo-400 hover:text-indigo-300 transition-colors duration-300 font-medium">
+        <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-indigo-200">Educational background</h2>
+        <a href="{% url 'career' %}" class="mt-3 md:mt-0 group flex items-center text-violet-400 hover:text-violet-300 transition-colors duration-300 font-medium">
             <span>View Complete History</span>
             <svg class="w-4 h-4 ml-1.5 group-hover:translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
         </a>
         {% else %}
-        <h2 class="text-2xl font-bold text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-200">Educational history</h2>
+        <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-indigo-200">Educational history</h2>
         {% endif %}
     </div>
     
-    <div class="space-y-6">
+    <div class="space-y-8">
         {% for edu in education %}
         <div class="flex flex-col md:flex-row md:items-start mt-6">
             <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
-                <div class="w-16 h-16 bg-indigo-900/40 rounded-xl flex items-center justify-center shadow-lg border border-indigo-800/30">
+                <div class="w-16 h-16 bg-gradient-to-br from-violet-900/60 to-indigo-900/40 rounded-xl flex items-center justify-center shadow-lg border border-indigo-700/30 backdrop-blur-sm">
                     {% if edu.logo %}
                         {% if edu.website %}
-                            <a href="{{ edu.website }}" target="_blank" title="Visit {{ edu.institution }}">
-                                <img src="{{ edu.logo }}" alt="{{ edu.institution }} logo" class="w-12 h-12 rounded-full">
+                            <a href="{{ edu.website }}" target="_blank" title="Visit {{ edu.institution }}" class="hover:scale-110 transition-transform duration-300">
+                                <img src="{{ edu.logo }}" alt="{{ edu.institution }} logo" class="w-12 h-12 rounded-full shadow-md">
                             </a>
                         {% else %}
-                            <img src="{{ edu.logo }}" alt="{{ edu.institution }} logo" class="w-12 h-12 rounded-full">
+                            <img src="{{ edu.logo }}" alt="{{ edu.institution }} logo" class="w-12 h-12 rounded-full shadow-md">
                         {% endif %}
                     {% else %}
                         {% if edu.website %}
-                            <a href="{{ edu.website }}" target="_blank" title="Visit {{ edu.institution }}">
-                                <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <a href="{{ edu.website }}" target="_blank" title="Visit {{ edu.institution }}" class="hover:scale-110 transition-transform duration-300">
+                                <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
                                     <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path>
                                 </svg>
                             </a>
                         {% else %}
-                            <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
                                 <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path>
@@ -50,24 +50,24 @@
             </div>
             <div class="flex-grow">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3">
-                    <h3 class="text-xl font-bold text-white">{{ edu.degree }}</h3>
-                    <span class="text-indigo-300 text-sm font-medium bg-indigo-900/20 px-3 py-1 rounded-full mt-1 sm:mt-0">{{ edu.years }}</span>
+                    <h3 class="text-xl font-bold text-white text-shadow">{{ edu.degree }}</h3>
+                    <span class="text-indigo-300 text-sm font-medium bg-gradient-to-r from-indigo-900/30 to-violet-900/30 px-3 py-1 rounded-full mt-1 sm:mt-0 border border-indigo-800/20 shadow-sm">{{ edu.years }}</span>
                 </div>
-                <p class="text-gray-300 mb-4 italic">
+                <p class="text-blue-200 mb-4 italic">
                     {% if edu.website %}
-                        <a class="text-blue-300" href="{{ edu.website }}" target="_blank">{{ edu.institution }}</a>
+                        <a class="text-cyan-300 hover:text-cyan-200 transition-colors duration-200" href="{{ edu.website }}" target="_blank">{{ edu.institution }}</a>
                     {% else %}
                         {{ edu.institution }}
                     {% endif %}
                 </p>
-                <div class="group bg-gradient-to-br from-gray-800/80 to-gray-900/90 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
-                    <ul class="space-y-2.5 text-gray-300">
+                <div class="group bg-gradient-to-br from-slate-800/90 to-gray-900/90 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:-translate-y-1 hover:border-violet-500/50 hover:shadow-violet-500/20">
+                    <ul class="space-y-3 text-gray-200">
                         {% for achievement in edu.achievements %}
                         <li class="flex items-start group">
-                            <svg class="w-5 h-5 text-indigo-400 mr-2.5 mt-0.5 flex-shrink-0 group-hover:text-indigo-300 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="w-5 h-5 text-cyan-400 mr-2.5 mt-0.5 flex-shrink-0 group-hover:text-cyan-300 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            <span class="group-hover:text-gray-200 transition-colors duration-200">{{ achievement }}</span>
+                            <span class="group-hover:text-white transition-colors duration-200">{{ achievement }}</span>
                         </li>
                         {% endfor %}
                     </ul>
@@ -79,7 +79,7 @@
 
     {% if view %}
     <div class="mt-10 text-center relative z-10 md:hidden">
-        <a href="{% url 'career' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 hover:shadow-lg">
+        <a href="{% url 'career' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/20">
             View Complete History
             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>

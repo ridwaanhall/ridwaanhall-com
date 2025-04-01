@@ -60,7 +60,7 @@
                     {% endif %}
                     <p class="text-{% if experience.is_current %}indigo{% else %}gray{% endif %}-300 text-sm font-medium">
                         {% if experience.website %}
-                            <a class="text-gray-300 hover:text-indigo-300 transition-colors duration-300" href="{{ experience.website }}" target="_blank">{{ experience.company }}</a>
+                            <a class="text-cyan-300 hover:text-indigo-300 transition-colors duration-300" href="{{ experience.website }}" target="_blank">{{ experience.company }}</a>
                         {% else %}
                             {{ experience.company }}
                         {% endif %}

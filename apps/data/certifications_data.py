@@ -6,6 +6,8 @@ class CertificationsData:
             "credential_url": "https://www.linkedin.com/learning/certificates/75dfc2562365bbe8c92e2d79c8c8b2ddd5313f935086a44ca98c31d2ce5ef43a",
             "year": "2024",
             "institution": "LinkedIn",
+            "website": "https://www.linkedin.com/learning",
+            "logo": "https://ridwaanhall.me/static/img/logo/linkedin.webp",
             "is_featured": True,
             "achievements": [
                 "Created RESTful APIs using Django REST Framework with best practices",
@@ -19,6 +21,8 @@ class CertificationsData:
             "credential_url": "https://www.dicoding.com/certificates/NVP74VLKRPR0",
             "year": "2024",
             "institution": "Dicoding Indonesia",
+            "website": "https://www.dicoding.com",
+            "logo": "https://ridwaanhall.me/static/img/logo/dicoding.webp",
             "is_featured": True,
             "achievements": [
                 "Learned ML system design using k-NN and Random Forest algorithms",

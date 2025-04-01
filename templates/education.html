@@ -30,14 +30,14 @@
                     {% else %}
                         {% if edu.website %}
                             <a href="{{ edu.website }}" target="_blank" title="Visit {{ edu.institution }}" class="hover:scale-110 transition-transform duration-300">
-                                <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
                                     <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path>
                                 </svg>
                             </a>
                         {% else %}
-                            <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
                                 <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path>
@@ -53,7 +53,7 @@
                 </div>
                 <p class="text-blue-200 mb-4 italic">
                     {% if edu.website %}
-                        <a class="text-cyan-300 hover:text-cyan-200 transition-colors duration-200" href="{{ edu.website }}" target="_blank">{{ edu.institution }}</a>
+                        <a class="text-indigo-300 hover:text-indigo-200 transition-colors duration-200" href="{{ edu.website }}" target="_blank">{{ edu.institution }}</a>
                     {% else %}
                         {{ edu.institution }}
                     {% endif %}
@@ -62,7 +62,7 @@
                     <ul class="space-y-3 text-gray-200">
                         {% for achievement in edu.achievements %}
                         <li class="flex items-start group">
-                            <svg class="w-5 h-5 text-cyan-400 mr-2.5 mt-0.5 flex-shrink-0 group-hover:text-cyan-300 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="w-5 h-5 text-indigo-400 mr-2.5 mt-0.5 flex-shrink-0 group-hover:text-indigo-300 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                             <span class="group-hover:text-white transition-colors duration-200">{{ achievement }}</span>

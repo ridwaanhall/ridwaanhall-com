@@ -147,48 +147,46 @@
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                    <div class="bg-transparent backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
+                    <div class="bg-transparent backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-indigo-500/50 transition-all duration-300 hover:shadow-indigo-500/20">
+                        <h3 class="text-neutral-400 font-medium text-sm">Start Date</h3>
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-xl font-bold">{{ wakatime_stats.start_date }}</p>
+                            <p class="text-indigo-400 text-xl font-bold">{{ wakatime_stats.start_date }}</p>
                         </div>
-                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Start Date</h3>
                     </div>
                     
-                    <div class="bg-transparent backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
+                    <div class="bg-transparent backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-indigo-500/50 transition-all duration-300 hover:shadow-indigo-500/20">
+                        <h3 class="text-neutral-400 font-medium text-sm">End Date</h3>
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-xl font-bold">{{ wakatime_stats.end_date }}</p>
+                            <p class="text-indigo-400 text-xl font-bold">{{ wakatime_stats.end_date }}</p>
                         </div>
-                        <h3 class="text-indigo-400 font-medium text-sm mt-2">End Date</h3>
                     </div>
                     
-                    <div class="bg-transparent backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
+                    <div class="bg-transparent backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-indigo-500/50 transition-all duration-300 hover:shadow-indigo-500/20">
+                        <h3 class="text-neutral-400 font-medium text-sm">Coding Average</h3>
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-xl font-bold">{{ wakatime_stats.daily_average }}</p>
+                            <p class="text-indigo-400 text-xl font-bold">{{ wakatime_stats.daily_average }}</p>
                         </div>
-                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Coding Average</h3>
                     </div>
                     
-                    <div class="bg-transparent backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
+                    <div class="bg-transparent backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-indigo-500/50 transition-all duration-300 hover:shadow-indigo-500/20">
+                        <h3 class="text-neutral-400 font-medium text-sm">Coding Time</h3>
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-xl font-bold">{{ wakatime_stats.this_week_coding }}</p>
+                            <p class="text-indigo-400 text-xl font-bold">{{ wakatime_stats.this_week_coding }}</p>
                         </div>
-                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Coding Time</h3>
                     </div>
                     
-                    <div class="bg-transparent backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
+                    <div class="bg-transparent backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-indigo-500/50 transition-all duration-300 hover:shadow-indigo-500/20">
+                        <h3 class="text-neutral-400 font-medium text-sm">Best Day</h3>
                         <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-white text-xl font-bold">{{ wakatime_stats.best_day_date }} ({{ wakatime_stats.best_day_coding }})</p>
-                            </div>
+                            <p class="text-indigo-400 text-xl font-bold">{{ wakatime_stats.best_day_date }} ({{ wakatime_stats.best_day_coding }})</p>
                         </div>
-                        <h3 class="text-indigo-400 font-medium text-sm mt-2">Best Day</h3>
                     </div>
                     
-                    <div class="bg-transparent backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
+                    <div class="bg-transparent backdrop-blur-sm rounded-xl shadow-lg overflow-hidden p-5 border border-indigo-500/50 transition-all duration-300 hover:shadow-indigo-500/20">
+                        <h3 class="text-neutral-400 font-medium text-sm">All Time Since {{ wakatime_stats.all_time_start }}</h3>
                         <div class="flex items-center justify-between">
-                            <p class="text-white text-xl font-bold">{{ wakatime_stats.all_time_coding }}</p>
+                            <p class="text-indigo-400 text-xl font-bold">{{ wakatime_stats.all_time_coding }}</p>
                         </div>
-                        <h3 class="text-indigo-400 font-medium text-sm mt-2">All Time Since {{ wakatime_stats.all_time_start }}</h3>
                     </div>
 
                 </div>

@@ -246,5 +246,30 @@ class ProjectsData:
             ],
             "tech_stack": ["Next.js", "Once UI", "TypeScript", "SCSS", "MDX", "JavaScript"],
             "setup_instructions": "Refer to the repository README for detailed setup instructions and deployment processes."
+        },
+        {
+            "id": 10,
+            "title": "Neon AI",
+            "headline": "AI Chatbot template built using advanced tools and frameworks.",
+            "description": "An AI chatbot template leveraging the Once UI framework on Next.js, featuring advanced routing, React Server Components, and unified APIs for seamless integration and performance optimization.",
+            "image_url": "https://ridwaanhall.me/static/img/project/neon_ai.webp", 
+            "is_featured": False,
+            "github_url": "https://github.com/ridwaanhall/neon-ai",
+            "features": [
+                {
+                    "title": "Advanced Routing",
+                    "description": "Optimized navigation and performance with Next.js App Router."
+                },
+                {
+                    "title": "AI SDK",
+                    "description": "Unified API for generating text, structured objects, and tool calls with LLMs."
+                },
+                {
+                    "title": "Data Persistence",
+                    "description": "Powered by Vercel Postgres and Blob for efficient data storage."
+                }
+            ],
+            "tech_stack": ["Next.js", "Tailwind CSS", "TypeScript", "Vercel Postgres", "Radix UI"],
+            "setup_instructions": "Refer to the README.md in the repository for setup details and deployment processes."
         }
     ]

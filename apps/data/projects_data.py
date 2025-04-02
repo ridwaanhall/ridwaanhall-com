@@ -216,8 +216,8 @@ class ProjectsData:
             "headline": "Personal portfolio website built using the Once UI framework on Next.js.",
             "description": "A personal portfolio website leveraging the Once UI framework on Next.js, featuring responsive design, SEO optimization, customization options, and localization support.",
             "image_url": "https://ridwaanhall.me/static/img/project/ridwaanhall_me.webp",
-            "is_featured": False,
             "github_url": "https://github.com/ridwaanhall/ridwaanhall.me",
+            "is_featured": False,
             "features": [
                 {
                     "title": "Once UI Framework",
@@ -253,8 +253,9 @@ class ProjectsData:
             "headline": "AI Chatbot built using advanced tools and frameworks.",
             "description": "An AI chatbot leveraging the Once UI framework on Next.js, featuring advanced routing, React Server Components, and unified APIs for seamless integration and performance optimization.",
             "image_url": "https://ridwaanhall.me/static/img/project/neon_ai.webp", 
-            "is_featured": False,
             "github_url": "https://github.com/ridwaanhall/neon-ai",
+            "demo_url": "https://ridwaanhall-ai.vercel.app",
+            "is_featured": False,
             "features": [
                 {
                     "title": "Advanced Routing",
@@ -271,5 +272,31 @@ class ProjectsData:
             ],
             "tech_stack": ["Next.js", "Tailwind CSS", "TypeScript", "Vercel Postgres", "Radix UI"],
             "setup_instructions": "Refer to the README.md in the repository for setup details and deployment processes."
+        },
+        {
+            "id": 11,
+            "title": "Instagram Analytics",
+            "headline": "Analyze Instagram followers and following data effectively.",
+            "description": "A Python script to analyze Instagram followers and following data, providing various analytics such as mutual followers, non-followers, and more.",
+            "image_url": "https://ridwaanhall.me/static/img/project/instagram_following_followers.webp",
+            "github_url": "https://github.com/ridwaanhall/instagram-following-followers",
+            "demo_url": "https://instagram-following-followers.vercel.app",
+            "is_featured": False,
+            "features": [
+                {
+                    "title": "Followers Analysis",
+                    "description": "Counts and lists mutual followers, non-followers, and one-sided followers."
+                },
+                {
+                    "title": "Following Analysis",
+                    "description": "Counts and lists one-sided followings effectively."
+                },
+                {
+                    "title": "JSON Compatibility",
+                    "description": "Processes Instagram data formatted in JSON for better analytics."
+                }
+            ],
+            "tech_stack": ["bulmaCSS", "Django", "Whitenoise"],
+            "setup_instructions": "Clone the repository, place the required JSON files (following.json and followers_1.json), and run the script using Python."
         }
     ]

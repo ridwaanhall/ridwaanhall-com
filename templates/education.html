@@ -1,6 +1,6 @@
 <div class="mb-8 mt-6">
     
-    <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-700/50 pb-5 relative z-10">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-4 border-b border-gray-700/50 pb-4 relative z-10">
         {% if view %}
         <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-indigo-200">Educational background</h2>
         <a href="{% url 'career' %}" class="mt-3 md:mt-0 group flex items-center text-violet-400 hover:text-violet-300 transition-colors duration-300 font-medium">
@@ -14,7 +14,7 @@
         {% endif %}
     </div>
     
-    <div class="space-y-8">
+    <div class="space-y-4">
         {% for edu in education %}
         <div class="flex flex-col md:flex-row md:items-start mt-6">
             <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-6">

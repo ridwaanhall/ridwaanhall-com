@@ -130,7 +130,7 @@ class ProjectsData:
             "demo_url": "https://ridwaanhall-bike-sharing-analytics.streamlit.app/",
             "github_url": "https://github.com/ridwaanhall/dicoding-bike-sharing-analysis",
             "image_url": "https://ridwaanhall.me/static/img/project/bike_sharing_analysis_dashboard.webp",
-            "is_featured": True,
+            "is_featured": False,
             "features": [
                 {
                     "title": "Seasonal Analysis",

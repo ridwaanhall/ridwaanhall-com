@@ -119,10 +119,8 @@
                                         <p class="text-gray-300 mb-4 line-clamp-2">{{ blog.description }}</p>
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center space-x-3">
-                                                <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center">
-                                                    <span class="text-white text-xs font-bold">{{ blog.author|slice:":1" }}</span>
-                                                </div>
-                                                <span class="text-gray-300 text-sm">{{ blog.author }}</span>
+                                                <img src="{{ blog.author_image }}" alt="{{ blog.username }}" class="w-7 h-7 rounded-full object-cover border border-indigo-400">
+                                                <span class="text-gray-300 text-sm">{{ blog.username }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -133,12 +131,12 @@
                         
                         <!-- Navigation arrows - positioned bottom right -->
                         <div class="absolute bottom-4 right-4 z-30 flex space-x-2">
-                            <button class="slider-nav prev bg-black/60 hover:bg-indigo-600 text-white w-10 h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-gray-800 transform hover:scale-105">
+                            <button class="slider-nav prev bg-black/60 hover:bg-indigo-600 text-white w-10 h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-gray-800 transform hover:scale-105" title="Previous Slide">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                 </svg>
                             </button>
-                            <button class="slider-nav next bg-black/60 hover:bg-indigo-600 text-white w-10 h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-gray-800 transform hover:scale-105">
+                            <button class="slider-nav next bg-black/60 hover:bg-indigo-600 text-white w-10 h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-gray-800 transform hover:scale-105" title="Next Slide">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
@@ -149,7 +147,7 @@
                         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex space-x-2">
                             {% for blog in blogs %}
                                 {% if blog.is_featured %}
-                                <button class="slider-dot w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-all duration-300" data-index="{{ forloop.counter0 }}"></button>
+                                <button class="slider-dot w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Slide {{ forloop.counter0 }}"></button>
                                 {% endif %}
                             {% endfor %}
                         </div>
@@ -166,7 +164,7 @@
                 </div>
 
                 <!-- Blog posts grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-5">
                     {% for blog in blogs %}
                     <div class="group bg-transparent backdrop-blur-sm rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 border border-gray-700 hover:border-indigo-500 flex flex-col h-full transform hover:-translate-y-1">
                         <!-- Image container -->
@@ -182,10 +180,8 @@
                         <div class="p-5 flex-grow flex flex-col">
                             <div class="flex justify-between items-center mb-3">
                                 <div class="flex items-center space-x-2">
-                                    <div class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center">
-                                        <span class="text-white text-xs font-bold">{{ blog.author|slice:":1" }}</span>
-                                    </div>
-                                    <span class="text-gray-300 text-xs">{{ blog.author }}</span>
+                                    <img src="{{ blog.author_image }}" alt="{{ blog.username }}" class="w-7 h-7 rounded-full object-cover border border-indigo-400">
+                                    <span class="text-gray-300 text-xs">{{ blog.username }}</span>
                                 </div>
                                 <span class="text-gray-400 text-xs">{{ blog.date }}</span>
                             </div>

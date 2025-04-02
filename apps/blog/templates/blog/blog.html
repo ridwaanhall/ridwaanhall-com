@@ -166,46 +166,43 @@
                 <!-- Blog posts grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-5">
                     {% for blog in blogs %}
-                    <div class="group bg-transparent backdrop-blur-sm rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 border border-gray-700 hover:border-indigo-500 flex flex-col h-full transform hover:-translate-y-1">
-                        <!-- Image container with read article overlay -->
-                        <div class="relative h-48 overflow-hidden">
-                            <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-60"></div>
-                            
-                            <!-- Read article overlay - only visible on hover -->
-                            {% comment %} <div class="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                            </div> {% endcomment %}
-                            
-                            <div class="absolute top-3 left-3 flex flex-wrap gap-1">
-                                {% for tag in blog.tags|slice:":3" %}
-                                <span class="font-medium rounded-full bg-neutral-900/80 px-2.5 py-1 font-mono text-xs text-neutral-400">
-                                    #{{ tag|slugify }}
-                                </span>
-                                {% endfor %}
+                    <a href="{% url 'blog_detail' title=blog.title|slugify %}">
+                        <div style="height: 350px; overflow: hidden;" class="group relative overflow-hidden rounded-xl border border-gray-700 hover:border-indigo-500 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 transform h-full">
+                            <!-- Background image covering the entire card -->
+                            <div class="absolute inset-0">
+                                <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-gray-900/30"></div>
                             </div>
-                        </div>
-                        
-                        <!-- Content -->
-                        <div class="p-5 flex-grow flex flex-col">
-                            <div class="flex justify-between items-center mb-3">
-                                <div class="flex items-center space-x-2">
-                                    <img src="{{ blog.author_image }}" alt="{{ blog.username }}" class="w-7 h-7 rounded-full object-cover border border-indigo-400">
-                                    <span class="text-gray-300 text-xs">{{ blog.username }}</span>
+                            
+                            <!-- Content overlaid on the image -->
+                            <div class="relative z-10 p-5 flex flex-col h-full">
+                                <div class="flex flex-wrap gap-1 mb-4">
+                                    {% for tag in blog.tags|slice:":3" %}
+                                    <span class="font-medium rounded-full bg-neutral-900/80 px-2.5 py-1 font-mono text-xs text-neutral-400">
+                                        #{{ tag|slugify }}
+                                    </span>
+                                    {% endfor %}
                                 </div>
-                                <span class="text-gray-400 text-xs">{{ blog.date }}</span>
+                                
+                                <div class="flex-grow"></div>
+                                
+                                <h3 class="text-lg font-bold text-white mb-2 line-clamp-2 relative inline-block">
+                                    <span class="relative group-hover:text-indigo-300 transition-colors duration-300">{{ blog.title }}</span>
+                                    <span class="absolute left-0 bottom-0 h-0.5 bg-indigo-400 w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
+                                </h3>
+                                <p class="text-gray-300 text-sm line-clamp-3 mb-0">{{ blog.description }}</p>
+                                
+                                <hr class="border-t border-gray-200/50 w-full my-3">
+
+                                <div class="flex justify-between items-center mb-0">
+                                    <div class="flex items-center space-x-2">
+                                        <img src="{{ blog.author_image }}" alt="{{ blog.username }}" title="By {{ blog.username }}" class="w-7 h-7 rounded-full object-cover border border-indigo-400">
+                                    </div>
+                                    <span class="text-gray-400 text-xs">{{ blog.date }}</span>
+                                </div>
                             </div>
-                            
-                            <h3 class="text-lg font-bold text-white mb-2 line-clamp-2">{{ blog.title }}</h3>
-                            <p class="text-gray-400 text-sm line-clamp-3 mb-4 flex-grow">{{ blog.description }}</p>
-                            
-                            <a href="{% url 'blog_detail' title=blog.title|slugify %}" class="mt-auto inline-flex items-center text-indigo-400 hover:text-indigo-300 transition-colors duration-300 text-sm font-medium">
-                                <span>Read Article</span>
-                                <svg class="w-4 h-4 ml-1.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                </svg>
-                            </a>
                         </div>
-                    </div>
+                    </a>
                     {% endfor %}
                 </div>
                 

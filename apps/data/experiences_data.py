@@ -72,7 +72,7 @@ class ExperiencesData:
         {
             "title": "Founder",
             "company": "Copilot ID",
-            "website": "https://copilotid.com",
+            "website": "https://github.com/copilot-id",
             "logo": "https://ridwaanhall.me/static/img/logo/copilot_id.webp",
             "period": "Jan 2023 - Present",
             "is_current": True,

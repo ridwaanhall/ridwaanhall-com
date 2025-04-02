@@ -23,7 +23,7 @@ class BlogData:
             "id": 2,
             "title": "Building Web Applications with Django",
             "description": "Discover how Django makes web development faster and more secure with its batteries-included philosophy.",
-            "image_url": "https://ridwaanhall.me/static/img/blog/building_web_applictions_with_django.webp",
+            "image_url": "https://ridwaanhall.me/static/img/blog/building_web_applications_with_django.webp",
             "date": "March 24, 2025",
             "author": "Ridwan Halim",
             "username": "ridwaanhall",

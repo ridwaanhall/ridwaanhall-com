@@ -167,12 +167,21 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-5">
                     {% for blog in blogs %}
                     <div class="group bg-transparent backdrop-blur-sm rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 border border-gray-700 hover:border-indigo-500 flex flex-col h-full transform hover:-translate-y-1">
-                        <!-- Image container -->
+                        <!-- Image container with read article overlay -->
                         <div class="relative h-48 overflow-hidden">
                             <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-60"></div>
-                            <div class="absolute top-3 left-3 bg-indigo-600 text-white text-xs font-medium rounded-md px-2.5 py-1">
-                                {{ blog.category }}
+                            
+                            <!-- Read article overlay - only visible on hover -->
+                            {% comment %} <div class="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                            </div> {% endcomment %}
+                            
+                            <div class="absolute top-3 left-3 flex flex-wrap gap-1">
+                                {% for tag in blog.tags|slice:":3" %}
+                                <span class="font-medium rounded-full bg-neutral-900/80 px-2.5 py-1 font-mono text-xs text-neutral-400">
+                                    #{{ tag|slugify }}
+                                </span>
+                                {% endfor %}
                             </div>
                         </div>
                         

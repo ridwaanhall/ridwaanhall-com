@@ -1,25 +1,23 @@
 # ridwaanhall.me
 
-🔥 Personal website was built originally from scratch using Django, Tailwind CSS, and HTML.
+🔥 Personal website was built originally from scratch using Django and TailwindCSS.
 
 ![ridwaanhal](staticfiles/img/project/ridwaanhall_dev.webp)
 
 ---
 
+[![wakatime](https://wakatime.com/badge/user/018b799e-de53-4f7a-bb65-edc2df9f26d8/project/cc5b6b55-ece5-47ae-b643-512d9d86e93b.svg)](https://wakatime.com/badge/user/018b799e-de53-4f7a-bb65-edc2df9f26d8/project/cc5b6b55-ece5-47ae-b643-512d9d86e93b)
+
 ## Introduction
 
-Welcome to my personal website repository! This site serves as my digital portfolio and personal brand showcase. The website features a clean, responsive design built completely from scratch using Django framework for the backend, with Tailwind CSS and HTML for the frontend styling.
+Welcome to my personal website repository! This site serves as my digital portfolio and personal brand showcase. The website features a clean, responsive design built completely from scratch using Django framework for the backend, with TailwindCSS and HTML for the frontend styling.
 
 This project demonstrates my web development skills and provides visitors with information about my work, projects, and professional background. Feel free to explore the codebase to see how I've implemented various features and optimized the site for performance.
-
-## Theme
-
-black no border and card.
 
 ## Tech Stack
 
 - **Backend**: Django (Python web framework)
-- **Frontend**: HTML, Tailwind CSS
+- **Frontend**: HTML, TailwindCSS
 - **Programming Languages**: Python
 - **Deployment**: Vercel
 - **Version Control**: Git

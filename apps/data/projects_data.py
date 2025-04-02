@@ -250,8 +250,8 @@ class ProjectsData:
         {
             "id": 10,
             "title": "Neon AI",
-            "headline": "AI Chatbot template built using advanced tools and frameworks.",
-            "description": "An AI chatbot template leveraging the Once UI framework on Next.js, featuring advanced routing, React Server Components, and unified APIs for seamless integration and performance optimization.",
+            "headline": "AI Chatbot built using advanced tools and frameworks.",
+            "description": "An AI chatbot leveraging the Once UI framework on Next.js, featuring advanced routing, React Server Components, and unified APIs for seamless integration and performance optimization.",
             "image_url": "https://ridwaanhall.me/static/img/project/neon_ai.webp", 
             "is_featured": False,
             "github_url": "https://github.com/ridwaanhall/neon-ai",

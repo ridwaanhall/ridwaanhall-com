@@ -298,5 +298,31 @@ class ProjectsData:
             ],
             "tech_stack": ["bulmaCSS", "Django", "Whitenoise"],
             "setup_instructions": "Clone the repository, place the required JSON files (following.json and followers_1.json), and run the script using Python."
+        },
+        {
+            "id": 12,
+            "title": "Lumina",
+            "headline": "A solution for students who often forget attendance.",
+            "description": "Lumina is an automated attendance code generator designed to help students overcome the challenge of forgetting attendance easily, quickly, and securely.",
+            "image_url": "https://ridwaanhall.me/static/img/project/lumina.webp",
+            "github_url": "https://github.com/ridwaanhall/Lumina",
+            "demo_url": "https://lupa-presensi.vercel.app",
+            "is_featured": False,
+            "features": [
+                {
+                    "title": "Automatic Code Generator",
+                    "description": "Generates new encrypted attendance codes instantly."
+                },
+                {
+                    "title": "Intuitive Design",
+                    "description": "A simple and easy-to-use interface, even in panic situations."
+                },
+                {
+                    "title": "Secure Encryption",
+                    "description": "Safe and reliable encryption process for attendance codes."
+                }
+            ],
+            "tech_stack": ["Python", "Django", "Bulma", "Vercel", "Cloudflare"],
+            "setup_instructions": "Refer to the README.md in the repository for setup details and deployment processes."
         }
     ]

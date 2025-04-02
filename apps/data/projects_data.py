@@ -324,5 +324,30 @@ class ProjectsData:
             ],
             "tech_stack": ["Python", "Django", "Bulma", "Vercel", "Cloudflare"],
             "setup_instructions": "Refer to the README.md in the repository for setup details and deployment processes."
+        },
+        {
+            "id": 13,
+            "title": "NGL Link Spam",
+            "headline": "Send messages to NGL without logging in.",
+            "description": "A Python project that allows users to send messages to NGL using different options, including custom messages and random messages, without requiring login credentials.",
+            "image_url": "https://ridwaanhall.me/static/img/project/ngl_link_spamming.webp",
+            "github_url": "https://github.com/ridwaanhall/ngl-link-spamming",
+            "is_featured": False,
+            "features": [
+                {
+                    "title": "Custom Message Sender",
+                    "description": "Send personalized messages to NGL targets efficiently."
+                },
+                {
+                    "title": "Random Message Generator",
+                    "description": "Generate and send random messages with ease."
+                },
+                {
+                    "title": "No Login Required",
+                    "description": "Send messages directly without needing to log in to NGL."
+                }
+            ],
+            "tech_stack": ["Python"],
+            "setup_instructions": "Clone the repository, install the dependencies listed in requirements.txt, and use one of the available scripts (send_custom.py, send_random.py, or send_msg.py) to send messages."
         }
     ]

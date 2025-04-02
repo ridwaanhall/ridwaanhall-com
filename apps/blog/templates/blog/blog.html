@@ -89,11 +89,8 @@
 
             <div class="space-y-8 relative z-10">
 
-                <!-- Featured blog posts slider -->
                 <div class="relative mb-10 mt-12 overflow-hidden rounded-xl border border-indigo-600/50 shadow-lg shadow-indigo-500/10">
-                    <!-- Slider container -->
                     <div class="featured-slider-container relative">
-                        <!-- Slides wrapper -->
                         <div class="featured-slider-wrapper flex transition-transform duration-500 ease-in-out">
                             {% for blog in blogs %}
                                 {% if blog.is_featured %}
@@ -129,7 +126,6 @@
                             {% endfor %}
                         </div>
                         
-                        <!-- Navigation arrows - positioned bottom right -->
                         <div class="absolute bottom-4 right-4 z-30 flex space-x-2">
                             <button class="slider-nav prev bg-black/60 hover:bg-indigo-600 text-white w-10 h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-gray-800 transform hover:scale-105" title="Previous Slide">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,7 +139,6 @@
                             </button>
                         </div>
                         
-                        <!-- Dots indicators -->
                         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex space-x-2">
                             {% for blog in blogs %}
                                 {% if blog.is_featured %}
@@ -163,18 +158,15 @@
                     </div>
                 </div>
 
-                <!-- Blog posts grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 gap-5">
                     {% for blog in blogs %}
                     <a href="{% url 'blog_detail' title=blog.title|slugify %}">
                         <div style="height: 350px; overflow: hidden;" class="group relative overflow-hidden rounded-xl border border-gray-700 hover:border-indigo-500 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 transform h-full">
-                            <!-- Background image covering the entire card -->
                             <div class="absolute inset-0">
                                 <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-500">
                                 <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-gray-900/30"></div>
                             </div>
                             
-                            <!-- Content overlaid on the image -->
                             <div class="relative z-10 p-5 flex flex-col h-full">
                                 <div class="flex flex-wrap gap-1 mb-4">
                                     {% for tag in blog.tags|slice:":3" %}
@@ -190,15 +182,26 @@
                                     <span class="relative group-hover:text-indigo-300 transition-colors duration-300">{{ blog.title }}</span>
                                     <span class="absolute left-0 bottom-0 h-0.5 bg-indigo-400 w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
                                 </h3>
-                                <p class="text-gray-300 text-sm line-clamp-3 mb-0">{{ blog.description }}</p>
+                                <p class="text-gray-300 text-sm line-clamp-3 mb-2">{{ blog.description }}</p>
                                 
-                                <hr class="border-t border-gray-200/50 w-full my-3">
-
-                                <div class="flex justify-between items-center mb-0">
-                                    <div class="flex items-center space-x-2">
-                                        <img src="{{ blog.author_image }}" alt="{{ blog.username }}" title="By {{ blog.username }}" class="w-7 h-7 rounded-full object-cover border border-indigo-400">
+                                <div class="mt-auto">
+                                    <hr class="border-t border-gray-500 w-full mb-3">
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-2">
+                                            <img alt="{{ blog.username }}" loading="lazy" width="28" height="28" 
+                                                 class="rounded-full border border-indigo-500"
+                                                 src="{{ blog.author_image }}">
+                                            <span class="text-xs text-gray-300">{{ blog.username }}</span>
+                                        </div>
+                                        
+                                        <div class="flex items-center">
+                                            <span class="text-xs text-gray-400">{{ blog.date }}</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 text-indigo-400 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                            </svg>
+                                        </div>
                                     </div>
-                                    <span class="text-gray-400 text-xs">{{ blog.date }}</span>
                                 </div>
                             </div>
                         </div>
@@ -206,7 +209,6 @@
                     {% endfor %}
                 </div>
                 
-                <!-- Pagination -->
                 <div class="mt-12 flex justify-center">
                     <div class="inline-flex bg-gray-800 rounded-lg overflow-hidden">
                         <a href="{% url 'blog' %}" class="px-4 py-2 bg-indigo-600 text-white">1</a>

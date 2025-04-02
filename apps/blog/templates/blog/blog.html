@@ -87,60 +87,192 @@
     <main class="p-4 md:p-6">
         <div class="max-w-7xl mx-auto">
 
-            <div class="mt-12 mb-10">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div>
-                        <h1 class="text-4xl font-bold text-white mb-2 tracking-tight">Blog <span class="text-indigo-400">Posts</span></h1>
-                        <p class="mt-2 text-lg text-gray-300 leading-relaxed">Explore my collection of articles, tutorials, and thoughts on various tech topics.</p>
-                    </div>
-                </div>
-            </div>
+            <div class="space-y-8 relative z-10">
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 relative z-10">
-                {% for blog in blogs %}
-                <div class="flex flex-col md:flex-row bg-transparent rounded-xl overflow-hidden transition-all duration-300 shadow-lg border border-gray-700 hover:border-indigo-700 transform hover:-translate-y-1">
-                    <div class="md:w-2/5 relative">
-                        <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-48 md:h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900/70 to-transparent opacity-50 md:opacity-80"></div>
-                        <div class="absolute top-4 left-4 bg-indigo-600 bg-opacity-80 backdrop-blur-sm text-white text-xs font-medium rounded-full px-3 py-1">
-                            {{ blog.category }}
+                <div class="relative mb-10 mt-12 overflow-hidden rounded-xl border border-indigo-600/50 shadow-lg shadow-indigo-500/10">
+                    <div class="featured-slider-container relative">
+                        <div class="featured-slider-wrapper flex transition-transform duration-500 ease-in-out">
+                            {% for blog in blogs %}
+                                {% if blog.is_featured %}
+                                <div class="featured-slide w-full flex-shrink-0 relative">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/80 to-gray-900/80 mix-blend-multiply z-10"></div>
+                                    <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-80 object-cover object-center">
+                                    
+                                    <div class="absolute top-4 right-4 z-20">
+                                        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg flex items-center">
+                                            <svg class="w-4 h-4 mr-1" stroke="none" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"></path>
+                                            </svg>
+                                            <span class="tracking-wider">FEATURED</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="absolute bottom-0 left-0 right-0 p-6 z-20">
+                                        <div class="flex items-center space-x-2 mb-3">
+                                            <span class="bg-indigo-600 text-white text-xs font-semibold px-3 py-1 rounded-full">{{ blog.category }}</span>
+                                            <span class="text-gray-300 text-xs">{{ blog.date }}</span>
+                                        </div>
+                                        <h2 class="text-2xl font-bold text-white mb-2"><a href="{% url 'blog_detail' title=blog.title|slugify %}" class="relative inline-block after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-gray-400 hover:after:w-full after:transition-all after:duration-300">{{ blog.title }}</a></h2>
+                                        <p class="text-gray-300 mb-4 line-clamp-2">{{ blog.description }}</p>
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-3">
+                                                <img src="{{ blog.author_image }}" alt="{{ blog.username }}" class="w-7 h-7 rounded-full object-cover border border-indigo-400">
+                                                <span class="text-gray-300 text-sm">{{ blog.username }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
                         </div>
-                        <div class="absolute bottom-4 left-4 text-white text-xs">
-                            {{ blog.date }}
-                        </div>
-                    </div>
-                    <div class="md:w-3/5 p-5">
-                        {% if blog.is_featured %}
-                        <div class="absolute top-0 right-0 z-20">
-                            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold px-3 py-1.5 rounded-bl-lg shadow-lg flex items-center transform origin-top-right transition-all duration-300 group-hover:scale-110 group-hover:shadow-indigo-500/30">
-                                <svg class="w-4 h-4 mr-1" stroke="none" fill="currentColor" stroke-width="2" viewBox="0 0 1024 1024" height="15" width="15" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M878.3 392.1L631.9 145.7c-6.5-6.5-15-9.7-23.5-9.7s-17 3.2-23.5 9.7L423.8 306.9c-12.2-1.4-24.5-2-36.8-2-73.2 0-146.4 24.1-206.5 72.3-15.4 12.3-16.6 35.4-2.7 49.4l181.7 181.7-215.4 215.2a15.8 15.8 0 0 0-4.6 9.8l-3.4 37.2c-.9 9.4 6.6 17.4 15.9 17.4.5 0 1 0 1.5-.1l37.2-3.4c3.7-.3 7.2-2 9.8-4.6l215.4-215.4 181.7 181.7c6.5 6.5 15 9.7 23.5 9.7 9.7 0 19.3-4.2 25.9-12.4 56.3-70.3 79.7-158.3 70.2-243.4l161.1-161.1c12.9-12.8 12.9-33.8 0-46.8z"></path>
+                        
+                        <div class="absolute bottom-4 right-4 z-30 flex space-x-2">
+                            <button class="slider-nav prev bg-black/60 hover:bg-indigo-600 text-white w-10 h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-gray-800 transform hover:scale-105" title="Previous Slide">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                 </svg>
-                                <span class="tracking-wider">FEATURED</span>
-                            </div>
-                        </div>
-                        {% endif %}
-                        <div class="flex items-center space-x-3 mb-3">
-                            <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center">
-                                <span class="text-white text-xs font-bold">{{ blog.author|slice:":1" }}</span>
-                            </div>
-                            <span class="text-gray-300 text-sm">{{ blog.author }}</span>
-                        </div>
-                        <h3 class="text-lg font-semibold text-white mb-2">{{ blog.title }}</h3>
-                        <p class="text-gray-400 text-sm line-clamp-3 mb-4">{{ blog.description }}</p>
-                        <div class="flex items-center justify-between">
-                            <a href="{% url 'blog' %}{{ blog.title|slugify }}" class="text-indigo-400 hover:text-indigo-300 transition-colors duration-300 flex items-center text-sm font-medium">
-                                <span>Read Article</span>
-                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </button>
+                            <button class="slider-nav next bg-black/60 hover:bg-indigo-600 text-white w-10 h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-gray-800 transform hover:scale-105" title="Next Slide">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
-                            </a>
+                            </button>
+                        </div>
+                        
+                        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex space-x-2">
+                            {% for blog in blogs %}
+                                {% if blog.is_featured %}
+                                <button class="slider-dot w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Slide {{ forloop.counter0 }}"></button>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
-                {% endfor %}
+
+                <div class="mt-6 mb-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div>
+                            <h1 class="text-4xl font-bold text-white mb-2 tracking-tight">Latest <span class="text-indigo-400">Blogs</span></h1>
+                            <p class="mt-2 text-lg text-gray-300 leading-relaxed">Explore my collection of articles, tutorials, and thoughts on various tech topics.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 gap-5">
+                    {% for blog in blogs %}
+                    <a href="{% url 'blog_detail' title=blog.title|slugify %}">
+                        <div style="height: 350px; overflow: hidden;" class="group relative overflow-hidden rounded-xl border border-gray-700 hover:border-indigo-500 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 transform h-full">
+                            <div class="absolute inset-0">
+                                <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-gray-900/30"></div>
+                            </div>
+                            
+                            <div class="relative z-10 p-5 flex flex-col h-full">
+                                <div class="flex flex-wrap gap-1 mb-4">
+                                    {% for tag in blog.tags|slice:":3" %}
+                                    <span class="font-medium rounded-full bg-neutral-900/80 px-2.5 py-1 font-mono text-xs text-neutral-400">
+                                        #{{ tag|slugify }}
+                                    </span>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="flex-grow"></div>
+                                
+                                <h3 class="text-lg font-bold text-white mb-2 line-clamp-2 relative inline-block">
+                                    <span class="relative group-hover:text-indigo-300 transition-colors duration-300 group-hover:underline group-hover:underline-offset-4">{{ blog.title }}</span>
+                                    {% comment %} <span class="absolute left-0 bottom-0 h-0.5 bg-indigo-400 w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span> {% endcomment %}
+                                </h3>
+                                <p class="text-gray-300 text-sm line-clamp-3 mb-2">{{ blog.description }}</p>
+                                
+                                <div class="mt-auto">
+                                    <hr class="border-t border-gray-500 w-full mb-3">
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-2">
+                                            <img alt="{{ blog.username }}" loading="lazy" width="28" height="28" 
+                                                 class="rounded-full border border-indigo-500"
+                                                 src="{{ blog.author_image }}">
+                                            <span class="font-mono text-xs text-gray-300">{{ blog.username }}</span>
+                                        </div>
+                                        
+                                        <div class="flex items-center">
+                                            <span class="font-mono text-xs text-gray-400">{{ blog.date }}</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 text-indigo-400 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                
+                <div class="mt-12 flex justify-center">
+                    <div class="inline-flex bg-gray-800 rounded-lg overflow-hidden">
+                        <a href="{% url 'blog' %}" class="px-4 py-2 bg-indigo-600 text-white">1</a>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sliderWrapper = document.querySelector('.featured-slider-wrapper');
+        const slides = document.querySelectorAll('.featured-slide');
+        const dots = document.querySelectorAll('.slider-dot');
+        const prevBtn = document.querySelector('.slider-nav.prev');
+        const nextBtn = document.querySelector('.slider-nav.next');
+        let currentIndex = 0;
+        
+        // Set initial active dot
+        if (dots.length > 0) {
+            dots[0].classList.add('bg-white', 'w-4');
+        }
+        
+        function goToSlide(index) {
+            // Handle edge cases
+            if (index < 0) index = slides.length - 1;
+            if (index >= slides.length) index = 0;
+            
+            currentIndex = index;
+            sliderWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+            
+            // Update dots
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('bg-white', i === currentIndex);
+                dot.classList.toggle('bg-white/50', i !== currentIndex);
+                dot.classList.toggle('w-4', i === currentIndex);
+                dot.classList.toggle('w-2', i !== currentIndex);
+            });
+        }
+        
+        // Event listeners
+        prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+        nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+        
+        // Add click events to dots
+        dots.forEach((dot, i) => {
+            dot.addEventListener('click', () => goToSlide(i));
+        });
+        
+        // Auto-slide every 5 seconds
+        if (slides.length > 1) {
+            setInterval(() => {
+                goToSlide(currentIndex + 1);
+            }, 5000);
+        }
+        
+        // Hide navigation if only one slide
+        if (slides.length <= 1) {
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+        }
+    });
+</script>
 {% endblock %}

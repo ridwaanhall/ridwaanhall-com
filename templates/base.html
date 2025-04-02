@@ -10,7 +10,7 @@
         <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
         <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
         <link rel="icon" href="{% static 'favicon/favicon.ico' %}">
-        <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}">
+        <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}" type="application/manifest+json">
 
         {% block head_seo %}
 
@@ -23,7 +23,7 @@
     <body class="bg-gray-950 text-gray-300 transition-colors duration-200">
         <header class="md:hidden bg-gradient-to-b from-gray-950 to-gray-950 shadow-sm">
             <div class="flex items-center justify-between p-4">
-                <button id="open-sidebar" class="text-gray-600 hover:text-gray-950 transition-colors">
+                <button id="open-sidebar" class="text-gray-600 hover:text-gray-950 transition-colors" aria-label="Open Sidebar">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
@@ -38,7 +38,7 @@
             </div>
         </header>
 
-        <div class="max-w-[1280px] mx-auto px-4">
+        <div class="max-w-[1200px] mx-auto px-4">
             <div class="flex flex-col md:flex-row min-h-screen">
                 {% include 'sidebar.html' %}
 

@@ -176,5 +176,47 @@
             arrow.classList.remove('rotate-180');
         }
     }
+
+    function toggleAchievementsCerts(id) {
+        const element = document.getElementById(id);
+        const counter = id.split('-')[1];
+
+        const showTextCert = document.getElementById('show-text-cert-' + counter);
+        const hideTextCert = document.getElementById('hide-text-cert-' + counter);
+        const arrowCert = document.getElementById('arrow-cert-' + counter);
+        
+        if (element.classList.contains('hidden')) {
+            element.classList.remove('hidden');
+            showTextCert.classList.add('hidden');
+            hideTextCert.classList.remove('hidden');
+            arrowCert.classList.add('rotate-180');
+        } else {
+            element.classList.add('hidden');
+            showTextCert.classList.remove('hidden');
+            hideTextCert.classList.add('hidden');
+            arrowCert.classList.remove('rotate-180');
+        }
+    }
+
+    function toggleResponsibilities(id) {
+        const element = document.getElementById(id);
+        const counter = id.split('-')[1];
+
+        const showTextResp = document.getElementById('show-text-resp-' + counter);
+        const hideTextResp = document.getElementById('hide-text-resp-' + counter);
+        const arrowResp = document.getElementById('arrow-resp-' + counter);
+        
+        if (element.classList.contains('hidden')) {
+            element.classList.remove('hidden');
+            showTextResp.classList.add('hidden');
+            hideTextResp.classList.remove('hidden');
+            arrowResp.classList.add('rotate-180');
+        } else {
+            element.classList.add('hidden');
+            showTextResp.classList.remove('hidden');
+            hideTextResp.classList.add('hidden');
+            arrowResp.classList.remove('rotate-180');
+        }
+    }
 </script>
 {% endblock %}

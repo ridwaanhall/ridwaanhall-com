@@ -62,53 +62,56 @@
         
                     <p class="text-blue-200 mb-3 italic text-sm sm:text-base">
                         {% if certification.website %}
-                        <a class="text-indigo-300 hover:text-indigo-200 transition-colors duration-200 underline-offset-2 hover:underline" href="{{ certification.website }}" target="_blank" rel="noopener">{{ certification.institution }}</a>
-                        {% else %} {{ certification.institution }} {% endif %}
+                            <a class="text-indigo-300 hover:text-indigo-200 transition-colors duration-200 underline-offset-2 hover:underline" href="{{ certification.website }}" target="_blank" rel="noopener">{{ certification.institution }}</a>
+                        {% else %}
+                            {{ certification.institution }}
+                        {% endif %}
                     </p>
         
                     <div class="mt-2 flex flex-wrap gap-2">
                         {% if certification.achievements %}
-                        <button
-                            type="button"
-                            class="flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-indigo-900/20 text-indigo-300 hover:text-indigo-200 hover:bg-indigo-900/30 transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-indigo-500/50"
-                            onclick="toggleAchievements('achievements-cert-{{ forloop.counter }}')"
-                            aria-expanded="false"
-                            aria-controls="achievements-cert-{{ forloop.counter }}"
-                        >
-                            <span id="show-text-cert-{{ forloop.counter }}">Show Achievements</span>
-                            <span id="hide-text-cert-{{ forloop.counter }}" class="hidden">Hide Achievements</span>
-                            <svg class="w-4 h-4 ml-1.5 transition-transform duration-300" id="arrow-cert-{{ forloop.counter }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
-                        {% endif %} {% if certification.credential_url %}
-                        <a
-                            href="{{ certification.credential_url }}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="inline-flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-gradient-to-r from-violet-600/80 to-indigo-600/80 text-white hover:from-violet-500 hover:to-indigo-500 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-violet-500/50"
-                        >
-                            <span>View Credential</span>
-                            <svg class="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                            </svg>
-                        </a>
+                            <button
+                                type="button"
+                                class="flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-indigo-900/20 text-indigo-300 hover:text-indigo-200 hover:bg-indigo-900/30 transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-indigo-500/50"
+                                onclick="toggleAchievementsCerts('achievementscert-{{ certification.id }}')"
+                                aria-expanded="false"
+                                aria-controls="achievementscert-{{ certification.id }}"
+                            >
+                                <span id="show-text-cert-{{ certification.id }}">Show Achievements</span>
+                                <span id="hide-text-cert-{{ certification.id }}" class="hidden">Hide Achievements</span>
+                                <svg class="w-4 h-4 ml-1.5 transition-transform duration-300" id="arrow-cert-{{ certification.id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                        {% endif %}
+                        {% if certification.credential_url %}
+                            <a
+                                href="{{ certification.credential_url }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-gradient-to-r from-violet-600/80 to-indigo-600/80 text-white hover:from-violet-500 hover:to-indigo-500 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                            >
+                                <span>View Credential</span>
+                                <svg class="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                </svg>
+                            </a>
                         {% endif %}
                     </div>
         
                     {% if certification.achievements %}
-                    <div id="achievements-cert-{{ forloop.counter }}" class="hidden mt-3 transition-all duration-300 ease-in-out">
-                        <ul class="space-y-2 text-gray-200 text-sm sm:text-base pl-1">
-                            {% for achievement in certification.achievements %}
-                            <li class="flex items-start group py-1">
-                                <svg class="w-5 h-5 text-indigo-400 mr-2.5 mt-0.5 flex-shrink-0 group-hover:text-indigo-300 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <span class="group-hover:text-white transition-colors duration-200">{{ achievement }}</span>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                        <div id="achievementscert-{{ certification.id }}" class="hidden mt-3 transition-all duration-300 ease-in-out">
+                            <ul class="space-y-2 text-gray-200 text-sm sm:text-base pl-1">
+                                {% for achievement in certification.achievements %}
+                                    <li class="flex items-start group py-1">
+                                        <svg class="w-5 h-5 text-indigo-400 mr-2.5 mt-0.5 flex-shrink-0 group-hover:text-indigo-300 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <span class="group-hover:text-white transition-colors duration-200">{{ achievement }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     {% endif %}
                 </div>
             </div>

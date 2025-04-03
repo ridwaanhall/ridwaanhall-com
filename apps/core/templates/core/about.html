@@ -79,16 +79,17 @@
                         
                         <!-- About Me Content -->
                         <div class="space-y-6">
-
-                            <p class="text-indigo-400">Assalamu'alaikum</p>
-
-                            {% for story in about.stories %}
-                            <p class="text-gray-300">
-                                {{ story|safe }}
-                            </p>
-                            {% endfor %}
-                            
-                            <p class="text-indigo-400">Wassalamu'alaikum!</p>
+                            <div class="border border-gray-700 rounded-xl p-6 hover:border-indigo-500 transition-all duration-300">
+                                <p class="text-indigo-400 text-xl font-medium mb-4">Assalamu'alaikum</p>
+                                
+                                {% for story in about.stories %}
+                                <div class="mb-2">
+                                    <p class="text-lg text-gray-300">{{ story|safe }}</p>
+                                </div>
+                                {% endfor %}
+                                
+                                <p class="text-indigo-400 text-xl font-medium mt-6">Wassalamu'alaikum!</p>
+                            </div>
                         </div>
                     </div>
 

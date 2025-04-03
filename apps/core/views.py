@@ -8,6 +8,7 @@ from apps.data.blog_data import BlogData
 from apps.data.projects_data import ProjectsData
 from apps.data.education_data import EducationData
 from apps.data.certifications_data import CertificationsData
+from apps.data.services_data import ServicesData
 
 
 class BasePortfolioView(TemplateView):
@@ -64,6 +65,7 @@ class HomeView(BasePortfolioView):
             'projects': [project for project in ProjectsData.projects if project.get('is_featured')],
             'education': [edu for edu in EducationData.education if edu.get('is_last')],
             'experiences': [exp for exp in ExperiencesData.experiences if exp.get('is_current')],
+            'services': ServicesData.services,
             'about': about,
             'certifications': CertificationsData.certifications,
             'seo': self.get_seo_data(

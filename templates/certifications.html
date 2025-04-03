@@ -1,6 +1,6 @@
 <div class="mb-6 mt-6">
     
-    <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-700/50 pb-5 relative z-10">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-4 border-b border-gray-700/50 pb-5 relative z-10">
         {% if view_certs %}
         <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-indigo-200">Featured Certifications</h2>
         <a href="https://www.linkedin.com/in/ridwaanhall/details/certifications/" class="mt-3 md:mt-0 group flex items-center text-violet-400 hover:text-violet-300 transition-colors duration-300 font-medium">
@@ -16,70 +16,103 @@
     
     <div class="space-y-4">
         {% for certification in certifications %}
-        <div class="flex flex-col md:flex-row md:items-start mt-6">
-            <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
-                <div class="w-16 h-16 bg-gradient-to-br from-violet-900/60 to-indigo-900/40 rounded-xl flex items-center justify-center shadow-lg border border-indigo-700/30 backdrop-blur-sm">
-                    {% if certification.logo %}
-                        {% if certification.website %}
-                            <a href="{{ certification.website }}" target="_blank" title="Visit {{ certification.institution }}" class="hover:scale-110 transition-transform duration-300">
-                                <img src="{{ certification.logo }}" alt="{{ certification.institution }} logo" class="w-12 h-12 rounded-full shadow-md">
-                            </a>
+        <div class="group rounded-xl shadow-lg overflow-hidden p-3 sm:p-4 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20 backdrop-blur-sm">
+            <div class="flex flex-col md:flex-row md:items-start gap-4">
+                <div class="flex-shrink-0">
+                    <div
+                        class="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-violet-900/60 to-indigo-900/40 rounded-lg flex items-center justify-center shadow-lg border border-indigo-700/30 backdrop-blur-sm transform transition-all duration-300 group-hover:scale-105"
+                    >
+                        {% if certification.logo %} {% if certification.website %}
+                        <a href="{{ certification.website }}" target="_blank" rel="noopener" aria-label="Visit {{ certification.institution }}" class="hover:scale-110 transition-transform duration-300">
+                            <img src="{{ certification.logo }}" alt="{{ certification.institution }} logo" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-md object-cover" />
+                        </a>
                         {% else %}
-                            <img src="{{ certification.logo }}" alt="{{ certification.institution }} logo" class="w-12 h-12 rounded-full shadow-md">
-                        {% endif %}
-                    {% else %}
-                        {% if certification.website %}
-                            <a href="{{ certification.website }}" target="_blank" title="Visit {{ certification.institution }}" class="hover:scale-110 transition-transform duration-300">
-                                <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                                </svg>
-                            </a>
+                        <img src="{{ certification.logo }}" alt="{{ certification.institution }} logo" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-md object-cover" />
+                        {% endif %} {% else %} {% if certification.website %}
+                        <a href="{{ certification.website }}" target="_blank" rel="noopener" aria-label="Visit {{ certification.institution }}" class="hover:scale-110 transition-transform duration-300">
+                            <svg class="w-7 h-7 sm:w-8 sm:h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                                ></path>
+                            </svg>
+                        </a>
                         {% else %}
-                            <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                            </svg>
-                        {% endif %}
-                    {% endif %}
-                </div>
-            </div>
-            <div class="flex-grow">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3">
-                    <h3 class="text-xl font-bold text-white text-shadow">{{ certification.title }}</h3>
-                    <span class="text-indigo-300 text-sm font-medium bg-gradient-to-r from-indigo-900/30 to-violet-900/30 px-3 py-1 rounded-full mt-1 sm:mt-0 border border-indigo-800/20 shadow-sm">{{ certification.issued }}</span>
-                </div>
-                <p class="text-blue-200 mb-4 italic">
-                    {% if certification.website %}
-                        <a class="text-indigo-300 hover:text-indigo-200 transition-colors duration-200" href="{{ certification.website }}" target="_blank">{{ certification.institution }}</a>
-                    {% else %}
-                        {{ certification.institution }}
-                    {% endif %}
-                </p>
-                <div class="group rounded-xl shadow-lg overflow-hidden p-6 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
-                    <ul class="space-y-3 text-gray-200">
-                        {% for achievement in certification.achievements %}
-                        <li class="flex items-start group">
-                            <svg class="w-5 h-5 text-indigo-400 mr-2.5 mt-0.5 flex-shrink-0 group-hover:text-indigo-300 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span class="group-hover:text-white transition-colors duration-200">{{ achievement }}</span>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                
-                {% if certification.credential_url %}
-                <div class="mt-4">
-                    <a href="{{ certification.credential_url }}" target="_blank" rel="noopener noreferrer" 
-                        class="group inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/20">
-                        <span>View Credential</span>
-                        <svg class="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        <svg class="w-7 h-7 sm:w-8 sm:h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                            ></path>
                         </svg>
-                    </a>
+                        {% endif %} {% endif %}
+                    </div>
                 </div>
-                {% endif %}
+        
+                <div class="flex-grow">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                        <h3 class="text-lg sm:text-xl font-bold text-white text-shadow">{{ certification.title }}</h3>
+                        <span class="inline-flex text-indigo-300 text-xs sm:text-sm font-medium bg-gradient-to-r from-indigo-900/30 to-violet-900/30 px-3 py-1 rounded-full border border-indigo-800/20 shadow-sm whitespace-nowrap">
+                            {{ certification.issued }}
+                        </span>
+                    </div>
+        
+                    <p class="text-blue-200 mb-3 italic text-sm sm:text-base">
+                        {% if certification.website %}
+                        <a class="text-indigo-300 hover:text-indigo-200 transition-colors duration-200 underline-offset-2 hover:underline" href="{{ certification.website }}" target="_blank" rel="noopener">{{ certification.institution }}</a>
+                        {% else %} {{ certification.institution }} {% endif %}
+                    </p>
+        
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        {% if certification.achievements %}
+                        <button
+                            type="button"
+                            class="flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-indigo-900/20 text-indigo-300 hover:text-indigo-200 hover:bg-indigo-900/30 transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-indigo-500/50"
+                            onclick="toggleAchievements('achievements-cert-{{ forloop.counter }}')"
+                            aria-expanded="false"
+                            aria-controls="achievements-cert-{{ forloop.counter }}"
+                        >
+                            <span id="show-text-cert-{{ forloop.counter }}">Show Achievements</span>
+                            <span id="hide-text-cert-{{ forloop.counter }}" class="hidden">Hide Achievements</span>
+                            <svg class="w-4 h-4 ml-1.5 transition-transform duration-300" id="arrow-cert-{{ forloop.counter }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        {% endif %} {% if certification.credential_url %}
+                        <a
+                            href="{{ certification.credential_url }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-gradient-to-r from-violet-600/80 to-indigo-600/80 text-white hover:from-violet-500 hover:to-indigo-500 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                        >
+                            <span>View Credential</span>
+                            <svg class="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                            </svg>
+                        </a>
+                        {% endif %}
+                    </div>
+        
+                    {% if certification.achievements %}
+                    <div id="achievements-cert-{{ forloop.counter }}" class="hidden mt-3 transition-all duration-300 ease-in-out">
+                        <ul class="space-y-2 text-gray-200 text-sm sm:text-base pl-1">
+                            {% for achievement in certification.achievements %}
+                            <li class="flex items-start group py-1">
+                                <svg class="w-5 h-5 text-indigo-400 mr-2.5 mt-0.5 flex-shrink-0 group-hover:text-indigo-300 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span class="group-hover:text-white transition-colors duration-200">{{ achievement }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
-        </div>
+        </div>        
         {% endfor %}
     </div>
 

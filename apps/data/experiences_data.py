@@ -35,6 +35,7 @@ class ExperiencesData:
     
     experiences = [
         {
+            "id": 13,
             "title": "Machine Learning Mentor",
             "company": "Coding Camp powered by DBS Foundation",
             "logo": "https://ridwaanhall.me/static/img/logo/coding_camp_dbs_foundation.webp",
@@ -52,6 +53,7 @@ class ExperiencesData:
             ]
         },
         {
+            "id": 12,
             "title": "Machine Learning Ops Cohort",
             "company": "Coding Camp powered by DBS Foundation",
             "logo": "https://ridwaanhall.me/static/img/logo/coding_camp_dbs_foundation.webp",
@@ -68,6 +70,7 @@ class ExperiencesData:
             ]
         },
         {
+            "id": 11,
             "title": "Machine Learning Expert Cohort",
             "company": "Coding Camp powered by DBS Foundation",
             "logo": "https://ridwaanhall.me/static/img/logo/coding_camp_dbs_foundation.webp",
@@ -87,6 +90,7 @@ class ExperiencesData:
             ]
         },
         {
+            "id": 10,
             "title": "Machine Learning Intermediate Cohort",
             "company": "Coding Camp powered by DBS Foundation",
             "logo": "https://ridwaanhall.me/static/img/logo/coding_camp_dbs_foundation.webp",
@@ -106,6 +110,7 @@ class ExperiencesData:
             ]
         },
         {
+            "id": 9,
             "title": "Machine Learning Beginner Cohort",
             "company": "Coding Camp powered by DBS Foundation",
             "logo": "https://ridwaanhall.me/static/img/logo/coding_camp_dbs_foundation.webp",
@@ -123,6 +128,7 @@ class ExperiencesData:
             ]
         },
         {
+            "id": 8,
             "title": "Founder",
             "company": "Copilot ID",
             "logo": "https://ridwaanhall.me/static/img/logo/copilot_id.webp",
@@ -138,6 +144,7 @@ class ExperiencesData:
             ]
         },
         {
+            "id": 7,
             "title": "Chief Secretary",
             "company": "IKA-PPIM 2021",
             "logo": "https://ridwaanhall.me/static/img/logo/ikappim_21.webp",
@@ -154,6 +161,7 @@ class ExperiencesData:
             ]
         },
         {
+            "id": 6,
             "title": "Assistant Squad Leader of Web Developer Intern",
             "company": "GAOTek Inc.",
             "logo": "https://ridwaanhall.me/static/img/logo/gaotek_inc.webp",
@@ -171,6 +179,7 @@ class ExperiencesData:
             ]
         },
         {
+            "id": 5,
             "title": "Main Team of Web Developer Intern",
             "company": "GAOTek Inc.",
             "logo": "https://ridwaanhall.me/static/img/logo/gaotek_inc.webp",
@@ -188,6 +197,7 @@ class ExperiencesData:
             ]
         },
         {
+            "id": 4,
             "title": "Web Developer Intern",
             "company": "GAOTek Inc.",
             "logo": "https://ridwaanhall.me/static/img/logo/gaotek_inc.webp",
@@ -206,6 +216,7 @@ class ExperiencesData:
             ]
         },
         {
+            "id": 3,
             "title": "Machine Learning Intern",
             "company": "YoungDev",
             "logo": "https://ridwaanhall.me/static/img/logo/youngdev.webp",
@@ -222,6 +233,7 @@ class ExperiencesData:
             ]
         },
         {
+            "id": 2,
             "title": "Machine Learning Intern",
             "company": "iNeuron.ai",
             "logo": "https://ridwaanhall.me/static/img/logo/ineuron.webp",
@@ -238,6 +250,7 @@ class ExperiencesData:
             ]
         },
         {
+            "id": 1,
             "title": "Deputy of Da'wah",
             "company": "Imaarotu Syu'unith Tholabah",
             "logo": "https://ridwaanhall.me/static/img/logo/ist.webp",

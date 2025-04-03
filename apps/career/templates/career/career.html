@@ -133,30 +133,6 @@
 
 {% block scripts %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const toggleButtons = document.querySelectorAll('[id^="toggle-responsibilities-"]');
-        
-        toggleButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const experienceId = this.id.split('-').pop();
-                const content = document.getElementById('responsibilities-content-' + experienceId);
-                const icon = this.querySelector('.toggle-icon-down');
-                
-                if (content.classList.contains('hidden')) {
-                    content.classList.remove('hidden');
-                    content.classList.add('block');
-                    icon.classList.add('rotate-180');
-                } else {
-                    content.classList.add('hidden');
-                    content.classList.remove('block');
-                    icon.classList.remove('rotate-180');
-                }
-            });
-        });
-    });
-</script>
-
-<script>
     function toggleAchievements(id) {
         const element = document.getElementById(id);
         const counter = id.split('-')[1];

@@ -77,8 +77,7 @@ class ExperiencesData:
             "period": "Jan 2023 - Present",
             "is_current": True,
             "responsibilities": [
-                "Led the development of Python-based projects.",
-                "Specialized in AI technologies and software frameworks such as Django and Flask."
+                "Specialized in AI technologies and software frameworks such as Django, TensorFlow, PyTorch, and more."
             ]
         },
         {

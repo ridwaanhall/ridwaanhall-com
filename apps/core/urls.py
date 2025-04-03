@@ -15,7 +15,6 @@ def robots_txt(request):
         f"Sitemap: {base_url}/sitemap-static.xml",
         f"Sitemap: {base_url}/sitemap-blog.xml",
         f"Sitemap: {base_url}/sitemap-projects.xml",
-        "Crawl-delay: 10",  # Be nice to search engines
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")
 

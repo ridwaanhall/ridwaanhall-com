@@ -77,39 +77,18 @@
                             <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-indigo-300">My Story</h2>
                         </div>
                         
-                        <!-- Introduction -->
-                        <div class="pl-4 border-l-2 border-indigo-500/50">
-                            <p class="text-xl font-medium text-indigo-300 mb-3">Assalamu'alaikum! 👋</p>
-                            <p class="text-gray-300 leading-relaxed">
-                                Hi, I'm <span class="text-indigo-400 font-semibold">{{ about.name }}</span>—though many in the tech community might recognize me as <span class="text-indigo-400 font-semibold">{{ about.username }}</span>. I'm a Python Developer with a passion for Machine Learning and Web Development, based in the {{ about.location.province }}, {{ about.location.country }}. Over the past few years, I've completed over 30 projects, leveraging tools like Django, Flask, scikit-learn, PyTorch, next.js, and TensorFlow.
-                            </p>
-                        </div>
+                        <!-- About Me Content -->
+                        <div class="space-y-6">
 
-                        <!-- Personal Achievement -->
-                        <div class="py-5 px-6 bg-gradient-to-r from-indigo-950/20 to-purple-950/20 rounded-lg">
-                            <p class="text-gray-300 leading-relaxed">
-                                Beyond the world of tech, I have accomplished something deeply personal and meaningful—memorizing nearly <span class="text-indigo-300 font-semibold">30 Juz of the Quran</span>, an achievement that has instilled discipline, focus, and a deep sense of purpose in everything I do.
-                            </p>
-                        </div>
+                            <p class="text-indigo-400">Assalamu'alaikum</p>
 
-                        <!-- Professional Background -->
-                        <div class="text-gray-300 leading-relaxed">
-                            <p>
-                                What truly excites me is exploring the intersection of AI and web development to create innovative solutions that optimize processes, enrich user experiences, and push technological boundaries. With a degree in Informatics (specializing in AI) from the University of Technology Yogyakarta, I thrive on continuous learning, staying at the forefront of advancements in Artificial Intelligence, Machine Learning, and web development.
+                            {% for story in about.stories %}
+                            <p class="text-gray-300">
+                                {{ story|safe }}
                             </p>
-                        </div>
-
-                        <!-- Vision -->
-                        <div class="pl-4 border-l-2 border-indigo-500/50">
-                            <p class="text-gray-300 leading-relaxed">
-                                Moving forward, my vision is to <span class="text-indigo-300 font-semibold">harness the power of AI</span> to build impactful technologies that solve real-world challenges. Let's connect, collaborate, or create something amazing together!
-                            </p>
-                        </div>
-
-                        <!-- Closing -->
-                        <div class="flex items-center justify-end">
-                            <div class="h-2 w-2 rounded-full bg-indigo-500 mr-3 animate-pulse"></div>
-                            <p class="text-xl font-medium text-indigo-300">Wassalamu'alaikum!</p>
+                            {% endfor %}
+                            
+                            <p class="text-indigo-400">Wassalamu'alaikum!</p>
                         </div>
                     </div>
 
@@ -120,7 +99,7 @@
                         </svg>
                         <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-indigo-300">Current Focus</h2>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <div class="border border-gray-700 rounded-xl p-6 hover:border-indigo-500 transition-all duration-300">
                             <div class="text-indigo-400 mb-4 inline-flex p-4">
                                 <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">

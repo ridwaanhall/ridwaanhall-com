@@ -70,7 +70,7 @@
                         "@type": "Organization",
                         "name": "{{ cert.institution }}"
                     },
-                    "validFrom": "{{ cert.year }}"
+                    "validFrom": "{{ cert.issued }}"
                 }{% if not forloop.last %},{% endif %}
                 {% endfor %}
             ]

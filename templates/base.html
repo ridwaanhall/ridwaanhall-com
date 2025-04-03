@@ -12,6 +12,52 @@
         <link rel="icon" href="{% static 'favicon/favicon.ico' %}">
         <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}" type="application/manifest+json">
 
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "url": "{{ request.scheme }}://{{ request.get_host }}/",
+                "name": "{{ seo.title }}",
+                "mainEntityOfPage": [
+                    {
+                        "@type": "WebPage",
+                        "url": "{{ request.scheme }}://{{ request.get_host }}/",
+                        "name": "Home"
+                    },
+                    {
+                        "@type": "WebPage",
+                        "url": "{{ request.scheme }}://{{ request.get_host }}/about",
+                        "name": "About"
+                    },
+                    {
+                        "@type": "WebPage",
+                        "url": "{{ request.scheme }}://{{ request.get_host }}/career",
+                        "name": "Career"
+                    },
+                    {
+                        "@type": "WebPage",
+                        "url": "{{ request.scheme }}://{{ request.get_host }}/dashboard",
+                        "name": "Dashboard"
+                    },
+                    {
+                        "@type": "WebPage",
+                        "url": "{{ request.scheme }}://{{ request.get_host }}/projects",
+                        "name": "Projects"
+                    },
+                    {
+                        "@type": "WebPage",
+                        "url": "{{ request.scheme }}://{{ request.get_host }}/blog",
+                        "name": "Blog"
+                    },
+                    {
+                        "@type": "WebPage",
+                        "url": "{{ request.scheme }}://{{ request.get_host }}/contact",
+                        "name": "Contact"
+                    }
+                ]
+            }
+        </script>
+
         {% block head_seo %}
 
         {% endblock %}

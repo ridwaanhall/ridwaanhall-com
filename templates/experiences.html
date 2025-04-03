@@ -29,7 +29,7 @@
             <div class="rounded-xl shadow-lg overflow-hidden p-4 sm:p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20 backdrop-blur-sm">
                 <!-- Header: Title and Company -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
-                    <h3 class="text-xl font-bold text-white flex flex-wrap items-center gap-2">
+                    <h3 class="text-xl font-bold text-gray-300 flex flex-wrap items-center gap-2">
                         {{ experience.title }} {% if experience.is_current %}
                         <span class="px-3 py-1 text-xs font-semibold bg-indigo-900/70 text-indigo-300 rounded-full shadow-inner shadow-indigo-500/20 border border-indigo-700/50">Current</span>
                         {% endif %}
@@ -58,7 +58,7 @@
                             </div>
                         </div>
                         {% else %}
-                        <div class="w-10 h-10 mr-3 bg-gray-700/80 rounded-lg flex items-center justify-center text-white shadow-md">
+                        <div class="w-10 h-10 mr-3 bg-gray-700/80 rounded-lg flex items-center justify-center text-gray-300 shadow-md">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path
                                     stroke-linecap="round"
@@ -111,7 +111,7 @@
                 <!-- Responsibilities toggle button -->
                 <button
                     type="button"
-                    class="inline-flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-gradient-to-r from-violet-600/80 to-indigo-600/80 text-white hover:from-violet-500 hover:to-indigo-500 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                    class="inline-flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-gradient-to-r from-violet-600/80 to-indigo-600/80 text-gray-300 hover:from-violet-500 hover:to-indigo-500 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-violet-500/50"
                     onclick="toggleResponsibilities('expresponsibilities-{{ forloop.counter }}')"
                     aria-expanded="false"
                     aria-controls="expresponsibilities-{{ forloop.counter }}"
@@ -143,7 +143,7 @@
 
     {% if view %}
     <div class="mt-10 text-center relative z-10 md:hidden">
-        <a href="{% url 'career' %}" class="inline-flex items-center px-6 py-3 border border-indigo-600 text-sm font-medium rounded-lg shadow-lg text-white bg-indigo-600/90 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300">
+        <a href="{% url 'career' %}" class="inline-flex items-center px-6 py-3 border border-indigo-600 text-sm font-medium rounded-lg shadow-lg text-gray-300 bg-indigo-600/90 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300">
             <span>View All Experience</span>
             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>

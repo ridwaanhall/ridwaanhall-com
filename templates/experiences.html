@@ -17,7 +17,7 @@
     <div class="relative border-l-2 border-indigo-500/70 pl-8 ml-4 space-y-4">
         {% for experience in experiences %}
         <div class="relative group">
-            <!-- Enhanced timeline dot with animation -->
+
             <div class="absolute -left-11 top-0 w-6 h-6 rounded-full bg-{% if experience.is_current %}indigo-500{% else %}gray-700{% endif %} shadow-lg shadow-{% if experience.is_current %}indigo-500/30{% else %}gray-700/20{% endif %} border border-{% if experience.is_current %}indigo-400{% else %}gray-600{% endif %}/50 transition-all duration-300"></div>
             {% if experience.is_current %}
             <div class="absolute -left-11 top-0 w-6 h-6 rounded-full bg-indigo-400/50 animate-ping"></div>
@@ -64,12 +64,33 @@
                     </p>
                 </div>
             </div>
-            <p class="text-gray-400 text-sm mb-4 flex items-center">
-                <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
-                {{ experience.period }}
-            </p>
+            <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                <p class="text-gray-400 text-sm flex items-center">
+                    <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    {{ experience.period }}
+                </p>
+                {% if experience.employment_type %}
+                <p class="text-gray-400 text-sm flex items-center">
+                    <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    {{ experience.employment_type }}
+                </p>
+                {% endif %}
+                {% if experience.location_type or experience.location %}
+                <p class="text-gray-400 text-sm flex items-center">
+                    <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    {% if experience.location_type %}{{ experience.location_type }}{% endif %}
+                    {% if experience.location_type and experience.location %} · {% endif %}
+                    {% if experience.location %}{{ experience.location }}{% endif %}
+                </p>
+                {% endif %}
+            </div>
             <div class="group rounded-xl shadow-lg overflow-hidden p-6 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
                 <h4 class="text-sm font-medium text-indigo-300 mb-4 uppercase tracking-wider flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

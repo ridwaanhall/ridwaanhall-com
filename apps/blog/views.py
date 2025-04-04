@@ -26,8 +26,13 @@ class BaseBlogView(View):
     def get_common_data(self):
 
         all_blogs = BlogData.blogs
+        # all_blogs = sorted(all_blogs, key=lambda blog: blog.get('date', ''), reverse=True)
         
-        all_blogs.sort(key=lambda blog: (not blog.get('is_featured', False), -blog.get('id', 0)))
+        # short by id from high to low
+        all_blogs.sort(key=lambda blog: (-blog.get('id', 0)))
+        
+        # short by featured and date based on id
+        # all_blogs.sort(key=lambda blog: (not blog.get('is_featured', False), -blog.get('id', 0)))
         
         return {
             'blogs': all_blogs,

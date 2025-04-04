@@ -36,6 +36,21 @@
                 {% endif %}
             </a>
             
+            <a href="{% url 'dashboard' %}" class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'dashboard' %}bg-indigo-900 text-white{% else %}text-gray-300 hover:bg-gray-700/50 hover:text-white{% endif %}">
+                <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 {% if request.resolver_match.url_name == 'dashboard' %}text-white{% else %}text-gray-400{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+                <span class="ml-3 font-medium">Dashboard</span>
+
+                {% if request.resolver_match.url_name == 'dashboard' %}
+                <span class="ml-auto text-white">
+                    <svg class="animate-pulse text-white" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                    </svg>
+                </span>
+                {% endif %}
+            </a>
+
             <a href="{% url 'about' %}" class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'about' %}bg-indigo-900 text-white{% else %}text-gray-300 hover:bg-gray-700/50 hover:text-white{% endif %}">
                 <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 {% if request.resolver_match.url_name == 'about' %}text-white{% else %}text-gray-400{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -58,21 +73,6 @@
                 <span class="ml-3 font-medium">Career</span>
 
                 {% if request.resolver_match.url_name == 'career' %}
-                <span class="ml-auto text-white">
-                    <svg class="animate-pulse text-white" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
-                    </svg>
-                </span>
-                {% endif %}
-            </a>
-            
-            <a href="{% url 'dashboard' %}" class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'dashboard' %}bg-indigo-900 text-white{% else %}text-gray-300 hover:bg-gray-700/50 hover:text-white{% endif %}">
-                <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 {% if request.resolver_match.url_name == 'dashboard' %}text-white{% else %}text-gray-400{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                </svg>
-                <span class="ml-3 font-medium">Dashboard</span>
-
-                {% if request.resolver_match.url_name == 'dashboard' %}
                 <span class="ml-auto text-white">
                     <svg class="animate-pulse text-white" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
@@ -170,7 +170,31 @@
             </span>
             {% endif %}
         </a>
+
+        <a
+            href="{% url 'dashboard' %}"
+            class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'dashboard' %} bg-indigo-900 text-white {% else %} text-gray-300 hover:bg-gray-700/50 hover:text-white {% endif %}"
+        >
+            <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 text-gray-400 {% if request.resolver_match.url_name == 'dashboard' %} animate-pulse text-white {% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                ></path>
+            </svg>
     
+            <span class="ml-3 font-medium">Dashboard</span>
+    
+            {% if request.resolver_match.url_name == 'dashboard' %}
+            <span class="ml-auto text-white">
+                <svg class="animate-pulse text-white" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                </svg>
+            </span>
+            {% endif %}
+        </a>
+
         <a href="{% url 'about' %}" class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'about' %} bg-indigo-900 text-white {% else %} text-gray-300 hover:bg-gray-700/50 hover:text-white {% endif %}">
             <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 text-gray-400 {% if request.resolver_match.url_name == 'about' %} animate-pulse text-white {% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -200,30 +224,6 @@
             <span class="ml-3 font-medium">Career</span>
     
             {% if request.resolver_match.url_name == 'career' %}
-            <span class="ml-auto text-white">
-                <svg class="animate-pulse text-white" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
-                </svg>
-            </span>
-            {% endif %}
-        </a>
-    
-        <a
-            href="{% url 'dashboard' %}"
-            class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'dashboard' %} bg-indigo-900 text-white {% else %} text-gray-300 hover:bg-gray-700/50 hover:text-white {% endif %}"
-        >
-            <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 text-gray-400 {% if request.resolver_match.url_name == 'dashboard' %} animate-pulse text-white {% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                ></path>
-            </svg>
-    
-            <span class="ml-3 font-medium">Dashboard</span>
-    
-            {% if request.resolver_match.url_name == 'dashboard' %}
             <span class="ml-auto text-white">
                 <svg class="animate-pulse text-white" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>

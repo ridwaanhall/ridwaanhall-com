@@ -95,8 +95,8 @@
                 "item": {
                     "@type": "SoftwareSourceCode",
                     "name": "{{ project.title }}",
-                    "description": "{{ project.description }}",
-                    "programmingLanguage": "{{ project.tech_stack|join:', ' }}",
+                    "description": "{{ project.headline }}",
+                    "programmingLanguage": "{% for tech in project.tech_stack %}{{ tech.name|join:'' }}{% if not forloop.last %}, {% endif %}{% endfor %}",
                     "image": "{{ project.image_url }}",
                     "codeRepository": "{{ project.github_url }}",
                     "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'projects' %}{{ project.title|slugify }}",

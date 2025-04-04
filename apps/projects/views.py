@@ -28,7 +28,7 @@ class ProjectsView(TemplateView):
         
         # Extract unique tech stack items
         tech_stack_keywords = list(set([
-            tech for project in projects 
+            tech['name'] for project in projects 
             for tech in project.get('tech_stack', [])
         ]))[:10]
         
@@ -43,7 +43,7 @@ class ProjectsView(TemplateView):
 
 class ProjectsDetailView(View):
     def get(self, request, title):
-        try:
+        # try:
             projects = ProjectsData.projects
             about = AboutData.get_about_data()[0]
             
@@ -54,8 +54,8 @@ class ProjectsDetailView(View):
                 
             seo = create_seo_dict(
                 title=f"{project['title']} | {about['name']} - Project Details",
-                description=project['description'],
-                keywords=f"{project['title']}, {about['name']}, {', '.join(project.get('tech_stack', []))}",
+                description=project['headline'],
+                keywords=f"{project['title']}, {about['name']}, {', '.join(item['name'] for item in project.get('tech_stack', []))}",
                 image_url=project.get('image_url', about.get('image_url', '')),
                 og_type='article'
             )
@@ -66,7 +66,7 @@ class ProjectsDetailView(View):
                 'seo': seo,
             })
             
-        except SuspiciousOperation:
-            return render(request, 'error.html', {'error_code': 400}, status=400)
-        except Exception:
-            return render(request, 'error.html', {'error_code': 500}, status=500)
+        # except SuspiciousOperation:
+        #     return render(request, 'error.html', {'error_code': 400}, status=400)
+        # except Exception:
+        #     return render(request, 'error.html', {'error_code': 500}, status=500)

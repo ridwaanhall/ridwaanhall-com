@@ -8,19 +8,19 @@
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
-<meta name="description" content="{{ seo.description }}">
+<meta name="description" content="{{ seo.headline }}">
 <meta name="keywords" content="{{ seo.keywords }}">
 
 <meta property="og:type" content="{{ seo.og_type }}">
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
 <meta property="og:title" content="{{ seo.title }}">
-<meta property="og:description" content="{{ seo.description }}">
+<meta property="og:description" content="{{ seo.headline }}">
 <meta property="og:image" content="{{ seo.og_image }}">
 
 <meta property="twitter:card" content="{{ seo.twitter_card }}">
 <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
 <meta property="twitter:title" content="{{ seo.title }}">
-<meta property="twitter:description" content="{{ seo.description }}">
+<meta property="twitter:description" content="{{ seo.headline }}">
 <meta property="twitter:image" content="{{ seo.og_image }}">
 
 <script type="application/ld+json">
@@ -28,7 +28,7 @@
         "@context": "https://schema.org",
         "@type": "CollectionPage",
         "name": "{{ seo.title }}",
-        "description": "{{ seo.description }}",
+        "description": "{{ seo.headline }}",
         "url": "{{ request.build_absolute_uri }}",
         "author": {
             "@type": "Person", 
@@ -47,10 +47,10 @@
                     "item": {
                         "@type": "SoftwareSourceCode",
                         "name": "{{ project.title }}",
-                        "description": "{{ project.description }}",
+                        "description": "{{ project.headline }}",
                         "codeRepository": "{{ project.github_url }}",
                         "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'projects' %}{{ project.title|slugify }}",
-                        "programmingLanguage": "{{ project.tech_stack|join:', ' }}"
+                        "programmingLanguage":  "{% for tech in project.tech_stack %}{{ tech.name|join:'' }}{% if not forloop.last %}, {% endif %}{% endfor %}"
                     }
                 }{% if not forloop.last %},{% endif %}
                 {% endfor %}
@@ -127,7 +127,7 @@
                         
                         <div class="flex flex-wrap gap-2 mb-4">
                             {% for tech in project.tech_stack|slice:":3" %}
-                            <span class="text-xs bg-{% cycle 'blue-600' 'green-600' 'purple-600' 'indigo-600' 'rose-600' 'cyan-600' %}/70 text-gray-300 px-2 py-1 rounded">{{ tech }}</span>
+                            <span class="text-xs bg-{% cycle 'blue-600' 'green-600' 'purple-600' 'indigo-600' 'rose-600' 'cyan-600' %}/70 text-gray-300 px-2 py-1 rounded">{{ tech.name }}</span>
                             {% endfor %}
                             {% if project.tech_stack|length > 3 %}
                             <span class="text-xs bg-{% cycle 'blue-600' 'green-600' 'purple-600' 'indigo-600' 'rose-600' 'cyan-600' %}/70 text-gray-300 px-2 py-1 rounded">+{{ project.tech_stack|length|add:"-3" }}</span>

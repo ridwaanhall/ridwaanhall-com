@@ -127,10 +127,10 @@
                         
                         <div class="flex flex-wrap gap-2 mb-4">
                             {% for tech in project.tech_stack|slice:":3" %}
-                            <span class="text-xs bg-{% cycle 'blue-600' 'green-600' 'purple-600' 'indigo-600' 'rose-600' 'cyan-600' %}/70 text-gray-300 px-2 py-1 rounded">{{ tech.name }}</span>
+                            <span class="text-xs font-medium rounded-full bg-gray-600 px-2.5 py-1 font-mono text-gray-300">{{ tech.name }}</span>
                             {% endfor %}
                             {% if project.tech_stack|length > 3 %}
-                            <span class="text-xs bg-{% cycle 'blue-600' 'green-600' 'purple-600' 'indigo-600' 'rose-600' 'cyan-600' %}/70 text-gray-300 px-2 py-1 rounded">+{{ project.tech_stack|length|add:"-3" }}</span>
+                            <span class="text-xs font-medium rounded-full bg-gray-600 px-2.5 py-1 font-mono text-gray-300">+{{ project.tech_stack|length|add:"-3" }}</span>
                             {% endif %}
                         </div>
                         

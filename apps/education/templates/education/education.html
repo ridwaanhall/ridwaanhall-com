@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block head_seo %}
+
+<title>{{ seo.title }}</title>
+
+<meta name="author" content="{{ about.username }}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<meta name="description" content="{{ seo.description }}">
+<meta name="keywords" content="{{ seo.keywords }}">
+
+<meta property="og:type" content="{{ seo.og_type }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:title" content="{{ seo.title }}">
+<meta property="og:description" content="{{ seo.description }}">
+<meta property="og:image" content="{{ seo.og_image }}">
+
+<meta property="twitter:card" content="{{ seo.twitter_card }}">
+<meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+<meta property="twitter:title" content="{{ seo.title }}">
+<meta property="twitter:description" content="{{ seo.description }}">
+<meta property="twitter:image" content="{{ seo.og_image }}">
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ProfilePage",
+        "name": "{{ seo.title }}",
+        "description": "{{ seo.description }}",
+        "mainEntity": {
+            "@type": "Person",
+            "name": "{{ about.name }}",
+            "image": "{{ about.image_url }}",
+            "description": "{{ about.short_description }}",
+            "jobTitle": "{{ about.role }}",
+            "url": "{{ request.scheme }}://{{ request.get_host }}/",
+            "alumniOf": [
+                {% for edu in education %}
+                {
+                    "@type": "EducationalOrganization",
+                    "name": "{{ edu.institution }}",
+                    "url": "{{ edu.website }}"
+                }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ]
+        }
+    }
+</script>
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ request.scheme }}://{{ request.get_host }}/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Educations",
+                "item": "{{ request.build_absolute_uri }}"
+            }
+        ]
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="flex-1 md:ml-68">
+    <main class="p-4 md:p-6">
+        <div class="max-w-7xl mx-auto">
+
+            <div class="mt-12 mb-10">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div>
+                        <h1 class="text-4xl font-bold text-white mb-2 tracking-tight">Educational <span class="text-indigo-400">History</span></h1>
+                        <p class="mt-2 text-lg text-gray-300 leading-relaxed">Exploring my professional experience, education, and achievements throughout my career path.</p>
+                    </div>
+                </div>
+            </div>
+
+            {% if education %}
+                {% include 'education.html' %}
+            {% endif %}
+
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function toggleAchievements(id) {
+        const element = document.getElementById(id);
+        const counter = id.split('-')[1];
+        const showText = document.getElementById('show-text-' + counter);
+        const hideText = document.getElementById('hide-text-' + counter);
+        const arrow = document.getElementById('arrow-' + counter);
+        
+        if (element.classList.contains('hidden')) {
+            element.classList.remove('hidden');
+            showText.classList.add('hidden');
+            hideText.classList.remove('hidden');
+            arrow.classList.add('rotate-180');
+        } else {
+            element.classList.add('hidden');
+            showText.classList.remove('hidden');
+            hideText.classList.add('hidden');
+            arrow.classList.remove('rotate-180');
+        }
+    }
+</script>
+{% endblock %}

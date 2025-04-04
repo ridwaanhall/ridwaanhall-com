@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'apps.dashboard',
     'apps.projects',
     'apps.blog',
+    'apps.education',
+    'apps.certifications',
     
     'django.contrib.sitemaps',
 ]

@@ -3,8 +3,6 @@ from django.shortcuts import render
 import logging
 
 from apps.data.experiences_data import ExperiencesData
-from apps.data.certifications_data import CertificationsData
-from apps.data.education_data import EducationData
 from apps.data.about_data import AboutData
 
 logger = logging.getLogger(__name__)
@@ -22,8 +20,6 @@ class CareerView(TemplateView):
             'view_certs': 'true',
             'view': False,
             'experiences': ExperiencesData.experiences,
-            'education': EducationData.education,
-            'certifications': CertificationsData.certifications,
             'about': about,
             'seo': self._get_seo_data(about),
         })

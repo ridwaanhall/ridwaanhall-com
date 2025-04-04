@@ -118,14 +118,6 @@
                 {% include 'experiences.html' %}
             {% endif %}
 
-            {% if education %}
-                {% include 'education.html' %}
-            {% endif %}
-
-            {% if certifications %}
-                {% include 'certifications.html' %}
-            {% endif %}
-
         </div>
     </main>
 </div>
@@ -133,47 +125,6 @@
 
 {% block scripts %}
 <script>
-    function toggleAchievements(id) {
-        const element = document.getElementById(id);
-        const counter = id.split('-')[1];
-        const showText = document.getElementById('show-text-' + counter);
-        const hideText = document.getElementById('hide-text-' + counter);
-        const arrow = document.getElementById('arrow-' + counter);
-        
-        if (element.classList.contains('hidden')) {
-            element.classList.remove('hidden');
-            showText.classList.add('hidden');
-            hideText.classList.remove('hidden');
-            arrow.classList.add('rotate-180');
-        } else {
-            element.classList.add('hidden');
-            showText.classList.remove('hidden');
-            hideText.classList.add('hidden');
-            arrow.classList.remove('rotate-180');
-        }
-    }
-
-    function toggleAchievementsCerts(id) {
-        const element = document.getElementById(id);
-        const counter = id.split('-')[1];
-
-        const showTextCert = document.getElementById('show-text-cert-' + counter);
-        const hideTextCert = document.getElementById('hide-text-cert-' + counter);
-        const arrowCert = document.getElementById('arrow-cert-' + counter);
-        
-        if (element.classList.contains('hidden')) {
-            element.classList.remove('hidden');
-            showTextCert.classList.add('hidden');
-            hideTextCert.classList.remove('hidden');
-            arrowCert.classList.add('rotate-180');
-        } else {
-            element.classList.add('hidden');
-            showTextCert.classList.remove('hidden');
-            hideTextCert.classList.add('hidden');
-            arrowCert.classList.remove('rotate-180');
-        }
-    }
-
     function toggleResponsibilities(id) {
         const element = document.getElementById(id);
         const counter = id.split('-')[1];

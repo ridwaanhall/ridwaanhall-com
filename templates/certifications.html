@@ -1,18 +1,4 @@
-<div class="mb-6 mt-6">
-    
-    <div class="flex flex-col md:flex-row justify-between items-center mb-4 border-b border-gray-700/50 pb-5 relative z-10">
-        {% if view_certs %}
-        <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-indigo-200">Featured Certifications</h2>
-        <a href="https://www.linkedin.com/in/ridwaanhall/details/certifications/" class="mt-3 md:mt-0 group flex items-center text-violet-400 hover:text-violet-300 transition-colors duration-300 font-medium">
-            <span>View More</span>
-            <svg class="w-4 h-4 ml-1.5 group-hover:translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-            </svg>
-        </a>
-        {% else %}
-        <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-indigo-200">Certifications</h2>
-        {% endif %}
-    </div>
+<div class="mt-6">
     
     <div class="space-y-4">
         {% for certification in certifications %}

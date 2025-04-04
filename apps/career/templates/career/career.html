@@ -114,17 +114,46 @@
                 </div>
             </div>
 
-            {% if experiences %}
-                {% include 'experiences.html' %}
-            {% endif %}
+            <div class="mb-6 border-b border-gray-700">
+                <div class="flex flex-wrap -mb-px text-sm font-medium text-center">
+                    <button id="tab-experiences" 
+                                    onclick="switchTab('experiences')" 
+                                    class="inline-block p-4 border-b-2 border-indigo-500 text-indigo-400 rounded-t-lg" 
+                                    aria-selected="true" role="tab">
+                        Experience
+                    </button>
+                    <button id="tab-education" 
+                                    onclick="switchTab('education')" 
+                                    class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-300 hover:border-gray-300" 
+                                    aria-selected="false" role="tab">
+                        Education
+                    </button>
+                    <button id="tab-certifications" 
+                                    onclick="switchTab('certifications')" 
+                                    class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-300 hover:border-gray-300" 
+                                    aria-selected="false" role="tab">
+                        Certifications
+                    </button>
+                </div>
+            </div>
 
-            {% if education %}
-                {% include 'education.html' %}
-            {% endif %}
-
-            {% if certifications %}
-                {% include 'certifications.html' %}
-            {% endif %}
+            <div class="tab-content">
+                <div id="content-experiences" class="block">
+                    {% if experiences %}
+                        {% include 'experiences.html' %}
+                    {% endif %}
+                </div>
+                <div id="content-education" class="hidden">
+                    {% if education %}
+                        {% include 'education.html' %}
+                    {% endif %}
+                </div>
+                <div id="content-certifications" class="hidden">
+                    {% if certifications %}
+                        {% include 'certifications.html' %}
+                    {% endif %}
+                </div>
+            </div>
 
         </div>
     </main>
@@ -192,6 +221,32 @@
             showTextResp.classList.remove('hidden');
             hideTextResp.classList.add('hidden');
             arrowResp.classList.remove('rotate-180');
+        }
+    }
+
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-content > div').forEach(content => {
+            content.classList.add('hidden');
+            content.classList.remove('block');
+        });
+        
+        const selectedContent = document.getElementById('content-' + tabName);
+        if (selectedContent) {
+            selectedContent.classList.remove('hidden');
+            selectedContent.classList.add('block');
+        }
+        
+        document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+            tab.classList.remove('border-indigo-500', 'text-indigo-400');
+            tab.classList.add('border-transparent');
+            tab.setAttribute('aria-selected', 'false');
+        });
+        
+        const selectedTab = document.getElementById('tab-' + tabName);
+        if (selectedTab) {
+            selectedTab.classList.remove('border-transparent');
+            selectedTab.classList.add('border-indigo-500', 'text-indigo-400');
+            selectedTab.setAttribute('aria-selected', 'true');
         }
     }
 </script>

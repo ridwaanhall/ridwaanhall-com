@@ -108,7 +108,7 @@
 
             <div class="prose prose-lg prose-invert max-w-none mb-10">
                 {% for paragraph in blog.content %}
-                    <p class="text-gray-300 mb-6">{{ paragraph }}</p>
+                    <p class="text-gray-300">{{ paragraph|safe }}</p>
                 {% endfor %}
             </div>
 

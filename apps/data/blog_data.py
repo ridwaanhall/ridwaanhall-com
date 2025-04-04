@@ -122,5 +122,33 @@ class BlogData:
             ],
             "tags": ["Eid al-Fitr", "Prophet Muhammad", "Islam", "Traditions", "Community"],
             "is_featured": True
+        },
+        {
+            "id": 8,
+            "title": "Mastering Conventional Commits: A Developer's Guide",
+            "description": "Learn how to craft meaningful commit messages that tell your project's story with style and clarity.",
+            "image_url": "https://ridwaanhall.me/static/img/blog/conventional_commits_guide.webp",
+            "date": "April 4, 2025",
+            "author": "Ridwan Halim",
+            "username": "ridwaanhall",
+            "author_image": "https://ridwaanhall.me/static/img/ridwaanhall.webp",
+            "is_featured": False,
+            "content": [
+                "When it comes to coding, commit messages are more than just notes—they're your story in the making. Conventional Commit standards make this process cleaner and more exciting. Here's how you can rock those commits:",
+                    "<ul class='list-disc pl-5'>",
+                    "<li><span class='font-bold text-blue-500'>✨ feat:</span> Add something fresh and exciting! Use it to introduce new features that wow your users. Example: <span class='font-mono text-blue-500'>feat: add user authentication module</span></li>",
+                    "<li><span class='font-bold text-red-500'>🛠️ fix:</span> Bugs, begone! Squash errors and keep your code pristine. Example: <span class='font-mono text-red-500'>fix: correct login validation error</span></li>",
+                    "<li><span class='font-bold text-yellow-500'>📝 docs:</span> Because words matter too! Highlight updates or fixes in documentation. Example: <span class='font-mono text-yellow-500'>docs: update API usage in README</span></li>",
+                    "<li><span class='font-bold text-purple-500'>🎨 style:</span> Keep it chic! Perfect your code format without touching its logic. Example: <span class='font-mono text-purple-500'>style: format files using Prettier</span></li>",
+                    "<li><span class='font-bold text-orange-500'>🔄 refactor:</span> Code overhaul, anyone? Streamline and improve without altering the behavior. Example: <span class='font-mono text-orange-500'>refactor: optimize database queries</span></li>",
+                    "<li><span class='font-bold text-pink-500'>🧪 test:</span> Test smarter, not harder! Add or update those life-saving test cases. Example: <span class='font-mono text-pink-500'>test: add unit tests for user service</span></li>",
+                    "<li><span class='font-bold text-green-500'>⚡ perf:</span> Faster, smoother, better! Use this for jaw-dropping performance improvements. Example: <span class='font-mono text-green-500'>perf: improve image rendering efficiency</span></li>",
+                    "<li><span class='font-bold text-indigo-500'>🤖 ci:</span> Automation is key! Make updates to the Continuous Integration setup. Example: <span class='font-mono text-indigo-500'>ci: update GitHub Actions workflow</span></li>",
+                    "<li><span class='font-bold text-gray-500'>🛠️ build:</span> Solid foundations matter! Updates affecting your build system or dependencies. Example: <span class='font-mono text-gray-500'>build: add webpack config for production build</span></li>",
+                    "<li><span class='font-bold text-teal-500'>🚧 chore:</span> Maintenance never stops! For those routine tasks that keep everything in top shape. Example: <span class='font-mono text-teal-500'>chore: update npm dependencies</span></li>",
+                    "<li><span class='font-bold text-rose-500'>⏪ revert:</span> Second chances are everything! Undo past commits and start fresh. Example: <span class='font-mono text-rose-500'>revert: revert commit abc123 due to bug</span></li>",
+                    "</ul>"
+            ],
+            "tags": ["Conventional Commits", "Git", "Commit Messages", "Coding Standards", "Development"],
         }
     ]

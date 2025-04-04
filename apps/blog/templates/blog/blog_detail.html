@@ -108,7 +108,7 @@
 
             <div class="prose prose-lg prose-invert max-w-none mb-10">
                 {% for paragraph in blog.content %}
-                    <p class="text-gray-300 mb-6">{{ paragraph }}</p>
+                    <p class="text-gray-300">{{ paragraph|safe }}</p>
                 {% endfor %}
             </div>
 
@@ -116,16 +116,7 @@
                 <h2 class="text-xl font-semibold text-white mb-3">Tags</h2>
                 <div class="flex flex-wrap gap-2">
                     {% for tag in blog.tags %}
-                    <span class="font-medium rounded-full px-2.5 py-1 font-mono text-xs 
-                        {% with color_index=forloop.counter0|divisibleby:6 %}
-                            {% if forloop.counter0|divisibleby:6 %}bg-purple-600/90 text-purple-200
-                            {% elif forloop.counter0|divisibleby:5 %}bg-blue-600/90 text-blue-200
-                            {% elif forloop.counter0|divisibleby:4 %}bg-green-600/90 text-green-200
-                            {% elif forloop.counter0|divisibleby:3 %}bg-yellow-600/90 text-yellow-200
-                            {% elif forloop.counter0|divisibleby:2 %}bg-red-600/90 text-red-200
-                            {% else %}bg-indigo-600/90 text-indigo-200
-                            {% endif %}
-                        {% endwith %}">
+                    <span class="text-xs font-medium rounded-full bg-gray-600 px-2.5 py-1 font-mono text-gray-300">
                         #{{ tag|slugify }}
                     </span>
                     {% endfor %}

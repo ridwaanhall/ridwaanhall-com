@@ -2,7 +2,7 @@
 
 🔥 Personal website was built originally from scratch using Django and TailwindCSS.
 
-![ridwaanhal](staticfiles/img/project/ridwaanhall_dev.webp)
+![ridwaanhal](public/ridwaanhall_dev.png)
 
 ---
 
@@ -10,75 +10,92 @@
 
 ## Introduction
 
-Welcome to my personal website repository! This site serves as my digital portfolio and personal brand showcase. The website features a clean, responsive design built completely from scratch using Django framework for the backend, with TailwindCSS and HTML for the frontend styling.
+Welcome to my personal website repository! This site serves as my digital portfolio and personal brand showcase. The website features a clean, responsive design built completely from scratch using Django framework for the backend, with TailwindCSS for the frontend styling.
 
 This project demonstrates my web development skills and provides visitors with information about my work, projects, and professional background. Feel free to explore the codebase to see how I've implemented various features and optimized the site for performance.
 
 ## Tech Stack
 
-- **Backend**: Django (Python web framework)
-- **Frontend**: HTML, TailwindCSS
-- **Programming Languages**: Python
-- **Deployment**: Vercel
-- **Version Control**: Git
+| Component | Technology/Tool |
+|-----------|-----------------|
+| Programming Languages | ![Python](https://img.shields.io/badge/-Python-05122A?style=flat&logo=python) |
+| Backend | ![Django](https://img.shields.io/badge/-Django-05122A?style=flat&logo=django) |
+| Frontend | ![TailwindCSS](https://img.shields.io/badge/-TailwindCSS-05122A?style=flat&logo=tailwindcss) |
+| Version Control | ![Git](https://img.shields.io/badge/-Git-05122A?style=flat&logo=git) ![GitHub](https://img.shields.io/badge/-GitHub-05122A?style=flat&logo=github) |
+| PaaS | ![Vercel](https://img.shields.io/badge/-Vercel-05122A?style=flat&logo=vercel) |
+| CDN | ![Cloudflare](https://img.shields.io/badge/-Cloudflare-05122A?style=flat&logo=cloudflare) |
+| Analytics | ![Cloudflare Browser Insights](https://img.shields.io/badge/-Cloudflare%20Browser%20Insights-05122A?style=flat&logo=cloudflare) |
+| Performance | ![Cloudflare Zaraz](https://img.shields.io/badge/-Cloudflare%20Zaraz-05122A?style=flat&logo=cloudflare) |
+| Security | ![HSTS](https://img.shields.io/badge/-HSTS-05122A?style=flat&logo=security) |
+| Miscellaneous | ![PWA](https://img.shields.io/badge/-PWA-05122A?style=flat&logo=pwa) ![Open Graph](https://img.shields.io/badge/-Open%20Graph-05122A?style=flat&logo=opengraph) ![HTTP/3](https://img.shields.io/badge/-HTTP%2F3-05122A?style=flat&logo=http) |
+
+## PageSpeed Insights
+
+The website has been optimized for performance across all devices, achieving near-perfect scores on Google PageSpeed Insights.
+
+### Desktop Performance
+
+[![Performance: 99](https://img.shields.io/badge/Performance-99-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=desktop)
+[![Accessibility: 100](https://img.shields.io/badge/Accessibility-100-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=desktop)
+[![Best Practices: 100](https://img.shields.io/badge/Best_Practices-100-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=desktop)
+[![SEO: 100](https://img.shields.io/badge/SEO-100-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=desktop)
+
+![PageSpeed Desktop](public/pagespeed_desktop.png)
+
+### Mobile Performance
+
+[![Performance: 97](https://img.shields.io/badge/Performance-97-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=mobile)
+[![Accessibility: 100](https://img.shields.io/badge/Accessibility-100-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=mobile)
+[![Best Practices: 100](https://img.shields.io/badge/Best_Practices-100-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=mobile)
+[![SEO: 100](https://img.shields.io/badge/SEO-100-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=mobile)
+
+![PageSpeed Mobile](public/pagespeed_mobile.png)
 
 ## Features
 
-- **JSON Data Management**: Uses JSON files for content storage instead of a database, making data easy to update and modify
-- **Responsive Design**: Fully responsive layout that works across all device sizes
-- **Portfolio Showcase**: Curated collection of my projects with descriptions and images
-- **Dashboard**: Interactive dashboard displaying coding metrics from WakaTime and GitHub activity statistics
-- **About Me Section**: Professional background and personal introduction
-- **Blog/Articles**: Sharing my thoughts and expertise on various topics
-- **Resume/CV Display**: Professional experience and qualifications
-- **Skills Showcase**: Visual representation of my technical skills
-- **Social Media Integration**: Links to my professional profiles
-- **SEO Optimization**: Enhanced discoverability through search engines
+| Feature | Description |
+|---------|-------------|
+| JSON Data Management | Uses JSON-Python files for content storage instead of a database, making data easy to update and modify |
+| Responsive Design | Fully responsive layout that works across all device sizes |
+| Portfolio Showcase | Curated collection of my projects with descriptions and images |
+| Dashboard | Interactive dashboard displaying coding metrics from WakaTime and GitHub activity statistics |
+| About Me Section | Professional background and personal introduction |
+| Blog/Articles | Sharing my thoughts and expertise on various topics |
+| Resume/CV Display | Professional experience and qualifications |
+| Skills Showcase | Visual representation of my technical skills |
+| Social Media Integration | Links to my professional profiles |
+| SEO Optimization | Enhanced discoverability through search engines |
 
 ## Getting Started
 
-1. **Clone the Repository**
+### Quick Setup
 
-    ```bash
-    git clone https://github.com/ridwaanhall/ridwaanhall_dev.git
-    cd ridwaanhall_dev
-    ```
+```bash
+git clone https://github.com/ridwaanhall/ridwaanhall_dev.git
+cd ridwaanhall_dev
+python -m venv venv
+# Windows: venv\Scripts\activate | macOS/Linux: source venv/bin/activate
+pip install -r requirements.txt
+python manage.py runserver
+```
 
-2. **Create and Activate Virtual Environment**
+### Environment Configuration
 
-    ```bash
-    # On Windows
-    virtualenv venv
-    venv\Scripts\activate
+Create a `.env` file in the root directory with:
 
-    # On macOS/Linux
-    virtualenv venv
-    source venv/bin/activate
-    ```
+```txt
+SECRET_KEY="YOUR_DJANGO_SECRET_KEY"
+ACCESS_TOKEN="YOUR_GITHUB_ACCESS_TOKEN"
+WAKATIME_API_KEY="YOUR_WAKATIME_API_KEY"
+```
 
-3. **Install Requirements**
+- **SECRET_KEY**: Generate with `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`
+- **ACCESS_TOKEN**: Generate at [GitHub Settings/Tokens](https://github.com/settings/tokens)
+- **WAKATIME_API_KEY**: Available at [WakaTime Settings](https://wakatime.com/settings/account)
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+### Customization
 
-4. **Set Up Environment Variables**
-    Create a `.env` file in the root directory and add necessary environment variables:
-
-    ```txt
-    SECRET_KEY="YOUR_DJANGO_SECRET_KEY"
-    ACCESS_TOKEN="YOUR_GITHUB_ACCESS_TOKEN"
-    WAKATIME_API_KEY="YOUR_WAKATIME_API_KEY"
-    ```
-
-5. **Run Development Server**
-
-    ```bash
-    python manage.py runserver
-    ```
-
-6. **Customize Content**
-    You can modify the website content by editing the data files located in `apps/data/appsname_data.py`. This allows you to update information without changing the core application code.
+Update content by modifying the data files in `apps/data/appsname_data.py`.
 
 ## Project Structure
 
@@ -87,7 +104,7 @@ ridwaanhall_dev/
 ├── apps/              # Django apps containing specific features
 │   ├── data/          # Data files for content
 │   ├── ...
-├── static/            # Static files (CSS, JS, images)
+├── staticfiles/       # Static files (CSS, JS, images)
 ├── templates/         # HTML templates
 ├── manage.py          # Django management script
 └── ...
@@ -116,6 +133,9 @@ Contributions are welcome! If you'd like to contribute:
 
 ## Contact
 
-- Website: [ridwaanhall.me](https://ridwaanhall.me)
-- GitHub: [@ridwaanhall](https://github.com/ridwaanhall)
-- Twitter/X: [@ridwaanhall](https://x.com/ridwaanhall)
+| Platform   | Contact                                               |
+|------------|-------------------------------------------------------|
+| Email      | [ridwaanhall.dev@gmail.com](mailto:ridwaanhall.dev@gmail.com) |
+| Website    | [ridwaanhall.me](https://ridwaanhall.me)              |
+| GitHub     | [@ridwaanhall](https://github.com/ridwaanhall)        |
+| Twitter/X  | [@ridwaanhall](https://x.com/ridwaanhall)             |

@@ -24,7 +24,7 @@ This project demonstrates my web development skills and provides visitors with i
 | Version Control | ![Git](https://img.shields.io/badge/-Git-05122A?style=flat&logo=git) ![GitHub](https://img.shields.io/badge/-GitHub-05122A?style=flat&logo=github) |
 | PaaS | ![Vercel](https://img.shields.io/badge/-Vercel-05122A?style=flat&logo=vercel) |
 | CDN | ![Cloudflare](https://img.shields.io/badge/-Cloudflare-05122A?style=flat&logo=cloudflare) |
-| Analytics | ![Cloudflare Browser Insights](https://img.shields.io/badge/-Cloudflare%20Browser%20Insights-05122A?style=flat&logo=cloudflare) |
+| Analytics | ![Cloudflare Browser Insights](https://img.shields.io/badge/-Cloudflare%20Browser%20Insights-05122A?style=flat&logo=cloudflare) ![Umami](https://img.shields.io/badge/-Umami-05122A?style=flat&logo=umami) |
 | Performance | ![Cloudflare Zaraz](https://img.shields.io/badge/-Cloudflare%20Zaraz-05122A?style=flat&logo=cloudflare) |
 | Security | ![HSTS](https://img.shields.io/badge/-HSTS-05122A?style=flat&logo=security) |
 | Miscellaneous | ![PWA](https://img.shields.io/badge/-PWA-05122A?style=flat&logo=pwa) ![Open Graph](https://img.shields.io/badge/-Open%20Graph-05122A?style=flat&logo=opengraph) ![HTTP/3](https://img.shields.io/badge/-HTTP%2F3-05122A?style=flat&logo=http) |

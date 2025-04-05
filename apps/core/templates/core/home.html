@@ -107,7 +107,7 @@
                         "image": "{{ about.image_url|default:"N/A" }}",
                         "url": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/"
                     },
-                    "keywords": "featured project{{ project.category }}, {{ project.tech_stack|join:', ' }}"
+                    "keywords": "featured project, {% for tech in project.tech_stack %}{{ tech.name|join:'' }}{% if not forloop.last %}, {% endif %}{% endfor %}",
                 }
             }{% if not forloop.last %},{% endif %}
             {% endfor %}

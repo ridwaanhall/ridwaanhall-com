@@ -1,54 +1,78 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render
-import logging
+from django.core.exceptions import SuspiciousOperation
 
 from apps.data.experiences_data import ExperiencesData
 from apps.data.certifications_data import CertificationsData
 from apps.data.education_data import EducationData
 from apps.data.about_data import AboutData
 
-logger = logging.getLogger(__name__)
 
-class CareerView(TemplateView):
+class BaseCareerView(TemplateView):
+    """
+    Base view for career-related pages.
+    Provides about data, error rendering, and exception handling.
+    """
+
+    def get_about(self):
+        return AboutData.get_about_data()[0]
+
+    def get_common_context(self):
+        return {
+            'about': self.get_about()
+        }
+
+    def render_error(self, request, status_code, message=None):
+        context = {'error_code': status_code}
+        if message:
+            context['error_message'] = message
+        return render(request, 'error.html', context, status=status_code)
+
+    def handle_exceptions(self, func):
+        """
+        Decorator-like method to handle exceptions in views.
+        """
+        def wrapper(request, *args, **kwargs):
+            try:
+                return func(request, *args, **kwargs)
+            except SuspiciousOperation:
+                return self.render_error(request, 400)
+            except (AttributeError, TypeError, KeyError):
+                return self.render_error(request, 500, 'Data processing error occurred.')
+            except (FileNotFoundError, ImportError):
+                return self.render_error(request, 500, 'Resource loading error occurred.')
+            except Exception:
+                return self.render_error(request, 500, 'An unexpected error occurred.')
+        return wrapper
+
+
+class CareerView(BaseCareerView):
+    """
+    Displays the career/resume page with experiences, education, and certifications.
+    """
     template_name = 'career/career.html'
-    error_template_name = 'error.html'
-    
-    def get_context_data(self, **kwargs):
-        """Prepare context data for the template"""
-        context = super().get_context_data(**kwargs)
-        about = AboutData.get_about_data()[0]
-        
+
+    def get(self, request, *args, **kwargs):
+        return self.handle_exceptions(self._get)(request, *args, **kwargs)
+
+    def _get(self, request, *args, **kwargs):
+        context = self.get_common_context()
+        about = context['about']
+
         context.update({
             'view_certs': 'true',
             'view': False,
             'experiences': ExperiencesData.experiences,
             'education': EducationData.education,
             'certifications': CertificationsData.certifications,
-            'about': about,
-            'seo': self._get_seo_data(about),
-        })
-        return context
-    
-    def _get_seo_data(self, about):
-        """Generate SEO metadata"""
-        return {
-            'title': f"Career & Resume | {about['name']} - Professional Experience",
-            'description': f"Explore {about['name']}'s professional journey, education, work experience, and certifications. View full resume and career highlights.",
-            'keywords': f"{about['name']}, resume, CV, career, professional experience, certifications, education, work history",
-            'og_image': about.get('image_url', ''),
-            'og_type': 'profile',
-            'twitter_card': 'summary',
-        }
-    
-    def get(self, request, *args, **kwargs):
-        try:
-            context = self.get_context_data(**kwargs)
-            return render(request, self.template_name, context)
-        except Exception as e:
-            logger.error(f"Error in CareerView: {str(e)}", exc_info=True)
-            
-            error_context = {
-                'error_code': 500,
-                'error_message': 'An unexpected error occurred. Please try again later.'
+            'seo': {
+                'title': f"Career & Resume | {about['name']} - Professional Experience",
+                'description': f"Explore {about['name']}'s professional journey, education, work experience, and certifications.",
+                'keywords': f"{about['name']}, resume, CV, career, professional experience, certifications, education, work history",
+                'og_image': about.get('image_url', ''),
+                'og_type': 'profile',
+                'twitter_card': 'summary_large_image',
             }
-            return render(request, self.error_template_name, error_context, status=500)
+        })
+
+        return self.render_to_response(context)

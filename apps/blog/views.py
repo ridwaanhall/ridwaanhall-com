@@ -1,99 +1,113 @@
+from django.views.generic import TemplateView
 from django.shortcuts import render
-from django.views import View
 from django.utils.text import slugify
+from django.http import Http404
 from django.core.exceptions import SuspiciousOperation
-from functools import wraps
 
 from apps.data.blog_data import BlogData
 from apps.data.about_data import AboutData
 
-def handle_exceptions(view_method):
-    @wraps(view_method)
-    def wrapper(self, request, *args, **kwargs):
-        try:
-            return view_method(self, request, *args, **kwargs)
-        except SuspiciousOperation:
-            return self.render_error(request, 400)
-        except (AttributeError, TypeError, KeyError):
-            return self.render_error(request, 500, 'Data processing error occurred.')
-        except (FileNotFoundError, ImportError):
-            return self.render_error(request, 500, 'Resource loading error occurred.')
-        except Exception:
-            return self.render_error(request, 500, 'An unexpected error occurred.')
-    return wrapper
 
-class BaseBlogView(View):
-    def get_common_data(self):
+class BaseBlogView(TemplateView):
+    """
+    Base view for blog-related pages.
+    Handles context, SEO, and error rendering.
+    """
 
-        all_blogs = BlogData.blogs
-        # all_blogs = sorted(all_blogs, key=lambda blog: blog.get('date', ''), reverse=True)
-        
-        # short by id from high to low
-        all_blogs.sort(key=lambda blog: (-blog.get('id', 0)))
-        
-        # short by featured and date based on id
-        # all_blogs.sort(key=lambda blog: (not blog.get('is_featured', False), -blog.get('id', 0)))
-        
+    def get_about(self):
+        return AboutData.get_about_data()[0]
+
+    def get_blogs(self):
+        return sorted(BlogData.blogs, key=lambda blog: -blog.get('id', 0))
+
+    def get_common_context(self):
         return {
-            'blogs': all_blogs,
-            'about': AboutData.get_about_data()[0]
+            'blogs': self.get_blogs(),
+            'about': self.get_about()
         }
-    
-    def render_error(self, request, code, message=None):
-        context = {'error_code': code}
+
+    def render_error(self, request, status_code, message=None):
+        context = {'error_code': status_code}
         if message:
             context['error_message'] = message
-        return render(request, 'error.html', context, status=code)
+        return render(request, 'error.html', context, status=status_code)
+
+    def handle_exceptions(self, func):
+        """
+        Decorator to wrap the GET method with exception handling.
+        """
+        def wrapper(request, *args, **kwargs):
+            try:
+                return func(request, *args, **kwargs)
+            except SuspiciousOperation:
+                return self.render_error(request, 400)
+            except (AttributeError, TypeError, KeyError):
+                return self.render_error(request, 500, 'Data processing error occurred.')
+            except (FileNotFoundError, ImportError):
+                return self.render_error(request, 500, 'Resource loading error occurred.')
+            except Exception:
+                return self.render_error(request, 500, 'An unexpected error occurred.')
+        return wrapper
+
 
 class BlogView(BaseBlogView):
-    @handle_exceptions
-    def get(self, request):
-        data = self.get_common_data()
-        
-        seo = {
-            'title': f"Blog | {data['about']['name']} - Articles and Insights",
-            'description': f"Explore articles, tutorials, and insights by {data['about']['name']} about technology, development, and programming.",
-            'keywords': f"blog, articles, tech blog, programming, tutorials, {data['about']['name']}, developer insights",
-            'og_image': data['about'].get('image_url', ''),
+    """
+    Displays the main blog list page with all blog posts and SEO metadata.
+    """
+    template_name = 'blog/blog.html'
+
+    def get(self, request, *args, **kwargs):
+        return self.handle_exceptions(self._get)(request, *args, **kwargs)
+
+    def _get(self, request, *args, **kwargs):
+        context = self.get_common_context()
+        about = context['about']
+        context['seo'] = {
+            'title': f"Blog | {about['name']} - Articles and Insights",
+            'description': f"Explore articles, tutorials, and insights by {about['name']} about technology, development, and programming.",
+            'keywords': f"blog, articles, tech blog, programming, tutorials, {about['name']}, developer insights",
+            'og_image': about.get('image_url', ''),
             'og_type': 'website',
             'twitter_card': 'summary_large_image',
         }
-        
-        context = {
-            'blogs': data['blogs'],
-            'about': data['about'],
-            'seo': seo,
-        }
-        
-        return render(request, 'blog/blog.html', context)
+        return self.render_to_response(context)
+
 
 class BlogDetailView(BaseBlogView):
-    @handle_exceptions
-    def get(self, request, title):
+    """
+    Displays a specific blog post detail view by slugified title.
+    """
+    template_name = 'blog/blog_detail.html'
+
+    def get(self, request, title, *args, **kwargs):
+        return self.handle_exceptions(lambda r, *a, **kw: self._get(r, title, *a, **kw))(request, *args, **kwargs)
+
+    def _get(self, request, title, *args, **kwargs):
         if not isinstance(title, str):
             raise SuspiciousOperation("Invalid title format")
-            
-        data = self.get_common_data()
-        blog_post = next((item for item in data['blogs'] if slugify(item['title']) == title), None)
-        
-        if not blog_post:
-            return self.render_error(request, 404)
-            
-        seo = {
-            'title': f"{blog_post['title']} | {data['about']['name']}",
-            'description': blog_post['description'],
-            'keywords': f"{', '.join(blog_post['tags'])}, {data['about']['name']}, blog, article",
-            'og_image': blog_post.get('image_url', data['about'].get('image_url', '')),
+
+        context = self.get_common_context()
+        about = context['about']
+
+        blog = next(
+            (b for b in context['blogs'] if slugify(b['title']) == title),
+            None
+        )
+
+        if not blog:
+            raise Http404("Blog not found")
+
+        context['blog'] = blog
+        context['seo'] = {
+            'title': f"{blog['title']} | {about['name']}",
+            'description': blog.get('description', ''),
+            'keywords': f"{', '.join(blog.get('tags', []))}, {about['name']}, blog, article",
+            'og_image': blog.get('image_url', about.get('image_url', '')),
             'og_type': 'article',
             'twitter_card': 'summary_large_image',
-            'published_date': blog_post.get('date', ''),
-            'author': blog_post.get('author', data['about']['name']),
-            'tags': blog_post.get('tags', []),
+            'published_date': blog.get('date', ''),
+            'author': blog.get('author', about['name']),
+            'tags': blog.get('tags', []),
         }
-        
-        context = {
-            'blog': blog_post,
-            'about': data['about'],
-            'seo': seo,
-        }
-        return render(request, 'blog/blog_detail.html', context)
+
+        return self.render_to_response(context)

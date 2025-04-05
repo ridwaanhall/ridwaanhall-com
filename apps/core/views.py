@@ -13,11 +13,14 @@ from apps.data.services_data import ServicesData
 
 class BasePortfolioView(TemplateView):
     """Base view for portfolio pages with common error handling and data access."""
-    
+
     def get_about_data(self):
-        """Get about data safely."""
-        return AboutData.get_about_data()[0]
-        
+        """Safely get about data with fallback."""
+        about_data = AboutData.get_about_data()
+        if not about_data:
+            raise FileNotFoundError("About data is missing.")
+        return about_data[0]
+
     def get_seo_data(self, title, description, keywords, og_type='website', twitter_card='summary'):
         """Generate consistent SEO metadata."""
         about = self.get_about_data()
@@ -29,20 +32,7 @@ class BasePortfolioView(TemplateView):
             'og_type': og_type,
             'twitter_card': twitter_card,
         }
-    
-    def render_with_error_handling(self, request, template_name, context):
-        """Render template with standardized error handling."""
-        try:
-            return render(request, template_name, context)
-        except AttributeError:
-            return self.render_error(request, 'Internal server error occurred.')
-        except (TypeError, KeyError):
-            return self.render_error(request, 'Data processing error occurred.')
-        except (FileNotFoundError, ImportError):
-            return self.render_error(request, 'Resource loading error occurred.')
-        except Exception:
-            return self.render_error(request, 'An unexpected error occurred.')
-    
+
     def render_error(self, request, message):
         """Render error page with consistent formatting."""
         context = {
@@ -51,13 +41,38 @@ class BasePortfolioView(TemplateView):
         }
         return render(request, 'error.html', context, status=500)
 
+    def render_not_found(self, request, message="Page not found."):
+        """Render 404 error page."""
+        context = {
+            'error_code': 404,
+            'error_message': message
+        }
+        return render(request, 'error.html', context, status=404)
+
+    def handle_exceptions(self, func):
+        """Decorator to handle exceptions in views."""
+        def wrapper(request, *args, **kwargs):
+            try:
+                return func(request, *args, **kwargs)
+            except AttributeError:
+                return self.render_error(request, 'Internal server error occurred.')
+            except (TypeError, KeyError):
+                return self.render_error(request, 'Data processing error occurred.')
+            except (FileNotFoundError, ImportError):
+                return self.render_error(request, 'Resource loading error occurred.')
+            except Exception:
+                return self.render_error(request, 'An unexpected error occurred.')
+        return wrapper
+
 
 class HomeView(BasePortfolioView):
     template_name = 'core/home.html'
-    
+
     def get(self, request, *args, **kwargs):
+        return self.handle_exceptions(self._get)(request, *args, **kwargs)
+
+    def _get(self, request, *args, **kwargs):
         about = self.get_about_data()
-        
         context = {
             'view': True,
             'view_certs': True,
@@ -75,16 +90,17 @@ class HomeView(BasePortfolioView):
                 twitter_card='summary_large_image'
             ),
         }
-        
-        return self.render_with_error_handling(request, self.template_name, context)
+        return render(request, self.template_name, context)
 
 
 class AboutView(BasePortfolioView):
     template_name = 'core/about.html'
-    
+
     def get(self, request, *args, **kwargs):
+        return self.handle_exceptions(self._get)(request, *args, **kwargs)
+
+    def _get(self, request, *args, **kwargs):
         about = self.get_about_data()
-        
         context = {
             'view': True,
             'experiences': [exp for exp in ExperiencesData.experiences if exp.get('is_current')],
@@ -97,18 +113,18 @@ class AboutView(BasePortfolioView):
                 og_type='profile'
             ),
         }
-        
-        return self.render_with_error_handling(request, self.template_name, context)
+        return render(request, self.template_name, context)
 
 
 class ContactView(BasePortfolioView):
     template_name = 'core/contact.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return self.handle_exceptions(self._get)(request, *args, **kwargs)
+
+    def _get(self, request, *args, **kwargs):
         about = self.get_about_data()
-        
-        context.update({
+        context = {
             'view': True,
             'about': about,
             'current_time': timezone.localtime(timezone.now()),
@@ -117,10 +133,5 @@ class ContactView(BasePortfolioView):
                 description=f"Contact {about['name']} for collaboration, job opportunities, or consulting. Get in touch today!",
                 keywords=f"{about['name']}, contact, get in touch, email, message, connect"
             ),
-        })
-        
-        return context
-        
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-        return self.render_with_error_handling(request, self.template_name, context)
+        }
+        return render(request, self.template_name, context)

@@ -109,7 +109,7 @@ class GitHubStatsCalculator:
             first_day = timezone.make_aware(first_day) if timezone.is_naive(first_day) else first_day
             
             # Determine if this is the current week
-            last_day = first_day + timedelta(days=6)
+            last_day = first_day + timedelta(days=7)
             if first_day <= today <= last_day:
                 current_week = week
             

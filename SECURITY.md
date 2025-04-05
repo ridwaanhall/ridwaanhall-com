@@ -2,15 +2,23 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+This project supports the following versions of dependencies as specified in `requirements.txt`:
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| Package | Version |
+| ------- | ------- |
+| asgiref | 3.8.1 |
+| certifi | 2025.1.31 |
+| charset-normalizer | 3.4.1 |
+| Django | 5.2 |
+| idna | 3.10 |
+| python-decouple | 3.8 |
+| requests | 2.32.3 |
+| sqlparse | 0.5.3 |
+| tzdata | 2025.1 |
+| urllib3 | 2.3.0 |
+| whitenoise | 6.9.0 |
+
+Please ensure you're using a supported version to receive security updates.
 
 ## Reporting a Vulnerability
 

@@ -1,0 +1,76 @@
+<div class="mt-8">
+    <div class="space-y-6">
+        {% for interview in interviews %}
+        <!-- Interview application card -->
+        <div class="group rounded-xl shadow-lg overflow-hidden border border-gray-700/40 transition-all duration-300 hover:border-indigo-500/60 hover:shadow-xl hover:shadow-indigo-500/10 backdrop-blur-sm">
+            <div class="p-5">
+                <div class="flex flex-col md:flex-row md:items-start gap-5">
+                    <div class="flex-grow">
+                        <!-- Header section -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                            <h3 class="text-xl font-bold text-white">{{ interview.company_name }}</h3>
+                            <span
+                                class="inline-flex items-center text-xs font-medium px-3 py-1.5 rounded-full border shadow-sm whitespace-nowrap transition-all"
+                                :class="{'text-green-300 bg-green-900/20 border-green-700/30': '{{ interview.status }}' == 'Accepted', 
+                                  'text-red-300 bg-red-900/20 border-red-700/30': '{{ interview.status }}' == 'Rejected',
+                                  'text-yellow-300 bg-amber-900/20 border-yellow-700/30': '{{ interview.status }}' == 'In Progress'}"
+                            >
+                                {{ interview.status }}
+                            </span>
+                        </div>
+        
+                        <!-- Info section -->
+                        <p class="text-blue-200 mb-2 italic text-sm font-medium">Position: {{ interview.position }}</p>
+        
+                        <!-- Toggle button -->
+                        <div class="mt-5 flex flex-wrap gap-2">
+                            <button
+                                type="button"
+                                class="inline-flex items-center text-sm py-1.5 px-3 rounded-md bg-gradient-to-r from-violet-600/90 to-indigo-600/90 text-white hover:from-violet-500 hover:to-indigo-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:ring-offset-1 focus:ring-offset-gray-900"
+                                onclick="toggleJourney('journey-details-{{ forloop.counter }}')"
+                                aria-expanded="false"
+                                aria-controls="journey-details-{{ forloop.counter }}"
+                            >
+                                <span id="show-journey-{{ forloop.counter }}">View Application Journey</span>
+                                <span id="hide-journey-{{ forloop.counter }}" class="hidden">Hide Details</span>
+                                <svg class="w-4 h-4 ml-2 transition-transform duration-200 ease-out" id="arrow-journey-{{ forloop.counter }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                        </div>
+        
+                        <!-- Expandable content -->
+                        <div id="journey-details-{{ forloop.counter }}" class="hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out opacity-0 max-h-0" style="transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;">
+                            <div class="p-4 rounded-lg bg-gray-800/50 border border-gray-700/50">
+                                <ul class="space-y-3 text-gray-200 text-sm">
+                                    {% for step in interview.journey %}
+                                    <li class="flex items-start group pl-1 py-1 hover:bg-gray-800/30 rounded-md transition-colors duration-150">
+                                        <svg
+                                            class="w-5 h-5 text-indigo-400 mr-3 mt-0.5 flex-shrink-0 group-hover:text-indigo-300 transition-colors duration-200"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <span class="group-hover:text-gray-100 transition-colors duration-200"><span class="font-medium text-indigo-300">{{ step.title }}:</span> {{ step.details }}</span>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+        
+                        <!-- Lessons learned section -->
+                        <div class="mt-5 pt-4 border-t border-gray-700/30">
+                            <p class="text-gray-200"><span class="font-semibold text-indigo-300">Lessons Learned:</span> {{ interview.lessons_learned }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of interview card -->
+        {% endfor %}        
+    </div>
+
+</div>

@@ -5,6 +5,7 @@ from django.core.exceptions import SuspiciousOperation
 from apps.data.experiences_data import ExperiencesData
 from apps.data.certifications_data import CertificationsData
 from apps.data.education_data import EducationData
+from apps.data.interviews_data import InterviewsData
 from apps.data.about_data import AboutData
 
 
@@ -65,6 +66,7 @@ class CareerView(BaseCareerView):
             'experiences': ExperiencesData.experiences,
             'education': EducationData.education,
             'certifications': CertificationsData.certifications,
+            'interviews': InterviewsData.interviews,
             'seo': {
                 'title': f"Career & Resume | {about['name']} - Professional Experience",
                 'description': f"Explore {about['name']}'s professional journey, education, work experience, and certifications.",

@@ -29,5 +29,23 @@ class CertificationsData:
                 "Built sentiment analysis models with Deep Learning and SVM",
                 "Developed recommendation systems with Content-based and Collaborative Filtering"
             ]
+        },
+        {
+            "id": 3,
+            "title": "Building a Personal Portfolio with Django",
+            "credential_url": "https://www.linkedin.com/learning/certificates/f8a7650056c8c53c7cd79e25aa0f2fe70a23b1fcf6ce9c9b5e5fb8f928b3c9cb",
+            "issued": "Oct 2023",
+            "institution": "LinkedIn Learning",
+            "website": "https://www.linkedin.com",
+            "logo": "https://ridwaanhall.me/static/img/logo/linkedin.webp",
+            "is_featured": True,
+            "achievements": [
+                "Learned basics of Django for web development",
+                "Built a personal portfolio website from the ground up",
+                "Created a database and designed website layout",
+                "Added and updated URL paths",
+                "Connected Django project to Postgres"
+            ]
         }
+
     ]

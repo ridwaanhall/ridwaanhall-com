@@ -1,17 +1,89 @@
 class InterviewsData:
+    '''
+    {
+        'company_name': '',
+        'status': '',  # Can be 'Accepted', 'Rejected', or 'In Progress'
+        'position': '',
+        'journey': [
+            {
+                'title': '',
+                'details': '',
+                'notes': ''
+            },
+        ],
+        'lessons_learned': ''
+    },
+    '''
     interviews = [
         {
-            "company_name": "Company Name",
-            "status": "In Progress",  # Can be "Accepted", "Rejected", or "In Progress"
-            "position": "Position Title",
-            "journey": [
+            'company_name': 'Dicoding Indonesia',
+            'status': 'Accepted',
+            'position': 'Machine Learning Mentor',
+            'journey': [
                 {
-                    "title": "Resume Submission",
-                    "details": "Submission details and date"
+                    'title': 'Initial Contact',
+                    'details': 'Received email invitation to become a mentor',
+                    'notes': '-'
                 },
-                # Additional journey steps can be added here
+                {
+                    'title': 'Application Process',
+                    'details': 'Completed Google form with personal data, motivation, photo, and experience details',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Course Completion',
+                    'details': 'Required to complete the course I would be mentoring',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Interview',
+                    'details': 'Discussed personal background, motivation, and problem-solving skills',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Final Result',
+                    'details': 'Accepted for the Machine Learning Mentor position',
+                    'notes': '-'
+                },
             ],
-            "lessons_learned": "Key insights from this application process"
+            'lessons_learned': 'Thoroughly studying the documentation provided by the HR team significantly increases the likelihood of a successful application outcome.'
         },
-        # Additional interview entries would go here
+        {
+            'company_name': 'HashMicro',
+            'status': 'In Progress',
+            'position': 'Django Developer',
+            'journey': [
+                {
+                    'title': 'Initial Contact',
+                    'details': 'HR reached out through LinkedIn with an interview link',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Technical Interview',
+                    'details': 'Discussed Django class views vs function views and salary expectations',
+                    'notes': '<span class="text-red-600">They asked me to turn on my camera, but not theirs</span>'
+                },
+                {
+                    'title': 'Application Process',
+                    'details': 'Directed to apply formally through the company website',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Assessment Tests',
+                    'details': 'Completed logical reasoning psychological test and technical assessment',
+                    'notes': '-'
+                },
+                {
+                    'title': 'User Interview',
+                    'details': 'Final interview with the user/client team',
+                    'notes': '<span class="text-red-600">They asked me to turn on my camera, but not theirs</span>'
+                },
+                {
+                    'title': 'Waiting for Feedback',
+                    'details': 'Currently awaiting decision from the company',
+                    'notes': '-'
+                },
+            ],
+            'lessons_learned': 'Requiring candidates to turn on their cameras while not reciprocating may reflect a lack of mutual respect and transparency, which can leave a negative impression of the organization\'s values.'
+        },
     ]

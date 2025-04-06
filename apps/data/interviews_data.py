@@ -1,8 +1,8 @@
 class InterviewsData:
-    '''
+    ''' # Can be 'Accepted', 'Rejected', or 'In Progress'
     {
         'company_name': '',
-        'status': '',  # Can be 'Accepted', 'Rejected', or 'In Progress'
+        'status': '',
         'position': '',
         'journey': [
             {
@@ -85,5 +85,33 @@ class InterviewsData:
                 },
             ],
             'lessons_learned': 'Requiring candidates to turn on their cameras while not reciprocating may reflect a lack of mutual respect and transparency, which can leave a negative impression of the organization\'s values.'
+        },
+        {
+            'company_name': 'GaoTek Inc.',
+            'status': 'Accepted',
+            'position': 'Web Developer Intern',
+            'journey': [
+                {
+                    'title': 'Initial Contact',
+                    'details': 'Contacted through LinkedIn offering an internship opportunity',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Interview Process',
+                    'details': 'Participated in a Google Meet interview discussing experience and personal background',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Application Requirements',
+                    'details': 'Invited to a group and asked to submit CV with link',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Final Result',
+                    'details': 'Received acceptance for the Web Developer Intern position',
+                    'notes': '-'
+                },
+            ],
+            'lessons_learned': 'Maintaining an updated LinkedIn profile and CV can lead to internship opportunities through direct outreach.'
         },
     ]

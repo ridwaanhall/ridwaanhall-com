@@ -108,8 +108,8 @@
             <div class="mt-12 mb-10">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
-                        <h1 class="text-4xl font-bold text-white mb-2 tracking-tight">Career <span class="text-indigo-400">Journey</span></h1>
-                        <p class="mt-2 text-lg text-gray-300 leading-relaxed">Exploring my professional experience, education, and achievements throughout my career path.</p>
+                        <h1 class="text-4xl font-bold text-white mb-2 tracking-tight">Journey <span class="text-indigo-400"> of Growth</span></h1>
+                        <p class="mt-2 text-lg text-gray-300 leading-relaxed">A comprehensive showcase of my professional experiences, education, and achievements that reflect my journey toward growth and excellence.</p>
                     </div>
                 </div>
             </div>
@@ -121,6 +121,12 @@
                                     class="inline-block p-4 border-b-2 border-indigo-500 text-indigo-400 rounded-t-lg" 
                                     aria-selected="true" role="tab">
                         Experience
+                    </button>
+                    <button id="tab-interviews" 
+                                    onclick="switchTab('interviews')" 
+                                    class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-300 hover:border-gray-300" 
+                                    aria-selected="false" role="tab">
+                        Interviews
                     </button>
                     <button id="tab-education" 
                                     onclick="switchTab('education')" 
@@ -142,6 +148,9 @@
                     {% if experiences %}
                         {% include 'career/experiences.html' %}
                     {% endif %}
+                </div>
+                <div id="content-interviews" class="hidden">
+                        {% include 'career/interviews.html' %}
                 </div>
                 <div id="content-education" class="hidden">
                     {% if education %}
@@ -170,57 +179,103 @@
         const arrow = document.getElementById('arrow-' + counter);
         
         if (element.classList.contains('hidden')) {
+
             element.classList.remove('hidden');
+            element.style.maxHeight = '0';
+            element.style.opacity = '0';
+            element.style.overflow = 'hidden';
+            element.style.transition = 'max-height 0.3s ease-out, opacity 0.3s ease-out';
             showText.classList.add('hidden');
             hideText.classList.remove('hidden');
             arrow.classList.add('rotate-180');
+            
+            setTimeout(() => {
+                element.style.maxHeight = element.scrollHeight + 'px';
+                element.style.opacity = '1';
+            }, 10);
         } else {
-            element.classList.add('hidden');
+            // Hide content with animation
+            element.style.maxHeight = '0';
+            element.style.opacity = '0';
             showText.classList.remove('hidden');
             hideText.classList.add('hidden');
             arrow.classList.remove('rotate-180');
+            
+            setTimeout(() => {
+                element.classList.add('hidden');
+            }, 300);
         }
     }
 
     function toggleAchievementsCerts(id) {
         const element = document.getElementById(id);
         const counter = id.split('-')[1];
-
         const showTextCert = document.getElementById('show-text-cert-' + counter);
         const hideTextCert = document.getElementById('hide-text-cert-' + counter);
         const arrowCert = document.getElementById('arrow-cert-' + counter);
         
         if (element.classList.contains('hidden')) {
+            // Show content with animation
             element.classList.remove('hidden');
+            element.style.maxHeight = '0';
+            element.style.opacity = '0';
+            element.style.overflow = 'hidden';
+            element.style.transition = 'max-height 0.3s ease-out, opacity 0.3s ease-out';
             showTextCert.classList.add('hidden');
             hideTextCert.classList.remove('hidden');
             arrowCert.classList.add('rotate-180');
+            
+            setTimeout(() => {
+                element.style.maxHeight = element.scrollHeight + 'px';
+                element.style.opacity = '1';
+            }, 10);
         } else {
-            element.classList.add('hidden');
+            // Hide content with animation
+            element.style.maxHeight = '0';
+            element.style.opacity = '0';
             showTextCert.classList.remove('hidden');
             hideTextCert.classList.add('hidden');
             arrowCert.classList.remove('rotate-180');
+            
+            setTimeout(() => {
+                element.classList.add('hidden');
+            }, 300);
         }
     }
 
     function toggleResponsibilities(id) {
         const element = document.getElementById(id);
         const counter = id.split('-')[1];
-
         const showTextResp = document.getElementById('show-text-resp-' + counter);
         const hideTextResp = document.getElementById('hide-text-resp-' + counter);
         const arrowResp = document.getElementById('arrow-resp-' + counter);
         
         if (element.classList.contains('hidden')) {
+            // Show content with animation
             element.classList.remove('hidden');
+            element.style.maxHeight = '0';
+            element.style.opacity = '0';
+            element.style.overflow = 'hidden';
+            element.style.transition = 'max-height 0.3s ease-out, opacity 0.3s ease-out';
             showTextResp.classList.add('hidden');
             hideTextResp.classList.remove('hidden');
             arrowResp.classList.add('rotate-180');
+            
+            setTimeout(() => {
+                element.style.maxHeight = element.scrollHeight + 'px';
+                element.style.opacity = '1';
+            }, 10);
         } else {
-            element.classList.add('hidden');
+            // Hide content with animation
+            element.style.maxHeight = '0';
+            element.style.opacity = '0';
             showTextResp.classList.remove('hidden');
             hideTextResp.classList.add('hidden');
             arrowResp.classList.remove('rotate-180');
+            
+            setTimeout(() => {
+                element.classList.add('hidden');
+            }, 300);
         }
     }
 
@@ -249,5 +304,38 @@
             selectedTab.setAttribute('aria-selected', 'true');
         }
     }
+
+    function toggleJourney(id) {
+        const content = document.getElementById(id);
+        const cardId = id.split('-').pop();
+        const showText = document.getElementById('show-journey-' + cardId);
+        const hideText = document.getElementById('hide-journey-' + cardId);
+        const arrow = document.getElementById('arrow-journey-' + cardId);
+        
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            content.classList.add('block');
+            showText.classList.add('hidden');
+            hideText.classList.remove('hidden');
+            arrow.classList.add('rotate-180');
+            
+            setTimeout(() => {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                content.style.opacity = '1';
+            }, 10);
+        } else {
+            content.style.maxHeight = '0px';
+            content.style.opacity = '0';
+            showText.classList.remove('hidden');
+            hideText.classList.add('hidden');
+            arrow.classList.remove('rotate-180');
+            
+            setTimeout(() => {
+                content.classList.add('hidden');
+                content.classList.remove('block');
+            }, 300);
+        }
+    }
+
 </script>
 {% endblock %}

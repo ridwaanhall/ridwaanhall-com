@@ -1,0 +1,97 @@
+<div class="mt-4">
+    <div class="space-y-6">
+        {% if interviews %}
+        {% for interview in interviews %}
+        <!-- Interview application card -->
+        <div class="group mb-4 rounded-xl shadow-lg overflow-hidden border border-gray-700/40 transition-all duration-300 hover:border-indigo-500/60 hover:shadow-xl hover:shadow-indigo-500/10 backdrop-blur-sm">
+            <div class="p-5">
+                <div class="flex flex-col md:flex-row md:items-start gap-5">
+                    <div class="flex-grow">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-xl font-bold text-white">{{ interview.company_name }}</h3>
+                                <p class="text-blue-200 italic text-sm font-medium">- {{ interview.position }}</p>
+                            </div>
+                            <span class="inline-flex items-center rounded-full px-3.5 py-1.5 text-sm font-medium shadow-inner
+                                {% if interview.status == 'Accepted' %}bg-green-900/40 text-green-200 ring-1 ring-green-500/50{% endif %}
+                                {% if interview.status == 'Rejected' %}bg-red-900/40 text-red-200 ring-1 ring-red-500/50{% endif %}
+                                {% if interview.status == 'In Progress' %}bg-amber-900/40 text-amber-200 ring-1 ring-amber-500/50{% endif %}">
+                                <span class="relative flex h-2 w-2 mr-2">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75
+                                        {% if interview.status == 'Accepted' %}bg-green-400{% endif %}
+                                        {% if interview.status == 'Rejected' %}bg-red-400{% endif %}
+                                        {% if interview.status == 'In Progress' %}bg-amber-400{% endif %}"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 
+                                        {% if interview.status == 'Accepted' %}bg-green-500{% endif %}
+                                        {% if interview.status == 'Rejected' %}bg-red-500{% endif %}
+                                        {% if interview.status == 'In Progress' %}bg-amber-500{% endif %}"></span>
+                                </span>
+                                {{ interview.status }}
+                            </span>
+                        </div>
+        
+                        <div class="mt-5 flex flex-wrap gap-2">
+                            <button
+                                type="button"
+                                class="inline-flex items-center text-sm py-1.5 px-3 rounded-md bg-gradient-to-r from-violet-600/90 to-indigo-600/90 text-white hover:from-violet-500 hover:to-indigo-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:ring-offset-1 focus:ring-offset-gray-900"
+                                onclick="toggleJourney('journey-details-{{ forloop.counter }}')"
+                                aria-expanded="false"
+                                aria-controls="journey-details-{{ forloop.counter }}"
+                            >
+                                <span id="show-journey-{{ forloop.counter }}">View Application Journey</span>
+                                <span id="hide-journey-{{ forloop.counter }}" class="hidden">Hide Application Journey</span>
+                                <svg class="w-4 h-4 ml-2 transition-transform duration-200 ease-out" id="arrow-journey-{{ forloop.counter }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                        </div>
+        
+                        <div id="journey-details-{{ forloop.counter }}" class="hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out opacity-0 max-h-0" style="transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;">
+                            <div class="overflow-y-auto overflow-x-auto max-h-[60vh] sm:max-h-[70vh]">
+                                <table class="min-w-full divide-y divide-gray-700/30 text-sm">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Step</th>
+                                            <th class="px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Details</th>
+                                            <th class="px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-700/20">
+                                        {% for step in interview.journey %}
+                                        <tr class="hover:bg-gray-800/30 transition-colors duration-150">
+                                            <td class="px-3 py-2 whitespace-nowrap flex items-center">
+                                                <span class="font-medium text-indigo-300">{{ step.title }}</span>
+                                            </td>
+                                            <td class="px-3 py-2 text-gray-200">{{ step.details }}</td>
+                                            <td class="px-3 py-2 text-gray-200">{{ step.notes|safe }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+        
+                        <div class="mt-5 pt-4 border-t border-gray-700/30">
+                            <div
+                                class="inline-flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-gradient-to-r from-violet-600/80 to-indigo-600/80 text-gray-300 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                            >
+                                <p class="text-gray-200"><span class="font-semibold text-indigo-300">Lessons Learned:</span> {{ interview.lessons_learned }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <!-- Empty state -->
+        <div class="text-center py-12 px-4">
+            <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+            </svg>
+            <h3 class="mt-4 text-lg font-medium text-gray-100">No interviews found</h3>
+            <p class="mt-2 text-sm text-gray-400">Start adding interviews to track your career journey.</p>
+        </div>
+        {% endif %}        
+    </div>
+</div>

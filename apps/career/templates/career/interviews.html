@@ -13,21 +13,21 @@
                                 <p class="text-blue-200 italic text-sm font-medium">- {{ interview.position }}</p>
                             </div>
                             <span class="inline-flex items-center rounded-full px-3.5 py-1.5 text-sm font-medium shadow-inner
-                                {% if interview.status == 'In Progress' %}bg-amber-900/40 text-amber-200 ring-1 ring-amber-500/50{% endif %}
+                                {% if interview.status == 'In Progress' %}bg-blue-900/40 text-blue-200 ring-1 ring-blue-500/50{% endif %}
                                 {% if interview.status == 'Accepted' %}bg-green-900/40 text-green-200 ring-1 ring-green-500/50{% endif %}
                                 {% if interview.status == 'Rejected' %}bg-red-900/40 text-red-200 ring-1 ring-red-500/50{% endif %}
-                                {% if interview.status == 'Ghosting' %}bg-gray-900/40 text-gray-200 ring-1 ring-gray-500/50{% endif %}">
+                                {% if interview.status == 'Ghosting' %}bg-slate-900/40 text-slate-200 ring-1 ring-slate-500/50{% endif %}">
                                 <span class="relative flex h-2 w-2 mr-2">
                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75
-                                        {% if interview.status == 'In Progress' %}bg-amber-400{% endif %}
+                                        {% if interview.status == 'In Progress' %}bg-blue-400{% endif %}
                                         {% if interview.status == 'Accepted' %}bg-green-400{% endif %}
                                         {% if interview.status == 'Rejected' %}bg-red-400{% endif %}
-                                        {% if interview.status == 'Ghosting' %}bg-gray-400{% endif %}"></span>
+                                        {% if interview.status == 'Ghosting' %}bg-slate-400{% endif %}"></span>
                                     <span class="relative inline-flex rounded-full h-2 w-2 
-                                        {% if interview.status == 'In Progress' %}bg-amber-500{% endif %}
+                                        {% if interview.status == 'In Progress' %}bg-blue-500{% endif %}
                                         {% if interview.status == 'Accepted' %}bg-green-500{% endif %}
                                         {% if interview.status == 'Rejected' %}bg-red-500{% endif %}
-                                        {% if interview.status == 'Ghosting' %}bg-gray-500{% endif %}"></span>
+                                        {% if interview.status == 'Ghosting' %}bg-slate-500{% endif %}"></span>
                                 </span>
                                 {{ interview.status }}
                             </span>
@@ -74,11 +74,9 @@
                             </div>
                         </div>
         
-                        <div class="mt-5 pt-4 border-t border-gray-700/30">
-                            <div
-                                class="inline-flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-gradient-to-r from-violet-600/80 to-indigo-600/80 text-gray-300 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-violet-500/50"
-                            >
-                                <p class="text-gray-200"><span class="font-semibold text-indigo-300">Lessons Learned:</span> {{ interview.lessons_learned }}</p>
+                        <div class="mt-5 pt-4 border-t border-gray-800/40">
+                            <div class="inline-flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-gradient-to-r from-violet-900/90 to-indigo-900/90 text-gray-200 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-violet-500/50">
+                                <p class="text-gray-100"><span class="font-semibold text-indigo-200">Lessons Learned:</span> {{ interview.lessons_learned }}</p>
                             </div>
                         </div>
                     </div>

@@ -51,7 +51,7 @@ class InterviewsData:
         {
             'company_name': 'HashMicro',
             'status': 'In Progress',
-            'position': 'Django Developer',
+            'position': 'Python Developer (Django)',
             'journey': [
                 {
                     'title': 'Initial Contact',
@@ -114,4 +114,37 @@ class InterviewsData:
             ],
             'lessons_learned': 'Maintaining an updated LinkedIn profile and CV can lead to internship opportunities through direct outreach.'
         },
+        {
+            'company_name': 'Speechify',
+            'status': 'Rejected',
+            'position': 'Frontend Developer',
+            'journey': [
+                {
+                    'title': 'Initial Contact',
+                    'details': 'Received email from recruiter who was interested in my GitHub profile',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Job Opportunity',
+                    'details': 'Was offered a frontend position and invited to complete a coding test',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Technical Assessment',
+                    'details': 'Asked to build a speech-to-text website project as part of the evaluation',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Security Incident',
+                    'details': 'Experienced account security issues during the testing session',
+                    'notes': '<span class="text-red-600">Had to terminate the test due to potential hacking attempt on my account</span>'
+                },
+                {
+                    'title': 'Final Result',
+                    'details': 'Received notification that I did not meet the required criteria',
+                    'notes': '-'
+                },
+            ],
+            'lessons_learned': 'Thoroughly prepare for coding tests by researching both online resources and the company\'s products. Always ensure your testing environment is secure before beginning any technical assessments.'
+        }
     ]

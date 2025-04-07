@@ -115,6 +115,34 @@ class InterviewsData:
             'lessons_learned': 'Maintaining an updated LinkedIn profile and CV can lead to internship opportunities through direct outreach.'
         },
         {
+            'company_name': 'Shortlyst AI',
+            'status': 'Ghosting',
+            'position': 'Backend Engineer Intern',
+            'journey': [
+                {
+                    'title': 'Initial Contact',
+                    'details': 'Contacted through LinkedIn for a Backend Engineer internship opportunity',
+                    'notes': '-'
+                },
+                {
+                    'title': 'First Interview',
+                    'details': 'Discussed personal background and previous projects',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Technical Interview',
+                    'details': 'Discussed potential internship work and responsibilities',
+                    'notes': '<span class="text-red-600">Interviewer requested I turn on my camera but did not reciprocate</span>'
+                },
+                {
+                    'title': 'Waiting for Feedback',
+                    'details': 'No further communication received after technical interview',
+                    'notes': '<span class="text-red-600">Ghosted with no status update</span>'
+                },
+            ],
+            'lessons_learned': 'Fascinating how some organizations preach professionalism yet vanish without a trace. Perhaps those who demand transparency without offering it in return may someday wonder why their talent pipeline mysteriously runs dry. The industry remembers those who respect candidates\' time and dignity—and those who don\'t.'
+        },
+        {
             'company_name': 'Speechify',
             'status': 'Rejected',
             'position': 'Frontend Developer',

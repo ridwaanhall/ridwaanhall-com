@@ -87,34 +87,6 @@ class InterviewsData:
             'lessons_learned': 'Requiring candidates to turn on their cameras while not reciprocating may reflect a lack of mutual respect and transparency, which can leave a negative impression of the organization\'s values.'
         },
         {
-            'company_name': 'GaoTek Inc.',
-            'status': 'Accepted',
-            'position': 'Web Developer Intern',
-            'journey': [
-                {
-                    'title': 'Initial Contact',
-                    'details': 'Contacted through LinkedIn offering an internship opportunity',
-                    'notes': '-'
-                },
-                {
-                    'title': 'Interview Process',
-                    'details': 'Participated in a Google Meet interview discussing experience and personal background',
-                    'notes': '-'
-                },
-                {
-                    'title': 'Application Requirements',
-                    'details': 'Invited to a group and asked to submit CV with link',
-                    'notes': '-'
-                },
-                {
-                    'title': 'Final Result',
-                    'details': 'Received acceptance for the Web Developer Intern position',
-                    'notes': '-'
-                },
-            ],
-            'lessons_learned': 'Maintaining an updated LinkedIn profile and CV can lead to internship opportunities through direct outreach.'
-        },
-        {
             'company_name': 'Shortlyst AI',
             'status': 'Ghosting',
             'position': 'Backend Engineer Intern',
@@ -174,5 +146,51 @@ class InterviewsData:
                 },
             ],
             'lessons_learned': 'Thoroughly prepare for coding tests by researching both online resources and the company\'s products. Always ensure your testing environment is secure before beginning any technical assessments.'
-        }
+        },
+        {
+            'company_name': 'GaoTek Inc.',
+            'status': 'Accepted',
+            'position': 'Assistant Squad Leader of Web Developer Intern',
+            'journey': [
+                {
+                    'title': 'Performance Recognition',
+                    'details': 'Was offered assistant position through my channel due to good performance',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Role Transition',
+                    'details': 'Scheduled to begin assistant squad leader position',
+                    'notes': '-'
+                },
+            ],
+            'lessons_learned': 'Good performance in your role can lead to faster promotions and career advancement opportunities.'
+        },
+        {
+            'company_name': 'GaoTek Inc.',
+            'status': 'Accepted',
+            'position': 'Web Developer Intern',
+            'journey': [
+                {
+                    'title': 'Initial Contact',
+                    'details': 'Contacted through LinkedIn offering an internship opportunity',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Interview Process',
+                    'details': 'Participated in a Google Meet interview discussing experience and personal background',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Application Requirements',
+                    'details': 'Invited to a group and asked to submit CV with link',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Final Result',
+                    'details': 'Received acceptance for the Web Developer Intern position',
+                    'notes': '-'
+                },
+            ],
+            'lessons_learned': 'Maintaining an updated LinkedIn profile and CV can lead to internship opportunities through direct outreach.'
+        },
     ]

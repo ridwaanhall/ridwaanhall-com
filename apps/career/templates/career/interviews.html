@@ -16,18 +16,18 @@
                                 {% if interview.status == 'In Progress' %}bg-blue-900/40 text-blue-200 ring-1 ring-blue-500/50{% endif %}
                                 {% if interview.status == 'Accepted' %}bg-green-900/40 text-green-200 ring-1 ring-green-500/50{% endif %}
                                 {% if interview.status == 'Rejected' %}bg-red-900/40 text-red-200 ring-1 ring-red-500/50{% endif %}
-                                {% if interview.status == 'Ghosting' %}bg-slate-900/40 text-slate-200 ring-1 ring-slate-500/50{% endif %}">
+                                {% if interview.status == 'Ghosting' %}bg-yellow-900/40 text-yellow-200 ring-1 ring-yellow-500/50{% endif %}">
                                 <span class="relative flex h-2 w-2 mr-2">
                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75
                                         {% if interview.status == 'In Progress' %}bg-blue-400{% endif %}
                                         {% if interview.status == 'Accepted' %}bg-green-400{% endif %}
                                         {% if interview.status == 'Rejected' %}bg-red-400{% endif %}
-                                        {% if interview.status == 'Ghosting' %}bg-slate-400{% endif %}"></span>
+                                        {% if interview.status == 'Ghosting' %}bg-yellow-400{% endif %}"></span>
                                     <span class="relative inline-flex rounded-full h-2 w-2 
                                         {% if interview.status == 'In Progress' %}bg-blue-500{% endif %}
                                         {% if interview.status == 'Accepted' %}bg-green-500{% endif %}
                                         {% if interview.status == 'Rejected' %}bg-red-500{% endif %}
-                                        {% if interview.status == 'Ghosting' %}bg-slate-500{% endif %}"></span>
+                                        {% if interview.status == 'Ghosting' %}bg-yellow-500{% endif %}"></span>
                                 </span>
                                 {{ interview.status }}
                             </span>

@@ -246,13 +246,14 @@
     }
 
     // Toggle function for responsibilities in experiences
+    // Toggle function for responsibilities in experiences
     function toggleResponsibilities(id) {
         const element = document.getElementById(id);
-        const counter = id.split('-')[1];
-        const showTextResp = document.getElementById('show-text-resp-' + counter);
-        const hideTextResp = document.getElementById('hide-text-resp-' + counter);
-        const arrowResp = document.getElementById('arrow-resp-' + counter);
-        
+        const counterParts = id.split('-').slice(1).join('-'); // Get both parts of counter (e.g., "1-2")
+        const showTextResp = document.getElementById('show-text-resp-' + counterParts);
+        const hideTextResp = document.getElementById('hide-text-resp-' + counterParts);
+        const arrowResp = document.getElementById('arrow-resp-' + counterParts);
+    
         if (element.classList.contains('hidden')) {
             // Show content with animation
             element.classList.remove('hidden');

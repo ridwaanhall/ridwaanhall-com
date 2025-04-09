@@ -54,7 +54,7 @@ class ProjectsView(BaseProjectsView):
     Displays all projects with SEO metadata.
     """
     template_name = 'projects/projects.html'
-    projects_per_page = 10
+    projects_per_page = 6
 
     def get(self, request, *args, **kwargs):
         return self.handle_exceptions(self._get)(request, *args, **kwargs)

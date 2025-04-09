@@ -1,123 +1,122 @@
 <div class="mt-6">
-    
     <div class="relative space-y-4">
-        {% for experience in experiences %}
+        {% regroup experiences by company as company_list %}
+        {% for company_group in company_list %}
         <div class="relative group mb-4 last:mb-0">
-        
-            <!-- Experience card -->
+            <!-- Company card -->
             <div class="rounded-xl shadow-lg overflow-hidden p-4 sm:p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20 backdrop-blur-sm">
-                <!-- Header: Title and Company -->
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
-                    <h3 class="text-xl font-bold text-gray-300 flex flex-wrap items-center gap-2">
-                        {{ experience.title }} {% if experience.is_current %}
-                        <span class="px-3 py-1 text-xs font-semibold bg-indigo-900/70 text-indigo-300 rounded-full shadow-inner shadow-indigo-500/20 border border-indigo-700/50">Current</span>
-                        {% endif %}
-                    </h3>
-        
-                    <!-- Company logo and name -->
-                    <div class="flex items-center mt-2 sm:mt-0">
-                        {% if experience.logo %}
-                        <div class="w-10 h-10 mr-3 rounded-lg bg-white/10 p-1.5 flex items-center justify-center shadow-md">
-                            {% if experience.website %}
-                            <a href="{{ experience.website }}" target="_blank" rel="noopener" class="w-full h-full flex items-center justify-center" aria-label="{{ experience.company }} website">
-                                <img src="{{ experience.logo }}" alt="{{ experience.company }}" class="max-h-full max-w-full object-contain" onerror="this.style.display='none';this.parentNode.nextElementSibling.style.display='flex';" />
-                            </a>
+                {% with first_exp=company_group.list.0 %}
+                
+                <!-- Experience positions -->
+                {% for experience in company_group.list %}
+                <div class="{% if not forloop.first %}border-t border-gray-700/30 pt-4{% endif %} {% if not forloop.last %}mb-4{% endif %}">
+                    <!-- First item: Company header + Title combined -->
+                    <div class="flex flex-wrap items-start justify-between mb-4">
+                        <!-- Company header (only on first experience, now on the right) -->
+                        {% if forloop.first %}
+                        <div class="flex items-center ml-auto mb-2 sm:mb-0 order-2">
+                            <p class="text-indigo-300 text-sm font-medium mr-3">
+                                {% if first_exp.website %}
+                                <a class="hover:underline transition-colors duration-300" href="{{ first_exp.website }}" target="_blank" rel="noopener">{{ company_group.grouper }}</a>
+                                {% else %} {{ company_group.grouper }} {% endif %}
+                            </p>
+                            {% if first_exp.logo %}
+                            <div class="w-10 h-10 rounded-lg bg-white/10 p-1.5 flex items-center justify-center shadow-md">
+                                {% if first_exp.website %}
+                                <a href="{{ first_exp.website }}" target="_blank" rel="noopener" class="w-full h-full flex items-center justify-center" aria-label="{{ first_exp.company }} website">
+                                    <img src="{{ first_exp.logo }}" alt="{{ first_exp.company }}" class="max-h-full max-w-full object-contain" onerror="this.style.display='none';this.parentNode.nextElementSibling.style.display='flex';" />
+                                </a>
+                                {% else %}
+                                <img src="{{ first_exp.logo }}" alt="{{ first_exp.company }}" class="max-h-full max-w-full object-contain" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                                {% endif %}
+                                <div class="hidden w-full h-full bg-gray-700 rounded-md flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                            </div>
                             {% else %}
-                            <img src="{{ experience.logo }}" alt="{{ experience.company }}" class="max-h-full max-w-full object-contain" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-                            {% endif %}
-                            <div class="hidden w-full h-full bg-gray-700 rounded-md flex items-center justify-center">
+                            <div class="w-10 h-10 bg-gray-700/80 rounded-lg flex items-center justify-center text-gray-300 shadow-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                                    />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
                             </div>
-                        </div>
-                        {% else %}
-                        <div class="w-10 h-10 mr-3 bg-gray-700/80 rounded-lg flex items-center justify-center text-gray-300 shadow-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                                />
-                            </svg>
+                            {% endif %}
                         </div>
                         {% endif %}
-                        <p class="text-{% if experience.is_current %}indigo{% else %}blue{% endif %}-300 text-sm font-medium">
-                            {% if experience.website %}
-                            <a class="hover:underline transition-colors duration-300" href="{{ experience.website }}" target="_blank" rel="noopener">{{ experience.company }}</a>
-                            {% else %} {{ experience.company }} {% endif %}
+                        
+                        <!-- Title and current badge -->
+                        <div class="flex-grow">
+                            <h3 class="text-xl font-bold text-gray-300 flex flex-wrap items-center gap-2">
+                                {{ experience.title }} 
+                                {% if experience.is_current %}
+                                <span class="px-3 py-1 text-xs font-semibold bg-indigo-900/70 text-indigo-300 rounded-full shadow-inner shadow-indigo-500/20 border border-indigo-700/50">Current</span>
+                                {% endif %}
+                            </h3>
+                        </div>
+                    </div>
+
+                    <!-- Details: Period, Employment Type, Location -->
+                    <div class="flex flex-wrap gap-3 mb-4 text-gray-400 text-sm">
+                        <p class="flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            {{ experience.period }}
                         </p>
+                        {% if experience.employment_type %}
+                        <p class="flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            {{ experience.employment_type }}
+                        </p>
+                        {% endif %}
+                        {% if experience.location_type or experience.location %}
+                        <p class="flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            {% if experience.location_type %}{{ experience.location_type }}{% endif %} {% if experience.location_type and experience.location %} · {% endif %} {% if experience.location %}{{ experience.location }}{% endif %}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Responsibilities toggle button -->
+                    <button
+                        type="button"
+                        class="inline-flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-gradient-to-r from-violet-600/80 to-indigo-600/80 text-gray-300 hover:from-violet-500 hover:to-indigo-500 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                        onclick="toggleResponsibilities('expresponsibilities-{{ forloop.parentloop.counter }}-{{ forloop.counter }}')"
+                        aria-expanded="false"
+                        aria-controls="expresponsibilities-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"
+                    >
+                        <span id="show-text-resp-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">View Responsibilities</span>
+                        <span id="hide-text-resp-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" class="hidden">Hide Responsibilities</span>
+                        <svg class="w-4 h-4 ml-2 transition-transform duration-300" id="arrow-resp-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Responsibilities content (hidden by default) -->
+                    <div id="expresponsibilities-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" class="hidden mt-4 transition-all duration-300 ease-in-out">
+                        <ul class="space-y-2 text-gray-200 pl-1">
+                            {% for responsibility in experience.responsibilities %}
+                            <li class="flex items-start py-1.5 hover:bg-gray-800/30 px-2 rounded-md transition-colors duration-200">
+                                <svg class="w-5 h-5 text-{% if experience.is_current %}indigo{% else %}blue{% endif %}-400 mr-2.5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>{{ responsibility }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
-        
-                <!-- Details: Period, Employment Type, Location -->
-                <div class="flex flex-wrap gap-3 mb-4 text-gray-400 text-sm">
-                    <p class="flex items-center">
-                        <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                        {{ experience.period }}
-                    </p>
-                    {% if experience.employment_type %}
-                    <p class="flex items-center">
-                        <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                            ></path>
-                        </svg>
-                        {{ experience.employment_type }}
-                    </p>
-                    {% endif %} {% if experience.location_type or experience.location %}
-                    <p class="flex items-center">
-                        <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                        {% if experience.location_type %}{{ experience.location_type }}{% endif %} {% if experience.location_type and experience.location %} · {% endif %} {% if experience.location %}{{ experience.location }}{% endif %}
-                    </p>
-                    {% endif %}
-                </div>
-        
-                <!-- Responsibilities toggle button -->
-                <button
-                    type="button"
-                    class="inline-flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-gradient-to-r from-violet-600/80 to-indigo-600/80 text-gray-300 hover:from-violet-500 hover:to-indigo-500 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-violet-500/50"
-                    onclick="toggleResponsibilities('expresponsibilities-{{ forloop.counter }}')"
-                    aria-expanded="false"
-                    aria-controls="expresponsibilities-{{ forloop.counter }}"
-                >
-                    <span id="show-text-resp-{{ forloop.counter }}">View Responsibilities</span>
-                    <span id="hide-text-resp-{{ forloop.counter }}" class="hidden">Hide Responsibilities</span>
-                    <svg class="w-4 h-4 ml-2 transition-transform duration-300" id="arrow-resp-{{ forloop.counter }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-        
-                <!-- Responsibilities content (hidden by default) -->
-                <div id="expresponsibilities-{{ forloop.counter }}" class="hidden mt-4 transition-all duration-300 ease-in-out">
-                    <ul class="space-y-2 text-gray-200 pl-1">
-                        {% for responsibility in experience.responsibilities %}
-                        <li class="flex items-start py-1.5 hover:bg-gray-800/30 px-2 rounded-md transition-colors duration-200">
-                            <svg class="w-5 h-5 text-{% if experience.is_current %}indigo{% else %}blue{% endif %}-400 mr-2.5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span>{{ responsibility }}</span>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+                {% endfor %}
+                {% endwith %}
             </div>
         </div>
-        {% endfor %}        
+        {% endfor %}
     </div>
 
     {% if view %}

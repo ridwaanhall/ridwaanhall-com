@@ -1,15 +1,8 @@
 <div class="mt-6">
     
-    <div class="relative border-l-2 border-indigo-500/70 pl-8 ml-4 space-y-4">
+    <div class="relative space-y-4">
         {% for experience in experiences %}
         <div class="relative group mb-4 last:mb-0">
-            <!-- Timeline dot indicator with ping effect for current position -->
-            <div
-                class="absolute -left-11 top-3 w-6 h-6 rounded-full bg-{% if experience.is_current %}indigo-500{% else %}gray-700{% endif %} shadow-lg shadow-{% if experience.is_current %}indigo-500/30{% else %}gray-700/20{% endif %} border border-{% if experience.is_current %}indigo-400{% else %}gray-600{% endif %}/50 transition-all duration-300"
-            ></div>
-            {% if experience.is_current %}
-            <div class="absolute -left-11 top-3 w-6 h-6 rounded-full bg-indigo-400/50 animate-ping"></div>
-            {% endif %}
         
             <!-- Experience card -->
             <div class="rounded-xl shadow-lg overflow-hidden p-4 sm:p-5 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20 backdrop-blur-sm">

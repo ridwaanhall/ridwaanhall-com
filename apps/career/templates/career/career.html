@@ -171,6 +171,7 @@
 
 {% block scripts %}
 <script>
+    // Toggle function for achievements in education
     function toggleAchievements(id) {
         const element = document.getElementById(id);
         const counter = id.split('-')[1];
@@ -207,6 +208,7 @@
         }
     }
 
+    // Toggle function for certifications achievements
     function toggleAchievementsCerts(id) {
         const element = document.getElementById(id);
         const counter = id.split('-')[1];
@@ -243,6 +245,7 @@
         }
     }
 
+    // Toggle function for responsibilities in experiences
     function toggleResponsibilities(id) {
         const element = document.getElementById(id);
         const counter = id.split('-')[1];
@@ -305,6 +308,7 @@
         }
     }
 
+    // Toggle function for interview journey details
     function toggleJourney(id) {
         const content = document.getElementById(id);
         const cardId = id.split('-').pop();

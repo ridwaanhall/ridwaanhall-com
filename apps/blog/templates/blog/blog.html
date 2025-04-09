@@ -89,10 +89,10 @@
 
             <div class="space-y-8 relative z-10">
 
-                <div class="relative mb-10 mt-12 overflow-hidden rounded-xl border border-indigo-600/50 shadow-lg shadow-indigo-500/10">
+                <div class="relative mb-10 mt-12 overflow-hidden rounded-xl border border-gray-700 shadow-lg shadow-indigo-500/10">
                     <div class="featured-slider-container relative">
                         <div class="featured-slider-wrapper flex transition-transform duration-500 ease-in-out">
-                            {% for blog in blogs %}
+                            {% for blog in featured_blogs %}
                                 {% if blog.is_featured %}
                                 <div class="featured-slide w-full flex-shrink-0 relative">
                                     <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/80 to-gray-900/80 mix-blend-multiply z-10"></div>
@@ -140,10 +140,8 @@
                         </div>
                         
                         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex space-x-2">
-                            {% for blog in blogs %}
-                                {% if blog.is_featured %}
+                            {% for blog in featured_blogs %}
                                 <button class="slider-dot w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Slide {{ forloop.counter0 }}"></button>
-                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>
@@ -208,11 +206,75 @@
                     {% endfor %}
                 </div>
                 
-                <div class="mt-12 flex justify-center">
-                    <div class="inline-flex bg-gray-800 rounded-lg overflow-hidden">
-                        <a href="{% url 'blog' %}" class="px-4 py-2 bg-indigo-600 text-white">1</a>
-                    </div>
+                <!-- Pagination -->
+                {% if is_paginated %}
+                <div class="mt-10 mb-6">
+                    <nav class="flex justify-center" aria-label="Pagination">
+                        <ul class="inline-flex items-center gap-1 rounded-lg bg-gray-800/30 p-1 backdrop-blur-sm border border-gray-700/50">
+                            <!-- Previous page -->
+                            {% if blogs.has_previous %}
+                                <li>
+                                    <a href="?page={{ blogs.previous_page_number }}" 
+                                    class="flex h-9 w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-indigo-500/20 hover:text-indigo-300"
+                                    aria-label="Previous page">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <span class="flex h-9 w-9 items-center justify-center rounded-md text-sm text-gray-500 cursor-not-allowed" aria-disabled="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                    </span>
+                                </li>
+                            {% endif %}
+                            
+                            <!-- Page numbers -->
+                            {% for num in paginator.page_range %}
+                                {% if blogs.number == num %}
+                                    <li>
+                                        <span aria-current="page" class="flex h-9 w-9 items-center justify-center rounded-md bg-indigo-600 text-white text-sm font-medium">
+                                            {{ num }}
+                                        </span>
+                                    </li>
+                                {% elif num > blogs.number|add:'-3' and num < blogs.number|add:'3' %}
+                                    <li>
+                                        <a href="?page={{ num }}" 
+                                        class="flex h-9 w-9 items-center justify-center rounded-md text-sm text-gray-300 transition-all hover:bg-indigo-500/20 hover:text-white">
+                                            {{ num }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            <!-- Next page -->
+                            {% if blogs.has_next %}
+                                <li>
+                                    <a href="?page={{ blogs.next_page_number }}" 
+                                    class="flex h-9 w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-indigo-500/20 hover:text-indigo-300"
+                                    aria-label="Next page">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <span class="flex h-9 w-9 items-center justify-center rounded-md text-sm text-gray-500 cursor-not-allowed" aria-disabled="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                    </span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
                 </div>
+                {% endif %}
+
             </div>
         </div>
     </main>

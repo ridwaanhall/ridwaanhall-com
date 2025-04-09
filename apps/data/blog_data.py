@@ -132,7 +132,7 @@ class BlogData:
             "author": "Ridwan Halim",
             "username": "ridwaanhall",
             "author_image": "https://ridwaanhall.me/static/img/ridwaanhall.webp",
-            "is_featured": False,
+            "is_featured": True,
             "content": [
                 "When it comes to coding, commit messages are more than just notes—they're your story in the making. Conventional Commit standards make this process cleaner and more exciting. Here's how you can rock those commits:",
                     "<ul class='list-disc pl-5'>",

@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.utils.text import slugify
 from django.http import Http404
 from django.core.exceptions import SuspiciousOperation
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from apps.data.blog_data import BlogData
 from apps.data.about_data import AboutData
@@ -55,6 +56,7 @@ class BlogView(BaseBlogView):
     Displays the main blog list page with all blog posts and SEO metadata.
     """
     template_name = 'blog/blog.html'
+    blogs_per_page = 6
 
     def get(self, request, *args, **kwargs):
         return self.handle_exceptions(self._get)(request, *args, **kwargs)
@@ -62,6 +64,26 @@ class BlogView(BaseBlogView):
     def _get(self, request, *args, **kwargs):
         context = self.get_common_context()
         about = context['about']
+        all_blogs = context['blogs']
+        
+        # Paginate blogs
+        paginator = Paginator(all_blogs, self.blogs_per_page)
+        page = request.GET.get('page', 1)
+        
+        try:
+            blogs_page = paginator.page(page)
+        except PageNotAnInteger:
+            blogs_page = paginator.page(1)
+        except EmptyPage:
+            blogs_page = paginator.page(paginator.num_pages)
+        
+        # Update context with paginated blogs
+        context['blogs'] = blogs_page
+        context['featured_blogs'] = [b for b in all_blogs if b.get('is_featured')]
+        context['featured_blogs'] = sorted(context['featured_blogs'], key=lambda b: -b.get('id', 0))[:3]
+        context['paginator'] = paginator
+        context['is_paginated'] = paginator.num_pages > 1
+        
         context['seo'] = {
             'title': f"Blog | {about['name']} - Articles and Insights",
             'description': f"Explore articles, tutorials, and insights by {about['name']} about technology, development, and programming.",

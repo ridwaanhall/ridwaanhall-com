@@ -4,6 +4,7 @@ from django.utils.text import slugify
 from django.http import Http404
 from django.core.exceptions import SuspiciousOperation
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.data.projects_data import ProjectsData
 from apps.data.about_data import AboutData
 
@@ -53,6 +54,7 @@ class ProjectsView(BaseProjectsView):
     Displays all projects with SEO metadata.
     """
     template_name = 'projects/projects.html'
+    projects_per_page = 10
 
     def get(self, request, *args, **kwargs):
         return self.handle_exceptions(self._get)(request, *args, **kwargs)
@@ -60,12 +62,28 @@ class ProjectsView(BaseProjectsView):
     def _get(self, request, *args, **kwargs):
         context = self.get_common_context()
         about = context['about']
-        projects = context['projects']
+        all_projects = context['projects']
+
+        # Paginate projects
+        paginator = Paginator(all_projects, self.projects_per_page)
+        page = request.GET.get('page', 1)
+        
+        try:
+            projects_page = paginator.page(page)
+        except PageNotAnInteger:
+            projects_page = paginator.page(1)
+        except EmptyPage:
+            projects_page = paginator.page(paginator.num_pages)
+        
+        # Update context with paginated projects
+        context['projects'] = projects_page
+        context['paginator'] = paginator
+        context['is_paginated'] = paginator.num_pages > 1
 
         # Generate tech stack keywords from all projects
         tech_stack_keywords = list(set([
             tech['name']
-            for project in projects
+            for project in all_projects
             for tech in project.get('tech_stack', [])
         ]))[:10]
 
@@ -73,7 +91,7 @@ class ProjectsView(BaseProjectsView):
             'title': f"Projects & Portfolio | {about['name']} - Developer Showcase",
             'description': f"Explore {about['name']}'s development projects, applications, and coding portfolio. View demos and source code.",
             'keywords': f"{about['name']}, projects, portfolio, developer, applications, demos, github, code samples, {', '.join(tech_stack_keywords)}",
-            'og_image': projects[0].get('image_url') if projects else about.get('image_url', ''),
+            'og_image': all_projects[0].get('image_url') if all_projects else about.get('image_url', ''),
             'og_type': 'website',
             'twitter_card': 'summary_large_image',
         }

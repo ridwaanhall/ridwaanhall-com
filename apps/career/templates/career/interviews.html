@@ -9,7 +9,7 @@
                     <div class="flex-grow">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
                             <div class="flex items-center gap-2">
-                                <h3 class="text-xl font-bold text-white">{{ interview.company_name }}</h3>
+                                <h3 class="text-xl font-bold text-gray-300">{{ interview.company_name }}</h3>
                                 <p class="text-blue-200 italic text-sm font-medium">- {{ interview.position }}</p>
                             </div>
                             <span class="inline-flex items-center rounded-full px-3.5 py-1.5 text-sm font-medium shadow-inner
@@ -36,7 +36,7 @@
                         <div class="mt-5 flex flex-wrap gap-2">
                             <button
                                 type="button"
-                                class="inline-flex items-center text-sm py-1.5 px-3 rounded-md bg-gradient-to-r from-violet-600/90 to-indigo-600/90 text-white hover:from-violet-500 hover:to-indigo-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:ring-offset-1 focus:ring-offset-gray-900"
+                                class="inline-flex items-center text-sm py-1.5 px-3 rounded-md bg-gradient-to-r from-violet-600/90 to-indigo-600/90 text-gray-300 hover:from-violet-500 hover:to-indigo-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:ring-offset-1 focus:ring-offset-gray-900"
                                 onclick="toggleJourney('journey-details-{{ forloop.counter }}')"
                                 aria-expanded="false"
                                 aria-controls="journey-details-{{ forloop.counter }}"

@@ -122,11 +122,11 @@
                                     aria-selected="true" role="tab">
                         Experience
                     </button>
-                    <button id="tab-interviews" 
-                                    onclick="switchTab('interviews')" 
+                    <button id="tab-applications" 
+                                    onclick="switchTab('applications')" 
                                     class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-300 hover:border-gray-300" 
                                     aria-selected="false" role="tab">
-                        Interviews
+                        Applications
                     </button>
                     <button id="tab-education" 
                                     onclick="switchTab('education')" 
@@ -149,8 +149,8 @@
                         {% include 'career/experiences.html' %}
                     {% endif %}
                 </div>
-                <div id="content-interviews" class="hidden">
-                        {% include 'career/interviews.html' %}
+                <div id="content-applications" class="hidden">
+                        {% include 'career/applications.html' %}
                 </div>
                 <div id="content-education" class="hidden">
                     {% if education %}

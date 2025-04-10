@@ -116,23 +116,23 @@
 
             <div class="mb-6 border-b border-gray-700">
                 <div class="flex flex-wrap -mb-px text-sm font-medium text-center">
-                    <button id="tab-experiences" 
-                                    onclick="switchTab('experiences')" 
-                                    class="inline-block p-4 border-b-2 border-indigo-500 text-indigo-400 rounded-t-lg" 
-                                    aria-selected="true" role="tab">
-                        Experience
-                    </button>
                     <button id="tab-applications" 
                                     onclick="switchTab('applications')" 
+                                    class="inline-block p-4 border-b-2 border-indigo-500 text-indigo-400 rounded-t-lg" 
+                                    aria-selected="true" role="tab">
+                        Applications
+                    </button>
+                    <button id="tab-experiences" 
+                                    onclick="switchTab('experiences')" 
                                     class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-300 hover:border-gray-300" 
                                     aria-selected="false" role="tab">
-                        Applications
+                        Experiences
                     </button>
                     <button id="tab-education" 
                                     onclick="switchTab('education')" 
                                     class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-300 hover:border-gray-300" 
                                     aria-selected="false" role="tab">
-                        Education
+                        Educations
                     </button>
                     <button id="tab-certifications" 
                                     onclick="switchTab('certifications')" 
@@ -144,13 +144,13 @@
             </div>
 
             <div class="tab-content">
-                <div id="content-experiences" class="block">
+                <div id="content-applications" class="block">
+                    {% include 'career/applications.html' %}
+                </div>
+                <div id="content-experiences" class="hidden">
                     {% if experiences %}
                         {% include 'career/experiences.html' %}
                     {% endif %}
-                </div>
-                <div id="content-applications" class="hidden">
-                        {% include 'career/applications.html' %}
                 </div>
                 <div id="content-education" class="hidden">
                     {% if education %}

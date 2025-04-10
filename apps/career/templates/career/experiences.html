@@ -42,8 +42,13 @@
                         <div class="mb-3">
                             <h2 class="text-indigo-300 font-medium">
                                 {% if first_exp.website %}
-                                <a class="hover:underline transition-colors duration-300" href="{{ first_exp.website }}" target="_blank" rel="noopener">{{ company_group.grouper }}</a>
-                                {% else %} {{ company_group.grouper }} {% endif %}
+                                    <a class="group/link relative inline-block overflow-hidden transition-colors duration-300" href="{{ first_exp.website }}" target="_blank" rel="noopener">
+                                        {{ company_group.grouper }}
+                                        <span class="absolute left-0 bottom-0 h-0.5 w-full bg-indigo-400 transform scale-x-0 origin-left transition-transform duration-300 group-hover/link:scale-x-100"></span>
+                                    </a>
+                                {% else %}
+                                    {{ company_group.grouper }}
+                                {% endif %}
                             </h2>
                         </div>
                         

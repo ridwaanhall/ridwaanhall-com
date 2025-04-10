@@ -13,21 +13,21 @@
                                 <p class="text-blue-200 italic text-sm font-medium">- {{ interview.position }}</p>
                             </div>
                             <span class="inline-flex items-center rounded-full px-3.5 py-1.5 text-sm font-medium shadow-inner
-                                {% if interview.status == 'In Progress' %}bg-blue-900/40 text-blue-200 ring-1 ring-blue-500/50{% endif %}
-                                {% if interview.status == 'Accepted' %}bg-green-900/40 text-green-200 ring-1 ring-green-500/50{% endif %}
-                                {% if interview.status == 'Rejected' %}bg-red-900/40 text-red-200 ring-1 ring-red-500/50{% endif %}
-                                {% if interview.status == 'Ghosting' %}bg-yellow-900/40 text-yellow-200 ring-1 ring-yellow-500/50{% endif %}">
+                                {% if interview.status == 'In Progress' %}bg-blue-950/60 text-blue-300 ring-1 ring-blue-700/70{% endif %}
+                                {% if interview.status == 'Accepted' %}bg-green-950/60 text-green-300 ring-1 ring-green-700/70{% endif %}
+                                {% if interview.status == 'Rejected' %}bg-red-950/60 text-red-300 ring-1 ring-red-700/70{% endif %}
+                                {% if interview.status == 'Ghosting' %}bg-yellow-950/60 text-yellow-300 ring-1 ring-yellow-700/70{% endif %}">
                                 <span class="relative flex h-2 w-2 mr-2">
                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75
-                                        {% if interview.status == 'In Progress' %}bg-blue-400{% endif %}
-                                        {% if interview.status == 'Accepted' %}bg-green-400{% endif %}
-                                        {% if interview.status == 'Rejected' %}bg-red-400{% endif %}
-                                        {% if interview.status == 'Ghosting' %}bg-yellow-400{% endif %}"></span>
+                                        {% if interview.status == 'In Progress' %}bg-blue-600{% endif %}
+                                        {% if interview.status == 'Accepted' %}bg-green-600{% endif %}
+                                        {% if interview.status == 'Rejected' %}bg-red-600{% endif %}
+                                        {% if interview.status == 'Ghosting' %}bg-yellow-600{% endif %}"></span>
                                     <span class="relative inline-flex rounded-full h-2 w-2 
-                                        {% if interview.status == 'In Progress' %}bg-blue-500{% endif %}
-                                        {% if interview.status == 'Accepted' %}bg-green-500{% endif %}
-                                        {% if interview.status == 'Rejected' %}bg-red-500{% endif %}
-                                        {% if interview.status == 'Ghosting' %}bg-yellow-500{% endif %}"></span>
+                                        {% if interview.status == 'In Progress' %}bg-blue-700{% endif %}
+                                        {% if interview.status == 'Accepted' %}bg-green-700{% endif %}
+                                        {% if interview.status == 'Rejected' %}bg-red-700{% endif %}
+                                        {% if interview.status == 'Ghosting' %}bg-yellow-700{% endif %}"></span>
                                 </span>
                                 {{ interview.status }}
                             </span>
@@ -36,7 +36,7 @@
                         <div class="mt-5 flex flex-wrap gap-2">
                             <button
                                 type="button"
-                                class="inline-flex items-center text-sm py-1.5 px-3 rounded-md bg-gradient-to-r from-violet-600/90 to-indigo-600/90 text-gray-300 hover:from-violet-500 hover:to-indigo-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:ring-offset-1 focus:ring-offset-gray-900"
+                                class="inline-flex items-center text-sm py-1.5 px-3 rounded-md bg-gray-700 text-gray-200 hover:bg-gray-600 transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-gray-500"
                                 onclick="toggleJourney('journey-details-{{ forloop.counter }}')"
                                 aria-expanded="false"
                                 aria-controls="journey-details-{{ forloop.counter }}"
@@ -73,10 +73,10 @@
                                 </table>
                             </div>
                         </div>
-        
+                        <!-- For the Lessons Learned section -->
                         <div class="mt-5 pt-4 border-t border-gray-800/40">
-                            <div class="inline-flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-gradient-to-r from-violet-900/90 to-indigo-900/90 text-gray-200 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-violet-500/50">
-                                <p class="text-gray-100"><span class="font-semibold text-indigo-200">Lessons Learned:</span> {{ interview.lessons_learned }}</p>
+                            <div class="inline-flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-gray-800 text-gray-200 transition-all duration-300">
+                                <p class="text-gray-200"><span class="font-semibold">Lessons Learned:</span> {{ interview.lessons_learned }}</p>
                             </div>
                         </div>
                     </div>

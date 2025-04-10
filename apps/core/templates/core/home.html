@@ -170,7 +170,7 @@
 
                     <div class="flex-1 space-y-5 text-center lg:text-left">
                         <div>
-                            <p class="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-1 mb-3 text-xs font-medium text-gray-300 rounded-full uppercase shadow-lg">{{ about.role }}</p>
+                            <p class="inline-block bg-indigo-800 px-4 py-1 mb-3 text-xs font-medium text-gray-300 rounded-full uppercase shadow-lg">{{ about.role }}</p>
                             <h1 class="text-3xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">Hi, <span class="text-indigo-400">Welcome!</span></h1>
                         </div>
                         
@@ -223,8 +223,8 @@
                     </div>
                     
                     <div class="relative hidden md:block mt-8 lg:mt-0 w-48 h-48 md:w-64 md:h-64 xl:w-72 xl:h-72 flex-shrink-0">
-                        <div class="absolute inset-0 rounded-full bg-indigo-600 bg-opacity-20 blur-xl"></div>
-                        <div class="absolute -inset-1 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 opacity-30 blur-sm"></div>
+                        <div class="absolute inset-0 rounded-full bg-indigo-800 bg-opacity-20 blur-xl"></div>
+                        <div class="absolute -inset-1 rounded-full bg-indigo-800 opacity-30 blur-sm"></div>
                         <div class="relative h-full w-full rounded-full overflow-hidden border-2 border-indigo-600/30">
                             <img 
                                 src="{{ about.image_url }}" 
@@ -233,7 +233,7 @@
                             >
                         </div>
                         
-                        <div class="absolute -bottom-2 -right-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full px-4 py-1 text-xs text-gray-300 shadow-lg">
+                        <div class="absolute -bottom-2 -right-2 bg-indigo-800 rounded-full px-4 py-1 text-xs text-gray-300 shadow-lg">
                             <span>{{ about.location.prov }}, {{ about.location.country }}</span>
                         </div>
                     </div>
@@ -246,7 +246,6 @@
             
             {% include 'career/tech_skills.html' %}
 
-            {% include 'career/work_together.html' %}
         </div>
     </main>
 </div>

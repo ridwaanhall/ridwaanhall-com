@@ -1,35 +1,35 @@
 <div class="mt-4">
     <div class="space-y-6">
-        {% if interviews %}
-        {% for interview in interviews %}
-        <!-- Interview application card -->
+        {% if applications %}
+        {% for application in applications %}
+        <!-- application application card -->
         <div class="group mb-4 rounded-xl shadow-lg overflow-hidden border border-gray-700/40 transition-all duration-300 hover:border-indigo-500/60 hover:shadow-xl hover:shadow-indigo-500/10 backdrop-blur-sm">
             <div class="p-5">
                 <div class="flex flex-col md:flex-row md:items-start gap-5">
                     <div class="flex-grow">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
                             <div class="flex items-center gap-2">
-                                <h3 class="text-xl font-bold text-gray-300">{{ interview.company_name }}</h3>
-                                <p class="text-blue-200 italic text-sm font-medium">- {{ interview.position }}</p>
+                                <h3 class="text-xl font-bold text-gray-300">{{ application.company_name }}</h3>
+                                <p class="text-blue-200 italic text-sm font-medium">- {{ application.position }}</p>
                             </div>
                             <span class="inline-flex items-center rounded-full px-3.5 py-1.5 text-sm font-medium shadow-inner
-                                {% if interview.status == 'In Progress' %}bg-blue-950/60 text-blue-300 ring-1 ring-blue-700/70{% endif %}
-                                {% if interview.status == 'Accepted' %}bg-green-950/60 text-green-300 ring-1 ring-green-700/70{% endif %}
-                                {% if interview.status == 'Rejected' %}bg-red-950/60 text-red-300 ring-1 ring-red-700/70{% endif %}
-                                {% if interview.status == 'Ghosting' %}bg-yellow-950/60 text-yellow-300 ring-1 ring-yellow-700/70{% endif %}">
+                                {% if application.status == 'In Progress' %}bg-blue-950/60 text-blue-300 ring-1 ring-blue-700/70{% endif %}
+                                {% if application.status == 'Accepted' %}bg-green-950/60 text-green-300 ring-1 ring-green-700/70{% endif %}
+                                {% if application.status == 'Rejected' %}bg-red-950/60 text-red-300 ring-1 ring-red-700/70{% endif %}
+                                {% if application.status == 'Ghosting' %}bg-yellow-950/60 text-yellow-300 ring-1 ring-yellow-700/70{% endif %}">
                                 <span class="relative flex h-2 w-2 mr-2">
                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75
-                                        {% if interview.status == 'In Progress' %}bg-blue-600{% endif %}
-                                        {% if interview.status == 'Accepted' %}bg-green-600{% endif %}
-                                        {% if interview.status == 'Rejected' %}bg-red-600{% endif %}
-                                        {% if interview.status == 'Ghosting' %}bg-yellow-600{% endif %}"></span>
+                                        {% if application.status == 'In Progress' %}bg-blue-600{% endif %}
+                                        {% if application.status == 'Accepted' %}bg-green-600{% endif %}
+                                        {% if application.status == 'Rejected' %}bg-red-600{% endif %}
+                                        {% if application.status == 'Ghosting' %}bg-yellow-600{% endif %}"></span>
                                     <span class="relative inline-flex rounded-full h-2 w-2 
-                                        {% if interview.status == 'In Progress' %}bg-blue-700{% endif %}
-                                        {% if interview.status == 'Accepted' %}bg-green-700{% endif %}
-                                        {% if interview.status == 'Rejected' %}bg-red-700{% endif %}
-                                        {% if interview.status == 'Ghosting' %}bg-yellow-700{% endif %}"></span>
+                                        {% if application.status == 'In Progress' %}bg-blue-700{% endif %}
+                                        {% if application.status == 'Accepted' %}bg-green-700{% endif %}
+                                        {% if application.status == 'Rejected' %}bg-red-700{% endif %}
+                                        {% if application.status == 'Ghosting' %}bg-yellow-700{% endif %}"></span>
                                 </span>
-                                {{ interview.status }}
+                                {{ application.status }}
                             </span>
                         </div>
         
@@ -60,7 +60,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-700/20">
-                                        {% for step in interview.journey %}
+                                        {% for step in application.journey %}
                                         <tr class="hover:bg-gray-800/30 transition-colors duration-150">
                                             <td class="px-3 py-2 whitespace-nowrap flex items-center">
                                                 <span class="font-medium text-indigo-300">{{ step.title }}</span>
@@ -76,7 +76,7 @@
                         <!-- For the Lessons Learned section -->
                         <div class="mt-5 pt-4 border-t border-gray-800/40">
                             <div class="inline-flex items-center text-xs sm:text-sm py-1 px-2 rounded-md bg-gray-800 text-gray-200 transition-all duration-300">
-                                <p class="text-gray-200"><span class="font-semibold">Lessons Learned:</span> {{ interview.lessons_learned }}</p>
+                                <p class="text-gray-200"><span class="font-semibold">Lessons Learned:</span> {{ application.lessons_learned }}</p>
                             </div>
                         </div>
                     </div>
@@ -90,8 +90,8 @@
             <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
             </svg>
-            <h3 class="mt-4 text-lg font-medium text-gray-100">No interviews found</h3>
-            <p class="mt-2 text-sm text-gray-400">Start adding interviews to track your career journey.</p>
+            <h3 class="mt-4 text-lg font-medium text-gray-100">No applications found</h3>
+            <p class="mt-2 text-sm text-gray-400">Start adding applications to track your career journey.</p>
         </div>
         {% endif %}        
     </div>

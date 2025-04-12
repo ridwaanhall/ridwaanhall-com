@@ -5,7 +5,7 @@ from django.core.exceptions import SuspiciousOperation
 from apps.data.experiences_data import ExperiencesData
 from apps.data.certifications_data import CertificationsData
 from apps.data.education_data import EducationData
-from apps.data.interviews_data import InterviewsData
+from apps.data.applications_data import ApplicationsData
 from apps.data.about_data import AboutData
 
 
@@ -66,11 +66,11 @@ class CareerView(BaseCareerView):
             'experiences': ExperiencesData.experiences,
             'education': EducationData.education,
             'certifications': CertificationsData.certifications,
-            'interviews': InterviewsData.interviews,
+            'applications': ApplicationsData.applications,
             'seo': {
                 'title': f"Journey of Growth | {about['name']} - Career Portfolio",
-                'description': f"{about['name']}'s Journey of Growth: A comprehensive showcase of professional experiences, interviews, education, and certifications that reflect my career development and achievements.",
-                'keywords': f"{about['name']}, resume, CV, career, professional experience, certifications, education, interviews, work history",
+                'description': f"{about['name']}'s Journey of Growth: A comprehensive showcase of professional experiences, applications, education, and certifications that reflect my career development and achievements.",
+                'keywords': f"{about['name']}, resume, CV, career, professional experience, certifications, education, applications, work history",
                 'og_image': about.get('image_url', ''),
                 'og_type': 'profile',
                 'twitter_card': 'summary_large_image',

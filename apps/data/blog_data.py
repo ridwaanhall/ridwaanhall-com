@@ -121,7 +121,7 @@ class BlogData:
                 "Eid al-Fitr was also a day of sharing happiness. Prophet Muhammad (PBUH) set an example by showing generosity, kindness, and care, ensuring that every member of the community felt included in the celebration."
             ],
             "tags": ["Eid al-Fitr", "Prophet Muhammad", "Islam", "Traditions", "Community"],
-            "is_featured": True
+            "is_featured": False
         },
         {
             "id": 8,

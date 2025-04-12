@@ -87,6 +87,44 @@ class InterviewsData:
             'lessons_learned': 'Requiring candidates to turn on their cameras while not reciprocating may reflect a lack of mutual respect and transparency, which can leave a negative impression of the organization\'s values.'
         },
         {
+            'company_name': 'Skyshi Digital Indonesia',
+            'status': 'Rejected',
+            'position': 'Python Developer (Junior Level)',
+            'journey': [
+                {
+                    'title': 'Discovery',
+                    'details': 'Found the job opportunity on LinkedIn',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Application Submission',
+                    'details': 'Applied through LinkedIn with resume and required documents',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Application Progress',
+                    'details': 'Received notification that application was viewed and resume downloaded',
+                    'notes': '-'
+                },
+                {
+                    'title': 'No Response',
+                    'details': 'Received no callback or follow-up after resume review',
+                    'notes': '<span class="text-red-600">No communication despite application being processed</span>'
+                },
+                {
+                    'title': 'Position Closed',
+                    'details': 'The job listing was closed after my application',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Position Reopened',
+                    'details': 'Same position was reposted one month later',
+                    'notes': '<span class="text-red-600">Suggests they were collecting resumes rather than hiring</span>'
+                },
+            ],
+            'lessons_learned': 'Companies that repeatedly post and close the same positions without engaging candidates may be building resume databases rather than filling actual roles. This practice wastes applicants\' time and erodes trust. If your organization has no immediate hiring intentions, consider more transparent ways to build your talent pipeline that respect candidates\' time and hopes.'
+        },
+        {
             'company_name': 'Shortlyst AI',
             'status': 'Ghosting',
             'position': 'Backend Engineer Intern',
@@ -146,6 +184,52 @@ class InterviewsData:
                 },
             ],
             'lessons_learned': 'Thoroughly prepare for coding tests by researching both online resources and the company\'s products. Always ensure your testing environment is secure before beginning any technical assessments.'
+        },
+        {
+            'company_name': 'National Fair Housing Alliance',
+            'status': 'Rejected',
+            'position': 'AI Engineer Intern',
+            'journey': [
+                {
+                    'title': 'Discovery',
+                    'details': 'Found the internship opportunity through LinkedIn job postings',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Application Submission',
+                    'details': 'Applied through LinkedIn with resume and required documents',
+                    'notes': '-'
+                },
+                {
+                    'title': 'No Response',
+                    'details': 'Received no feedback or follow-up after application submission',
+                    'notes': '<span class="text-red-600">Likely eliminated during initial screening phase</span>'
+                },
+            ],
+            'lessons_learned': 'Not all applications receive responses. Companies often use automated screening systems that filter candidates before human review. Having a targeted resume for each role increases chances of passing initial screens.'
+        },
+        {
+            'company_name': 'Reality AI Lab',
+            'status': 'Rejected',
+            'position': 'AI Engineer Intern',
+            'journey': [
+            {
+                'title': 'Discovery',
+                'details': 'Found the internship opportunity through LinkedIn job postings',
+                'notes': '-'
+            },
+            {
+                'title': 'Application Submission',
+                'details': 'Applied through LinkedIn with resume and required documents',
+                'notes': '-'
+            },
+            {
+                'title': 'No Response',
+                'details': 'Received no feedback or follow-up after application submission',
+                'notes': '<span class="text-red-600">Likely eliminated during initial screening phase</span>'
+            },
+            ],
+            'lessons_learned': 'Not all applications receive responses. Companies often use automated screening systems that filter candidates before human review. Having a targeted resume for each role increases chances of passing initial screens.'
         },
         {
             'company_name': 'GaoTek Inc.',

@@ -150,5 +150,24 @@ class BlogData:
                     "</ul>"
             ],
             "tags": ["Conventional Commits", "Git", "Commit Messages", "Coding Standards", "Development"],
+        },
+        {
+            "id": 9,
+            "title": "The Story Behind Choosing .dev, .com, and .id Domain Extensions",
+            "description": "An insightful journey through the process of selecting the right domain extension for Ridwan's website.",
+            "image_url": "https://ridwaanhall.me/static/img/blog/choosing_domain.webp",
+            "date": "April 13, 2025",
+            "author": "Ridwan Halim",
+            "username": "ridwaanhall",
+            "author_image": "https://ridwaanhall.me/static/img/ridwaanhall.webp",
+            "content": [
+                "<span class='font-semibold'>Creating my website</span> wasn’t just about the content—it was about establishing its identity. Choosing the right domain extension for <span class='text-blue-600'>ridwaanhall</span> was a crucial step, requiring thoughtful consideration of all options: <span class='text-green-600'>.dev</span>, <span class='text-blue-600'>.com</span>, and <span class='text-red-600'>.id</span>.",
+                "Initially, I considered <span class='text-green-600'>.dev</span>. As a developer, it felt fitting to represent the technological aspect of my projects, such as demo showcases, programming insights, and innovative ideas. <span class='text-green-600'>.dev</span> had a strong, professional tone, perfectly suited for my tech-focused endeavors. However, my vision wasn’t limited to technology. I wanted to include broader topics, such as reflections on religion and societal trends, which demanded a domain that resonated with a more diverse audience.",
+                "Next, <span class='text-blue-600'>.com</span> emerged as the most versatile option. With its popularity and global recognition, <span class='text-blue-600'>.com</span> had the power to seamlessly integrate all facets of my website. Whether showcasing technical projects or sharing blog posts about culture, religion, or trends, <span class='text-blue-600'>.com</span> provided the flexibility to appeal to a wide audience—tech enthusiasts, casual readers, and everyone in between.",
+                "I also considered <span class='text-red-600'>.id</span>, which resonated deeply with my Indonesian heritage. It felt personal and proud, symbolizing my roots. However, as I thought about the scope of my website’s content and its global reach, I realized that <span class='text-red-600'>.id</span> might limit the international vision I wanted to convey.",
+                "In the end, I chose <span class='text-blue-600'>ridwaanhall.com</span>. This domain reflects my aspiration to create a platform that embodies my multifaceted interests. It captures the harmony of technical expertise with thoughtful exploration of diverse topics. With <span class='text-blue-600'>.com</span>, I found the perfect balance for welcoming audiences from all walks of life."
+            ],
+            "tags": ["Domain Extensions", ".dev", ".com", ".id", "Web Development", "Personal Branding"],
+            "is_featured": False
         }
     ]

@@ -38,7 +38,7 @@ class AboutData:
                     "province": "Central Java",
                     "prov": "Central Java",
                     "country": "Indonesia",
-                    "map_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126585.91904713991!2d110.29942949999999!3d-7.732935699999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59bd800eed9d%3A0x8da2a5bd43977a33!2sSleman%20Regency%2C%20Special%20Region%20of%20Yogyakarta!5e0!3m2!1sen!2sid!4v1693559291713!5m2!1sen!2sid"
+                    "map_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d472166.72680191!2d110.27628355896701!3d-7.3869701170751005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a73e2eb7ff211%3A0x3027a76e352bc80!2sBoyolali%20Regency%2C%20Central%20Java!5e1!3m2!1sen!2sid!4v1744531766838!5m2!1sen!2sid"
                 },
                 "social_media": {
                     "github": "https://github.com/ridwaanhall",

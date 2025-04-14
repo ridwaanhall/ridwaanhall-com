@@ -23,15 +23,14 @@ class AboutData:
                 "is_active": cls.is_working_hours(),
                 # "is_active": False,
                 "short_bio": "A passionate machine learning engineer and web development with a focus on practical applications of AI.",
-                "short_description": "Fueled by Python, coding the future of AI and web tech. Let's make magic happen!",
+                "short_description": "Coding by day, memorizing Quran by heart—who else but me?",
                 "stories": [
-                    "Hi, I'm ridwaanhall—a Python Developer, Machine Learning Mentor, and Founder of Copilot ID based in the vibrant city of Central Java, Indonesia. I'm passionate about building AI-powered solutions and crafting awesome web applications.",
-                    "On a personal note, I've memorized nearly 30 Juz of the Quran, an achievement that taught me the values of discipline, dedication, and focus—qualities I bring to every aspect of my professional life.",
-                    "Professionally, I've had the chance to take on some exciting roles. As a Machine Learning mentor at Coding Camp powered by DBS Foundation, I've guided over 50 students to master both technical and soft skills. I've also completed more than 30 Python projects using technologies like Django, Flask, TensorFlow, PyTorch, and Next.js.",
-                    "Additionally, I supported over 100 interns during my time at GAOTek Inc., providing technical guidance and helping them thrive in their roles.",
-                    "My educational journey includes earning a bachelor's degree in Intelligent Systems (AI) from the University of Technology Yogyakarta, where I focused on advancing Machine Learning technologies. Before that, I studied at Pondok Pesantren Islam Al Mukmin, where I built a strong foundation in Islamic studies while attending Islamic Boarding School of Al Mukmin.",
-                    "Looking ahead, my vision is to leverage AI to solve real-world problems quickly and efficiently. I'm also passionate about building my personal brand, contributing to open-source projects, and focusing on both short and long-term investments to support sustainable growth and innovation.",
-                    "If you're into brainstorming ideas, collaborating on exciting projects, or just sharing insights about technology, feel free to reach out. Let's create something amazing together! 🚀"
+                    "Yo, I’m ridwaanhall—coding by day, memorizing Quran by heart—who else but me? Based in the buzzing heart of Central Java, Indonesia, I’m the founder of Copilot ID, building AI apps and slick websites with Django, Flask, and Next.js that solve real problems.",
+                    "On a personal note, I’ve memorized nearly 30 Juz of the Quran. It’s not just about verses—it’s wired me for grit, focus, and discipline, the same energy I pour into every line of code and mentoring session.",
+                    "I’ve had some dope gigs. I mentored 50+ coders at DBS Foundation’s Coding Camp, leveling up their Python and people skills. At GAOTek Inc., I guided 100+ interns to crush it. Oh, and I’ve shipped 30+ projects—AI models, web apps, you name it—using TensorFlow, PyTorch, and more.",
+                    "My roots? I studied at Pondok Pesantren Islam Al Mukmin, soaking up Islamic wisdom, then snagged a Bachelor’s in Intelligent Systems (AI) from University of Technology Yogyakarta, geeking out on Machine Learning breakthroughs.",
+                    "What’s next? I’m all in on using AI to tackle big challenges fast, growing Copilot ID, and dropping value in open-source communities. Plus, I’m playing the long game with investments to fuel innovation that lasts.",
+                    "Got a wild idea or just wanna vibe on tech? Hit me up—let’s build something epic together! 🚀"
                 ],
                 "location": {
                     "regency": "Boyolali",

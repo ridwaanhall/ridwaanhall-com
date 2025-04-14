@@ -1,53 +1,43 @@
 <h2 class="text-2xl font-bold text-white mb-4 mt-10 border-b border-gray-700 pb-3">Connect With Me</h2>
-<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
+<div class="flex flex-col justify-between gap-3 md:flex-row">
+    <!-- Email Button -->
+    <a href="mailto:{{ about.social_media.email }}" class="flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-[15px] text-neutral-50 transition-all duration-300 hover:bg-green-700 flex w-full items-center justify-center transition-all duration-300 hover:scale-105 md:w-1/5 border dark:border-neutral-700" data-umami-event="Contact: Email">
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 2A2 2 0 0 0 .05 3.555L8 8.414l7.95-4.859A2 2 0 0 0 14 2H2Zm-2 9.8V4.698l5.803 3.546L0 11.801Zm6.761-2.97-6.57 4.026A2 2 0 0 0 2 14h6.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.606-3.446l-.367-.225L8 9.586l-1.239-.757ZM16 9.671V4.697l-5.803 3.546.338.208A4.482 4.482 0 0 1 12.5 8c1.414 0 2.675.652 3.5 1.671Z"></path>
+            <path d="M15.834 12.244c0 1.168-.577 2.025-1.587 2.025-.503 0-1.002-.228-1.12-.648h-.043c-.118.416-.543.643-1.015.643-.77 0-1.259-.542-1.259-1.434v-.529c0-.844.481-1.4 1.26-1.4.585 0 .87.333.953.63h.03v-.568h.905v2.19c0 .272.18.42.411.42.315 0 .639-.415.639-1.39v-.118c0-1.277-.95-2.326-2.484-2.326h-.04c-1.582 0-2.64 1.067-2.64 2.724v.157c0 1.867 1.237 2.654 2.57 2.654h.045c.507 0 .935-.07 1.18-.18v.731c-.219.1-.643.175-1.237.175h-.044C10.438 16 9 14.82 9 12.646v-.214C9 10.36 10.421 9 12.485 9h.035c2.12 0 3.314 1.43 3.314 3.034v.21Zm-4.04.21v.227c0 .586.227.8.581.8.31 0 .564-.17.564-.743v-.367c0-.516-.275-.708-.572-.708-.346 0-.573.245-.573.791Z"></path>
+        </svg>
+        Email
+    </a>
 
-    <div class="bg-transparent rounded-xl p-4 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-indigo-300/50 hover:border-indigo-400/50 hover:shadow-indigo-400/20 group">
-        <a href="{{ about.social_media.github }}" class="flex flex-col items-center" aria-label="GitHub Profile">
-            <div class="w-14 h-14 flex items-center justify-center rounded-full bg-gray-700/20 mb-4 group-hover:bg-indigo-500/30 transition-all duration-300">
-                <svg class="w-7 h-7 text-indigo-400 group-hover:text-indigo-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
-                </svg>
-            </div>
-            <span class="text-center font-medium text-gray-200 group-hover:text-white">GitHub</span>
-            <span class="text-xs text-gray-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">@{{ about.username }}</span>
-        </a>
-    </div>
-    
-    <div class="bg-transparent rounded-xl p-4 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-blue-300/50 hover:border-blue-400/50 hover:shadow-blue-400/20 group">
-        <a href="{{ about.social_media.follow_linkedin }}" class="flex flex-col items-center" aria-label="LinkedIn Profile">
-            <div class="w-14 h-14 flex items-center justify-center rounded-full bg-blue-500/20 mb-4 group-hover:bg-blue-500/30 transition-all duration-300">
-                <svg class="w-7 h-7 text-blue-400 group-hover:text-blue-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path>
-                </svg>
-            </div>
-            <span class="text-center font-medium text-gray-200 group-hover:text-white">LinkedIn</span>
-            <span class="text-xs text-gray-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">in/{{ about.username }}</span>
-        </a>
-    </div>
-    
-    <div class="bg-transparent rounded-xl p-4 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-pink-300/50 hover:border-pink-400/50 hover:shadow-pink-400/20 group">
-        <a href="{{ about.social_media.instagram }}" class="flex flex-col items-center" aria-label="Instagram Profile">
-            <div class="w-14 h-14 flex items-center justify-center rounded-full bg-pink-500/20 mb-4 group-hover:bg-pink-500/30 transition-all duration-300">
-                <svg class="w-7 h-7 text-pink-400 group-hover:text-pink-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
-                </svg>
-            </div>
-            <span class="text-center font-medium text-gray-200 group-hover:text-white">Instagram</span>
-            <span class="text-xs text-gray-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">@{{ about.username }}</span>
-        </a>
-    </div>
-    
-    <div class="bg-transparent rounded-xl p-4 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-green-300/50 hover:border-green-400/50 hover:shadow-green-400/20 group">
-        <a href="mailto:{{ about.social_media.email }}" class="flex flex-col items-center" aria-label="Email Me">
-            <div class="w-14 h-14 flex items-center justify-center rounded-full bg-green-500/20 mb-4 group-hover:bg-green-500/30 transition-all duration-300">
-                <svg class="w-7 h-7 text-green-400 group-hover:text-green-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                </svg>
-            </div>
-            <span class="text-center font-medium text-gray-200 group-hover:text-white">Email</span>
-            <span class="text-xs text-gray-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">{{ about.social_media.email }}</span>
-        </a>
-    </div>
-    
+    <!-- LinkedIn Button -->
+    <a href="{{ about.social_media.follow_linkedin }}" class="flex items-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-[15px] text-neutral-50 transition-all duration-300 hover:bg-blue-600 flex w-full items-center justify-center transition-all duration-300 hover:scale-105 md:w-1/5 border dark:border-neutral-700" data-umami-event="Social: Linkedin">
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"></path>
+        </svg>
+        Linkedin
+    </a>
+
+    <!-- X (formerly Twitter) Button -->
+    <a href="{{ about.social_media.x }}" class="flex items-center gap-2 rounded-lg bg-sky-500 px-4 py-2 text-[15px] text-neutral-50 transition-all duration-300 hover:bg-sky-600 flex w-full items-center justify-center transition-all duration-300 hover:scale-105 md:w-1/5 border dark:border-neutral-700" data-umami-event="Social: X">
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"></path>
+        </svg>
+        X
+    </a>
+
+    <!-- Instagram Button -->
+    <a href="{{ about.social_media.instagram }}" class="flex items-center gap-2 rounded-lg bg-orange-700 px-4 py-2 text-[15px] text-neutral-50 transition-all duration-300 hover:bg-orange-800 flex w-full items-center justify-center transition-all duration-300 hover:scale-105 md:w-1/5 border dark:border-neutral-700" data-umami-event="Social: Instagram">
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"></path>
+        </svg>
+        Instagram
+    </a>
+
+    <!-- GitHub Button -->
+    <a href="{{ about.social_media.github }}" class="flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-[15px] text-neutral-50 transition-all duration-300 hover:bg-gray-800 flex w-full items-center justify-center transition-all duration-300 hover:scale-105 md:w-1/5 border dark:border-neutral-700" data-umami-event="Social: Github">
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+        </svg>
+        Github
+    </a>
 </div>

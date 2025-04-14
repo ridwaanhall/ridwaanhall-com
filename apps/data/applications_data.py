@@ -21,32 +21,32 @@ class ApplicationsData:
             'position': 'Machine Learning Mentor',
             'journey': [
                 {
-                    'title': 'Initial Contact',
-                    'details': 'Received email invitation to become a mentor',
+                    'title': 'First Hit',
+                    'details': 'Got an email inviting me to mentor—caught me off guard but hyped!',
                     'notes': '-'
                 },
                 {
-                    'title': 'Application Process',
-                    'details': 'Completed Google form with personal data, motivation, photo, and experience details',
+                    'title': 'Form Vibes',
+                    'details': 'Filled out a Google Form with my info, motivation, pic, and experience',
                     'notes': '-'
                 },
                 {
-                    'title': 'Course Completion',
-                    'details': 'Required to complete the course I would be mentoring',
+                    'title': 'Course Grind',
+                    'details': 'Had to complete the course I’d be mentoring—went all in!',
                     'notes': '-'
                 },
                 {
-                    'title': 'Interview',
-                    'details': 'Discussed personal background, motivation, and problem-solving skills',
+                    'title': 'Real Talk',
+                    'details': 'Chatted about my background, passion, and tackled some problem-solving questions',
                     'notes': '-'
                 },
                 {
-                    'title': 'Final Result',
-                    'details': 'Accepted for the Machine Learning Mentor position',
+                    'title': 'Locked In!',
+                    'details': 'Snagged the Machine Learning Mentor role—ready to inspire!',
                     'notes': '-'
                 },
             ],
-            'lessons_learned': 'Thoroughly studying the documentation provided by the HR team significantly increases the likelihood of a successful application outcome.'
+            'lessons_learned': 'Digging into HR’s docs like it’s a treasure hunt seriously boosts your chances!'
         },
         {
             'company_name': 'HashMicro',
@@ -54,37 +54,37 @@ class ApplicationsData:
             'position': 'Python Developer (Django)',
             'journey': [
                 {
-                    'title': 'Initial Contact',
-                    'details': 'HR reached out through LinkedIn with an interview link',
+                    'title': 'LinkedIn DM',
+                    'details': 'HR slid into my LinkedIn with an interview link—game on!',
                     'notes': '-'
                 },
                 {
-                    'title': 'Technical Interview',
-                    'details': 'Discussed Django class views vs function views and salary expectations',
-                    'notes': '<span class="text-red-600">They asked me to turn on my camera, but not theirs</span>'
+                    'title': 'Tech Chat',
+                    'details': 'Geeked out on Django class vs function views and talked salary. Had to turn my cam on, but theirs stayed off—odd.',
+                    'notes': '<span class="text-red-600">Only my camera was on—kinda weird vibe</span>'
                 },
                 {
-                    'title': 'Application Process',
-                    'details': 'Directed to apply formally through the company website',
+                    'title': 'Official Apply',
+                    'details': 'Told to apply through their website—done deal',
                     'notes': '-'
                 },
                 {
-                    'title': 'Assessment Tests',
-                    'details': 'Completed logical reasoning psychological test and technical assessment',
+                    'title': 'Brain Teasers',
+                    'details': 'Tackled a logic test and coding challenge—sweated a bit!',
                     'notes': '-'
                 },
                 {
-                    'title': 'User Interview',
-                    'details': 'Final interview with the user/client team',
-                    'notes': '<span class="text-red-600">They asked me to turn on my camera, but not theirs</span>'
+                    'title': 'Client Meet',
+                    'details': 'Final interview with the user team—same deal, my cam on, theirs off',
+                    'notes': '<span class="text-red-600">Again, just my camera—come on, really?</span>'
                 },
                 {
-                    'title': 'Waiting for Feedback',
-                    'details': 'Currently awaiting decision from the company',
+                    'title': 'Waiting Game',
+                    'details': 'Now just chilling for their decision—wish me luck!',
                     'notes': '-'
                 },
             ],
-            'lessons_learned': 'Requiring candidates to turn on their cameras while not reciprocating may reflect a lack of mutual respect and transparency, which can leave a negative impression of the organization\'s values.'
+            'lessons_learned': 'Asking for my camera on but keeping theirs off? Not cool. Respect’s a two-way street—makes a big difference.'
         },
         {
             'company_name': 'Skyshi Digital Indonesia',
@@ -92,37 +92,37 @@ class ApplicationsData:
             'position': 'Python Developer (Junior Level)',
             'journey': [
                 {
-                    'title': 'Discovery',
-                    'details': 'Found the job opportunity on LinkedIn',
+                    'title': 'Spotted It',
+                    'details': 'Found a dope job post on LinkedIn—looked promising',
                     'notes': '-'
                 },
                 {
-                    'title': 'Application Submission',
-                    'details': 'Applied through LinkedIn with resume and required documents',
+                    'title': 'Sent It',
+                    'details': 'Applied via LinkedIn with my resume and docs',
                     'notes': '-'
                 },
                 {
-                    'title': 'Application Progress',
-                    'details': 'Received notification that application was viewed and resume downloaded',
+                    'title': 'Some Action',
+                    'details': 'Got a “resume viewed” ping—thought I was in the game!',
                     'notes': '-'
                 },
                 {
-                    'title': 'No Response',
-                    'details': 'Received no callback or follow-up after resume review',
-                    'notes': '<span class="text-red-600">No communication despite application being processed</span>'
+                    'title': 'Ghost Town',
+                    'details': 'No call, no email—complete silence after that',
+                    'notes': '<span class="text-red-600">Zero follow-up—pretty rude</span>'
                 },
                 {
-                    'title': 'Position Closed',
-                    'details': 'The job listing was closed after my application',
+                    'title': 'Job Closed',
+                    'details': 'Listing shut down right after my app',
                     'notes': '-'
                 },
                 {
-                    'title': 'Position Reopened',
-                    'details': 'Same position was reposted one month later',
-                    'notes': '<span class="text-red-600">Suggests they were collecting resumes rather than hiring</span>'
+                    'title': 'Plot Twist',
+                    'details': 'Same job popped back up a month later—shady!',
+                    'notes': '<span class="text-red-600">Feels like they’re just hoarding resumes</span>'
                 },
             ],
-            'lessons_learned': 'Companies that repeatedly post and close the same positions without engaging candidates may be building resume databases rather than filling actual roles. This practice wastes applicants\' time and erodes trust. If your organization has no immediate hiring intentions, consider more transparent ways to build your talent pipeline that respect candidates\' time and hopes.'
+            'lessons_learned': 'Some companies play games, opening and closing jobs to collect resumes. Waste of time—be real and save everyone the hassle.'
         },
         {
             'company_name': 'Shortlyst AI',
@@ -130,27 +130,27 @@ class ApplicationsData:
             'position': 'Backend Engineer Intern',
             'journey': [
                 {
-                    'title': 'Initial Contact',
-                    'details': 'Contacted through LinkedIn for a Backend Engineer internship opportunity',
+                    'title': 'First Contact',
+                    'details': 'Got a LinkedIn ping about a backend internship—sweet!',
                     'notes': '-'
                 },
                 {
-                    'title': 'First Interview',
-                    'details': 'Discussed personal background and previous projects',
+                    'title': 'Kickoff Chat',
+                    'details': 'Talked about my background and projects—good vibes',
                     'notes': '-'
                 },
                 {
-                    'title': 'Technical Interview',
-                    'details': 'Discussed potential internship work and responsibilities',
-                    'notes': '<span class="text-red-600">Interviewer requested I turn on my camera but did not reciprocate</span>'
+                    'title': 'Tech Dive',
+                    'details': 'Discussed intern tasks—fun convo, but I had to cam up while they didn’t',
+                    'notes': '<span class="text-red-600">Cam on for me, off for them—ugh</span>'
                 },
                 {
-                    'title': 'Waiting for Feedback',
-                    'details': 'No further communication received after technical interview',
-                    'notes': '<span class="text-red-600">Ghosted with no status update</span>'
+                    'title': 'Vanished',
+                    'details': 'No word after that—total ghost mode',
+                    'notes': '<span class="text-red-600">Ghosted with no heads-up—lame</span>'
                 },
             ],
-            'lessons_learned': 'Fascinating how some organizations preach professionalism yet vanish without a trace. Perhaps those who demand transparency without offering it in return may someday wonder why their talent pipeline mysteriously runs dry. The industry remembers those who respect candidates\' time and dignity—and those who don\'t.'
+            'lessons_learned': 'Preaching professionalism but pulling a Houdini? Nah. Respect candidates’ time, and your rep stays solid.'
         },
         {
             'company_name': 'Speechify',
@@ -158,32 +158,32 @@ class ApplicationsData:
             'position': 'Frontend Developer',
             'journey': [
                 {
-                    'title': 'Initial Contact',
-                    'details': 'Received email from recruiter who was interested in my GitHub profile',
+                    'title': 'GitHub Glow',
+                    'details': 'Recruiter vibed with my GitHub and shot me an email',
                     'notes': '-'
                 },
                 {
-                    'title': 'Job Opportunity',
-                    'details': 'Was offered a frontend position and invited to complete a coding test',
+                    'title': 'Cool Offer',
+                    'details': 'Got a frontend gig pitch and a coding test invite',
                     'notes': '-'
                 },
                 {
-                    'title': 'Technical Assessment',
-                    'details': 'Asked to build a speech-to-text website project as part of the evaluation',
+                    'title': 'Code Challenge',
+                    'details': 'Tasked with building a speech-to-text web project',
                     'notes': '-'
                 },
                 {
-                    'title': 'Security Incident',
-                    'details': 'Experienced account security issues during the testing session',
-                    'notes': '<span class="text-red-600">Had to terminate the test due to potential hacking attempt on my account</span>'
+                    'title': 'Security Drama',
+                    'details': 'Mid-test, my account got sketchy—possible hack. Had to pull the plug.',
+                    'notes': '<span class="text-red-600">Bailed on the test due to account issues</span>'
                 },
                 {
-                    'title': 'Final Result',
-                    'details': 'Received notification that I did not meet the required criteria',
+                    'title': 'No Go',
+                    'details': 'Got word I didn’t make the cut—oh well',
                     'notes': '-'
                 },
             ],
-            'lessons_learned': 'Thoroughly prepare for coding tests by researching both online resources and the company\'s products. Always ensure your testing environment is secure before beginning any technical assessments.'
+            'lessons_learned': 'Prep hard for coding tests—scope out the company’s stuff and online tips. Oh, and lock down your setup to avoid disasters.'
         },
         {
             'company_name': 'National Fair Housing Alliance',
@@ -191,45 +191,45 @@ class ApplicationsData:
             'position': 'AI Engineer Intern',
             'journey': [
                 {
-                    'title': 'Discovery',
-                    'details': 'Found the internship opportunity through LinkedIn job postings',
+                    'title': 'Found It',
+                    'details': 'Caught an internship post on LinkedIn—looked fire',
                     'notes': '-'
                 },
                 {
-                    'title': 'Application Submission',
-                    'details': 'Applied through LinkedIn with resume and required documents',
+                    'title': 'Dropped Resume',
+                    'details': 'Applied via LinkedIn with my CV and docs',
                     'notes': '-'
                 },
                 {
-                    'title': 'No Response',
-                    'details': 'Received no feedback or follow-up after application submission',
-                    'notes': '<span class="text-red-600">Likely eliminated during initial screening phase</span>'
+                    'title': 'Crickets',
+                    'details': 'No response—probably got axed early',
+                    'notes': '<span class="text-red-600">Likely filtered out in screening</span>'
                 },
             ],
-            'lessons_learned': 'Not all applications receive responses. Companies often use automated screening systems that filter candidates before human review. Having a targeted resume for each role increases chances of passing initial screens.'
+            'lessons_learned': 'Not every app gets a reply. Companies use bots to screen—tailor your resume to slip through.'
         },
         {
             'company_name': 'Reality AI Lab',
             'status': 'Rejected',
             'position': 'AI Engineer Intern',
             'journey': [
-            {
-                'title': 'Discovery',
-                'details': 'Found the internship opportunity through LinkedIn job postings',
-                'notes': '-'
-            },
-            {
-                'title': 'Application Submission',
-                'details': 'Applied through LinkedIn with resume and required documents',
-                'notes': '-'
-            },
-            {
-                'title': 'No Response',
-                'details': 'Received no feedback or follow-up after application submission',
-                'notes': '<span class="text-red-600">Likely eliminated during initial screening phase</span>'
-            },
+                {
+                    'title': 'Job Radar',
+                    'details': 'Spotted an AI internship on LinkedIn—had to try',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Sent Docs',
+                    'details': 'Submitted my resume and papers via LinkedIn',
+                    'notes': '-'
+                },
+                {
+                    'title': 'Silent Treatment',
+                    'details': 'No feedback—guessing I got screened out',
+                    'notes': '<span class="text-red-600">Probably didn’t pass  make the bot cut</span>'
+                },
             ],
-            'lessons_learned': 'Not all applications receive responses. Companies often use automated screening systems that filter candidates before human review. Having a targeted resume for each role increases chances of passing initial screens.'
+            'lessons_learned': 'Same deal—craft a laser-focused resume to dodge those screening bots.'
         },
         {
             'company_name': 'GaoTek Inc.',
@@ -237,17 +237,17 @@ class ApplicationsData:
             'position': 'Assistant Squad Leader of Web Developer Intern',
             'journey': [
                 {
-                    'title': 'Performance Recognition',
-                    'details': 'Was offered assistant position through my channel due to good performance',
+                    'title': 'Got Props',
+                    'details': 'My work stood out, so they offered me assistant squad leader—hype!',
                     'notes': '-'
                 },
                 {
-                    'title': 'Role Transition',
-                    'details': 'Scheduled to begin assistant squad leader position',
+                    'title': 'Level Up',
+                    'details': 'Set to step into the new role soon—let’s go!',
                     'notes': '-'
                 },
             ],
-            'lessons_learned': 'Good performance in your role can lead to faster promotions and career advancement opportunities.'
+            'lessons_learned': 'Grind hard, and the big roles come knocking—performance pays off!'
         },
         {
             'company_name': 'GaoTek Inc.',
@@ -255,26 +255,26 @@ class ApplicationsData:
             'position': 'Web Developer Intern',
             'journey': [
                 {
-                    'title': 'Initial Contact',
-                    'details': 'Contacted through LinkedIn offering an internship opportunity',
+                    'title': 'LinkedIn Hit',
+                    'details': 'Scored a DM about an internship—felt legit!',
                     'notes': '-'
                 },
                 {
-                    'title': 'Interview Process',
-                    'details': 'Participated in a Google Meet interview discussing experience and personal background',
+                    'title': 'Virtual Hang',
+                    'details': 'Jumped on a Google Meet to talk experience and vibes',
                     'notes': '-'
                 },
                 {
-                    'title': 'Application Requirements',
-                    'details': 'Invited to a group and asked to submit CV with link',
+                    'title': 'CV Drop',
+                    'details': 'Joined a group and sent my CV with all the links',
                     'notes': '-'
                 },
                 {
-                    'title': 'Final Result',
-                    'details': 'Received acceptance for the Web Developer Intern position',
+                    'title': 'Nailed It!',
+                    'details': 'Bagged the Web Developer Intern spot—ready to build!',
                     'notes': '-'
                 },
             ],
-            'lessons_learned': 'Maintaining an updated LinkedIn profile and CV can lead to internship opportunities through direct outreach.'
+            'lessons_learned': 'Keep your LinkedIn and CV fresh—doors open when you’re ready!'
         },
     ]

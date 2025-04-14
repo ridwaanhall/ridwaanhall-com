@@ -2,17 +2,17 @@ class EducationData:
     education = [
         {
             "degree": "S.Kom in Intelligence Systems (AI)",
-            "years": "2021 - Present",
+            "years": "2021 - Now",
             "institution": "Universitas Teknologi Yogyakarta",
             "website": "https://uty.ac.id/",
             "logo": "https://ridwaanhall.com/static/img/logo/uty.webp",
             "is_last": True,
             "achievements": [
-                "Studied Algorithm Programming and Object-Oriented Programming",
-                "Completed Web and Mobile Development courses",
-                "Learned Big Data & Data Analytics",
-                "Studied Machine Learning and Augmented Reality Technology",
-                "Mastered Data Structures & Algorithms and Neural Networks"
+                "Got down with algorithms and object-oriented coding—nailed the basics!",
+                "Built slick web in hands-on courses.",
+                "Dived into Big Data and analytics—crunching numbers like a pro.",
+                "Leveled up with Machine Learning and played with AR tech.",
+                "Mastered data structures, algorithms, and neural nets—brainy stuff!"
             ]
         },
         {
@@ -23,10 +23,10 @@ class EducationData:
             "logo": "https://ridwaanhall.com/static/img/logo/al_mukmin_ngruki.webp",
             "is_last": False,
             "achievements": [
-                "Practiced reviewing and memorizing the Qur'an before and after salah (prayer).",
-                "Engaged in environmental and outdoor activities as part of the society.",
-                "Memorized nearly the entire Qur'an with remarkable dedication and focus.",
-                "Participated in Santri Pecinta Alam (SAPALA KAMUFISA).",
+                "Memorized Qur’an like a champ, reciting before and after prayers.",
+                "Got my hands dirty with outdoor adventures and community vibes.",
+                "Nearly memorized the whole Qur’an—talk about dedication!",
+                "Joined Santri Pecinta Alam (SAPALA KAMUFISA) for nature-fueled fun."
             ]
         },
         {
@@ -37,9 +37,9 @@ class EducationData:
             "logo": "https://ridwaanhall.com/static/img/logo/al_mukmin_ngruki.webp",
             "is_last": False,
             "achievements": [
-                "Practiced reviewing and memorizing the Qur'an before and after salah (prayer).",
-                "Practiced archery and taught Islamic religious knowledge.",
-                "Learned foundational web development skills including HTML, CSS, and PHP."
+                "Kept up with Qur’an recitation around prayer times—soul fuel.",
+                "Tried my hand at archery and shared Islamic knowledge with peers.",
+                "Kicked off web dev with HTML, CSS, and PHP—first taste of code!"
             ]
         },
         {
@@ -48,9 +48,9 @@ class EducationData:
             "institution": "SD IT Al Mannan",
             "is_last": False,
             "achievements": [
-                "Practiced daily prayers, recitations for salah, and post-salah supplications.",
-                "Memorized Juz 30 of the Qur'an and parts of Juz 29.",
-                "Learned stories and historical accounts of prophets and Islam."
+                "Got into daily prayers and post-salah du’as—built that routine early.",
+                "Memorized Juz 30 and chunks of Juz 29—Qur’an game strong!",
+                "Soaked up stories of prophets and Islamic history—mind-blowing tales."
             ]
         },
         {
@@ -59,9 +59,9 @@ class EducationData:
             "institution": "TK IT Al Mannan",
             "is_last": False,
             "achievements": [
-                "Practiced and performed daily Islamic prayers.",
-                "Memorized short Qur'anic surahs.",
-                "Learned and expanded everyday vocabulary in both Arabic and English."
+                "Started praying daily and nailing those Islamic vibes.",
+                "Memorized short Qur’anic surahs—tiny me was killing it!",
+                "Picked up Arabic and English words—vocab level-up!"
             ]
         }
     ]

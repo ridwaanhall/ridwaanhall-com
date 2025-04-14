@@ -16,6 +16,7 @@ else:
     ALLOWED_HOSTS = [
         '.vercel.app',
         '.ridwaanhall.me',
+        '.ridwaanhall.com',
     ]
 
 SECURE_HSTS_SECONDS = 31536000  # 1 year

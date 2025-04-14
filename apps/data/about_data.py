@@ -43,6 +43,7 @@ class AboutData:
                 "social_media": {
                     "github": "https://github.com/ridwaanhall",
                     "linkedin": "https://linkedin.com/in/ridwaanhall",
+                    "follow_linkedin": "https://linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=ridwaanhall",
                     "x": "https://x.com/ridwaanhall",
                     "instagram": "https://instagram.com/ridwaanhall",
                     "medium": "https://medium.com/@ridwaanhall",

@@ -113,7 +113,7 @@ class ProjectsData:
     projects = [
         {
             "id": 1,
-            "title": "ridwaanhall.dev",
+            "title": "ridwaanhall.com",
             "headline": "Personal portfolio website built with Django and TailwindCSS, deployed as serverless using Vercel.",
             "description": [
                 "A personal portfolio website built with Django and TailwindCSS, deployed as serverless using Vercel. Features sections for about, projects, blogs, education, experience, and a dynamic dashboard.",

@@ -35,7 +35,7 @@ class AboutData:
                     "x": "https://x.com/ridwaanhall",
                     "instagram": "https://instagram.com/ridwaanhall",
                     "medium": "https://medium.com/@ridwaanhall",
-                    "email": "ridwaanhall.dev@gmail.com"
+                    "email": "hi@ridwaanhall.com"
                 },
                 "skills": [
                     "Python",

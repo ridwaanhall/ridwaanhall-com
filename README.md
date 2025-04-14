@@ -2,7 +2,7 @@
 
 🔥 Personal website was built originally from scratch using Django and TailwindCSS.
 
-![ridwaanhal](public/ridwaanhall_dev.png)
+![ridwaanhall](public/ridwaanhall_dev.png)
 
 ---
 
@@ -135,7 +135,7 @@ Contributions are welcome! If you'd like to contribute:
 
 | Platform   | Contact                                               |
 |------------|-------------------------------------------------------|
-| Email      | [ridwaanhall.dev@gmail.com](mailto:ridwaanhall.dev@gmail.com) |
+| Email      | [hi@ridwaanhall.com](mailto:hi@ridwaanhall.com) |
 | Website    | [ridwaanhall.com](https://ridwaanhall.com)              |
 | GitHub     | [@ridwaanhall](https://github.com/ridwaanhall)        |
 | Twitter/X  | [@ridwaanhall](https://x.com/ridwaanhall)             |

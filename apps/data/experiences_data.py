@@ -46,10 +46,10 @@ class ExperiencesData:
             "location": "Bandung, Indonesia",
             "is_current": True,
             "responsibilities": [
-                "Mentoring a cohort of 25 students (Feb-Jul 2025) through weekly sessions, aiming for a minimum 88% graduation rate.",
-                "Allocating 7+ hours per week, leading 1-hour weekly consultations, monitoring progress, and facilitating team-building activities.",
-                "Supporting 50-75 students with 2-hour weekly technical and soft skills instruction across merged groups.",
-                "Participating in 1.5-hour monthly program meetings and mentor development sessions."
+                "Guiding 25 students (Feb-Jul 2025) with weekly sessions to hit an 88% grad rate—let’s get ‘em there!",
+                "Dropping 7+ hours a week on 1-hour consults, tracking progress, and hyping up team vibes.",
+                "Coaching 50-75 students with 2-hour weekly tech and soft skills classes across groups.",
+                "Jumping into 1.5-hour monthly meetings and mentor glow-up sessions."
             ]
         },
         {
@@ -58,15 +58,14 @@ class ExperiencesData:
             "company": "Coding Camp powered by DBS Foundation",
             "logo": "https://ridwaanhall.com/static/img/logo/coding_camp_dbs_foundation.webp",
             "website": "https://www.dbs.com/spark/index/id_id/site/codingcamp/index.html",
-            "period": "Feb 2025 - Present",
+            "period": "Dec 2024 - Jan 2025",
             "employment_type": employment_types["ap"],
             "location_type": location_types["rm"],
             "location": "Bandung, Indonesia",
-            "period": "Dec 2024 - Jan 2025",
             "is_current": False,
             "responsibilities": [
-                "Learned principles of ML Ops for reliable and scalable machine learning systems.",
-                "Gained insights into managing ML systems in production environments."
+                "Got the lowdown on ML Ops to build slick, scalable ML systems.",
+                "Learned the ropes of running ML in real-world production—game-changer!"
             ]
         },
         {
@@ -75,18 +74,17 @@ class ExperiencesData:
             "company": "Coding Camp powered by DBS Foundation",
             "logo": "https://ridwaanhall.com/static/img/logo/coding_camp_dbs_foundation.webp",
             "website": "https://www.dbs.com/spark/index/id_id/site/codingcamp/index.html",
-            "period": "Feb 2025 - Present",
+            "period": "Oct 2024 - Dec 2024",
             "employment_type": employment_types["ap"],
             "location_type": location_types["rm"],
             "location": "Bandung, Indonesia",
-            "period": "Oct 2024 - Dec 2024",
             "is_current": False,
             "responsibilities": [
-                "Designed machine learning systems as part of structured projects.",
-                "Developed predictive analytics models using algorithms like k-Nearest Neighbor, Random Forest, and AdaBoost.",
-                "Built sentiment analysis models with Deep Learning and Support Vector Machine techniques.",
-                "Applied computer vision techniques for image recognition and object detection.",
-                "Created recommendation systems using Content-based and Collaborative Filtering approaches."
+                "Cooked up ML systems for dope projects—full-on problem-solving mode.",
+                "Built predictive models with k-Nearest Neighbor, Random Forest, and AdaBoost—nailed it.",
+                "Whipped up sentiment analysis using Deep Learning and SVM—pretty slick!",
+                "Dabbled in computer vision for image recognition and object detection—mind blown.",
+                "Crafted recommendation systems with Content-based and Collaborative Filtering—user vibes on point."
             ]
         },
         {
@@ -95,18 +93,17 @@ class ExperiencesData:
             "company": "Coding Camp powered by DBS Foundation",
             "logo": "https://ridwaanhall.com/static/img/logo/coding_camp_dbs_foundation.webp",
             "website": "https://www.dbs.com/spark/index/id_id/site/codingcamp/index.html",
-            "period": "Feb 2025 - Present",
+            "period": "Jul 2024 - Sep 2024",
             "employment_type": employment_types["ap"],
             "location_type": location_types["rm"],
             "location": "Bandung, Indonesia",
-            "period": "Jul 2024 - Sep 2024",
             "is_current": False,
             "responsibilities": [
-                "Built advanced neural network models using TensorFlow and Keras.",
-                "Implemented NLP projects for text classification and sentiment analysis.",
-                "Developed deep learning models for time series analysis and image classification.",
-                "Explored recommendation systems and reinforcement learning algorithms.",
-                "Mastered generative AI concepts and model deployment strategies."
+                "Built beefy neural nets with TensorFlow and Keras—deep learning FTW!",
+                "Tackled NLP for text classification and sentiment analysis—words got no secrets.",
+                "Cranked out deep learning models for time series and image classification—smooth.",
+                "Explored recommendation systems and reinforcement learning—next-level stuff.",
+                "Got cozy with generative AI and model deployment—ready for the real world!"
             ]
         },
         {
@@ -115,16 +112,15 @@ class ExperiencesData:
             "company": "Coding Camp powered by DBS Foundation",
             "logo": "https://ridwaanhall.com/static/img/logo/coding_camp_dbs_foundation.webp",
             "website": "https://www.dbs.com/spark/index/id_id/site/codingcamp/index.html",
-            "period": "Feb 2025 - Present",
+            "period": "Jan 2024 - Jun 2024",
             "employment_type": employment_types["ap"],
             "location_type": location_types["rm"],
             "location": "Bandung, Indonesia",
-            "period": "Jan 2024 - Jun 2024",
             "is_current": False,
             "responsibilities": [
-                "Learned foundational data visualization techniques using Google Sheets.",
-                "Mastered Python basics and object-oriented programming principles.",
-                "Studied supervised and unsupervised machine learning algorithms."
+                "Kicked off with data viz in Google Sheets—charts never looked so good.",
+                "Mastered Python basics and OOP—coding’s my jam now!",
+                "Dived into supervised and unsupervised ML algorithms—brain’s buzzing."
             ]
         },
         {
@@ -133,14 +129,13 @@ class ExperiencesData:
             "company": "Copilot ID",
             "logo": "https://ridwaanhall.com/static/img/logo/copilot_id.webp",
             "website": "https://github.com/copilot-id",
-            "period": "Feb 2025 - Present",
+            "period": "Jan 2023 - Present",
             "employment_type": employment_types["ft"],
             "location_type": location_types["hy"],
             "location": "Yogyakarta, Indonesia",
-            "period": "Jan 2023 - Present",
             "is_current": True,
             "responsibilities": [
-                "Specialized in AI technologies and software frameworks such as Django, TensorFlow, PyTorch, and more."
+                "Living that AI life, building with Django, TensorFlow, PyTorch, and more—full-stack geek mode!"
             ]
         },
         {
@@ -153,12 +148,11 @@ class ExperiencesData:
             "employment_type": employment_types["pt"],
             "location_type": location_types["rm"],
             "location": "Surakarta, Indonesia",
-            "period": "Sep 2021 - Present",
             "is_current": True,
             "responsibilities": [
-                "Managed alumni data for over 200 individuals with filtering and graphical analysis.",
-                "Prepared organizational documents and meeting summaries.",
-                "Created user-friendly design interfaces for alumni management."
+                "Wrangled data for 200+ alumni with slick filtering and dope graphs.",
+                "Whipped up org docs and meeting notes—keeping it tight.",
+                "Designed clean, user-friendly interfaces for alumni management—UX vibes!"
             ]
         },
         {
@@ -167,16 +161,15 @@ class ExperiencesData:
             "company": "GAOTek Inc.",
             "logo": "https://ridwaanhall.com/static/img/logo/gaotek_inc.webp",
             "website": "https://gaotek.com",
-            "period": "Feb 2025 - Present",
+            "period": "Apr 2024 - May 2024",
             "employment_type": employment_types["in"],
             "location_type": location_types["rm"],
             "location": "New York, USA",
-            "period": "Apr 2024 - May 2024",
             "is_current": False,
             "responsibilities": [
-                "Guided over 100 interns and ensured timely progress tracking.",
-                "Facilitated daily meetings and communication among teams.",
-                "Assisted interns with technical and project challenges."
+                "Led 100+ interns, keeping everyone on track like a pro.",
+                "Ran daily huddles and kept the team vibe strong.",
+                "Helped interns crush tech and project hurdles—teamwork makes the dream work!"
             ]
         },
         {
@@ -185,16 +178,15 @@ class ExperiencesData:
             "company": "GAOTek Inc.",
             "logo": "https://ridwaanhall.com/static/img/logo/gaotek_inc.webp",
             "website": "https://gaotek.com",
-            "period": "Feb 2025 - Present",
+            "period": "Apr 2024 - May 2024",
             "employment_type": employment_types["in"],
             "location_type": location_types["rm"],
             "location": "New York, USA",
-            "period": "Apr 2024 - May 2024",
             "is_current": False,
             "responsibilities": [
-                "Collaborating with the team in weekly meetings to discuss project strategies and updates.",
-                "Enhancing skills in Google Search Console, Google Analytics, and Google Tag Manager by completing 3 tasks.",
-                "Making reports every Monday to Friday (EST time) for a full 1 month."
+                "Jammed with the crew weekly to plan projects and swap ideas.",
+                "Leveled up on Google Search Console, Analytics, and Tag Manager with 3 solid tasks.",
+                "Dropped reports every weekday for a month—kept it consistent!"
             ]
         },
         {
@@ -203,17 +195,16 @@ class ExperiencesData:
             "company": "GAOTek Inc.",
             "logo": "https://ridwaanhall.com/static/img/logo/gaotek_inc.webp",
             "website": "https://gaotek.com",
-            "period": "Feb 2025 - Present",
+            "period": "Feb 2024 - Mar 2024",
             "employment_type": employment_types["in"],
             "location_type": location_types["rm"],
             "location": "New York, USA",
-            "period": "Feb 2024 - Mar 2024",
             "is_current": False,
             "responsibilities": [
-                "Actively contribute in team meetings every Monday to Friday at 11.30 PM EST to troubleshoot and update.",
-                "Working with WooCommerce on WordPress; adding 30+ products, creating 1 contact form page, 30+ single product pages, and more.",
-                "Actively completing 7+ tasks and assignments with faster than other interns in 2 months.",
-                "Making reports every Monday to Friday (EST time) for a full 2 months."
+                "Joined late-night team huddles (11:30 PM EST) to debug and plan—grind mode!",
+                "Went ham on WooCommerce—added 30+ products, built a contact form, and 30+ product pages.",
+                "Smashed 7+ tasks faster than most interns in just 2 months.",
+                "Churned out daily reports for 2 months—never missed a beat!"
             ]
         },
         {
@@ -222,15 +213,14 @@ class ExperiencesData:
             "company": "YoungDev",
             "logo": "https://ridwaanhall.com/static/img/logo/youngdev.webp",
             "website": "https://youngdevinterns.net",
-            "period": "Feb 2025 - Present",
+            "period": "Apr 2024 - May 2024",
             "employment_type": employment_types["in"],
             "location_type": location_types["rm"],
             "location": "Islamabad, Pakistan",
-            "period": "Apr 2024 - May 2024",
             "is_current": False,
             "responsibilities": [
-                "Developed predictive models using Python and Scikit-Learn.",
-                "Created classification and regression models with high precision and accuracy."
+                "Built predictive models with Python and Scikit-Learn—data’s my playground.",
+                "Cooked up classification and regression models that hit the mark!"
             ]
         },
         {
@@ -239,15 +229,14 @@ class ExperiencesData:
             "company": "iNeuron.ai",
             "logo": "https://ridwaanhall.com/static/img/logo/ineuron.webp",
             "website": "https://ineuron.ai",
-            "period": "Feb 2025 - Present",
+            "period": "Jan 2024 - Jan 2024",
             "employment_type": employment_types["in"],
             "location_type": location_types["rm"],
             "location": "Karnataka, India",
-            "period": "Jan 2024 - Jan 2024",
             "is_current": False,
             "responsibilities": [
-                "Focused on a project related to phishing domain detection.",
-                "Applied machine learning principles to enhance cybersecurity solutions."
+                "Tackled a phishing domain detection project—cybersecurity meets ML!",
+                "Used ML to beef up online defenses—pretty dope mission."
             ]
         },
         {
@@ -256,16 +245,15 @@ class ExperiencesData:
             "company": "Imaarotu Syu'unith Tholabah",
             "logo": "https://ridwaanhall.com/static/img/logo/ist.webp",
             "website": "https://istngruki.org",
-            "period": "Feb 2025 - Present",
+            "period": "Sep 2019 - Sep 2020",
             "employment_type": employment_types["ft"],
             "location_type": location_types["on"],
             "location": "Surakarta, Indonesia",
-            "period": "Sep 2019 - Sep 2020",
             "is_current": False,
             "responsibilities": [
-                "Organized 50 Islamic boarding school students for teaching in nearby villages.",
-                "Collaborated with other sections to create competitions for over 500 students.",
-                "Enhanced the disciplinary environment within the boarding school."
+                "Rallied 50 boarding school students to teach in local villages—community vibes!",
+                "Teamed up to run epic competitions for 500+ students—energy was unreal.",
+                "Kept the boarding school’s discipline game tight and inspiring."
             ]
         }
     ]

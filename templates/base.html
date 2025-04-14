@@ -11,6 +11,25 @@
         <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
         <link rel="icon" href="{% static 'favicon/favicon.ico' %}">
         <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}" type="application/manifest+json">
+        
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="2cdbb5a6-2a40-4a8a-b74f-227d5d825d5a"></script>
+        <!-- Google Tag Manager -->
+        <script>
+            (function(w, d, s, l, i) {
+                w[l] = w[l] || [];
+                w[l].push({
+                    'gtm.start': new Date().getTime(),
+                    event: 'gtm.js'
+                });
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != 'dataLayer' ? '&l=' + l : '';
+                j.async = true;
+                j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                f.parentNode.insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', 'GTM-TDBLZJGZ');
+        </script>
+        <!-- End Google Tag Manager -->
 
         <script type="application/ld+json">
             {
@@ -63,9 +82,20 @@
         {% endblock %}
 
         <script src="{% static 'tailwind/index.global.js' %}"></script>
-        <script defer src="https://cloud.umami.is/script.js" data-website-id="2cdbb5a6-2a40-4a8a-b74f-227d5d825d5a"></script>
     </head>
     <body class="bg-gray-950 text-gray-300 transition-colors duration-200">
+        
+        <!-- Google Tag Manager (noscript) -->
+        <noscript>
+            <iframe 
+                src="https://www.googletagmanager.com/ns.html?id=GTM-TDBLZJGZ"
+                height="0" 
+                width="0" 
+                style="display:none;visibility:hidden">
+            </iframe>
+        </noscript>
+        <!-- End Google Tag Manager (noscript) -->
+
         <header class="md:hidden bg-gradient-to-b from-gray-950 to-gray-950 shadow-sm border-b border-gray-800">
             <div class="flex items-center gap-3 p-4">
                 <div class="relative">

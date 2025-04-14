@@ -121,8 +121,8 @@ class ProjectsData:
                 "The site features a comprehensive API integration system that pulls real-time data from GitHub and WakaTime to display up-to-date coding statistics and project activities. The responsive design ensures seamless user experience across desktop, tablet, and mobile devices."
             ],
             "github_url": "https://github.com/ridwaanhall/ridwaanhall_dev",
-            "demo_url": "https://ridwaanhall.me",
-            "image_url": "https://ridwaanhall.me/static/img/project/ridwaanhall_dev.webp",
+            "demo_url": "https://ridwaanhall.com",
+            "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_dev.webp",
             "is_featured": True,
             "features": [
                 {
@@ -157,7 +157,7 @@ class ProjectsData:
                 "Customer engagement is enhanced through monthly promotional campaigns and a direct communication channel via WhatsApp integration, allowing for personalized service and immediate response to customer inquiries."
             ],
             "demo_url": "https://belimadu.com",
-            "image_url": "https://ridwaanhall.me/static/img/project/belimadu_com.webp",
+            "image_url": "https://ridwaanhall.com/static/img/project/belimadu_com.webp",
             "is_featured": True,
             "features": [
                 {
@@ -190,7 +190,7 @@ class ProjectsData:
                 "The music recommendation engine employs collaborative filtering and content-based approaches to create personalized playlists for users. The system analyzes listening patterns, genre preferences, and acoustic features of tracks to suggest music that aligns with individual tastes while introducing new discoveries."
             ],
             "github_url": "https://github.com/ridwaanhall/applied-machine-learning",
-            "image_url": "https://ridwaanhall.me/static/img/project/gold_price_prediction_and_music_recommendation_system.webp",
+            "image_url": "https://ridwaanhall.com/static/img/project/gold_price_prediction_and_music_recommendation_system.webp",
             "is_featured": False,
             "features": [
                 {
@@ -216,7 +216,7 @@ class ProjectsData:
                 "This platform serves as a central hub for game enthusiasts and developers interested in Mobile Legends data. The API offers detailed endpoints for heroes, skills, equipment, and meta statistics that can be integrated into third-party applications and tools.",
                 "The accompanying website provides intuitive visualization of complex game data, making it accessible to casual players looking to improve their gameplay. Advanced features include hero compatibility metrics, counter-pick suggestions, and optimal build paths based on current meta analysis."
             ],
-            "image_url": "https://ridwaanhall.me/static/img/project/mobile_legends_bang_bang_api_and_website.webp",
+            "image_url": "https://ridwaanhall.com/static/img/project/mobile_legends_bang_bang_api_and_website.webp",
             "demo_url": "https://api-mobilelegends.vercel.app/",
             "github_url": "https://github.com/ridwaanhall/api-mobilelegends",
             "is_featured": False,
@@ -252,7 +252,7 @@ class ProjectsData:
                 "The API simplifies the process of retrieving educational data from Indonesia's official higher education database. Researchers, educational institutions, and developers can access structured information about universities, colleges, programs, and accreditation statuses through standardized endpoints.",
                 "Designed with performance in mind, the API implements caching strategies and optimization techniques to handle high request volumes while maintaining quick response times. Comprehensive documentation guides users through authentication, request formation, and data interpretation."
             ],
-            "image_url": "https://ridwaanhall.me/static/img/project/api_pddikti_kemendiksaintek.webp",
+            "image_url": "https://ridwaanhall.com/static/img/project/api_pddikti_kemendiksaintek.webp",
             "demo_url": "https://pddikti-docs.vercel.app/",
             "github_url": "https://github.com/ridwaanhall/api-pddikti",
             "is_featured": False,
@@ -288,7 +288,7 @@ class ProjectsData:
             ],
             "demo_url": "https://ridwaanhall-bike-sharing-analytics.streamlit.app/",
             "github_url": "https://github.com/ridwaanhall/dicoding-bike-sharing-analysis",
-            "image_url": "https://ridwaanhall.me/static/img/project/bike_sharing_analysis_dashboard.webp",
+            "image_url": "https://ridwaanhall.com/static/img/project/bike_sharing_analysis_dashboard.webp",
             "is_featured": False,
             "features": [
                 {
@@ -324,7 +324,7 @@ class ProjectsData:
                 "The pipeline employs multiple natural language processing techniques to handle the complexities of Indonesian language text, including slang, abbreviations, and mixed-language content commonly found in user reviews. Comparative analysis between different machine learning models reveals the most effective approaches for this specific domain."
             ],
             "github_url": "https://github.com/ridwaanhall/Dicoding-Machine-Learning-Intermediate/tree/main/01_project",
-            "image_url": "https://ridwaanhall.me/static/img/project/sentiment_analysis_tokopedia_app.webp",
+            "image_url": "https://ridwaanhall.com/static/img/project/sentiment_analysis_tokopedia_app.webp",
             "is_featured": False,
             "features": [
                 {
@@ -362,7 +362,7 @@ class ProjectsData:
                 "This portfolio platform combines elegant visual design with powerful backend functionality to create a comprehensive showcase of professional accomplishments and technical capabilities. The site structure follows best practices for content organization and user flow.",
                 "Behind the scenes, the site implements custom Django models and views to manage content dynamically, allowing for easy updates and maintenance. Authentication systems protect administrative areas while providing seamless access to public-facing content."
             ],
-            "image_url": "https://ridwaanhall.me/static/img/project/ridwaanhall_pythonanywhere_com.webp",
+            "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_pythonanywhere_com.webp",
             "is_featured": False,
             "features": [
                 {
@@ -397,7 +397,7 @@ class ProjectsData:
                 "This modern portfolio implements advanced Next.js features including Server Components, optimized image loading, and efficient code splitting to deliver exceptional performance metrics. The site achieves perfect Lighthouse scores across performance, accessibility, best practices, and SEO dimensions.",
                 "The internationalization system supports multiple languages through a robust content management approach that maintains consistent design and functionality across language variants. Custom animations and interactive elements enhance user engagement without compromising load times."
             ],
-            "image_url": "https://ridwaanhall.me/static/img/project/ridwaanhall_me.webp",
+            "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_me.webp",
             "github_url": "https://github.com/ridwaanhall/ridwaanhall.me",
             "is_featured": False,
             "features": [
@@ -445,7 +445,7 @@ class ProjectsData:
                 "The Neon AI platform reimagines conversational AI interfaces by combining cutting-edge language model capabilities with intuitive user experience design. The architecture leverages streaming responses for immediate feedback and realistic conversation flow.",
                 "The system includes context-aware conversation history management to maintain coherent multi-turn dialogues while respecting privacy and security considerations. Integration with structured data sources enables the chatbot to retrieve and present information in visually appealing formats beyond simple text responses."
             ],
-            "image_url": "https://ridwaanhall.me/static/img/project/neon_ai.webp", 
+            "image_url": "https://ridwaanhall.com/static/img/project/neon_ai.webp", 
             "github_url": "https://github.com/ridwaanhall/neon-ai",
             "demo_url": "https://ridwaanhall-ai.vercel.app",
             "is_featured": False,
@@ -481,7 +481,7 @@ class ProjectsData:
                 "This tool helps social media managers and influencers optimize their Instagram growth strategy by identifying key relationship patterns within their follower network. The analytics highlight engagement opportunities with accounts that have reciprocal interest versus those that don't follow back.",
                 "Beyond simple following/follower ratios, the system categorizes relationships to identify potential networking opportunities and engagement gaps. The application provides both aggregate statistics and detailed lists that can be exported for further analysis or direct outreach campaigns."
             ],
-            "image_url": "https://ridwaanhall.me/static/img/project/instagram_following_followers.webp",
+            "image_url": "https://ridwaanhall.com/static/img/project/instagram_following_followers.webp",
             "github_url": "https://github.com/ridwaanhall/instagram-following-followers",
             "demo_url": "https://instagram-following-followers.vercel.app",
             "is_featured": False,
@@ -515,7 +515,7 @@ class ProjectsData:
                 "Developed specifically for educational settings, this tool addresses a common pain point for students by providing instant access to encrypted attendance codes that comply with institutional requirements. The system works across multiple course structures and attendance systems.",
                 "The encryption algorithm ensures that generated codes maintain their validity while protecting against unauthorized use or manipulation. User experience was prioritized throughout development, resulting in a streamlined interface that requires minimal steps even in time-constrained situations."
             ],
-            "image_url": "https://ridwaanhall.me/static/img/project/lumina.webp",
+            "image_url": "https://ridwaanhall.com/static/img/project/lumina.webp",
             "github_url": "https://github.com/ridwaanhall/Lumina",
             "demo_url": "https://lupa-presensi.vercel.app",
             "is_featured": False,
@@ -551,7 +551,7 @@ class ProjectsData:
                 "This automation tool demonstrates practical application of web requests and API interactions by interfacing with NGL's messaging infrastructure. The project showcases how Python can be used to programmatically interact with web services that primarily expect human interaction.",
                 "The implementation includes rate limiting and request management capabilities to ensure responsible usage and prevent service disruptions. Different messaging modes provide flexibility for various use cases, from testing to automated notifications."
             ],
-            "image_url": "https://ridwaanhall.me/static/img/project/ngl_link_spamming.webp",
+            "image_url": "https://ridwaanhall.com/static/img/project/ngl_link_spamming.webp",
             "github_url": "https://github.com/ridwaanhall/ngl-link-spamming",
             "is_featured": False,
             "features": [

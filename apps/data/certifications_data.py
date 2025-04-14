@@ -7,7 +7,7 @@ class CertificationsData:
             "issued": "Dec 2024",
             "institution": "LinkedIn",
             "website": "https://www.linkedin.com/learning",
-            "logo": "https://ridwaanhall.me/static/img/logo/linkedin.webp",
+            "logo": "https://ridwaanhall.com/static/img/logo/linkedin.webp",
             "is_featured": True,
             "achievements": [
                 "Created RESTful APIs using Django REST Framework with best practices",
@@ -22,7 +22,7 @@ class CertificationsData:
             "issued": "Dec 2024",
             "institution": "Dicoding Indonesia",
             "website": "https://www.dicoding.com",
-            "logo": "https://ridwaanhall.me/static/img/logo/dicoding.webp",
+            "logo": "https://ridwaanhall.com/static/img/logo/dicoding.webp",
             "is_featured": True,
             "achievements": [
                 "Learned ML system design using k-NN and Random Forest algorithms",
@@ -37,7 +37,7 @@ class CertificationsData:
             "issued": "Oct 2023",
             "institution": "LinkedIn Learning",
             "website": "https://www.linkedin.com",
-            "logo": "https://ridwaanhall.me/static/img/logo/linkedin.webp",
+            "logo": "https://ridwaanhall.com/static/img/logo/linkedin.webp",
             "is_featured": True,
             "achievements": [
                 "Learned basics of Django for web development",

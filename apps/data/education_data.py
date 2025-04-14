@@ -5,7 +5,7 @@ class EducationData:
             "years": "2021 - Present",
             "institution": "Universitas Teknologi Yogyakarta",
             "website": "https://uty.ac.id/",
-            "logo": "https://ridwaanhall.me/static/img/logo/uty.webp",
+            "logo": "https://ridwaanhall.com/static/img/logo/uty.webp",
             "is_last": True,
             "achievements": [
                 "Studied Algorithm Programming and Object-Oriented Programming",
@@ -20,7 +20,7 @@ class EducationData:
             "years": "2018 - 2021",
             "institution": "MAS Al Mukmin Ngruki",
             "website": "https://almukminngruki.or.id/",
-            "logo": "https://ridwaanhall.me/static/img/logo/al_mukmin_ngruki.webp",
+            "logo": "https://ridwaanhall.com/static/img/logo/al_mukmin_ngruki.webp",
             "is_last": False,
             "achievements": [
                 "Practiced reviewing and memorizing the Qur'an before and after salah (prayer).",
@@ -34,7 +34,7 @@ class EducationData:
             "years": "2015 - 2018",
             "institution": "MTsS Islam Ngruki",
             "website": "https://almukminngruki.or.id/",
-            "logo": "https://ridwaanhall.me/static/img/logo/al_mukmin_ngruki.webp",
+            "logo": "https://ridwaanhall.com/static/img/logo/al_mukmin_ngruki.webp",
             "is_last": False,
             "achievements": [
                 "Practiced reviewing and memorizing the Qur'an before and after salah (prayer).",

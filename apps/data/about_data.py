@@ -16,7 +16,7 @@ class AboutData:
             {
                 "name": "Ridwan Halim",
                 "username": "ridwaanhall",
-                "image_url": "https://ridwaanhall.me/static/img/ridwaanhall.webp",
+                "image_url": "https://ridwaanhall.com/static/img/ridwaanhall.webp",
                 "personal_website": "https://ridwaanhall.vercel.app",
                 "cv": "https://bit.ly/cv-ridwaanhall",
                 "role": "Machine Learning Mentor",

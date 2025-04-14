@@ -1,4 +1,4 @@
-# ridwaanhall.me
+# ridwaanhall.com
 
 🔥 Personal website was built originally from scratch using Django and TailwindCSS.
 
@@ -136,6 +136,6 @@ Contributions are welcome! If you'd like to contribute:
 | Platform   | Contact                                               |
 |------------|-------------------------------------------------------|
 | Email      | [ridwaanhall.dev@gmail.com](mailto:ridwaanhall.dev@gmail.com) |
-| Website    | [ridwaanhall.me](https://ridwaanhall.me)              |
+| Website    | [ridwaanhall.com](https://ridwaanhall.com)              |
 | GitHub     | [@ridwaanhall](https://github.com/ridwaanhall)        |
 | Twitter/X  | [@ridwaanhall](https://x.com/ridwaanhall)             |

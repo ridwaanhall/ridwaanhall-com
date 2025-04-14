@@ -1,43 +1,95 @@
-<div class="relative mt-6 rounded-xl overflow-hidden group border-4 border-[#1a5d1a] border-t-[#ce1126] border-r-white/30 border-b-green-500 border-l-black">
-    
-    <div class="relative p-8 md:p-10 z-10">
+<div class="relative mt-6 rounded-xl overflow-hidden border-4 border-[#1a5d1a] border-t-[#ce1126] border-r-white/30 border-b-green-500 border-l-black bg-gradient-to-br from-black/80 via-gray-900/90 to-black/80">
+    <div class="relative p-6 z-10">
+        <!-- Background Effects -->
+        <div class="absolute top-0 right-0 w-48 h-48 rounded-full bg-red-500/10 blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-green-500/10 blur-3xl animate-pulse"></div>
 
-        <div class="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-0 left-0 w-40 h-40 rounded-full blur-3xl"></div>
-        
-        <div class="absolute top-10 right-10 animate-bounce-slow opacity-20">
-            <svg class="w-12 h-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
-            </svg>
-        </div>
-        
-        <div class="text-center max-w-3xl mx-auto">
-            <div class="inline-block mb-3 rounded-full bg-green-400/10 px-3 py-1 text-sm font-semibold text-green-200">I Stand With Palestine 🇵🇸</div>
-            <h2 class="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-                I Support <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-red-600">Palestine's Struggle</span>
+        <div class="text-center max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="inline-block mb-4 rounded-full bg-red-600/40 px-4 py-1.5 text-sm font-semibold text-white hover:scale-105 transition-transform duration-300">STAND WITH PALESTINE 🇵🇸</div>
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-5 tracking-tight">
+                Taking Action for <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-red-600">Humanity in Gaza</span>
             </h2>
-            <p class="text-gray-200 mb-8 text-lg md:text-xl leading-relaxed">
-                I stand firmly with the people of Palestine in their fight for dignity, freedom, and justice. This ongoing humanitarian crisis requires our urgent attention and united action.
+            <p class="text-gray-300 mb-6 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">
+                This is a call to action. The humanitarian crisis in Gaza—marked by displacement, hunger, and loss—demands our <em class="italic">compassion</em> and urgent response.
             </p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="backdrop-blur-sm p-4 rounded-lg border border-green-500">
-                    <div class="text-green-200 mb-2 text-xl">⚖️</div>
-                    <h3 class="font-bold text-white">Human Rights Violations</h3>
-                    <p class="text-sm text-gray-200">Forced displacement, travel restrictions, and systemic injustice must not go ignored.</p>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="relative bg-black/50 backdrop-blur-lg p-5 rounded-xl border border-red-600/50 hover:border-red-600 shadow-lg hover:shadow-red-500/20 transition-all duration-300 group">
+                    <h3 class="font-bold text-white text-3xl mb-1">48,000+</h3>
+                    <p class="text-sm text-gray-300">
+                        People killed since October 2023, including thousands of children and women <sup><a href="https://www.ochaopt.org" target="_blank" class="text-green-400 hover:text-green-300">[1]</a></sup>
+                    </p>
+                    <div class="absolute inset-0 rounded-xl bg-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
-                <div class="backdrop-blur-sm p-4 rounded-lg border border-white">
-                    <div class="text-green-200 mb-2 text-xl">🏠</div>
-                    <h3 class="font-bold text-white">Civilian Suffering</h3>
-                    <p class="text-sm text-gray-200">Countless innocent lives — especially children — endure trauma and lack vital resources.</p>
+                <div class="relative bg-black/50 backdrop-blur-lg p-5 rounded-xl border border-white/50 hover:border-white shadow-lg hover:shadow-white/20 transition-all duration-300 group">
+                    <h3 class="font-bold text-white text-3xl mb-1">1.9M+</h3>
+                    <p class="text-sm text-gray-300">
+                        People displaced—90% of Gaza’s population <sup><a href="https://www.unrwa.org" target="_blank" class="text-green-400 hover:text-green-300">[2]</a></sup>
+                    </p>
+                    <div class="absolute inset-0 rounded-xl bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
-                <div class="backdrop-blur-sm p-4 rounded-lg border border-red-500">
-                    <div class="text-green-200 mb-2 text-xl">✊</div>
-                    <h3 class="font-bold text-white">Right to Self-Determination</h3>
-                    <p class="text-sm text-gray-200">Palestinians deserve the right to live freely, with dignity, in a sovereign and peaceful homeland.</p>
+                <div class="relative bg-black/50 backdrop-blur-lg p-5 rounded-xl border border-green-600/50 hover:border-green-600 shadow-lg hover:shadow-green-500/20 transition-all duration-300 group">
+                    <h3 class="font-bold text-white text-3xl mb-1">Over 60%</h3>
+                    <p class="text-sm text-gray-300">
+                        Homes and infrastructure damaged or destroyed <sup><a href="https://www.ochaopt.org" target="_blank" class="text-green-400 hover:text-green-300">[3]</a></sup>
+                    </p>
+                    <div class="absolute inset-0 rounded-xl bg-green-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
             </div>
 
+            <!-- CTA -->
+            <div class="relative bg-black/60 backdrop-blur-lg p-6 rounded-xl border border-white/30 shadow-xl mb-6">
+                <h3 class="font-bold text-white text-2xl mb-6 text-center">How You Can Help</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <a
+                        href="https://www.unrwa.org/donate"
+                        class="relative bg-green-700 hover:bg-green-800 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center hover:scale-105 shadow-lg hover:shadow-green-500/30 group"
+                        target="_blank"
+                        aria-label="Donate to UNRWA"
+                    >
+                        <span>Donate to UNRWA</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        <div class="absolute inset-0 rounded-xl bg-green-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </a>
+                    <a
+                        href="https://donate.who.foundation"
+                        class="relative bg-red-700 hover:bg-red-800 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center hover:scale-105 shadow-lg hover:shadow-red-500/30 group"
+                        target="_blank"
+                        aria-label="Support WHO for Medical Aid"
+                    >
+                        <span>Support Medical Aid</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        <div class="absolute inset-0 rounded-xl bg-red-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Why I Stand -->
+            <div class="relative text-left bg-black/50 backdrop-blur-lg p-6 rounded-xl border border-white/20 shadow-xl">
+                <h3 class="font-bold text-white text-2xl">Why I Stand With Gaza</h3>
+                <p class="text-gray-300 leading-relaxed">
+                    As someone who values <em class="italic">justice</em> and <em class="italic">humanity</em>, I’m moved by the suffering in Gaza. Growing up, I learned the importance of standing up for what’s right, inspired by my faith
+                    and experiences as a coder solving real-world problems. The crisis in Gaza isn’t just a headline—it’s a call to support dignity and hope for millions. Join me in making a difference.
+                </p>
+                {% comment %} <a href="/palestine-resources" class="inline-block text-green-400 hover:text-green-300 font-medium underline hover:translate-x-2 transition-transform duration-300" aria-label="Learn more about Palestine resources">
+                    Learn more about my stance and resources
+                </a> {% endcomment %}
+            </div>
+
+            <!-- Sources -->
+            <div class="text-center text-gray-400 text-sm mt-8">
+                <p>
+                    Sources: <a href="https://www.ochaopt.org" target="_blank" class="text-green-400 hover:text-green-300">[1] OCHA</a>,
+                    <a href="https://www.unrwa.org" target="_blank" class="text-green-400 hover:text-green-300">[2] UNRWA</a>,
+                    <a href="https://www.ochaopt.org" target="_blank" class="text-green-400 hover:text-green-300">[3] OCHA/UNOSAT</a>
+                </p>
+            </div>
         </div>
     </div>
 </div>

@@ -120,9 +120,9 @@ class ProjectsData:
                 "This project showcases modern web development practices by combining Django's powerful backend capabilities with TailwindCSS's utility-first approach to styling. The serverless architecture on Vercel ensures optimal performance with minimal maintenance overhead.",
                 "The site features a comprehensive API integration system that pulls real-time data from GitHub and WakaTime to display up-to-date coding statistics and project activities. The responsive design ensures seamless user experience across desktop, tablet, and mobile devices."
             ],
-            "github_url": "https://github.com/ridwaanhall/ridwaanhall_dev",
+            "github_url": "https://github.com/ridwaanhall/ridwaanhall_com",
             "demo_url": "https://ridwaanhall.com",
-            "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_dev.webp",
+            "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_com.webp",
             "is_featured": True,
             "features": [
                 {

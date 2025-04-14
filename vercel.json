@@ -1,7 +1,7 @@
 {
 	"builds": [
             {
-            "src": "ridwaanhall_dev/wsgi.py",
+            "src": "ridwaanhall_com/wsgi.py",
             "use": "@vercel/python",
             "config": {
                 "maxLambdaSize": "15mb",
@@ -16,7 +16,7 @@
 		},
 		{
 			"src": "/(.*)",
-			"dest": "ridwaanhall_dev/wsgi.py"
+			"dest": "ridwaanhall_com/wsgi.py"
 		}
 	]
 }

@@ -2,7 +2,7 @@
 
 🔥 Personal website was built originally from scratch using Django and TailwindCSS.
 
-![ridwaanhall](public/ridwaanhall_dev.png)
+![ridwaanhall](public/ridwaanhall_com.png)
 
 ---
 
@@ -71,8 +71,8 @@ The website has been optimized for performance across all devices, achieving nea
 ### Quick Setup
 
 ```bash
-git clone https://github.com/ridwaanhall/ridwaanhall_dev.git
-cd ridwaanhall_dev
+git clone https://github.com/ridwaanhall/ridwaanhall_com.git
+cd ridwaanhall_com
 python -m venv venv
 # Windows: venv\Scripts\activate | macOS/Linux: source venv/bin/activate
 pip install -r requirements.txt
@@ -100,7 +100,7 @@ Update content by modifying the data files in `apps/data/appsname_data.py`.
 ## Project Structure
 
 ```txt
-ridwaanhall_dev/
+ridwaanhall_com/
 ├── apps/              # Django apps containing specific features
 │   ├── data/          # Data files for content
 │   ├── ...

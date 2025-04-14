@@ -58,7 +58,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'ridwaanhall_dev.urls'
+ROOT_URLCONF = 'ridwaanhall_com.urls'
 
 TEMPLATES = [
     {
@@ -78,7 +78,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ridwaanhall_dev.wsgi.application'
+WSGI_APPLICATION = 'ridwaanhall_com.wsgi.application'
 
 
 DATABASES = {

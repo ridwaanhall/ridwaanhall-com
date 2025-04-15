@@ -6,571 +6,567 @@ class ProjectsData:
     tech_stack = {
         "python": {
             "name": "Python",
-            "description": "Main programming language used for backend development"
+            "description": "My go-to for building robust backends with clean code"
         },
         "django": {
             "name": "Django",
-            "description": "Web framework for building the backend application"
+            "description": "The web framework I use to whip up solid backend apps fast"
         },
         "tailwindcss": {
             "name": "TailwindCSS",
-            "description": "Utility-first CSS framework for styling the frontend"
+            "description": "Sleek utility-first CSS to make frontends look sharp"
         },
         "vercel": {
             "name": "Vercel",
-            "description": "Platform for serverless deployment and hosting"
+            "description": "My pick for seamless serverless hosting and deployments"
         },
         "github_api": {
             "name": "GitHub API",
-            "description": "API for fetching GitHub project statistics and activities"
+            "description": "Grabs project stats and activity straight from my repos"
         },
         "wakatime_api": {
             "name": "WakaTime API",
-            "description": "API for retrieving coding time metrics and analytics"
+            "description": "Tracks my coding hours and analytics like a pro"
         },
         "bootstrap": {
             "name": "Bootstrap",
-            "description": "CSS framework for responsive design and components"
+            "description": "Handy CSS framework for quick, responsive designs"
         },
         "machine_learning": {
             "name": "Machine Learning",
-            "description": "Techniques and algorithms for predictive modeling and data analysis"
+            "description": "Crunching data with algorithms to predict and analyze stuff"
         },
         "music_recommendation": {
             "name": "Music Recommendation Algorithms",
-            "description": "Algorithms for suggesting music tracks based on user preferences"
+            "description": "Suggests tunes based on what you vibe with"
         },
         "rest_api": {
             "name": "REST API",
-            "description": "Architectural style for designing networked applications"
+            "description": "The blueprint for smooth, networked app communication"
         },
         "nextjs": {
             "name": "Next.js",
-            "description": "React framework for server-rendered applications"
+            "description": "React framework for fast, server-rendered web apps"
         },
         "shadcn_ui": {
             "name": "Shadcn UI",
-            "description": "UI components and design system for building modern web applications"
+            "description": "Modern UI components to craft clean, stylish interfaces"
         },
         "javascript": {
             "name": "JavaScript",
-            "description": "Programming language for building interactive web applications"
+            "description": "Brings the web to life with interactive magic"
         },
         "css": {
             "name": "CSS",
-            "description": "Cascading Style Sheets for styling web pages"
+            "description": "Styles web pages to look good and feel right"
         },
         "streamlit": {
             "name": "Streamlit",
-            "description": "Framework for building data applications and dashboards in Python"
+            "description": "Turns Python into slick data dashboards and apps"
         },
         "tensorflow": {
             "name": "TensorFlow",
-            "description": "Open-source library for machine learning and deep learning"
+            "description": "My toolkit for diving deep into ML and neural networks"
         },
         "once_ui": {
             "name": "Once UI",
-            "description": "Design system and component library for building modern web applications"
+            "description": "Design system for building modern, polished web apps"
         },
         "typescript": {
             "name": "TypeScript",
-            "description": "Superset of JavaScript that adds static typing to the language"
+            "description": "JavaScript with guardrails for cleaner, typed code"
         },
         "scss": {
             "name": "SCSS",
-            "description": "Sass (Syntactically Awesome Style Sheets) for writing CSS with variables and nesting"
+            "description": "Supercharged CSS with variables and nesting for style"
         },
         "mdx": {
             "name": "MDX",
-            "description": "Markdown for JSX, allowing you to write JSX in Markdown documents"
+            "description": "Mixes Markdown with JSX for dynamic docs"
         },
         "vercel_postgres": {
             "name": "Vercel Postgres",
-            "description": "Managed PostgreSQL database service provided by Vercel"
+            "description": "Managed Postgres database that’s easy to scale"
         },
         "radix_ui": {
             "name": "Radix UI",
-            "description": "Low-level UI components for building accessible and customizable user interfaces"
+            "description": "Low-level UI components for accessible, custom designs"
         },
         "bulma": {
             "name": "Bulma",
-            "description": "CSS framework based on Flexbox for responsive design and components"
+            "description": "Flexbox-based CSS for responsive, clean layouts"
         },
         "whitenoise": {
             "name": "Whitenoise",
-            "description": "Middleware for serving static files in Django applications"
+            "description": "Serves Django static files like a charm"
         },
         "cloudflare": {
             "name": "Cloudflare",
-            "description": "Web performance and security company providing CDN and DDoS protection"
+            "description": "Speeds up sites and keeps them safe with CDN and security"
         },
         "django_rest_framework": {
             "name": "Django REST Framework",
-            "description": "Powerful toolkit for building Web APIs in Django applications"
+            "description": "My toolkit for crafting powerful APIs in Django"
         },
     }
     
     projects = [
-        {
-            "id": 1,
-            "title": "ridwaanhall.com",
-            "headline": "Personal portfolio website built with Django and TailwindCSS, deployed as serverless using Vercel.",
-            "description": [
-                "A personal portfolio website built with Django and TailwindCSS, deployed as serverless using Vercel. Features sections for about, projects, blogs, education, experience, and a dynamic dashboard.",
-                "This project showcases modern web development practices by combining Django's powerful backend capabilities with TailwindCSS's utility-first approach to styling. The serverless architecture on Vercel ensures optimal performance with minimal maintenance overhead.",
-                "The site features a comprehensive API integration system that pulls real-time data from GitHub and WakaTime to display up-to-date coding statistics and project activities. The responsive design ensures seamless user experience across desktop, tablet, and mobile devices."
-            ],
-            "github_url": "https://github.com/ridwaanhall/ridwaanhall_com",
-            "demo_url": "https://ridwaanhall.com",
-            "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_com.webp",
-            "is_featured": True,
-            "features": [
-                {
-                    "title": "Serverless Architecture",
-                    "description": "Deployed as a serverless application on Vercel for high availability and scalability.",
-                },
-                {
-                    "title": "Interactive Dashboard",
-                    "description": "Dynamic dashboard integrating GitHub and WakaTime APIs to display coding statistics and activities.",
-                },
-                {
-                    "title": "Responsive Design",
-                    "description": "Fully responsive design built with TailwindCSS to provide optimal viewing experience across all devices.",
-                }
-            ],
-            "tech_stack": [
-                tech_stack["python"],
-                tech_stack["django"],
-                tech_stack["tailwindcss"],
-                tech_stack["vercel"],
-                tech_stack["github_api"],
-                tech_stack["wakatime_api"]
-            ],
-        },
-        {
-            "id": 2,
-            "title": "belimadu.com",
-            "headline": "E-commerce website for honey products built with Django and Bootstrap, deployed using Vercel.",
-            "description": [
-                "An e-commerce website for honey products built with Django and Bootstrap, deployed using Vercel. Features product catalog, articles about honey benefits, WhatsApp integration for direct orders, and monthly special offers.",
-                "The platform serves as a complete digital solution for honey vendors, combining informative content about honey's health benefits with a streamlined shopping experience. The site implements SEO best practices to increase organic traffic and visibility.",
-                "Customer engagement is enhanced through monthly promotional campaigns and a direct communication channel via WhatsApp integration, allowing for personalized service and immediate response to customer inquiries."
-            ],
-            "demo_url": "https://belimadu.com",
-            "image_url": "https://ridwaanhall.com/static/img/project/belimadu_com.webp",
-            "is_featured": True,
-            "features": [
-                {
-                    "title": "Product Catalog",
-                    "description": "Comprehensive honey product listings with detailed descriptions, pricing, and high-quality images.",
-                },
-                {
-                    "title": "WhatsApp Integration",
-                    "description": "Direct ordering system through WhatsApp API for seamless customer communication and order processing.",
-                },
-                {
-                    "title": "Monthly Offers",
-                    "description": "Dynamic monthly special offers section showcasing discounted products and seasonal honey varieties.",
-                }
-            ],
-            "tech_stack": [
-                tech_stack["python"],
-                tech_stack["django"], 
-                tech_stack["bootstrap"],
-                tech_stack["vercel"]
-            ],
-        },
-        {
-            "id": 3,
-            "title": "Gold Price Prediction and Music Recommendation System",
-            "headline": "Predict gold prices and recommend music tracks using machine learning algorithms.",
-            "description": [
-                "This project focuses on predicting gold prices using machine learning to help investors and analysts make informed decisions. Additionally, it includes a music recommendation system to suggest tracks, artists, and albums based on user preferences and listening habits.",
-                "The gold price prediction component utilizes historical price data and economic indicators to forecast future gold prices with impressive accuracy. Multiple regression models and time series analysis techniques were implemented and compared to identify the most reliable prediction method.",
-                "The music recommendation engine employs collaborative filtering and content-based approaches to create personalized playlists for users. The system analyzes listening patterns, genre preferences, and acoustic features of tracks to suggest music that aligns with individual tastes while introducing new discoveries."
-            ],
-            "github_url": "https://github.com/ridwaanhall/applied-machine-learning",
-            "image_url": "https://ridwaanhall.com/static/img/project/gold_price_prediction_and_music_recommendation_system.webp",
-            "is_featured": False,
-            "features": [
-                {
-                    "title": "Gold Price Prediction",
-                    "description": "Machine learning model to predict gold prices for informed investment and analysis.",
-                },
-                {
-                    "title": "Music Recommendation System",
-                    "description": "Suggests tracks, artists, and albums based on user preferences and listening habits.",
-                }
-            ],
-            "tech_stack": [
-                tech_stack["machine_learning"],
-                tech_stack["music_recommendation"]
-            ],
-        },
-        {
-            "id": 4,
-            "title": "Mobile Legends: Bang Bang API and Website",
-            "headline": "RESTful API and website interface for Mobile Legends: Bang Bang data.",
-            "description": [
-                "A comprehensive project that includes a RESTful API for Mobile Legends: Bang Bang data, interactive API documentation for developers, and a website interface for users to explore hero analytics, rankings, and game data.",
-                "This platform serves as a central hub for game enthusiasts and developers interested in Mobile Legends data. The API offers detailed endpoints for heroes, skills, equipment, and meta statistics that can be integrated into third-party applications and tools.",
-                "The accompanying website provides intuitive visualization of complex game data, making it accessible to casual players looking to improve their gameplay. Advanced features include hero compatibility metrics, counter-pick suggestions, and optimal build paths based on current meta analysis."
-            ],
-            "image_url": "https://ridwaanhall.com/static/img/project/mobile_legends_bang_bang_api_and_website.webp",
-            "demo_url": "https://api-mobilelegends.vercel.app/",
-            "github_url": "https://github.com/ridwaanhall/api-mobilelegends",
-            "is_featured": False,
-            "features": [
-                {
-                    "title": "RESTful API",
-                    "description": "Provides read-only endpoints using GET methods for hero data, rankings, skills, and compatibility metrics.",
-                },
-                {
-                    "title": "API Documentation",
-                    "description": "Interactive documentation built with Next.js and Shadcn UI for a modern, user-friendly developer experience.",
-                },
-                {
-                    "title": "User-friendly Website",
-                    "description": "Web interface for casual users to browse hero statistics and game data without technical knowledge.",
-                }
-            ],
-            "tech_stack": [
-                tech_stack["django"],
-                tech_stack["python"],
-                tech_stack["rest_api"],
-                tech_stack["nextjs"],
-                tech_stack["shadcn_ui"],
-                tech_stack["vercel"]
-            ],
-        },
-        {
-            "id": 5,
-            "title": "API PDDikti KEMENDIKSAINTEK",
-            "headline": "API for accessing updated data from PDDikti KEMENDIKSAINTEK.",
-            "description": [
-                "This project provides an easy-to-use API for accessing updated data from PDDikti KEMENDIKSAINTEK. It includes API endpoints for educational institution data and other related resources.",
-                "The API simplifies the process of retrieving educational data from Indonesia's official higher education database. Researchers, educational institutions, and developers can access structured information about universities, colleges, programs, and accreditation statuses through standardized endpoints.",
-                "Designed with performance in mind, the API implements caching strategies and optimization techniques to handle high request volumes while maintaining quick response times. Comprehensive documentation guides users through authentication, request formation, and data interpretation."
-            ],
-            "image_url": "https://ridwaanhall.com/static/img/project/api_pddikti_kemendiksaintek.webp",
-            "demo_url": "https://pddikti-docs.vercel.app/",
-            "github_url": "https://github.com/ridwaanhall/api-pddikti",
-            "is_featured": False,
-            "features": [
-                {
-                    "title": "Easy Access to PDDikti Data",
-                    "description": "API endpoints for retrieving data on educational institutions and more from PDDikti KEMENDIKSAINTEK.",
-                },
-                {
-                    "title": "User-Friendly API",
-                    "description": "Designed with simplicity and ease of use in mind for developers.",
-                },
-                {
-                    "title": "Updated Data Integration",
-                    "description": "Supports updated datasets from PDDikti for accuracy and relevance.",
-                }
-            ],
-            "tech_stack": [
-                tech_stack["python"],
-                tech_stack["django"],
-                tech_stack["javascript"],
-                tech_stack["css"]
-            ],
-        },
-        {
-            "id": 6,
-            "title": "Bike Sharing Analysis Dashboard",
-            "headline": "Explore the relationship between weather conditions and bike rentals with an interactive dashboard.",
-            "description": [
-                "This project explores the relationship between weather conditions and bike rentals. It includes a dashboard to visualize trends, such as popular seasons, working days vs weekends, and the impact of weather on bike rental patterns.",
-                "Using advanced data analysis techniques, the dashboard presents insights that can help bike-sharing companies optimize their fleet distribution and pricing strategies based on weather forecasts and historical patterns.",
-                "The interactive visualizations allow users to filter data by multiple parameters including temperature ranges, humidity levels, windspeed, and time periods to identify specific correlations that influence rental behaviors. Machine learning models provide predictive analytics for future rental demands based on weather forecasts."
-            ],
-            "demo_url": "https://ridwaanhall-bike-sharing-analytics.streamlit.app/",
-            "github_url": "https://github.com/ridwaanhall/dicoding-bike-sharing-analysis",
-            "image_url": "https://ridwaanhall.com/static/img/project/bike_sharing_analysis_dashboard.webp",
-            "is_featured": False,
-            "features": [
-                {
-                    "title": "Seasonal Analysis",
-                    "description": "Analysis of bike rentals to determine the most and least popular seasons.",
-                },
-                {
-                    "title": "Weather Correlation",
-                    "description": "Examination of how weather conditions affect the total bike rentals.",
-                },
-                {
-                    "title": "Working Days vs Holidays",
-                    "description": "Comparison of bike rental trends between weekdays and weekends/holidays.",
-                },
-                {
-                    "title": "Streamlit Dashboard",
-                    "description": "Interactive visualization of the analysis results using Streamlit.",
-                }
-            ],
-            "tech_stack": [
-                tech_stack["python"],
-                tech_stack["streamlit"],
-                tech_stack["tensorflow"]
-            ],
-        },
-        {
-            "id": 7,
-            "title": "Sentiment Analysis Tokopedia App Using Machine Learning Techniques",
-            "headline": "Comprehensive pipeline for sentiment analysis of Google Play Store reviews for the Tokopedia app.",
-            "description": [
-                "This project implements a comprehensive pipeline for sentiment analysis of Google Play Store reviews for the Tokopedia app. It includes data scraping, preprocessing, feature extraction, and evaluation using various machine learning models.",
-                "The sentiment analysis system extracts valuable customer insights from thousands of user reviews, helping identify specific strengths and weaknesses of the Tokopedia application from the user perspective. These insights can guide product development priorities and customer experience improvements.",
-                "The pipeline employs multiple natural language processing techniques to handle the complexities of Indonesian language text, including slang, abbreviations, and mixed-language content commonly found in user reviews. Comparative analysis between different machine learning models reveals the most effective approaches for this specific domain."
-            ],
-            "github_url": "https://github.com/ridwaanhall/Dicoding-Machine-Learning-Intermediate/tree/main/01_project",
-            "image_url": "https://ridwaanhall.com/static/img/project/sentiment_analysis_tokopedia_app.webp",
-            "is_featured": False,
-            "features": [
-                {
-                    "title": "Data Scraping",
-                    "description": "Scrapes user reviews from the Google Play Store using a custom scraper.",
-                },
-                {
-                    "title": "Text Preprocessing",
-                    "description": "Includes cleaning, case folding, tokenizing, stopword removal, and stemming.",
-                },
-                {
-                    "title": "Feature Extraction",
-                    "description": "Utilizes TF-IDF, Count Vectorization, and Word2Vec for feature representation.",
-                },
-                {
-                    "title": "Model Evaluation",
-                    "description": "Evaluates models like Logistic Regression, XGBoost, and Random Forest to determine the best-performing algorithm.",
-                },
-                {
-                    "title": "Sentiment Prediction",
-                    "description": "Provides percentage-based sentiment analysis results for new user reviews.",
-                }
-            ],
-            "tech_stack": [
-                tech_stack["python"],
-                tech_stack["machine_learning"]
-            ],
-        },
-        {
-            "id": 8,
-            "title": "ridwaanhall.pythonanywhere.com",
-            "headline": "Personal portfolio website built with Vuexy HTML and Django, showcasing yearly stats via GitHub API.",
-            "description": [
-                "A personal portfolio website crafted with Vuexy HTML and Django. Features sections for about, projects, blogs, education, experience, and a dynamic dashboard integrating yearly statistics through GitHub API.",
-                "This portfolio platform combines elegant visual design with powerful backend functionality to create a comprehensive showcase of professional accomplishments and technical capabilities. The site structure follows best practices for content organization and user flow.",
-                "Behind the scenes, the site implements custom Django models and views to manage content dynamically, allowing for easy updates and maintenance. Authentication systems protect administrative areas while providing seamless access to public-facing content."
-            ],
-            "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_pythonanywhere_com.webp",
-            "is_featured": False,
-            "features": [
-                {
-                    "title": "Website Pages",
-                    "description": "Includes pages such as About, Career, Contact, Projects, Dashboard, Attendance, Playground, Decrypt, Login, Certificate, Coming Soon, Error, and Home, each with unique purposes and functionalities."
-                },
-                {
-                    "title": "Professional Interface",
-                    "description": "Built with Vuexy HTML for a modern and visually appealing design."
-                },
-                {
-                    "title": "Yearly Stats Dashboard",
-                    "description": "Integrated with GitHub API for yearly statistics."
-                },
-                {
-                    "title": "Responsive Design",
-                    "description": "Optimized for seamless viewing across all devices."
-                }
-            ],
-            "tech_stack": [
-                tech_stack["python"],
-                tech_stack["django"],
-                tech_stack["github_api"]
-            ],
-        },
-        {
-            "id": 9,
-            "title": "ridwaanhall.me",
-            "headline": "Personal portfolio website built using the Once UI framework on Next.js.",
-            "description": [
-                "A personal portfolio website leveraging the Once UI framework on Next.js, featuring responsive design, SEO optimization, customization options, and localization support.",
-                "This modern portfolio implements advanced Next.js features including Server Components, optimized image loading, and efficient code splitting to deliver exceptional performance metrics. The site achieves perfect Lighthouse scores across performance, accessibility, best practices, and SEO dimensions.",
-                "The internationalization system supports multiple languages through a robust content management approach that maintains consistent design and functionality across language variants. Custom animations and interactive elements enhance user engagement without compromising load times."
-            ],
-            "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_me.webp",
-            "github_url": "https://github.com/ridwaanhall/ridwaanhall.me",
-            "is_featured": False,
-            "features": [
-                {
-                    "title": "Once UI Framework",
-                    "description": "Includes all tokens, components, and features of the Once UI framework."
-                },
-                {
-                    "title": "SEO Optimization",
-                    "description": "Automatic open-graph, X image generation, and metadata generation for better search engine visibility."
-                },
-                {
-                    "title": "Responsive Design",
-                    "description": "A responsive layout optimized for all screen sizes and timeless design."
-                },
-                {
-                    "title": "Extensive Customization",
-                    "description": "Endless customization options through data attributes."
-                },
-                {
-                    "title": "Content Management",
-                    "description": "Render sections conditionally, manage social links, and password-protect specific URLs."
-                },
-                {
-                    "title": "Localization",
-                    "description": "Supports multilingual content using the next-intl library for a wider audience reach."
-                }
-            ],
-            "tech_stack": [
-                tech_stack["nextjs"],
-                tech_stack["once_ui"],
-                tech_stack["typescript"],
-                tech_stack["scss"],
-                tech_stack["mdx"],
-                tech_stack["javascript"]
-            ],
-            "setup_instructions": "Refer to the repository README for detailed setup instructions and deployment processes."
-        },
-        {
-            "id": 10,
-            "title": "Neon AI",
-            "headline": "AI Chatbot built using advanced tools and frameworks.",
-            "description": [
-                "An AI chatbot leveraging the Once UI framework on Next.js, featuring advanced routing, React Server Components, and unified APIs for seamless integration and performance optimization.",
-                "The Neon AI platform reimagines conversational AI interfaces by combining cutting-edge language model capabilities with intuitive user experience design. The architecture leverages streaming responses for immediate feedback and realistic conversation flow.",
-                "The system includes context-aware conversation history management to maintain coherent multi-turn dialogues while respecting privacy and security considerations. Integration with structured data sources enables the chatbot to retrieve and present information in visually appealing formats beyond simple text responses."
-            ],
-            "image_url": "https://ridwaanhall.com/static/img/project/neon_ai.webp", 
-            "github_url": "https://github.com/ridwaanhall/neon-ai",
-            "demo_url": "https://ridwaanhall-ai.vercel.app",
-            "is_featured": False,
-            "features": [
-                {
-                    "title": "Advanced Routing",
-                    "description": "Optimized navigation and performance with Next.js App Router."
-                },
-                {
-                    "title": "AI SDK",
-                    "description": "Unified API for generating text, structured objects, and tool calls with LLMs."
-                },
-                {
-                    "title": "Data Persistence",
-                    "description": "Powered by Vercel Postgres and Blob for efficient data storage."
-                }
-            ],
-            "tech_stack": [
-                tech_stack["nextjs"],
-                tech_stack["tailwindcss"],
-                tech_stack["typescript"],
-                tech_stack["vercel_postgres"],
-                tech_stack["radix_ui"]
-            ],
-            "setup_instructions": "Refer to the README.md in the repository for setup details and deployment processes."
-        },
-        {
-            "id": 11,
-            "title": "Instagram Analytics",
-            "headline": "Analyze Instagram followers and following data effectively.",
-            "description": [
-                "A Python script to analyze Instagram followers and following data, providing various analytics such as mutual followers, non-followers, and more.",
-                "This tool helps social media managers and influencers optimize their Instagram growth strategy by identifying key relationship patterns within their follower network. The analytics highlight engagement opportunities with accounts that have reciprocal interest versus those that don't follow back.",
-                "Beyond simple following/follower ratios, the system categorizes relationships to identify potential networking opportunities and engagement gaps. The application provides both aggregate statistics and detailed lists that can be exported for further analysis or direct outreach campaigns."
-            ],
-            "image_url": "https://ridwaanhall.com/static/img/project/instagram_following_followers.webp",
-            "github_url": "https://github.com/ridwaanhall/instagram-following-followers",
-            "demo_url": "https://instagram-following-followers.vercel.app",
-            "is_featured": False,
-            "features": [
-                {
-                    "title": "Followers Analysis",
-                    "description": "Counts and lists mutual followers, non-followers, and one-sided followers."
-                },
-                {
-                    "title": "Following Analysis",
-                    "description": "Counts and lists one-sided followings effectively."
-                },
-                {
-                    "title": "JSON Compatibility",
-                    "description": "Processes Instagram data formatted in JSON for better analytics."
-                }
-            ],
-            "tech_stack": [
-                tech_stack["bulma"],
-                tech_stack["django"],
-                tech_stack["whitenoise"]
-            ],
-            "setup_instructions": "Clone the repository, place the required JSON files (following.json and followers_1.json), and run the script using Python."
-        },
-        {
-            "id": 12,
-            "title": "Lumina",
-            "headline": "A solution for students who often forget attendance.",
-            "description": [
-                "Lumina is an automated attendance code generator designed to help students overcome the challenge of forgetting attendance easily, quickly, and securely.",
-                "Developed specifically for educational settings, this tool addresses a common pain point for students by providing instant access to encrypted attendance codes that comply with institutional requirements. The system works across multiple course structures and attendance systems.",
-                "The encryption algorithm ensures that generated codes maintain their validity while protecting against unauthorized use or manipulation. User experience was prioritized throughout development, resulting in a streamlined interface that requires minimal steps even in time-constrained situations."
-            ],
-            "image_url": "https://ridwaanhall.com/static/img/project/lumina.webp",
-            "github_url": "https://github.com/ridwaanhall/Lumina",
-            "demo_url": "https://lupa-presensi.vercel.app",
-            "is_featured": False,
-            "features": [
-                {
-                    "title": "Automatic Code Generator",
-                    "description": "Generates new encrypted attendance codes instantly."
-                },
-                {
-                    "title": "Intuitive Design",
-                    "description": "A simple and easy-to-use interface, even in panic situations."
-                },
-                {
-                    "title": "Secure Encryption",
-                    "description": "Safe and reliable encryption process for attendance codes."
-                }
-            ],
-            "tech_stack": [
-                tech_stack["python"],
-                tech_stack["django"],
-                tech_stack["bulma"],
-                tech_stack["vercel"],
-                tech_stack["cloudflare"]
-            ],
-            "setup_instructions": "Refer to the README.md in the repository for setup details and deployment processes."
-        },
-        {
-            "id": 13,
-            "title": "NGL Link Spam",
-            "headline": "Send messages to NGL without logging in.",
-            "description": [
-                "A Python project that allows users to send messages to NGL using different options, including custom messages and random messages, without requiring login credentials.",
-                "This automation tool demonstrates practical application of web requests and API interactions by interfacing with NGL's messaging infrastructure. The project showcases how Python can be used to programmatically interact with web services that primarily expect human interaction.",
-                "The implementation includes rate limiting and request management capabilities to ensure responsible usage and prevent service disruptions. Different messaging modes provide flexibility for various use cases, from testing to automated notifications."
-            ],
-            "image_url": "https://ridwaanhall.com/static/img/project/ngl_link_spamming.webp",
-            "github_url": "https://github.com/ridwaanhall/ngl-link-spamming",
-            "is_featured": False,
-            "features": [
-                {
-                    "title": "Custom Message Sender",
-                    "description": "Send personalized messages to NGL targets efficiently."
-                },
-                {
-                    "title": "Random Message Generator",
-                    "description": "Generate and send random messages with ease."
-                },
-                {
-                    "title": "No Login Required",
-                    "description": "Send messages directly without needing to log in to NGL."
-                }
-            ],
-            "tech_stack": [
-                tech_stack["python"]
-            ],
-            "setup_instructions": "Clone the repository, install the dependencies listed in requirements.txt, and use one of the available scripts (send_custom.py, send_random.py, or send_msg.py) to send messages."
-        }
-    ]
+            {
+                "id": 1,
+                "title": "ridwaanhall.com",
+                "headline": "My personal portfolio site, powered by Django and TailwindCSS, running serverless on Vercel.",
+                "description": [
+                    "This is my digital home base, built with Django and TailwindCSS, hosted serverless on Vercel. It’s got everything—about me, projects, blog, education, experience, and a slick dashboard.",
+                    "I mixed Django’s backend muscle with Tailwind’s clean styling to create a fast, modern site. Vercel’s serverless setup keeps it low-maintenance and snappy.",
+                    "The dashboard pulls live GitHub and WakaTime data to show my coding stats in real time. Plus, it’s fully responsive, looking sharp on phones, tablets, or desktops."
+                ],
+                "github_url": "https://github.com/ridwaanhall/ridwaanhall_com",
+                "demo_url": "https://ridwaanhall.com",
+                "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_com.webp",
+                "is_featured": True,
+                "features": [
+                    {
+                        "title": "Serverless Vibes",
+                        "description": "Hosted on Vercel for max uptime and easy scaling.",
+                    },
+                    {
+                        "title": "Live Dashboard",
+                        "description": "Shows my GitHub and WakaTime stats in real time.",
+                    },
+                    {
+                        "title": "Smooth Design",
+                        "description": "TailwindCSS makes it look good on any screen."
+                    }
+                ],
+                "tech_stack": [
+                    tech_stack["python"],
+                    tech_stack["django"],
+                    tech_stack["tailwindcss"],
+                    tech_stack["vercel"],
+                    tech_stack["github_api"],
+                    tech_stack["wakatime_api"]
+                ],
+            },
+            {
+                "id": 2,
+                "title": "belimadu.com",
+                "headline": "E-commerce site for honey goodies, built with Django and Bootstrap on Vercel.",
+                "description": [
+                    "Belimadu.com is an e-commerce hub for honey products, crafted with Django and Bootstrap, hosted on Vercel. It’s got a product catalog, health tips, WhatsApp ordering, and monthly deals.",
+                    "It’s a one-stop shop for honey lovers, blending useful articles with a smooth shopping flow. SEO tweaks help it pop up on Google searches.",
+                    "Customers can hit up WhatsApp for quick orders, and monthly promos keep things fresh with special offers."
+                ],
+                "demo_url": "https://belimadu.com",
+                "image_url": "https://ridwaanhall.com/static/img/project/belimadu_com.webp",
+                "is_featured": True,
+                "features": [
+                    {
+                        "title": "Honey Catalog",
+                        "description": "Lists products with crisp images and details.",
+                    },
+                    {
+                        "title": "WhatsApp Orders",
+                        "description": "Chat directly to place orders fast.",
+                    },
+                    {
+                        "title": "Hot Deals",
+                        "description": "Monthly specials on seasonal honey picks."
+                    }
+                ],
+                "tech_stack": [
+                    tech_stack["python"],
+                    tech_stack["django"], 
+                    tech_stack["bootstrap"],
+                    tech_stack["vercel"]
+                ],
+            },
+            {
+                "id": 3,
+                "title": "Gold Price & Music Recommender",
+                "headline": "ML-powered gold price predictor and music suggestion system.",
+                "description": [
+                    "This project uses machine learning to predict gold prices and recommend music tracks based on your vibe.",
+                    "For gold, I crunched historical data and economic trends to forecast prices with solid accuracy, testing multiple models to find the best fit.",
+                    "The music recommender analyzes your listening habits and song features to suggest tracks and artists you’ll love, mixing in some fresh finds."
+                ],
+                "github_url": "https://github.com/ridwaanhall/applied-machine-learning",
+                "image_url": "https://ridwaanhall.com/static/img/project/gold_price_prediction_and_music_recommendation_system.webp",
+                "is_featured": False,
+                "features": [
+                    {
+                        "title": "Gold Forecasts",
+                        "description": "Predicts prices to guide investment moves.",
+                    },
+                    {
+                        "title": "Music Picks",
+                        "description": "Curates tracks based on your taste."
+                    }
+                ],
+                "tech_stack": [
+                    tech_stack["machine_learning"],
+                    tech_stack["music_recommendation"]
+                ],
+            },
+            {
+                "id": 4,
+                "title": "Mobile Legends API & Site",
+                "headline": "REST API and website for Mobile Legends game data.",
+                "description": [
+                    "A REST API and website for Mobile Legends fans, serving up hero stats, rankings, and game insights.",
+                    "The API delivers clean endpoints for heroes, skills, and meta trends, perfect for devs building game tools. Docs are easy to navigate.",
+                    "The site breaks down complex data for casual players, with tips on hero matchups, builds, and counters based on the latest meta."
+                ],
+                "image_url": "https://ridwaanhall.com/static/img/project/mobile_legends_bang_bang_api_and_website.webp",
+                "demo_url": "https://api-mobilelegends.vercel.app/",
+                "github_url": "https://github.com/ridwaanhall/api-mobilelegends",
+                "is_featured": False,
+                "features": [
+                    {
+                        "title": "Game API",
+                        "description": "GET endpoints for hero stats and rankings.",
+                    },
+                    {
+                        "title": "Dev Docs",
+                        "description": "Next.js-powered guide for easy API use.",
+                    },
+                    {
+                        "title": "Player Hub",
+                        "description": "Simple site for browsing game insights."
+                    }
+                ],
+                "tech_stack": [
+                    tech_stack["django"],
+                    tech_stack["python"],
+                    tech_stack["rest_api"],
+                    tech_stack["nextjs"],
+                    tech_stack["shadcn_ui"],
+                    tech_stack["vercel"]
+                ],
+            },
+            {
+                "id": 5,
+                "title": "PDDikti API",
+                "headline": "API for Indonesia’s higher education data from PDDikti.",
+                "description": [
+                    "An API to pull fresh data from PDDikti, Indonesia’s higher ed database, covering unis, programs, and more.",
+                    "It’s built for researchers and devs, with clear endpoints to grab structured info like accreditation stats.",
+                    "Caching and optimizations keep it fast even with heavy traffic, and the docs make it a breeze to use."
+                ],
+                "image_url": "https://ridwaanhall.com/static/img/project/api_pddikti_kemendiksaintek.webp",
+                "demo_url": "https://pddikti-docs.vercel.app/",
+                "github_url": "https://github.com/ridwaanhall/api-pddikti",
+                "is_featured": False,
+                "features": [
+                    {
+                        "title": "Edu Data",
+                        "description": "Easy access to uni and program info.",
+                    },
+                    {
+                        "title": "Dev-Friendly",
+                        "description": "Simple setup for coders.",
+                    },
+                    {
+                        "title": "Fresh Stats",
+                        "description": "Always-updated PDDikti data."
+                    }
+                ],
+                "tech_stack": [
+                    tech_stack["python"],
+                    tech_stack["django"],
+                    tech_stack["javascript"],
+                    tech_stack["css"]
+                ],
+            },
+            {
+                "id": 6,
+                "title": "Bike Sharing Dashboard",
+                "headline": "Interactive dashboard linking weather and bike rentals.",
+                "description": [
+                    "A dashboard digging into how weather impacts bike rentals, showing trends by season, day, and conditions.",
+                    "It uses data analysis to help bike companies tweak fleet plans and pricing based on forecasts.",
+                    "Users can filter by temp, humidity, or time to spot patterns, with ML models predicting future demand."
+                ],
+                "demo_url": "https://ridwaanhall-bike-sharing-analytics.streamlit.app/",
+                "github_url": "https://github.com/ridwaanhall/dicoding-bike-sharing-analysis",
+                "image_url": "https://ridwaanhall.com/static/img/project/bike_sharing_analysis_dashboard.webp",
+                "is_featured": False,
+                "features": [
+                    {
+                        "title": "Season Trends",
+                        "description": "Shows peak biking seasons.",
+                    },
+                    {
+                        "title": "Weather Impact",
+                        "description": "Links conditions to rental spikes.",
+                    },
+                    {
+                        "title": "Day Breakdown",
+                        "description": "Compares weekdays vs. weekends.",
+                    },
+                    {
+                        "title": "Streamlit UI",
+                        "description": "Interactive charts for easy insights."
+                    }
+                ],
+                "tech_stack": [
+                    tech_stack["python"],
+                    tech_stack["streamlit"],
+                    tech_stack["tensorflow"]
+                ],
+            },
+            {
+                "id": 7,
+                "title": "Tokopedia Sentiment Analysis",
+                "headline": "ML pipeline to analyze Tokopedia app reviews.",
+                "description": [
+                    "A full pipeline for scraping and analyzing Tokopedia app reviews from Google Play, using ML to gauge sentiment.",
+                    "It digs into what users love or hate, helping devs prioritize fixes and features.",
+                    "Handles tricky Indonesian text—slang and all—with multiple models compared to find the best performer."
+                ],
+                "github_url": "https://github.com/ridwaanhall/Dicoding-Machine-Learning-Intermediate/tree/main/01_project",
+                "image_url": "https://ridwaanhall.com/static/img/project/sentiment_analysis_tokopedia_app.webp",
+                "is_featured": False,
+                "features": [
+                    {
+                        "title": "Review Scraper",
+                        "description": "Pulls fresh Play Store feedback.",
+                    },
+                    {
+                        "title": "Text Cleanup",
+                        "description": "Preps messy text for analysis.",
+                    },
+                    {
+                        "title": "Feature Extraction",
+                        "description": "Uses TF-IDF and Word2Vec for insights.",
+                    },
+                    {
+                        "title": "Model Testing",
+                        "description": "Pits ML models to find the champ.",
+                    },
+                    {
+                        "title": "Sentiment Scores",
+                        "description": "Predicts review vibes accurately."
+                    }
+                ],
+                "tech_stack": [
+                    tech_stack["python"],
+                    tech_stack["machine_learning"]
+                ],
+            },
+            {
+                "id": 8,
+                "title": "ridwaanhall.pythonanywhere.com",
+                "headline": "Portfolio site with Vuexy HTML and Django, flexing GitHub stats.",
+                "description": [
+                    "Another portfolio site, this time with Vuexy HTML and Django, packed with sections and a GitHub-powered stats dashboard.",
+                    "It’s got a polished look and smart backend to manage content easily, with secure admin access.",
+                    "The dashboard pulls yearly GitHub data to show off my coding hustle."
+                ],
+                "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_pythonanywhere_com.webp",
+                "is_featured": False,
+                "features": [
+                    {
+                        "title": "Loaded Pages",
+                        "description": "Tons of sections like About, Projects, and more.",
+                    },
+                    {
+                        "title": "Clean UI",
+                        "description": "Vuexy HTML for a pro-level design.",
+                    },
+                    {
+                        "title": "GitHub Stats",
+                        "description": "Yearly coding insights via API.",
+                    },
+                    {
+                        "title": "Mobile-Friendly",
+                        "description": "Works great on any device."
+                    }
+                ],
+                "tech_stack": [
+                    tech_stack["python"],
+                    tech_stack["django"],
+                    tech_stack["github_api"]
+                ],
+            },
+            {
+                "id": 9,
+                "title": "ridwaanhall.me",
+                "headline": "Next.js portfolio rocking Once UI with top-notch performance.",
+                "description": [
+                    "A Next.js portfolio using Once UI, built for speed, SEO, and global reach.",
+                    "It’s optimized to the max with Server Components, lazy images, and code splitting, scoring perfect on Lighthouse.",
+                    "Supports multiple languages, custom animations, and stays snappy no matter the device."
+                ],
+                "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_me.webp",
+                "github_url": "https://github.com/ridwaanhall/ridwaanhall.me",
+                "is_featured": False,
+                "features": [
+                    {
+                        "title": "Once UI",
+                        "description": "Full design system for sleek components.",
+                    },
+                    {
+                        "title": "SEO Boost",
+                        "description": "Auto-generated meta for search visibility.",
+                    },
+                    {
+                        "title": "Responsive Layout",
+                        "description": "Flawless on any screen size.",
+                    },
+                    {
+                        "title": "Customizable",
+                        "description": "Tweak everything with data attributes.",
+                    },
+                    {
+                        "title": "Multilingual",
+                        "description": "Supports global audiences with next-intl."
+                    }
+                ],
+                "tech_stack": [
+                    tech_stack["nextjs"],
+                    tech_stack["once_ui"],
+                    tech_stack["typescript"],
+                    tech_stack["scss"],
+                    tech_stack["mdx"],
+                    tech_stack["javascript"]
+                ],
+                "setup_instructions": "Check the repo README for setup and deployment steps."
+            },
+            {
+                "id": 10,
+                "title": "Neon AI",
+                "headline": "AI chatbot built with Next.js and Once UI.",
+                "description": [
+                    "Neon AI is a smart chatbot running on Next.js and Once UI, with smooth routing and unified APIs.",
+                    "It delivers instant responses with a conversational flow that feels natural, thanks to streaming tech.",
+                    "Keeps chats coherent with context tracking and pulls data to present answers in cool, visual ways."
+                ],
+                "image_url": "https://ridwaanhall.com/static/img/project/neon_ai.webp", 
+                "github_url": "https://github.com/ridwaanhall/neon-ai",
+                "demo_url": "https://ridwaanhall-ai.vercel.app",
+                "is_featured": False,
+                "features": [
+                    {
+                        "title": "Smart Routing",
+                        "description": "Next.js App Router for fast navigation.",
+                    },
+                    {
+                        "title": "AI Power",
+                        "description": "Unified API for text and tool calls.",
+                    },
+                    {
+                        "title": "Data Storage",
+                        "description": "Vercel Postgres and Blob for efficiency."
+                    }
+                ],
+                "tech_stack": [
+                    tech_stack["nextjs"],
+                    tech_stack["tailwindcss"],
+                    tech_stack["typescript"],
+                    tech_stack["vercel_postgres"],
+                    tech_stack["radix_ui"]
+                ],
+                "setup_instructions": "See README.md in the repo for setup and deploy details."
+            },
+            {
+                "id": 11,
+                "title": "Instagram Analytics",
+                "headline": "Python tool to break down Instagram follower data.",
+                "description": [
+                    "A Python script to analyze Instagram followers and following, spotting mutuals, non-followers, and more.",
+                    "It helps influencers and managers find engagement gaps and networking wins by mapping relationships.",
+                    "Outputs detailed stats and lists for outreach or deeper dives, all from JSON data."
+                ],
+                "image_url": "https://ridwaanhall.com/static/img/project/instagram_following_followers.webp",
+                "github_url": "https://github.com/ridwaanhall/instagram-following-followers",
+                "demo_url": "https://instagram-following-followers.vercel.app",
+                "is_featured": False,
+                "features": [
+                    {
+                        "title": "Follower Breakdown",
+                        "description": "Lists mutuals and one-sided followers.",
+                    },
+                    {
+                        "title": "Following Insights",
+                        "description": "Tracks who you follow without reciprocation.",
+                    },
+                    {
+                        "title": "JSON Support",
+                        "description": "Handles Instagram data smoothly."
+                    }
+                ],
+                "tech_stack": [
+                    tech_stack["bulma"],
+                    tech_stack["django"],
+                    tech_stack["whitenoise"]
+                ],
+                "setup_instructions": "Clone repo, add JSON files (following.json, followers_1.json), and run the script."
+            },
+            {
+                "id": 12,
+                "title": "Lumina",
+                "headline": "Auto-attendance tool for forgetful students.",
+                "description": [
+                    "Lumina generates encrypted attendance codes fast, saving students from missing roll call.",
+                    "Built for schools, it fits various course setups with secure, valid codes.",
+                    "The interface is dead simple, perfect for those last-minute panics."
+                ],
+                "image_url": "https://ridwaanhall.com/static/img/project/lumina.webp",
+                "github_url": "https://github.com/ridwaanhall/Lumina",
+                "demo_url": "https://lupa-presensi.vercel.app",
+                "is_featured": False,
+                "features": [
+                    {
+                        "title": "Code Generator",
+                        "description": "Spits out secure codes instantly.",
+                    },
+                    {
+                        "title": "Easy UI",
+                        "description": "No fuss, even under pressure.",
+                    },
+                    {
+                        "title": "Safe Codes",
+                        "description": "Encryption keeps things legit."
+                    }
+                ],
+                "tech_stack": [
+                    tech_stack["python"],
+                    tech_stack["django"],
+                    tech_stack["bulma"],
+                    tech_stack["vercel"],
+                    tech_stack["cloudflare"]
+                ],
+                "setup_instructions": "Check repo README for setup and deploy steps."
+            },
+            {
+                "id": 13,
+                "title": "NGL Link Spam",
+                "headline": "Python script to message NGL without logging in.",
+                "description": [
+                    "A Python tool to send custom or random messages to NGL, no login needed.",
+                    "It shows off web requests and API tricks, automating what’s usually manual.",
+                    "Built-in rate limits keep it chill to avoid spamming issues."
+                ],
+                "image_url": "https://ridwaanhall.com/static/img/project/ngl_link_spamming.webp",
+                "github_url": "https://github.com/ridwaanhall/ngl-link-spamming",
+                "is_featured": False,
+                "features": [
+                    {
+                        "title": "Custom Messages",
+                        "description": "Send your own texts with ease.",
+                    },
+                    {
+                        "title": "Random Texts",
+                        "description": "Auto-generate messages for fun.",
+                    },
+                    {
+                        "title": "No Login",
+                        "description": "Straight to messaging, no hassle."
+                    }
+                ],
+                "tech_stack": [
+                    tech_stack["python"]
+                ],
+                "setup_instructions": "Clone repo, install requirements.txt, and run send_custom.py, send_random.py, or send_msg.py."
+            }
+        ]

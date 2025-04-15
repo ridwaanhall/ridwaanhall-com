@@ -108,35 +108,35 @@
             <div class="mb-8 mt-10">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
-                        <h1 class="text-4xl font-bold text-white mb-2 tracking-tight">Journey <span class="text-indigo-400"> of Growth</span></h1>
-                        <p class="mt-2 text-lg text-stone-300 leading-relaxed">Flexing my grind—from Quran-inspired hustle to coding gigs and AI breakthroughs. This is my story of leveling up through jobs, learning, and certifications.</p>
+                        <h1 class="text-4xl font-bold text-white mb-2 tracking-tight">Journey <span class="text-sky-400"> of Growth</span></h1>
+                        <p class="mt-2 text-lg text-zinc-300 leading-relaxed">Flexing my grind—from Quran-inspired hustle to coding gigs and AI breakthroughs. This is my story of leveling up through jobs, learning, and certifications.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="mb-6 border-b border-stone-700">
+            <div class="mb-6 border-b border-zinc-700">
                 <div class="flex flex-wrap -mb-px text-sm font-medium text-center">
                     <button id="tab-applications" 
                                     onclick="switchTab('applications')" 
-                                    class="inline-block p-4 border-b-2 border-indigo-500 text-indigo-400 rounded-t-lg" 
+                                    class="inline-block p-4 border-b-2 border-sky-500 text-sky-400 rounded-t-lg" 
                                     aria-selected="true" role="tab">
                         Applications
                     </button>
                     <button id="tab-experiences" 
                                     onclick="switchTab('experiences')" 
-                                    class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-stone-300 hover:border-stone-300" 
+                                    class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300" 
                                     aria-selected="false" role="tab">
                         Experiences
                     </button>
                     <button id="tab-education" 
                                     onclick="switchTab('education')" 
-                                    class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-stone-300 hover:border-stone-300" 
+                                    class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300" 
                                     aria-selected="false" role="tab">
                         Educations
                     </button>
                     <button id="tab-certifications" 
                                     onclick="switchTab('certifications')" 
-                                    class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-stone-300 hover:border-stone-300" 
+                                    class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300" 
                                     aria-selected="false" role="tab">
                         Certifications
                     </button>
@@ -296,7 +296,7 @@
         }
         
         document.querySelectorAll('[id^="tab-"]').forEach(tab => {
-            tab.classList.remove('border-indigo-500', 'text-indigo-400');
+            tab.classList.remove('border-sky-500', 'text-sky-400');
             tab.classList.add('border-transparent');
             tab.setAttribute('aria-selected', 'false');
         });
@@ -304,7 +304,7 @@
         const selectedTab = document.getElementById('tab-' + tabName);
         if (selectedTab) {
             selectedTab.classList.remove('border-transparent');
-            selectedTab.classList.add('border-indigo-500', 'text-indigo-400');
+            selectedTab.classList.add('border-sky-500', 'text-sky-400');
             selectedTab.setAttribute('aria-selected', 'true');
         }
     }

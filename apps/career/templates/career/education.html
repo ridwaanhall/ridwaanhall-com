@@ -2,11 +2,11 @@
     
     <div class="space-y-4">
         {% for edu in education %}
-        <div class="group rounded-xl shadow-lg overflow-hidden p-3 sm:p-4 border border-stone-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20 backdrop-blur-sm">
+        <div class="group rounded-xl shadow-lg overflow-hidden p-3 sm:p-4 border border-zinc-700/50 transition-all duration-300 hover:border-sky-500/50 hover:shadow-sky-500/20 backdrop-blur-sm">
             <div class="flex flex-col md:flex-row md:items-start gap-4">
                 <div class="flex-shrink-0">
                     <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-violet-900/60 to-indigo-900/40 rounded-lg flex items-center justify-center shadow-lg border border-indigo-700/30 backdrop-blur-sm transform transition-all duration-300 group-hover:scale-105"
+                        class="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-violet-900/60 to-sky-900/40 rounded-lg flex items-center justify-center shadow-lg border border-sky-700/30 backdrop-blur-sm transform transition-all duration-300 group-hover:scale-105"
                     >
                         {% if edu.logo %} {% if edu.website %}
                         <a href="{{ edu.website }}" target="_blank" rel="noopener" aria-label="Visit {{ edu.institution }}" class="hover:scale-110 transition-transform duration-300">
@@ -16,7 +16,7 @@
                         <img src="{{ edu.logo }}" alt="{{ edu.institution }} logo" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-md object-cover" />
                         {% endif %} {% else %} {% if edu.website %}
                         <a href="{{ edu.website }}" target="_blank" rel="noopener" aria-label="Visit {{ edu.institution }}" class="hover:scale-110 transition-transform duration-300">
-                            <svg class="w-7 h-7 sm:w-8 sm:h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="w-7 h-7 sm:w-8 sm:h-8 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
                                 <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
                                 <path
@@ -28,7 +28,7 @@
                             </svg>
                         </a>
                         {% else %}
-                        <svg class="w-7 h-7 sm:w-8 sm:h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-7 h-7 sm:w-8 sm:h-8 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
                             <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
                             <path
@@ -44,15 +44,15 @@
         
                 <div class="flex-grow">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                        <h3 class="text-lg sm:text-xl font-bold text-stone-300 text-shadow">{{ edu.degree }}</h3>
-                        <span class="inline-flex text-indigo-300 text-xs sm:text-sm font-medium bg-gradient-to-r from-indigo-900/30 to-violet-900/30 px-3 py-1 rounded-full border border-indigo-800/20 shadow-sm whitespace-nowrap">
+                        <h3 class="text-lg sm:text-xl font-bold text-zinc-300 text-shadow">{{ edu.degree }}</h3>
+                        <span class="inline-flex text-sky-300 text-xs sm:text-sm font-medium bg-gradient-to-r from-sky-900/30 to-violet-900/30 px-3 py-1 rounded-full border border-sky-800/20 shadow-sm whitespace-nowrap">
                             {{ edu.years }}
                         </span>
                     </div>
         
                     <p class="text-blue-200 mb-3 italic text-sm sm:text-base">
                         {% if edu.website %}
-                        <a class="text-indigo-300 hover:text-indigo-200 transition-colors duration-200 underline-offset-2 hover:underline" href="{{ edu.website }}" target="_blank" rel="noopener">{{ edu.institution }}</a>
+                        <a class="text-sky-300 hover:text-sky-200 transition-colors duration-200 underline-offset-2 hover:underline" href="{{ edu.website }}" target="_blank" rel="noopener">{{ edu.institution }}</a>
                         {% else %} {{ edu.institution }} {% endif %}
                     </p>
         
@@ -60,7 +60,7 @@
                     <div class="mt-2">
                         <button
                             type="button"
-                            class="inline-flex items-center text-sm py-1.5 px-3 rounded-md bg-transparent border border-stone-600 text-stone-200 hover:border-stone-400 transition-all duration-200"
+                            class="inline-flex items-center text-sm py-1.5 px-3 rounded-md bg-transparent border border-zinc-600 text-zinc-200 hover:border-zinc-400 transition-all duration-200"
                             onclick="toggleAchievements('achievements-{{ forloop.counter }}')"
                             aria-expanded="false"
                             aria-controls="achievements-{{ forloop.counter }}"
@@ -73,11 +73,11 @@
                         </button>
         
                         <div id="achievements-{{ forloop.counter }}" class="hidden mt-3 transition-all duration-300 ease-in-out">
-                            <ul class="space-y-2 text-stone-200 text-sm sm:text-base pl-1">
+                            <ul class="space-y-2 text-zinc-200 text-sm sm:text-base pl-1">
                                 {% for achievement in edu.achievements %}
                                 <li class="flex items-start group py-1">
                                     <svg
-                                        class="w-5 h-5 text-indigo-400 mr-2.5 mt-0.5 flex-shrink-0 group-hover:text-indigo-300 transition-colors duration-200"
+                                        class="w-5 h-5 text-sky-400 mr-2.5 mt-0.5 flex-shrink-0 group-hover:text-sky-300 transition-colors duration-200"
                                         fill="none"
                                         stroke="currentColor"
                                         viewBox="0 0 24 24"
@@ -85,7 +85,7 @@
                                     >
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
-                                    <span class="group-hover:text-stone-300 transition-colors duration-200">{{ achievement }}</span>
+                                    <span class="group-hover:text-zinc-300 transition-colors duration-200">{{ achievement }}</span>
                                 </li>
                                 {% endfor %}
                             </ul>
@@ -100,7 +100,7 @@
 
     {% if view %}
     <div class="mt-10 text-center relative z-10 md:hidden">
-        <a href="{% url 'career' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-stone-300 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/20">
+        <a href="{% url 'career' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-zinc-300 bg-gradient-to-r from-violet-600 to-sky-600 hover:from-violet-500 hover:to-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/20">
             View Complete History
             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>

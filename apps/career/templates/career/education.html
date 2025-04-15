@@ -6,7 +6,7 @@
             <div class="flex flex-col md:flex-row md:items-start gap-4">
                 <div class="flex-shrink-0">
                     <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-violet-900/60 to-sky-900/40 rounded-lg flex items-center justify-center shadow-lg border border-sky-700/30 backdrop-blur-sm transform transition-all duration-300 group-hover:scale-105"
+                        class="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-zinc-900/60 to-sky-900/40 rounded-lg flex items-center justify-center shadow-lg border border-sky-700/30 backdrop-blur-sm transform transition-all duration-300 group-hover:scale-105"
                     >
                         {% if edu.logo %} {% if edu.website %}
                         <a href="{{ edu.website }}" target="_blank" rel="noopener" aria-label="Visit {{ edu.institution }}" class="hover:scale-110 transition-transform duration-300">
@@ -45,7 +45,7 @@
                 <div class="flex-grow">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                         <h3 class="text-lg sm:text-xl font-bold text-zinc-300 text-shadow">{{ edu.degree }}</h3>
-                        <span class="inline-flex text-sky-300 text-xs sm:text-sm font-medium bg-gradient-to-r from-sky-900/30 to-violet-900/30 px-3 py-1 rounded-full border border-sky-800/20 shadow-sm whitespace-nowrap">
+                        <span class="inline-flex text-sky-300 text-xs sm:text-sm font-medium bg-gradient-to-r from-sky-900/30 to-zinc-900/30 px-3 py-1 rounded-full border border-sky-800/20 shadow-sm whitespace-nowrap">
                             {{ edu.years }}
                         </span>
                     </div>
@@ -100,7 +100,7 @@
 
     {% if view %}
     <div class="mt-10 text-center relative z-10 md:hidden">
-        <a href="{% url 'career' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-zinc-300 bg-gradient-to-r from-violet-600 to-sky-600 hover:from-violet-500 hover:to-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/20">
+        <a href="{% url 'career' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-zinc-300 bg-gradient-to-r from-zinc-600 to-sky-600 hover:from-zinc-500 hover:to-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-500 transition-all duration-300 hover:shadow-lg hover:shadow-zinc-500/20">
             View Complete History
             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>

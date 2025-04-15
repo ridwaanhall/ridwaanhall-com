@@ -10,7 +10,7 @@
 
 ## Introduction
 
-Welcome to my personal website repository! This site serves as my digital portfolio and personal brand showcase. The website features a clean, responsive design built completely from scratch using Django framework for the backend, with TailwindCSS for the frontend styling.
+Welcome to my personal website repository! This site serves as my personal brand showcase. The website features a clean, responsive design built completely from scratch using Django framework for the backend, with TailwindCSS for the frontend styling.
 
 This project demonstrates my web development skills and provides visitors with information about my work, projects, and professional background. Feel free to explore the codebase to see how I've implemented various features and optimized the site for performance.
 

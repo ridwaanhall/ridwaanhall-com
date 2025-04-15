@@ -84,8 +84,8 @@ class HomeView(BasePortfolioView):
             'about': about,
             'certifications': CertificationsData.certifications,
             'seo': self.get_seo_data(
-                title=f"{about['name']} - Portfolio and Personal Website",
-                description=f"Portfolio and personal website of {about['username']}. {about.get('short_description', '')}",
+                title=f"{about['name']} - Personal Website",
+                description=f"Personal website of {about['username']}. {about.get('short_description', '')}",
                 keywords=f"{about['username']}, {about['name']}, portfolio, developer, projects, blogs, certifications, education, experiences",
                 twitter_card='summary_large_image'
             ),

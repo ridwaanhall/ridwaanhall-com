@@ -3,7 +3,7 @@
         {% if applications %}
         {% for application in applications %}
         <!-- application application card -->
-        <div class="group mb-4 rounded-xl shadow-lg overflow-hidden border border-zinc-700/40 transition-all duration-300 hover:border-sky-500/60 hover:shadow-xl hover:shadow-sky-500/10 backdrop-blur-sm">
+        <div class="group mb-4 rounded-xl shadow-lg overflow-hidden border border-zinc-700/40 transition-all duration-300 hover:border-indigo-500/60 hover:shadow-xl hover:shadow-indigo-500/10 backdrop-blur-sm">
             <div class="p-3 sm:p-4">
                 <div class="flex flex-col md:flex-row md:items-start gap-5">
                     <div class="flex-grow">
@@ -54,16 +54,16 @@
                                 <table class="min-w-full divide-y divide-zinc-700/30 text-sm">
                                     <thead>
                                         <tr>
-                                            <th class="px-3 py-2 text-left text-xs font-medium text-sky-300 uppercase tracking-wider">Step</th>
-                                            <th class="px-3 py-2 text-left text-xs font-medium text-sky-300 uppercase tracking-wider">Details</th>
-                                            <th class="px-3 py-2 text-left text-xs font-medium text-sky-300 uppercase tracking-wider">Notes</th>
+                                            <th class="px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Step</th>
+                                            <th class="px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Details</th>
+                                            <th class="px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Notes</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-zinc-700/20">
                                         {% for step in application.journey %}
                                         <tr class="hover:bg-zinc-800/30 transition-colors duration-150">
                                             <td class="px-3 py-2 whitespace-nowrap flex items-center">
-                                                <span class="font-medium text-sky-300">{{ step.title }}</span>
+                                                <span class="font-medium text-indigo-300">{{ step.title }}</span>
                                             </td>
                                             <td class="px-3 py-2 text-zinc-200">{{ step.details }}</td>
                                             <td class="px-3 py-2 text-zinc-200">{{ step.notes|safe }}</td>

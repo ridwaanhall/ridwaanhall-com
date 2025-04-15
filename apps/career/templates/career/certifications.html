@@ -2,11 +2,11 @@
     
     <div class="space-y-4">
         {% for certification in certifications %}
-        <div class="group rounded-xl shadow-lg overflow-hidden p-3 sm:p-4 border border-zinc-700/50 transition-all duration-300 hover:border-sky-500/50 hover:shadow-sky-500/20 backdrop-blur-sm">
+        <div class="group rounded-xl shadow-lg overflow-hidden p-3 sm:p-4 border border-zinc-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20 backdrop-blur-sm">
             <div class="flex flex-col md:flex-row md:items-start gap-4">
                 <div class="flex-shrink-0">
                     <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-zinc-900/60 to-sky-900/40 rounded-lg flex items-center justify-center shadow-lg border border-sky-700/30 backdrop-blur-sm transform transition-all duration-300 group-hover:scale-105"
+                        class="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-zinc-900/60 to-indigo-900/40 rounded-lg flex items-center justify-center shadow-lg border border-indigo-700/30 backdrop-blur-sm transform transition-all duration-300 group-hover:scale-105"
                     >
                         {% if certification.logo %} {% if certification.website %}
                         <a href="{{ certification.website }}" target="_blank" rel="noopener" aria-label="Visit {{ certification.institution }}" class="hover:scale-110 transition-transform duration-300">
@@ -16,7 +16,7 @@
                         <img src="{{ certification.logo }}" alt="{{ certification.institution }} logo" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-md object-cover" />
                         {% endif %} {% else %} {% if certification.website %}
                         <a href="{{ certification.website }}" target="_blank" rel="noopener" aria-label="Visit {{ certification.institution }}" class="hover:scale-110 transition-transform duration-300">
-                            <svg class="w-7 h-7 sm:w-8 sm:h-8 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="w-7 h-7 sm:w-8 sm:h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
@@ -26,7 +26,7 @@
                             </svg>
                         </a>
                         {% else %}
-                        <svg class="w-7 h-7 sm:w-8 sm:h-8 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-7 h-7 sm:w-8 sm:h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
@@ -41,14 +41,14 @@
                 <div class="flex-grow">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                         <h3 class="text-lg sm:text-xl font-bold text-zinc-300 text-shadow">{{ certification.title }}</h3>
-                        <span class="inline-flex text-sky-300 text-xs sm:text-sm font-medium bg-gradient-to-r from-sky-900/30 to-zinc-900/30 px-3 py-1 rounded-full border border-sky-800/20 shadow-sm whitespace-nowrap">
+                        <span class="inline-flex text-indigo-300 text-xs sm:text-sm font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-3 py-1 rounded-full border border-indigo-800/20 shadow-sm whitespace-nowrap">
                             {{ certification.issued }}
                         </span>
                     </div>
         
                     <p class="text-blue-200 mb-3 italic text-sm sm:text-base">
                         {% if certification.website %}
-                            <a class="text-sky-300 hover:text-sky-200 transition-colors duration-200 underline-offset-2 hover:underline" href="{{ certification.website }}" target="_blank" rel="noopener">{{ certification.institution }}</a>
+                            <a class="text-indigo-300 hover:text-indigo-200 transition-colors duration-200 underline-offset-2 hover:underline" href="{{ certification.website }}" target="_blank" rel="noopener">{{ certification.institution }}</a>
                         {% else %}
                             {{ certification.institution }}
                         {% endif %}
@@ -90,7 +90,7 @@
                             <ul class="space-y-2 text-zinc-200 text-sm sm:text-base pl-1">
                                 {% for achievement in certification.achievements %}
                                     <li class="flex items-start group py-1">
-                                        <svg class="w-5 h-5 text-sky-400 mr-2.5 mt-0.5 flex-shrink-0 group-hover:text-sky-300 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <svg class="w-5 h-5 text-indigo-400 mr-2.5 mt-0.5 flex-shrink-0 group-hover:text-indigo-300 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
                                         <span class="group-hover:text-zinc-300 transition-colors duration-200">{{ achievement }}</span>
@@ -107,7 +107,7 @@
 
     {% if view_certs %}
     <div class="mt-10 text-center relative z-10">
-        <a href="{{ about.social_media.linkedin }}/details/certifications/" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-zinc-300 bg-gradient-to-r from-zinc-600 to-sky-600 hover:from-zinc-500 hover:to-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-500 transition-all duration-300 hover:shadow-lg hover:shadow-zinc-500/20">
+        <a href="{{ about.social_media.linkedin }}/details/certifications/" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-zinc-300 bg-gradient-to-r from-zinc-600 to-indigo-600 hover:from-zinc-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-500 transition-all duration-300 hover:shadow-lg hover:shadow-zinc-500/20">
             View More
             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>

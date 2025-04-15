@@ -89,17 +89,17 @@
 
             <div class="space-y-8 relative z-10">
 
-                <div class="relative mb-8 mt-10 overflow-hidden rounded-xl border border-zinc-700 shadow-lg shadow-sky-500/10">
+                <div class="relative mb-8 mt-10 overflow-hidden rounded-xl border border-zinc-700 shadow-lg shadow-indigo-500/10">
                     <div class="featured-slider-container relative">
                         <div class="featured-slider-wrapper flex transition-transform duration-500 ease-in-out">
                             {% for blog in featured_blogs %}
                                 {% if blog.is_featured %}
                                 <div class="featured-slide w-full flex-shrink-0 relative">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-sky-900/80 to-zinc-900/80 mix-blend-multiply z-10"></div>
+                                    <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/80 to-zinc-900/80 mix-blend-multiply z-10"></div>
                                     <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-80 object-cover object-center">
                                     
                                     <div class="absolute top-4 right-4 z-20">
-                                        <div class="bg-gradient-to-r from-sky-600 to-purple-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg flex items-center">
+                                        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg flex items-center">
                                             <svg class="w-4 h-4 mr-1" stroke="none" fill="currentColor" viewBox="0 0 24 24">
                                                 <path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"></path>
                                             </svg>
@@ -109,14 +109,14 @@
                                     
                                     <div class="absolute bottom-0 left-0 right-0 p-6 z-20">
                                         <div class="flex items-center space-x-2 mb-3">
-                                            <span class="bg-sky-600 text-white text-xs font-semibold px-3 py-1 rounded-full">{{ blog.category }}</span>
+                                            <span class="bg-indigo-600 text-white text-xs font-semibold px-3 py-1 rounded-full">{{ blog.category }}</span>
                                             <span class="font-mono text-zinc-300 text-xs">{{ blog.date }}</span>
                                         </div>
                                         <h2 class="text-2xl font-bold text-white mb-2"><a href="{% url 'blog_detail' title=blog.title|slugify %}" class="relative inline-block after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-zinc-400 hover:after:w-full after:transition-all after:duration-300">{{ blog.title }}</a></h2>
                                         <p class="text-zinc-300 mb-4 line-clamp-2">{{ blog.description }}</p>
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center space-x-3">
-                                                <img src="{{ blog.author_image }}" alt="{{ blog.username }}" class="w-7 h-7 rounded-full object-cover border border-sky-400">
+                                                <img src="{{ blog.author_image }}" alt="{{ blog.username }}" class="w-7 h-7 rounded-full object-cover border border-indigo-400">
                                                 <span class="text-zinc-300 text-sm">{{ blog.username }}</span>
                                             </div>
                                         </div>
@@ -127,12 +127,12 @@
                         </div>
                         
                         <div class="absolute bottom-4 right-4 z-30 flex space-x-2">
-                            <button class="slider-nav prev bg-black/60 hover:bg-sky-600 text-white w-10 h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-1 focus:ring-offset-zinc-800 transform hover:scale-105" title="Previous Slide">
+                            <button class="slider-nav prev bg-black/60 hover:bg-indigo-600 text-white w-10 h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-zinc-800 transform hover:scale-105" title="Previous Slide">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                 </svg>
                             </button>
-                            <button class="slider-nav next bg-black/60 hover:bg-sky-600 text-white w-10 h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-1 focus:ring-offset-zinc-800 transform hover:scale-105" title="Next Slide">
+                            <button class="slider-nav next bg-black/60 hover:bg-indigo-600 text-white w-10 h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-zinc-800 transform hover:scale-105" title="Next Slide">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
@@ -150,7 +150,7 @@
                 <div class="mt-6 mb-6">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div>
-                            <h1 class="text-4xl font-bold text-white mb-2 tracking-tight">Latest <span class="text-sky-400">Blogs</span></h1>
+                            <h1 class="text-4xl font-bold text-white mb-2 tracking-tight">Latest <span class="text-indigo-400">Blogs</span></h1>
                             <p class="mt-2 text-lg text-zinc-300 leading-relaxed">Dive into my blogs—tutorials, AI insights, and tech thoughts crafted to spark ideas and solve problems.</p>
                         </div>
                     </div>
@@ -159,7 +159,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 gap-4">
                     {% for blog in blogs %}
                     <a href="{% url 'blog_detail' title=blog.title|slugify %}">
-                        <div style="height: 350px; overflow: hidden;" class="group relative overflow-hidden rounded-xl border border-zinc-700 transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/10 transform h-full">
+                        <div style="height: 350px; overflow: hidden;" class="group relative overflow-hidden rounded-xl border border-zinc-700 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 transform h-full">
                             <div class="absolute inset-0">
                                 <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-500">
                                 <div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/80 to-zinc-900/30"></div>
@@ -187,14 +187,14 @@
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center space-x-2">
                                             <img alt="{{ blog.username }}" loading="lazy" width="28" height="28" 
-                                                 class="rounded-full border border-sky-500"
+                                                 class="rounded-full border border-indigo-500"
                                                  src="{{ blog.author_image }}">
                                             <span class="font-mono text-xs text-zinc-300">{{ blog.username }}</span>
                                         </div>
                                         
                                         <div class="flex items-center">
                                             <span class="font-mono text-xs text-zinc-400">{{ blog.date }}</span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 text-sky-400 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 text-indigo-400 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                             </svg>
                                         </div>
@@ -215,7 +215,7 @@
                             {% if blogs.has_previous %}
                                 <li>
                                     <a href="?page={{ blogs.previous_page_number }}" 
-                                    class="flex h-9 w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-sky-500/20 hover:text-sky-300"
+                                    class="flex h-9 w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-indigo-500/20 hover:text-indigo-300"
                                     aria-label="Previous page">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
@@ -236,14 +236,14 @@
                             {% for num in paginator.page_range %}
                                 {% if blogs.number == num %}
                                     <li>
-                                        <span aria-current="page" class="flex h-9 w-9 items-center justify-center rounded-md bg-sky-600 text-white text-sm font-medium">
+                                        <span aria-current="page" class="flex h-9 w-9 items-center justify-center rounded-md bg-indigo-600 text-white text-sm font-medium">
                                             {{ num }}
                                         </span>
                                     </li>
                                 {% elif num > blogs.number|add:'-3' and num < blogs.number|add:'3' %}
                                     <li>
                                         <a href="?page={{ num }}" 
-                                        class="flex h-9 w-9 items-center justify-center rounded-md text-sm text-zinc-300 transition-all hover:bg-sky-500/20 hover:text-white">
+                                        class="flex h-9 w-9 items-center justify-center rounded-md text-sm text-zinc-300 transition-all hover:bg-indigo-500/20 hover:text-white">
                                             {{ num }}
                                         </a>
                                     </li>
@@ -254,7 +254,7 @@
                             {% if blogs.has_next %}
                                 <li>
                                     <a href="?page={{ blogs.next_page_number }}" 
-                                    class="flex h-9 w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-sky-500/20 hover:text-sky-300"
+                                    class="flex h-9 w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-indigo-500/20 hover:text-indigo-300"
                                     aria-label="Next page">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />

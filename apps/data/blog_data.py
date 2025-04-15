@@ -7,7 +7,7 @@ class BlogData:
             "id": 1,
             "title": "Python 101: Your Chill Guide to Getting Started",
             "description": "New to coding? Let’s dive into why Python’s the coolest way to kick off your programming adventure!",
-            "image_url": "https://ridwaanhall.com/static/img/blog/start_with_python1.webp",
+            "image_url": "https://ridwaanhall.com/static/img/blog/start_with_python.webp",
             "date": "March 24, 2025",
             "author": "Ridwan Halim",
             "username": "ridwaanhall",
@@ -176,5 +176,24 @@ class BlogData:
             ],
             "tags": ["Domains", ".com", ".dev", ".id", "Web Dev", "Branding"],
             "is_featured": False
+        },
+        {
+            "id": 10,
+            "title": "Why I’m Coding for Gaza’s Truth",
+            "description": "From pesantren to Python, here’s why I’m hustling to amplify Gaza’s crisis with facts, faith, and a call to act—no noise, just heart.",
+            "image_url": "https://ridwaanhall.com/static/img/blog/gaza_crisis.webp",
+            "date": "April 16, 2025",
+            "author": "Ridwan Halim",
+            "username": "ridwaanhall",
+            "author_image": "https://ridwaanhall.com/static/img/ridwaanhall.webp",
+            "content": [
+                "Yo, I’m Ridwaan—<span class='text-green-600'>coding by day, memorizing Quran by heart—who else but me?</span> Gaza’s crisis ain’t just a headline for me; it’s a call to debug the biggest bug: <span class='text-red-600'>injustice</span>. Growing up in Pondok Pesantren, I learned fairness is non-negotiable, Surah by Surah. Now, as a coder, I’m wiring that hustle into something real.",
+                "Let’s talk facts: since October 2023, <span class='text-red-600'>42,000+ lives</span> have been lost in Gaza—kids, families, dreams. Over <span class='text-white'>1.9 million</span> people, 90% of the population, are displaced, scraping by in tents. And <span class='text-green-600'>60%+</span> of homes, schools, hospitals? Gone. These aren’t my numbers; they’re from <a href='https://www.ochaopt.org' target='_blank' class='text-green-400 hover:text-green-300'>OCHA</a> and <a href='https://www.unrwa.org' target='_blank' class='text-green-400 hover:text-green-300'>UNRWA</a>.",
+                "Why do I care? Pondok taught me to stand for what’s right, no matter the stack. Coding taught me to solve problems, whether it’s a Django bug or a crisis screaming for truth. Gaza’s not just data—it’s <span class='text-white'>people</span> fighting for dignity. That’s why I’m curating resources like <a href='https://www.who.int/emergencies/situations/occupied-palestinian-territory' target='_blank' class='text-green-400 hover:text-green-300'>WHO’s health reports</a> or <a href='https://www.btselem.org' target='_blank' class='text-green-400 hover:text-green-300'>B’Tselem’s raw stories</a>.",
+                "Here’s the deal: you can help. Donate to <a href='https://www.unrwa.org/donate' target='_blank' class='text-green-400 hover:text-green-300'>UNRWA</a>—they’re feeding families right now. Share this post on X to cut through the noise. Or dive into a book like <span class='text-red-600'>“Justice for Some”</span> by Noura Erakat to get the full picture. Every move counts.",
+                "This blog’s my code for Gaza—<span class='text-green-600'>built with faith, facts, and grind</span>. Pesantren gave me roots; AI gave me tools. Together, let’s push for hope, one step at a time. Who’s with me?"
+            ],
+            "tags": ["Gaza", "Palestine", "Humanitarian", "Justice", "Resources", "Faith", "Coding"],
+            "is_featured": True
         }
     ]

@@ -68,13 +68,13 @@ class CareerView(BaseCareerView):
             'certifications': CertificationsData.certifications,
             'applications': ApplicationsData.applications,
             'seo': {
-                'title': f"Journey of Growth | {about['name']} - Career Portfolio",
-                'description': f"{about['name']}'s Journey of Growth: A comprehensive showcase of professional experiences, applications, education, and certifications that reflect my career development and achievements.",
-                'keywords': f"{about['name']}, resume, CV, career, professional experience, certifications, education, applications, work history",
-                'og_image': about.get('image_url', ''),
-                'og_type': 'profile',
-                'twitter_card': 'summary_large_image',
-            }
+            'title': f"{about['name']}'s Journey - My Career Story",
+            'description': f"Here’s the scoop on {about['name']}’s career—jobs, projects, and all the cool stuff I’ve learned along the way.",
+            'keywords': f"{about['name']}, career, work, skills, experience, growth, certifications, applications",
+            'og_image': about.get('image_url', ''),
+            'og_type': 'profile',
+            'twitter_card': 'summary_large_image',
+        }
         })
 
         return self.render_to_response(context)

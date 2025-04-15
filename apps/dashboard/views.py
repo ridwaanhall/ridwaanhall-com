@@ -240,9 +240,9 @@ class DashboardView(TemplateView):
     def _get_seo_data(self, about_data: Dict) -> Dict:
         """Generate SEO metadata."""
         return {
-            'title': f"Developer Dashboard | {about_data['name']} - Coding Activity",
-            'description': f"Track {about_data['name']}'s coding activity, GitHub contributions, and development metrics. See real-time stats and productivity measures.",
-            'keywords': f"{about_data['name']}, developer dashboard, github contributions, coding metrics, programming activity, wakatime stats",
+            'title': f"{about_data['name']}'s Dev Hub - My Coding Life",
+            'description': f"Check out what {about_data['name']}'s been coding lately—GitHub commits, stats, and all the nerdy details!",
+            'keywords': f"{about_data['name']}, coding, github, dev stats, programming, productivity",
             'og_image': about_data.get('image_url', ''),
             'og_type': 'website',
             'twitter_card': 'summary_large_image',

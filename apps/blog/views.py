@@ -85,9 +85,9 @@ class BlogView(BaseBlogView):
         context['is_paginated'] = paginator.num_pages > 1
         
         context['seo'] = {
-            'title': f"Blog | {about['name']} - Articles and Insights",
-            'description': f"Explore articles, tutorials, and insights by {about['name']} about technology, development, and programming.",
-            'keywords': f"blog, articles, tech blog, programming, tutorials, {about['name']}, developer insights",
+            'title': f"{about['name']}'s Blog - Thoughts & Tutorials",
+            'description': f"Dive into {about['name']}'s brain—articles, coding tips, and random tech thoughts.",
+            'keywords': f"blog, coding, tech, tutorials, {about['name']}, ideas, insights",
             'og_image': about.get('image_url', ''),
             'og_type': 'website',
             'twitter_card': 'summary_large_image',
@@ -121,9 +121,9 @@ class BlogDetailView(BaseBlogView):
 
         context['blog'] = blog
         context['seo'] = {
-            'title': f"{blog['title']} | {about['name']}",
-            'description': blog.get('description', ''),
-            'keywords': f"{', '.join(blog.get('tags', []))}, {about['name']}, blog, article",
+            'title': f"{blog['title']} - {about['name']}'s Take",
+            'description': blog.get('description', 'Something I wrote—hope you dig it!'),
+            'keywords': f"{', '.join(blog.get('tags', []))}, {about['name']}, blog, ideas",
             'og_image': blog.get('image_url', about.get('image_url', '')),
             'og_type': 'article',
             'twitter_card': 'summary_large_image',

@@ -84,11 +84,11 @@ class HomeView(BasePortfolioView):
             'about': about,
             'certifications': CertificationsData.certifications,
             'seo': self.get_seo_data(
-                title=f"{about['name']} - Personal Website",
-                description=f"Personal website of {about['username']}. {about.get('short_description', '')}",
-                keywords=f"{about['username']}, {about['name']}, portfolio, developer, projects, blogs, certifications, education, experiences",
-                twitter_card='summary_large_image'
-            ),
+            title=f"Hey, I'm {about['name']} - Welcome to My World",
+            description=f"This is {about['username']}'s corner of the internet! {about.get('short_description', 'A place where I share my projects, ideas, and journey.')}",
+            keywords=f"{about['username']}, {about['name']}, portfolio, coder, projects, blogs, skills, learning",
+            twitter_card='summary_large_image'
+        ),
         }
         return render(request, self.template_name, context)
 
@@ -107,11 +107,11 @@ class AboutView(BasePortfolioView):
             'education': [edu for edu in EducationData.education if edu.get('is_last')],
             'about': about,
             'seo': self.get_seo_data(
-                title=f"About {about['name']} - Background and Experience",
-                description=f"Learn about {about['name']}'s professional background, skills, and experience. {about.get('short_description', '')}",
-                keywords=f"{about['name']}, about, background, skills, experience, education, career",
-                og_type='profile'
-            ),
+            title=f"Get to Know {about['name']} - My Story",
+            description=f"Curious about me? Here’s a peek into my journey, skills, and what I’m all about. {about.get('short_description', '')}",
+            keywords=f"{about['name']}, my story, skills, experience, career, learning, vibes",
+            og_type='profile'
+        ),
         }
         return render(request, self.template_name, context)
 
@@ -129,9 +129,9 @@ class ContactView(BasePortfolioView):
             'about': about,
             'current_time': timezone.localtime(timezone.now()),
             'seo': self.get_seo_data(
-                title=f"Contact {about['name']} - Get in Touch",
-                description=f"Contact {about['name']} for collaboration, job opportunities, or consulting. Get in touch today!",
-                keywords=f"{about['name']}, contact, get in touch, email, message, connect"
-            ),
+            title=f"Hit Me Up - Connect with {about['name']}",
+            description=f"Wanna chat? Reach out to {about['name']} for collabs, gigs, or just to say hi!",
+            keywords=f"{about['name']}, contact, connect, email, collab, let’s talk"
+        ),
         }
         return render(request, self.template_name, context)

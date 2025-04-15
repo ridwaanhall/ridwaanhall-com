@@ -88,9 +88,9 @@ class ProjectsView(BaseProjectsView):
         ]))[:10]
 
         context['seo'] = {
-            'title': f"Projects & Portfolio | {about['name']} - Developer Showcase",
-            'description': f"Explore {about['name']}'s development projects, applications, and coding portfolio. View demos and source code.",
-            'keywords': f"{about['name']}, projects, portfolio, developer, applications, demos, github, code samples, {', '.join(tech_stack_keywords)}",
+            'title': f"{about['name']}'s Projects - Stuff I’ve Built",
+            'description': f"Take a look at {about['name']}'s coding adventures—apps, projects, and demos I’ve poured my heart into.",
+            'keywords': f"{about['name']}, projects, portfolio, coding, apps, github, {', '.join(tech_stack_keywords)}",
             'og_image': all_projects[0].get('image_url') if all_projects else about.get('image_url', ''),
             'og_type': 'website',
             'twitter_card': 'summary_large_image',
@@ -125,8 +125,8 @@ class ProjectsDetailView(BaseProjectsView):
 
         context['project'] = project
         context['seo'] = {
-            'title': f"{project['title']} | {about['name']} - Project Details",
-            'description': project.get('headline', ''),
+            'title': f"{project['title']} - {about['name']}'s Creation",
+            'description': project.get('headline', 'A cool project I worked on—check it out!'),
             'keywords': f"{project['title']}, {about['name']}, {', '.join(tech['name'] for tech in project.get('tech_stack', []))}",
             'og_image': project.get('image_url', about.get('image_url', '')),
             'og_type': 'article',

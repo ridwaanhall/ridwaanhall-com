@@ -50,7 +50,7 @@ class ApplicationsData:
         },
         {
             'company_name': 'HashMicro',
-            'status': 'In Progress',
+            'status': 'Ghosting',
             'position': 'Python Developer (Django)',
             'journey': [
                 {
@@ -83,8 +83,13 @@ class ApplicationsData:
                     'details': 'Now just chilling for their decision—wish me luck!',
                     'notes': '-'
                 },
+                {
+                    'title': 'Vanished',
+                    'details': 'No word after the final interview—total ghost mode',
+                    'notes': '<span class="text-red-600">Ghosted with no heads-up—lame</span>'
+                }
             ],
-            'lessons_learned': 'Asking for my camera on but keeping theirs off? Not cool. Respect’s a two-way street—makes a big difference.'
+            'lessons_learned': '<span class="text-red-600 font-bold">Camera on for me, off for you?</span> Respect’s not one-sided. HR, grow a pair: <span class="text-blue-600 font-bold">tell candidates they’re out</span>. <span class="text-orange-600 font-bold">Ghosting’s for gutless wonders</span>. This HR’s a <span class="underline decoration-red-400 decoration-2">clown show</span>.'
         },
         {
             'company_name': 'Skyshi Digital Indonesia',

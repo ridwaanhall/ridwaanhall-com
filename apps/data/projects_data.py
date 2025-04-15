@@ -1,3 +1,5 @@
+from django.conf import settings
+
 class ProjectsData:
     '''
     projects maximum is featured true is 3
@@ -121,8 +123,8 @@ class ProjectsData:
                     "The dashboard pulls live GitHub and WakaTime data to show my coding stats in real time. Plus, it’s fully responsive, looking sharp on phones, tablets, or desktops."
                 ],
                 "github_url": "https://github.com/ridwaanhall/ridwaanhall_com",
-                "demo_url": "https://ridwaanhall.com",
-                "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_com.webp",
+                "demo_url": f"{settings.BASE_URL}",
+                "image_url": f"{settings.BASE_URL}/static/img/project/ridwaanhall_com.webp",
                 "is_featured": True,
                 "features": [
                     {
@@ -157,7 +159,7 @@ class ProjectsData:
                     "Customers can hit up WhatsApp for quick orders, and monthly promos keep things fresh with special offers."
                 ],
                 "demo_url": "https://belimadu.com",
-                "image_url": "https://ridwaanhall.com/static/img/project/belimadu_com.webp",
+                "image_url": f"{settings.BASE_URL}/static/img/project/belimadu_com.webp",
                 "is_featured": True,
                 "features": [
                     {
@@ -190,7 +192,7 @@ class ProjectsData:
                     "The music recommender analyzes your listening habits and song features to suggest tracks and artists you’ll love, mixing in some fresh finds."
                 ],
                 "github_url": "https://github.com/ridwaanhall/applied-machine-learning",
-                "image_url": "https://ridwaanhall.com/static/img/project/gold_price_prediction_and_music_recommendation_system.webp",
+                "image_url": f"{settings.BASE_URL}/static/img/project/gold_price_prediction_and_music_recommendation_system.webp",
                 "is_featured": False,
                 "features": [
                     {
@@ -216,7 +218,7 @@ class ProjectsData:
                     "The API delivers clean endpoints for heroes, skills, and meta trends, perfect for devs building game tools. Docs are easy to navigate.",
                     "The site breaks down complex data for casual players, with tips on hero matchups, builds, and counters based on the latest meta."
                 ],
-                "image_url": "https://ridwaanhall.com/static/img/project/mobile_legends_bang_bang_api_and_website.webp",
+                "image_url": f"{settings.BASE_URL}/static/img/project/mobile_legends_bang_bang_api_and_website.webp",
                 "demo_url": "https://api-mobilelegends.vercel.app/",
                 "github_url": "https://github.com/ridwaanhall/api-mobilelegends",
                 "is_featured": False,
@@ -252,7 +254,7 @@ class ProjectsData:
                     "It’s built for researchers and devs, with clear endpoints to grab structured info like accreditation stats.",
                     "Caching and optimizations keep it fast even with heavy traffic, and the docs make it a breeze to use."
                 ],
-                "image_url": "https://ridwaanhall.com/static/img/project/api_pddikti_kemendiksaintek.webp",
+                "image_url": f"{settings.BASE_URL}/static/img/project/api_pddikti_kemendiksaintek.webp",
                 "demo_url": "https://pddikti-docs.vercel.app/",
                 "github_url": "https://github.com/ridwaanhall/api-pddikti",
                 "is_featured": False,
@@ -288,7 +290,7 @@ class ProjectsData:
                 ],
                 "demo_url": "https://ridwaanhall-bike-sharing-analytics.streamlit.app/",
                 "github_url": "https://github.com/ridwaanhall/dicoding-bike-sharing-analysis",
-                "image_url": "https://ridwaanhall.com/static/img/project/bike_sharing_analysis_dashboard.webp",
+                "image_url": f"{settings.BASE_URL}/static/img/project/bike_sharing_analysis_dashboard.webp",
                 "is_featured": False,
                 "features": [
                     {
@@ -324,7 +326,7 @@ class ProjectsData:
                     "Handles tricky Indonesian text—slang and all—with multiple models compared to find the best performer."
                 ],
                 "github_url": "https://github.com/ridwaanhall/Dicoding-Machine-Learning-Intermediate/tree/main/01_project",
-                "image_url": "https://ridwaanhall.com/static/img/project/sentiment_analysis_tokopedia_app.webp",
+                "image_url": f"{settings.BASE_URL}/static/img/project/sentiment_analysis_tokopedia_app.webp",
                 "is_featured": False,
                 "features": [
                     {
@@ -362,7 +364,7 @@ class ProjectsData:
                     "It’s got a polished look and smart backend to manage content easily, with secure admin access.",
                     "The dashboard pulls yearly GitHub data to show off my coding hustle."
                 ],
-                "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_pythonanywhere_com.webp",
+                "image_url": f"{settings.BASE_URL}/static/img/project/ridwaanhall_pythonanywhere_com.webp",
                 "is_featured": False,
                 "features": [
                     {
@@ -397,7 +399,7 @@ class ProjectsData:
                     "It’s optimized to the max with Server Components, lazy images, and code splitting, scoring perfect on Lighthouse.",
                     "Supports multiple languages, custom animations, and stays snappy no matter the device."
                 ],
-                "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_me.webp",
+                "image_url": f"{settings.BASE_URL}/static/img/project/ridwaanhall_me.webp",
                 "github_url": "https://github.com/ridwaanhall/ridwaanhall.me",
                 "is_featured": False,
                 "features": [
@@ -441,7 +443,7 @@ class ProjectsData:
                     "It delivers instant responses with a conversational flow that feels natural, thanks to streaming tech.",
                     "Keeps chats coherent with context tracking and pulls data to present answers in cool, visual ways."
                 ],
-                "image_url": "https://ridwaanhall.com/static/img/project/neon_ai.webp", 
+                "image_url": f"{settings.BASE_URL}/static/img/project/neon_ai.webp", 
                 "github_url": "https://github.com/ridwaanhall/neon-ai",
                 "demo_url": "https://ridwaanhall-ai.vercel.app",
                 "is_featured": False,
@@ -477,7 +479,7 @@ class ProjectsData:
                     "It helps influencers and managers find engagement gaps and networking wins by mapping relationships.",
                     "Outputs detailed stats and lists for outreach or deeper dives, all from JSON data."
                 ],
-                "image_url": "https://ridwaanhall.com/static/img/project/instagram_following_followers.webp",
+                "image_url": f"{settings.BASE_URL}/static/img/project/instagram_following_followers.webp",
                 "github_url": "https://github.com/ridwaanhall/instagram-following-followers",
                 "demo_url": "https://instagram-following-followers.vercel.app",
                 "is_featured": False,
@@ -511,7 +513,7 @@ class ProjectsData:
                     "Built for schools, it fits various course setups with secure, valid codes.",
                     "The interface is dead simple, perfect for those last-minute panics."
                 ],
-                "image_url": "https://ridwaanhall.com/static/img/project/lumina.webp",
+                "image_url": f"{settings.BASE_URL}/static/img/project/lumina.webp",
                 "github_url": "https://github.com/ridwaanhall/Lumina",
                 "demo_url": "https://lupa-presensi.vercel.app",
                 "is_featured": False,
@@ -547,7 +549,7 @@ class ProjectsData:
                     "It shows off web requests and API tricks, automating what’s usually manual.",
                     "Built-in rate limits keep it chill to avoid spamming issues."
                 ],
-                "image_url": "https://ridwaanhall.com/static/img/project/ngl_link_spamming.webp",
+                "image_url": f"{settings.BASE_URL}/static/img/project/ngl_link_spamming.webp",
                 "github_url": "https://github.com/ridwaanhall/ngl-link-spamming",
                 "is_featured": False,
                 "features": [

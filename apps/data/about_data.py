@@ -1,4 +1,5 @@
 from django.utils import timezone
+from django.conf import settings
 
 class AboutData:
     @staticmethod
@@ -16,7 +17,7 @@ class AboutData:
             {
                 "name": "Ridwan Halim",
                 "username": "ridwaanhall",
-                "image_url": "https://ridwaanhall.com/static/img/ridwaanhall.webp",
+                "image_url": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
                 "personal_website": "https://ridwaanhall.vercel.app",
                 "cv": "https://bit.ly/cv-ridwaanhall",
                 "role": "Machine Learning Mentor",

@@ -1,3 +1,5 @@
+from django.conf import settings
+
 class CertificationsData:
     certifications = [
         {
@@ -7,7 +9,7 @@ class CertificationsData:
             "issued": "Dec 2024",
             "institution": "LinkedIn Learning",
             "website": "https://www.linkedin.com/learning",
-            "logo": "https://ridwaanhall.com/static/img/logo/linkedin.webp",
+            "logo": f"{settings.BASE_URL}/static/img/logo/linkedin.webp",
             "is_featured": True,
             "achievements": [
                 "Built REST APIs with Django REST Framework like a pro, following best practices",
@@ -22,7 +24,7 @@ class CertificationsData:
             "issued": "Dec 2024",
             "institution": "Dicoding Indonesia",
             "website": "https://www.dicoding.com",
-            "logo": "https://ridwaanhall.com/static/img/logo/dicoding.webp",
+            "logo": f"{settings.BASE_URL}/static/img/logo/dicoding.webp",
             "is_featured": True,
             "achievements": [
                 "Designed ML systems using k-NN and Random Forest algorithms",
@@ -37,7 +39,7 @@ class CertificationsData:
             "issued": "Oct 2023",
             "institution": "LinkedIn Learning",
             "website": "https://www.linkedin.com",
-            "logo": "https://ridwaanhall.com/static/img/logo/linkedin.webp",
+            "logo": f"{settings.BASE_URL}/static/img/logo/linkedin.webp",
             "is_featured": True,
             "achievements": [
                 "Got the hang of Django for web development from scratch",

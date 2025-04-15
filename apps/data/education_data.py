@@ -1,3 +1,5 @@
+from django.conf import settings
+
 class EducationData:
     education = [
         {
@@ -5,7 +7,7 @@ class EducationData:
             "years": "2021 - Now",
             "institution": "Universitas Teknologi Yogyakarta",
             "website": "https://uty.ac.id/",
-            "logo": "https://ridwaanhall.com/static/img/logo/uty.webp",
+            "logo": f"{settings.BASE_URL}/static/img/logo/uty.webp",
             "is_last": True,
             "achievements": [
                 "Got down with algorithms and object-oriented coding—nailed the basics!",
@@ -20,7 +22,7 @@ class EducationData:
             "years": "2018 - 2021",
             "institution": "MAS Al Mukmin Ngruki",
             "website": "https://almukminngruki.or.id/",
-            "logo": "https://ridwaanhall.com/static/img/logo/al_mukmin_ngruki.webp",
+            "logo": f"{settings.BASE_URL}/static/img/logo/al_mukmin_ngruki.webp",
             "is_last": False,
             "achievements": [
                 "Memorized Qur’an like a champ, reciting before and after prayers.",
@@ -34,7 +36,7 @@ class EducationData:
             "years": "2015 - 2018",
             "institution": "MTsS Islam Ngruki",
             "website": "https://almukminngruki.or.id/",
-            "logo": "https://ridwaanhall.com/static/img/logo/al_mukmin_ngruki.webp",
+            "logo": f"{settings.BASE_URL}/static/img/logo/al_mukmin_ngruki.webp",
             "is_last": False,
             "achievements": [
                 "Kept up with Qur’an recitation around prayer times—soul fuel.",

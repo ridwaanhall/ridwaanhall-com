@@ -2,7 +2,7 @@
     
     <div class="space-y-4">
         {% for edu in education %}
-        <div class="group rounded-xl shadow-lg overflow-hidden p-3 sm:p-4 border border-gray-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20 backdrop-blur-sm">
+        <div class="group rounded-xl shadow-lg overflow-hidden p-3 sm:p-4 border border-stone-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20 backdrop-blur-sm">
             <div class="flex flex-col md:flex-row md:items-start gap-4">
                 <div class="flex-shrink-0">
                     <div
@@ -44,7 +44,7 @@
         
                 <div class="flex-grow">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                        <h3 class="text-lg sm:text-xl font-bold text-gray-300 text-shadow">{{ edu.degree }}</h3>
+                        <h3 class="text-lg sm:text-xl font-bold text-stone-300 text-shadow">{{ edu.degree }}</h3>
                         <span class="inline-flex text-indigo-300 text-xs sm:text-sm font-medium bg-gradient-to-r from-indigo-900/30 to-violet-900/30 px-3 py-1 rounded-full border border-indigo-800/20 shadow-sm whitespace-nowrap">
                             {{ edu.years }}
                         </span>
@@ -60,7 +60,7 @@
                     <div class="mt-2">
                         <button
                             type="button"
-                            class="inline-flex items-center text-sm py-1.5 px-3 rounded-md bg-transparent border border-gray-600 text-gray-200 hover:border-gray-400 transition-all duration-200"
+                            class="inline-flex items-center text-sm py-1.5 px-3 rounded-md bg-transparent border border-stone-600 text-stone-200 hover:border-stone-400 transition-all duration-200"
                             onclick="toggleAchievements('achievements-{{ forloop.counter }}')"
                             aria-expanded="false"
                             aria-controls="achievements-{{ forloop.counter }}"
@@ -73,7 +73,7 @@
                         </button>
         
                         <div id="achievements-{{ forloop.counter }}" class="hidden mt-3 transition-all duration-300 ease-in-out">
-                            <ul class="space-y-2 text-gray-200 text-sm sm:text-base pl-1">
+                            <ul class="space-y-2 text-stone-200 text-sm sm:text-base pl-1">
                                 {% for achievement in edu.achievements %}
                                 <li class="flex items-start group py-1">
                                     <svg
@@ -85,7 +85,7 @@
                                     >
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
-                                    <span class="group-hover:text-gray-300 transition-colors duration-200">{{ achievement }}</span>
+                                    <span class="group-hover:text-stone-300 transition-colors duration-200">{{ achievement }}</span>
                                 </li>
                                 {% endfor %}
                             </ul>
@@ -100,7 +100,7 @@
 
     {% if view %}
     <div class="mt-10 text-center relative z-10 md:hidden">
-        <a href="{% url 'career' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-300 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/20">
+        <a href="{% url 'career' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-stone-300 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/20">
             View Complete History
             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>

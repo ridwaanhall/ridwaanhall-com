@@ -1,4 +1,4 @@
-<div class="flex flex-col md:flex-row justify-between items-center mb-4 mt-6 border-b border-gray-700 pb-4 relative z-10">
+<div class="flex flex-col md:flex-row justify-between items-center mb-4 mt-6 border-b border-stone-700 pb-4 relative z-10">
     <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-indigo-200">Featured Blogs</h2>
     <a href="{% url 'blog' %}" class="mt-2 md:mt-0 group flex items-center text-indigo-400 hover:text-indigo-300 transition-colors duration-300">
         <span>View All Blogs</span>
@@ -11,10 +11,10 @@
 <div class="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 gap-4">
     {% for blog in blogs %}
     <a href="{% url 'blog_detail' title=blog.title|slugify %}">
-        <div style="height: 350px; overflow: hidden;" class="group relative overflow-hidden rounded-xl border border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 transform h-full">
+        <div style="height: 350px; overflow: hidden;" class="group relative overflow-hidden rounded-xl border border-stone-700 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 transform h-full">
             <div class="absolute inset-0">
                 <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-500">
-                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-gray-900/30"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-stone-900 via-stone-900/80 to-stone-900/30"></div>
             </div>
             
             <div class="relative z-10 p-5 flex flex-col h-full">
@@ -31,21 +31,21 @@
                 <h3 class="text-lg font-bold text-white mb-2 line-clamp-2 relative inline-block">
                     <span class="relative transition-colors duration-300 group-hover:underline group-hover:underline-offset-4">{{ blog.title }}</span>
                 </h3>
-                <p class="text-gray-300 text-sm line-clamp-3 mb-2">{{ blog.description }}</p>
+                <p class="text-stone-300 text-sm line-clamp-3 mb-2">{{ blog.description }}</p>
                 
                 <div class="mt-auto">
-                    <hr class="border-t border-gray-500 w-full mb-3">
+                    <hr class="border-t border-stone-500 w-full mb-3">
                     
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-2">
                             <img alt="{{ blog.username }}" loading="lazy" width="28" height="28" 
                                     class="rounded-full border border-indigo-500"
                                     src="{{ blog.author_image }}">
-                            <span class="font-mono text-xs text-gray-300">{{ blog.username }}</span>
+                            <span class="font-mono text-xs text-stone-300">{{ blog.username }}</span>
                         </div>
                         
                         <div class="flex items-center">
-                            <span class="font-mono text-xs text-gray-400">{{ blog.date }}</span>
+                            <span class="font-mono text-xs text-stone-400">{{ blog.date }}</span>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 text-indigo-400 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                             </svg>

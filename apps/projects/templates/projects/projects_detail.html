@@ -145,14 +145,14 @@
                                 {{ project.title }}
                             </h1>
                             
-                            <p class="text-lg text-gray-300 leading-relaxed mb-6 max-w-2xl">
+                            <p class="text-lg text-stone-300 leading-relaxed mb-6 max-w-2xl">
                                 {{ project.headline }}
                             </p>
                             
                             <!-- Action Buttons -->
                             <div class="flex flex-wrap items-center gap-4 mb-6">
                                 {% if project.github_url %}
-                                <a href="{{ project.github_url }}" class="group relative inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-white font-medium transition duration-300 overflow-hidden">
+                                <a href="{{ project.github_url }}" class="group relative inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-white font-medium transition duration-300 overflow-hidden">
                                     <span class="absolute inset-0 w-0 bg-indigo-500/20 transition-all duration-300 ease-out group-hover:w-full"></span>
                                     <span class="relative flex items-center">
                                         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -178,10 +178,10 @@
                             <!-- Tech Stack Pills -->
                             {% if project.tech_stack %}
                             <div class="mb-4">
-                                <h3 class="text-sm font-medium text-gray-400 mb-2">Built with:</h3>
+                                <h3 class="text-sm font-medium text-stone-400 mb-2">Built with:</h3>
                                 <div class="flex flex-wrap gap-2">
                                     {% for tech in project.tech_stack %}
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-800 text-gray-200 border border-gray-700 hover:border-indigo-500/50 transition-colors duration-200">{{ tech.name }}</span>
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-stone-800 text-stone-200 border border-stone-700 hover:border-indigo-500/50 transition-colors duration-200">{{ tech.name }}</span>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -193,13 +193,13 @@
                         <div class="lg:w-2/5 flex items-center">
                             <div class="w-full rounded-lg overflow-hidden shadow-xl transform transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
                                 <div class="relative w-full">
-                                    <div class="absolute top-0 left-0 right-0 h-10 bg-gray-900/90 backdrop-blur-sm flex items-center px-4 z-10">
+                                    <div class="absolute top-0 left-0 right-0 h-10 bg-stone-900/90 backdrop-blur-sm flex items-center px-4 z-10">
                                         <div class="flex items-center gap-1.5">
                                             <div class="w-3 h-3 rounded-full bg-red-500"></div>
                                             <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
                                             <div class="w-3 h-3 rounded-full bg-green-500"></div>
                                         </div>
-                                        <span class="ml-auto text-xs text-gray-400">{{ project.title|lower|cut:" "|add:".webp" }}</span>
+                                        <span class="ml-auto text-xs text-stone-400">{{ project.title|lower|cut:" "|add:".webp" }}</span>
                                     </div>
                                     <img src="{{ project.image_url }}" alt="{{ project.title }}" 
                                          class="w-full h-full object-cover rounded-b-lg shadow-lg" 
@@ -223,13 +223,13 @@
                         </svg>
                         Project Description
                     </h2>
-                    <div class="h-px flex-1 bg-gray-700/50 ml-3"></div>
+                    <div class="h-px flex-1 bg-stone-700/50 ml-3"></div>
                 </div>
                 
-                <div class="group bg-gray-900/30 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-800 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10">
+                <div class="group bg-stone-900/30 backdrop-blur-sm rounded-xl overflow-hidden border border-stone-800 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10">
                     <div class="p-4">
                         {% for paragraph in project.description %}
-                            <p class="text-gray-300 leading-relaxed {% if not forloop.last %}mb-4{% endif %}">{{ paragraph }}</p>
+                            <p class="text-stone-300 leading-relaxed {% if not forloop.last %}mb-4{% endif %}">{{ paragraph }}</p>
                         {% endfor %}
                     </div>
                 </div>
@@ -247,12 +247,12 @@
                         </svg>
                         Key Features
                     </h2>
-                    <div class="h-px flex-1 bg-gray-700/50 ml-3"></div>
+                    <div class="h-px flex-1 bg-stone-700/50 ml-3"></div>
                 </div>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {% for feature in project.features %}
-                    <div class="group bg-gray-900/30 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-800 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10">
+                    <div class="group bg-stone-900/30 backdrop-blur-sm rounded-xl overflow-hidden border border-stone-800 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10">
                         {% if feature.image_url %}
                         <div class="overflow-hidden h-48">
                             <img src="{{ feature.image_url }}" alt="{{ feature.title }}" 
@@ -263,7 +263,7 @@
                             <h3 class="text-xl font-semibold text-white mb-2 group-hover:text-indigo-300 transition-colors duration-300">
                                 {{ feature.title }}
                             </h3>
-                            <p class="text-gray-300 leading-relaxed">{{ feature.description }}</p>
+                            <p class="text-stone-300 leading-relaxed">{{ feature.description }}</p>
                         </div>
                     </div>
                     {% endfor %}
@@ -282,13 +282,13 @@
                         </svg>
                         Technical Details
                     </h2>
-                    <div class="h-px flex-1 bg-gray-700/50 ml-3"></div>
+                    <div class="h-px flex-1 bg-stone-700/50 ml-3"></div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {% if project.tech_stack %}
                         {% for tech in project.tech_stack %}
-                        <div class="group bg-gray-900/30 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-800 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10">
+                        <div class="group bg-stone-900/30 backdrop-blur-sm rounded-xl overflow-hidden border border-stone-800 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10">
                             {% if feature.image_url %}
                             <div class="overflow-hidden h-48">
                                 <img src="{{ feature.image_url }}" alt="{{ tech.name }}" 
@@ -299,7 +299,7 @@
                                 <h3 class="text-xl font-semibold text-white mb-2 group-hover:text-indigo-300 transition-colors duration-300">
                                     {{ tech.name }}
                                 </h3>
-                                <p class="text-gray-300 leading-relaxed">{{ tech.description }}</p>
+                                <p class="text-stone-300 leading-relaxed">{{ tech.description }}</p>
                             </div>
                         </div>
                         {% endfor %}
@@ -310,7 +310,7 @@
 
             <!-- Navigation Section -->
             <div class="flex flex-col sm:flex-row items-center justify-center gap-5 mt-6">
-                <a href="{% url 'projects' %}" class="w-full sm:w-auto rounded-xl flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-gray-700 hover:bg-gray-600 transition-all duration-300 hover:shadow-lg hover:shadow-gray-700/30">
+                <a href="{% url 'projects' %}" class="w-full sm:w-auto rounded-xl flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-stone-700 hover:bg-stone-600 transition-all duration-300 hover:shadow-lg hover:shadow-stone-700/30">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                     </svg>

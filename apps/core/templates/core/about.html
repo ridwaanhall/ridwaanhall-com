@@ -55,7 +55,7 @@
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
                         <h1 class="text-4xl font-bold text-white mb-2 tracking-tight">About <span class="text-indigo-400">Me</span></h1>
-                        <p class="mt-2 text-lg text-gray-300 leading-relaxed">{{ about.role }} based in {{ about.location.province }} {{ about.location.country }}, hyped about helping coders nail AI and build dope solutions.</p>
+                        <p class="mt-2 text-lg text-zinc-300 leading-relaxed">{{ about.role }} based in {{ about.location.province }} {{ about.location.country }}, hyped about helping coders nail AI and build dope solutions.</p>
                     </div>
                 </div>
             </div>
@@ -68,12 +68,12 @@
                         
                         <!-- About Me Content -->
                         <div class="space-y-6">
-                            <div class="border border-gray-700 rounded-xl p-6 hover:border-indigo-500 transition-all duration-300">
+                            <div class="border border-zinc-700 rounded-xl p-6 hover:border-indigo-500 transition-all duration-300">
                                 <p class="text-indigo-400 text-xl font-medium mb-4">Assalamu'alaikum</p>
                                 
                                 {% for story in about.stories %}
                                 <div class="mb-2">
-                                    <p class="text-lg text-gray-300">{{ story|safe }}</p>
+                                    <p class="text-lg text-zinc-300">{{ story|safe }}</p>
                                 </div>
                                 {% endfor %}
                                 

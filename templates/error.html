@@ -8,9 +8,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.0.15/dist/index.global.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
-<body class="bg-gradient-to-br from-gray-900 to-gray-800 text-gray-300 min-h-screen">
+<body class="bg-gradient-to-br from-zinc-900 to-zinc-800 text-zinc-300 min-h-screen">
     <div class="container mx-auto min-h-screen flex flex-col items-center justify-center px-4 py-12">
-        <div class="w-full max-w-md bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-gray-700/50">
+        <div class="w-full max-w-md bg-zinc-800/50 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-zinc-700/50">
             <div class="text-center">
                 <div class="animate-pulse mb-6">
                     <h1 class="text-8xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-pink-600">
@@ -29,7 +29,7 @@
                     {% block error_title %}Page Not Found{% endblock %}
                 </h2>
                 
-                <p class="text-gray-300 max-w-md mx-auto mb-8">
+                <p class="text-zinc-300 max-w-md mx-auto mb-8">
                     {% block error_message %}The page you are looking for doesn't exist or has been moved.{% endblock %}
                 </p>
                 
@@ -42,7 +42,7 @@
                             Go to Homepage
                         </span>
                     </a>
-                    <button onclick="window.history.back()" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium transition-colors duration-200 shadow-lg">
+                    <button onclick="window.history.back()" class="px-6 py-3 bg-zinc-700 hover:bg-zinc-600 rounded-lg font-medium transition-colors duration-200 shadow-lg">
                         <span class="flex items-center justify-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -54,7 +54,7 @@
             </div>
         </div>
         
-        <div class="mt-12 text-gray-500 text-sm">
+        <div class="mt-12 text-zinc-500 text-sm">
             <p>© {% now "Y" %} Ridwan Halim. All rights reserved.</p>
         </div>
     </div>

@@ -153,7 +153,7 @@ class BlogData:
                 "<li><span class='font-bold text-pink-500'>🧪 test:</span> Lock in those tests. Like: <span class='font-mono text-pink-500'>test: add auth unit tests</span></li>",
                 "<li><span class='font-bold text-green-500'>⚡ perf:</span> Speed things up—wow factor! Like: <span class='font-mono text-green-500'>perf: optimize image load</span></li>",
                 "<li><span class='font-bold text-indigo-500'>🤖 ci:</span> Keep CI humming. Like: <span class='font-mono text-indigo-500'>ci: tweak GitHub Actions</span></li>",
-                "<li><span class='font-bold text-gray-500'>🛠️ build:</span> Solidify your setup. Like: <span class='font-mono text-gray-500'>build: update webpack</span></li>",
+                "<li><span class='font-bold text-zinc-500'>🛠️ build:</span> Solidify your setup. Like: <span class='font-mono text-zinc-500'>build: update webpack</span></li>",
                 "<li><span class='font-bold text-teal-500'>🚧 chore:</span> Handle the grunt work. Like: <span class='font-mono text-teal-500'>chore: bump dependencies</span></li>",
                 "<li><span class='font-bold text-rose-500'>⏪ revert:</span> Hit rewind when needed. Like: <span class='font-mono text-rose-500'>revert: undo buggy commit</span></li>",
                 "</ul>"

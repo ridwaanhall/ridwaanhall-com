@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any
 
 import requests
-from decouple import config
+from django.conf import settings
 from django.core.cache import cache
 from django.utils import timezone
 from django.views.generic import TemplateView
@@ -256,7 +256,7 @@ class DashboardView(TemplateView):
         if not github_data:
             github_client = GitHubClient(
                 username=AboutData.get_about_data()[0]['username'],
-                access_token=config("ACCESS_TOKEN")
+                access_token=settings.ACCESS_TOKEN
             )
             github_activity = github_client.get_contribution_data()
             
@@ -288,7 +288,7 @@ class DashboardView(TemplateView):
         wakatime_stats = cache.get(cache_key)
         
         if not wakatime_stats:
-            wakatime_client = WakatimeClient(api_key=config("WAKATIME_API_KEY"))
+            wakatime_client = WakatimeClient(api_key=settings.WAKATIME_API_KEY)
             wakatime_activity = wakatime_client.get_activity_data()
             
             if wakatime_activity:

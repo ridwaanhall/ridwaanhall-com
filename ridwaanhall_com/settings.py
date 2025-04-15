@@ -6,6 +6,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY')
 ACCESS_TOKEN = config('ACCESS_TOKEN')
+WAKATIME_API_KEY = config('WAKATIME_API_KEY')
+
+BASE_URL = config('BASE_URL', default='https://ridwaanhall.com')
 
 
 DEBUG = config('DEBUG', default=False, cast=bool)

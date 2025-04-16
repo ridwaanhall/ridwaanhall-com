@@ -1,4 +1,5 @@
 from django.conf import settings
+from datetime import datetime
 
 class ProjectsData:
     '''
@@ -148,6 +149,7 @@ class ProjectsData:
                     tech_stack["github_api"],
                     tech_stack["wakatime_api"]
                 ],
+                "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             },
             {
                 "id": 2,
@@ -181,6 +183,7 @@ class ProjectsData:
                     tech_stack["bootstrap"],
                     tech_stack["vercel"]
                 ],
+                "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             },
             {
                 "id": 3,
@@ -208,6 +211,7 @@ class ProjectsData:
                     tech_stack["machine_learning"],
                     tech_stack["music_recommendation"]
                 ],
+                "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             },
             {
                 "id": 4,
@@ -244,6 +248,7 @@ class ProjectsData:
                     tech_stack["shadcn_ui"],
                     tech_stack["vercel"]
                 ],
+                "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             },
             {
                 "id": 5,
@@ -278,6 +283,7 @@ class ProjectsData:
                     tech_stack["javascript"],
                     tech_stack["css"]
                 ],
+                "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             },
             {
                 "id": 6,
@@ -315,6 +321,7 @@ class ProjectsData:
                     tech_stack["streamlit"],
                     tech_stack["tensorflow"]
                 ],
+                "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             },
             {
                 "id": 7,
@@ -354,6 +361,7 @@ class ProjectsData:
                     tech_stack["python"],
                     tech_stack["machine_learning"]
                 ],
+                "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             },
             {
                 "id": 8,
@@ -389,6 +397,7 @@ class ProjectsData:
                     tech_stack["django"],
                     tech_stack["github_api"]
                 ],
+                "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             },
             {
                 "id": 9,
@@ -432,7 +441,7 @@ class ProjectsData:
                     tech_stack["mdx"],
                     tech_stack["javascript"]
                 ],
-                "setup_instructions": "Check the repo README for setup and deployment steps."
+                "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             },
             {
                 "id": 10,
@@ -468,7 +477,7 @@ class ProjectsData:
                     tech_stack["vercel_postgres"],
                     tech_stack["radix_ui"]
                 ],
-                "setup_instructions": "See README.md in the repo for setup and deploy details."
+                "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             },
             {
                 "id": 11,
@@ -502,7 +511,7 @@ class ProjectsData:
                     tech_stack["django"],
                     tech_stack["whitenoise"]
                 ],
-                "setup_instructions": "Clone repo, add JSON files (following.json, followers_1.json), and run the script."
+                "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             },
             {
                 "id": 12,
@@ -538,7 +547,7 @@ class ProjectsData:
                     tech_stack["vercel"],
                     tech_stack["cloudflare"]
                 ],
-                "setup_instructions": "Check repo README for setup and deploy steps."
+                "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             },
             {
                 "id": 13,
@@ -569,6 +578,6 @@ class ProjectsData:
                 "tech_stack": [
                     tech_stack["python"]
                 ],
-                "setup_instructions": "Clone repo, install requirements.txt, and run send_custom.py, send_random.py, or send_msg.py."
+                "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             }
         ]

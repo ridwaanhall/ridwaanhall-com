@@ -15,17 +15,16 @@ class StaticViewSitemap(Sitemap):
         return reverse(item)
     
     def priority(self, item):
-        if item == 'home':
-            return 1.00
-        else:
-            return 0.80
+        return 1.00 if item == 'home' else 0.90
     
     def lastmod(self, item):
         return timezone.now()
 
 class BlogSitemap(Sitemap):
     changefreq = "weekly"
-    priority = 0.7
+    
+    def priority(self, obj):
+        return 0.9 if obj.get('is_featured') else 0.8
 
     def items(self):
         return BlogData.blogs
@@ -34,17 +33,13 @@ class BlogSitemap(Sitemap):
         return reverse('blog_detail', kwargs={'title': slugify(obj['title'])})
     
     def lastmod(self, obj):
-        if 'date' in obj:
-            try:
-                from datetime import datetime
-                return datetime.strptime(obj['date'], '%B %d, %Y')
-            except:
-                return timezone.now()
-        return timezone.now()
+        return obj['date_in_rfc'] if 'date_in_rfc' in obj else timezone.now()
 
 class ProjectSitemap(Sitemap):
     changefreq = "monthly"
-    priority = 0.8
+    
+    def priority(self, obj):
+        return 0.9 if obj.get('is_featured') else 0.8
 
     def items(self):
         return ProjectsData.projects

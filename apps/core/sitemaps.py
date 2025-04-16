@@ -4,6 +4,9 @@ from django.utils import timezone
 from django.utils.text import slugify
 from apps.data.blog_data import BlogData
 from apps.data.projects_data import ProjectsData
+from pathlib import Path
+import os
+from datetime import datetime
 
 class StaticViewSitemap(Sitemap):
     changefreq = 'weekly'
@@ -33,7 +36,7 @@ class BlogSitemap(Sitemap):
         return reverse('blog_detail', kwargs={'title': slugify(obj['title'])})
     
     def lastmod(self, obj):
-        return obj['date_in_rfc'] if 'date_in_rfc' in obj else timezone.now()
+        return obj['updated_at'] if 'updated_at' in obj else timezone.now()
 
 class ProjectSitemap(Sitemap):
     changefreq = "monthly"
@@ -46,3 +49,6 @@ class ProjectSitemap(Sitemap):
 
     def location(self, obj):
         return reverse('projects_detail', kwargs={'title': slugify(obj['title'])})
+    
+    def lastmod(self, obj):
+        return obj['updated_at'] if 'updated_at' in obj else timezone.now()

@@ -82,13 +82,6 @@
             {% for tech in project.tech_stack %}
             "{{ tech.name }}"{% if not forloop.last %},{% endif %}
             {% endfor %}
-        ],
-        "step": [
-            {
-                "@type": "HowToStep",
-                "name": "Setup & Installation",
-                "text": "{{ project.setup_instructions|linebreaks|escapejs }}"
-            }
         ]
     }
 </script>

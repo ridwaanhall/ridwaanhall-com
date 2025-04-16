@@ -84,7 +84,7 @@
         "@context": "https://schema.org",
         "@type": "ItemList",
         "name": "Featured Projects by {{ about.name }}",
-        "description": "Highlighted projects and applications developed by {{ about.username }}",
+        "description": "{{ seo.description }}",
         "numberOfItems": {{ projects|length }},
         "itemListOrder": "https://schema.org/ItemListOrderDescending",
         "itemListElement": [
@@ -107,7 +107,7 @@
                         "image": "{{ about.image_url|default:"N/A" }}",
                         "url": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/"
                     },
-                    "keywords": "featured project, {% for tech in project.tech_stack %}{{ tech.name|join:'' }}{% if not forloop.last %}, {% endif %}{% endfor %}",
+                    "keywords": "featured project, {% for tech in project.tech_stack %}{{ tech.name|join:'' }}{% if not forloop.last %}, {% endif %}{% endfor %}"
                 }
             }{% if not forloop.last %},{% endif %}
             {% endfor %}

@@ -35,11 +35,11 @@
             "jobTitle": "{{ about.role }}",
             "url": "{{ request.build_absolute_uri }}",
             "sameAs": [
-                "{{ about.social_media.github }}",
-                "{{ about.social_media.linkedin }}",
-                "{{ about.social_media.x }}",
-                "{{ about.social_media.medium }}",
-                "{{ about.social_media.instagram }}"
+                {% if about.social_media.github %}"{{ about.social_media.github }}"{% else %}null{% endif %},
+                {% if about.social_media.linkedin %}"{{ about.social_media.linkedin }}"{% else %}null{% endif %},
+                {% if about.social_media.x %}"{{ about.social_media.x }}"{% else %}null{% endif %},
+                {% if about.social_media.medium %}"{{ about.social_media.medium }}"{% else %}null{% endif %},
+                {% if about.social_media.instagram %}"{{ about.social_media.instagram }}"{% else %}null{% endif %}
             ]
         }
     }

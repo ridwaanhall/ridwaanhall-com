@@ -51,11 +51,11 @@
                 "addressCountry": "{{ about.location.country }}"
             },
             "sameAs": [
-                "{{ about.social_media.github }}",
-                "{{ about.social_media.linkedin }}",
-                "{{ about.social_media.x }}",
-                "{{ about.social_media.medium }}",
-                "{{ about.social_media.instagram }}"
+                {% if about.social_media.github %}"{{ about.social_media.github }}"{% if about.social_media.linkedin or about.social_media.x or about.social_media.medium or about.social_media.instagram %},{% endif %}{% endif %}
+                {% if about.social_media.linkedin %}"{{ about.social_media.linkedin }}"{% if about.social_media.x or about.social_media.medium or about.social_media.instagram %},{% endif %}{% endif %}
+                {% if about.social_media.x %}"{{ about.social_media.x }}"{% if about.social_media.medium or about.social_media.instagram %},{% endif %}{% endif %}
+                {% if about.social_media.medium %}"{{ about.social_media.medium }}"{% if about.social_media.instagram %},{% endif %}{% endif %}
+                {% if about.social_media.instagram %}"{{ about.social_media.instagram }}"{% endif %}
             ]
         }
     }

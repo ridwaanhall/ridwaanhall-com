@@ -1,5 +1,7 @@
 from django.contrib.sitemaps.views import sitemap, index
-from apps.core.sitemaps import StaticViewSitemap, BlogSitemap, ProjectSitemap
+from apps.core.sitemaps import (
+    StaticViewSitemap, BlogSitemap, ProjectSitemap,
+)
 from django.http import HttpResponse
 
 from django.urls import path
@@ -20,8 +22,12 @@ def robots_txt(request):
 
 # Define individual sitemaps
 static_sitemap = {'static': StaticViewSitemap}
-blog_sitemap = {'blog': BlogSitemap}
-project_sitemap = {'projects': ProjectSitemap}
+blog_sitemap = {
+    'blog': BlogSitemap,
+}
+project_sitemap = {
+    'projects': ProjectSitemap,
+}
 
 # Combined sitemap dictionary for the index
 sitemaps = {**static_sitemap, **blog_sitemap, **project_sitemap}

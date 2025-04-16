@@ -4,22 +4,46 @@ from django.utils import timezone
 from django.utils.text import slugify
 from apps.data.blog_data import BlogData
 from apps.data.projects_data import ProjectsData
-from pathlib import Path
-import os
-from datetime import datetime
+from math import ceil
 
 class StaticViewSitemap(Sitemap):
     changefreq = 'weekly'
 
+    def __init__(self, items_per_page=6):
+        self.items_per_page = items_per_page
+
     def items(self):
-        return ['home', 'about', 'contact', 'blog', 'projects', 'career', 'dashboard']
+        static_pages = ['home', 'about', 'contact', 'career', 'dashboard']
+
+        blog_total = len(BlogData.blogs)
+        blog_pages = ceil(blog_total / self.items_per_page)
+        blog_page_items = [f'blog-page-{i}' for i in range(1, blog_pages + 1)]
+
+        project_total = len(ProjectsData.projects)
+        project_pages = ceil(project_total / self.items_per_page)
+        project_page_items = [f'projects-page-{i}' for i in range(1, project_pages + 1)]
+
+        return static_pages + blog_page_items + project_page_items
 
     def location(self, item):
+        if item.startswith('blog-page-'):
+            page = int(item.split('-')[-1])
+            return reverse('blog') if page == 1 else f"{reverse('blog')}?page={page}"
+
+        if item.startswith('projects-page-'):
+            page = int(item.split('-')[-1])
+            return reverse('projects') if page == 1 else f"{reverse('projects')}?page={page}"
+
         return reverse(item)
-    
+
     def priority(self, item):
-        return 1.00 if item == 'home' else 0.90
-    
+        if item == 'home':
+            return 1.0
+        elif item.startswith('blog-page-') or item.startswith('projects-page-'):
+            page = int(item.split('-')[-1])
+            return 0.9 if page == 1 else 0.7
+        return 0.9
+
     def lastmod(self, item):
         return timezone.now()
 

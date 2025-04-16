@@ -172,7 +172,8 @@
                         "headline": "{{ blog.title }}",
                         "description": "{{ blog.description }}",
                         "image": "{{ blog.image_url }}",
-                        "datePublished": "{{ blog.date }}",
+                        "datePublished": "{{ blog.date_in_rfc|safe }}",
+                        "dateModified": "{{ blog.date_in_rfc|safe }}",
                         "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'blog' %}{{ blog.title|slugify }}",
                         "author": {
                             "@type": "Person", 

@@ -44,7 +44,8 @@
                 "headline": "{{ blog.title }}",
                 "description": "{{ blog.description }}",
                 "image": "{{ blog.image_url }}",
-                "datePublished": "{{ blog.date }}",
+                "datePublished": "{{ blog.date_in_rfc|safe }}",
+                "dateModified": "{{ blog.date_in_rfc|safe }}",
                 "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'blog_detail' title=blog.title|slugify %}",
                 "author": {
                     "@type": "Person", 
@@ -110,7 +111,7 @@
                                     <div class="absolute bottom-0 left-0 right-0 p-6 z-20">
                                         <div class="flex items-center space-x-2 mb-3">
                                             <span class="bg-indigo-600 text-white text-xs font-semibold px-3 py-1 rounded-full">{{ blog.category }}</span>
-                                            <span class="font-mono text-zinc-300 text-xs">{{ blog.date }}</span>
+                                            <span class="font-mono text-zinc-300 text-xs">{{ blog.date_in_rfc|date:"F j, Y, g:i a" }}</span>
                                         </div>
                                         <h2 class="text-2xl font-bold text-white mb-2"><a href="{% url 'blog_detail' title=blog.title|slugify %}" class="relative inline-block after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-zinc-400 hover:after:w-full after:transition-all after:duration-300">{{ blog.title }}</a></h2>
                                         <p class="text-zinc-300 mb-4 line-clamp-2">{{ blog.description }}</p>
@@ -193,7 +194,7 @@
                                         </div>
                                         
                                         <div class="flex items-center">
-                                            <span class="font-mono text-xs text-zinc-400">{{ blog.date }}</span>
+                                            <span class="font-mono text-xs text-zinc-400">{{ blog.date_in_rfc|date:"F j, Y, g:i a" }}</span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 text-indigo-400 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                             </svg>

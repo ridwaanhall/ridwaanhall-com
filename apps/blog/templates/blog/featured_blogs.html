@@ -45,7 +45,7 @@
                         </div>
                         
                         <div class="flex items-center">
-                            <span class="font-mono text-xs text-zinc-400">{{ blog.date }}</span>
+                            <span class="font-mono text-xs text-zinc-400">{{ blog.date_in_rfc|date:"F j, Y, g:i a" }}</span>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 text-indigo-400 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                             </svg>

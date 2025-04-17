@@ -138,51 +138,45 @@
             <!-- Projects grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
                 {% for project in projects %}
-                <div class="group bg-zinc-800/30 backdrop-blur-sm rounded-xl overflow-hidden flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/20 border border-zinc-700/50 hover:border-indigo-500/50">
-                    <div class="relative h-52 overflow-hidden">
-                        <img src="{{ project.image_url }}" alt="{{ project.title }}" 
-                            class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105">
-                        
-                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-90"></div>
-                        
-                        {% if project.is_featured %}
-                        <div class="absolute top-0 right-0 z-20">
-                            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold px-3 py-1.5 rounded-bl-lg shadow-lg flex items-center transition-all duration-300 group-hover:shadow-indigo-500/30">
-                                <svg class="w-4 h-4 mr-1" stroke="none" fill="currentColor" stroke-width="2" viewBox="0 0 1024 1024" height="15" width="15" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M878.3 392.1L631.9 145.7c-6.5-6.5-15-9.7-23.5-9.7s-17 3.2-23.5 9.7L423.8 306.9c-12.2-1.4-24.5-2-36.8-2-73.2 0-146.4 24.1-206.5 72.3-15.4 12.3-16.6 35.4-2.7 49.4l181.7 181.7-215.4 215.2a15.8 15.8 0 0 0-4.6 9.8l-3.4 37.2c-.9 9.4 6.6 17.4 15.9 17.4.5 0 1 0 1.5-.1l37.2-3.4c3.7-.3 7.2-2 9.8-4.6l215.4-215.4 181.7 181.7c6.5 6.5 15 9.7 23.5 9.7 9.7 0 19.3-4.2 25.9-12.4 56.3-70.3 79.7-158.3 70.2-243.4l161.1-161.1c12.9-12.8 12.9-33.8 0-46.8z"></path>
-                                </svg>
-                                <span class="tracking-wider">FEATURED</span>
+                <a href="{% url 'projects' %}{{ project.title|slugify }}" class="block h-full">
+                    <div class="group bg-zinc-800/30 backdrop-blur-sm rounded-xl overflow-hidden flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/20 border border-zinc-700/50 hover:border-indigo-500/50">
+                        <div class="relative h-52 overflow-hidden">
+                            <img src="{{ project.image_url }}" alt="{{ project.title }}" 
+                                class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105">
+                            
+                            <div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-90"></div>
+                            
+                            {% if project.is_featured %}
+                            <div class="absolute top-0 right-0 z-20">
+                                <div class="bg-lime-300 text-emerald-950 text-xs font-bold px-3 py-1.5 rounded-bl-lg shadow-lg flex items-center transition-all duration-300 group-hover:shadow-purple-500/30">
+                                    <svg class="w-4 h-4 mr-1" stroke="none" fill="currentColor" stroke-width="2" viewBox="0 0 1024 1024" height="15" width="15" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M878.3 392.1L631.9 145.7c-6.5-6.5-15-9.7-23.5-9.7s-17 3.2-23.5 9.7L423.8 306.9c-12.2-1.4-24.5-2-36.8-2-73.2 0-146.4 24.1-206.5 72.3-15.4 12.3-16.6 35.4-2.7 49.4l181.7 181.7-215.4 215.2a15.8 15.8 0 0 0-4.6 9.8l-3.4 37.2c-.9 9.4 6.6 17.4 15.9 17.4.5 0 1 0 1.5-.1l37.2-3.4c3.7-.3 7.2-2 9.8-4.6l215.4-215.4 181.7 181.7c6.5 6.5 15 9.7 23.5 9.7 9.7 0 19.3-4.2 25.9-12.4 56.3-70.3 79.7-158.3 70.2-243.4l161.1-161.1c12.9-12.8 12.9-33.8 0-46.8z"></path>
+                                    </svg>
+                                    <span class="tracking-wider">FEATURED</span>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="absolute bottom-3 left-3">
+                                <span class="bg-indigo-600/80 backdrop-blur-sm text-white text-xs font-medium px-2.5 py-1 rounded-md">{{ project.category }}</span>
                             </div>
                         </div>
-                        {% endif %}
                         
-                        <div class="absolute bottom-3 left-3">
-                            <span class="bg-indigo-600/80 backdrop-blur-sm text-white text-xs font-medium px-2.5 py-1 rounded-md">{{ project.category }}</span>
+                        <div class="p-4 flex flex-col flex-grow">
+                            <h3 class="text-xl font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">{{ project.title }}</h3>
+                            <p class="text-zinc-300 text-sm flex-grow line-clamp-3 mb-4">{{ project.headline }}</p>
+                            
+                            <div class="flex flex-wrap gap-2">
+                                {% for tech in project.tech_stack|slice:":3" %}
+                                <span class="text-xs font-medium rounded-full bg-zinc-600 px-2.5 py-1 font-mono text-zinc-300">{{ tech.name }}</span>
+                                {% endfor %}
+                                {% if project.tech_stack|length > 3 %}
+                                <span class="text-xs font-medium rounded-full bg-zinc-600 px-2.5 py-1 font-mono text-zinc-300">+{{ project.tech_stack|length|add:"-3" }}</span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="p-4 flex flex-col flex-grow">
-                        <h3 class="text-xl font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">{{ project.title }}</h3>
-                        <p class="text-zinc-300 text-sm flex-grow line-clamp-3 mb-4">{{ project.headline }}</p>
-                        
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            {% for tech in project.tech_stack|slice:":3" %}
-                            <span class="text-xs font-medium rounded-full bg-zinc-600 px-2.5 py-1 font-mono text-zinc-300">{{ tech.name }}</span>
-                            {% endfor %}
-                            {% if project.tech_stack|length > 3 %}
-                            <span class="text-xs font-medium rounded-full bg-zinc-600 px-2.5 py-1 font-mono text-zinc-300">+{{ project.tech_stack|length|add:"-3" }}</span>
-                            {% endif %}
-                        </div>
-                        
-                        <a href="{% url 'projects' %}{{ project.title|slugify }}" 
-                           class="mt-auto inline-flex items-center justify-center bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-400 hover:text-white border border-indigo-500/30 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-300">
-                            View Project Details
-                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
+                </a>
                 {% endfor %}
             </div>
             

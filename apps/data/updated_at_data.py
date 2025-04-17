@@ -54,35 +54,35 @@ class UpdatedAtData:
             },
             {
                 "page": "about",
-                "updated_at": cls.get_latest_modified_date([
-                    "apps/data/about_data.py",
-                    "apps/about/templates/about/about.html"
-                ]),
-            },
-            {
-                "page": "career",
                 "updated_at": cls.get_template_last_modified(
-                    "apps/career/templates/career/career.html"
+                    "apps/data/about_data.py",
                 )[0],
             },
             {
-                "page": "projects",
+                "page": "career",
                 "updated_at": cls.get_latest_modified_date([
-                    "apps/data/projects_data.py",
-                    "apps/projects/templates/projects/projects.html"
+                    "apps/data/applications_data.py",
+                    "apps/data/experiences_data.py",
+                    "apps/data/education_data.py",
+                    "apps/data/certifications_data.py",
                 ]),
             },
             {
+                "page": "projects",
+                "updated_at": cls.get_template_last_modified(
+                    "apps/data/projects_data.py",
+                )[0],
+            },
+            {
                 "page": "blog",
-                "updated_at": cls.get_latest_modified_date([
+                "updated_at": cls.get_template_last_modified(
                     "apps/data/blog_data.py",
-                    "apps/blog/templates/blog/blog.html"
-                ]),
+                )[0],
             },
             {
                 "page": "contact",
                 "updated_at": cls.get_template_last_modified(
-                    "apps/contact/templates/contact/contact.html"
+                    "apps/data/about_data.py",
                 )[0],
             },
         ]

@@ -16,7 +16,7 @@ class StaticViewSitemap(Sitemap):
         }
 
     def items(self):
-        static_pages = ['home', 'about', 'contact', 'career', 'dashboard']
+        static_pages = ['home', 'dashboard', 'about', 'career', 'contact']
 
         blog_total = len(BlogData.blogs)
         blog_pages = ceil(blog_total / self.items_per_page)

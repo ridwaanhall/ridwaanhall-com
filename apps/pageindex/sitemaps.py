@@ -5,12 +5,17 @@ from django.utils.text import slugify
 from apps.data.blog_data import BlogData
 from apps.data.projects_data import ProjectsData
 from math import ceil
+from apps.data.updated_at_data import UpdatedAtData
 
 class StaticViewSitemap(Sitemap):
     changefreq = 'weekly'
 
     def __init__(self, items_per_page=6):
         self.items_per_page = items_per_page
+        self.updated_at_map = {
+            item['page']: item['updated_at']
+            for item in UpdatedAtData.get_all_updated_data()
+        }
 
     def items(self):
         static_pages = ['home', 'about', 'contact', 'career', 'dashboard']
@@ -41,10 +46,16 @@ class StaticViewSitemap(Sitemap):
             return 1.0
         elif item.startswith('blog-page-') or item.startswith('projects-page-'):
             page = int(item.split('-')[-1])
-            return 0.9 if page == 1 else 0.7
+            return 0.9 if page == 1 else 0.8
         return 0.9
 
     def lastmod(self, item):
+        if item in self.updated_at_map and self.updated_at_map[item]:
+            # Convert the string timestamp to a datetime object
+            try:
+                return timezone.datetime.strptime(self.updated_at_map[item], '%Y-%m-%d %H:%M:%S%z')
+            except ValueError:
+                return timezone.now()
         return timezone.now()
 
 class BlogSitemap(Sitemap):

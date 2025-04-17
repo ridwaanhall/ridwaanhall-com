@@ -94,7 +94,7 @@
     <main class="px-4 py-6 md:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
             <header class="mb-8">
-                <h1 class="text-3xl md:text-4xl font-bold text-white mb-3">{{ blog.title }}</h1>
+                <h1 class="text-3xl md:text-4xl font-bold mb-3">{{ blog.title }}</h1>
                 <div class="flex items-center text-zinc-400 mb-6">
                     <span>{{ blog.updated_at|date:"F j, Y, g:i a" }}</span>
                     <span class="mx-2">•</span>
@@ -124,7 +124,7 @@
             </div>
 
             <footer>
-                <h2 class="text-xl font-semibold text-white mb-3">Tags</h2>
+                <h2 class="text-xl font-semibold mb-3">Tags</h2>
                 <div class="flex flex-wrap gap-2">
                     {% for tag in blog.tags %}
                     <span class="text-xs font-medium rounded-full bg-zinc-600 px-2.5 py-1 font-mono">
@@ -135,9 +135,9 @@
             </footer>
 
             <div class="mt-8 mb-6">
-                <a href="{% url 'blog' %}" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-sm md:text-base font-bold px-4 py-2 rounded-lg shadow-lg flex items-center w-fit transition-all duration-300" aria-label="Return to blog listing page">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                <a href="{% url 'blog' %}" class="inline-flex items-center justify-center px-3 py-2.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 font-medium transition duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                     </svg>
                     Back to Blog
                 </a>

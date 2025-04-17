@@ -42,7 +42,7 @@ class StaticViewSitemap(Sitemap):
     def changefreq(self, item):
         if item == 'dashboard':
             return 'daily'
-        elif item.startswith('projects-page-'):
+        elif item=='about' or item=='contact' or item == 'career' or item.startswith('projects-page-'):
             return 'monthly'
         return 'weekly'
 

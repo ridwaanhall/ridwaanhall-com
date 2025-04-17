@@ -208,5 +208,26 @@ class BlogData:
             ],
             "tags": ["Gaza", "Palestine", "Humanitarian", "Justice", "Resources", "Faith", "Coding"],
             "is_featured": True
+        },
+        {
+            "id": 11,
+            "title": "Surviving Internet Fun in 2025",
+            "description": "Internet’s super wild in 2025! Funny memes, AI videos, and silly words everywhere. Here’s how I keep up without going crazy!",
+            "image_url": f"{settings.BASE_URL}/static/img/blog/internet_trends_2025.webp",
+            "created_at": datetime.strptime("2025-04-17T16:26:34+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-17T16:26:34+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "author": "Ridwan Halim",
+            "username": "ridwaanhall",
+            "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
+            "content": [
+                "Wow, the internet in 2025 is like a <span class='text-purple-600'>big, crazy party</span>! One second, I’m on X looking at cool <span class='text-red-600'>AI tricks</span>. Then, boom, I see funny videos like dancing toilets or cats with silly hats. They call these <span class='text-red-600'>brainrot memes</span>. I laugh so hard, but I gotta stay focused or my brain gets all dizzy!",
+                "Next up, <span class='text-blue-600'>AI stuff</span> is super big. My buddy Grok 3 makes awesome videos, like funny TikToks or X posts that everyone loves. It’s like magic! But sometimes I’m like, ‘Wait, is this a robot or my friend posting?’ It’s tricky, but so cool for making fun stuff on my blog at <span class='text-blue-600'>ridwaanhall.com</span>. I even tried making an AI meme at my coding camp, and the kids went wild!",
+                "Oh, and <span class='text-green-600'>funny words</span> are everywhere! People say ‘rizz’ for cool guys or ‘Ohio’ for weird stuff. I learned these at my Coding Camp in Bandung (yep, where I teach!). I said ‘silly goose’ in class, and my students couldn’t stop giggling. You can use these words in blogs to make people smile, but don’t use too many, or it’s too much, and you’re in trouble!",
+                "I also love <span class='text-yellow-600'>X posts</span>. They show me what’s hot, like AI news, funny Indonesian jokes, or even cool tech ideas. I pick the best ones so I don’t get lost in boring stuff. It’s like having a superhero filter for my phone! I found a meme about coding that I shared on my site, and people loved it. Gotta keep that X feed clean, you know?",
+                "So, how do I handle all this internet craziness? I use <span class='text-purple-600'>smart tricks</span> and stay super chill. I write about tech, faith, and fun on <span class='text-blue-600'>ridwaanhall.com</span>. Like, I made a post about Python and added a silly meme to make it fun. Mixing brainrot with smart stuff keeps my blog happy and my readers smiling. Let’s keep the good vibes, fam!",
+                "One last tip: don’t get stuck in the internet jungle! Pick one or two fun things, like a cool meme or a new word, and share it. I learned this when I got lost watching too many AI cat videos. Now I balance it with my coding work and faith stuff. You can do it too—stay wavy and have fun!"
+            ],
+            "tags": ["Internet Trends", "Brainrot Memes", "AI Videos", "Funny Words", "Tech Fun", "X Posts", "Indonesian Memes"],
+            "is_featured": False
         }
     ]

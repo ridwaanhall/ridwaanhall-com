@@ -169,10 +169,15 @@
                             <div class="relative z-10 p-5 flex flex-col h-full">
                                 <div class="flex flex-wrap gap-1 mb-4">
                                     {% for tag in blog.tags|slice:":3" %}
-                                    <span class="font-medium rounded-full bg-zinc-900/80 px-2.5 py-1 font-mono text-xs text-zinc-400">
+                                    <span class="font-medium rounded-full bg-zinc-900/80 px-2.5 py-1 font-mono text-xs">
                                         #{{ tag|slugify }}
                                     </span>
                                     {% endfor %}
+                                    {% if blog.tags|length > 3 %}
+                                    <span class="font-medium rounded-full bg-zinc-900/80 px-2.5 py-1 font-mono text-xs">
+                                        +{{ blog.tags|length|add:"-3" }}
+                                    </span>
+                                    {% endif %}
                                 </div>
                                 
                                 <div class="flex-grow"></div>

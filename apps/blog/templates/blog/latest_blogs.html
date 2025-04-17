@@ -1,5 +1,5 @@
 <div class="flex flex-col md:flex-row justify-between items-center mb-4 mt-6 border-b border-zinc-700 pb-4 relative z-10">
-    <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-indigo-200">Latest Blogs</h2>
+    <h2 class="text-2xl font-bold tracking-tight">Latest <span class="text-indigo-400">Blogs</span></h2>
     <a href="{% url 'blog' %}" class="mt-2 md:mt-0 group flex items-center text-indigo-400 hover:text-indigo-300 transition-colors duration-300">
         <span>View All Blogs</span>
         <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -20,15 +20,20 @@
             <div class="relative z-10 p-4 flex flex-col h-full">
                 <div class="flex flex-wrap gap-1 mb-4">
                     {% for tag in blog.tags|slice:":3" %}
-                    <span class="font-medium rounded-full bg-zinc-900/80 px-2.5 py-1 font-mono text-xs text-zinc-400">
+                    <span class="font-medium rounded-full bg-zinc-900/80 px-2.5 py-1 font-mono text-xs">
                         #{{ tag|slugify }}
                     </span>
                     {% endfor %}
+                    {% if blog.tags|length > 3 %}
+                    <span class="font-medium rounded-full bg-zinc-900/80 px-2.5 py-1 font-mono text-xs">
+                        +{{ blog.tags|length|add:"-3" }}
+                    </span>
+                    {% endif %}
                 </div>
                 
                 <div class="flex-grow"></div>
                 
-                <h3 class="text-lg font-bold text-white mb-2 line-clamp-2 relative inline-block">
+                <h3 class="text-lg font-bold mb-2 line-clamp-2 relative inline-block">
                     <span class="relative transition-colors duration-300 group-hover:underline group-hover:underline-offset-4">{{ blog.title }}</span>
                 </h3>
                 <p class="text-zinc-300 text-sm line-clamp-3 mb-2">{{ blog.description }}</p>
@@ -59,7 +64,7 @@
 </div>
 
 <div class="mt-8 text-center relative z-10 md:hidden">
-    <a href="{% url 'blog' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-300">
+    <a href="{% url 'blog' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-300">
         View All Blogs
     </a>
 </div>

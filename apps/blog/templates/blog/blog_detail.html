@@ -127,7 +127,7 @@
                 <h2 class="text-xl font-semibold text-white mb-3">Tags</h2>
                 <div class="flex flex-wrap gap-2">
                     {% for tag in blog.tags %}
-                    <span class="text-xs font-medium rounded-full bg-zinc-600 px-2.5 py-1 font-mono text-zinc-300">
+                    <span class="text-xs font-medium rounded-full bg-zinc-600 px-2.5 py-1 font-mono">
                         #{{ tag|slugify }}
                     </span>
                     {% endfor %}

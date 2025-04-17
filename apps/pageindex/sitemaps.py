@@ -8,8 +8,6 @@ from math import ceil
 from apps.data.updated_at_data import UpdatedAtData
 
 class StaticViewSitemap(Sitemap):
-    changefreq = 'weekly'
-
     def __init__(self, items_per_page=6):
         self.items_per_page = items_per_page
         self.updated_at_map = {
@@ -40,6 +38,13 @@ class StaticViewSitemap(Sitemap):
             return reverse('projects') if page == 1 else f"{reverse('projects')}?page={page}"
 
         return reverse(item)
+
+    def changefreq(self, item):
+        if item == 'dashboard':
+            return 'daily'
+        elif item.startswith('projects-page-'):
+            return 'monthly'
+        return 'weekly'
 
     def priority(self, item):
         if item == 'home':

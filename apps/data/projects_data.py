@@ -297,7 +297,7 @@ class ProjectsData:
                 "demo_url": "https://ridwaanhall-bike-sharing-analytics.streamlit.app/",
                 "github_url": "https://github.com/ridwaanhall/dicoding-bike-sharing-analysis",
                 "image_url": f"{settings.BASE_URL}/static/img/project/bike_sharing_analysis_dashboard.webp",
-                "is_featured": False,
+                "is_featured": True,
                 "features": [
                     {
                         "title": "Season Trends",
@@ -321,7 +321,7 @@ class ProjectsData:
                     tech_stack["streamlit"],
                     tech_stack["tensorflow"]
                 ],
-                "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                "updated_at": datetime.strptime("2025-04-17T17:49:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             },
             {
                 "id": 7,

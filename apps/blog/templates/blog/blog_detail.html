@@ -121,7 +121,7 @@
             <header class="mb-8">
                 <h1 class="text-3xl md:text-4xl font-bold mb-3">{{ blog.title }}</h1>
                 <div class="flex items-center text-zinc-400 mb-6">
-                    <span>{{ blog.updated_at|date:"F j, Y, g:i a" }}</span>
+                    <time datetime="{{ blog.updated_at|date:'c' }}">{{ blog.updated_at|date:"F j, Y, g:i a" }}</time>
                     <span class="mx-2">•</span>
                     <div class="flex items-center gap-2">
                         <span class="text-zinc-400">By</span>

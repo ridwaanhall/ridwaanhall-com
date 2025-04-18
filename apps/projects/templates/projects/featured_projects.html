@@ -29,10 +29,10 @@
                 
                 <div class="flex flex-wrap gap-2">
                     {% for tech in project.tech_stack|slice:":3" %}
-                    <span class="text-xs font-medium rounded-full bg-zinc-600 px-2.5 py-1 font-mono text-zinc-300">{{ tech.name }}</span>
+                    <span class="text-xs font-medium rounded-full border border-zinc-600 px-2.5 py-1 font-mono">{{ tech.name }}</span>
                     {% endfor %}
                     {% if project.tech_stack|length > 3 %}
-                    <span class="text-xs font-medium rounded-full bg-zinc-600 px-2.5 py-1 font-mono text-zinc-300">+{{ project.tech_stack|length|add:"-3" }}</span>
+                    <span class="text-xs font-medium rounded-full border border-zinc-600 px-2.5 py-1 font-mono">+{{ project.tech_stack|length|add:"-3" }}</span>
                     {% endif %}
                 </div>
             </div>

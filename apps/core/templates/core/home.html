@@ -140,7 +140,9 @@
                         "description": "{{ project.headline }}",
                         "programmingLanguage": "{% for tech in project.tech_stack %}{{ tech.name|join:'' }}{% if not forloop.last %}, {% endif %}{% endfor %}",
                         "image": "{{ project.image_url }}",
+                        {% if project.github_url %}
                         "codeRepository": "{{ project.github_url }}",
+                        {% endif %}
                         "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'projects' %}{{ project.title|slugify }}",
                         "author": {
                             "@type": "Person", 

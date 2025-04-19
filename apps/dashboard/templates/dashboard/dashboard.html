@@ -437,7 +437,6 @@
             });
             
             if (isFuture) {
-                // cell.setAttribute('title', `Future date: ${formattedDate}`);
                 cell.setAttribute('data-contributions', 'future');
                 cell.setAttribute('data-date', formattedDate);
                 cell.setAttribute('data-day', dayName);
@@ -448,7 +447,6 @@
                 } else {
                     contribText = contributions === 1 ? '1 contribution' : `${contributions} contributions`;
                 }
-                // cell.setAttribute('title', `${contribText} on ${formattedDate}`);
                 cell.setAttribute('data-contributions', contributions);
                 cell.setAttribute('data-date', formattedDate);
                 cell.setAttribute('data-day', dayName);
@@ -501,23 +499,28 @@
                 }
             }
             
-            // Animate cells with staggered delay
+            // Animate cells with random fade-in
             animateCellsAppearance(cells);
         }
         
         /**
-         * Animate cells to fade in with a staggered effect
+         * Animate cells to fade in with a random effect
          */
         function animateCellsAppearance(cells) {
-            const batchSize = 20;
-            const delayBetweenBatches = 50;
+            // Create a shuffled copy of the cells array
+            const shuffledCells = [...cells].sort(() => Math.random() - 0.5);
             
-            for (let i = 0; i < cells.length; i++) {
-                const batchIndex = Math.floor(i / batchSize);
+            const totalCells = shuffledCells.length;
+            const maxDelay = 1200; // Maximum delay in milliseconds
+            
+            // Apply random delays to each cell
+            shuffledCells.forEach((cell, index) => {
+                // Generate random delay between 0 and maxDelay
+                const delay = Math.floor(Math.random() * maxDelay);
                 setTimeout(() => {
-                    cells[i].classList.replace('opacity-0', 'opacity-100');
-                }, batchIndex * delayBetweenBatches);
-            }
+                    cell.classList.replace('opacity-0', 'opacity-100');
+                }, delay);
+            });
         }
         
         /**

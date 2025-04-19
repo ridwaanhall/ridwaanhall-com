@@ -133,62 +133,62 @@
 
 {% block content %}
 <div class="flex-1 md:ml-62">
-    <main class="px-4 py-6 md:px-6 lg:px-8">
+    <main class="px-3 py-4 sm:px-4 sm:py-6 md:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
 
-            <div class="mb-8">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="mb-6 md:mb-8">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
                     <div>
-                        <h1 class="text-4xl font-bold mb-2 tracking-tight">Journey <span class="text-indigo-400"> of Growth</span></h1>
-                        <p class="mt-2 text-lg text-zinc-300 leading-relaxed">Flexing my grind—from Quran-inspired hustle to coding gigs and AI breakthroughs. This is my story of leveling up through jobs, learning, and certifications.</p>
+                        <h1 class="text-3xl sm:text-4xl font-bold mb-2 tracking-tight">Journey <span class="text-indigo-400"> of Growth</span></h1>
+                        <p class="mt-2 text-base sm:text-lg text-zinc-300 leading-relaxed">Flexing my grind—from Quran-inspired hustle to coding gigs and AI breakthroughs. This is my story of leveling up through jobs, learning, and certifications.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="mb-6 border-b border-zinc-700">
-                <div class="flex flex-wrap -mb-px text-sm font-medium text-center">
+            <div class="mb-6 border-b border-zinc-700 overflow-x-auto scrollbar-hide">
+                <div class="flex flex-nowrap min-w-full -mb-px text-sm font-medium text-center whitespace-nowrap">
                     <button id="tab-applications" 
-                                    onclick="switchTab('applications')" 
-                                    class="inline-block p-4 border-b-2 border-indigo-500 text-indigo-400 rounded-t-lg" 
-                                    aria-selected="true" role="tab">
+                            onclick="switchTab('applications')" 
+                            class="inline-block p-2 sm:p-4 border-b-2 border-indigo-500 text-indigo-400 rounded-t-lg flex-1 sm:flex-none" 
+                            aria-selected="true" role="tab">
                         Applications
                     </button>
                     <button id="tab-experiences" 
-                                    onclick="switchTab('experiences')" 
-                                    class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300" 
-                                    aria-selected="false" role="tab">
+                            onclick="switchTab('experiences')" 
+                            class="inline-block p-2 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none" 
+                            aria-selected="false" role="tab">
                         Experiences
                     </button>
                     <button id="tab-education" 
-                                    onclick="switchTab('education')" 
-                                    class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300" 
-                                    aria-selected="false" role="tab">
+                            onclick="switchTab('education')" 
+                            class="inline-block p-2 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none" 
+                            aria-selected="false" role="tab">
                         Educations
                     </button>
                     <button id="tab-certifications" 
-                                    onclick="switchTab('certifications')" 
-                                    class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300" 
-                                    aria-selected="false" role="tab">
+                            onclick="switchTab('certifications')" 
+                            class="inline-block p-2 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none" 
+                            aria-selected="false" role="tab">
                         Certifications
                     </button>
                 </div>
             </div>
 
-            <div class="tab-content">
-                <div id="content-applications" class="block">
+            <div class="tab-content w-full">
+                <div id="content-applications" class="block w-full">
                     {% include 'career/applications.html' %}
                 </div>
-                <div id="content-experiences" class="hidden">
+                <div id="content-experiences" class="hidden w-full">
                     {% if experiences %}
                         {% include 'career/experiences.html' %}
                     {% endif %}
                 </div>
-                <div id="content-education" class="hidden">
+                <div id="content-education" class="hidden w-full">
                     {% if education %}
                         {% include 'career/education.html' %}
                     {% endif %}
                 </div>
-                <div id="content-certifications" class="hidden">
+                <div id="content-certifications" class="hidden w-full">
                     {% if certifications %}
                         {% include 'career/certifications.html' %}
                     {% endif %}

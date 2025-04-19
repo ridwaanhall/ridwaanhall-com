@@ -1,43 +1,43 @@
-<div class="relative mt-8 rounded-xl shadow-lg overflow-hidden border border-zinc-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
-    <div class="p-8 md:p-10">
+<div class="relative mt-4 sm:mt-8 rounded-xl shadow-lg overflow-hidden border border-zinc-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20">
+    <div class="p-4 sm:p-6 md:p-10">
         <div class="text-center max-w-3xl mx-auto">
             <!-- Header -->
-            <div class="inline-block mb-3 rounded-full bg-indigo-900/20 px-3 py-1 text-sm font-semibold border border-indigo-900/30">
+            <div class="inline-block mb-2 sm:mb-3 rounded-full bg-indigo-900/20 px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold border border-indigo-900/30">
                 {{ palestine.title }}
             </div>
-            <h2 class="text-3xl md:text-4xl font-bold mb-4 tracking-tight">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 tracking-tight">
                 {{ palestine.description|safe }}
             </h2>
-            <p class="text-zinc-400 mb-8 text-lg leading-relaxed">
+            <p class="text-zinc-400 mb-6 sm:mb-8 text-base sm:text-lg leading-relaxed">
                 {{ palestine.callToAction }}
             </p>
 
             <!-- Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div class="bg-zinc-900/50 p-4 rounded-lg border border-zinc-700/50 shadow-sm transition-all duration-200 hover:border-indigo-500/30 hover:shadow-indigo-500/10">
-                    <h3 class="font-bold">{{ palestine.statistics.peopleKilled.headline }}</h3>
-                    <p class="text-sm text-zinc-400">{{ palestine.statistics.peopleKilled.details }}<sup><a href="{{ palestine.statistics.peopleKilled.url }}" target="_blank">[1]</a></sup></p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mb-6">
+                <div class="bg-zinc-900/50 p-3 sm:p-4 rounded-lg border border-zinc-700/50 shadow-sm transition-all duration-200 hover:border-indigo-500/30 hover:shadow-indigo-500/10">
+                    <h3 class="font-bold text-sm sm:text-base">{{ palestine.statistics.peopleKilled.headline }}</h3>
+                    <p class="text-xs sm:text-sm text-zinc-400">{{ palestine.statistics.peopleKilled.details }}<sup><a href="{{ palestine.statistics.peopleKilled.url }}" target="_blank" class="text-indigo-400">[1]</a></sup></p>
                 </div>
-                <div class="bg-zinc-900/50 p-4 rounded-lg border border-zinc-700/50 shadow-sm transition-all duration-200 hover:border-indigo-500/30 hover:shadow-indigo-500/10">
-                    <h3 class="font-bold">{{ palestine.statistics.peopleDisplaced.headline }}</h3>
-                    <p class="text-sm text-zinc-400">{{ palestine.statistics.peopleDisplaced.details }}<sup><a href="{{ palestine.statistics.peopleDisplaced.url }}" target="_blank">[2]</a></sup></p>
+                <div class="bg-zinc-900/50 p-3 sm:p-4 rounded-lg border border-zinc-700/50 shadow-sm transition-all duration-200 hover:border-indigo-500/30 hover:shadow-indigo-500/10">
+                    <h3 class="font-bold text-sm sm:text-base">{{ palestine.statistics.peopleDisplaced.headline }}</h3>
+                    <p class="text-xs sm:text-sm text-zinc-400">{{ palestine.statistics.peopleDisplaced.details }}<sup><a href="{{ palestine.statistics.peopleDisplaced.url }}" target="_blank" class="text-indigo-400">[2]</a></sup></p>
                 </div>
-                <div class="bg-zinc-900/50 p-4 rounded-lg border border-zinc-700/50 shadow-sm transition-all duration-200 hover:border-indigo-500/30 hover:shadow-indigo-500/10">
-                    <h3 class="font-bold">{{ palestine.statistics.peopleInjured.headline }}</h3>
-                    <p class="text-sm text-zinc-400">{{ palestine.statistics.peopleInjured.details }}<sup><a href="{{ palestine.statistics.peopleInjured.url }}" target="_blank">[3]</a></sup></p>
+                <div class="bg-zinc-900/50 p-3 sm:p-4 rounded-lg border border-zinc-700/50 shadow-sm transition-all duration-200 hover:border-indigo-500/30 hover:shadow-indigo-500/10 sm:col-span-2 md:col-span-1">
+                    <h3 class="font-bold text-sm sm:text-base">{{ palestine.statistics.peopleInjured.headline }}</h3>
+                    <p class="text-xs sm:text-sm text-zinc-400">{{ palestine.statistics.peopleInjured.details }}<sup><a href="{{ palestine.statistics.peopleInjured.url }}" target="_blank" class="text-indigo-400">[3]</a></sup></p>
                 </div>
             </div>
 
             <!-- CTA -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <a href="{{ palestine.actions.donateToUNRWA }}" target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-indigo-500/50 font-medium rounded-lg bg-indigo-900/20 hover:bg-indigo-800/40 hover:text-white hover:shadow-lg hover:shadow-indigo-500/20 transition-all duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 mb-6">
+                <a href="{{ palestine.actions.donateToUNRWA }}" target="_blank" class="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-indigo-500/50 font-medium rounded-lg bg-indigo-900/20 hover:bg-indigo-800/40 hover:text-white hover:shadow-lg hover:shadow-indigo-500/20 transition-all duration-300 text-sm sm:text-base">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                     Donate to UNRWA
                 </a>
-                <a href="{{ palestine.actions.supportMedicalAid }}" target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-indigo-500/50 font-medium rounded-lg bg-indigo-900/20 hover:bg-indigo-800/40 hover:text-white hover:shadow-lg hover:shadow-indigo-500/20 transition-all duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <a href="{{ palestine.actions.supportMedicalAid }}" target="_blank" class="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-indigo-500/50 font-medium rounded-lg bg-indigo-900/20 hover:bg-indigo-800/40 hover:text-white hover:shadow-lg hover:shadow-indigo-500/20 transition-all duration-300 text-sm sm:text-base">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                     Support Medical Aid
@@ -45,22 +45,24 @@
             </div>
 
             <!-- Why I Stand -->
-            <div class="bg-zinc-900/50 p-6 rounded-lg border border-zinc-700/50 shadow-sm transition-all duration-200 hover:border-indigo-500/30 hover:shadow-indigo-500/10 text-left mb-6">
-                <h3 class="font-bold mb-2">Why I Stand With Gaza</h3>
-                <p class="text-zinc-400">
+            <div class="bg-zinc-900/50 p-4 sm:p-6 rounded-lg border border-zinc-700/50 shadow-sm transition-all duration-200 hover:border-indigo-500/30 hover:shadow-indigo-500/10 text-left mb-6">
+                <h3 class="font-bold mb-2 text-sm sm:text-base">Why I Stand With Gaza</h3>
+                <p class="text-zinc-400 text-xs sm:text-sm">
                     {{ palestine.whyIStand|safe }}
                 </p>
-                <a href="{% url 'blog' %}why-im-coding-for-gazas-truth" class="text-indigo-400 hover:text-indigo-300" aria-label="Learn more about Palestine resources">
+                <a href="{% url 'blog' %}why-im-coding-for-gazas-truth" class="text-indigo-400 hover:text-indigo-300 text-xs sm:text-sm" aria-label="Learn more about Palestine resources">
                     Learn more about my stance and resources
                 </a>
             </div>
 
             <!-- Sources -->
-            <div class="text-zinc-500 text-sm">
+            <div class="text-zinc-500 text-xs sm:text-sm">
                 Sources:
-                <a href="{{ palestine.statistics.peopleKilled.url }}" target="_blank" class="text-indigo-400 hover:text-indigo-300">[1] {{ palestine.statistics.peopleKilled.source }}</a>,
-                <a href="{{ palestine.statistics.peopleDisplaced.url }}" target="_blank" class="text-indigo-400 hover:text-indigo-300">[2] {{ palestine.statistics.peopleDisplaced.source }}</a>,
-                <a href="{{ palestine.statistics.peopleInjured.url }}" target="_blank" class="text-indigo-400 hover:text-indigo-300">[3] {{ palestine.statistics.peopleInjured.source }}</a>
+                <div class="space-y-1 sm:space-y-0 sm:inline">
+                    <a href="{{ palestine.statistics.peopleKilled.url }}" target="_blank" class="text-indigo-400 hover:text-indigo-300 block sm:inline">[1] {{ palestine.statistics.peopleKilled.source }}</a><span class="hidden sm:inline">,&nbsp;</span>
+                    <a href="{{ palestine.statistics.peopleDisplaced.url }}" target="_blank" class="text-indigo-400 hover:text-indigo-300 block sm:inline">[2] {{ palestine.statistics.peopleDisplaced.source }}</a><span class="hidden sm:inline">,&nbsp;</span>
+                    <a href="{{ palestine.statistics.peopleInjured.url }}" target="_blank" class="text-indigo-400 hover:text-indigo-300 block sm:inline">[3] {{ palestine.statistics.peopleInjured.source }}</a>
+                </div>
             </div>
         </div>
     </div>

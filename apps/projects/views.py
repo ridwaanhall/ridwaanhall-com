@@ -19,8 +19,8 @@ class BaseProjectsView(TemplateView):
         return AboutData.get_about_data()[0]
 
     def get_projects(self):
-        # Featured projects will appear first
-        return sorted(ProjectsData.projects, key=lambda p: not p.get('is_featured', False))
+        # Sort by featured status first, then by ID (highest to lowest)
+        return sorted(ProjectsData.projects, key=lambda p: (not p.get('is_featured', False), -p.get('id', 0)))
 
     def get_common_context(self):
         return {

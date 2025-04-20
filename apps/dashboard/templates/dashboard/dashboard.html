@@ -275,10 +275,10 @@
                         <span class="text-zinc-400 font-medium">Less</span>
                         <div class="flex space-x-0.5 sm:space-x-1">
                             <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-xs bg-zinc-900/90" title="0 contributions"></div>
-                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-xs bg-green-500/20" title="1-3 contributions"></div>
-                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-xs bg-green-500/50" title="4-9 contributions"></div>
-                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-xs bg-green-500/70" title="10-15 contributions"></div>
-                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-xs bg-green-500/90" title="16+ contributions"></div>
+                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-xs bg-green-600/20" title="1-3 contributions"></div>
+                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-xs bg-green-600/50" title="4-9 contributions"></div>
+                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-xs bg-green-600/90" title="10-15 contributions"></div>
+                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-xs bg-green-500" title="16+ contributions"></div>
                         </div>
                         <span class="text-zinc-400 font-medium">More</span>
                     </div>
@@ -389,10 +389,10 @@
             if (isFuture) return 'bg-zinc-950';
             
             if (contributions === 0) return 'bg-zinc-900/90';
-            if (contributions >= 1 && contributions <= 3) return 'bg-green-500/20';
-            if (contributions >= 4 && contributions <= 9) return 'bg-green-500/50';
-            if (contributions >= 10 && contributions <= 15) return 'bg-green-500/70';
-            return 'bg-green-500/90';
+            if (contributions >= 1 && contributions <= 3) return 'bg-green-600/20';
+            if (contributions >= 4 && contributions <= 9) return 'bg-green-600/50';
+            if (contributions >= 10 && contributions <= 15) return 'bg-green-600/90';
+            return 'bg-green-500';
         }
         
         /**

@@ -20,7 +20,9 @@
             </div>
             
             <div class="p-3 sm:p-4 flex flex-col flex-grow">
-                <h3 class="text-lg sm:text-xl font-bold mb-1 sm:mb-2 group-hover:text-indigo-400 transition-colors">{{ project.title }}</h3>
+                <h3 class="text-base sm:text-lg font-bold text-white mb-1 sm:mb-2 line-clamp-2 relative inline-block">
+                    <span class="relative transition-colors duration-300 group-hover:underline group-hover:underline-offset-4">{{ project.title }}</span>
+                </h3>
                 <p class="text-zinc-300 text-xs sm:text-sm flex-grow line-clamp-2 sm:line-clamp-3 mb-2 sm:mb-4">{{ project.headline }}</p>
                 
                 <div class="flex flex-wrap gap-1 sm:gap-2">

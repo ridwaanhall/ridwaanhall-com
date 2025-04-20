@@ -146,7 +146,7 @@ class ApplicationsData:
                 },
                 {
                     "title": "Tech Dive",
-                    "details": "Got into intern tasks—dope convo, but they forced my cam on while they stayed invisible.",
+                    "details": "Got into intern tasks—dope convo, but they asked my cam on while they stayed invisible.",
                     "notes": "<span class='text-red-600'>Cam on for me, theirs off? Weak, shady move, losers!</span>"
                 },
                 {

@@ -147,16 +147,10 @@
 
             <div class="mb-6 border-b border-zinc-700">
                 <div class="flex flex-nowrap min-w-full -mb-px text-sm font-medium text-center whitespace-nowrap">
-                    <button id="tab-applications" 
-                            onclick="switchTab('applications')" 
-                            class="inline-block p-2 sm:p-4 border-b-2 border-indigo-500 text-indigo-400 rounded-t-lg flex-1 sm:flex-none" 
-                            aria-selected="true" role="tab">
-                        Applications
-                    </button>
                     <button id="tab-experiences" 
-                            onclick="switchTab('experiences')" 
-                            class="inline-block p-2 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none" 
-                            aria-selected="false" role="tab">
+                            onclick="switchTab('experiences')"
+                            class="inline-block p-2 sm:p-4 border-b-2 border-indigo-500 text-indigo-400 rounded-t-lg flex-1 sm:flex-none"  
+                            aria-selected="true" role="tab">
                         Experiences
                     </button>
                     <button id="tab-education" 
@@ -171,27 +165,33 @@
                             aria-selected="false" role="tab">
                         Certifications
                     </button>
+                    <button id="tab-applications" 
+                            onclick="switchTab('applications')" 
+                            class="inline-block p-2 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none" 
+                            aria-selected="false" role="tab">
+                        Applications
+                    </button>
                 </div>
             </div>
 
             <div class="tab-content w-full">
-                <div id="content-applications" class="block w-full">
-                    {% include 'career/applications.html' %}
-                </div>
-                <div id="content-experiences" class="hidden w-full">
+                <div id="content-experiences" class="block w-full">
                     {% if experiences %}
                         {% include 'career/experiences.html' %}
                     {% endif %}
                 </div>
                 <div id="content-education" class="hidden w-full">
                     {% if education %}
-                        {% include 'career/education.html' %}
+                    {% include 'career/education.html' %}
                     {% endif %}
                 </div>
                 <div id="content-certifications" class="hidden w-full">
                     {% if certifications %}
-                        {% include 'career/certifications.html' %}
+                    {% include 'career/certifications.html' %}
                     {% endif %}
+                </div>
+                <div id="content-applications" class="hidden w-full">
+                    {% include 'career/applications.html' %}
                 </div>
             </div>
 
@@ -205,10 +205,10 @@
     
     function switchTab(tabName) {
         const tabOrder = {
-            'applications': 1,
-            'experiences': 2,
-            'education': 3,
-            'certifications': 4
+            'experiences': 1,
+            'education': 2,
+            'certifications': 3,
+            'applications': 4
         };
         
         const currentActive = document.querySelector('.tab-content > div:not(.hidden)');

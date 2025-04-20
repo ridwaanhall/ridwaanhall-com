@@ -1391,7 +1391,7 @@ class ProjectsData:
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/neon_ai.webp", 
             "github_url": "https://github.com/ridwaanhall/neon-ai",
-            "demo_url": "https://ridwaanhall-ai.vercel.app",
+            "demo_url": "https://chat.ridwaanhall.com",
             "is_featured": False,
             "features": [
                 {
@@ -1427,7 +1427,7 @@ class ProjectsData:
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/instagram_following_followers.webp",
             "github_url": "https://github.com/ridwaanhall/instagram-following-followers",
-            "demo_url": "https://instagram-following-followers.vercel.app",
+            "demo_url": "https://igstats.ridwaanhall.com",
             "is_featured": False,
             "features": [
                 {
@@ -1461,7 +1461,7 @@ class ProjectsData:
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/lumina.webp",
             "github_url": "https://github.com/ridwaanhall/Lumina",
-            "demo_url": "https://lupa-presensi.vercel.app",
+            "demo_url": "https://lumina.ridwaanhall.com",
             "is_featured": False,
             "features": [
                 {
@@ -1571,7 +1571,7 @@ class ProjectsData:
                 "The site breaks down complex data for casual players, with tips on hero matchups, builds, and counters based on the latest meta."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/mobile_legends_bang_bang_api_and_website.webp",
-            "demo_url": "https://api-mobilelegends.vercel.app/",
+            "demo_url": "https://mlbb-stats.ridwaanhall.com/",
             "github_url": "https://github.com/ridwaanhall/api-mobilelegends",
             "is_featured": True,
             "features": [
@@ -1608,9 +1608,9 @@ class ProjectsData:
                 "Caching and optimizations keep it fast even with heavy traffic, and the docs make it a breeze to use."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/api_pddikti_kemendiksaintek.webp",
-            "demo_url": "https://pddikti-docs.vercel.app/",
+            "demo_url": "https://pddikti-docs.ridwaanhall.com/",
             "github_url": "https://github.com/ridwaanhall/api-pddikti",
-            "is_featured": False,
+            "is_featured": True,
             "features": [
                 {
                     "title": "Edu Data",

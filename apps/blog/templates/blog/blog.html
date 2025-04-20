@@ -143,7 +143,7 @@
                                         <div class="flex items-center space-x-2 mb-2 sm:mb-3">
                                             <time datetime="{{ blog.updated_at|date:'c' }}" class="font-mono text-xs">{{ blog.updated_at|date:"g:i A T, D F j, Y" }}</time>
                                         </div>
-                                        <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2"><a href="{% url 'blog_detail' title=blog.title|slugify %}" class="relative inline-block after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-zinc-400 hover:after:w-full after:transition-all after:duration-300">{{ blog.title }}</a></h2>
+                                        <h2 class="text-lg sm:text-xl md:text-2xl font-bold mb-1 sm:mb-2"><a href="{% url 'blog_detail' title=blog.title|slugify %}" class="relative inline-block after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-zinc-400 hover:after:w-full after:transition-all after:duration-300">{{ blog.title }}</a></h2>
                                         <p class="text-zinc-300 text-sm mb-2 sm:mb-4 line-clamp-2">{{ blog.description }}</p>
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center space-x-2 sm:space-x-3">
@@ -158,12 +158,12 @@
                         </div>
                         
                         <div class="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 z-30 flex space-x-1 sm:space-x-2">
-                            <button class="slider-nav prev bg-black/60 hover:bg-indigo-600 text-white w-8 h-8 sm:w-10 sm:h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-zinc-800 transform hover:scale-105" title="Previous Slide">
+                            <button class="slider-nav prev bg-black/60 hover:bg-indigo-600 w-8 h-8 sm:w-10 sm:h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-zinc-800 transform hover:scale-105" title="Previous Slide">
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                 </svg>
                             </button>
-                            <button class="slider-nav next bg-black/60 hover:bg-indigo-600 text-white w-8 h-8 sm:w-10 sm:h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-zinc-800 transform hover:scale-105" title="Next Slide">
+                            <button class="slider-nav next bg-black/60 hover:bg-indigo-600 w-8 h-8 sm:w-10 sm:h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-zinc-800 transform hover:scale-105" title="Next Slide">
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
@@ -181,7 +181,7 @@
                 <div class="mt-4 sm:mt-6 mb-4 sm:mb-6">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-6">
                         <div>
-                            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight">Latest <span class="text-indigo-400">Blogs</span></h1>
+                            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 tracking-tight">Latest <span class="text-indigo-400">Blogs</span></h1>
                             <p class="mt-1 sm:mt-2 text-sm sm:text-base md:text-lg text-zinc-300 leading-relaxed">Dive into my blogs—tutorials, AI insights, and tech thoughts crafted to spark ideas and solve problems.</p>
                         </div>
                     </div>
@@ -212,7 +212,7 @@
                                 
                                 <div class="flex-grow"></div>
                                 
-                                <h3 class="text-base sm:text-lg font-bold text-white mb-1 sm:mb-2 line-clamp-2 relative inline-block">
+                                <h3 class="text-base sm:text-lg font-bold mb-1 sm:mb-2 line-clamp-2 relative inline-block">
                                     <span class="relative transition-colors duration-300 group-hover:underline group-hover:decoration-2">{{ blog.title }}</span>
                                 </h3>
                                 <p class="text-zinc-300 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 mb-2">{{ blog.description }}</p>
@@ -276,7 +276,7 @@
                             {% for num in paginator.page_range %}
                                 {% if blogs.number == num %}
                                     <li>
-                                        <span aria-current="page" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md bg-indigo-600 text-white text-sm font-medium">
+                                        <span aria-current="page" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md bg-indigo-600 text-sm font-medium">
                                             {{ num }}
                                         </span>
                                     </li>

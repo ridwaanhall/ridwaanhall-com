@@ -61,7 +61,7 @@ class UpdatedAtData:
             {
                 "page": "career",
                 "updated_at": cls.get_latest_modified_date([
-                    "apps/data/applications_data.py",
+                    # "apps/data/applications_data.py",
                     "apps/data/experiences_data.py",
                     "apps/data/education_data.py",
                     "apps/data/certifications_data.py",

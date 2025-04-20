@@ -237,6 +237,29 @@ class ApplicationsData:
             'lessons_learned': 'Same deal—craft a laser-focused resume to dodge those screening bots.'
         },
         {
+            "company_name": "Copilot ID",
+            "status": "Accepted",
+            "position": "Founder",
+            "journey": [
+                {
+                    "title": "Dream Spark",
+                    "details": "Got this wild idea to start a company vibin’ with my love for Python, ML, DL, and web dev.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Name Hunt",
+                    "details": "Brainstormed a dope name that screams my passion—boom, Copilot ID was born!",
+                    "notes": "-"
+                },
+                {
+                    "title": "Founder Vibes",
+                    "details": "Stepped up as the founder, ready to hustle and make waves!",
+                    "notes": "-"
+                }
+            ],
+            "lessons_learned": "Chase your passion and give it a name—your vision’s gotta start somewhere!"
+        },
+        {
             'company_name': 'GaoTek Inc.',
             'status': 'Accepted',
             'position': 'Assistant Squad Leader of Web Developer Intern',
@@ -253,6 +276,24 @@ class ApplicationsData:
                 },
             ],
             'lessons_learned': 'Grind hard, and the big roles come knocking—performance pays off!'
+        },
+        {
+            "company_name": "GAOTek Inc.",
+            "status": "Accepted",
+            "position": "Main Team of Web Developer Intern",
+            "journey": [
+                {
+                    "title": "Intern Grind",
+                    "details": "Crushed my internship tasks like a boss, putting in that work.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Level Up",
+                    "details": "My performance was straight fire, so they bumped me to the main web dev team!",
+                    "notes": "-"
+                }
+            ],
+            "lessons_learned": "Go hard on your tasks—good vibes and hustle get you noticed!"
         },
         {
             'company_name': 'GaoTek Inc.',
@@ -282,4 +323,68 @@ class ApplicationsData:
             ],
             'lessons_learned': 'Keep your LinkedIn and CV fresh—doors open when you’re ready!'
         },
+        {
+            "company_name": "YoungDev",
+            "status": "Accepted",
+            "position": "Machine Learning Intern",
+            "journey": [
+                {
+                    "title": "LinkedIn Scroll",
+                    "details": "Spotted a ML intern gig on LinkedIn that matched my vibe.",
+                    "notes": "-"
+                },
+                {
+                    "title": "CV Yeet",
+                    "details": "Shot my CV over, hyped to level up my ML knowledge.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Group Chat Poppin’",
+                    "details": "Got accepted and slid into the WhatsApp group for the deets.",
+                    "notes": "-"
+                }
+            ],
+            "lessons_learned": "Stay active on LinkedIn and shoot your shot—opportunities are out there!"
+        },
+        {
+            "company_name": "iNeuron.ai",
+            "status": "Accepted",
+            "position": "Machine Learning Intern",
+            "journey": [
+                {
+                    "title": "Website Find",
+                    "details": "Stumbled on an intern post while surfin’ iNeuron’s site.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Sign-Up Swag",
+                    "details": "Applied for the ML intern gig and got the green light!",
+                    "notes": "-"
+                },
+                {
+                    "title": "Task Mode",
+                    "details": "Got tasks to tackle, but I’m juggling other stuff since this gig’s chill and flexible.",
+                    "notes": "-"
+                }
+            ],
+            "lessons_learned": "Flexible gigs are dope—grab ‘em, but balance your hustle!"
+        },
+        {
+            "company_name": "Imaarotu Syu'unith Tholabah",
+            "status": "Accepted",
+            "position": "Deputy of Da'wah",
+            "journey": [
+                {
+                    "title": "Boarding School Buzz",
+                    "details": "Hit senior year at boarding school, and it was time for the big org handover.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Ustadz Call",
+                    "details": "Teachers (ustadz) picked the roles, and I got tapped for Deputy of Da’wah!",
+                    "notes": "-"
+                }
+            ],
+            "lessons_learned": "Show up and shine—sometimes the big roles find you!"
+        }
     ]

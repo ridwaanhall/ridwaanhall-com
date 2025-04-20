@@ -52,44 +52,44 @@ class ApplicationsData:
             'company_name': 'HashMicro',
             'status': 'Ghosting',
             'position': 'Python Developer (Django)',
-            'journey': [
+            "journey": [
                 {
-                    'title': 'LinkedIn DM',
-                    'details': 'HR slid into my LinkedIn with an interview link—game on!',
-                    'notes': '-'
+                    "title": "LinkedIn DM",
+                    "details": "HR slid into my LinkedIn with some interview link—thought it was lit!",
+                    "notes": "-"
                 },
                 {
-                    'title': 'Tech Chat',
-                    'details': 'Geeked out on Django class vs function views and talked salary. Had to turn my cam on, but theirs stayed off—odd.',
-                    'notes': '<span class="text-red-600">Only my camera was on—kinda weird vibe</span>'
+                    "title": "Tech Talk",
+                    "details": "Got deep into Django class vs function views, hashed out salary. They forced my cam on, but theirs? Pitch fucking black—shady as hell.",
+                    "notes": "<span class='text-red-600'>Just my face on? What a fucking cowardly move, HR!</span>"
                 },
                 {
-                    'title': 'Official Apply',
-                    'details': 'Told to apply through their website—done deal',
-                    'notes': '-'
+                    "title": "Official Apply",
+                    "details": "Told to apply through their shitty website—done, no sweat.",
+                    "notes": "-"
                 },
                 {
-                    'title': 'Brain Teasers',
-                    'details': 'Tackled a logic test and coding challenge—sweated a bit!',
-                    'notes': '-'
+                    "title": "Brain Teasers",
+                    "details": "Smashed a logic test and coding challenge—fucking nailed it!",
+                    "notes": "-"
                 },
                 {
-                    'title': 'Client Meet',
-                    'details': 'Final interview with the user team—same deal, my cam on, theirs off',
-                    'notes': '<span class="text-red-600">Again, just my camera—come on, really?</span>'
+                    "title": "Client Meet",
+                    "details": "Final round with the user team—guess what? My cam’s on, theirs off. Again. Total bullshit.",
+                    "notes": "<span class='text-red-600'>Solo cam vibes? Fucking disrespectful pricks!</span>"
                 },
                 {
-                    'title': 'Waiting Game',
-                    'details': 'Now just chilling for their decision—wish me luck!',
-                    'notes': '-'
+                    "title": "Waiting Game",
+                    "details": "Now just chilling, waiting for their damn decision—bet it’s gonna suck.",
+                    "notes": "-"
                 },
                 {
-                    'title': 'Vanished',
-                    'details': 'No word after the final interview—total ghost mode',
-                    'notes': '<span class="text-red-600">Ghosted with no heads-up—lame</span>'
+                    "title": "Fucking Vanished",
+                    "details": "No word after the final interview—ghosted like a bunch of spineless assholes.",
+                    "notes": "<span class='text-red-600'>Dipped with no fucking update? Pathetic shitshow!</span>"
                 }
             ],
-            'lessons_learned': '<span class="text-red-600 font-bold">Camera on for me, off for you?</span> Respect’s not one-sided. HR, grow a pair: <span class="text-blue-600 font-bold">tell candidates they’re out</span>. <span class="text-orange-600 font-bold">Ghosting’s for gutless wonders</span>. This HR’s a <span class="underline decoration-red-400 decoration-2">clown show</span>.'
+            "lessons_learned": "<span class='text-red-600 font-bold'>Cam on for me, but you’re hiding like cowards?</span> Respect’s a two-way fucking street. HR, grow some damn balls: <span class='text-blue-600 font-bold'>tell candidates you’re screwing them over</span>. <span class='text-orange-600 font-bold'>Ghosting’s for gutless fucking losers</span>. This HR’s a <span class='underline decoration-red-400 decoration-2'>straight-up clown-ass disaster</span>."
         },
         {
             'company_name': 'indigoshi Digital Indonesia',
@@ -133,29 +133,29 @@ class ApplicationsData:
             'company_name': 'Shortlyst AI',
             'status': 'Ghosting',
             'position': 'Backend Engineer Intern',
-            'journey': [
+            "journey": [
                 {
-                    'title': 'First Contact',
-                    'details': 'Got a LinkedIn ping about a backend internship—sweet!',
-                    'notes': '-'
+                    "title": "First Contact",
+                    "details": "HR hit my LinkedIn with some backend intern bait—thought it was fucking dope!",
+                    "notes": "-"
                 },
                 {
-                    'title': 'Kickoff Chat',
-                    'details': 'Talked about my background and projects—good vibes',
-                    'notes': '-'
+                    "title": "Kickoff Chat",
+                    "details": "Chatted up my projects and skills—vibes were solid, no cap.",
+                    "notes": "-"
                 },
                 {
-                    'title': 'Tech Dive',
-                    'details': 'Discussed intern tasks—fun convo, but I had to cam up while they didn’t',
-                    'notes': '<span class="text-red-600">Cam on for me, off for them—ugh</span>'
+                    "title": "Tech Dive",
+                    "details": "Dug into intern tasks—cool talk, but they made me turn my cam on while they hid like fucking cowards.",
+                    "notes": "<span class='text-red-600'>Cam on for me, theirs off? Shitty asshole move!</span>"
                 },
                 {
-                    'title': 'Vanished',
-                    'details': 'No word after that—total ghost mode',
-                    'notes': '<span class="text-red-600">Ghosted with no heads-up—lame</span>'
-                },
+                    "title": "Fucking Vanished",
+                    "details": "Not a damn peep after that—ghosted me like spineless pricks.",
+                    "notes": "<span class='text-red-600'>Ditched with no word? Fucking pathetic trash!</span>"
+                }
             ],
-            'lessons_learned': 'Preaching professionalism but pulling a Houdini? Nah. Respect candidates’ time, and your rep stays solid.'
+            "lessons_learned": "<span class='text-red-600 font-bold'>Talk big about professionalism but pull a disappearing act?</span> Fuck that noise. HR, quit being gutless assholes: <span class='text-blue-600 font-bold'>give candidates a damn heads-up</span>. <span class='text-orange-600 font-bold'>Ghosting’s for fucking lowlife scum</span>. This company’s a <span class='underline decoration-red-400 decoration-2'>straight-up shitshow circus</span>."
         },
         {
             'company_name': 'Speechify',

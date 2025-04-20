@@ -484,12 +484,12 @@
             contributionGrid.style.gridTemplateRows = `repeat(${DAYS_IN_WEEK}, minmax(0, 1fr))`;
             
             // Set gap dynamically based on screen size
-            const gap = window.innerWidth < 640 ? '0.5px' : '1px';
+            const gap = window.innerWidth < 640 ? '1px' : '1.5px';
             contributionGrid.style.gap = gap;
             
             // Handle resize events for responsive gap
             window.addEventListener('resize', function() {
-                contributionGrid.style.gap = window.innerWidth < 640 ? '0.5px' : '1px';
+                contributionGrid.style.gap = window.innerWidth < 640 ? '1px' : '1.5px';
             });
             
             const cells = [];

@@ -225,7 +225,7 @@ class ProjectsData:
                 "image_url": f"{settings.BASE_URL}/static/img/project/mobile_legends_bang_bang_api_and_website.webp",
                 "demo_url": "https://api-mobilelegends.vercel.app/",
                 "github_url": "https://github.com/ridwaanhall/api-mobilelegends",
-                "is_featured": False,
+                "is_featured": True,
                 "features": [
                     {
                         "title": "Game API",
@@ -248,7 +248,7 @@ class ProjectsData:
                     tech_stack["shadcn_ui"],
                     tech_stack["vercel"]
                 ],
-                "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                "updated_at": datetime.strptime("2025-04-20T14:24:22+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             },
             {
                 "id": 5,
@@ -579,5 +579,42 @@ class ProjectsData:
                     tech_stack["python"]
                 ],
                 "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            },
+            {
+                "id": 14,
+                "title": "OpenShop RESTful API",
+                "headline": "RESTful API for managing products with Django REST Framework.",
+                "description": [
+                    "A slick RESTful API to handle product data like a pro, built with Django REST Framework.",
+                    "Supports creating, reading, updating, deleting, and searching products with full CRUD and HATEOAS vibes.",
+                    "Includes soft delete, data validation, and proper status codes for a smooth experience."
+                ],
+                "image_url": f"{settings.BASE_URL}/static/img/project/openshop_restful_api.webp",
+                "github_url": "https://github.com/ridwaanhall/a743-backend-pemula-python/tree/submission",
+                "is_featured": False,
+                "features": [
+                    {
+                        "title": "Full CRUD",
+                        "description": "Create, read, update, and delete products with ease."
+                    },
+                    {
+                        "title": "Search by Name",
+                        "description": "Find products by name with a clean query."
+                    },
+                    {
+                        "title": "HATEOAS Links",
+                        "description": "Navigate resources with embedded API links."
+                    },
+                    {
+                        "title": "Soft Delete",
+                        "description": "Mark products as deleted without losing data."
+                    }
+                ],
+                "tech_stack": [
+                    tech_stack["python"],
+                    tech_stack["django"],
+                    tech_stack["django_rest_framework"]
+                ],
+                "updated_at": datetime.strptime("2025-04-20T14:53:55+07:00", "%Y-%m-%dT%H:%M:%S%z")
             }
         ]

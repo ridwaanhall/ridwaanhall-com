@@ -211,23 +211,23 @@ class BlogData:
         },
         {
             "id": 11,
-            "title": "Surviving Internet Fun in 2025",
-            "description": "Internet’s super wild in 2025! Funny memes, AI videos, and silly words everywhere. Here’s how I keep up without going crazy!",
-            "image_url": f"{settings.BASE_URL}/static/img/blog/internet_trends_2025.webp",
-            "created_at": datetime.strptime("2025-04-17T16:26:34+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-            "updated_at": datetime.strptime("2025-04-17T16:26:34+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "title": "What’s Good with Brainrot in 2025?",
+            "description": "Brainrot’s takin’ over the internet in 2025, and it’s WILD! From cursed memes to AI vids and slang that’s got no chill, here’s the tea on what brainrot is and how to not lose your mind in the chaos.",
+            "image_url": f"{settings.BASE_URL}/static/img/blog/brainrot_explained_2025.webp",
+            "created_at": datetime.strptime("2025-04-21T20:24:34+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-21T20:24:34+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             "author": "Ridwan Halim",
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "content": [
-                "Wow, the internet in 2025 is like a <span class='text-purple-600'>big, crazy party</span>! One second, I’m on X looking at cool <span class='text-red-600'>AI tricks</span>. Then, boom, I see funny videos like dancing toilets or cats with silly hats. They call these <span class='text-red-600'>brainrot memes</span>. I laugh so hard, but I gotta stay focused or my brain gets all dizzy!",
-                "Next up, <span class='text-blue-600'>AI stuff</span> is super big. My buddy Grok 3 makes awesome videos, like funny TikToks or X posts that everyone loves. It’s like magic! But sometimes I’m like, ‘Wait, is this a robot or my friend posting?’ It’s tricky, but so cool for making fun stuff on my blog at <span class='text-blue-600'>ridwaanhall.com</span>. I even tried making an AI meme at my coding camp, and the kids went wild!",
-                "Oh, and <span class='text-green-600'>funny words</span> are everywhere! People say ‘rizz’ for cool guys or ‘Ohio’ for weird stuff. I learned these at my Coding Camp in Bandung (yep, where I teach!). I said ‘silly goose’ in class, and my students couldn’t stop giggling. You can use these words in blogs to make people smile, but don’t use too many, or it’s too much, and you’re in trouble!",
-                "I also love <span class='text-yellow-600'>X posts</span>. They show me what’s hot, like AI news, funny Indonesian jokes, or even cool tech ideas. I pick the best ones so I don’t get lost in boring stuff. It’s like having a superhero filter for my phone! I found a meme about coding that I shared on my site, and people loved it. Gotta keep that X feed clean, you know?",
-                "So, how do I handle all this internet craziness? I use <span class='text-purple-600'>smart tricks</span> and stay super chill. I write about tech, faith, and fun on <span class='text-blue-600'>ridwaanhall.com</span>. Like, I made a post about Python and added a silly meme to make it fun. Mixing brainrot with smart stuff keeps my blog happy and my readers smiling. Let’s keep the good vibes, fam!",
-                "One last tip: don’t get stuck in the internet jungle! Pick one or two fun things, like a cool meme or a new word, and share it. I learned this when I got lost watching too many AI cat videos. Now I balance it with my coding work and faith stuff. You can do it too—stay wavy and have fun!"
+                "Yo, <span class='text-purple-600'>brainrot</span> is the internet’s wildest flex in 2025, and it’s got us all actin’ unwise! It’s what happens when you’re deep in the scroll, drownin’ in <span class='text-red-600'>cursed memes</span>, AI vids, and slang that hits like a fever dream. Your brain’s like, ‘Bruh, I’m fried!’ Here’s the 411 on this digital chaos and how to keep your vibes high without crashin’. Check my blog at <span class='text-blue-600'>ridwaanhall.com</span> for more!",
+                "<span class='text-blue-600'>What even is brainrot?</span> Straight-up, it’s like your brain’s gettin’ roasted by too much internet sauce. Think scrollin’ X or TikTok for hours, vibin’ with <span class='text-red-600'>absurd content</span> that’s funny but kinda pointless. It’s those moments when you’re laughin’ at a meme but forget how to think deep. My Coding Camp kids in Bandung call it ‘brain lag’—and they’re not wrong!",
+                "In 2025, brainrot’s poppin’ off with <span class='text-green-600'>next-level chaos</span>. We got <span class='text-red-600'>Italian Brainrot memes</span> like **Bombardiro Crocodilo** (a freakin’ croc with a jet bod) or **Tung Tung Tung Sahur** (a kentongan with a face, no cap). Then there’s <span class='text-blue-600'>AI vids</span>—Grok 3’s out here droppin’ TikToks that keep you glued to your screen. And don’t sleep on slang like ‘rizz’ for smooth moves or ‘Ohio’ for anything cursed. I tried ‘rizzler’ in class, and my students were SCREAMIN’!",
+                "But here’s the tea: brainrot can <span class='text-yellow-600'>mess you up</span>. Too much of it, and your brain’s on snooze mode—<span class='text-red-600'>no critical thinking</span>, just vibes. It kills your grind, too; I lost a whole afternoon to AI cat vids once, oops. Plus, it can stress you out when you realize you can’t focus. I felt that when I got stuck in a meme loop instead of preppin’ my coding lessons. Gotta stay woke!",
+                "So, how do you <span class='text-purple-600'>survive the brainrot wave</span>? Keep it chill and picky with your content. I mix fun stuff with smart posts on <span class='text-blue-600'>ridwaanhall.com</span>—like droppin’ a Python tutorial with a side of silly memes. Curate your X feed for the good stuff: Indo jokes, tech hacks, or faith inspo. And take breaks—go code, pray, or just touch grass. My camp kids keep me grounded; they’re out here learnin’ while I’m dodgin’ brainrot traps!",
+                "Real talk: brainrot’s part of the 2025 internet vibe, but you can <span class='text-green-600'>run the game</span> instead of lettin’ it run you. Pick one or two fire memes or slang words, flex ‘em, and move on. I learned this after sharin’ a coding meme that popped off on X. Balance the goofy with the glow-up, and you’re golden. So, you ever caught yourself in a brainrot spiral? Drop your story, fam—let’s vibe! 😎"
             ],
-            "tags": ["Internet Trends", "Brainrot Memes", "AI Videos", "Funny Words", "Tech Fun", "X Posts", "Indonesian Memes"],
+            "tags": ["Brainrot 101", "Internet Chaos", "Absurd Memes", "AI Vibes", "Slang Game", "Tech Life", "Indo Internet"],
             "is_featured": False
         }
     ]

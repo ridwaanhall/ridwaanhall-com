@@ -248,17 +248,17 @@
                 
                 <!-- Pagination -->
                 {% if is_paginated %}
-                <div class="mt-6 sm:mt-10 mb-4 sm:mb-6">
+                <div class="mt-4">
                     <nav class="flex justify-center" aria-label="Pagination">
-                        <ul class="inline-flex items-center gap-1 rounded-lg bg-transparent p-1 backdrop-blur-sm border border-zinc-700/70">
+                        <ul class="inline-flex items-center gap-0.5 sm:gap-1 rounded-lg bg-zinc-800/30 p-0.5 sm:p-1 backdrop-blur-sm border border-zinc-700/50">
                             <!-- Previous page -->
                             {% if blogs.has_previous %}
                                 <li>
                                     <a href="?page={{ blogs.previous_page_number }}" 
-                                    class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-indigo-500/20 hover:text-indigo-300"
-                                    aria-label="Previous page">
+                                       class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-indigo-500/20 hover:text-indigo-300"
+                                       aria-label="Previous page">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
                                         </svg>
                                     </a>
                                 </li>
@@ -266,33 +266,29 @@
                                 <li>
                                     <span class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm text-zinc-500 cursor-not-allowed" aria-disabled="true">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
                                         </svg>
                                     </span>
                                 </li>
                             {% endif %}
                             
-                            <!-- Page numbers - show fewer numbers on mobile -->
+                            <!-- Page numbers -->
                             {% for num in paginator.page_range %}
-                                {% if blogs.number == num %}
+                                {% if num == blogs.number %}
                                     <li>
-                                        <span aria-current="page" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md bg-indigo-600 text-sm font-medium">
+                                        <span aria-current="page" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md bg-indigo-600 text-xs sm:text-sm font-medium">
                                             {{ num }}
                                         </span>
                                     </li>
-                                {% elif num > blogs.number|add:'-2' and num < blogs.number|add:'2' or forloop.first or forloop.last %}
+                                {% elif num == 1 or num == paginator.num_pages or num > blogs.number|add:'-3' and num < blogs.number|add:'3' %}
                                     <li>
-                                        <a href="?page={{ num }}" 
-                                        class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm text-zinc-300 transition-all hover:bg-indigo-500/20 hover:text-white">
+                                        <a href="?page={{ num }}" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-xs sm:text-sm text-zinc-300 transition-all hover:bg-indigo-500/20 hover:text-indigo-300">
                                             {{ num }}
                                         </a>
                                     </li>
-                                {% elif num == blogs.number|add:'-2' or num == blogs.number|add:'2' %}
-                                    <li class="hidden sm:block">
-                                        <a href="?page={{ num }}" 
-                                        class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm text-zinc-300 transition-all hover:bg-indigo-500/20 hover:text-white">
-                                            {{ num }}
-                                        </a>
+                                {% elif num == 2 and blogs.number > 4 or num == paginator.num_pages|add:'-1' and blogs.number < paginator.num_pages|add:'-3' %}
+                                    <li>
+                                        <span class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center">...</span>
                                     </li>
                                 {% endif %}
                             {% endfor %}
@@ -301,10 +297,10 @@
                             {% if blogs.has_next %}
                                 <li>
                                     <a href="?page={{ blogs.next_page_number }}" 
-                                    class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-indigo-500/20 hover:text-indigo-300"
-                                    aria-label="Next page">
+                                       class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-indigo-500/20 hover:text-indigo-300"
+                                       aria-label="Next page">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                                         </svg>
                                     </a>
                                 </li>
@@ -312,7 +308,7 @@
                                 <li>
                                     <span class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm text-zinc-500 cursor-not-allowed" aria-disabled="true">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                                         </svg>
                                     </span>
                                 </li>

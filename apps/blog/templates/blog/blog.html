@@ -158,12 +158,12 @@
                         </div>
                         
                         <div class="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 z-30 flex space-x-1 sm:space-x-2">
-                            <button class="slider-nav prev bg-black/60 hover:bg-indigo-600 w-8 h-8 sm:w-10 sm:h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-zinc-800 transform hover:scale-105" title="Previous Slide">
+                            <button class="slider-nav prev bg-black/60 hover:bg-indigo-600 w-8 h-8 sm:w-10 sm:h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105" title="Previous Slide">
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                 </svg>
                             </button>
-                            <button class="slider-nav next bg-black/60 hover:bg-indigo-600 w-8 h-8 sm:w-10 sm:h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-zinc-800 transform hover:scale-105" title="Next Slide">
+                            <button class="slider-nav next bg-black/60 hover:bg-indigo-600 w-8 h-8 sm:w-10 sm:h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105" title="Next Slide">
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
@@ -172,7 +172,11 @@
                         
                         <div class="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex space-x-1 sm:space-x-2">
                             {% for blog in featured_blogs %}
-                                <button class="slider-dot w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white/50 hover:bg-white transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Slide {{ forloop.counter0 }}"></button>
+                                {% if forloop.first %}
+                                <button class="slider-dot bg-white w-4 h-1.5 sm:h-2 rounded-full hover:bg-white transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Slide {{ forloop.counter }}"></button>
+                                {% else %}
+                                <button class="slider-dot bg-white/50 w-1.5 h-1.5 sm:h-2 rounded-full hover:bg-white transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Slide {{ forloop.counter }}"></button>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>
@@ -348,12 +352,20 @@
             sliderWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
             
             // Update dots
-            dots.forEach((dot, i) => {
-                dot.classList.toggle('bg-white', i === currentIndex);
-                dot.classList.toggle('bg-white/50', i !== currentIndex);
-                dot.classList.toggle('w-4', i === currentIndex);
-                dot.classList.toggle('w-2', i !== currentIndex);
-            });
+                dots.forEach((dot, i) => {
+                    // Handle background color
+                    dot.classList.toggle('bg-white', i === currentIndex);
+                    dot.classList.toggle('bg-white/50', i !== currentIndex);
+                    
+                    // Handle width classes correctly
+                    if (i === currentIndex) {
+                        dot.classList.add('w-4');
+                        dot.classList.remove('w-1.5');
+                    } else {
+                        dot.classList.remove('w-4');
+                        dot.classList.add('w-1.5');
+                    }
+                });
         }
         
         // Event listeners

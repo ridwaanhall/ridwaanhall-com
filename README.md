@@ -60,9 +60,8 @@ My site’s *fast* AF, optimized for all devices, and flexing near-perfect score
 | About Me | My story, skills, and professional vibe in one spot. |
 | Blog/Articles | Dropping knowledge and hot takes on tech and more. |
 | Resume/CV | My work history and skills, ready to impress. |
-| Skills Showcase | Visual flex of what I bring to the table. |
 | Social Media | Links to my profiles so you can slide into my DMs. |
-| SEO Game | Optimized so Google can’t miss me. 🔍 |
+| SEO Game | Optimized so Google and Bing can’t miss me. 🔍 |
 
 ## Get It Running
 

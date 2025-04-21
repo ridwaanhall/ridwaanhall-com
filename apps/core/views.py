@@ -110,7 +110,7 @@ class AboutView(BasePortfolioView):
             'about': about,
             'seo': self.get_seo_data(
                 title=f"Get to Know {about['name']} - My Story",
-                description=f"Curious about me? Here’s a peek into my journey, skills, and what I’m all about. {about.get('short_description', '')}",
+                description="Curious about me? Here’s a peek into my journey, skills, and what I’m all about.",
                 keywords=f"{about['username']}, my story, skills, experience, career, learning, vibes",
                 og_type='profile'
             ),

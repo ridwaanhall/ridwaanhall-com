@@ -16,6 +16,8 @@ class AboutData:
         return [
             {
                 "name": "Ridwan Halim",
+                "first_name": "Ridwan",
+                "last_name": "Halim",
                 "username": "ridwaanhall",
                 "image_url": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
                 "personal_website": "https://ridwaanhall.com",

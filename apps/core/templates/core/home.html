@@ -149,7 +149,7 @@
                             "name": "{{ about.name|default:"N/A" }}",
                             "username": "{{ about.username|default:"N/A" }}",
                             "image": "{{ about.image_url|default:"N/A" }}",
-                            "url": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/"
+                            "url": "{{ request.scheme|default:'N/A' }}://{{ request.get_host|default:'N/A' }}/"
                         },
                         "keywords": "featured project, {% for tech in project.tech_stack %}{{ tech.name|join:'' }}{% if not forloop.last %}, {% endif %}{% endfor %}"
                     }
@@ -209,20 +209,25 @@
     <main class="px-4 py-6 md:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             
-            <div class="relative mb-8">
-                <div class="flex flex-col lg:flex-row items-center gap-2 lg:gap-6">
-
-                    <div class="flex-1 space-y-4 sm:space-y-5 text-center lg:text-left">
-                        <div>
-                            <p class="inline-block mb-2 sm:mb-3 rounded-full bg-sky-900/20 px-3 py-1 text-sm font-semibold text-sky-300 border border-sky-900 uppercase">{{ about.role }}</p>
-                            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">Hi, <span class="text-indigo-400">Welcome!</span></h1>
+            <section class="py-0">
+                <div class="mx-auto lg:mx-0">
+                    <!-- Hero content with simplified structure -->
+                    <div class="text-center lg:text-left">
+                        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
+                            Hi, I'm <span class="text-indigo-400">{{ about.first_name }}</span>
+                        </h1>
+                        
+                        <div class="flex flex-wrap items-center justify-center lg:justify-start my-3">
+                            <span class="text-sky-400 font-semibold">{{ about.role }}</span>
+                            <span class="mx-2">•</span>
+                            <span>{{ about.location.prov }}, {{ about.location.country }}</span>
                         </div>
                         
-                        <p class="text-zinc-300 text-base sm:text-lg max-w-xl mx-auto lg:mx-0">
-                            {{ about.short_description }}
+                        <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed mb-4">
+                            {% if about.short_description|length > 0 %}{{ about.short_description }} {{ about.short_bio }}{% else %}I am a passionate software engineer with a focus on building impactful solutions. I love to explore new technologies and share my knowledge through writing and open-source contributions.{% endif %}
                         </p>
                         
-                        <div class="flex flex-wrap justify-center lg:justify-start gap-2 sm:gap-3 mt-4 sm:mt-6">
+                        <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                             <a href="{{ about.cv }}" class="group flex items-center px-4 sm:px-5 py-2 sm:py-2.5 bg-indigo-900/80 text-zinc-200 text-sm sm:text-base font-medium rounded-lg hover:bg-indigo-900 transition-all shadow-lg hover:shadow-indigo-500/30">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -237,58 +242,9 @@
                                 Contact Me
                             </a>
                         </div>
-                        
-                        <div class="flex justify-center lg:justify-start space-x-2 sm:space-x-4 pt-2">
-                            <a href="{{ about.social_media.github }}" title="Visit {{ about.username }} GitHub profile" class="text-zinc-400 hover:text-white transition-colors p-1.5 sm:p-2 bg-indigo-900/80 rounded-full hover:bg-indigo-900">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
-                                </svg>
-                            </a>
-                            <a href="{{ about.social_media.linkedin }}" title="Visit {{ about.username }} LinkedIn profile" class="text-zinc-400 hover:text-white transition-colors p-1.5 sm:p-2 bg-indigo-900/80 rounded-full hover:bg-indigo-900">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd"></path>
-                                </svg>
-                            </a>
-                            <a href="{{ about.social_media.instagram }}" title="Visit {{ about.username }} Instagram profile" class="text-zinc-400 hover:text-white transition-colors p-1.5 sm:p-2 bg-indigo-900/80 rounded-full hover:bg-indigo-900">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"></path>
-                                </svg>
-                            </a>
-                            <a href="{{ about.social_media.medium }}" title="Visit {{ about.username }} Medium profile" class="text-zinc-400 hover:text-white transition-colors p-1.5 sm:p-2 bg-indigo-900/80 rounded-full hover:bg-indigo-900">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75S24 8.83 24 12z"/>
-                                </svg>
-                            </a>
-                            <a href="{{ about.donate.0.github_sponsor }}" title="Sponsor {{ about.username }}" class="text-zinc-400 hover:text-white transition-colors p-1.5 sm:p-2 bg-indigo-900/80 rounded-full hover:bg-indigo-900">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="relative block mt-6 lg:mt-0 w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 xl:w-72 xl:h-72 flex-shrink-0">
-                        <div class="absolute inset-0 rounded-full bg-indigo-800 bg-opacity-20 blur-xl"></div>
-                        <div class="absolute -inset-1 rounded-full bg-indigo-800 opacity-30 blur-sm"></div>
-                        <div class="relative h-full w-full rounded-full overflow-hidden border-2 border-indigo-600/30">
-                            <img 
-                                src="{{ about.image_url }}" 
-                                alt="{{ about.name }} Profile Photo" 
-                                class="object-cover w-full h-full"
-                                loading="eager"
-                            >
-                        </div>
-                        
-                        <div class="absolute -bottom-2 -right-2 bg-sky-800 rounded-full px-1.5 sm:px-2 py-0.5 sm:py-1 text-2xs sm:text-xs shadow-lg flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-0.5 sm:mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <span class="truncate max-w-[80px] sm:max-w-full">{{ about.location.prov }}, {{ about.location.country }}</span>
-                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
             <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
 

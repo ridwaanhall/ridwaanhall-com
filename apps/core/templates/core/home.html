@@ -209,8 +209,8 @@
     <main class="px-4 py-6 md:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             
-            <section class="py-6 sm:py-8">
-                <div class="max-w-3xl mx-auto lg:mx-0">
+            <section class="py-0">
+                <div class="mx-auto lg:mx-0">
                     <!-- Hero content with simplified structure -->
                     <div class="text-center lg:text-left">
                         <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
@@ -223,21 +223,20 @@
                             <span>{{ about.location.prov }}, {{ about.location.country }}</span>
                         </div>
                         
-                        <p class="text-zinc-300 text-sm sm:text-base max-w-2xl mx-auto lg:mx-0 mb-5">
-                            {{ about.short_description }}
+                        <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed mb-4">
+                            {% if about.short_description|length > 0 %}{{ about.short_description }} {{ about.short_bio }}{% else %}I am a passionate software engineer with a focus on building impactful solutions. I love to explore new technologies and share my knowledge through writing and open-source contributions.{% endif %}
                         </p>
                         
-                        <!-- Simplified action buttons -->
                         <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                            <a href="{{ about.cv }}" class="flex items-center justify-center px-4 py-2 bg-indigo-700 text-white rounded-lg hover:bg-indigo-600 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <a href="{{ about.cv }}" class="group flex items-center px-4 sm:px-5 py-2 sm:py-2.5 bg-indigo-900/80 text-zinc-200 text-sm sm:text-base font-medium rounded-lg hover:bg-indigo-900 transition-all shadow-lg hover:shadow-indigo-500/30">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                 </svg>
                                 Preview CV
                             </a>
-                            <a href="{% url 'contact' %}" class="flex items-center justify-center px-4 py-2 border border-indigo-500 text-indigo-300 rounded-lg hover:bg-indigo-700 hover:text-white transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <a href="{% url 'contact' %}" class="group flex items-center px-4 sm:px-5 py-2 sm:py-2.5 border border-zinc-600 text-zinc-300 text-sm sm:text-base font-medium rounded-lg hover:bg-zinc-700 hover:text-white transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                                 </svg>
                                 Contact Me

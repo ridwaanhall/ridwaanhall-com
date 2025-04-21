@@ -224,88 +224,88 @@ class ProjectsData:
     projects = [
         {
             "id": 1,
-            "title": "Mobile Legends Username Checker",
-            "headline": "Easily find usernames in MLBB using Python magic and API.",
+            "title": "MLBB Username Finder",
+            "headline": "Snag Mobile Legends usernames in a snap with Python and API vibes.",
             "description": [
-                "This Python project is designed to fetch usernames for Mobile Legends players.",
-                "Using API, we take user ID and zone ID as inputs to retrieve the player's username.",
-                "It's lightweight, straightforward, and a life-saver for MLBB gamers."
+                "This Python project is your go-to for grabbing Mobile Legends usernames like a pro.",
+                "Just pop in a user ID and zone ID, and boom—our API hooks you up with the player's username.",
+                "Light, fast, and a total game-changer for MLBB fans."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/mlbb_username_checker.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Quick Lookups",
-                    "description": "Fetch usernames in seconds by providing user ID and zone ID."
+                    "title": "Lightning-Fast Lookups",
+                    "description": "Get usernames in a flash with just a user ID and zone ID."
                 },
                 {
-                    "title": "Powered by Python",
-                    "description": "Uses Python for speed and reliability."
+                    "title": "Python-Powered Swagger",
+                    "description": "Rocking Python for speed and smooth performance."
                 },
                 {
-                    "title": "API-Driven",
-                    "description": "Leverages API for accurate data."
+                    "title": "API Awesomeness",
+                    "description": "Taps into APIs for spot-on, reliable data."
                 }
             ],
             "tech_stack": [
-                tech_stack["python"],
+                tech_stack["python"]
             ],
-            "updated_at": datetime.strptime("2023-03-30T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2023-03-30T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 2,
-            "title": "TikTok User Data Extractor",
-            "headline": "Get all the juicy details from TikTok profiles with Python and BeautifulSoup.",
+            "title": "TikTok Profile Digger",
+            "headline": "Scoop all the hot TikTok profile deets with Python and BeautifulSoup flair.",
             "description": [
-                "A Python project to scrape TikTok user data straight from profile pages.",
-                "Using BeautifulSoup, it pulls details like username, bio, followers, following, and total likes from the HTML structure.",
-                "Saves time and effort while diving into TikTok data. Perfect for automation enthusiasts!"
+                "This Python project dives deep into TikTok profiles, snagging all the good stuff.",
+                "With BeautifulSoup, it pulls username, bio, followers, following, and likes straight from the page.",
+                "Perfect for data nerds and TikTok stalkers—saves time and sparks curiosity!"
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/tiktok_data_extractor.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "All-in-One Scraper",
-                    "description": "Extracts username, bio, followers, following, and likes in one go."
+                    "title": "Ultimate Data Grab",
+                    "description": "Snatches username, bio, followers, following, and likes in one swoop."
                 },
                 {
-                    "title": "Powered by BeautifulSoup",
-                    "description": "Uses BeautifulSoup to parse TikTok's profile HTML with finesse."
+                    "title": "BeautifulSoup Magic",
+                    "description": "Parses TikTok’s HTML like a boss with BeautifulSoup."
                 },
                 {
-                    "title": "Data Collector's Dream",
-                    "description": "Great for research, insights, or simply satisfying your curiosity."
+                    "title": "Curiosity Crusher",
+                    "description": "Ideal for research, insights, or just feeding your TikTok obsession."
                 }
             ],
             "tech_stack": [
                 tech_stack["python"],
-                tech_stack["BeautifulSoup"],
+                tech_stack["BeautifulSoup"]
             ],
-            "updated_at": datetime.strptime("2023-04-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2023-04-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 3,
-            "title": "Frontend - API | Quran Website",
-            "headline": "Explore the Quran like never before—modern tools meet divine wisdom.",
+            "title": "Quran Explorer Web",
+            "headline": "Dive into the Quran with a sleek, modern twist—holy wisdom meets dope tech.",
             "description": [
-                "A sleek Flask-powered website that connects users to Quran chapters, verses, and translations.",
-                "Designed with AdminLTE, it combines style and functionality for an unforgettable browsing experience.",
-                "Data sourced from quranenc.com and quran.api-docs.io ensures credibility and depth."
+                "This Flask-powered site lets you explore Quran chapters, verses, and translations with style.",
+                "Rocking AdminLTE for a slick look and feel, it’s as functional as it is beautiful.",
+                "Pulls legit data from quranenc.com and quran.api-docs.io for a deep, trustworthy experience."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/quran_website_frontend_api.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Smart APIs",
-                    "description": "Comprehensive endpoints for chapters, Juz info, verses, and translations."
+                    "title": "Killer APIs",
+                    "description": "Drops endpoints for chapters, Juz, verses, and translations like a champ."
                 },
                 {
-                    "title": "Script Variety",
-                    "description": "Access Quran verses in Uthmani, Uthmani Simple, Imlaei, and Imlaei Simple scripts."
+                    "title": "Script Swag",
+                    "description": "Get verses in Uthmani, Uthmani Simple, Imlaei, or Imlaei Simple—your call."
                 },
                 {
-                    "title": "Translation Filters",
-                    "description": "Pinpoint the exact translation by chapter, Surah, Aya, or key."
+                    "title": "Translation Hunt",
+                    "description": "Zero in on translations by chapter, Surah, Aya, or keyword."
                 }
             ],
             "tech_stack": [
@@ -317,27 +317,27 @@ class ProjectsData:
         },
         {
             "id": 4,
-            "title": "BMKG Weather & Quake Info Hub",
-            "headline": "Stay ahead with weather and earthquake updates, powered by Flask and AdminLTE.",
+            "title": "BMKG Weather & Quake Tracker",
+            "headline": "Stay woke with real-time weather and quake updates, served fresh by Flask.",
             "description": [
-                "Built with Flask as the backend and AdminLTE for styling, this project delivers real-time earthquake and weather forecasts.",
-                "The data is sourced directly from BMKG, making it reliable and accurate for daily insights.",
-                "Whether it's tracking weather in Yogyakarta or checking recent quake activity, this tool’s got your back."
+                "This Flask and AdminLTE combo dishes out live weather forecasts and earthquake alerts.",
+                "Data comes straight from BMKG, so you know it’s legit and on point.",
+                "From Yogyakarta’s skies to the latest tremors, this tool’s got you covered."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/bmkg_weather_quake_hub.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Real-Time Forecasts",
-                    "description": "Get weather updates for the next 3 days, including wind speed, direction, and more."
+                    "title": "Live Weather Vibes",
+                    "description": "Check 3-day forecasts with wind speed, direction, and more."
                 },
                 {
-                    "title": "Earthquake Alerts",
-                    "description": "Keep tabs on the latest quakes straight from BMKG's database."
+                    "title": "Quake Watch",
+                    "description": "Stay in the loop with the latest earthquake updates from BMKG."
                 },
                 {
-                    "title": "Built for Local Insights",
-                    "description": "Focuses on Indonesia-specific data for accurate, relevant updates."
+                    "title": "Indonesia Focus",
+                    "description": "Tailored for local data, keeping it real and relevant."
                 }
             ],
             "tech_stack": [
@@ -349,27 +349,27 @@ class ProjectsData:
         },
         {
             "id": 5,
-            "title": "BMKG Weather Pro | Real-Time Forecasts",
-            "headline": "Your go-to tool for Indonesia’s weather updates, powered by Flask and BMKG data.",
+            "title": "BMKG Weather Pro",
+            "headline": "Your VIP pass to Indonesia’s weather scene, powered by Flask and BMKG.",
             "description": [
-                "This Flask-based project fetches detailed weather forecasts straight from BMKG's database.",
-                "You can filter by region, parameter, and time range to get the data you need.",
-                "From Aceh to Papua, the project covers all of Indonesia with reliable weather insights."
+                "This Flask project hooks you up with detailed weather forecasts from BMKG’s database.",
+                "Filter by region, parameter, or time range to get exactly what you need.",
+                "From Aceh to Papua, it’s your one-stop shop for reliable weather intel."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/bmkg_weather_forecast_api.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Wide Coverage",
-                    "description": "Supports weather data retrieval for all Indonesian provinces."
+                    "title": "Nationwide Reach",
+                    "description": "Covers weather data for every corner of Indonesia."
                 },
                 {
-                    "title": "Custom Filters",
-                    "description": "Combine area_id, parameter_id, and time range for tailored results."
+                    "title": "Flexi-Filters",
+                    "description": "Mix and match area, parameter, and time for custom results."
                 },
                 {
-                    "title": "Efficient Data Handling",
-                    "description": "Uses Flask framework for quick and easy routing."
+                    "title": "Flask Flow",
+                    "description": "Smooth routing and fast data handling with Flask."
                 }
             ],
             "tech_stack": [
@@ -380,28 +380,28 @@ class ProjectsData:
         },
         {
             "id": 6,
-            "title": "MLBB Game Stats & Info API",
-            "headline": "Track MLBB player data, stats, and winrates—powered by Flask and custom integrations.",
+            "title": "MLBB Stats & Winrate API",
+            "headline": "Level up with MLBB player stats and winrates, served hot by Flask.",
             "description": [
-                "This Flask-based API lets you fetch Mobile Legends Bang Bang data like usernames, MPL stats, winrate calculations, and more.",
-                "It sources data from mainlagiaja.com, id-mpl.com, takapadia.com, and additional features built by me.",
-                "Perfect for developers or gamers who want quick access to MLBB game stats without hassle."
+                "This Flask API is your ticket to Mobile Legends data—usernames, MPL stats, winrates, and more.",
+                "Pulls info from mainlagiaja.com, id-mpl.com, takapadia.com, plus some custom flair I cooked up.",
+                "A must-have for devs and gamers who want MLBB stats without the grind."
             ],
             "demo_url": "https://mlbb-api.ridwaanhall.repl.co",
             "image_url": f"{settings.BASE_URL}/static/img/project/mlbb_game_stats_api.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Username Checker",
-                    "description": "Fetch player usernames easily using the mainlagiaja.com API."
+                    "title": "Username Grabber",
+                    "description": "Scoop up player usernames fast via mainlagiaja.com’s API."
                 },
                 {
-                    "title": "MPL Data Integration",
-                    "description": "Provides stats and details directly from id-mpl.com."
+                    "title": "MPL Stats Connect",
+                    "description": "Dives into id-mpl.com for juicy stats and insights."
                 },
                 {
-                    "title": "Winrate Calculator",
-                    "description": "Accurate winrate calculation sourced from takapadia.com."
+                    "title": "Winrate Wizard",
+                    "description": "Cranks out accurate winrates using takapadia.com data."
                 }
             ],
             "tech_stack": [
@@ -412,28 +412,28 @@ class ProjectsData:
         },
         {
             "id": 7,
-            "title": "Instagram Media Downloader API",
-            "headline": "Snag profile pics, stories, and posts in HD—built with Flask and save-free.com.",
+            "title": "Insta Media Grabber API",
+            "headline": "Yo, snatch Instagram pics, stories, and posts in HD with Flask and save-free.com.",
             "description": [
-                "This Flask-powered API lets users download Instagram profile pictures in HD, stories, and post media like images and videos.",
-                "Using save-free.com as the media source, the API ensures reliable data fetching.",
-                "Perfect for simplifying media downloads while keeping it fast and hassle-free."
+                "This Flask-powered API is your ticket to downloading Instagram profile pics, stories, and post media in crisp HD.",
+                "Taps into save-free.com for legit, reliable media fetching without the fuss.",
+                "Perfect for quick, no-sweat media downloads that keep things smooth."
             ],
             "demo_url": "https://instagram-api-v1.ridwaanhall.repl.co/",
             "image_url": f"{settings.BASE_URL}/static/img/project/instagram_media_downloader.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "HD Profile Pictures",
-                    "description": "Grab high-quality profile pics with ease."
+                    "title": "HD Profile Pics",
+                    "description": "Grab crystal-clear profile pictures in a snap."
                 },
                 {
-                    "title": "Story Saver",
-                    "description": "Download Instagram stories effortlessly."
+                    "title": "Story Swiper",
+                    "description": "Download Instagram stories like it’s nothing."
                 },
                 {
-                    "title": "Post Media Downloader",
-                    "description": "Fetch images and videos from posts in a snap."
+                    "title": "Post Media Magic",
+                    "description": "Scoop up images and videos from posts in a heartbeat."
                 }
             ],
             "tech_stack": [
@@ -444,28 +444,28 @@ class ProjectsData:
         },
         {
             "id": 8,
-            "title": "BMKG Quake Tracker API (Unofficial)",
-            "headline": "Stay updated on earthquakes, tsunamis, and seismic news with real-time data via Flask.",
+            "title": "BMKG Quake Watcher API (Unofficial)",
+            "headline": "Stay in the loop with real-time earthquake and tsunami updates via Flask.",
             "description": [
-                "A Flask-based API delivering earthquake data in multiple formats like XML, JSON, and GeoJSON.",
-                "Includes insights on earthquakes above 5 magnitude, latest quakes, tsunami updates, real-time alerts, and seismic news.",
-                "Perfect for researchers, developers, or anyone wanting reliable quake info."
+                "This Flask-based API dishes out earthquake data in XML, JSON, and GeoJSON formats, no cap.",
+                "Covers quakes over 5 magnitude, recent tremors, tsunami alerts, and seismic news.",
+                "A must-have for researchers, devs, or anyone vibing with quake info."
             ],
             "demo_url": "https://earthquake-bmkg-api.ridwaanhall.repl.co",
             "image_url": f"{settings.BASE_URL}/static/img/project/bmkg_quake_tracker_api.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Multi-Format Data",
-                    "description": "Fetch earthquake info in XML, JSON, or GeoJSON formats."
+                    "title": "Flexi-Format Data",
+                    "description": "Grab quake info in XML, JSON, or GeoJSON—your pick."
                 },
                 {
-                    "title": "Real-Time Alerts",
-                    "description": "Get the latest updates on tsunamis and seismic activity."
+                    "title": "Live Alerts",
+                    "description": "Stay woke with real-time tsunami and seismic updates."
                 },
                 {
-                    "title": "Data-Rich API",
-                    "description": "Provides quake magnitude, location, PGA Max, MMI, and more."
+                    "title": "Data Deep Dive",
+                    "description": "Get magnitude, location, PGA Max, MMI, and more."
                 }
             ],
             "tech_stack": [
@@ -476,28 +476,28 @@ class ProjectsData:
         },
         {
             "id": 9,
-            "title": "College Insights API (Unofficial PDDIKTI)",
-            "headline": "Explore student, lecturer, and program data with ease—built on Flask.",
+            "title": "College Data Scout API (Unofficial PDDIKTI)",
+            "headline": "Dig into Indonesian college stats like a pro with this Flask-powered API.",
             "description": [
-                "This Flask-powered API provides detailed data for Indonesian colleges, students, lecturers, study programs, and more.",
-                "You can fetch specific student info like names and ID numbers, lecturer profiles, and program details seamlessly.",
-                "Perfect for researchers or developers needing quick access to higher education data."
+                "This Flask API is your go-to for snagging data on Indonesian colleges, students, lecturers, and programs.",
+                "Easily pull student names, IDs, lecturer profiles, or program details in a snap.",
+                "Perfect for researchers or devs who want quick, clean access to higher ed data."
             ],
             "github_url": "https://replit.com/@ridwaanhall/college-data",
             "image_url": f"{settings.BASE_URL}/static/img/project/college_insights_api.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Student Data",
-                    "description": "Fetch student names, IDs, and other details."
+                    "title": "Student Scoop",
+                    "description": "Fetch names, IDs, and more for students."
                 },
                 {
-                    "title": "Lecturer Profiles",
-                    "description": "Access lecturer names, ID numbers, and more."
+                    "title": "Lecturer Lowdown",
+                    "description": "Grab lecturer names, IDs, and profiles."
                 },
                 {
-                    "title": "Program Info",
-                    "description": "Retrieve study program details and college data."
+                    "title": "Program Playbook",
+                    "description": "Dive into study programs and college details."
                 }
             ],
             "tech_stack": [
@@ -508,27 +508,27 @@ class ProjectsData:
         },
         {
             "id": 10,
-            "title": "ChatBot Gateway for Telegram & WhatsApp",
-            "headline": "Seamlessly connect OpenAI-powered bots to Telegram and WhatsApp using Flask.",
+            "title": "ChatBot Bridge for Telegram & WhatsApp",
+            "headline": "Link up OpenAI-powered bots to Telegram and WhatsApp with Flask swagger.",
             "description": [
-                "Built with Flask as the backend, this project serves as a gateway for POST and GET requests to manage messages from Telegram and WhatsApp.",
-                "It integrates OpenAI's capabilities, making it simple to handle user interactions via messaging apps.",
-                "Perfect for automating conversations or building smart chat solutions."
+                "This Flask project is your slick gateway for handling Telegram and WhatsApp messages with POST and GET requests.",
+                "Taps into OpenAI for next-level, smart convo vibes.",
+                "Perfect for automating chats or building brainy bot solutions."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/chatbot_gateway.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Flask-Driven Backend",
-                    "description": "Handles message routing for seamless bot communication."
+                    "title": "Flask Flow",
+                    "description": "Routes messages like a boss for seamless bot chats."
                 },
                 {
-                    "title": "Multi-Platform Support",
-                    "description": "Compatible with both Telegram and WhatsApp."
+                    "title": "App-Agnostic",
+                    "description": "Works like a charm on Telegram and WhatsApp."
                 },
                 {
-                    "title": "OpenAI Integration",
-                    "description": "Leverages AI-powered responses for smarter conversations."
+                    "title": "OpenAI Smarts",
+                    "description": "Drops AI-powered replies for sharper convos."
                 }
             ],
             "tech_stack": [
@@ -540,27 +540,27 @@ class ProjectsData:
         },
         {
             "id": 11,
-            "title": "Tsunami & Earthquake Insights",
-            "headline": "Track tsunami warnings and earthquake data across Indonesia with real-time updates.",
+            "title": "Tsunami & Quake Dashboard",
+            "headline": "Track Indonesia’s quakes and tsunami alerts with real-time flair.",
             "description": [
-                "This Flask-based frontend provides comprehensive earthquake and tsunami data sourced from BMKG.",
-                "With visualizations powered by Chart.js and interactive maps using Leaflet, OpenStreetMap, and Google Maps, it's a powerful tool for monitoring seismic activity.",
-                "The responsive design, backed by Bootstrap and enhanced with OverlayScrollbars, ensures a smooth user experience."
+                "This Flask frontend serves up earthquake and tsunami data straight from BMKG, no filter.",
+                "With Chart.js visuals, Leaflet maps, OpenStreetMap, and Google Maps, it’s a seismic data party.",
+                "Rocking Bootstrap and OverlayScrollbars for a clean, responsive vibe."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/inatews_dashboard.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Real-Time Earthquake Data",
-                    "description": "Access historical and live earthquake information straight from BMKG."
+                    "title": "Live Quake Data",
+                    "description": "Get historical and real-time earthquake info from BMKG."
                 },
                 {
-                    "title": "Tsunami Warnings",
-                    "description": "Get real-time updates on potential tsunami threats in Indonesia."
+                    "title": "Tsunami Heads-Up",
+                    "description": "Stay alert with live tsunami warnings across Indonesia."
                 },
                 {
-                    "title": "Advanced Visualizations",
-                    "description": "Includes interactive maps, shakemaps, and charts for better data insights."
+                    "title": "Visual Feast",
+                    "description": "Interactive maps, shakemaps, and charts for epic insights."
                 }
             ],
             "tech_stack": [
@@ -577,28 +577,28 @@ class ProjectsData:
         },
         {
             "id": 12,
-            "title": "College Data Hub | Search & Stats",
-            "headline": "Navigate Indonesian college data with ease, backed by Flask.",
+            "title": "College Data Playground",
+            "headline": "Explore Indonesian college stats with a slick Flask-powered hub.",
             "description": [
-                "This Flask-powered website provides a comprehensive view of college data, from student and lecturer details to study programs and institutions.",
-                "The platform includes a dashboard for statistics, a search feature, and detailed pages for students, lecturers, colleges, and study programs.",
-                "Designed to make data exploration simple, efficient, and accessible for users."
+                "This Flask site is your one-stop shop for college data—students, lecturers, programs, and more.",
+                "Comes with a dope dashboard for stats, a search tool, and detailed pages for everything.",
+                "Built to make digging through academic data fun, fast, and easy."
             ],
             "demo_url": "https://replit.com/@ridwaanhall/web-college",
             "image_url": f"{settings.BASE_URL}/static/img/project/college_data_hub.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Interactive Dashboard",
-                    "description": "Visualize college stats including total students, lecturers, and study programs."
+                    "title": "Stats Dashboard",
+                    "description": "Visualize student, lecturer, and program counts like a pro."
                 },
                 {
-                    "title": "Advanced Search",
-                    "description": "Quickly find information on students, lecturers, colleges, and programs."
+                    "title": "Search Superstar",
+                    "description": "Find students, lecturers, colleges, or programs in a flash."
                 },
                 {
-                    "title": "Detailed Views",
-                    "description": "Dive deep into specific data for students, lecturers, colleges, and provinces."
+                    "title": "Deep Dives",
+                    "description": "Explore detailed data on students, lecturers, and more."
                 }
             ],
             "tech_stack": [
@@ -610,27 +610,27 @@ class ProjectsData:
         },
         {
             "id": 13,
-            "title": "Student Search Bot for Telegram",
-            "headline": "Easily find student details via Telegram chat, powered by Flask.",
+            "title": "Telegram Student Finder Bot",
+            "headline": "Hunt down student deets via Telegram with Flask-powered ease.",
             "description": [
-                "This Python-based Telegram bot uses Flask to connect via webhook and handle messages seamlessly.",
-                "Just send your name, student number, or a combination, and the bot will list matching names. Tap on a name to see detailed student info.",
-                "Details include name, student ID, college, study programs, and more—making it effortless to retrieve student information."
+                "This Python Telegram bot, hooked up with Flask and webhooks, makes finding student info a breeze.",
+                "Drop a name or student ID, and it’ll list matches—tap one for full details like college and programs.",
+                "Your go-to for quick, no-fuss student data lookups."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/student_search_bot_telegram.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Smart Search",
-                    "description": "Quickly find student info by name, ID, or a combo of both."
+                    "title": "Slick Search",
+                    "description": "Find students by name, ID, or both in seconds."
                 },
                 {
-                    "title": "Detailed Profiles",
-                    "description": "View student name, ID, college, and study programs at a glance."
+                    "title": "Full Profiles",
+                    "description": "Get name, ID, college, and program details instantly."
                 },
                 {
-                    "title": "Powered by Flask",
-                    "description": "Leverages Flask and Telegram webhook for smooth performance."
+                    "title": "Flask Finesse",
+                    "description": "Runs smooth with Flask and Telegram webhooks."
                 }
             ],
             "tech_stack": [
@@ -642,27 +642,27 @@ class ProjectsData:
         },
         {
             "id": 14,
-            "title": "OpenAI API | Dynamic Conversational System",
-            "headline": "Dive into the art of AI conversations with GPT-3.5 Turbo and Flask.",
+            "title": "OpenAI Chat Master",
+            "headline": "Get chatty with GPT-3.5 Turbo using Flask and Python swagger.",
             "description": [
-                "This project focuses on using the OpenAI API to build conversational systems powered by GPT-3.5 Turbo.",
-                "With Flask as the backend, HTTP requests were crafted to enable seamless interactions between users and the AI assistant.",
-                "The project demonstrates the practical application of state-of-the-art natural language processing models, showcasing their ability to comprehend and respond accurately."
+                "This project taps OpenAI’s API to craft killer conversational systems with GPT-3.5 Turbo.",
+                "Flask handles the backend, slinging HTTP requests for smooth AI-user vibes.",
+                "Shows off next-level NLP skills for sharp, accurate responses."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/openai_api_dynamic_conversational_system.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "AI-Driven Conversations",
-                    "description": "Integrates GPT-3.5 Turbo for engaging and intelligent user interactions."
+                    "title": "AI Chat Vibes",
+                    "description": "GPT-3.5 Turbo powers dope, engaging convos."
                 },
                 {
-                    "title": "Flask Gateway",
-                    "description": "Facilitates smooth communication via HTTP POST and GET requests."
+                    "title": "Flask Flex",
+                    "description": "Handles POST and GET requests like a champ."
                 },
                 {
-                    "title": "Cutting-Edge NLP",
-                    "description": "Harnesses the power of OpenAI for advanced natural language processing."
+                    "title": "NLP Game Strong",
+                    "description": "OpenAI’s tech delivers top-tier language processing."
                 }
             ],
             "tech_stack": [
@@ -674,28 +674,27 @@ class ProjectsData:
         },
         {
             "id": 15,
-            "title": "Planetary API | Explore the Universe",
-            "headline": "Unlock celestial data with Flask and SQLAlchemy—your gateway to the solar system.",
+            "title": "Planetary API | Cosmic Data Hub",
+            "headline": "Explore the solar system with Flask and SQLAlchemy—space data, unlocked.",
             "description": [
-                "The Planetary API is a RESTful service designed to provide data about planets in our solar system.",
-                "Retrieve detailed information such as names, types, home stars, masses, radii, and distances from Earth.",
-                "Includes user authentication and secure routes, with built-in CRUD functionality for managing planetary data.",
-                "Integrates JWT for secure access and Flask-Mail for email notifications, ensuring a seamless user experience."
+                "This RESTful Planetary API dishes out juicy details on planets in our solar system.",
+                "Get names, types, home stars, masses, radii, and Earth distances with ease.",
+                "Rocking JWT for secure access, CRUD ops, and Flask-Mail for email notifications."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/planetary_api_explore_universe.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Comprehensive Planetary Data",
-                    "description": "Access detailed information about planets, their types, and distances."
+                    "title": "Planet Data Galore",
+                    "description": "Scoop up details on planets, types, and distances."
                 },
                 {
-                    "title": "Secure Access",
-                    "description": "Features user registration, authentication, and password recovery powered by JWT."
+                    "title": "Locked & Loaded",
+                    "description": "JWT secures user access, registration, and recovery."
                 },
                 {
-                    "title": "Built for Developers",
-                    "description": "Supports CRUD operations while maintaining data integrity."
+                    "title": "Dev-Friendly",
+                    "description": "CRUD ops keep data management clean and tight."
                 }
             ],
             "tech_stack": [
@@ -709,28 +708,28 @@ class ProjectsData:
         },
         {
             "id": 16,
-            "title": "Number Recognition App | Neural Networks in Action",
-            "headline": "Real-time number recognition with a GUI powered by MLP and Python.",
+            "title": "Number Spotter App | Neural Net Magic",
+            "headline": "Catch hand-drawn numbers in real-time with MLP and a slick Python GUI.",
             "description": [
-                "This GUI-based app uses a Multi-Layer Perceptron (MLP) to recognize hand-drawn numbers from 0 to 9.",
-                "Users can input seven adjustable features through sliders, enabling real-time predictions from the trained neural network.",
-                "The app provides additional insights into training progress, including epoch count and error statistics, making it a practical and interactive tool for understanding pattern recognition."
+                "This GUI app uses a Multi-Layer Perceptron to spot numbers (0-9) drawn by you.",
+                "Tweak seven sliders for live predictions from the neural network, no lag.",
+                "Drops insights on training progress, like epochs and error stats, for a fun learning vibe."
             ],
             "github_url": "https://github.com/ridwaanhall/Training-Neural-Networks-in-Python",
             "image_url": f"{settings.BASE_URL}/static/img/project/neural_number_recognition.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Interactive Sliders",
-                    "description": "Adjust features to see real-time number predictions."
+                    "title": "Slider Shenanigans",
+                    "description": "Adjust features for instant number predictions."
                 },
                 {
-                    "title": "MLP-Powered Insights",
-                    "description": "Leverages neural networks for precise number recognition."
+                    "title": "MLP Muscle",
+                    "description": "Neural nets nail number recognition with precision."
                 },
                 {
-                    "title": "Training Visualization",
-                    "description": "Displays epoch count and error progression for learning clarity."
+                    "title": "Training Peek",
+                    "description": "See epoch counts and error trends for clarity."
                 }
             ],
             "tech_stack": [
@@ -742,28 +741,28 @@ class ProjectsData:
         },
         {
             "id": 17,
-            "title": "OpenAI Function Calling | Power Up Your API Skills",
-            "headline": "Leverage GPT-3.5 Turbo for dynamic tasks using Python and Flask.",
+            "title": "OpenAI Function Flex",
+            "headline": "Unleash GPT-3.5 Turbo for slick tasks with Python and Flask.",
             "description": [
-                "This project showcases how to interact with the OpenAI API by sending structured POST requests using Python's requests library.",
-                "Features include specific functions like 'locationQuery' to fetch weather data and 'authorQuery' for author information retrieval.",
-                "Demonstrates expertise in integrating OpenAI's NLP capabilities for versatile, text-based tasks."
+                "This project shows off OpenAI API skills, firing structured POST requests with Python’s requests library.",
+                "Comes with cool functions like ‘locationQuery’ for weather and ‘authorQuery’ for author info.",
+                "A dope showcase of OpenAI’s NLP for versatile, text-based tasks."
             ],
             "demo_url": "https://your-openai-function-calling-url.com",
             "image_url": f"{settings.BASE_URL}/static/img/project/openai_function_calling.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Function-Specific APIs",
-                    "description": "Built-in functions for querying location-based data or author info."
+                    "title": "Task-Targeted APIs",
+                    "description": "Query weather or author data with built-in functions."
                 },
                 {
-                    "title": "Effortless Integration",
-                    "description": "Uses Python's requests library to seamlessly interact with OpenAI."
+                    "title": "Smooth Connect",
+                    "description": "Python’s requests library links up with OpenAI flawlessly."
                 },
                 {
-                    "title": "Dynamic Text Processing",
-                    "description": "Leverages GPT-3.5 Turbo for intelligent and accurate responses."
+                    "title": "Text Powerhouse",
+                    "description": "GPT-3.5 Turbo delivers smart, spot-on responses."
                 }
             ],
             "tech_stack": [
@@ -775,27 +774,27 @@ class ProjectsData:
         },
         {
             "id": 18,
-            "title": "RESTful Drink Service API",
-            "headline": "A Django-powered API for managing your drink database effortlessly.",
+            "title": "Drink Database API",
+            "headline": "Manage your drink data like a boss with this Django-powered API.",
             "description": [
-                "Built using Django and Django REST Framework, this API is designed for managing a database of drinks with ease.",
-                "Supports full CRUD operations: add new drinks, update details, retrieve specific drink info, or delete drinks.",
-                "Perfect for developers looking to integrate drink-related data management into their applications while following RESTful design principles."
+                "This Django and DRF-built API makes handling a drink database a total breeze.",
+                "Full CRUD vibes: add, update, fetch, or delete drinks with ease.",
+                "Perfect for devs looking to plug drink data into their apps with RESTful swagger."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/restful_drink_service.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "CRUD Functionality",
-                    "description": "Easily create, read, update, and delete drink objects."
+                    "title": "CRUD Crush",
+                    "description": "Create, read, update, or delete drinks like a pro."
                 },
                 {
-                    "title": "Django REST Framework",
-                    "description": "Utilizes DRF for robust, scalable API development."
+                    "title": "DRF Domination",
+                    "description": "Django REST Framework brings scalable API heat."
                 },
                 {
-                    "title": "API Best Practices",
-                    "description": "Designed following RESTful principles for clean and efficient endpoints."
+                    "title": "RESTful Rules",
+                    "description": "Clean, efficient endpoints built on REST principles."
                 }
             ],
             "tech_stack": [
@@ -807,28 +806,28 @@ class ProjectsData:
         },
         {
             "id": 19,
-            "title": "CRM System | Simple User Management",
-            "headline": "Streamline user data management effortlessly with Django-based CRUD functionality.",
+            "title": "CRM Lite | User Management",
+            "headline": "Keep user data in check with this slick Django-powered CRM.",
             "description": [
-                "This project is a Django-powered web application designed to simplify user data management for organizations.",
-                "Features include user registration, login, and full CRUD operations for efficient data control.",
-                "Ideal for HR, customer support, or any organization needing a straightforward user management solution."
+                "This Django web app makes managing user data a walk in the park for any org.",
+                "Handles registration, login, and full CRUD ops for total control.",
+                "Perfect for HR, support teams, or anyone needing a clean user management fix."
             ],
             "github_url": "https://github.com/ridwaanhall/CRUD-mastery-with-Django",
             "image_url": f"{settings.BASE_URL}/static/img/project/crm_simple_user_management.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Full CRUD Operations",
-                    "description": "Create, read, update, and delete records seamlessly."
+                    "title": "CRUD Mastery",
+                    "description": "Add, view, edit, or delete records with ease."
                 },
                 {
-                    "title": "User Registration & Login",
-                    "description": "Allows secure access and account management."
+                    "title": "Secure Access",
+                    "description": "Rock-solid registration and login flows."
                 },
                 {
-                    "title": "Streamlined Dashboard",
-                    "description": "Provides intuitive tools for quick access and sorting."
+                    "title": "Slick Dashboard",
+                    "description": "Intuitive tools for quick sorting and access."
                 }
             ],
             "tech_stack": [
@@ -839,27 +838,27 @@ class ProjectsData:
         },
         {
             "id": 20,
-            "title": "PDDIKTI API | Comprehensive College Data",
-            "headline": "Effortlessly access student, lecturer, and college data with this Django-powered API.",
+            "title": "PDDIKTI Data API | College Insights",
+            "headline": "Tap into Indonesian college data with this dope Django-powered API.",
             "description": [
-                "This Django REST Framework-based API is designed to provide information about students, lecturers, colleges, and study programs.",
-                "It supports reliable data retrieval and is ideal for developers integrating higher education data into their applications.",
-                "Built to ensure efficiency and simplicity in accessing academic information for various use cases."
+                "This Django REST Framework API serves up student, lecturer, college, and program info with ease.",
+                "Built for devs who need reliable, quick access to higher ed data for their apps.",
+                "Keeps things simple and efficient for all your academic data needs."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/pddikti_api_django.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Academic Data Access",
-                    "description": "Retrieve information on students, lecturers, colleges, and study programs."
+                    "title": "Academic Data Drop",
+                    "description": "Grab student, lecturer, college, and program info."
                 },
                 {
-                    "title": "Django REST Framework",
-                    "description": "Leverages DRF for robust API development and scalability."
+                    "title": "DRF Power",
+                    "description": "Django REST Framework fuels scalable API vibes."
                 },
                 {
-                    "title": "Reliable Routing",
-                    "description": "Includes well-structured endpoints for seamless data integration."
+                    "title": "Clean Endpoints",
+                    "description": "Structured routes for smooth data integration."
                 }
             ],
             "tech_stack": [
@@ -871,27 +870,27 @@ class ProjectsData:
         },
         {
             "id": 21,
-            "title": "Time Series Forecasting | Predicting Electricity Demand",
-            "headline": "Harness the power of RNNs for accurate time series forecasting.",
+            "title": "Electricity Demand Forecaster",
+            "headline": "Tap into RNNs to nail super-accurate electricity demand predictions.",
             "description": [
-                "This project implements Recurrent Neural Networks (RNNs), including LSTM and GRU, for time series forecasting to predict electricity demand.",
-                "The model is trained on historical electricity demand data, alongside meteorological and calendar-related features.",
-                "Designed to capture temporal dependencies, the project showcases the potential of RNNs for practical applications in energy management."
+                "This project rocks Recurrent Neural Networks (RNNs) like LSTM and GRU to forecast electricity demand with serious precision.",
+                "Trained on historical demand data, mixed with weather and calendar features for max accuracy.",
+                "Perfect for showcasing how RNNs can level up energy management with killer temporal insights."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/time_series_forecasting_rnn.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Powerful RNN Models",
-                    "description": "Utilizes LSTM and GRU to model temporal dependencies effectively."
+                    "title": "RNN Powerhouse",
+                    "description": "LSTM and GRU models crush it at capturing time-based patterns."
                 },
                 {
-                    "title": "Comprehensive Dataset",
-                    "description": "Includes historical electricity demand, weather data, and calendar features."
+                    "title": "Loaded Dataset",
+                    "description": "Blends historical demand, weather, and calendar data for sharp predictions."
                 },
                 {
-                    "title": "Real-World Insights",
-                    "description": "Enables accurate predictions for practical energy forecasting applications."
+                    "title": "Energy Game-Changer",
+                    "description": "Delivers spot-on forecasts for real-world energy planning."
                 }
             ],
             "tech_stack": [
@@ -905,61 +904,61 @@ class ProjectsData:
         },
         {
             "id": 22,
-            "title": "Emotion Recognition with CNNs | TIMM Models & Augmentation",
-            "headline": "Classify emotions with cutting-edge CNNs, advanced augmentation techniques, and pretrained TIMM models.",
+            "title": "Emotion Detector CNN",
+            "headline": "Spot emotions like a pro with next-level CNNs and TIMM model magic.",
             "description": [
-                "This project employs Convolutional Neural Networks (CNNs) with pretrained models from the TIMM library to classify emotions.",
-                "Data augmentation techniques like random resizing, flipping, color jittering, CutMix, and MixUp are implemented to improve model generalization.",
-                "The dataset is strategically split into training and validation sets to optimize the model's performance."
+                "This project uses Convolutional Neural Networks (CNNs) with pretrained TIMM models to classify emotions like a boss.",
+                "Boosted by dope augmentation tricks like random resizing, flipping, color jitter, CutMix, and MixUp for top-tier generalization.",
+                "Smart dataset splits for training and validation ensure the model’s performance is on point."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/emotion_recognition_timm_cnn.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Pretrained TIMM Models",
-                    "description": "Utilizes high-performance TIMM models for reliable emotion recognition."
+                    "title": "TIMM Model Swagger",
+                    "description": "High-performance pretrained models for reliable emotion detection."
                 },
                 {
-                    "title": "Advanced Augmentation",
-                    "description": "Integrates techniques like CutMix and MixUp for enhanced data variability."
+                    "title": "Augmentation All-Stars",
+                    "description": "CutMix, MixUp, and more spice up data for better results."
                 },
                 {
-                    "title": "Optimized Training Process",
-                    "description": "Includes training and validation splits to achieve higher accuracy and generalization."
+                    "title": "Training Smarts",
+                    "description": "Optimized splits for max accuracy and generalization."
                 }
             ],
             "tech_stack": [
                 tech_stack["python"],
                 tech_stack["pytorch"],
                 tech_stack["cnn"],
-                tech_stack["timm"],
+                tech_stack["timm"]
             ],
             "updated_at": datetime.strptime("2024-01-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 23,
-            "title": "PEMILU 2024 Data APIs",
-            "headline": "Dynamic APIs for real-time 2024 Indonesia Election data, built with Django REST Framework.",
+            "title": "Pemilu 2024 Data Hub",
+            "headline": "Live 2024 Indonesia Election data at your fingertips with Django REST APIs.",
             "description": [
-                "Yo, this is your go-to API collection for diving into Indonesia’s 2024 Election data. It’s packed with endpoints that serve up everything from candidate names to voting stats, all in real time.",
-                "Built with Django REST Framework, these APIs are rock-solid and easy to use. They pull data from reliable database endpoints, handling errors like a pro so you don’t have to sweat it.",
-                "Whether you’re building an election tracker or crunching numbers for analysis, these APIs give you the flexibility to grab data at any level of detail. Perfect for devs who want to create dope electoral apps!"
+                "This API collection is your VIP pass to Indonesia’s 2024 Election data—candidate names, voting stats, all in real-time glory.",
+                "Powered by Django REST Framework, it’s built tough with clean endpoints and pro-level error handling.",
+                "Perfect for devs cooking up election trackers or diving deep into vote analysis with flexible, detailed data."
             ],
             "github_url": "https://github.com/ridwaanhall/realcount-pemilu-2024",
             "image_url": f"{settings.BASE_URL}/static/img/project/pemilu_2024_api.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Flexible Endpoints",
-                    "description": "Grab candidate names, dispute stats, regions, or voting details with ease."
+                    "title": "Versatile Endpoints",
+                    "description": "Scoop up candidate names, dispute stats, or voting details effortlessly."
                 },
                 {
-                    "title": "Error-Proof",
-                    "description": "Built-in error handling keeps your app running smoothly."
+                    "title": "Bulletproof Handling",
+                    "description": "Error-proof design keeps your app running like a dream."
                 },
                 {
-                    "title": "Granular Data",
-                    "description": "Access election info at any level of detail for killer insights."
+                    "title": "Deep Data Dives",
+                    "description": "Grab election insights at any level for epic analysis."
                 }
             ],
             "tech_stack": [
@@ -970,28 +969,28 @@ class ProjectsData:
         },
         {
             "id": 24,
-            "title": "PEMILU 2024 Vote Tracker",
-            "headline": "Slick website for real-time 2024 Indonesia Presidential Election vote data, powered by Django and Bootstrap.",
+            "title": "Pemilu 2024 Vote Dashboard",
+            "headline": "Sleek web app for real-time 2024 Indonesia Election vote tracking with Django flair.",
             "description": [
-                "Check out this dope web app for the 2024 Indonesia Presidential and Vice-Presidential Election! It’s got a clean, user-friendly vibe that lets you dive into vote data across regions—national, provincial, district, sub-district, village, and even polling stations (TPS).",
-                "Built with Django and Django REST Framework for a solid backend, and styled with Bootstrap for that smooth, responsive look. It also packs legit evidence data to keep everything transparent and trustworthy.",
-                "Perfect for anyone wanting to track election results or build something cool with real-time vote info. No fluff, just straight-up useful!"
+                "This fire web app for the 2024 Indonesia Presidential Election lets you explore vote data across regions—from national to polling stations.",
+                "Built with Django and Django REST Framework for a rock-solid backend, styled with Bootstrap for a clean, responsive look.",
+                "Packed with verified evidence data, it’s perfect for tracking results or building dope election tools."
             ],
             "github_url": "https://github.com/ridwaanhall/realcount-pemilu-2024",
             "image_url": f"{settings.BASE_URL}/static/img/project/pemilu_2024_website.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Region-Based Data",
-                    "description": "Explore vote results from national down to polling station levels."
+                    "title": "Region-Specific Insights",
+                    "description": "Dive into vote data from national to TPS levels."
                 },
                 {
-                    "title": "Trusted Info",
-                    "description": "Includes verified evidence data for max authenticity."
+                    "title": "Trusted Evidence",
+                    "description": "Verified data ensures transparency and reliability."
                 },
                 {
-                    "title": "Responsive Design",
-                    "description": "Looks fire on any device, thanks to Bootstrap."
+                    "title": "Slick Responsive Design",
+                    "description": "Bootstrap makes it look fire on any screen."
                 }
             ],
             "tech_stack": [
@@ -1004,28 +1003,28 @@ class ProjectsData:
         },
         {
             "id": 25,
-            "title": "Digit Recognition for Election Vote Recap | HOG + SVM Magic",
-            "headline": "Boost accuracy in handwritten digit recognition with advanced feature extraction and machine learning.",
+            "title": "Election Digit Scanner",
+            "headline": "Nail handwritten digit recognition for 2024 Indonesia vote recaps with HOG and SVM.",
             "description": [
-                "This project tackles data input errors in vote recapitulation for the 2024 Indonesian Presidential Election, leveraging cutting-edge pattern recognition techniques.",
-                "Using Histogram of Oriented Gradients (HOG) for feature extraction and K-Nearest Neighbors (KNN) as well as Support Vector Machine (SVM) algorithms for classification, the system achieved exceptional accuracy levels.",
-                "Experimental results confirmed that the combination of HOG with SVM provided the best performance, surpassing 97% accuracy across various dataset splits."
+                "This project kills data entry errors in the 2024 Indonesian Presidential Election vote recap with cutting-edge pattern recognition.",
+                "Uses Histogram of Oriented Gradients (HOG) for feature extraction and K-Nearest Neighbors (KNN) plus Support Vector Machine (SVM) for classification, hitting over 97% accuracy.",
+                "Experiments prove HOG + SVM is the champ, delivering top-tier performance across dataset splits."
             ],
             "github_url": "https://github.com/ridwaanhall/handwritten-digit-recognition-of-the-2024-indonesian-presidential-election-recap",
             "image_url": f"{settings.BASE_URL}/static/img/project/default_project_image.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Feature Extraction with HOG",
-                    "description": "Detect edges and gradient directions for enhanced digit recognition."
+                    "title": "HOG Feature Magic",
+                    "description": "Extracts edges and gradients for pinpoint digit recognition."
                 },
                 {
-                    "title": "High Performance Algorithms",
-                    "description": "Leverages KNN and SVM, achieving accuracy beyond 97%."
+                    "title": "SVM & KNN Power",
+                    "description": "Drops 97%+ accuracy with killer classification algorithms."
                 },
                 {
-                    "title": "Experimental Insights",
-                    "description": "Compares techniques with and without feature extraction to highlight performance gains."
+                    "title": "Performance Breakdown",
+                    "description": "Compares extraction vs. no-extraction for clear wins."
                 }
             ],
             "tech_stack": [
@@ -1038,28 +1037,28 @@ class ProjectsData:
         },
         {
             "id": 26,
-            "title": "Khodam Checker | What's Your Color, Boss?",
-            "headline": "Discover your Khodam online with this Django-powered website.",
+            "title": "Khodam Color Finder",
+            "headline": "Unleash your inner Khodam vibe with this Django-powered online checker.",
             "description": [
-                "This online platform allows users to check their Khodam color quickly and effortlessly.",
-                "Built with Django, the website is accessible to the public for three months starting from June 25, 2024.",
-                "Designed for a smooth and fun user experience, making mystical exploration modern and interactive."
+                "This slick platform lets you discover your Khodam color in a snap, no hassle.",
+                "Built with Django, it’s open to all for three months starting June 25, 2024.",
+                "Brings a modern, fun twist to mystical exploration with a smooth user experience."
             ],
             "github_url": "https://github.com/ridwaanhall/website-cek-khodam",
             "image_url": f"{settings.BASE_URL}/static/img/project/default_project_image.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Quick Khodam Check",
-                    "description": "Effortlessly explore your Khodam online."
+                    "title": "Instant Khodam Check",
+                    "description": "Find your Khodam color with zero fuss."
                 },
                 {
-                    "title": "Public Accessibility",
-                    "description": "Available to everyone during its active period."
+                    "title": "Open to All",
+                    "description": "Publicly accessible during its live run."
                 },
                 {
-                    "title": "Django-Powered",
-                    "description": "Ensures a robust backend for smooth operations."
+                    "title": "Django Swagger",
+                    "description": "Rock-solid backend for seamless performance."
                 }
             ],
             "tech_stack": [
@@ -1070,44 +1069,44 @@ class ProjectsData:
         },
         {
             "id": 27,
-            "title": "Zeronine App | Handwritten Recognition",
-            "headline": "From zero to hero—handwritten recognition for Arabic and English digits and characters.",
+            "title": "Zeronine Handwriting Wizard",
+            "headline": "Crush Arabic and English digit/character recognition with CNN-powered magic.",
             "description": [
-                "The Zeronine App is a journey from data gathering to creating a simple yet impactful website for handwritten recognition.",
-                "Showcases the ability to classify Arabic digits, Arabic characters, English digits, and English characters through advanced image processing.",
-                "Built with a focus on Convolutional Neural Networks (CNNs) to deliver accurate and efficient recognition results."
+                "The Zeronine App takes you from raw data to a slick website for handwritten recognition of Arabic and English digits and characters.",
+                "Uses Convolutional Neural Networks (CNNs) to nail classification with high accuracy.",
+                "A full journey from data collection to deployment, built for impact and efficiency."
             ],
             "github_url": "https://github.com/ridwaanhall/zeronine",
             "image_url": f"{settings.BASE_URL}/static/img/project/zeronine_handwritten_recognition.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Multi-Language Classification",
-                    "description": "Supports recognition of both Arabic and English digits and characters."
+                    "title": "Bilingual Recognition",
+                    "description": "Handles Arabic and English digits and characters like a champ."
                 },
                 {
-                    "title": "CNN-Powered Models",
-                    "description": "Leverages Convolutional Neural Networks for precise handwriting recognition."
+                    "title": "CNN Supercharge",
+                    "description": "Convolutional Neural Networks deliver precise handwriting detection."
                 },
                 {
-                    "title": "Comprehensive Workflow",
-                    "description": "Covers data gathering, model training, and website deployment seamlessly."
+                    "title": "End-to-End Flow",
+                    "description": "Covers data gathering, training, and website rollout."
                 }
             ],
             "tech_stack": [
                 tech_stack["python"],
-                tech_stack["cnn"],
+                tech_stack["cnn"]
             ],
             "updated_at": datetime.strptime("2024-08-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 28,
-            "title": "Follow Dragon | SpaceX Clone App",
-            "headline": "Track SpaceX Dragon missions in real-time with Django-powered APIs.",
+            "title": "Follow Dragon SpaceX Tracker",
+            "headline": "Chase SpaceX Dragon missions live with Django-powered API swagger.",
             "description": [
-                "This Django project is designed to interact with external APIs, providing real-time SpaceX Dragon data and rendering it in sleek HTML templates.",
-                "The core functionality lies in the `dragon_public` view, which fetches JSON data using custom headers and renders responsive templates.",
-                "Includes additional views for route redirection and dynamic data rendering, ensuring seamless interaction for users."
+                "This Django project hooks into external APIs to serve real-time SpaceX Dragon data, rendered in slick HTML templates.",
+                "The `dragon_public` view grabs JSON data with custom headers, delivering responsive, dynamic visuals.",
+                "Extra views handle redirects and data rendering for a seamless user experience."
             ],
             "demo_url": "https://follow-dragon.ridwaanhall.com/",
             "github_url": "https://github.com/ridwaanhall/follow-dragon-spacex",
@@ -1115,52 +1114,52 @@ class ProjectsData:
             "is_featured": False,
             "features": [
                 {
-                    "title": "API Integration",
-                    "description": "Fetch JSON data using custom headers for real-time mission tracking."
+                    "title": "Live API Connect",
+                    "description": "Pulls JSON data with custom headers for real-time mission tracking."
                 },
                 {
-                    "title": "HTML Template Rendering",
-                    "description": "Provides responsive designs for dynamic data visualization."
+                    "title": "Sleek Template Vibes",
+                    "description": "Responsive designs make data pop dynamically."
                 },
                 {
-                    "title": "Django-Powered Flexibility",
-                    "description": "Ensures robust performance and easy scalability with Django framework."
+                    "title": "Django Dynamism",
+                    "description": "Robust and scalable thanks to Django’s framework."
                 }
             ],
             "tech_stack": [
                 tech_stack["python"],
-                tech_stack["django"],
+                tech_stack["django"]
             ],
             "updated_at": datetime.strptime("2024-09-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 29,
-            "title": "MLBB Mabar VIP/VVIP Manager",
-            "headline": "Streamline gaming sessions, skin requests, and hero selections for VIP players with Django.",
+            "title": "MLBB VIP Mabar Organizer",
+            "headline": "Level up MLBB sessions with Django-powered VIP management for skins and heroes.",
             "description": [
-                "This Django-powered system simplifies the management of gaming sessions (Mabar), skin requests, hero preferences, and user feedback for Mobile Legends: Bang Bang.",
-                "Tracks session status, supports both regular and VIP users, and ensures smooth communication with donors through a well-structured interface.",
-                "Designed to enhance user experience, this system organizes requests efficiently and improves the overall gameplay collaboration process."
+                "This Django system makes managing Mobile Legends: Bang Bang sessions, skin requests, hero picks, and feedback a breeze.",
+                "Tracks session status for regular and VIP users, keeping donor communication tight and organized.",
+                "Built to boost gameplay collaboration and streamline the VIP experience."
             ],
             "github_url": "https://github.com/ridwaanhall/management-mabar-VIP-MLBB",
             "image_url": f"{settings.BASE_URL}/static/img/project/mlbb_mabar_vip_manager.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Mabar Session Management",
-                    "description": "Tracks gaming sessions with donor and user information, ensuring seamless coordination."
+                    "title": "Session Coordinator",
+                    "description": "Manages Mabar sessions with donor and user details."
                 },
                 {
-                    "title": "Bonus Skin Delivery",
-                    "description": "Handles skin requests with automated delivery status tracking."
+                    "title": "Skin Request Flow",
+                    "description": "Automates skin delivery status for VIPs."
                 },
                 {
-                    "title": "Hero Request System",
-                    "description": "Lets users submit hero preferences, including lane and meta details."
+                    "title": "Hero Pick System",
+                    "description": "Handles hero preferences, lanes, and meta choices."
                 },
                 {
-                    "title": "Comment Album Tracking",
-                    "description": "Manages and logs donor comments for streamlined feedback resolution."
+                    "title": "Feedback Tracker",
+                    "description": "Logs donor comments for quick resolution."
                 }
             ],
             "tech_stack": [
@@ -1171,44 +1170,44 @@ class ProjectsData:
         },
         {
             "id": 30,
-            "title": "Ant Colony Optimization | Indonesia Real Map",
-            "headline": "Optimize routes and visualize algorithm progress with ACO on Indonesia's map.",
+            "title": "Indonesia Route Optimizer",
+            "headline": "Find the best paths across Indonesia with ACO and slick visualizations.",
             "description": [
-                "This project implements the Ant Colony Optimization (ACO) algorithm on a real map of Indonesia.",
-                "Features include configurable parameters for optimization, visualization tools to track algorithm progress, and hyperparameter tuning for enhanced performance.",
-                "Designed to provide practical insights and improve efficiency in solving pathfinding and optimization problems."
+                "This project brings Ant Colony Optimization (ACO) to life on a real map of Indonesia for next-level route planning.",
+                "Tweakable parameters and visualization tools let you track the algorithm’s progress in style.",
+                "Built to deliver practical insights and boost efficiency for pathfinding challenges."
             ],
             "github_url": "https://github.com/ridwaanhall/aco-algorithm",
             "image_url": f"{settings.BASE_URL}/static/img/project/default_project_image.webp",
             "is_featured": False,
             "features": [
                 {
-                    "title": "Real Map Implementation",
-                    "description": "Leverages ACO to optimize routes using Indonesia's geographical data."
+                    "title": "Real-World Mapping",
+                    "description": "Optimizes routes using Indonesia’s actual geography."
                 },
                 {
-                    "title": "Progress Visualization",
-                    "description": "Offers visual insights into the algorithm’s optimization process."
+                    "title": "Visual Progress",
+                    "description": "Watch the algorithm work with clear visualizations."
                 },
                 {
-                    "title": "Hyperparameter Optimization",
-                    "description": "Fine-tunes algorithm parameters to achieve superior results."
+                    "title": "Tuning Mastery",
+                    "description": "Fine-tune parameters for peak optimization results."
                 }
             ],
             "tech_stack": [
                 tech_stack["python"],
-                tech_stack["aco"],
+                tech_stack["aco"]
             ],
             "updated_at": datetime.strptime("2024-12-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 31,
             "title": "NGL Link Spam",
-            "headline": "Python script to message NGL without logging in.",
+            "headline": "Python script to fire off NGL messages, no login required.",
             "description": [
-                "A Python tool to send custom or random messages to NGL, no login needed.",
-                "It shows off web requests and API tricks, automating what’s usually manual.",
-                "Built-in rate limits keep it chill to avoid spamming issues."
+                "This Python tool lets you send custom or random messages to NGL without needing an account.",
+                "Flexes web requests and API skills, automating what’s usually a manual grind.",
+                "Keeps it cool with built-in rate limits to dodge spamming headaches."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/ngl_link_spamming.webp",
             "github_url": "https://github.com/ridwaanhall/ngl-link-spamming",
@@ -1216,49 +1215,49 @@ class ProjectsData:
             "features": [
                 {
                     "title": "Custom Messages",
-                    "description": "Send your own texts with ease.",
+                    "description": "Drop your own texts with zero hassle."
                 },
                 {
                     "title": "Random Texts",
-                    "description": "Auto-generate messages for fun.",
+                    "description": "Generate quirky messages for kicks."
                 },
                 {
                     "title": "No Login",
-                    "description": "Straight to messaging, no hassle."
+                    "description": "Jump straight to messaging, no sign-up needed."
                 }
             ],
             "tech_stack": [
                 tech_stack["python"]
             ],
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 32,
             "title": "ridwaanhall.pythonanywhere.com",
-            "headline": "Portfolio site with Vuexy HTML and Django, flexing GitHub stats.",
+            "headline": "Slick portfolio site with Vuexy HTML and Django, showing off GitHub stats.",
             "description": [
-                "Another portfolio site, this time with Vuexy HTML and Django, packed with sections and a GitHub-powered stats dashboard.",
-                "It’s got a polished look and smart backend to manage content easily, with secure admin access.",
-                "The dashboard pulls yearly GitHub data to show off my coding hustle."
+                "This portfolio site, powered by Vuexy HTML and Django, is loaded with sections and a GitHub-driven stats dashboard.",
+                "Rocking a sharp design and a smart backend for easy content updates, plus secure admin access.",
+                "The dashboard pulls yearly GitHub data to flex my coding grind in style."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/ridwaanhall_pythonanywhere_com.webp",
             "is_featured": False,
             "features": [
                 {
                     "title": "Loaded Pages",
-                    "description": "Tons of sections like About, Projects, and more.",
+                    "description": "Packed with sections like About, Projects, and beyond."
                 },
                 {
                     "title": "Clean UI",
-                    "description": "Vuexy HTML for a pro-level design.",
+                    "description": "Vuexy HTML delivers a pro-grade look."
                 },
                 {
-                    "title": "GitHub Stats",
-                    "description": "Yearly coding insights via API.",
+                    "title": "Git.callbacks",
+                    "description": "Yearly coding insights pulled via API."
                 },
                 {
                     "title": "Mobile-Friendly",
-                    "description": "Works great on any device."
+                    "description": "Looks dope on any device."
                 }
             ],
             "tech_stack": [
@@ -1266,16 +1265,16 @@ class ProjectsData:
                 tech_stack["django"],
                 tech_stack["github_api"]
             ],
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 33,
             "title": "Gold Price & Music Recommender",
-            "headline": "ML-powered gold price predictor and music suggestion system.",
+            "headline": "ML vibes forecasting gold prices and curating your next music banger.",
             "description": [
-                "This project uses machine learning to predict gold prices and recommend music tracks based on your vibe.",
-                "For gold, I crunched historical data and economic trends to forecast prices with solid accuracy, testing multiple models to find the best fit.",
-                "The music recommender analyzes your listening habits and song features to suggest tracks and artists you’ll love, mixing in some fresh finds."
+                "This project uses machine learning to predict gold prices and drop music recs that match your mood.",
+                "For gold, it crunches historical data and economic trends, testing multiple models for tight accuracy.",
+                "The music recommender scans your listening habits and song features to serve up tracks and artists you’ll vibe with."
             ],
             "github_url": "https://github.com/ridwaanhall/applied-machine-learning",
             "image_url": f"{settings.BASE_URL}/static/img/project/gold_price_prediction_and_music_recommendation_system.webp",
@@ -1283,7 +1282,7 @@ class ProjectsData:
             "features": [
                 {
                     "title": "Gold Forecasts",
-                    "description": "Predicts prices to guide investment moves.",
+                    "description": "Predicts prices to guide investment moves."
                 },
                 {
                     "title": "Music Picks",
@@ -1294,16 +1293,16 @@ class ProjectsData:
                 tech_stack["machine_learning"],
                 tech_stack["music_recommendation"]
             ],
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 34,
-            "title": "Tokopedia Sentiment Analysis",
-            "headline": "ML pipeline to analyze Tokopedia app reviews.",
+            "title": "Tokopedia Review Scanner",
+            "headline": "ML pipeline to decode Tokopedia app feedback like a pro.",
             "description": [
-                "A full pipeline for scraping and analyzing Tokopedia app reviews from Google Play, using ML to gauge sentiment.",
-                "It digs into what users love or hate, helping devs prioritize fixes and features.",
-                "Handles tricky Indonesian text—slang and all—with multiple models compared to find the best performer."
+                "This pipeline scrapes and analyzes Tokopedia app reviews from Google Play, using ML to read the sentiment.",
+                "It pinpoints what users love or hate, helping devs focus on fixes and features that matter.",
+                "Tackles messy Indonesian text—slang included—comparing models to find the top performer."
             ],
             "github_url": "https://github.com/ridwaanhall/Dicoding-Machine-Learning-Intermediate/tree/main/01_project",
             "image_url": f"{settings.BASE_URL}/static/img/project/sentiment_analysis_tokopedia_app.webp",
@@ -1311,39 +1310,39 @@ class ProjectsData:
             "features": [
                 {
                     "title": "Review Scraper",
-                    "description": "Pulls fresh Play Store feedback.",
+                    "description": "Grabs fresh feedback from Play Store."
                 },
                 {
                     "title": "Text Cleanup",
-                    "description": "Preps messy text for analysis.",
+                    "description": "Tames messy text for clean analysis."
                 },
                 {
                     "title": "Feature Extraction",
-                    "description": "Uses TF-IDF and Word2Vec for insights.",
+                    "description": "Uses TF-IDF and Word2Vec for deep insights."
                 },
                 {
                     "title": "Model Testing",
-                    "description": "Pits ML models to find the champ.",
+                    "description": "Battles ML models to crown the best."
                 },
                 {
                     "title": "Sentiment Scores",
-                    "description": "Predicts review vibes accurately."
+                    "description": "Nails review vibes with precision."
                 }
             ],
             "tech_stack": [
                 tech_stack["python"],
                 tech_stack["machine_learning"]
             ],
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 35,
             "title": "ridwaanhall.me",
-            "headline": "Next.js portfolio rocking Once UI with top-notch performance.",
+            "headline": "Next.js portfolio with Once UI, built for speed and global vibes.",
             "description": [
-                "A Next.js portfolio using Once UI, built for speed, SEO, and global reach.",
-                "It’s optimized to the max with Server Components, lazy images, and code splitting, scoring perfect on Lighthouse.",
-                "Supports multiple languages, custom animations, and stays snappy no matter the device."
+                "This Next.js portfolio, rocking Once UI, is optimized for lightning speed, SEO, and worldwide access.",
+                "Loaded with Server Components, lazy images, and code splitting, it scores 100 on Lighthouse.",
+                "Supports multiple languages, custom animations, and stays buttery smooth on any device."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/ridwaanhall_me.webp",
             "github_url": "https://github.com/ridwaanhall/ridwaanhall.me",
@@ -1351,23 +1350,23 @@ class ProjectsData:
             "features": [
                 {
                     "title": "Once UI",
-                    "description": "Full design system for sleek components.",
+                    "description": "Sleek design system for fire components."
                 },
                 {
                     "title": "SEO Boost",
-                    "description": "Auto-generated meta for search visibility.",
+                    "description": "Auto-generated meta for max search visibility."
                 },
                 {
                     "title": "Responsive Layout",
-                    "description": "Flawless on any screen size.",
+                    "description": "Flawless on any screen size."
                 },
                 {
                     "title": "Customizable",
-                    "description": "Tweak everything with data attributes.",
+                    "description": "Tweak everything with data attributes."
                 },
                 {
                     "title": "Multilingual",
-                    "description": "Supports global audiences with next-intl."
+                    "description": "Ready for global audiences with next-intl."
                 }
             ],
             "tech_stack": [
@@ -1378,29 +1377,29 @@ class ProjectsData:
                 tech_stack["mdx"],
                 tech_stack["javascript"]
             ],
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 36,
             "title": "Neon AI",
-            "headline": "AI chatbot built with Next.js and Once UI.",
+            "headline": "Next.js-powered AI chatbot with Once UI and slick vibes.",
             "description": [
-                "Neon AI is a smart chatbot running on Next.js and Once UI, with smooth routing and unified APIs.",
-                "It delivers instant responses with a conversational flow that feels natural, thanks to streaming tech.",
-                "Keeps chats coherent with context tracking and pulls data to present answers in cool, visual ways."
+                "Neon AI is a next-level chatbot built on Next.js and Once UI, with seamless routing and unified APIs.",
+                "Delivers instant, natural responses using streaming tech for a smooth conversational flow.",
+                "Tracks context for coherent chats and presents data in visually dope formats."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/neon_ai.webp", 
+            "image_url": f"{settings.BASE_URL}/static/img/project/neon_ai.webp",
             "github_url": "https://github.com/ridwaanhall/neon-ai",
             "demo_url": "https://chat.ridwaanhall.com",
             "is_featured": False,
             "features": [
                 {
                     "title": "Smart Routing",
-                    "description": "Next.js App Router for fast navigation.",
+                    "description": "Next.js App Router for zippy navigation."
                 },
                 {
                     "title": "AI Power",
-                    "description": "Unified API for text and tool calls.",
+                    "description": "Unified API for text and tool calls."
                 },
                 {
                     "title": "Data Storage",
@@ -1414,16 +1413,16 @@ class ProjectsData:
                 tech_stack["vercel_postgres"],
                 tech_stack["radix_ui"]
             ],
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 37,
-            "title": "Instagram Analytics",
-            "headline": "Python tool to break down Instagram follower data.",
+            "title": "Insta Follow Analyzer",
+            "headline": "Python tool to dissect Instagram follower dynamics.",
             "description": [
-                "A Python script to analyze Instagram followers and following, spotting mutuals, non-followers, and more.",
-                "It helps influencers and managers find engagement gaps and networking wins by mapping relationships.",
-                "Outputs detailed stats and lists for outreach or deeper dives, all from JSON data."
+                "This Python script breaks down Instagram followers and following, spotting mutuals, non-followers, and more.",
+                "Perfect for influencers and managers to find engagement gaps or networking opportunities.",
+                "Spits out detailed stats and lists from JSON data for outreach or deeper analysis."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/instagram_following_followers.webp",
             "github_url": "https://github.com/ridwaanhall/instagram-following-followers",
@@ -1432,15 +1431,15 @@ class ProjectsData:
             "features": [
                 {
                     "title": "Follower Breakdown",
-                    "description": "Lists mutuals and one-sided followers.",
+                    "description": "Lists mutuals and one-sided followers."
                 },
                 {
                     "title": "Following Insights",
-                    "description": "Tracks who you follow without reciprocation.",
+                    "description": "Tracks who you follow without reciprocation."
                 },
                 {
                     "title": "JSON Support",
-                    "description": "Handles Instagram data smoothly."
+                    "description": "Handles Instagram data like a pro."
                 }
             ],
             "tech_stack": [
@@ -1448,16 +1447,16 @@ class ProjectsData:
                 tech_stack["django"],
                 tech_stack["whitenoise"]
             ],
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 38,
-            "title": "Lumina",
-            "headline": "Auto-attendance tool for forgetful students.",
+            "title": "Lumina Attendance Saver",
+            "headline": "Auto-attendance tool for students who forget the roll call.",
             "description": [
-                "Lumina generates encrypted attendance codes fast, saving students from missing roll call.",
-                "Built for schools, it fits various course setups with secure, valid codes.",
-                "The interface is dead simple, perfect for those last-minute panics."
+                "Lumina pumps out encrypted attendance codes in a flash, saving students from missing class check-ins.",
+                "Built for schools, it adapts to different course setups with secure, valid codes.",
+                "The interface is stupid simple, perfect for those last-second scrambles."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/lumina.webp",
             "github_url": "https://github.com/ridwaanhall/Lumina",
@@ -1466,11 +1465,11 @@ class ProjectsData:
             "features": [
                 {
                     "title": "Code Generator",
-                    "description": "Spits out secure codes instantly.",
+                    "description": "Spits out secure codes instantly."
                 },
                 {
                     "title": "Easy UI",
-                    "description": "No fuss, even under pressure.",
+                    "description": "No fuss, even under pressure."
                 },
                 {
                     "title": "Safe Codes",
@@ -1484,16 +1483,16 @@ class ProjectsData:
                 tech_stack["vercel"],
                 tech_stack["cloudflare"]
             ],
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 39,
-            "title": "OpenShop RESTful API",
-            "headline": "RESTful API for managing products with Django REST Framework.",
+            "title": "OpenShop Product API",
+            "headline": "Slick RESTful API for juggling product data with Django REST Framework.",
             "description": [
-                "A slick RESTful API to handle product data like a pro, built with Django REST Framework.",
-                "Supports creating, reading, updating, deleting, and searching products with full CRUD and HATEOAS vibes.",
-                "Includes soft delete, data validation, and proper status codes for a smooth experience."
+                "This RESTful API, built with Django REST Framework, handles product data like a champ.",
+                "Supports full CRUD, product searches, and HATEOAS for smooth navigation.",
+                "Comes with soft delete, data validation, and proper status codes for a polished experience."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/openshop_restful_api.webp",
             "github_url": "https://github.com/ridwaanhall/a743-backend-pemula-python/tree/submission",
@@ -1525,12 +1524,12 @@ class ProjectsData:
         },
         {
             "id": 40,
-            "title": "Bike Sharing Dashboard",
-            "headline": "Interactive dashboard linking weather and bike rentals.",
+            "title": "Bike Rental Insights Dashboard",
+            "headline": "Interactive dashboard tying weather to bike rental trends.",
             "description": [
-                "A dashboard digging into how weather impacts bike rentals, showing trends by season, day, and conditions.",
-                "It uses data analysis to help bike companies tweak fleet plans and pricing based on forecasts.",
-                "Users can filter by temp, humidity, or time to spot patterns, with ML models predicting future demand."
+                "This dashboard dives into how weather drives bike rentals, breaking down trends by season, day, and conditions.",
+                "It uses data analysis to help bike companies optimize fleets and pricing based on forecasts.",
+                "Filter by temp, humidity, or time to uncover patterns, with ML models predicting future demand."
             ],
             "demo_url": "https://ridwaanhall-bike-sharing-analytics.streamlit.app/",
             "github_url": "https://github.com/ridwaanhall/dicoding-bike-sharing-analysis",
@@ -1539,15 +1538,15 @@ class ProjectsData:
             "features": [
                 {
                     "title": "Season Trends",
-                    "description": "Shows peak biking seasons.",
+                    "description": "Shows peak biking seasons."
                 },
                 {
                     "title": "Weather Impact",
-                    "description": "Links conditions to rental spikes.",
+                    "description": "Links conditions to rental spikes."
                 },
                 {
                     "title": "Day Breakdown",
-                    "description": "Compares weekdays vs. weekends.",
+                    "description": "Compares weekdays vs. weekends."
                 },
                 {
                     "title": "Streamlit UI",
@@ -1559,16 +1558,16 @@ class ProjectsData:
                 tech_stack["streamlit"],
                 tech_stack["tensorflow"]
             ],
-            "updated_at": datetime.strptime("2025-04-17T17:49:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-17T17:49:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 41,
-            "title": "Mobile Legends API & Site",
-            "headline": "REST API and website for Mobile Legends game data.",
+            "title": "MLBB API Stats Hub",
+            "headline": "REST API and website loaded with Mobile Legends game data.",
             "description": [
-                "A REST API and website for Mobile Legends fans, serving up hero stats, rankings, and game insights.",
-                "The API delivers clean endpoints for heroes, skills, and meta trends, perfect for devs building game tools. Docs are easy to navigate.",
-                "The site breaks down complex data for casual players, with tips on hero matchups, builds, and counters based on the latest meta."
+                "A must-have for Mobile Legends fans, this REST API and website dish out hero stats, rankings, and game insights.",
+                "The API offers clean endpoints for heroes, skills, and meta trends, ideal for devs crafting game tools. Docs are super easy to follow.",
+                "The site breaks down complex data for casual players, dropping tips on hero matchups, builds, and counters based on the latest meta."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/mobile_legends_bang_bang_api_and_website.webp",
             "demo_url": "https://mlbb-stats.ridwaanhall.com/",
@@ -1577,11 +1576,11 @@ class ProjectsData:
             "features": [
                 {
                     "title": "Game API",
-                    "description": "GET endpoints for hero stats and rankings.",
+                    "description": "GET endpoints for hero stats and rankings."
                 },
                 {
                     "title": "Dev Docs",
-                    "description": "Next.js-powered guide for easy API use.",
+                    "description": "Next.js-powered guide for easy API use."
                 },
                 {
                     "title": "Player Hub",
@@ -1596,16 +1595,16 @@ class ProjectsData:
                 tech_stack["shadcn_ui"],
                 tech_stack["vercel"]
             ],
-            "updated_at": datetime.strptime("2025-04-20T14:24:22+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-20T14:24:22+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 42,
-            "title": "PDDikti API",
-            "headline": "API for Indonesia’s higher education data from PDDikti.",
+            "title": "PDDikti Data Vault",
+            "headline": "API unlocking Indonesia’s higher education data from PDDikti.",
             "description": [
-                "An API to pull fresh data from PDDikti, Indonesia’s higher ed database, covering unis, programs, and more.",
-                "It’s built for researchers and devs, with clear endpoints to grab structured info like accreditation stats.",
-                "Caching and optimizations keep it fast even with heavy traffic, and the docs make it a breeze to use."
+                "This API pulls fresh, juicy data from PDDikti, Indonesia’s higher ed database, covering universities, programs, and more.",
+                "Built for researchers and devs, it offers clear endpoints to snag structured info like accreditation stats.",
+                "Caching and optimizations keep it blazing fast under heavy traffic, with docs that make integration a breeze."
             ],
             "image_url": f"{settings.BASE_URL}/static/img/project/api_pddikti_kemendiksaintek.webp",
             "demo_url": "https://pddikti-docs.ridwaanhall.com/",
@@ -1614,11 +1613,11 @@ class ProjectsData:
             "features": [
                 {
                     "title": "Edu Data",
-                    "description": "Easy access to uni and program info.",
+                    "description": "Easy access to uni and program info."
                 },
                 {
                     "title": "Dev-Friendly",
-                    "description": "Simple setup for coders.",
+                    "description": "Simple setup for coders."
                 },
                 {
                     "title": "Fresh Stats",
@@ -1631,16 +1630,16 @@ class ProjectsData:
                 tech_stack["javascript"],
                 tech_stack["css"]
             ],
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 43,
-            "title": "belimadu.com",
-            "headline": "E-commerce site for honey goodies, built with Django and Bootstrap on Vercel.",
+            "title": "BeliMadu.com",
+            "headline": "E-commerce hotspot for honey treats, built with Django and Bootstrap on Vercel.",
             "description": [
-                "Belimadu.com is an e-commerce hub for honey products, crafted with Django and Bootstrap, hosted on Vercel. It’s got a product catalog, health tips, WhatsApp ordering, and monthly deals.",
-                "It’s a one-stop shop for honey lovers, blending useful articles with a smooth shopping flow. SEO tweaks help it pop up on Google searches.",
-                "Customers can hit up WhatsApp for quick orders, and monthly promos keep things fresh with special offers."
+                "Belimadu.com is your go-to e-commerce hub for honey products, crafted with Django and Bootstrap, hosted on Vercel. It’s loaded with a product catalog, health tips, WhatsApp ordering, and monthly deals.",
+                "A sweet spot for honey fans, mixing helpful articles with a smooth shopping experience. SEO tweaks make it shine on Google.",
+                "Customers can hit up WhatsApp for quick orders, and monthly promos keep the buzz alive with fresh offers."
             ],
             "demo_url": "https://belimadu.com",
             "image_url": f"{settings.BASE_URL}/static/img/project/belimadu_com.webp",
@@ -1648,11 +1647,11 @@ class ProjectsData:
             "features": [
                 {
                     "title": "Honey Catalog",
-                    "description": "Lists products with crisp images and details.",
+                    "description": "Lists products with crisp images and details."
                 },
                 {
                     "title": "WhatsApp Orders",
-                    "description": "Chat directly to place orders fast.",
+                    "description": "Chat directly to place orders fast."
                 },
                 {
                     "title": "Hot Deals",
@@ -1661,20 +1660,20 @@ class ProjectsData:
             ],
             "tech_stack": [
                 tech_stack["python"],
-                tech_stack["django"], 
+                tech_stack["django"],
                 tech_stack["bootstrap"],
                 tech_stack["vercel"]
             ],
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 44,
             "title": "ridwaanhall.com",
             "headline": "My personal portfolio site, powered by Django and TailwindCSS, running serverless on Vercel.",
             "description": [
-                "This is my digital home base, built with Django and TailwindCSS, hosted serverless on Vercel. It’s got everything—about me, projects, blog, education, experience, and a slick dashboard.",
-                "I mixed Django’s backend muscle with Tailwind’s clean styling to create a fast, modern site. Vercel’s serverless setup keeps it low-maintenance and snappy.",
-                "The dashboard pulls live GitHub and WakaTime data to show my coding stats in real time. Plus, it’s fully responsive, looking sharp on phones, tablets, or desktops."
+                "This is my digital HQ, built with Django and TailwindCSS, hosted serverless on Vercel. It’s got it all—about me, projects, blog, education, experience, and a sleek dashboard.",
+                "Blends Django’s backend power with Tailwind’s sharp styling for a fast, modern site. Vercel’s serverless setup keeps it low-maintenance and lightning-quick.",
+                "The dashboard pulls live GitHub and WakaTime data to flex my coding stats in real time, looking fire on any device."
             ],
             "github_url": "https://github.com/ridwaanhall/ridwaanhall_com",
             "demo_url": f"{settings.BASE_URL}",
@@ -1683,11 +1682,11 @@ class ProjectsData:
             "features": [
                 {
                     "title": "Serverless Vibes",
-                    "description": "Hosted on Vercel for max uptime and easy scaling.",
+                    "description": "Hosted on Vercel for max uptime and easy scaling."
                 },
                 {
                     "title": "Live Dashboard",
-                    "description": "Shows my GitHub and WakaTime stats in real time.",
+                    "description": "Shows my GitHub and WakaTime stats in real time."
                 },
                 {
                     "title": "Smooth Design",
@@ -1702,6 +1701,6 @@ class ProjectsData:
                 tech_stack["github_api"],
                 tech_stack["wakatime_api"]
             ],
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
     ]

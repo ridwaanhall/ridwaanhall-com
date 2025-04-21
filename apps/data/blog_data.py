@@ -215,7 +215,7 @@ class BlogData:
             "description": "Brainrot’s takin’ over the internet in 2025, and it’s WILD! From cursed memes to AI vids and slang that’s got no chill, here’s the tea on what brainrot is and how to not lose your mind in the chaos.",
             "image_url": f"{settings.BASE_URL}/static/img/blog/brainrot_explained_2025.webp",
             "created_at": datetime.strptime("2025-04-21T20:24:34+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-            "updated_at": datetime.strptime("2025-04-21T20:24:34+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-21T21:13:56+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             "author": "Ridwan Halim",
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",

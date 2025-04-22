@@ -13,7 +13,7 @@
     <a href="{% url 'blog_detail' title=blog.title|slugify %}">
         <div style="height: 350px; sm:height: 350px;" class="group relative overflow-hidden rounded-xl border border-zinc-700 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 transform h-full">
             <div class="absolute inset-0">
-                <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-500">
+                <img src="https://wsrv.nl/?url={{ blog.image_url }}&w=300&h=200" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-500" loading="lazy">
                 <div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/80 to-zinc-900/30"></div>
             </div>
             

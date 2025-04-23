@@ -1,14 +1,20 @@
 # ridwaanhall.com
 
-🔥 Yo, I built my personal site from *scratch* with Django and TailwindCSS, and it’s straight-up 🔥. Hosted on Vercel for that smooth vibe. 😎
+🔥 I built my personal site from *scratch* with Django and TailwindCSS, and it’s straight-up 🔥. Hosted on Vercel for that smooth vibe. 😎
 
 ![ridwaanhall](public/ridwaanhall_com.png)
 
 ---
 
+## Coding Time Flex 💪⏱️
+
+Check it - I've put some serious hours into building this bad boy! The Wakatime badge below shows exactly how much time I've spent in the code trenches making this site awesome:
+
 [![wakatime](https://wakatime.com/badge/user/018b799e-de53-4f7a-bb65-edc2df9f26d8/project/cc5b6b55-ece5-47ae-b643-512d9d86e93b.svg)](https://wakatime.com/badge/user/018b799e-de53-4f7a-bb65-edc2df9f26d8/project/cc5b6b55-ece5-47ae-b643-512d9d86e93b)
 
-## Yo, What's This?
+Every minute tracked, every line of code counted. This is what dedication looks like! 🔥
+
+## What's This?
 
 Welcome to my digital crib! This site’s my personal brand, showing off my skills with a clean, responsive design. I coded it from the ground up using Django for the backend and TailwindCSS for that slick frontend look. It’s got all the deets on my projects, work, and who I am. Wanna peek under the hood? Dive into the code and see how I made it pop. 🚀
 

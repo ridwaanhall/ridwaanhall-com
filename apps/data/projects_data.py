@@ -243,7 +243,8 @@ class ProjectsData:
                 "Just pop in a user ID and zone ID, and boom—our API hooks you up with the player's username.",
                 "Light, fast, and a total game-changer for MLBB fans."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/mlbb_username_checker.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_username_checker.webp",
+            "img_name": "mlbb_username_checker.webp",
             "is_featured": False,
             "features": [
                 {
@@ -273,7 +274,8 @@ class ProjectsData:
                 "With BeautifulSoup, it pulls username, bio, followers, following, and likes straight from the page.",
                 "Perfect for data nerds and TikTok stalkers—saves time and sparks curiosity!"
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/tiktok_data_extractor.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/tiktok_data_extractor.webp",
+            "img_name": "tiktok_data_extractor.webp",
             "is_featured": False,
             "features": [
                 {
@@ -304,7 +306,8 @@ class ProjectsData:
                 "Rocking AdminLTE for a slick look and feel, it’s as functional as it is beautiful.",
                 "Pulls legit data from quranenc.com and quran.api-docs.io for a deep, trustworthy experience."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/quran_website_frontend_api.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/quran_website_frontend_api.webp",
+            "img_name": "quran_website_frontend_api.webp",
             "is_featured": False,
             "features": [
                 {
@@ -336,7 +339,8 @@ class ProjectsData:
                 "Data comes straight from BMKG, so you know it’s legit and on point.",
                 "From Yogyakarta’s skies to the latest tremors, this tool’s got you covered."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/bmkg_weather_quake_hub.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/bmkg_weather_quake_hub.webp",
+            "img_name": "bmkg_weather_quake_hub.webp",
             "is_featured": False,
             "features": [
                 {
@@ -368,7 +372,8 @@ class ProjectsData:
                 "Filter by region, parameter, or time range to get exactly what you need.",
                 "From Aceh to Papua, it’s your one-stop shop for reliable weather intel."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/bmkg_weather_forecast_api.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/bmkg_weather_forecast_api.webp",
+            "img_name": "bmkg_weather_forecast_api.webp",
             "is_featured": False,
             "features": [
                 {
@@ -400,7 +405,8 @@ class ProjectsData:
                 "A must-have for devs and gamers who want MLBB stats without the grind."
             ],
             "demo_url": "https://mlbb-api.ridwaanhall.repl.co",
-            "image_url": f"{settings.BASE_URL}/static/img/project/mlbb_game_stats_api.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_game_stats_api.webp",
+            "img_name": "mlbb_game_stats_api.webp",
             "is_featured": False,
             "features": [
                 {
@@ -432,7 +438,8 @@ class ProjectsData:
                 "Perfect for quick, no-sweat media downloads that keep things smooth."
             ],
             "demo_url": "https://instagram-api-v1.ridwaanhall.repl.co/",
-            "image_url": f"{settings.BASE_URL}/static/img/project/instagram_media_downloader.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/instagram_media_downloader.webp",
+            "img_name": "instagram_media_downloader.webp",
             "is_featured": False,
             "features": [
                 {
@@ -464,7 +471,8 @@ class ProjectsData:
                 "A must-have for researchers, devs, or anyone vibing with quake info."
             ],
             "demo_url": "https://earthquake-bmkg-api.ridwaanhall.repl.co",
-            "image_url": f"{settings.BASE_URL}/static/img/project/bmkg_quake_tracker_api.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/bmkg_quake_tracker_api.webp",
+            "img_name": "bmkg_quake_tracker_api.webp",
             "is_featured": False,
             "features": [
                 {
@@ -496,7 +504,8 @@ class ProjectsData:
                 "Perfect for researchers or devs who want quick, clean access to higher ed data."
             ],
             "github_url": "https://replit.com/@ridwaanhall/college-data",
-            "image_url": f"{settings.BASE_URL}/static/img/project/college_insights_api.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/college_insights_api.webp",
+            "img_name": "college_insights_api.webp",
             "is_featured": False,
             "features": [
                 {
@@ -527,7 +536,8 @@ class ProjectsData:
                 "Taps into OpenAI for next-level, smart convo vibes.",
                 "Perfect for automating chats or building brainy bot solutions."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/chatbot_gateway.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/chatbot_gateway.webp",
+            "img_name": "chatbot_gateway.webp",
             "is_featured": False,
             "features": [
                 {
@@ -559,7 +569,8 @@ class ProjectsData:
                 "With Chart.js visuals, Leaflet maps, OpenStreetMap, and Google Maps, it’s a seismic data party.",
                 "Rocking Bootstrap and OverlayScrollbars for a clean, responsive vibe."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/inatews_dashboard.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/inatews_dashboard.webp",
+            "img_name": "inatews_dashboard.webp",
             "is_featured": False,
             "features": [
                 {
@@ -597,7 +608,8 @@ class ProjectsData:
                 "Built to make digging through academic data fun, fast, and easy."
             ],
             "demo_url": "https://replit.com/@ridwaanhall/web-college",
-            "image_url": f"{settings.BASE_URL}/static/img/project/college_data_hub.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/college_data_hub.webp",
+            "img_name": "college_data_hub.webp",
             "is_featured": False,
             "features": [
                 {
@@ -629,7 +641,8 @@ class ProjectsData:
                 "Drop a name or student ID, and it’ll list matches—tap one for full details like college and programs.",
                 "Your go-to for quick, no-fuss student data lookups."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/student_search_bot_telegram.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/student_search_bot_telegram.webp",
+            "img_name": "student_search_bot_telegram.webp",
             "is_featured": False,
             "features": [
                 {
@@ -661,7 +674,8 @@ class ProjectsData:
                 "Flask handles the backend, slinging HTTP requests for smooth AI-user vibes.",
                 "Shows off next-level NLP skills for sharp, accurate responses."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/openai_api_dynamic_conversational_system.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/openai_api_dynamic_conversational_system.webp",
+            "img_name": "openai_api_dynamic_conversational_system.webp",
             "is_featured": False,
             "features": [
                 {
@@ -693,7 +707,8 @@ class ProjectsData:
                 "Get names, types, home stars, masses, radii, and Earth distances with ease.",
                 "Rocking JWT for secure access, CRUD ops, and Flask-Mail for email notifications."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/planetary_api_explore_universe.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/planetary_api_explore_universe.webp",
+            "img_name": "planetary_api_explore_universe.webp",
             "is_featured": False,
             "features": [
                 {
@@ -728,7 +743,8 @@ class ProjectsData:
                 "Drops insights on training progress, like epochs and error stats, for a fun learning vibe."
             ],
             "github_url": "https://github.com/ridwaanhall/Training-Neural-Networks-in-Python",
-            "image_url": f"{settings.BASE_URL}/static/img/project/neural_number_recognition.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/neural_number_recognition.webp",
+            "img_name": "neural_number_recognition.webp",
             "is_featured": False,
             "features": [
                 {
@@ -761,7 +777,8 @@ class ProjectsData:
                 "A dope showcase of OpenAI’s NLP for versatile, text-based tasks."
             ],
             "demo_url": "https://your-openai-function-calling-url.com",
-            "image_url": f"{settings.BASE_URL}/static/img/project/openai_function_calling.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/openai_function_calling.webp",
+            "img_name": "openai_function_calling.webp",
             "is_featured": False,
             "features": [
                 {
@@ -793,7 +810,8 @@ class ProjectsData:
                 "Full CRUD vibes: add, update, fetch, or delete drinks with ease.",
                 "Perfect for devs looking to plug drink data into their apps with RESTful swagger."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/restful_drink_service.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/restful_drink_service.webp",
+            "img_name": "restful_drink_service.webp",
             "is_featured": False,
             "features": [
                 {
@@ -826,7 +844,8 @@ class ProjectsData:
                 "Perfect for HR, support teams, or anyone needing a clean user management fix."
             ],
             "github_url": "https://github.com/ridwaanhall/CRUD-mastery-with-Django",
-            "image_url": f"{settings.BASE_URL}/static/img/project/crm_simple_user_management.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/crm_simple_user_management.webp",
+            "img_name": "crm_simple_user_management.webp",
             "is_featured": False,
             "features": [
                 {
@@ -857,7 +876,8 @@ class ProjectsData:
                 "Built for devs who need reliable, quick access to higher ed data for their apps.",
                 "Keeps things simple and efficient for all your academic data needs."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/pddikti_api_django.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/pddikti_api_django.webp",
+            "img_name": "pddikti_api_django.webp",
             "is_featured": False,
             "features": [
                 {
@@ -889,7 +909,8 @@ class ProjectsData:
                 "Trained on historical demand data, mixed with weather and calendar features for max accuracy.",
                 "Perfect for showcasing how RNNs can level up energy management with killer temporal insights."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/time_series_forecasting_rnn.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/time_series_forecasting_rnn.webp",
+            "img_name": "time_series_forecasting_rnn.webp",
             "is_featured": False,
             "features": [
                 {
@@ -923,7 +944,8 @@ class ProjectsData:
                 "Boosted by dope augmentation tricks like random resizing, flipping, color jitter, CutMix, and MixUp for top-tier generalization.",
                 "Smart dataset splits for training and validation ensure the model’s performance is on point."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/emotion_recognition_timm_cnn.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/emotion_recognition_timm_cnn.webp",
+            "img_name": "emotion_recognition_timm_cnn.webp",
             "is_featured": False,
             "features": [
                 {
@@ -957,7 +979,8 @@ class ProjectsData:
                 "Perfect for devs cooking up election trackers or diving deep into vote analysis with flexible, detailed data."
             ],
             "github_url": "https://github.com/ridwaanhall/realcount-pemilu-2024",
-            "image_url": f"{settings.BASE_URL}/static/img/project/pemilu_2024_api.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/pemilu_2024_api.webp",
+            "img_name": "pemilu_2024_api.webp",
             "is_featured": False,
             "features": [
                 {
@@ -989,7 +1012,8 @@ class ProjectsData:
                 "Packed with verified evidence data, it’s perfect for tracking results or building dope election tools."
             ],
             "github_url": "https://github.com/ridwaanhall/realcount-pemilu-2024",
-            "image_url": f"{settings.BASE_URL}/static/img/project/pemilu_2024_website.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/pemilu_2024_website.webp",
+            "img_name": "pemilu_2024_website.webp",
             "is_featured": False,
             "features": [
                 {
@@ -1023,7 +1047,8 @@ class ProjectsData:
                 "Experiments prove HOG + SVM is the champ, delivering top-tier performance across dataset splits."
             ],
             "github_url": "https://github.com/ridwaanhall/handwritten-digit-recognition-of-the-2024-indonesian-presidential-election-recap",
-            "image_url": f"{settings.BASE_URL}/static/img/project/default_project_image.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/default_project_image.webp",
+            "img_name": "default_project_image.webp",
             "is_featured": False,
             "features": [
                 {
@@ -1057,7 +1082,8 @@ class ProjectsData:
                 "Brings a modern, fun twist to mystical exploration with a smooth user experience."
             ],
             "github_url": "https://github.com/ridwaanhall/website-cek-khodam",
-            "image_url": f"{settings.BASE_URL}/static/img/project/default_project_image.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/default_project_image.webp",
+            "img_name": "default_project_image.webp",
             "is_featured": False,
             "features": [
                 {
@@ -1089,7 +1115,8 @@ class ProjectsData:
                 "A full journey from data collection to deployment, built for impact and efficiency."
             ],
             "github_url": "https://github.com/ridwaanhall/zeronine",
-            "image_url": f"{settings.BASE_URL}/static/img/project/zeronine_handwritten_recognition.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/zeronine_handwritten_recognition.webp",
+            "img_name": "zeronine_handwritten_recognition.webp",
             "is_featured": False,
             "features": [
                 {
@@ -1122,7 +1149,8 @@ class ProjectsData:
             ],
             "demo_url": "https://follow-dragon.ridwaanhall.com/",
             "github_url": "https://github.com/ridwaanhall/follow-dragon-spacex",
-            "image_url": f"{settings.BASE_URL}/static/img/project/follow_dragon_spacex.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/follow_dragon_spacex.webp",
+            "img_name": "follow_dragon_spacex.webp",
             "is_featured": False,
             "features": [
                 {
@@ -1154,7 +1182,8 @@ class ProjectsData:
                 "Built to boost gameplay collaboration and streamline the VIP experience."
             ],
             "github_url": "https://github.com/ridwaanhall/management-mabar-VIP-MLBB",
-            "image_url": f"{settings.BASE_URL}/static/img/project/mlbb_mabar_vip_manager.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_mabar_vip_manager.webp",
+            "img_name": "mlbb_mabar_vip_manager.webp",
             "is_featured": False,
             "features": [
                 {
@@ -1190,7 +1219,8 @@ class ProjectsData:
                 "Built to deliver practical insights and boost efficiency for pathfinding challenges."
             ],
             "github_url": "https://github.com/ridwaanhall/aco-algorithm",
-            "image_url": f"{settings.BASE_URL}/static/img/project/default_project_image.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/default_project_image.webp",
+            "img_name": "default_project_image.webp",
             "is_featured": False,
             "features": [
                 {
@@ -1221,7 +1251,8 @@ class ProjectsData:
                 "Flexes web requests and API skills, automating what’s usually a manual grind.",
                 "Keeps it cool with built-in rate limits to dodge spamming headaches."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/ngl_link_spamming.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/ngl_link_spamming.webp",
+            "img_name": "ngl_link_spamming.webp",
             "github_url": "https://github.com/ridwaanhall/ngl-link-spamming",
             "is_featured": False,
             "features": [
@@ -1252,7 +1283,8 @@ class ProjectsData:
                 "Rocking a sharp design and a smart backend for easy content updates, plus secure admin access.",
                 "The dashboard pulls yearly GitHub data to flex my coding grind in style."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/ridwaanhall_pythonanywhere_com.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/ridwaanhall_pythonanywhere_com.webp",
+            "img_name": "ridwaanhall_pythonanywhere_com.webp",
             "is_featured": False,
             "features": [
                 {
@@ -1289,7 +1321,8 @@ class ProjectsData:
                 "The music recommender scans your listening habits and song features to serve up tracks and artists you’ll vibe with."
             ],
             "github_url": "https://github.com/ridwaanhall/applied-machine-learning",
-            "image_url": f"{settings.BASE_URL}/static/img/project/gold_price_prediction_and_music_recommendation_system.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/gold_price_prediction_and_music_recommendation_system.webp",
+            "img_name": "gold_price_prediction_and_music_recommendation_system.webp",
             "is_featured": False,
             "features": [
                 {
@@ -1317,7 +1350,8 @@ class ProjectsData:
                 "Tackles messy Indonesian text—slang included—comparing models to find the top performer."
             ],
             "github_url": "https://github.com/ridwaanhall/Dicoding-Machine-Learning-Intermediate/tree/main/01_project",
-            "image_url": f"{settings.BASE_URL}/static/img/project/sentiment_analysis_tokopedia_app.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/sentiment_analysis_tokopedia_app.webp",
+            "img_name": "sentiment_analysis_tokopedia_app.webp",
             "is_featured": False,
             "features": [
                 {
@@ -1356,7 +1390,8 @@ class ProjectsData:
                 "Loaded with Server Components, lazy images, and code splitting, it scores 100 on Lighthouse.",
                 "Supports multiple languages, custom animations, and stays buttery smooth on any device."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/ridwaanhall_me.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/ridwaanhall_me.webp",
+            "img_name": "ridwaanhall_me.webp",
             "github_url": "https://github.com/ridwaanhall/ridwaanhall.me",
             "is_featured": False,
             "features": [
@@ -1400,7 +1435,8 @@ class ProjectsData:
                 "Delivers instant, natural responses using streaming tech for a smooth conversational flow.",
                 "Tracks context for coherent chats and presents data in visually dope formats."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/neon_ai.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/neon_ai.webp",
+            "img_name": "neon_ai.webp",
             "github_url": "https://github.com/ridwaanhall/neon-ai",
             "demo_url": "https://chat.ridwaanhall.com",
             "is_featured": False,
@@ -1436,7 +1472,8 @@ class ProjectsData:
                 "Perfect for influencers and managers to find engagement gaps or networking opportunities.",
                 "Spits out detailed stats and lists from JSON data for outreach or deeper analysis."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/instagram_following_followers.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/instagram_following_followers.webp",
+            "img_name": "instagram_following_followers.webp",
             "github_url": "https://github.com/ridwaanhall/instagram-following-followers",
             "demo_url": "https://igstats.ridwaanhall.com",
             "is_featured": False,
@@ -1470,7 +1507,8 @@ class ProjectsData:
                 "Built for schools, it adapts to different course setups with secure, valid codes.",
                 "The interface is stupid simple, perfect for those last-second scrambles."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/lumina.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/lumina.webp",
+            "img_name": "lumina.webp",
             "github_url": "https://github.com/ridwaanhall/Lumina",
             "demo_url": "https://lumina.ridwaanhall.com",
             "is_featured": False,
@@ -1506,7 +1544,8 @@ class ProjectsData:
                 "Supports full CRUD, product searches, and HATEOAS for smooth navigation.",
                 "Comes with soft delete, data validation, and proper status codes for a polished experience."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/openshop_restful_api.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/openshop_restful_api.webp",
+            "img_name": "openshop_restful_api.webp",
             "github_url": "https://github.com/ridwaanhall/a743-backend-pemula-python/tree/submission",
             "is_featured": False,
             "features": [
@@ -1545,7 +1584,8 @@ class ProjectsData:
             ],
             "demo_url": "https://ridwaanhall-bike-sharing-analytics.streamlit.app/",
             "github_url": "https://github.com/ridwaanhall/dicoding-bike-sharing-analysis",
-            "image_url": f"{settings.BASE_URL}/static/img/project/bike_sharing_analysis_dashboard.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/bike_sharing_analysis_dashboard.webp",
+            "img_name": "bike_sharing_analysis_dashboard.webp",
             "is_featured": True,
             "features": [
                 {
@@ -1581,7 +1621,8 @@ class ProjectsData:
                 "The API offers clean endpoints for heroes, skills, and meta trends, ideal for devs crafting game tools. Docs are super easy to follow.",
                 "The site breaks down complex data for casual players, dropping tips on hero matchups, builds, and counters based on the latest meta."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/mobile_legends_bang_bang_api_and_website.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/mobile_legends_bang_bang_api_and_website.webp",
+            "img_name": "mobile_legends_bang_bang_api_and_website.webp",
             "demo_url": "https://mlbb-stats.ridwaanhall.com/",
             "github_url": "https://github.com/ridwaanhall/api-mobilelegends",
             "is_featured": True,
@@ -1618,7 +1659,8 @@ class ProjectsData:
                 "Built for researchers and devs, it offers clear endpoints to snag structured info like accreditation stats.",
                 "Caching and optimizations keep it blazing fast under heavy traffic, with docs that make integration a breeze."
             ],
-            "image_url": f"{settings.BASE_URL}/static/img/project/api_pddikti_kemendiksaintek.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/api_pddikti_kemendiksaintek.webp",
+            "img_name": "api_pddikti_kemendiksaintek.webp",
             "demo_url": "https://pddikti-docs.ridwaanhall.com/",
             "github_url": "https://github.com/ridwaanhall/api-pddikti",
             "is_featured": True,
@@ -1654,7 +1696,8 @@ class ProjectsData:
                 "Customers can hit up WhatsApp for quick orders, and monthly promos keep the buzz alive with fresh offers."
             ],
             "demo_url": "https://belimadu.com",
-            "image_url": f"{settings.BASE_URL}/static/img/project/belimadu_com.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/belimadu_com.webp",
+            "img_name": "belimadu_com.webp",
             "is_featured": True,
             "features": [
                 {
@@ -1689,7 +1732,8 @@ class ProjectsData:
             ],
             "github_url": "https://github.com/ridwaanhall/ridwaanhall_com",
             "demo_url": "https://ridwaanhall.com",
-            "image_url": f"{settings.BASE_URL}/static/img/project/ridwaanhall_com.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/ridwaanhall_com.webp",
+            "img_name": "ridwaanhall_com.webp",
             "is_featured": True,
             "features": [
                 {
@@ -1725,7 +1769,8 @@ class ProjectsData:
                 "With next-level data crunchin’ and a souped-up LSTM setup, this tool’s got precision and adaptability on lock, makin’ it a total game-changer."
             ],
             "github_url": "https://github.com/ridwaanhall/indonesia-gold-price-prediction",
-            "image_url": f"{settings.BASE_URL}/static/img/project/indonesia_gold_price_prediction.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/indonesia_gold_price_prediction.webp",
+            "img_name": "indonesia_gold_price_prediction.webp",
             "is_featured": False,
             "features": [
                 {

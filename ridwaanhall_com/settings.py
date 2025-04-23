@@ -10,6 +10,8 @@ WAKATIME_API_KEY = config('WAKATIME_API_KEY')
 
 BASE_URL = config('BASE_URL', default='https://ridwaanhall.com')
 
+BLOG_BASE_IMG_URL = config('BLOG_BASE_IMG_URL', default='https://ridwaanhall.com/static/img/blog')
+PROJECT_BASE_IMG_URL = config('PROJECT_BASE_IMG_URL', default='https://ridwaanhall.com/static/img/project')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 

@@ -126,7 +126,7 @@ class BlogData:
                 "Both handle GPUs and TPUs like champs, but TensorFlow’s got a slight edge in raw performance. Pick TensorFlow for bulletproof production apps, or PyTorch if you’re tinkering and iterating like a mad scientist."
             ],
             "tags": ["PyTorch", "TensorFlow", "AI", "Deep Learning", "ML"],
-            "is_featured": True
+            "is_featured": False
         },
         {
             "id": 7,

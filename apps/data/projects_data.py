@@ -219,6 +219,18 @@ class ProjectsData:
             "name": "ACO",
             "description": "Ant Colony Optimization for solving computational problems"
         },
+        "numpy": {
+            "name": "NumPy",
+            "description": "Fundamental package for scientific computing with Python"
+        },
+        "matplotlib": {
+            "name": "Matplotlib",
+            "description": "Plotting library for creating static, animated, and interactive visualizations"
+        },
+        "seaborn": {
+            "name": "Seaborn",
+            "description": "Statistical data visualization library based on Matplotlib"
+        },
     }
     
     projects = [
@@ -1676,7 +1688,7 @@ class ProjectsData:
                 "The dashboard pulls live GitHub and WakaTime data to flex my coding stats in real time, looking fire on any device."
             ],
             "github_url": "https://github.com/ridwaanhall/ridwaanhall_com",
-            "demo_url": f"{settings.BASE_URL}",
+            "demo_url": "https://ridwaanhall.com",
             "image_url": f"{settings.BASE_URL}/static/img/project/ridwaanhall_com.webp",
             "is_featured": True,
             "features": [
@@ -1701,6 +1713,41 @@ class ProjectsData:
                 tech_stack["github_api"],
                 tech_stack["wakatime_api"]
             ],
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
+            "updated_at": datetime.strptime("2025-04-23T22:03:09+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
+        {
+            "id": 45,
+            "title": "Indonesia’s Gold Trends by AI",
+            "headline": "Transforming 10+ years of gold price data into precise forecasts using LSTM neural networks for Indonesia’s market trends.",
+            "description": [
+                "This project’s straight-up droppin’ LSTM neural nets to forecast Indonesian gold prices like a pro. It’s vibin’ off historical data to nail short-term predictions and keep it real for long-term outlooks.",
+                "Runnin’ on 10+ years of gold price data, it’s spittin’ next-day price calls, short-term trends (1-6 months), and even long-term visions (up to 5 years). Plus, you get dope interactive plots and exportable data for that extra sauce.",
+                "With next-level data crunchin’ and a souped-up LSTM setup, this tool’s got precision and adaptability on lock, makin’ it a total game-changer."
+            ],
+            "github_url": "https://github.com/ridwaanhall/indonesia-gold-price-prediction",
+            "image_url": f"{settings.BASE_URL}/static/img/project/indonesia_gold_price_prediction.webp",
+            "is_featured": False,
+            "features": [
+                {
+                    "title": "Deep Learning Drip",
+                    "description": "LSTM neural nets bringin’ that A-game for predictions across all timeframes."
+                },
+                {
+                    "title": "Visuals Poppin’",
+                    "description": "Dynamic plots make price forecasts look clean and easy to roll with."
+                },
+                {
+                    "title": "Full-Range Forecast",
+                    "description": "From next-day vibes to 5-year plans, it’s got trends covered with style."
+                }
+            ],
+            "tech_stack": [
+                tech_stack["python"],
+                tech_stack["pytorch"],
+                tech_stack["numpy"],
+                tech_stack["matplotlib"],
+                tech_stack["seaborn"]
+            ],
+            "updated_at": datetime.strptime("2025-04-23T22:07:45+07:00", "%Y-%m-%dT%H:%M:%S%z")
+        }
     ]

@@ -148,49 +148,24 @@
                 
                 <!-- Project Header -->
                 <div class="relative z-10">
-                    <div class="flex flex-col lg:flex-row gap-4">
-                        <!-- Project Info -->
-                        <div class="flex-1">
-                            <div class="inline-flex items-center px-2 py-1 sm:px-3 mb-3 sm:mb-4 rounded-full text-xs font-medium bg-indigo-900/50 text-indigo-300 border border-indigo-700/50">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                                Project Showcase
-                            </div>
-                            
-                            <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-3 sm:mb-4 tracking-tight">
-                                {{ project.title }}
-                            </h1>
-                            
-                            <p class="text-base sm:text-lg text-zinc-300 leading-relaxed mb-4 sm:mb-6 max-w-2xl">
-                                {{ project.headline }}
-                            </p>
-                            
-                            <!-- Action Buttons -->
-                            <div class="flex flex-wrap items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
-                                {% if project.github_url %}
-                                <a href="{{ project.github_url }}" class="inline-flex items-center justify-center px-3 py-2 sm:px-5 sm:py-2.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 font-medium transition duration-300 text-sm sm:text-base">
-                                    <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
-                                    </svg>
-                                    Source Code
-                                </a>
-                                {% endif %}
-                                
-                                {% if project.demo_url %}
-                                <a href="{{ project.demo_url }}" class="inline-flex items-center justify-center px-3 py-2 sm:px-5 sm:py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 font-medium transition duration-300 text-sm sm:text-base">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Live Demo
-                                </a>
-                                {% endif %}
-                            </div>
-                            
+                    <!-- Project Info Container -->
+                    <div class="flex flex-col">
+                        
+                        <!-- Title -->
+                        <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-3 sm:mb-4 tracking-tight">
+                            {{ project.title }}
+                        </h1>
+                        
+                        <!-- Headline -->
+                        <p class="text-base sm:text-lg text-zinc-300 leading-relaxed mb-4 sm:mb-6 max-w-3xl">
+                            {{ project.headline }}
+                        </p>
+                        
+                        <!-- Built With + Action Buttons Container -->
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                             <!-- Tech Stack Pills -->
                             {% if project.tech_stack %}
-                            <div class="mb-4">
+                            <div>
                                 <h3 class="text-sm font-medium text-zinc-400 mb-2">Built with:</h3>
                                 <div class="flex flex-wrap gap-1.5 sm:gap-2">
                                     {% for tech in project.tech_stack %}
@@ -199,12 +174,43 @@
                                 </div>
                             </div>
                             {% endif %}
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex gap-4">
+                                {% if project.github_url %}
+                                <a target="_blank" href="{{ project.github_url }}">
+                                    <div class="flex items-center gap-2 font-medium text-neutral-700 dark:text-neutral-300">
+                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                                        </svg>
+                                        <span class="text-[15px] transition-all duration-300 dark:text-teal-500 hover:dark:text-teal-400">Source Code</span>
+                                    </div>
+                                </a>
+                                {% endif %}
+                                
+                                {% if project.github_url and project.demo_url %}
+                                <span class="text-neutral-400 dark:text-neutral-600">|</span>
+                                {% endif %}
+                                
+                                {% if project.demo_url %}
+                                <a target="_blank" href="{{ project.demo_url }}">
+                                    <div class="flex items-center gap-2 font-medium text-neutral-700 dark:text-neutral-300">
+                                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                            <polyline points="15 3 21 3 21 9"></polyline>
+                                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                                        </svg>
+                                        <span class="text-[15px] transition-all duration-300 dark:text-teal-500 hover:dark:text-teal-400">Live Demo</span>
+                                    </div>
+                                </a>
+                                {% endif %}
+                            </div>
                         </div>
                         
                         <!-- Project Image -->
                         {% if project.image_url %}
-                        <div class="mt-4 lg:mt-0 lg:w-2/5 flex items-center">
-                            <div class="w-full rounded-lg overflow-hidden shadow-xl transform transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
+                        <div class="w-full">
+                            <div class="w-full rounded-lg overflow-hidden shadow-xl transform transition-all duration-300 hover:shadow-indigo-500/20">
                                 <div class="relative w-full">
                                     <div class="absolute top-0 left-0 right-0 h-8 sm:h-10 bg-zinc-900/90 backdrop-blur-sm flex items-center px-3 sm:px-4 z-10">
                                         <div class="flex items-center gap-1 sm:gap-1.5">
@@ -216,7 +222,7 @@
                                     </div>
                                     <img src="{{ project.image_url }}" alt="{{ project.title }}" 
                                          class="w-full h-full object-cover rounded-b-lg shadow-lg" 
-                                         style="min-height: 200px; max-height: 350px;" loading="lazy">
+                                         style="min-height: 200px;" loading="lazy">
                                 </div>
                             </div>
                         </div>
@@ -239,12 +245,10 @@
                     <div class="h-px flex-1 bg-zinc-700/50 ml-2 sm:ml-3"></div>
                 </div>
                 
-                <div class="group bg-zinc-900/30 backdrop-blur-sm rounded-xl overflow-hidden border border-zinc-800 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10">
-                    <div class="p-3 sm:p-4">
-                        {% for paragraph in project.description %}
-                            <p class="text-zinc-300 text-sm sm:text-base leading-relaxed {% if not forloop.last %}mb-3 sm:mb-4{% endif %}">{{ paragraph }}</p>
-                        {% endfor %}
-                    </div>
+                <div class="mx-1 sm:mx-2">
+                    {% for paragraph in project.description %}
+                        <p class="text-zinc-300 text-sm sm:text-base leading-relaxed {% if not forloop.last %}mb-3 sm:mb-4{% endif %}">{{ paragraph }}</p>
+                    {% endfor %}
                 </div>
             </div>
             {% endif %}

@@ -145,6 +145,19 @@
         <div class="max-w-7xl mx-auto">
             <!-- Project Header Section -->
             <div class="relative mb-6 sm:mb-8">
+                <!-- Back button at top -->
+                <div class="w-fit">
+                    <a href="{% url 'projects' %}">
+                        <div class="flex gap-2 w-max hover:gap-3 items-center mb-6 transition-all duration-300 font-medium cursor-pointer">
+                            <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" data-testid="back-icon" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 8 8 12 12 16"></polyline>
+                                <line x1="16" y1="12" x2="8" y2="12"></line>
+                            </svg>
+                            <span>Back</span>
+                        </div>
+                    </a>
+                </div>
                 
                 <!-- Project Header -->
                 <div class="relative z-10">
@@ -165,42 +178,39 @@
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                             <!-- Tech Stack Pills -->
                             {% if project.tech_stack %}
-                            <div>
-                                <h3 class="text-sm font-medium text-zinc-400 mb-2">Built with:</h3>
-                                <div class="flex flex-wrap gap-1.5 sm:gap-2">
-                                    {% for tech in project.tech_stack %}
-                                    <span class="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-zinc-800 text-zinc-200 border border-zinc-700 hover:border-indigo-500/50 transition-colors duration-200">{{ tech.name }}</span>
-                                    {% endfor %}
-                                </div>
+                            <div class="flex flex-wrap gap-1.5 sm:gap-2">
+                                {% for tech in project.tech_stack %}
+                                <span class="inline-flex items-center px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs font-medium bg-zinc-800 text-zinc-200 border border-zinc-700 hover:border-indigo-500/50 hover:bg-zinc-700 transition-all duration-200">{{ tech.name }}</span>
+                                {% endfor %}
                             </div>
                             {% endif %}
                             
                             <!-- Action Buttons -->
                             <div class="flex gap-4">
                                 {% if project.github_url %}
-                                <a target="_blank" href="{{ project.github_url }}">
-                                    <div class="flex items-center gap-2 font-medium text-neutral-700 dark:text-neutral-300">
-                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
+                                <a target="_blank" href="{{ project.github_url }}" class="group transition-all duration-300">
+                                    <div class="flex items-center gap-2 font-medium text-neutral-300">
+                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" class="group-hover:text-indigo-400 transition-colors duration-300" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
                                         </svg>
-                                        <span class="text-[15px] transition-all duration-300 dark:text-teal-500 hover:dark:text-teal-400">Source Code</span>
+                                        <span class="text-[15px] group-hover:text-indigo-400 transition-colors duration-300">Source Code</span>
                                     </div>
                                 </a>
                                 {% endif %}
                                 
                                 {% if project.github_url and project.demo_url %}
-                                <span class="text-neutral-400 dark:text-neutral-600">|</span>
+                                <span class="text-neutral-600">|</span>
                                 {% endif %}
                                 
                                 {% if project.demo_url %}
-                                <a target="_blank" href="{{ project.demo_url }}">
-                                    <div class="flex items-center gap-2 font-medium text-neutral-700 dark:text-neutral-300">
-                                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
+                                <a target="_blank" href="{{ project.demo_url }}" class="group transition-all duration-300">
+                                    <div class="flex items-center gap-2 font-medium text-neutral-300">
+                                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="group-hover:text-indigo-400 transition-colors duration-300" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                                             <polyline points="15 3 21 3 21 9"></polyline>
                                             <line x1="10" y1="14" x2="21" y2="3"></line>
                                         </svg>
-                                        <span class="text-[15px] transition-all duration-300 dark:text-teal-500 hover:dark:text-teal-400">Live Demo</span>
+                                        <span class="text-[15px] group-hover:text-indigo-400 transition-colors duration-300">Live Demo</span>
                                     </div>
                                 </a>
                                 {% endif %}
@@ -210,7 +220,7 @@
                         <!-- Project Image -->
                         {% if project.image_url %}
                         <div class="w-full">
-                            <div class="w-full rounded-lg overflow-hidden shadow-xl transform transition-all duration-300 hover:shadow-indigo-500/20">
+                            <div class="w-full rounded-lg overflow-hidden shadow-xl transform transition-all duration-500 hover:shadow-indigo-500/20 hover:-translate-y-1">
                                 <div class="relative w-full">
                                     <div class="absolute top-0 left-0 right-0 h-8 sm:h-10 bg-zinc-900/90 backdrop-blur-sm flex items-center px-3 sm:px-4 z-10">
                                         <div class="flex items-center gap-1 sm:gap-1.5">
@@ -221,7 +231,7 @@
                                         <span class="ml-auto text-xs text-zinc-400 hidden sm:block">{{ project.img_name }}</span>
                                     </div>
                                     <img src="{{ project.image_url }}" alt="{{ project.title }}" 
-                                         class="w-full h-full object-cover rounded-b-lg shadow-lg" 
+                                         class="w-full h-full object-cover rounded-b-lg shadow-lg transition-transform duration-700 hover:scale-105" 
                                          style="min-height: 200px;" loading="lazy">
                                 </div>
                             </div>

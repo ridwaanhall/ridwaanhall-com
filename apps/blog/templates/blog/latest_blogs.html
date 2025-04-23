@@ -52,8 +52,8 @@
                         
                         <div class="flex items-center">
                             <span class="mr-1 sm:mr-2 text-zinc-400">
-                                <time datetime="{{ blog.updated_at|date:'c' }}" class="font-mono text-xs hidden sm:inline">{{ blog.updated_at|date:"g:i A T, D F j, Y" }}</time>
-                                <time datetime="{{ blog.updated_at|date:'c' }}" class="font-mono text-xs sm:hidden">{{ blog.updated_at|date:"g:i A, D M j" }}</time>
+                                <time datetime="{{ blog.updated_at|date:'c' }}" class="text-xs hidden sm:inline">{{ blog.updated_at|date:"g:i A T, D F j, Y" }}</time>
+                                <time datetime="{{ blog.updated_at|date:'c' }}" class="text-xs sm:hidden">{{ blog.updated_at|date:"g:i A, D M j" }}</time>
                             </span>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 text-indigo-400 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />

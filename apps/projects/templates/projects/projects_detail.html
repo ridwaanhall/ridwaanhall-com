@@ -212,7 +212,7 @@
                                             <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
                                             <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
                                         </div>
-                                        <span class="ml-auto text-xs text-zinc-400 hidden sm:block">{{ project.title|lower|cut:" "|add:".webp" }}</span>
+                                        <span class="ml-auto text-xs text-zinc-400 hidden sm:block">{{ project.img_name }}</span>
                                     </div>
                                     <img src="{{ project.image_url }}" alt="{{ project.title }}" 
                                          class="w-full h-full object-cover rounded-b-lg shadow-lg" 

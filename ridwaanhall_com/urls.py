@@ -9,5 +9,8 @@ urlpatterns = [
     path('projects/', include('apps.projects.urls')),
     path('blog/', include('apps.blog.urls')),
     
+    # Add favicon path before the catch-all
+    path('favicon.ico', views.favicon_view, name='favicon'),
+    
     path('<path:url>', views.CatchAllView.as_view(), name='catch_all'),
 ]

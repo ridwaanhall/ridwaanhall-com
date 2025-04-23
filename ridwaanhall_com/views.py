@@ -11,6 +11,10 @@ class CatchAllView(View):
         return render(request, 'error.html', context, status=404)
 
 def favicon_view(request):
-    # Update path to where favicon is actually located
-    favicon_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'favicon', 'favicon.ico')
-    return FileResponse(open(favicon_path, 'rb'))
+    favicon_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'staticfiles', 'favicon', 'favicon.ico')
+    
+    if os.path.exists(favicon_path):
+        return FileResponse(open(favicon_path, 'rb'))
+    
+    context = {'error_code': 404}
+    return render(request, 'error.html', context, status=404)

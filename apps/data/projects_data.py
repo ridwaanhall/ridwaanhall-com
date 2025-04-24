@@ -9,35 +9,41 @@ class ProjectsData:
     tech_stack = {
         "python": {
             "name": "Python",
-            "description": "My go-to for building robust backends with clean code"
+            "description": "My go-to for building robust backends with clean code",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
         },
         "django": {
             "name": "Django",
-            "description": "The web framework I use to whip up solid backend apps fast"
+            "description": "The web framework I use to whip up solid backend apps fast",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg"
         },
         "tailwindcss": {
             "name": "TailwindCSS",
-            "description": "Sleek utility-first CSS to make frontends look sharp"
+            "description": "Sleek utility-first CSS to make frontends look sharp",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg"
         },
         "vercel": {
             "name": "Vercel",
-            "description": "My pick for seamless serverless hosting and deployments"
+            "description": "My pick for seamless serverless hosting and deployments",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg"
         },
         "github_api": {
             "name": "GitHub API",
-            "description": "Grabs project stats and activity straight from my repos"
+            "description": "Grabs project stats and activity straight from my repos",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
         },
         "wakatime_api": {
             "name": "WakaTime API",
-            "description": "Tracks my coding hours and analytics like a pro"
+            "description": "Tracks my coding hours and analytics like a pro",
         },
         "bootstrap": {
             "name": "Bootstrap",
-            "description": "Handy CSS framework for quick, responsive designs"
+            "description": "Handy CSS framework for quick, responsive designs",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg"
         },
         "machine_learning": {
             "name": "Machine Learning",
-            "description": "Crunching data with algorithms to predict and analyze stuff"
+            "description": "Crunching data with algorithms to predict and analyze stuff",
         },
         "music_recommendation": {
             "name": "Music Recommendation Algorithms",
@@ -49,87 +55,101 @@ class ProjectsData:
         },
         "nextjs": {
             "name": "Next.js",
-            "description": "React framework for fast, server-rendered web apps"
+            "description": "React framework for fast, server-rendered web apps",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg"
         },
         "shadcn_ui": {
             "name": "Shadcn UI",
-            "description": "Modern UI components to craft clean, stylish interfaces"
+            "description": "Modern UI components to craft clean, stylish interfaces",
         },
         "javascript": {
             "name": "JavaScript",
-            "description": "Brings the web to life with interactive magic"
+            "description": "Brings the web to life with interactive magic",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
         },
         "css": {
             "name": "CSS",
-            "description": "Styles web pages to look good and feel right"
+            "description": "Styles web pages to look good and feel right",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
         },
         "streamlit": {
             "name": "Streamlit",
-            "description": "Turns Python into slick data dashboards and apps"
+            "description": "Turns Python into slick data dashboards and apps",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/streamlit/streamlit-original.svg"
         },
         "tensorflow": {
             "name": "TensorFlow",
-            "description": "My toolkit for diving deep into ML and neural networks"
+            "description": "My toolkit for diving deep into ML and neural networks",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg"
         },
         "once_ui": {
             "name": "Once UI",
-            "description": "Design system for building modern, polished web apps"
+            "description": "Design system for building modern, polished web apps",
         },
         "typescript": {
             "name": "TypeScript",
-            "description": "JavaScript with guardrails for cleaner, typed code"
+            "description": "JavaScript with guardrails for cleaner, typed code",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"
         },
         "scss": {
             "name": "SCSS",
-            "description": "Supercharged CSS with variables and nesting for style"
+            "description": "Supercharged CSS with variables and nesting for style",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sass/sass-original.svg"
         },
         "mdx": {
             "name": "MDX",
-            "description": "Mixes Markdown with JSX for dynamic docs"
+            "description": "Mixes Markdown with JSX for dynamic docs",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/markdown/markdown-original.svg"
         },
         "vercel_postgres": {
             "name": "Vercel Postgres",
-            "description": "Managed Postgres database that’s easy to scale"
+            "description": "Managed Postgres database that’s easy to scale",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg"
         },
         "radix_ui": {
             "name": "Radix UI",
-            "description": "Low-level UI components for accessible, custom designs"
+            "description": "Low-level UI components for accessible, custom designs",
         },
         "bulma": {
             "name": "Bulma",
-            "description": "Flexbox-based CSS for responsive, clean layouts"
+            "description": "Flexbox-based CSS for responsive, clean layouts",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bulma/bulma-plain.svg"
         },
         "whitenoise": {
             "name": "Whitenoise",
-            "description": "Serves Django static files like a charm"
+            "description": "Serves Django static files like a charm",
         },
         "cloudflare": {
             "name": "Cloudflare",
-            "description": "Speeds up sites and keeps them safe with CDN and security"
+            "description": "Speeds up sites and keeps them safe with CDN and security",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cloudflare/cloudflare-original.svg"
         },
         "django_rest_framework": {
             "name": "Django REST Framework",
-            "description": "My toolkit for crafting powerful APIs in Django"
+            "description": "My toolkit for crafting powerful APIs in Django",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg"
         },
         "BeautifulSoup": {
             "name": "BeautifulSoup",
-            "description": "Web scraping made easy with Python"
+            "description": "Web scraping made easy with Python",
         },
         "adminlte": {
             "name": "AdminLTE",
-            "description": "Sleek admin dashboard template for web apps"
+            "description": "Sleek admin dashboard template for web apps",
         },
         "flask": {
             "name": "Flask",
-            "description": "Lightweight web framework for Python, perfect for APIs"
+            "description": "Lightweight web framework for Python, perfect for APIs",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg"
         },
         "openai_api": {
             "name": "OpenAI API",
-            "description": "Integrate AI capabilities into your apps with ease"
+            "description": "Integrate AI capabilities into your apps with ease",
         },
         "google_maps": {
             "name": "Google Maps",
-            "description": "Brings maps and location data to your web apps"
+            "description": "Brings maps and location data to your web apps",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
         },
         "leaflet": {
             "name": "Leaflet",
@@ -149,27 +169,33 @@ class ProjectsData:
         },
         "telegram_api": {
             "name": "Telegram API",
-            "description": "Connects your apps to Telegram for messaging and bots"
+            "description": "Connects your apps to Telegram for messaging and bots",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/telegram/telegram-original.svg"
         },
         "whatsapp_api": {
             "name": "WhatsApp API",
-            "description": "Integrate WhatsApp messaging into your applications"
+            "description": "Integrate WhatsApp messaging into your applications",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/whatsapp/whatsapp-original.svg"
         },
         "jwt": {
             "name": "JWT",
-            "description": "Securely transmit information between parties as a JSON object"
+            "description": "Securely transmit information between parties as a JSON object",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/json/json-original.svg"
         },
         "sqlalchemy": {
             "name": "SQLAlchemy",
-            "description": "Python SQL toolkit and Object-Relational Mapping (ORM) system"
+            "description": "Python SQL toolkit and Object-Relational Mapping (ORM) system",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg"
         },
         "flask_mail": {
             "name": "Flask-Mail",
-            "description": "Email support for Flask applications"
+            "description": "Email support for Flask applications",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg"
         },
         "sqlite": {
             "name": "SQLite",
-            "description": "Lightweight database for quick and easy data storage"
+            "description": "Lightweight database for quick and easy data storage",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg"
         },
         "neural_networks": {
             "name": "Neural Networks",
@@ -181,11 +207,12 @@ class ProjectsData:
         },
         "pytorch": {
             "name": "PyTorch",
-            "description": "Open-source machine learning library for Python, great for deep learning"
+            "description": "Open-source machine learning library for Python, great for deep learning",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg"
         },
         "rnn": {
             "name": "RNN",
-            "description": "Recurrent Neural Networks for sequence prediction tasks"
+            "description": "Recurrent Neural Networks for sequence prediction tasks",
         },
         "lstm": {
             "name": "LSTM",
@@ -221,15 +248,17 @@ class ProjectsData:
         },
         "numpy": {
             "name": "NumPy",
-            "description": "Fundamental package for scientific computing with Python"
+            "description": "Fundamental package for scientific computing with Python",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg"
         },
         "matplotlib": {
             "name": "Matplotlib",
-            "description": "Plotting library for creating static, animated, and interactive visualizations"
+            "description": "Plotting library for creating static, animated, and interactive visualizations",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/matplotlib/matplotlib-original.svg"
         },
         "seaborn": {
             "name": "Seaborn",
-            "description": "Statistical data visualization library based on Matplotlib"
+            "description": "Statistical data visualization library based on Matplotlib",
         },
     }
     
@@ -1335,10 +1364,12 @@ class ProjectsData:
                 }
             ],
             "tech_stack": [
+                tech_stack["python"],
+                tech_stack["tensorflow"],
                 tech_stack["machine_learning"],
                 tech_stack["music_recommendation"]
             ],
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
+            "updated_at": datetime.strptime("2025-04-24T13:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         },
         {
             "id": 34,

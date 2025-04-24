@@ -25,8 +25,10 @@ class AboutData:
                 "role": "Machine Learning Mentor",
                 "is_active": cls.is_working_hours(),
                 # "is_active": False,
-                "short_bio": "A passionate machine learning engineer and web development with a focus on practical applications of AI.",
                 "short_description": "Coding by day, memorizing Quran by heart—who else but me?",
+                "short_bio": "A passionate machine learning engineer and web development with a focus on practical applications of AI.",
+                "short_cta": "Let's whip up something epic that'll leave everyone stunned!",
+                "long_description": "I’m a machine learning engineer and web developer, building AI apps and slick websites that solve real problems. I’ve memorized nearly 30 Juz of the Quran, which has wired me for grit, focus, and discipline. I’ve mentored 50+ coders at DBS Foundation’s Coding Camp and guided 100+ interns at GAOTek Inc. I’ve shipped 30+ projects using TensorFlow, PyTorch, and more. I’m all in on using AI to tackle big challenges fast, growing Copilot ID, and dropping value in open-source communities.",
                 "stories": [
                     "Yo, I’m ridwaanhall—coding by day, memorizing Quran by heart—who else but me? Based in the buzzing heart of Central Java, Indonesia, I’m the founder of Copilot ID, building AI apps and slick websites with Django, Flask, and Next.js that solve real problems.",
                     "On a personal note, I’ve memorized nearly 30 Juz of the Quran. It’s not just about verses—it’s wired me for grit, focus, and discipline, the same energy I pour into every line of code and mentoring session.",
@@ -40,6 +42,7 @@ class AboutData:
                     "province": "Central Java",
                     "prov": "Central Java",
                     "country": "Indonesia",
+                    "flag": "🇮🇩",
                     "map_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d472166.72680191!2d110.27628355896701!3d-7.3869701170751005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a73e2eb7ff211%3A0x3027a76e352bc80!2sBoyolali%20Regency%2C%20Central%20Java!5e1!3m2!1sen!2sid!4v1744531766838!5m2!1sen!2sid"
                 },
                 "social_media": {

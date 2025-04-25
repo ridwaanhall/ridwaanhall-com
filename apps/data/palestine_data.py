@@ -13,7 +13,7 @@ class PalestineData:
             },
             "peopleDisplaced": {
                 "headline": "1.9M+",
-                "details": "People displaced—90% \of Gaza's population",
+                "details": "People displaced—90% of Gaza's population",
                 "source": "UNRWA",
                 "url": "https://www.unrwa.org/resources/reports/unrwa-situation-report-167-situation-gaza-strip-and-west-bank-including-east-jerusalem"
             },

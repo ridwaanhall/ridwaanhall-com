@@ -265,9 +265,11 @@
                 </div>
                 
                 <div class="mx-1 sm:mx-2">
-                    {% for paragraph in project.description %}
-                        <p class="text-zinc-300 text-sm sm:text-base leading-relaxed {% if not forloop.last %}mb-3 sm:mb-4{% endif %}">{{ paragraph }}</p>
-                    {% endfor %}
+                    {% if project.description %}
+                        {% for paragraph in project.description %}
+                            <p class="text-zinc-300 text-sm sm:text-base leading-relaxed {% if not forloop.last %}mb-3 sm:mb-4{% endif %}">{{ paragraph }}</p>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
             {% endif %}

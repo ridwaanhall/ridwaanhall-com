@@ -1,5 +1,5 @@
 <div id="mobile-sidebar" class="fixed inset-0 z-40 bg-black bg-opacity-60 backdrop-blur-sm hidden md:hidden" aria-hidden="true">
-    <div class="fixed inset-y-0 left-0 w-72 bg-gradient-to-b from-zinc-950 to-zinc-950 transition-all duration-300 transform -translate-x-full shadow-xl" id="mobile-menu">
+    <div class="fixed inset-y-0 left-0 w-72 bg-gradient-to-b from-zinc-950 to-zinc-950 transition-all duration-300 transform -translate-x-full shadow-xl flex flex-col" id="mobile-menu">
         <div class="flex items-center justify-between p-5 mb-4">
             <div class="flex items-center">
                 <div class="relative">
@@ -20,7 +20,7 @@
             </button>
         </div>
         
-        <nav class="px-3">
+        <nav class="px-3 flex-grow">
             <a href="{% url 'home' %}" class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'home' %}bg-indigo-900/80{% else %}text-zinc-300 hover:bg-indigo-300/10 hover:text-white{% endif %}">
                 <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 {% if request.resolver_match.url_name == 'home' %}text-white{% else %}text-zinc-400{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
@@ -127,6 +127,10 @@
                 {% endif %}
             </a>
         </nav>
+
+        <div class="px-6 py-4 mt-auto text-center text-xs">
+            © {% now "Y" %} {{ about.name }}. All rights reserved.
+        </div>
     </div>
 </div>
 
@@ -213,7 +217,7 @@
             </span>
             {% endif %}
         </a>
-    
+
         <a
             href="{% url 'blog' %}"
             class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name in 'blog blog_detail' %} bg-indigo-900/80 {% else %} text-zinc-300 hover:bg-indigo-300/10 hover:text-white {% endif %}"
@@ -232,7 +236,7 @@
             </span>
             {% endif %}
         </a>
-    
+
         <a href="{% url 'career' %}" class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'career' %} bg-indigo-900/80 {% else %} text-zinc-300 hover:bg-indigo-300/10 hover:text-white {% endif %}">
             <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 text-zinc-400 {% if request.resolver_match.url_name == 'career' %} animate-pulse {% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path 
@@ -269,7 +273,7 @@
             </span>
             {% endif %}
         </a>
-    
+        
         <a
             href="{% url 'contact' %}"
             class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'contact' %} bg-indigo-900/80 {% else %} text-zinc-300 hover:bg-indigo-300/10 hover:text-white {% endif %}"
@@ -290,5 +294,9 @@
             </span>
             {% endif %}
         </a>
-    </nav>    
+    </nav>
+
+    <div class="px-6 py-4 mt-auto text-center text-xs">
+        © {% now "Y" %} {{ about.name }}. All rights reserved.
+    </div>
 </div>

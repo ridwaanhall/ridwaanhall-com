@@ -164,19 +164,23 @@
             </header>
     
             <div class="prose prose-sm sm:prose prose-md lg:prose-lg prose-invert max-w-none mb-8 md:mb-10">
-                {% for paragraph in blog.content %}
-                <p class="text-zinc-300 mb-2">{{ paragraph|safe }}</p>
-                {% endfor %}
+                {% if blog.content %}
+                    {% for paragraph in blog.content %}
+                    <p class="text-zinc-300 mb-2">{{ paragraph|safe }}</p>
+                    {% endfor %}
+                {% endif %}
             </div>
     
             <footer>
                 <h2 class="text-lg sm:text-xl font-semibold mb-2 md:mb-3">Tags</h2>
                 <div class="flex flex-wrap gap-1.5 sm:gap-2">
-                    {% for tag in blog.tags %}
-                    <span class="text-xs font-medium rounded-full bg-zinc-600 px-2 py-0.5 sm:px-2.5 sm:py-1 font-mono">
-                        #{{ tag|slugify }}
-                    </span>
-                    {% endfor %}
+                    {% if blog.tags %}
+                        {% for tag in blog.tags %}
+                        <span class="text-xs font-medium rounded-full bg-zinc-600 px-2 py-0.5 sm:px-2.5 sm:py-1 font-mono">
+                            #{{ tag|slugify }}
+                        </span>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </footer>
     

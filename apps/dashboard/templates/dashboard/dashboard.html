@@ -171,7 +171,7 @@
             <div class="mb-6">
                 <div class="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
                     <h2 class="text-xl sm:text-2xl font-bold">Wakatime <span class="text-indigo-400">Statistics</span></h2>
-                    <p class="font-mono text-xs sm:text-sm text-zinc-400">Last update: <span class="text-indigo-400 font-medium">{{ wakatime_stats.last_update_time }}</span></p>
+                    <p class="text-xs sm:text-sm text-zinc-400">Last update: <span class="text-indigo-400 font-medium">{% now "g:i A T, D F j, Y" %}</span></p>
                 </div>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">

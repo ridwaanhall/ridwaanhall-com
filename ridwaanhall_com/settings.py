@@ -1,6 +1,6 @@
 from pathlib import Path
 from decouple import config
-from csp.constants import SELF, NONE # Import CSP constants
+from csp.constants import SELF, NONE, UNSAFE_INLINE # Import CSP constants
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -152,14 +152,14 @@ CONTENT_SECURITY_POLICY = {
         'object-src': (NONE,), # Use NONE constant
         'script-src': (
             SELF, # Use SELF constant
-            # UNSAFE_INLINE, # Add back using constant if absolutely necessary
+            UNSAFE_INLINE, # Add back using constant if absolutely necessary
             'static.cloudflareinsights.com',
             'cloud.umami.is',
             '*.googleapis.com',
         ),
         'style-src': (
             SELF, # Use SELF constant
-            # UNSAFE_INLINE, # Add back using constant if absolutely necessary
+            UNSAFE_INLINE, # Add back using constant if absolutely necessary
             '*.googleapis.com',
             '*.gstatic.com',
         ),

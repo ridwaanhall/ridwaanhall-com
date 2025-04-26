@@ -1,5 +1,6 @@
 from pathlib import Path
 from decouple import config
+from csp.constants import SELF, NONE # Import CSP constants
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -42,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    "csp",
     
     'apps.core',
     'apps.career',
@@ -127,43 +130,48 @@ STATIC_URL = 'static/'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Add CSP settings (adjust 'self', script-src, style-src etc. based on your needs)
-CSP_DEFAULT_SRC = ("'self'",)
-CSP_SCRIPT_SRC = (
-    "'self'",
-    "static.cloudflareinsights.com",
-    "cloud.umami.is",
-    "*.googleapis.com",
-)
-CSP_STYLE_SRC = (
-    "'self'",
-    "*.googleapis.com",
-    "*.gstatic.com",
-)
-CSP_IMG_SRC = (
-    "'self'",
-    "data:",
-    "cdn.jsdelivr.net",
-    "wsrv.nl",
-    "*.googleapis.com",
-    "*.gstatic.com",
-)
-CSP_FONT_SRC = (
-    "'self'",
-    "*.gstatic.com",
-)
-CSP_CONNECT_SRC = (
-    "'self'",
-    "*.googleapis.com",
-)
-CSP_FRAME_SRC = (
-    "'self'",
-    "*.google.com",
-)
-CSP_FRAME_ANCESTORS = ("'none'",)
-CSP_OBJECT_SRC = ("'none'",)
-CSP_BASE_URI = ("'self'",)
-CSP_FORM_ACTION = ("'self'",)
+CONTENT_SECURITY_POLICY = {
+    'DIRECTIVES': {
+        'base-uri': (SELF,), # Use SELF constant
+        'connect-src': (SELF, '*.googleapis.com', "cloud.umami.is"), # Use SELF constant
+        'default-src': (SELF,), # Use SELF constant
+        'font-src': (SELF, '*.gstatic.com'), # Use SELF constant
+        'form-action': (SELF,), # Use SELF constant
+        'frame-ancestors': (NONE,), # Use NONE constant
+        'frame-src': (SELF, '*.google.com'), # Use SELF constant
+        'img-src': (
+            SELF, # Use SELF constant
+            'data:',
+            BLOG_BASE_IMG_URL,
+            PROJECT_BASE_IMG_URL,
+            'cdn.jsdelivr.net',
+            'wsrv.nl',
+            '*.googleapis.com',
+            '*.gstatic.com',
+        ),
+        'object-src': (NONE,), # Use NONE constant
+        'script-src': (
+            SELF, # Use SELF constant
+            # UNSAFE_INLINE, # Add back using constant if absolutely necessary
+            'static.cloudflareinsights.com',
+            'cloud.umami.is',
+            '*.googleapis.com',
+        ),
+        'style-src': (
+            SELF, # Use SELF constant
+            # UNSAFE_INLINE, # Add back using constant if absolutely necessary
+            '*.googleapis.com',
+            '*.gstatic.com',
+        ),
+        # Consider adding for better security if site is fully HTTPS
+        # 'upgrade-insecure-requests': True,
+    }
+    # Optional: Add REPORT_ONLY = True to test without enforcing
+    # 'REPORT_ONLY': DEBUG,
+    # Optional: Add REPORT_URI to send violation reports
+    # 'REPORT_URI': '/csp-report/', # Example endpoint
+}
+
 
 PERMISSIONS_POLICY = {
     "accelerometer": [],

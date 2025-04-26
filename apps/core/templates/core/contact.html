@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %} {# Add this if not already in base.html #}
 
 {% block head_seo %}
 
@@ -207,19 +208,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-    function updateTime() {
-        const now = new Date();
-        const options = { 
-            year: 'numeric', month: 'long', day: 'numeric', 
-            hour: 'numeric', minute: 'numeric', second: 'numeric', 
-            hour12: true,
-            timeZone: 'Asia/Jakarta'
-        };
-        document.getElementById('current-time').textContent = now.toLocaleString('en-US', options);
-    }
-
-    updateTime();
-    setInterval(updateTime, 1000);
-</script>
+<script src="{% static 'js/updateTime.js' %}"></script>
 {% endblock %}

@@ -32,6 +32,7 @@ SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin' # Add this line
 
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
@@ -56,6 +57,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    'csp.middleware.CSPMiddleware', # Add this line for Content-Security-Policy
+    'django_permissions_policy.PermissionsPolicyMiddleware', # Add this line for Permissions-Policy
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -123,6 +126,43 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Add CSP settings (adjust 'self', script-src, style-src etc. based on your needs)
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'") # Allow inline scripts for now, refine as needed
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'") # Allow inline styles for now, refine as needed
+CSP_IMG_SRC = ("'self'", "data:", BLOG_BASE_IMG_URL, PROJECT_BASE_IMG_URL) # Allow data: URIs and your image base URLs
+CSP_FONT_SRC = ("'self'",)
+CSP_CONNECT_SRC = ("'self'",) # Add any external APIs you connect to
+CSP_FRAME_ANCESTORS = ("'none'",) # Disallow framing by default
+CSP_OBJECT_SRC = ("'none'",)
+CSP_BASE_URI = ("'self'",)
+CSP_FORM_ACTION = ("'self'",)
+
+# Add Permissions Policy settings (restrictive by default)
+PERMISSIONS_POLICY = {
+    "accelerometer": [],
+    "ambient-light-sensor": [],
+    "autoplay": [],
+    "camera": [],
+    "display-capture": [],
+    "document-domain": [],
+    "encrypted-media": [],
+    "fullscreen": [],
+    "geolocation": [],
+    "gyroscope": [],
+    "magnetometer": [],
+    "microphone": [],
+    "midi": [],
+    "payment": [],
+    "picture-in-picture": [],
+    "publickey-credentials-get": [],
+    "screen-wake-lock": [],
+    "sync-xhr": [],
+    "usb": [],
+    "web-share": [],
+    "xr-spatial-tracking": [],
+}
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

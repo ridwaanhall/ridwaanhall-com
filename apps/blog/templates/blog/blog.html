@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %} {# Add this if not already in base.html #}
 
 {% block head_seo %}
 
@@ -329,66 +330,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const sliderWrapper = document.querySelector('.featured-slider-wrapper');
-        const slides = document.querySelectorAll('.featured-slide');
-        const dots = document.querySelectorAll('.slider-dot');
-        const prevBtn = document.querySelector('.slider-nav.prev');
-        const nextBtn = document.querySelector('.slider-nav.next');
-        let currentIndex = 0;
-        
-        // Set initial active dot
-        if (dots.length > 0) {
-            dots[0].classList.add('bg-white', 'w-4');
-        }
-        
-        function goToSlide(index) {
-            // Handle edge cases
-            if (index < 0) index = slides.length - 1;
-            if (index >= slides.length) index = 0;
-            
-            currentIndex = index;
-            sliderWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
-            
-            // Update dots
-                dots.forEach((dot, i) => {
-                    // Handle background color
-                    dot.classList.toggle('bg-white', i === currentIndex);
-                    dot.classList.toggle('bg-white/50', i !== currentIndex);
-                    
-                    // Handle width classes correctly
-                    if (i === currentIndex) {
-                        dot.classList.add('w-4');
-                        dot.classList.remove('w-1.5');
-                    } else {
-                        dot.classList.remove('w-4');
-                        dot.classList.add('w-1.5');
-                    }
-                });
-        }
-        
-        // Event listeners
-        prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
-        nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
-        
-        // Add click events to dots
-        dots.forEach((dot, i) => {
-            dot.addEventListener('click', () => goToSlide(i));
-        });
-        
-        // Auto-slide every 5 seconds
-        if (slides.length > 1) {
-            setInterval(() => {
-                goToSlide(currentIndex + 1);
-            }, 5000);
-        }
-        
-        // Hide navigation if only one slide
-        if (slides.length <= 1) {
-            prevBtn.style.display = 'none';
-            nextBtn.style.display = 'none';
-        }
-    });
-</script>
+<script src="{% static 'js/featuredSlider.js' %}"></script>
 {% endblock %}

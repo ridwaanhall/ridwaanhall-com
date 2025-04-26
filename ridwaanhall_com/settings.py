@@ -163,8 +163,7 @@ CONTENT_SECURITY_POLICY = {
             '*.googleapis.com',
             '*.gstatic.com',
         ),
-        # Consider adding for better security if site is fully HTTPS
-        # 'upgrade-insecure-requests': True,
+        'upgrade-insecure-requests': True,
     }
     # Optional: Add REPORT_ONLY = True to test without enforcing
     # 'REPORT_ONLY': DEBUG,

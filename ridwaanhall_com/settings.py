@@ -129,17 +129,42 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Add CSP settings (adjust 'self', script-src, style-src etc. based on your needs)
 CSP_DEFAULT_SRC = ("'self'",)
-CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'") # Allow inline scripts for now, refine as needed
-CSP_STYLE_SRC = ("'self'", "'unsafe-inline'") # Allow inline styles for now, refine as needed
-CSP_IMG_SRC = ("'self'", "data:", BLOG_BASE_IMG_URL, PROJECT_BASE_IMG_URL) # Allow data: URIs and your image base URLs
-CSP_FONT_SRC = ("'self'",)
-CSP_CONNECT_SRC = ("'self'",) # Add any external APIs you connect to
-CSP_FRAME_ANCESTORS = ("'none'",) # Disallow framing by default
+CSP_SCRIPT_SRC = (
+    "'self'",
+    "static.cloudflareinsights.com",
+    "cloud.umami.is",
+    "*.googleapis.com",
+)
+CSP_STYLE_SRC = (
+    "'self'",
+    "*.googleapis.com",
+    "*.gstatic.com",
+)
+CSP_IMG_SRC = (
+    "'self'",
+    "data:",
+    "cdn.jsdelivr.net",
+    "wsrv.nl",
+    "*.googleapis.com",
+    "*.gstatic.com",
+)
+CSP_FONT_SRC = (
+    "'self'",
+    "*.gstatic.com",
+)
+CSP_CONNECT_SRC = (
+    "'self'",
+    "*.googleapis.com",
+)
+CSP_FRAME_SRC = (
+    "'self'",
+    "*.google.com",
+)
+CSP_FRAME_ANCESTORS = ("'none'",)
 CSP_OBJECT_SRC = ("'none'",)
 CSP_BASE_URI = ("'self'",)
 CSP_FORM_ACTION = ("'self'",)
 
-# Add Permissions Policy settings (restrictive by default)
 PERMISSIONS_POLICY = {
     "accelerometer": [],
     "ambient-light-sensor": [],

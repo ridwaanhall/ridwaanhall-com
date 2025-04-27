@@ -152,16 +152,18 @@ CONTENT_SECURITY_POLICY = {
         'object-src': (NONE,), # Use NONE constant
         'script-src': (
             SELF, # Use SELF constant
-            UNSAFE_INLINE, # Add back using constant if absolutely necessary
+            # UNSAFE_INLINE, # Add back using constant if absolutely necessary
             'static.cloudflareinsights.com',
             'cloud.umami.is',
             '*.googleapis.com',
+            'cdn.jsdelivr.net',
         ),
         'style-src': (
             SELF, # Use SELF constant
-            UNSAFE_INLINE, # Add back using constant if absolutely necessary
+            # UNSAFE_INLINE, # Add back using constant if absolutely necessary
             '*.googleapis.com',
             '*.gstatic.com',
+            'cdn.jsdelivr.net',
         ),
         'upgrade-insecure-requests': True,
     }

@@ -87,7 +87,7 @@ class BlogView(BaseBlogView):
         context['seo'] = {
             'title': f"{about['name']}'s Blog - Thoughts & Tutorials",
             'description': f"Dive into {about['name']}'s brain—articles, coding tips, and random tech thoughts.",
-            'keywords': f"blog, coding, tech, tutorials, {about['name']}, ideas, insights",
+            'keywords': f"blog, coding, tech, tutorials, {about['name']}, {about['username']}, ideas, insights",
             'og_image': about.get('image_url', ''),
             'og_type': 'website',
             'twitter_card': 'summary_large_image',

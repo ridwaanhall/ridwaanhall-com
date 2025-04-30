@@ -69,7 +69,7 @@ class CareerView(BaseCareerView):
             'applications': ApplicationsData.applications,
             'seo': {
             'title': f"{about['name']}'s Journey - My Career Story",
-            'description': f"Here’s the scoop on {about['name']}’s career—jobs, projects, and all the cool stuff I’ve learned along the way.",
+            'description': f"Dive into {about['name']}’s epic ride—killer work gigs, education adventures, slick certifications, and the wild tales from every interview and opportunity I’ve crushed.",
             'keywords': f"{about['name']}, career, work, skills, experience, growth, certifications, applications",
             'og_image': about.get('image_url', ''),
             'og_type': 'profile',

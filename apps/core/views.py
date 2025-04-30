@@ -88,7 +88,7 @@ class HomeView(BasePortfolioView):
             'seo': self.get_seo_data(
                 title=f"Hey, I'm {about['name']} - Welcome to My World",
                 description=f"This is {about['username']}'s corner of the internet! {about.get('short_description', 'A place where I share my projects, ideas, and journey.')}",
-                keywords=f"{about['username']}, portfolio, coder, projects, blogs, skills, learning, ai engineer, web developer",
+                keywords=f"{about['username']}, portfolio, coder, projects, blogs, skills, learning, ai engineer, web developer, machine learning engineer, dbs foundation coding camp mentor",
                 twitter_card='summary_large_image'
             ),
         }
@@ -110,8 +110,8 @@ class AboutView(BasePortfolioView):
             'about': about,
             'seo': self.get_seo_data(
                 title=f"Get to Know {about['name']} - My Story",
-                description="Curious about me? Here’s a peek into my journey, skills, and what I’m all about.",
-                keywords=f"{about['username']}, my story, skills, experience, career, learning, vibes",
+                description=f"Meet {about['username']}, a {about['location']['province']}-based {about['role']} and Copilot ID founder. Explore journey in AI, 30+ shipped projects, Quran memorization, and mentoring coders to build epic solutions.",
+                keywords=f"{about['username']}, machine learning, AI developer, Python mentor, Django, Flask, Next.js, Quran memorization, Copilot ID, coding projects",
                 og_type='profile'
             ),
         }

@@ -128,8 +128,8 @@
             </a>
         </nav>
 
-        <div class="px-6 py-4 mt-auto text-center text-xs">
-            © {% now "Y" %} {{ about.name }}.
+        <div class="px-6 py-4 mt-auto text-center text-xs text-zinc-400">
+            © {% now "Y" %} {{ about.name }} <span class="mx-1">•</span> <a href="{% url 'privacy' %}" class="hover:text-zinc-300 hover:underline {% if request.resolver_match.url_name == 'privacy' %}text-zinc-300 underline{% endif %}">Privacy</a>
         </div>
     </div>
 </div>
@@ -296,7 +296,7 @@
         </a>
     </nav>
 
-    <div class="px-6 py-4 mt-auto text-center text-xs">
-        © {% now "Y" %} {{ about.name }}.
+    <div class="px-6 py-4 mt-auto text-center text-xs text-zinc-400">
+        © {% now "Y" %} {{ about.name }} <span class="mx-1">•</span> <a href="{% url 'privacy' %}" class="hover:text-zinc-300 hover:underline {% if request.resolver_match.url_name == 'privacy' %}text-zinc-300 underline{% endif %}">Privacy</a>
     </div>
 </div>

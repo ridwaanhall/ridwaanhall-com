@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block head_seo %}
+
+<title>{{ seo.title }}</title>
+
+<meta name="author" content="{{ about.username }}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<meta name="description" content="{{ seo.description }}">
+<meta name="keywords" content="{{ seo.keywords }}">
+
+<meta property="og:type" content="{{ seo.og_type }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:title" content="{{ seo.title }}">
+<meta property="og:description" content="{{ seo.description }}">
+<meta property="og:image" content="{{ seo.og_image }}">
+
+<meta property="twitter:card" content="{{ seo.twitter_card }}">
+<meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+<meta property="twitter:title" content="{{ seo.title }}">
+<meta property="twitter:description" content="{{ seo.description }}">
+<meta property="twitter:image" content="{{ seo.og_image }}">
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "AboutPage",
+        "mainEntity": {
+            "@type": "Person",
+            "name": "{{ about.name }}",
+            "description": "{{ seo.description }}",
+            "image": "{{ about.image_url }}",
+            "jobTitle": "{{ about.role }}",
+            "url": "{{ request.build_absolute_uri }}",
+            "sameAs": [
+                {% if about.social_media.github %}"{{ about.social_media.github }}"{% else %}null{% endif %},
+                {% if about.social_media.linkedin %}"{{ about.social_media.linkedin }}"{% else %}null{% endif %},
+                {% if about.social_media.x %}"{{ about.social_media.x }}"{% else %}null{% endif %},
+                {% if about.social_media.medium %}"{{ about.social_media.medium }}"{% else %}null{% endif %},
+                {% if about.social_media.instagram %}"{{ about.social_media.instagram }}"{% else %}null{% endif %}
+            ]
+        }
+    }
+</script>
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "name": "Site Navigation",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ request.scheme }}://{{ request.get_host }}/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "About",
+                "item": "{{ request.scheme }}://{{ request.get_host }}/about"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Career",
+                "item": "{{ request.scheme }}://{{ request.get_host }}/career"
+            },
+            {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "Dashboard",
+                "item": "{{ request.scheme }}://{{ request.get_host }}/dashboard"
+            },
+            {
+                "@type": "ListItem",
+                "position": 5,
+                "name": "Projects",
+                "item": "{{ request.scheme }}://{{ request.get_host }}/projects"
+            },
+            {
+                "@type": "ListItem",
+                "position": 6,
+                "name": "Blog",
+                "item": "{{ request.scheme }}://{{ request.get_host }}/blog"
+            },
+            {
+                "@type": "ListItem",
+                "position": 7,
+                "name": "Contact",
+                "item": "{{ request.scheme }}://{{ request.get_host }}/contact"
+            }
+        ]
+    }
+</script>
+
+{% endblock %}
+
+{% block content %}
+<div class="flex-1 md:ml-62">
+    <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+
+            <div class="mb-6 sm:mb-8">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+                    <div class="w-full">
+                        <h1 class="text-3xl sm:text-4xl font-bold mb-2 tracking-tight">Privacy <span class="text-indigo-400">Stuff</span></h1>
+                        <p class="mt-2 text-base sm:text-lg text-zinc-300 leading-relaxed">
+                            For {{ privacy_policy.website }} - Keeping it chill and transparent!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <div class="grid grid-cols-1 gap-6 sm:gap-8">
+                <div class="w-full">
+                    <div class="space-y-4 sm:space-y-6">
+                        <!-- Introduction -->
+                        <div class="border border-zinc-700 rounded-xl p-4 sm:p-6 hover:border-indigo-500 transition-all duration-300">
+                            <p class="text-base sm:text-lg text-zinc-300 mb-4">
+                                We totally get that your privacy is a big deal. Here's the lowdown on how we handle your info when you hang out on our site.
+                            </p>
+                            
+                            <!-- Data Collection -->
+                            <div class="mb-6">
+                                <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-indigo-400">What We Grab</h2>
+                                
+                                {% for service, data in privacy_policy.data_collected.items %}
+                                <div class="mb-4">
+                                    <h3 class="text-lg font-medium mb-2">{{ service|title }}</h3>
+                                    <ul class="list-disc pl-5 text-zinc-300">
+                                        {% for item, status in data.items %}
+                                        <li>{{ item }}: {{ status }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <!-- Data Usage -->
+                            <div class="mb-6">
+                                <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-indigo-400">What We Do With It</h2>
+                                <ul class="list-disc pl-5 text-zinc-300">
+                                    {% for usage in privacy_policy.data_usage %}
+                                    <li>{{ usage }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            
+                            <!-- Third Party Services -->
+                            <div class="mb-6">
+                                <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-indigo-400">Our Buddies</h2>
+                                <ul class="list-disc pl-5 text-zinc-300">
+                                    {% for service, purpose in privacy_policy.third_party_services.items %}
+                                    <li><strong>{{ service }}</strong>: {{ purpose }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            
+                            <!-- Data Protection -->
+                            <div class="mb-6">
+                                <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-indigo-400">Keeping It Safe</h2>
+                                <ul class="list-disc pl-5 text-zinc-300">
+                                    {% for item, details in privacy_policy.data_protection.items %}
+                                    <li><strong>{{ item|title }}</strong>: {{ details }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            
+                            <!-- User Rights -->
+                            <div class="mb-6">
+                                <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-indigo-400">Your Power Moves</h2>
+                                <ul class="list-disc pl-5 text-zinc-300">
+                                    {% for right, description in privacy_policy.user_rights.items %}
+                                    <li><strong>{{ right|title }}</strong>: {{ description }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            
+                            <!-- Policy Updates -->
+                            <div class="mb-6">
+                                <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-indigo-400">Keeping It Fresh</h2>
+                                <p class="text-zinc-300">{{ privacy_policy.policy_updates }}</p>
+                            </div>
+                            
+                            <!-- Contact -->
+                            <div class="mb-4">
+                                <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-indigo-400">Hit Us Up</h2>
+                                <p class="text-zinc-300">Got questions? Slide into our DMs at: 
+                                    <a href="mailto:{{ privacy_policy.contact_email }}" class="text-indigo-400 hover:underline">{{ privacy_policy.contact_email }}</a>
+                                </p>
+                            </div>
+                            
+                            <!-- Last Updated -->
+                            <div class="mt-6 pt-4 border-t border-zinc-700">
+                                <p class="text-sm text-zinc-400">Last vibe check: {{ privacy_policy.last_updated|date:"g:i A T, D F j, Y" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

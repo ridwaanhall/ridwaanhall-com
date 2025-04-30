@@ -10,6 +10,7 @@ from apps.data.education_data import EducationData
 from apps.data.certifications_data import CertificationsData
 from apps.data.services_data import ServicesData
 from apps.data.palestine_data import PalestineData
+from apps.data.privacy_policy_data import PrivacyPolicyData
 
 
 class BasePortfolioView(TemplateView):
@@ -134,6 +135,25 @@ class ContactView(BasePortfolioView):
                 title=f"Hit Me Up - Connect with {about['username']}",
                 description=f"Wanna chat? Reach out to {about['username']} for collabs, gigs, or just to say hi!",
                 keywords=f"{about['username']}, machine learning enineer in indonesia, web developer in indonesia, contact, connect, reach out, chat, collab",
+            ),
+        }
+        return render(request, self.template_name, context)
+
+class PrivacyPolicyView(BasePortfolioView):
+    template_name = 'core/privacy_policy.html'
+
+    def get(self, request, *args, **kwargs):
+        return self.handle_exceptions(self._get)(request, *args, **kwargs)
+
+    def _get(self, request, *args, **kwargs):
+        about = self.get_about_data()
+        context = {
+            'about': about,
+            'privacy_policy': PrivacyPolicyData.privacy_policy,
+            'seo': self.get_seo_data(
+                title="Privacy Stuff - Keeping it chill and transparent!",
+                description="We got you! Check out how we keep your data safe and sound.",
+                keywords=f"{about['username']}, privacy vibes, data safety, your rights",
             ),
         }
         return render(request, self.template_name, context)

@@ -536,10 +536,14 @@
             }
             
             // Create and position month labels
-            monthPositions.forEach(pos => {
+            monthPositions.forEach((pos, index) => {
                 const label = document.createElement('span');
                 label.textContent = MONTH_NAMES[pos.month];
-                label.className = 'absolute text-2xs sm:text-xs font-medium';
+                
+                // Add hidden class to first and last month labels
+                const isFirstOrLast = index === 0 || index === monthPositions.length - 1;
+                label.className = `absolute text-2xs sm:text-xs font-medium ${isFirstOrLast ? 'hidden' : ''}`;
+                
                 label.style.left = `${(pos.week / WEEKS_IN_YEAR) * 100}%`;
                 monthLabelsContainer.appendChild(label);
             });

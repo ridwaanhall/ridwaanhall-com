@@ -38,7 +38,7 @@ class ApplicationsData:
                 {
                     "title": "Real Talk",
                     "details": "Chatted about my background, passion, and tackled some problem-solving questions",
-                    "notes": "-"
+                    "notes": "<span class='text-blue-600'>Respect for both of us having cams on—straight-up professional vibe, not like HashMicro’s cowardly cam-off clown show!</span>"
                 },
                 {
                     "title": "Locked In!",
@@ -50,7 +50,7 @@ class ApplicationsData:
         },
         {
             "company_name": "HashMicro",
-            "status": "Ghosting",
+            "status": "Rejected",
             "position": "Python Developer (Django)",
             "journey": [
                 {
@@ -80,16 +80,21 @@ class ApplicationsData:
                 },
                 {
                     "title": "Waiting Game",
-                    "details": "Just chilling, waiting for their call—hoping they don’t flop.",
-                    "notes": "-"
+                    "details": "Waited over 30 days for any word—total radio silence. Felt like they forgot I existed.",
+                    "notes": "<span class='text-red-600'>A month-plus with zero updates? Amateur hour!</span>"
                 },
                 {
-                    "title": "Poof, Gone",
-                    "details": "No word after the final interview—vanished like total cowards.",
-                    "notes": "<span class='text-red-600'>Ghosted with zero heads-up? Pathetic excuse for a company!</span>"
+                    "title": "Rejection Email",
+                    "details": "After 30+ days of nothing, got an email saying my resume was solid but I didn’t make the cut. They said I could ask why, but their silence already spoke volumes.",
+                    "notes": "<span class='text-red-600'>A month to send a rejection? Pathetic effort, clowns!</span>"
+                },
+                {
+                    "title": "Response to Rejection",
+                    "details": "Sent a polite reply, thanking them with a tiny nod of respect for at least replying, asked for feedback, and left the door open for future roles. Still not impressed with their HR circus.",
+                    "notes": "<span class='text-blue-600'>Kept it professional, but their month-long ghosting act deserves zero applause!</span>"
                 }
             ],
-            "lessons_learned": "<span class='text-red-600 font-bold'>Cam on for me, but you’re hiding like scared little kids?</span> Respect’s a two-way street, geniuses. HR, grow a spine: <span class='text-blue-600 font-bold'>tell candidates you’re ditching them</span>. <span class='text-orange-600 font-bold'>Ghosting’s for spineless losers who can’t handle basic decency</span>. This HR’s a <span class='underline decoration-red-400 decoration-2'>hot mess of a clown show</span>."
+            "lessons_learned": "<span class='text-red-600 font-bold'>Cam on for me, but you’re hiding like scared little kids?</span> Respect’s a two-way street, geniuses. HR, grow a spine: <span class='text-blue-600 font-bold'>don’t make candidates wait over a month for a basic rejection</span>. <span class='text-orange-600 font-bold'>Dragging people along with zero updates is for amateurs who can’t handle basic professionalism</span>. This HR’s a <span class='underline decoration-red-400 decoration-2'>hot mess of a clown show</span>."
         },
         {
             "company_name": "Indigoshi Digital Indonesia",

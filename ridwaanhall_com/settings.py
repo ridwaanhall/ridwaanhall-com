@@ -132,15 +132,38 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 CONTENT_SECURITY_POLICY = {
     'DIRECTIVES': {
-        'base-uri': (SELF,), # Use SELF constant
-        'connect-src': (SELF, '*.googleapis.com', "cloud.umami.is"), # Use SELF constant
-        'default-src': (SELF,), # Use SELF constant
-        'font-src': (SELF, '*.gstatic.com'), # Use SELF constant
-        'form-action': (SELF,), # Use SELF constant
-        'frame-ancestors': (NONE,), # Use NONE constant
-        'frame-src': (SELF, '*.google.com'), # Use SELF constant
+        'base-uri': (
+            SELF,
+            'ridwaanhall.com',
+        ),
+        'connect-src': (
+            SELF,
+            'ridwaanhall.com',
+            '*.googleapis.com',
+            "cloud.umami.is"
+        ),
+        'default-src': (
+            SELF,
+            'ridwaanhall.com',
+        ),
+        'font-src': (
+            SELF,
+            'ridwaanhall.com',
+            '*.gstatic.com'
+        ),
+        'form-action': (
+            SELF,
+        ),
+        'frame-ancestors': (
+            NONE,
+        ), # Use NONE constant
+        'frame-src': (
+            SELF,
+            '*.google.com'
+        ),
         'img-src': (
-            SELF, # Use SELF constant
+            SELF,
+            'ridwaanhall.com',
             'data:',
             BLOG_BASE_IMG_URL,
             PROJECT_BASE_IMG_URL,
@@ -149,16 +172,20 @@ CONTENT_SECURITY_POLICY = {
             '*.googleapis.com',
             '*.gstatic.com',
         ),
-        'object-src': (NONE,), # Use NONE constant
+        'object-src': (
+            NONE,
+        ), # Use NONE constant
         'script-src': (
-            SELF, # Use SELF constant
+            SELF,
+            'ridwaanhall.com',
             UNSAFE_INLINE, # Add back using constant if absolutely necessary
             'static.cloudflareinsights.com',
             'cloud.umami.is',
             '*.googleapis.com',
         ),
         'style-src': (
-            SELF, # Use SELF constant
+            SELF,
+            'ridwaanhall.com',
             UNSAFE_INLINE, # Add back using constant if absolutely necessary
             '*.googleapis.com',
             '*.gstatic.com',

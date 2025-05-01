@@ -201,11 +201,11 @@ CONTENT_SECURITY_POLICY = {
 
 PERMISSIONS_POLICY = {
     "accelerometer": [],
-    "ambient-light-sensor": [],
+    # "ambient-light-sensor": [],
     "autoplay": [],
     "camera": [],
     "display-capture": [],
-    "document-domain": [],
+    # "document-domain": [],
     "encrypted-media": [],
     "fullscreen": [],
     "geolocation": [],

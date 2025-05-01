@@ -88,6 +88,7 @@ python manage.py runserver
 Drop a `.env` file in the root with:
 
 ```txt
+# .env
 SECRET_KEY="YOUR_DJANGO_SECRET_KEY"
 ACCESS_TOKEN="YOUR_GITHUB_ACCESS_TOKEN"
 WAKATIME_API_KEY="YOUR_WAKATIME_API_KEY"

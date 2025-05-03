@@ -3,7 +3,6 @@ from django.conf import settings
 class CertificationsData:
     certifications = [
         {
-            "id": 1,
             "title": "Crafting Slick REST APIs with Django",
             "credential_url": "https://www.linkedin.com/learning/certificates/75dfc2562365bbe8c92e2d79c8c8b2ddd5313f935086a44ca98c31d2ce5ef43a",
             "issued": "Dec 2024",
@@ -18,8 +17,7 @@ class CertificationsData:
             ]
         },
         {
-            "id": 2,
-            "title": "Diving Deep into Machine Learning",
+            "title": "Applied Machine Learning",
             "credential_url": "https://www.dicoding.com/certificates/NVP74VLKRPR0",
             "issued": "Dec 2024",
             "institution": "Dicoding Indonesia",
@@ -33,7 +31,6 @@ class CertificationsData:
             ]
         },
         {
-            "id": 3,
             "title": "Building a Dope Portfolio with Django",
             "credential_url": "https://www.linkedin.com/learning/certificates/f8a7650056c8c53c7cd79e25aa0f2fe70a23b1fcf6ce9c9b5e5fb8f928b3c9cb",
             "issued": "Oct 2023",

@@ -65,6 +65,7 @@ class UpdatedAtData:
                     "apps/data/experiences_data.py",
                     "apps/data/education_data.py",
                     "apps/data/certifications_data.py",
+                    "apps/data/awards_data.py",
                 ]),
             },
             {

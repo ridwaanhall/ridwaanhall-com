@@ -1786,6 +1786,7 @@ class ProjectsData:
                 tech_stack["tailwindcss"],
                 tech_stack["vercel"],
                 tech_stack["github_api"],
+                tech_stack["cloudflare"],
                 tech_stack["wakatime_api"]
             ],
             "updated_at": datetime.strptime("2025-04-23T22:03:09+07:00", "%Y-%m-%dT%H:%M:%S%z")

@@ -161,6 +161,12 @@
                             aria-selected="false" role="tab">
                         Educations
                     </button>
+                    <button id="tab-awards" 
+                            onclick="switchTab('awards')" 
+                            class="inline-block p-2 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none" 
+                            aria-selected="false" role="tab">
+                        Awards
+                    </button>
                     <button id="tab-certifications" 
                             onclick="switchTab('certifications')" 
                             class="inline-block p-2 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none" 
@@ -185,6 +191,11 @@
                 <div id="content-education" class="hidden w-full">
                     {% if education %}
                     {% include 'career/education.html' %}
+                    {% endif %}
+                </div>
+                <div id="content-awards" class="hidden w-full">
+                    {% if awards %}
+                    {% include 'career/awards.html' %}
                     {% endif %}
                 </div>
                 <div id="content-certifications" class="hidden w-full">

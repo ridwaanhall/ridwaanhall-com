@@ -16,7 +16,8 @@ class ApplicationsData:
     """
     applications = [
         {
-            "company_name": "Dicoding Indonesia",
+            "id": 14,
+            "company_name": "Coding Camp Powered by DBS Foundation (Dicoding Indonesia)",
             "status": "Accepted",
             "position": "Machine Learning Mentor",
             "journey": [
@@ -49,6 +50,7 @@ class ApplicationsData:
             "lessons_learned": "Digging into HR’s docs like it’s a treasure hunt seriously boosts your chances!"
         },
         {
+            "id": 13,
             "company_name": "HashMicro",
             "status": "Rejected",
             "position": "Python Developer (Django)",
@@ -97,6 +99,7 @@ class ApplicationsData:
             "lessons_learned": "<span class='text-red-600 font-bold'>Cam on for me, but you’re hiding like scared little kids?</span> Respect’s a two-way street, geniuses. HR, grow a spine: <span class='text-blue-600 font-bold'>don’t make candidates wait over a month for a basic rejection</span>. <span class='text-orange-600 font-bold'>Dragging people along with zero updates is for amateurs who can’t handle basic professionalism</span>. This HR’s a <span class='underline decoration-red-400 decoration-2'>hot mess of a clown show</span>."
         },
         {
+            "id": 12,
             "company_name": "Indigoshi Digital Indonesia",
             "status": "Rejected",
             "position": "Python Developer (Junior Level)",
@@ -135,6 +138,7 @@ class ApplicationsData:
             "lessons_learned": "<span class='text-red-600 font-bold'>Opening and closing jobs just to collect resumes like some shady side hustle?</span> HR, stop playing dirty: <span class='text-blue-600 font-bold'>give candidates a real shot or quit wasting their time</span>. <span class='text-orange-600 font-bold'>This kind of nonsense is for spineless posers</span>. Your company’s a <span class='underline decoration-red-400 decoration-2'>pathetic dumpster fire of a circus</span>."
         },
         {
+            "id": 11,
             "company_name": "Shortlyst AI",
             "status": "Ghosting",
             "position": "Backend Engineer Intern",
@@ -163,6 +167,7 @@ class ApplicationsData:
             "lessons_learned": "<span class='text-red-600 font-bold'>Bragging about professionalism but pulling a Houdini?</span> HR, get a grip: <span class='text-blue-600 font-bold'>stop leaving candidates hanging like spineless flakes</span>. <span class='text-orange-600 font-bold'>Ghosting’s for posers who can’t handle a simple email</span>. This company’s a <span class='underline decoration-red-400 decoration-2'>sad, sloppy clown parade</span>."
         },
         {
+            "id": 10,
             "company_name": "Speechify",
             "status": "Rejected",
             "position": "Frontend Developer",
@@ -196,6 +201,7 @@ class ApplicationsData:
             "lessons_learned": "Prep hard for coding tests—scope out the company’s stuff and online tips. Oh, and lock down your setup to avoid disasters."
         },
         {
+            "id": 9,
             "company_name": "National Fair Housing Alliance",
             "status": "Rejected",
             "position": "AI Engineer Intern",
@@ -219,6 +225,7 @@ class ApplicationsData:
             "lessons_learned": "Not every app gets a reply. Companies use bots to screen—tailor your resume to slip through."
         },
         {
+            "id": 8,
             "company_name": "Reality AI Lab",
             "status": "Rejected",
             "position": "AI Engineer Intern",
@@ -242,6 +249,7 @@ class ApplicationsData:
             "lessons_learned": "Same deal—craft a laser-focused resume to dodge those screening bots."
         },
         {
+            "id": 7,
             "company_name": "Copilot ID",
             "status": "Accepted",
             "position": "Founder",
@@ -265,6 +273,7 @@ class ApplicationsData:
             "lessons_learned": "Chase your passion and give it a name—your vision’s gotta start somewhere!"
         },
         {
+            "id": 6,
             "company_name": "GaoTek Inc.",
             "status": "Accepted",
             "position": "Assistant Squad Leader of Web Developer Intern",
@@ -283,6 +292,7 @@ class ApplicationsData:
             "lessons_learned": "Grind hard, and the big roles come knocking—performance pays off!"
         },
         {
+            "id": 5,
             "company_name": "GAOTek Inc.",
             "status": "Accepted",
             "position": "Main Team of Web Developer Intern",
@@ -301,6 +311,7 @@ class ApplicationsData:
             "lessons_learned": "Go hard on your tasks—good vibes and hustle get you noticed!"
         },
         {
+            "id": 4,
             "company_name": "GaoTek Inc.",
             "status": "Accepted",
             "position": "Web Developer Intern",
@@ -329,6 +340,7 @@ class ApplicationsData:
             "lessons_learned": "Keep your LinkedIn and CV fresh—doors open when you’re ready!"
         },
         {
+            "id": 3,
             "company_name": "YoungDev",
             "status": "Accepted",
             "position": "Machine Learning Intern",
@@ -352,6 +364,7 @@ class ApplicationsData:
             "lessons_learned": "Stay active on LinkedIn and shoot your shot—opportunities are out there!"
         },
         {
+            "id": 2,
             "company_name": "iNeuron.ai",
             "status": "Accepted",
             "position": "Machine Learning Intern",
@@ -375,6 +388,7 @@ class ApplicationsData:
             "lessons_learned": "Flexible gigs are dope—grab ‘em, but balance your hustle!"
         },
         {
+            "id": 1,
             "company_name": "Imaarotu Syu’unith Tholabah",
             "status": "Accepted",
             "position": "Deputy of Da’wah",

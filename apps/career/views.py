@@ -6,6 +6,7 @@ from apps.data.experiences_data import ExperiencesData
 from apps.data.certifications_data import CertificationsData
 from apps.data.education_data import EducationData
 from apps.data.applications_data import ApplicationsData
+from apps.data.awards_data import AwardsData
 from apps.data.about_data import AboutData
 
 
@@ -60,6 +61,8 @@ class CareerView(BaseCareerView):
         context = self.get_common_context()
         about = context['about']
 
+        awards_sorted = sorted(AwardsData.awards, key=lambda x: x.get('id', 0), reverse=True)
+
         context.update({
             'view_certs': 'true',
             'view': False,
@@ -67,10 +70,11 @@ class CareerView(BaseCareerView):
             'education': EducationData.education,
             'certifications': CertificationsData.certifications,
             'applications': ApplicationsData.applications,
+            'awards': awards_sorted,
             'seo': {
             'title': f"{about['name']}'s Journey - My Career Story",
-            'description': f"Dive into {about['name']}’s epic ride—killer work gigs, education adventures, slick certifications, and the wild tales from every interview and opportunity I’ve crushed.",
-            'keywords': f"{about['name']}, career, work, skills, experience, growth, certifications, applications",
+            'description': f"Dive into {about['name']}’s epic ride—killer work gigs, education adventures, slick certifications, stellar honors & bold awards, and the wild tales from every interview and opportunity I’ve crushed.",
+            'keywords': f"{about['name']}, career, work, skills, experience, growth, certifications, stellar honors & bold awards, applications",
             'og_image': about.get('image_url', ''),
             'og_type': 'profile',
             'twitter_card': 'summary_large_image',

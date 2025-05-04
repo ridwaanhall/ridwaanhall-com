@@ -518,25 +518,49 @@
         function renderMonthLabels() {
             monthLabelsContainer.innerHTML = '';
             const grid = formatDatesIntoGrid();
-            const monthPositions = [];
-            let currentMonth = -1;
             
-            // Find positions where months change
+            // Create a map to track the earliest week for each month
+            const monthToEarliestWeek = new Map();
+            
+            // Find the earliest occurrence of each month in the grid
             for (let week = 0; week < WEEKS_IN_YEAR; week++) {
                 for (let day = 0; day < DAYS_IN_WEEK; day++) {
                     if (grid[week] && grid[week][day] && grid[week][day].date) {
-                        const month = grid[week][day].date.getMonth();
+                        const date = grid[week][day].date;
+                        const month = date.getMonth();
                         
-                        if (month !== currentMonth) {
-                            monthPositions.push({ month, week });
-                            currentMonth = month;
+                        if (!monthToEarliestWeek.has(month) || week < monthToEarliestWeek.get(month)) {
+                            monthToEarliestWeek.set(month, week);
                         }
                     }
                 }
             }
             
+            // Convert the map to an array and sort by week position
+            const monthPositions = Array.from(monthToEarliestWeek.entries())
+                .map(([month, week]) => ({ month, week }))
+                .sort((a, b) => a.week - b.week);
+            
+            // Apply minimum distance between labels
+            const MIN_WEEK_DISTANCE = 3; // Minimum weeks between labels
+            const filteredPositions = [];
+            
+            for (let i = 0; i < monthPositions.length; i++) {
+                if (i === 0) {
+                    filteredPositions.push(monthPositions[i]);
+                    continue;
+                }
+                
+                const current = monthPositions[i];
+                const previous = filteredPositions[filteredPositions.length - 1];
+                
+                if (current.week - previous.week >= MIN_WEEK_DISTANCE) {
+                    filteredPositions.push(current);
+                }
+            }
+            
             // Create and position month labels
-            monthPositions.forEach(pos => {
+            filteredPositions.forEach(pos => {
                 const label = document.createElement('span');
                 label.textContent = MONTH_NAMES[pos.month];
                 label.className = 'absolute text-2xs sm:text-xs font-medium';

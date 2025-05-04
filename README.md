@@ -25,7 +25,7 @@ Welcome to my digital crib! This site’s my personal brand, showing off my skil
 | Code Vibes | ![Python](https://img.shields.io/badge/-Python-05122A?style=flat&logo=python) |
 | Backend | ![Django](https://img.shields.io/badge/-Django-05122A?style=flat&logo=django) |
 | Frontend | ![TailwindCSS](https://img.shields.io/badge/-TailwindCSS-05122A?style=flat&logo=tailwindcss) |
-| Typography | ![Plus Jakarta Sans](https://img.shields.io/badge/-Onest-05122A?style=flat&logo=googlefonts) ![Mono](https://img.shields.io/badge/-Mono-05122A?style=flat&logo=googlefonts) |
+| Typography | ![Onest](https://img.shields.io/badge/-Onest-05122A?style=flat&logo=googlefonts) ![Mono](https://img.shields.io/badge/-Mono-05122A?style=flat&logo=googlefonts) |
 | Version Control | ![Git](https://img.shields.io/badge/-Git-05122A?style=flat&logo=git) ![GitHub](https://img.shields.io/badge/-GitHub-05122A?style=flat&logo=github) |
 | Hosting | ![Vercel](https://img.shields.io/badge/-Vercel-05122A?style=flat&logo=vercel) |
 | CDN | ![Cloudflare](https://img.shields.io/badge/-Cloudflare-05122A?style=flat&logo=cloudflare) |
@@ -143,4 +143,4 @@ Got ideas? Slide in:
 | Email      | [hi@ridwaanhall.com](mailto:hi@ridwaanhall.com) |
 | Website    | [ridwaanhall.com](https://ridwaanhall.com) |
 | GitHub     | [@ridwaanhall](https://github.com/ridwaanhall) |
-| Twitter/X  | [@ridwaanhall](https://x.com/ridwaanhall) |
+| LinkedIn  | [in/ridwaanhall](https://li.ridwaanhall.com) |

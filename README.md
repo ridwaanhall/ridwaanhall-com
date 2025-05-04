@@ -94,6 +94,8 @@ ACCESS_TOKEN="YOUR_GITHUB_ACCESS_TOKEN"
 WAKATIME_API_KEY="YOUR_WAKATIME_API_KEY"
 ```
 
+See full setup in `.env.example`.
+
 - **SECRET_KEY**: Run `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`
 - **ACCESS_TOKEN**: Grab one at [GitHub Settings/Tokens](https://github.com/settings/tokens)
 - **WAKATIME_API_KEY**: Cop it from [WakaTime Settings](https://wakatime.com/settings/account)

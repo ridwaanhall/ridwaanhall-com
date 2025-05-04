@@ -40,19 +40,19 @@ My site’s *fast* AF, optimized for all devices, and flexing near-perfect score
 
 ### Desktop Vibes
 
-[![Performance: 99](https://img.shields.io/badge/Performance-99-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=desktop)
-[![Accessibility: 100](https://img.shields.io/badge/Accessibility-100-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=desktop)
-[![Best Practices: 100](https://img.shields.io/badge/Best_Practices-100-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=desktop)
-[![SEO: 100](https://img.shields.io/badge/SEO-100-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=desktop)
+[![Performance: 97](https://img.shields.io/badge/Performance-97-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/bubxp8v27w?form_factor=desktop)
+[![Accessibility: 95](https://img.shields.io/badge/Accessibility-95-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/bubxp8v27w?form_factor=desktop)
+[![Best Practices: 93](https://img.shields.io/badge/Best_Practices-93-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/bubxp8v27w?form_factor=desktop)
+[![SEO: 100](https://img.shields.io/badge/SEO-100-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/bubxp8v27w?form_factor=desktop)
 
 ![PageSpeed Desktop](public/pagespeed_desktop.png)
 
 ### Mobile Flow
 
-[![Performance: 97](https://img.shields.io/badge/Performance-97-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=mobile)
-[![Accessibility: 100](https://img.shields.io/badge/Accessibility-100-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=mobile)
-[![Best Practices: 100](https://img.shields.io/badge/Best_Practices-100-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=mobile)
-[![SEO: 100](https://img.shields.io/badge/SEO-100-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-me/hzo9v4pstz?form_factor=mobile)
+[![Performance: 91](https://img.shields.io/badge/Performance-91-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/bubxp8v27w?form_factor=mobile)
+[![Accessibility: 95](https://img.shields.io/badge/Accessibility-95-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/bubxp8v27w?form_factor=mobile)
+[![Best Practices: 93](https://img.shields.io/badge/Best_Practices-93-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/bubxp8v27w?form_factor=mobile)
+[![SEO: 100](https://img.shields.io/badge/SEO-100-success)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/bubxp8v27w?form_factor=mobile)
 
 ![PageSpeed Mobile](public/pagespeed_mobile.png)
 
@@ -75,8 +75,8 @@ My site’s *fast* AF, optimized for all devices, and flexing near-perfect score
 ### Quick Start
 
 ```bash
-git clone https://github.com/ridwaanhall/ridwaanhall_com.git
-cd ridwaanhall_com
+git clone https://github.com/ridwaanhall/ridwaanhall-com.git
+cd ridwaanhall-com
 python -m venv venv
 # Windows: venv\Scripts\activate | macOS/Linux: source venv/bin/activate
 pip install -r requirements.txt
@@ -132,7 +132,7 @@ Got ideas? Slide in:
 1. Fork the repo.
 2. Create a branch (`git checkout -b feature/your-dope-idea`).
 3. Make your changes.
-4. Commit (`git commit -m 'Added some next-level stuff'`).
+4. Commit (`git commit -m 'feat: some next-level stuff'`).
 5. Push it (`git push origin feature/your-dope-idea`).
 6. Open a Pull Request and let’s talk.
 

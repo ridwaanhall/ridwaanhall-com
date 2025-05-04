@@ -51,11 +51,24 @@
                         </span>
                     </div>
         
-                    <p class="text-blue-200 mb-2 sm:mb-3 italic text-xs sm:text-sm md:text-base">
-                        {% if edu.website %}
-                        <a class="text-indigo-300 hover:text-indigo-200 transition-colors duration-200 underline-offset-2 hover:underline" href="{{ edu.website }}" target="_blank" rel="noopener">{{ edu.institution }}</a>
-                        {% else %} {{ edu.institution }} {% endif %}
-                    </p>
+                    <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-3 mb-3 sm:mb-4 text-zinc-400">
+                        <div class="flex items-center">
+                            <span class="text-blue-200 italic text-xs sm:text-sm md:text-base">
+                                {% if edu.website %}
+                                <a class="text-indigo-300 hover:text-indigo-200 transition-colors duration-200 underline-offset-2 hover:underline" href="{{ edu.website }}" target="_blank" rel="noopener">{{ edu.institution }}</a>
+                                {% else %}{{ edu.institution }}{% endif %}
+                            </span>
+                        </div>
+                        {% if edu.location %}
+                        <div class="flex items-center">
+                            <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            <span class="text-xs sm:text-sm md:text-base">{{ edu.location.regency }}, {{ edu.location.province }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
         
                     {% if edu.achievements %}
                     <div class="mt-1 sm:mt-2">

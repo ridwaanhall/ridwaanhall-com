@@ -47,11 +47,11 @@ class StaticViewSitemap(Sitemap):
         return 'weekly'
 
     def priority(self, item):
-        if item == 'home':
+        if item == 'home' or item == 'dashboard' or item == 'about' or item == 'career' or item == 'contact':
             return 1.0
         elif item.startswith('blog-page-') or item.startswith('projects-page-'):
             page = int(item.split('-')[-1])
-            return 0.9 if page == 1 else 0.8
+            return 1.0 if page == 1 else 0.9
         return 0.9
 
     def lastmod(self, item):

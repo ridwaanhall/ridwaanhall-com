@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 progressBar.style.opacity = "1";
                 progressBar.style.width = "0%";
                 
-                pageContent.classList.add('opacity-0', 'translate-y-8');
+                pageContent.classList.add('opacity-100', 'translate-y-0'); // opaticity before is 0, i make to 100. and stranslate y from 8 to 0
                 
                 setTimeout(() => {
                     window.location.href = destination;

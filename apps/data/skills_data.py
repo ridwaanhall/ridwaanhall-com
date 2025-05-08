@@ -33,7 +33,7 @@ class SkillsData:
         {"title": "Vercel", "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg"},
         {"title": "Netlify", "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/netlify/netlify-original.svg"},
         {"title": "Cloudflare Pages", "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cloudflare/cloudflare-original.svg"},
-        {"title": "Docker", "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"},
+        # {"title": "Docker", "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"},
         {"title": "Cloudflare Workers", "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cloudflareworkers/cloudflareworkers-original.svg"},
         {"title": "Nginx", "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg"},
         {"title": "Visual Studio Code", "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg"},

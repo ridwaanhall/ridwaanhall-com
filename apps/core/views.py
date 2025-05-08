@@ -11,7 +11,7 @@ from apps.data.certifications_data import CertificationsData
 from apps.data.services_data import ServicesData
 from apps.data.palestine_data import PalestineData
 from apps.data.privacy_policy_data import PrivacyPolicyData
-
+from apps.data.skills_data import SkillsData
 
 class BasePortfolioView(TemplateView):
     """Base view for portfolio pages with common error handling and data access."""
@@ -83,7 +83,7 @@ class HomeView(BasePortfolioView):
             'education': [edu for edu in EducationData.education if edu.get('is_last')],
             'experiences': [exp for exp in ExperiencesData.experiences if exp.get('is_current')],
             'services': ServicesData.services,
-            'palestine': PalestineData.palestine,
+            'skills': SkillsData.skills,
             'about': about,
             'certifications': CertificationsData.certifications,
             'seo': self.get_seo_data(

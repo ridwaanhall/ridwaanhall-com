@@ -202,6 +202,21 @@
 }
 </script>
 
+<style>
+    @keyframes scroll {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-50%);
+        }
+    }
+    
+    .animate-scroll {
+        animation: scroll 20s linear infinite;
+    }
+</style>
+
 {% endblock %}
 
 {% block content %}
@@ -259,6 +274,10 @@
             <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
             
             {% include 'projects/featured_projects.html' %}
+
+            <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
+
+            {% include 'core/skills.html' %}
 
             {% include 'career/work_together.html' %}
             

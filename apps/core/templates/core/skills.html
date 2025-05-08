@@ -2,9 +2,10 @@
     <h2 class="text-xl sm:text-2xl font-bold">Tech Stack <span class="text-indigo-400">I've Viced With</span></h2>
 </div>
 
-<div class="overflow-hidden w-full mb-8 relative">
-    <div class="skills-carousel flex animate-scroll whitespace-nowrap py-4">
-        {% for skill in skills %}
+<!-- Top Carousel: Right to Left -->
+<div class="overflow-hidden-skills w-full relative">
+    <div class="skills-carousel flex whitespace-nowrap py-2">
+        {% for skill in skills_top %}
             <div class="inline-block mx-2 whitespace-nowrap">
                 <div class="rounded-full bg-zinc-800/70 backdrop-blur-sm border border-zinc-700/50 hover:border-indigo-500/50 transition-all duration-300 px-4 py-2 flex items-center gap-2">
                     <img src="{{ skill.icon_svg }}" alt="{{ skill.title }}" class="h-5">
@@ -12,9 +13,54 @@
                 </div>
             </div>
         {% endfor %}
-        
         <!-- Duplicate skills for infinite scrolling effect -->
-        {% for skill in skills %}
+        {% for skill in skills_top %}
+            <div class="inline-block mx-2 whitespace-nowrap">
+                <div class="rounded-full bg-zinc-800/70 backdrop-blur-sm border border-zinc-700/50 hover:border-indigo-500/50 transition-all duration-300 px-4 py-2 flex items-center gap-2">
+                    <img src="{{ skill.icon_svg }}" alt="{{ skill.title }}" class="h-5">
+                    <span class="font-medium text-sm">{{ skill.title }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Middle Carousel: Left to Right -->
+<div class="overflow-hidden-skills w-full relative">
+    <div class="skills-carousel-reverse flex whitespace-nowrap py-2">
+        {% for skill in skills_middle %}
+            <div class="inline-block mx-2 whitespace-nowrap">
+                <div class="rounded-full bg-zinc-800/70 backdrop-blur-sm border border-zinc-700/50 hover:border-indigo-500/50 transition-all duration-300 px-4 py-2 flex items-center gap-2">
+                    <img src="{{ skill.icon_svg }}" alt="{{ skill.title }}" class="h-5">
+                    <span class="font-medium text-sm">{{ skill.title }}</span>
+                </div>
+            </div>
+        {% endfor %}
+        <!-- Duplicate skills for infinite scrolling effect -->
+        {% for skill in skills_middle %}
+            <div class="inline-block mx-2 whitespace-nowrap">
+                <div class="rounded-full bg-zinc-800/70 backdrop-blur-sm border border-zinc-700/50 hover:border-indigo-500/50 transition-all duration-300 px-4 py-2 flex items-center gap-2">
+                    <img src="{{ skill.icon_svg }}" alt="{{ skill.title }}" class="h-5">
+                    <span class="font-medium text-sm">{{ skill.title }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Bottom Carousel: Right to Left -->
+<div class="overflow-hidden-skills w-full relative">
+    <div class="skills-carousel flex whitespace-nowrap py-2">
+        {% for skill in skills_bottom %}
+            <div class="inline-block mx-2 whitespace-nowrap">
+                <div class="rounded-full bg-zinc-800/70 backdrop-blur-sm border border-zinc-700/50 hover:border-indigo-500/50 transition-all duration-300 px-4 py-2 flex items-center gap-2">
+                    <img src="{{ skill.icon_svg }}" alt="{{ skill.title }}" class="h-5">
+                    <span class="font-medium text-sm">{{ skill.title }}</span>
+                </div>
+            </div>
+        {% endfor %}
+        <!-- Duplicate skills for infinite scrolling effect -->
+        {% for skill in skills_bottom %}
             <div class="inline-block mx-2 whitespace-nowrap">
                 <div class="rounded-full bg-zinc-800/70 backdrop-blur-sm border border-zinc-700/50 hover:border-indigo-500/50 transition-all duration-300 px-4 py-2 flex items-center gap-2">
                     <img src="{{ skill.icon_svg }}" alt="{{ skill.title }}" class="h-5">

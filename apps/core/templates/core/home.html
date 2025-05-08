@@ -202,6 +202,61 @@
 }
 </script>
 
+<style>
+    @keyframes scroll {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-50%);
+        }
+    }
+
+    @keyframes scroll-reverse {
+        0% {
+            transform: translateX(-50%);
+        }
+        100% {
+            transform: translateX(0);
+        }
+    }
+
+    .skills-carousel {
+        display: flex;
+        animation: scroll 25s linear infinite;
+        will-change: transform;
+    }
+
+    .skills-carousel-reverse {
+        display: flex;
+        animation: scroll-reverse 25s linear infinite;
+        will-change: transform;
+    }
+
+    .skills-carousel:hover,
+    .skills-carousel-reverse:hover {
+        animation-play-state: paused; /* Pause animation on hover */
+    }
+
+    .skills-carousel > div,
+    .skills-carousel-reverse > div {
+        flex: 0 0 auto; /* Prevent shrinking or growing */
+    }
+
+    .overflow-hidden-skills {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        mask-image: linear-gradient(
+            to right,
+            transparent,
+            white 10%,
+            white 90%,
+            transparent
+        ); /* Fade edges for a polished look */
+    }
+</style>
+
 {% endblock %}
 
 {% block content %}
@@ -259,6 +314,10 @@
             <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
             
             {% include 'projects/featured_projects.html' %}
+
+            <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
+
+            {% include 'core/skills.html' %}
 
             {% include 'career/work_together.html' %}
             

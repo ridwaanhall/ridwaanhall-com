@@ -11,7 +11,8 @@ from apps.data.certifications_data import CertificationsData
 from apps.data.services_data import ServicesData
 from apps.data.palestine_data import PalestineData
 from apps.data.privacy_policy_data import PrivacyPolicyData
-
+from apps.data.skills_data import SkillsData
+import random
 
 class BasePortfolioView(TemplateView):
     """Base view for portfolio pages with common error handling and data access."""
@@ -75,6 +76,14 @@ class HomeView(BasePortfolioView):
 
     def _get(self, request, *args, **kwargs):
         about = self.get_about_data()
+        # Get skills data and shuffle it for random display
+        skills_top = list(SkillsData.skills)
+        random.shuffle(skills_top)
+        skills_middle = list(SkillsData.skills)
+        random.shuffle(skills_middle)
+        skills_bottom = list(SkillsData.skills)
+        random.shuffle(skills_bottom)
+        
         context = {
             'view': True,
             'view_certs': True,
@@ -83,14 +92,16 @@ class HomeView(BasePortfolioView):
             'education': [edu for edu in EducationData.education if edu.get('is_last')],
             'experiences': [exp for exp in ExperiencesData.experiences if exp.get('is_current')],
             'services': ServicesData.services,
-            'palestine': PalestineData.palestine,
+            'skills_top': skills_top,
+            'skills_middle': skills_middle,
+            'skills_bottom': skills_bottom,
             'about': about,
             'certifications': CertificationsData.certifications,
             'seo': self.get_seo_data(
-                title=f"Hey, I'm {about['name']} - Welcome to My World",
-                description=f"This is {about['username']}'s corner of the internet! {about.get('short_description', 'A place where I share my projects, ideas, and journey.')}",
-                keywords=f"{about['username']}, portfolio, coder, projects, blogs, skills, learning, ai engineer, web developer, machine learning engineer, dbs foundation coding camp mentor",
-                twitter_card='summary_large_image'
+            title=f"Hey, I'm {about['name']} - Welcome to My World",
+            description=f"This is {about['username']}'s corner of the internet! {about.get('short_description', 'A place where I share my projects, ideas, and journey.')}",
+            keywords=f"{about['username']}, portfolio, coder, projects, blogs, skills, learning, ai engineer, web developer, machine learning engineer, dbs foundation coding camp mentor",
+            twitter_card='summary_large_image'
             ),
         }
         return render(request, self.template_name, context)

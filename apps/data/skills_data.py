@@ -50,4 +50,8 @@ class SkillsData:
         {"title": "Streamlit", "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/streamlit/streamlit-original.svg"},
         {"title": "FastAPI", "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg"},
         {"title": "Selenium", "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/selenium/selenium-original.svg"},
+        {"title": "PyPi", "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pypi/pypi-original.svg"},
+        {"title": "WooCommerce", "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/woocommerce/woocommerce-original.svg"},
+        {"title": "WordPress", "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wordpress/wordpress-plain.svg"},
+        {"title": "SQLAlchemy", "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg"},
     ]

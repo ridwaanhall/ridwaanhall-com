@@ -45,7 +45,7 @@ class ExperiencesData:
             "period": "Feb 2025 - Present",
             "employment_type": employment_types["pt"],
             "location_type": location_types["rm"],
-            "location": "Bandung, Indonesia",
+            "location": "Bandung, Indonesia 🇮🇩",
             "is_current": True,
             "responsibilities": [
                 "Guiding 25 students (Feb-Jul 2025) with weekly sessions to hit an 88% grad rate—let’s get ‘em there!",
@@ -63,7 +63,7 @@ class ExperiencesData:
             "period": "Dec 2024 - Jan 2025",
             "employment_type": employment_types["ap"],
             "location_type": location_types["rm"],
-            "location": "Bandung, Indonesia",
+            "location": "Bandung, Indonesia 🇮🇩",
             "is_current": False,
             "responsibilities": [
                 "Got the lowdown on ML Ops to build slick, scalable ML systems.",
@@ -79,7 +79,7 @@ class ExperiencesData:
             "period": "Oct 2024 - Dec 2024",
             "employment_type": employment_types["ap"],
             "location_type": location_types["rm"],
-            "location": "Bandung, Indonesia",
+            "location": "Bandung, Indonesia 🇮🇩",
             "is_current": False,
             "responsibilities": [
                 "Cooked up ML systems for dope projects—full-on problem-solving mode.",
@@ -98,7 +98,7 @@ class ExperiencesData:
             "period": "Jul 2024 - Sep 2024",
             "employment_type": employment_types["ap"],
             "location_type": location_types["rm"],
-            "location": "Bandung, Indonesia",
+            "location": "Bandung, Indonesia 🇮🇩",
             "is_current": False,
             "responsibilities": [
                 "Built beefy neural nets with TensorFlow and Keras—deep learning FTW!",
@@ -117,7 +117,7 @@ class ExperiencesData:
             "period": "Jan 2024 - Jun 2024",
             "employment_type": employment_types["ap"],
             "location_type": location_types["rm"],
-            "location": "Bandung, Indonesia",
+            "location": "Bandung, Indonesia 🇮🇩",
             "is_current": False,
             "responsibilities": [
                 "Kicked off with data viz in Google Sheets—charts never looked so good.",
@@ -134,7 +134,7 @@ class ExperiencesData:
             "period": "Jan 2023 - Present",
             "employment_type": employment_types["ft"],
             "location_type": location_types["hy"],
-            "location": "Yogyakarta, Indonesia",
+            "location": "Yogyakarta, Indonesia 🇮🇩",
             "is_current": True,
             "responsibilities": [
                 "Living that AI life, building with Django, TensorFlow, PyTorch, and more—full-stack geek mode!"
@@ -149,7 +149,7 @@ class ExperiencesData:
             "period": "Sep 2021 - Present",
             "employment_type": employment_types["pt"],
             "location_type": location_types["rm"],
-            "location": "Surakarta, Indonesia",
+            "location": "Surakarta, Indonesia 🇮🇩",
             "is_current": True,
             "responsibilities": [
                 "Wrangled data for 200+ alumni with slick filtering and dope graphs.",
@@ -166,7 +166,7 @@ class ExperiencesData:
             "period": "Apr 2024 - May 2024",
             "employment_type": employment_types["in"],
             "location_type": location_types["rm"],
-            "location": "New York, USA",
+            "location": "New York, USA 🇺🇸",
             "is_current": False,
             "responsibilities": [
                 "Led 100+ interns, keeping everyone on track like a pro.",
@@ -183,7 +183,7 @@ class ExperiencesData:
             "period": "Apr 2024 - May 2024",
             "employment_type": employment_types["in"],
             "location_type": location_types["rm"],
-            "location": "New York, USA",
+            "location": "New York, USA 🇺🇸",
             "is_current": False,
             "responsibilities": [
                 "Jammed with the crew weekly to plan projects and swap ideas.",
@@ -200,7 +200,7 @@ class ExperiencesData:
             "period": "Feb 2024 - Mar 2024",
             "employment_type": employment_types["in"],
             "location_type": location_types["rm"],
-            "location": "New York, USA",
+            "location": "New York, USA 🇺🇸",
             "is_current": False,
             "responsibilities": [
                 "Joined late-night team huddles (11:30 PM EST) to debug and plan—grind mode!",
@@ -218,7 +218,7 @@ class ExperiencesData:
             "period": "Apr 2024 - May 2024",
             "employment_type": employment_types["in"],
             "location_type": location_types["rm"],
-            "location": "Islamabad, Pakistan",
+            "location": "Islamabad, Pakistan 🇵🇰",
             "is_current": False,
             "responsibilities": [
                 "Built predictive models with Python and Scikit-Learn—data’s my playground.",
@@ -234,7 +234,7 @@ class ExperiencesData:
             "period": "Jan 2024 - Jan 2024",
             "employment_type": employment_types["in"],
             "location_type": location_types["rm"],
-            "location": "Karnataka, India",
+            "location": "Karnataka, India 🇮🇳",
             "is_current": False,
             "responsibilities": [
                 "Tackled a phishing domain detection project—cybersecurity meets ML!",
@@ -250,7 +250,7 @@ class ExperiencesData:
             "period": "Sep 2019 - Sep 2020",
             "employment_type": employment_types["ft"],
             "location_type": location_types["on"],
-            "location": "Surakarta, Indonesia",
+            "location": "Surakarta, Indonesia 🇮🇩",
             "is_current": False,
             "responsibilities": [
                 "Rallied 50 boarding school students to teach in local villages—community vibes!",

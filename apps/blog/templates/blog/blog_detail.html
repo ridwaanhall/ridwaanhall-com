@@ -166,7 +166,11 @@
             <div class="prose prose-sm sm:prose prose-md lg:prose-lg prose-invert max-w-none mb-8 md:mb-10">
                 {% if blog.content %}
                     {% for paragraph in blog.content %}
-                    <p class="text-zinc-300 mb-2">{{ paragraph|safe }}</p>
+                        {% if paragraph|slice:":1" == "<" %}
+                            {{ paragraph|safe }}
+                        {% else %}
+                            <p class="text-zinc-300 mb-2">{{ paragraph|safe }}</p>
+                        {% endif %}
                     {% endfor %}
                 {% endif %}
             </div>

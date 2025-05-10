@@ -5,9 +5,7 @@
         <div class="group rounded-xl shadow-lg overflow-hidden p-2 sm:p-3 md:p-4 border border-zinc-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20 backdrop-blur-sm">
             <div class="flex flex-col md:flex-row md:items-start gap-3 md:gap-4">
                 <div class="flex-shrink-0 flex justify-center md:justify-start">
-                    <div
-                        class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-br from-zinc-900/60 to-indigo-900/40 rounded-lg flex items-center justify-center shadow-lg border border-indigo-700/30 backdrop-blur-sm transform transition-all duration-300 group-hover:scale-105"
-                    >
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-br from-zinc-900/60 to-indigo-900/40 rounded-lg flex items-center justify-center shadow-lg border border-indigo-700/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
                         {% if certification.logo %} {% if certification.website %}
                         <a href="{{ certification.website }}" target="_blank" rel="noopener" aria-label="Visit {{ certification.institution }}" class="hover:scale-110 transition-transform duration-300">
                             <img src="{{ certification.logo }}" alt="{{ certification.institution }} logo" class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full shadow-md object-cover" />

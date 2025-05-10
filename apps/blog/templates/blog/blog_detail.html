@@ -255,10 +255,16 @@
     </main>    
 </article>
 
+<!-- Add scroll to top button -->
+<button id="scrollToTopBtn" class="fixed bottom-6 right-6 p-3 rounded-full bg-zinc-800 hover:bg-zinc-700 shadow-lg transition-all duration-300 opacity-0 translate-y-10 z-50" aria-label="Scroll to top">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 4l8 8h-6v8h-4v-8H4l8-8z" />
+    </svg>
+</button>
 {% endblock %}
 
 {% block scripts %}
-<!-- Add clipboard functionality script with tooltip animation -->
+<!-- Existing clipboard functionality script -->
 <script>
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(function() {
@@ -276,5 +282,29 @@ function copyToClipboard(text) {
         console.error('Could not copy text: ', err);
     });
 }
+
+// Scroll to top functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+    
+    // Show button when user scrolls down 300px from the top
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+            scrollToTopBtn.classList.remove('opacity-0', 'translate-y-10');
+            scrollToTopBtn.classList.add('opacity-100', 'translate-y-0');
+        } else {
+            scrollToTopBtn.classList.remove('opacity-100', 'translate-y-0');
+            scrollToTopBtn.classList.add('opacity-0', 'translate-y-10');
+        }
+    });
+    
+    // Smooth scroll to top when button is clicked
+    scrollToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+});
 </script>
 {% endblock %}

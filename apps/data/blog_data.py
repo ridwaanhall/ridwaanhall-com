@@ -176,7 +176,7 @@ class BlogData:
             "is_featured": False
         },
         {
-            "id": 4,
+            "id": 3,
             "title": "Hacking Your Dev Life: Time Management Tricks",
             "description": "Wanna crush code and still have a life? Here's how to stay productive without burning out.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/effective_time_management_for_developers.webp",
@@ -205,7 +205,7 @@ class BlogData:
             "is_featured": False
         },
         {
-            "id": 5,
+            "id": 4,
             "title": "Why Lailatul Qadr Is the Ultimate Night of Blessings",
             "description": "Get the lowdown on Lailatul Qadr and why it's the most epic night in Islam.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/lailatul_qadr_night.webp",
@@ -231,7 +231,7 @@ class BlogData:
             "is_featured": False
         },
         {
-            "id": 6,
+            "id": 5,
             "title": "PyTorch vs. TensorFlow: Pick Your AI Fight Club",
             "description": "TensorFlow or PyTorch? Let's break down the big dogs of deep learning and find your perfect match.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/pytorch_vs_tensorflow.webp",
@@ -261,7 +261,7 @@ class BlogData:
             "is_featured": False
         },
         {
-            "id": 7,
+            "id": 6,
             "title": "Eid al-Fitr: Celebrating the Prophet's Way",
             "description": "Dive into how Prophet Muhammad (PBUH) rocked Eid al-Fitr with joy, faith, and community love.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/eid_al_fitr_prophetic_way.webp",
@@ -290,7 +290,7 @@ class BlogData:
             "is_featured": False
         },
         {
-            "id": 8,
+            "id": 7,
             "title": "Nail Your Git Game with Conventional Commits",
             "description": "Make your commit messages pop with style and clarity—tell your code's story like a pro!",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/conventional_commits_guide.webp",
@@ -343,77 +343,7 @@ class BlogData:
             "is_featured": False
         },
         {
-            "id": 7,
-            "title": "Eid al-Fitr: Celebrating the Prophet's Way",
-            "description": "Dive into how Prophet Muhammad (PBUH) rocked Eid al-Fitr with joy, faith, and community love.",
-            "image_url": f"{settings.BLOG_BASE_IMG_URL}/eid_al_fitr_prophetic_way.webp",
-            "img_name": "eid_al_fitr_prophetic_way.webp",
-            "created_at": datetime.strptime("2025-03-31T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-            "author": "Ridwan Halim",
-            "username": "ridwaanhall",
-            "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
-            "content": [
-                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Eid al-Fitr represents one of Islam's most joyous celebrations, marking the conclusion of Ramadan's month-long fast. Understanding how Prophet Muhammad (peace be upon him) celebrated this occasion provides valuable guidance for Muslims seeking to honor this special day according to authentic traditions.</p>",
-                
-                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>The Prophetic Spirit of Eid Celebration</h2>",
-                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Eid al-Fitr back in Prophet Muhammad's (PBUH) day was all about gratitude and good times. It kicked off with a big group prayer outdoors, followed by a sermon that lit up everyone's faith and unity. This communal celebration emphasized the importance of collective joy and spiritual renewal.</p>",
-                
-                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Spiritual Practices and Traditions</h2>",
-                "<p class='mb-4 text-sm md:text-base lg:text-lg'>The Prophet pushed takbir—glorifying Allah from Eid's eve till prayer time—to keep the thankful vibes flowing. Zakat al-Fitr was a must, making sure everyone, especially the less fortunate, could join the party. These practices ensured that spiritual devotion remained central to the celebration.</p>",
-                
-                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Personal Preparations and Community Building</h2>",
-                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Before heading out, he'd munch on dates to mark the end of fasting—a small move with big meaning. Eid was also about patching things up, forgiving, and spreading kindness to make the community tight. The Prophet emphasized that personal joy should extend to strengthening bonds with family, friends, and the broader community.</p>",
-                
-                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Implementing Prophetic Eid Practices Today</h2>",
-                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Contemporary Muslims can honor the Prophetic tradition by maintaining the balance between celebration and spiritual significance. This includes participating in community prayers, ensuring charitable giving reaches those in need before the Eid prayer, wearing one's best clothes, and fostering an atmosphere of reconciliation and happiness that extends beyond one's immediate circle.</p>"
-            ],
-            "tags": ["Eid al-Fitr", "Prophet Muhammad", "Islam", "Community"],
-            "is_featured": False
-        },
-        {
             "id": 8,
-            "title": "Nail Your Git Game with Conventional Commits",
-            "description": "Make your commit messages pop with style and clarity—tell your code's story like a pro!",
-            "image_url": f"{settings.BLOG_BASE_IMG_URL}/conventional_commits_guide.webp",
-            "img_name": "conventional_commits_guide.webp",
-            "created_at": datetime.strptime("2025-04-04T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-            "author": "Ridwan Halim",
-            "username": "ridwaanhall",
-            "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
-            "is_featured": True,
-            "content": [
-                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Version control is the backbone of modern software development, and well-structured commit messages are essential for maintaining clean, understandable project histories. Conventional Commits provide a standardized format that enhances collaboration, automates versioning, and makes codebases more maintainable for teams of all sizes.</p>",
-                
-                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Understanding Conventional Commits</h2>",
-                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Commits aren't just logs—they're your code's epic saga. Conventional Commits keep it clean and fun. Here's the playbook to slay it:</p>",
-                
-                "<h3 class='text-lg md:text-xl font-bold mt-3 md:mt-4 mb-2'>Core Commit Types and Their Usage</h3>",
-                "<ul class='list-disc pl-5'>",
-                "<li><span class='font-bold text-blue-500'>✨ feat:</span> Drop something new and shiny! Like: <span class='font-mono text-blue-500'>feat: add user login flow</span></li>",
-                "<li><span class='font-bold text-red-500'>🛠️ fix:</span> Squash bugs like a boss. Like: <span class='font-mono text-red-500'>fix: patch login glitch</span></li>",
-                "<li><span class='font-bold text-yellow-500'>📝 docs:</span> Make your docs sparkle. Like: <span class='font-mono text-yellow-500'>docs: beef up API guide</span></li>",
-                "<li><span class='font-bold text-purple-500'>🎨 style:</span> Keep it pretty—no logic changes. Like: <span class='font-mono text-purple-500'>style: tidy up CSS</span></li>",
-                "<li><span class='font-bold text-orange-500'>🔄 refactor:</span> Revamp code for max vibes. Like: <span class='font-mono text-orange-500'>refactor: streamline DB calls</span></li>",
-                "<li><span class='font-bold text-pink-500'>🧪 test:</span> Lock in those tests. Like: <span class='font-mono text-pink-500'>test: add auth unit tests</span></li>",
-                "<li><span class='font-bold text-green-500'>⚡ perf:</span> Speed things up—wow factor! Like: <span class='font-mono text-green-500'>perf: optimize image load</span></li>",
-                "<li><span class='font-bold text-indigo-500'>🤖 ci:</span> Keep CI humming. Like: <span class='font-mono text-indigo-500'>ci: tweak GitHub Actions</span></li>",
-                "<li><span class='font-bold text-zinc-500'>🛠️ build:</span> Solidify your setup. Like: <span class='font-mono text-zinc-500'>build: update webpack</span></li>",
-                "<li><span class='font-bold text-teal-500'>🚧 chore:</span> Handle the grunt work. Like: <span class='font-mono text-teal-500'>chore: bump dependencies</span></li>",
-                "<li><span class='font-bold text-rose-500'>⏪ revert:</span> Hit rewind when needed. Like: <span class='font-mono text-rose-500'>revert: undo buggy commit</span></li>",
-                "</ul>",
-                
-                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Benefits of Conventional Commits</h2>",
-                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Adopting Conventional Commits offers numerous advantages for development teams. The standardized format enables automatic changelog generation, simplifies semantic versioning decisions, and provides clear context for code changes. This approach makes repository histories more navigable and helps new team members understand project evolution more quickly.</p>",
-                
-                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Implementing in Your Workflow</h2>",
-                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Getting started with Conventional Commits is straightforward. Tools like commitlint, husky, and standard-version can enforce commit message standards and automate version management. For teams, consider documenting the chosen convention in your project's contributing guidelines and incorporating commit message validation into your CI pipeline.</p>"
-            ],
-            "tags": ["Git", "Commits", "Coding Tips", "Dev Workflow"],
-        },
-        {
-            "id": 9,
             "title": "How I Picked the Perfect Domain for My Site",
             "description": "The wild ride of choosing between .dev, .com, and .id for ridwaanhall.com—here's the tea!",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/choosing_domain.webp",
@@ -513,7 +443,7 @@ class BlogData:
             "is_featured": True
         },
         {
-            "id": 10,
+            "id": 9,
             "title": "Why I'm Coding for Gaza's Truth",
             "description": "From pesantren to Python, here's why I'm hustling to amplify Gaza's crisis with facts, faith, and a call to act—no noise, just heart.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/gaza_crisis.webp",
@@ -545,7 +475,7 @@ class BlogData:
             "is_featured": True
         },
         {
-            "id": 11,
+            "id": 10,
             "title": "What's Good with Brainrot in 2025?",
             "description": "Brainrot's takin' over the internet in 2025, and it's WILD! From cursed memes to AI vids and slang that's got no chill, here's the tea on what brainrot is and how to not lose your mind in the chaos.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/brainrot_explained_2025.webp",
@@ -580,7 +510,7 @@ class BlogData:
             "is_featured": False
         },
         {
-            "id": 12,
+            "id": 11,
             "title": "Predicting Gold Prices in Indonesia: AI's Golden Touch",
             "description": "Gold price forecasting in Indonesia just got smarter! Dive into how AI-powered LSTM models are transforming historical data into actionable insights for investors and analysts.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/gold_price_prediction.webp",
@@ -615,7 +545,7 @@ class BlogData:
             "is_featured": True
         },
         {
-            "id": 13,
+            "id": 12,
             "title": "Complete Guide to Modern Web Development in 2025",
             "description": "Master modern web development with our comprehensive guide covering frontend frameworks, backend technologies, and DevOps practices for building powerful web applications.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/modern_web_dev_guide.webp",
@@ -650,7 +580,7 @@ class BlogData:
             "is_featured": False
         },
         {
-            "id": 14,
+            "id": 13,
             "title": "Top 6 Asian Countries with Better Governance and Religious Harmony",
             "description": "Exploring Asian nations with strong governance, low corruption, and religious tolerance for Indonesians seeking alternatives.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/asian_nations_comparison.webp",

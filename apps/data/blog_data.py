@@ -509,7 +509,7 @@ class BlogData:
                 
                 "<p class='mb-4 text-sm md:text-base lg:text-lg'>What domain extension did you choose for your website, and why? Share your experience in the comments below!</p>"
             ],
-            "tags": ["Domains", ".com", ".dev", ".id", "Web Dev", "Branding", "Domain Selection", "Website Development", "Personal Branding", "Online Identity"],
+            "tags": ["Domains", "Personal Branding", ".com", ".dev", ".id", "Web Dev", "Branding", "Domain Selection", "Website Development", "Online Identity"],
             "is_featured": True
         },
         {

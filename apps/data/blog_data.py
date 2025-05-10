@@ -9,28 +9,118 @@ class BlogData:
         {
             "id": 1,
             "title": "Python 101: Your Chill Guide to Getting Started",
-            "description": "New to coding? Let’s dive into why Python’s the coolest way to kick off your programming adventure!",
+            "description": "New to coding? Let's dive into why Python's the coolest way to kick off your programming adventure!",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/start_with_python.webp",
             "img_name": "start_with_python.webp",
             "created_at": datetime.strptime("2025-03-24T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-05-10T13:13:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             "author": "Ridwan Halim",
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "content": [
-                "Python’s like the Swiss Army knife of coding—simple, versatile, and straight-up fun. Whether you’re dreaming of building websites, crunching data, or automating boring tasks like renaming 100 files, Python’s got your back with a vibe that’s easy to pick up.",
-                "Why’s it so dope? No cryptic syntax like some other languages—just clean, readable code. You can write a script to scrape a website or analyze your Spotify playlist in a weekend. Big shots like Google and Netflix use it, so you’re in good company.",
-                "Ready to jump in? Head to python.org and grab the latest version (3.12 as of now—stay current!). Start with a simple ‘Hello, World!’ to get comfy. Then play with loops (like `for i in range(5)`), lists (`my_stuff = ['pizza', 'code', 'vibes']`), and functions to feel the flow.",
-                "Stuck? The Python community’s your squad—Reddit’s r/learnpython, Stack Overflow, or free tutorials on YouTube are gold. Try coding a basic calculator or a to-do list to level up. Pro tip: use VS Code with the Python extension for a smooth ride.",
-                "Next steps? Dip into libraries like `pandas` for data or `requests` for web stuff. Python’s a gateway to web dev, AI, or even hacking (ethically, of course!). Keep tinkering, and you’ll be building cool stuff in no time."
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Python's like the Swiss Army knife of coding—simple, versatile, and straight-up fun. Whether you're dreaming of building websites, crunching data, or automating boring tasks like renaming 100 files, Python's got your back with a vibe that's easy to pick up. With its readable syntax and powerful capabilities, Python has become the go-to language for beginners and professionals alike in 2025.</p>",
+
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Why Python Stands Out in the Coding Universe</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Why's it so dope? No cryptic syntax like some other languages—just clean, readable code that almost looks like plain English. You can write a script to scrape a website or analyze your Spotify playlist in a weekend. Big shots like Google, Netflix, and Instagram use it extensively, so you're in good company.</p>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Python's strengths include:</p>",
+                "<ul class='list-disc pl-6 mb-4 text-sm md:text-base lg:text-lg'>",
+                "<li><strong>Readability:</strong> Its clear syntax means less time debugging and more time creating</li>",
+                "<li><strong>Versatility:</strong> From web development to AI, Python handles it all</li>",
+                "<li><strong>Massive community:</strong> Over 8.2 million developers worldwide as of 2025</li>",
+                "<li><strong>Rich libraries:</strong> Pre-built code for almost anything you want to build</li>",
+                "</ul>",
+
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Getting Started with Python: Your First Steps</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Ready to jump in? Head to <a href=\"https://python.org\" class=\"text-blue-600 hover:underline\">python.org</a> and grab the latest version (3.12 as of now—stay current!). The installation is straightforward on Windows, Mac, or Linux, taking just a few minutes.</p>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Start with this classic \"Hello, World!\" to get comfy:</p>",
+                "<pre class=\"bg-zinc-800 p-3 rounded-lg mb-4 overflow-x-auto\"><code class=\"language-python\">print(\"Hello, World! I'm coding in Python!\")</code></pre>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Then play with these fundamental concepts:</p>",
+                "<ul class='list-disc pl-6 mb-4 text-sm md:text-base lg:text-lg'>",
+                "<li><strong>Variables:</strong> <code>name = \"Python Newbie\"</code></li>",
+                "<li><strong>Loops:</strong> <code>for i in range(5): print(f\"Count: {i}\")</code></li>",
+                "<li><strong>Lists:</strong> <code>my_stuff = ['pizza', 'code', 'vibes']</code></li>",
+                "<li><strong>Conditional statements:</strong> <code>if score > 80: print(\"You rock!\")</code></li>",
+                "</ul>",
+
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Setting Up Your Python Environment</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>While you can code Python in simple text editors, using the right tools makes learning smoother. Here are some must-have setups:</p>",
+                "<ul class='list-disc pl-6 mb-4 text-sm md:text-base lg:text-lg'>",
+                "<li><strong>VS Code:</strong> Free, powerful editor with awesome Python extensions</li>",
+                "<li><strong>PyCharm:</strong> More feature-rich IDE if you're getting serious</li>",
+                "<li><strong>Jupyter Notebooks:</strong> Perfect for data science experimentation</li>",
+                "<li><strong>Virtual environments:</strong> Use <code>venv</code> to keep your projects tidy</li>",
+                "</ul>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Pro tip: Install the Python extension in VS Code for syntax highlighting, code completion, and debugging tools that make coding way more enjoyable.</p>",
+
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Community and Learning Resources</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Stuck? The Python community's your squad—Reddit's <a href=\"https://www.reddit.com/r/learnpython/\" class=\"text-blue-600 hover:underline\">r/learnpython</a>, Stack Overflow, or free tutorials on YouTube are gold. The Python community is known for being one of the most welcoming in tech.</p>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Check out these beginner-friendly resources:</p>",
+                "<ul class='list-disc pl-6 mb-4 text-sm md:text-base lg:text-lg'>",
+                "<li><strong>Automate the Boring Stuff with Python</strong> - Free online book that teaches practical skills</li>",
+                "<li><strong>Codecademy's Python Course</strong> - Interactive lessons with immediate feedback</li>",
+                "<li><strong>Python Discord Server</strong> - Real-time help from friendly developers</li>",
+                "<li><strong>freeCodeCamp's Python videos</strong> - Comprehensive tutorials on YouTube</li>",
+                "</ul>",
+
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Your First Python Projects</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Theory's cool, but building stuff is where the real learning happens. Start with these beginner-friendly projects:</p>",
+                "<ul class='list-disc pl-6 mb-4 text-sm md:text-base lg:text-lg'>",
+                "<li><strong>Command-line calculator:</strong> Build a simple tool that can add, subtract, multiply and divide</li>",
+                "<li><strong>To-do list app:</strong> Create a program that adds, deletes, and shows tasks</li>",
+                "<li><strong>Random password generator:</strong> Make strong passwords with Python's random module</li>",
+                "<li><strong>Weather checker:</strong> Use APIs to fetch and display current weather conditions</li>",
+                "</ul>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Here's a snippet to get you started with a simple to-do list:</p>",
+                "<pre class=\"bg-zinc-800 p-3 rounded-lg mb-4 overflow-x-auto\"><code class=\"language-python\">todos = []\n\nwhile True:\n    action = input(\"Type 'add', 'view', 'remove', or 'quit': \").lower()\n    \n    if action == 'add':\n        task = input(\"Enter a task: \")\n        todos.append(task)\n        print(f\"Added: {task}\")\n    elif action == 'view':\n        for i, task in enumerate(todos, 1):\n            print(f\"{i}. {task}\")\n    elif action == 'remove':\n        if todos:\n            idx = int(input(\"Enter task number to remove: \")) - 1\n            if 0 <= idx < len(todos):\n                removed = todos.pop(idx)\n                print(f\"Removed: {removed}\")\n        else:\n            print(\"No tasks to remove!\")\n    elif action == 'quit':\n        break</code></pre>",
+
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Taking Your Python Skills Further</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Once you've got the basics down, it's time to level up. Explore these powerful Python libraries that open new worlds:</p>",
+                "<ul class='list-disc pl-6 mb-4 text-sm md:text-base lg:text-lg'>",
+                "<li><strong>pandas:</strong> Data analysis made simple with DataFrame structures</li>",
+                "<li><strong>requests:</strong> Fetch data from websites and APIs with just a few lines of code</li>",
+                "<li><strong>Flask/Django:</strong> Build web applications from simple APIs to full-fledged sites</li>",
+                "<li><strong>Matplotlib/Seaborn:</strong> Create beautiful data visualizations</li>",
+                "<li><strong>TensorFlow/PyTorch:</strong> Dip your toes into machine learning and AI</li>",
+                "</ul>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>By 2025, Python skills in data science, AI, and automation are among the highest-paid in tech. A solid Python foundation can open doors to careers in:</p>",
+                "<ul class='list-disc pl-6 mb-4 text-sm md:text-base lg:text-lg'>",
+                "<li>Data Science and Analytics</li>",
+                "<li>Web Development</li>",
+                "<li>Machine Learning Engineering</li>",
+                "<li>DevOps and Automation</li>",
+                "<li>Cybersecurity (ethical hacking)</li>",
+                "</ul>",
+
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Common Beginner Pitfalls and How to Avoid Them</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Everyone hits roadblocks when learning Python. Here are some common ones and how to navigate them:</p>",
+                "<ul class='list-disc pl-6 mb-4 text-sm md:text-base lg:text-lg'>",
+                "<li><strong>Indentation errors:</strong> Python uses spaces to determine code blocks. Be consistent with your spacing.</li>",
+                "<li><strong>Forgetting colons:</strong> Always add a colon after if statements, loops, and function definitions.</li>",
+                "<li><strong>Zero-indexing confusion:</strong> Remember that the first item in a list is at index 0, not 1.</li>",
+                "<li><strong>Tutorial paralysis:</strong> Don't get stuck in an endless loop of tutorials—build real projects!</li>",
+                "</ul>",
+
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Python Community Events and Networking</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Coding gets way more fun when you connect with other Pythonistas! Check out:</p>",
+                "<ul class='list-disc pl-6 mb-4 text-sm md:text-base lg:text-lg'>",
+                "<li><strong>PyCon:</strong> The biggest annual Python conference with events worldwide</li>",
+                "<li><strong>Local Python Meetups:</strong> Find groups in your city on Meetup.com</li>",
+                "<li><strong>Hackathons:</strong> Put your skills to the test in weekend coding competitions</li>",
+                "<li><strong>Open Source Projects:</strong> Contribute to Python libraries and learn from the community</li>",
+                "</ul>",
+
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Conclusion: Your Python Journey Starts Now</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Python isn't just a programming language—it's a ticket to building cool stuff, solving problems, and maybe even landing that tech job you've been eyeing. The beauty of Python is that you can start creating useful programs within days, not months.</p>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Remember, the best way to learn is by doing. Open up your code editor today, write that first line, and join the millions who've discovered the joy of Python programming. Your future self will thank you!</p>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Have questions about getting started with Python? Drop a comment below or hit me up on Twitter <a href=\"https://twitter.com/ridwaanhall\" class=\"text-blue-600 hover:underline\">@ridwaanhall</a>. Happy coding!</p>"
             ],
             "tags": ["Python", "Coding", "Newbies"],
             "is_featured": False
         },
         {
             "id": 2,
-            "title": "Whipping Up Web Apps with Django’s Magic",
-            "description": "See how Django’s all-in-one toolkit makes building secure, speedy web apps a total breeze.",
+            "title": "Whipping Up Web Apps with Django's Magic",
+            "description": "See how Django's all-in-one toolkit makes building secure, speedy web apps a total breeze.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/building_web_applications_with_django.webp",
             "img_name": "building_web_applications_with_django.webp",
             "created_at": datetime.strptime("2025-03-24T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -39,11 +129,19 @@ class BlogData:
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "content": [
-                "Django’s the Python framework that’s like having a superpower for web dev. It’s got everything—security, speed, and a vibe that lets you focus on coding your app instead of wrestling with configs. Think of it as the cheat code for building sites like OpenShop (yep, like that e-commerce API we’ve geeked out over!).",
-                "First, fire up a project with `django-admin startproject myapp`. Boom—you’ve got a skeleton ready to roll. Create an app (`python manage.py startapp shop`) to handle your logic, like products or users. Django’s ORM is a beast: define a `Product` model with fields like `name` and `price`, and it’ll handle the database heavy lifting.",
-                "Views are where the fun’s at—map a URL (say, `/products/`) to a function or class that pulls data and renders a template. Speaking of templates, Django’s got a slick system to keep your HTML clean. Throw in the built-in admin panel (`/admin/`), and you’re managing data like a pro without writing extra code.",
-                "Security? Django’s got your back with CSRF protection and user auth out of the box. Need an API? Pair it with Django REST Framework (like we did for OpenShop) for JSON endpoints that scream speed. Scalability? It’s battle-tested—Instagram and Pinterest run on it.",
-                "Wanna try it? Build a simple blog: set up models for posts, create views to list and detail them, and style it with Bootstrap. Debug with `python manage.py runserver` and tweak as you go. Trust me, once you go Django, you won’t wanna code raw again."
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Django's the Python framework that's like having a superpower for web dev. It's got everything—security, speed, and a vibe that lets you focus on coding your app instead of wrestling with configs. Think of it as the cheat code for building sites like OpenShop (yep, like that e-commerce API we've geeked out over!).</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Getting Started with Django</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>First, fire up a project with <code>django-admin startproject myapp</code>. Boom—you've got a skeleton ready to roll. Create an app (<code>python manage.py startapp shop</code>) to handle your logic, like products or users. Django's ORM is a beast: define a <code>Product</code> model with fields like <code>name</code> and <code>price</code>, and it'll handle the database heavy lifting.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Views and Templates: The Core of Django</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Views are where the fun's at—map a URL (say, <code>/products/</code>) to a function or class that pulls data and renders a template. Speaking of templates, Django's got a slick system to keep your HTML clean. Throw in the built-in admin panel (<code>/admin/</code>), and you're managing data like a pro without writing extra code.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Django's Security and Scalability</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Security? Django's got your back with CSRF protection and user auth out of the box. Need an API? Pair it with Django REST Framework (like we did for OpenShop) for JSON endpoints that scream speed. Scalability? It's battle-tested—Instagram and Pinterest run on it.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Building Your First Django Project</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Wanna try it? Build a simple blog: set up models for posts, create views to list and detail them, and style it with Bootstrap. Debug with <code>python manage.py runserver</code> and tweak as you go. Trust me, once you go Django, you won't wanna code raw again.</p>"
             ],
             "tags": ["Django", "Web Dev", "Python"],
             "is_featured": False
@@ -51,7 +149,7 @@ class BlogData:
         {
             "id": 3,
             "title": "Neural Nets Made Easy with TensorFlow & Keras",
-            "description": "Ready to build AI that sees and thinks? Let’s get rolling with TensorFlow and Keras for some deep learning fun!",
+            "description": "Ready to build AI that sees and thinks? Let's get rolling with TensorFlow and Keras for some deep learning fun!",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/deep_learning_with_tensorflow_and_keras.webp",
             "img_name": "deep_learning_with_tensorflow_and_keras.webp",
             "created_at": datetime.strptime("2025-03-24T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -60,11 +158,19 @@ class BlogData:
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "content": [
-                "TensorFlow and Keras are like the Batman and Robin of deep learning—TensorFlow’s the heavy-duty engine, Keras is the slick API making neural nets feel like a breeze. Together, they power AI that can spot cats in photos or predict your next binge-watch.",
-                "Let’s build something real: a neural network to classify handwritten digits (MNIST dataset—classic!). Start with `tensorflow.keras.Sequential()` to stack layers—think `Dense(128, activation='relu')` for the brains and `softmax` for the final guess. Keras makes it stupid simple to add layers like LEGO bricks.",
-                "Training’s where the magic happens. Feed your model data with `model.fit()`, tweak it with epochs (like 5-10), and watch it learn. TensorFlow’s handling the math under the hood—gradients, backprop, all that jazz. Use `model.evaluate()` to check accuracy—aim for 95%+ to flex.",
-                "Wanna go deeper? Play with CNNs for image recognition (`Conv2D`) or RNNs for text (`LSTM`). Overfitting? Toss in `Dropout(0.2)`. Debug with TensorBoard to visualize your model’s vibe. I’ve used this combo for sentiment analysis and image classifiers—it’s legit.",
-                "Kick it off with `pip install tensorflow` and Google Colab if your laptop’s not beefy. Try coding a model to guess movie genres from posters—fun and doable. Keep experimenting, and you’ll be an AI wizard before you know it."
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>TensorFlow and Keras are like the Batman and Robin of deep learning—TensorFlow's the heavy-duty engine, Keras is the slick API making neural nets feel like a breeze. Together, they power AI that can spot cats in photos or predict your next binge-watch.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Building Your First Neural Network</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Let's build something real: a neural network to classify handwritten digits (MNIST dataset—classic!). Start with <code>tensorflow.keras.Sequential()</code> to stack layers—think <code>Dense(128, activation='relu')</code> for the brains and <code>softmax</code> for the final guess. Keras makes it stupid simple to add layers like LEGO bricks.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Training and Optimization</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Training's where the magic happens. Feed your model data with <code>model.fit()</code>, tweak it with epochs (like 5-10), and watch it learn. TensorFlow's handling the math under the hood—gradients, backprop, all that jazz. Use <code>model.evaluate()</code> to check accuracy—aim for 95%+ to flex.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Advanced Deep Learning Techniques</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Wanna go deeper? Play with CNNs for image recognition (<code>Conv2D</code>) or RNNs for text (<code>LSTM</code>). Overfitting? Toss in <code>Dropout(0.2)</code>. Debug with TensorBoard to visualize your model's vibe. I've used this combo for sentiment analysis and image classifiers—it's legit.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Getting Started with TensorFlow</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Kick it off with <code>pip install tensorflow</code> and Google Colab if your laptop's not beefy. Try coding a model to guess movie genres from posters—fun and doable. Keep experimenting, and you'll be an AI wizard before you know it.</p>"
             ],
             "tags": ["TensorFlow", "Keras", "AI", "Deep Learning"],
             "is_featured": False
@@ -72,7 +178,7 @@ class BlogData:
         {
             "id": 4,
             "title": "Hacking Your Dev Life: Time Management Tricks",
-            "description": "Wanna crush code and still have a life? Here’s how to stay productive without burning out.",
+            "description": "Wanna crush code and still have a life? Here's how to stay productive without burning out.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/effective_time_management_for_developers.webp",
             "img_name": "effective_time_management_for_developers.webp",
             "created_at": datetime.strptime("2025-03-24T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -81,11 +187,19 @@ class BlogData:
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "content": [
-                "Coding’s a rush, but deadlines and bugs can make you wanna yeet your laptop. Enter time management hacks like Pomodoro—25 minutes of pure focus, 5-minute breather. It’s like a gym sesh for your brain, keeping you sharp without crashing.",
-                "Try timeboxing: give a task (say, debugging an API) 2 hours max. No perfectionism—ship it and move on. Tools like Trello or Notion keep your tasks in check; I use them to juggle ML projects and blog posts without losing my mind.",
-                "Distractions are the enemy. Mute Slack, ditch social media, and pop on lo-fi beats—focus mode activated. Set hard boundaries: no coding past 9 PM unless it’s crunch time. That way, you’ve got juice for gaming, fam, or just chilling.",
-                "Plan your week like a boss—Sunday nights, I map out big wins (like finishing a Django view) and small stuff (emails). Prioritize what moves the needle; skip the busywork. Bonus: track time with Toggl to see where you’re slacking.",
-                "Burnout’s real, so take breaks seriously—walk, stretch, or pray to reset. I’ve dodged crashes by mixing coding sprints with downtime. Test these hacks for a week, tweak what works, and you’ll be shipping code like a pro with time to spare."
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Coding's a rush, but deadlines and bugs can make you wanna yeet your laptop. Enter time management hacks like Pomodoro—25 minutes of pure focus, 5-minute breather. It's like a gym sesh for your brain, keeping you sharp without crashing.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Timeboxing for Developer Productivity</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Try timeboxing: give a task (say, debugging an API) 2 hours max. No perfectionism—ship it and move on. Tools like Trello or Notion keep your tasks in check; I use them to juggle ML projects and blog posts without losing my mind.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Eliminating Developer Distractions</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Distractions are the enemy. Mute Slack, ditch social media, and pop on lo-fi beats—focus mode activated. Set hard boundaries: no coding past 9 PM unless it's crunch time. That way, you've got juice for gaming, fam, or just chilling.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Strategic Weekly Planning</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Plan your week like a boss—Sunday nights, I map out big wins (like finishing a Django view) and small stuff (emails). Prioritize what moves the needle; skip the busywork. Bonus: track time with Toggl to see where you're slacking.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Preventing Burnout with Intentional Rest</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Burnout's real, so take breaks seriously—walk, stretch, or pray to reset. I've dodged crashes by mixing coding sprints with downtime. Test these hacks for a week, tweak what works, and you'll be shipping code like a pro with time to spare.</p>"
             ],
             "tags": ["Productivity", "Time Hacks", "Dev Life"],
             "is_featured": False
@@ -93,7 +207,7 @@ class BlogData:
         {
             "id": 5,
             "title": "Why Lailatul Qadr Is the Ultimate Night of Blessings",
-            "description": "Get the lowdown on Lailatul Qadr and why it’s the most epic night in Islam.",
+            "description": "Get the lowdown on Lailatul Qadr and why it's the most epic night in Islam.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/lailatul_qadr_night.webp",
             "img_name": "lailatul_qadr_night.webp",
             "created_at": datetime.strptime("2025-03-27T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -102,8 +216,16 @@ class BlogData:
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "content": [
-                "Lailatul Qadr, aka the Night of Power, is Islam’s holiest night—when the Quran’s first verses dropped to Prophet Muhammad. It’s like a spiritual jackpot, packed with blessings.",
-                "The Quran says it’s ‘better than a thousand months,’ so worship on this night is like stacking 83+ years of good vibes. Muslims go all-in with prayers, Quran reading, and deep reflection to soak it all up."
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Lailatul Qadr, also known as the Night of Power or Decree, stands as the most significant night in the Islamic calendar. This blessed night marks the occasion when the first verses of the Holy Quran were revealed to Prophet Muhammad (peace be upon him), forever changing the course of human spiritual history.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>The Historical Significance of Lailatul Qadr</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Lailatul Qadr, aka the Night of Power, is Islam's holiest night—when the Quran's first verses dropped to Prophet Muhammad. It's like a spiritual jackpot, packed with blessings that elevate this night above all others in the Islamic tradition.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Spiritual Rewards Beyond Measure</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>The Quran says it's 'better than a thousand months,' so worship on this night is like stacking 83+ years of good vibes. Muslims go all-in with prayers, Quran reading, and deep reflection to soak it all up, making the most of this extraordinary opportunity for spiritual connection and divine rewards.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Seeking Lailatul Qadr During Ramadan</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>While the exact date remains a blessed mystery, Islamic tradition places Lailatul Qadr within the last ten nights of Ramadan, with particular emphasis on the odd-numbered nights. This intentional ambiguity encourages believers to maximize their worship throughout these nights, seeking this matchless blessing with heightened devotion.</p>"
             ],
             "tags": ["Islam", "Ramadan", "Lailatul Qadr", "Faith"],
             "is_featured": False
@@ -111,7 +233,7 @@ class BlogData:
         {
             "id": 6,
             "title": "PyTorch vs. TensorFlow: Pick Your AI Fight Club",
-            "description": "TensorFlow or PyTorch? Let’s break down the big dogs of deep learning and find your perfect match.",
+            "description": "TensorFlow or PyTorch? Let's break down the big dogs of deep learning and find your perfect match.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/pytorch_vs_tensorflow.webp",
             "img_name": "pytorch_vs_tensorflow.webp",
             "created_at": datetime.strptime("2025-03-28T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -120,17 +242,27 @@ class BlogData:
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "content": [
-                "PyTorch and TensorFlow are the heavyweights of deep learning, but they’ve got different vibes. TensorFlow’s Google-backed, with a static graph setup that’s a beast for scaling and deploying to production—think TensorFlow Serving for servers or Lite for mobiles.",
-                "PyTorch, from Meta, is the chill coder’s choice—dynamic graphs make debugging a breeze, and its Python-y flow feels like home for research nerds. Tools like TorchServe are catching up for production, too.",
-                "TensorFlow’s got a massive toolbox: TensorBoard for slick visuals, TensorFlow.js for web apps, and optimizations that scream speed on specific hardware. PyTorch counters with fastai for quick models and GPU-friendly coding that’s a joy to tweak.",
-                "Both handle GPUs and TPUs like champs, but TensorFlow’s got a slight edge in raw performance. Pick TensorFlow for bulletproof production apps, or PyTorch if you’re tinkering and iterating like a mad scientist."
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>In the rapidly evolving field of artificial intelligence and deep learning, two frameworks have emerged as frontrunners: PyTorch and TensorFlow. These powerful tools have become essential for researchers, developers, and companies building cutting-edge AI solutions. Understanding their differences and strengths is crucial for selecting the right framework for your specific needs.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Core Philosophy and Development Approach</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>PyTorch and TensorFlow are the heavyweights of deep learning, but they've got different vibes. TensorFlow's Google-backed, with a static graph setup that's a beast for scaling and deploying to production—think TensorFlow Serving for servers or Lite for mobiles.</p>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>PyTorch, from Meta, is the chill coder's choice—dynamic graphs make debugging a breeze, and its Python-y flow feels like home for research nerds. Tools like TorchServe are catching up for production, too.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Ecosystem and Tooling Comparison</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>TensorFlow's got a massive toolbox: TensorBoard for slick visuals, TensorFlow.js for web apps, and optimizations that scream speed on specific hardware. PyTorch counters with fastai for quick models and GPU-friendly coding that's a joy to tweak.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Performance and Deployment Considerations</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Both handle GPUs and TPUs like champs, but TensorFlow's got a slight edge in raw performance. Pick TensorFlow for bulletproof production apps, or PyTorch if you're tinkering and iterating like a mad scientist.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Making Your Framework Decision</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Your choice between PyTorch and TensorFlow should align with your specific project requirements, team expertise, and deployment needs. For production-ready applications with enterprise support, TensorFlow offers robust solutions. For research projects and rapid experimentation, PyTorch's intuitive design may be more suitable. Many organizations maintain expertise in both frameworks to leverage their respective strengths.</p>"
             ],
             "tags": ["PyTorch", "TensorFlow", "AI", "Deep Learning", "ML"],
             "is_featured": False
         },
         {
             "id": 7,
-            "title": "Eid al-Fitr: Celebrating the Prophet’s Way",
+            "title": "Eid al-Fitr: Celebrating the Prophet's Way",
             "description": "Dive into how Prophet Muhammad (PBUH) rocked Eid al-Fitr with joy, faith, and community love.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/eid_al_fitr_prophetic_way.webp",
             "img_name": "eid_al_fitr_prophetic_way.webp",
@@ -140,9 +272,19 @@ class BlogData:
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "content": [
-                "Eid al-Fitr back in Prophet Muhammad’s (PBUH) day was all about gratitude and good times. It kicked off with a big group prayer outdoors, followed by a sermon that lit up everyone’s faith and unity.",
-                "The Prophet pushed takbir—glorifying Allah from Eid’s eve till prayer time—to keep the thankful vibes flowing. Zakat al-Fitr was a must, making sure everyone, especially the less fortunate, could join the party.",
-                "Before heading out, he’d munch on dates to mark the end of fasting—a small move with big meaning. Eid was also about patching things up, forgiving, and spreading kindness to make the community tight."
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Eid al-Fitr represents one of Islam's most joyous celebrations, marking the conclusion of Ramadan's month-long fast. Understanding how Prophet Muhammad (peace be upon him) celebrated this occasion provides valuable guidance for Muslims seeking to honor this special day according to authentic traditions.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>The Prophetic Spirit of Eid Celebration</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Eid al-Fitr back in Prophet Muhammad's (PBUH) day was all about gratitude and good times. It kicked off with a big group prayer outdoors, followed by a sermon that lit up everyone's faith and unity. This communal celebration emphasized the importance of collective joy and spiritual renewal.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Spiritual Practices and Traditions</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>The Prophet pushed takbir—glorifying Allah from Eid's eve till prayer time—to keep the thankful vibes flowing. Zakat al-Fitr was a must, making sure everyone, especially the less fortunate, could join the party. These practices ensured that spiritual devotion remained central to the celebration.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Personal Preparations and Community Building</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Before heading out, he'd munch on dates to mark the end of fasting—a small move with big meaning. Eid was also about patching things up, forgiving, and spreading kindness to make the community tight. The Prophet emphasized that personal joy should extend to strengthening bonds with family, friends, and the broader community.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Implementing Prophetic Eid Practices Today</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Contemporary Muslims can honor the Prophetic tradition by maintaining the balance between celebration and spiritual significance. This includes participating in community prayers, ensuring charitable giving reaches those in need before the Eid prayer, wearing one's best clothes, and fostering an atmosphere of reconciliation and happiness that extends beyond one's immediate circle.</p>"
             ],
             "tags": ["Eid al-Fitr", "Prophet Muhammad", "Islam", "Community"],
             "is_featured": False
@@ -150,7 +292,7 @@ class BlogData:
         {
             "id": 8,
             "title": "Nail Your Git Game with Conventional Commits",
-            "description": "Make your commit messages pop with style and clarity—tell your code’s story like a pro!",
+            "description": "Make your commit messages pop with style and clarity—tell your code's story like a pro!",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/conventional_commits_guide.webp",
             "img_name": "conventional_commits_guide.webp",
             "created_at": datetime.strptime("2025-04-04T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -160,7 +302,12 @@ class BlogData:
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "is_featured": True,
             "content": [
-                "Commits aren’t just logs—they’re your code’s epic saga. Conventional Commits keep it clean and fun. Here’s the playbook to slay it:",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Version control is the backbone of modern software development, and well-structured commit messages are essential for maintaining clean, understandable project histories. Conventional Commits provide a standardized format that enhances collaboration, automates versioning, and makes codebases more maintainable for teams of all sizes.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Understanding Conventional Commits</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Commits aren't just logs—they're your code's epic saga. Conventional Commits keep it clean and fun. Here's the playbook to slay it:</p>",
+                
+                "<h3 class='text-lg md:text-xl font-bold mt-3 md:mt-4 mb-2'>Core Commit Types and Their Usage</h3>",
                 "<ul class='list-disc pl-5'>",
                 "<li><span class='font-bold text-blue-500'>✨ feat:</span> Drop something new and shiny! Like: <span class='font-mono text-blue-500'>feat: add user login flow</span></li>",
                 "<li><span class='font-bold text-red-500'>🛠️ fix:</span> Squash bugs like a boss. Like: <span class='font-mono text-red-500'>fix: patch login glitch</span></li>",
@@ -173,14 +320,102 @@ class BlogData:
                 "<li><span class='font-bold text-zinc-500'>🛠️ build:</span> Solidify your setup. Like: <span class='font-mono text-zinc-500'>build: update webpack</span></li>",
                 "<li><span class='font-bold text-teal-500'>🚧 chore:</span> Handle the grunt work. Like: <span class='font-mono text-teal-500'>chore: bump dependencies</span></li>",
                 "<li><span class='font-bold text-rose-500'>⏪ revert:</span> Hit rewind when needed. Like: <span class='font-mono text-rose-500'>revert: undo buggy commit</span></li>",
-                "</ul>"
+                "</ul>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Benefits of Conventional Commits</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Adopting Conventional Commits offers numerous advantages for development teams. The standardized format enables automatic changelog generation, simplifies semantic versioning decisions, and provides clear context for code changes. This approach makes repository histories more navigable and helps new team members understand project evolution more quickly.</p>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>In the rapidly evolving field of artificial intelligence and deep learning, two frameworks have emerged as frontrunners: PyTorch and TensorFlow. These powerful tools have become essential for researchers, developers, and companies building cutting-edge AI solutions. Understanding their differences and strengths is crucial for selecting the right framework for your specific needs.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Core Philosophy and Development Approach</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>PyTorch and TensorFlow are the heavyweights of deep learning, but they've got different vibes. TensorFlow's Google-backed, with a static graph setup that's a beast for scaling and deploying to production—think TensorFlow Serving for servers or Lite for mobiles.</p>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>PyTorch, from Meta, is the chill coder's choice—dynamic graphs make debugging a breeze, and its Python-y flow feels like home for research nerds. Tools like TorchServe are catching up for production, too.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Ecosystem and Tooling Comparison</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>TensorFlow's got a massive toolbox: TensorBoard for slick visuals, TensorFlow.js for web apps, and optimizations that scream speed on specific hardware. PyTorch counters with fastai for quick models and GPU-friendly coding that's a joy to tweak.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Performance and Deployment Considerations</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Both handle GPUs and TPUs like champs, but TensorFlow's got a slight edge in raw performance. Pick TensorFlow for bulletproof production apps, or PyTorch if you're tinkering and iterating like a mad scientist.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Making Your Framework Decision</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Your choice between PyTorch and TensorFlow should align with your specific project requirements, team expertise, and deployment needs. For production-ready applications with enterprise support, TensorFlow offers robust solutions. For research projects and rapid experimentation, PyTorch's intuitive design may be more suitable. Many organizations maintain expertise in both frameworks to leverage their respective strengths.</p>"
+            ],
+            "tags": ["PyTorch", "TensorFlow", "AI", "Deep Learning", "ML"],
+            "is_featured": False
+        },
+        {
+            "id": 7,
+            "title": "Eid al-Fitr: Celebrating the Prophet's Way",
+            "description": "Dive into how Prophet Muhammad (PBUH) rocked Eid al-Fitr with joy, faith, and community love.",
+            "image_url": f"{settings.BLOG_BASE_IMG_URL}/eid_al_fitr_prophetic_way.webp",
+            "img_name": "eid_al_fitr_prophetic_way.webp",
+            "created_at": datetime.strptime("2025-03-31T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "author": "Ridwan Halim",
+            "username": "ridwaanhall",
+            "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
+            "content": [
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Eid al-Fitr represents one of Islam's most joyous celebrations, marking the conclusion of Ramadan's month-long fast. Understanding how Prophet Muhammad (peace be upon him) celebrated this occasion provides valuable guidance for Muslims seeking to honor this special day according to authentic traditions.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>The Prophetic Spirit of Eid Celebration</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Eid al-Fitr back in Prophet Muhammad's (PBUH) day was all about gratitude and good times. It kicked off with a big group prayer outdoors, followed by a sermon that lit up everyone's faith and unity. This communal celebration emphasized the importance of collective joy and spiritual renewal.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Spiritual Practices and Traditions</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>The Prophet pushed takbir—glorifying Allah from Eid's eve till prayer time—to keep the thankful vibes flowing. Zakat al-Fitr was a must, making sure everyone, especially the less fortunate, could join the party. These practices ensured that spiritual devotion remained central to the celebration.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Personal Preparations and Community Building</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Before heading out, he'd munch on dates to mark the end of fasting—a small move with big meaning. Eid was also about patching things up, forgiving, and spreading kindness to make the community tight. The Prophet emphasized that personal joy should extend to strengthening bonds with family, friends, and the broader community.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Implementing Prophetic Eid Practices Today</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Contemporary Muslims can honor the Prophetic tradition by maintaining the balance between celebration and spiritual significance. This includes participating in community prayers, ensuring charitable giving reaches those in need before the Eid prayer, wearing one's best clothes, and fostering an atmosphere of reconciliation and happiness that extends beyond one's immediate circle.</p>"
+            ],
+            "tags": ["Eid al-Fitr", "Prophet Muhammad", "Islam", "Community"],
+            "is_featured": False
+        },
+        {
+            "id": 8,
+            "title": "Nail Your Git Game with Conventional Commits",
+            "description": "Make your commit messages pop with style and clarity—tell your code's story like a pro!",
+            "image_url": f"{settings.BLOG_BASE_IMG_URL}/conventional_commits_guide.webp",
+            "img_name": "conventional_commits_guide.webp",
+            "created_at": datetime.strptime("2025-04-04T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "author": "Ridwan Halim",
+            "username": "ridwaanhall",
+            "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
+            "is_featured": True,
+            "content": [
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Version control is the backbone of modern software development, and well-structured commit messages are essential for maintaining clean, understandable project histories. Conventional Commits provide a standardized format that enhances collaboration, automates versioning, and makes codebases more maintainable for teams of all sizes.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Understanding Conventional Commits</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Commits aren't just logs—they're your code's epic saga. Conventional Commits keep it clean and fun. Here's the playbook to slay it:</p>",
+                
+                "<h3 class='text-lg md:text-xl font-bold mt-3 md:mt-4 mb-2'>Core Commit Types and Their Usage</h3>",
+                "<ul class='list-disc pl-5'>",
+                "<li><span class='font-bold text-blue-500'>✨ feat:</span> Drop something new and shiny! Like: <span class='font-mono text-blue-500'>feat: add user login flow</span></li>",
+                "<li><span class='font-bold text-red-500'>🛠️ fix:</span> Squash bugs like a boss. Like: <span class='font-mono text-red-500'>fix: patch login glitch</span></li>",
+                "<li><span class='font-bold text-yellow-500'>📝 docs:</span> Make your docs sparkle. Like: <span class='font-mono text-yellow-500'>docs: beef up API guide</span></li>",
+                "<li><span class='font-bold text-purple-500'>🎨 style:</span> Keep it pretty—no logic changes. Like: <span class='font-mono text-purple-500'>style: tidy up CSS</span></li>",
+                "<li><span class='font-bold text-orange-500'>🔄 refactor:</span> Revamp code for max vibes. Like: <span class='font-mono text-orange-500'>refactor: streamline DB calls</span></li>",
+                "<li><span class='font-bold text-pink-500'>🧪 test:</span> Lock in those tests. Like: <span class='font-mono text-pink-500'>test: add auth unit tests</span></li>",
+                "<li><span class='font-bold text-green-500'>⚡ perf:</span> Speed things up—wow factor! Like: <span class='font-mono text-green-500'>perf: optimize image load</span></li>",
+                "<li><span class='font-bold text-indigo-500'>🤖 ci:</span> Keep CI humming. Like: <span class='font-mono text-indigo-500'>ci: tweak GitHub Actions</span></li>",
+                "<li><span class='font-bold text-zinc-500'>🛠️ build:</span> Solidify your setup. Like: <span class='font-mono text-zinc-500'>build: update webpack</span></li>",
+                "<li><span class='font-bold text-teal-500'>🚧 chore:</span> Handle the grunt work. Like: <span class='font-mono text-teal-500'>chore: bump dependencies</span></li>",
+                "<li><span class='font-bold text-rose-500'>⏪ revert:</span> Hit rewind when needed. Like: <span class='font-mono text-rose-500'>revert: undo buggy commit</span></li>",
+                "</ul>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Benefits of Conventional Commits</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Adopting Conventional Commits offers numerous advantages for development teams. The standardized format enables automatic changelog generation, simplifies semantic versioning decisions, and provides clear context for code changes. This approach makes repository histories more navigable and helps new team members understand project evolution more quickly.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Implementing in Your Workflow</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Getting started with Conventional Commits is straightforward. Tools like commitlint, husky, and standard-version can enforce commit message standards and automate version management. For teams, consider documenting the chosen convention in your project's contributing guidelines and incorporating commit message validation into your CI pipeline.</p>"
             ],
             "tags": ["Git", "Commits", "Coding Tips", "Dev Workflow"],
         },
         {
             "id": 9,
             "title": "How I Picked the Perfect Domain for My Site",
-            "description": "The wild ride of choosing between .dev, .com, and .id for ridwaanhall.com—here’s the tea!",
+            "description": "The wild ride of choosing between .dev, .com, and .id for ridwaanhall.com—here's the tea!",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/choosing_domain.webp",
             "img_name": "choosing_domain.webp",
             "created_at": datetime.strptime("2025-04-13T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -189,19 +424,30 @@ class BlogData:
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "content": [
-                "Building <span class='text-blue-600'>ridwaanhall.com</span> wasn’t just about code—it was about giving it a vibe. Picking the right domain extension was a big deal, so I weighed <span class='text-green-600'>.dev</span>, <span class='text-blue-600'>.com</span>, and <span class='text-red-600'>.id</span> like a pro.",
-                "<span class='text-green-600'>.dev</span> screamed coder cred—perfect for flexing my tech projects and geeky posts. But I wanted more than just a dev diary; I’m also into faith, culture, and big ideas, so it felt a bit narrow.",
-                "Then there’s <span class='text-blue-600'>.com</span>—the OG. It’s global, flexible, and fits everything from AI tutorials to life musings. It’s like the ultimate stage for techies, casual readers, and everyone else.",
-                "<span class='text-red-600'>.id</span> hit home as an Indonesian—it’s personal, proud, and rooted. But my site’s got global dreams, and I didn’t wanna box it in.",
-                "So, I went with <span class='text-blue-600'>ridwaanhall.com</span>. It’s the sweet spot—tech, faith, and stories, all under one roof, welcoming folks from everywhere. Boom!"
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Selecting the perfect domain name for your personal or professional website represents a critical branding decision. The domain extension you choose communicates your site's purpose, audience, and geographic focus. This article details my decision-making process when selecting between popular TLDs for my personal website.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>The Importance of Domain Selection</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Building <span class='text-blue-600'>ridwaanhall.com</span> wasn't just about code—it was about giving it a vibe. Picking the right domain extension was a big deal, so I weighed <span class='text-green-600'>.dev</span>, <span class='text-blue-600'>.com</span>, and <span class='text-red-600'>.id</span> like a pro.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Evaluating .dev: The Developer-Focused Option</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'><span class='text-green-600'>.dev</span> screamed coder cred—perfect for flexing my tech projects and geeky posts. But I wanted more than just a dev diary; I'm also into faith, culture, and big ideas, so it felt a bit narrow.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Considering .com: The Universal Standard</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Then there's <span class='text-blue-600'>.com</span>—the OG. It's global, flexible, and fits everything from AI tutorials to life musings. It's like the ultimate stage for techies, casual readers, and everyone else.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Analyzing .id: The National Identity Option</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'><span class='text-red-600'>.id</span> hit home as an Indonesian—it's personal, proud, and rooted. But my site's got global dreams, and I didn't wanna box it in.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Final Decision and Rationale</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>So, I went with <span class='text-blue-600'>ridwaanhall.com</span>. It's the sweet spot—tech, faith, and stories, all under one roof, welcoming folks from everywhere. Boom!</p>"
             ],
             "tags": ["Domains", ".com", ".dev", ".id", "Web Dev", "Branding"],
             "is_featured": False
         },
         {
             "id": 10,
-            "title": "Why I’m Coding for Gaza’s Truth",
-            "description": "From pesantren to Python, here’s why I’m hustling to amplify Gaza’s crisis with facts, faith, and a call to act—no noise, just heart.",
+            "title": "Why I'm Coding for Gaza's Truth",
+            "description": "From pesantren to Python, here's why I'm hustling to amplify Gaza's crisis with facts, faith, and a call to act—no noise, just heart.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/gaza_crisis.webp",
             "img_name": "gaza_crisis.webp",
             "created_at": datetime.strptime("2025-04-16T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -210,19 +456,30 @@ class BlogData:
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "content": [
-                "Yo, I’m ridwaanhall—<span class='text-green-600'>coding by day, memorizing Quran by heart—who else but me?</span> Gaza’s crisis ain’t just a headline for me; it’s a call to debug the biggest bug: <span class='text-red-600'>injustice</span>. Growing up in Pondok Pesantren, I learned fairness is non-negotiable, Surah by Surah. Now, as a coder, I’m wiring that hustle into something real.",
-                "Let’s talk facts: since October 2023, <span class='text-red-600'>42,000+ lives</span> have been lost in Gaza—kids, families, dreams. Over <span class='text-white'>1.9 million</span> people, 90% of the population, are displaced, scraping by in tents. And <span class='text-green-600'>60%+</span> of homes, schools, hospitals? Gone. These aren’t my numbers; they’re from <a href='https://www.ochaopt.org' target='_blank' class='text-green-400 hover:text-green-300'>OCHA</a> and <a href='https://www.unrwa.org' target='_blank' class='text-green-400 hover:text-green-300'>UNRWA</a>.",
-                "Why do I care? Pondok taught me to stand for what’s right, no matter the stack. Coding taught me to solve problems, whether it’s a Django bug or a crisis screaming for truth. Gaza’s not just data—it’s <span class='text-white'>people</span> fighting for dignity. That’s why I’m curating resources like <a href='https://www.who.int/emergencies/situations/occupied-palestinian-territory' target='_blank' class='text-green-400 hover:text-green-300'>WHO’s health reports</a> or <a href='https://www.btselem.org' target='_blank' class='text-green-400 hover:text-green-300'>B’Tselem’s raw stories</a>.",
-                "Here’s the deal: you can help. Donate to <a href='https://www.unrwa.org/donate' target='_blank' class='text-green-400 hover:text-green-300'>UNRWA</a>—they’re feeding families right now. Share this post on X to cut through the noise. Or dive into a book like <span class='text-red-600'>“Justice for Some”</span> by Noura Erakat to get the full picture. Every move counts.",
-                "This blog’s my code for Gaza—<span class='text-green-600'>built with faith, facts, and grind</span>. Pesantren gave me roots; AI gave me tools. Together, let’s push for hope, one step at a time. Who’s with me?"
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>The humanitarian crisis in Gaza represents one of the most pressing global challenges of our time. As both a technologist and someone raised with strong ethical principles, I've found myself compelled to leverage my skills to amplify awareness and accurate information about the situation. This article explains my personal motivation and approach to this critical issue.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Personal Background and Motivation</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Yo, I'm ridwaanhall—<span class='text-green-600'>coding by day, memorizing Quran by heart—who else but me?</span> Gaza's crisis ain't just a headline for me; it's a call to debug the biggest bug: <span class='text-red-600'>injustice</span>. Growing up in Pondok Pesantren, I learned fairness is non-negotiable, Surah by Surah. Now, as a coder, I'm wiring that hustle into something real.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>The Current Humanitarian Situation: Facts and Figures</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Let's talk facts: since October 2023, <span class='text-red-600'>42,000+ lives</span> have been lost in Gaza—kids, families, dreams. Over <span class='text-white'>1.9 million</span> people, 90% of the population, are displaced, scraping by in tents. And <span class='text-green-600'>60%+</span> of homes, schools, hospitals? Gone. These aren't my numbers; they're from <a href='https://www.ochaopt.org' target='_blank' class='text-green-400 hover:text-green-300'>OCHA</a> and <a href='https://www.unrwa.org' target='_blank' class='text-green-400 hover:text-green-300'>UNRWA</a>.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Technology's Role in Humanitarian Awareness</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Why do I care? Pondok taught me to stand for what's right, no matter the stack. Coding taught me to solve problems, whether it's a Django bug or a crisis screaming for truth. Gaza's not just data—it's <span class='text-white'>people</span> fighting for dignity. That's why I'm curating resources like <a href='https://www.who.int/emergencies/situations/occupied-palestinian-territory' target='_blank' class='text-green-400 hover:text-green-300'>WHO's health reports</a> or <a href='https://www.btselem.org' target='_blank' class='text-green-400 hover:text-green-300'>B'Tselem's raw stories</a>.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Practical Ways to Make a Difference</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Here's the deal: you can help. Donate to <a href='https://www.unrwa.org/donate' target='_blank' class='text-green-400 hover:text-green-300'>UNRWA</a>—they're feeding families right now. Share this post on X to cut through the noise. Or dive into a book like <span class='text-red-600'>Justice for Some</span> by Noura Erakat to get the full picture. Every move counts.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Faith, Technology, and Humanitarian Action</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>This blog's my code for Gaza—<span class='text-green-600'>built with faith, facts, and grind</span>. Pesantren gave me roots; AI gave me tools. Together, let's push for hope, one step at a time. Who's with me?</p>"
             ],
             "tags": ["Gaza", "Palestine", "Humanitarian", "Justice", "Resources", "Faith", "Coding"],
             "is_featured": True
         },
         {
             "id": 11,
-            "title": "What’s Good with Brainrot in 2025?",
-            "description": "Brainrot’s takin’ over the internet in 2025, and it’s WILD! From cursed memes to AI vids and slang that’s got no chill, here’s the tea on what brainrot is and how to not lose your mind in the chaos.",
+            "title": "What's Good with Brainrot in 2025?",
+            "description": "Brainrot's takin' over the internet in 2025, and it's WILD! From cursed memes to AI vids and slang that's got no chill, here's the tea on what brainrot is and how to not lose your mind in the chaos.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/brainrot_explained_2025.webp",
             "img_name": "brainrot_explained_2025.webp",
             "created_at": datetime.strptime("2025-04-21T20:24:34+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -231,19 +488,32 @@ class BlogData:
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "content": [
-                "Yo, <span class='text-purple-600'>brainrot</span> is the internet’s wildest flex in 2025, and it’s got us all actin’ unwise! It’s what happens when you’re deep in the scroll, drownin’ in <span class='text-red-600'>cursed memes</span>, AI vids, and slang that hits like a fever dream. Your brain’s like, ‘Bruh, I’m fried!’ Here’s the 411 on this digital chaos and how to keep your vibes high without crashin’. Check my blog at <span class='text-blue-600'>ridwaanhall.com</span> for more!",
-                "<span class='text-blue-600'>What even is brainrot?</span> Straight-up, it’s like your brain’s gettin’ roasted by too much internet sauce. Think scrollin’ X or TikTok for hours, vibin’ with <span class='text-red-600'>absurd content</span> that’s funny but kinda pointless. It’s those moments when you’re laughin’ at a meme but forget how to think deep. My Coding Camp kids in Bandung call it ‘brain lag’—and they’re not wrong!",
-                "In 2025, brainrot’s poppin’ off with <span class='text-green-600'>next-level chaos</span>. We got <span class='text-red-600'>Italian Brainrot memes</span> like **Bombardiro Crocodilo** (a freakin’ croc with a jet bod) or **Tung Tung Tung Sahur** (a kentongan with a face, no cap). Then there’s <span class='text-blue-600'>AI vids</span>—Grok 3’s out here droppin’ TikToks that keep you glued to your screen. And don’t sleep on slang like ‘rizz’ for smooth moves or ‘Ohio’ for anything cursed. I tried ‘rizzler’ in class, and my students were SCREAMIN’!",
-                "But here’s the tea: brainrot can <span class='text-yellow-600'>mess you up</span>. Too much of it, and your brain’s on snooze mode—<span class='text-red-600'>no critical thinking</span>, just vibes. It kills your grind, too; I lost a whole afternoon to AI cat vids once, oops. Plus, it can stress you out when you realize you can’t focus. I felt that when I got stuck in a meme loop instead of preppin’ my coding lessons. Gotta stay woke!",
-                "So, how do you <span class='text-purple-600'>survive the brainrot wave</span>? Keep it chill and picky with your content. I mix fun stuff with smart posts on <span class='text-blue-600'>ridwaanhall.com</span>—like droppin’ a Python tutorial with a side of silly memes. Curate your X feed for the good stuff: Indo jokes, tech hacks, or faith inspo. And take breaks—go code, pray, or just touch grass. My camp kids keep me grounded; they’re out here learnin’ while I’m dodgin’ brainrot traps!",
-                "Real talk: brainrot’s part of the 2025 internet vibe, but you can <span class='text-green-600'>run the game</span> instead of lettin’ it run you. Pick one or two fire memes or slang words, flex ‘em, and move on. I learned this after sharin’ a coding meme that popped off on X. Balance the goofy with the glow-up, and you’re golden. So, you ever caught yourself in a brainrot spiral? Drop your story, fam—let’s vibe! 😎"
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>In 2025, internet culture has evolved into a complex ecosystem of rapidly changing trends, memes, and viral content. The phenomenon known as 'brainrot' has become a significant part of online discourse, affecting how we process information and interact with digital media. This article examines the nature, impact, and management strategies for this uniquely modern condition.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Understanding Internet Brainrot: A 2025 Phenomenon</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Yo, <span class='text-purple-600'>brainrot</span> is the internet's wildest flex in 2025, and it's got us all actin' unwise! It's what happens when you're deep in the scroll, drownin' in <span class='text-red-600'>cursed memes</span>, AI vids, and slang that hits like a fever dream. Your brain's like, 'Bruh, I'm fried!' Here's the 411 on this digital chaos and how to keep your vibes high without crashin'. Check my blog at <span class='text-blue-600'>ridwaanhall.com</span> for more!</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Defining Digital Brainrot in Today's Context</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'><span class='text-blue-600'>What even is brainrot?</span> Straight-up, it's like your brain's gettin' roasted by too much internet sauce. Think scrollin' X or TikTok for hours, vibin' with <span class='text-red-600'>absurd content</span> that's funny but kinda pointless. It's those moments when you're laughin' at a meme but forget how to think deep. My Coding Camp kids in Bandung call it 'brain lag'—and they're not wrong!</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Trending Brainrot Content in 2025</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>In 2025, brainrot's poppin' off with <span class='text-green-600'>next-level chaos</span>. We got <span class='text-red-600'>Italian Brainrot memes</span> like **Bombardiro Crocodilo** (a freakin' croc with a jet bod) or **Tung Tung Tung Sahur** (a kentongan with a face, no cap). Then there's <span class='text-blue-600'>AI vids</span>—Grok 3's out here droppin' TikToks that keep you glued to your screen. And don't sleep on slang like 'rizz' for smooth moves or 'Ohio' for anything cursed. I tried 'rizzler' in class, and my students were SCREAMIN'!</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Cognitive and Productivity Impact</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>But here's the tea: brainrot can <span class='text-yellow-600'>mess you up</span>. Too much of it, and your brain's on snooze mode—<span class='text-red-600'>no critical thinking</span>, just vibes. It kills your grind, too; I lost a whole afternoon to AI cat vids once, oops. Plus, it can stress you out when you realize you can't focus. I felt that when I got stuck in a meme loop instead of preppin' my coding lessons. Gotta stay woke!</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Managing Digital Content Consumption</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>So, how do you <span class='text-purple-600'>survive the brainrot wave</span>? Keep it chill and picky with your content. I mix fun stuff with smart posts on <span class='text-blue-600'>ridwaanhall.com</span>—like droppin' a Python tutorial with a side of silly memes. Curate your X feed for the good stuff: Indo jokes, tech hacks, or faith inspo. And take breaks—go code, pray, or just touch grass. My camp kids keep me grounded; they're out here learnin' while I'm dodgin' brainrot traps!</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Finding Balance in the Age of Viral Content</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Real talk: brainrot's part of the 2025 internet vibe, but you can <span class='text-green-600'>run the game</span> instead of lettin' it run you. Pick one or two fire memes or slang words, flex 'em, and move on. I learned this after sharin' a coding meme that popped off on X. Balance the goofy with the glow-up, and you're golden. So, you ever caught yourself in a brainrot spiral? Drop your story, fam—let's vibe! 😎</p>"
             ],
             "tags": ["Brainrot 101", "Internet Chaos", "Absurd Memes", "AI Vibes", "Slang Game", "Tech Life", "Indo Internet"],
             "is_featured": False
         },
         {
             "id": 12,
-            "title": "Predicting Gold Prices in Indonesia: AI’s Golden Touch",
+            "title": "Predicting Gold Prices in Indonesia: AI's Golden Touch",
             "description": "Gold price forecasting in Indonesia just got smarter! Dive into how AI-powered LSTM models are transforming historical data into actionable insights for investors and analysts.",
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/gold_price_prediction.webp",
             "img_name": "gold_price_prediction.webp",
@@ -253,12 +523,25 @@ class BlogData:
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "content": [
-                "<span class='text-purple-600'>Gold price prediction</span> is the next big flex for Indonesia’s market scene! With AI-powered LSTM models, we’re crunchin’ 10+ years of data to forecast trends that investors can bank on. Wanna know how it works? Check my blog at <span class='text-blue-600'>ridwaanhall.com</span> for the full scoop!",
-                "<span class='text-blue-600'>What’s the deal with gold price prediction?</span> Straight-up, it’s about using deep learning to analyze historical price patterns and predict future trends. Think next-day prices, short-term vibes (1-6 months), and long-term outlooks (up to 5 years). My model’s got interactive plots and exportable data for that extra sauce. Investors in Jakarta are already hyped!",
-                "In 2025, gold price prediction’s poppin’ off with <span class='text-green-600'>next-level precision</span>. We’re talkin’ LSTM neural networks that adapt to market volatility and seasonal trends. Plus, the visualizations are clean—dynamic plots that make data analysis a breeze. And don’t sleep on the CSV exports; they’re perfect for deeper dives into the numbers.",
-                "But here’s the tea: forecasting isn’t foolproof. Market shocks and black swan events can throw predictions off. That’s why my model focuses on trends rather than exact prices for long-term forecasts. It’s all about staying informed and adaptable in a fast-changing market.",
-                "So, how do you <span class='text-purple-600'>leverage gold price predictions</span>? Use the insights to make smarter investment decisions. Whether you’re a trader, analyst, or just curious about the market, this tool’s got you covered. Check out <span class='text-blue-600'>ridwaanhall.com</span> for tutorials on using the model and tips for navigating Indonesia’s gold market.",
-                "Real talk: AI’s changing the game for gold price forecasting, and you can be part of it. Dive into the data, explore the trends, and make informed moves. Got questions or stories about your investment journey? Drop a comment, fam—let’s vibe! 😎"
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Artificial intelligence has revolutionized financial forecasting across global markets, including Indonesia's precious metals sector. By applying advanced machine learning techniques to historical data, analysts and investors can now access more accurate price predictions, helping them make more informed decisions in this traditionally volatile market.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>The Revolution in Gold Price Forecasting</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'><span class='text-purple-600'>Gold price prediction</span> is the next big flex for Indonesia's market scene! With AI-powered LSTM models, we're crunchin' 10+ years of data to forecast trends that investors can bank on. Wanna know how it works? Check my blog at <span class='text-blue-600'>ridwaanhall.com</span> for the full scoop!</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>How Modern Gold Price Prediction Works</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'><span class='text-blue-600'>What's the deal with gold price prediction?</span> Straight-up, it's about using deep learning to analyze historical price patterns and predict future trends. Think next-day prices, short-term vibes (1-6 months), and long-term outlooks (up to 5 years). My model's got interactive plots and exportable data for that extra sauce. Investors in Jakarta are already hyped!</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Technical Implementation and Innovations</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>In 2025, gold price prediction's poppin' off with <span class='text-green-600'>next-level precision</span>. We're talkin' LSTM neural networks that adapt to market volatility and seasonal trends. Plus, the visualizations are clean—dynamic plots that make data analysis a breeze. And don't sleep on the CSV exports; they're perfect for deeper dives into the numbers.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Limitations and Considerations</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>But here's the tea: forecasting isn't foolproof. Market shocks and black swan events can throw predictions off. That's why my model focuses on trends rather than exact prices for long-term forecasts. It's all about staying informed and adaptable in a fast-changing market.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Practical Applications for Investors</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>So, how do you <span class='text-purple-600'>leverage gold price predictions</span>? Use the insights to make smarter investment decisions. Whether you're a trader, analyst, or just curious about the market, this tool's got you covered. Check out <span class='text-blue-600'>ridwaanhall.com</span> for tutorials on using the model and tips for navigating Indonesia's gold market.</p>",
+                
+                "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>The Future of AI in Financial Forecasting</h2>",
+                "<p class='mb-4 text-sm md:text-base lg:text-lg'>Real talk: AI's changing the game for gold price forecasting, and you can be part of it. Dive into the data, explore the trends, and make informed moves. Got questions or stories about your investment journey? Drop a comment, fam—let's vibe! 😎</p>"
             ],
             "tags": ["Gold Price Prediction", "AI Forecasting", "Deep Learning", "Market Trends", "Investment Insights", "Tech Life", "Indo Market"],
             "is_featured": True

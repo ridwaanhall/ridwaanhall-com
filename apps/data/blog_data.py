@@ -419,7 +419,7 @@ class BlogData:
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/choosing_domain.webp",
             "img_name": "choosing_domain.webp",
             "created_at": datetime.strptime("2025-04-13T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-            "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-05-10T13:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             "author": "Ridwan Halim",
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",

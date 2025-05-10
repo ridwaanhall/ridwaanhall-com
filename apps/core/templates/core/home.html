@@ -282,25 +282,25 @@
                             {% if about.short_description|length > 0 %}{{ about.short_description }} {{ about.short_bio }} {{ about.short_cta }}{% else %}I am a passionate software engineer with a focus on building impactful solutions. I love to explore new technologies and share my knowledge through writing and open-source contributions.{% endif %}
                         </p>
                         
-                        <div class="flex flex-col mb-6 sm:mb-6 md:mb-8 sm:flex-row gap-3 justify-center lg:justify-start">
-                            <a href="{{ about.cv }}" class="group flex items-center px-4 sm:px-5 py-2 sm:py-2.5 bg-indigo-900/80 text-zinc-200 text-sm sm:text-base font-medium rounded-lg hover:bg-indigo-900 transition-all shadow-lg hover:shadow-indigo-500/30">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div class="flex flex-row mb-6 sm:mb-6 md:mb-8 justify-center lg:justify-start gap-2 sm:gap-3">
+                            <a href="{{ about.cv }}" class="group flex items-center px-2 sm:px-4 md:px-5 py-2 sm:py-2.5 bg-indigo-900/80 text-zinc-200 text-xs sm:text-sm md:text-base font-medium rounded-lg hover:bg-indigo-900 transition-all shadow-lg hover:shadow-indigo-500/30">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 mr-1 sm:mr-1.5 md:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                 </svg>
-                                Preview CV
+                                <span class="sm:inline">Preview CV</span>
                             </a>
-                            <a href="{% url 'contact' %}" class="group flex items-center px-4 sm:px-5 py-2 sm:py-2.5 border border-zinc-600 text-zinc-300 text-sm sm:text-base font-medium rounded-lg hover:bg-zinc-700 hover:text-white transition-all">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <a href="{% url 'contact' %}" class="group flex items-center px-2 sm:px-4 md:px-5 py-2 sm:py-2.5 border border-zinc-600 text-zinc-300 text-xs sm:text-sm md:text-base font-medium rounded-lg hover:bg-zinc-700 hover:text-white transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 mr-1 sm:mr-1.5 md:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                                 </svg>
-                                Contact Me
+                                <span class="sm:inline">Contact</span>
                             </a>
-                            <a href="{{ about.donate.0.github_sponsor }}" class="group flex items-center px-4 sm:px-5 py-2 sm:py-2.5 bg-pink-700/80 text-zinc-200 text-sm sm:text-base font-medium rounded-lg hover:bg-pink-800 transition-all shadow-lg hover:shadow-pink-500/30">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <a href="{{ about.donate.0.github_sponsor }}" class="group flex items-center px-2 sm:px-4 md:px-5 py-2 sm:py-2.5 bg-pink-700/80 text-zinc-200 text-xs sm:text-sm md:text-base font-medium rounded-lg hover:bg-pink-800 transition-all shadow-lg hover:shadow-pink-500/30">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 mr-1 sm:mr-1.5 md:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                 </svg>
-                                Sponsor
+                                <span class="sm:inline">Sponsor</span>
                             </a>
                         </div>
                     </div>

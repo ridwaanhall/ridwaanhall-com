@@ -145,11 +145,11 @@
                                             <time datetime="{{ blog.updated_at|date:'c' }}" class="font-mono text-xs">{{ blog.updated_at|date:"g:i A T, D F j, Y" }}</time>
                                         </div>
                                         <h2 class="text-lg sm:text-xl md:text-2xl font-bold mb-1 sm:mb-2"><a href="{% url 'blog_detail' title=blog.title|slugify %}" class="relative inline-block after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-zinc-400 hover:after:w-full after:transition-all after:duration-300">{{ blog.title }}</a></h2>
-                                        <p class="text-zinc-300 text-sm mb-2 sm:mb-4 line-clamp-2">{{ blog.description }}</p>
+                                        <p class="text-sm mb-2 sm:mb-4 line-clamp-2">{{ blog.description }}</p>
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center space-x-2 sm:space-x-3">
                                                 <img src="{{ blog.author_image }}" alt="{{ blog.username }}" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover border border-indigo-400">
-                                                <span class="text-zinc-300 text-xs sm:text-sm">{{ blog.username }}</span>
+                                                <span class="text-xs sm:text-sm">{{ blog.username }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -187,7 +187,7 @@
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-6">
                         <div>
                             <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 tracking-tight">Latest <span class="text-indigo-400">Blogs</span></h1>
-                            <p class="mt-1 sm:mt-2 text-sm sm:text-base md:text-lg text-zinc-300 leading-relaxed">Dive into my blogs—tutorials, AI insights, opinions, and tech thoughts crafted to spark ideas and solve problems.</p>
+                            <p class="mt-1 sm:mt-2 text-sm sm:text-base md:text-lg leading-relaxed">Dive into my blogs—tutorials, AI insights, opinions, and tech thoughts crafted to spark ideas and solve problems.</p>
                         </div>
                     </div>
                 </div>
@@ -204,12 +204,12 @@
                             <div class="relative z-10 p-3 sm:p-4 flex flex-col h-full">
                                 <div class="flex flex-wrap gap-1 mb-2 sm:mb-4">
                                     {% for tag in blog.tags|slice:":3" %}
-                                    <span class="font-medium rounded-full bg-zinc-900/80 px-1.5 sm:px-2.5 py-0.5 sm:py-1 font-mono text-xs">
+                                    <span class="font-medium rounded-full bg-zinc-900/80 px-1.5 sm:px-2.5 py-0.5 sm:py-1 font-mono text-xs border border-zinc-700">
                                         #{{ tag|slugify }}
                                     </span>
                                     {% endfor %}
                                     {% if blog.tags|length > 3 %}
-                                    <span class="font-medium rounded-full bg-zinc-900/80 px-1.5 sm:px-2.5 py-0.5 sm:py-1 font-mono text-xs">
+                                    <span class="font-medium rounded-full bg-zinc-900/80 px-1.5 sm:px-2.5 py-0.5 sm:py-1 font-mono text-xs border border-zinc-700">
                                         +{{ blog.tags|length|add:"-3" }}
                                     </span>
                                     {% endif %}
@@ -220,7 +220,7 @@
                                 <h3 class="text-base sm:text-lg font-bold mb-1 sm:mb-2 line-clamp-2 relative inline-block">
                                     <span class="relative transition-colors duration-300 group-hover:underline group-hover:decoration-2">{{ blog.title }}</span>
                                 </h3>
-                                <p class="text-zinc-300 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 mb-2">{{ blog.description }}</p>
+                                <p class="text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 mb-2">{{ blog.description }}</p>
                                 
                                 <div class="mt-auto">
                                     <hr class="border-t border-zinc-500 w-full mb-2 sm:mb-3">
@@ -231,11 +231,11 @@
                                                 class="rounded-full border border-indigo-500 w-5 h-5 sm:w-7 sm:h-7"
                                                 src="{{ blog.author_image }}"
                                             >
-                                            <span class="text-xs sm:text-sm text-zinc-300 truncate max-w-[100px] sm:max-w-[150px]">{{ blog.username }}</span>
+                                            <span class="text-xs sm:text-sm truncate max-w-[100px] sm:max-w-[150px]">{{ blog.username }}</span>
                                         </div>
                                         
                                         <div class="flex items-center">
-                                            <span class="mr-1 sm:mr-2 text-zinc-400">
+                                            <span class="mr-1 sm:mr-2">
                                                 <time datetime="{{ blog.updated_at|date:'c' }}" class="text-xs hidden sm:inline">{{ blog.updated_at|date:"g:i A T, D F j, Y" }}</time>
                                                 <time datetime="{{ blog.updated_at|date:'c' }}" class="text-xs sm:hidden">{{ blog.updated_at|date:"g:i A, D M j" }}</time>
                                             </span>
@@ -287,7 +287,7 @@
                                     </li>
                                 {% elif num == 1 or num == paginator.num_pages or num > blogs.number|add:'-3' and num < blogs.number|add:'3' %}
                                     <li>
-                                        <a href="?page={{ num }}" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-xs sm:text-sm text-zinc-300 transition-all hover:bg-indigo-500/20 hover:text-indigo-300">
+                                        <a href="?page={{ num }}" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-xs sm:text-sm transition-all hover:bg-indigo-500/20 hover:text-indigo-300">
                                             {{ num }}
                                         </a>
                                     </li>

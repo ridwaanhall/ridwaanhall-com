@@ -45,7 +45,7 @@ function switchTab(tabName) {
     }
     
     document.querySelectorAll('[id^="tab-"]').forEach(tab => {
-        tab.classList.remove('border-indigo-500', 'text-indigo-400');
+        tab.classList.remove('border-zinc-300', 'text-zinc-300');
         tab.classList.add('border-transparent');
         tab.setAttribute('aria-selected', 'false');
     });
@@ -53,7 +53,7 @@ function switchTab(tabName) {
     const selectedTab = document.getElementById('tab-' + tabName);
     if (selectedTab) {
         selectedTab.classList.remove('border-transparent');
-        selectedTab.classList.add('border-indigo-500', 'text-indigo-400');
+        selectedTab.classList.add('border-zinc-300', 'text-zinc-300');
         selectedTab.setAttribute('aria-selected', 'true');
     }
 }

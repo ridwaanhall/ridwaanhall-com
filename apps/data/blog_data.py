@@ -491,7 +491,7 @@ class BlogData:
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/brainrot_explained_2025.webp",
             "img_name": "brainrot_explained_2025.webp",
             "created_at": datetime.strptime("2025-04-21T20:24:34+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-            "updated_at": datetime.strptime("2025-04-21T21:13:56+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-05-11T14:06:56+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             "author": "Ridwan Halim",
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
@@ -516,7 +516,7 @@ class BlogData:
                 "<h2 class='text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-5 mb-2 md:mb-3'>Finding Balance in the Age of Viral Content</h2>",
                 "<p class='mb-4 text-sm md:text-base lg:text-lg'>Real talk: brainrot's part of the 2025 internet vibe, but you can <span class='text-green-600'>run the game</span> instead of lettin' it run you. Pick one or two fire memes or slang words, flex 'em, and move on. I learned this after sharin' a coding meme that popped off on X. Balance the goofy with the glow-up, and you're golden. So, you ever caught yourself in a brainrot spiral? Drop your story, fam—let's vibe! 😎</p>"
             ],
-            "tags": ["Brainrot 101", "Internet Chaos", "Absurd Memes", "AI Vibes", "Slang Game", "Tech Life", "Indo Internet"],
+            "tags": ["Brainrot 101", "Bombardiro Crocodilo", "Tung Tung Sahur", "Absurd Memes", "AI Vibes", "Slang Game", "Tech Life", "Indo Internet"],
             "is_featured": False
         },
         {
@@ -526,7 +526,7 @@ class BlogData:
             "image_url": f"{settings.BLOG_BASE_IMG_URL}/gold_price_prediction.webp",
             "img_name": "gold_price_prediction.webp",
             "created_at": datetime.strptime("2025-04-23T22:20:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-            "updated_at": datetime.strptime("2025-04-23T22:20:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+            "updated_at": datetime.strptime("2025-05-10T23:09:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
             "author": "Ridwan Halim",
             "username": "ridwaanhall",
             "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",

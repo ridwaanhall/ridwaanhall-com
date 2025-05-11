@@ -128,7 +128,7 @@
                             {% for blog in featured_blogs %}
                                 {% if blog.is_featured %}
                                 <div class="featured-slide w-full flex-shrink-0 relative">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/80 to-zinc-900/80 mix-blend-multiply z-10"></div>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black via-zinc-900/80 to-zinc-900/10 z-10"></div>
                                     <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-60 sm:h-72 md:h-80 object-cover object-center">
                                     
                                     <div class="absolute top-2 sm:top-4 right-2 sm:right-4 z-20">
@@ -198,7 +198,7 @@
                         <div style="height: 350px; sm:height: 350px;" class="group relative overflow-hidden rounded-xl border border-zinc-700 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 transform h-full">
                             <div class="absolute inset-0">
                                 <img src="https://wsrv.nl/?url={{ blog.image_url }}&w=300&h=300" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-500" loading="lazy">
-                                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-900/80 to-zinc-900/10"></div>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black via-zinc-900/80 to-zinc-900/10"></div>
                             </div>
                             
                             <div class="relative z-10 p-3 sm:p-4 flex flex-col h-full">
@@ -255,7 +255,7 @@
                 {% if is_paginated %}
                 <div class="mt-4">
                     <nav class="flex justify-center" aria-label="Pagination">
-                        <ul class="inline-flex items-center gap-0.5 sm:gap-1 rounded-lg bg-zinc-800/30 p-0.5 sm:p-1 backdrop-blur-sm border border-zinc-700/50">
+                        <ul class="inline-flex items-center gap-0.5 sm:gap-1 rounded-lg p-0.5 sm:p-1 backdrop-blur-sm border border-zinc-700/50">
                             <!-- Previous page -->
                             {% if blogs.has_previous %}
                                 <li>

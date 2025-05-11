@@ -195,52 +195,51 @@ class GitHubContributions {
         this.monthLabelsContainer.innerHTML = '';
         const grid = this.formatDatesIntoGrid();
         
-        // Create a map to track the earliest week for each month
-        const monthToEarliestWeek = new Map();
+        // Track earliest week for each unique month-year combination
+        const monthYearToEarliestWeek = new Map();
         
-        // Find the earliest occurrence of each month in the grid
+        // Find the earliest occurrence of each month-year in the grid
         for (let week = 0; week < this.WEEKS_IN_YEAR; week++) {
             for (let day = 0; day < this.DAYS_IN_WEEK; day++) {
                 if (grid[week] && grid[week][day] && grid[week][day].date) {
                     const date = grid[week][day].date;
                     const month = date.getMonth();
+                    const year = date.getFullYear();
+                    const key = `${year}-${month}`;
                     
-                    if (!monthToEarliestWeek.has(month) || week < monthToEarliestWeek.get(month)) {
-                        monthToEarliestWeek.set(month, week);
+                    if (!monthYearToEarliestWeek.has(key) || week < monthYearToEarliestWeek.get(key)) {
+                        monthYearToEarliestWeek.set(key, week);
                     }
                 }
             }
         }
         
         // Convert the map to an array and sort by week position
-        const monthPositions = Array.from(monthToEarliestWeek.entries())
-            .map(([month, week]) => ({ month, week }))
+        const monthPositions = Array.from(monthYearToEarliestWeek.entries())
+            .map(([key, week]) => {
+                const [year, month] = key.split('-').map(Number);
+                return { month, year, week };
+            })
             .sort((a, b) => a.week - b.week);
         
-        // Apply minimum distance between labels
-        const MIN_WEEK_DISTANCE = 3; // Minimum weeks between labels
-        const filteredPositions = [];
-        
-        for (let i = 0; i < monthPositions.length; i++) {
-            if (i === 0) {
-                filteredPositions.push(monthPositions[i]);
-                continue;
-            }
-            
-            const current = monthPositions[i];
-            const previous = filteredPositions[filteredPositions.length - 1];
-            
-            if (current.week - previous.week >= MIN_WEEK_DISTANCE) {
-                filteredPositions.push(current);
-            }
-        }
-        
-        // Create and position month labels
-        filteredPositions.forEach(pos => {
+        // Create and position month labels for ALL months (no filtering)
+        monthPositions.forEach((pos, index) => {
             const label = document.createElement('span');
             label.textContent = this.MONTH_NAMES[pos.month];
             label.className = 'absolute text-2xs sm:text-xs font-medium';
-            label.style.left = `${(pos.week / this.WEEKS_IN_YEAR) * 100}%`;
+            
+            // Only offset by one week for months after the first one
+            let offsetWeek = pos.week;
+            if (index > 0) { // Not the first month
+                offsetWeek = Math.min(pos.week + 1, this.WEEKS_IN_YEAR - 1);
+            }
+            
+            const percentPosition = (offsetWeek / this.WEEKS_IN_YEAR) * 100;
+            label.style.left = `${percentPosition}%`;
+            
+            // Add a data attribute for debugging if needed
+            label.setAttribute('data-year', pos.year);
+            
             this.monthLabelsContainer.appendChild(label);
         });
     }

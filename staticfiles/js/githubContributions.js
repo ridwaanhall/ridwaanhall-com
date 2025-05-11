@@ -48,12 +48,12 @@ class GitHubContributions {
      * Determines the background color based on contribution count
      */
     getContributionColor(contributions, isFuture) {
-        if (isFuture) return 'bg-zinc-950';
+        if (isFuture) return ''; // No color for future dates
         
-        if (contributions === 0) return 'bg-zinc-900/90';
-        if (contributions >= 1 && contributions <= 3) return 'bg-green-600/20';
-        if (contributions >= 4 && contributions <= 9) return 'bg-green-600/50';
-        if (contributions >= 10 && contributions <= 15) return 'bg-green-600/90';
+        if (contributions === 0) return 'bg-zinc-950';
+        if (contributions >= 1 && contributions <= 8) return 'bg-green-600/20';
+        if (contributions >= 9 && contributions <= 21) return 'bg-green-600/50';
+        if (contributions >= 22 && contributions <= 30) return 'bg-green-600/90';
         return 'bg-green-500';
     }
     
@@ -72,7 +72,7 @@ class GitHubContributions {
         cell.style.gridColumn = `${weekIndex + 1}`;
         
         if (!cellData || !cellData.date) {
-            cell.className += ' bg-zinc-950 opacity-30';
+            cell.className += ' opacity-30';
             return cell;
         }
         

@@ -66,7 +66,6 @@
     {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
-        "name": "Site Navigation",
         "itemListElement": [
             {
                 "@type": "ListItem",
@@ -77,38 +76,8 @@
             {
                 "@type": "ListItem",
                 "position": 2,
-                "name": "Dashboard",
-                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'dashboard' %}"
-            },
-            {
-                "@type": "ListItem",
-                "position": 3,
-                "name": "Projects",
-                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'projects' %}"
-            },
-            {
-                "@type": "ListItem",
-                "position": 4,
                 "name": "Blog",
                 "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'blog' %}"
-            },
-            {
-                "@type": "ListItem",
-                "position": 5,
-                "name": "Journey",
-                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'blog' %}"
-            },
-            {
-                "@type": "ListItem",
-                "position": 6,
-                "name": "About",
-                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'about' %}"
-            },
-            {
-                "@type": "ListItem",
-                "position": 7,
-                "name": "Contact",
-                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'contact' %}"
             }
         ]
     }

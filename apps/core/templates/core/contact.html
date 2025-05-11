@@ -66,49 +66,18 @@
     {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
-        "name": "Site Navigation",
         "itemListElement": [
             {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "{{ request.scheme }}://{{ request.get_host }}/"
+                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'home' %}"
             },
             {
                 "@type": "ListItem",
                 "position": 2,
-                "name": "About",
-                "item": "{{ request.scheme }}://{{ request.get_host }}/about"
-            },
-            {
-                "@type": "ListItem",
-                "position": 3,
-                "name": "Career",
-                "item": "{{ request.scheme }}://{{ request.get_host }}/career"
-            },
-            {
-                "@type": "ListItem",
-                "position": 4,
-                "name": "Dashboard",
-                "item": "{{ request.scheme }}://{{ request.get_host }}/dashboard"
-            },
-            {
-                "@type": "ListItem",
-                "position": 5,
-                "name": "Projects",
-                "item": "{{ request.scheme }}://{{ request.get_host }}/projects"
-            },
-            {
-                "@type": "ListItem",
-                "position": 6,
-                "name": "Blog",
-                "item": "{{ request.scheme }}://{{ request.get_host }}/blog"
-            },
-            {
-                "@type": "ListItem",
-                "position": 7,
                 "name": "Contact",
-                "item": "{{ request.scheme }}://{{ request.get_host }}/contact"
+                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'contact' %}"
             }
         ]
     }

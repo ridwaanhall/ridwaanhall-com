@@ -87,37 +87,37 @@
             "mainEntityOfPage": [
                 {
                     "@type": "WebPage",
-                    "url": "{{ request.scheme }}://{{ request.get_host }}/",
+                    "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'home' %}",
                     "name": "Home"
                 },
                 {
                     "@type": "WebPage",
-                    "url": "{{ request.scheme }}://{{ request.get_host }}/about",
-                    "name": "About"
-                },
-                {
-                    "@type": "WebPage",
-                    "url": "{{ request.scheme }}://{{ request.get_host }}/career",
-                    "name": "Career"
-                },
-                {
-                    "@type": "WebPage",
-                    "url": "{{ request.scheme }}://{{ request.get_host }}/dashboard",
+                    "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'dashboard' %}",
                     "name": "Dashboard"
                 },
                 {
                     "@type": "WebPage",
-                    "url": "{{ request.scheme }}://{{ request.get_host }}/projects",
+                    "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'projects' %}",
                     "name": "Projects"
                 },
                 {
                     "@type": "WebPage",
-                    "url": "{{ request.scheme }}://{{ request.get_host }}/blog",
+                    "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'blog' %}",
                     "name": "Blog"
                 },
                 {
                     "@type": "WebPage",
-                    "url": "{{ request.scheme }}://{{ request.get_host }}/contact",
+                    "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'career' %}",
+                    "name": "Journey"
+                },
+                {
+                    "@type": "WebPage",
+                    "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'about' %}",
+                    "name": "About"
+                },
+                {
+                    "@type": "WebPage",
+                    "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'contact' %}",
                     "name": "Contact"
                 }
             ]

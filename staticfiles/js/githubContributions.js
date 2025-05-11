@@ -197,6 +197,7 @@ class GitHubContributions {
         
         // Track earliest week for each unique month-year combination
         const monthYearToEarliestWeek = new Map();
+        const monthYearToFirstDay = new Map(); // Track the first day of week for each month
         
         // Find the earliest occurrence of each month-year in the grid
         for (let week = 0; week < this.WEEKS_IN_YEAR; week++) {
@@ -206,9 +207,12 @@ class GitHubContributions {
                     const month = date.getMonth();
                     const year = date.getFullYear();
                     const key = `${year}-${month}`;
+                    const dayOfMonth = date.getDate();
                     
                     if (!monthYearToEarliestWeek.has(key) || week < monthYearToEarliestWeek.get(key)) {
                         monthYearToEarliestWeek.set(key, week);
+                        // Store the first day of week we encounter for this month
+                        monthYearToFirstDay.set(key, { day, dayOfMonth });
                     }
                 }
             }
@@ -218,7 +222,14 @@ class GitHubContributions {
         const monthPositions = Array.from(monthYearToEarliestWeek.entries())
             .map(([key, week]) => {
                 const [year, month] = key.split('-').map(Number);
-                return { month, year, week };
+                const firstDayInfo = monthYearToFirstDay.get(key);
+                return { 
+                    month, 
+                    year, 
+                    week,
+                    firstDayOfWeek: firstDayInfo ? firstDayInfo.day : null,
+                    firstDayOfMonth: firstDayInfo ? firstDayInfo.dayOfMonth : null
+                };
             })
             .sort((a, b) => a.week - b.week);
         
@@ -228,9 +239,17 @@ class GitHubContributions {
             label.textContent = this.MONTH_NAMES[pos.month];
             label.className = 'absolute text-2xs sm:text-xs font-medium';
             
-            // Only offset by one week for months after the first one
+            // Check special conditions for positioning:
+            // 1. First month is always at original position
+            // 2. Other months: if they start on the 1st day of month AND on Sunday (0), keep at original position
             let offsetWeek = pos.week;
-            if (index > 0) { // Not the first month
+            
+            const isFirstMonth = index === 0;
+            const startsOnFirstDayOfMonth = pos.firstDayOfMonth === 1;
+            const startsOnSunday = pos.firstDayOfWeek === 0;
+            
+            if (!isFirstMonth && !(startsOnFirstDayOfMonth && startsOnSunday)) {
+                // Only offset if not first month and doesn't start on Sunday with 1st day of month
                 offsetWeek = Math.min(pos.week + 1, this.WEEKS_IN_YEAR - 1);
             }
             

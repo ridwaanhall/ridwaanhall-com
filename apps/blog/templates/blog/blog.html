@@ -159,12 +159,12 @@
                         </div>
                         
                         <div class="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 z-30 flex space-x-1 sm:space-x-2">
-                            <button class="slider-nav prev bg-black/60 hover:bg-indigo-600 w-8 h-8 sm:w-10 sm:h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105" title="Previous Slide">
+                            <button class="slider-nav prev bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105" title="Previous Slide">
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                 </svg>
                             </button>
-                            <button class="slider-nav next bg-black/60 hover:bg-indigo-600 w-8 h-8 sm:w-10 sm:h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105" title="Next Slide">
+                            <button class="slider-nav next bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105" title="Next Slide">
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
@@ -260,7 +260,7 @@
                             {% if blogs.has_previous %}
                                 <li>
                                     <a href="?page={{ blogs.previous_page_number }}" 
-                                       class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-indigo-500/20 hover:text-indigo-300"
+                                       class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200"
                                        aria-label="Previous page">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
@@ -281,13 +281,13 @@
                             {% for num in paginator.page_range %}
                                 {% if num == blogs.number %}
                                     <li>
-                                        <span aria-current="page" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md bg-indigo-600 text-xs sm:text-sm font-medium">
+                                        <span aria-current="page" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md bg-zinc-800 text-xs sm:text-sm font-medium">
                                             {{ num }}
                                         </span>
                                     </li>
                                 {% elif num == 1 or num == paginator.num_pages or num > blogs.number|add:'-3' and num < blogs.number|add:'3' %}
                                     <li>
-                                        <a href="?page={{ num }}" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-xs sm:text-sm transition-all hover:bg-indigo-500/20 hover:text-indigo-300">
+                                        <a href="?page={{ num }}" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-xs sm:text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200">
                                             {{ num }}
                                         </a>
                                     </li>
@@ -302,7 +302,7 @@
                             {% if blogs.has_next %}
                                 <li>
                                     <a href="?page={{ blogs.next_page_number }}" 
-                                       class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-indigo-500/20 hover:text-indigo-300"
+                                       class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200"
                                        aria-label="Next page">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />

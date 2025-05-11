@@ -175,10 +175,10 @@
                                 {% if project.github_url %}
                                 <a target="_blank" href="{{ project.github_url }}" class="group transition-all duration-300">
                                     <div class="flex items-center gap-2 font-medium">
-                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" class="group-hover:text-indigo-400 transition-colors duration-300" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
+                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" class="group-hover:text-zinc-200 transition-colors duration-300" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
                                         </svg>
-                                        <span class="text-[15px] group-hover:text-indigo-400 transition-colors duration-300">Source Code</span>
+                                        <span class="text-[15px] group-hover:text-zinc-200 transition-colors duration-300">Source Code</span>
                                     </div>
                                 </a>
                                 {% endif %}
@@ -190,12 +190,12 @@
                                 {% if project.demo_url %}
                                 <a target="_blank" href="{{ project.demo_url }}" class="group transition-all duration-300">
                                     <div class="flex items-center gap-2 font-medium">
-                                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="group-hover:text-indigo-400 transition-colors duration-300" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
+                                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="group-hover:text-zinc-200 transition-colors duration-300" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                                             <polyline points="15 3 21 3 21 9"></polyline>
                                             <line x1="10" y1="14" x2="21" y2="3"></line>
                                         </svg>
-                                        <span class="text-[15px] group-hover:text-indigo-400 transition-colors duration-300">Live Demo</span>
+                                        <span class="text-[15px] group-hover:text-zinc-200 transition-colors duration-300">Live Demo</span>
                                     </div>
                                 </a>
                                 {% endif %}
@@ -213,7 +213,7 @@
                                             <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
                                             <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
                                         </div>
-                                        <span class="ml-auto text-xs text-zinc-400 hidden sm:block">{{ project.img_name }}</span>
+                                        <span class="ml-auto text-xs hidden sm:block">{{ project.img_name }}</span>
                                     </div>
                                     <img src="{{ project.image_url }}" alt="{{ project.title }}" 
                                          class="w-full h-full object-cover rounded-b-lg shadow-lg transition-transform duration-700 hover:scale-105" 
@@ -266,7 +266,7 @@
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                     {% for feature in project.features %}
-                    <div class="group bg-zinc-900/30 backdrop-blur-sm rounded-xl overflow-hidden border border-zinc-800 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10">
+                    <div class="group backdrop-blur-sm rounded-xl overflow-hidden border border-zinc-800 transition-all duration-300 hover:border-zinc-700 hover:shadow-lg hover:shadow-zinc-900">
                         {% if feature.image_url %}
                         <div class="overflow-hidden h-36 sm:h-48">
                             <img src="{{ feature.image_url }}" alt="{{ feature.title }}" 
@@ -274,7 +274,7 @@
                         </div>
                         {% endif %}
                         <div class="p-3 sm:p-5">
-                            <h3 class="text-lg sm:text-xl font-semibold mb-1.5 sm:mb-2 group-hover:text-indigo-300 transition-colors duration-300">
+                            <h3 class="text-lg sm:text-xl font-semibold mb-1.5 sm:mb-2 group-hover:text-zinc-300 transition-colors duration-300">
                                 {{ feature.title }}
                             </h3>
                             <p class="text-sm sm:text-base text-zinc-300 leading-relaxed">{{ feature.description }}</p>
@@ -301,7 +301,7 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                     {% for tech in project.tech_stack %}
-                    <div class="group bg-zinc-900/30 backdrop-blur-sm rounded-xl overflow-hidden border border-zinc-800 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10">
+                    <div class="group backdrop-blur-sm rounded-xl overflow-hidden border border-zinc-800 transition-all duration-300 hover:border-zinc-700 hover:shadow-lg hover:shadow-zinc-900">
                         {% if tech.image_url %}
                         <div class="overflow-hidden h-36 sm:h-48">
                             <img src="{{ tech.image_url }}" alt="{{ tech.name }}" 
@@ -309,7 +309,7 @@
                         </div>
                         {% endif %}
                         <div class="p-3 sm:p-5">
-                            <h3 class="text-lg sm:text-xl font-semibold mb-1.5 sm:mb-2 group-hover:text-indigo-300 transition-colors duration-300">
+                            <h3 class="text-lg sm:text-xl font-semibold mb-1.5 sm:mb-2 group-hover:text-zinc-300 transition-colors duration-300">
                                 {{ tech.name }}
                             </h3>
                             <p class="text-sm sm:text-base text-zinc-300 leading-relaxed">{{ tech.description }}</p>
@@ -329,7 +329,7 @@
                     Back to Projects
                 </a>
                 {% if project.demo_url %}
-                <a href="{{ project.demo_url }}" class="inline-flex items-center justify-center px-2.5 py-2 sm:px-3 sm:py-2.5 rounded-lg bg-indigo-900 hover:bg-indigo-800 font-medium transition duration-300 text-sm sm:text-base">
+                <a href="{{ project.demo_url }}" class="inline-flex items-center justify-center px-2.5 py-2 sm:px-3 sm:py-2.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 font-medium transition duration-300 text-sm sm:text-base">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

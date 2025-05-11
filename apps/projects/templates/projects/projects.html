@@ -133,7 +133,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 mb-6">
                 {% for project in projects %}
                 <a href="{% url 'projects' %}{{ project.title|slugify }}" class="block h-full">
-                    <div class="group backdrop-blur-sm rounded-xl overflow-hidden flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/20 border border-zinc-700/50 hover:border-indigo-500/50">
+                    <div class="group backdrop-blur-sm rounded-xl overflow-hidden flex flex-col h-full transition-all duration-300 border border-zinc-800">
                         <div class="relative h-40 sm:h-52 overflow-hidden">
                             <img src="https://wsrv.nl/?url={{ project.image_url }}&w=300&h=300" alt="{{ project.title }}" 
                                 class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105" loading="lazy">
@@ -184,7 +184,7 @@
             {% if is_paginated %}
             <div class="mt-4">
                 <nav class="flex justify-center" aria-label="Pagination">
-                    <ul class="inline-flex items-center gap-0.5 sm:gap-1 rounded-lg p-0.5 sm:p-1 backdrop-blur-sm border border-zinc-700/50">
+                    <ul class="inline-flex items-center gap-0.5 sm:gap-1 rounded-lg p-0.5 sm:p-1 backdrop-blur-sm border border-zinc-800">
                         <!-- Previous page -->
                         {% if projects.has_previous %}
                             <li>

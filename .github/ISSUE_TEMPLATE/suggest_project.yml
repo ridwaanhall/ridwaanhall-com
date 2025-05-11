@@ -1,0 +1,72 @@
+---
+name: 💪 Suggest a Project
+description: Have a project that I should add to my portfolio? Let me know!
+title: "[New Project]: <title>"
+labels: ["💪 New Project"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # Thank you for suggesting a project for my portfolio!
+  - type: checkboxes
+    attributes:
+      label: Is this project already in my portfolio?
+      description: Please check if this project is already listed in my repositories.
+      options:
+        - label: I have checked the existing projects in ridwaanhall-com
+          required: true
+  - type: textarea
+    attributes:
+      label: Tell me about the project
+      description: Please provide details about the project and why it would be a good addition to my portfolio!
+    validations:
+      required: yes
+  - type: textarea
+    attributes:
+      label: Project GitHub Repository
+      description: Please provide a link to the GitHub repository of the project (if available).
+    validations:
+      required: false
+  - type: checkboxes
+    id: tech_stack
+    attributes:
+      label: Technology Stack
+      description: What technologies does this project use?
+      options:
+        - label: "Frontend (React, Vue, Angular, etc.)"
+        - label: "Backend (Node.js, Django, Flask, etc.)"
+        - label: "Mobile (Flutter, React Native, etc.)"
+        - label: "Data Science/ML"
+        - label: "Other"
+  - type: checkboxes
+    id: DPG
+    attributes:
+      label: Is the Project a DPG (Digital Public Good)
+      description: You can check the DPG Registry [here](https://digitalpublicgoods.net/registry/)
+      options:
+        - label: "Yes"
+        - label: "No"
+  - type: checkboxes
+    id: SDGs
+    attributes:
+      label: Does the project address any Sustainable Development Goals?
+      description: View the SDGs [here](https://sdgs.un.org/goals)
+      options:
+        - label: "Yes"
+        - label: "No"
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow my repository's Code of Conduct
+      options:
+        - label: I've read the Code of Conduct and understand my responsibilities
+          required: true
+  - type: textarea
+    attributes:
+      label: Additional Information
+      description: >
+        Any other details, links, or context about the project you'd like to share?
+
+
+        Tip: You can attach images or files by clicking this area to highlight it and then dragging files in.

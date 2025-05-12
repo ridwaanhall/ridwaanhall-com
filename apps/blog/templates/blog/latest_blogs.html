@@ -1,5 +1,5 @@
 <div class="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
-    <h2 class="text-xl sm:text-2xl font-bold">Latest <span class="text-indigo-400">Blogs</span></h2>
+    <h2 class="text-xl sm:text-2xl font-medium">Latest <span class="text-indigo-400">Blogs</span></h2>
     <a href="{% url 'blog' %}" class="group flex items-center text-indigo-400 hover:text-indigo-300 transition-colors duration-300">
         <span class="transform transition-transform duration-300 group-hover:-translate-x-1">View All Blogs</span>
         <svg class="w-3 h-3 sm:w-4 sm:h-4 ml-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -33,7 +33,7 @@
                 
                 <div class="flex-grow"></div>
                 
-                <h3 class="text-base sm:text-lg font-bold mb-1 sm:mb-2 line-clamp-2 relative inline-block">
+                <h3 class="text-base sm:text-lg font-semibold mb-1 sm:mb-2 line-clamp-2 relative inline-block">
                     <span class="relative transition-colors duration-300 group-hover:underline group-hover:decoration-2">{{ blog.title }}</span>
                 </h3>
                 <p class="text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 mb-2">{{ blog.description }}</p>

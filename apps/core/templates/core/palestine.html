@@ -5,7 +5,7 @@
             <div class="inline-block mb-2 sm:mb-3 rounded-full bg-indigo-900/20 px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold border border-indigo-900/30">
                 {{ palestine.title }}
             </div>
-            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 tracking-tight">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl  mb-3 sm:mb-4 tracking-tight">
                 {{ palestine.description|safe }}
             </h2>
             <p class="text-zinc-400 mb-6 sm:mb-8 text-base sm:text-lg leading-relaxed">
@@ -15,15 +15,15 @@
             <!-- Stats -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mb-6">
                 <div class="bg-zinc-900/50 p-3 sm:p-4 rounded-lg border border-zinc-700/50 shadow-sm transition-all duration-200 hover:border-indigo-500/30 hover:shadow-indigo-500/10">
-                    <h3 class="font-bold text-sm sm:text-base">{{ palestine.statistics.peopleKilled.headline }}</h3>
+                    <h3 class=" text-sm sm:text-base">{{ palestine.statistics.peopleKilled.headline }}</h3>
                     <p class="text-xs sm:text-sm text-zinc-400">{{ palestine.statistics.peopleKilled.details }}<sup><a href="{{ palestine.statistics.peopleKilled.url }}" target="_blank" class="text-indigo-400">[1]</a></sup></p>
                 </div>
                 <div class="bg-zinc-900/50 p-3 sm:p-4 rounded-lg border border-zinc-700/50 shadow-sm transition-all duration-200 hover:border-indigo-500/30 hover:shadow-indigo-500/10">
-                    <h3 class="font-bold text-sm sm:text-base">{{ palestine.statistics.peopleDisplaced.headline }}</h3>
+                    <h3 class=" text-sm sm:text-base">{{ palestine.statistics.peopleDisplaced.headline }}</h3>
                     <p class="text-xs sm:text-sm text-zinc-400">{{ palestine.statistics.peopleDisplaced.details }}<sup><a href="{{ palestine.statistics.peopleDisplaced.url }}" target="_blank" class="text-indigo-400">[2]</a></sup></p>
                 </div>
                 <div class="bg-zinc-900/50 p-3 sm:p-4 rounded-lg border border-zinc-700/50 shadow-sm transition-all duration-200 hover:border-indigo-500/30 hover:shadow-indigo-500/10 sm:col-span-2 md:col-span-1">
-                    <h3 class="font-bold text-sm sm:text-base">{{ palestine.statistics.peopleInjured.headline }}</h3>
+                    <h3 class=" text-sm sm:text-base">{{ palestine.statistics.peopleInjured.headline }}</h3>
                     <p class="text-xs sm:text-sm text-zinc-400">{{ palestine.statistics.peopleInjured.details }}<sup><a href="{{ palestine.statistics.peopleInjured.url }}" target="_blank" class="text-indigo-400">[3]</a></sup></p>
                 </div>
             </div>
@@ -46,7 +46,7 @@
 
             <!-- Why I Stand -->
             <div class="bg-zinc-900/50 p-4 sm:p-6 rounded-lg border border-zinc-700/50 shadow-sm transition-all duration-200 hover:border-indigo-500/30 hover:shadow-indigo-500/10 text-left mb-6">
-                <h3 class="font-bold mb-2 text-sm sm:text-base">Why I Stand With Gaza</h3>
+                <h3 class=" mb-2 text-sm sm:text-base">Why I Stand With Gaza</h3>
                 <p class="text-zinc-400 text-xs sm:text-sm">
                     {{ palestine.whyIStand|safe }}
                 </p>

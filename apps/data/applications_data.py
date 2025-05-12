@@ -96,7 +96,7 @@ class ApplicationsData:
                     "notes": "<span class='text-blue-600'>Kept it professional, but their month-long ghosting act deserves zero applause!</span>"
                 }
             ],
-            "lessons_learned": "<span class='text-red-600 font-bold'>Cam on for me, but you’re hiding like scared little kids?</span> Respect’s a two-way street, geniuses. HR, grow a spine: <span class='text-blue-600 font-bold'>don’t make candidates wait over a month for a basic rejection</span>. <span class='text-orange-600 font-bold'>Dragging people along with zero updates is for amateurs who can’t handle basic professionalism</span>. This HR’s a <span class='underline decoration-red-400 decoration-2'>hot mess of a clown show</span>."
+            "lessons_learned": "<span class='text-red-600 '>Cam on for me, but you’re hiding like scared little kids?</span> Respect’s a two-way street, geniuses. HR, grow a spine: <span class='text-blue-600 '>don’t make candidates wait over a month for a basic rejection</span>. <span class='text-orange-600 '>Dragging people along with zero updates is for amateurs who can’t handle basic professionalism</span>. This HR’s a <span class='underline decoration-red-400 decoration-2'>hot mess of a clown show</span>."
         },
         {
             "id": 12,
@@ -135,7 +135,7 @@ class ApplicationsData:
                     "notes": "<span class='text-red-600'>Hoarding resumes like greedy wannabes? Total scam energy!</span>"
                 }
             ],
-            "lessons_learned": "<span class='text-red-600 font-bold'>Opening and closing jobs just to collect resumes like some shady side hustle?</span> HR, stop playing dirty: <span class='text-blue-600 font-bold'>give candidates a real shot or quit wasting their time</span>. <span class='text-orange-600 font-bold'>This kind of nonsense is for spineless posers</span>. Your company’s a <span class='underline decoration-red-400 decoration-2'>pathetic dumpster fire of a circus</span>."
+            "lessons_learned": "<span class='text-red-600 '>Opening and closing jobs just to collect resumes like some shady side hustle?</span> HR, stop playing dirty: <span class='text-blue-600 '>give candidates a real shot or quit wasting their time</span>. <span class='text-orange-600 '>This kind of nonsense is for spineless posers</span>. Your company’s a <span class='underline decoration-red-400 decoration-2'>pathetic dumpster fire of a circus</span>."
         },
         {
             "id": 11,
@@ -164,7 +164,7 @@ class ApplicationsData:
                     "notes": "<span class='text-red-600'>Ditched with no word? Lame-ass nonsense!</span>"
                 }
             ],
-            "lessons_learned": "<span class='text-red-600 font-bold'>Bragging about professionalism but pulling a Houdini?</span> HR, get a grip: <span class='text-blue-600 font-bold'>stop leaving candidates hanging like spineless flakes</span>. <span class='text-orange-600 font-bold'>Ghosting’s for posers who can’t handle a simple email</span>. This company’s a <span class='underline decoration-red-400 decoration-2'>sad, sloppy clown parade</span>."
+            "lessons_learned": "<span class='text-red-600 '>Bragging about professionalism but pulling a Houdini?</span> HR, get a grip: <span class='text-blue-600 '>stop leaving candidates hanging like spineless flakes</span>. <span class='text-orange-600 '>Ghosting’s for posers who can’t handle a simple email</span>. This company’s a <span class='underline decoration-red-400 decoration-2'>sad, sloppy clown parade</span>."
         },
         {
             "id": 10,

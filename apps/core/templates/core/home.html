@@ -39,7 +39,7 @@
                 "email": "{{ about.social_media.email }}",
                 "address": {
                     "@type": "PostalAddress",
-                    "addressLocality": "{{ about.location.regency }}",
+                    "addressLocality": "{{ about.location.residency }}",
                     "addressRegion": "{{ about.location.province }}",
                     "addressCountry": "{{ about.location.country }}"
                 },
@@ -275,7 +275,7 @@
                         <div class="flex flex-wrap items-center justify-start my-3 text-zinc-400">
                             <span>{{ about.role }}</span>
                             <span class="mx-2">•</span>
-                            <span>{{ about.location.prov }}, {{ about.location.country }} {{ about.location.flag }}</span>
+                            <span>{{ about.location.residency }}, {{ about.location.country }} {{ about.location.flag }}</span>
                         </div>
                         
                         <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed mb-4">

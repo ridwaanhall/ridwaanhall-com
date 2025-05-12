@@ -237,7 +237,7 @@ class GitHubContributions {
         monthPositions.forEach((pos, index) => {
             const label = document.createElement('span');
             label.textContent = this.MONTH_NAMES[pos.month];
-            label.className = 'absolute text-2xs sm:text-xs text-zinc-400 font-medium';
+            label.className = 'absolute text-xs text-zinc-400 font-medium';
             
             // Check special conditions for positioning:
             // 1. First month is always at original position

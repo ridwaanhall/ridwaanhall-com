@@ -266,13 +266,13 @@
             
             <section class="py-0">
                 <div class="mx-auto lg:mx-0">
-                    <!-- Hero content with simplified structure -->
-                    <div class="text-center lg:text-left">
-                        <h1 class="text-2xl sm:text-3xl md:text-4xl font-semibold mb-2">
+                    <!-- Hero content with consistent left alignment -->
+                    <div class="text-left">
+                        <h1 class="text-2xl lg:text-3xl font-medium mb-2">
                             Hi, I'm <span class="text-indigo-400">{{ about.first_name }}</span>
                         </h1>
                         
-                        <div class="flex flex-wrap items-center justify-center lg:justify-start my-3">
+                        <div class="flex flex-wrap items-center justify-start my-3">
                             <span>{{ about.role }}</span>
                             <span class="mx-2">•</span>
                             <span>{{ about.location.prov }}, {{ about.location.country }} {{ about.location.flag }}</span>
@@ -282,7 +282,7 @@
                             {% if about.short_description|length > 0 %}{{ about.short_description }} {{ about.short_bio }} {{ about.short_cta }}{% else %}I am a passionate software engineer with a focus on building impactful solutions. I love to explore new technologies and share my knowledge through writing and open-source contributions.{% endif %}
                         </p>
                         
-                        <div class="flex flex-row mb-6 sm:mb-6 md:mb-8 justify-center lg:justify-start gap-2 sm:gap-3">
+                        <div class="flex flex-row mb-6 sm:mb-6 md:mb-8 justify-start gap-2 sm:gap-3">
                             <a href="{{ about.cv }}" class="group flex items-center px-2 sm:px-4 md:px-5 py-2 sm:py-2.5 bg-indigo-900/80 text-zinc-200 text-xs sm:text-sm md:text-base font-medium rounded-lg hover:bg-indigo-900 transition-all shadow-lg hover:shadow-indigo-500/30">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 mr-1 sm:mr-1.5 md:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

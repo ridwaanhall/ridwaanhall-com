@@ -36,7 +36,7 @@
                         <div class="mt-4 sm:mt-5 flex flex-wrap gap-2">
                             <button
                                 type="button"
-                                class="inline-flex items-center text-xs sm:text-sm py-1 sm:py-1.5 px-2 sm:px-3 rounded-md bg-transparent border border-zinc-600 text-zinc-200 hover:border-zinc-400 transition-all duration-200 touch-manipulation min-h-[36px]"
+                                class="inline-flex items-center text-xs sm:text-sm py-1 sm:py-1.5 px-2 sm:px-3 rounded-md bg-transparent border border-zinc-600 hover:border-zinc-400 transition-all duration-200 touch-manipulation min-h-[36px]"
                                 onclick="toggleJourney('journey-details-{{ forloop.counter }}')"
                                 aria-expanded="false"
                                 aria-controls="journey-details-{{ forloop.counter }}"
@@ -66,8 +66,8 @@
                                                 <td class="px-2 sm:px-3 py-2 align-top">
                                                     <span class="font-medium text-indigo-300 text-xs sm:text-sm">{{ step.title }}</span>
                                                 </td>
-                                                <td class="px-2 sm:px-3 py-2 text-zinc-200 text-xs sm:text-sm break-words">{{ step.details }}</td>
-                                                <td class="px-2 sm:px-3 py-2 text-zinc-200 text-xs sm:text-sm break-words">{{ step.notes|safe }}</td>
+                                                <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">{{ step.details }}</td>
+                                                <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">{{ step.notes|safe }}</td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
@@ -77,8 +77,8 @@
                         </div>
                         <!-- For the Lessons Learned section -->
                         <div class="mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-zinc-800/80">
-                            <div class="text-xs sm:text-sm py-1 px-2 text-zinc-200">
-                                <p class="text-zinc-200"><span class="font-semibold">Lessons Learned:</span> {{ application.lessons_learned|safe }}</p>
+                            <div class="text-xs sm:text-sm py-1 px-2">
+                                <p><span class="font-semibold">Lessons Learned:</span> {{ application.lessons_learned|safe }}</p>
                             </div>
                         </div>
                     </div>

@@ -102,7 +102,7 @@
                             <div class="flex justify-center md:justify-start">
                                 <button
                                     type="button"
-                                    class="inline-flex items-center text-xs sm:text-sm py-1 sm:py-1.5 px-2 sm:px-3 rounded-md bg-transparent border border-zinc-600 text-zinc-200 hover:border-zinc-400 transition-all duration-200"
+                                    class="inline-flex items-center text-xs sm:text-sm py-1 sm:py-1.5 px-2 sm:px-3 rounded-md bg-transparent border border-zinc-600 hover:border-zinc-400 transition-all duration-200"
                                     onclick="toggleResponsibilities('expresponsibilities-{{ forloop.parentloop.counter }}-{{ forloop.counter }}')"
                                     aria-expanded="false"
                                     aria-controls="expresponsibilities-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"
@@ -117,9 +117,9 @@
 
                             <!-- Responsibilities content (hidden by default) -->
                             <div id="expresponsibilities-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" class="hidden mt-3 sm:mt-4 transition-all duration-300 ease-in-out">
-                                <ul class="space-y-1 sm:space-y-2 text-zinc-200 pl-0 sm:pl-1">
+                                <ul class="space-y-1 sm:space-y-2 pl-0 sm:pl-1">
                                     {% for responsibility in experience.responsibilities %}
-                                    <li class="flex items-start py-1 sm:py-1.5 hover:bg-zinc-800/30 px-1 sm:px-2 rounded-md transition-colors duration-200 text-xs sm:text-sm md:text-base">
+                                    <li class="flex items-start py-1 sm:py-1.5px-1 sm:px-2 rounded-md transition-colors duration-200 text-xs sm:text-sm">
                                         <svg class="w-4 h-4 sm:w-5 sm:h-5 text-{% if experience.is_current %}indigo{% else %}blue{% endif %}-400 mr-1.5 sm:mr-2.5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>

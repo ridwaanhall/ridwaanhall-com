@@ -3,8 +3,9 @@
     <div class="space-y-3 sm:space-y-4">
         {% for certification in certifications %}
         <div class="rounded-xl shadow-lg overflow-hidden p-2 sm:p-3 md:p-4 border border-zinc-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20 backdrop-blur-sm">
-            <div class="flex flex-col md:flex-row md:items-start gap-3 md:gap-4">
-                <div class="flex-shrink-0 flex justify-center md:justify-start">
+            <div class="flex items-start gap-3 md:gap-4">
+                <!-- Logo always on left -->
+                <div class="flex-shrink-0">
                     <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-br from-zinc-900/60 to-indigo-900/40 rounded-lg flex items-center justify-center shadow-lg border border-indigo-700/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
                         {% if certification.logo %}
                             {% if certification.website %}
@@ -13,7 +14,7 @@
                                 </a>
                             {% else %}
                                 <img src="{{ certification.logo }}" alt="{{ certification.institution }} logo" class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full shadow-md object-cover" />
-                        {% endif %}
+                            {% endif %}
                         {% else %}
                             {% if certification.website %}
                                 <a href="{{ certification.website }}" target="_blank" rel="noopener" aria-label="Visit {{ certification.institution }}" class="hover:scale-110 transition-transform duration-300">
@@ -29,16 +30,20 @@
                         {% endif %}
                     </div>
                 </div>
-        
+                
                 <div class="flex-grow">
-                    <div class="flex flex-row items-center justify-between gap-1 sm:gap-2 mb-1 sm:mb-2">
-                        <h3 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow">{{ certification.title }}</h3>
-                        <span class="inline-flex text-indigo-300 text-xs sm:text-sm font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 sm:px-3 py-1 rounded-full border border-indigo-800/20 shadow-sm whitespace-nowrap">
+                    <div class="flex flex-row items-center justify-between">
+                        <!-- Certification title -->
+                        <h3 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow truncate mr-2">{{ certification.title }}</h3>
+                        
+                        <!-- Issued date -->
+                        <span class="inline-flex flex-shrink-0 text-indigo-300 text-xs sm:text-sm font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 sm:px-3 py-1 rounded-full border border-indigo-800/20 shadow-sm whitespace-nowrap">
                             {{ certification.issued }}
                         </span>
                     </div>
-        
-                    <p class="text-blue-200 mb-2 sm:mb-3 italic text-xs sm:text-sm md:text-base">
+                    
+                    <!-- Institution -->
+                    <p class="text-blue-200 mt-1 mb-2 sm:mb-3 italic text-xs sm:text-sm md:text-base">
                         {% if certification.website %}
                             <a class="text-indigo-300 hover:text-indigo-200 transition-colors duration-200 underline-offset-2 hover:underline" href="{{ certification.website }}" target="_blank" rel="noopener">{{ certification.institution }}</a>
                         {% else %}

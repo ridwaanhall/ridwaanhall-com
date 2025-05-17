@@ -29,7 +29,7 @@ Welcome to my digital crib! This site’s my personal brand, showing off my skil
 | Version Control | ![Git](https://img.shields.io/badge/-Git-05122A?style=flat&logo=git) ![GitHub](https://img.shields.io/badge/-GitHub-05122A?style=flat&logo=github) |
 | Hosting | ![Vercel](https://img.shields.io/badge/-Vercel-05122A?style=flat&logo=vercel) |
 | CDN | ![Cloudflare](https://img.shields.io/badge/-Cloudflare-05122A?style=flat&logo=cloudflare) |
-| Analytics | ![Cloudflare Browser Insights](https://img.shields.io/badge/-Cloudflare%20Browser%20Insights-05122A?style=flat&logo=cloudflare) ![Umami](https://img.shields.io/badge/-Umami-05122A?style=flat&logo=umami) ![Google Tag Manager](https://img.shields.io/badge/-Google%20Tag%20Manager-05122A?style=flat&logo=googletagmanager) |
+| Analytics | ![Cloudflare Browser Insights](https://img.shields.io/badge/-Cloudflare%20Browser%20Insights-05122A?style=flat&logo=cloudflare) ![Google Tag Manager](https://img.shields.io/badge/-Google%20Tag%20Manager-05122A?style=flat&logo=googletagmanager) |
 | Speed Boost | ![Cloudflare Zaraz](https://img.shields.io/badge/-Cloudflare%20Zaraz-05122A?style=flat&logo=cloudflare) |
 | Security | ![HSTS](https://img.shields.io/badge/-HSTS-05122A?style=flat&logo=security) |
 | Extra Sauce | ![PWA](https://img.shields.io/badge/-PWA-05122A?style=flat&logo=pwa) ![Open Graph](https://img.shields.io/badge/-Open%20Graph-05122A?style=flat&logo=opengraph) ![HTTP/3](https://img.shields.io/badge/-HTTP%2F3-05122A?style=flat&logo=http) |

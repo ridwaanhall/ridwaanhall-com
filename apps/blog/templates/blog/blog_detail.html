@@ -1,33 +1,39 @@
 {% extends 'base.html' %}
 
 {% block head_seo %}
-
+<!-- Primary Meta Tags -->
 <title>{{ seo.title }}</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="{{ about.username }}">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <meta name="keywords" content="{{ seo.keywords }}">
 <link rel="canonical" href="{{ request.build_absolute_uri }}">
-
 <meta name="description" content="{{ seo.description }}">
+<meta name="language" content="en">
 
+<!-- Open Graph / Facebook -->
 <meta property="og:type" content="{{ seo.og_type }}">
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
 <meta property="og:title" content="{{ seo.title }}">
 <meta property="og:description" content="{{ seo.description }}">
 <meta property="og:image" content="{{ seo.og_image }}">
+<meta property="og:site_name" content="{{ about.username }}'s Blog">
 <meta property="article:published_time" content="{{ seo.published_date }}">
+<meta property="article:modified_time" content="{{ blog.updated_at|date:'c' }}">
 <meta property="article:author" content="{{ about.username }}">
 {% for tag in seo.tags %}
 <meta property="article:tag" content="{{ tag }}">
 {% endfor %}
 
+<!-- Twitter -->
 <meta property="twitter:card" content="{{ seo.twitter_card }}">
 <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
 <meta property="twitter:title" content="{{ seo.title }}">
 <meta property="twitter:description" content="{{ seo.description }}">
 <meta property="twitter:image" content="{{ seo.og_image }}">
+<meta property="twitter:creator" content="@{{ about.username }}">
 
+<!-- Schema.org BlogPosting structured data -->
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -39,14 +45,13 @@
         "headline": "{{ blog.title }}",
         "description": "{{ blog.description }}",
         "image": "{{ blog.image_url }}",
-        "datePublished": "{{ blog.created_at|safe }}",
-        "dateModified": "{{ blog.updated_at|safe }}",
+        "datePublished": "{{ blog.created_at|date:'c' }}",
+        "dateModified": "{{ blog.updated_at|date:'c' }}",
         "author": {
             "@type": "Person", 
             "name": "{{ about.name|default:"N/A" }}",
-            "username": "{{ about.username|default:"N/A" }}",
-            "image": "{{ blog.author_image|default:"N/A" }}",
-            "url": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/"
+            "url": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/",
+            "image": "{{ blog.author_image|default:"N/A" }}"
         },
         "publisher": {
             "@type": "Person",
@@ -56,11 +61,14 @@
                 "url": "{{ blog.author_image }}"
             }
         },
-        "articleBody": "{% for paragraph in blog.content %}{{ paragraph }} {% endfor %}",
-        "keywords": "{% for tag in blog.tags %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}"
+        "articleBody": "{% for paragraph in blog.content %}{{ paragraph|striptags }} {% endfor %}",
+        "keywords": "{% for tag in blog.tags %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}",
+        "wordCount": "{% for paragraph in blog.content %}{{ paragraph|striptags|wordcount }}{% if not forloop.last %}+{% endif %}{% endfor %}",
+        "inLanguage": "en"
     }
 </script>
 
+<!-- Schema.org BreadcrumbList -->
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -82,7 +90,7 @@
                 "@type": "ListItem",
                 "position": 3,
                 "name": "{{ blog.title }}",
-                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'blog_detail' title=blog.title|slugify %}"
+                "item": "{{ request.build_absolute_uri }}"
             }
         ]
     }

@@ -84,10 +84,15 @@ class BlogView(BaseBlogView):
         context['paginator'] = paginator
         context['is_paginated'] = paginator.num_pages > 1
         
+        # Enhanced SEO metadata with more keywords and detail
+        primary_keywords = "blog, coding, tech, tutorials"
+        secondary_keywords = f"{about['name']}, {about['username']}, ideas, insights"
+        topic_keywords = ", ".join(set([tag for blog in all_blogs[:20] for tag in blog.get('tags', [])]))
+        
         context['seo'] = {
             'title': f"{about['name']}'s Blog - Thoughts & Tutorials",
-            'description': f"Dive into {about['name']}'s brain—articles, opinions, coding tips, and random tech thoughts.",
-            'keywords': f"blog, coding, tech, tutorials, {about['name']}, {about['username']}, ideas, insights",
+            'description': f"Dive into {about['name']}'s collection of articles, opinions, coding tips, and tech insights. Topics include {topic_keywords[:100]}.",
+            'keywords': f"{primary_keywords}, {secondary_keywords}, {topic_keywords}",
             'og_image': about.get('image_url', ''),
             'og_type': 'website',
             'twitter_card': 'summary_large_image',
@@ -120,14 +125,19 @@ class BlogDetailView(BaseBlogView):
             raise Http404("Blog not found")
 
         context['blog'] = blog
+        
+        # Enhanced SEO metadata with more specific and detailed information
+        tag_keywords = ", ".join(blog.get('tags', []))
+        related_keywords = f"{about['name']}, blog, {about['username']}"
+        
         context['seo'] = {
             'title': f"{blog['title']} - {about['name']}'s Take",
-            'description': blog.get('description', 'Something I wrote—hope you dig it!'),
-            'keywords': f"{', '.join(blog.get('tags', []))}, {about['name']}, blog, ideas",
+            'description': blog.get('description', 'Read my latest insights and perspectives on this topic.'),
+            'keywords': f"{tag_keywords}, {related_keywords}, ideas, insights",
             'og_image': blog.get('image_url', about.get('image_url', '')),
             'og_type': 'article',
             'twitter_card': 'summary_large_image',
-            'published_date': blog.get('date', ''),
+            'published_date': blog.get('created_at', '').isoformat() if blog.get('created_at') else '',
             'author': blog.get('author', about['name']),
             'tags': blog.get('tags', []),
         }

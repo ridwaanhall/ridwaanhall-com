@@ -100,7 +100,7 @@ class HomeView(BasePortfolioView):
             'seo': self.get_seo_data(
             title=f"Hey, I'm {about['name']} - Welcome to My World",
             description=f"This is {about['username']}'s corner of the internet! {about.get('short_description', 'A place where I share my projects, ideas, and journey.')}",
-            keywords=f"{about['username']}, portfolio, coder, projects, blogs, skills, learning, ai engineer, web developer, machine learning engineer, dbs foundation coding camp mentor",
+            keywords=f"{about['username']}, portfolio, coder, projects, blogs, skills, learning, ai engineer, web developer, machine learning engineer, dbs foundation coding camp mentor, django, python, pytorch",
             twitter_card='summary_large_image'
             ),
         }

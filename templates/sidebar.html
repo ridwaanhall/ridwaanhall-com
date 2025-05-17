@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between p-5 mb-4">
             <div class="flex items-center">
                 <div class="relative">
-                    <img src="{{ about.image_url }}" alt="{{ about.name }} Profile Photo" class="w-12 h-12 rounded-full object-cover">
+                    <img src="{{ about.image_url }}" alt="{{ about.name }} Profile Photo" class="w-12 h-12 rounded-full object-cover" width="358" height="358">
                     {% if about.is_active %}
                     <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full"></div>
                     {% endif %}
@@ -140,7 +140,7 @@
                 <div class="relative rounded-full">
                     <img src="{{ about.image_url }}" alt="{{ about.name }} Profile Photo" 
                          class="w-15 h-15 rounded-full object-cover duration-700 ease-in-out scale-100 lg:hover:scale-105" 
-                         loading="lazy" decoding="async">
+                         loading="lazy" decoding="async" width="358" height="358">
                     {% if about.is_active %}
                     <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border border-zinc-950"></div>
                     {% endif %}

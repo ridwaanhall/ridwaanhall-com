@@ -158,9 +158,9 @@
                         <div class="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex space-x-1 sm:space-x-2">
                             {% for blog in featured_blogs %}
                                 {% if forloop.first %}
-                                <button class="slider-dot bg-white w-4 h-1.5 sm:h-2 rounded-full hover:bg-white transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Slide {{ forloop.counter }}"></button>
+                                <button class="slider-dot bg-zinc-300 w-4 h-1.5 sm:h-2 rounded-full hover:bg-zinc-300 transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Slide {{ forloop.counter }}"></button>
                                 {% else %}
-                                <button class="slider-dot bg-white/50 w-1.5 h-1.5 sm:h-2 rounded-full hover:bg-white transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Slide {{ forloop.counter }}"></button>
+                                <button class="slider-dot bg-zinc-300/50 w-1.5 h-1.5 sm:h-2 rounded-full hover:bg-zinc-300 transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Slide {{ forloop.counter }}"></button>
                                 {% endif %}
                             {% endfor %}
                         </div>

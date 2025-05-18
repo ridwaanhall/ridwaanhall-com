@@ -38,7 +38,16 @@
                         
                         <!-- Years - consistently on the right -->
                         <span class="inline-flex flex-shrink-0 text-indigo-300 text-xs sm:text-sm font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 sm:px-3 py-1 rounded-full border border-indigo-800/20 shadow-sm whitespace-nowrap">
-                            {{ edu.years }}
+                            {% if edu.years %}
+                                {{ edu.years }}
+                            {% elif edu.date %}
+                                {{ edu.date.start.month }} {{ edu.date.start.year }} - 
+                                {% if edu.date.end %}
+                                    {{ edu.date.end.month }} {{ edu.date.end.year }}
+                                {% else %}
+                                    Present
+                                {% endif %}
+                            {% endif %}
                         </span>
                     </div>
                     

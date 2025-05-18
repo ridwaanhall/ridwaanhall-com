@@ -4,7 +4,16 @@ class EducationData:
     education = [
         {
             "degree": "S.Kom in Intelligence Systems (AI)",
-            "years": "2021 - Now",
+            "date": {
+                "start": {
+                    "year": 2021,
+                    "month": "Sep"
+                },
+                "end": {
+                    "year": 2025,
+                    "month": "Aug"
+                }
+            },
             "institution": "Universitas Teknologi Yogyakarta",
             "website": "https://uty.ac.id/",
             "logo": f"{settings.BASE_URL}/static/img/logo/uty.webp",

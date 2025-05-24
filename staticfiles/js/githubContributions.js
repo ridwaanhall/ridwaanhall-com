@@ -233,33 +233,65 @@ class GitHubContributions {
             })
             .sort((a, b) => a.week - b.week);
         
-        // Create and position month labels for ALL months (no filtering)
+        // Create and position month labels, avoiding overlaps
+        const processedMonths = new Set(); // Track months that already have labels
+        
         monthPositions.forEach((pos, index) => {
+            const monthKey = `${pos.year}-${pos.month}`;
+            
+            // Skip if this month already has a label
+            if (processedMonths.has(monthKey)) {
+                return;
+            }
+            
             const label = document.createElement('span');
-            label.textContent = this.MONTH_NAMES[pos.month];
             label.className = 'absolute text-xs text-zinc-400 font-medium';
             
-            // Check special conditions for positioning:
-            // 1. First month is always at original position
-            // 2. Other months: if they start on the 1st day of month AND on Sunday (0), keep at original position
             let offsetWeek = pos.week;
+            let monthLabel = this.MONTH_NAMES[pos.month];
             
             const isFirstMonth = index === 0;
-            const startsOnFirstDayOfMonth = pos.firstDayOfMonth === 1;
-            const startsOnSunday = pos.firstDayOfWeek === 0;
+            const currentMonthWeekCount = monthPositions.filter(p => p.month === pos.month && p.year === pos.year).length;
+            const isEndOfMonthScenario = currentMonthWeekCount === 1 && pos.firstDayOfMonth > 25;
             
-            if (!isFirstMonth && !(startsOnFirstDayOfMonth && startsOnSunday)) {
-                // Only offset if not first month and doesn't start on Sunday with 1st day of month
+            // Special handling for first week when it's end of month
+            if (isFirstMonth && isEndOfMonthScenario) {
+                // For first week showing end of month, use next month's label
+                const nextMonth = (pos.month + 1) % 12;
+                const nextYear = pos.month === 11 ? pos.year + 1 : pos.year;
+                monthLabel = this.MONTH_NAMES[nextMonth];
+                
+                // Mark both current and next month as processed to avoid duplicates
+                processedMonths.add(monthKey);
+                const nextMonthKey = `${nextYear}-${nextMonth}`;
+                processedMonths.add(nextMonthKey);
+            } else if (isEndOfMonthScenario && !isFirstMonth) {
+                // Use next month's label for end-of-month scenarios
+                const nextMonth = (pos.month + 1) % 12;
+                const nextYear = pos.month === 11 ? pos.year + 1 : pos.year;
+                monthLabel = this.MONTH_NAMES[nextMonth];
+                offsetWeek = Math.min(pos.week + 1, this.WEEKS_IN_YEAR - 1);
+                
+                // Mark the next month as processed to avoid duplicate labels
+                const nextMonthKey = `${nextYear}-${nextMonth}`;
+                processedMonths.add(nextMonthKey);
+            } else if (!isFirstMonth) {
+                // Regular offset for non-first months
                 offsetWeek = Math.min(pos.week + 1, this.WEEKS_IN_YEAR - 1);
             }
             
+            label.textContent = monthLabel;
             const percentPosition = (offsetWeek / this.WEEKS_IN_YEAR) * 100;
             label.style.left = `${percentPosition}%`;
             
             // Add a data attribute for debugging if needed
             label.setAttribute('data-year', pos.year);
+            label.setAttribute('data-original-month', this.MONTH_NAMES[pos.month]);
             
             this.monthLabelsContainer.appendChild(label);
+            
+            // Mark this month as processed
+            processedMonths.add(monthKey);
         });
     }
 }

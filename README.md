@@ -1,6 +1,6 @@
 # ridwaanhall.com
 
-🔥 I built my personal site from *scratch* with Django and TailwindCSS, and it’s straight-up 🔥. Hosted on Vercel for that smooth vibe. 😎
+🔥 I built my personal site from *scratch* with Django and TailwindCSS, and it’s straight-up 🔥. Hosted on Vercel for that smooth vibe.😎
 
 ![ridwaanhall](public/ridwaanhall_com.png)
 

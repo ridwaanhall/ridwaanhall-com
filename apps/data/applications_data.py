@@ -22,32 +22,32 @@ class ApplicationsData:
             "position": "Machine Learning Mentor",
             "journey": [
                 {
-                    "title": "First Hit",
-                    "details": "Got an email inviting me to mentor—caught me off guard but hyped!",
+                    "title": "Initial Contact",
+                    "details": "Received an email invitation to become a mentor, which was unexpected but exciting.",
                     "notes": "-"
                 },
                 {
-                    "title": "Form Vibes",
-                    "details": "Filled out a Google Form with my info, motivation, pic, and experience",
+                    "title": "Application Process",
+                    "details": "Completed a Google Form with personal information, motivation, profile picture, and experience details.",
                     "notes": "-"
                 },
                 {
-                    "title": "Course Grind",
-                    "details": "Had to complete the course I’d be mentoring—went all in!",
+                    "title": "Course Completion",
+                    "details": "Required to complete the course that I would be mentoring to ensure adequate preparation.",
                     "notes": "-"
                 },
                 {
-                    "title": "Real Talk",
-                    "details": "Chatted about my background, passion, and tackled some problem-solving questions",
-                    "notes": "<span class='text-blue-600'>Respect for both of us having cams on—straight-up professional vibe, not like HashMicro’s cowardly cam-off clown show!</span>"
+                    "title": "Interview Session",
+                    "details": "Discussed background, passion, and answered problem-solving questions during the interview.",
+                    "notes": "<span class='text-blue-600'>Appreciated the professional interview setup with both parties having cameras enabled.</span>"
                 },
                 {
-                    "title": "Locked In!",
-                    "details": "Snagged the Machine Learning Mentor role—ready to inspire!",
+                    "title": "Final Selection",
+                    "details": "Successfully secured the Machine Learning Mentor position.",
                     "notes": "-"
                 },
             ],
-            "lessons_learned": "Digging into HR’s docs like it’s a treasure hunt seriously boosts your chances!"
+            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates."
         },
         {
             "id": 13,
@@ -56,47 +56,47 @@ class ApplicationsData:
             "position": "Python Developer (Django)",
             "journey": [
                 {
-                    "title": "LinkedIn DM",
-                    "details": "HR slid into my LinkedIn with an interview link—thought it was a vibe!",
+                    "title": "Initial Contact",
+                    "details": "HR contacted me via LinkedIn with an interview invitation.",
                     "notes": "-"
                 },
                 {
-                    "title": "Tech Talk",
-                    "details": "Went hard on Django class vs function views, even talked salary. They made me turn my cam on, but theirs? Total blackout—super sketchy.",
-                    "notes": "<span class='text-red-600'>Only my face on display? HR’s hiding like spineless wannabes!</span>"
+                    "title": "Technical Interview",
+                    "details": "Discussed Django class vs function views and salary expectations. Interview format had cameras enabled only for candidates.",
+                    "notes": "<span class='text-orange-600'>Interview setup could be improved with mutual camera visibility for better engagement.</span>"
                 },
                 {
-                    "title": "Official Apply",
-                    "details": "Had to apply through their clunky website—knocked it out, no biggie.",
+                    "title": "Formal Application",
+                    "details": "Completed the official application through company website.",
                     "notes": "-"
                 },
                 {
-                    "title": "Brain Teasers",
-                    "details": "Crushed a logic test and coding challenge—nailed it like a boss!",
+                    "title": "Assessment Phase",
+                    "details": "Successfully completed logic test and coding challenge assessments.",
                     "notes": "-"
                 },
                 {
-                    "title": "Client Meet",
-                    "details": "Final round with the user team—yep, my cam’s on, theirs off. Again. Straight-up rude.",
-                    "notes": "<span class='text-red-600'>Solo cam vibes? Beyond disrespectful, you clowns!</span>"
+                    "title": "Final Interview",
+                    "details": "Final interview round with the client team, maintaining the same camera format.",
+                    "notes": "<span class='text-orange-600'>Consistent interview format throughout the process.</span>"
                 },
                 {
-                    "title": "Waiting Game",
-                    "details": "Waited over 30 days for any word—total radio silence. Felt like they forgot I existed.",
-                    "notes": "<span class='text-red-600'>A month-plus with zero updates? Amateur hour!</span>"
+                    "title": "Extended Wait Period",
+                    "details": "Waited over 30 days for feedback without receiving status updates.",
+                    "notes": "<span class='text-orange-600'>Extended communication gap during evaluation period.</span>"
                 },
                 {
-                    "title": "Rejection Email",
-                    "details": "After 30+ days of nothing, got an email saying my resume was solid but I didn’t make the cut. They said I could ask why, but their silence already spoke volumes.",
-                    "notes": "<span class='text-red-600'>A month to send a rejection? Pathetic effort, clowns!</span>"
+                    "title": "Rejection Notification",
+                    "details": "Received rejection email after 30+ days, acknowledging resume quality but indicating non-selection. Offered opportunity to request feedback.",
+                    "notes": "<span class='text-orange-600'>Lengthy response time for final decision communication.</span>"
                 },
                 {
-                    "title": "Response to Rejection",
-                    "details": "Sent a polite reply, thanking them with a tiny nod of respect for at least replying, asked for feedback, and left the door open for future roles. Still not impressed with their HR circus.",
-                    "notes": "<span class='text-blue-600'>Kept it professional, but their month-long ghosting act deserves zero applause!</span>"
+                    "title": "Professional Response",
+                    "details": "Sent a courteous reply expressing gratitude, requesting constructive feedback, and maintaining openness for future opportunities.",
+                    "notes": "<span class='text-blue-600'>Maintained professional communication throughout the process.</span>"
                 }
             ],
-            "lessons_learned": "<span class='text-red-600 '>Cam on for me, but you’re hiding like scared little kids?</span> Respect’s a two-way street, geniuses. HR, grow a spine: <span class='text-blue-600 '>don’t make candidates wait over a month for a basic rejection</span>. <span class='text-orange-600 '>Dragging people along with zero updates is for amateurs who can’t handle basic professionalism</span>. This HR’s a <span class='underline decoration-red-400 decoration-2'>hot mess of a clown show</span>."
+            "lessons_learned": "<span class='text-blue-600'>Professional interview setups benefit from mutual respect and transparency.</span> <span class='text-orange-600'>Extended communication delays can impact candidate experience and company reputation.</span> Providing timely feedback and maintaining consistent communication standards are essential for professional hiring processes."
         },
         {
             "id": 12,
@@ -105,37 +105,37 @@ class ApplicationsData:
             "position": "Python Developer (Junior Level)",
             "journey": [
                 {
-                    "title": "Spotted It",
-                    "details": "Saw this slick job post on LinkedIn—looked like a total win!",
+                    "title": "Job Discovery",
+                    "details": "Found an attractive job posting on LinkedIn that matched my qualifications.",
                     "notes": "-"
                 },
                 {
-                    "title": "Sent It",
-                    "details": "Fired off my resume and docs via LinkedIn—felt like a champ.",
+                    "title": "Application Submission",
+                    "details": "Submitted resume and supporting documents via LinkedIn.",
                     "notes": "-"
                 },
                 {
-                    "title": "Some Action",
-                    "details": "Got a ‘resume viewed and downloaded’ ping—yo, I thought I was in!",
+                    "title": "Initial Response",
+                    "details": "Received notification that resume was viewed and downloaded.",
                     "notes": "-"
                 },
                 {
-                    "title": "Ghost Town",
-                    "details": "Not a single call or email—complete dead zone after that.",
-                    "notes": "<span class='text-red-600'>Zero follow-up? Straight-up rude clowns!</span>"
+                    "title": "Communication Gap",
+                    "details": "No follow-up communication received after initial acknowledgment.",
+                    "notes": "<span class='text-orange-600'>Limited follow-up communication after application review.</span>"
                 },
                 {
-                    "title": "Job Closed",
-                    "details": "Listing got pulled right after my app—super sketchy vibes.",
+                    "title": "Job Listing Closure",
+                    "details": "Job posting was removed shortly after application submission.",
                     "notes": "-"
                 },
                 {
-                    "title": "Plot Twist",
-                    "details": "Same job popped back up a month later—what kinda game is this?",
-                    "notes": "<span class='text-red-600'>Hoarding resumes like greedy wannabes? Total scam energy!</span>"
+                    "title": "Listing Reappearance",
+                    "details": "Same position was reposted approximately one month later.",
+                    "notes": "<span class='text-orange-600'>Uncertain hiring timeline and process clarity.</span>"
                 }
             ],
-            "lessons_learned": "<span class='text-red-600 '>Opening and closing jobs just to collect resumes like some shady side hustle?</span> HR, stop playing dirty: <span class='text-blue-600 '>give candidates a real shot or quit wasting their time</span>. <span class='text-orange-600 '>This kind of nonsense is for spineless posers</span>. Your company’s a <span class='underline decoration-red-400 decoration-2'>pathetic dumpster fire of a circus</span>."
+            "lessons_learned": "<span class='text-orange-600'>Some companies may have extended recruitment cycles or changing requirements.</span> <span class='text-blue-600'>Candidates should maintain realistic expectations about hiring timelines and continue exploring other opportunities.</span> Clear communication about hiring processes would improve candidate experience."
         },
         {
             "id": 11,
@@ -144,27 +144,27 @@ class ApplicationsData:
             "position": "Backend Engineer Intern",
             "journey": [
                 {
-                    "title": "First Contact",
-                    "details": "HR dropped a backend intern gig in my LinkedIn—thought it was a banger!",
+                    "title": "Initial Contact",
+                    "details": "HR reached out via LinkedIn about a backend intern position.",
                     "notes": "-"
                 },
                 {
-                    "title": "Kickoff Chat",
-                    "details": "Talked up my projects and skills—vibes were chill, no lie.",
+                    "title": "Preliminary Discussion",
+                    "details": "Discussed projects and technical skills in initial conversation.",
                     "notes": "-"
                 },
                 {
-                    "title": "Tech Dive",
-                    "details": "Got into intern tasks—dope convo, but they asked my cam on while they stayed invisible.",
-                    "notes": "<span class='text-red-600'>Cam on for me, theirs off? Weak, shady move, losers!</span>"
+                    "title": "Technical Discussion",
+                    "details": "Detailed conversation about intern responsibilities and tasks. Interview format had candidate camera enabled.",
+                    "notes": "<span class='text-orange-600'>Interview setup could benefit from mutual camera visibility.</span>"
                 },
                 {
-                    "title": "Vanished",
-                    "details": "Not a peep after that—ghosted me like total cowards.",
-                    "notes": "<span class='text-red-600'>Ditched with no word? Lame-ass nonsense!</span>"
+                    "title": "Communication Cessation",
+                    "details": "No further communication received after technical discussion.",
+                    "notes": "<span class='text-orange-600'>Process concluded without formal closure or feedback.</span>"
                 }
             ],
-            "lessons_learned": "<span class='text-red-600 '>Bragging about professionalism but pulling a Houdini?</span> HR, get a grip: <span class='text-blue-600 '>stop leaving candidates hanging like spineless flakes</span>. <span class='text-orange-600 '>Ghosting’s for posers who can’t handle a simple email</span>. This company’s a <span class='underline decoration-red-400 decoration-2'>sad, sloppy clown parade</span>."
+            "lessons_learned": "<span class='text-blue-600'>Professional communication includes providing closure to candidates regardless of outcome.</span> <span class='text-orange-600'>Clear hiring timelines and follow-up processes improve overall candidate experience.</span> Companies should maintain consistent communication standards throughout the recruitment process."
         },
         {
             "id": 10,
@@ -173,32 +173,32 @@ class ApplicationsData:
             "position": "Frontend Developer",
             "journey": [
                 {
-                    "title": "GitHub Glow",
-                    "details": "Recruiter vibed with my GitHub and shot me an email",
+                    "title": "Recruiter Outreach",
+                    "details": "Recruiter discovered my GitHub profile and initiated contact via email.",
                     "notes": "-"
                 },
                 {
-                    "title": "Cool Offer",
-                    "details": "Got a frontend gig pitch and a coding test invite",
+                    "title": "Position Offer",
+                    "details": "Received frontend developer position pitch and coding test invitation.",
                     "notes": "-"
                 },
                 {
-                    "title": "Code Challenge",
-                    "details": "Tasked with building a speech-to-text web project",
+                    "title": "Technical Assessment",
+                    "details": "Assigned to build a speech-to-text web application project.",
                     "notes": "-"
                 },
                 {
-                    "title": "Security Drama",
-                    "details": "Mid-test, my account got sketchy—possible hack. Had to pull the plug.",
-                    "notes": "<span class='text-red-600'>Bailed on the test due to account issues</span>"
+                    "title": "Technical Interruption",
+                    "details": "Encountered account security issues during assessment that required immediate attention and test discontinuation.",
+                    "notes": "<span class='text-orange-600'>Had to withdraw from assessment due to security concerns.</span>"
                 },
                 {
-                    "title": "No Go",
-                    "details": "Got word I didn’t make the cut—oh well",
+                    "title": "Final Decision",
+                    "details": "Received notification of non-selection for the position.",
                     "notes": "-"
                 },
             ],
-            "lessons_learned": "Prep hard for coding tests—scope out the company’s stuff and online tips. Oh, and lock down your setup to avoid disasters."
+            "lessons_learned": "Thorough preparation for technical assessments is crucial, including researching company products and available resources. Maintaining secure development environments is essential to avoid disruptions during critical evaluations."
         },
         {
             "id": 9,
@@ -207,22 +207,22 @@ class ApplicationsData:
             "position": "AI Engineer Intern",
             "journey": [
                 {
-                    "title": "Found It",
-                    "details": "Caught an internship post on LinkedIn—looked fire",
+                    "title": "Job Discovery",
+                    "details": "Found an internship opportunity on LinkedIn that aligned with my interests.",
                     "notes": "-"
                 },
                 {
-                    "title": "Dropped Resume",
-                    "details": "Applied via LinkedIn with my CV and docs",
+                    "title": "Application Submission",
+                    "details": "Applied via LinkedIn with CV and supporting documentation.",
                     "notes": "-"
                 },
                 {
-                    "title": "Crickets",
-                    "details": "No response—probably got axed early",
-                    "notes": "<span class='text-red-600'>Likely filtered out in screening</span>"
+                    "title": "No Response",
+                    "details": "Did not receive any communication following application submission.",
+                    "notes": "<span class='text-orange-600'>Application likely filtered during initial screening phase.</span>"
                 },
             ],
-            "lessons_learned": "Not every app gets a reply. Companies use bots to screen—tailor your resume to slip through."
+            "lessons_learned": "Not all applications receive individual responses due to high volume. Companies often use automated screening systems, making resume optimization important for initial filtering stages."
         },
         {
             "id": 8,
@@ -231,22 +231,22 @@ class ApplicationsData:
             "position": "AI Engineer Intern",
             "journey": [
                 {
-                    "title": "Job Radar",
-                    "details": "Spotted an AI internship on LinkedIn—had to try",
+                    "title": "Opportunity Identification",
+                    "details": "Discovered AI internship position on LinkedIn platform.",
                     "notes": "-"
                 },
                 {
-                    "title": "Sent Docs",
-                    "details": "Submitted my resume and papers via LinkedIn",
+                    "title": "Document Submission",
+                    "details": "Submitted resume and supporting materials via LinkedIn.",
                     "notes": "-"
                 },
                 {
-                    "title": "Silent Treatment",
-                    "details": "No feedback—guessing I got screened out",
-                    "notes": "<span class='text-red-600'>Probably didn’t pass  make the bot cut</span>"
+                    "title": "No Communication",
+                    "details": "Did not receive feedback following application submission.",
+                    "notes": "<span class='text-orange-600'>Application likely did not pass initial screening criteria.</span>"
                 },
             ],
-            "lessons_learned": "Same deal—craft a laser-focused resume to dodge those screening bots."
+            "lessons_learned": "Focus on creating targeted resumes that align with specific job requirements to improve success rates in automated screening processes."
         },
         {
             "id": 7,
@@ -255,22 +255,22 @@ class ApplicationsData:
             "position": "Founder",
             "journey": [
                 {
-                    "title": "Dream Spark",
-                    "details": "Got this wild idea to start a company vibin’ with my love for Python, ML, DL, and web dev.",
+                    "title": "Vision Development",
+                    "details": "Conceived the idea to start a company based on expertise in Python, ML, DL, and web development.",
                     "notes": "-"
                 },
                 {
-                    "title": "Name Hunt",
-                    "details": "Brainstormed a dope name that screams my passion—boom, Copilot ID was born!",
+                    "title": "Brand Creation",
+                    "details": "Developed company name and branding that reflects technical passion and expertise.",
                     "notes": "-"
                 },
                 {
-                    "title": "Founder Vibes",
-                    "details": "Stepped up as the founder, ready to hustle and make waves!",
+                    "title": "Leadership Role",
+                    "details": "Established position as company founder to pursue entrepreneurial goals.",
                     "notes": "-"
                 }
             ],
-            "lessons_learned": "Chase your passion and give it a name—your vision’s gotta start somewhere!"
+            "lessons_learned": "Following your passion and technical expertise can lead to entrepreneurial opportunities. Clear vision and branding are essential foundation elements for new ventures."
         },
         {
             "id": 6,
@@ -279,17 +279,17 @@ class ApplicationsData:
             "position": "Assistant Squad Leader of Web Developer Intern",
             "journey": [
                 {
-                    "title": "Got Props",
-                    "details": "My work stood out, so they offered me assistant squad leader—hype!",
+                    "title": "Performance Recognition",
+                    "details": "Work performance was recognized, leading to promotion opportunity to assistant squad leader position.",
                     "notes": "-"
                 },
                 {
-                    "title": "Level Up",
-                    "details": "Set to step into the new role soon—let’s go!",
+                    "title": "Role Transition",
+                    "details": "Prepared to assume new leadership responsibilities in the upcoming period.",
                     "notes": "-"
                 },
             ],
-            "lessons_learned": "Grind hard, and the big roles come knocking—performance pays off!"
+            "lessons_learned": "Consistent high performance and dedication to work responsibilities can lead to advancement opportunities and increased responsibilities."
         },
         {
             "id": 5,
@@ -298,17 +298,17 @@ class ApplicationsData:
             "position": "Main Team of Web Developer Intern",
             "journey": [
                 {
-                    "title": "Intern Grind",
-                    "details": "Crushed my internship tasks like a boss, putting in that work.",
+                    "title": "Internship Performance",
+                    "details": "Successfully completed internship tasks and demonstrated strong work ethic.",
                     "notes": "-"
                 },
                 {
-                    "title": "Level Up",
-                    "details": "My performance was straight fire, so they bumped me to the main web dev team!",
+                    "title": "Team Promotion",
+                    "details": "Strong performance resulted in promotion to the main web development team.",
                     "notes": "-"
                 }
             ],
-            "lessons_learned": "Go hard on your tasks—good vibes and hustle get you noticed!"
+            "lessons_learned": "Dedication to assigned tasks and maintaining positive work attitude leads to recognition and career advancement opportunities."
         },
         {
             "id": 4,
@@ -317,27 +317,27 @@ class ApplicationsData:
             "position": "Web Developer Intern",
             "journey": [
                 {
-                    "title": "LinkedIn Hit",
-                    "details": "Scored a DM about an internship—felt legit!",
+                    "title": "LinkedIn Opportunity",
+                    "details": "Received direct message about internship opportunity through LinkedIn.",
                     "notes": "-"
                 },
                 {
-                    "title": "Virtual Hang",
-                    "details": "Jumped on a Google Meet to talk experience and vibes",
+                    "title": "Virtual Interview",
+                    "details": "Participated in Google Meet interview to discuss experience and qualifications.",
                     "notes": "-"
                 },
                 {
-                    "title": "CV Drop",
-                    "details": "Joined a group and sent my CV with all the links",
+                    "title": "Documentation Submission",
+                    "details": "Joined group communication and submitted CV with portfolio links.",
                     "notes": "-"
                 },
                 {
-                    "title": "Nailed It!",
-                    "details": "Bagged the Web Developer Intern spot—ready to build!",
+                    "title": "Position Secured",
+                    "details": "Successfully obtained Web Developer Intern position.",
                     "notes": "-"
                 },
             ],
-            "lessons_learned": "Keep your LinkedIn and CV fresh—doors open when you’re ready!"
+            "lessons_learned": "Maintaining an updated LinkedIn profile and current CV creates opportunities for career advancement and professional networking."
         },
         {
             "id": 3,
@@ -346,22 +346,22 @@ class ApplicationsData:
             "position": "Machine Learning Intern",
             "journey": [
                 {
-                    "title": "LinkedIn Scroll",
-                    "details": "Spotted a ML intern gig on LinkedIn that matched my vibe.",
+                    "title": "Opportunity Discovery",
+                    "details": "Found ML intern position on LinkedIn that aligned with career interests.",
                     "notes": "-"
                 },
                 {
-                    "title": "CV Yeet",
-                    "details": "Shot my CV over, hyped to level up my ML knowledge.",
+                    "title": "Application Submission",
+                    "details": "Submitted CV with enthusiasm for expanding ML knowledge and experience.",
                     "notes": "-"
                 },
                 {
-                    "title": "Group Chat Poppin’",
-                    "details": "Got accepted and slid into the WhatsApp group for the deets.",
+                    "title": "Acceptance Communication",
+                    "details": "Received acceptance and joined WhatsApp group for program details and coordination.",
                     "notes": "-"
                 }
             ],
-            "lessons_learned": "Stay active on LinkedIn and shoot your shot—opportunities are out there!"
+            "lessons_learned": "Active engagement on professional platforms and willingness to pursue learning opportunities can lead to valuable internship experiences."
         },
         {
             "id": 2,
@@ -370,40 +370,40 @@ class ApplicationsData:
             "position": "Machine Learning Intern",
             "journey": [
                 {
-                    "title": "Website Find",
-                    "details": "Stumbled on an intern post while surfin’ iNeuron’s site.",
+                    "title": "Website Discovery",
+                    "details": "Found internship posting while browsing iNeuron's company website.",
                     "notes": "-"
                 },
                 {
-                    "title": "Sign-Up Swag",
-                    "details": "Applied for the ML intern gig and got the green light!",
+                    "title": "Application Success",
+                    "details": "Applied for ML intern position and received acceptance confirmation.",
                     "notes": "-"
                 },
                 {
-                    "title": "Task Mode",
-                    "details": "Got tasks to tackle, but I’m juggling other stuff since this gig’s chill and flexible.",
+                    "title": "Flexible Engagement",
+                    "details": "Received tasks to complete while managing other commitments due to flexible program structure.",
                     "notes": "-"
                 }
             ],
-            "lessons_learned": "Flexible gigs are dope—grab ‘em, but balance your hustle!"
+            "lessons_learned": "Flexible internship opportunities provide valuable experience while allowing for balanced schedule management and multiple learning pursuits."
         },
         {
             "id": 1,
-            "company_name": "Imaarotu Syu’unith Tholabah",
+            "company_name": "Imaarotu Syu'unith Tholabah",
             "status": "Accepted",
-            "position": "Deputy of Da’wah",
+            "position": "Deputy of Da'wah",
             "journey": [
                 {
-                    "title": "Boarding School Buzz",
-                    "details": "Hit senior year at boarding school, and it was time for the big org handover.",
+                    "title": "Senior Year Transition",
+                    "details": "Reached final year at boarding school during organizational leadership transition period.",
                     "notes": "-"
                 },
                 {
-                    "title": "Ustadz Call",
-                    "details": "Teachers (ustadz) picked the roles, and I got tapped for Deputy of Da’wah!",
+                    "title": "Leadership Selection",
+                    "details": "Selected by teachers (ustadz) for Deputy of Da'wah leadership position.",
                     "notes": "-"
                 }
             ],
-            "lessons_learned": "Show up and shine—sometimes the big roles find you!"
+            "lessons_learned": "Consistent positive behavior and dedication to community responsibilities can lead to recognition and leadership opportunities."
         }
     ]

@@ -16,6 +16,15 @@
                 <img src="https://wsrv.nl/?url={{ project.image_url }}&w=300&h=300" alt="{{ project.title }}" 
                     class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105" loading="lazy">
                 <div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-90"></div>
+
+                <div class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                    <div class="flex items-center font-medium text-sm sm:text-base">
+                        <span class="mr-1">View project</span>
+                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </div>
+                </div>
             </div>
             
             <div class="p-3 sm:p-4 flex flex-col flex-grow">

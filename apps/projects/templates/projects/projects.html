@@ -148,6 +148,16 @@
                             
                             <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
                             
+                            <!-- Hover overlay with "View project" text -->
+                            <div class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                                <div class="flex items-center font-medium text-sm sm:text-base">
+                                    <span class="mr-1">View project</span>
+                                    <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            
                             {% if project.is_featured %}
                             <div class="absolute top-0 right-0 z-20">
                                 <div class="bg-lime-300 text-emerald-950 text-xs font-bold px-2 py-1 sm:px-3 sm:py-1.5 rounded-bl-lg shadow-lg flex items-center transition-all duration-300 group-hover:shadow-purple-500/30">

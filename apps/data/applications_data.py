@@ -140,7 +140,7 @@ class ApplicationsData:
         {
             "id": 11,
             "company_name": "Shortlyst AI",
-            "status": "Ghosting",
+            "status": "Ghosted",
             "position": "Backend Engineer Intern",
             "journey": [
                 {

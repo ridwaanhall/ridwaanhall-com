@@ -1,4 +1,3 @@
-// Toggle function for achievements in education
 function toggleAchievements(id) {
     const element = document.getElementById(id);
     const counter = id.split('-')[1];
@@ -22,7 +21,6 @@ function toggleAchievements(id) {
             element.style.opacity = '1';
         }, 10);
     } else {
-        // Hide content with animation
         element.style.maxHeight = '0';
         element.style.opacity = '0';
         showText.classList.remove('hidden');
@@ -35,7 +33,6 @@ function toggleAchievements(id) {
     }
 }
 
-// Toggle function for certifications achievements
 function toggleAchievementsCerts(id) {
     const element = document.getElementById(id);
     const counter = id.split('-')[1];
@@ -44,7 +41,6 @@ function toggleAchievementsCerts(id) {
     const arrowCert = document.getElementById('arrow-cert-' + counter);
     
     if (element.classList.contains('hidden')) {
-        // Show content with animation
         element.classList.remove('hidden');
         element.style.maxHeight = '0';
         element.style.opacity = '0';
@@ -59,7 +55,6 @@ function toggleAchievementsCerts(id) {
             element.style.opacity = '1';
         }, 10);
     } else {
-        // Hide content with animation
         element.style.maxHeight = '0';
         element.style.opacity = '0';
         showTextCert.classList.remove('hidden');
@@ -72,16 +67,14 @@ function toggleAchievementsCerts(id) {
     }
 }
 
-// Toggle function for responsibilities in experiences
 function toggleResponsibilities(id) {
     const element = document.getElementById(id);
-    const counterParts = id.split('-').slice(1).join('-'); // Get both parts of counter (e.g., "1-2")
+    const counterParts = id.split('-').slice(1).join('-');
     const showTextResp = document.getElementById('show-text-resp-' + counterParts);
     const hideTextResp = document.getElementById('hide-text-resp-' + counterParts);
     const arrowResp = document.getElementById('arrow-resp-' + counterParts);
 
     if (element.classList.contains('hidden')) {
-        // Show content with animation
         element.classList.remove('hidden');
         element.style.maxHeight = '0';
         element.style.opacity = '0';
@@ -96,7 +89,6 @@ function toggleResponsibilities(id) {
             element.style.opacity = '1';
         }, 10);
     } else {
-        // Hide content with animation
         element.style.maxHeight = '0';
         element.style.opacity = '0';
         showTextResp.classList.remove('hidden');
@@ -109,7 +101,6 @@ function toggleResponsibilities(id) {
     }
 }
 
-// Toggle function for interview journey details
 function toggleJourney(id) {
     const content = document.getElementById(id);
     const cardId = id.split('-').pop();

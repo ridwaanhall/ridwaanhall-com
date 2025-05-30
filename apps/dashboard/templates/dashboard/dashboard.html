@@ -299,10 +299,8 @@
 <script src="{% static 'js/githubContributions.js' %}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Process GitHub contribution data
         const githubData = {{ github_activity|safe }};
         
-        // Initialize the GitHub contributions display
         const contributionsGraph = new GitHubContributions(githubData);
         contributionsGraph.init();
     });

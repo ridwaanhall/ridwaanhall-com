@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     countElements.forEach(element => {
         const target = parseFloat(element.dataset.target);
-        const duration = 1500; // Animation duration in milliseconds
+        const duration = 1500;
         const start = 0;
         const startTime = performance.now();
         

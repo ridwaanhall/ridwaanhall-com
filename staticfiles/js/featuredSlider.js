@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Set initial active dot
     if (dots.length > 0) {
-        dots[0].classList.add('bg-white', 'w-4');
-        dots[0].classList.remove('bg-white/50', 'w-1.5'); // Ensure initial state is correct
+        dots[0].classList.add('bg-zinc-300', 'w-4');
+        dots[0].classList.remove('bg-zinc-300/50', 'w-1.5'); // Ensure initial state is correct
     }
 
     function goToSlide(index) {
@@ -38,17 +38,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Update dots
         dots.forEach((dot, i) => {
-            // Handle background color
-            dot.classList.toggle('bg-white', i === currentIndex);
-            dot.classList.toggle('bg-white/50', i !== currentIndex);
-
-            // Handle width classes correctly
             if (i === currentIndex) {
-                dot.classList.add('w-4');
-                dot.classList.remove('w-1.5');
+                // Active dot
+                dot.classList.remove('bg-zinc-300/50', 'w-1.5');
+                dot.classList.add('bg-zinc-300', 'w-4');
             } else {
-                dot.classList.remove('w-4');
-                dot.classList.add('w-1.5');
+                // Inactive dot
+                dot.classList.remove('bg-zinc-300', 'w-4');
+                dot.classList.add('bg-zinc-300/50', 'w-1.5');
             }
         });
     }

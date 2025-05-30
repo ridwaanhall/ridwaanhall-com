@@ -12,8 +12,7 @@ function updateTime() {
     }
 }
 
-// Ensure the DOM is loaded before trying to access elements
 document.addEventListener('DOMContentLoaded', function() {
-    updateTime(); // Initial call
-    setInterval(updateTime, 1000); // Update every second
+    updateTime();
+    setInterval(updateTime, 1000);
 });

@@ -257,6 +257,16 @@
     }
 </style>
 
+<style>
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+</style>
+
 {% endblock %}
 
 {% block content %}
@@ -320,4 +330,45 @@
         </div>
     </main>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const slider = document.getElementById('blogSlider');
+    const cardWidth = 285; // Updated card width for new dimensions
+    let autoSlideInterval;
+    
+    function slideNext() {
+        const maxScroll = slider.scrollWidth - slider.clientWidth;
+        if (slider.scrollLeft >= maxScroll) {
+            // Reset to beginning
+            slider.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+            slider.scrollBy({ left: cardWidth, behavior: 'smooth' });
+        }
+    }
+    
+    function startAutoSlide() {
+        autoSlideInterval = setInterval(slideNext, 6000); // 5 seconds
+    }
+    
+    function stopAutoSlide() {
+        if (autoSlideInterval) {
+            clearInterval(autoSlideInterval);
+        }
+    }
+    
+    // Pause auto-slide on hover
+    slider.addEventListener('mouseenter', stopAutoSlide);
+    slider.addEventListener('mouseleave', startAutoSlide);
+    
+    // Touch support - pause on touch
+    slider.addEventListener('touchstart', stopAutoSlide);
+    slider.addEventListener('touchend', startAutoSlide);
+    
+    // Initialize auto-slide
+    startAutoSlide();
+});
+</script>
 {% endblock %}

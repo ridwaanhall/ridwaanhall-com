@@ -87,7 +87,7 @@ class HomeView(BasePortfolioView):
         context = {
             'view': True,
             'view_certs': True,
-            'blogs': sorted(BlogData.blogs, key=lambda blog: -blog.get('id', 0))[:2],
+            'blogs': sorted(BlogData.blogs, key=lambda blog: -blog.get('id', 0))[:5],
             'projects': sorted(ProjectsData.projects, key=lambda p: (not -p.get('is_featured', False), -p.get('id', 0)))[:2],
             'education': [edu for edu in EducationData.education if edu.get('is_last')],
             'experiences': [exp for exp in ExperiencesData.experiences if exp.get('is_current')],

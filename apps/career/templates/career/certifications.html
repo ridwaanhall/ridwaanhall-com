@@ -2,7 +2,7 @@
     
     <div class="space-y-3 sm:space-y-4">
         {% for certification in certifications %}
-        <div class="rounded-xl shadow-lg overflow-hidden p-2 sm:p-3 md:p-4 border border-zinc-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:shadow-indigo-500/20 backdrop-blur-sm">
+        <div class="rounded-xl shadow-lg overflow-hidden p-2 sm:p-3 md:p-4 border border-zinc-700/50 transition-all duration-300 hover:border-zinc-700">
             <div class="flex items-start gap-3 md:gap-4">
                 <!-- Logo always on left -->
                 <div class="flex-shrink-0">
@@ -84,16 +84,16 @@
         
                     {% if certification.achievements %}
                         <div id="achievementscert-{{ certification.id }}" class="hidden mt-2 sm:mt-3 transition-all duration-300 ease-in-out">
-                            <ul class="space-y-1 sm:space-y-2 text-zinc-200 text-xs sm:text-sm pl-1">
+                            <div class="space-y-1 text-xs sm:text-sm pl-1">
                                 {% for achievement in certification.achievements %}
-                                    <li class="flex items-start group py-0.5 sm:py-1">
-                                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400 mr-2 sm:mr-2.5 mt-0.5 flex-shrink-0 group-hover:text-indigo-300 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        <span class="group-hover:text-zinc-300 transition-colors duration-200">{{ achievement }}</span>
-                                    </li>
+                                    <div class="flex items-start group">
+                                        <div class="flex-shrink-0 w-5 h-5 mt-0.5">
+                                            <div class="w-2 h-2 bg-blue-500 rounded-full mt-1.5 group-hover:bg-blue-600 transition-colors duration-200"></div>
+                                        </div>
+                                        <p class="text-sm leading-relaxed">{{ achievement }}</p>
+                                    </div>
                                 {% endfor %}
-                            </ul>
+                            </div>
                         </div>
                     {% endif %}
                 </div>

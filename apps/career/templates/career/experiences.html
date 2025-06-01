@@ -1,18 +1,18 @@
-<div class="mt-8">
-    <div class="space-y-6">
+<div class="mt-4 sm:mt-6">
+    <div class="space-y-3 sm:space-y-4">
         {% regroup experiences by company as company_list %}
         {% for company_group in company_list %}
         <div class="group">
             <!-- Company Card -->
-            <div class="bg-white dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-lg transition-all duration-300 hover:border-zinc-300 dark:hover:border-zinc-700 overflow-hidden backdrop-blur-sm">
+            <div class="rounded-2xl border border-zinc-700 shadow-sm hover:shadow-lg transition-all duration-300 hover:border-zinc-600 overflow-hidden backdrop-blur-sm">
                 {% with first_exp=company_group.list.0 %}
                 
                 <!-- Company Header -->
-                <div class="p-6 border-b border-zinc-100 dark:border-zinc-800">
+                <div class="p-4 border-b border-zinc-700">
                     <div class="flex items-center space-x-4">
                         <!-- Company Logo -->
                         <div class="flex-shrink-0">
-                            <div class="w-16 h-16 bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-800 dark:to-zinc-900 rounded-xl flex items-center justify-center border border-zinc-200 dark:border-zinc-700 shadow-sm">
+                            <div class="w-16 h-16 rounded-xl flex items-center justify-center border border-zinc-600 shadow-sm">
                                 {% if first_exp.logo %}
                                     {% if first_exp.website %}
                                     <a href="{{ first_exp.website }}" target="_blank" rel="noopener" class="hover:scale-105 transition-transform duration-200" aria-label="Visit {{ company_group.grouper }}">
@@ -24,12 +24,12 @@
                                 {% else %}
                                     {% if first_exp.website %}
                                     <a href="{{ first_exp.website }}" target="_blank" rel="noopener" class="hover:scale-105 transition-transform duration-200" aria-label="Visit {{ company_group.grouper }}">
-                                        <svg class="w-8 h-8 text-zinc-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1" />
                                         </svg>
                                     </a>
                                     {% else %}
-                                    <svg class="w-8 h-8 text-zinc-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1" />
                                     </svg>
                                     {% endif %}
@@ -39,9 +39,9 @@
                         
                         <!-- Company Info -->
                         <div class="flex-1 min-w-0">
-                            <h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+                            <h2 class="text-xl font-semibold truncate">
                                 {% if first_exp.website %}
-                                    <a href="{{ first_exp.website }}" target="_blank" rel="noopener" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
+                                    <a href="{{ first_exp.website }}" target="_blank" rel="noopener" class="hover:text-blue-400 transition-colors duration-200">
                                         {{ company_group.grouper }}
                                         <svg class="w-4 h-4 inline-block ml-1 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -51,7 +51,7 @@
                                     {{ company_group.grouper }}
                                 {% endif %}
                             </h2>
-                            <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+                            <p class="text-sm text-zinc-400 mt-1">
                                 {{ company_group.list|length }} position{{ company_group.list|length|pluralize }}
                             </p>
                         </div>
@@ -59,59 +59,28 @@
                 </div>
                 
                 <!-- Positions List -->
-                <div class="divide-y divide-zinc-100 dark:divide-zinc-800">
+                <div class="divide-y divide-zinc-700">
                     {% for experience in company_group.list %}
-                    <div class="p-6">
-                        <!-- Position Header -->
-                        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-                            <div class="flex-1">
-                                <div class="flex flex-wrap items-center gap-2 mb-2">
-                                    <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100">
-                                        {{ experience.title }}
-                                    </h3>
-                                    {% if experience.is_current %}
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700/50">
-                                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5 animate-pulse"></span>
-                                        Current
-                                    </span>
-                                    {% endif %}
-                                </div>
-                                
-                                <!-- Position Details -->
-                                <div class="flex flex-wrap gap-4 text-sm text-zinc-600 dark:text-zinc-400">
-                                    <div class="flex items-center">
-                                        <svg class="w-4 h-4 mr-1.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                        {{ experience.period }}
-                                    </div>
-                                    {% if experience.employment_type %}
-                                    <div class="flex items-center">
-                                        <svg class="w-4 h-4 mr-1.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                        </svg>
-                                        {{ experience.employment_type }}
-                                    </div>
-                                    {% endif %}
-                                    {% if experience.location_type or experience.location %}
-                                    <div class="flex items-center">
-                                        <svg class="w-4 h-4 mr-1.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                        {% if experience.location_type %}{{ experience.location_type }}{% endif %}
-                                        {% if experience.location_type and experience.location %} · {% endif %}
-                                        {% if experience.location %}{{ experience.location }}{% endif %}
-                                    </div>
-                                    {% endif %}
-                                </div>
+                    <div class="p-4">
+                        <!-- Position Header with Title and Button -->
+                        <div class="flex items-center justify-between gap-4 mb-2">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <h3 class="text-lg font-medium">
+                                    {{ experience.title }}
+                                </h3>
+                                {% if experience.is_current %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-900/30 text-emerald-400 border border-emerald-700/50">
+                                    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5 animate-pulse"></span>
+                                    Current
+                                </span>
+                                {% endif %}
                             </div>
                             
                             <!-- Expand Button -->
                             <div class="flex-shrink-0">
                                 <button
                                     type="button"
-                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors duration-200"
+                                    class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 border border-zinc-600 hover:border-zinc-500"
                                     onclick="toggleResponsibilities('expresponsibilities-{{ forloop.parentloop.counter }}-{{ forloop.counter }}')"
                                     aria-expanded="false"
                                     aria-controls="expresponsibilities-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"
@@ -125,20 +94,47 @@
                             </div>
                         </div>
 
+                        <!-- Position Details -->
+                        <div class="flex flex-wrap gap-4 text-sm text-zinc-400 mb-4">
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 mr-1.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                {{ experience.period }}
+                            </div>
+                            {% if experience.employment_type %}
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 mr-1.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                {{ experience.employment_type }}
+                            </div>
+                            {% endif %}
+                            {% if experience.location_type or experience.location %}
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 mr-1.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                {% if experience.location_type %}{{ experience.location_type }}{% endif %}
+                                {% if experience.location_type and experience.location %} · {% endif %}
+                                {% if experience.location %}{{ experience.location }}{% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+
                         <!-- Responsibilities (Hidden by default) -->
                         <div id="expresponsibilities-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" class="hidden transition-all duration-300 ease-in-out">
-                            <div class="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
-                                <h4 class="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-3">Key Responsibilities</h4>
-                                <div class="space-y-2">
-                                    {% for responsibility in experience.responsibilities %}
-                                    <div class="flex items-start group">
-                                        <div class="flex-shrink-0 w-5 h-5 mt-0.5 mr-3">
-                                            <div class="w-2 h-2 bg-blue-500 rounded-full mt-1.5 group-hover:bg-blue-600 transition-colors duration-200"></div>
-                                        </div>
-                                        <p class="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">{{ responsibility }}</p>
+                            <h4 class="text-sm font-medium mb-3">Key Responsibilities</h4>
+                            <div class="space-y-2">
+                                {% for responsibility in experience.responsibilities %}
+                                <div class="flex items-start group">
+                                    <div class="flex-shrink-0 w-5 h-5 mt-0.5 mr-3">
+                                        <div class="w-2 h-2 bg-blue-500 rounded-full mt-1.5 group-hover:bg-blue-600 transition-colors duration-200"></div>
                                     </div>
-                                    {% endfor %}
+                                    <p class="text-sm leading-relaxed">{{ responsibility }}</p>
                                 </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>

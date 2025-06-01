@@ -9,21 +9,21 @@
                     <div class="flex-grow w-full">
                         <div class="flex flex-row items-center justify-between gap-1 sm:gap-2 mb-1 sm:mb-2">
                             <div class="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2">
-                                <h3 class="text-lg sm:text-xl font-medium text-zinc-300 break-words">{{ application.company_name }}</h3>
-                                <p class="text-blue-200 italic text-sm font-medium">- {{ application.position }}</p>
+                                <h3 class="text-base sm:text-lg font-medium text-zinc-300 break-words">{{ application.company_name }}</h3>
+                                <p class="text-blue-200 italic text-xs sm:text-sm font-medium">- {{ application.position }}</p>
                             </div>
-                            <span class="inline-flex items-center rounded-full px-2.5 sm:px-3.5 py-1.5 text-xs sm:text-sm font-medium shadow-inner whitespace-nowrap
+                            <span class="inline-flex items-center rounded-full px-2 sm:px-2.5 py-1 text-xs font-medium shadow-inner whitespace-nowrap
                                 {% if application.status == 'In Progress' %}bg-blue-950/60 text-blue-300 ring-1 ring-blue-700/70{% endif %}
                                 {% if application.status == 'Accepted' %}bg-green-950/60 text-green-300 ring-1 ring-green-700/70{% endif %}
                                 {% if application.status == 'Rejected' %}bg-red-950/60 text-red-300 ring-1 ring-red-700/70{% endif %}
                                 {% if application.status == 'Ghosted' %}bg-yellow-950/60 text-yellow-300 ring-1 ring-yellow-700/70{% endif %}">
-                                <span class="relative flex h-2 w-2 mr-2">
+                                <span class="relative flex h-1.5 w-1.5 mr-1.5">
                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75
                                         {% if application.status == 'In Progress' %}bg-blue-600{% endif %}
                                         {% if application.status == 'Accepted' %}bg-green-600{% endif %}
                                         {% if application.status == 'Rejected' %}bg-red-600{% endif %}
                                         {% if application.status == 'Ghosted' %}bg-yellow-600{% endif %}"></span>
-                                    <span class="relative inline-flex rounded-full h-2 w-2 
+                                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 
                                         {% if application.status == 'In Progress' %}bg-blue-700{% endif %}
                                         {% if application.status == 'Accepted' %}bg-green-700{% endif %}
                                         {% if application.status == 'Rejected' %}bg-red-700{% endif %}

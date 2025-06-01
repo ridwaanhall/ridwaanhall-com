@@ -72,7 +72,7 @@ function toggleResponsibilities(id) {
     const counterParts = id.split('-').slice(1).join('-');
     const showTextResp = document.getElementById('show-text-resp-' + counterParts);
     const hideTextResp = document.getElementById('hide-text-resp-' + counterParts);
-    const arrowResp = document.getElementById('arrow-resp-' + counterParts);
+    const arrowResp = document.getElementById('arrow-' + counterParts);
 
     if (element.classList.contains('hidden')) {
         element.classList.remove('hidden');

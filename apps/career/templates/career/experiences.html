@@ -4,7 +4,7 @@
         {% for company_group in company_list %}
         <div class="group">
             <!-- Company Card -->
-            <div class="rounded-2xl border border-zinc-700 shadow-sm hover:shadow-lg transition-all duration-300 hover:border-zinc-600 overflow-hidden backdrop-blur-sm">
+            <div class="rounded-xl border border-zinc-700 shadow-sm hover:shadow-lg transition-all duration-300 hover:border-zinc-600 overflow-hidden backdrop-blur-sm">
                 {% with first_exp=company_group.list.0 %}
                 
                 <!-- Company Header -->
@@ -129,7 +129,7 @@
                             <div class="space-y-2">
                                 {% for responsibility in experience.responsibilities %}
                                 <div class="flex items-start group">
-                                    <div class="flex-shrink-0 w-5 h-5 mt-0.5 mr-3">
+                                    <div class="flex-shrink-0 w-5 h-5 mt-0.5">
                                         <div class="w-2 h-2 bg-blue-500 rounded-full mt-1.5 group-hover:bg-blue-600 transition-colors duration-200"></div>
                                     </div>
                                     <p class="text-sm leading-relaxed">{{ responsibility }}</p>

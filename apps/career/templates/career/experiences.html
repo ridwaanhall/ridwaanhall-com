@@ -4,11 +4,11 @@
         {% for company_group in company_list %}
             <div class="group">
                 <!-- Company Card -->
-                <div class="rounded-xl border border-zinc-700 shadow-sm hover:shadow-lg transition-all duration-300 hover:border-zinc-600 overflow-hidden backdrop-blur-sm">
+                <div class="rounded-xl border border-zinc-700/50 shadow-sm hover:shadow-lg transition-all duration-300 hover:border-zinc-700 overflow-hidden backdrop-blur-sm">
                     {% with first_exp=company_group.list.0 %}
                     
                     <!-- Company Header -->
-                    <div class="p-4 border-b border-zinc-700">
+                    <div class="p-4 border-b border-zinc-700/50">
                         <div class="flex items-center space-x-4">
                             <!-- Company Logo -->
                             <div class="flex-shrink-0">
@@ -80,14 +80,14 @@
                                 <div class="flex-shrink-0">
                                     <button
                                         type="button"
-                                        class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 border border-zinc-600 hover:border-zinc-500"
+                                        class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 border border-zinc-700 hover:border-zinc-700/50"
                                         onclick="toggleResponsibilities('expresponsibilities-{{ forloop.parentloop.counter }}-{{ forloop.counter }}')"
                                         aria-expanded="false"
                                         aria-controls="expresponsibilities-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"
                                     >
                                         <span id="show-text-resp-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">View Details</span>
                                         <span id="hide-text-resp-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" class="hidden">Hide Details</span>
-                                        <svg class="w-4 h-4 ml-2 transition-transform duration-200" id="arrow-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4 ml-2 transition-transform duration-200 animate-pulse" id="arrow-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                         </svg>
                                     </button>

@@ -3,7 +3,7 @@
         {% if applications %}
         {% for application in applications %}
         <!-- application card -->
-        <div class="group mb-4 rounded-xl shadow-lg overflow-hidden border border-zinc-700/40 transition-all duration-300 hover:border-indigo-500/60 hover:shadow-xl hover:shadow-indigo-500/10 backdrop-blur-sm">
+        <div class="group mb-4 rounded-xl overflow-hidden border border-zinc-700/50 transition-all duration-300 hover:border-zinc-700">
             <div class="p-3 sm:p-4">
                 <div class="flex flex-col md:flex-row md:items-start gap-3 sm:gap-5">
                     <div class="flex-grow w-full">
@@ -36,7 +36,7 @@
                         <div class="mt-4 sm:mt-5 flex flex-wrap gap-2">
                             <button
                                 type="button"
-                                class="inline-flex items-center text-xs sm:text-sm py-1 sm:py-1.5 px-2 sm:px-3 rounded-md bg-transparent border border-zinc-600 hover:border-zinc-400 transition-all duration-200 touch-manipulation min-h-[36px]"
+                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-200 border border-zinc-700 hover:border-zinc-600"
                                 onclick="toggleJourney('journey-details-{{ forloop.counter }}')"
                                 aria-expanded="false"
                                 aria-controls="journey-details-{{ forloop.counter }}"

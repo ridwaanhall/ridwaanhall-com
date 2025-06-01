@@ -165,6 +165,8 @@ class GitHubContributions {
 
         const monthYearToEarliestWeek = new Map();
         const monthYearToFirstDay = new Map();
+        const monthYearToWeekCount = new Map();
+        const currentYear = new Date().getFullYear();
 
         for (let week = 0; week < this.WEEKS_IN_YEAR; week++) {
             for (let day = 0; day < this.DAYS_IN_WEEK; day++) {
@@ -174,6 +176,12 @@ class GitHubContributions {
                     const year = date.getFullYear();
                     const key = `${year}-${month}`;
                     const dayOfMonth = date.getDate();
+
+                    // Count weeks for each month-year combination
+                    if (!monthYearToWeekCount.has(key)) {
+                        monthYearToWeekCount.set(key, new Set());
+                    }
+                    monthYearToWeekCount.get(key).add(week);
 
                     if (!monthYearToEarliestWeek.has(key) || week < monthYearToEarliestWeek.get(key)) {
                         monthYearToEarliestWeek.set(key, week);
@@ -187,13 +195,23 @@ class GitHubContributions {
             .map(([key, week]) => {
                 const [year, month] = key.split("-").map(Number);
                 const firstDayInfo = monthYearToFirstDay.get(key);
+                const weekCount = monthYearToWeekCount.get(key).size;
+                const isPastYear = year < currentYear;
+                
                 return {
                     month,
                     year,
                     week,
+                    weekCount,
+                    isPastYear,
                     firstDayOfWeek: firstDayInfo ? firstDayInfo.day : null,
                     firstDayOfMonth: firstDayInfo ? firstDayInfo.dayOfMonth : null,
                 };
+            })
+            .filter(pos => {
+                // Only show month labels if they have at least 2 weeks of data
+                // This applies to both past year and current year
+                return pos.weekCount >= 2;
             })
             .sort((a, b) => a.week - b.week);
 
@@ -217,6 +235,11 @@ class GitHubContributions {
             const isEndOfMonthScenario = currentMonthWeekCount === 1 && pos.firstDayOfMonth > 25;
 
             const isSundayOrMondayStart = pos.firstDayOfWeek === 0 || pos.firstDayOfWeek === 1;
+
+            // Additional check for months with insufficient data (redundant but kept for safety)
+            if (pos.weekCount < 2) {
+                return; // Skip rendering this label
+            }
 
             if (isFirstMonth && isEndOfMonthScenario) {
                 const nextMonth = (pos.month + 1) % 12;
@@ -244,6 +267,7 @@ class GitHubContributions {
 
             label.setAttribute("data-year", pos.year);
             label.setAttribute("data-original-month", this.MONTH_NAMES[pos.month]);
+            label.setAttribute("data-week-count", pos.weekCount);
 
             this.monthLabelsContainer.appendChild(label);
 

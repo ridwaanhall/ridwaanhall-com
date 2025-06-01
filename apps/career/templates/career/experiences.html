@@ -12,14 +12,14 @@
                     <div class="flex items-center space-x-4">
                         <!-- Company Logo -->
                         <div class="flex-shrink-0">
-                            <div class="w-16 h-16 rounded-xl flex items-center justify-center border border-zinc-600 shadow-sm">
+                            <div class="flex items-center justify-center shadow-sm">
                                 {% if first_exp.logo %}
                                     {% if first_exp.website %}
                                     <a href="{{ first_exp.website }}" target="_blank" rel="noopener" class="hover:scale-105 transition-transform duration-200" aria-label="Visit {{ company_group.grouper }}">
-                                        <img src="{{ first_exp.logo }}" alt="{{ company_group.grouper }}" class="w-10 h-10 rounded-lg object-cover" />
+                                        <img src="{{ first_exp.logo }}" alt="{{ company_group.grouper }}" class="w-16 h-16 rounded-lg object-cover" />
                                     </a>
                                     {% else %}
-                                    <img src="{{ first_exp.logo }}" alt="{{ company_group.grouper }}" class="w-10 h-10 rounded-lg object-cover" />
+                                    <img src="{{ first_exp.logo }}" alt="{{ company_group.grouper }}" class="w-16 h-16 rounded-lg object-cover" />
                                     {% endif %}
                                 {% else %}
                                     {% if first_exp.website %}

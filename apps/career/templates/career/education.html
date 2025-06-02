@@ -6,14 +6,14 @@
             <div class="flex items-start gap-3 md:gap-4">
                 <!-- Logo always on left -->
                 <div class="flex-shrink-0">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-br from-zinc-900/60 to-indigo-900/40 rounded-lg flex items-center justify-center shadow-lg border border-indigo-700/30 backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg flex items-center justify-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
                         {% if edu.logo %}
                             {% if edu.website %}
                                 <a href="{{ edu.website }}" target="_blank" rel="noopener" aria-label="Visit {{ edu.institution }}" class="hover:scale-110 transition-transform duration-300">
-                                    <img src="{{ edu.logo }}" alt="{{ edu.institution }} logo" class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full shadow-md object-cover">
+                                    <img src="{{ edu.logo }}" alt="{{ edu.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-md object-cover">
                                 </a>
                             {% else %}
-                                <img src="{{ edu.logo }}" alt="{{ edu.institution }} logo" class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full shadow-md object-cover">
+                                <img src="{{ edu.logo }}" alt="{{ edu.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-md object-cover">
                             {% endif %}
                         {% else %}
                             {% if edu.website %}

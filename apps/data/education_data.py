@@ -101,6 +101,7 @@ class EducationData:
             "degree": "Kindergarten",
             "years": "2007 - 2009",
             "institution": "TK IT Al Mannan",
+            "logo": f"{settings.BASE_URL}/static/img/logo/tkit_al_mannan_ori.webp",
             "is_last": False,
             "location": {
                 "regency": "Boyolali",

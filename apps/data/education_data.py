@@ -81,6 +81,7 @@ class EducationData:
             "degree": "Elementary School",
             "years": "2009 - 2015",
             "institution": "SD IT Al Mannan",
+            "logo": f"{settings.BASE_URL}/static/img/logo/sdit_al_mannan.webp",
             "is_last": False,
             "location": {
                 "regency": "Boyolali",

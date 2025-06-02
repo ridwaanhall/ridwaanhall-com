@@ -6,24 +6,24 @@
             <div class="flex items-start gap-3 md:gap-4">
                 <!-- Logo always on left -->
                 <div class="flex-shrink-0">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg flex items-center justify-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
+                    <div class="flex items-center justify-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
                         {% if certification.logo %}
                             {% if certification.website %}
                                 <a href="{{ certification.website }}" target="_blank" rel="noopener" aria-label="Visit {{ certification.institution }}" class="hover:scale-110 transition-transform duration-300">
-                                    <img src="{{ certification.logo }}" alt="{{ certification.institution }} logo" class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full shadow-md object-cover" />
+                                    <img src="{{ certification.logo }}" alt="{{ certification.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow-md object-cover" />
                                 </a>
                             {% else %}
-                                <img src="{{ certification.logo }}" alt="{{ certification.institution }} logo" class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full shadow-md object-cover" />
+                                <img src="{{ certification.logo }}" alt="{{ certification.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow-md object-cover" />
                             {% endif %}
                         {% else %}
                             {% if certification.website %}
                                 <a href="{{ certification.website }}" target="_blank" rel="noopener" aria-label="Visit {{ certification.institution }}" class="hover:scale-110 transition-transform duration-300">
-                                    <svg class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <svg class="w-12 h-12 sm:w-14 sm:h-14 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                                     </svg>
                                 </a>
                             {% else %}
-                                <svg class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <svg class="w-12 h-12 sm:w-14 sm:h-14 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                                 </svg>
                             {% endif %}

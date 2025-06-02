@@ -60,7 +60,7 @@ My site’s *fast* AF, optimized for all devices, and flexing near-perfect score
 
 | Feature | What's Good |
 |---------|-------------|
-| JSON Data | No database, just JSON-Python files for easy content updates. 😎 |
+| JSON Data | No database, just JSON-Python-HTML files for easy content updates. 😎 |
 | Responsive Design | Looks dope on any screen size, from phone to big monitor. |
 | Portfolio Glow-Up | Showcasing my projects with slick descriptions and visuals. |
 | Dashboard | Interactive stats from WakaTime and GitHub, flexing my code game. |

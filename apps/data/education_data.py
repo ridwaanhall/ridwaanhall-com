@@ -3,7 +3,8 @@ from django.conf import settings
 class EducationData:
     education = [
         {
-            "degree": "S.Kom in Intelligence Systems (AI)",
+            "degree": "Informatics in Intelligence Systems (S.Kom.)",
+            "alias": "Bachelor of Computer Science",
             "date": {
                 "start": {
                     "year": 2021,

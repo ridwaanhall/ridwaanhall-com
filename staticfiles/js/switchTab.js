@@ -1,10 +1,11 @@
 function switchTab(tabName) {
     const tabOrder = {
-        'experiences': 1,
-        'education': 2,
-        'awards': 3,
-        'certifications': 4,
-        'applications': 5
+        'intro': 1,
+        'experiences': 2,
+        'education': 3,
+        'awards': 4,
+        'certifications': 5,
+        'applications': 6
     };
     
     const currentActive = document.querySelector('.tab-content > div:not(.hidden)');

@@ -1,14 +1,23 @@
 function switchTab(tabName) {
+    console.log('Switching to tab:', tabName); // Debug log
+    
     const tabOrder = {
-        'experiences': 1,
-        'education': 2,
-        'awards': 3,
-        'certifications': 4,
-        'applications': 5
+        'intro': 1,
+        'experiences': 2,
+        'education': 3,
+        'awards': 4,
+        'certifications': 5,
+        'applications': 6
     };
     
     const currentActive = document.querySelector('.tab-content > div:not(.hidden)');
     const selectedContent = document.getElementById('content-' + tabName);
+    
+    // Error handling
+    if (!selectedContent) {
+        console.error('Content element not found for tab:', tabName);
+        return;
+    }
     
     if (currentActive && currentActive !== selectedContent) {
         const currentTabName = currentActive.id.replace('content-', '');
@@ -25,6 +34,8 @@ function switchTab(tabName) {
             currentActive.classList.add('hidden');
             currentActive.classList.remove('block');
             currentActive.style.transform = '';
+            currentActive.style.opacity = '';
+            currentActive.style.transition = '';
             
             selectedContent.classList.remove('hidden');
             selectedContent.classList.add('block');
@@ -35,6 +46,13 @@ function switchTab(tabName) {
                 selectedContent.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
                 selectedContent.style.opacity = '1';
                 selectedContent.style.transform = 'translateX(0)';
+                
+                // Clean up styles after animation
+                setTimeout(() => {
+                    selectedContent.style.transition = '';
+                    selectedContent.style.transform = '';
+                    selectedContent.style.opacity = '';
+                }, 300);
             }, 10);
         }, 300);
     } else if (selectedContent) {
@@ -44,6 +62,7 @@ function switchTab(tabName) {
         selectedContent.style.transform = 'translateX(0)';
     }
     
+    // Update tab buttons
     document.querySelectorAll('[id^="tab-"]').forEach(tab => {
         tab.classList.remove('border-zinc-300', 'text-zinc-300');
         tab.classList.add('border-transparent');
@@ -55,5 +74,12 @@ function switchTab(tabName) {
         selectedTab.classList.remove('border-transparent');
         selectedTab.classList.add('border-zinc-300', 'text-zinc-300');
         selectedTab.setAttribute('aria-selected', 'true');
+    } else {
+        console.error('Tab button not found for:', tabName);
     }
 }
+
+// Initialize first tab on page load
+document.addEventListener('DOMContentLoaded', function() {
+    switchTab('intro');
+});

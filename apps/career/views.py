@@ -66,6 +66,7 @@ class CareerView(BaseCareerView):
         context.update({
             'view_certs': 'true',
             'view': False,
+            'about': about,
             'experiences': ExperiencesData.experiences,
             'education': EducationData.education,
             'certifications': CertificationsData.certifications,

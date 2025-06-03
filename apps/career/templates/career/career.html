@@ -152,10 +152,16 @@
 
             <div class="mb-6 border-b border-zinc-700">
                 <div class="flex flex-wrap min-w-full -mb-px text-sm font-medium text-center" role="tablist">
+                    <button id="tab-intro" 
+                            onclick="switchTab('intro')" 
+                            class="inline-block p-2 sm:p-4 border-b-2 border-zinc-300 text-zinc-300 rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none whitespace-nowrap"  
+                            aria-selected="false" role="tab">
+                        Intro
+                    </button>
                     <button id="tab-experiences" 
                             onclick="switchTab('experiences')"
-                            class="inline-block p-2 sm:p-4 border-b-2 border-zinc-300 text-zinc-300 rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none whitespace-nowrap"  
-                            aria-selected="true" role="tab">
+                            class="inline-block p-2 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none whitespace-nowrap" 
+                            aria-selected="false" role="tab">
                         Experiences
                     </button>
                     <button id="tab-education" 
@@ -186,7 +192,14 @@
             </div>
 
             <div class="tab-content w-full">
-                <div id="content-experiences" class="block w-full">
+                <div id="content-intro" class="block w-full">
+                    {% if about %}
+                        {% include 'career/intro.html' %}
+                    {% else %}
+                        <p class="text-zinc-400">No introduction available.</p>
+                    {% endif %}
+                </div>
+                <div id="content-experiences" class="hidden w-full">
                     {% if experiences %}
                         {% include 'career/experiences.html' %}
                     {% endif %}

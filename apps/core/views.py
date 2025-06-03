@@ -106,30 +106,6 @@ class HomeView(BasePortfolioView):
         }
         return render(request, self.template_name, context)
 
-
-class AboutView(BasePortfolioView):
-    template_name = 'core/about.html'
-
-    def get(self, request, *args, **kwargs):
-        return self.handle_exceptions(self._get)(request, *args, **kwargs)
-
-    def _get(self, request, *args, **kwargs):
-        about = self.get_about_data()
-        context = {
-            'view': True,
-            'experiences': [exp for exp in ExperiencesData.experiences if exp.get('is_current')],
-            'education': [edu for edu in EducationData.education if edu.get('is_last')],
-            'about': about,
-            'seo': self.get_seo_data(
-                title=f"Get to Know {about['name']} - My Story",
-                description=f"Meet {about['username']}, a {about['location']['province']}-based {about['role']} and Copilot ID founder. Explore journey in AI, 30+ shipped projects, Quran memorization, and mentoring coders to build epic solutions.",
-                keywords=f"{about['username']}, machine learning, AI developer, Python mentor, Django, Flask, Next.js, Quran memorization, Copilot ID, coding projects",
-                og_type='profile'
-            ),
-        }
-        return render(request, self.template_name, context)
-
-
 class ContactView(BasePortfolioView):
     template_name = 'core/contact.html'
 

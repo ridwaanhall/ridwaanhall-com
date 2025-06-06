@@ -209,9 +209,9 @@
                                     <div class="flex items-center justify-between gap-3">
                                         <div class="w-20 text-sm">{{ language.name }}</div>
                                         <div class="relative flex h-3 flex-1 justify-center rounded-full bg-zinc-800/50">
-                                            <span class="bg-gradient-to-r from-indigo-400 to-cyan-500 absolute left-0 top-0 h-3 rounded-full" style="width: {{ language.percent }}%;"></span>
+                                            <span class="bg-gradient-to-r from-indigo-400 to-cyan-500 absolute left-0 top-0 h-3 rounded-full transition-all duration-1000 ease-out animate-width" style="width: 0%;" data-width="{{ language.percent }}%"></span>
                                         </div>
-                                        <div class="w-10 text-right text-sm font-medium">{{ language.percent|floatformat:0 }}%</div>
+                                        <div class="w-10 text-right text-sm font-medium animate-percent" data-target="{{ language.percent|floatformat:0 }}">0%</div>
                                     </div>
                                 </li>
                                 {% endfor %}
@@ -228,9 +228,9 @@
                                     <div class="flex items-center justify-between gap-3">
                                         <div class="w-20 text-sm">{{ category.name }}</div>
                                         <div class="relative flex h-3 flex-1 justify-center rounded-full bg-zinc-800/50">
-                                            <span class="bg-gradient-to-r from-purple-500 to-pink-600 absolute left-0 top-0 h-3 rounded-full" style="width: {{ category.percent }}%;"></span>
+                                            <span class="bg-gradient-to-r from-purple-500 to-pink-600 absolute left-0 top-0 h-3 rounded-full transition-all duration-1000 ease-out animate-width" style="width: 0%;" data-width="{{ category.percent }}%"></span>
                                         </div>
-                                        <div class="w-10 text-right text-sm font-medium">{{ category.percent|floatformat:0 }}%</div>
+                                        <div class="w-10 text-right text-sm font-medium animate-percent" data-target="{{ category.percent|floatformat:0 }}">0%</div>
                                     </div>
                                 </li>
                                 {% endfor %}
@@ -239,9 +239,9 @@
                                     <div class="flex items-center justify-between gap-3">
                                         <div class="w-20 text-sm">{{ os.name }}</div>
                                         <div class="relative flex h-3 flex-1 justify-center rounded-full bg-zinc-800/50">
-                                            <span class="bg-gradient-to-r from-purple-500 to-pink-600 absolute left-0 top-0 h-3 rounded-full" style="width: {{ os.percent }}%;"></span>
+                                            <span class="bg-gradient-to-r from-purple-500 to-pink-600 absolute left-0 top-0 h-3 rounded-full transition-all duration-1000 ease-out animate-width" style="width: 0%;" data-width="{{ os.percent }}%"></span>
                                         </div>
-                                        <div class="w-10 text-right text-sm font-medium">{{ os.percent|floatformat:0 }}%</div>
+                                        <div class="w-10 text-right text-sm font-medium animate-percent" data-target="{{ os.percent|floatformat:0 }}">0%</div>
                                     </div>
                                 </li>
                                 {% endfor %}
@@ -353,5 +353,30 @@
         const contributionsGraph = new GitHubContributions(githubData);
         contributionsGraph.init();
     });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate progress bars
+    setTimeout(() => {
+        document.querySelectorAll('.animate-width').forEach(bar => {
+            bar.style.width = bar.dataset.width;
+        });
+    }, 300);
+
+    // Animate percentage counters
+    document.querySelectorAll('.animate-percent').forEach(element => {
+        const target = parseInt(element.dataset.target);
+        let current = 0;
+        const increment = target / 50;
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            element.textContent = Math.round(current) + '%';
+        }, 20);
+    });
+});
 </script>
 {% endblock %}

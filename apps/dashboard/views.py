@@ -51,8 +51,9 @@ class WakatimeStatsCalculator:
         last_7_days = data['last_7_days']['data']
         all_time = data['all_time']['data']
         
-        end_date = datetime.fromisoformat(last_7_days['end'].replace('Z', '+07:00'))
-        now = timezone.now().astimezone(timezone.get_fixed_timezone(420))  # UTC+7 Jakarta time
+        end_date = datetime.fromisoformat(last_7_days['end'].replace('Z', '+00:00'))
+        now = timezone.now()
+
         time_diff = now - end_date
         hours_ago = int(time_diff.total_seconds() / 3600)
         
@@ -84,8 +85,10 @@ class WakatimeStatsCalculator:
             })
         
         return {
-            'start_date': datetime.fromisoformat(last_7_days['start'].replace('Z', '+07:00')).strftime('%B %d, %Y'),
-            'end_date': datetime.fromisoformat(last_7_days['end'].replace('Z', '+07:00')).strftime('%B %d, %Y'),
+            'created_at': datetime.fromisoformat(last_7_days['created_at'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
+            'updated_at': datetime.fromisoformat(last_7_days['modified_at'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
+            'start_date': datetime.fromisoformat(last_7_days['start'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
+            'end_date': datetime.fromisoformat(last_7_days['end'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
             'daily_average': WakatimeStatsCalculator._format_time(last_7_days['daily_average_including_other_language']),
             'this_week_coding': WakatimeStatsCalculator._format_time(last_7_days['total_seconds_including_other_language']),
             'best_day_date': datetime.fromisoformat(last_7_days['best_day']['date']).strftime('%B %d, %Y'),
@@ -94,8 +97,8 @@ class WakatimeStatsCalculator:
             'top_1_category': top_category,
             'top_2_os': top_os,
             'all_time_coding': all_time['text'],
-            'all_time_start': datetime.fromisoformat(all_time['range']['start'].replace('Z', '+07:00')).strftime('%B %d, %Y'),
-            'all_time_end': datetime.fromisoformat(all_time['range']['end'].replace('Z', '+07:00')).strftime('%B %d, %Y'),
+            'all_time_start': datetime.fromisoformat(all_time['range']['start'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
+            'all_time_end': datetime.fromisoformat(all_time['range']['end'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
             'last_update_time': f"{hours_ago} hours ago"
         }
     

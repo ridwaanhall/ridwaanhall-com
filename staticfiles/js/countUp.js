@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     countElements.forEach(element => {
         const target = parseFloat(element.dataset.target);
-        const duration = 3000;
+        const duration = 5000;
         const start = 0;
         const startTime = performance.now();
         

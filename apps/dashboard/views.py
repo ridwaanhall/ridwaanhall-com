@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 import requests
 from typing import Dict, Optional, Any
+import pytz
 
 from django.conf import settings
 from django.core.cache import cache
@@ -43,6 +44,14 @@ class WakatimeClient:
 
 class WakatimeStatsCalculator:
     @staticmethod
+    def _convert_to_gmt7(iso_string: str) -> datetime:
+        """Convert ISO string to GMT+7 timezone."""
+        utc_dt = datetime.fromisoformat(iso_string.replace('Z', '+00:00'))
+        utc_dt = utc_dt.replace(tzinfo=pytz.UTC)
+        gmt7 = pytz.timezone('Asia/Jakarta')  # GMT+7
+        return utc_dt.astimezone(gmt7)
+    
+    @staticmethod
     def calculate_stats(data: Dict) -> Optional[Dict]:
         """Calculate Wakatime statistics."""
         if not data:
@@ -51,10 +60,10 @@ class WakatimeStatsCalculator:
         last_7_days = data['last_7_days']['data']
         all_time = data['all_time']['data']
         
-        end_date = datetime.fromisoformat(last_7_days['end'].replace('Z', '+00:00'))
-        now = timezone.now()
+        modified_at = WakatimeStatsCalculator._convert_to_gmt7(last_7_days['modified_at'])
+        now_gmt7 = timezone.now().astimezone(pytz.timezone('Asia/Jakarta'))
 
-        time_diff = now - end_date
+        time_diff = now_gmt7 - modified_at
         hours_ago = int(time_diff.total_seconds() / 3600)
         
         # Get top 3 languages
@@ -85,20 +94,20 @@ class WakatimeStatsCalculator:
             })
         
         return {
-            'created_at': datetime.fromisoformat(last_7_days['created_at'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
-            'updated_at': datetime.fromisoformat(last_7_days['modified_at'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
-            'start_date': datetime.fromisoformat(last_7_days['start'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
-            'end_date': datetime.fromisoformat(last_7_days['end'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
+            'created_at': WakatimeStatsCalculator._convert_to_gmt7(last_7_days['created_at']).strftime('%B %d, %Y'),
+            'updated_at': WakatimeStatsCalculator._convert_to_gmt7(last_7_days['modified_at']).strftime('%B %d, %Y'),
+            'start_date': WakatimeStatsCalculator._convert_to_gmt7(last_7_days['start']).strftime('%B %d, %Y'),
+            'end_date': WakatimeStatsCalculator._convert_to_gmt7(last_7_days['end']).strftime('%B %d, %Y'),
             'daily_average': WakatimeStatsCalculator._format_time(last_7_days['daily_average_including_other_language']),
             'this_week_coding': WakatimeStatsCalculator._format_time(last_7_days['total_seconds_including_other_language']),
-            'best_day_date': datetime.fromisoformat(last_7_days['best_day']['date']).strftime('%B %d, %Y'),
+            'best_day_date': WakatimeStatsCalculator._convert_to_gmt7(last_7_days['best_day']['date']).strftime('%B %d, %Y'),
             'best_day_coding': last_7_days['best_day']['text'],
             'top_3_languages': top_languages,
             'top_1_category': top_category,
             'top_2_os': top_os,
             'all_time_coding': all_time['text'],
-            'all_time_start': datetime.fromisoformat(all_time['range']['start'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
-            'all_time_end': datetime.fromisoformat(all_time['range']['end'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
+            'all_time_start': WakatimeStatsCalculator._convert_to_gmt7(all_time['range']['start']).strftime('%B %d, %Y'),
+            'all_time_end': WakatimeStatsCalculator._convert_to_gmt7(all_time['range']['end']).strftime('%B %d, %Y'),
             'last_update_time': f"{hours_ago} hours ago"
         }
     

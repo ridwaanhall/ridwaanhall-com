@@ -56,13 +56,25 @@ class WakatimeStatsCalculator:
         time_diff = now - end_date
         hours_ago = int(time_diff.total_seconds() / 3600)
         
+        # Get top 3 languages
+        top_languages = []
+        for i, lang in enumerate(last_7_days['languages'][:3]):
+            top_languages.append({
+            'name': lang['name'],
+            'percentage': lang['percent'],
+            'time': lang['text']
+            })
+        
         return {
             'start_date': datetime.fromisoformat(last_7_days['start'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
             'end_date': end_date.strftime('%B %d, %Y'),
-            'daily_average': WakatimeStatsCalculator._format_time(last_7_days['daily_average']),
-            'this_week_coding': WakatimeStatsCalculator._format_time(last_7_days['total_seconds']),
+            'daily_average': WakatimeStatsCalculator._format_time(last_7_days['daily_average_including_other_language']),
+            'this_week_coding': WakatimeStatsCalculator._format_time(last_7_days['total_seconds_including_other_language']),
             'best_day_date': datetime.fromisoformat(last_7_days['best_day']['date']).strftime('%B %d, %Y'),
             'best_day_coding': last_7_days['best_day']['text'],
+            'top_language': last_7_days['languages'][0]['name'],
+            'top_language_percentage': last_7_days['languages'][0]['percent'],
+            'top_3_languages': top_languages,
             'all_time_coding': all_time['text'],
             'all_time_start': datetime.fromisoformat(all_time['range']['start'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
             'all_time_end': datetime.fromisoformat(all_time['range']['end'].replace('Z', '+00:00')).strftime('%B %d, %Y'),

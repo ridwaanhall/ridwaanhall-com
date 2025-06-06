@@ -211,7 +211,7 @@
                                         <div class="relative flex h-3 flex-1 justify-center rounded-full bg-zinc-800/50">
                                             <span class="bg-gradient-to-r from-indigo-400 to-purple-600 absolute left-0 top-0 h-3 rounded-full" style="width: {{ language.percent }}%;"></span>
                                         </div>
-                                        <div class="w-10 text-right text-sm font-medium">{{ language.percent }}%</div>
+                                        <div class="w-10 text-right text-sm font-medium">{{ language.percent|floatformat:0 }}%</div>
                                     </div>
                                 </li>
                                 {% endfor %}
@@ -230,7 +230,7 @@
                                         <div class="relative flex h-3 flex-1 justify-center rounded-full bg-zinc-800/50">
                                             <span class="bg-gradient-to-r from-indigo-400 to-purple-600 absolute left-0 top-0 h-3 rounded-full" style="width: {{ category.percent }}%;"></span>
                                         </div>
-                                        <div class="w-10 text-right text-sm font-medium">{{ category.percent }}%</div>
+                                        <div class="w-10 text-right text-sm font-medium">{{ category.percent|floatformat:0 }}%</div>
                                     </div>
                                 </li>
                                 {% endfor %}
@@ -241,7 +241,7 @@
                                         <div class="relative flex h-3 flex-1 justify-center rounded-full bg-zinc-800/50">
                                             <span class="bg-gradient-to-r from-indigo-400 to-purple-600 absolute left-0 top-0 h-3 rounded-full" style="width: {{ os.percent }}%;"></span>
                                         </div>
-                                        <div class="w-10 text-right text-sm font-medium">{{ os.percent }}%</div>
+                                        <div class="w-10 text-right text-sm font-medium">{{ os.percent|floatformat:0 }}%</div>
                                     </div>
                                 </li>
                                 {% endfor %}

@@ -1863,5 +1863,41 @@ class ProjectsData:
                 tech_stack["vercel"]
             ],
             "updated_at": datetime.strptime("2025-04-26T16:35:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
+        },
+        {
+            "id": 47,
+            "title": "Neural Network from Scratch",
+            "headline": "A professional implementation of a neural network using only NumPy for MNIST digit classification.",
+            "description": [
+                "This project achieves 98.06% test accuracy on MNIST, built with a clean, object-oriented architecture.",
+                "Includes 6 activation functions, 5 loss functions, and 4 weight initializers.",
+                "Offers advanced training with SGD momentum, learning rate scheduling, and early stopping.",
+                "Features an interactive GUI for real-time digit recognition.",
+                "Organized visualization tools for tracking model performance."
+            ],
+            "github_url": "https://github.com/ridwaanhall/Neural-Network-from-Scratch",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/neural_network_scratch.webp",
+            "img_name": "neural_network_scratch.webp",
+            "is_featured": True,
+            "features": [
+                {
+                    "title": "Pure NumPy Implementation",
+                    "description": "No TensorFlow or PyTorch, just optimized NumPy operations."
+                },
+                {
+                    "title": "High Accuracy",
+                    "description": "Achieves 98.06% test accuracy on MNIST dataset."
+                },
+                {
+                    "title": "Comprehensive CLI",
+                    "description": "20+ configurable parameters for training and optimization."
+                }
+            ],
+            "tech_stack": [
+                tech_stack["python"],
+                tech_stack["numpy"],
+                tech_stack["matplotlib"]
+            ],
+            "updated_at": datetime.strptime("2025-06-06T18:57:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
         }
     ]

@@ -51,8 +51,8 @@ class WakatimeStatsCalculator:
         last_7_days = data['last_7_days']['data']
         all_time = data['all_time']['data']
         
-        end_date = datetime.fromisoformat(last_7_days['end'].replace('Z', '+00:00'))
-        now = timezone.now()
+        end_date = datetime.fromisoformat(last_7_days['end'].replace('Z', '+07:00'))
+        now = timezone.now().astimezone(timezone.get_fixed_timezone(420))  # UTC+7 Jakarta time
         time_diff = now - end_date
         hours_ago = int(time_diff.total_seconds() / 3600)
         
@@ -61,23 +61,41 @@ class WakatimeStatsCalculator:
         for i, lang in enumerate(last_7_days['languages'][:3]):
             top_languages.append({
             'name': lang['name'],
-            'percentage': lang['percent'],
+            'percent': lang['percent'],
             'time': lang['text']
+            })
+            
+        # Get top 1 category
+        top_category = []
+        for i, category in enumerate(last_7_days['categories'][:1]):
+            top_category.append({
+                'name': category['name'],
+                'percent': category['percent'],
+                'time': category['text']
+            })
+            
+        # get top 2 operating systems
+        top_os = []
+        for i, os in enumerate(last_7_days['operating_systems'][:2]):
+            top_os.append({
+                'name': os['name'],
+                'percent': os['percent'],
+                'time': os['text']
             })
         
         return {
-            'start_date': datetime.fromisoformat(last_7_days['start'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
-            'end_date': end_date.strftime('%B %d, %Y'),
+            'start_date': datetime.fromisoformat(last_7_days['start'].replace('Z', '+07:00')).strftime('%B %d, %Y'),
+            'end_date': datetime.fromisoformat(last_7_days['end'].replace('Z', '+07:00')).strftime('%B %d, %Y'),
             'daily_average': WakatimeStatsCalculator._format_time(last_7_days['daily_average_including_other_language']),
             'this_week_coding': WakatimeStatsCalculator._format_time(last_7_days['total_seconds_including_other_language']),
             'best_day_date': datetime.fromisoformat(last_7_days['best_day']['date']).strftime('%B %d, %Y'),
             'best_day_coding': last_7_days['best_day']['text'],
-            'top_language': last_7_days['languages'][0]['name'],
-            'top_language_percentage': last_7_days['languages'][0]['percent'],
             'top_3_languages': top_languages,
+            'top_1_category': top_category,
+            'top_2_os': top_os,
             'all_time_coding': all_time['text'],
-            'all_time_start': datetime.fromisoformat(all_time['range']['start'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
-            'all_time_end': datetime.fromisoformat(all_time['range']['end'].replace('Z', '+00:00')).strftime('%B %d, %Y'),
+            'all_time_start': datetime.fromisoformat(all_time['range']['start'].replace('Z', '+07:00')).strftime('%B %d, %Y'),
+            'all_time_end': datetime.fromisoformat(all_time['range']['end'].replace('Z', '+07:00')).strftime('%B %d, %Y'),
             'last_update_time': f"{hours_ago} hours ago"
         }
     

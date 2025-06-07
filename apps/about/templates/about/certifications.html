@@ -1,37 +1,26 @@
 <div class="mt-4 sm:mt-6">
     
     {% if view_certs %}
-    <div class="relative mt-4 mb-4 rounded-xl overflow-hidden p-4 sm:p-6 bg-gradient-to-tr from-blue-900 to-blue-800 border border-zinc-700/50 hover:border-blue-400/70 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300">
-        <div class="flex flex-col md:flex-row items-center gap-4 sm:gap-6">
-            <div class="flex-shrink-0 p-3 rounded-full border border-blue-400/40 bg-blue-950/50">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 sm:w-8 sm:h-8 text-blue-300" fill="currentColor" viewBox="0 0 24 24">
+    <div class="mb-6 p-4 rounded-lg border border-zinc-700/50 bg-zinc-800/30 hover:border-zinc-600 transition-all duration-200">
+        <div class="flex items-center gap-3">
+            <div class="flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-indigo-400" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
                 </svg>
             </div>
-            <div class="flex-1 text-center md:text-left">
-                <h3 class="text-lg sm:text-xl mb-2 text-blue-300">View All Certifications on LinkedIn</h3>
-                <p class="text-blue-100 text-sm sm:text-base mb-4">Access my complete certification portfolio with detailed credentials and achievements!</p>
-                
-                <div class="flex flex-wrap justify-center md:justify-start gap-2 sm:gap-3 mt-2">
-                    <a href="https://linkedin.com/in/{{ about.username }}/details/certifications/" 
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       class="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg border border-blue-700 bg-blue-950/60 hover:border-blue-400 hover:bg-blue-800/30 hover:shadow-md hover:shadow-blue-400/20 transition-all duration-300 text-sm text-blue-200">
-                        <span>View on LinkedIn</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5 ml-1.5 sm:ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                        </svg>
-                    </a>
-                </div>
-
-                <!-- Decorative elements -->
-                <div class="absolute top-0 right-0 -mt-4 -mr-4 hidden md:block">
-                    <div class="w-20 h-20 rounded-full bg-blue-400/10"></div>
-                </div>
-                <div class="absolute bottom-0 left-0 -mb-6 -ml-6 hidden md:block">
-                    <div class="w-16 h-16 rounded-full bg-blue-500/10"></div>
-                </div>
+            <div class="flex-1">
+                <h3 class="text-sm font-medium text-blue-200">View All Certifications</h3>
+                <p class="text-xs text-blue-300/80 mt-1">See my complete certification portfolio on LinkedIn</p>
             </div>
+            <a href="https://linkedin.com/in/{{ about.username }}/details/certifications/" 
+               target="_blank"
+               rel="noopener noreferrer"
+               class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md border border-zinc-600 hover:border-zinc-500 hover:bg-zinc-700/50 text-blue-200 transition-all duration-200">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+                View on LinkedIn
+            </a>
         </div>
     </div>
     {% endif %}

@@ -104,7 +104,7 @@ class BlogDetailView(BaseBlogView):
     """
     Displays a specific blog post detail view by slugified title.
     """
-    template_name = 'blog/blog_detail.html'
+    template_name = 'blog/blog-detail.html'
 
     def get(self, request, title, *args, **kwargs):
         return self.handle_exceptions(lambda r, *a, **kw: self._get(r, title, *a, **kw))(request, *args, **kwargs)

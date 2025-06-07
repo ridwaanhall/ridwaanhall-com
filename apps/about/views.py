@@ -10,9 +10,9 @@ from apps.data.awards_data import AwardsData
 from apps.data.about_data import AboutData
 
 
-class BaseCareerView(TemplateView):
+class BaseAboutView(TemplateView):
     """
-    Base view for career-related pages.
+    Base view for about-related pages.
     Provides about data, error rendering, and exception handling.
     """
 
@@ -48,11 +48,11 @@ class BaseCareerView(TemplateView):
         return wrapper
 
 
-class CareerView(BaseCareerView):
+class AboutView(BaseAboutView):
     """
-    Displays the career/resume page with experiences, education, and certifications.
+    Displays the about/about page with experiences, education, and certifications.
     """
-    template_name = 'career/career.html'
+    template_name = 'about/about.html'
 
     def get(self, request, *args, **kwargs):
         return self.handle_exceptions(self._get)(request, *args, **kwargs)

@@ -16,7 +16,7 @@ class StaticViewSitemap(Sitemap):
         }
 
     def items(self):
-        static_pages = ['home', 'dashboard', 'about', 'career', 'contact']
+        static_pages = ['home', 'dashboard', 'about', 'contact']
 
         blog_total = len(BlogData.blogs)
         blog_pages = ceil(blog_total / self.items_per_page)
@@ -42,12 +42,12 @@ class StaticViewSitemap(Sitemap):
     def changefreq(self, item):
         if item == 'dashboard':
             return 'daily'
-        elif item=='about' or item=='contact' or item == 'career' or item.startswith('projects-page-'):
+        elif item=='about' or item=='contact' or item.startswith('projects-page-'):
             return 'monthly'
         return 'weekly'
 
     def priority(self, item):
-        if item == 'home' or item == 'dashboard' or item == 'about' or item == 'career' or item == 'contact':
+        if item == 'home' or item == 'dashboard' or item == 'about' or item == 'contact':
             return 1.0
         elif item.startswith('blog-page-') or item.startswith('projects-page-'):
             page = int(item.split('-')[-1])

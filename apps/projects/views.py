@@ -102,7 +102,7 @@ class ProjectsDetailView(BaseProjectsView):
     """
     Displays detailed view for a specific project based on slugified title.
     """
-    template_name = 'projects/projects_detail.html'
+    template_name = 'projects/projects-detail.html'
 
     def get(self, request, title, *args, **kwargs):
         return self.handle_exceptions(lambda r, *a, **kw: self._get(r, title, *a, **kw))(request, *args, **kwargs)

@@ -107,8 +107,8 @@
                 },
                 {
                     "@type": "WebPage",
-                    "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'career' %}",
-                    "name": "Journey"
+                    "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'about' %}",
+                    "name": "About"
                 },
                 {
                     "@type": "WebPage",
@@ -288,22 +288,21 @@
                         </p>
                         
                         <div class="flex flex-row mb-6 sm:mb-6 md:mb-8 justify-start gap-2 sm:gap-3">
-                            <a href="{% url 'career' %}" class="group inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full bg-indigo-800 hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-indigo-700/30">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            <a href="{% url 'about' %}" class="group inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full bg-indigo-800 hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-indigo-700/30">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 group-hover:animate-pulse group-hover:-rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                 </svg>
-                                <span>Career</span>
+                                <span>About</span>
                             </a>
                             <a href="{% url 'contact' %}" class="group inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full bg-zinc-800 hover:bg-zinc-700 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-zinc-700/30">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 group-hover:animate-pulse group-hover:-rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                                 </svg>
                                 <span>Contact</span>
                             </a>
                             <a href="{{ about.donate.0.github_sponsor }}" class="group inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full bg-pink-800 hover:bg-pink-700 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-pink-700/30">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 animate-pulse group-hover:animate-bounce group-hover:-rotate-12 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                                 </svg>
                                 <span>Sponsor</span>
                             </a>
@@ -314,13 +313,13 @@
 
             <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
 
-            {% include 'blog/latest_blogs.html' %}
+            {% include 'blog/latest-blogs.html' %}
 
             <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
             
             {% include 'core/skills.html' %}
 
-            {% include 'career/sponsor-me.html' %}
+            {% include 'about/sponsor-me.html' %}
             
         </div>
     </main>

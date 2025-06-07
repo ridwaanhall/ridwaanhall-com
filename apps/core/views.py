@@ -127,7 +127,7 @@ class ContactView(BasePortfolioView):
         return render(request, self.template_name, context)
 
 class PrivacyPolicyView(BasePortfolioView):
-    template_name = 'core/privacy_policy.html'
+    template_name = 'core/privacy-policy.html'
 
     def get(self, request, *args, **kwargs):
         return self.handle_exceptions(self._get)(request, *args, **kwargs)

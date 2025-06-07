@@ -1763,8 +1763,8 @@ class ProjectsData:
             ],
             "github_url": "https://github.com/ridwaanhall/ridwaanhall_com",
             "demo_url": "https://ridwaanhall.com",
-            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/ridwaanhall_com.webp",
-            "img_name": "ridwaanhall_com.webp",
+            "image_url": f"{settings.PROJECT_BASE_IMG_URL}/ridwaanhall_com_20250607.webp",
+            "img_name": "ridwaanhall_com_20250607.webp",
             "is_featured": True,
             "features": [
                 {

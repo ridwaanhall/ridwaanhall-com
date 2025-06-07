@@ -1,36 +1,24 @@
 <div class="mt-4 sm:mt-6">
 
-    <!-- External profiles section -->
-    <div class="relative mt-4 mb-4 rounded-xl overflow-hidden p-4 sm:p-6 bg-gradient-to-tr border-teal-400 from-teal-900 to-teal-800 border border-zinc-700/50 hover:border-teal-400/70 hover:shadow-lg hover:shadow-teal-500/30 transition-all duration-300">
-        <div class="flex flex-col md:flex-row items-center gap-4 sm:gap-6">
-            <div class="flex-shrink-0 p-3 rounded-full border border-teal-400/40 bg-teal-950/50">
-                <svg class="w-6 h-6 sm:w-8 sm:h-8 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7a1 1 0 011-1h14a1 1 0 011 1v11a3 3 0 01-3 3H7a3 3 0 01-3-3V7zM7 8h10v2H7V8zm0 4h10v6H7v-6z"></path>
+    <!-- CV Download section -->
+    <div class="mb-6 p-4 rounded-lg border border-zinc-700/50 bg-zinc-800/30 hover:border-zinc-600 transition-all duration-200">
+        <div class="flex items-center gap-3">
+            <div class="flex-shrink-0">
+                <svg class="w-6 h-6 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
             </div>
-            <div class="flex-1 text-center md:text-left">
-                <h3 class="text-lg sm:text-xl mb-2 text-teal-300">Download/View My Word Resume</h3>
-                <p class="text-teal-100 text-sm sm:text-base mb-4">Access my full resume featuring tech experience, organizational roles, education, languages, skills, and tools!</p>
-                
-                <div class="flex flex-wrap justify-center md:justify-start gap-2 sm:gap-3 mt-2">
-                    <a href="{{ about.cv }}" download 
-                        class="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg border border-teal-700 bg-teal-950/60 hover:border-teal-400 hover:bg-teal-800/30 hover:shadow-md hover:shadow-teal-400/20 transition-all duration-300 text-sm text-teal-200">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        View CV (.docx)
-                    </a>
-                </div>
-
-                <!-- Decorative elements -->
-                <div class="absolute top-0 right-0 -mt-4 -mr-4 hidden md:block">
-                    <div class="w-20 h-20 rounded-full bg-teal-400/10"></div>
-                </div>
-                <div class="absolute bottom-0 left-0 -mb-6 -ml-6 hidden md:block">
-                    <div class="w-16 h-16 rounded-full bg-teal-500/10"></div>
-                </div>
+            <div class="flex-1">
+                <h3 class="text-sm font-medium text-zinc-200">Download Resume</h3>
+                <p class="text-xs text-zinc-400 mt-1">Complete CV with experience, skills, and education</p>
             </div>
+            <a href="{{ about.cv }}" download 
+                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md border border-zinc-600 hover:border-zinc-500 hover:bg-zinc-700/50 transition-all duration-200">
+                <svg class="w-4 h-4 mr-1.5" fill="currentColor" stroke="currentColor" viewBox="0 0 48 48">
+                    <path d="M21.9 7.38v19.86l-6.73-6.73a.87.87 0 0 0-1.24 0l-1.73 1.73a.88.88 0 0 0 0 1.24l11.18 11.18c.34.35.9.35 1.24 0L35.8 23.48a.88.88 0 0 0 0-1.24l-1.73-1.73a.87.87 0 0 0-1.24 0l-6.73 6.73V7.38c0-.49-.4-.88-.87-.88h-2.45c-.49 0-.88.4-.88.88ZM10.88 37.13c-.49 0-.88.39-.88.87v2.63c0 .48.4.87.88.87h26.24c.49 0 .88-.4.88-.87V38c0-.48-.4-.87-.87-.87H10.86Z"></path>
+                </svg>
+                Download
+            </a>
         </div>
     </div>
 

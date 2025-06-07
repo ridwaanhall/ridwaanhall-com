@@ -9,7 +9,7 @@ This project supports the following versions of dependencies as specified in `re
 | asgiref                   | 3.8.1    |
 | certifi                   | 2025.1.31|
 | charset-normalizer        | 3.4.1    |
-| Django                    | 5.2.1    |
+| Django                    | 5.2.2    |
 | django-csp                | 4.0      |
 | django-permissions-policy | 4.25.0   |
 | idna                      | 3.10     |

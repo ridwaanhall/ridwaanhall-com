@@ -2,7 +2,7 @@
 
 🔥 I built my personal site from *scratch* with Django and TailwindCSS, and it’s straight-up 🔥. Hosted on Vercel for that smooth vibe.😎
 
-![ridwaanhall](public/ridwaanhall_com.png)
+![ridwaanhall](https://ridwaanhall.com/static/img/project/ridwaanhall_com_20250607.webp)
 
 ---
 

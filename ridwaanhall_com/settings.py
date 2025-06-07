@@ -166,7 +166,7 @@ INSTALLED_APPS = [
     
     # Project apps
     'apps.core',
-    'apps.career',
+    'apps.about',
     'apps.data',
     'apps.dashboard',
     'apps.projects',

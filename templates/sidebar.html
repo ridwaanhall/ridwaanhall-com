@@ -81,13 +81,13 @@
                 {% endif %}
             </a>
 
-            <a {% if request.resolver_match.url_name != 'career' %}href="{% url 'career' %}"{% else %}role="button"{% endif %} class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'career' %}bg-zinc-800{% else %} hover:bg-zinc-800{% endif %}" tabindex="-1">
-                <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 {% if request.resolver_match.url_name == 'career' %}text-white{% else %}text-zinc-400{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <a {% if request.resolver_match.url_name != 'about' %}href="{% url 'about' %}"{% else %}role="button"{% endif %} class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'about' %}bg-zinc-800{% else %} hover:bg-zinc-800{% endif %}" tabindex="-1">
+                <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 {% if request.resolver_match.url_name == 'about' %}text-white{% else %}text-zinc-400{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
-                <span class="ml-3 font-medium">Journey</span>
+                <span class="ml-3 font-medium">About</span>
 
-                {% if request.resolver_match.url_name == 'career' %}
+                {% if request.resolver_match.url_name == 'about' %}
                 <span class="ml-auto">
                     <svg class="animate-pulse" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
@@ -212,14 +212,14 @@
             {% endif %}
         </a>
 
-        <a {% if request.resolver_match.url_name != 'career' %}href="{% url 'career' %}"{% else %}role="button"{% endif %} class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'career' %} bg-zinc-800 {% else %} hover:bg-zinc-800 {% endif %}">
-            <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 text-zinc-400 {% if request.resolver_match.url_name == 'career' %} animate-pulse {% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <a {% if request.resolver_match.url_name != 'about' %}href="{% url 'about' %}"{% else %}role="button"{% endif %} class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'about' %} bg-zinc-800 {% else %} hover:bg-zinc-800 {% endif %}">
+            <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 text-zinc-400 {% if request.resolver_match.url_name == 'about' %} animate-pulse {% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
             </svg>
     
-            <span class="ml-3 font-medium">Journey</span>
+            <span class="ml-3 font-medium">About</span>
     
-            {% if request.resolver_match.url_name == 'career' %}
+            {% if request.resolver_match.url_name == 'about' %}
             <span class="ml-auto">
                 <svg class="animate-pulse" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>

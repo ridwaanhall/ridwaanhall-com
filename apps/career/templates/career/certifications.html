@@ -1,5 +1,23 @@
 <div class="mt-4 sm:mt-6">
     
+    {% if view_certs %}
+    <div class="mb-4 flex justify-end">
+        <a href="https://linkedin.com/in/{{ about.username }}/details/certifications/" 
+           target="_blank"
+           rel="noopener noreferrer"
+           class="group inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-all duration-200 border border-zinc-700/50 hover:border-indigo-500/50 rounded-lg bg-zinc-900/50 hover:bg-indigo-900/20 backdrop-blur-sm text-zinc-300 hover:text-indigo-200">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+            </svg>
+            <span>View All on LinkedIn</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 group-hover:translate-x-0.5 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+        </a>
+    </div>
+    {% endif %}
+
     <div class="space-y-3 sm:space-y-4">
         {% for certification in certifications %}
         <div class="rounded-xl shadow-lg overflow-hidden p-2 sm:p-3 md:p-4 border border-zinc-700/50 transition-all duration-300 hover:border-zinc-700">
@@ -101,16 +119,4 @@
         </div>        
         {% endfor %}
     </div>
-
-    {% if view_certs %}
-    <div class="mt-6 sm:mt-8 md:mt-10 text-center relative z-10">
-        <a href="https://linkedin.com/in/{{ about.username }}/details/certifications/" 
-           class="group inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-md bg-zinc-800 hover:bg-zinc-700 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-zinc-700/30">
-           <span>View More</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-            </svg>
-        </a>
-    </div>
-    {% endif %}
 </div>

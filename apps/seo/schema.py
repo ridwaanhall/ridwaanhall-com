@@ -9,6 +9,8 @@ from django.utils.text import slugify
 from .config import SEOConfig
 from apps.data.education_data import EducationData
 from apps.data.experiences_data import ExperiencesData
+from apps.data.certifications_data import CertificationsData
+from apps.data.awards_data import AwardsData
 
 
 class SEOSchemaGenerator:
@@ -16,7 +18,7 @@ class SEOSchemaGenerator:
     
     @staticmethod
     def generate_person_schema(about_data: Dict) -> Dict:
-        """Generate Person schema for about pages."""
+        """Generate comprehensive Person schema for about pages with full profile data."""
         social_links = []
         social_media = about_data.get('social_media', {})
         
@@ -33,7 +35,40 @@ class SEOSchemaGenerator:
                 "name": edu.get('institution', ''),
                 "url": edu.get('website', '')
             }
+            if edu.get('degree'):
+                alumni_entry["hasCredential"] = {
+                    "@type": "EducationalOccupationalCredential",
+                    "name": edu.get('degree', ''),
+                    "dateReceived": edu.get('years', '').split(' - ')[-1] if edu.get('years') else None
+                }
             alumni_of.append(alumni_entry)
+        
+        # Format work experience
+        work_experience = []
+        experiences_data = ExperiencesData.experiences
+        for exp in experiences_data:
+            work_exp = {
+                "@type": "OrganizationRole",
+                "roleName": exp.get('title', ''),
+                "worksFor": {
+                    "@type": "Organization",
+                    "name": exp.get('company', ''),
+                    "url": exp.get('website', '')
+                },
+                "description": ' '.join(exp.get('responsibilities', [])),
+                "employmentType": exp.get('employment_type', ''),
+                "workLocation": exp.get('location', '')
+            }
+            
+            # Parse period for dates
+            period = exp.get('period', '')
+            if ' - ' in period:
+                start_date, end_date = period.split(' - ', 1)
+                work_exp["startDate"] = start_date.strip()
+                if end_date.strip().lower() != 'present':
+                    work_exp["endDate"] = end_date.strip()
+            
+            work_experience.append(work_exp)
         
         # Format skills for knowsAbout
         skills = about_data.get('skills', [])
@@ -41,7 +76,8 @@ class SEOSchemaGenerator:
             knows_about = skills
         else:
             knows_about = []
-          # Get current work experience
+        
+        # Get current work experience
         current_experience = None
         for exp in ExperiencesData.experiences:
             if exp.get('is_current', False):
@@ -74,7 +110,8 @@ class SEOSchemaGenerator:
             "description": about_data.get('short_description', ''),
             "email": about_data.get('email', 'hi@ridwaanhall.com'),
             "alumniOf": alumni_of,
-            "knowsAbout": knows_about
+            "knowsAbout": knows_about,
+            "workExperience": work_experience
         })
         
         return schema
@@ -262,3 +299,68 @@ class SEOSchemaGenerator:
                 "contactType": "customer service"
             }
         }
+    
+    @staticmethod
+    def generate_profile_page_schema(about_data: Dict) -> Dict:
+        """Generate ProfilePage schema with comprehensive profile information including certifications and awards."""
+        # Generate the main Person entity
+        person_schema = SEOSchemaGenerator.generate_person_schema(about_data)
+        
+        # Add certifications as hasCredential
+        certifications = []
+        for cert in CertificationsData.certifications:
+            certification = {
+                "@type": "EducationalOccupationalCredential",
+                "name": cert.get('title', ''),
+                "url": cert.get('credential_url', ''),
+                "credentialCategory": "certification",
+                "recognizedBy": {
+                    "@type": "Organization",
+                    "name": cert.get('institution', ''),
+                    "url": cert.get('website', '')
+                },
+                "validFrom": cert.get('issued', ''),
+                "description": ' '.join(cert.get('achievements', []))
+            }
+            certifications.append(certification)
+        
+        person_schema["hasCredential"] = certifications
+        
+        # Add awards as awards array
+        awards = []
+        for award in AwardsData.awards:
+            award_schema = {
+                "@type": "Award",
+                "name": award.get('title', ''),
+                "description": award.get('description', ''),
+                "dateReceived": award.get('issued', ''),
+                "awardingOrganization": {
+                    "@type": "Organization",
+                    "name": award.get('institution', ''),
+                    "url": award.get('website', '')
+                },
+                "url": award.get('credential_url', '')
+            }
+            awards.append(award_schema)
+        
+        person_schema["award"] = awards
+        
+        # Create ProfilePage schema
+        profile_page_schema = {
+            "@context": "https://schema.org",
+            "@type": "ProfilePage",
+            "name": f"{about_data.get('name', '')}'s Professional Profile",
+            "description": f"Professional profile showcasing {about_data.get('name', '')}'s experience, education, certifications, and achievements",
+            "url": f"{SEOConfig.SITE_URL}/about/",
+            "mainEntity": person_schema,
+            "author": {
+                "@type": "Person",
+                "name": about_data.get('name', ''),
+                "url": SEOConfig.SITE_URL
+            },
+            "dateCreated": "2020-01-01",
+            "dateModified": datetime.now().strftime("%Y-%m-%d"),
+            "inLanguage": "en"
+        }
+        
+        return profile_page_schema

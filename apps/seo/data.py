@@ -30,16 +30,22 @@ class SEOData:
             'canonical_url': SEOConfig.SITE_URL,
             'content_type': 'homepage'
         }
-    
     @staticmethod
     def get_about_seo(about_data: Dict) -> Dict:
         """Generate SEO data for about page."""
         keywords = SEOConfig.COMMON_KEYWORDS['personal'] + \
                   ['about', 'biography', 'background', 'experience', 'skills']
         
+        # Format location properly from dictionary
+        location = about_data.get('location', {})
+        if isinstance(location, dict):
+            location_str = f"{location.get('regency', '')}, {location.get('country', 'Indonesia')} {location.get('flag', '🇮🇩')}"
+        else:
+            location_str = str(location) if location else 'Indonesia'
+        
         return {
             'title': f"About {about_data['name']} - {about_data.get('role', 'Developer')}",
-            'description': f"Learn more about {about_data['name']}, {about_data.get('role', 'a passionate developer')} from {about_data.get('location', 'Indonesia')}. Discover my background, skills, and journey in tech.",
+            'description': f"Learn more about {about_data['name']}, {about_data.get('role', 'a passionate developer')} from {location_str}. Discover my background, skills, and journey in tech.",
             'keywords': ', '.join(keywords[:15]),
             'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
             'og_type': SEOConfig.CONTENT_TYPES['about']['og_type'],

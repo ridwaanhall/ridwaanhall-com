@@ -33,7 +33,7 @@ class SEOManager:
         """Get complete SEO data for about page."""
         seo_data = SEOData.get_about_seo(self.about_data)
         seo_data['schemas'] = [
-            self.schema_generator.generate_person_schema(self.about_data),
+            self.schema_generator.generate_profile_page_schema(self.about_data),
             self.schema_generator.generate_breadcrumb_schema([
                 {"name": "Home", "url": SEOConfig.SITE_URL},
                 {"name": "About", "url": f"{SEOConfig.SITE_URL}/about/"}

@@ -94,7 +94,7 @@ class PaginatedView(BaseView):
         
         if items_per_page is None:
             items_per_page = self.items_per_page
-            
+        
         paginator = Paginator(items, items_per_page)
         page = request.GET.get('page', 1)
         
@@ -105,10 +105,47 @@ class PaginatedView(BaseView):
         except EmptyPage:
             page_obj = paginator.page(paginator.num_pages)
         
+        # Calculate page range for better pagination display
+        current_page = page_obj.number
+        num_pages = paginator.num_pages
+        
+        # Create a smart page range that shows:
+        # - First page (1)
+        # - Pages around current (current-2 to current+2)
+        # - Last page (num_pages)
+        # - Ellipsis (...) where there are gaps
+        
+        page_range = []
+        
+        # Always include page 1
+        page_range.append(1)
+        
+        # Calculate start and end of the window around current page
+        window_start = max(2, current_page - 2)
+        window_end = min(num_pages, current_page + 2)
+        
+        # Add ellipsis after 1 if there's a gap
+        if window_start > 2:
+            page_range.append('...')
+        
+        # Add pages in the window (excluding 1 and last page)
+        for page_num in range(window_start, window_end + 1):
+            if page_num != 1 and page_num != num_pages:
+                page_range.append(page_num)
+        
+        # Add ellipsis before last page if there's a gap
+        if window_end < num_pages - 1:
+            page_range.append('...')
+        
+        # Always include last page (if it's not the same as first page)
+        if num_pages > 1:
+            page_range.append(num_pages)
+        
         return {
             'page_obj': page_obj,
             'paginator': paginator,
-            'is_paginated': paginator.num_pages > 1
+            'is_paginated': paginator.num_pages > 1,
+            'page_range': page_range
         }
 
 

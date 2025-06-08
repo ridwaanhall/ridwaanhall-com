@@ -3,10 +3,6 @@ Projects views for listing and displaying project details.
 Handles project listing with pagination and individual project details.
 """
 
-from django.utils.text import slugify
-from django.http import Http404
-from django.core.exceptions import SuspiciousOperation
-
 from apps.core.base_views import PaginatedView, DetailView
 from apps.core.data_service import DataService
 from apps.seo.mixins import ProjectsListSEOMixin, ProjectDetailSEOMixin

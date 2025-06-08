@@ -1,0 +1,45 @@
+<!-- SEO Meta Tags Template -->
+<!-- Primary Meta Tags -->
+<title>{{ seo.title }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="{{ seo.author|default:'Ridwan Hall' }}">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="{% if request %}{{ request.build_absolute_uri }}{% else %}{{ seo.canonical_url }}{% endif %}">
+<meta name="description" content="{{ seo.description }}">
+<meta name="keywords" content="{{ seo.keywords }}">
+<meta name="language" content="en">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="{{ seo.og_type|default:'website' }}">
+<meta property="og:url" content="{% if request %}{{ request.build_absolute_uri }}{% else %}{{ seo.canonical_url }}{% endif %}">
+<meta property="og:title" content="{{ seo.og_title|default:seo.title }}">
+<meta property="og:description" content="{{ seo.og_description|default:seo.description }}">
+<meta property="og:image" content="{{ seo.og_image }}">
+<meta property="og:site_name" content="ridwaanhall.com">
+
+{% if seo.published_date %}
+<!-- Article specific meta tags -->
+<meta property="article:published_time" content="{{ seo.published_date }}">
+{% endif %}
+{% if seo.modified_date %}
+<meta property="article:modified_time" content="{{ seo.modified_date }}">
+{% endif %}
+{% if seo.author %}
+<meta property="article:author" content="{{ seo.author }}">
+{% endif %}
+{% for tag in seo.tags %}
+<meta property="article:tag" content="{{ tag }}">
+{% endfor %}
+
+<!-- Twitter -->
+<meta property="twitter:card" content="{{ seo.twitter_card|default:'summary_large_image' }}">
+<meta property="twitter:url" content="{% if request %}{{ request.build_absolute_uri }}{% else %}{{ seo.canonical_url }}{% endif %}">
+<meta property="twitter:title" content="{{ seo.twitter_title|default:seo.title }}">
+<meta property="twitter:description" content="{{ seo.twitter_description|default:seo.description }}">
+<meta property="twitter:image" content="{{ seo.twitter_image|default:seo.og_image }}">
+{% if seo.twitter_site %}
+<meta property="twitter:site" content="{{ seo.twitter_site }}">
+{% endif %}
+{% if seo.twitter_creator %}
+<meta property="twitter:creator" content="{{ seo.twitter_creator }}">
+{% endif %}

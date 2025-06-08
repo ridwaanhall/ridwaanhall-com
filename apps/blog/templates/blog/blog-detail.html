@@ -1,14 +1,5 @@
 {% extends 'base_seo.html' %}
-{% load static %}>
-<meta name="language" content="en">
-
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="{{ seo.og_type }}">
-<meta property="og:url" content="{{ request.build_absolute_uri }}">
-<meta property="og:title" content="{{ seo.title }}">
-<meta property="og:description" content="{{ seo.description }}">
-<meta property="og:image" content="{{ seo.og_image }}">
-
+{% load static %}
 
 {% block content %}
 <article class="flex-1 md:ml-62">

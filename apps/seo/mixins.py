@@ -64,8 +64,8 @@ class SEOMixin:
             # Default SEO data
             return {
                 'title': 'ridwaanhall.com',
-                'description': 'Ridwan Hall - Software Developer & AI Engineer',
-                'keywords': 'ridwan hall, software developer, ai engineer',
+                'description': 'Ridwan Halim - Software Developer & AI Engineer',
+                'keywords': 'Ridwan Halim, ridwaanhall, software developer, ai engineer',
                 'og_image': self.get_about_data().get('image_url', ''),
                 'og_type': 'website',
                 'twitter_card': 'summary_large_image',

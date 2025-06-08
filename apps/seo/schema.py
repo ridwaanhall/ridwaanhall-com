@@ -7,6 +7,7 @@ from typing import Dict, List, Optional, Any
 from datetime import datetime
 from django.utils.text import slugify
 from .config import SEOConfig
+from apps.data.education_data import EducationData
 
 
 class SEOSchemaGenerator:
@@ -22,6 +23,24 @@ class SEOSchemaGenerator:
             if url:
                 social_links.append(url)
         
+        # Format education data for alumniOf
+        alumni_of = []
+        education_data = EducationData.education
+        for edu in education_data:
+            alumni_entry = {
+                "@type": "EducationalOrganization",
+                "name": edu.get('institution', ''),
+                "url": edu.get('website', '')
+            }
+            alumni_of.append(alumni_entry)
+        
+        # Format skills for knowsAbout
+        skills = about_data.get('skills', [])
+        if isinstance(skills, list):
+            knows_about = skills
+        else:
+            knows_about = []
+        
         schema = SEOConfig.SCHEMA_TEMPLATES['person'].copy()
         schema.update({
             "name": about_data.get('name', ''),
@@ -30,9 +49,9 @@ class SEOSchemaGenerator:
             "sameAs": social_links,
             "jobTitle": about_data.get('role', 'Software Developer'),
             "description": about_data.get('short_description', ''),
-            "email": about_data.get('email', ''),
-            "alumniOf": about_data.get('education', []),
-            "knowsAbout": about_data.get('skills', [])
+            "email": about_data.get('email', 'hi@ridwaanhall.com'),
+            "alumniOf": alumni_of,
+            "knowsAbout": knows_about
         })
         
         return schema

@@ -23,7 +23,7 @@ class SEOConfig:
     
     # Site information
     SITE_NAME = "ridwaanhall.com"
-    AUTHOR = "Ridwan Hall"
+    AUTHOR = "RidwaanHall"
     SITE_URL = getattr(settings, 'SITE_URL', 'https://ridwaanhall.com')
     DEFAULT_IMAGE = f"{SITE_URL}/static/img/default-og-image.webp"
     

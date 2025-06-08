@@ -27,18 +27,22 @@ class ProjectsView(ProjectsListSEOMixin, PaginatedView):
         # Get all projects sorted by featured status and ID
         all_projects = DataService.get_projects()
         
-        # Paginate projects
+        # Use the base class pagination method
         pagination_data = self.paginate_items(request, all_projects, self.items_per_page)
-        
         context = self.get_common_context()
         context.update({
-            'projects': pagination_data['page_obj'],
+            'projects': pagination_data['page_obj'],  # This is the Django page object with pagination methods
             'paginator': pagination_data['paginator'],
-            'is_paginated': pagination_data['is_paginated']
+            'is_paginated': pagination_data['is_paginated'],
+            'page_range': pagination_data['page_range']
         })
 
         # Add SEO data from mixin
-        context.update(self.get_context_data(projects=all_projects, page=request.GET.get('page', 1)))
+        try:
+            page_num = int(request.GET.get('page', 1))
+        except (ValueError, TypeError):
+            page_num = 1
+        context.update(self.get_context_data(projects=all_projects, page=page_num))
         return self.render_to_response(context)
 
 

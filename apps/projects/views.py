@@ -36,13 +36,17 @@ class ProjectsView(ProjectsListSEOMixin, PaginatedView):
             'is_paginated': pagination_data['is_paginated'],
             'page_range': pagination_data['page_range']
         })
-
         # Add SEO data from mixin
         try:
             page_num = int(request.GET.get('page', 1))
         except (ValueError, TypeError):
             page_num = 1
-        context.update(self.get_context_data(projects=all_projects, page=page_num))
+        
+        # Get SEO data without overriding the paginated projects
+        seo_context = self.get_context_data(projects=all_projects, page=page_num)
+        # Only add the 'seo' key, not the whole context which might override 'projects'
+        if 'seo' in seo_context:
+            context['seo'] = seo_context['seo']
         return self.render_to_response(context)
 
 

@@ -22,27 +22,31 @@ class BlogView(BlogListSEOMixin, PaginatedView):
 
     def get(self, request, *args, **kwargs):
         return self.handle_exceptions(self._get)(request, *args, **kwargs)
-    
+
     def _get(self, request, *args, **kwargs):
         # Get all blogs sorted by ID descending
         all_blogs = DataService.get_blogs()
         
-        # Paginate blogs
+        # Use the base class pagination method
         pagination_data = self.paginate_items(request, all_blogs, self.items_per_page)
         
         # Get featured blogs
         featured_blogs = DataService.get_blogs(featured_only=True)[:3]
-        
         context = self.get_common_context()
         context.update({
-            'blogs': pagination_data['page_obj'],
+            'blogs': pagination_data['page_obj'],  # This is the Django page object with pagination methods
             'featured_blogs': featured_blogs,
             'paginator': pagination_data['paginator'],
-            'is_paginated': pagination_data['is_paginated']
+            'is_paginated': pagination_data['is_paginated'],
+            'page_range': pagination_data['page_range']
         })
         
-        # Add SEO data from mixin  
-        context.update(self.get_context_data(blogs=all_blogs, page=request.GET.get('page', 1)))
+        # Add SEO data from mixin
+        try:
+            page_num = int(request.GET.get('page', 1))
+        except (ValueError, TypeError):
+            page_num = 1
+        context.update(self.get_context_data(blogs=all_blogs, page=page_num))
         return self.render_to_response(context)
 
 

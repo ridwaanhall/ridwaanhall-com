@@ -1,0 +1,253 @@
+{% extends "base_seo.html" %}
+{% load static %}
+
+{% block title %}Error Testing Menu{% endblock %}
+
+{% block meta_description %}Error handling testing interface for development{% endblock %}
+
+{% block extra_head %}
+<meta name="robots" content="noindex, nofollow">
+<style>
+    .test-card {
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .test-card:hover {
+        border-color: #3b82f6;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+    }
+    
+    .test-button {
+        transition: all 0.2s ease;
+    }
+    
+    .test-button:hover {
+        transform: scale(1.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+    <div class="container mx-auto max-w-6xl">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                Error Handling Test Suite
+            </h1>
+            <p class="text-slate-400 text-lg">
+                Test different error scenarios to verify error handling works correctly
+            </p>
+            {% if debug_mode %}
+            <div class="inline-flex items-center gap-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-4 py-2 mt-4">
+                <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+                <span class="text-yellow-300 font-medium">DEBUG MODE ONLY</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Test Categories -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <!-- HTTP Error Tests -->
+            <div class="test-card bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-semibold text-white">HTTP Error Tests</h2>
+                        <p class="text-slate-400">Test standard HTTP error responses</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <a href="/test-errors/400/" class="test-button block w-full bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 rounded-lg p-4 text-left transition-all duration-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-medium text-red-300">400 Bad Request</h3>
+                                <p class="text-red-400/80 text-sm">Test malformed request handling</p>
+                            </div>
+                            <span class="text-red-300 text-2xl font-bold">400</span>
+                        </div>
+                    </a>
+
+                    <a href="/test-errors/403/" class="test-button block w-full bg-orange-600/20 hover:bg-orange-600/30 border border-orange-500/30 rounded-lg p-4 text-left transition-all duration-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-medium text-orange-300">403 Forbidden</h3>
+                                <p class="text-orange-400/80 text-sm">Test access denied scenarios</p>
+                            </div>
+                            <span class="text-orange-300 text-2xl font-bold">403</span>
+                        </div>
+                    </a>
+
+                    <a href="/test-errors/404/" class="test-button block w-full bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 rounded-lg p-4 text-left transition-all duration-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-medium text-blue-300">404 Not Found</h3>
+                                <p class="text-blue-400/80 text-sm">Test missing page handling</p>
+                            </div>
+                            <span class="text-blue-300 text-2xl font-bold">404</span>
+                        </div>
+                    </a>
+
+                    <a href="/test-errors/500/" class="test-button block w-full bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 rounded-lg p-4 text-left transition-all duration-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-medium text-purple-300">500 Internal Error</h3>
+                                <p class="text-purple-400/80 text-sm">Test server error handling</p>
+                            </div>
+                            <span class="text-purple-300 text-2xl font-bold">500</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- AJAX Error Tests -->
+            <div class="test-card bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-semibold text-white">AJAX/API Tests</h2>
+                        <p class="text-slate-400">Test JSON error responses</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <button onclick="testAjaxError('400')" class="test-button w-full bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 rounded-lg p-4 text-left transition-all duration-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-medium text-red-300">AJAX 400</h3>
+                                <p class="text-red-400/80 text-sm">Test JSON bad request response</p>
+                            </div>
+                            <span class="text-red-300">▶</span>
+                        </div>
+                    </button>
+
+                    <button onclick="testAjaxError('403')" class="test-button w-full bg-orange-600/20 hover:bg-orange-600/30 border border-orange-500/30 rounded-lg p-4 text-left transition-all duration-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-medium text-orange-300">AJAX 403</h3>
+                                <p class="text-orange-400/80 text-sm">Test JSON forbidden response</p>
+                            </div>
+                            <span class="text-orange-300">▶</span>
+                        </div>
+                    </button>
+
+                    <button onclick="testAjaxError('404')" class="test-button w-full bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 rounded-lg p-4 text-left transition-all duration-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-medium text-blue-300">AJAX 404</h3>
+                                <p class="text-blue-400/80 text-sm">Test JSON not found response</p>
+                            </div>
+                            <span class="text-blue-300">▶</span>
+                        </div>
+                    </button>
+
+                    <button onclick="testAjaxError('500')" class="test-button w-full bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 rounded-lg p-4 text-left transition-all duration-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-medium text-purple-300">AJAX 500</h3>
+                                <p class="text-purple-400/80 text-sm">Test JSON server error response</p>
+                            </div>
+                            <span class="text-purple-300">▶</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Area -->
+        <div id="testResults" class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-8 mb-8" style="display: none;">
+            <h3 class="text-xl font-semibold text-white mb-4">Test Results</h3>
+            <div id="resultContent" class="bg-slate-900/50 rounded-lg p-4 text-sm font-mono">
+                <!-- Results will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="text-center">
+            <a href="{% url 'home' %}" class="inline-flex items-center gap-2 bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Back to Homepage
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function testAjaxError(errorType) {
+    const resultArea = document.getElementById('testResults');
+    const resultContent = document.getElementById('resultContent');
+    
+    // Show results area
+    resultArea.style.display = 'block';
+    resultContent.innerHTML = `<div class="text-yellow-300">Testing AJAX ${errorType} error...</div>`;
+    
+    // Make AJAX request
+    fetch(`/test-errors/ajax/?type=${errorType}`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        return response.json().then(data => ({
+            status: response.status,
+            statusText: response.statusText,
+            data: data
+        }));
+    })
+    .then(result => {
+        resultContent.innerHTML = `
+            <div class="space-y-2">
+                <div class="text-blue-300">Status: ${result.status} ${result.statusText}</div>
+                <div class="text-green-300">Response Headers:</div>
+                <div class="text-gray-300 ml-4">Content-Type: application/json</div>
+                <div class="text-green-300">Response Body:</div>
+                <div class="text-gray-300 ml-4">${JSON.stringify(result.data, null, 2)}</div>
+                <div class="text-green-400 font-bold">✓ AJAX error handling working correctly!</div>
+            </div>
+        `;
+    })
+    .catch(error => {
+        resultContent.innerHTML = `
+            <div class="space-y-2">
+                <div class="text-red-300">Error: ${error.message}</div>
+                <div class="text-red-400">✗ AJAX error handling failed</div>
+            </div>
+        `;
+    });
+}
+
+// Auto-scroll to results when they appear
+const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+            const target = mutation.target;
+            if (target.id === 'testResults' && target.style.display !== 'none') {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+});
+
+observer.observe(document.getElementById('testResults'), {
+    attributes: true,
+    attributeFilter: ['style']
+});
+</script>
+{% endblock %}

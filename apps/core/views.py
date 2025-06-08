@@ -9,7 +9,6 @@ from apps.data.projects_data import ProjectsData
 from apps.data.education_data import EducationData
 from apps.data.certifications_data import CertificationsData
 from apps.data.services_data import ServicesData
-from apps.data.palestine_data import PalestineData
 from apps.data.privacy_policy_data import PrivacyPolicyData
 from apps.data.skills_data import SkillsData
 from apps.seo.mixins import HomepageSEOMixin, ContactSEOMixin, PrivacyPolicySEOMixin

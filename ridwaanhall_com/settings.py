@@ -177,6 +177,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    'ridwaanhall_com.middleware.SecurityHeadersMiddleware',
+    'ridwaanhall_com.middleware.PerformanceMiddleware',
     'csp.middleware.CSPMiddleware',
     'django_permissions_policy.PermissionsPolicyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -185,6 +187,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'ridwaanhall_com.middleware.ErrorHandlingMiddleware',
 ]
 
 ROOT_URLCONF = 'ridwaanhall_com.urls'
@@ -260,3 +263,52 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # ------------------------------------------------------------------------------
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ------------------------------------------------------------------------------
+# ERROR HANDLING SETTINGS
+# ------------------------------------------------------------------------------
+
+# Custom error handlers - enabled for both debug and production
+handler400 = 'ridwaanhall_com.error_handlers.handler400'
+handler403 = 'ridwaanhall_com.error_handlers.handler403'
+handler404 = 'ridwaanhall_com.error_handlers.handler404'
+handler500 = 'ridwaanhall_com.error_handlers.handler500'
+
+# Logging configuration for Vercel compatibility (console only, no file logging)
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG' if DEBUG else 'WARNING',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose' if DEBUG else 'simple',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'ridwaanhall_com.error_handlers': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+    },
+}

@@ -1,91 +1,54 @@
-from django.views.generic import TemplateView
-from django.shortcuts import render
-from django.utils.text import slugify
-from django.http import Http404
-from django.core.exceptions import SuspiciousOperation
+"""
+Projects views for listing and displaying project details.
+Handles project listing with pagination and individual project details.
+"""
 
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from apps.data.projects_data import ProjectsData
-from apps.data.about_data import AboutData
+from apps.core.base_views import PaginatedView, DetailView
+from apps.core.data_service import DataService
 from apps.seo.mixins import ProjectsListSEOMixin, ProjectDetailSEOMixin
 
 
-class BaseProjectsView(TemplateView):
+class ProjectsView(ProjectsListSEOMixin, PaginatedView):
     """
-    Base view for project-related pages.
-    Handles common context, SEO generation, and error rendering.
-    """
-
-    def get_about(self):
-        return AboutData.get_about_data()[0]
-
-    def get_projects(self):
-        return sorted(ProjectsData.projects, key=lambda p: (-p.get('is_featured', 0), -p.get('id', 0)))
-
-    def get_common_context(self):
-        return {
-            'projects': self.get_projects(),
-            'about': self.get_about()
-        }
-
-    def render_error(self, request, status_code, message=None):
-        context = {'error_code': status_code}
-        if message:
-            context['error_message'] = message
-        return render(request, 'error.html', context, status=status_code)
-
-    def handle_exceptions(self, func):
-        def wrapper(request, *args, **kwargs):
-            try:
-                return func(request, *args, **kwargs)
-            except SuspiciousOperation:
-                return self.render_error(request, 400)
-            except (AttributeError, TypeError, KeyError):
-                return self.render_error(request, 500, 'Data processing error occurred.')
-            except (FileNotFoundError, ImportError):
-                return self.render_error(request, 500, 'Resource loading error occurred.')
-            except Exception:
-                return self.render_error(request, 500, 'An unexpected error occurred.')
-        return wrapper
-
-
-class ProjectsView(ProjectsListSEOMixin, BaseProjectsView):
-    """
-    Displays all projects with SEO metadata.
+    Projects listing view with pagination.
+    Displays all projects sorted by featured status and ID.
     """
     template_name = 'projects/projects.html'
-    projects_per_page = 6
+    items_per_page = 6
 
     def get(self, request, *args, **kwargs):
         return self.handle_exceptions(self._get)(request, *args, **kwargs)
 
     def _get(self, request, *args, **kwargs):
+        # Get all projects sorted by featured status and ID
+        all_projects = DataService.get_projects()
+        
+        # Use the base class pagination method
+        pagination_data = self.paginate_items(request, all_projects, self.items_per_page)
         context = self.get_common_context()
-        all_projects = context['projects']
-
-        # Paginate projects
-        paginator = Paginator(all_projects, self.projects_per_page)
-        page = request.GET.get('page', 1)
-        
+        context.update({
+            'projects': pagination_data['page_obj'],  # This is the Django page object with pagination methods
+            'paginator': pagination_data['paginator'],
+            'is_paginated': pagination_data['is_paginated'],
+            'page_range': pagination_data['page_range']
+        })
+        # Add SEO data from mixin
         try:
-            projects_page = paginator.page(page)
-        except PageNotAnInteger:
-            projects_page = paginator.page(1)
-        except EmptyPage:
-            projects_page = paginator.page(paginator.num_pages)
+            page_num = int(request.GET.get('page', 1))
+        except (ValueError, TypeError):
+            page_num = 1
         
-        # Update context with paginated projects
-        context['projects'] = projects_page
-        context['paginator'] = paginator
-        context['is_paginated'] = paginator.num_pages > 1
-
-        # SEO data is handled by the mixin
-        context.update(self.get_context_data(projects=all_projects, page=page))
+        # Get SEO data without overriding the paginated projects
+        seo_context = self.get_context_data(projects=all_projects, page=page_num)
+        # Only add the 'seo' key, not the whole context which might override 'projects'
+        if 'seo' in seo_context:
+            context['seo'] = seo_context['seo']
         return self.render_to_response(context)
 
 
-class ProjectsDetailView(ProjectDetailSEOMixin, BaseProjectsView):
+class ProjectsDetailView(ProjectDetailSEOMixin, DetailView):
     """
+    Project detail view for individual projects.
     Displays detailed view for a specific project based on slugified title.
     """
     template_name = 'projects/projects-detail.html'
@@ -94,20 +57,15 @@ class ProjectsDetailView(ProjectDetailSEOMixin, BaseProjectsView):
         return self.handle_exceptions(lambda r, *a, **kw: self._get(r, title, *a, **kw))(request, *args, **kwargs)
 
     def _get(self, request, title, *args, **kwargs):
-        if not isinstance(title, str):
-            raise SuspiciousOperation("Invalid project title format")
-
+        # Get all projects
+        all_projects = DataService.get_projects()
+        
+        # Find project by slug
+        project = self.get_item_by_slug(all_projects, title, 'title')
+        
         context = self.get_common_context()
-
-        project = next(
-            (p for p in context['projects'] if slugify(p['title']) == title),
-            None
-        )
-
-        if not project:
-            raise Http404("Project not found")
-
         context['project'] = project
-        # SEO data is handled by the mixin
+        
+        # Add SEO data from mixin
         context.update(self.get_context_data(project=project))
         return self.render_to_response(context)

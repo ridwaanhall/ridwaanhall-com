@@ -62,8 +62,7 @@ class SEOMixin:
             return seo_manager.get_privacy_policy_seo()
         else:
             # Default SEO data
-            return {
-                'title': 'ridwaanhall.com',
+            return {                'title': 'ridwaanhall.com',
                 'description': 'Ridwan Halim - Software Developer & AI Engineer',
                 'keywords': 'Ridwan Halim, ridwaanhall, software developer, ai engineer',
                 'og_image': self.get_about_data().get('image_url', ''),
@@ -77,12 +76,17 @@ class SEOMixin:
         context = super().get_context_data(**kwargs) if hasattr(super(), 'get_context_data') else kwargs
         
         # Generate SEO data
+        try:
+            page = int(self.request.GET.get('page', 1)) if hasattr(self, 'request') else 1
+        except (ValueError, TypeError):
+            page = 1
+            
         seo_kwargs = {
             'blogs': context.get('blogs', []),
             'projects': context.get('projects', []),
             'blog_data': context.get('blog', {}),
             'project_data': context.get('project', {}),
-            'page': self.request.GET.get('page', 1) if hasattr(self, 'request') else 1
+            'page': page
         }
         
         seo_data = self.get_seo_data(**seo_kwargs)

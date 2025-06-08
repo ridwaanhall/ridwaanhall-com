@@ -1,57 +1,20 @@
-from django.views.generic import TemplateView
+"""
+About views for displaying about page with experiences, education, and certifications.
+Provides comprehensive portfolio information with proper error handling.
+"""
+
 from django.shortcuts import render
 from django.core.exceptions import SuspiciousOperation
 
-from apps.data.experiences_data import ExperiencesData
-from apps.data.certifications_data import CertificationsData
-from apps.data.education_data import EducationData
-from apps.data.applications_data import ApplicationsData
-from apps.data.awards_data import AwardsData
-from apps.data.about_data import AboutData
+from apps.core.base_views import BaseView
+from apps.core.data_service import DataService
 from apps.seo.mixins import AboutSEOMixin
 
 
-class BaseAboutView(TemplateView):
+class AboutView(AboutSEOMixin, BaseView):
     """
-    Base view for about-related pages.
-    Provides about data, error rendering, and exception handling.
-    """
-
-    def get_about(self):
-        return AboutData.get_about_data()[0]
-
-    def get_common_context(self):
-        return {
-            'about': self.get_about()
-        }
-
-    def render_error(self, request, status_code, message=None):
-        context = {'error_code': status_code}
-        if message:
-            context['error_message'] = message
-        return render(request, 'error.html', context, status=status_code)
-
-    def handle_exceptions(self, func):
-        """
-        Decorator-like method to handle exceptions in views.
-        """
-        def wrapper(request, *args, **kwargs):
-            try:
-                return func(request, *args, **kwargs)
-            except SuspiciousOperation:
-                return self.render_error(request, 400)
-            except (AttributeError, TypeError, KeyError):
-                return self.render_error(request, 500, 'Data processing error occurred.')
-            except (FileNotFoundError, ImportError):
-                return self.render_error(request, 500, 'Resource loading error occurred.')
-            except Exception:
-                return self.render_error(request, 500, 'An unexpected error occurred.')
-        return wrapper
-
-
-class AboutView(AboutSEOMixin, BaseAboutView):
-    """
-    Displays the about/about page with experiences, education, and certifications.
+    About page view displaying comprehensive portfolio information.
+    Shows experiences, education, certifications, applications, and awards.
     """
     template_name = 'about/about.html'
 
@@ -59,20 +22,19 @@ class AboutView(AboutSEOMixin, BaseAboutView):
         return self.handle_exceptions(self._get)(request, *args, **kwargs)
 
     def _get(self, request, *args, **kwargs):
-        context = self.get_common_context()
+        about = self.get_about_data()
 
-        awards_sorted = sorted(AwardsData.awards, key=lambda x: x.get('id', 0), reverse=True)
-
-        context.update({
+        context = {
+            'about': about,
             'view_certs': 'true',
             'view': False,
-            'experiences': ExperiencesData.experiences,
-            'education': EducationData.education,
-            'certifications': CertificationsData.certifications,
-            'applications': ApplicationsData.applications,
-            'awards': awards_sorted,
-        })
+            'experiences': DataService.get_experiences(),
+            'education': DataService.get_education(),
+            'certifications': DataService.get_certifications(),
+            'applications': DataService.get_applications(),
+            'awards': DataService.get_awards(),  # Already sorted by ID descending
+        }
 
-        # SEO data is handled by the mixin
+        # Add SEO data from mixin
         context.update(self.get_context_data(**context))
         return self.render_to_response(context)

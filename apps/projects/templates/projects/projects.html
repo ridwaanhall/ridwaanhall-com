@@ -182,24 +182,23 @@
                                 </span>
                             </li>
                         {% endif %}
-                        
-                        <!-- Page numbers -->
-                        {% for num in paginator.page_range %}
-                            {% if num == projects.number %}
+                          <!-- Page numbers -->
+                        {% for item in page_range %}
+                            {% if item == "..." %}
+                                <li>
+                                    <span class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center text-zinc-500">...</span>
+                                </li>
+                            {% elif item == projects.number %}
                                 <li>
                                     <span aria-current="page" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md bg-zinc-800 text-xs sm:text-sm font-medium">
-                                        {{ num }}
+                                        {{ item }}
                                     </span>
                                 </li>
-                            {% elif num == 1 or num == paginator.num_pages or num > projects.number|add:'-3' and num < projects.number|add:'3' %}
+                            {% else %}
                                 <li>
-                                    <a href="?page={{ num }}" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-xs sm:text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200">
-                                        {{ num }}
+                                    <a href="?page={{ item }}" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-xs sm:text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200">
+                                        {{ item }}
                                     </a>
-                                </li>
-                            {% elif num == 2 and projects.number > 4 or num == paginator.num_pages|add:'-1' and projects.number < paginator.num_pages|add:'-3' %}
-                                <li>
-                                    <span class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center">...</span>
                                 </li>
                             {% endif %}
                         {% endfor %}

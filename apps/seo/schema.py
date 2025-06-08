@@ -456,3 +456,60 @@ class SEOSchemaGenerator:
             "dateModified": datetime.now().strftime("%Y-%m-%d"),
             "inLanguage": "en"
         }
+    
+    @staticmethod
+    def generate_privacy_policy_schema(about_data: Dict) -> Dict:
+        """Generate comprehensive PrivacyPolicy schema for privacy policy page."""
+        return {
+            "@context": "https://schema.org",
+            "@type": "PrivacyPolicy",
+            "name": "Privacy Policy - ridwaanhall.com",
+            "description": "Comprehensive privacy policy outlining how we collect, use, and protect your personal information on ridwaanhall.com",
+            "url": f"{SEOConfig.SITE_URL}/privacy-policy/",
+            "dateCreated": "2025-03-16",
+            "dateModified": datetime.now().strftime("%Y-%m-%d"),
+            "inLanguage": "en",
+            "publisher": {
+                "@type": "Person",
+                "name": about_data.get('name', ''),
+                "url": SEOConfig.SITE_URL,
+                "email": about_data.get('social_media', {}).get('email', ''),
+                "image": about_data.get('image_url', '')
+            },
+            "author": {
+                "@type": "Person", 
+                "name": about_data.get('name', ''),
+                "url": SEOConfig.SITE_URL,
+                "email": about_data.get('social_media', {}).get('email', ''),
+                "jobTitle": about_data.get('role', 'Software Developer')
+            },
+            "isPartOf": {
+                "@type": "WebSite",
+                "name": f"{about_data.get('name', '')}'s Portfolio",
+                "url": SEOConfig.SITE_URL
+            },
+            "audience": {
+                "@type": "Audience",
+                "audienceType": "Website Users"
+            },
+            "jurisdiction": "Global",
+            "keywords": [
+                "privacy policy",
+                "data protection", 
+                "user privacy",
+                "personal information",
+                "data collection",
+                "cookie policy",
+                "GDPR compliance"
+            ],
+            "mainEntity": {
+                "@type": "Organization",
+                "name": about_data.get('name', ''),
+                "url": SEOConfig.SITE_URL,
+                "contactPoint": {
+                    "@type": "ContactPoint",
+                    "email": about_data.get('social_media', {}).get('email', ''),
+                    "contactType": "customer service"
+                }
+            }
+        }

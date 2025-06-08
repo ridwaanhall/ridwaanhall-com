@@ -132,6 +132,7 @@ class SEOManager:
         """Get complete SEO data for privacy policy page."""
         seo_data = SEOData.get_privacy_policy_seo(self.about_data)
         seo_data['schemas'] = [
+            self.schema_generator.generate_privacy_policy_schema(self.about_data),
             self.schema_generator.generate_breadcrumb_schema([
                 {"name": "Home", "url": SEOConfig.SITE_URL},
                 {"name": "Privacy Policy", "url": f"{SEOConfig.SITE_URL}/privacy-policy/"}

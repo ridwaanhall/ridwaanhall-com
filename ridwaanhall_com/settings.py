@@ -163,8 +163,7 @@ INSTALLED_APPS = [
     
     # Security apps
     "csp",
-    
-    # Project apps
+      # Project apps
     'apps.core',
     'apps.about',
     'apps.data',
@@ -172,6 +171,7 @@ INSTALLED_APPS = [
     'apps.projects',
     'apps.blog',
     'apps.pageindex',
+    'apps.seo',
 ]
 
 MIDDLEWARE = [

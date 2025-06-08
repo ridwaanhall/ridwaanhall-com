@@ -8,6 +8,7 @@ from apps.data.education_data import EducationData
 from apps.data.applications_data import ApplicationsData
 from apps.data.awards_data import AwardsData
 from apps.data.about_data import AboutData
+from apps.seo.mixins import AboutSEOMixin
 
 
 class BaseAboutView(TemplateView):
@@ -48,7 +49,7 @@ class BaseAboutView(TemplateView):
         return wrapper
 
 
-class AboutView(BaseAboutView):
+class AboutView(AboutSEOMixin, BaseAboutView):
     """
     Displays the about/about page with experiences, education, and certifications.
     """
@@ -59,27 +60,19 @@ class AboutView(BaseAboutView):
 
     def _get(self, request, *args, **kwargs):
         context = self.get_common_context()
-        about = context['about']
 
         awards_sorted = sorted(AwardsData.awards, key=lambda x: x.get('id', 0), reverse=True)
 
         context.update({
             'view_certs': 'true',
             'view': False,
-            'about': about,
             'experiences': ExperiencesData.experiences,
             'education': EducationData.education,
             'certifications': CertificationsData.certifications,
             'applications': ApplicationsData.applications,
             'awards': awards_sorted,
-            'seo': {
-            'title': f"{about['name']}'s Journey - My Career Story",
-            'description': f"Dive into {about['name']}’s epic ride—killer work gigs, education adventures, slick certifications, stellar honors & bold awards, and the wild tales from every interview and opportunity I’ve crushed.",
-            'keywords': f"{about['name']}, career, work, skills, experience, growth, certifications, stellar honors & bold awards, applications",
-            'og_image': about.get('image_url', ''),
-            'og_type': 'profile',
-            'twitter_card': 'summary_large_image',
-        }
         })
 
+        # SEO data is handled by the mixin
+        context.update(self.get_context_data(**context))
         return self.render_to_response(context)

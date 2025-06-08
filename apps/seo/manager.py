@@ -45,7 +45,7 @@ class SEOManager:
         """Get complete SEO data for contact page."""
         seo_data = SEOData.get_contact_seo(self.about_data)
         seo_data['schemas'] = [
-            self.schema_generator.generate_organization_schema(self.about_data),
+            self.schema_generator.generate_contact_page_schema(self.about_data),
             self.schema_generator.generate_breadcrumb_schema([
                 {"name": "Home", "url": SEOConfig.SITE_URL},
                 {"name": "Contact", "url": f"{SEOConfig.SITE_URL}/contact/"}

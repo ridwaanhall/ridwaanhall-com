@@ -284,6 +284,7 @@ class SEOSchemaGenerator:
     @staticmethod
     def generate_organization_schema(about_data: Dict) -> Dict:
         """Generate Organization schema if applicable."""
+        email = about_data.get('social_media', {}).get('email', '')
         return {
             "@context": "https://schema.org",
             "@type": "Organization",
@@ -295,13 +296,13 @@ class SEOSchemaGenerator:
             ],
             "contactPoint": {
                 "@type": "ContactPoint",
-                "email": about_data.get('email', ''),
+                "email": email,
                 "contactType": "customer service"
             }
         }
     
     @staticmethod
-    def generate_profile_page_schema(about_data: Dict) -> Dict:
+    def generate_contact_page_schema(about_data: Dict) -> Dict:
         """Generate ProfilePage schema with comprehensive profile information including certifications and awards."""
         # Generate the main Person entity
         person_schema = SEOSchemaGenerator.generate_person_schema(about_data)
@@ -364,3 +365,86 @@ class SEOSchemaGenerator:
         }
         
         return profile_page_schema
+    
+    @staticmethod
+    def generate_contact_page_schema(about_data: Dict) -> Dict:
+        """Generate ContactPage schema with comprehensive contact information."""
+        email = about_data.get('social_media', {}).get('email', '')
+        social_media = about_data.get('social_media', {})
+        
+        # Define business hours
+        business_hours = [
+            {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                "opens": "09:00",
+                "closes": "17:00",
+                "validFrom": "2024-01-01",
+                "validThrough": "2025-12-31"
+            }
+        ]
+        
+        # Enhanced organization schema with location and contact details
+        organization = {
+            "@type": "Organization",
+            "name": about_data.get('name', ''),
+            "url": SEOConfig.SITE_URL,
+            "logo": about_data.get('image_url', ''),
+            "email": email,
+            "sameAs": [url for url in social_media.values() if url],
+            "openingHoursSpecification": business_hours,
+            "availableLanguage": ["English", "Indonesian"],
+            "contactPoint": [
+                {
+                    "@type": "ContactPoint",
+                    "email": email,
+                    "contactType": "customer service",
+                    "availableLanguage": ["English", "Indonesian"],
+                    "hoursAvailable": {
+                        "@type": "OpeningHoursSpecification",
+                        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                        "opens": "09:00",
+                        "closes": "17:00"
+                    }
+                },
+                {
+                    "@type": "ContactPoint",
+                    "url": social_media.get('linkedin', ''),
+                    "contactType": "customer service",
+                    "availableLanguage": ["English", "Indonesian"]
+                },
+                {
+                    "@type": "ContactPoint",
+                    "url": social_media.get('github', ''),
+                    "contactType": "technical support",
+                    "availableLanguage": ["English"]
+                }
+            ]
+        }
+        
+        # Main ContactPage schema
+        return {
+            "@context": "https://schema.org",
+            "@type": "ContactPage",
+            "name": f"Contact {about_data.get('name', '')}",
+            "description": f"Get in touch with {about_data.get('name', '')} for professional inquiries, project collaborations, or technical discussions.",
+            "url": f"{SEOConfig.SITE_URL}/contact/",
+            "mainEntity": organization,
+            "author": {
+                "@type": "Person",
+                "name": about_data.get('name', ''),
+                "url": SEOConfig.SITE_URL,
+                "image": about_data.get('image_url', ''),
+                "jobTitle": about_data.get('role', 'Software Developer'),
+                "email": email,
+                "sameAs": [url for url in social_media.values() if url]
+            },
+            "dateCreated": "2020-01-01",
+            "dateModified": datetime.now().strftime("%Y-%m-%d"),
+            "inLanguage": "en",
+            "isPartOf": {
+                "@type": "WebSite",
+                "name": f"{about_data.get('name', '')}'s Portfolio",
+                "url": SEOConfig.SITE_URL
+            }
+        }

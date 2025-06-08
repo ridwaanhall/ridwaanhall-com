@@ -8,6 +8,7 @@ from datetime import datetime
 from django.utils.text import slugify
 from .config import SEOConfig
 from apps.data.education_data import EducationData
+from apps.data.experiences_data import ExperiencesData
 
 
 class SEOSchemaGenerator:
@@ -40,14 +41,36 @@ class SEOSchemaGenerator:
             knows_about = skills
         else:
             knows_about = []
+          # Get current work experience
+        current_experience = None
+        for exp in ExperiencesData.experiences:
+            if exp.get('is_current', False):
+                current_experience = exp
+                break
         
+        # Use current experience for job title and organization
+        if current_experience:
+            job_title = current_experience.get('title', about_data.get('role', 'Software Developer'))
+            works_for = {
+                "@type": "Organization",
+                "name": current_experience.get('company', ''),
+                "url": current_experience.get('website', '')
+            }
+        else:
+            job_title = about_data.get('role', 'Software Developer')
+            works_for = {
+                "@type": "Organization",
+                "name": "Freelance"
+            }
+
         schema = SEOConfig.SCHEMA_TEMPLATES['person'].copy()
         schema.update({
             "name": about_data.get('name', ''),
             "url": SEOConfig.SITE_URL,
             "image": about_data.get('image_url', ''),
             "sameAs": social_links,
-            "jobTitle": about_data.get('role', 'Software Developer'),
+            "jobTitle": job_title,
+            "worksFor": works_for,
             "description": about_data.get('short_description', ''),
             "email": about_data.get('email', 'hi@ridwaanhall.com'),
             "alumniOf": alumni_of,

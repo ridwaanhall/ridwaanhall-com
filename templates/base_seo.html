@@ -1,0 +1,89 @@
+{% load seo_tags %}
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<!--
+╦═╗╦╔╦╗╦ ╦╔═╗╔═╗╔╗╔╦ ╦╔═╗╦  ╦  
+╠╦╝║ ║║║║║╠═╣╠═╣║║║╠═╣╠═╣║  ║  
+╩╚═╩═╩╝╚╩╝╩ ╩╩ ╩╝╚╝╩ ╩╩ ╩╩═╝╩═╝
+-->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="creation-date" content="2025-03-16">
+        {% load static %}
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
+        <link rel="icon" href="{% static 'favicon/favicon.ico' %}">
+        <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}" type="application/manifest+json">
+
+        <!-- SEO Meta Tags -->
+        {% if seo %}
+            {% render_seo_meta seo request %}
+        {% else %}
+            {% block head_seo %}
+            <!-- Fallback SEO for backward compatibility -->
+            {% endblock %}
+        {% endif %}
+
+        <!-- Structured Data -->
+        {% if seo.schemas %}
+            {% render_schema seo.schemas %}
+        {% endif %}
+
+        <script src="{% static 'tailwind/index.global.js' %}"></script>
+        
+        <link rel="stylesheet" href="{% static 'font/Onest/Onest.css' %}">
+
+        <link rel="stylesheet" href="{% static 'css/clickRipple.css' %}">
+        <link rel="stylesheet" href="{% static 'css/skillSlider.css' %}">
+        <link rel="stylesheet" href="{% static 'css/hideScroll.css' %}">
+
+    </head>
+    <body class="bg-black text-zinc-300 transition-colors duration-200">
+        <header class="md:hidden bg-black shadow-sm border-b border-zinc-800">
+            <div class="flex items-center gap-3 p-4">
+                <div class="relative">
+                    <img src="{{ about.image_url }}" alt="{{ about.username }} Profile Photo" class="w-10 h-10 rounded-full object-cover" width="358" height="358"/>
+                    {% if about.is_active %}
+                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-zinc-950"></div>
+                    {% endif %}
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="text-lg font-medium text-zinc-200">{{ about.name }}</div>
+                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" class="text-blue-400 w-5 h-5" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="none" d="M0 0h24v24H0z"></path>
+                        <path d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z"></path>
+                    </svg>
+                </div>
+                <button id="open-sidebar" class="ml-auto hover:text-zinc-200 transition-colors" aria-label="Open Sidebar">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <div id="page-loading-bar" class="fixed top-0 left-0 h-0.5 bg-gradient-to-r from-teal-400 via-teal-300 to-teal-500 z-50 w-0 transition-all duration-300 ease-out"></div>
+        
+        <div class="mx-auto max-w-6xl">
+            <div class="flex flex-col lg:flex-row lg:gap-2 lg:py-4 xl:pb-8">
+                {% include 'sidebar.html' %}
+
+                <div id="page-content" class="z-10 w-full opacity-0 translate-y-8 transition-all duration-700 ease-out">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scripts -->
+        <script defer src="{% static 'js/progressBar.js' %}"></script>
+        <script defer src="{% static 'js/sidebar.js' %}"></script>
+        <script defer src="{% static 'js/pageTransition.js' %}"></script>
+        <script defer src="{% static 'js/createRipple.js' %}"></script>
+
+        {% block scripts %}
+        {% endblock %}
+    </body>
+</html>

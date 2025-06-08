@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.views.generic import TemplateView
 
 from apps.data.about_data import AboutData
+from apps.seo.mixins import DashboardSEOMixin
 
 from apps.dashboard.github_api import GitHubClient, GitHubStatsCalculator
 
@@ -118,7 +119,7 @@ class WakatimeStatsCalculator:
         minutes = int((seconds % 3600) // 60)
         return f"{hours} hrs {minutes} mins"
 
-class DashboardView(TemplateView):
+class DashboardView(DashboardSEOMixin, TemplateView):
     template_name = 'dashboard/dashboard.html'
     
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
@@ -127,11 +128,7 @@ class DashboardView(TemplateView):
         # Get basic information
         about = AboutData.get_about_data()
         context['about'] = about[0]
-        
-        # Set SEO data
-        context['seo'] = self._get_seo_data(about[0])
-        
-        # Get GitHub stats
+          # Get GitHub stats
         github_data = self._get_github_data()
         if github_data:
             context.update(github_data)
@@ -141,19 +138,12 @@ class DashboardView(TemplateView):
         if wakatime_stats:
             context['wakatime_stats'] = wakatime_stats
         
+        # SEO data is handled by the mixin
+        mixin_context = super(DashboardView, self).get_context_data(**context)
+        context.update(mixin_context)
+        
         return context
-    
-    def _get_seo_data(self, about_data: Dict) -> Dict:
-        """Generate SEO metadata."""
-        return {
-            'title': f"{about_data['name']}'s Dev Hub - My Coding Life",
-            'description': f"Check out what {about_data['name']}'s been coding lately—GitHub commits, stats, and all the nerdy details!",
-            'keywords': f"{about_data['name']}, coding, github, dev stats, programming, productivity",
-            'og_image': about_data.get('image_url', ''),
-            'og_type': 'website',
-            'twitter_card': 'summary_large_image',
-        }
-    
+
     def _get_github_data(self) -> Optional[Dict]:
         """Get GitHub statistics data with caching."""
         cache_key = 'github_activity_data'

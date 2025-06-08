@@ -1,14 +1,5 @@
-{% extends 'base.html' %}
-{% load static %} {# Add this if not already in base.html #}
-
-{% block head_seo %}
-<!-- Primary Meta Tags -->
-<title>{{ seo.title }}</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="{{ about.username }}">
-<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-<link rel="canonical" href="{{ request.build_absolute_uri }}">
-<meta name="description" content="{{ seo.description }}">
+{% extends 'base_seo.html' %}
+{% load static %}>
 <meta name="keywords" content="{{ seo.keywords }}">
 <meta name="language" content="en">
 
@@ -17,87 +8,7 @@
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
 <meta property="og:title" content="{{ seo.title }}">
 <meta property="og:description" content="{{ seo.description }}">
-<meta property="og:image" content="{{ seo.og_image }}">
-<meta property="og:site_name" content="{{ about.username }}'s Blog">
 
-<!-- Twitter -->
-<meta property="twitter:card" content="{{ seo.twitter_card }}">
-<meta property="twitter:url" content="{{ request.build_absolute_uri }}">
-<meta property="twitter:title" content="{{ seo.title }}">
-<meta property="twitter:description" content="{{ seo.description }}">
-<meta property="twitter:image" content="{{ seo.og_image }}">
-<meta property="twitter:creator" content="@{{ about.username }}">
-
-<!-- Schema.org Blog structured data -->
-<script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Blog",
-        "name": "{{ seo.title }}",
-        "description": "{{ seo.description }}",
-        "url": "{{ request.build_absolute_uri }}",
-        "author": {
-            "@type": "Person", 
-            "name": "{{ about.name|default:"N/A" }}",
-            "url": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/",
-            "image": "{{ about.image_url|default:"N/A" }}"
-        },
-        "inLanguage": "en",
-        "blogPost": [
-            {% for blog in blogs %}
-            {
-                "@type": "BlogPosting",
-                "headline": "{{ blog.title }}",
-                "description": "{{ blog.description }}",
-                "image": "{{ blog.image_url }}",
-                "datePublished": "{{ blog.created_at|date:'c' }}",
-                "dateModified": "{{ blog.updated_at|date:'c' }}",
-                "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'blog_detail' title=blog.title|slugify %}",
-                "author": {
-                    "@type": "Person", 
-                    "name": "{{ about.name|default:"N/A" }}",
-                    "url": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/",
-                    "image": "{{ about.image_url|default:"N/A" }}"
-                },
-                "keywords": "{% for tag in blog.tags %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}"
-            }{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        ]
-    }
-</script>
-
-<!-- Schema.org BreadcrumbList -->
-<script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'home' %}"
-            },
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Blog",
-                "item": "{{ request.build_absolute_uri }}"
-            }
-        ]
-    }
-</script>
-
-<!-- Pagination for SEO -->
-{% if is_paginated %}
-    {% if blogs.has_previous %}
-        <link rel="prev" href="{{ request.path }}?page={{ blogs.previous_page_number }}">
-    {% endif %}
-    {% if blogs.has_next %}
-        <link rel="next" href="{{ request.path }}?page={{ blogs.next_page_number }}">
-    {% endif %}
-{% endif %}
-{% endblock %}
 
 {% block content %}
 <div class="flex-1 md:ml-62">

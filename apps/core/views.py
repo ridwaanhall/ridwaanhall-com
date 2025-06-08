@@ -12,6 +12,7 @@ from apps.data.services_data import ServicesData
 from apps.data.palestine_data import PalestineData
 from apps.data.privacy_policy_data import PrivacyPolicyData
 from apps.data.skills_data import SkillsData
+from apps.seo.mixins import HomepageSEOMixin, ContactSEOMixin, PrivacyPolicySEOMixin
 import random
 
 class BasePortfolioView(TemplateView):
@@ -68,7 +69,7 @@ class BasePortfolioView(TemplateView):
         return wrapper
 
 
-class HomeView(BasePortfolioView):
+class HomeView(HomepageSEOMixin, BasePortfolioView):
     template_name = 'core/home.html'
 
     def get(self, request, *args, **kwargs):
@@ -97,16 +98,13 @@ class HomeView(BasePortfolioView):
             'skills_bottom': skills_bottom,
             'about': about,
             'certifications': CertificationsData.certifications,
-            'seo': self.get_seo_data(
-            title=f"Hey, I'm {about['name']} - Welcome to My World",
-            description=f"This is {about['username']}'s corner of the internet! {about.get('short_description', 'A place where I share my projects, ideas, and journey.')}",
-            keywords=f"{about['username']}, portfolio, coder, projects, blogs, skills, learning, ai engineer, web developer, machine learning engineer, dbs foundation coding camp mentor, django, python, pytorch",
-            twitter_card='summary_large_image'
-            ),
         }
+        
+        # SEO data is handled by the mixin
+        context.update(self.get_context_data(**context))
         return render(request, self.template_name, context)
 
-class ContactView(BasePortfolioView):
+class ContactView(ContactSEOMixin, BasePortfolioView):
     template_name = 'core/contact.html'
 
     def get(self, request, *args, **kwargs):
@@ -118,15 +116,13 @@ class ContactView(BasePortfolioView):
             'view': True,
             'about': about,
             'current_time': timezone.localtime(timezone.now()),
-            'seo': self.get_seo_data(
-                title=f"Hit Me Up - Connect with {about['username']}",
-                description=f"Wanna chat? Reach out to {about['username']} for collabs, gigs, or just to say hi!",
-                keywords=f"{about['username']}, machine learning enineer in indonesia, web developer in indonesia, contact, connect, reach out, chat, collab",
-            ),
         }
+        
+        # SEO data is handled by the mixin
+        context.update(self.get_context_data(**context))
         return render(request, self.template_name, context)
 
-class PrivacyPolicyView(BasePortfolioView):
+class PrivacyPolicyView(PrivacyPolicySEOMixin, BasePortfolioView):
     template_name = 'core/privacy-policy.html'
 
     def get(self, request, *args, **kwargs):
@@ -137,10 +133,8 @@ class PrivacyPolicyView(BasePortfolioView):
         context = {
             'about': about,
             'privacy_policy': PrivacyPolicyData.privacy_policy,
-            'seo': self.get_seo_data(
-                title="Privacy Stuff - Keeping it chill and transparent!",
-                description="We got you! Check out how we keep your data safe and sound.",
-                keywords=f"{about['username']}, privacy vibes, data safety, your rights",
-            ),
         }
+        
+        # SEO data is handled by the mixin
+        context.update(self.get_context_data(**context))
         return render(request, self.template_name, context)

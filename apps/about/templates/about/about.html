@@ -1,106 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'base_seo.html' %}
 
 {% load static %}
 
 {% block head_seo %}
-
-<title>{{ seo.title }}</title>
-
-<meta name="author" content="{{ about.username }}">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="{{ request.build_absolute_uri }}">
-
-<meta name="description" content="{{ seo.description }}">
-<meta name="keywords" content="{{ seo.keywords }}">
-
-<meta property="og:type" content="{{ seo.og_type }}">
-<meta property="og:url" content="{{ request.build_absolute_uri }}">
-<meta property="og:title" content="{{ seo.title }}">
-<meta property="og:description" content="{{ seo.description }}">
-<meta property="og:image" content="{{ seo.og_image }}">
-
-<meta property="twitter:card" content="{{ seo.twitter_card }}">
-<meta property="twitter:url" content="{{ request.build_absolute_uri }}">
-<meta property="twitter:title" content="{{ seo.title }}">
-<meta property="twitter:description" content="{{ seo.description }}">
-<meta property="twitter:image" content="{{ seo.og_image }}">
-
-<script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "ProfilePage",
-        "name": "{{ seo.title }}",
-        "description": "{{ seo.description }}",
-        "mainEntity": {
-            "@type": "Person",
-            "name": "{{ about.name }}",
-            "image": "{{ about.image_url }}",
-            "description": "{{ about.short_description }}",
-            "jobTitle": "{{ about.role }}",
-            "url": "{{ request.scheme }}://{{ request.get_host }}/",
-            "workExperience": [
-                {% for experience in experiences %}
-                {
-                    "@type": "OrganizationRole",
-                    "roleName": "{{ experience.title }}",
-                    "worksFor": {
-                        "@type": "Organization",
-                        "name": "{{ experience.company }}"
-                    },
-                    "startDate": "{{ experience.period|slice:'0:8' }}",
-                    "description": "{% for resp in experience.responsibilities %}{{ resp }}{% if not forloop.last %} {% endif %}{% endfor %}"
-                }{% if not forloop.last %},{% endif %}
-                {% endfor %}
-            ],
-            "alumniOf": [
-                {% for edu in education %}
-                {
-                    "@type": "EducationalOrganization",
-                    "name": "{{ edu.institution }}",
-                    "url": "{{ edu.website }}"
-                }{% if not forloop.last %},{% endif %}
-                {% endfor %}
-            ],
-            "hasCredential": [
-                {% for cert in certifications %}
-                {
-                    "@type": "EducationalOccupationalCredential",
-                    "name": "{{ cert.title }}",
-                    "url": "{{ cert.credential_url }}",
-                    "credentialCategory": "certification",
-                    "recognizedBy": {
-                        "@type": "Organization",
-                        "name": "{{ cert.institution }}"
-                    },
-                    "validFrom": "{{ cert.issued }}"
-                }{% if not forloop.last %},{% endif %}
-                {% endfor %}
-            ]
-        }
-    }
-</script>
-
-<script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "name": "Site Navigation",
-        "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'home' %}"
-            },
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "About",
-                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'about' %}"
-            }
-        ]
-    }
-</script>
+<!-- Custom SEO meta tags if needed can be added here -->
+<!-- Schema and basic meta tags are handled by base_seo.html automatically -->
 {% endblock %}
 
 {% block content %}

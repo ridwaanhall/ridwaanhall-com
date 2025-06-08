@@ -7,6 +7,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from apps.data.blog_data import BlogData
 from apps.data.about_data import AboutData
+from apps.seo.mixins import BlogListSEOMixin, BlogDetailSEOMixin
 
 
 class BaseBlogView(TemplateView):
@@ -51,7 +52,7 @@ class BaseBlogView(TemplateView):
         return wrapper
 
 
-class BlogView(BaseBlogView):
+class BlogView(BlogListSEOMixin, BaseBlogView):
     """
     Displays the main blog list page with all blog posts and SEO metadata.
     """
@@ -84,23 +85,12 @@ class BlogView(BaseBlogView):
         context['paginator'] = paginator
         context['is_paginated'] = paginator.num_pages > 1
         
-        # Enhanced SEO metadata with more keywords and detail
-        primary_keywords = "blog, coding, tech, tutorials"
-        secondary_keywords = f"{about['name']}, {about['username']}, ideas, insights"
-        topic_keywords = ", ".join(set([tag for blog in all_blogs[:20] for tag in blog.get('tags', [])]))
-        
-        context['seo'] = {
-            'title': f"{about['name']}'s Blog - Thoughts & Tutorials",
-            'description': f"Dive into {about['name']}'s collection of articles, opinions, coding tips, and tech insights. Topics include {topic_keywords[:100]}.",
-            'keywords': f"{primary_keywords}, {secondary_keywords}, {topic_keywords}",
-            'og_image': about.get('image_url', ''),
-            'og_type': 'website',
-            'twitter_card': 'summary_large_image',
-        }
+        # SEO data is handled by the mixin
+        context.update(self.get_context_data(blogs=all_blogs, page=page))
         return self.render_to_response(context)
 
 
-class BlogDetailView(BaseBlogView):
+class BlogDetailView(BlogDetailSEOMixin, BaseBlogView):
     """
     Displays a specific blog post detail view by slugified title.
     """
@@ -126,20 +116,6 @@ class BlogDetailView(BaseBlogView):
 
         context['blog'] = blog
         
-        # Enhanced SEO metadata with more specific and detailed information
-        tag_keywords = ", ".join(blog.get('tags', []))
-        related_keywords = f"{about['name']}, blog, {about['username']}"
-        
-        context['seo'] = {
-            'title': f"{blog['title']} - {about['name']}'s Take",
-            'description': blog.get('description', 'Read my latest insights and perspectives on this topic.'),
-            'keywords': f"{tag_keywords}, {related_keywords}, ideas, insights",
-            'og_image': blog.get('image_url', about.get('image_url', '')),
-            'og_type': 'article',
-            'twitter_card': 'summary_large_image',
-            'published_date': blog.get('created_at', '').isoformat() if blog.get('created_at') else '',
-            'author': blog.get('author', about['name']),
-            'tags': blog.get('tags', []),
-        }
-
+        # SEO data is handled by the mixin
+        context.update(self.get_context_data(blog=blog))
         return self.render_to_response(context)

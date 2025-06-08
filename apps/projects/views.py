@@ -7,6 +7,7 @@ from django.core.exceptions import SuspiciousOperation
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from apps.data.projects_data import ProjectsData
 from apps.data.about_data import AboutData
+from apps.seo.mixins import ProjectsListSEOMixin, ProjectDetailSEOMixin
 
 
 class BaseProjectsView(TemplateView):
@@ -48,7 +49,7 @@ class BaseProjectsView(TemplateView):
         return wrapper
 
 
-class ProjectsView(BaseProjectsView):
+class ProjectsView(ProjectsListSEOMixin, BaseProjectsView):
     """
     Displays all projects with SEO metadata.
     """
@@ -60,7 +61,6 @@ class ProjectsView(BaseProjectsView):
 
     def _get(self, request, *args, **kwargs):
         context = self.get_common_context()
-        about = context['about']
         all_projects = context['projects']
 
         # Paginate projects
@@ -79,26 +79,12 @@ class ProjectsView(BaseProjectsView):
         context['paginator'] = paginator
         context['is_paginated'] = paginator.num_pages > 1
 
-        # Generate tech stack keywords from all projects
-        tech_stack_keywords = list(set([
-            tech['name']
-            for project in all_projects
-            for tech in project.get('tech_stack', [])
-        ]))[:10]
-
-        context['seo'] = {
-            'title': f"{about['name']}'s Projects - Stuff I’ve Built",
-            'description': f"Take a look at {about['name']}'s coding adventures—apps, projects, and demos I’ve poured my heart into.",
-            'keywords': f"{about['name']}, projects, portfolio, coding, apps, github, {', '.join(tech_stack_keywords)}",
-            'og_image': all_projects[0].get('image_url') if all_projects else about.get('image_url', ''),
-            'og_type': 'website',
-            'twitter_card': 'summary_large_image',
-        }
-
+        # SEO data is handled by the mixin
+        context.update(self.get_context_data(projects=all_projects, page=page))
         return self.render_to_response(context)
 
 
-class ProjectsDetailView(BaseProjectsView):
+class ProjectsDetailView(ProjectDetailSEOMixin, BaseProjectsView):
     """
     Displays detailed view for a specific project based on slugified title.
     """
@@ -112,7 +98,6 @@ class ProjectsDetailView(BaseProjectsView):
             raise SuspiciousOperation("Invalid project title format")
 
         context = self.get_common_context()
-        about = context['about']
 
         project = next(
             (p for p in context['projects'] if slugify(p['title']) == title),
@@ -123,13 +108,6 @@ class ProjectsDetailView(BaseProjectsView):
             raise Http404("Project not found")
 
         context['project'] = project
-        context['seo'] = {
-            'title': f"{project['title']} - {about['name']}'s Creation",
-            'description': project.get('headline', 'A cool project I worked on—check it out!'),
-            'keywords': f"{project['title']}, {about['name']}, {', '.join(tech['name'] for tech in project.get('tech_stack', []))}",
-            'og_image': project.get('image_url', about.get('image_url', '')),
-            'og_type': 'article',
-            'twitter_card': 'summary_large_image',
-        }
-
+        # SEO data is handled by the mixin
+        context.update(self.get_context_data(project=project))
         return self.render_to_response(context)

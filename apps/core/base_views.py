@@ -87,6 +87,7 @@ class PaginatedView(BaseView):
     Provides consistent pagination functionality.
     """
     items_per_page = 6
+    
     def paginate_items(self, request, items, items_per_page=None):
         """Paginate items with error handling."""
         from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger

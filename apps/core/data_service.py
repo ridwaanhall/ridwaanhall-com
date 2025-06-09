@@ -7,15 +7,14 @@ import logging
 from typing import List, Dict, Any, Optional
 from django.core.cache import cache
 
-from apps.data.about_data import AboutData
+from apps.data.about.about_data import AboutData
 from apps.data.data_manager import DataManager
-from apps.data.experiences_data import ExperiencesData
-from apps.data.education_data import EducationData
-from apps.data.certifications_data import CertificationsData
-from apps.data.services_data import ServicesData
-from apps.data.skills_data import SkillsData
-from apps.data.awards_data import AwardsData
-from apps.data.applications_data import ApplicationsData
+from apps.data.about.experiences_data import ExperiencesData
+from apps.data.about.education_data import EducationData
+from apps.data.about.certifications_data import CertificationsData
+from apps.data.about.skills_data import SkillsData
+from apps.data.about.awards_data import AwardsData
+from apps.data.about.applications_data import ApplicationsData
 from apps.data.privacy_policy_data import PrivacyPolicyData
 
 logger = logging.getLogger(__name__)
@@ -113,15 +112,6 @@ class DataService:
             return SkillsData.skills
         except Exception as e:
             logger.error(f"Error fetching skills data: {e}")
-            return []
-    
-    @staticmethod
-    def get_services() -> List[Dict[str, Any]]:
-        """Get services data."""
-        try:
-            return ServicesData.services
-        except Exception as e:
-            logger.error(f"Error fetching services data: {e}")
             return []
     
     @staticmethod

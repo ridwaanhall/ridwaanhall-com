@@ -41,7 +41,6 @@ class HomeView(HomepageSEOMixin, BaseView):
             'projects': DataService.get_projects()[:2],  # Top 2 featured projects
             'education': DataService.get_education(last_only=True),
             'experiences': DataService.get_experiences(current_only=True),
-            'services': DataService.get_services(),
             'skills_top': skills_top,
             'skills_middle': skills_middle,
             'skills_bottom': skills_bottom,

@@ -5,7 +5,7 @@ Reusable mixins for views to automatically include SEO functionality.
 
 from typing import Dict, Any
 from django.views.generic import TemplateView
-from apps.data.about_data import AboutData
+from apps.data.about.about_data import AboutData
 from .manager import SEOManager
 
 

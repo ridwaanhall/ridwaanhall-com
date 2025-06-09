@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django.core.exceptions import SuspiciousOperation
 from django.http import Http404
 
-from apps.data.about_data import AboutData
+from apps.data.about.about_data import AboutData
 
 logger = logging.getLogger(__name__)
 

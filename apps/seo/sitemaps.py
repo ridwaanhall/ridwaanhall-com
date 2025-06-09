@@ -10,7 +10,7 @@ from django.utils.text import slugify
 from math import ceil
 
 from apps.core.data_service import DataService
-from apps.data.updated_at_data import UpdatedAtData
+from apps.seo.updated_at_data import UpdatedAtData
 
 
 class StaticPagesSitemap(Sitemap):

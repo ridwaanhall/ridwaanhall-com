@@ -3,7 +3,7 @@ Data Manager - Central controller for blog and project data
 Loads data from individual files only (no centralized files).
 """
 
-class DataManager:
+class ContentManager:
     """
     Central data manager that loads data from individual files.
     """

@@ -16,7 +16,7 @@ from apps.core.data_service import DataService
 
 class Command(BaseCommand):
     help = 'Comprehensive SEO management and validation'
-
+    
     def add_arguments(self, parser):
         parser.add_argument(
             '--validate',
@@ -39,6 +39,11 @@ class Command(BaseCommand):
             help='Check meta tags on all pages',
         )
         parser.add_argument(
+            '--pages',
+            nargs='+',
+            help='Validate specific pages by URL path (e.g. / /blog/ /about/)',
+        )
+        parser.add_argument(
             '--report',
             action='store_true',
             help='Generate comprehensive SEO report',
@@ -56,8 +61,7 @@ class Command(BaseCommand):
         for host in test_hosts:
             if host not in allowed_hosts:
                 allowed_hosts.append(host)
-        
-        # Use override_settings to temporarily modify ALLOWED_HOSTS
+          # Use override_settings to temporarily modify ALLOWED_HOSTS
         with override_settings(ALLOWED_HOSTS=allowed_hosts):
             self.client = Client()
             
@@ -69,6 +73,8 @@ class Command(BaseCommand):
                 self.ping_google_sitemaps()
             elif options['check_meta']:
                 self.check_meta_tags()
+            elif options['pages']:
+                self.validate_specific_pages(options['pages'])
             elif options['report']:
                 self.generate_report()
             else:
@@ -194,11 +200,91 @@ class Command(BaseCommand):
                     self.stdout.write(
                         self.style.ERROR(f'  ❌ {name} - Status {response.status_code}')
                     )
-
             except Exception as e:
                 self.stdout.write(
                     self.style.ERROR(f'  ❌ {name} - Error: {e}')
                 )
+    def validate_specific_pages(self, pages: List[str]):
+        """Validate specific pages by URL path."""
+        self.stdout.write(
+            self.style.SUCCESS(f'🔍 Validating {len(pages)} specific pages...\n')
+        )
+        
+        for url in pages:
+            # Ensure URL starts with /
+            if not url.startswith('/'):
+                url = '/' + url
+            
+            # Ensure URL has trailing slash unless it's the root or already has one
+            if url != '/' and not url.endswith('/'):
+                url = url + '/'
+            
+            self.stdout.write(f'Checking page: {url}')
+            
+            try:
+                response = self.client.get(url)
+                if response.status_code == 200:
+                    content = response.content.decode('utf-8')
+                    
+                    # Check for essential meta tags
+                    meta_checks = {
+                        'Title': '<title>' in content and not '<title></title>' in content,
+                        'Description': 'name="description"' in content,
+                        'Canonical': 'rel="canonical"' in content,
+                        'OG Title': 'property="og:title"' in content,
+                        'OG Description': 'property="og:description"' in content,
+                        'OG Image': 'property="og:image"' in content,
+                        'Twitter Card': 'name="twitter:card"' in content or 'property="twitter:card"' in content,
+                        'Robots': 'name="robots"' in content,
+                    }
+                    
+                    # Count passed and failed checks
+                    passed = [tag for tag, present in meta_checks.items() if present]
+                    failed = [tag for tag, present in meta_checks.items() if not present]
+                    
+                    # Show results
+                    if not failed:
+                        self.stdout.write(f'  ✅ All meta tags present ({len(passed)}/8)')
+                    else:
+                        self.stdout.write(f'  ⚠️  {len(passed)}/8 meta tags present')
+                        for tag in failed:
+                            self.stdout.write(f'    ❌ Missing: {tag}')
+                    
+                    # Check for additional SEO elements
+                    additional_checks = {
+                        'Schema.org JSON-LD': 'application/ld+json' in content,
+                        'Viewport Meta': 'name="viewport"' in content,
+                        'Language': 'lang=' in content[:200],  # Check in head section
+                        'Charset': 'charset=' in content[:200],
+                    }
+                    
+                    additional_passed = [item for item, present in additional_checks.items() if present]
+                    additional_failed = [item for item, present in additional_checks.items() if not present]
+                    
+                    if additional_passed:
+                        self.stdout.write(f'  📋 Additional SEO elements: {", ".join(additional_passed)}')
+                    if additional_failed:
+                        self.stdout.write(f'  ⚠️  Missing additional elements: {", ".join(additional_failed)}')
+                    
+                elif response.status_code == 404:
+                    self.stdout.write(
+                        self.style.ERROR(f'  ❌ Page not found (404)')
+                    )
+                else:
+                    self.stdout.write(
+                        self.style.ERROR(f'  ❌ HTTP {response.status_code}')
+                    )
+                    
+            except Exception as e:
+                self.stdout.write(
+                    self.style.ERROR(f'  ❌ Error accessing page: {e}')
+                )
+            
+            self.stdout.write('')  # Add blank line between pages
+        
+        self.stdout.write(
+            self.style.SUCCESS('✅ Specific page validation completed!')
+        )
 
     def ping_google_sitemaps(self):
         """Ping Google about sitemap updates."""

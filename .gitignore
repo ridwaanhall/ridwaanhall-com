@@ -123,3 +123,9 @@ dmypy.json
 static/
 building_web_apps_with_django.webp
 data.html
+analyze_data.py
+demo_data_system.py
+generate_individual_files.py
+INDIVIDUAL_FILES_DOCS.md
+system_summary.py
+test_individual_files.py

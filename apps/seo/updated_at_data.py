@@ -1,10 +1,68 @@
 import os
 import datetime
+import glob
+import importlib.util
 from django.conf import settings
 from django.utils import timezone
 
 
 class UpdatedAtData:
+    @staticmethod
+    def get_updated_at_from_content_files(folder_path, data_key="blog_data"):
+        """Extract updated_at from individual content files (blog or project)."""
+        latest_dt = None
+        
+        # Get all Python files in the folder
+        pattern = os.path.join(settings.BASE_DIR, folder_path, "*.py")
+        files = glob.glob(pattern)
+        
+        for file_path in files:
+            # Skip __init__.py and __pycache__ files
+            if "__init__" in file_path or "__pycache__" in file_path:
+                continue
+                
+            try:
+                # Load the module dynamically
+                spec = importlib.util.spec_from_file_location("temp_module", file_path)
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                
+                # Get the data (blog_data or project_data)
+                if hasattr(module, data_key):
+                    data = getattr(module, data_key)
+                    if isinstance(data, dict) and "updated_at" in data:
+                        updated_at = data["updated_at"]
+                        if updated_at and (latest_dt is None or updated_at > latest_dt):
+                            latest_dt = updated_at
+                            
+            except Exception:
+                # Skip files that can't be loaded or don't have the expected structure
+                continue
+        
+        if latest_dt:
+            # Ensure timezone awareness
+            if timezone.is_naive(latest_dt):
+                latest_dt = timezone.make_aware(latest_dt)
+            latest_dt = timezone.localtime(latest_dt)
+            return latest_dt.strftime('%Y-%m-%d %H:%M:%S%z'), latest_dt
+        
+        return "", None
+
+    @staticmethod
+    def get_latest_blog_updated_at():
+        """Get the latest updated_at from all blog files."""
+        return UpdatedAtData.get_updated_at_from_content_files("apps/data/content/blog", "blog_data")
+
+    @staticmethod
+    def get_latest_project_updated_at():
+        """Get the latest updated_at from all project files."""
+        return UpdatedAtData.get_updated_at_from_content_files("apps/data/content/projects", "project_data")
+
+    @staticmethod
+    def get_about_updated_at():
+        """Get updated_at from about_data.py (fallback to file modification time since no updated_at field exists)."""
+        return UpdatedAtData.get_template_last_modified("apps/data/about/about_data.py")
+
     @staticmethod
     def get_template_last_modified(template_path):
         """Get the last modification time of a file and return formatted date and datetime object."""
@@ -35,17 +93,28 @@ class UpdatedAtData:
                 formatted_date = formatted
 
         return formatted_date
-
-    @classmethod
-    def get_all_updated_data(cls):
+    
+    @staticmethod
+    def get_all_updated_data():
         """Returns a list of all pages with their last modified timestamps."""
-        return [            {
+        # Get blog and project updated_at for home page comparison
+        blog_formatted, blog_dt = UpdatedAtData.get_latest_blog_updated_at()
+        project_formatted, project_dt = UpdatedAtData.get_latest_project_updated_at()
+        about_formatted, about_dt = UpdatedAtData.get_about_updated_at()
+        
+        # For home page: use latest between blog, project, and about
+        home_latest_dt = None
+        home_formatted = ""
+        
+        for dt, formatted in [(blog_dt, blog_formatted), (project_dt, project_formatted), (about_dt, about_formatted)]:
+            if dt and (home_latest_dt is None or dt > home_latest_dt):
+                home_latest_dt = dt
+                home_formatted = formatted
+        
+        return [
+            {
                 "page": "home",
-                "updated_at": cls.get_latest_modified_date([
-                    "apps/data/about_data.py",
-                    "apps/data/blog/",
-                    "apps/data/projects/"
-                ]),
+                "updated_at": home_formatted,
             },
             {
                 "page": "dashboard",
@@ -53,30 +122,25 @@ class UpdatedAtData:
             },
             {
                 "page": "projects",
-                "updated_at": cls.get_template_last_modified(
-                    "apps/data/projects/",
-                )[0],
-            },            {
+                "updated_at": project_formatted,
+            },
+            {
                 "page": "blog",
-                "updated_at": cls.get_template_last_modified(
-                    "apps/data/blog/",
-                )[0],
+                "updated_at": blog_formatted,
             },
             {
                 "page": "about",
-                "updated_at": cls.get_latest_modified_date([
-                    "apps/data/about_data.py",
-                    "apps/data/applications_data.py",
-                    "apps/data/experiences_data.py",
-                    "apps/data/education_data.py",
-                    "apps/data/certifications_data.py",
-                    "apps/data/awards_data.py",
+                "updated_at": UpdatedAtData.get_latest_modified_date([
+                    "apps/data/about/about_data.py",
+                    "apps/data/about/applications_data.py",
+                    "apps/data/about/experiences_data.py",
+                    "apps/data/about/education_data.py",
+                    "apps/data/about/certifications_data.py",
+                    "apps/data/about/awards_data.py",
                 ]),
             },
             {
                 "page": "contact",
-                "updated_at": cls.get_template_last_modified(
-                    "apps/data/about_data.py",
-                )[0],
+                "updated_at": about_formatted,
             },
         ]

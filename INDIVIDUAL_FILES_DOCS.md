@@ -23,25 +23,29 @@ The **Individual File System Architecture** represents a groundbreaking approach
 ### File Structure Hierarchy
 
 ```txt
-apps/data/
-├── blog/                        # 🗃️ Individual Blog Files (14 files)
-│   ├── blog-1.py               # "Python 101: Your Chill Guide to Getting Started"
-│   ├── blog-2.py               # "Whipping Up Web Apps with Django's Magic"
-│   ├── blog-3.py               # "Neural Nets Made Easy with TensorFlow & Keras"
-│   ├── blog-4.py               # "Hacking Your Dev Life: Time Management Tricks"
-│   ├── ...                     # Additional blog posts
-│   └── blog-14.py              # Latest blog article
-├── projects/                    # 📁 Individual Project Files (47 files)
-│   ├── project-1.py            # "MLBB Username Finder"
-│   ├── project-2.py            # "TikTok Profile Scraper"
-│   ├── project-3.py            # "Quran Explorer Web"
-│   ├── project-4.py            # "BMKG Weather & Quake Tracker"
-│   ├── ...                     # Enterprise projects
-│   └── project-47.py           # "Neural Network from Scratch"
-├── blog_index.py               # 🔍 Intelligent Blog File Loader
-├── projects_index.py           # 🔍 Smart Project File Loader
-├── content_manager.py             # 🎛️ Central Data Controller
-└── [other_data_files...]       # Supporting data modules
+apps/data/                 # 🗂️ INDIVIDUAL FILE SYSTEM (Revolutionary!)
+├── __init__.py
+├── about_manager.py       # About section data management
+├── apps.py
+├── content_manager.py     # 🎛️ Central Data Controller
+├── data_service.py        # Data service layer
+├── content/               # 📚 Individual Content Files
+│   ├── __init__.py
+│   ├── blog_index.py      # 🔍 Intelligent Blog File Loader
+│   ├── projects_index.py  # 🔍 Smart Project File Loader
+│   ├── blog/              # 📚 14 Individual Blog Files
+│   │   ├── blog-1.py      # "Python 101: Your Chill Guide"
+│   │   ├── blog-2.py      # "Whipping Up Web Apps with Django's Magic"
+│   │   ├── ...            # Each blog as separate module
+│   │   └── blog-14.py     # Latest blog articles
+│   ├── projects/          # 💼 47 Individual Project Files
+│   │   ├── project-1.py   # "MLBB Username Finder"
+│   │   ├── project-2.py   # "TikTok Profile Scraper"
+│   │   ├── ...            # Each project as separate module
+│   │   └── project-47.py  # "Neural Network from Scratch"
+│   └── __pycache__/
+├── about/                 # 📄 About section data files
+└── privacy/               # 🔐 Privacy policy data
 ```
 
 ### 📊 System Statistics

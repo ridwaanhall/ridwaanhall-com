@@ -1,0 +1,29 @@
+"""
+Project #2: TikTok Profile Digger
+Generated from centralized projects data
+"""
+
+from datetime import datetime
+from django.conf import settings
+
+# Project data for: TikTok Profile Digger
+project_data = {
+    "id": 2,
+    "title": """TikTok Profile Digger""",
+    "headline": """Scoop all the hot TikTok profile deets with Python and BeautifulSoup flair.""",
+    "description": ['This Python project dives deep into TikTok profiles, snagging all the good stuff.', 'With BeautifulSoup, it pulls username, bio, followers, following, and likes straight from the page.', 'Perfect for data nerds and TikTok stalkers—saves time and sparks curiosity!'],
+    "image_url": "https://ridwaanhall.com/static/img/project/tiktok_data_extractor.webp",
+    "img_name": "tiktok_data_extractor.webp",
+    "is_featured": False,
+    "features": [{'title': 'Ultimate Data Grab', 'description': 'Snatches username, bio, followers, following, and likes in one swoop.'}, {'title': 'BeautifulSoup Magic', 'description': 'Parses TikTok’s HTML like a boss with BeautifulSoup.'}, {'title': 'Curiosity Crusher', 'description': 'Ideal for research, insights, or just feeding your TikTok obsession.'}],
+    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'BeautifulSoup', 'description': 'Web scraping made easy with Python'}],
+    "github_url": "",
+    "demo_url": "",
+    "status": "completed",
+    "created_at": None,
+    "updated_at": datetime.strptime("2023-04-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "category": "",
+    "tags": [],
+    "priority": 1,
+    "slug": ""
+}

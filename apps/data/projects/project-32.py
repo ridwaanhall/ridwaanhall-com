@@ -1,0 +1,29 @@
+"""
+Project #32: ridwaanhall.pythonanywhere.com
+Generated from centralized projects data
+"""
+
+from datetime import datetime
+from django.conf import settings
+
+# Project data for: ridwaanhall.pythonanywhere.com
+project_data = {
+    "id": 32,
+    "title": """ridwaanhall.pythonanywhere.com""",
+    "headline": """Slick portfolio site with Vuexy HTML and Django, showing off GitHub stats.""",
+    "description": ['This portfolio site, powered by Vuexy HTML and Django, is loaded with sections and a GitHub-driven stats dashboard.', 'Rocking a sharp design and a smart backend for easy content updates, plus secure admin access.', 'The dashboard pulls yearly GitHub data to flex my coding grind in style.'],
+    "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_pythonanywhere_com.webp",
+    "img_name": "ridwaanhall_pythonanywhere_com.webp",
+    "is_featured": False,
+    "features": [{'title': 'Loaded Pages', 'description': 'Packed with sections like About, Projects, and beyond.'}, {'title': 'Clean UI', 'description': 'Vuexy HTML delivers a pro-grade look.'}, {'title': 'Git.callbacks', 'description': 'Yearly coding insights pulled via API.'}, {'title': 'Mobile-Friendly', 'description': 'Looks dope on any device.'}],
+    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'The web framework I use to whip up solid backend apps fast', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}, {'name': 'GitHub API', 'description': 'Grabs project stats and activity straight from my repos', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg'}],
+    "github_url": "",
+    "demo_url": "",
+    "status": "completed",
+    "created_at": None,
+    "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "category": "",
+    "tags": [],
+    "priority": 1,
+    "slug": ""
+}

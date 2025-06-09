@@ -39,13 +39,12 @@ class UpdatedAtData:
     @classmethod
     def get_all_updated_data(cls):
         """Returns a list of all pages with their last modified timestamps."""
-        return [
-            {
+        return [            {
                 "page": "home",
                 "updated_at": cls.get_latest_modified_date([
                     "apps/data/about_data.py",
-                    "apps/data/blog_data.py",
-                    "apps/data/projects_data.py"
+                    "apps/data/blog/",
+                    "apps/data/projects/"
                 ]),
             },
             {
@@ -67,17 +66,15 @@ class UpdatedAtData:
                     "apps/data/certifications_data.py",
                     "apps/data/awards_data.py",
                 ]),
-            },
-            {
+            },            {
                 "page": "projects",
                 "updated_at": cls.get_template_last_modified(
-                    "apps/data/projects_data.py",
+                    "apps/data/projects/",
                 )[0],
-            },
-            {
+            },            {
                 "page": "blog",
                 "updated_at": cls.get_template_last_modified(
-                    "apps/data/blog_data.py",
+                    "apps/data/blog/",
                 )[0],
             },
             {

@@ -1,0 +1,29 @@
+"""
+Project #6: MLBB Stats & Winrate API
+Generated from centralized projects data
+"""
+
+from datetime import datetime
+from django.conf import settings
+
+# Project data for: MLBB Stats & Winrate API
+project_data = {
+    "id": 6,
+    "title": """MLBB Stats & Winrate API""",
+    "headline": """Level up with MLBB player stats and winrates, served hot by Flask.""",
+    "description": ['This Flask API is your ticket to Mobile Legends data—usernames, MPL stats, winrates, and more.', 'Pulls info from mainlagiaja.com, id-mpl.com, takapadia.com, plus some custom flair I cooked up.', 'A must-have for devs and gamers who want MLBB stats without the grind.'],
+    "image_url": "https://ridwaanhall.com/static/img/project/mlbb_game_stats_api.webp",
+    "img_name": "mlbb_game_stats_api.webp",
+    "is_featured": False,
+    "features": [{'title': 'Username Grabber', 'description': 'Scoop up player usernames fast via mainlagiaja.com’s API.'}, {'title': 'MPL Stats Connect', 'description': 'Dives into id-mpl.com for juicy stats and insights.'}, {'title': 'Winrate Wizard', 'description': 'Cranks out accurate winrates using takapadia.com data.'}],
+    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight web framework for Python, perfect for APIs', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}],
+    "github_url": "",
+    "demo_url": "https://mlbb-api.ridwaanhall.repl.co",
+    "status": "completed",
+    "created_at": None,
+    "updated_at": datetime.strptime("2023-08-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "category": "",
+    "tags": [],
+    "priority": 1,
+    "slug": ""
+}

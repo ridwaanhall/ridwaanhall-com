@@ -184,7 +184,7 @@ class Command(BaseCommand):
             blogs = BlogData.blogs[:3]  # Test first 3 blog posts
             for blog in blogs:
                 slug = slugify(blog['title'])
-                test_pages.append((f'/blog/{slug}/', f'Blog: {blog["title"][:30]}...'))
+                test_pages.append((f'/blog/{slug}', f'Blog: {blog["title"][:30]}...'))
         except Exception as e:
             self.stdout.write(
                 self.style.WARNING(f'Could not load blog pages: {e}')
@@ -195,7 +195,7 @@ class Command(BaseCommand):
             projects = ProjectsData.projects[:3]  # Test first 3 projects
             for project in projects:
                 slug = slugify(project['title'])
-                test_pages.append((f'/projects/{slug}/', f'Project: {project["title"][:30]}...'))
+                test_pages.append((f'/projects/{slug}', f'Project: {project["title"][:30]}...'))
         except Exception as e:
             self.stdout.write(
                 self.style.WARNING(f'Could not load project pages: {e}')

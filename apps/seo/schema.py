@@ -7,10 +7,10 @@ from typing import Dict, List, Optional, Any
 from datetime import datetime
 from django.utils.text import slugify
 from .config import SEOConfig
-from apps.data.education_data import EducationData
-from apps.data.experiences_data import ExperiencesData
-from apps.data.certifications_data import CertificationsData
-from apps.data.awards_data import AwardsData
+from apps.data.about.education_data import EducationData
+from apps.data.about.experiences_data import ExperiencesData
+from apps.data.about.certifications_data import CertificationsData
+from apps.data.about.awards_data import AwardsData
 
 
 class SEOSchemaGenerator:

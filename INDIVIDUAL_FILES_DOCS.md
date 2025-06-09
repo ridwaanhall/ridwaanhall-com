@@ -23,25 +23,29 @@ The **Individual File System Architecture** represents a groundbreaking approach
 ### File Structure Hierarchy
 
 ```txt
-apps/data/
-├── blog/                        # 🗃️ Individual Blog Files (14 files)
-│   ├── blog-1.py               # "Python 101: Your Chill Guide to Getting Started"
-│   ├── blog-2.py               # "Whipping Up Web Apps with Django's Magic"
-│   ├── blog-3.py               # "Neural Nets Made Easy with TensorFlow & Keras"
-│   ├── blog-4.py               # "Hacking Your Dev Life: Time Management Tricks"
-│   ├── ...                     # Additional blog posts
-│   └── blog-14.py              # Latest blog article
-├── projects/                    # 📁 Individual Project Files (47 files)
-│   ├── project-1.py            # "MLBB Username Finder"
-│   ├── project-2.py            # "TikTok Profile Scraper"
-│   ├── project-3.py            # "Quran Explorer Web"
-│   ├── project-4.py            # "BMKG Weather & Quake Tracker"
-│   ├── ...                     # Enterprise projects
-│   └── project-47.py           # "Neural Network from Scratch"
-├── blog_index.py               # 🔍 Intelligent Blog File Loader
-├── projects_index.py           # 🔍 Smart Project File Loader
-├── data_manager.py             # 🎛️ Central Data Controller
-└── [other_data_files...]       # Supporting data modules
+apps/data/                 # 🗂️ INDIVIDUAL FILE SYSTEM (Revolutionary!)
+├── __init__.py
+├── about_manager.py       # About section data management
+├── apps.py
+├── content_manager.py     # 🎛️ Central Data Controller
+├── data_service.py        # Data service layer
+├── content/               # 📚 Individual Content Files
+│   ├── __init__.py
+│   ├── blog_index.py      # 🔍 Intelligent Blog File Loader
+│   ├── projects_index.py  # 🔍 Smart Project File Loader
+│   ├── blog/              # 📚 14 Individual Blog Files
+│   │   ├── blog-1.py      # "Python 101: Your Chill Guide"
+│   │   ├── blog-2.py      # "Whipping Up Web Apps with Django's Magic"
+│   │   ├── ...            # Each blog as separate module
+│   │   └── blog-14.py     # Latest blog articles
+│   ├── projects/          # 💼 47 Individual Project Files
+│   │   ├── project-1.py   # "MLBB Username Finder"
+│   │   ├── project-2.py   # "TikTok Profile Scraper"
+│   │   ├── ...            # Each project as separate module
+│   │   └── project-47.py  # "Neural Network from Scratch"
+│   └── __pycache__/
+├── about/                 # 📄 About section data files
+└── privacy/               # 🔐 Privacy policy data
 ```
 
 ### 📊 System Statistics
@@ -56,27 +60,27 @@ apps/data/
 
 ## 🔧 Data Manager API
 
-The `DataManager` class provides a unified, enterprise-grade interface for accessing all content through a clean, intuitive API.
+The `ContentManager` class provides a unified, enterprise-grade interface for accessing all content through a clean, intuitive API.
 
 ### 🚀 Core Operations
 
 ```python
-from apps.data.data_manager import DataManager
+from apps.data.content_manager import ContentManager
 
 # 📚 Blog Operations
-blogs = DataManager.get_blogs()                    # Load all 14 blog posts
-blog = DataManager.get_blog_by_id(1)              # Get specific blog post
-featured_blogs = DataManager.get_featured_blogs(limit=3)  # Get featured content
-recent_blogs = DataManager.get_recent_blogs(limit=5)      # Get latest posts
+blogs = ContentManager.get_blogs()                    # Load all 14 blog posts
+blog = ContentManager.get_blog_by_id(1)              # Get specific blog post
+featured_blogs = ContentManager.get_featured_blogs(limit=3)  # Get featured content
+recent_blogs = ContentManager.get_recent_blogs(limit=5)      # Get latest posts
 
 # 💼 Project Operations
-projects = DataManager.get_projects()              # Load all 47 projects
-project = DataManager.get_project_by_id(1)        # Get specific project
-featured_projects = DataManager.get_featured_projects(limit=6)  # Get showcase projects
-recent_projects = DataManager.get_recent_projects(limit=8)      # Get latest work
+projects = ContentManager.get_projects()              # Load all 47 projects
+project = ContentManager.get_project_by_id(1)        # Get specific project
+featured_projects = ContentManager.get_featured_projects(limit=6)  # Get showcase projects
+recent_projects = ContentManager.get_recent_projects(limit=8)      # Get latest work
 
 # 📊 System Information
-info = DataManager.get_data_source_info()
+info = ContentManager.get_data_source_info()
 print(f"System: Individual File Architecture")
 print(f"Blogs: {info['blogs_count']} files")
 print(f"Projects: {info['projects_count']} files")
@@ -86,16 +90,16 @@ print(f"Projects: {info['projects_count']} files")
 
 ```python
 # Content filtering by featured status
-featured_content = DataManager.get_featured_blogs()
-showcase_projects = DataManager.get_featured_projects()
+featured_content = ContentManager.get_featured_blogs()
+showcase_projects = ContentManager.get_featured_projects()
 
 # Recent content with custom limits
-latest_blogs = DataManager.get_recent_blogs(limit=10)
-newest_projects = DataManager.get_recent_projects(limit=12)
+latest_blogs = ContentManager.get_recent_blogs(limit=10)
+newest_projects = ContentManager.get_recent_projects(limit=12)
 
 # Individual content retrieval
-python_blog = DataManager.get_blog_by_id(1)       # "Python 101" blog post
-mlbb_project = DataManager.get_project_by_id(1)   # "MLBB Username Finder"
+python_blog = ContentManager.get_blog_by_id(1)       # "Python 101" blog post
+mlbb_project = ContentManager.get_project_by_id(1)   # "MLBB Username Finder"
 ```
 
 ## 📄 Individual File Architecture
@@ -220,7 +224,7 @@ PROJECT_FILES_PATH = "apps/data/projects/"
 
 ```python
 # views.py - Production Implementation
-from apps.data.data_manager import DataManager
+from apps.data.content_manager import ContentManager
 
 class ProjectListView(ListView):
     """Enhanced project list view with individual file system."""
@@ -229,8 +233,8 @@ class ProjectListView(ListView):
         context = super().get_context_data(**kwargs)
         
         # Load projects from individual files
-        context['projects'] = DataManager.get_projects()
-        context['featured_projects'] = DataManager.get_featured_projects(limit=6)
+        context['projects'] = ContentManager.get_projects()
+        context['featured_projects'] = ContentManager.get_featured_projects(limit=6)
         context['total_projects'] = len(context['projects'])
         
         return context
@@ -240,7 +244,7 @@ class BlogDetailView(DetailView):
     
     def get_object(self):
         blog_id = self.kwargs.get('id')
-        return DataManager.get_blog_by_id(blog_id)
+        return ContentManager.get_blog_by_id(blog_id)
 ```
 
 ## 🚀 Technical Advantages
@@ -574,8 +578,8 @@ class IndividualFilesMonitor:
         """Monitor file loading performance."""
         start_time = time.time()
         
-        blogs = DataManager.get_blogs()
-        projects = DataManager.get_projects()
+        blogs = ContentManager.get_blogs()
+        projects = ContentManager.get_projects()
         
         load_time = time.time() - start_time
         
@@ -596,7 +600,7 @@ class IndividualFilesMonitor:
 
 ```python
 # Debug file loading issues
-from apps.data.data_manager import DataManager
+from apps.data.content_manager import ContentManager
 
 # Check if files exist
 import os
@@ -608,7 +612,7 @@ print(f"Project files: {len(os.listdir(project_dir))} files")
 
 # Test loading
 try:
-    blogs = DataManager.get_blogs()
+    blogs = ContentManager.get_blogs()
     print(f"Successfully loaded {len(blogs)} blogs")
 except Exception as e:
     print(f"Error loading blogs: {e}")
@@ -634,7 +638,7 @@ from apps.data.validators import ContentValidator
 
 for i in range(1, 15):  # Check all blog files
     try:
-        blog = DataManager.get_blog_by_id(i)
+        blog = ContentManager.get_blog_by_id(i)
         ContentValidator.validate_blog_data(blog)
         print(f"Blog {i}: ✅ Valid")
     except Exception as e:

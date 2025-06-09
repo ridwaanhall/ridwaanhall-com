@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.utils import timezone
 
 from apps.core.base_views import BaseView
-from apps.core.data_service import DataService
+from apps.data.data_service import DataService
 from apps.seo.mixins import HomepageSEOMixin, ContactSEOMixin, PrivacyPolicySEOMixin
 
 
@@ -41,7 +41,6 @@ class HomeView(HomepageSEOMixin, BaseView):
             'projects': DataService.get_projects()[:2],  # Top 2 featured projects
             'education': DataService.get_education(last_only=True),
             'experiences': DataService.get_experiences(current_only=True),
-            'services': DataService.get_services(),
             'skills_top': skills_top,
             'skills_middle': skills_middle,
             'skills_bottom': skills_bottom,

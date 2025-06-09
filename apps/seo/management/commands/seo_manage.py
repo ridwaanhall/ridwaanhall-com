@@ -11,7 +11,7 @@ from typing import Dict, List
 import json
 
 from apps.seo.sitemaps import StaticPagesSitemap, BlogSitemap, ProjectSitemap
-from apps.core.data_service import DataService
+from apps.data.data_service import DataService
 
 
 class Command(BaseCommand):
@@ -164,7 +164,7 @@ class Command(BaseCommand):
         self.stdout.write('Checking meta tags...')
         
         # Import here to avoid circular imports
-        from apps.data.data_manager import DataManager
+        from apps.data.content_manager import ContentManager
         from django.utils.text import slugify
         
         # Basic static pages
@@ -179,7 +179,7 @@ class Command(BaseCommand):
         ]
           # Add sample blog detail pages (first 3 blogs)
         try:
-            blogs = DataManager.get_blogs()[:3]  # Test first 3 blog posts
+            blogs = ContentManager.get_blogs()[:3]  # Test first 3 blog posts
             for blog in blogs:
                 slug = slugify(blog['title'])
                 test_pages.append((f'/blog/{slug}', f'Blog: {blog["title"][:30]}...'))
@@ -189,7 +189,7 @@ class Command(BaseCommand):
             )
           # Add sample project detail pages (first 3 projects)
         try:
-            projects = DataManager.get_projects()[:3]  # Test first 3 projects
+            projects = ContentManager.get_projects()[:3]  # Test first 3 projects
             for project in projects:
                 slug = slugify(project['title'])
                 test_pages.append((f'/projects/{slug}', f'Project: {project["title"][:30]}...'))

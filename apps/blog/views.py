@@ -4,7 +4,7 @@ Handles blog listing with pagination and individual blog post details.
 """
 
 from apps.core.base_views import PaginatedView, DetailView
-from apps.core.data_service import DataService
+from apps.data.data_service import DataService
 from apps.seo.mixins import BlogListSEOMixin, BlogDetailSEOMixin
 
 

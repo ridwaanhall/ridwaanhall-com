@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django.core.exceptions import SuspiciousOperation
 from django.http import Http404
 
-from apps.data.about_data import AboutData
+from apps.data.about.about_data import AboutData
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ class BaseView(TemplateView):
             about_data = AboutData.get_about_data()
             if not about_data:
                 raise FileNotFoundError("About data is missing.")
-            return about_data[0]
+            return about_data
         except Exception as e:
             logger.error(f"Error fetching about data: {e}")
             raise

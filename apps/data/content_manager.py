@@ -3,7 +3,7 @@ Data Manager - Central controller for blog and project data
 Loads data from individual files only (no centralized files).
 """
 
-class DataManager:
+class ContentManager:
     """
     Central data manager that loads data from individual files.
     """
@@ -11,13 +11,13 @@ class DataManager:
     @classmethod
     def get_blogs(cls):
         """Get all blog data from individual files."""
-        from .blog_index import BlogDataIndex
+        from .content.blog_index import BlogDataIndex
         return BlogDataIndex.load_all_blogs()
     
     @classmethod
     def get_projects(cls):
         """Get all project data from individual files."""
-        from .projects_index import ProjectsDataIndex
+        from .content.projects_index import ProjectsDataIndex
         return ProjectsDataIndex.load_all_projects()
     
     @classmethod
@@ -94,6 +94,6 @@ class DataManager:
             'description': 'Using individual files from blog/ and projects/ directories',
             'blogs_count': blogs_count,
             'projects_count': projects_count,
-            'blog_files': f'apps/data/blog/ ({blogs_count} files)',
-            'project_files': f'apps/data/projects/ ({projects_count} files)'
+            'blog_files': f'apps/data/content/blog/ ({blogs_count} files)',
+            'project_files': f'apps/data/content/projects/ ({projects_count} files)'
         }

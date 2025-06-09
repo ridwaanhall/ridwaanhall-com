@@ -7,15 +7,8 @@ import logging
 from typing import List, Dict, Any, Optional
 from django.core.cache import cache
 
-from apps.data.about.about_data import AboutData
 from apps.data.content_manager import ContentManager
-from apps.data.about.experiences_data import ExperiencesData
-from apps.data.about.education_data import EducationData
-from apps.data.about.certifications_data import CertificationsData
-from apps.data.about.skills_data import SkillsData
-from apps.data.about.awards_data import AwardsData
-from apps.data.about.applications_data import ApplicationsData
-from apps.data.privacy.privacy_policy_data import PrivacyPolicyData
+from apps.data.about_manager import AboutManager
 
 logger = logging.getLogger(__name__)
 
@@ -30,11 +23,11 @@ class DataService:
     def get_about_data() -> Optional[Dict[str, Any]]:
         """Get about data with error handling."""
         try:
-            about_data = AboutData.get_about_data()
-            return about_data[0] if about_data else None
+            return AboutManager.get_about_data()
         except Exception as e:
             logger.error(f"Error fetching about data: {e}")
             return None
+            
     @staticmethod
     def get_blogs(sort_by_id: bool = True, featured_only: bool = False) -> List[Dict[str, Any]]:
         """Get blog data with optional sorting and filtering."""
@@ -51,6 +44,7 @@ class DataService:
         except Exception as e:
             logger.error(f"Error fetching blog data: {e}")
             return []
+            
     @staticmethod
     def get_projects(sort_by_featured: bool = True) -> List[Dict[str, Any]]:
         """Get project data with optional sorting by featured status."""
@@ -72,12 +66,7 @@ class DataService:
     def get_experiences(current_only: bool = False) -> List[Dict[str, Any]]:
         """Get experience data with optional filtering for current positions."""
         try:
-            experiences = ExperiencesData.experiences
-            
-            if current_only:
-                experiences = [exp for exp in experiences if exp.get('is_current')]
-                
-            return experiences
+            return AboutManager.get_experiences(current_only=current_only)
         except Exception as e:
             logger.error(f"Error fetching experience data: {e}")
             return []
@@ -86,12 +75,7 @@ class DataService:
     def get_education(last_only: bool = False) -> List[Dict[str, Any]]:
         """Get education data with optional filtering for most recent."""
         try:
-            education = EducationData.education
-            
-            if last_only:
-                education = [edu for edu in education if edu.get('is_last')]
-                
-            return education
+            return AboutManager.get_education(last_only=last_only)
         except Exception as e:
             logger.error(f"Error fetching education data: {e}")
             return []
@@ -100,7 +84,7 @@ class DataService:
     def get_certifications() -> List[Dict[str, Any]]:
         """Get certification data."""
         try:
-            return CertificationsData.certifications
+            return AboutManager.get_certifications()
         except Exception as e:
             logger.error(f"Error fetching certification data: {e}")
             return []
@@ -109,7 +93,7 @@ class DataService:
     def get_skills() -> List[Dict[str, Any]]:
         """Get skills data."""
         try:
-            return SkillsData.skills
+            return AboutManager.get_skills()
         except Exception as e:
             logger.error(f"Error fetching skills data: {e}")
             return []
@@ -118,12 +102,7 @@ class DataService:
     def get_awards(sort_by_id: bool = True) -> List[Dict[str, Any]]:
         """Get awards data with optional sorting."""
         try:
-            awards = AwardsData.awards
-            
-            if sort_by_id:
-                awards = sorted(awards, key=lambda x: x.get('id', 0), reverse=True)
-                
-            return awards
+            return AboutManager.get_awards(sort_by_id=sort_by_id)
         except Exception as e:
             logger.error(f"Error fetching awards data: {e}")
             return []
@@ -132,7 +111,7 @@ class DataService:
     def get_applications() -> List[Dict[str, Any]]:
         """Get applications data."""
         try:
-            return ApplicationsData.applications
+            return AboutManager.get_applications()
         except Exception as e:
             logger.error(f"Error fetching applications data: {e}")
             return []
@@ -141,7 +120,7 @@ class DataService:
     def get_privacy_policy() -> List[Dict[str, Any]]:
         """Get privacy policy data."""
         try:
-            return PrivacyPolicyData.privacy_policy
+            return AboutManager.get_privacy_policy()
         except Exception as e:
             logger.error(f"Error fetching privacy policy data: {e}")
             return []

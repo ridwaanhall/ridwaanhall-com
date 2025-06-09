@@ -11,6 +11,7 @@ urlpatterns = [
     
     # Add favicon path before the catch-all
     path('favicon.ico', views.favicon_view, name='favicon'),
-    
-    path('<path:url>', views.CatchAllView.as_view(), name='catch_all'),
 ]
+
+# Custom error handlers
+handler404 = 'ridwaanhall_com.views.custom_404_view'

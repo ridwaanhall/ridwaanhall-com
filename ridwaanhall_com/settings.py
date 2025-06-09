@@ -147,6 +147,9 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 3600  # 1 hour in seconds
 SESSION_SAVE_EVERY_REQUEST = True
 
+# URL handling settings
+APPEND_SLASH = True  # Automatically redirect URLs without trailing slash
+
 # ------------------------------------------------------------------------------
 # APPLICATION SETTINGS
 # ------------------------------------------------------------------------------

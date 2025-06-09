@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 from math import ceil
 
-from apps.core.data_service import DataService
+from apps.data.data_service import DataService
 from apps.seo.updated_at_data import UpdatedAtData
 
 

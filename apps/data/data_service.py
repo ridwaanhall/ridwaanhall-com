@@ -8,14 +8,14 @@ from typing import List, Dict, Any, Optional
 from django.core.cache import cache
 
 from apps.data.about.about_data import AboutData
-from apps.data.content.data_manager import DataManager
+from apps.data.data_manager import DataManager
 from apps.data.about.experiences_data import ExperiencesData
 from apps.data.about.education_data import EducationData
 from apps.data.about.certifications_data import CertificationsData
 from apps.data.about.skills_data import SkillsData
 from apps.data.about.awards_data import AwardsData
 from apps.data.about.applications_data import ApplicationsData
-from apps.data.privacy_policy_data import PrivacyPolicyData
+from apps.data.privacy.privacy_policy_data import PrivacyPolicyData
 
 logger = logging.getLogger(__name__)
 

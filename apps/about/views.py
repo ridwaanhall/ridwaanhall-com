@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.core.exceptions import SuspiciousOperation
 
 from apps.core.base_views import BaseView
-from apps.core.data_service import DataService
+from apps.data.data_service import DataService
 from apps.seo.mixins import AboutSEOMixin
 
 

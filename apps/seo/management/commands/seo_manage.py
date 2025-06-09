@@ -11,7 +11,7 @@ from typing import Dict, List
 import json
 
 from apps.seo.sitemaps import StaticPagesSitemap, BlogSitemap, ProjectSitemap
-from apps.core.data_service import DataService
+from apps.data.data_service import DataService
 
 
 class Command(BaseCommand):
@@ -164,7 +164,7 @@ class Command(BaseCommand):
         self.stdout.write('Checking meta tags...')
         
         # Import here to avoid circular imports
-        from apps.data.content.data_manager import DataManager
+        from apps.data.data_manager import DataManager
         from django.utils.text import slugify
         
         # Basic static pages

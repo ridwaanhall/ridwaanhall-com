@@ -11,13 +11,13 @@ class DataManager:
     @classmethod
     def get_blogs(cls):
         """Get all blog data from individual files."""
-        from .blog_index import BlogDataIndex
+        from .content.blog_index import BlogDataIndex
         return BlogDataIndex.load_all_blogs()
     
     @classmethod
     def get_projects(cls):
         """Get all project data from individual files."""
-        from .projects_index import ProjectsDataIndex
+        from .content.projects_index import ProjectsDataIndex
         return ProjectsDataIndex.load_all_projects()
     
     @classmethod

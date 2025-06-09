@@ -21,10 +21,10 @@
 {% for tag in seo.tags %}<meta property="article:tag" content="{{ tag }}">{% endfor %}
 
 <!-- Twitter -->
-<meta property="twitter:card" content="{{ seo.twitter_card|default:'summary_large_image' }}">
-<meta property="twitter:url" content="{% if request %}{{ request.build_absolute_uri }}{% else %}{{ seo.canonical_url }}{% endif %}">
-<meta property="twitter:title" content="{{ seo.twitter_title|default:seo.title }}">
-<meta property="twitter:description" content="{{ seo.twitter_description|default:seo.description }}">
-<meta property="twitter:image" content="{{ seo.twitter_image|default:seo.og_image }}">
-{% if seo.twitter_site %}<meta property="twitter:site" content="{{ seo.twitter_site }}">{% endif %}
-{% if seo.twitter_creator %}<meta property="twitter:creator" content="{{ seo.twitter_creator }}">{% endif %}
+<meta name="twitter:card" content="{{ seo.twitter_card|default:'summary_large_image' }}">
+<meta name="twitter:url" content="{% if request %}{{ request.build_absolute_uri }}{% else %}{{ seo.canonical_url }}{% endif %}">
+<meta name="twitter:title" content="{{ seo.twitter_title|default:seo.title }}">
+<meta name="twitter:description" content="{{ seo.twitter_description|default:seo.description }}">
+<meta name="twitter:image" content="{{ seo.twitter_image|default:seo.og_image }}">
+{% if seo.twitter_site %}<meta name="twitter:site" content="{{ seo.twitter_site }}">{% endif %}
+{% if seo.twitter_creator %}<meta name="twitter:creator" content="{{ seo.twitter_creator }}">{% endif %}

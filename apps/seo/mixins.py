@@ -3,8 +3,6 @@ SEO Mixins
 Reusable mixins for views to automatically include SEO functionality.
 """
 
-from typing import Dict, Any
-from django.views.generic import TemplateView
 from apps.data.about.about_data import AboutData
 from .manager import SEOManager
 
@@ -62,7 +60,8 @@ class SEOMixin:
             return seo_manager.get_privacy_policy_seo()
         else:
             # Default SEO data
-            return {                'title': 'ridwaanhall.com',
+            return {
+                'title': 'ridwaanhall.com',
                 'description': 'Ridwan Halim - Software Developer & AI Engineer',
                 'keywords': 'Ridwan Halim, ridwaanhall, software developer, ai engineer',
                 'og_image': self.get_about_data().get('image_url', ''),

@@ -8,7 +8,7 @@ from django.conf import settings
 
 # Blog data for: How I Picked the Perfect Domain for My Site
 blog_data = {
-    "id": 8,
+    "id": 9,
     "title": """How I Picked the Perfect Domain for My Site""",
     "description": """The wild ride of choosing between .dev, .com, and .id for ridwaanhall.com—here's the tea!""",
     "image_url": "https://ridwaanhall.com/static/img/blog/choosing_domain.webp",

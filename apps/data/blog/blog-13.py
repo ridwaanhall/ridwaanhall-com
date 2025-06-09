@@ -8,7 +8,7 @@ from django.conf import settings
 
 # Blog data for: Complete Guide to Modern Web Development in 2025
 blog_data = {
-    "id": 12,
+    "id": 13,
     "title": """Complete Guide to Modern Web Development in 2025""",
     "description": """Master modern web development with our comprehensive guide covering frontend frameworks, backend technologies, and DevOps practices for building powerful web applications.""",
     "image_url": "https://ridwaanhall.com/static/img/blog/modern_web_dev_guide.webp",

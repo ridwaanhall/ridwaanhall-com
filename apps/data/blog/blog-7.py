@@ -8,7 +8,7 @@ from django.conf import settings
 
 # Blog data for: Eid al-Fitr: Celebrating the Prophet's Way
 blog_data = {
-    "id": 6,
+    "id": 7,
     "title": """Eid al-Fitr: Celebrating the Prophet's Way""",
     "description": """Dive into how Prophet Muhammad (PBUH) rocked Eid al-Fitr with joy, faith, and community love.""",
     "image_url": "https://ridwaanhall.com/static/img/blog/eid_al_fitr_prophetic_way.webp",

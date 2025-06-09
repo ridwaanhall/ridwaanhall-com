@@ -8,7 +8,7 @@ from django.conf import settings
 
 # Blog data for: Nail Your Git Game with Conventional Commits
 blog_data = {
-    "id": 7,
+    "id": 8,
     "title": """Nail Your Git Game with Conventional Commits""",
     "description": """Make your commit messages pop with style and clarity—tell your code's story like a pro!""",
     "image_url": "https://ridwaanhall.com/static/img/blog/conventional_commits_guide.webp",

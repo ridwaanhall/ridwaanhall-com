@@ -8,7 +8,7 @@ from django.conf import settings
 
 # Blog data for: What's Good with Brainrot in 2025?
 blog_data = {
-    "id": 10,
+    "id": 11,
     "title": """What's Good with Brainrot in 2025?""",
     "description": """Brainrot's takin' over the internet in 2025, and it's WILD! From cursed memes to AI vids and slang that's got no chill, here's the tea on what brainrot is and how to not lose your mind in the chaos.""",
     "image_url": "https://ridwaanhall.com/static/img/blog/brainrot_explained_2025.webp",

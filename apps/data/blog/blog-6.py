@@ -8,7 +8,7 @@ from django.conf import settings
 
 # Blog data for: PyTorch vs. TensorFlow: Pick Your AI Fight Club
 blog_data = {
-    "id": 5,
+    "id": 6,
     "title": """PyTorch vs. TensorFlow: Pick Your AI Fight Club""",
     "description": """TensorFlow or PyTorch? Let's break down the big dogs of deep learning and find your perfect match.""",
     "image_url": "https://ridwaanhall.com/static/img/blog/pytorch_vs_tensorflow.webp",

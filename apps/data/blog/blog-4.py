@@ -8,7 +8,7 @@ from django.conf import settings
 
 # Blog data for: Hacking Your Dev Life: Time Management Tricks
 blog_data = {
-    "id": 3,
+    "id": 4,
     "title": """Hacking Your Dev Life: Time Management Tricks""",
     "description": """Wanna crush code and still have a life? Here's how to stay productive without burning out.""",
     "image_url": "https://ridwaanhall.com/static/img/blog/effective_time_management_for_developers.webp",

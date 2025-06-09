@@ -8,7 +8,7 @@ from django.conf import settings
 
 # Blog data for: Why Lailatul Qadr Is the Ultimate Night of Blessings
 blog_data = {
-    "id": 4,
+    "id": 5,
     "title": """Why Lailatul Qadr Is the Ultimate Night of Blessings""",
     "description": """Get the lowdown on Lailatul Qadr and why it's the most epic night in Islam.""",
     "image_url": "https://ridwaanhall.com/static/img/blog/lailatul_qadr_night.webp",

@@ -8,7 +8,7 @@ from django.conf import settings
 
 # Blog data for: Predicting Gold Prices in Indonesia: AI's Golden Touch
 blog_data = {
-    "id": 11,
+    "id": 12,
     "title": """Predicting Gold Prices in Indonesia: AI's Golden Touch""",
     "description": """Gold price forecasting in Indonesia just got smarter! Dive into how AI-powered LSTM models are transforming historical data into actionable insights for investors and analysts.""",
     "image_url": "https://ridwaanhall.com/static/img/blog/gold_price_prediction.webp",

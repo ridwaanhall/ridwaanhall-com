@@ -8,7 +8,7 @@ from django.conf import settings
 
 # Blog data for: Top 6 Asian Countries with Better Governance and Religious Harmony
 blog_data = {
-    "id": 13,
+    "id": 14,
     "title": """Top 6 Asian Countries with Better Governance and Religious Harmony""",
     "description": """Exploring Asian nations with strong governance, low corruption, and religious tolerance for Indonesians seeking alternatives.""",
     "image_url": "https://ridwaanhall.com/static/img/blog/asian_nations_comparison.webp",

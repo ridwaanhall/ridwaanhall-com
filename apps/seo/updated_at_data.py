@@ -52,21 +52,6 @@ class UpdatedAtData:
                 "updated_at": timezone.now().strftime('%Y-%m-%d %H:%M:%S%z'),
             },
             {
-                "page": "about",
-                "updated_at": cls.get_template_last_modified(
-                    "apps/data/about_data.py",
-                )[0],
-            },
-            {
-                "page": "career",
-                "updated_at": cls.get_latest_modified_date([
-                    # "apps/data/applications_data.py",
-                    "apps/data/experiences_data.py",
-                    "apps/data/education_data.py",
-                    "apps/data/certifications_data.py",
-                    "apps/data/awards_data.py",
-                ]),
-            },            {
                 "page": "projects",
                 "updated_at": cls.get_template_last_modified(
                     "apps/data/projects/",
@@ -76,6 +61,17 @@ class UpdatedAtData:
                 "updated_at": cls.get_template_last_modified(
                     "apps/data/blog/",
                 )[0],
+            },
+            {
+                "page": "about",
+                "updated_at": cls.get_latest_modified_date([
+                    "apps/data/about_data.py",
+                    "apps/data/applications_data.py",
+                    "apps/data/experiences_data.py",
+                    "apps/data/education_data.py",
+                    "apps/data/certifications_data.py",
+                    "apps/data/awards_data.py",
+                ]),
             },
             {
                 "page": "contact",

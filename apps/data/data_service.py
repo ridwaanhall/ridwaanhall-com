@@ -8,7 +8,7 @@ from typing import List, Dict, Any, Optional
 from django.core.cache import cache
 
 from apps.data.about.about_data import AboutData
-from apps.data.content_manager import DataManager
+from apps.data.content_manager import ContentManager
 from apps.data.about.experiences_data import ExperiencesData
 from apps.data.about.education_data import EducationData
 from apps.data.about.certifications_data import CertificationsData
@@ -39,7 +39,7 @@ class DataService:
     def get_blogs(sort_by_id: bool = True, featured_only: bool = False) -> List[Dict[str, Any]]:
         """Get blog data with optional sorting and filtering."""
         try:
-            blogs = DataManager.get_blogs()
+            blogs = ContentManager.get_blogs()
             
             if featured_only:
                 blogs = [blog for blog in blogs if blog.get('is_featured')]
@@ -55,7 +55,7 @@ class DataService:
     def get_projects(sort_by_featured: bool = True) -> List[Dict[str, Any]]:
         """Get project data with optional sorting by featured status."""
         try:
-            projects = DataManager.get_projects()
+            projects = ContentManager.get_projects()
             
             if sort_by_featured:
                 projects = sorted(

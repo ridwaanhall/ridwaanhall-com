@@ -92,7 +92,7 @@ apps/data/
 │   └── project-47.py      # Neural Network from Scratch
 ├── blog_index.py          # Intelligent blog file loader
 ├── projects_index.py      # Smart project file loader
-└── data_manager.py        # Central data controller with switching logic
+└── content_manager.py        # Central data controller with switching logic
 ```
 
 #### Featured Projects Showcase
@@ -131,7 +131,7 @@ apps/data/
 
 #### Data Management Innovation
 
-- **DataManager Class**: Central controller with intelligent switching between data sources
+- **ContentManager Class**: Central controller with intelligent switching between data sources
 - **Individual File Loading**: Dynamic loading of 47 projects and 14 blogs from separate files
 - **Caching Strategy**: Intelligent caching for optimal performance
 - **Modular Updates**: Easy content management without system-wide changes
@@ -282,7 +282,7 @@ ridwaanhall-com/                   # 🏗️ Revolutionary Portfolio Architectur
 │   │   │   └── project-47.py     # "Neural Network from Scratch"
 │   │   ├── blog_index.py         # 🔍 Intelligent Blog File Loader
 │   │   ├── projects_index.py     # 🔍 Smart Project File Loader
-│   │   ├── data_manager.py       # 🎛️ Central Data Controller
+│   │   ├── content_manager.py       # 🎛️ Central Data Controller
 │   │   └── [other_data...]       # Supporting data modules
 │   ├── projects/                 # 💼 Portfolio Management System
 │   └── seo/                      # 🚀 Advanced SEO Management & Sitemaps

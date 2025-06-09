@@ -26,16 +26,16 @@ The **Individual File System Architecture** represents a groundbreaking approach
 apps/data/
 ├── blog/                        # 🗃️ Individual Blog Files (14 files)
 │   ├── blog-1.py               # "Python 101: Your Chill Guide to Getting Started"
-│   ├── blog-2.py               # "Why I'm Coding for Gaza's Truth"
-│   ├── blog-3.py               # "Django Environment Setup: Production Ready"
-│   ├── blog-4.py               # "Machine Learning with Python: Beginner's Journey"
+│   ├── blog-2.py               # "Whipping Up Web Apps with Django's Magic"
+│   ├── blog-3.py               # "Neural Nets Made Easy with TensorFlow & Keras"
+│   ├── blog-4.py               # "Hacking Your Dev Life: Time Management Tricks"
 │   ├── ...                     # Additional blog posts
 │   └── blog-14.py              # Latest blog article
 ├── projects/                    # 📁 Individual Project Files (47 files)
 │   ├── project-1.py            # "MLBB Username Finder"
 │   ├── project-2.py            # "TikTok Profile Scraper"
-│   ├── project-3.py            # "Bike Rental Insights Dashboard"
-│   ├── project-4.py            # "MLBB API Stats Hub"
+│   ├── project-3.py            # "Quran Explorer Web"
+│   ├── project-4.py            # "BMKG Weather & Quake Tracker"
 │   ├── ...                     # Enterprise projects
 │   └── project-47.py           # "Neural Network from Scratch"
 ├── blog_index.py               # 🔍 Intelligent Blog File Loader

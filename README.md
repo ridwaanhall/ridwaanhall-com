@@ -82,7 +82,7 @@ This portfolio represents the culmination of modern web development practices, f
 apps/data/
 ├── blog/                   # Individual blog files
 │   ├── blog-1.py          # Python 101: Your Chill Guide to Getting Started
-│   ├── blog-2.py          # Why I'm Coding for Gaza's Truth
+│   ├── blog-2.py          # Whipping Up Web Apps with Django's Magic
 │   ├── ...                # 14 total blog files
 │   └── blog-14.py         # Latest articles
 ├── projects/              # Individual project files
@@ -272,7 +272,7 @@ ridwaanhall-com/                   # 🏗️ Revolutionary Portfolio Architectur
 │   ├── data/                      # 🗂️ INDIVIDUAL FILE SYSTEM (Revolutionary!)
 │   │   ├── blog/                  # 📚 14 Individual Blog Files
 │   │   │   ├── blog-1.py         # "Python 101: Your Chill Guide"
-│   │   │   ├── blog-2.py         # "Why I'm Coding for Gaza's Truth"
+│   │   │   ├── blog-2.py         # "Whipping Up Web Apps with Django's Magic"
 │   │   │   ├── ...               # Each blog as separate module
 │   │   │   └── blog-14.py        # Latest blog articles
 │   │   ├── projects/             # 💼 47 Individual Project Files

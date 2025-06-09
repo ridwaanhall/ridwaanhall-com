@@ -1,0 +1,29 @@
+"""
+Project #37: Insta Follow Analyzer
+Generated from centralized projects data
+"""
+
+from datetime import datetime
+from django.conf import settings
+
+# Project data for: Insta Follow Analyzer
+project_data = {
+    "id": 37,
+    "title": """Insta Follow Analyzer""",
+    "headline": """Python tool to dissect Instagram follower dynamics.""",
+    "description": ['This Python script breaks down Instagram followers and following, spotting mutuals, non-followers, and more.', 'Perfect for influencers and managers to find engagement gaps or networking opportunities.', 'Spits out detailed stats and lists from JSON data for outreach or deeper analysis.'],
+    "image_url": "https://ridwaanhall.com/static/img/project/instagram_following_followers.webp",
+    "img_name": "instagram_following_followers.webp",
+    "is_featured": False,
+    "features": [{'title': 'Follower Breakdown', 'description': 'Lists mutuals and one-sided followers.'}, {'title': 'Following Insights', 'description': 'Tracks who you follow without reciprocation.'}, {'title': 'JSON Support', 'description': 'Handles Instagram data like a pro.'}],
+    "tech_stack": [{'name': 'Bulma', 'description': 'Flexbox-based CSS for responsive, clean layouts', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bulma/bulma-plain.svg'}, {'name': 'Django', 'description': 'The web framework I use to whip up solid backend apps fast', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}, {'name': 'Whitenoise', 'description': 'Serves Django static files like a charm'}],
+    "github_url": "https://github.com/ridwaanhall/instagram-following-followers",
+    "demo_url": "https://igstats.ridwaanhall.com",
+    "status": "completed",
+    "created_at": None,
+    "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "category": "",
+    "tags": [],
+    "priority": 1,
+    "slug": ""
+}

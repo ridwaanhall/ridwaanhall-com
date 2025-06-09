@@ -8,8 +8,7 @@ from typing import List, Dict, Any, Optional
 from django.core.cache import cache
 
 from apps.data.about_data import AboutData
-from apps.data.blog_data import BlogData
-from apps.data.projects_data import ProjectsData
+from apps.data.data_manager import DataManager
 from apps.data.experiences_data import ExperiencesData
 from apps.data.education_data import EducationData
 from apps.data.certifications_data import CertificationsData
@@ -37,12 +36,11 @@ class DataService:
         except Exception as e:
             logger.error(f"Error fetching about data: {e}")
             return None
-    
     @staticmethod
     def get_blogs(sort_by_id: bool = True, featured_only: bool = False) -> List[Dict[str, Any]]:
         """Get blog data with optional sorting and filtering."""
         try:
-            blogs = BlogData.blogs
+            blogs = DataManager.get_blogs()
             
             if featured_only:
                 blogs = [blog for blog in blogs if blog.get('is_featured')]
@@ -54,12 +52,11 @@ class DataService:
         except Exception as e:
             logger.error(f"Error fetching blog data: {e}")
             return []
-    
     @staticmethod
     def get_projects(sort_by_featured: bool = True) -> List[Dict[str, Any]]:
         """Get project data with optional sorting by featured status."""
         try:
-            projects = ProjectsData.projects
+            projects = DataManager.get_projects()
             
             if sort_by_featured:
                 projects = sorted(

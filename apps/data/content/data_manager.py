@@ -94,6 +94,6 @@ class DataManager:
             'description': 'Using individual files from blog/ and projects/ directories',
             'blogs_count': blogs_count,
             'projects_count': projects_count,
-            'blog_files': f'apps/data/blog/ ({blogs_count} files)',
-            'project_files': f'apps/data/projects/ ({projects_count} files)'
+            'blog_files': f'apps/data/content/blog/ ({blogs_count} files)',
+            'project_files': f'apps/data/content/projects/ ({projects_count} files)'
         }

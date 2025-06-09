@@ -244,6 +244,7 @@ class Command(BaseCommand):
         
         # Summary
         self.stdout.write(f'\n📊 Meta Tags Summary: {passed_pages}/{total_pages} pages passed ({(passed_pages/total_pages)*100:.1f}%)')
+    
     def validate_specific_pages(self, pages: List[str]):
         """Validate specific pages by URL path."""
         self.stdout.write(
@@ -254,10 +255,24 @@ class Command(BaseCommand):
             # Ensure URL starts with /
             if not url.startswith('/'):
                 url = '/' + url
+            # Handle trailing slash logic based on URL patterns:
+            # - Static pages (dashboard, blog list, project list, about, contact, privacy-policy) need trailing slash
+            # - Blog detail and project detail pages should NOT have trailing slash
+            static_pages_needing_slash = ['/dashboard', '/blog', '/projects', '/about', '/contact', '/privacy-policy']
+            is_blog_detail = url.startswith('/blog/') and url != '/blog/' and len(url) > 6  # Has slug after /blog/
+            is_project_detail = url.startswith('/projects/') and url != '/projects/' and len(url) > 10  # Has slug after /projects/
             
-            # Ensure URL has trailing slash unless it's the root or already has one
-            if url != '/' and not url.endswith('/'):
-                url = url + '/'
+            if url == '/':
+                # Root URL is fine as is
+                pass
+            elif is_blog_detail or is_project_detail:
+                # Blog/project detail pages should NOT have trailing slash
+                if url.endswith('/'):
+                    url = url.rstrip('/')
+            elif any(url.startswith(page) for page in static_pages_needing_slash):
+                # Static pages need trailing slash
+                if not url.endswith('/'):
+                    url = url + '/'
             
             self.stdout.write(f'Checking page: {url}')
             

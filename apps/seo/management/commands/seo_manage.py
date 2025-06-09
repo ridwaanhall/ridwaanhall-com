@@ -164,8 +164,7 @@ class Command(BaseCommand):
         self.stdout.write('Checking meta tags...')
         
         # Import here to avoid circular imports
-        from apps.data.blog_data import BlogData
-        from apps.data.projects_data import ProjectsData
+        from apps.data.data_manager import DataManager
         from django.utils.text import slugify
         
         # Basic static pages
@@ -178,10 +177,9 @@ class Command(BaseCommand):
             ('/contact/', 'Contact'),
             ('/privacy-policy/', 'Privacy Policy'),
         ]
-        
-        # Add sample blog detail pages (first 3 blogs)
+          # Add sample blog detail pages (first 3 blogs)
         try:
-            blogs = BlogData.blogs[:3]  # Test first 3 blog posts
+            blogs = DataManager.get_blogs()[:3]  # Test first 3 blog posts
             for blog in blogs:
                 slug = slugify(blog['title'])
                 test_pages.append((f'/blog/{slug}', f'Blog: {blog["title"][:30]}...'))
@@ -189,10 +187,9 @@ class Command(BaseCommand):
             self.stdout.write(
                 self.style.WARNING(f'Could not load blog pages: {e}')
             )
-        
-        # Add sample project detail pages (first 3 projects)
+          # Add sample project detail pages (first 3 projects)
         try:
-            projects = ProjectsData.projects[:3]  # Test first 3 projects
+            projects = DataManager.get_projects()[:3]  # Test first 3 projects
             for project in projects:
                 slug = slugify(project['title'])
                 test_pages.append((f'/projects/{slug}', f'Project: {project["title"][:30]}...'))

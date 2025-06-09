@@ -9,7 +9,7 @@ from django.conf import settings
 # Blog data for: Why I'm Coding for Gaza's Truth
 blog_data = {
     "id": 9,
-    "title": """Why I'm Coding for Gaza's Truth s""",
+    "title": """Why I'm Coding for Gaza's Truth""",
     "description": """From Islamic boarding school to Python, here's why I'm hustling to amplify Gaza's crisis with facts, faith, and a call to act—no noise, just heart.""",
     "image_url": "https://ridwaanhall.com/static/img/blog/gaza_crisis.webp",
     "img_name": "gaza_crisis.webp",

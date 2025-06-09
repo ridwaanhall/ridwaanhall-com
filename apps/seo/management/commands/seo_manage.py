@@ -164,7 +164,7 @@ class Command(BaseCommand):
         self.stdout.write('Checking meta tags...')
         
         # Import here to avoid circular imports
-        from apps.data.data_manager import DataManager
+        from apps.data.content.data_manager import DataManager
         from django.utils.text import slugify
         
         # Basic static pages

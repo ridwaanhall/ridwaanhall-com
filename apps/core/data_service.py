@@ -8,7 +8,7 @@ from typing import List, Dict, Any, Optional
 from django.core.cache import cache
 
 from apps.data.about.about_data import AboutData
-from apps.data.data_manager import DataManager
+from apps.data.content.data_manager import DataManager
 from apps.data.about.experiences_data import ExperiencesData
 from apps.data.about.education_data import EducationData
 from apps.data.about.certifications_data import CertificationsData

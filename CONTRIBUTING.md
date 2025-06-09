@@ -38,14 +38,14 @@ Before you begin, ensure you have the following installed:
 2. **Clone your fork** locally:
 
    ```powershell
-   git clone https://github.com/your-username/ridwaanhall_com.git
-   cd ridwaanhall_com
+   git clone https://github.com/ridwaanhall/ridwaanhall-com.git
+   cd ridwaanhall-com
    ```
 
 3. **Add upstream remote**:
 
    ```powershell
-   git remote add upstream https://github.com/ridwaanhall/ridwaanhall_com.git
+   git remote add upstream https://github.com/ridwaanhall/ridwaanhall-com.git
    ```
 
 ## Development Setup
@@ -108,8 +108,8 @@ ridwaanhall_com/
 │   ├── blog/                      # Blog system with SEO
 │   ├── core/                      # Homepage & base views
 │   ├── dashboard/                 # GitHub/WakaTime analytics
-│   ├── data/                      # Content management (JSON-based)
-│   ├── pageindex/                 # SEO, sitemaps, robots.txt
+│   ├── data/                      # Individual file data management system
+│   ├── seo/                       # SEO, sitemaps, robots.txt
 │   └── projects/                  # Portfolio management
 ├── ridwaanhall_com/               # Django project configuration
 ├── static/                        # Development static files
@@ -130,8 +130,8 @@ ridwaanhall_com/
 | `projects` | Portfolio showcase | Project listings, detailed views, tech stack |
 | `blog` | Content management | Articles, featured posts, SEO optimization |
 | `dashboard` | Analytics integration | GitHub stats, WakaTime metrics, charts |
-| `data` | Content storage | JSON-based data management |
-| `pageindex` | SEO & indexing | Sitemaps, robots.txt, meta tags |
+| `data` | Individual file system | Revolutionary modular data architecture |
+| `seo` | SEO & indexing | Sitemaps, robots.txt, meta tags |
 
 ## Contributing Guidelines
 

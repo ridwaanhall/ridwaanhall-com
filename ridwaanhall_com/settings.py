@@ -163,14 +163,14 @@ INSTALLED_APPS = [
     
     # Security apps
     "csp",
-      # Project apps
+    
+    # Project apps
     'apps.core',
     'apps.about',
     'apps.data',
     'apps.dashboard',
     'apps.projects',
     'apps.blog',
-    'apps.pageindex',
     'apps.seo',
 ]
 

@@ -176,14 +176,13 @@ class Command(BaseCommand):
                 response = self.client.get(url)
                 if response.status_code == 200:
                     content = response.content.decode('utf-8')
-                    
-                    # Check for essential meta tags
+                      # Check for essential meta tags
                     meta_checks = {
-                        'title': '<title>' in content,
+                        'title': '<title>' in content and not '<title></title>' in content,
                         'description': 'name="description"' in content,
                         'og:title': 'property="og:title"' in content,
                         'og:description': 'property="og:description"' in content,
-                        'twitter:card': 'name="twitter:card"' in content,
+                        'twitter:card': 'name="twitter:card"' in content or 'property="twitter:card"' in content,
                     }
                     
                     missing_tags = [tag for tag, present in meta_checks.items() if not present]

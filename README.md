@@ -317,11 +317,19 @@ The `apps/data/` directory showcases the **revolutionary individual file archite
 
 ### Adding New Projects
 
-Edit `apps/data/projects_data.py`:
+Create a new individual project file `apps/data/projects/project-48.py`:
 
 ```python
-{
-    "id": 45,
+"""
+Project #48: Your Project Name
+Individual file architecture implementation
+"""
+
+from datetime import datetime
+from django.conf import settings
+
+project_data = {
+    "id": 48,
     "title": "Your Project Name",
     "headline": "Short project description",
     "description": [
@@ -331,6 +339,7 @@ Edit `apps/data/projects_data.py`:
     "github_url": "https://github.com/username/repo",
     "demo_url": "https://your-demo.com",
     "image_url": f"{settings.PROJECT_BASE_IMG_URL}/your-project.webp",
+    "img_name": "your-project.webp",
     "is_featured": True,
     "features": [
         {
@@ -339,34 +348,63 @@ Edit `apps/data/projects_data.py`:
         }
     ],
     "tech_stack": [
-        tech_stack["python"],
-        tech_stack["django"]
+        {
+            "name": "Python",
+            "description": "Core development language",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+        },
+        {
+            "name": "Django",
+            "description": "Web framework",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg"
+        }
     ],
-    "updated_at": datetime.strptime("2025-06-07T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
+    "status": "completed",
+    "created_at": datetime.strptime("2025-06-07T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-06-07T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "category": "Web Development",
+    "tags": ["Python", "Django", "Web"],
+    "priority": 1,
+    "slug": "your-project-name"
 }
 ```
 
 ### Adding Blog Posts
 
-Edit `apps/data/blog_data.py`:
+Create a new individual blog file `apps/data/blog/blog-15.py`:
 
 ```python
-{
-    "id": 10,
+"""
+Blog Post #15: Your Blog Post Title
+Individual file architecture implementation
+"""
+
+from datetime import datetime
+from django.conf import settings
+
+blog_data = {
+    "id": 15,
     "title": "Your Blog Post Title",
     "description": "Brief post description",
     "content": [
         "Article paragraph 1",
         "Article paragraph 2",
-        "<h2>Subheading</h2>",
-        "More content..."
+        "<h2 class='text-xl lg:text-2xl text-medium mt-4 md:mt-5 mb-2 md:mb-3'>Subheading</h2>",
+        "<p class='mb-4 text-sm md:text-base lg:text-lg'>More content...</p>"
     ],
     "image_url": f"{settings.BLOG_BASE_IMG_URL}/your-post.webp",
-    "author_image": "author-image-url",
+    "img_name": "your-post.webp",
+    "author": "Ridwan Halim",
+    "username": "ridwaanhall",
+    "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
     "tags": ["tag1", "tag2"],
     "is_featured": True,
     "created_at": datetime.strptime("2025-06-07T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-06-07T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z")
+    "updated_at": datetime.strptime("2025-06-07T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "category": "Technology",
+    "read_time": 5,
+    "views": 0,
+    "slug": "your-blog-post-title"
 }
 ```
 

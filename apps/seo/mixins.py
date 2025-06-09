@@ -22,7 +22,7 @@ class SEOMixin:
         about_data = AboutData.get_about_data()
         if not about_data:
             raise FileNotFoundError("About data is missing.")
-        return about_data[0]
+        return about_data
     
     def get_seo_manager(self):
         """Get SEO manager instance."""

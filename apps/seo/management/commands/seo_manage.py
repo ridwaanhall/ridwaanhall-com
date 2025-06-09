@@ -158,37 +158,75 @@ class Command(BaseCommand):
                 self.stdout.write(
                     self.style.ERROR(f'  ❌ {url} - Error: {e}')
                 )
-
+    
     def check_meta_tags(self):
-        """Check meta tags on key pages."""
+        """Check meta tags on all pages."""
         self.stdout.write('Checking meta tags...')
         
+        # Import here to avoid circular imports
+        from apps.data.blog_data import BlogData
+        from apps.data.projects_data import ProjectsData
+        from django.utils.text import slugify
+        
+        # Basic static pages
         test_pages = [
             ('/', 'Home'),
             ('/about/', 'About'),
             ('/dashboard/', 'Dashboard'),
-            ('/blog/', 'Blog'),
-            ('/projects/', 'Projects'),
+            ('/blog/', 'Blog List'),
+            ('/projects/', 'Projects List'),
+            ('/contact/', 'Contact'),
+            ('/privacy-policy/', 'Privacy Policy'),
         ]
+        
+        # Add sample blog detail pages (first 3 blogs)
+        try:
+            blogs = BlogData.blogs[:3]  # Test first 3 blog posts
+            for blog in blogs:
+                slug = slugify(blog['title'])
+                test_pages.append((f'/blog/{slug}/', f'Blog: {blog["title"][:30]}...'))
+        except Exception as e:
+            self.stdout.write(
+                self.style.WARNING(f'Could not load blog pages: {e}')
+            )
+        
+        # Add sample project detail pages (first 3 projects)
+        try:
+            projects = ProjectsData.projects[:3]  # Test first 3 projects
+            for project in projects:
+                slug = slugify(project['title'])
+                test_pages.append((f'/projects/{slug}/', f'Project: {project["title"][:30]}...'))
+        except Exception as e:
+            self.stdout.write(
+                self.style.WARNING(f'Could not load project pages: {e}')
+            )
+        
+        self.stdout.write(f'Testing {len(test_pages)} pages for SEO compliance...\n')
+        
+        total_pages = len(test_pages)
+        passed_pages = 0
         
         for url, name in test_pages:
             try:
                 response = self.client.get(url)
                 if response.status_code == 200:
                     content = response.content.decode('utf-8')
-                      # Check for essential meta tags
+                    
+                    # Check for essential meta tags
                     meta_checks = {
                         'title': '<title>' in content and not '<title></title>' in content,
                         'description': 'name="description"' in content,
                         'og:title': 'property="og:title"' in content,
                         'og:description': 'property="og:description"' in content,
                         'twitter:card': 'name="twitter:card"' in content or 'property="twitter:card"' in content,
+                        'canonical': 'rel="canonical"' in content,
                     }
                     
                     missing_tags = [tag for tag, present in meta_checks.items() if not present]
                     
                     if not missing_tags:
                         self.stdout.write(f'  ✅ {name} - All meta tags present')
+                        passed_pages += 1
                     else:
                         self.stdout.write(
                             self.style.WARNING(
@@ -203,6 +241,9 @@ class Command(BaseCommand):
                 self.stdout.write(
                     self.style.ERROR(f'  ❌ {name} - Error: {e}')
                 )
+        
+        # Summary
+        self.stdout.write(f'\n📊 Meta Tags Summary: {passed_pages}/{total_pages} pages passed ({(passed_pages/total_pages)*100:.1f}%)')
     def validate_specific_pages(self, pages: List[str]):
         """Validate specific pages by URL path."""
         self.stdout.write(

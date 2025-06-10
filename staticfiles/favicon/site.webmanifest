@@ -3,8 +3,8 @@
     "short_name": "ridwaanhall",
     "start_url": "/",
     "display": "standalone",
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff",
+    "theme_color": "#000000",
+    "background_color": "#000000",
     "icons": [
         {
             "src": "https://ridwaanhall.com/static/favicon/android-chrome-192x192.png",

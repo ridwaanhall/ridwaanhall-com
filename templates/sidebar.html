@@ -330,7 +330,7 @@
                     <ul class="space-y-1" id="search-results">
                         <!-- Home -->
                         <li class="search-item" data-name="home" data-url="{% url 'home' %}">
-                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-[#ffffff14] {% if request.resolver_match.url_name == 'home' %}bg-zinc-700/60 text-white{% endif %}">
+                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name == 'home' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}">
                                 <div class="flex items-center gap-5">
                                     <div class="transition-all duration-300 group-hover:-rotate-12 {% if request.resolver_match.url_name == 'home' %}-rotate-12{% endif %}">
                                         <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -350,7 +350,7 @@
                         
                         <!-- Dashboard -->
                         <li class="search-item" data-name="dashboard" data-url="{% url 'dashboard' %}">
-                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-[#ffffff14] {% if request.resolver_match.url_name == 'dashboard' %}bg-zinc-700/60 text-white{% endif %}">
+                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name == 'dashboard' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}">
                                 <div class="flex items-center gap-5">
                                     <div class="transition-all duration-300 group-hover:-rotate-12 {% if request.resolver_match.url_name == 'dashboard' %}-rotate-12{% endif %}">
                                         <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -378,7 +378,7 @@
                         
                         <!-- Projects -->
                         <li class="search-item" data-name="projects" data-url="{% url 'projects' %}">
-                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-[#ffffff14] {% if request.resolver_match.url_name in 'projects projects_detail' %}bg-zinc-700/60 text-white{% endif %}">
+                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name in 'projects projects_detail' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}">
                                 <div class="flex items-center gap-5">
                                     <div class="transition-all duration-300 group-hover:-rotate-12 {% if request.resolver_match.url_name in 'projects projects_detail' %}-rotate-12{% endif %}">
                                         <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -401,7 +401,7 @@
                         
                         <!-- Blog -->
                         <li class="search-item" data-name="blog" data-url="{% url 'blog' %}">
-                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-[#ffffff14] {% if request.resolver_match.url_name in 'blog blog_detail' %}bg-zinc-700/60 text-white{% endif %}">
+                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name in 'blog blog_detail' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}">
                                 <div class="flex items-center gap-5">
                                     <div class="transition-all duration-300 group-hover:-rotate-12 {% if request.resolver_match.url_name in 'blog blog_detail' %}-rotate-12{% endif %}">
                                         <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -422,7 +422,7 @@
                         
                         <!-- About -->
                         <li class="search-item" data-name="about" data-url="{% url 'about' %}">
-                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-[#ffffff14] {% if request.resolver_match.url_name == 'about' %}bg-zinc-700/60 text-white{% endif %}">
+                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name == 'about' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}">
                                 <div class="flex items-center gap-5">
                                     <div class="transition-all duration-300 group-hover:-rotate-12 {% if request.resolver_match.url_name == 'about' %}-rotate-12{% endif %}">
                                         <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -442,7 +442,7 @@
                         
                         <!-- Contact -->
                         <li class="search-item" data-name="contact" data-url="{% url 'contact' %}">
-                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-[#ffffff14] {% if request.resolver_match.url_name == 'contact' %}bg-zinc-700/60 text-white{% endif %}">
+                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name == 'contact' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}">
                                 <div class="flex items-center gap-5">
                                     <div class="transition-all duration-300 group-hover:-rotate-12 {% if request.resolver_match.url_name == 'contact' %}-rotate-12{% endif %}">
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -469,7 +469,7 @@
                     <ul class="space-y-1">
                         <!-- Email -->
                         <li class="social-item" data-name="email" data-url="{{ about.social_media.email }}">
-                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-[#ffffff14]">
+                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-zinc-800">
                                 <div class="flex items-center gap-5">
                                     <div class="transition-all duration-300 group-hover:-rotate-12">
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -485,7 +485,7 @@
                         
                         <!-- LinkedIn -->
                         <li class="social-item" data-name="linkedin" data-url="{{ about.social_media.linkedin }}">
-                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-[#ffffff14]">
+                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-zinc-800">
                                 <div class="flex items-center gap-5">
                                     <div class="transition-all duration-300 group-hover:-rotate-12">
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -500,7 +500,7 @@
                         
                         <!-- X (Twitter) -->
                         <li class="social-item" data-name="x twitter" data-url="{{ about.social_media.x }}">
-                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-[#ffffff14]">
+                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-zinc-800">
                                 <div class="flex items-center gap-5">
                                     <div class="transition-all duration-300 group-hover:-rotate-12">
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -515,7 +515,7 @@
                         
                         <!-- Instagram -->
                         <li class="social-item" data-name="instagram" data-url="{{ about.social_media.instagram }}">
-                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-[#ffffff14]">
+                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-zinc-800">
                                 <div class="flex items-center gap-5">
                                     <div class="transition-all duration-300 group-hover:-rotate-12">
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -530,7 +530,7 @@
                         
                         <!-- GitHub -->
                         <li class="social-item" data-name="github" data-url="{{ about.social_media.github }}">
-                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-[#ffffff14]">
+                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-zinc-800">
                                 <div class="flex items-center gap-5">
                                     <div class="transition-all duration-300 group-hover:-rotate-12">
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg">

@@ -1,0 +1,37 @@
+.search-item.highlighted .group,
+.social-item.highlighted .group {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.shadow-3xl {
+    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Custom scrollbar for search modal */
+#search-modal .overflow-y-auto {
+    scrollbar-width: thin;
+    scrollbar-color: #3f3f46 #18181b;
+}
+
+#search-modal .overflow-y-auto::-webkit-scrollbar {
+    width: 8px;
+}
+
+#search-modal .overflow-y-auto::-webkit-scrollbar-track {
+    background: #18181b;
+    border-radius: 4px;
+}
+
+#search-modal .overflow-y-auto::-webkit-scrollbar-thumb {
+    background: #3f3f46;
+    border-radius: 4px;
+    border: 1px solid #27272a;
+}
+
+#search-modal .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: #52525b;
+}
+
+#search-modal .overflow-y-auto::-webkit-scrollbar-corner {
+    background: #18181b;
+}

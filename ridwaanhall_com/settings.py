@@ -1,6 +1,9 @@
 """
 Django settings for ridwaanhall_com project.
 Contains security configurations and environment-specific settings.
+
+Author: Ridwan Halim (ridwaanhall.com)
+License: Apache License 2.0
 """
 
 from pathlib import Path

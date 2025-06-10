@@ -22,8 +22,9 @@
         
         <nav class="px-3 flex-grow">
             <a {% if request.resolver_match.url_name != 'home' %}href="{% url 'home' %}"{% else %}role="button"{% endif %} class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'home' %}bg-zinc-800{% else %} hover:bg-zinc-800{% endif %}" tabindex="-1">
-                <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 {% if request.resolver_match.url_name == 'home' %}animate-pulse{% else %}text-zinc-400{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 {% if request.resolver_match.url_name == 'home' %}text-white animate-pulse{% else %}text-zinc-400{% endif %}" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 3h16a2 2 0 0 1 2 2v6a10 10 0 0 1-10 10A10 10 0 0 1 2 11V5a2 2 0 0 1 2-2z"></path>
+                    <polyline points="8 10 12 14 16 10"></polyline>
                 </svg>
                 <span class="ml-3 font-medium">Home</span>
 
@@ -148,8 +149,9 @@
     
     <nav class="px-3 flex-grow">
         <a {% if request.resolver_match.url_name != 'home' %}href="{% url 'home' %}"{% else %}role="button"{% endif %} class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'home' %} bg-zinc-800 {% else %} hover:bg-zinc-800 {% endif %}">
-            <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 text-zinc-400 {% if request.resolver_match.url_name == 'home' %} animate-pulse {% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 text-zinc-400 {% if request.resolver_match.url_name == 'home' %} animate-pulse {% endif %}" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 3h16a2 2 0 0 1 2 2v6a10 10 0 0 1-10 10A10 10 0 0 1 2 11V5a2 2 0 0 1 2-2z"></path>
+                <polyline points="8 10 12 14 16 10"></polyline>
             </svg>
     
             <span class="ml-3 font-medium">Home</span>

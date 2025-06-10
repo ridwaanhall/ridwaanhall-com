@@ -60,8 +60,12 @@
                 {% endif %}
             </a>
             <a {% if request.resolver_match.url_name != 'projects' %}href="{% url 'projects' %}"{% else %}role="button"{% endif %} class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name in 'projects projects_detail' %}bg-zinc-800{% else %} hover:bg-zinc-800{% endif %}" tabindex="-1">
-                <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 {% if request.resolver_match.url_name in 'projects projects_detail' %}animate-pulse{% else %}text-zinc-400{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 {% if request.resolver_match.url_name in 'projects projects_detail' %}text-white animate-pulse{% else %}text-zinc-400{% endif %}" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                    <line x1="6" y1="1" x2="6" y2="4"></line>
+                    <line x1="10" y1="1" x2="10" y2="4"></line>
+                    <line x1="14" y1="1" x2="14" y2="4"></line>
                 </svg>
                 <span class="ml-3 font-medium">Projects</span>
                 
@@ -74,8 +78,10 @@
                 {% endif %}
             </a>
             <a {% if request.resolver_match.url_name != 'blog' %}href="{% url 'blog' %}"{% else %}role="button"{% endif %} class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name in 'blog blog_detail' %}bg-zinc-800{% else %} hover:bg-zinc-800{% endif %}" tabindex="-1">
-                <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 {% if request.resolver_match.url_name in 'blog blog_detail' %}animate-pulse{% else %}text-zinc-400{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 {% if request.resolver_match.url_name in 'blog blog_detail' %}text-white animate-pulse{% else %}text-zinc-400{% endif %}" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 11a9 9 0 0 1 9 9"></path>
+                    <path d="M4 4a16 16 0 0 1 16 16"></path>
+                    <circle cx="5" cy="19" r="1"></circle>
                 </svg>
                 <span class="ml-3 font-medium">Blog</span>
                 
@@ -102,8 +108,10 @@
                 {% endif %}
             </a>
             <a {% if request.resolver_match.url_name != 'contact' %}href="{% url 'contact' %}"{% else %}role="button"{% endif %} class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'contact' %}bg-zinc-800{% else %} hover:bg-zinc-800{% endif %}" tabindex="-1">
-                <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 {% if request.resolver_match.url_name == 'contact' %}animate-pulse{% else %}text-zinc-400{% endif %}" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20.56,3.34a1,1,0,0,0-1-.08l-17,8a1,1,0,0,0-.57.92,1,1,0,0,0,.6.9L8,15.45v6.72L13.84,18l4.76,2.08a.93.93,0,0,0,.4.09,1,1,0,0,0,.52-.15,1,1,0,0,0,.48-.79l1-15A1,1,0,0,0,20.56,3.34ZM18.1,17.68l-5.27-2.31L16,9.17,8.35,13.42,5.42,12.13,18.89,5.79Z"></path>
+                <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 {% if request.resolver_match.url_name == 'contact' %}text-white animate-pulse{% else %}text-zinc-400{% endif %}" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.92 2.38A15.72 15.72 0 0 0 17.5 2a8.26 8.26 0 0 0-6 2.06Q9.89 5.67 8.31 7.27c-1.21-.13-4.08-.2-6 1.74a1 1 0 0 0 0 1.41l11.3 11.32a1 1 0 0 0 1.41 0c1.95-2 1.89-4.82 1.77-6l3.21-3.2c3.19-3.19 1.74-9.18 1.68-9.43a1 1 0 0 0-.76-.73zm-2.36 8.75L15 14.67a1 1 0 0 0-.27.9 6.81 6.81 0 0 1-.54 3.94L4.52 9.82a6.67 6.67 0 0 1 4-.5A1 1 0 0 0 9.39 9s1.4-1.45 3.51-3.56A6.61 6.61 0 0 1 17.5 4a14.51 14.51 0 0 1 2.33.2c.24 1.43.62 5.04-1.27 6.93z"></path>
+                    <circle cx="15.73" cy="8.3" r="2"></circle>
+                    <path d="M5 16c-2 1-2 5-2 5a7.81 7.81 0 0 0 5-2z"></path>
                 </svg>
                 <span class="ml-3 font-medium">Contact</span>
 
@@ -189,10 +197,13 @@
             </span>
             {% endif %}
         </a>
-
         <a {% if request.resolver_match.url_name != 'projects' %}href="{% url 'projects' %}"{% else %}role="button"{% endif %} class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name in 'projects projects_detail' %} bg-zinc-800 {% else %} hover:bg-zinc-800 {% endif %}">
-            <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 text-zinc-400 {% if request.resolver_match.url_name in 'projects projects_detail' %} animate-pulse {% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+            <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 text-zinc-400 {% if request.resolver_match.url_name in 'projects projects_detail' %} animate-pulse {% endif %}" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                <line x1="6" y1="1" x2="6" y2="4"></line>
+                <line x1="10" y1="1" x2="10" y2="4"></line>
+                <line x1="14" y1="1" x2="14" y2="4"></line>
             </svg>
     
             <span class="ml-3 font-medium">Projects</span>
@@ -205,10 +216,11 @@
             </span>
             {% endif %}
         </a>
-
         <a {% if request.resolver_match.url_name != 'blog' %}href="{% url 'blog' %}"{% else %}role="button"{% endif %} class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name in 'blog blog_detail' %} bg-zinc-800 {% else %} hover:bg-zinc-800 {% endif %}">
-            <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 text-zinc-400 {% if request.resolver_match.url_name in 'blog blog_detail' %} animate-pulse {% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+            <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 text-zinc-400 {% if request.resolver_match.url_name in 'blog blog_detail' %} animate-pulse {% endif %}" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 11a9 9 0 0 1 9 9"></path>
+                <path d="M4 4a16 16 0 0 1 16 16"></path>
+                <circle cx="5" cy="19" r="1"></circle>
             </svg>
     
             <span class="ml-3 font-medium">Blog</span>
@@ -237,12 +249,11 @@
             </span>
             {% endif %}
         </a>
-        
         <a {% if request.resolver_match.url_name != 'contact' %}href="{% url 'contact' %}"{% else %}role="button"{% endif %} class="flex group items-center px-3 py-2.5 mb-1 rounded-lg {% if request.resolver_match.url_name == 'contact' %} bg-zinc-800 {% else %} hover:bg-zinc-800 {% endif %}">
-            <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 text-zinc-400 {% if request.resolver_match.url_name == 'contact' %} animate-pulse {% endif %}" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M20.56,3.34a1,1,0,0,0-1-.08l-17,8a1,1,0,0,0-.57.92,1,1,0,0,0,.6.9L8,15.45v6.72L13.84,18l4.76,2.08a.93.93,0,0,0,.4.09,1,1,0,0,0,.52-.15,1,1,0,0,0,.48-.79l1-15A1,1,0,0,0,20.56,3.34ZM18.1,17.68l-5.27-2.31L16,9.17,8.35,13.42,5.42,12.13,18.89,5.79Z"
-                ></path>
+            <svg class="w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12 text-zinc-400 {% if request.resolver_match.url_name == 'contact' %} animate-pulse {% endif %}" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20.92 2.38A15.72 15.72 0 0 0 17.5 2a8.26 8.26 0 0 0-6 2.06Q9.89 5.67 8.31 7.27c-1.21-.13-4.08-.2-6 1.74a1 1 0 0 0 0 1.41l11.3 11.32a1 1 0 0 0 1.41 0c1.95-2 1.89-4.82 1.77-6l3.21-3.2c3.19-3.19 1.74-9.18 1.68-9.43a1 1 0 0 0-.76-.73zm-2.36 8.75L15 14.67a1 1 0 0 0-.27.9 6.81 6.81 0 0 1-.54 3.94L4.52 9.82a6.67 6.67 0 0 1 4-.5A1 1 0 0 0 9.39 9s1.4-1.45 3.51-3.56A6.61 6.61 0 0 1 17.5 4a14.51 14.51 0 0 1 2.33.2c.24 1.43.62 5.04-1.27 6.93z"></path>
+                <circle cx="15.73" cy="8.3" r="2"></circle>
+                <path d="M5 16c-2 1-2 5-2 5a7.81 7.81 0 0 0 5-2z"></path>
             </svg>
     
             <span class="ml-3 font-medium">Contact</span>

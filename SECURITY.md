@@ -15,7 +15,7 @@ This project supports the following versions of dependencies as specified in `re
 | idna                      | 3.10     |
 | packaging                 | 25.0     |
 | python-decouple           | 3.8      |
-| requests                  | 2.32.3   |
+| requests                  | 2.32.4   |
 | sqlparse                  | 0.5.3    |
 | tzdata                    | 2025.1   |
 | urllib3                   | 2.3.0    |

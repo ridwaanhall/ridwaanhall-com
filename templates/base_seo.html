@@ -11,11 +11,20 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="creation-date" content="2025-03-16">
         {% load static %}
-        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}">
+
+        <!-- Essential favicons (not all from manifest) -->
+        <link rel="icon" href="{% static 'favicon/favicon.ico' %}">
         <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
         <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
-        <link rel="icon" href="{% static 'favicon/favicon.ico' %}">
+        
+        <!-- Apple touch icon -->
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}">
+
+        <!-- Link to the web manifest -->
         <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}" type="application/manifest+json">
+
+        <!-- Theme color for browsers -->
+        <meta name="theme-color" content="#000000">
 
         <!-- SEO Meta Tags -->
         {% if seo %}

@@ -90,7 +90,7 @@ class SEOData:
         }
     
     @staticmethod
-    def get_blog_list_seo(about_data: Dict, blogs: List[Dict] = None) -> Dict:
+    def get_blog_list_seo(about_data: Dict, blogs: Optional[List[Dict]] = None) -> Dict:
         """Generate SEO data for blog listing page."""
         # Extract topics from recent blogs
         topic_keywords = []
@@ -137,7 +137,7 @@ class SEOData:
         }
     
     @staticmethod
-    def get_projects_list_seo(about_data: Dict, projects: List[Dict] = None) -> Dict:
+    def get_projects_list_seo(about_data: Dict, projects: Optional[List[Dict]] = None) -> Dict:
         """Generate SEO data for projects listing page."""
         # Extract tech stack from featured projects
         tech_keywords = []

@@ -24,6 +24,8 @@ class UpdatedAtData:
             try:
                 # Load the module dynamically
                 spec = importlib.util.spec_from_file_location("temp_module", file_path)
+                if spec is None or spec.loader is None:
+                    continue
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
                 

@@ -42,45 +42,46 @@ class StaticPagesSitemap(Sitemap):
 
         return static_pages + blog_page_items + project_page_items
 
-    def location(self, item):
+    def location(self, obj):
         """Generate URLs for static pages."""
-        if item.startswith('blog-page-'):
-            page = int(item.split('-')[-1])
+        obj_str = str(obj)
+        if obj_str.startswith('blog-page-'):
+            page = int(obj_str.split('-')[-1])
             return reverse('blog') if page == 1 else f"{reverse('blog')}?page={page}"
 
-        if item.startswith('projects-page-'):
-            page = int(item.split('-')[-1])
+        if obj_str.startswith('projects-page-'):
+            page = int(obj_str.split('-')[-1])
             return reverse('projects') if page == 1 else f"{reverse('projects')}?page={page}"
 
-        return reverse(item)
+        return reverse(obj_str)
 
-    def changefreq(self, item):
+    def changefreq(self, obj):
         """Set change frequency based on page type."""
-        if item == 'dashboard':
+        if obj == 'dashboard':
             return 'daily'
-        elif item in ['about', 'contact', 'privacy'] or item.startswith('projects-page-'):
+        elif obj in ['about', 'contact', 'privacy'] or obj.startswith('projects-page-'):
             return 'monthly'
         return 'weekly'
 
-    def priority(self, item):
+    def priority(self, obj):
         """Set priority based on page importance."""
-        if item in ['home', 'dashboard', 'about', 'contact']:
+        if obj in ['home', 'dashboard', 'about', 'contact']:
             return 1.0
-        elif item.startswith(('blog-page-', 'projects-page-')):
-            page = int(item.split('-')[-1])
+        elif obj.startswith(('blog-page-', 'projects-page-')):
+            page = int(obj.split('-')[-1])
             return 1.0 if page == 1 else 0.9
         return 0.9
-    
-    def lastmod(self, item):
+
+    def lastmod(self, obj):
         """Get last modification date from updated_at data."""
         # Handle paginated blog pages - use blog data
-        if item.startswith('blog-page-'):
+        if obj.startswith('blog-page-'):
             base_item = 'blog'
         # Handle paginated project pages - use projects data  
-        elif item.startswith('projects-page-'):
+        elif obj.startswith('projects-page-'):
             base_item = 'projects'
         else:
-            base_item = item
+            base_item = obj
             
         if base_item in self.updated_at_map and self.updated_at_map[base_item]:
             try:
@@ -105,7 +106,7 @@ class BlogSitemap(Sitemap):
     
     def priority(self, obj):
         """Higher priority for featured blogs."""
-        return 0.9 if obj.get('is_featured') else 0.8
+        return 0.9 if getattr(obj, 'is_featured', False) else 0.8
 
     def items(self):
         """Get all blog posts."""
@@ -113,12 +114,14 @@ class BlogSitemap(Sitemap):
 
     def location(self, obj):
         """Generate blog detail URLs."""
-        return reverse('blog_detail', kwargs={'title': slugify(obj['title'])})
+        title = obj.get('title') if isinstance(obj, dict) else getattr(obj, 'title', '')
+        title = title or ''  # Ensure title is never None
+        return reverse('blog_detail', kwargs={'title': slugify(title)})
     
     def lastmod(self, obj):
         """Get last modification date."""
-        if 'updated_at' in obj and obj['updated_at']:
-            return obj['updated_at']
+        if hasattr(obj, 'updated_at') and obj.updated_at:
+            return obj.updated_at
         return timezone.now()
 
 
@@ -131,7 +134,7 @@ class ProjectSitemap(Sitemap):
     
     def priority(self, obj):
         """Higher priority for featured projects."""
-        return 0.9 if obj.get('is_featured') else 0.8
+        return 0.9 if getattr(obj, 'is_featured', False) else 0.8
 
     def items(self):
         """Get all projects."""
@@ -139,7 +142,9 @@ class ProjectSitemap(Sitemap):
 
     def location(self, obj):
         """Generate project detail URLs."""
-        return reverse('projects_detail', kwargs={'title': slugify(obj['title'])})
+        title = obj.get('title') if isinstance(obj, dict) else getattr(obj, 'title', '')
+        title = title or ''  # Ensure title is never None
+        return reverse('projects_detail', kwargs={'title': slugify(title)})
     
     def lastmod(self, obj):
         """Get last modification date."""

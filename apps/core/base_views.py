@@ -4,11 +4,11 @@ This module contains shared error handling, context generation, and utility meth
 """
 
 import logging
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Union
 from django.views.generic import TemplateView
 from django.shortcuts import render
 from django.core.exceptions import SuspiciousOperation
-from django.http import Http404
+from django.http import Http404, HttpResponse
 
 from apps.data.about.about_data import AboutData
 
@@ -38,9 +38,9 @@ class BaseView(TemplateView):
             'about': self.get_about_data()
         }
     
-    def render_error(self, request, status_code: int, message: Optional[str] = None) -> render:
+    def render_error(self, request, status_code: int, message: Optional[str] = None) -> HttpResponse:
         """Render error page with consistent formatting."""
-        context = {'error_code': status_code}
+        context: Dict[str, Union[int, str]] = {'error_code': status_code}
         if message:
             context['error_message'] = message
         return render(request, 'error.html', context, status=status_code)

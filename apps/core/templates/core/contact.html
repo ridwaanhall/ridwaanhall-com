@@ -25,7 +25,21 @@
                         </svg>
                         Availability
                     </h2>
+
+                    <!-- Current Time Section -->
                     <div class="border border-zinc-700 rounded-lg p-3 sm:p-4">
+                        <h3 class="font-medium mb-2 flex items-center">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Jakarta Time
+                        </h3>
+                        <div class="text-base sm:text-xl text-indigo-300 font-mono text-center">
+                            <span id="current-time"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 sm:mt-5 border border-zinc-700 rounded-lg p-3 sm:p-4">
                         <div class="space-y-3 sm:space-y-4">
                             <div class="flex justify-between items-center flex-wrap gap-2">
                                 <span>Monday - Friday</span>
@@ -49,19 +63,6 @@
                             </p>
                         </div>
                     </div>
-                    
-                    <!-- Current Time Section -->
-                    <div class="mt-4 sm:mt-5 border border-zinc-700 rounded-lg p-3 sm:p-4">
-                        <h3 class="font-medium mb-2 flex items-center">
-                            <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            Jakarta Time
-                        </h3>
-                        <div class="text-base sm:text-xl text-indigo-300 font-mono text-center">
-                            <span id="current-time"></span>
-                        </div>
-                    </div>
                 </div>
                 
                 <div class="lg:col-span-7 order-1 lg:order-2">
@@ -80,7 +81,7 @@
                     </div>
                     {% endif %}
                     
-                    <div class="flex items-center gap-4 border border-zinc-700/80 bg-zinc-800/40 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-zinc-600/80 transition-all duration-300">
+                    <div class="flex items-center gap-4 border border-zinc-700/80 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-zinc-600/80 transition-all duration-300">
                         <div class="p-3 bg-indigo-500/10 rounded-full flex-shrink-0">
                             <svg class="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
@@ -88,7 +89,7 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="font-medium text-lg">{{ about.location.residency }}, {{ about.location.province }}, {{ about.location.country }}</p>
+                            <p class="font-medium">{{ about.location.residency }}, {{ about.location.province }}, {{ about.location.country }}</p>
                         </div>
                     </div>
                 </div>

@@ -112,7 +112,6 @@ class UpdatedAtData:
             if dt and (home_latest_dt is None or dt > home_latest_dt):
                 home_latest_dt = dt
                 home_formatted = formatted
-        
         return [
             {
                 "page": "home",
@@ -144,5 +143,11 @@ class UpdatedAtData:
             {
                 "page": "contact",
                 "updated_at": about_formatted,
+            },
+            {
+                "page": "privacy",
+                "updated_at": UpdatedAtData.get_latest_modified_date([
+                    "apps/data/privacy/privacy_data.py",
+                ]) or about_formatted,
             },
         ]

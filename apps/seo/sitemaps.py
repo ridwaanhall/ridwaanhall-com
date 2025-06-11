@@ -70,18 +70,30 @@ class StaticPagesSitemap(Sitemap):
             page = int(item.split('-')[-1])
             return 1.0 if page == 1 else 0.9
         return 0.9
-
+    
     def lastmod(self, item):
         """Get last modification date from updated_at data."""
-        if item in self.updated_at_map and self.updated_at_map[item]:
+        # Handle paginated blog pages - use blog data
+        if item.startswith('blog-page-'):
+            base_item = 'blog'
+        # Handle paginated project pages - use projects data  
+        elif item.startswith('projects-page-'):
+            base_item = 'projects'
+        else:
+            base_item = item
+            
+        if base_item in self.updated_at_map and self.updated_at_map[base_item]:
             try:
                 return timezone.datetime.strptime(
-                    self.updated_at_map[item], 
+                    self.updated_at_map[base_item], 
                     '%Y-%m-%d %H:%M:%S%z'
                 )
             except ValueError:
-                return timezone.now()
-        return timezone.now()
+                pass
+        
+        # Final fallback to a reasonable default date instead of today
+        # This should rarely be hit now that we handle all cases properly
+        return timezone.datetime(2024, 1, 1, tzinfo=timezone.get_current_timezone())
 
 
 class BlogSitemap(Sitemap):

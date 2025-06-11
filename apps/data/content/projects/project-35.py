@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: ridwaanhall.me
 project_data = {
@@ -16,7 +17,14 @@ project_data = {
     "img_name": "ridwaanhall_me.webp",
     "is_featured": False,
     "features": [{'title': 'Once UI', 'description': 'Sleek design system for fire components.'}, {'title': 'SEO Boost', 'description': 'Auto-generated meta for max search visibility.'}, {'title': 'Responsive Layout', 'description': 'Flawless on any screen size.'}, {'title': 'Customizable', 'description': 'Tweak everything with data attributes.'}, {'title': 'Multilingual', 'description': 'Ready for global audiences with next-intl.'}],
-    "tech_stack": [{'name': 'Next.js', 'description': 'React framework for production-ready web applications', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg'}, {'name': 'Once UI', 'description': 'Design system for building modern, polished web apps', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg'}, {'name': 'TypeScript', 'description': 'Typed superset of JavaScript for better development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg'}, {'name': 'SCSS', 'description': 'Supercharged CSS with variables and nesting for style', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sass/sass-original.svg'}, {'name': 'MDX', 'description': 'Mixes Markdown with JSX for dynamic docs', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/markdown/markdown-original.svg'}, {'name': 'JavaScript', 'description': 'Dynamic programming language for interactive web experiences', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["nextjs"],
+        SkillsData.tech_stack["once_ui"],
+        SkillsData.tech_stack["typescript"],
+        SkillsData.tech_stack["scss"],
+        SkillsData.tech_stack["mdx"],
+        SkillsData.tech_stack["javascript"]
+    ],
     "github_url": "https://github.com/ridwaanhall/ridwaanhall.me",
     "demo_url": "",
     "status": "completed",

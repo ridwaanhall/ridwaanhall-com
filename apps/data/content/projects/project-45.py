@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Indonesia’s Gold Trends by AI
 project_data = {
@@ -16,7 +17,13 @@ project_data = {
     "img_name": "indonesia_gold_price_prediction.webp",
     "is_featured": False,
     "features": [{'title': 'Deep Learning Drip', 'description': 'LSTM neural nets bringin’ that A-game for predictions across all timeframes.'}, {'title': 'Visuals Poppin’', 'description': 'Dynamic plots make price forecasts look clean and easy to roll with.'}, {'title': 'Full-Range Forecast', 'description': 'From next-day vibes to 5-year plans, it’s got trends covered with style.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'PyTorch', 'description': 'Deep learning framework with dynamic computation graphs', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg'}, {'name': 'NumPy', 'description': 'Fundamental package for scientific computing in Python', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg'}, {'name': 'Matplotlib', 'description': 'Comprehensive library for creating visualizations in Python', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/matplotlib/matplotlib-original.svg'}, {'name': 'Seaborn', 'description': 'Statistical data visualization library based on Matplotlib', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["pytorch"],
+        SkillsData.tech_stack["numpy"],
+        SkillsData.tech_stack["matplotlib"],
+        SkillsData.tech_stack["seaborn"]
+    ],
     "github_url": "https://github.com/ridwaanhall/indonesia-gold-price-prediction",
     "demo_url": "",
     "status": "completed",

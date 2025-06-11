@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: BMKG Weather Pro
 project_data = {
@@ -16,7 +17,10 @@ project_data = {
     "img_name": "bmkg_weather_forecast_api.webp",
     "is_featured": False,
     "features": [{'title': 'Nationwide Reach', 'description': 'Covers weather data for every corner of Indonesia.'}, {'title': 'Flexi-Filters', 'description': 'Mix and match area, parameter, and time for custom results.'}, {'title': 'Flask Flow', 'description': 'Smooth routing and fast data handling with Flask.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight and flexible Python web framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["flask"]
+    ],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: TikTok Profile Digger
 project_data = {
@@ -16,7 +17,10 @@ project_data = {
     "img_name": "tiktok_data_extractor.webp",
     "is_featured": False,
     "features": [{'title': 'Ultimate Data Grab', 'description': 'Snatches username, bio, followers, following, and likes in one swoop.'}, {'title': 'BeautifulSoup Magic', 'description': 'Parses TikTok’s HTML like a boss with BeautifulSoup.'}, {'title': 'Curiosity Crusher', 'description': 'Ideal for research, insights, or just feeding your TikTok obsession.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'BeautifulSoup', 'description': 'Web scraping made easy with Python', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["beautifulsoup"]
+    ],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

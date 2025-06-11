@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Indonesia Route Optimizer
 project_data = {
@@ -16,7 +17,10 @@ project_data = {
     "img_name": "default_project_image.webp",
     "is_featured": False,
     "features": [{'title': 'Real-World Mapping', 'description': 'Optimizes routes using Indonesia’s actual geography.'}, {'title': 'Visual Progress', 'description': 'Watch the algorithm work with clear visualizations.'}, {'title': 'Tuning Mastery', 'description': 'Fine-tune parameters for peak optimization results.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'ACO', 'description': 'Ant Colony Optimization for solving computational problems', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/algorithm/algorithm-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["aco"]
+    ],
     "github_url": "https://github.com/ridwaanhall/aco-algorithm",
     "demo_url": "",
     "status": "completed",

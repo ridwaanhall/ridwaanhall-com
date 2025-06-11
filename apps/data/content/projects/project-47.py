@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Neural Network from Scratch
 project_data = {
@@ -25,7 +26,11 @@ project_data = {
     "img_name": "neural_network_scratch.webp",
     "is_featured": True,
     "features": [{'title': 'Pure NumPy Implementation', 'description': 'No TensorFlow or PyTorch, just optimized NumPy operations.'}, {'title': 'High Accuracy', 'description': 'Achieves 98.06% test accuracy on MNIST dataset.'}, {'title': 'Comprehensive CLI', 'description': '20+ configurable parameters for training and optimization.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'NumPy', 'description': 'Fundamental package for scientific computing in Python', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg'}, {'name': 'Matplotlib', 'description': 'Comprehensive library for creating visualizations in Python', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/matplotlib/matplotlib-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["numpy"],
+        SkillsData.tech_stack["matplotlib"]
+    ],
     "github_url": "https://github.com/ridwaanhall/Neural-Network-from-Scratch",
     "demo_url": "",
     "status": "completed",

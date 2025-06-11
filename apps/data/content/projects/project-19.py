@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: CRM Lite | User Management
 project_data = {
@@ -16,7 +17,10 @@ project_data = {
     "img_name": "crm_simple_user_management.webp",
     "is_featured": False,
     "features": [{'title': 'CRUD Mastery', 'description': 'Add, view, edit, or delete records with ease.'}, {'title': 'Secure Access', 'description': 'Rock-solid registration and login flows.'}, {'title': 'Slick Dashboard', 'description': 'Intuitive tools for quick sorting and access.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'High-level Python web framework for rapid development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["django"]
+    ],
     "github_url": "https://github.com/ridwaanhall/CRUD-mastery-with-Django",
     "demo_url": "",
     "status": "completed",

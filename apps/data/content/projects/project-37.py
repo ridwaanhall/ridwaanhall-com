@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Insta Follow Analyzer
 project_data = {
@@ -16,7 +17,11 @@ project_data = {
     "img_name": "instagram_following_followers.webp",
     "is_featured": False,
     "features": [{'title': 'Follower Breakdown', 'description': 'Lists mutuals and one-sided followers.'}, {'title': 'Following Insights', 'description': 'Tracks who you follow without reciprocation.'}, {'title': 'JSON Support', 'description': 'Handles Instagram data like a pro.'}],
-    "tech_stack": [{'name': 'Bulma', 'description': 'Modern CSS framework based on Flexbox', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bulma/bulma-plain.svg'}, {'name': 'Django', 'description': 'High-level Python web framework for rapid development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}, {'name': 'Whitenoise', 'description': 'Serves Django static files like a charm', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["bulma"],
+        SkillsData.tech_stack["django"],
+        SkillsData.tech_stack["whitenoise"]
+    ],
     "github_url": "https://github.com/ridwaanhall/instagram-following-followers",
     "demo_url": "https://igstats.ridwaanhall.com",
     "status": "completed",

@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Tsunami & Quake Dashboard
 project_data = {
@@ -16,7 +17,16 @@ project_data = {
     "img_name": "inatews_dashboard.webp",
     "is_featured": False,
     "features": [{'title': 'Live Quake Data', 'description': 'Get historical and real-time earthquake info from BMKG.'}, {'title': 'Tsunami Heads-Up', 'description': 'Stay alert with live tsunami warnings across Indonesia.'}, {'title': 'Visual Feast', 'description': 'Interactive maps, shakemaps, and charts for epic insights.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight and flexible Python web framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}, {'name': 'Bootstrap', 'description': 'Popular CSS framework for responsive design', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg'}, {'name': 'Leaflet', 'description': 'Interactive maps for web apps, easy to use and customize', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg'}, {'name': 'Chart.js', 'description': 'Simple yet flexible JavaScript charts for data visualization', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg'}, {'name': 'DataTables', 'description': 'Enhances HTML tables with sorting, searching, and pagination', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg'}, {'name': 'Google Maps', 'description': 'Brings maps and location data to your web apps', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg'}, {'name': 'OpenStreetMap', 'description': 'Free, editable map of the world, perfect for web apps', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["flask"],
+        SkillsData.tech_stack["bootstrap"],
+        SkillsData.tech_stack["leaflet"],
+        SkillsData.tech_stack["chartjs"],
+        SkillsData.tech_stack["datatables"],
+        SkillsData.tech_stack["google_maps"],
+        SkillsData.tech_stack["openstreetmap"]
+    ],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

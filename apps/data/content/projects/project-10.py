@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: ChatBot Bridge for Telegram & WhatsApp
 project_data = {
@@ -16,7 +17,11 @@ project_data = {
     "img_name": "chatbot_gateway.webp",
     "is_featured": False,
     "features": [{'title': 'Flask Flow', 'description': 'Routes messages like a boss for seamless bot chats.'}, {'title': 'App-Agnostic', 'description': 'Works like a charm on Telegram and WhatsApp.'}, {'title': 'OpenAI Smarts', 'description': 'Drops AI-powered replies for sharper convos.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight and flexible Python web framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}, {'name': 'OpenAI API', 'description': 'Integrate AI capabilities into your apps with ease', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/openai/openai-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["flask"],
+        SkillsData.tech_stack["openai_api"]
+    ],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: NGL Link Spam
 project_data = {
@@ -16,7 +17,9 @@ project_data = {
     "img_name": "ngl_link_spamming.webp",
     "is_featured": False,
     "features": [{'title': 'Custom Messages', 'description': 'Drop your own texts with zero hassle.'}, {'title': 'Random Texts', 'description': 'Generate quirky messages for kicks.'}, {'title': 'No Login', 'description': 'Jump straight to messaging, no sign-up needed.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"]
+    ],
     "github_url": "https://github.com/ridwaanhall/ngl-link-spamming",
     "demo_url": "",
     "status": "completed",

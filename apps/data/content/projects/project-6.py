@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: MLBB Stats & Winrate API
 project_data = {
@@ -16,7 +17,10 @@ project_data = {
     "img_name": "mlbb_game_stats_api.webp",
     "is_featured": False,
     "features": [{'title': 'Username Grabber', 'description': 'Scoop up player usernames fast via mainlagiaja.com’s API.'}, {'title': 'MPL Stats Connect', 'description': 'Dives into id-mpl.com for juicy stats and insights.'}, {'title': 'Winrate Wizard', 'description': 'Cranks out accurate winrates using takapadia.com data.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight and flexible Python web framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["flask"]
+    ],
     "github_url": "",
     "demo_url": "https://mlbb-api.ridwaanhall.repl.co",
     "status": "completed",

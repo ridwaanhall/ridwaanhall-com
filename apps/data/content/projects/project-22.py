@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Emotion Detector CNN
 project_data = {
@@ -16,7 +17,12 @@ project_data = {
     "img_name": "emotion_recognition_timm_cnn.webp",
     "is_featured": False,
     "features": [{'title': 'TIMM Model Swagger', 'description': 'High-performance pretrained models for reliable emotion detection.'}, {'title': 'Augmentation All-Stars', 'description': 'CutMix, MixUp, and more spice up data for better results.'}, {'title': 'Training Smarts', 'description': 'Optimized splits for max accuracy and generalization.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'PyTorch', 'description': 'Deep learning framework with dynamic computation graphs', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg'}, {'name': 'CNN', 'description': 'Convolutional Neural Networks for image processing and recognition', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg'}, {'name': 'timm', 'description': 'PyTorch image models library with pre-trained models', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["pytorch"],
+        SkillsData.tech_stack["cnn"],
+        SkillsData.tech_stack["timm"]
+    ],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

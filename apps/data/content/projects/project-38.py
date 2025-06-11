@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Lumina Attendance Saver
 project_data = {
@@ -16,7 +17,13 @@ project_data = {
     "img_name": "lumina.webp",
     "is_featured": False,
     "features": [{'title': 'Code Generator', 'description': 'Spits out secure codes instantly.'}, {'title': 'Easy UI', 'description': 'No fuss, even under pressure.'}, {'title': 'Safe Codes', 'description': 'Encryption keeps things legit.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'High-level Python web framework for rapid development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}, {'name': 'Bulma', 'description': 'Modern CSS framework based on Flexbox', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bulma/bulma-plain.svg'}, {'name': 'Vercel', 'description': 'Platform for frontend frameworks and static sites', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg'}, {'name': 'Cloudflare', 'description': 'Speeds up sites and keeps them safe with CDN and security', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cloudflare/cloudflare-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["django"],
+        SkillsData.tech_stack["bulma"],
+        SkillsData.tech_stack["vercel"],
+        SkillsData.tech_stack["cloudflare"]
+    ],
     "github_url": "https://github.com/ridwaanhall/Lumina",
     "demo_url": "https://lumina.ridwaanhall.com",
     "status": "completed",

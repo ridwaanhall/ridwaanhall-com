@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Planetary API | Cosmic Data Hub
 project_data = {
@@ -16,7 +17,13 @@ project_data = {
     "img_name": "planetary_api_explore_universe.webp",
     "is_featured": False,
     "features": [{'title': 'Planet Data Galore', 'description': 'Scoop up details on planets, types, and distances.'}, {'title': 'Locked & Loaded', 'description': 'JWT secures user access, registration, and recovery.'}, {'title': 'Dev-Friendly', 'description': 'CRUD ops keep data management clean and tight.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight and flexible Python web framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}, {'name': 'SQLAlchemy', 'description': 'Python SQL toolkit and Object-Relational Mapping library', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg'}, {'name': 'JWT', 'description': 'Securely transmit information between parties as a JSON object', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/json/json-original.svg'}, {'name': 'Flask-Mail', 'description': 'Email support for Flask applications', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["flask"],
+        SkillsData.tech_stack["sqlalchemy"],
+        SkillsData.tech_stack["jwt"],
+        SkillsData.tech_stack["flask_mail"]
+    ],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

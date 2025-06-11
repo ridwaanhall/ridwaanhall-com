@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Indonesia Gold Price Vibe
 project_data = {
@@ -16,7 +17,12 @@ project_data = {
     "img_name": "indonesia_gold_price_tracker.webp",
     "is_featured": False,
     "features": [{'title': 'Live Price Drops', 'description': 'Gold prices updated on the regular to keep you in sync with the market.'}, {'title': 'Throwback Trends', 'description': 'Deep dive into past price action across different timeframes.'}, {'title': 'Smart Analytics', 'description': 'SMA calculations and volatility insights to keep it 100.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'High-level Python web framework for rapid development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}, {'name': 'TailwindCSS', 'description': 'Sleek utility-first CSS to make frontends look sharp', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg'}, {'name': 'Vercel', 'description': 'Platform for frontend frameworks and static sites', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["django"],
+        SkillsData.tech_stack["tailwindcss"],
+        SkillsData.tech_stack["vercel"]
+    ],
     "github_url": "",
     "demo_url": "https://finance.ridwaanhall.com",
     "status": "completed",

@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Election Digit Scanner
 project_data = {
@@ -16,7 +17,12 @@ project_data = {
     "img_name": "default_project_image.webp",
     "is_featured": False,
     "features": [{'title': 'HOG Feature Magic', 'description': 'Extracts edges and gradients for pinpoint digit recognition.'}, {'title': 'SVM & KNN Power', 'description': 'Drops 97%+ accuracy with killer classification algorithms.'}, {'title': 'Performance Breakdown', 'description': 'Compares extraction vs. no-extraction for clear wins.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'HOG', 'description': 'Histogram of Oriented Gradients for object detection', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg'}, {'name': 'SVM', 'description': 'Support Vector Machines for classification and regression tasks', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg'}, {'name': 'KNN', 'description': 'K-Nearest Neighbors for classification based on distance metrics', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["hog"],
+        SkillsData.tech_stack["svm"],
+        SkillsData.tech_stack["knn"]
+    ],
     "github_url": "https://github.com/ridwaanhall/handwritten-digit-recognition-of-the-2024-indonesian-presidential-election-recap",
     "demo_url": "",
     "status": "completed",

@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: OpenAI Chat Master
 project_data = {
@@ -16,7 +17,11 @@ project_data = {
     "img_name": "openai_api_dynamic_conversational_system.webp",
     "is_featured": False,
     "features": [{'title': 'AI Chat Vibes', 'description': 'GPT-3.5 Turbo powers dope, engaging convos.'}, {'title': 'Flask Flex', 'description': 'Handles POST and GET requests like a champ.'}, {'title': 'NLP Game Strong', 'description': 'OpenAI’s tech delivers top-tier language processing.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight and flexible Python web framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}, {'name': 'OpenAI API', 'description': 'Integrate AI capabilities into your apps with ease', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/openai/openai-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["flask"],
+        SkillsData.tech_stack["openai_api"]
+    ],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

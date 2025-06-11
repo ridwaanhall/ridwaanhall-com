@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Neon AI
 project_data = {
@@ -16,7 +17,13 @@ project_data = {
     "img_name": "neon_ai.webp",
     "is_featured": False,
     "features": [{'title': 'Smart Routing', 'description': 'Next.js App Router for zippy navigation.'}, {'title': 'AI Power', 'description': 'Unified API for text and tool calls.'}, {'title': 'Data Storage', 'description': 'Vercel Postgres and Blob for efficiency.'}],
-    "tech_stack": [{'name': 'Next.js', 'description': 'React framework for production-ready web applications', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg'}, {'name': 'TailwindCSS', 'description': 'Sleek utility-first CSS to make frontends look sharp', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg'}, {'name': 'TypeScript', 'description': 'Typed superset of JavaScript for better development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg'}, {'name': 'Vercel Postgres', 'description': 'Managed Postgres database that's easy to scale', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg'}, {'name': 'Radix UI', 'description': 'Low-level UI components for accessible, custom designs', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["nextjs"],
+        SkillsData.tech_stack["tailwindcss"],
+        SkillsData.tech_stack["typescript"],
+        SkillsData.tech_stack["vercel_postgres"],
+        SkillsData.tech_stack["radix_ui"]
+    ],
     "github_url": "https://github.com/ridwaanhall/neon-ai",
     "demo_url": "https://chat.ridwaanhall.com",
     "status": "completed",

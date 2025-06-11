@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: BMKG Quake Watcher API (Unofficial)
 project_data = {
@@ -16,7 +17,10 @@ project_data = {
     "img_name": "bmkg_quake_tracker_api.webp",
     "is_featured": False,
     "features": [{'title': 'Flexi-Format Data', 'description': 'Grab quake info in XML, JSON, or GeoJSON—your pick.'}, {'title': 'Live Alerts', 'description': 'Stay woke with real-time tsunami and seismic updates.'}, {'title': 'Data Deep Dive', 'description': 'Get magnitude, location, PGA Max, MMI, and more.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight and flexible Python web framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["flask"]
+    ],
     "github_url": "",
     "demo_url": "https://earthquake-bmkg-api.ridwaanhall.repl.co",
     "status": "completed",

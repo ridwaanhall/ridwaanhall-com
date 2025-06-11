@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Bike Rental Insights Dashboard
 project_data = {
@@ -16,7 +17,11 @@ project_data = {
     "img_name": "bike_sharing_analysis_dashboard.webp",
     "is_featured": True,
     "features": [{'title': 'Season Trends', 'description': 'Shows peak biking seasons.'}, {'title': 'Weather Impact', 'description': 'Links conditions to rental spikes.'}, {'title': 'Day Breakdown', 'description': 'Compares weekdays vs. weekends.'}, {'title': 'Streamlit UI', 'description': 'Interactive charts for easy insights.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Streamlit', 'description': 'Framework for building data science web applications', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/streamlit/streamlit-original.svg'}, {'name': 'TensorFlow', 'description': 'Open-source machine learning framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["streamlit"],
+        SkillsData.tech_stack["tensorflow"]
+    ],
     "github_url": "https://github.com/ridwaanhall/dicoding-bike-sharing-analysis",
     "demo_url": "https://ridwaanhall-bike-sharing-analytics.streamlit.app/",
     "status": "completed",

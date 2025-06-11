@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: BMKG Weather & Quake Tracker
 project_data = {
@@ -16,7 +17,11 @@ project_data = {
     "img_name": "bmkg_weather_quake_hub.webp",
     "is_featured": False,
     "features": [{'title': 'Live Weather Vibes', 'description': 'Check 3-day forecasts with wind speed, direction, and more.'}, {'title': 'Quake Watch', 'description': 'Stay in the loop with the latest earthquake updates from BMKG.'}, {'title': 'Indonesia Focus', 'description': 'Tailored for local data, keeping it real and relevant.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight and flexible Python web framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}, {'name': 'AdminLTE', 'description': 'Sleek admin dashboard template for web apps', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["flask"],
+        SkillsData.tech_stack["adminlte"]
+    ],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

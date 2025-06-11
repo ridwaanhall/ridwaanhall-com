@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Electricity Demand Forecaster
 project_data = {
@@ -16,7 +17,13 @@ project_data = {
     "img_name": "time_series_forecasting_rnn.webp",
     "is_featured": False,
     "features": [{'title': 'RNN Powerhouse', 'description': 'LSTM and GRU models crush it at capturing time-based patterns.'}, {'title': 'Loaded Dataset', 'description': 'Blends historical demand, weather, and calendar data for sharp predictions.'}, {'title': 'Energy Game-Changer', 'description': 'Delivers spot-on forecasts for real-world energy planning.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'PyTorch', 'description': 'Deep learning framework with dynamic computation graphs', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg'}, {'name': 'RNN', 'description': 'Recurrent Neural Networks for sequence prediction tasks', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg'}, {'name': 'LSTM', 'description': 'Long Short-Term Memory networks for time series and sequence data', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg'}, {'name': 'GRU', 'description': 'Gated Recurrent Units for efficient sequence modeling', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["pytorch"],
+        SkillsData.tech_stack["rnn"],
+        SkillsData.tech_stack["lstm"],
+        SkillsData.tech_stack["gru"]
+    ],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

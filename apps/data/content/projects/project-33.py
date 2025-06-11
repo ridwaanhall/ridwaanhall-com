@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Gold Price & Music Recommender
 project_data = {
@@ -16,7 +17,12 @@ project_data = {
     "img_name": "gold_price_prediction_and_music_recommendation_system.webp",
     "is_featured": False,
     "features": [{'title': 'Gold Forecasts', 'description': 'Predicts prices to guide investment moves.'}, {'title': 'Music Picks', 'description': 'Curates tracks based on your taste.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'TensorFlow', 'description': 'Open-source machine learning framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg'}, {'name': 'Machine Learning', 'description': 'Crunching data with algorithms to predict and analyze stuff', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Music Recommendation Algorithms', 'description': 'Suggests tunes based on what you vibe with', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/algorithm/algorithm-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["tensorflow"],
+        SkillsData.tech_stack["machine_learning"],
+        SkillsData.tech_stack["music_recommendation"]
+    ],
     "github_url": "https://github.com/ridwaanhall/applied-machine-learning",
     "demo_url": "",
     "status": "completed",

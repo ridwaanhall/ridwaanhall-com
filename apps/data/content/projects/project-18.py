@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Drink Database API
 project_data = {
@@ -16,7 +17,11 @@ project_data = {
     "img_name": "restful_drink_service.webp",
     "is_featured": False,
     "features": [{'title': 'CRUD Crush', 'description': 'Create, read, update, or delete drinks like a pro.'}, {'title': 'DRF Domination', 'description': 'Django REST Framework brings scalable API heat.'}, {'title': 'RESTful Rules', 'description': 'Clean, efficient endpoints built on REST principles.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'High-level Python web framework for rapid development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}, {'name': 'Django REST Framework', 'description': 'Powerful toolkit for building Web APIs in Django', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/djangorest/djangorest-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["django"],
+        SkillsData.tech_stack["django_rest_framework"]
+    ],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

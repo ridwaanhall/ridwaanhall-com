@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: PDDikti Data Vault
 project_data = {
@@ -16,7 +17,12 @@ project_data = {
     "img_name": "api_pddikti_kemendiksaintek.webp",
     "is_featured": True,
     "features": [{'title': 'Edu Data', 'description': 'Easy access to uni and program info.'}, {'title': 'Dev-Friendly', 'description': 'Simple setup for coders.'}, {'title': 'Fresh Stats', 'description': 'Always-updated PDDikti data.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'High-level Python web framework for rapid development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}, {'name': 'JavaScript', 'description': 'Dynamic programming language for interactive web experiences', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg'}, {'name': 'CSS', 'description': 'Styles web pages to look good and feel right', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["django"],
+        SkillsData.tech_stack["javascript"],
+        SkillsData.tech_stack["css"]
+    ],
     "github_url": "https://github.com/ridwaanhall/api-pddikti",
     "demo_url": "https://pddikti-docs.ridwaanhall.com/",
     "status": "completed",

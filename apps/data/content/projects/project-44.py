@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: ridwaanhall.com
 project_data = {
@@ -16,7 +17,15 @@ project_data = {
     "img_name": "ridwaanhall_com_20250607.webp",
     "is_featured": True,
     "features": [{'title': 'Serverless Vibes', 'description': 'Hosted on Vercel for max uptime and easy scaling.'}, {'title': 'Live Dashboard', 'description': 'Shows my GitHub and WakaTime stats in real time.'}, {'title': 'Smooth Design', 'description': 'TailwindCSS makes it look good on any screen.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'High-level Python web framework for rapid development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}, {'name': 'TailwindCSS', 'description': 'Sleek utility-first CSS to make frontends look sharp', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg'}, {'name': 'Vercel', 'description': 'Platform for frontend frameworks and static sites', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg'}, {'name': 'GitHub API', 'description': 'Grabs project stats and activity straight from my repos', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg'}, {'name': 'Cloudflare', 'description': 'Speeds up sites and keeps them safe with CDN and security', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cloudflare/cloudflare-original.svg'}, {'name': 'WakaTime API', 'description': 'Tracks my coding hours and analytics like a pro', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wakatime/wakatime-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["django"],
+        SkillsData.tech_stack["tailwindcss"],
+        SkillsData.tech_stack["vercel"],
+        SkillsData.tech_stack["github_api"],
+        SkillsData.tech_stack["cloudflare"],
+        SkillsData.tech_stack["wakatime_api"]
+    ],
     "github_url": "https://github.com/ridwaanhall/ridwaanhall_com",
     "demo_url": "https://ridwaanhall.com",
     "status": "completed",

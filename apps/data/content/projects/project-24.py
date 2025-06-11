@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Pemilu 2024 Vote Dashboard
 project_data = {
@@ -16,7 +17,12 @@ project_data = {
     "img_name": "pemilu_2024_website.webp",
     "is_featured": False,
     "features": [{'title': 'Region-Specific Insights', 'description': 'Dive into vote data from national to TPS levels.'}, {'title': 'Trusted Evidence', 'description': 'Verified data ensures transparency and reliability.'}, {'title': 'Slick Responsive Design', 'description': 'Bootstrap makes it look fire on any screen.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'High-level Python web framework for rapid development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}, {'name': 'Django REST Framework', 'description': 'Powerful toolkit for building Web APIs in Django', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/djangorest/djangorest-original.svg'}, {'name': 'Bootstrap', 'description': 'Popular CSS framework for responsive design', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["django"],
+        SkillsData.tech_stack["django_rest_framework"],
+        SkillsData.tech_stack["bootstrap"]
+    ],
     "github_url": "https://github.com/ridwaanhall/realcount-pemilu-2024",
     "demo_url": "",
     "status": "completed",

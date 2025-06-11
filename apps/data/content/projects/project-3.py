@@ -5,6 +5,7 @@ Generated from centralized projects data
 
 from datetime import datetime
 from django.conf import settings
+from apps.data.about.skills_data import SkillsData
 
 # Project data for: Quran Explorer Web
 project_data = {
@@ -16,7 +17,11 @@ project_data = {
     "img_name": "quran_website_frontend_api.webp",
     "is_featured": False,
     "features": [{'title': 'Killer APIs', 'description': 'Drops endpoints for chapters, Juz, verses, and translations like a champ.'}, {'title': 'Script Swag', 'description': 'Get verses in Uthmani, Uthmani Simple, Imlaei, or Imlaei Simple—your call.'}, {'title': 'Translation Hunt', 'description': 'Zero in on translations by chapter, Surah, Aya, or keyword.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight and flexible Python web framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}, {'name': 'AdminLTE', 'description': 'Sleek admin dashboard template for web apps', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg'}],
+    "tech_stack": [
+        SkillsData.tech_stack["python"],
+        SkillsData.tech_stack["flask"],
+        SkillsData.tech_stack["adminlte"]
+    ],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

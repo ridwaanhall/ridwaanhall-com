@@ -16,7 +16,7 @@ project_data = {
     "img_name": "instagram_media_downloader.webp",
     "is_featured": False,
     "features": [{'title': 'HD Profile Pics', 'description': 'Grab crystal-clear profile pictures in a snap.'}, {'title': 'Story Swiper', 'description': 'Download Instagram stories like it’s nothing.'}, {'title': 'Post Media Magic', 'description': 'Scoop up images and videos from posts in a heartbeat.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight web framework for Python, perfect for APIs', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}],
+    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight and flexible Python web framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}],
     "github_url": "",
     "demo_url": "https://instagram-api-v1.ridwaanhall.repl.co/",
     "status": "completed",

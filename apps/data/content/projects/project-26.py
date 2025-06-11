@@ -16,7 +16,7 @@ project_data = {
     "img_name": "default_project_image.webp",
     "is_featured": False,
     "features": [{'title': 'Instant Khodam Check', 'description': 'Find your Khodam color with zero fuss.'}, {'title': 'Open to All', 'description': 'Publicly accessible during its live run.'}, {'title': 'Django Swagger', 'description': 'Rock-solid backend for seamless performance.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'The web framework I use to whip up solid backend apps fast', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}],
+    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'High-level Python web framework for rapid development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}],
     "github_url": "https://github.com/ridwaanhall/website-cek-khodam",
     "demo_url": "",
     "status": "completed",

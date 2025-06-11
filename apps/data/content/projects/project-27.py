@@ -16,7 +16,7 @@ project_data = {
     "img_name": "zeronine_handwritten_recognition.webp",
     "is_featured": False,
     "features": [{'title': 'Bilingual Recognition', 'description': 'Handles Arabic and English digits and characters like a champ.'}, {'title': 'CNN Supercharge', 'description': 'Convolutional Neural Networks deliver precise handwriting detection.'}, {'title': 'End-to-End Flow', 'description': 'Covers data gathering, training, and website rollout.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'CNN', 'description': 'Convolutional Neural Networks for image processing and recognition'}],
+    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'CNN', 'description': 'Convolutional Neural Networks for image processing and recognition', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg'}],
     "github_url": "https://github.com/ridwaanhall/zeronine",
     "demo_url": "",
     "status": "completed",

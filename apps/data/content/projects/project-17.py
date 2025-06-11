@@ -16,7 +16,7 @@ project_data = {
     "img_name": "openai_function_calling.webp",
     "is_featured": False,
     "features": [{'title': 'Task-Targeted APIs', 'description': 'Query weather or author data with built-in functions.'}, {'title': 'Smooth Connect', 'description': 'Python’s requests library links up with OpenAI flawlessly.'}, {'title': 'Text Powerhouse', 'description': 'GPT-3.5 Turbo delivers smart, spot-on responses.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight web framework for Python, perfect for APIs', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}, {'name': 'OpenAI API', 'description': 'Integrate AI capabilities into your apps with ease'}],
+    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight and flexible Python web framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}, {'name': 'OpenAI API', 'description': 'Integrate AI capabilities into your apps with ease', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/openai/openai-original.svg'}],
     "github_url": "",
     "demo_url": "https://your-openai-function-calling-url.com",
     "status": "completed",

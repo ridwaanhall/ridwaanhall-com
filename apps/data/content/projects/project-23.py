@@ -16,7 +16,7 @@ project_data = {
     "img_name": "pemilu_2024_api.webp",
     "is_featured": False,
     "features": [{'title': 'Versatile Endpoints', 'description': 'Scoop up candidate names, dispute stats, or voting details effortlessly.'}, {'title': 'Bulletproof Handling', 'description': 'Error-proof design keeps your app running like a dream.'}, {'title': 'Deep Data Dives', 'description': 'Grab election insights at any level for epic analysis.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django REST Framework', 'description': 'My toolkit for crafting powerful APIs in Django', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}],
+    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django REST Framework', 'description': 'Powerful toolkit for building Web APIs in Django', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/djangorest/djangorest-original.svg'}],
     "github_url": "https://github.com/ridwaanhall/realcount-pemilu-2024",
     "demo_url": "",
     "status": "completed",

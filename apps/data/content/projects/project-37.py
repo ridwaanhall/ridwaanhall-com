@@ -16,7 +16,7 @@ project_data = {
     "img_name": "instagram_following_followers.webp",
     "is_featured": False,
     "features": [{'title': 'Follower Breakdown', 'description': 'Lists mutuals and one-sided followers.'}, {'title': 'Following Insights', 'description': 'Tracks who you follow without reciprocation.'}, {'title': 'JSON Support', 'description': 'Handles Instagram data like a pro.'}],
-    "tech_stack": [{'name': 'Bulma', 'description': 'Flexbox-based CSS for responsive, clean layouts', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bulma/bulma-plain.svg'}, {'name': 'Django', 'description': 'The web framework I use to whip up solid backend apps fast', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}, {'name': 'Whitenoise', 'description': 'Serves Django static files like a charm'}],
+    "tech_stack": [{'name': 'Bulma', 'description': 'Modern CSS framework based on Flexbox', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bulma/bulma-plain.svg'}, {'name': 'Django', 'description': 'High-level Python web framework for rapid development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}, {'name': 'Whitenoise', 'description': 'Serves Django static files like a charm', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}],
     "github_url": "https://github.com/ridwaanhall/instagram-following-followers",
     "demo_url": "https://igstats.ridwaanhall.com",
     "status": "completed",

@@ -16,7 +16,7 @@ project_data = {
     "img_name": "mlbb_mabar_vip_manager.webp",
     "is_featured": False,
     "features": [{'title': 'Session Coordinator', 'description': 'Manages Mabar sessions with donor and user details.'}, {'title': 'Skin Request Flow', 'description': 'Automates skin delivery status for VIPs.'}, {'title': 'Hero Pick System', 'description': 'Handles hero preferences, lanes, and meta choices.'}, {'title': 'Feedback Tracker', 'description': 'Logs donor comments for quick resolution.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'The web framework I use to whip up solid backend apps fast', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}],
+    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'High-level Python web framework for rapid development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}],
     "github_url": "https://github.com/ridwaanhall/management-mabar-VIP-MLBB",
     "demo_url": "",
     "status": "completed",

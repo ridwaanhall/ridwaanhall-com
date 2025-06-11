@@ -16,7 +16,7 @@ project_data = {
     "img_name": "chatbot_gateway.webp",
     "is_featured": False,
     "features": [{'title': 'Flask Flow', 'description': 'Routes messages like a boss for seamless bot chats.'}, {'title': 'App-Agnostic', 'description': 'Works like a charm on Telegram and WhatsApp.'}, {'title': 'OpenAI Smarts', 'description': 'Drops AI-powered replies for sharper convos.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight web framework for Python, perfect for APIs', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}, {'name': 'OpenAI API', 'description': 'Integrate AI capabilities into your apps with ease'}],
+    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight and flexible Python web framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}, {'name': 'OpenAI API', 'description': 'Integrate AI capabilities into your apps with ease', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/openai/openai-original.svg'}],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

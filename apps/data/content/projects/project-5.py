@@ -16,7 +16,7 @@ project_data = {
     "img_name": "bmkg_weather_forecast_api.webp",
     "is_featured": False,
     "features": [{'title': 'Nationwide Reach', 'description': 'Covers weather data for every corner of Indonesia.'}, {'title': 'Flexi-Filters', 'description': 'Mix and match area, parameter, and time for custom results.'}, {'title': 'Flask Flow', 'description': 'Smooth routing and fast data handling with Flask.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight web framework for Python, perfect for APIs', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}],
+    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight and flexible Python web framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

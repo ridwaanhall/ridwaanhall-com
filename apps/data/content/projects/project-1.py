@@ -16,7 +16,7 @@ project_data = {
     "img_name": "mlbb_username_checker.webp",
     "is_featured": False,
     "features": [{'title': 'Lightning-Fast Lookups', 'description': 'Get usernames in a flash with just a user ID and zone ID.'}, {'title': 'Python-Powered Swagger', 'description': 'Rocking Python for speed and smooth performance.'}, {'title': 'API Awesomeness', 'description': 'Taps into APIs for spot-on, reliable data.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}],
+    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

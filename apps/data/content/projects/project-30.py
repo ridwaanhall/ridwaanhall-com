@@ -16,7 +16,7 @@ project_data = {
     "img_name": "default_project_image.webp",
     "is_featured": False,
     "features": [{'title': 'Real-World Mapping', 'description': 'Optimizes routes using Indonesia’s actual geography.'}, {'title': 'Visual Progress', 'description': 'Watch the algorithm work with clear visualizations.'}, {'title': 'Tuning Mastery', 'description': 'Fine-tune parameters for peak optimization results.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'ACO', 'description': 'Ant Colony Optimization for solving computational problems'}],
+    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'ACO', 'description': 'Ant Colony Optimization for solving computational problems', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/algorithm/algorithm-original.svg'}],
     "github_url": "https://github.com/ridwaanhall/aco-algorithm",
     "demo_url": "",
     "status": "completed",

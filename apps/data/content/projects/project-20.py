@@ -16,7 +16,7 @@ project_data = {
     "img_name": "pddikti_api_django.webp",
     "is_featured": False,
     "features": [{'title': 'Academic Data Drop', 'description': 'Grab student, lecturer, college, and program info.'}, {'title': 'DRF Power', 'description': 'Django REST Framework fuels scalable API vibes.'}, {'title': 'Clean Endpoints', 'description': 'Structured routes for smooth data integration.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'The web framework I use to whip up solid backend apps fast', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}, {'name': 'Django REST Framework', 'description': 'My toolkit for crafting powerful APIs in Django', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}],
+    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'High-level Python web framework for rapid development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}, {'name': 'Django REST Framework', 'description': 'Powerful toolkit for building Web APIs in Django', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/djangorest/djangorest-original.svg'}],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

@@ -16,7 +16,7 @@ project_data = {
     "img_name": "follow_dragon_spacex.webp",
     "is_featured": False,
     "features": [{'title': 'Live API Connect', 'description': 'Pulls JSON data with custom headers for real-time mission tracking.'}, {'title': 'Sleek Template Vibes', 'description': 'Responsive designs make data pop dynamically.'}, {'title': 'Django Dynamism', 'description': 'Robust and scalable thanks to Django’s framework.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'The web framework I use to whip up solid backend apps fast', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}],
+    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'High-level Python web framework for rapid development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}],
     "github_url": "https://github.com/ridwaanhall/follow-dragon-spacex",
     "demo_url": "https://follow-dragon.ridwaanhall.com/",
     "status": "completed",

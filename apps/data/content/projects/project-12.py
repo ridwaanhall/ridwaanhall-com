@@ -16,7 +16,7 @@ project_data = {
     "img_name": "college_data_hub.webp",
     "is_featured": False,
     "features": [{'title': 'Stats Dashboard', 'description': 'Visualize student, lecturer, and program counts like a pro.'}, {'title': 'Search Superstar', 'description': 'Find students, lecturers, colleges, or programs in a flash.'}, {'title': 'Deep Dives', 'description': 'Explore detailed data on students, lecturers, and more.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight web framework for Python, perfect for APIs', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}, {'name': 'Bootstrap', 'description': 'Handy CSS framework for quick, responsive designs', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg'}],
+    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight and flexible Python web framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}, {'name': 'Bootstrap', 'description': 'Popular CSS framework for responsive design', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg'}],
     "github_url": "",
     "demo_url": "https://replit.com/@ridwaanhall/web-college",
     "status": "completed",

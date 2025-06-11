@@ -16,7 +16,7 @@ project_data = {
     "img_name": "bmkg_weather_quake_hub.webp",
     "is_featured": False,
     "features": [{'title': 'Live Weather Vibes', 'description': 'Check 3-day forecasts with wind speed, direction, and more.'}, {'title': 'Quake Watch', 'description': 'Stay in the loop with the latest earthquake updates from BMKG.'}, {'title': 'Indonesia Focus', 'description': 'Tailored for local data, keeping it real and relevant.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight web framework for Python, perfect for APIs', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}, {'name': 'AdminLTE', 'description': 'Sleek admin dashboard template for web apps'}],
+    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Flask', 'description': 'Lightweight and flexible Python web framework', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg'}, {'name': 'AdminLTE', 'description': 'Sleek admin dashboard template for web apps', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg'}],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

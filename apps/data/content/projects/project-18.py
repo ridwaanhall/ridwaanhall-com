@@ -16,7 +16,7 @@ project_data = {
     "img_name": "restful_drink_service.webp",
     "is_featured": False,
     "features": [{'title': 'CRUD Crush', 'description': 'Create, read, update, or delete drinks like a pro.'}, {'title': 'DRF Domination', 'description': 'Django REST Framework brings scalable API heat.'}, {'title': 'RESTful Rules', 'description': 'Clean, efficient endpoints built on REST principles.'}],
-    "tech_stack": [{'name': 'Python', 'description': 'My go-to for building robust backends with clean code', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'The web framework I use to whip up solid backend apps fast', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}, {'name': 'Django REST Framework', 'description': 'My toolkit for crafting powerful APIs in Django', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}],
+    "tech_stack": [{'name': 'Python', 'description': 'Versatile programming language for web development, data science, and automation', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'}, {'name': 'Django', 'description': 'High-level Python web framework for rapid development', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg'}, {'name': 'Django REST Framework', 'description': 'Powerful toolkit for building Web APIs in Django', 'icon_svg': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/djangorest/djangorest-original.svg'}],
     "github_url": "",
     "demo_url": "",
     "status": "completed",

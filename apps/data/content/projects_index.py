@@ -27,9 +27,12 @@ class ProjectsDataIndex:
                 spec = importlib.util.spec_from_file_location(
                     f"project_{project_file.stem}", project_file
                 )
+                if spec is None or spec.loader is None:
+                    continue
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
-                  # Get the project data
+                
+                # Get the project data
                 if hasattr(module, 'project_data'):
                     project_data = module.project_data.copy()
                     

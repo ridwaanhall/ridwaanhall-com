@@ -259,10 +259,199 @@ class SkillsData:
             "name": "WordPress",
             "description": "Popular content management system for websites",
             "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wordpress/wordpress-plain.svg"
-        },
-        {
+        },        {
             "name": "SQLAlchemy",
             "description": "Python SQL toolkit and Object-Relational Mapping library",
             "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg"
+        },
+        {
+            "name": "ACO",
+            "description": "Ant Colony Optimization for solving computational problems",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/algorithm/algorithm-original.svg"
+        },
+        {
+            "name": "AdminLTE",
+            "description": "Sleek admin dashboard template for web apps",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg"
+        },
+        {
+            "name": "BeautifulSoup",
+            "description": "Web scraping made easy with Python",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+        },
+        {
+            "name": "CNN",
+            "description": "Convolutional Neural Networks for image processing and recognition",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg"
+        },
+        {
+            "name": "CSS",
+            "description": "Styles web pages to look good and feel right",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+        },
+        {
+            "name": "Chart.js",
+            "description": "Simple yet flexible JavaScript charts for data visualization",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+        },
+        {
+            "name": "Cloudflare",
+            "description": "Speeds up sites and keeps them safe with CDN and security",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cloudflare/cloudflare-original.svg"
+        },
+        {
+            "name": "DataTables",
+            "description": "Enhances HTML tables with sorting, searching, and pagination",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+        },
+        {
+            "name": "Flask-Mail",
+            "description": "Email support for Flask applications",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg"
+        },
+        {
+            "name": "GRU",
+            "description": "Gated Recurrent Units for efficient sequence modeling",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg"
+        },
+        {
+            "name": "GUI Framework",
+            "description": "Framework for building graphical user interfaces",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+        },
+        {
+            "name": "GitHub API",
+            "description": "Grabs project stats and activity straight from my repos",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+        },
+        {
+            "name": "Google Maps",
+            "description": "Brings maps and location data to your web apps",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
+        },
+        {
+            "name": "HOG",
+            "description": "Histogram of Oriented Gradients for object detection",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg"
+        },
+        {
+            "name": "JWT",
+            "description": "Securely transmit information between parties as a JSON object",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/json/json-original.svg"
+        },
+        {
+            "name": "KNN",
+            "description": "K-Nearest Neighbors for classification based on distance metrics",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg"
+        },
+        {
+            "name": "LSTM",
+            "description": "Long Short-Term Memory networks for time series and sequence data",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg"
+        },
+        {
+            "name": "Leaflet",
+            "description": "Interactive maps for web apps, easy to use and customize",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+        },
+        {
+            "name": "MDX",
+            "description": "Mixes Markdown with JSX for dynamic docs",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/markdown/markdown-original.svg"
+        },
+        {
+            "name": "Machine Learning",
+            "description": "Crunching data with algorithms to predict and analyze stuff",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+        },
+        {
+            "name": "Music Recommendation Algorithms",
+            "description": "Suggests tunes based on what you vibe with",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/algorithm/algorithm-original.svg"
+        },
+        {
+            "name": "Neural Networks",
+            "description": "AI models that mimic the human brain for complex tasks",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg"
+        },
+        {
+            "name": "Once UI",
+            "description": "Design system for building modern, polished web apps",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
+        },
+        {
+            "name": "OpenAI API",
+            "description": "Integrate AI capabilities into your apps with ease",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/openai/openai-original.svg"
+        },
+        {
+            "name": "OpenStreetMap",
+            "description": "Free, editable map of the world, perfect for web apps",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+        },
+        {
+            "name": "REST API",
+            "description": "The blueprint for smooth, networked app communication",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg"
+        },
+        {
+            "name": "RNN",
+            "description": "Recurrent Neural Networks for sequence prediction tasks",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg"
+        },
+        {
+            "name": "Radix UI",
+            "description": "Low-level UI components for accessible, custom designs",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
+        },
+        {
+            "name": "SCSS",
+            "description": "Supercharged CSS with variables and nesting for style",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sass/sass-original.svg"
+        },
+        {
+            "name": "SVM",
+            "description": "Support Vector Machines for classification and regression tasks",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg"
+        },
+        {
+            "name": "Seaborn",
+            "description": "Statistical data visualization library based on Matplotlib",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+        },
+        {
+            "name": "Shadcn UI",
+            "description": "Modern UI components to craft clean, stylish interfaces",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
+        },
+        {
+            "name": "TailwindCSS",
+            "description": "Sleek utility-first CSS to make frontends look sharp",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg"
+        },
+        {
+            "name": "Telegram API",
+            "description": "Connects your apps to Telegram for messaging and bots",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/telegram/telegram-original.svg"
+        },
+        {
+            "name": "Vercel Postgres",
+            "description": "Managed Postgres database that's easy to scale",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg"
+        },
+        {
+            "name": "WakaTime API",
+            "description": "Tracks my coding hours and analytics like a pro",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wakatime/wakatime-original.svg"
+        },
+        {
+            "name": "Whitenoise",
+            "description": "Serves Django static files like a charm",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg"
+        },
+        {
+            "name": "timm",
+            "description": "PyTorch image models library with pre-trained models",
+            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg"
         }
     ]

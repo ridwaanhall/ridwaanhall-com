@@ -29,10 +29,30 @@ class ProjectsDataIndex:
                 )
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
-                
-                # Get the project data
+                  # Get the project data
                 if hasattr(module, 'project_data'):
-                    projects.append(module.project_data)
+                    project_data = module.project_data.copy()
+                    
+                    # Resolve tech_stack keys to full objects
+                    if 'tech_stack' in project_data:
+                        from apps.data.about.skills_data import SkillsData
+                        # Extract the key references and resolve them
+                        tech_keys = []
+                        for tech in project_data['tech_stack']:
+                            # Check if tech is already a dict (backward compatibility)
+                            if isinstance(tech, dict) and 'name' in tech:
+                                # Already resolved object, keep as is
+                                continue
+                            else:
+                                # This should be a reference like SkillsData.tech_stack["python"]
+                                # We need to extract the actual object
+                                tech_keys.append(tech)
+                        
+                        # If we have key references, resolve them
+                        if tech_keys:
+                            project_data['tech_stack'] = tech_keys
+                    
+                    projects.append(project_data)
                     
             except Exception as e:
                 print(f"Error loading {project_file}: {e}")

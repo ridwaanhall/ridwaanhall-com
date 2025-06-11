@@ -425,7 +425,7 @@ class SkillsData:
         "telegram_api": {
             "name": "Telegram API",
             "description": "Connects your apps to Telegram for messaging and bots",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/telegram/telegram-original.svg"
+            "icon_svg": ""
         },
         "vercel_postgres": {
             "name": "Vercel Postgres",

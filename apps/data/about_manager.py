@@ -45,9 +45,11 @@ class AboutManager:
     
     @classmethod
     def get_skills(cls):
-        """Get skills data."""
+        """Get skills data - only returns skills with valid icon_svg."""
         from .about.skills_data import SkillsData
-        return SkillsData.skills
+        all_skills = SkillsData.get_skills_list()
+        # Filter out skills without icon_svg
+        return [skill for skill in all_skills if skill.get('icon_svg', '').strip()]
     
     @classmethod
     def get_awards(cls, sort_by_id=True):

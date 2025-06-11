@@ -20,8 +20,9 @@
                             <span>{{ about.location.residency }}, {{ about.location.country }} {{ about.location.flag }}</span>
                         </div>
                         
-                        <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed mb-4">
-                            {% if about.short_description|length > 0 %}{{ about.short_description }} {{ about.short_bio }} {{ about.short_cta }}{% else %}I am a passionate software engineer with a focus on building impactful solutions. I love to explore new technologies and share my knowledge through writing and open-source contributions.{% endif %}
+                        <!-- Optimized LCP element with font preloading hint -->
+                        <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed mb-4" style="font-display: swap;">
+                            {% if about.short_description|length > 0 %}{{ about.short_description }} {{ about.short_bio }} {{ about.short_cta }}{% else %}Coding by day, memorizing Quran by heart—who else but me? I'm a passionate Python developer and DevOps engineer crafting digital solutions that matter.{% endif %}
                         </p>
                         
                         <div class="flex flex-row mb-6 sm:mb-6 md:mb-8 justify-start gap-2 sm:gap-3">
@@ -48,15 +49,18 @@
                 </div>
             </section>
 
+            <!-- Lazy load non-critical sections -->
             <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
 
-            {% include 'blog/latest-blogs.html' %}
+            <div id="lazy-content">
+                {% include 'blog/latest-blogs.html' %}
 
-            <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
-            
-            {% include 'core/skills.html' %}
+                <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
+                
+                {% include 'core/skills.html' %}
 
-            {% include 'about/sponsor-me.html' %}
+                {% include 'about/sponsor-me.html' %}
+            </div>
             
         </div>
     </main>
@@ -66,40 +70,40 @@
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const slider = document.getElementById('blogSlider');
-    const cardWidth = 285; // Updated card width for new dimensions
-    let autoSlideInterval;
-    
-    function slideNext() {
-        const maxScroll = slider.scrollWidth - slider.clientWidth;
-        if (slider.scrollLeft >= maxScroll) {
-            // Reset to beginning
-            slider.scrollTo({ left: 0, behavior: 'smooth' });
-        } else {
-            slider.scrollBy({ left: cardWidth, behavior: 'smooth' });
+    // Defer slider initialization to improve LCP
+    setTimeout(() => {
+        const slider = document.getElementById('blogSlider');
+        if (!slider) return;
+        
+        const cardWidth = 285;
+        let autoSlideInterval;
+        
+        function slideNext() {
+            const maxScroll = slider.scrollWidth - slider.clientWidth;
+            if (slider.scrollLeft >= maxScroll) {
+                slider.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+                slider.scrollBy({ left: cardWidth, behavior: 'smooth' });
+            }
         }
-    }
-    
-    function startAutoSlide() {
-        autoSlideInterval = setInterval(slideNext, 6000); // 5 seconds
-    }
-    
-    function stopAutoSlide() {
-        if (autoSlideInterval) {
-            clearInterval(autoSlideInterval);
+        
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(slideNext, 6000);
         }
-    }
-    
-    // Pause auto-slide on hover
-    slider.addEventListener('mouseenter', stopAutoSlide);
-    slider.addEventListener('mouseleave', startAutoSlide);
-    
-    // Touch support - pause on touch
-    slider.addEventListener('touchstart', stopAutoSlide);
-    slider.addEventListener('touchend', startAutoSlide);
-    
-    // Initialize auto-slide
-    startAutoSlide();
+        
+        function stopAutoSlide() {
+            if (autoSlideInterval) {
+                clearInterval(autoSlideInterval);
+            }
+        }
+        
+        slider.addEventListener('mouseenter', stopAutoSlide);
+        slider.addEventListener('mouseleave', startAutoSlide);
+        slider.addEventListener('touchstart', stopAutoSlide);
+        slider.addEventListener('touchend', startAutoSlide);
+        
+        startAutoSlide();
+    }, 100);
 });
 </script>
 {% endblock %}

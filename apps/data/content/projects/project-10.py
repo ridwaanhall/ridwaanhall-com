@@ -13,7 +13,7 @@ project_data = {
     "title": """ChatBot Bridge for Telegram & WhatsApp""",
     "headline": """Link up OpenAI-powered bots to Telegram and WhatsApp with Flask swagger.""",
     "description": ['This Flask project is your slick gateway for handling Telegram and WhatsApp messages with POST and GET requests.', 'Taps into OpenAI for next-level, smart convo vibes.', 'Perfect for automating chats or building brainy bot solutions.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/chatbot_gateway.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/chatbot_gateway.webp",
     "img_name": "chatbot_gateway.webp",
     "is_featured": False,
     "features": [{'title': 'Flask Flow', 'description': 'Routes messages like a boss for seamless bot chats.'}, {'title': 'App-Agnostic', 'description': 'Works like a charm on Telegram and WhatsApp.'}, {'title': 'OpenAI Smarts', 'description': 'Drops AI-powered replies for sharper convos.'}],

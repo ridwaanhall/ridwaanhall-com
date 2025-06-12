@@ -13,7 +13,7 @@ project_data = {
     "title": """Pemilu 2024 Vote Dashboard""",
     "headline": """Sleek web app for real-time 2024 Indonesia Election vote tracking with Django flair.""",
     "description": ['This fire web app for the 2024 Indonesia Presidential Election lets you explore vote data across regions—from national to polling stations.', 'Built with Django and Django REST Framework for a rock-solid backend, styled with Bootstrap for a clean, responsive look.', 'Packed with verified evidence data, it’s perfect for tracking results or building dope election tools.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/pemilu_2024_website.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/pemilu_2024_website.webp",
     "img_name": "pemilu_2024_website.webp",
     "is_featured": False,
     "features": [{'title': 'Region-Specific Insights', 'description': 'Dive into vote data from national to TPS levels.'}, {'title': 'Trusted Evidence', 'description': 'Verified data ensures transparency and reliability.'}, {'title': 'Slick Responsive Design', 'description': 'Bootstrap makes it look fire on any screen.'}],

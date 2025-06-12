@@ -13,7 +13,7 @@ project_data = {
     "title": """Khodam Color Finder""",
     "headline": """Unleash your inner Khodam vibe with this Django-powered online checker.""",
     "description": ['This slick platform lets you discover your Khodam color in a snap, no hassle.', 'Built with Django, it’s open to all for three months starting June 25, 2024.', 'Brings a modern, fun twist to mystical exploration with a smooth user experience.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/default_project_image.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/default_project_image.webp",
     "img_name": "default_project_image.webp",
     "is_featured": False,
     "features": [{'title': 'Instant Khodam Check', 'description': 'Find your Khodam color with zero fuss.'}, {'title': 'Open to All', 'description': 'Publicly accessible during its live run.'}, {'title': 'Django Swagger', 'description': 'Rock-solid backend for seamless performance.'}],

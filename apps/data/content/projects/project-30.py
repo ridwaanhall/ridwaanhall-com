@@ -13,7 +13,7 @@ project_data = {
     "title": """Indonesia Route Optimizer""",
     "headline": """Find the best paths across Indonesia with ACO and slick visualizations.""",
     "description": ['This project brings Ant Colony Optimization (ACO) to life on a real map of Indonesia for next-level route planning.', 'Tweakable parameters and visualization tools let you track the algorithm’s progress in style.', 'Built to deliver practical insights and boost efficiency for pathfinding challenges.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/default_project_image.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/default_project_image.webp",
     "img_name": "default_project_image.webp",
     "is_featured": False,
     "features": [{'title': 'Real-World Mapping', 'description': 'Optimizes routes using Indonesia’s actual geography.'}, {'title': 'Visual Progress', 'description': 'Watch the algorithm work with clear visualizations.'}, {'title': 'Tuning Mastery', 'description': 'Fine-tune parameters for peak optimization results.'}],

@@ -13,7 +13,7 @@ project_data = {
     "title": """MLBB Username Finder""",
     "headline": """Snag Mobile Legends usernames in a snap with Python and API vibes.""",
     "description": ['This Python project is your go-to for grabbing Mobile Legends usernames like a pro.', "Just pop in a user ID and zone ID, and boom—our API hooks you up with the player's username.", 'Light, fast, and a total game-changer for MLBB fans.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/mlbb_username_checker.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_username_checker.webp",
     "img_name": "mlbb_username_checker.webp",
     "is_featured": False,
     "features": [{'title': 'Lightning-Fast Lookups', 'description': 'Get usernames in a flash with just a user ID and zone ID.'}, {'title': 'Python-Powered Swagger', 'description': 'Rocking Python for speed and smooth performance.'}, {'title': 'API Awesomeness', 'description': 'Taps into APIs for spot-on, reliable data.'}],

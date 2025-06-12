@@ -13,7 +13,7 @@ project_data = {
     "title": """Lumina Attendance Saver""",
     "headline": """Auto-attendance tool for students who forget the roll call.""",
     "description": ['Lumina pumps out encrypted attendance codes in a flash, saving students from missing class check-ins.', 'Built for schools, it adapts to different course setups with secure, valid codes.', 'The interface is stupid simple, perfect for those last-second scrambles.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/lumina.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/lumina.webp",
     "img_name": "lumina.webp",
     "is_featured": False,
     "features": [{'title': 'Code Generator', 'description': 'Spits out secure codes instantly.'}, {'title': 'Easy UI', 'description': 'No fuss, even under pressure.'}, {'title': 'Safe Codes', 'description': 'Encryption keeps things legit.'}],

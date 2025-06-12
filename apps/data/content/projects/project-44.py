@@ -13,7 +13,7 @@ project_data = {
     "title": """ridwaanhall.com""",
     "headline": """My personal portfolio site, powered by Django and TailwindCSS, running serverless on Vercel.""",
     "description": ['This is my digital HQ, built with Django and TailwindCSS, hosted serverless on Vercel. It’s got it all—about me, projects, blog, education, experience, and a sleek dashboard.', 'Blends Django’s backend power with Tailwind’s sharp styling for a fast, modern site. Vercel’s serverless setup keeps it low-maintenance and lightning-quick.', 'The dashboard pulls live GitHub and WakaTime data to flex my coding stats in real time, looking fire on any device.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/ridwaanhall_com_20250607.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/ridwaanhall_com_20250607.webp",
     "img_name": "ridwaanhall_com_20250607.webp",
     "is_featured": True,
     "features": [{'title': 'Serverless Vibes', 'description': 'Hosted on Vercel for max uptime and easy scaling.'}, {'title': 'Live Dashboard', 'description': 'Shows my GitHub and WakaTime stats in real time.'}, {'title': 'Smooth Design', 'description': 'TailwindCSS makes it look good on any screen.'}],

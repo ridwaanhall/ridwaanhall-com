@@ -13,7 +13,7 @@ project_data = {
     "title": """Zeronine Handwriting Wizard""",
     "headline": """Crush Arabic and English digit/character recognition with CNN-powered magic.""",
     "description": ['The Zeronine App takes you from raw data to a slick website for handwritten recognition of Arabic and English digits and characters.', 'Uses Convolutional Neural Networks (CNNs) to nail classification with high accuracy.', 'A full journey from data collection to deployment, built for impact and efficiency.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/zeronine_handwritten_recognition.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/zeronine_handwritten_recognition.webp",
     "img_name": "zeronine_handwritten_recognition.webp",
     "is_featured": False,
     "features": [{'title': 'Bilingual Recognition', 'description': 'Handles Arabic and English digits and characters like a champ.'}, {'title': 'CNN Supercharge', 'description': 'Convolutional Neural Networks deliver precise handwriting detection.'}, {'title': 'End-to-End Flow', 'description': 'Covers data gathering, training, and website rollout.'}],

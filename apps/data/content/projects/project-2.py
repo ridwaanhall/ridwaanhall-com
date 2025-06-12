@@ -13,7 +13,7 @@ project_data = {
     "title": """TikTok Profile Digger""",
     "headline": """Scoop all the hot TikTok profile deets with Python and BeautifulSoup flair.""",
     "description": ['This Python project dives deep into TikTok profiles, snagging all the good stuff.', 'With BeautifulSoup, it pulls username, bio, followers, following, and likes straight from the page.', 'Perfect for data nerds and TikTok stalkers—saves time and sparks curiosity!'],
-    "image_url": "https://ridwaanhall.com/static/img/project/tiktok_data_extractor.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/tiktok_data_extractor.webp",
     "img_name": "tiktok_data_extractor.webp",
     "is_featured": False,
     "features": [{'title': 'Ultimate Data Grab', 'description': 'Snatches username, bio, followers, following, and likes in one swoop.'}, {'title': 'BeautifulSoup Magic', 'description': 'Parses TikTok’s HTML like a boss with BeautifulSoup.'}, {'title': 'Curiosity Crusher', 'description': 'Ideal for research, insights, or just feeding your TikTok obsession.'}],

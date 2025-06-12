@@ -13,7 +13,7 @@ project_data = {
     "title": """Drink Database API""",
     "headline": """Manage your drink data like a boss with this Django-powered API.""",
     "description": ['This Django and DRF-built API makes handling a drink database a total breeze.', 'Full CRUD vibes: add, update, fetch, or delete drinks with ease.', 'Perfect for devs looking to plug drink data into their apps with RESTful swagger.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/restful_drink_service.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/restful_drink_service.webp",
     "img_name": "restful_drink_service.webp",
     "is_featured": False,
     "features": [{'title': 'CRUD Crush', 'description': 'Create, read, update, or delete drinks like a pro.'}, {'title': 'DRF Domination', 'description': 'Django REST Framework brings scalable API heat.'}, {'title': 'RESTful Rules', 'description': 'Clean, efficient endpoints built on REST principles.'}],

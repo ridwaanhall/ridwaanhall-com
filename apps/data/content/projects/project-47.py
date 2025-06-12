@@ -22,7 +22,7 @@ project_data = {
         "Comprehensive visualization tools are embedded within the project, generating organized reports on model performance, including accuracy curves, loss graphs, confusion matrices, and sample misclassifications. This provides users with deeper insights into model behavior and enables data-driven refinement.",
         "Ideal for researchers, students, and AI enthusiasts, this project serves as both a learning tool and a solid foundation for custom neural network experiments. Whether you’re diving into deep learning principles or developing specialized models, this implementation offers a streamlined, intuitive environment for gaining hands-on experience."
     ],
-    "image_url": "https://ridwaanhall.com/static/img/project/neural_network_scratch.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/neural_network_scratch.webp",
     "img_name": "neural_network_scratch.webp",
     "is_featured": True,
     "features": [{'title': 'Pure NumPy Implementation', 'description': 'No TensorFlow or PyTorch, just optimized NumPy operations.'}, {'title': 'High Accuracy', 'description': 'Achieves 98.06% test accuracy on MNIST dataset.'}, {'title': 'Comprehensive CLI', 'description': '20+ configurable parameters for training and optimization.'}],

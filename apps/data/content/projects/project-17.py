@@ -13,7 +13,7 @@ project_data = {
     "title": """OpenAI Function Flex""",
     "headline": """Unleash GPT-3.5 Turbo for slick tasks with Python and Flask.""",
     "description": ['This project shows off OpenAI API skills, firing structured POST requests with Python’s requests library.', 'Comes with cool functions like ‘locationQuery’ for weather and ‘authorQuery’ for author info.', 'A dope showcase of OpenAI’s NLP for versatile, text-based tasks.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/openai_function_calling.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/openai_function_calling.webp",
     "img_name": "openai_function_calling.webp",
     "is_featured": False,
     "features": [{'title': 'Task-Targeted APIs', 'description': 'Query weather or author data with built-in functions.'}, {'title': 'Smooth Connect', 'description': 'Python’s requests library links up with OpenAI flawlessly.'}, {'title': 'Text Powerhouse', 'description': 'GPT-3.5 Turbo delivers smart, spot-on responses.'}],

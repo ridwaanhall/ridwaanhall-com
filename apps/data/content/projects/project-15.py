@@ -13,7 +13,7 @@ project_data = {
     "title": """Planetary API | Cosmic Data Hub""",
     "headline": """Explore the solar system with Flask and SQLAlchemy—space data, unlocked.""",
     "description": ['This RESTful Planetary API dishes out juicy details on planets in our solar system.', 'Get names, types, home stars, masses, radii, and Earth distances with ease.', 'Rocking JWT for secure access, CRUD ops, and Flask-Mail for email notifications.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/planetary_api_explore_universe.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/planetary_api_explore_universe.webp",
     "img_name": "planetary_api_explore_universe.webp",
     "is_featured": False,
     "features": [{'title': 'Planet Data Galore', 'description': 'Scoop up details on planets, types, and distances.'}, {'title': 'Locked & Loaded', 'description': 'JWT secures user access, registration, and recovery.'}, {'title': 'Dev-Friendly', 'description': 'CRUD ops keep data management clean and tight.'}],

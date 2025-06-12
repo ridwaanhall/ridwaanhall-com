@@ -13,7 +13,7 @@ project_data = {
     "title": """Emotion Detector CNN""",
     "headline": """Spot emotions like a pro with next-level CNNs and TIMM model magic.""",
     "description": ['This project uses Convolutional Neural Networks (CNNs) with pretrained TIMM models to classify emotions like a boss.', 'Boosted by dope augmentation tricks like random resizing, flipping, color jitter, CutMix, and MixUp for top-tier generalization.', 'Smart dataset splits for training and validation ensure the model’s performance is on point.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/emotion_recognition_timm_cnn.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/emotion_recognition_timm_cnn.webp",
     "img_name": "emotion_recognition_timm_cnn.webp",
     "is_featured": False,
     "features": [{'title': 'TIMM Model Swagger', 'description': 'High-performance pretrained models for reliable emotion detection.'}, {'title': 'Augmentation All-Stars', 'description': 'CutMix, MixUp, and more spice up data for better results.'}, {'title': 'Training Smarts', 'description': 'Optimized splits for max accuracy and generalization.'}],

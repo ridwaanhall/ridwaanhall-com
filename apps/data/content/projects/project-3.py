@@ -13,7 +13,7 @@ project_data = {
     "title": """Quran Explorer Web""",
     "headline": """Dive into the Quran with a sleek, modern twist—holy wisdom meets dope tech.""",
     "description": ['This Flask-powered site lets you explore Quran chapters, verses, and translations with style.', 'Rocking AdminLTE for a slick look and feel, it’s as functional as it is beautiful.', 'Pulls legit data from quranenc.com and quran.api-docs.io for a deep, trustworthy experience.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/quran_website_frontend_api.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/quran_website_frontend_api.webp",
     "img_name": "quran_website_frontend_api.webp",
     "is_featured": False,
     "features": [{'title': 'Killer APIs', 'description': 'Drops endpoints for chapters, Juz, verses, and translations like a champ.'}, {'title': 'Script Swag', 'description': 'Get verses in Uthmani, Uthmani Simple, Imlaei, or Imlaei Simple—your call.'}, {'title': 'Translation Hunt', 'description': 'Zero in on translations by chapter, Surah, Aya, or keyword.'}],

@@ -13,7 +13,7 @@ project_data = {
     "title": """PDDikti Data Vault""",
     "headline": """API unlocking Indonesia’s higher education data from PDDikti.""",
     "description": ['This API pulls fresh, juicy data from PDDikti, Indonesia’s higher ed database, covering universities, programs, and more.', 'Built for researchers and devs, it offers clear endpoints to snag structured info like accreditation stats.', 'Caching and optimizations keep it blazing fast under heavy traffic, with docs that make integration a breeze.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/api_pddikti_kemendiksaintek.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/api_pddikti_kemendiksaintek.webp",
     "img_name": "api_pddikti_kemendiksaintek.webp",
     "is_featured": True,
     "features": [{'title': 'Edu Data', 'description': 'Easy access to uni and program info.'}, {'title': 'Dev-Friendly', 'description': 'Simple setup for coders.'}, {'title': 'Fresh Stats', 'description': 'Always-updated PDDikti data.'}],

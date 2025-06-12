@@ -117,10 +117,10 @@ class DataService:
             return []
     
     @staticmethod
-    def get_privacy_policy() -> List[Dict[str, Any]]:
+    def get_privacy_policy() -> Dict[str, Any]:
         """Get privacy policy data."""
         try:
             return AboutManager.get_privacy_policy()
         except Exception as e:
             logger.error(f"Error fetching privacy policy data: {e}")
-            return []
+            return {}

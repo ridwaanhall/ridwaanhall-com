@@ -130,7 +130,7 @@ class SEOSchemaGenerator:
         return schema
     
     @staticmethod
-    def generate_blog_schema(about_data: Dict, blogs: List[Dict] = None) -> Dict:
+    def generate_blog_schema(about_data: Dict, blogs: Optional[List[Dict]] = None) -> Dict:
         """Generate Blog schema for blog listing."""
         schema = SEOConfig.SCHEMA_TEMPLATES['blog'].copy()
         

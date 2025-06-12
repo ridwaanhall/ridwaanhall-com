@@ -65,7 +65,7 @@ class SEOManager:
         ]
         return seo_data
     
-    def get_blog_list_seo(self, blogs: List[Dict] = None, page: int = 1) -> Dict:
+    def get_blog_list_seo(self, blogs: Optional[List[Dict]] = None, page: int = 1) -> Dict:
         """Get complete SEO data for blog listing page."""
         seo_data = SEOData.get_blog_list_seo(self.about_data, blogs)
         
@@ -97,7 +97,7 @@ class SEOManager:
         ]
         return seo_data
     
-    def get_projects_list_seo(self, projects: List[Dict] = None, page: int = 1) -> Dict:
+    def get_projects_list_seo(self, projects: Optional[List[Dict]] = None, page: int = 1) -> Dict:
         """Get complete SEO data for projects listing page."""
         seo_data = SEOData.get_projects_list_seo(self.about_data, projects)
         

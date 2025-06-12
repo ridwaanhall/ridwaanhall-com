@@ -50,7 +50,7 @@ class HomeView(HomepageSEOMixin, BaseView):
         
         # Add SEO data from mixin
         context.update(self.get_context_data(**context))
-        return render(request, self.template_name, context)
+        return self.render_to_response(context)
 
 
 class ContactView(ContactSEOMixin, BaseView):
@@ -72,7 +72,7 @@ class ContactView(ContactSEOMixin, BaseView):
         
         # Add SEO data from mixin
         context.update(self.get_context_data(**context))
-        return render(request, self.template_name, context)
+        return self.render_to_response(context)
 
 
 class PrivacyPolicyView(PrivacyPolicySEOMixin, BaseView):
@@ -93,4 +93,4 @@ class PrivacyPolicyView(PrivacyPolicySEOMixin, BaseView):
         
         # Add SEO data from mixin
         context.update(self.get_context_data(**context))
-        return render(request, self.template_name, context)
+        return self.render_to_response(context)

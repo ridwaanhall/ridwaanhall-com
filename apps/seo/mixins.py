@@ -72,14 +72,18 @@ class SEOMixin:
     
     def get_context_data(self, **kwargs):
         """Add SEO data to context."""
-        context = super().get_context_data(**kwargs) if hasattr(super(), 'get_context_data') else kwargs
+        if hasattr(super(), 'get_context_data'):
+            context = super().get_context_data(**kwargs)
+        else:
+            context = kwargs
         
         # Generate SEO data
         try:
-            page = int(self.request.GET.get('page', 1)) if hasattr(self, 'request') else 1
+            request = getattr(self, 'request', None)
+            page = int(request.GET.get('page', 1)) if request else 1
         except (ValueError, TypeError):
             page = 1
-            
+
         seo_kwargs = {
             'blogs': context.get('blogs', []),
             'projects': context.get('projects', []),

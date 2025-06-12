@@ -3,9 +3,6 @@ About views for displaying about page with experiences, education, and certifica
 Provides comprehensive portfolio information with proper error handling.
 """
 
-from django.shortcuts import render
-from django.core.exceptions import SuspiciousOperation
-
 from apps.core.base_views import BaseView
 from apps.data.data_service import DataService
 from apps.seo.mixins import AboutSEOMixin

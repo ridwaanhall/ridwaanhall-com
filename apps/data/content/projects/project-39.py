@@ -20,13 +20,14 @@ project_data = {
     "tech_stack": [
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["django"],
-        SkillsData.tech_stack["django_rest_framework"]
+        SkillsData.tech_stack["django_rest_framework"],
+        SkillsData.tech_stack["nginx"]
     ],
     "github_url": "https://github.com/ridwaanhall/a743-backend-pemula-python/tree/submission",
     "demo_url": "",
     "status": "completed",
     "created_at": None,
-    "updated_at": datetime.strptime("2025-04-20T14:53:55+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-06-14T00:49:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "API, E-commerce, Product Management, Django",
     "tags": [
         "API",

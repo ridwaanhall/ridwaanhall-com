@@ -13,7 +13,7 @@ project_data = {
     "title": """College Data Playground""",
     "headline": """Explore Indonesian college stats with a slick Flask-powered hub.""",
     "description": ['This Flask site is your one-stop shop for college data—students, lecturers, programs, and more.', 'Comes with a dope dashboard for stats, a search tool, and detailed pages for everything.', 'Built to make digging through academic data fun, fast, and easy.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/college_data_hub.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/college_data_hub.webp",
     "img_name": "college_data_hub.webp",
     "is_featured": False,
     "features": [{'title': 'Stats Dashboard', 'description': 'Visualize student, lecturer, and program counts like a pro.'}, {'title': 'Search Superstar', 'description': 'Find students, lecturers, colleges, or programs in a flash.'}, {'title': 'Deep Dives', 'description': 'Explore detailed data on students, lecturers, and more.'}],
@@ -27,8 +27,18 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2023-09-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Web App, Education, Data Visualization",
+    "tags": [
+        "College Data",
+        "Dashboard",
+        "Flask",
+        "Bootstrap",
+        "Education",
+        "Indonesia",
+        "Data Visualization",
+        "Academic Data",
+        "Search Tool"
+    ],
     "priority": 1,
     "slug": ""
 }

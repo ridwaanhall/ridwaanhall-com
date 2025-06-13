@@ -13,7 +13,7 @@ project_data = {
     "title": """Tsunami & Quake Dashboard""",
     "headline": """Track Indonesia’s quakes and tsunami alerts with real-time flair.""",
     "description": ['This Flask frontend serves up earthquake and tsunami data straight from BMKG, no filter.', 'With Chart.js visuals, Leaflet maps, OpenStreetMap, and Google Maps, it’s a seismic data party.', 'Rocking Bootstrap and OverlayScrollbars for a clean, responsive vibe.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/inatews_dashboard.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/inatews_dashboard.webp",
     "img_name": "inatews_dashboard.webp",
     "is_featured": False,
     "features": [{'title': 'Live Quake Data', 'description': 'Get historical and real-time earthquake info from BMKG.'}, {'title': 'Tsunami Heads-Up', 'description': 'Stay alert with live tsunami warnings across Indonesia.'}, {'title': 'Visual Feast', 'description': 'Interactive maps, shakemaps, and charts for epic insights.'}],
@@ -32,8 +32,22 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2023-09-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Dashboard, Data Visualization, Disaster Monitoring",
+    "tags": [
+        "Dashboard",
+        "Earthquake",
+        "Tsunami",
+        "BMKG",
+        "Indonesia",
+        "Flask",
+        "Chart.js",
+        "Leaflet",
+        "OpenStreetMap",
+        "Google Maps",
+        "Bootstrap",
+        "Data Visualization",
+        "Disaster Monitoring"
+    ],
     "priority": 1,
     "slug": ""
 }

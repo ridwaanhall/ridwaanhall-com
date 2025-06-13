@@ -13,7 +13,7 @@ project_data = {
     "title": """Election Digit Scanner""",
     "headline": """Nail handwritten digit recognition for 2024 Indonesia vote recaps with HOG and SVM.""",
     "description": ['This project kills data entry errors in the 2024 Indonesian Presidential Election vote recap with cutting-edge pattern recognition.', 'Uses Histogram of Oriented Gradients (HOG) for feature extraction and K-Nearest Neighbors (KNN) plus Support Vector Machine (SVM) for classification, hitting over 97% accuracy.', 'Experiments prove HOG + SVM is the champ, delivering top-tier performance across dataset splits.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/default_project_image.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/default_project_image.webp",
     "img_name": "default_project_image.webp",
     "is_featured": False,
     "features": [{'title': 'HOG Feature Magic', 'description': 'Extracts edges and gradients for pinpoint digit recognition.'}, {'title': 'SVM & KNN Power', 'description': 'Drops 97%+ accuracy with killer classification algorithms.'}, {'title': 'Performance Breakdown', 'description': 'Compares extraction vs. no-extraction for clear wins.'}],
@@ -28,8 +28,19 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2024-06-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Machine Learning, Pattern Recognition, Election, Computer Vision",
+    "tags": [
+        "Digit Recognition",
+        "HOG",
+        "SVM",
+        "KNN",
+        "Election Data",
+        "Pattern Recognition",
+        "Python",
+        "Indonesia",
+        "Handwritten Data",
+        "2024 Election"
+    ],
     "priority": 1,
     "slug": ""
 }

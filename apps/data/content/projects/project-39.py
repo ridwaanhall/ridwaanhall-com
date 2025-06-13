@@ -13,7 +13,7 @@ project_data = {
     "title": """OpenShop Product API""",
     "headline": """Slick RESTful API for juggling product data with Django REST Framework.""",
     "description": ['This RESTful API, built with Django REST Framework, handles product data like a champ.', 'Supports full CRUD, product searches, and HATEOAS for smooth navigation.', 'Comes with soft delete, data validation, and proper status codes for a polished experience.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/openshop_restful_api.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/openshop_restful_api.webp",
     "img_name": "openshop_restful_api.webp",
     "is_featured": False,
     "features": [{'title': 'Full CRUD', 'description': 'Create, read, update, and delete products with ease.'}, {'title': 'Search by Name', 'description': 'Find products by name with a clean query.'}, {'title': 'HATEOAS Links', 'description': 'Navigate resources with embedded API links.'}, {'title': 'Soft Delete', 'description': 'Mark products as deleted without losing data.'}],
@@ -27,8 +27,20 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2025-04-20T14:53:55+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "API, E-commerce, Product Management, Django",
+    "tags": [
+        "API",
+        "E-commerce",
+        "Product Management",
+        "Django",
+        "Django REST Framework",
+        "Python",
+        "CRUD",
+        "HATEOAS",
+        "Soft Delete",
+        "Backend",
+        "Dicoding"
+    ],
     "priority": 1,
     "slug": ""
 }

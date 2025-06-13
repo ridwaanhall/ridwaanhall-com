@@ -122,13 +122,13 @@ blog_data = {
     "id": 1,
     "title": "Python 101: Your Chill Guide to Getting Started",
     "description": "New to coding? Let's dive into why Python's the coolest way to kick off your programming adventure!",
-    "image_url": "https://ridwaanhall.com/static/img/blog/start_with_python.webp",
+    "image_url": f"{settings.BLOG_BASE_IMG_URL}/start_with_python.webp",
     "img_name": "start_with_python.webp",
     "created_at": datetime.strptime("2025-03-24T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-05-10T13:13:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",
     "username": "ridwaanhall",
-    "author_image": "https://ridwaanhall.com/static/img/ridwaanhall.webp",
+    "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
     "content": [
         # Rich HTML content with TailwindCSS styling
         "<p class='mb-4 text-sm md:text-base lg:text-lg'>Python's like the Swiss Army knife of coding...</p>",
@@ -167,7 +167,7 @@ project_data = {
         "Just pop in a user ID and zone ID, and boom—our API hooks you up with the player's username.",
         "Light, fast, and a total game-changer for MLBB fans."
     ],
-    "image_url": "https://ridwaanhall.com/static/img/project/mlbb_username_checker.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_username_checker.webp",
     "img_name": "mlbb_username_checker.webp",
     "is_featured": False,
     "features": [
@@ -387,13 +387,13 @@ blog_data = {
     "id": 15,
     "title": "Advanced Django Optimization Techniques",
     "description": "Master advanced Django optimization for enterprise-grade performance.",
-    "image_url": "https://ridwaanhall.com/static/img/blog/django_optimization.webp",
+    "image_url": f"{settings.BLOG_BASE_IMG_URL}/django_optimization.webp",
     "img_name": "django_optimization.webp",
     "created_at": datetime.strptime("2025-06-09T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-06-09T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",
     "username": "ridwaanhall",
-    "author_image": "https://ridwaanhall.com/static/img/ridwaanhall.webp",
+    "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
     "content": [
         # Your comprehensive blog content here
     ],
@@ -432,7 +432,7 @@ project_data = {
         "Real-time insights and predictions using machine learning",
         "Professional dashboard with interactive visualizations"
     ],
-    "image_url": "https://ridwaanhall.com/static/img/project/ai_portfolio_analytics.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/ai_portfolio_analytics.webp",
     "img_name": "ai_portfolio_analytics.webp",
     "is_featured": True,
     "features": [

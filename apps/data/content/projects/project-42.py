@@ -13,7 +13,7 @@ project_data = {
     "title": """PDDikti Data Vault""",
     "headline": """API unlocking Indonesia’s higher education data from PDDikti.""",
     "description": ['This API pulls fresh, juicy data from PDDikti, Indonesia’s higher ed database, covering universities, programs, and more.', 'Built for researchers and devs, it offers clear endpoints to snag structured info like accreditation stats.', 'Caching and optimizations keep it blazing fast under heavy traffic, with docs that make integration a breeze.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/api_pddikti_kemendiksaintek.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/api_pddikti_kemendiksaintek.webp",
     "img_name": "api_pddikti_kemendiksaintek.webp",
     "is_featured": True,
     "features": [{'title': 'Edu Data', 'description': 'Easy access to uni and program info.'}, {'title': 'Dev-Friendly', 'description': 'Simple setup for coders.'}, {'title': 'Fresh Stats', 'description': 'Always-updated PDDikti data.'}],
@@ -28,8 +28,19 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "API, Education, Data Integration",
+    "tags": [
+        "API",
+        "PDDikti",
+        "Indonesia",
+        "Higher Education",
+        "Data Integration",
+        "Django",
+        "Python",
+        "Accreditation",
+        "University Data",
+        "Open Data"
+    ],
     "priority": 1,
     "slug": ""
 }

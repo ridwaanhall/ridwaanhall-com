@@ -13,7 +13,7 @@ project_data = {
     "title": """Number Spotter App | Neural Net Magic""",
     "headline": """Catch hand-drawn numbers in real-time with MLP and a slick Python GUI.""",
     "description": ['This GUI app uses a Multi-Layer Perceptron to spot numbers (0-9) drawn by you.', 'Tweak seven sliders for live predictions from the neural network, no lag.', 'Drops insights on training progress, like epochs and error stats, for a fun learning vibe.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/neural_number_recognition.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/neural_number_recognition.webp",
     "img_name": "neural_number_recognition.webp",
     "is_featured": False,
     "features": [{'title': 'Slider Shenanigans', 'description': 'Adjust features for instant number predictions.'}, {'title': 'MLP Muscle', 'description': 'Neural nets nail number recognition with precision.'}, {'title': 'Training Peek', 'description': 'See epoch counts and error trends for clarity.'}],
@@ -27,8 +27,17 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Machine Learning, GUI, Neural Network, Education",
+    "tags": [
+        "Neural Network",
+        "MLP",
+        "Handwritten Digit Recognition",
+        "Python",
+        "GUI",
+        "Education",
+        "Real-time Prediction",
+        "Training Visualization"
+    ],
     "priority": 1,
     "slug": ""
 }

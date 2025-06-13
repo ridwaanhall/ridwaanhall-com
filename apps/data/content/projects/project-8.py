@@ -13,7 +13,7 @@ project_data = {
     "title": """BMKG Quake Watcher API (Unofficial)""",
     "headline": """Stay in the loop with real-time earthquake and tsunami updates via Flask.""",
     "description": ['This Flask-based API dishes out earthquake data in XML, JSON, and GeoJSON formats, no cap.', 'Covers quakes over 5 magnitude, recent tremors, tsunami alerts, and seismic news.', 'A must-have for researchers, devs, or anyone vibing with quake info.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/bmkg_quake_tracker_api.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/bmkg_quake_tracker_api.webp",
     "img_name": "bmkg_quake_tracker_api.webp",
     "is_featured": False,
     "features": [{'title': 'Flexi-Format Data', 'description': 'Grab quake info in XML, JSON, or GeoJSON—your pick.'}, {'title': 'Live Alerts', 'description': 'Stay woke with real-time tsunami and seismic updates.'}, {'title': 'Data Deep Dive', 'description': 'Get magnitude, location, PGA Max, MMI, and more.'}],
@@ -26,8 +26,19 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2023-08-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "API, Disaster Monitoring, Earthquake, Flask",
+    "tags": [
+        "BMKG",
+        "Earthquake",
+        "Tsunami",
+        "API",
+        "Flask",
+        "Real-time Data",
+        "Indonesia",
+        "GeoJSON",
+        "XML",
+        "JSON"
+    ],
     "priority": 1,
     "slug": ""
 }

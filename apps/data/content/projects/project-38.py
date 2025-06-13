@@ -13,7 +13,7 @@ project_data = {
     "title": """Lumina Attendance Saver""",
     "headline": """Auto-attendance tool for students who forget the roll call.""",
     "description": ['Lumina pumps out encrypted attendance codes in a flash, saving students from missing class check-ins.', 'Built for schools, it adapts to different course setups with secure, valid codes.', 'The interface is stupid simple, perfect for those last-second scrambles.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/lumina.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/lumina.webp",
     "img_name": "lumina.webp",
     "is_featured": False,
     "features": [{'title': 'Code Generator', 'description': 'Spits out secure codes instantly.'}, {'title': 'Easy UI', 'description': 'No fuss, even under pressure.'}, {'title': 'Safe Codes', 'description': 'Encryption keeps things legit.'}],
@@ -29,8 +29,19 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Education, Attendance, Automation, Django",
+    "tags": [
+        "Attendance",
+        "Automation",
+        "Django",
+        "Python",
+        "Bulma",
+        "Vercel",
+        "Cloudflare",
+        "Student Tool",
+        "Code Generator",
+        "School"
+    ],
     "priority": 1,
     "slug": ""
 }

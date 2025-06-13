@@ -13,7 +13,7 @@ project_data = {
     "title": """PDDIKTI Data API | College Insights""",
     "headline": """Tap into Indonesian college data with this dope Django-powered API.""",
     "description": ['This Django REST Framework API serves up student, lecturer, college, and program info with ease.', 'Built for devs who need reliable, quick access to higher ed data for their apps.', 'Keeps things simple and efficient for all your academic data needs.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/pddikti_api_django.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/pddikti_api_django.webp",
     "img_name": "pddikti_api_django.webp",
     "is_featured": False,
     "features": [{'title': 'Academic Data Drop', 'description': 'Grab student, lecturer, college, and program info.'}, {'title': 'DRF Power', 'description': 'Django REST Framework fuels scalable API vibes.'}, {'title': 'Clean Endpoints', 'description': 'Structured routes for smooth data integration.'}],
@@ -27,8 +27,19 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2023-11-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "API, Education, Data, Django",
+    "tags": [
+        "API",
+        "PDDIKTI",
+        "College Data",
+        "Django",
+        "Django REST Framework",
+        "Python",
+        "Education",
+        "Academic Data",
+        "Student Data",
+        "Lecturer Data"
+    ],
     "priority": 1,
     "slug": ""
 }

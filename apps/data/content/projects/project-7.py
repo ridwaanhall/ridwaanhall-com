@@ -13,7 +13,7 @@ project_data = {
     "title": """Insta Media Grabber API""",
     "headline": """Yo, snatch Instagram pics, stories, and posts in HD with Flask and save-free.com.""",
     "description": ['This Flask-powered API is your ticket to downloading Instagram profile pics, stories, and post media in crisp HD.', 'Taps into save-free.com for legit, reliable media fetching without the fuss.', 'Perfect for quick, no-sweat media downloads that keep things smooth.'],
-    "image_url": "https://ridwaanhall.com/static/img/project/instagram_media_downloader.webp",
+    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/instagram_media_downloader.webp",
     "img_name": "instagram_media_downloader.webp",
     "is_featured": False,
     "features": [{'title': 'HD Profile Pics', 'description': 'Grab crystal-clear profile pictures in a snap.'}, {'title': 'Story Swiper', 'description': 'Download Instagram stories like it’s nothing.'}, {'title': 'Post Media Magic', 'description': 'Scoop up images and videos from posts in a heartbeat.'}],
@@ -26,8 +26,18 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2023-08-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "API, Social Media, Instagram, Flask",
+    "tags": [
+        "Instagram",
+        "API",
+        "Flask",
+        "Media Downloader",
+        "Profile Picture",
+        "Stories",
+        "Post Media",
+        "Python",
+        "HD Download"
+    ],
     "priority": 1,
     "slug": ""
 }

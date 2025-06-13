@@ -59,14 +59,19 @@
                                     <span class="text-xs sm:text-sm truncate max-w-[100px] sm:max-w-[150px]">{{ blog.username }}</span>
                                 </div>
                                 
-                                <div class="flex items-center">
-                                    <span class="mr-1 sm:mr-2">
+                                <div class="flex items-center min-w-[110px] sm:min-w-[150px] relative">
+                                    <!-- Date: fade out and move down on hover -->
+                                    <span class="transition-all duration-300 transform group-hover:opacity-0 group-hover:translate-y-4 group-hover:pointer-events-none opacity-100 pointer-events-auto translate-y-0 absolute left-0 w-full flex justify-end">
                                         <time datetime="{{ blog.updated_at|date:'c' }}" class="text-xs hidden sm:inline">{{ blog.updated_at|date:"F j, Y" }}</time>
                                         <time datetime="{{ blog.updated_at|date:'c' }}" class="text-xs sm:hidden">{{ blog.updated_at|date:"F j, Y" }}</time>
                                     </span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 text-indigo-400 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                    </svg>
+                                    <!-- Read more: fade in and move down from top on hover -->
+                                    <span class="transition-all duration-300 transform group-hover:opacity-100 group-hover:translate-y-0 opacity-0 pointer-events-none group-hover:pointer-events-auto -translate-y-4 flex items-center text-xs sm:text-sm absolute left-0 w-full justify-end">
+                                        Read more
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                        </svg>
+                                    </span>
                                 </div>
                             </div>
                         </div>

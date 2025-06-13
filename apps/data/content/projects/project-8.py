@@ -26,8 +26,19 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2023-08-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "API, Disaster Monitoring, Earthquake, Flask",
+    "tags": [
+        "BMKG",
+        "Earthquake",
+        "Tsunami",
+        "API",
+        "Flask",
+        "Real-time Data",
+        "Indonesia",
+        "GeoJSON",
+        "XML",
+        "JSON"
+    ],
     "priority": 1,
     "slug": ""
 }

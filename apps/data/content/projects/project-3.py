@@ -27,8 +27,18 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2023-07-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Web App, Religion, Quran, Flask",
+    "tags": [
+        "Quran",
+        "Web App",
+        "Flask",
+        "AdminLTE",
+        "API Integration",
+        "Translation",
+        "Islamic",
+        "Data Visualization",
+        "Religious Study"
+    ],
     "priority": 1,
     "slug": ""
 }

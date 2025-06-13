@@ -26,8 +26,18 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2023-11-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Web App, CRM, User Management, Django",
+    "tags": [
+        "CRM",
+        "User Management",
+        "Django",
+        "Python",
+        "CRUD",
+        "Web App",
+        "Dashboard",
+        "HR",
+        "Support Tool"
+    ],
     "priority": 1,
     "slug": ""
 }

@@ -27,8 +27,17 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2023-11-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "API, Database, Drinks, Django",
+    "tags": [
+        "API",
+        "Django",
+        "Django REST Framework",
+        "Drink Database",
+        "CRUD",
+        "Python",
+        "RESTful",
+        "Backend"
+    ],
     "priority": 1,
     "slug": ""
 }

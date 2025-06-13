@@ -26,8 +26,20 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Machine Learning, Sentiment Analysis, App Review, NLP",
+    "tags": [
+        "Tokopedia",
+        "Sentiment Analysis",
+        "Machine Learning",
+        "Python",
+        "NLP",
+        "Review Scraper",
+        "Google Play",
+        "Text Analysis",
+        "TF-IDF",
+        "Word2Vec",
+        "Dicoding"
+    ],
     "priority": 1,
     "slug": ""
 }

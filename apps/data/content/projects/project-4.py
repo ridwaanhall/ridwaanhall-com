@@ -27,8 +27,18 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2023-07-30T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Web App, Weather, Disaster Monitoring, Flask",
+    "tags": [
+        "BMKG",
+        "Weather",
+        "Earthquake",
+        "Flask",
+        "AdminLTE",
+        "Indonesia",
+        "Real-time Data",
+        "Disaster Monitoring",
+        "Forecast"
+    ],
     "priority": 1,
     "slug": ""
 }

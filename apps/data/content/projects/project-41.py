@@ -30,8 +30,23 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2025-04-20T14:24:22+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "API, Gaming, MLBB, Web App, Data Visualization",
+    "tags": [
+        "MLBB",
+        "Mobile Legends",
+        "API",
+        "REST API",
+        "Django",
+        "Next.js",
+        "Game Stats",
+        "Hero Data",
+        "Meta Analysis",
+        "Shadcn UI",
+        "Vercel",
+        "Python",
+        "Gaming",
+        "Data Visualization"
+    ],
     "priority": 1,
     "slug": ""
 }

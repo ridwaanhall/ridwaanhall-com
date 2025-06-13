@@ -25,8 +25,17 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Automation, Messaging, Social Media, Python Script",
+    "tags": [
+        "NGL",
+        "Messaging",
+        "Automation",
+        "Python",
+        "API",
+        "Web Requests",
+        "Rate Limiting",
+        "Social Media"
+    ],
     "priority": 1,
     "slug": ""
 }

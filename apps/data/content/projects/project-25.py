@@ -28,8 +28,19 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2024-06-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Machine Learning, Pattern Recognition, Election, Computer Vision",
+    "tags": [
+        "Digit Recognition",
+        "HOG",
+        "SVM",
+        "KNN",
+        "Election Data",
+        "Pattern Recognition",
+        "Python",
+        "Indonesia",
+        "Handwritten Data",
+        "2024 Election"
+    ],
     "priority": 1,
     "slug": ""
 }

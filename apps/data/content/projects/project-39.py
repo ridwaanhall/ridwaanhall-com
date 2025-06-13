@@ -27,8 +27,20 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2025-04-20T14:53:55+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "API, E-commerce, Product Management, Django",
+    "tags": [
+        "API",
+        "E-commerce",
+        "Product Management",
+        "Django",
+        "Django REST Framework",
+        "Python",
+        "CRUD",
+        "HATEOAS",
+        "Soft Delete",
+        "Backend",
+        "Dicoding"
+    ],
     "priority": 1,
     "slug": ""
 }

@@ -28,8 +28,19 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2024-04-30T23:59:59+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Web App, Dashboard, Election, Indonesia",
+    "tags": [
+        "Dashboard",
+        "Pemilu 2024",
+        "Election Data",
+        "Django",
+        "Django REST Framework",
+        "Bootstrap",
+        "Python",
+        "Indonesia",
+        "Vote Tracking",
+        "Data Visualization"
+    ],
     "priority": 1,
     "slug": ""
 }

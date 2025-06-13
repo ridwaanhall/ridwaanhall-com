@@ -32,8 +32,22 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2023-09-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Dashboard, Data Visualization, Disaster Monitoring",
+    "tags": [
+        "Dashboard",
+        "Earthquake",
+        "Tsunami",
+        "BMKG",
+        "Indonesia",
+        "Flask",
+        "Chart.js",
+        "Leaflet",
+        "OpenStreetMap",
+        "Google Maps",
+        "Bootstrap",
+        "Data Visualization",
+        "Disaster Monitoring"
+    ],
     "priority": 1,
     "slug": ""
 }

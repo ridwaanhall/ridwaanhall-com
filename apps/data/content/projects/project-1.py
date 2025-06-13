@@ -25,8 +25,17 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2023-03-30T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "API, Gaming, Utility",
+    "tags": [
+        "API",
+        "Mobile Legends",
+        "MLBB",
+        "Username Finder",
+        "Python",
+        "Game Utility",
+        "User Lookup",
+        "Gaming Tool"
+    ],
     "priority": 1,
     "slug": ""
 }

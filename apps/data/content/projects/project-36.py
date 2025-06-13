@@ -29,8 +29,19 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "AI, Chatbot, Web App, Next.js",
+    "tags": [
+        "AI Chatbot",
+        "Next.js",
+        "Once UI",
+        "TailwindCSS",
+        "TypeScript",
+        "Vercel Postgres",
+        "Radix UI",
+        "Streaming API",
+        "Conversational AI",
+        "Web App"
+    ],
     "priority": 1,
     "slug": ""
 }

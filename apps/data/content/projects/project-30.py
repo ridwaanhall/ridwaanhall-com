@@ -26,8 +26,18 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2024-12-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Optimization, Algorithm, Visualization, Mapping",
+    "tags": [
+        "Ant Colony Optimization",
+        "ACO",
+        "Route Planning",
+        "Indonesia",
+        "Python",
+        "Visualization",
+        "Mapping",
+        "Pathfinding",
+        "Algorithm"
+    ],
     "priority": 1,
     "slug": ""
 }

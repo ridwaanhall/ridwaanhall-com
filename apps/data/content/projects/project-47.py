@@ -36,8 +36,8 @@ project_data = {
     "status": "completed",
     "created_at": datetime.strptime("2025-06-04T18:57:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-06-06T18:57:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "machine learning",
+    "tags": ["neural network", "deep learning", "from scratch", "numpy", "mnist", "classification", "machine learning"],
     "priority": 1,
     "slug": ""
 }

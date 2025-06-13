@@ -29,8 +29,19 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2024-01-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Machine Learning, Forecasting, Energy, Time Series",
+    "tags": [
+        "RNN",
+        "LSTM",
+        "GRU",
+        "Electricity Demand",
+        "Forecasting",
+        "Time Series",
+        "Energy Management",
+        "Python",
+        "PyTorch",
+        "Weather Data"
+    ],
     "priority": 1,
     "slug": ""
 }

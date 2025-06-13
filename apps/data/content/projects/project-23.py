@@ -26,8 +26,18 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2024-03-01T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "API, Election, Data, Indonesia",
+    "tags": [
+        "API",
+        "Pemilu 2024",
+        "Election Data",
+        "Django REST Framework",
+        "Python",
+        "Indonesia",
+        "Voting Stats",
+        "Candidate Data",
+        "Real-time Data"
+    ],
     "priority": 1,
     "slug": ""
 }

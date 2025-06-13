@@ -26,8 +26,17 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2024-06-25T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Web App, Entertainment, Personality, Django",
+    "tags": [
+        "Khodam",
+        "Color Finder",
+        "Django",
+        "Python",
+        "Personality Test",
+        "Entertainment",
+        "Online Checker",
+        "Mystical"
+    ],
     "priority": 1,
     "slug": ""
 }

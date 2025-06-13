@@ -27,8 +27,18 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Social Media, Analytics, Instagram, Python Script",
+    "tags": [
+        "Instagram",
+        "Analytics",
+        "Followers",
+        "Following",
+        "Python",
+        "JSON Data",
+        "Engagement",
+        "Influencer Tool",
+        "Social Media"
+    ],
     "priority": 1,
     "slug": ""
 }

@@ -27,8 +27,19 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2023-11-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "API, Education, Data, Django",
+    "tags": [
+        "API",
+        "PDDIKTI",
+        "College Data",
+        "Django",
+        "Django REST Framework",
+        "Python",
+        "Education",
+        "Academic Data",
+        "Student Data",
+        "Lecturer Data"
+    ],
     "priority": 1,
     "slug": ""
 }

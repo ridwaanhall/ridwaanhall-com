@@ -27,8 +27,18 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Portfolio, Web App, Dashboard, Django",
+    "tags": [
+        "Portfolio",
+        "Django",
+        "Vuexy HTML",
+        "GitHub API",
+        "Dashboard",
+        "Personal Website",
+        "Python",
+        "Stats Visualization",
+        "Mobile Friendly"
+    ],
     "priority": 1,
     "slug": ""
 }

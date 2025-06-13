@@ -26,8 +26,17 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2024-08-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Machine Learning, Computer Vision, Handwriting Recognition",
+    "tags": [
+        "Handwriting Recognition",
+        "CNN",
+        "Arabic Characters",
+        "English Characters",
+        "Python",
+        "Data Collection",
+        "Deployment",
+        "Web App"
+    ],
     "priority": 1,
     "slug": ""
 }

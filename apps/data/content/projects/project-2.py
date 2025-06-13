@@ -26,8 +26,18 @@ project_data = {
     "status": "completed",
     "created_at": None,
     "updated_at": datetime.strptime("2023-04-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "",
-    "tags": [],
+    "category": "Web Scraping, Social Media, Data Extraction",
+    "tags": [
+        "TikTok",
+        "Web Scraping",
+        "BeautifulSoup",
+        "Python",
+        "Profile Data",
+        "Followers",
+        "Bio Extraction",
+        "Social Media",
+        "Data Mining"
+    ],
     "priority": 1,
     "slug": ""
 }

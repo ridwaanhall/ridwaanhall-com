@@ -14,7 +14,7 @@
         {% for blog in blogs %}
         <div class="flex-none w-80">
             <a href="{% url 'blog_detail' title=blog.title|slugify %}">
-                <div style="height: 350px;" class="group relative overflow-hidden rounded-xl border border-zinc-700 transition-all duration-300 transform h-full hover:border-zinc-500">
+                <div style="height: 350px;" class="group relative overflow-hidden rounded-xl border border-zinc-700 transition-all duration-300 transform h-full">
                     <div class="absolute inset-0">
                         <img src="https://wsrv.nl/?url={{ blog.image_url }}&w=300&h=300" 
                              alt="Featured image for blog: {{ blog.title }}" 
@@ -44,7 +44,7 @@
                         <h3 class="text-base sm:text-lg font-semibold mb-1 sm:mb-2 line-clamp-2 relative inline-block">
                             <span class="relative transition-colors duration-300 group-hover:underline group-hover:decoration-2">{{ blog.title }}</span>
                         </h3>
-                        <p class="text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 mb-2">{{ blog.description }}</p>
+                        <p class="text-xs sm:text-sm text-zinc-400 line-clamp-2 sm:line-clamp-3 mb-2">{{ blog.description }}</p>
                         
                         <div class="mt-auto">
                             <hr class="border-t border-zinc-500 w-full mb-2 sm:mb-3">

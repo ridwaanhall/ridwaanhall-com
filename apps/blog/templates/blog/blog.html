@@ -40,7 +40,7 @@
                                             <time datetime="{{ blog.updated_at|date:'c' }}" class="font-mono text-xs">{{ blog.updated_at|date:"g:i A T, D F j, Y" }}</time>
                                         </div>
                                         <h2 class="text-lg sm:text-xl md:text-2xl font-semibold mb-1 sm:mb-2"><a href="{% url 'blog_detail' title=blog.title|slugify %}" class="relative inline-block after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-zinc-400 hover:after:w-full after:transition-all after:duration-300">{{ blog.title }}</a></h2>
-                                        <p class="text-sm mb-2 sm:mb-4 line-clamp-2">{{ blog.description }}</p>
+                                        <p class="text-sm text-zinc-400 mb-2 sm:mb-4 line-clamp-2">{{ blog.description }}</p>
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center space-x-2 sm:space-x-3">
                                                 <img src="{{ blog.author_image }}" alt="{{ blog.username }}" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover" width="358" height="358">
@@ -115,7 +115,7 @@
                                 <h3 class="text-base sm:text-lg font-semibold mb-1 sm:mb-2 line-clamp-2 relative inline-block">
                                     <span class="relative transition-colors duration-300 group-hover:underline group-hover:decoration-2">{{ blog.title }}</span>
                                 </h3>
-                                <p class="text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 mb-2">{{ blog.description }}</p>
+                                <p class="text-xs sm:text-sm text-zinc-400 line-clamp-2 sm:line-clamp-3 mb-2">{{ blog.description }}</p>
                                 
                                 <div class="mt-auto">
                                     <hr class="border-t border-zinc-500 w-full mb-2 sm:mb-3">

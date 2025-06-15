@@ -51,7 +51,8 @@
                                         </svg>
                                     </div>
                                     {% endif %}
-                                    <span class="font-medium text-indigo-300 mr-1">{{ message.reply_to.user_full_name }}</span>
+                                    <span class="text-zinc-500">Replying to</span>
+                                    <span class="font-medium text-indigo-300 mr-1 ml-1">{{ message.reply_to.user_full_name }}</span>
                                     {% if message.reply_to.user_is_author %}
                                     <span class="bg-yellow-500/20 text-yellow-300 px-1.5 py-0.5 rounded-full text-xs mr-2 flex items-center">
                                         <svg class="w-2.5 h-2.5 mr-1" fill="currentColor" viewBox="0 0 24 24">
@@ -60,8 +61,8 @@
                                         Author
                                     </span>
                                     {% endif %}
-                                    <span class="text-zinc-500">replied:</span>
-                                    <span class="ml-1 truncate max-w-32 sm:max-w-48 text-zinc-300">"{{ message.reply_to.message }}"</span>
+                                    <span class="text-zinc-500">:</span>
+                                    <span class="ml-1 truncate max-w-32 sm:max-w-48">"{{ message.reply_to.message }}"</span>
                                 </div>
                             </div>
                             {% endif %}
@@ -81,7 +82,7 @@
                                         <div
                                             class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 border-2 border-zinc-700/50 transition-all duration-300 group-hover:border-indigo-400/50"
                                         >
-                                            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24">
                                                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                                             </svg>
                                         </div>
@@ -93,7 +94,7 @@
                                         <!-- Header -->
                                         <div class="flex items-center justify-between mb-2">
                                             <div class="flex items-center gap-2 flex-wrap">
-                                                <span class="font-semibold text-white text-sm sm:text-base">{{ message.user_full_name }}</span>
+                                                <span class="font-semibold text-sm sm:text-base">{{ message.user_full_name }}</span>
                                                 {% if message.user_is_author %}
                                                 <span class="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 text-yellow-300 px-2 py-1 rounded-lg text-xs font-medium flex items-center border border-yellow-500/20">
                                                     <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
@@ -108,7 +109,7 @@
                                                     {{ message.timestamp|date:"d/m/Y, H:i" }}
                                                 </time>
                                                 {% if user.is_authenticated %}                                                <button
-                                                    class="reply-btn transition-all duration-200 p-2 rounded-lg border border-transparent hover:border-zinc-600/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                                                    class="reply-btn transition-all duration-200 p-2 rounded-lg border border-transparent hover:border-zinc-600/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-zinc-500/50"
                                                     data-message-id="{{ message.pk }}"
                                                     data-user="{{ message.user_full_name }}"
                                                     data-message="{{ message.message }}"
@@ -148,7 +149,7 @@
                             <h5 class="text-lg font-medium mb-2">Welcome to my Guestbook!</h5>
                             <p class="mb-4">No messages yet. Be the first to leave a message!</p>
                             {% if not user.is_authenticated %}
-                            <a href="{% provider_login_url 'google' %}" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200">
+                            <a href="{% provider_login_url 'google' %}" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors duration-200">
                                 <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                                     <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -163,19 +164,19 @@
                     </div>
 
                     <!-- Message Input -->
-                    <div class="border-t border-zinc-700 p-4">
+                    <div class="border-t border-zinc-700 p-3">
                         {% if user.is_authenticated %}
                         <!-- Reply indicator -->
                         <div id="reply-indicator" class="hidden mb-3">
-                            <div class="border border-indigo-500 rounded-lg p-3 flex justify-between items-center">
+                            <div class="border border-zinc-500 rounded-lg p-3 flex justify-between items-center">
                                 <div class="flex items-center text-zinc-400 text-sm">
-                                    <svg class="w-4 h-4 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-4 h-4 mr-2 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                     </svg>
                                     <span class="text-zinc-500">Replying to</span>
                                     <strong id="reply-to-user" class="text-indigo-300 mx-1"></strong>
                                     <span class="text-zinc-500">:</span>
-                                    <span id="reply-to-message" class="ml-1 truncate max-w-32 sm:max-w-48 text-zinc-300"></span>
+                                    <span id="reply-to-message" class="ml-1 truncate max-w-32 sm:max-w-48"></span>
                                 </div>
                                 <button type="button" id="cancel-reply" class="p-1 rounded border border-transparent hover:border-zinc-600/50 transition-colors">
                                     <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -190,19 +191,19 @@
                             <input
                                 type="text"
                                 id="message-input"
-                                class="flex-1 px-4 py-3 border border-zinc-600 rounded-lg text-white placeholder-zinc-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-transparent"
+                                class="flex-1 px-4 py-3 border border-zinc-600 rounded-lg placeholder-zinc-400 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 bg-transparent"
                                 placeholder="Type your message..."
                                 maxlength="500"
                                 required
                             />
-                            <button type="submit" class="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center">
+                            <button type="submit" class="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition-colors duration-200 flex items-center justify-center">
                                 <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="22" width="22" xmlns="http://www.w3.org/2000/svg"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                             </button>
                         </form>
                         {% if user.is_authenticated %}
                         <div class="mt-3 text-sm text-zinc-400">
                             <span>Signed in as {{ current_user_profile.full_name|default:user.username }}{% if user.email %} ({{ user.email }}){% endif %} • </span>
-                            <form method="post" action="{% url 'logout' %}" class="inline">
+                            <form method="post" action="{% url 'account_logout' %}" class="inline">
                                 {% csrf_token %}
                                 <button type="submit" class="text-zinc-400 hover:text-indigo-400 underline transition-colors">
                                     Sign Out
@@ -218,8 +219,8 @@
                                 </svg>
                                 Sign in to leave a message in the guestbook
                             </p>
-                            <a href="{% provider_login_url 'google' %}" class="inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200">
-                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <a href="{% provider_login_url 'google' %}" class="inline-flex items-center px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors duration-200 text-sm">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                                     <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
                                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
@@ -323,7 +324,7 @@
                                 ? `<img src="${data.message.profile_image}" alt="${data.message.user}" 
                                      class="rounded-xl w-12 h-12 sm:w-14 sm:h-14 object-cover border-2 border-zinc-700/50 transition-all duration-300 group-hover:border-indigo-500/50">`
                                 : `<div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 border-2 border-zinc-700/50 transition-all duration-300 group-hover:border-indigo-400/50">
-                                     <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                     <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24">
                                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                                      </svg>
                                    </div>`;
@@ -350,16 +351,16 @@
                                     : "";
 
                                 replyHtml = `
-                                    <div class="border border-indigo-500 px-4 py-2">
+                                    <div class="border border-zinc-500 px-4 py-2">
                                         <div class="flex items-center text-zinc-400 text-sm">
                                             <svg class="w-4 h-4 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                             </svg>
-                                            ${replyAvatarHtml}
-                                            <span class="font-medium text-indigo-300 mr-1">${data.message.reply_to.user}</span>
+                                            ${replyAvatarHtml}                                            <span class="text-zinc-500">Replying to</span>
+                                            <span class="font-medium text-indigo-300 mr-1 ml-1">${data.message.reply_to.user}</span>
                                             ${replyAuthorBadge}
-                                            <span class="text-zinc-500">replied:</span>
-                                            <span class="ml-1 truncate max-w-32 sm:max-w-48 text-zinc-300">"${data.message.reply_to.message}"</span>
+                                            <span class="text-zinc-500">:</span>
+                                            <span class="ml-1 truncate max-w-32 sm:max-w-48">"${data.message.reply_to.message}"</span>
                                         </div>
                                     </div>
                                 `;
@@ -375,13 +376,13 @@
                                             <div class="flex-1 min-w-0">
                                                 <div class="flex items-center justify-between mb-2">
                                                     <div class="flex items-center gap-2 flex-wrap">
-                                                        <span class="font-semibold text-white text-sm sm:text-base">${data.message.user}</span>
+                                                        <span class="font-semibold text-sm sm:text-base">${data.message.user}</span>
                                                         ${authorBadgeHtml}
                                                     </div>
                                                     <div class="flex items-center gap-2">
                                                         <time class="text-zinc-400 text-xs sm:text-sm font-mono px-2 py-1 rounded-md">
                                                             ${data.message.timestamp}
-                                                        </time>                                                        <button class="reply-btn transition-all duration-200 p-2 rounded-lg border border-transparent hover:border-zinc-600/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" 
+                                                        </time>                                                        <button class="reply-btn transition-all duration-200 p-2 rounded-lg border border-transparent hover:border-zinc-600/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-zinc-500/50" 
                                                                 data-message-id="${data.message.id}" 
                                                                 data-user="${data.message.user}" 
                                                                 data-message="${data.message.message}" 

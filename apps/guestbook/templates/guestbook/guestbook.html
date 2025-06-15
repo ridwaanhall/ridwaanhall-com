@@ -1,8 +1,6 @@
 {% extends 'base_seo.html' %}
 {% load static %}
 {% load socialaccount %}
-{% load socialaccount %}
-
 {% block content %}
 <div class="flex-1 md:ml-62">
     <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
@@ -31,58 +29,68 @@
                             Guestbook Messages
                             <span class="ml-auto bg-white/20 px-2 py-1 rounded-full text-sm">{{ message_count|default:0 }} messages</span>
                         </h4>
-                    </div>                    <!-- Messages Container -->
-                    <div id="guestbook-messages" class="p-4 space-y-4 h-[500px] overflow-y-auto bg-zinc-900 scrollbar-thin scrollbar-thumb-indigo-400/30 scrollbar-track-zinc-700/30">                        {% if chat_messages %} {% for message in chat_messages reversed %}
-                        <div class="group backdrop-blur-sm border border-zinc-700/50 rounded-xl overflow-hidden transition-all duration-300 hover:border-zinc-600/80 hover:shadow-lg hover:shadow-zinc-900/20 hover:-translate-y-0.5 bg-zinc-800/40 hover:bg-zinc-800/60" data-message-id="{{ message.pk }}">
+                    </div>
+                    <!-- Messages Container -->
+                    <div id="guestbook-messages" class="p-4 space-y-4 h-[500px] overflow-y-auto bg-zinc-900 scrollbar-thin scrollbar-thumb-indigo-400/30 scrollbar-track-zinc-700/30">
+                        {% if chat_messages %}
+                        {% for message in chat_messages reversed %}
+                        <div
+                            class="group backdrop-blur-sm border border-zinc-700/50 rounded-xl overflow-hidden transition-all duration-300 hover:border-zinc-600/80 hover:shadow-lg hover:shadow-zinc-900/20 hover:-translate-y-0.5 bg-zinc-800/40 hover:bg-zinc-800/60"
+                            data-message-id="{{ message.pk }}"
+                        >
                             <!-- Reply indicator if this is a reply -->
                             {% if message.reply_to %}
-                                <div class="bg-zinc-800/50 border-l-4 border-indigo-500 px-4 py-2">
-                                    <div class="flex items-center text-zinc-400 text-sm">
-                                        <svg class="w-4 h-4 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                            <div class="bg-zinc-800/50 border-l-4 border-indigo-500 px-4 py-2">
+                                <div class="flex items-center text-zinc-400 text-sm">
+                                    <svg class="w-4 h-4 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                    </svg>
+                                    {% if message.reply_to.user_profile_image %}
+                                    <img src="{{ message.reply_to.user_profile_image }}" alt="{{ message.reply_to.user_full_name }}" class="rounded-full mr-2 w-5 h-5 object-cover border border-zinc-600" />
+                                    {% else %}
+                                    <div class="bg-indigo-500/20 rounded-full flex items-center justify-center w-5 h-5 mr-2">
+                                        <svg class="w-3 h-3 text-indigo-400" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                                         </svg>
-                                        {% if message.reply_to.user_profile_image %}
-                                            <img src="{{ message.reply_to.user_profile_image }}" alt="{{ message.reply_to.user_full_name }}" 
-                                                 class="rounded-full mr-2 w-5 h-5 object-cover border border-zinc-600">
-                                        {% else %}
-                                            <div class="bg-indigo-500/20 rounded-full flex items-center justify-center w-5 h-5 mr-2">
-                                                <svg class="w-3 h-3 text-indigo-400" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                                                </svg>
-                                            </div>
-                                        {% endif %}
-                                        <span class="font-medium text-indigo-300 mr-1">{{ message.reply_to.user_full_name }}</span>
-                                        {% if message.reply_to.user_is_author %}
-                                            <span class="bg-yellow-500/20 text-yellow-300 px-1.5 py-0.5 rounded-full text-xs mr-2 flex items-center">
-                                                <svg class="w-2.5 h-2.5 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                                                </svg>
-                                                Author
-                                            </span>
-                                        {% endif %}
-                                        <span class="text-zinc-500">replied:</span>
-                                        <span class="ml-1 truncate max-w-32 sm:max-w-48 text-zinc-300">"{{ message.reply_to.message }}"</span>
                                     </div>
+                                    {% endif %}
+                                    <span class="font-medium text-indigo-300 mr-1">{{ message.reply_to.user_full_name }}</span>
+                                    {% if message.reply_to.user_is_author %}
+                                    <span class="bg-yellow-500/20 text-yellow-300 px-1.5 py-0.5 rounded-full text-xs mr-2 flex items-center">
+                                        <svg class="w-2.5 h-2.5 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                        </svg>
+                                        Author
+                                    </span>
+                                    {% endif %}
+                                    <span class="text-zinc-500">replied:</span>
+                                    <span class="ml-1 truncate max-w-32 sm:max-w-48 text-zinc-300">"{{ message.reply_to.message }}"</span>
                                 </div>
+                            </div>
                             {% endif %}
-                            
+
                             <!-- Message content -->
                             <div class="p-4 sm:p-5">
                                 <div class="flex items-start gap-3 sm:gap-4">
                                     <!-- User Avatar -->
                                     <div class="flex-shrink-0">
                                         {% if message.user_profile_image %}
-                                            <img src="{{ message.user_profile_image }}" alt="{{ message.user_full_name }}" 
-                                                 class="rounded-xl w-12 h-12 sm:w-14 sm:h-14 object-cover border-2 border-zinc-700/50 transition-all duration-300 group-hover:border-indigo-500/50">
+                                        <img
+                                            src="{{ message.user_profile_image }}"
+                                            alt="{{ message.user_full_name }}"
+                                            class="rounded-xl w-12 h-12 sm:w-14 sm:h-14 object-cover border-2 border-zinc-700/50 transition-all duration-300 group-hover:border-indigo-500/50"
+                                        />
                                         {% else %}
-                                            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 border-2 border-zinc-700/50 transition-all duration-300 group-hover:border-indigo-400/50">
-                                                <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                                                </svg>
-                                            </div>
+                                        <div
+                                            class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 border-2 border-zinc-700/50 transition-all duration-300 group-hover:border-indigo-400/50"
+                                        >
+                                            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                            </svg>
+                                        </div>
                                         {% endif %}
                                     </div>
-                                    
+
                                     <!-- Message Content -->
                                     <div class="flex-1 min-w-0">
                                         <!-- Header -->
@@ -90,41 +98,48 @@
                                             <div class="flex items-center gap-2 flex-wrap">
                                                 <span class="font-semibold text-white text-sm sm:text-base">{{ message.user_full_name }}</span>
                                                 {% if message.user_is_author %}
-                                                    <span class="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 text-yellow-300 px-2 py-1 rounded-lg text-xs font-medium flex items-center border border-yellow-500/20">
-                                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                                                        </svg>
-                                                        Author
-                                                    </span>
+                                                <span class="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 text-yellow-300 px-2 py-1 rounded-lg text-xs font-medium flex items-center border border-yellow-500/20">
+                                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                                    </svg>
+                                                    Author
+                                                </span>
                                                 {% endif %}
                                             </div>
                                             <div class="flex items-center gap-2">
                                                 <time class="text-zinc-400 text-xs sm:text-sm font-mono bg-zinc-800/50 px-2 py-1 rounded-md">
                                                     {{ message.timestamp|date:"d/m/Y, H:i" }}
                                                 </time>
-                                                {% if user.is_authenticated %}                                                        <button class="reply-btn opacity-0 group-hover:opacity-100 transition-all duration-200 p-2 rounded-lg hover:bg-zinc-700/50 border border-transparent hover:border-zinc-600/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 focus:ring-offset-zinc-800" 
-                                                                data-message-id="{{ message.pk }}" 
-                                                                data-user="{{ message.user_full_name }}" 
-                                                                data-message="{{ message.message }}" 
-                                                                title="Reply to this message">
-                                                        <svg class="w-4 h-4 text-zinc-400 hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
-                                                        </svg>
-                                                    </button>
+                                                {% if user.is_authenticated %}
+                                                <button
+                                                    class="reply-btn opacity-0 group-hover:opacity-100 transition-all duration-200 p-2 rounded-lg hover:bg-zinc-700/50 border border-transparent hover:border-zinc-600/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 focus:ring-offset-zinc-800"
+                                                    data-message-id="{{ message.pk }}"
+                                                    data-user="{{ message.user_full_name }}"
+                                                    data-message="{{ message.message }}"
+                                                    title="Reply to this message"
+                                                >
+                                                    <svg class="w-4 h-4 text-zinc-400 hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                                    </svg>
+                                                </button>
                                                 {% endif %}
                                             </div>
-                                        </div>                                                <!-- Message Text -->
-                                                <div class="bg-zinc-800/30 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-zinc-700/30 transition-all duration-200 hover:bg-zinc-700/40 hover:border-indigo-500/30 hover:-translate-y-px" 
-                                                     data-message-id="{{ message.pk }}" 
-                                                     data-user="{{ message.user_full_name }}" 
-                                                     data-message="{{ message.message }}">
+                                        </div>
+                                        <!-- Message Text -->
+                                        <div
+                                            class="bg-zinc-800/30 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-zinc-700/30 transition-all duration-200 hover:bg-zinc-700/40 hover:border-indigo-500/30 hover:-translate-y-px"
+                                            data-message-id="{{ message.pk }}"
+                                            data-user="{{ message.user_full_name }}"
+                                            data-message="{{ message.message }}"
+                                        >
                                             <p class="text-zinc-200 text-sm sm:text-base leading-relaxed break-words">{{ message.message }}</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        {% endfor %} {% else %}
+                        {% endfor %}
+                        {% else %}
                         <div class="text-center text-zinc-400 py-16">
                             <svg class="w-16 h-16 mx-auto mb-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path
@@ -153,7 +168,8 @@
 
                     <!-- Message Input -->
                     <div class="border-t border-zinc-700 p-4">
-                        {% if user.is_authenticated %}                        <!-- Reply indicator -->
+                        {% if user.is_authenticated %}
+                        <!-- Reply indicator -->
                         <div id="reply-indicator" class="hidden mb-3">
                             <div class="bg-zinc-800/50 border-l-4 border-indigo-500 rounded-lg p-3 flex justify-between items-center">
                                 <div class="flex items-center text-zinc-400 text-sm">
@@ -189,7 +205,8 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                                 </svg>
                             </button>
-                        </form>                        {% if user.is_authenticated %}
+                        </form>
+                        {% if user.is_authenticated %}
                         <div class="mt-3 text-sm text-zinc-400">
                             <span>Signed in as {{ current_user_profile.full_name|default:user.username }}{% if user.email %} ({{ user.email }}){% endif %} • </span>
                             <form method="post" action="{% url 'logout' %}" class="inline">
@@ -226,7 +243,6 @@
     </main>
 </div>
 {% endblock %}
-
 {% block scripts %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -296,7 +312,8 @@
                         reply_to: document.getElementById("reply-to-id").value,
                     }),
                 })
-                    .then((response) => response.json())                    .then((data) => {
+                    .then((response) => response.json())
+                    .then((data) => {
                         if (data.success) {
                             // Create user name with author badge if applicable
                             const authorBadgeHtml = data.message.is_author
@@ -306,7 +323,7 @@
                                     </svg>
                                     Author
                                 </span>`
-                                : '';
+                                : "";
 
                             // Create profile image or default avatar
                             const avatarHtml = data.message.profile_image
@@ -319,7 +336,7 @@
                                    </div>`;
 
                             // Create reply indicator if this is a reply
-                            let replyHtml = '';
+                            let replyHtml = "";
                             if (data.message.reply_to) {
                                 const replyAvatarHtml = data.message.reply_to.profile_image
                                     ? `<img src="${data.message.reply_to.profile_image}" alt="${data.message.reply_to.user}" 
@@ -329,7 +346,7 @@
                                              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                                          </svg>
                                        </div>`;
-                                
+
                                 const replyAuthorBadge = data.message.reply_to.is_author
                                     ? `<span class="bg-yellow-500/20 text-yellow-300 px-1.5 py-0.5 rounded-full text-xs mr-2 flex items-center">
                                          <svg class="w-2.5 h-2.5 mr-1" fill="currentColor" viewBox="0 0 24 24">
@@ -337,7 +354,7 @@
                                          </svg>
                                          Author
                                        </span>`
-                                    : '';
+                                    : "";
 
                                 replyHtml = `
                                     <div class="bg-zinc-800/50 border-l-4 border-indigo-500 px-4 py-2">
@@ -353,7 +370,7 @@
                                         </div>
                                     </div>
                                 `;
-                            }                            // Add message to guestbook
+                            } // Add message to guestbook
                             const messageHtml = `
                                 <div class="group backdrop-blur-sm border border-zinc-700/50 rounded-xl overflow-hidden transition-all duration-300 hover:border-zinc-600/80 hover:shadow-lg hover:shadow-zinc-900/20 hover:-translate-y-0.5 bg-zinc-800/40 hover:bg-zinc-800/60" data-message-id="${data.message.id}">
                                     ${replyHtml}
@@ -485,7 +502,6 @@
         if (cancelReplyBtn) {
             cancelReplyBtn.addEventListener("click", clearReply);
         }
-
     });
 </script>
 

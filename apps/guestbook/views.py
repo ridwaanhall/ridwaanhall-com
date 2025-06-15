@@ -1,10 +1,9 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.http import JsonResponse
 from allauth.socialaccount.models import SocialAccount
 from apps.core.base_views import BaseView
 from .models import ChatMessage
+from apps.seo.mixins import GuestbookSEOMixin
 
 def get_user_profile_data(user):
     """
@@ -49,7 +48,7 @@ def get_user_profile_data(user):
     
     return profile_data
 
-class GuestbookView(BaseView):
+class GuestbookView(GuestbookSEOMixin, BaseView):
     """
     Guestbook page view - displays the live chat page
     """

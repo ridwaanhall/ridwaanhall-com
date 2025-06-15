@@ -170,7 +170,7 @@
                             </button>
                         </form>                        {% if user.is_authenticated %}
                         <div class="mt-3 text-sm text-zinc-400">
-                            <span>Signed in as {{ current_user_profile.full_name|default:user.username }} ({{ user.email }}) • </span>
+                            <span>Signed in as {{ current_user_profile.full_name|default:user.username }}{% if user.email %} ({{ user.email }}){% endif %} • </span>
                             <form method="post" action="{% url 'logout' %}" class="inline">
                                 {% csrf_token %}
                                 <button type="submit" class="text-zinc-400 hover:text-indigo-400 underline transition-colors">

@@ -6,7 +6,7 @@
     <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <div class="mb-6 sm:mb-8">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-6">
                     <div>
                         <h1 class="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">Guest<span class="text-indigo-400">book</span></h1>
                         <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">Leave a message, share your thoughts, or just say hello! I'd love to hear from you.</p>
@@ -16,7 +16,7 @@
             <div class="grid grid-cols-1 gap-6">
                 <!-- Guestbook Messages -->
                 <div class="border border-zinc-700 rounded-lg shadow-lg">
-                    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 rounded-t-lg">
+                    <div class="bg-zinc-800 p-3 rounded-t-lg">
                         <h4 class="text-lg font-medium flex items-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path
@@ -31,7 +31,7 @@
                         </h4>
                     </div>
                     <!-- Messages Container -->
-                    <div id="guestbook-messages" class="p-4 space-y-4 h-[500px] overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-400/30 scrollbar-track-zinc-700/30">
+                    <div id="guestbook-messages" class="p-3 space-y-4 h-[60vh] max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-400/30 scrollbar-track-zinc-700/30">
                         {% if chat_messages %}
                         {% for message in chat_messages reversed %}
                         <div class="group border border-zinc-700/50 rounded-xl overflow-hidden transition-all duration-300 hover:border-zinc-600/80 hover:shadow-md hover:shadow-zinc-900/10" data-message-id="{{ message.pk }}">
@@ -67,7 +67,7 @@
                             {% endif %}
 
                             <!-- Message content -->
-                            <div class="p-4 sm:p-5">
+                            <div class="p-3 sm:p-5">
                                 <div class="flex items-start gap-3 sm:gap-4">
                                     <!-- User Avatar -->
                                     <div class="flex-shrink-0">
@@ -114,7 +114,7 @@
                                                     data-message="{{ message.message }}"
                                                     title="Reply to this message"
                                                 >
-                                                    <svg class="w-4 h-4 text-zinc-400 hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <svg class="w-4 h-4 text-zinc-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                                     </svg>
                                                 </button>
@@ -123,7 +123,7 @@
                                         </div>
                                         <!-- Message Text -->
                                         <div
-                                            class="border border-zinc-700/40 rounded-lg p-3 sm:p-4 transition-all duration-200 hover:border-indigo-500/40"
+                                            class="border border-zinc-700/40 rounded-lg p-3 sm:p-3 transition-all duration-200 hover:border-indigo-500/40"
                                             data-message-id="{{ message.pk }}"
                                             data-user="{{ message.user_full_name }}"
                                             data-message="{{ message.message }}"
@@ -367,7 +367,7 @@
                             const messageHtml = `
                                 <div class="group border border-zinc-700/50 rounded-xl overflow-hidden transition-all duration-300 hover:border-zinc-600/80 hover:shadow-md hover:shadow-zinc-900/10" data-message-id="${data.message.id}">
                                     ${replyHtml}
-                                    <div class="p-4 sm:p-5">
+                                    <div class="p-3 sm:p-5">
                                         <div class="flex items-start gap-3 sm:gap-4">
                                             <div class="flex-shrink-0">
                                                 ${avatarHtml}
@@ -392,7 +392,7 @@
                                                         </button>
                                                     </div>
                                                 </div>
-                                                <div class="border border-zinc-700/40 rounded-lg p-3 sm:p-4 transition-all duration-200 hover:border-indigo-500/40" 
+                                                <div class="border border-zinc-700/40 rounded-lg p-3 sm:p-3 transition-all duration-200 hover:border-indigo-500/40" 
                                                      data-message-id="${data.message.id}" 
                                                      data-user="${data.message.user}" 
                                                      data-message="${data.message.message}">

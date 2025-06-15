@@ -90,6 +90,7 @@ CONTENT_SECURITY_POLICY = {
             'wsrv.nl',
             '*.googleapis.com',
             '*.gstatic.com',
+            'lh3.googleusercontent.com',
         ],
         'object-src': [NONE],
         'script-src': [
@@ -226,7 +227,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',
             ],
         },
     },
@@ -285,3 +285,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # ------------------------------------------------------------------------------
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# Login/Logout redirect URLs
+LOGIN_REDIRECT_URL = '/'  # Redirect to home page after login
+LOGOUT_REDIRECT_URL = '/'  # Redirect to home page after logout
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'  # Allauth specific logout redirect

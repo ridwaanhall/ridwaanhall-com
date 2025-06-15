@@ -122,10 +122,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Keyboard shortcuts
     document.addEventListener("keydown", function (e) {
-        // Ctrl/Cmd + K to open search
+        // Ctrl/Cmd + K to toggle search modal
         if ((e.ctrlKey || e.metaKey) && e.key === "k") {
             e.preventDefault();
-            showSearchModal();
+            
+            // Check if modal is currently visible
+            if (searchModal.classList.contains("hidden")) {
+                showSearchModal();
+            } else {
+                hideSearchModal();
+            }
         }
 
         // Escape to close search

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from allauth.socialaccount.models import SocialAccount
+from apps.core.base_views import BaseView
 from .models import ChatMessage
 
 def get_user_profile_data(user):
@@ -42,42 +43,53 @@ def get_user_profile_data(user):
     
     return profile_data
 
-# Create your views here.
-
-def guestbook(request):
+class GuestbookView(BaseView):
     """
     Guestbook page view - displays the live chat page
     """
-    # Get all chat messages with user profile data and replies
-    chat_messages = ChatMessage.objects.select_related('user', 'reply_to__user').all()[:50]  # Latest 50 messages
-      # Add profile data to each message
-    enriched_messages = []
-    for message in chat_messages:
-        profile_data = get_user_profile_data(message.user)
-        message.user_full_name = profile_data['full_name']
-        message.user_profile_image = profile_data['profile_image']
-        message.user_is_author = profile_data['is_author']
+    template_name = 'guestbook/guestbook.html'
+
+    def get(self, request, *args, **kwargs):
+        return self.handle_exceptions(self._get)(request, *args, **kwargs)
+
+    def _get(self, request, *args, **kwargs):
+        about = self.get_about_data()
+          # Get all chat messages with user profile data and replies
+        chat_messages = ChatMessage.objects.select_related('user', 'reply_to__user').all()[:50]  # Latest 50 messages
         
-        # Add reply_to profile data if it exists
-        if message.reply_to:
-            reply_profile_data = get_user_profile_data(message.reply_to.user)
-            message.reply_to.user_full_name = reply_profile_data['full_name']
-            message.reply_to.user_profile_image = reply_profile_data['profile_image']
-            message.reply_to.user_is_author = reply_profile_data['is_author']
+        # Get total message count
+        total_message_count = ChatMessage.objects.count()
         
-        enriched_messages.append(message)
-    
-    # Get current user profile data for navbar
-    current_user_profile = None
-    if request.user.is_authenticated:
-        current_user_profile = get_user_profile_data(request.user)
-    
-    context = {
-        'title': 'Live Chat',
-        'chat_messages': enriched_messages,
-        'current_user_profile': current_user_profile,
-    }
-    return render(request, 'guestbook/guestbook.html', context)
+        # Add profile data to each message
+        enriched_messages = []
+        for message in chat_messages:
+            profile_data = get_user_profile_data(message.user)
+            message.user_full_name = profile_data['full_name']
+            message.user_profile_image = profile_data['profile_image']
+            message.user_is_author = profile_data['is_author']
+            
+            # Add reply_to profile data if it exists
+            if message.reply_to:
+                reply_profile_data = get_user_profile_data(message.reply_to.user)
+                message.reply_to.user_full_name = reply_profile_data['full_name']
+                message.reply_to.user_profile_image = reply_profile_data['profile_image']
+                message.reply_to.user_is_author = reply_profile_data['is_author']
+            
+            enriched_messages.append(message)
+        
+        # Get current user profile data for navbar
+        current_user_profile = None
+        if request.user.is_authenticated:
+            current_user_profile = get_user_profile_data(request.user)
+        
+        context = {
+            'title': 'Guestbook',
+            'chat_messages': enriched_messages,
+            'message_count': total_message_count,
+            'current_user_profile': current_user_profile,
+            'about': about,
+        }
+        return self.render_to_response(context)
 
 @login_required
 def send_message(request):
@@ -133,3 +145,9 @@ def send_message(request):
             return JsonResponse({'success': False, 'error': 'Message cannot be empty'})
     
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+# Function-based view wrapper for URL compatibility
+def guestbook(request):
+    """Function-based view wrapper for GuestbookView"""
+    view = GuestbookView.as_view()
+    return view(request)

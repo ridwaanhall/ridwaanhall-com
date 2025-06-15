@@ -109,14 +109,14 @@
         
                     {% if certification.achievements %}
                         <div id="achievementscert-{{ certification.id }}" class="hidden mt-2 sm:mt-3 transition-all duration-300 ease-in-out">
-                            <div class="space-y-1 text-xs sm:text-sm pl-1">
+                            <div class="space-y-1 mt-2">
                                 {% for achievement in certification.achievements %}
-                                    <div class="flex items-start group">
-                                        <div class="flex-shrink-0 w-5 h-5 mt-0.5">
-                                            <div class="w-2 h-2 bg-blue-500 rounded-full mt-1.5 group-hover:bg-blue-600 transition-colors duration-200"></div>
-                                        </div>
-                                        <p class="text-sm leading-relaxed">{{ achievement }}</p>
+                                <div class="flex items-start group">
+                                    <div class="flex-shrink-0 w-5 h-5 mt-0.5">
+                                        <div class="w-2 h-2 bg-zinc-400 rounded-full mt-1"></div>
                                     </div>
+                                    <p class="text-sm leading-relaxed text-zinc-400">{{ achievement }}</p>
+                                </div>
                                 {% endfor %}
                             </div>
                         </div>

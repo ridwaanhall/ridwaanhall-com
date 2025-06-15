@@ -13,6 +13,14 @@
                 </div>
             </div>
         {% endfor %}
+        {% for skill in skills_top %}
+            <div class="inline-block mx-1.5 whitespace-nowrap">
+                <div class="rounded-full bg-zinc-900 backdrop-blur-sm border border-zinc-700 hover:border-zinc-400 transition-all duration-300 px-4 py-2 flex items-center gap-2">
+                    <img src="{{ skill.icon_svg }}" alt="{{ skill.name }}" class="h-5" width="20" height="20" loading="lazy">
+                    <span class="font-medium text-sm">{{ skill.name }}</span>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 </div>
 
@@ -27,12 +35,28 @@
                 </div>
             </div>
         {% endfor %}
+        {% for skill in skills_middle %}
+            <div class="inline-block mx-1.5 whitespace-nowrap">
+                <div class="rounded-full bg-zinc-900 backdrop-blur-sm border border-zinc-700 hover:border-zinc-400 transition-all duration-300 px-4 py-2 flex items-center gap-2">
+                    <img src="{{ skill.icon_svg }}" alt="{{ skill.name }}" class="h-5" width="20" height="20" loading="lazy">
+                    <span class="font-medium text-sm">{{ skill.name }}</span>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 </div>
 
 <!-- Bottom Carousel: Right to Left -->
 <div class="overflow-hidden-skills w-full relative">
     <div class="flex w-fit skills-carousel flex whitespace-nowrap py-2">
+        {% for skill in skills_bottom %}
+            <div class="inline-block mx-1.5 whitespace-nowrap">
+                <div class="rounded-full bg-zinc-900 backdrop-blur-sm border border-zinc-700 hover:border-zinc-400 transition-all duration-300 px-4 py-2 flex items-center gap-2">
+                    <img src="{{ skill.icon_svg }}" alt="{{ skill.name }}" class="h-5" width="20" height="20" loading="lazy">
+                    <span class="font-medium text-sm">{{ skill.name }}</span>
+                </div>
+            </div>
+        {% endfor %}
         {% for skill in skills_bottom %}
             <div class="inline-block mx-1.5 whitespace-nowrap">
                 <div class="rounded-full bg-zinc-900 backdrop-blur-sm border border-zinc-700 hover:border-zinc-400 transition-all duration-300 px-4 py-2 flex items-center gap-2">

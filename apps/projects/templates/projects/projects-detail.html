@@ -133,7 +133,7 @@
                         </h1>
                         
                         <!-- Headline -->
-                        <p class="text-base sm:text-lg text-zinc-300 leading-relaxed mb-4 max-w-3xl">
+                        <p class="text-base sm:text-lg leading-relaxed mb-4 max-w-3xl">
                             {{ project.headline }}
                         </p>
                         
@@ -145,7 +145,7 @@
                                 <a href="{% url 'projects' %}"
                                     class="relative inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-700 hover:bg-zinc-600 transition-all duration-200 group shadow-sm hover:shadow-md"
                                     aria-label="Back to projects">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 48 48" class="text-zinc-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 48 48">
                                         <path d="m3.88 21.88 15.3-15.3a1 1 0 0 1 1.4 0L23.4 9.4a1 1 0 0 1-.02 1.43L12.74 21H43a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H12.74l10.64 10.17a1 1 0 0 1 .02 1.43l-2.81 2.81a1 1 0 0 1-1.42 0L3.87 26.12a3 3 0 0 1 0-4.24Z"></path>
                                     </svg>
                                     <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-zinc-900 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transform scale-95 group-hover:scale-100 transition-all duration-200 ease-out pointer-events-none whitespace-nowrap shadow-lg
@@ -172,33 +172,39 @@
                             </div>
                             {% endif %}
                             
-                            <!-- Action Buttons -->
+                            <!-- Action Buttons (icon pills with hover text like tech stack) -->
                             <div class="flex gap-2">
                                 {% if project.github_url %}
-                                <a target="_blank" href="{{ project.github_url }}" class="group transition-all duration-300">
-                                    <div class="flex items-center gap-2 font-medium">
-                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" class="group-hover:text-zinc-200 transition-colors duration-300" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
-                                        </svg>
-                                        <span class="text-[15px] group-hover:text-zinc-200 transition-colors duration-300">Source Code</span>
-                                    </div>
+                                <a target="_blank" href="{{ project.github_url }}"
+                                   class="relative flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-800 hover:bg-zinc-600 transition-all duration-200 group shadow-md border border-zinc-700 hover:border-zinc-500"
+                                   aria-label="Source Code">
+                                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16"
+                                         class="w-5 h-5 group-hover:text-white transition-colors duration-200"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                                    </svg>
+                                    <span class="absolute left-1/2 -translate-x-1/2 -top-9 px-2 py-1 bg-zinc-900 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap z-20">
+                                        Source Code
+                                    </span>
+                                    <span class="sr-only">Source Code</span>
                                 </a>
                                 {% endif %}
-                                
-                                {% if project.github_url and project.demo_url %}
-                                <span>|</span>
-                                {% endif %}
-                                
+
                                 {% if project.demo_url %}
-                                <a target="_blank" href="{{ project.demo_url }}" class="group transition-all duration-300">
-                                    <div class="flex items-center gap-2 font-medium">
-                                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="group-hover:text-zinc-200 transition-colors duration-300" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                                            <polyline points="15 3 21 3 21 9"></polyline>
-                                            <line x1="10" y1="14" x2="21" y2="3"></line>
-                                        </svg>
-                                        <span class="text-[15px] group-hover:text-zinc-200 transition-colors duration-300">Live Demo</span>
-                                    </div>
+                                <a target="_blank" href="{{ project.demo_url }}"
+                                   class="relative flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-800 hover:bg-zinc-600 transition-all duration-200 group shadow-md border border-zinc-700 hover:border-zinc-500"
+                                   aria-label="Live Demo">
+                                    <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"
+                                         class="w-5 h-5 group-hover:text-white transition-colors duration-200"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                        <polyline points="15 3 21 3 21 9"></polyline>
+                                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                                    </svg>
+                                    <span class="absolute left-1/2 -translate-x-1/2 -top-9 px-2 py-1 bg-zinc-900 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap z-20">
+                                        Live Demo
+                                    </span>
+                                    <span class="sr-only">Live Demo</span>
                                 </a>
                                 {% endif %}
                             </div>
@@ -230,56 +236,39 @@
 
             <!-- Description Section -->
             {% if project.description %}
-            <div class="mb-6">
-                <div class="flex items-center mb-3 sm:mb-4">
-                    <div class="h-1 w-6 sm:w-8 bg-zinc-300 rounded-full mr-2 sm:mr-3"></div>
-                    <h2 class="text-xl sm:text-2xl font-semibold flex items-center group">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 mr-1.5 sm:mr-2 transition-colors duration-300 group-hover:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        <span class="transition-colors duration-300">Project <span class="text-indigo-400">Description</span></span>
-                    </h2>
-                    <div class="h-px flex-1 bg-zinc-700/50 ml-2 sm:ml-3"></div>
-                </div>
-                
-                <div class="mx-1 sm:mx-2">
-                    {% if project.description %}
-                        {% for paragraph in project.description %}
-                            <p class="text-zinc-300 text-sm sm:text-base leading-relaxed {% if not forloop.last %}mb-3 sm:mb-4{% endif %}">{{ paragraph }}</p>
-                        {% endfor %}
-                    {% endif %}
+            <div class="mb-8">
+                <h2 class="text-lg sm:text-xl font-semibold mb-2 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Description
+                </h2>
+                <div class="space-y-3">
+                    {% for paragraph in project.description %}
+                        <p class="text-base leading-relaxed">{{ paragraph }}</p>
+                    {% endfor %}
                 </div>
             </div>
             {% endif %}
 
             <!-- Features Section -->
             {% if project.features %}
-            <div class="mb-6">
-                <div class="flex items-center mb-3 sm:mb-4">
-                    <div class="h-1 w-6 sm:w-8 bg-zinc-300 rounded-full mr-2 sm:mr-3"></div>
-                    <h2 class="text-xl sm:text-2xl font-semibold flex items-center group">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 mr-1.5 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                        </svg>
-                        <span class="transition-colors duration-300">Key <span class="text-indigo-400">Features</span></span>
-                    </h2>
-                    <div class="h-px flex-1 bg-zinc-700/50 ml-2 sm:ml-3"></div>
-                </div>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            <div class="mb-8">
+                <h2 class="text-lg sm:text-xl font-semibold mb-2 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                    Features
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {% for feature in project.features %}
-                    <div class="group backdrop-blur-sm rounded-xl overflow-hidden border border-zinc-800 transition-all duration-300 hover:border-zinc-700 hover:shadow-lg hover:shadow-zinc-900">
+                    <div class="rounded-lg border border-zinc-700 hover:border-zinc-600 transition p-4 flex flex-col gap-2 shadow-sm">
                         {% if feature.image_url %}
-                        <div class="overflow-hidden h-36 sm:h-48">
-                            <img src="{{ feature.image_url }}" alt="{{ feature.title }}" 
-                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                        </div>
+                        <img src="{{ feature.image_url }}" alt="{{ feature.title }}" class="rounded-md w-full h-32 object-cover mb-2 bg-zinc-900" loading="lazy">
                         {% endif %}
-                        <div class="p-3 sm:p-5">
-                            <h3 class="text-lg sm:text-xl font-semibold mb-1.5 sm:mb-2 group-hover:text-zinc-300 transition-colors duration-300">
-                                {{ feature.title }}
-                            </h3>
-                            <p class="text-sm sm:text-base text-zinc-300 leading-relaxed">{{ feature.description }}</p>
+                        <div>
+                            <h3 class="text-base font-semibold mb-1">{{ feature.title }}</h3>
+                            <p class="text-zinc-400 text-sm">{{ feature.description }}</p>
                         </div>
                     </div>
                     {% endfor %}
@@ -289,32 +278,33 @@
 
             <!-- Technical Details Section -->
             {% if project.tech_stack %}
-            <div class="mb-6">
-                <div class="flex items-center mb-3 sm:mb-4">
-                    <div class="h-1 w-6 sm:w-8 bg-zinc-300 rounded-full mr-2 sm:mr-3"></div>
-                    <h2 class="text-xl sm:text-2xl font-semibold flex items-center group">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 mr-1.5 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                        </svg>
-                        <span class="transition-colors duration-300">Technical <span class="text-indigo-400">Details</span></span>
-                    </h2>
-                    <div class="h-px flex-1 bg-zinc-700/50 ml-2 sm:ml-3"></div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            <div class="mb-8">
+                <h2 class="text-lg sm:text-xl font-semibold mb-2 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    </svg>
+                    Tech Stack
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {% for tech in project.tech_stack %}
-                    <div class="group backdrop-blur-sm rounded-xl overflow-hidden border border-zinc-800 transition-all duration-300 hover:border-zinc-700 hover:shadow-lg hover:shadow-zinc-900">
-                        {% if tech.image_url %}
-                        <div class="overflow-hidden h-36 sm:h-48">
-                            <img src="{{ tech.image_url }}" alt="{{ tech.name }}" 
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    <div class="flex items-center gap-3 border border-zinc-700 rounded-lg px-3 py-3 shadow-sm hover:border-zinc-600 transition">
+                        <div class="flex items-center justify-center rounded-full bg-zinc-800/70" style="width: 40px; height: 40px; min-width: 40px; min-height: 40px;">
+                            {% if tech.icon_svg %}
+                                <img src="{{ tech.icon_svg }}" alt="{{ tech.name }}" class="w-6 h-6" loading="lazy">
+                            {% elif tech.image_url %}
+                                <img src="{{ tech.image_url }}" alt="{{ tech.name }}" class="w-6 h-6" loading="lazy">
+                            {% else %}
+                                <!-- Fallback: generic icon (e.g., a code SVG) -->
+                                <svg class="w-6 h-6 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 18l6-6-6-6M8 6l-6 6 6 6"/>
+                                </svg>
+                            {% endif %}
                         </div>
-                        {% endif %}
-                        <div class="p-3 sm:p-5">
-                            <h3 class="text-lg sm:text-xl font-semibold mb-1.5 sm:mb-2 group-hover:text-zinc-300 transition-colors duration-300">
-                                {{ tech.name }}
-                            </h3>
-                            <p class="text-sm sm:text-base text-zinc-300 leading-relaxed">{{ tech.description }}</p>
+                        <div>
+                            <span class="text-base font-medium">{{ tech.name }}</span>
+                            {% if tech.description %}
+                            <span class="text-zinc-400 block text-xs mt-0.5">{{ tech.description }}</span>
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}

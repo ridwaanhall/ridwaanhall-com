@@ -1,100 +1,521 @@
 {% extends 'base_seo.html' %}
 {% load static %}
+{% load socialaccount %}
+{% load socialaccount %}
 
 {% block content %}
 <div class="flex-1 md:ml-62">
     <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
-
             <div class="mb-6 sm:mb-8">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
                     <div>
-                        <h1 class="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">Contact <span class="text-indigo-400">Me</span></h1>
-                        <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">Got a question or ready to team up on an AI project? Hit me up—let's make something awesome!</p>
+                        <h1 class="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">Guest<span class="text-indigo-400">book</span></h1>
+                        <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">Leave a message, share your thoughts, or just say hello! I'd love to hear from you.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                            ></path>
+                        </svg>
+                        <span class="text-indigo-300 font-medium">{{ message_count|default:0 }} messages</span>
                     </div>
                 </div>
             </div>
-
-            {% include 'core/social.html' %}
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4 sm:mt-6">
-                <div class="lg:col-span-5 order-2 lg:order-1">
-                    <h2 class="text-xl font-medium mb-3 sm:mb-4 flex items-center">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        Availability
-                    </h2>
-
-                    <!-- Current Time Section -->
-                    <div class="border border-zinc-700 rounded-lg p-3 sm:p-4">
-                        <h3 class="font-medium mb-2 flex items-center">
-                            <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            <div class="grid grid-cols-1 gap-6">
+                <!-- Guestbook Messages -->
+                <div class="border border-zinc-700 rounded-lg shadow-lg">
+                    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 rounded-t-lg">
+                        <h4 class="text-lg font-medium flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                ></path>
                             </svg>
-                            Jakarta Time
-                        </h3>
-                        <div class="font-mono text-center">
-                            <span id="current-time"></span>
-                        </div>
+                            Guestbook Messages
+                            <span class="ml-auto bg-white/20 px-2 py-1 rounded-full text-sm">{{ message_count|default:0 }} messages</span>
+                        </h4>
                     </div>
 
-                    <div class="mt-4 sm:mt-5 border border-zinc-700 rounded-lg p-3 sm:p-4">
-                        <div class="space-y-3 sm:space-y-4">
-                            <div class="flex justify-between items-center flex-wrap gap-2">
-                                <span>Monday - Friday</span>
-                                <span class="text-indigo-300 font-medium px-2 sm:px-3 py-1 border border-indigo-700/50 rounded-full text-sm sm:text-base">9:00 AM - 3:00 PM</span>
+                    <!-- Messages Container -->
+                    <div id="guestbook-messages" class="p-0" style="height: 500px; overflow-y: auto; background: #1a1a1a;">
+                        {% if chat_messages %} {% for message in chat_messages reversed %}
+                        <div class="message-item p-4 border-b border-zinc-700/50 hover:bg-zinc-800/30 transition-colors duration-200" data-message-id="{{ message.pk }}">
+                            <!-- Reply indicator if this is a reply -->
+                            {% if message.reply_to %}
+                            <div class="reply-indicator ml-4 mb-2 pl-3 border-l-2 border-indigo-500">
+                                <div class="flex items-center text-zinc-400 text-sm">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                    </svg>
+                                    {% if message.reply_to.user_profile_image %}
+                                    <img src="{{ message.reply_to.user_profile_image }}" alt="{{ message.reply_to.user_full_name }}" class="rounded-full mr-1 w-4 h-4 object-cover" />
+                                    {% else %}
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                    </svg>
+                                    {% endif %}
+                                    <span class="font-medium mr-1">{{ message.reply_to.user_full_name }}:</span>
+                                    <span class="truncate max-w-48">{{ message.reply_to.message }}</span>
+                                </div>
                             </div>
-                            <div class="flex justify-between items-center flex-wrap gap-2">
-                                <span>Saturday</span>
-                                <span class="text-indigo-300 font-medium px-2 sm:px-3 py-1 border border-indigo-700/50 rounded-full text-sm sm:text-base">By appointment</span>
-                            </div>
-                            <div class="flex justify-between items-center flex-wrap gap-2">
-                                <span>Sunday</span>
-                                <span class="text-indigo-300 font-medium px-2 sm:px-3 py-1 border border-indigo-700/50 rounded-full text-sm sm:text-base">Closed</span>
+                            {% endif %}
+
+                            <div class="flex items-start gap-3">
+                                {% if message.user_profile_image %}
+                                <img src="{{ message.user_profile_image }}" alt="{{ message.user_full_name }}" class="rounded-full w-10 h-10 object-cover flex-shrink-0" />
+                                {% else %}
+                                <div class="bg-indigo-500 rounded-full flex items-center justify-center w-10 h-10 flex-shrink-0">
+                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                    </svg>
+                                </div>
+                                {% endif %}
+
+                                <div class="flex-1">
+                                    <div class="bg-zinc-800 rounded-lg p-3 message-bubble" data-message-id="{{ message.pk }}" data-user="{{ message.user_full_name }}" data-message="{{ message.message }}">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <div class="flex items-center gap-2">
+                                                <span class="font-medium text-indigo-300">{{ message.user_full_name }}</span>
+                                                {% if message.user_is_author %}
+                                                <span class="bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-full text-xs flex items-center">
+                                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                                    </svg>
+                                                    Author
+                                                </span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-zinc-400 text-xs">{{ message.timestamp|date:"d/m/Y, H:i" }}</span>
+                                                {% if user.is_authenticated %}
+                                                <button
+                                                    class="reply-btn opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded hover:bg-zinc-700"
+                                                    data-message-id="{{ message.pk }}"
+                                                    data-user="{{ message.user_full_name }}"
+                                                    data-message="{{ message.message }}"
+                                                    title="Reply"
+                                                >
+                                                    <svg class="w-4 h-4 text-zinc-400 hover:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                                    </svg>
+                                                </button>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <p class="text-zinc-200 text-sm leading-relaxed">{{ message.message }}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="mt-4 sm:mt-6 p-3 sm:p-4 border border-indigo-700/50 rounded-lg">
-                            <p class="flex items-center text-sm sm:text-base">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-indigo-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        {% endfor %} {% else %}
+                        <div class="text-center text-zinc-400 py-16">
+                            <svg class="w-16 h-16 mx-auto mb-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                ></path>
+                            </svg>
+                            <h5 class="text-lg font-medium mb-2">Welcome to my Guestbook!</h5>
+                            <p class="mb-4">No messages yet. Be the first to leave a message!</p>
+                            {% if not user.is_authenticated %}
+                            <a href="{% provider_login_url 'google' %}" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                                 </svg>
-                                <span><span class="font-medium">Response time:</span> I typically respond within 24-48 hours.</span>
+                                Sign in to leave a message
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Message Input -->
+                    <div class="border-t border-zinc-700 p-4">
+                        {% if user.is_authenticated %}
+                        <!-- Reply indicator -->
+                        <div id="reply-indicator" class="hidden mb-3">
+                            <div class="bg-zinc-800 rounded-lg p-3 flex justify-between items-center">
+                                <div class="flex items-center text-zinc-400 text-sm">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                    </svg>
+                                    <span>Replying to <strong id="reply-to-user" class="text-indigo-300"></strong>: </span>
+                                    <span id="reply-to-message" class="truncate max-w-48"></span>
+                                </div>
+                                <button type="button" id="cancel-reply" class="p-1 rounded hover:bg-zinc-700">
+                                    <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <form id="guestbook-form" class="flex gap-3">
+                            {% csrf_token %}
+                            <input type="hidden" id="reply-to-id" name="reply_to" value="" />
+                            <input
+                                type="text"
+                                id="message-input"
+                                class="flex-1 px-4 py-3 bg-zinc-800 border border-zinc-600 rounded-lg text-white placeholder-zinc-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                                placeholder="Type your message..."
+                                maxlength="500"
+                                required
+                            />
+                            <button type="submit" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200 flex items-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                </svg>
+                            </button>
+                        </form>
+
+                        <div class="mt-3 flex justify-between items-center text-sm">
+                            <span class="text-zinc-400">Press Enter to send • {{ message_count|default:0 }} total messages</span>
+                            {% if user.is_authenticated %}
+                            <div class="flex items-center gap-2">
+                                {% if current_user_profile.profile_image %}
+                                <img src="{{ current_user_profile.profile_image }}" alt="{{ current_user_profile.full_name }}" class="rounded-full w-5 h-5 object-cover" />
+                                {% endif %}
+                                <span class="text-zinc-400">
+                                    {{ current_user_profile.full_name|default:user.username }} {% if current_user_profile.is_author %}
+                                    <span class="bg-yellow-500/20 text-yellow-300 px-1 py-0.5 rounded text-xs ml-1">
+                                        <svg class="w-3 h-3 inline" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                        </svg>
+                                    </span>
+                                    {% endif %}
+                                </span>
+                                <form method="post" action="{% url 'logout' %}" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="p-1 text-zinc-400 hover:text-white rounded transition-colors" title="Sign out">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-6">
+                            <p class="text-zinc-400 mb-4 flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                </svg>
+                                Sign in to leave a message in the guestbook
                             </p>
+                            <a href="{% provider_login_url 'google' %}" class="inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                                </svg>
+                                Sign in with Google
+                            </a>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="lg:col-span-7 order-1 lg:order-2">
-                    <h2 class="text-xl font-medium mb-4 flex items-center">
-                        <svg class="w-6 h-6 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                        Find Me
-                    </h2>
-                    
-                    {% if about.location.map_url %}
-                    <div class="relative w-full h-52 sm:h-64 md:h-80 mb-5 rounded-xl overflow-hidden shadow-lg border border-zinc-700 group transform transition-all duration-300 hover:shadow-indigo-500/20">
-                        <iframe class="w-full h-full" src="{{ about.location.map_url }}" allowfullscreen="" loading="lazy" title="Location map"></iframe>
-                        <div class="absolute inset-0 bg-indigo-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    </div>
-                    {% endif %}
-                    
-                    <div class="flex items-center gap-4 border border-zinc-700/80 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-zinc-600/80 transition-all duration-300">
-                        <div class="p-3 bg-indigo-500/10 rounded-full flex-shrink-0">
-                            <svg class="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-medium">{{ about.location.residency }}, {{ about.location.province }}, {{ about.location.country }}</p>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
     </main>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            const jakartaTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Jakarta" }));
+            const timeString = jakartaTime.toLocaleString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true,
+            });
+            const timeElement = document.getElementById("current-time");
+            if (timeElement) {
+                timeElement.textContent = timeString;
+            }
+        }
+
+        // Update time immediately and then every second
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Guestbook functionality
+        const guestbookForm = document.getElementById("guestbook-form");
+        const messageInput = document.getElementById("message-input");
+        const guestbookMessages = document.getElementById("guestbook-messages");
+
+        // Auto-scroll to bottom of messages
+        function scrollToBottom() {
+            if (guestbookMessages) {
+                guestbookMessages.scrollTop = guestbookMessages.scrollHeight;
+            }
+        }
+
+        // Initial scroll to bottom
+        scrollToBottom();
+
+        // Handle form submission
+        if (guestbookForm) {
+            guestbookForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const message = messageInput.value.trim();
+                if (!message) return;
+
+                // Disable form while sending
+                messageInput.disabled = true;
+                const submitBtn = guestbookForm.querySelector('button[type="submit"]');
+                const originalBtnContent = submitBtn.innerHTML;
+                submitBtn.innerHTML =
+                    '<svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>';
+
+                // Send message via AJAX
+                fetch('{% url "send_message" %}', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                    },
+                    body: new URLSearchParams({
+                        message: message,
+                        reply_to: document.getElementById("reply-to-id").value,
+                    }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            // Create user name with author badge if applicable
+                            const userNameHtml = data.message.is_author
+                                ? `${data.message.user} <span class="bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-full text-xs flex items-center"><svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>Author</span>`
+                                : data.message.user;
+
+                            // Create profile image or default avatar
+                            const avatarHtml = data.message.profile_image
+                                ? `<img src="${data.message.profile_image}" alt="${data.message.user}" class="rounded-full w-10 h-10 object-cover flex-shrink-0">`
+                                : `<div class="bg-indigo-500 rounded-full flex items-center justify-content-center w-10 h-10 flex-shrink-0"><svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>`;
+
+                            // Create reply indicator if this is a reply
+                            let replyHtml = "";
+                            if (data.message.reply_to) {
+                                const replyAvatarHtml = data.message.reply_to.profile_image
+                                    ? `<img src="${data.message.reply_to.profile_image}" alt="${data.message.reply_to.user}" class="rounded-full mr-1 w-4 h-4 object-cover">`
+                                    : `<svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
+
+                                replyHtml = `
+                                <div class="reply-indicator ml-4 mb-2 pl-3 border-l-2 border-indigo-500">
+                                    <div class="flex items-center text-zinc-400 text-sm">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+                                        ${replyAvatarHtml}
+                                        <span class="font-medium mr-1">${data.message.reply_to.user}:</span>
+                                        <span class="truncate max-w-48">${data.message.reply_to.message}</span>
+                                    </div>
+                                </div>
+                            `;
+                            }
+
+                            // Add message to guestbook
+                            const messageHtml = `
+                            <div class="message-item p-4 border-b border-zinc-700/50 hover:bg-zinc-800/30 transition-colors duration-200" data-message-id="${data.message.id}">
+                                ${replyHtml}
+                                <div class="flex items-start gap-3">
+                                    ${avatarHtml}
+                                    <div class="flex-1">
+                                        <div class="bg-zinc-800 rounded-lg p-3 message-bubble" data-message-id="${data.message.id}" data-user="${data.message.user}" data-message="${data.message.message}">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="font-medium text-indigo-300">${userNameHtml}</span>
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-zinc-400 text-xs">${data.message.timestamp}</span>
+                                                    <button class="reply-btn opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded hover:bg-zinc-700" data-message-id="${data.message.id}" data-user="${data.message.user}" data-message="${data.message.message}" title="Reply">
+                                                        <svg class="w-4 h-4 text-zinc-400 hover:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <p class="text-zinc-200 text-sm leading-relaxed">${data.message.message}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                            // Remove "no messages" placeholder if it exists
+                            const noMessages = guestbookMessages.querySelector(".text-center.text-zinc-400.py-16");
+                            if (noMessages) {
+                                noMessages.remove();
+                            }
+
+                            guestbookMessages.insertAdjacentHTML("beforeend", messageHtml);
+                            messageInput.value = "";
+                            scrollToBottom();
+
+                            // Clear reply state
+                            clearReply();
+
+                            // Update message count
+                            const badges = document.querySelectorAll(".bg-white\\/20, .text-indigo-300");
+                            badges.forEach((badge) => {
+                                if (badge.textContent.includes("messages")) {
+                                    const currentCount = parseInt(badge.textContent.split(" ")[0]) || 0;
+                                    badge.textContent = `${currentCount + 1} messages`;
+                                }
+                            });
+                        } else {
+                            alert("Error: " + data.error);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("Failed to send message. Please try again.");
+                    })
+                    .finally(() => {
+                        // Re-enable form
+                        messageInput.disabled = false;
+                        submitBtn.innerHTML = originalBtnContent;
+                        messageInput.focus();
+                    });
+            });
+
+            // Handle Enter key
+            messageInput.addEventListener("keypress", function (e) {
+                if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    guestbookForm.dispatchEvent(new Event("submit"));
+                }
+            });
+        }
+
+        // Reply functionality
+        function setReply(messageId, userName, messageText) {
+            const replyIndicator = document.getElementById("reply-indicator");
+            const replyToUser = document.getElementById("reply-to-user");
+            const replyToMessage = document.getElementById("reply-to-message");
+            const replyToId = document.getElementById("reply-to-id");
+            const messageInput = document.getElementById("message-input");
+
+            if (replyToUser) replyToUser.textContent = userName;
+            if (replyToMessage) replyToMessage.textContent = messageText;
+            if (replyToId) replyToId.value = messageId;
+            if (replyIndicator) replyIndicator.classList.remove("hidden");
+            if (messageInput) {
+                messageInput.focus();
+                messageInput.placeholder = `Reply to ${userName}...`;
+            }
+        }
+
+        function clearReply() {
+            const replyIndicator = document.getElementById("reply-indicator");
+            const replyToId = document.getElementById("reply-to-id");
+            const messageInput = document.getElementById("message-input");
+
+            if (replyIndicator) replyIndicator.classList.add("hidden");
+            if (replyToId) replyToId.value = "";
+            if (messageInput) messageInput.placeholder = "Type your message...";
+        }
+
+        // Handle reply button clicks
+        document.addEventListener("click", function (e) {
+            if (e.target.closest(".reply-btn")) {
+                const button = e.target.closest(".reply-btn");
+                const messageId = button.dataset.messageId;
+                const userName = button.dataset.user;
+                const messageText = button.dataset.message;
+                setReply(messageId, userName, messageText);
+            }
+        });
+
+        // Handle cancel reply button
+        const cancelReplyBtn = document.getElementById("cancel-reply");
+        if (cancelReplyBtn) {
+            cancelReplyBtn.addEventListener("click", clearReply);
+        }
+
+        // Auto-refresh guestbook every 30 seconds
+        setInterval(function () {
+            if (document.visibilityState === "visible") {
+                location.reload();
+            }
+        }, 30000);
+    });
+</script>
+
+<style>
+    .message-item {
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    #guestbook-messages::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #guestbook-messages::-webkit-scrollbar-track {
+        background: #404040;
+        border-radius: 3px;
+    }
+
+    #guestbook-messages::-webkit-scrollbar-thumb {
+        background: #666;
+        border-radius: 3px;
+    }
+
+    #guestbook-messages::-webkit-scrollbar-thumb:hover {
+        background: #777;
+    }
+
+    .message-bubble:hover {
+        background: #374151 !important;
+        transition: background 0.2s ease;
+    }
+
+    .message-item:hover .reply-btn {
+        opacity: 1;
+    }
+
+    .reply-btn:hover {
+        background-color: #374151 !important;
+        color: #6366f1 !important;
+    }
+
+    .reply-indicator {
+        background-color: #1f2937 !important;
+    }
+
+    .group:hover .reply-btn {
+        opacity: 1;
+    }
+</style>
 {% endblock %}

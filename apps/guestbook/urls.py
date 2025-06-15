@@ -7,4 +7,5 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('send-message/', views.send_message, name='send_message'),
+    path('delete-message/', views.delete_message, name='delete_message'),
 ]

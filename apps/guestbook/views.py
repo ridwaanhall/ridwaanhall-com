@@ -156,6 +156,45 @@ def send_message(request):
     
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
+@login_required
+def delete_message(request):
+    """
+    Handle deleting chat messages (AJAX) - only for authors
+    """
+    if request.method == 'POST':
+        message_id = request.POST.get('message_id', '').strip()
+        
+        if not message_id:
+            return JsonResponse({'success': False, 'error': 'Message ID is required'})
+        
+        try:
+            message = ChatMessage.objects.get(id=message_id)
+              # Check if user can delete this message
+            user_profile = get_user_profile_data(request.user)
+            can_delete = False
+            
+            # Only authors can delete any message
+            if user_profile['is_author']:
+                can_delete = True
+            
+            if not can_delete:
+                return JsonResponse({'success': False, 'error': 'Permission denied - Only authors can delete messages'})
+            
+            # Delete the message
+            message.delete()
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Message deleted successfully'
+            })
+            
+        except ChatMessage.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Message not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': 'An error occurred'})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
 # Function-based view wrapper for URL compatibility
 def guestbook(request):
     """Function-based view wrapper for GuestbookView"""

@@ -3,13 +3,13 @@
         transform: translateX(0);
     }
     100% {
-        transform: translateX(-50%);
+        transform: translateX(-100%);
     }
 }
 
 @keyframes scroll-reverse {
     0% {
-        transform: translateX(-50%);
+        transform: translateX(-100%);
     }
     100% {
         transform: translateX(0);
@@ -18,13 +18,13 @@
 
 .skills-carousel {
     display: flex;
-    animation: scroll 180s linear infinite;
+    animation: scroll 360s linear infinite;
     will-change: transform;
 }
 
 .skills-carousel-reverse {
     display: flex;
-    animation: scroll-reverse 180s linear infinite;
+    animation: scroll-reverse 360s linear infinite;
     will-change: transform;
 }
 

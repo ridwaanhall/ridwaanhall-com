@@ -59,7 +59,8 @@ class GuestbookView(GuestbookSEOMixin, BaseView):
 
     def _get(self, request, *args, **kwargs):
         about = self.get_about_data()
-          # Get all chat messages with user profile data and replies
+        
+        # Get all chat messages with user profile data and replies
         chat_messages = ChatMessage.objects.select_related('user', 'reply_to__user').all()[:50]  # Latest 50 messages
         
         # Get total message count
@@ -87,13 +88,17 @@ class GuestbookView(GuestbookSEOMixin, BaseView):
         if request.user.is_authenticated:
             current_user_profile = get_user_profile_data(request.user)
         
-        context = {
-            'title': 'Guestbook',
+        # Get the base context with SEO data
+        context = self.get_context_data()
+        
+        # Add guestbook-specific context
+        context.update({
             'chat_messages': enriched_messages,
             'message_count': total_message_count,
             'current_user_profile': current_user_profile,
             'about': about,
-        }
+        })
+        
         return self.render_to_response(context)
 
 @login_required

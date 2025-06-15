@@ -170,6 +170,12 @@ INSTALLED_APPS = [
     # Security apps
     "csp",
     
+    'allauth',
+    'allauth.account',
+    
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    
     # Project apps
     'apps.core',
     'apps.about',
@@ -178,6 +184,7 @@ INSTALLED_APPS = [
     'apps.projects',
     'apps.blog',
     'apps.seo',
+    'apps.guestbook',
 ]
 
 MIDDLEWARE = [
@@ -191,7 +198,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    "allauth.account.middleware.AccountMiddleware",
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': config('GOOGLE_CLIENT_ID'),
+            'secret': config('GOOGLE_CLIENT_SECRET'),
+        },
+    }
+}
 
 ROOT_URLCONF = 'ridwaanhall_com.urls'
 
@@ -208,6 +226,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
             ],
         },
     },

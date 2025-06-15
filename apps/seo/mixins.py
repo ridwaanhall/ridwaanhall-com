@@ -140,6 +140,10 @@ class ProjectsListSEOMixin(SEOMixin):
 class ProjectDetailSEOMixin(SEOMixin):
     """SEO mixin specifically for project detail page."""
     seo_type = 'project_detail'
+    
+class GuestbookSEOMixin(SEOMixin):
+    """SEO mixin specifically for guestbook page."""
+    seo_type = 'guestbook'
 
 
 class PrivacyPolicySEOMixin(SEOMixin):

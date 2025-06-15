@@ -13,17 +13,6 @@
                         <h1 class="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">Guest<span class="text-indigo-400">book</span></h1>
                         <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">Leave a message, share your thoughts, or just say hello! I'd love to hear from you.</p>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                            ></path>
-                        </svg>
-                        <span class="text-indigo-300 font-medium">{{ message_count|default:0 }} messages</span>
-                    </div>
                 </div>
             </div>
             <div class="grid grid-cols-1 gap-6">
@@ -179,35 +168,17 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                                 </svg>
                             </button>
-                        </form>
-
-                        <div class="mt-3 flex justify-between items-center text-sm">
-                            <span class="text-zinc-400">Press Enter to send • {{ message_count|default:0 }} total messages</span>
-                            {% if user.is_authenticated %}
-                            <div class="flex items-center gap-2">
-                                {% if current_user_profile.profile_image %}
-                                <img src="{{ current_user_profile.profile_image }}" alt="{{ current_user_profile.full_name }}" class="rounded-full w-5 h-5 object-cover" />
-                                {% endif %}
-                                <span class="text-zinc-400">
-                                    {{ current_user_profile.full_name|default:user.username }} {% if current_user_profile.is_author %}
-                                    <span class="bg-yellow-500/20 text-yellow-300 px-1 py-0.5 rounded text-xs ml-1">
-                                        <svg class="w-3 h-3 inline" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                                        </svg>
-                                    </span>
-                                    {% endif %}
-                                </span>
-                                <form method="post" action="{% url 'logout' %}" class="inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="p-1 text-zinc-400 hover:text-white rounded transition-colors" title="Sign out">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                        </svg>
-                                    </button>
-                                </form>
-                            </div>
-                            {% endif %}
+                        </form>                        {% if user.is_authenticated %}
+                        <div class="mt-3 text-sm text-zinc-400">
+                            <span>Signed in as {{ current_user_profile.full_name|default:user.username }} ({{ user.email }}) • </span>
+                            <form method="post" action="{% url 'logout' %}" class="inline">
+                                {% csrf_token %}
+                                <button type="submit" class="text-zinc-400 hover:text-indigo-400 underline transition-colors">
+                                    Sign Out
+                                </button>
+                            </form>
                         </div>
+                        {% endif %}
                         {% else %}
                         <div class="text-center py-6">
                             <p class="text-zinc-400 mb-4 flex items-center justify-center">

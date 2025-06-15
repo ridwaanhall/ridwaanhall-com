@@ -13,7 +13,8 @@ def get_user_profile_data(user):
     profile_data = {
         'full_name': user.get_full_name() or user.username,
         'profile_image': None,
-        'is_author': False
+        'is_author': False,
+        'email': user.email
     }
     
     # Check if user is author
@@ -36,6 +37,11 @@ def get_user_profile_data(user):
             profile_image = social_account.extra_data.get('picture', '')
             if profile_image:
                 profile_data['profile_image'] = profile_image
+            
+            # Get email from Google if available
+            google_email = social_account.extra_data.get('email', '')
+            if google_email:
+                profile_data['email'] = google_email
                 
     except Exception as e:
         # Fallback to Django user data

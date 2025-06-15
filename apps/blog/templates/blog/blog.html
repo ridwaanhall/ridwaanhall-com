@@ -99,12 +99,12 @@
                             <div class="relative z-10 p-3 sm:p-4 flex flex-col h-full">
                                 <div class="flex flex-wrap gap-1 mb-2 sm:mb-4">
                                     {% for tag in blog.tags|slice:":3" %}
-                                    <span class="font-medium rounded-full bg-zinc-900/80 px-1.5 sm:px-2.5 py-0.5 sm:py-1 font-mono text-xs border border-zinc-700">
+                                    <span class="font-medium rounded-full bg-zinc-900/80 text-zinc-400 px-1.5 sm:px-2.5 py-0.5 sm:py-1 font-mono text-xs border border-zinc-700">
                                         #{{ tag|slugify }}
                                     </span>
                                     {% endfor %}
                                     {% if blog.tags|length > 3 %}
-                                    <span class="font-medium rounded-full bg-zinc-900/80 px-1.5 sm:px-2.5 py-0.5 sm:py-1 font-mono text-xs border border-zinc-700">
+                                    <span class="font-medium rounded-full bg-zinc-900/80 text-zinc-400 px-1.5 sm:px-2.5 py-0.5 sm:py-1 font-mono text-xs border border-zinc-700">
                                         +{{ blog.tags|length|add:"-3" }}
                                     </span>
                                     {% endif %}

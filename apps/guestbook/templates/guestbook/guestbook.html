@@ -27,7 +27,7 @@
                                 ></path>
                             </svg>
                             Guestbook Messages
-                            <span class="ml-auto bg-white/20 px-2 py-1 rounded-full text-sm">{{ message_count|default:0 }} messages</span>
+                            <span id="message-count" class="ml-auto bg-white/20 px-2 py-1 rounded-full text-sm">{{ message_count|default:0 }} messages</span>
                         </h4>
                     </div>
                     <!-- Messages Container -->
@@ -351,7 +351,7 @@
                                     : "";
 
                                 replyHtml = `
-                                    <div class="border border-zinc-500 px-4 py-2">
+                                    <div class="border-b border-zinc-700 px-4 py-2">
                                         <div class="flex items-center text-zinc-400 text-sm">
                                             <svg class="w-4 h-4 mr-2 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
@@ -416,16 +416,12 @@
                             scrollToBottom();
 
                             // Clear reply state
-                            clearReply();
-
-                            // Update message count
-                            const badges = document.querySelectorAll(".bg-white\\/20, .text-zinc-300");
-                            badges.forEach((badge) => {
-                                if (badge.textContent.includes("messages")) {
-                                    const currentCount = parseInt(badge.textContent.split(" ")[0]) || 0;
-                                    badge.textContent = `${currentCount + 1} messages`;
-                                }
-                            });
+                            clearReply();                            // Update message count
+                            const messageCountBadge = document.getElementById('message-count');
+                            if (messageCountBadge) {
+                                const currentCount = parseInt(messageCountBadge.textContent.split(" ")[0]) || 0;
+                                messageCountBadge.textContent = `${currentCount + 1} messages`;
+                            }
                         } else {
                             alert("Error: " + data.error);
                         }

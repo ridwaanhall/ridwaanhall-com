@@ -37,7 +37,7 @@
                         <div class="group border border-zinc-700/50 rounded-xl overflow-hidden transition-all duration-300 hover:border-zinc-600/80 hover:shadow-md hover:shadow-zinc-900/10" data-message-id="{{ message.pk }}">
                             <!-- Reply indicator if this is a reply -->
                             {% if message.reply_to %}
-                            <div class="border border-zinc-700 px-4 py-2">
+                            <div class="border-b border-zinc-700 px-4 py-2">
                                 <div class="flex items-center text-zinc-400 text-sm">
                                     <svg class="w-4 h-4 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
@@ -107,9 +107,8 @@
                                                 <time class="text-zinc-400 text-xs sm:text-sm font-mono px-2 py-1 rounded-md">
                                                     {{ message.timestamp|date:"d/m/Y, H:i" }}
                                                 </time>
-                                                {% if user.is_authenticated %}
-                                                <button
-                                                    class="reply-btn opacity-0 group-hover:opacity-100 transition-all duration-200 p-2 rounded-lg border border-transparent hover:border-zinc-600/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                                                {% if user.is_authenticated %}                                                <button
+                                                    class="reply-btn transition-all duration-200 p-2 rounded-lg border border-transparent hover:border-zinc-600/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
                                                     data-message-id="{{ message.pk }}"
                                                     data-user="{{ message.user_full_name }}"
                                                     data-message="{{ message.message }}"
@@ -168,7 +167,7 @@
                         {% if user.is_authenticated %}
                         <!-- Reply indicator -->
                         <div id="reply-indicator" class="hidden mb-3">
-                            <div class="border-l-4 border-indigo-500 rounded-lg p-3 flex justify-between items-center">
+                            <div class="border border-indigo-500 rounded-lg p-3 flex justify-between items-center">
                                 <div class="flex items-center text-zinc-400 text-sm">
                                     <svg class="w-4 h-4 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
@@ -196,10 +195,8 @@
                                 maxlength="500"
                                 required
                             />
-                            <button type="submit" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200 flex items-center">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                                </svg>
+                            <button type="submit" class="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center">
+                                <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="22" width="22" xmlns="http://www.w3.org/2000/svg"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                             </button>
                         </form>
                         {% if user.is_authenticated %}
@@ -353,7 +350,7 @@
                                     : "";
 
                                 replyHtml = `
-                                    <div class="border-l-4 border-indigo-500 px-4 py-2">
+                                    <div class="border border-indigo-500 px-4 py-2">
                                         <div class="flex items-center text-zinc-400 text-sm">
                                             <svg class="w-4 h-4 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
@@ -384,8 +381,7 @@
                                                     <div class="flex items-center gap-2">
                                                         <time class="text-zinc-400 text-xs sm:text-sm font-mono px-2 py-1 rounded-md">
                                                             ${data.message.timestamp}
-                                                        </time>
-                                                        <button class="reply-btn opacity-0 group-hover:opacity-100 transition-all duration-200 p-2 rounded-lg border border-transparent hover:border-zinc-600/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" 
+                                                        </time>                                                        <button class="reply-btn transition-all duration-200 p-2 rounded-lg border border-transparent hover:border-zinc-600/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" 
                                                                 data-message-id="${data.message.id}" 
                                                                 data-user="${data.message.user}" 
                                                                 data-message="${data.message.message}" 

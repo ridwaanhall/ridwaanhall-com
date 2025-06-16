@@ -94,7 +94,7 @@
                                         <!-- Header -->
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center gap-2 flex-wrap">
-                                                <span class="font-semibold text-sm sm:text-base">{{ message.user_full_name }}</span>
+                                                <span class="font-medium text-sm sm:text-base">{{ message.user_full_name }}</span>
                                                 {% if message.user_is_author %}
                                                 <div class="text-medium flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-1.5 py-0.5 text-violet-50">
                                                     <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="13" width="13" xmlns="http://www.w3.org/2000/svg">
@@ -404,7 +404,7 @@
                                             <div class="flex-1 min-w-0">
                                                 <div class="flex items-center justify-between">
                                                     <div class="flex items-center gap-2 flex-wrap">
-                                                        <span class="font-semibold text-sm sm:text-base">${escapeHtml(data.message.user)}</span>
+                                                        <span class="font-medium text-sm sm:text-base">${escapeHtml(data.message.user)}</span>
                                                         ${authorBadgeHtml}
                                                     </div>
                                                     <div class="flex items-center gap-2">

@@ -91,6 +91,7 @@ CONTENT_SECURITY_POLICY = {
             '*.googleapis.com',
             '*.gstatic.com',
             'lh3.googleusercontent.com',
+            'avatars.githubusercontent.com',
         ],
         'object-src': [NONE],
         'script-src': [

@@ -170,12 +170,12 @@ INSTALLED_APPS = [
     
     # Security apps
     "csp",
-    
     'allauth',
     'allauth.account',
     
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
     
     # Project apps
     'apps.core',
@@ -216,6 +216,15 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {
             'access_type': 'online',
         }
+    },
+    'github': {
+        'APP': {
+            'client_id': config('GITHUB_CLIENT_ID'),
+            'secret': config('GITHUB_CLIENT_SECRET'),
+        },
+        'SCOPE': [
+            'user:email',
+        ],
     }
 }
 

@@ -98,29 +98,27 @@
                                     <p class="w-fit rounded-lg rounded-tl-none bg-zinc-700 px-3 py-2 group-hover:bg-zinc-600 transition-colors"
                                        data-message-id="{{ message.pk }}"
                                        data-user="{{ message.user_full_name }}"
-                                       data-message="{{ message.message|escape }}">{{ message.message|escape|linebreaksbr }}</p>
-                                    
-                                    <!-- Action buttons -->
+                                       data-message="{{ message.message|escape }}">{{ message.message|escape|linebreaksbr }}</p>                                      <!-- Action buttons -->
                                     {% if user.is_authenticated %}
-                                    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div class="flex items-center gap-1">
                                         <button
-                                            class="reply-btn p-1.5 rounded-lg hover:bg-zinc-200 transition-colors"
+                                            class="reply-btn p-1.5 rounded-lg hover:bg-zinc-600 transition-colors"
                                             data-message-id="{{ message.pk }}"
                                             data-user="{{ message.user_full_name }}"
                                             data-message="{{ message.message|escape }}"
                                             title="Reply to this message"
                                         >
-                                            <svg class="w-4 h-4 text-zinc-500 hover:text-zinc-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-4 h-4 text-zinc-400 hover:text-zinc-200 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                             </svg>
                                         </button>
                                         {% if current_user_profile.is_author %}
                                         <button
-                                            class="delete-btn p-1.5 rounded-lg hover:bg-red-100 transition-colors"
+                                            class="delete-btn p-1.5 rounded-lg hover:bg-red-900/30 transition-colors"
                                             data-message-id="{{ message.pk }}"
                                             title="Delete this message"
                                         >
-                                            <svg class="w-4 h-4 text-zinc-500 hover:text-red-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-4 h-4 text-zinc-400 hover:text-red-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                             </svg>
                                         </button>
@@ -350,7 +348,7 @@
                                     </div>
                                 `;
                             }
-
+                            
                             // Add message to guestbook
                             const messageHtml = `
                                 <div class="flex items-start gap-3 px-3" data-message-id="${data.message.id}">
@@ -371,21 +369,21 @@
                                                data-message-id="${data.message.id}"
                                                data-user="${escapeHtml(data.message.user)}"
                                                data-message="${escapeHtml(data.message.message)}"></p>
-                                            <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button class="reply-btn p-1.5 rounded-lg hover:bg-zinc-200 transition-colors"
+                                            <div class="flex items-center gap-1">
+                                                <button class="reply-btn p-1.5 rounded-lg hover:bg-zinc-600 transition-colors"
                                                         data-message-id="${data.message.id}"
                                                         data-user="${escapeHtml(data.message.user)}"
                                                         data-message="${escapeHtml(data.message.message)}"
                                                         title="Reply to this message">
-                                                    <svg class="w-4 h-4 text-zinc-500 hover:text-zinc-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <svg class="w-4 h-4 text-zinc-400 hover:text-zinc-200 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                                     </svg>
                                                 </button>
                                                 {% if current_user_profile.is_author %}
-                                                <button class="delete-btn p-1.5 rounded-lg hover:bg-red-100 transition-colors"
+                                                <button class="delete-btn p-1.5 rounded-lg hover:bg-red-900/30 transition-colors"
                                                         data-message-id="${data.message.id}"
                                                         title="Delete this message">
-                                                    <svg class="w-4 h-4 text-zinc-500 hover:text-red-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <svg class="w-4 h-4 text-zinc-400 hover:text-red-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                                     </svg>
                                                 </button>
@@ -518,7 +516,7 @@
                             message_id: messageId,
                         }),
                     })
-                    .then((response) => response.json())                    .then((data) => {
+                    .then((response) => response.json()).then((data) => {
                         if (data.success) {
                             // Remove the message from the DOM - find the parent message container
                             const messageElement = button.closest('[data-message-id]');

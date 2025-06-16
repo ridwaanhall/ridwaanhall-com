@@ -14,19 +14,23 @@ class UserProfileMixin:
     @staticmethod
     def get_user_profile_data(user):
         """
-        Get user's full name, profile image from Google, and author status
+        Get user's full name, profile image from OAuth providers, and author/co-author status
         """
         profile_data = {
             'full_name': user.get_full_name() or user.username,
             'profile_image': None,
             'is_author': False,
+            'is_co_author': False,
+            'co_author_order': 0,
             'email': user.email
         }
         
-        # Check if user is author
+        # Check if user is author or co-author
         try:
-            if hasattr(user, 'userprofile') and user.userprofile.is_author:
-                profile_data['is_author'] = True
+            if hasattr(user, 'userprofile'):
+                profile_data['is_author'] = user.userprofile.is_author
+                profile_data['is_co_author'] = user.userprofile.is_co_author
+                profile_data['co_author_order'] = user.userprofile.co_author_order if user.userprofile.is_co_author else 0
         except:
             pass
         
@@ -99,6 +103,8 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
             message.user_full_name = profile_data['full_name']
             message.user_profile_image = profile_data['profile_image']
             message.user_is_author = profile_data['is_author']
+            message.user_is_co_author = profile_data['is_co_author']
+            message.user_co_author_order = profile_data['co_author_order']
             
             # Add reply_to profile data if it exists
             if message.reply_to:
@@ -106,6 +112,8 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
                 message.reply_to.user_full_name = reply_profile_data['full_name']
                 message.reply_to.user_profile_image = reply_profile_data['profile_image']
                 message.reply_to.user_is_author = reply_profile_data['is_author']
+                message.reply_to.user_is_co_author = reply_profile_data['is_co_author']
+                message.reply_to.user_co_author_order = reply_profile_data['co_author_order']
             
             enriched_messages.append(message)
         

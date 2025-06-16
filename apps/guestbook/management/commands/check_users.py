@@ -41,15 +41,18 @@ class Command(BaseCommand):
             return        # Prepare user data
         user_data = []
 
-        for user in users:
-            # Get or create user profile
+        for user in users:            # Get or create user profile
             try:
                 user_profile = UserProfile.objects.get(user=user)
                 is_author = user_profile.is_author
+                is_co_author = user_profile.is_co_author
+                co_author_order = user_profile.co_author_order if user_profile.is_co_author else 0
             except UserProfile.DoesNotExist:
                 # Create profile if it doesn't exist (shouldn't happen due to signals)
-                user_profile = UserProfile.objects.create(user=user, is_author=False)
+                user_profile = UserProfile.objects.create(user=user, is_author=False, is_co_author=False)
                 is_author = False
+                is_co_author = False
+                co_author_order = 0
             
             # Get social accounts for this user
             social_accounts = SocialAccount.objects.filter(user=user)
@@ -88,6 +91,8 @@ class Command(BaseCommand):
                 'email': user.email,
                 'provider': provider_str,
                 'is_author': is_author,
+                'is_co_author': is_co_author,
+                'co_author_order': co_author_order,
                 'is_active': user.is_active,
                 'is_staff': user.is_staff,
                 'is_superuser': user.is_superuser,
@@ -133,8 +138,7 @@ class Command(BaseCommand):
                 title=f"[bold blue]User Information[/bold blue] ({len(user_data)} users)",
                 box=box.ROUNDED,
                 show_header=True,
-                header_style="bold magenta"
-            )
+                header_style="bold magenta"            )
             
             table.add_column("ID", style="cyan", width=4)
             table.add_column("Username", style="green", width=15)
@@ -142,6 +146,7 @@ class Command(BaseCommand):
             table.add_column("Email", style="blue", width=25)
             table.add_column("Provider", style="magenta", width=12)
             table.add_column("Author", style="red", width=8)
+            table.add_column("Co-Author", style="yellow", width=10)
             table.add_column("Active", style="green", width=8)
             table.add_column("Staff", style="cyan", width=7)
             table.add_column("Super", style="red", width=7)
@@ -153,9 +158,9 @@ class Command(BaseCommand):
                 # Truncate long text
                 full_name = user_info['full_name'][:18] + '...' if len(user_info['full_name']) > 20 else user_info['full_name']
                 email = user_info['email'][:23] + '...' if len(user_info['email']) > 25 else user_info['email']
-                
-                # Style for author
+                  # Style for author and co-author
                 author_style = "[bold red]✓[/bold red]" if user_info['is_author'] else "✗"
+                co_author_style = f"[bold yellow]✓({user_info['co_author_order']})[/bold yellow]" if user_info['is_co_author'] else "✗"
                 active_style = "[bold green]✓[/bold green]" if user_info['is_active'] else "[dim]✗[/dim]"
                 staff_style = "[bold cyan]✓[/bold cyan]" if user_info['is_staff'] else "✗"
                 super_style = "[bold red]✓[/bold red]" if user_info['is_superuser'] else "✗"
@@ -167,6 +172,7 @@ class Command(BaseCommand):
                     email,
                     user_info['provider'],
                     author_style,
+                    co_author_style,
                     active_style,
                     staff_style,
                     super_style,
@@ -176,13 +182,13 @@ class Command(BaseCommand):
                 )
             
             console.print(table)
-            
-            # Summary
+              # Summary
             total_users = len(user_data)
             google_users = len([u for u in user_data if 'google' in u['provider'].lower()])
             github_users = len([u for u in user_data if 'github' in u['provider'].lower()])
             local_users = len([u for u in user_data if u['provider'] == 'Local'])
             authors = len([u for u in user_data if u['is_author']])
+            co_authors = len([u for u in user_data if u['is_co_author']])
             active_users = len([u for u in user_data if u['is_active']])
             
             console.print(f"\n[bold]Summary:[/bold]")
@@ -191,6 +197,7 @@ class Command(BaseCommand):
             console.print(f"GitHub Users: [blue]{github_users}[/blue]")
             console.print(f"Local Users: [yellow]{local_users}[/yellow]")
             console.print(f"Authors: [red]{authors}[/red]")
+            console.print(f"Co-Authors: [yellow]{co_authors}[/yellow]/2")
             console.print(f"Active Users: [green]{active_users}[/green]")
 
         self.stdout.write(

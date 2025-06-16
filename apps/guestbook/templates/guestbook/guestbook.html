@@ -447,9 +447,16 @@
                             const messageContainer = guestbookMessages.lastElementChild;
                             const messageParagraph = messageContainer.querySelector('p');
                             if (messageParagraph) {
-                                messageParagraph.textContent = data.message.message.replace(/\n/g, '\n');
-                                // Convert line breaks to HTML for display
-                                messageParagraph.innerHTML = messageParagraph.textContent.replace(/\n/g, '<br>');
+                                messageParagraph.textContent = data.message.message;
+                                // Convert line breaks to HTML for display safely
+                                const lines = messageParagraph.textContent.split('\n');
+                                messageParagraph.textContent = ''; // Clear existing content
+                                lines.forEach((line, index) => {
+                                    if (index > 0) {
+                                        messageParagraph.appendChild(document.createElement('br'));
+                                    }
+                                    messageParagraph.appendChild(document.createTextNode(line));
+                                });
                             }
                             
                             messageInput.value = "";

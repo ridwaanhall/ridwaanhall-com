@@ -3,9 +3,9 @@ from django.contrib.auth.views import LogoutView
 from . import views
 
 urlpatterns = [
-    path('', views.guestbook, name='guestbook'),
+    path('', views.GuestbookView.as_view(), name='guestbook'),
     path('accounts/', include('allauth.urls')),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
-    path('send-message/', views.send_message, name='send_message'),
-    path('delete-message/', views.delete_message, name='delete_message'),
+    path('send-message/', views.SendMessageView.as_view(), name='send_message'),
+    path('delete-message/', views.DeleteMessageView.as_view(), name='delete_message'),
 ]

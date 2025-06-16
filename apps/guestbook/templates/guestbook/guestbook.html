@@ -69,7 +69,7 @@
 
                             <!-- Message content -->
                             <div class="p-3">
-                                <div class="flex items-start gap-3 sm:gap-4">
+                                <div class="flex items-start gap-2">
                                     <!-- User Avatar -->
                                     <div class="flex-shrink-0">
                                         {% if message.user_profile_image %}
@@ -107,7 +107,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="flex items-center gap-2">
-                                                <time class="text-zinc-400 text-xs sm:text-sm font-mono px-2 py-1 rounded-md">
+                                                <time class="text-zinc-400 text-xs sm:text-sm font-mono" datetime="{{ message.timestamp|date:"c" }}">
                                                     {{ message.timestamp|date:"d/m/Y, H:i" }}
                                                 </time>
                                                 {% if user.is_authenticated %}
@@ -138,7 +138,7 @@
                                         </div>
                                         <!-- Message Text -->
                                         <div
-                                            class="border border-zinc-700/40 rounded-lg p-3 sm:p-3 transition-all duration-200 hover:border-zinc-500/40"
+                                            class="border border-zinc-700/40 rounded-b-lg rounded-tr-lg p-3 sm:p-3 transition-all duration-200 hover:border-zinc-500/40"
                                             data-message-id="{{ message.pk }}"
                                             data-user="{{ message.user_full_name }}"
                                             data-message="{{ message.message|escape }}"
@@ -330,7 +330,9 @@
                 })
                     .then((response) => response.json())
                     .then((data) => {
-                        if (data.success) {                            // Create user name with author badge if applicable
+                        if (data.success) {
+                            
+                            // Create user name with author badge if applicable
                             const authorBadgeHtml = data.message.is_author
                                 ? `<div class="text-medium flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-1.5 py-0.5 text-violet-50">
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="13" width="13" xmlns="http://www.w3.org/2000/svg">
@@ -350,7 +352,9 @@
                                      <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24">
                                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                                      </svg>
-                                   </div>`;                            // Create reply indicator if this is a reply
+                                   </div>`;
+                            
+                            // Create reply indicator if this is a reply
                             let replyHtml = "";
                             if (data.message.reply_to) {
                                 const replyAvatarHtml = data.message.reply_to.profile_image
@@ -393,17 +397,18 @@
                                 <div class="group border mb-2 border-zinc-700/50 rounded-xl overflow-hidden transition-all duration-300 hover:border-zinc-600/80 hover:shadow-md hover:shadow-zinc-900/10" data-message-id="${data.message.id}">
                                     ${replyHtml}
                                     <div class="p-3">
-                                        <div class="flex items-start gap-3 sm:gap-4">
+                                        <div class="flex items-start gap-2">
                                             <div class="flex-shrink-0">
                                                 ${avatarHtml}
                                             </div>
                                             <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between">                                                    <div class="flex items-center gap-2 flex-wrap">
+                                                <div class="flex items-center justify-between">
+                                                    <div class="flex items-center gap-2 flex-wrap">
                                                         <span class="font-semibold text-sm sm:text-base">${escapeHtml(data.message.user)}</span>
                                                         ${authorBadgeHtml}
                                                     </div>
                                                     <div class="flex items-center gap-2">
-                                                        <time class="text-zinc-400 text-xs sm:text-sm font-mono px-2 py-1 rounded-md">
+                                                        <time class="text-zinc-400 text-xs sm:text-sm font-mono" datetime="${escapeHtml(data.message.timestamp)}">
                                                             ${escapeHtml(data.message.timestamp)}
                                                         </time>
                                                         <button class="reply-btn transition-all duration-200 p-2 rounded-lg border border-transparent hover:border-zinc-600/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-zinc-500/50" 
@@ -425,7 +430,8 @@
                                                         </button>
                                                         {% endif %}
                                                     </div>
-                                                </div>                                                <div class="border border-zinc-700/40 rounded-lg p-3 sm:p-3 transition-all duration-200 hover:border-zinc-500/40" 
+                                                </div>
+                                                <div class="border border-zinc-700/40 rounded-b-lg rounded-tr-lg p-3 sm:p-3 transition-all duration-200 hover:border-zinc-500/40" 
                                                      data-message-id="${data.message.id}" 
                                                      data-user="${escapeHtml(data.message.user)}" 
                                                      data-message="${escapeHtml(data.message.message)}">
@@ -435,7 +441,8 @@
                                         </div>
                                     </div>
                                 </div>
-                            `;                            // Remove "no messages" placeholder if it exists
+                            `;
+                            // Remove "no messages" placeholder if it exists
                             const noMessages = guestbookMessages.querySelector(".text-center.text-zinc-400.py-16");
                             if (noMessages) {
                                 noMessages.remove();

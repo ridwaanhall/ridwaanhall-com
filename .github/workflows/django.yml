@@ -16,15 +16,21 @@ jobs:
             - name: Set up Python ${{ matrix.python-version }}
               uses: actions/setup-python@v3
               with:
-                  python-version: ${{ matrix.python-version }}
+                    python-version: ${{ matrix.python-version }}
             - name: Install Dependencies
               run: |
-                  python -m pip install --upgrade pip
-                  pip install -r requirements.txt
+                    python -m pip install --upgrade pip
+                    pip install -r requirements.txt
             - name: Run Tests
               run: |
-                  python manage.py test
+                    python manage.py test
               env:
-                  SECRET_KEY: ${{ secrets.SECRET_KEY }}
-                  ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-                  WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+                    SECRET_KEY: ${{ secrets.SECRET_KEY }}
+                    ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+                    WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+                    GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+                    GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+                    POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
+                    POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+                    POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+                    POSTGRES_USER: ${{ secrets.POSTGRES_USER }}

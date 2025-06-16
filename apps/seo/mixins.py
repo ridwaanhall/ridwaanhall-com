@@ -56,6 +56,8 @@ class SEOMixin:
         elif self.seo_type == 'project_detail':
             project_data = kwargs.get('project_data', {})
             return seo_manager.get_project_detail_seo(project_data)
+        elif self.seo_type == 'guestbook':
+            return seo_manager.get_guestbook_seo()
         elif self.seo_type == 'privacy_policy':
             return seo_manager.get_privacy_policy_seo()
         else:
@@ -140,6 +142,10 @@ class ProjectsListSEOMixin(SEOMixin):
 class ProjectDetailSEOMixin(SEOMixin):
     """SEO mixin specifically for project detail page."""
     seo_type = 'project_detail'
+    
+class GuestbookSEOMixin(SEOMixin):
+    """SEO mixin specifically for guestbook page."""
+    seo_type = 'guestbook'
 
 
 class PrivacyPolicySEOMixin(SEOMixin):

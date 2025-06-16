@@ -184,6 +184,23 @@ class SEOData:
             'content_type': 'project_detail',
             'tech_stack': tech_keywords
         }
+        
+    @staticmethod
+    def get_guestbook_seo(about_data: Dict) -> Dict:
+        """Generate SEO data for guestbook page."""
+        keywords = SEOConfig.COMMON_KEYWORDS['personal'][:3] + \
+                  ['guestbook', 'chat', 'live chat', 'messages', 'community']
+        
+        return {
+            'title': f"Guestbook - Chat with {about_data['name']}",
+            'description': f"Join the conversation! Leave a message for {about_data['name']} in the guestbook. Share your thoughts, feedback, or just say hi!",
+            'keywords': ', '.join(keywords),
+            'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
+            'og_type': SEOConfig.CONTENT_TYPES['guestbook']['og_type'],
+            'twitter_card': SEOConfig.CONTENT_TYPES['guestbook']['twitter_card'],
+            'canonical_url': f"{SEOConfig.SITE_URL}/guestbook/",
+            'content_type': 'guestbook'
+        }
     
     @staticmethod
     def get_privacy_policy_seo(about_data: Dict) -> Dict:

@@ -128,6 +128,17 @@ class SEOManager:
         ]
         return seo_data
     
+    def get_guestbook_seo(self) -> Dict:
+        """Get complete SEO data for guestbook page."""
+        seo_data = SEOData.get_guestbook_seo(self.about_data)
+        seo_data['schemas'] = [
+            self.schema_generator.generate_breadcrumb_schema([
+                {"name": "Home", "url": SEOConfig.SITE_URL},
+                {"name": "Guestbook", "url": f"{SEOConfig.SITE_URL}/guestbook/"}
+            ])
+        ]
+        return seo_data
+    
     def get_privacy_policy_seo(self) -> Dict:
         """Get complete SEO data for privacy policy page."""
         seo_data = SEOData.get_privacy_policy_seo(self.about_data)

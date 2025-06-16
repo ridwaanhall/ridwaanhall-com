@@ -90,6 +90,7 @@ CONTENT_SECURITY_POLICY = {
             'wsrv.nl',
             '*.googleapis.com',
             '*.gstatic.com',
+            'lh3.googleusercontent.com',
         ],
         'object-src': [NONE],
         'script-src': [
@@ -170,6 +171,12 @@ INSTALLED_APPS = [
     # Security apps
     "csp",
     
+    'allauth',
+    'allauth.account',
+    
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    
     # Project apps
     'apps.core',
     'apps.about',
@@ -178,6 +185,7 @@ INSTALLED_APPS = [
     'apps.projects',
     'apps.blog',
     'apps.seo',
+    'apps.guestbook',
 ]
 
 MIDDLEWARE = [
@@ -191,7 +199,25 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    "allauth.account.middleware.AccountMiddleware",
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': config('GOOGLE_CLIENT_ID'),
+            'secret': config('GOOGLE_CLIENT_SECRET'),
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
 
 ROOT_URLCONF = 'ridwaanhall_com.urls'
 
@@ -216,13 +242,18 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ridwaanhall_com.wsgi.application'
 
 # ------------------------------------------------------------------------------
-# DATABASE SETTINGS
+# DATABASE SETTINGS (PostgreSQL)
 # ------------------------------------------------------------------------------
+
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('POSTGRES_DATABASE', default='ridwaanhall_db'),
+        'USER': config('POSTGRES_USER', default='postgres'),
+        'PASSWORD': config('POSTGRES_PASSWORD', default=''),
+        'HOST': config('POSTGRES_HOST', default='localhost'),
+        'PORT': config('POSTGRES_PORT', default='5432'),
     }
 }
 
@@ -235,13 +266,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
     {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
-
-# Password hashers - using Argon2 as the primary hasher
-PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.Argon2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
 ]
 
 # ------------------------------------------------------------------------------
@@ -266,3 +290,16 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # ------------------------------------------------------------------------------
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# Allauth settings
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "none"
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_EMAIL_REQUIRED = True
+
+# Login/Logout redirect URLs
+LOGIN_REDIRECT_URL = "guestbook"
+LOGOUT_REDIRECT_URL = "guestbook"
+ACCOUNT_LOGOUT_REDIRECT_URL = "guestbook"

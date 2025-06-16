@@ -123,3 +123,5 @@ dmypy.json
 static/
 building_web_apps_with_django.webp
 data.html
+*.json
+migrations/

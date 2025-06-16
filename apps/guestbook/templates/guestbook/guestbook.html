@@ -1,0 +1,597 @@
+{% extends 'base_seo.html' %}
+{% load static %}
+{% load socialaccount %}
+{% block content %}
+<div class="flex-1 md:ml-62">
+    <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-6 sm:mb-8">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-6">
+                    <div>
+                        <h1 class="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">Guest<span class="text-indigo-400">book</span></h1>
+                        <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">Leave a message, share your thoughts, or just say hello! I'd love to hear from you.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 gap-6">
+                <!-- Guestbook Messages -->
+                <div class="border border-zinc-700 rounded-lg shadow-lg">
+                    <div class="bg-zinc-800 p-3 rounded-t-lg">
+                        <h4 class="text-lg font-medium flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                ></path>
+                            </svg>
+                            Guestbook Messages
+                            <span id="message-count" class="ml-auto bg-white/20 px-2 py-1 rounded-full text-sm">{{ message_count|default:0 }} messages</span>
+                        </h4>
+                    </div>
+                    <!-- Messages Container -->
+                    <div id="guestbook-messages" class="p-3 space-y-4 h-[60vh] max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-400/30 scrollbar-track-zinc-700/30">
+                        {% if chat_messages %}
+                        {% for message in chat_messages reversed %}
+                        <div class="group border mb-2 border-zinc-700/50 rounded-xl overflow-hidden transition-all duration-300 hover:border-zinc-600/80 hover:shadow-md hover:shadow-zinc-900/10" data-message-id="{{ message.pk }}">                            <!-- Reply indicator if this is a reply -->
+                            {% if message.reply_to %}
+                            <div class="border-b border-zinc-700 px-4 py-2">
+                                <div class="flex items-center text-zinc-400 text-sm">
+                                    <svg class="w-4 h-4 mr-2 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                    </svg>
+                                    {% if user.is_authenticated and message.user == user %}
+                                        <span class="text-zinc-500">You replied to</span>
+                                    {% elif user.is_authenticated and message.reply_to.user == user %}
+                                        <span class="text-zinc-500">{{ message.user_full_name }} replied to you</span>
+                                    {% else %}
+                                        <span class="text-zinc-500">Replied to</span>
+                                    {% endif %}
+                                    {% if not user.is_authenticated or message.reply_to.user != user %}
+                                        <span class="font-medium text-zinc-300 mr-1 ml-1">{{ message.reply_to.user_full_name }}</span>
+                                        {% if message.reply_to.user_is_author %}
+                                        <div class="text-medium flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-1.5 py-0.5 text-violet-50">
+                                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="13" width="13" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill="none" d="M0 0h24v24H0z"></path>
+                                                <path d="M17 11c.34 0 .67.04 1 .09V6.27L10.5 3 3 6.27v4.91c0 4.54 3.2 8.79 7.5 9.82.55-.13 1.08-.32 1.6-.55-.69-.98-1.1-2.17-1.1-3.45 0-3.31 2.69-6 6-6z"></path>
+                                                <path d="M17 13c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 1.38c.62 0 1.12.51 1.12 1.12s-.51 1.12-1.12 1.12-1.12-.51-1.12-1.12.5-1.12 1.12-1.12zm0 5.37c-.93 0-1.74-.46-2.24-1.17.05-.72 1.51-1.08 2.24-1.08s2.19.36 2.24 1.08c-.5.71-1.31 1.17-2.24 1.17z"></path>
+                                            </svg>
+                                            <span class=" text-[10px]">Author</span>
+                                        </div>
+                                        {% endif %}
+                                    {% endif %}
+                                    <span class="text-zinc-500">:</span>
+                                    <span class="ml-1 truncate max-w-32 sm:max-w-48 text-zinc-300">"{{ message.reply_to.message }}"</span>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Message content -->
+                            <div class="p-3">
+                                <div class="flex items-start gap-3 sm:gap-4">
+                                    <!-- User Avatar -->
+                                    <div class="flex-shrink-0">
+                                        {% if message.user_profile_image %}
+                                        <img
+                                            src="{{ message.user_profile_image }}"
+                                            alt="{{ message.user_full_name }}"
+                                            class="rounded-xl w-12 h-12 sm:w-14 sm:h-14 object-cover border-2 border-zinc-700/50 transition-all duration-300 group-hover:border-zinc-500/50"
+                                        />
+                                        {% else %}
+                                        <div
+                                            class="bg-gradient-to-br from-zinc-500 to-purple-600 rounded-xl flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 border-2 border-zinc-700/50 transition-all duration-300 group-hover:border-zinc-400/50"
+                                        >
+                                            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                            </svg>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Message Content -->
+                                    <div class="flex-1 min-w-0">
+                                        <!-- Header -->
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-2 flex-wrap">
+                                                <span class="font-semibold text-sm sm:text-base">{{ message.user_full_name }}</span>
+                                                {% if message.user_is_author %}
+                                                <div class="text-medium flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-1.5 py-0.5 text-violet-50">
+                                                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="13" width="13" xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill="none" d="M0 0h24v24H0z"></path>
+                                                        <path d="M17 11c.34 0 .67.04 1 .09V6.27L10.5 3 3 6.27v4.91c0 4.54 3.2 8.79 7.5 9.82.55-.13 1.08-.32 1.6-.55-.69-.98-1.1-2.17-1.1-3.45 0-3.31 2.69-6 6-6z"></path>
+                                                        <path d="M17 13c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 1.38c.62 0 1.12.51 1.12 1.12s-.51 1.12-1.12 1.12-1.12-.51-1.12-1.12.5-1.12 1.12-1.12zm0 5.37c-.93 0-1.74-.46-2.24-1.17.05-.72 1.51-1.08 2.24-1.08s2.19.36 2.24 1.08c-.5.71-1.31 1.17-2.24 1.17z"></path>
+                                                    </svg>
+                                                    <span class=" text-[10px]">Author</span>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <time class="text-zinc-400 text-xs sm:text-sm font-mono px-2 py-1 rounded-md">
+                                                    {{ message.timestamp|date:"d/m/Y, H:i" }}
+                                                </time>
+                                                {% if user.is_authenticated %}
+                                                    <button
+                                                        class="reply-btn transition-all duration-200 p-2 rounded-lg border border-transparent hover:border-zinc-600/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-zinc-500/50"
+                                                        data-message-id="{{ message.pk }}"
+                                                        data-user="{{ message.user_full_name }}"
+                                                        data-message="{{ message.message|escape }}"
+                                                        title="Reply to this message"
+                                                    >
+                                                    <svg class="w-4 h-4 text-zinc-400 hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                                    </svg>
+                                                    </button>
+                                                    {% if current_user_profile.is_author %}
+                                                        <button
+                                                            class="delete-btn transition-all duration-200 p-2 rounded-lg border border-transparent hover:border-red-600/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500/50"
+                                                            data-message-id="{{ message.pk }}"
+                                                            title="Delete this message"
+                                                        >
+                                                        <svg class="w-4 h-4 text-zinc-400 hover:text-red-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                        </svg>
+                                                        </button>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <!-- Message Text -->
+                                        <div
+                                            class="border border-zinc-700/40 rounded-lg p-3 sm:p-3 transition-all duration-200 hover:border-zinc-500/40"
+                                            data-message-id="{{ message.pk }}"
+                                            data-user="{{ message.user_full_name }}"
+                                            data-message="{{ message.message|escape }}"
+                                        >
+                                            <p class="leading-relaxed break-words">{{ message.message|escape|linebreaksbr }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="text-center text-zinc-400 py-16">
+                            <svg class="w-16 h-16 mx-auto mb-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                ></path>
+                            </svg>
+                            <h5 class="text-lg font-medium mb-2">Welcome to my Guestbook!</h5>
+                            <p class="mb-4">No messages yet. Be the first to leave a message!</p>
+                            {% if not user.is_authenticated %}
+                            <a href="{% provider_login_url 'google' %}" class="inline-flex items-center px-4 py-2 bg-zinc-600 hover:bg-zinc-700 rounded-lg transition-colors duration-200">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                                </svg>
+                                Sign in to leave a message
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Message Input -->
+                    <div class="border-t border-zinc-700 p-3">
+                        {% if user.is_authenticated %}
+                        <!-- Reply indicator -->
+                        <div id="reply-indicator" class="hidden mb-3">
+                            <div class="border border-zinc-500 rounded-lg p-3 flex justify-between items-center">
+                                <div class="flex items-center text-zinc-400 text-sm">
+                                    <svg class="w-4 h-4 mr-2 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                    </svg>
+                                    <span class="text-zinc-500">Replying to</span>
+                                    <strong id="reply-to-user" class="text-zinc-300 mx-1"></strong>
+                                    <span class="text-zinc-500">:</span>
+                                    <span id="reply-to-message" class="ml-1 truncate max-w-32 sm:max-w-48"></span>
+                                </div>
+                                <button type="button" id="cancel-reply" class="p-1 rounded border border-transparent hover:border-zinc-600/50 transition-colors">
+                                    <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <form id="guestbook-form" class="flex gap-3">
+                            {% csrf_token %}
+                            <input type="hidden" id="reply-to-id" name="reply_to" value="" />
+                            <input
+                                type="text"
+                                id="message-input"
+                                class="flex-1 px-4 py-3 border border-zinc-600 rounded-lg placeholder-zinc-400 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 bg-transparent"
+                                placeholder="Type your message..."
+                                maxlength="500"
+                                required
+                            />
+                            <button type="submit" class="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                                <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="22" width="22" xmlns="http://www.w3.org/2000/svg"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            </button>
+                        </form>
+                        {% if user.is_authenticated %}
+                        <div class="mt-3 text-sm text-zinc-400">
+                            <span>Signed in as {{ current_user_profile.full_name|default:user.username }}{% if user.email %} ({{ user.email }}){% endif %} • </span>
+                            <form method="post" action="{% url 'account_logout' %}" class="inline">
+                                {% csrf_token %}
+                                <button type="submit" class="text-zinc-400 hover:text-zinc-400 underline transition-colors">
+                                    Sign Out
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                        {% else %}
+                        <div class="text-center py-6">
+                            <p class="text-zinc-400 mb-4 flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                </svg>
+                                Sign in to leave a message in the guestbook
+                            </p>
+                            <a href="{% provider_login_url 'google' %}" class="inline-flex items-center px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors duration-200 text-sm">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                                </svg>
+                                Sign in with Google
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    // HTML escaping function to prevent XSS
+    function escapeHtml(text) {
+        if (typeof text !== 'string') return text;
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            const jakartaTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Jakarta" }));
+            const timeString = jakartaTime.toLocaleString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true,
+            });
+            const timeElement = document.getElementById("current-time");
+            if (timeElement) {
+                timeElement.textContent = timeString;
+            }
+        }
+
+        // Update time immediately and then every second
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Guestbook functionality
+        const guestbookForm = document.getElementById("guestbook-form");
+        const messageInput = document.getElementById("message-input");
+        const guestbookMessages = document.getElementById("guestbook-messages");
+
+        // Auto-scroll to bottom of messages
+        function scrollToBottom() {
+            if (guestbookMessages) {
+                guestbookMessages.scrollTop = guestbookMessages.scrollHeight;
+            }
+        }
+
+        // Initial scroll to bottom
+        scrollToBottom();
+
+        // Handle form submission
+        if (guestbookForm) {
+            guestbookForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const message = messageInput.value.trim();
+                if (!message) return;
+
+                // Disable form while sending
+                messageInput.disabled = true;
+                const submitBtn = guestbookForm.querySelector('button[type="submit"]');
+                const originalBtnContent = submitBtn.innerHTML;
+                submitBtn.innerHTML =
+                    '<svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>';
+
+                // Send message via AJAX
+                fetch('{% url "send_message" %}', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                    },
+                    body: new URLSearchParams({
+                        message: message,
+                        reply_to: document.getElementById("reply-to-id").value,
+                    }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {                            // Create user name with author badge if applicable
+                            const authorBadgeHtml = data.message.is_author
+                                ? `<div class="text-medium flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-1.5 py-0.5 text-violet-50">
+                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="13" width="13" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill="none" d="M0 0h24v24H0z"></path>
+                                            <path d="M17 11c.34 0 .67.04 1 .09V6.27L10.5 3 3 6.27v4.91c0 4.54 3.2 8.79 7.5 9.82.55-.13 1.08-.32 1.6-.55-.69-.98-1.1-2.17-1.1-3.45 0-3.31 2.69-6 6-6z"></path>
+                                            <path d="M17 13c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 1.38c.62 0 1.12.51 1.12 1.12s-.51 1.12-1.12 1.12-1.12-.51-1.12-1.12.5-1.12 1.12-1.12zm0 5.37c-.93 0-1.74-.46-2.24-1.17.05-.72 1.51-1.08 2.24-1.08s2.19.36 2.24 1.08c-.5.71-1.31 1.17-2.24 1.17z"></path>
+                                        </svg>
+                                        <span class=" text-[10px]">Author</span>
+                                    </div>`
+                                : "";
+
+                            // Create profile image or default avatar
+                            const avatarHtml = data.message.profile_image
+                                ? `<img src="${escapeHtml(data.message.profile_image)}" alt="${escapeHtml(data.message.user)}" 
+                                     class="rounded-xl w-12 h-12 sm:w-14 sm:h-14 object-cover border-2 border-zinc-700/50 transition-all duration-300 group-hover:border-zinc-500/50">`
+                                : `<div class="bg-gradient-to-br from-zinc-500 to-purple-600 rounded-xl flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 border-2 border-zinc-700/50 transition-all duration-300 group-hover:border-zinc-400/50">
+                                     <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24">
+                                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                     </svg>
+                                   </div>`;                            // Create reply indicator if this is a reply
+                            let replyHtml = "";
+                            if (data.message.reply_to) {
+                                const replyAvatarHtml = data.message.reply_to.profile_image
+                                    ? `<img src="${escapeHtml(data.message.reply_to.profile_image)}" alt="${escapeHtml(data.message.reply_to.user)}" 
+                                         class="rounded-full mr-2 w-5 h-5 object-cover border border-zinc-600">`
+                                    : `<div class="rounded-full flex items-center justify-center w-5 h-5 mr-2">
+                                         <svg class="w-3 h-3 text-zinc-400" fill="currentColor" viewBox="0 0 24 24">
+                                             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                         </svg>
+                                       </div>`;
+
+                                const replyAuthorBadge = data.message.reply_to.is_author
+                                    ? `<div class="text-medium flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-1.5 py-0.5 text-violet-50">
+                                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="13" width="13" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill="none" d="M0 0h24v24H0z"></path>
+                                                <path d="M17 11c.34 0 .67.04 1 .09V6.27L10.5 3 3 6.27v4.91c0 4.54 3.2 8.79 7.5 9.82.55-.13 1.08-.32 1.6-.55-.69-.98-1.1-2.17-1.1-3.45 0-3.31 2.69-6 6-6z"></path>
+                                                <path d="M17 13c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 1.38c.62 0 1.12.51 1.12 1.12s-.51 1.12-1.12 1.12-1.12-.51-1.12-1.12.5-1.12 1.12-1.12zm0 5.37c-.93 0-1.74-.46-2.24-1.17.05-.72 1.51-1.08 2.24-1.08s2.19.36 2.24 1.08c-.5.71-1.31 1.17-2.24 1.17z"></path>
+                                            </svg>
+                                            <span class=" text-[10px]">Author</span>
+                                        </div>`
+                                    : "";
+
+                                replyHtml = `
+                                    <div class="border-b border-zinc-700 px-4 py-2">
+                                        <div class="flex items-center text-zinc-400 text-sm">
+                                            <svg class="w-4 h-4 mr-2 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                            </svg>
+                                            ${replyAvatarHtml}
+                                            <span class="text-zinc-500">Replying to</span>
+                                            <span class="font-medium text-zinc-300 mr-1 ml-1">${escapeHtml(data.message.reply_to.user)}</span>
+                                            ${replyAuthorBadge}
+                                            <span class="text-zinc-500">:</span>
+                                            <span class="ml-1 truncate max-w-32 sm:max-w-48">"${escapeHtml(data.message.reply_to.message)}"</span>
+                                        </div>
+                                    </div>
+                                `;
+                            }// Add message to guestbook
+                            const messageHtml = `
+                                <div class="group border mb-2 border-zinc-700/50 rounded-xl overflow-hidden transition-all duration-300 hover:border-zinc-600/80 hover:shadow-md hover:shadow-zinc-900/10" data-message-id="${data.message.id}">
+                                    ${replyHtml}
+                                    <div class="p-3">
+                                        <div class="flex items-start gap-3 sm:gap-4">
+                                            <div class="flex-shrink-0">
+                                                ${avatarHtml}
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center justify-between">                                                    <div class="flex items-center gap-2 flex-wrap">
+                                                        <span class="font-semibold text-sm sm:text-base">${escapeHtml(data.message.user)}</span>
+                                                        ${authorBadgeHtml}
+                                                    </div>
+                                                    <div class="flex items-center gap-2">
+                                                        <time class="text-zinc-400 text-xs sm:text-sm font-mono px-2 py-1 rounded-md">
+                                                            ${escapeHtml(data.message.timestamp)}
+                                                        </time>
+                                                        <button class="reply-btn transition-all duration-200 p-2 rounded-lg border border-transparent hover:border-zinc-600/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-zinc-500/50" 
+                                                                data-message-id="${data.message.id}" 
+                                                                data-user="${escapeHtml(data.message.user)}" 
+                                                                data-message="${escapeHtml(data.message.message)}" 
+                                                                title="Reply to this message">
+                                                            <svg class="w-4 h-4 text-zinc-400 hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                                            </svg>
+                                                        </button>
+                                                        {% if current_user_profile.is_author %}
+                                                        <button class="delete-btn transition-all duration-200 p-2 rounded-lg border border-transparent hover:border-red-600/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500/50" 
+                                                                data-message-id="${data.message.id}" 
+                                                                title="Delete this message">
+                                                            <svg class="w-4 h-4 text-zinc-400 hover:text-red-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                            </svg>
+                                                        </button>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>                                                <div class="border border-zinc-700/40 rounded-lg p-3 sm:p-3 transition-all duration-200 hover:border-zinc-500/40" 
+                                                     data-message-id="${data.message.id}" 
+                                                     data-user="${escapeHtml(data.message.user)}" 
+                                                     data-message="${escapeHtml(data.message.message)}">
+                                                    <p class="leading-relaxed break-words"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;                            // Remove "no messages" placeholder if it exists
+                            const noMessages = guestbookMessages.querySelector(".text-center.text-zinc-400.py-16");
+                            if (noMessages) {
+                                noMessages.remove();
+                            }
+
+                            guestbookMessages.insertAdjacentHTML("beforeend", messageHtml);
+                            
+                            // Safely set the message content as text to prevent XSS
+                            const messageContainer = guestbookMessages.lastElementChild;
+                            const messageParagraph = messageContainer.querySelector('p');
+                            if (messageParagraph) {
+                                messageParagraph.textContent = data.message.message.replace(/\n/g, '\n');
+                                // Convert line breaks to HTML for display
+                                messageParagraph.innerHTML = messageParagraph.textContent.replace(/\n/g, '<br>');
+                            }
+                            
+                            messageInput.value = "";
+                            scrollToBottom();
+
+                            // Clear reply state
+                            clearReply();
+                            
+                            // Update message count
+                            const messageCountBadge = document.getElementById('message-count');
+                            if (messageCountBadge) {
+                                const currentCount = parseInt(messageCountBadge.textContent.split(" ")[0]) || 0;
+                                messageCountBadge.textContent = `${currentCount + 1} messages`;
+                            }
+                        } else {
+                            alert("Error: " + data.error);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("Failed to send message. Please try again.");
+                    })
+                    .finally(() => {
+                        // Re-enable form
+                        messageInput.disabled = false;
+                        submitBtn.innerHTML = originalBtnContent;
+                        messageInput.focus();
+                    });
+            });
+
+            // Handle Enter key
+            messageInput.addEventListener("keypress", function (e) {
+                if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    guestbookForm.dispatchEvent(new Event("submit"));
+                }
+            });
+        }        // Reply functionality
+        function setReply(messageId, userName, messageText) {
+            const replyIndicator = document.getElementById("reply-indicator");
+            const replyToUser = document.getElementById("reply-to-user");
+            const replyToMessage = document.getElementById("reply-to-message");
+            const replyToId = document.getElementById("reply-to-id");
+            const messageInput = document.getElementById("message-input");
+
+            if (replyToUser) replyToUser.textContent = userName;
+            if (replyToMessage) replyToMessage.textContent = messageText;
+            if (replyToId) replyToId.value = messageId;
+            if (replyIndicator) replyIndicator.classList.remove("hidden");
+            if (messageInput) {
+                messageInput.focus();
+                messageInput.placeholder = `Reply to ${userName}...`;
+            }
+        }
+
+        function clearReply() {
+            const replyIndicator = document.getElementById("reply-indicator");
+            const replyToId = document.getElementById("reply-to-id");
+            const messageInput = document.getElementById("message-input");
+
+            if (replyIndicator) replyIndicator.classList.add("hidden");
+            if (replyToId) replyToId.value = "";
+            if (messageInput) messageInput.placeholder = "Type your message...";
+        }        // Handle reply button clicks
+        document.addEventListener("click", function (e) {
+            if (e.target.closest(".reply-btn")) {
+                const button = e.target.closest(".reply-btn");
+                const messageId = button.dataset.messageId;
+                const userName = button.dataset.user;
+                const messageText = button.dataset.message;
+                setReply(messageId, userName, messageText);
+            }
+        });
+
+        // Handle delete button clicks
+        document.addEventListener("click", function (e) {
+            if (e.target.closest(".delete-btn")) {
+                const button = e.target.closest(".delete-btn");
+                const messageId = button.dataset.messageId;
+                
+                if (confirm("Are you sure you want to delete this message?")) {
+                    // Disable button while deleting
+                    button.disabled = true;
+                    const originalContent = button.innerHTML;
+                    button.innerHTML = '<svg class="w-4 h-4 animate-spin text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>';
+                    
+                    // Send delete request
+                    fetch('{% url "delete_message" %}', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                        },
+                        body: new URLSearchParams({
+                            message_id: messageId,
+                        }),
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            // Remove the message from the DOM
+                            const messageElement = button.closest('.group');
+                            if (messageElement) {
+                                messageElement.style.transition = 'all 0.3s ease';
+                                messageElement.style.opacity = '0';
+                                messageElement.style.transform = 'translateX(-100%)';
+                                setTimeout(() => {
+                                    messageElement.remove();
+                                    
+                                    // Update message count
+                                    const messageCountBadge = document.getElementById('message-count');
+                                    if (messageCountBadge) {
+                                        const currentCount = parseInt(messageCountBadge.textContent.split(" ")[0]) || 0;
+                                        const newCount = Math.max(0, currentCount - 1);
+                                        messageCountBadge.textContent = `${newCount} messages`;
+                                    }
+                                }, 300);
+                            }
+                        } else {
+                            alert("Error: " + (data.error || "Failed to delete message"));
+                            // Restore button
+                            button.disabled = false;
+                            button.innerHTML = originalContent;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("Failed to delete message. Please try again.");
+                        // Restore button
+                        button.disabled = false;
+                        button.innerHTML = originalContent;
+                    });
+                }
+            }
+        });
+
+        // Handle cancel reply button
+        const cancelReplyBtn = document.getElementById("cancel-reply");
+        if (cancelReplyBtn) {
+            cancelReplyBtn.addEventListener("click", clearReply);
+        }
+    });
+</script>
+
+{% endblock %}

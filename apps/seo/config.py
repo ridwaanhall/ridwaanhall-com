@@ -76,6 +76,18 @@ class SEOConfig:
             'twitter_card': 'summary',
             'priority': 0.8,
             'changefreq': 'monthly'
+        },
+        'guestbook': {
+            'og_type': 'website',
+            'twitter_card': 'summary_large_image',
+            'priority': 0.7,
+            'changefreq': 'daily'
+        },
+        'privacy_policy': {
+            'og_type': 'website',
+            'twitter_card': 'summary',
+            'priority': 0.5,
+            'changefreq': 'yearly'
         }
     }
     

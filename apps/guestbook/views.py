@@ -1,8 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.views import View
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 from allauth.socialaccount.models import SocialAccount
 from apps.core.base_views import BaseView
 from .models import ChatMessage
@@ -33,23 +31,41 @@ class UserProfileMixin:
             pass
         
         try:
-            # Get Google social account data
-            social_account = SocialAccount.objects.filter(user=user, provider='google').first()
-            if social_account and social_account.extra_data:
+            # Get Google social account data first
+            google_account = SocialAccount.objects.filter(user=user, provider='google').first()
+            if google_account and google_account.extra_data:
                 # Get full name from Google
-                google_name = social_account.extra_data.get('name', '')
+                google_name = google_account.extra_data.get('name', '')
                 if google_name:
                     profile_data['full_name'] = google_name
                 
                 # Get profile image from Google
-                profile_image = social_account.extra_data.get('picture', '')
+                profile_image = google_account.extra_data.get('picture', '')
                 if profile_image:
                     profile_data['profile_image'] = profile_image
                 
                 # Get email from Google if available
-                google_email = social_account.extra_data.get('email', '')
+                google_email = google_account.extra_data.get('email', '')
                 if google_email:
                     profile_data['email'] = google_email
+            
+            # Get GitHub social account data if Google is not available
+            elif not profile_data['profile_image']:
+                github_account = SocialAccount.objects.filter(user=user, provider='github').first()
+                if github_account and github_account.extra_data:
+                    # Get full name from GitHub
+                    github_name = github_account.extra_data.get('name', '') or github_account.extra_data.get('login', '')
+                    if github_name:
+                        profile_data['full_name'] = github_name
+                      # Get profile image from GitHub
+                    avatar_url = github_account.extra_data.get('avatar_url', '')
+                    if avatar_url:
+                        profile_data['profile_image'] = avatar_url
+                    
+                    # Get email from GitHub if available
+                    github_email = github_account.extra_data.get('email', '')
+                    if github_email:
+                        profile_data['email'] = github_email
                     
         except Exception as e:
             # Fallback to Django user data

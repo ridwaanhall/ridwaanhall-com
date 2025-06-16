@@ -176,9 +176,10 @@ class SendMessageView(LoginRequiredMixin, UserProfileMixin, View):
             reply_data = {
                 'id': reply_to_message.pk,
                 'user': reply_profile_data['full_name'],
-                'message': reply_to_message.message[:50] + ('...' if len(reply_to_message.message) > 50 else ''),
-                'profile_image': reply_profile_data['profile_image'],
-                'is_author': reply_profile_data['is_author']
+                'message': reply_to_message.message[:50] + ('...' if len(reply_to_message.message) > 50 else ''),                'profile_image': reply_profile_data['profile_image'],
+                'is_author': reply_profile_data['is_author'],
+                'is_co_author': reply_profile_data['is_co_author'],
+                'co_author_order': reply_profile_data['co_author_order']
             }
         
         return JsonResponse({
@@ -190,6 +191,8 @@ class SendMessageView(LoginRequiredMixin, UserProfileMixin, View):
                 'timestamp': chat_message.timestamp.strftime('%d/%m/%Y, %H:%M'),
                 'profile_image': profile_data['profile_image'],
                 'is_author': profile_data['is_author'],
+                'is_co_author': profile_data['is_co_author'],
+                'co_author_order': profile_data['co_author_order'],
                 'reply_to': reply_data
             }
         })

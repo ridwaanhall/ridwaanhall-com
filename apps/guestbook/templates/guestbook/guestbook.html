@@ -76,8 +76,7 @@
                                 <!-- Header with name and timestamp -->
                                 <div class="flex flex-col items-start gap-3 md:flex-row md:items-center">
                                     <div class="flex items-center gap-2">
-                                        <div class="text-sm font-medium">{{ message.user_full_name }}</div>
-                                        {% if message.user_is_author %}
+                                        <div class="text-sm font-medium">{{ message.user_full_name }}</div>                                        {% if message.user_is_author %}
                                         <div class="flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-1.5 py-0.5 text-violet-50">
                                             <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="10" width="10" xmlns="http://www.w3.org/2000/svg">
                                                 <path fill="none" d="M0 0h24v24H0z"></path>
@@ -85,6 +84,14 @@
                                                 <path d="M17 13c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 1.38c.62 0 1.12.51 1.12 1.12s-.51 1.12-1.12 1.12-1.12-.51-1.12-1.12.5-1.12 1.12-1.12zm0 5.37c-.93 0-1.74-.46-2.24-1.17.05-.72 1.51-1.08 2.24-1.08s2.19.36 2.24 1.08c-.5.71-1.31 1.17-2.24 1.17z"></path>
                                             </svg>
                                             <span class="text-[9px]">Author</span>
+                                        </div>
+                                        {% elif message.user_is_co_author %}
+                                        <div class="flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-amber-700 via-yellow-800 to-amber-700 px-1.5 py-0.5 text-amber-50">
+                                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="10" width="10" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill="none" d="M0 0h24v24H0z"></path>
+                                                <path d="M16 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L22 4H16zM10 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L16 4H10zM4 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L10 4H4zM7 14c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm10 0c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path>
+                                            </svg>
+                                            <span class="text-[9px]">Co-Author</span>
                                         </div>
                                         {% endif %}
                                         <div class="hidden md:flex">
@@ -329,8 +336,7 @@
                 })
                     .then((response) => response.json())
                     .then((data) => {
-                        if (data.success) {
-                            // Create user name with author badge if applicable
+                        if (data.success) {                            // Create user name with author/co-author badge if applicable
                             const authorBadgeHtml = data.message.is_author
                                 ? `<div class="flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-1.5 py-0.5 text-violet-50">
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="10" width="10" xmlns="http://www.w3.org/2000/svg">
@@ -340,7 +346,15 @@
                                         </svg>
                                         <span class="text-[9px]">Author</span>
                                     </div>`
-                                : "";
+                                : (data.message.is_co_author
+                                    ? `<div class="flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-amber-700 via-yellow-800 to-amber-700 px-1.5 py-0.5 text-amber-50">
+                                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="10" width="10" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill="none" d="M0 0h24v24H0z"></path>
+                                                <path d="M16 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L22 4H16zM10 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L16 4H10zM4 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L10 4H4zM7 14c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm10 0c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path>
+                                            </svg>
+                                            <span class="text-[9px]">Co-Author</span>
+                                        </div>`
+                                    : "");
 
                             // Create profile image or default avatar
                             const avatarHtml = data.message.profile_image

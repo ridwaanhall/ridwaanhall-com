@@ -629,8 +629,8 @@ blog_data = {
    WAKATIME_API_KEY=your-wakatime-key
    GOOGLE_CLIENT_ID=your-google-client-id
    GOOGLE_CLIENT_SECRET=your-google-client-secret
-   GITHUB_CLIENT_ID=your-github-client-id
-   GITHUB_CLIENT_SECRET=your-github-client-secret
+   GH_CLIENT_ID=your-github-client-id
+   GH_CLIENT_SECRET=your-github-client-secret
 
    # PostgreSQL settings (if using external database)
    POSTGRES_DATABASE=your-database

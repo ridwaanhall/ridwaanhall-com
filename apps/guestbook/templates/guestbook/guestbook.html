@@ -102,7 +102,7 @@
 
                                 <!-- Message bubble and actions -->
                                 <div class="group flex items-center gap-3">
-                                    <p class="w-fit rounded-lg rounded-tl-none bg-zinc-700 px-3 py-2 group-hover:bg-zinc-600 transition-colors"
+                                    <p class="w-fit rounded-lg rounded-tl-none bg-zinc-800 px-3 py-2 group-hover:bg-zinc-700 transition-colors"
                                        data-message-id="{{ message.pk }}"
                                        data-user="{{ message.user_full_name }}"
                                        data-message="{{ message.message|escape }}">{{ message.message|escape|linebreaksbr }}</p>                                      <!-- Action buttons -->
@@ -229,7 +229,7 @@
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                                 </svg>
-                                Sign in to leave a message in the guestbook
+                                Sign in to begin. Rest assured, your information is secure.
                             </p>
                             <div class="flex flex-col sm:flex-row gap-2 justify-center">
                                 <a href="{% provider_login_url 'google' %}" class="inline-flex items-center px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors duration-200 text-sm gap-1">
@@ -394,7 +394,7 @@
                                             </div>
                                         </div>
                                         <div class="group flex items-center gap-3">
-                                            <p class="w-fit rounded-lg rounded-tl-none bg-zinc-700 px-3 py-2 group-hover:bg-zinc-600 transition-colors"
+                                            <p class="w-fit rounded-lg rounded-tl-none bg-zinc-800 px-3 py-2 group-hover:bg-zinc-700 transition-colors"
                                                data-message-id="${data.message.id}"
                                                data-user="${escapeHtml(data.message.user)}"
                                                data-message="${escapeHtml(data.message.message)}"></p>

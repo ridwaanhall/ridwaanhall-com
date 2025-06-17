@@ -55,7 +55,6 @@ This portfolio represents the culmination of modern web development practices, f
 - **Featured Articles**: Curated content with advanced carousel functionality
 - **Social Sharing**: Integrated sharing for Twitter, LinkedIn, and Facebook
 - **SEO Optimization**: Comprehensive meta tags, structured data, and social media optimization
-- **Reading Time Calculation**: Automatic estimation with view tracking
 
 ### 👤 **About Section**
 
@@ -203,15 +202,6 @@ The website demonstrates exceptional performance across all critical metrics, ac
 [![Accessibility: 95](https://img.shields.io/badge/Accessibility-95-success?style=for-the-badge)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/bubxp8v27w?form_factor=mobile)
 [![Best Practices: 93](https://img.shields.io/badge/Best_Practices-93-success?style=for-the-badge)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/bubxp8v27w?form_factor=mobile)
 [![SEO: 100](https://img.shields.io/badge/SEO-100-success?style=for-the-badge)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/bubxp8v27w?form_factor=mobile)
-
-### ⚡ Individual File System Performance
-
-| Metric | Traditional System | Individual Files | Improvement |
-|--------|-------------------|------------------|-------------|
-| **Content Load Time** | 0.15s | 0.03s | **80% faster** |
-| **Memory Usage** | 28MB | 3MB | **89% reduction** |
-| **File Management** | 10min per edit | 30sec per edit | **95% faster** |
-| **System Scalability** | 100 items max | 500+ items | **5x more scalable** |
 
 ### Professional PageSpeed Reports
 
@@ -636,10 +626,10 @@ blog_data = {
 
 ### Vercel Deployment (Recommended)
 
-1. **Fork the Repository**
+1. **Clone the Repository**
 
    ```bash
-   # Fork this repository to your GitHub account
+   # Clone this repository to your GitHub account
    ```
 
 2. **Create Vercel Project**
@@ -706,15 +696,12 @@ blog_data = {
 - Contribution activity and graphs
 - Latest commit information
 - Repository language statistics
-- Star and fork counts
 
 ### WakaTime API Integration
 
 - Daily coding time tracking
-- Programming language usage
-- Project time allocation
-- Weekly and monthly statistics
-- Productivity metrics and insights
+- Weekly statistics
+- Productivity metrics
 
 ## 🛠️ Management Commands
 
@@ -781,7 +768,7 @@ We welcome contributions! Please follow these guidelines:
 
 ### Development Workflow
 
-1. **Fork & Clone**
+1. **Clone**
 
    ```bash
    git clone https://github.com/ridwaanhall/ridwaanhall-com.git

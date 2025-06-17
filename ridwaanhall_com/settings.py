@@ -91,6 +91,7 @@ CONTENT_SECURITY_POLICY = {
             '*.googleapis.com',
             '*.gstatic.com',
             'lh3.googleusercontent.com',
+            'avatars.githubusercontent.com',
         ],
         'object-src': [NONE],
         'script-src': [
@@ -170,12 +171,12 @@ INSTALLED_APPS = [
     
     # Security apps
     "csp",
-    
     'allauth',
     'allauth.account',
     
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
     
     # Project apps
     'apps.core',
@@ -216,6 +217,15 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {
             'access_type': 'online',
         }
+    },
+    'github': {
+        'APP': {
+            'client_id': config('GH_CLIENT_ID'),
+            'secret': config('GH_CLIENT_SECRET'),
+        },
+        'SCOPE': [
+            'user:email',
+        ],
     }
 }
 

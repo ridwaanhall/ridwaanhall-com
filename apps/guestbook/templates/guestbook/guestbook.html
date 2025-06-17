@@ -76,8 +76,7 @@
                                 <!-- Header with name and timestamp -->
                                 <div class="flex flex-col items-start gap-3 md:flex-row md:items-center">
                                     <div class="flex items-center gap-2">
-                                        <div class="text-sm font-medium">{{ message.user_full_name }}</div>
-                                        {% if message.user_is_author %}
+                                        <div class="text-sm font-medium">{{ message.user_full_name }}</div>                                        {% if message.user_is_author %}
                                         <div class="flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-1.5 py-0.5 text-violet-50">
                                             <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="10" width="10" xmlns="http://www.w3.org/2000/svg">
                                                 <path fill="none" d="M0 0h24v24H0z"></path>
@@ -85,6 +84,14 @@
                                                 <path d="M17 13c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 1.38c.62 0 1.12.51 1.12 1.12s-.51 1.12-1.12 1.12-1.12-.51-1.12-1.12.5-1.12 1.12-1.12zm0 5.37c-.93 0-1.74-.46-2.24-1.17.05-.72 1.51-1.08 2.24-1.08s2.19.36 2.24 1.08c-.5.71-1.31 1.17-2.24 1.17z"></path>
                                             </svg>
                                             <span class="text-[9px]">Author</span>
+                                        </div>
+                                        {% elif message.user_is_co_author %}
+                                        <div class="flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-amber-700 via-yellow-800 to-amber-700 px-1.5 py-0.5 text-amber-50">
+                                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="10" width="10" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill="none" d="M0 0h24v24H0z"></path>
+                                                <path d="M16 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L22 4H16zM10 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L16 4H10zM4 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L10 4H4zM7 14c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm10 0c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path>
+                                            </svg>
+                                            <span class="text-[9px]">Co-Author</span>
                                         </div>
                                         {% endif %}
                                         <div class="hidden md:flex">
@@ -95,7 +102,7 @@
 
                                 <!-- Message bubble and actions -->
                                 <div class="group flex items-center gap-3">
-                                    <p class="w-fit rounded-lg rounded-tl-none bg-zinc-700 px-3 py-2 group-hover:bg-zinc-600 transition-colors"
+                                    <p class="w-fit rounded-lg rounded-tl-none bg-zinc-800 px-3 py-2 group-hover:bg-zinc-700 transition-colors"
                                        data-message-id="{{ message.pk }}"
                                        data-user="{{ message.user_full_name }}"
                                        data-message="{{ message.message|escape }}">{{ message.message|escape|linebreaksbr }}</p>                                      <!-- Action buttons -->
@@ -143,19 +150,26 @@
                                     stroke-width="2"
                                     d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                                 ></path>
-                            </svg>
-                            <h5 class="text-lg font-medium mb-2">Welcome to my Guestbook!</h5>
+                            </svg>                            <h5 class="text-lg font-medium mb-2">Welcome to my Guestbook!</h5>
                             <p class="mb-4">No messages yet. Be the first to leave a message!</p>
                             {% if not user.is_authenticated %}
-                            <a href="{% provider_login_url 'google' %}" class="inline-flex items-center px-4 py-2 bg-zinc-600 hover:bg-zinc-700 rounded-lg transition-colors duration-200">
-                                <svg stroke="currentColor" fill="currentColor" stroke-width="0" version="1.1" x="0px" y="0px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" height="18" width="18" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12 c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24 c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
-                                    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657 C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
-                                    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36 c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
-                                    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571 c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
-                                </svg>
-                                Sign in to leave a message
-                            </a>
+                            <div class="flex flex-col sm:flex-row gap-2 justify-center">
+                                <a href="{% provider_login_url 'google' %}" class="inline-flex items-center px-4 py-2 bg-zinc-600 hover:bg-zinc-700 rounded-lg transition-colors duration-200">
+                                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" version="1.1" x="0px" y="0px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" height="18" width="18" xmlns="http://www.w3.org/2000/svg" class="mr-2">
+                                        <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12 c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24 c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                                        <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657 C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
+                                        <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36 c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
+                                        <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571 c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                                    </svg>
+                                    Sign in with Google
+                                </a>
+                                <a href="{% provider_login_url 'github' %}" class="inline-flex items-center px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition-colors duration-200">
+                                    <svg height="18" width="18" viewBox="0 0 16 16" version="1.1" aria-hidden="true" fill="currentColor" class="mr-2">
+                                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                                    </svg>
+                                    Sign in with GitHub
+                                </a>
+                            </div>
                             {% endif %}
                         </div>
                         {% endif %}
@@ -215,17 +229,25 @@
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                                 </svg>
-                                Sign in to leave a message in the guestbook
+                                Sign in to begin. Rest assured, your information is secure.
                             </p>
-                            <a href="{% provider_login_url 'google' %}" class="inline-flex items-center px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors duration-200 text-sm gap-1">
-                                <svg stroke="currentColor" fill="currentColor" stroke-width="0" version="1.1" x="0px" y="0px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" height="18" width="18" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12 c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24 c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
-                                    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657 C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
-                                    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36 c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
-                                    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571 c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
-                                </svg>
-                                Sign in with Google
-                            </a>
+                            <div class="flex flex-col sm:flex-row gap-2 justify-center">
+                                <a href="{% provider_login_url 'google' %}" class="inline-flex items-center px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors duration-200 text-sm gap-1">
+                                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" version="1.1" x="0px" y="0px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" height="18" width="18" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12 c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24 c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                                        <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657 C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
+                                        <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36 c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
+                                        <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571 c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                                    </svg>
+                                    Sign in with Google
+                                </a>
+                                <a href="{% provider_login_url 'github' %}" class="inline-flex items-center px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors duration-200 text-sm gap-1">
+                                    <svg height="18" width="18" viewBox="0 0 16 16" version="1.1" aria-hidden="true" fill="currentColor">
+                                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                                    </svg>
+                                    Sign in with GitHub
+                                </a>
+                            </div>
                         </div>
                         {% endif %}
                     </div>
@@ -314,8 +336,7 @@
                 })
                     .then((response) => response.json())
                     .then((data) => {
-                        if (data.success) {
-                            // Create user name with author badge if applicable
+                        if (data.success) {                            // Create user name with author/co-author badge if applicable
                             const authorBadgeHtml = data.message.is_author
                                 ? `<div class="flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-1.5 py-0.5 text-violet-50">
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="10" width="10" xmlns="http://www.w3.org/2000/svg">
@@ -325,7 +346,15 @@
                                         </svg>
                                         <span class="text-[9px]">Author</span>
                                     </div>`
-                                : "";
+                                : (data.message.is_co_author
+                                    ? `<div class="flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-amber-700 via-yellow-800 to-amber-700 px-1.5 py-0.5 text-amber-50">
+                                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="10" width="10" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill="none" d="M0 0h24v24H0z"></path>
+                                                <path d="M16 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L22 4H16zM10 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L16 4H10zM4 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L10 4H4zM7 14c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm10 0c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path>
+                                            </svg>
+                                            <span class="text-[9px]">Co-Author</span>
+                                        </div>`
+                                    : "");
 
                             // Create profile image or default avatar
                             const avatarHtml = data.message.profile_image
@@ -365,7 +394,7 @@
                                             </div>
                                         </div>
                                         <div class="group flex items-center gap-3">
-                                            <p class="w-fit rounded-lg rounded-tl-none bg-zinc-700 px-3 py-2 group-hover:bg-zinc-600 transition-colors"
+                                            <p class="w-fit rounded-lg rounded-tl-none bg-zinc-800 px-3 py-2 group-hover:bg-zinc-700 transition-colors"
                                                data-message-id="${data.message.id}"
                                                data-user="${escapeHtml(data.message.user)}"
                                                data-message="${escapeHtml(data.message.message)}"></p>

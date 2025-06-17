@@ -9,6 +9,8 @@ from django.dispatch import receiver
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_author = models.BooleanField(default=False, help_text="Designates whether this user is the site author/owner")
+    is_co_author = models.BooleanField(default=False, help_text="Designates whether this user is a co-author (max 2)")
+    co_author_order = models.PositiveIntegerField(default=0, help_text="Order of co-author assignment (for FIFO removal)")
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):

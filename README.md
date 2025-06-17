@@ -69,11 +69,17 @@ This portfolio represents the culmination of modern web development practices, f
 
 - **Real-time Messaging**: Chat-like interface with instant message posting
 - **Reply System**: Threaded conversations with contextual reply indicators
-- **Authentication Integration**: Google OAuth for secure user identification
-- **Author Privileges**: Special permissions for site owner (message deletion)
+- **Multi-Provider Authentication**: Google OAuth and GitHub OAuth for secure user identification
+- **Author & Co-Author System**:
+  - **Main Author**: Site owner with full privileges (message deletion, user management)
+  - **Co-Authors**: Up to 2 co-authors with special badges and recognition
+  - **FIFO Management**: Automatic removal of oldest co-author when limit exceeded
+- **Advanced User Management**: Django management commands for author/co-author administration
+- **Profile Integration**: Dynamic profile images and names from OAuth providers
 - **Security Hardened**: XSS protection, input validation, and CSRF protection
-- **Modern UI**: Tailwind-based design with smooth animations and responsive layout
+- **Modern UI**: Tailwind-based zinc-themed design with hover effects and responsive layout
 - **Message Management**: Real-time message count updates and infinite scroll
+- **Smart Badges**: Visual indicators for authors (purple) and co-authors (amber) with distinct icons
 
 ### 🏗️ **Revolutionary Individual File System**
 
@@ -137,7 +143,7 @@ apps/data/                 # 🗂️ INDIVIDUAL FILE SYSTEM (Revolutionary!)
   - `about`: Personal information and background management  - `projects`: Portfolio management with individual file loading system
   - `blog`: Content management system with modular posts
   - `dashboard`: Analytics and metrics with real-time GitHub and WakaTime API integration
-  - `guestbook`: Interactive messaging system with real-time chat functionality
+  - `guestbook`: Interactive messaging system with real-time chat, author/co-author management, and multi-provider OAuth
   - `data`: Revolutionary individual file data management system with content controller
   - `seo`: Advanced SEO management, sitemaps, structured data, and meta tag optimization
 
@@ -353,53 +359,16 @@ For production deployment, configure PostgreSQL:
 ridwaanhall-com/                   # 🏗️ Revolutionary Portfolio Architecture
 ├── apps/                          # 📦 Django Applications (Modular Design)
 │   ├── about/                     # 👤 Personal Information Module
-│   │   ├── __init__.py
-│   │   ├── admin.py
-│   │   ├── apps.py
-│   │   ├── models.py
-│   │   ├── tests.py
-│   │   ├── urls.py
-│   │   ├── views.py
-│   │   ├── migrations/
-│   │   ├── templates/
-│   │   └── __pycache__/
+│   │   └── templates/
 │   ├── blog/                      # 📝 Blog System with Template Management
-│   │   ├── __init__.py
-│   │   ├── admin.py
-│   │   ├── apps.py
-│   │   ├── models.py
-│   │   ├── tests.py
-│   │   ├── urls.py
-│   │   ├── views.py
-│   │   ├── migrations/
-│   │   ├── templates/
-│   │   └── __pycache__/
+│   │   └── templates/
 │   ├── core/                      # 🏠 Homepage & Base Functionality
-│   │   ├── __init__.py
-│   │   ├── admin.py
-│   │   ├── apps.py
 │   │   ├── base_views.py
-│   │   ├── data_service.py
-│   │   ├── models.py
-│   │   ├── tests.py
-│   │   ├── urls.py
-│   │   ├── views.py
-│   │   ├── migrations/
-│   │   ├── templates/
-│   │   └── __pycache__/
+│   │   └── data_service.py
 │   ├── dashboard/                 # 📊 Real-time Analytics Dashboard
-│   │   ├── __init__.py
-│   │   ├── admin.py
-│   │   ├── apps.py
 │   │   ├── github_api.py          # GitHub API Integration
-│   │   ├── models.py
-│   │   ├── tests.py
-│   │   ├── urls.py
-│   │   ├── views.py
 │   │   ├── wakatime_api.py        # WakaTime API Integration
-│   │   ├── migrations/
-│   │   ├── templates/
-│   │   └── __pycache__/
+│   │   └── templates/
 │   ├── data/                      # 🗂️ INDIVIDUAL FILE SYSTEM (Revolutionary!)
 │   │   ├── __init__.py
 │   │   ├── about_manager.py       # About section data management
@@ -425,11 +394,7 @@ ridwaanhall-com/                   # 🏗️ Revolutionary Portfolio Architectur
 │   │   ├── privacy/               # 🔐 Privacy policy data
 │   │   └── __pycache__/
 │   ├── guestbook/                 # 💬 Interactive Guestbook System
-│   │   ├── __init__.py
-│   │   ├── admin.py
-│   │   ├── apps.py
 │   │   ├── models.py              # ChatMessage and UserProfile models
-│   │   ├── tests.py
 │   │   ├── urls.py                # Guestbook routing
 │   │   ├── views.py               # CBV implementation with security mixins
 │   │   ├── management/            # Custom management commands
@@ -439,16 +404,7 @@ ridwaanhall-com/                   # 🏗️ Revolutionary Portfolio Architectur
 │   │   │       └── guestbook.html # Security-hardened chat interface
 │   │   └── __pycache__/
 │   ├── projects/                  # 💼 Portfolio Management System
-│   │   ├── __init__.py
-│   │   ├── admin.py
-│   │   ├── apps.py
-│   │   ├── models.py
-│   │   ├── tests.py
-│   │   ├── urls.py
-│   │   ├── views.py
-│   │   ├── migrations/
-│   │   ├── templates/
-│   │   └── __pycache__/
+│   │   └── templates/
 │   └── seo/                       # 🚀 Advanced SEO Management & Sitemaps
 │       ├── __init__.py
 │       ├── apps.py
@@ -459,12 +415,9 @@ ridwaanhall-com/                   # 🏗️ Revolutionary Portfolio Architectur
 │       ├── schema.py              # Structured data schemas
 │       ├── sitemaps.py            # XML sitemap generation
 │       ├── updated_at_data.py     # Last modified data tracking
-│       ├── urls.py
-│       ├── views.py
 │       ├── management/            # Django management commands
 │       ├── templates/             # SEO templates
-│       ├── templatetags/          # Custom template tags
-│       └── __pycache__/
+│       └── templatetags/          # Custom template tags
 ├── ridwaanhall_com/               # ⚙️ Django Project Configuration
 │   ├── __init__.py
 │   ├── asgi.py                    # ASGI configuration
@@ -480,17 +433,7 @@ ridwaanhall-com/                   # 🏗️ Revolutionary Portfolio Architectur
 ├── static/                        # 🎨 Development Static Assets
 ├── staticfiles/                   # 📦 Production Static Files
 │   ├── css/                       # Custom CSS files
-│   │   ├── clickRipple.css
-│   │   ├── hideScroll.css
-│   │   └── skillSlider.css
 │   ├── favicon/                   # Favicon files
-│   │   ├── android-chrome-192x192.png
-│   │   ├── android-chrome-512x512.png
-│   │   ├── apple-touch-icon.png
-│   │   ├── favicon-16x16.png
-│   │   ├── favicon-32x32.png
-│   │   ├── favicon.ico
-│   │   └── site.webmanifest
 │   ├── font/                      # Web fonts
 │   │   ├── Onest/
 │   │   └── Plus_Jakarta_Sans/
@@ -532,32 +475,42 @@ The `apps/data/content/` directory showcases the **revolutionary individual file
 
 ### Interactive Guestbook System
 
-The guestbook features a modern, chat-like interface with comprehensive security and user experience optimizations:
+The guestbook features a modern, chat-like interface with comprehensive security, user management, and an advanced author/co-author system:
 
 #### 🔐 Security Features
 
 - **XSS Protection**: All user input properly escaped and sanitized
 - **CSRF Protection**: Django CSRF tokens for all form submissions
 - **Input Validation**: Message length limits and content validation
-- **Authentication Required**: Google OAuth integration for verified users
-- **Authorization Controls**: Only site authors can delete messages
+- **Multi-Provider Authentication**: Google OAuth and GitHub OAuth integration
+- **Authorization Controls**: Granular permissions for authors and co-authors
 - **Safe HTML Rendering**: User content rendered as text to prevent code injection
+
+#### 👥 Author & Co-Author Management
+
+- **Single Main Author**: One site owner with full administrative privileges
+- **Up to 2 Co-Authors**: Special recognition with distinct amber badges
+- **FIFO System**: Automatic oldest co-author removal when adding a third
+- **Management Commands**: CLI tools for user role administration
+- **Dynamic Badges**: Visual indicators (purple for author, amber for co-authors)
+- **Profile Integration**: Automatic profile images and names from OAuth providers
 
 #### 💬 Chat Features
 
 - **Real-time Messaging**: AJAX-powered instant message posting
-- **Reply System**: Thread-like conversations with reply indicators
-- **User Profiles**: Google profile integration with avatars and names
-- **Author Badges**: Special indicators for site owner messages
+- **Reply System**: Thread-like conversations with contextual reply indicators
+- **Multi-Provider Profiles**: Google and GitHub profile integration with avatars
+- **Smart User Recognition**: "You replied to", "Replied to you" context awareness
 - **Message Management**: Live message count updates and smooth animations
-- **Responsive Design**: Mobile-optimized chat interface
+- **Responsive Design**: Mobile-optimized chat interface with zinc color theme
 
 #### 🎨 UI/UX Features
 
-- **Modern Design**: Tailwind CSS with dark theme and smooth transitions
-- **Interactive Elements**: Hover effects, loading states, and micro-animations
+- **Modern Zinc Theme**: Dark design with zinc color palette and smooth transitions
+- **Always Visible Actions**: Reply and delete buttons always shown with hover effects
+- **Interactive Elements**: Button hover backgrounds, loading states, and micro-animations
 - **Accessibility**: Proper ARIA labels and keyboard navigation
-- **Infinite Scroll**: Smooth scrolling message container
+- **Infinite Scroll**: Smooth scrolling message container with proper boundaries
 - **Status Indicators**: Clear visual feedback for all user actions
 
 ### Adding New Projects
@@ -676,6 +629,9 @@ blog_data = {
    WAKATIME_API_KEY=your-wakatime-key
    GOOGLE_CLIENT_ID=your-google-client-id
    GOOGLE_CLIENT_SECRET=your-google-client-secret
+   GH_CLIENT_ID=your-github-client-id
+   GH_CLIENT_SECRET=your-github-client-secret
+
    # PostgreSQL settings (if using external database)
    POSTGRES_DATABASE=your-database
    POSTGRES_HOST=your-host
@@ -731,6 +687,65 @@ blog_data = {
 - Project time allocation
 - Weekly and monthly statistics
 - Productivity metrics and insights
+
+## 🛠️ Management Commands
+
+The project includes powerful Django management commands for administration and monitoring:
+
+### User Management
+
+#### Check Users
+
+Monitor all users with their OAuth provider, email, and roles:
+
+```bash
+# Display all users in a beautiful table
+python manage.py check_users
+
+# Filter by provider
+python manage.py check_users --filter-provider google
+python manage.py check_users --filter-provider github
+
+# Show only authors
+python manage.py check_users --authors-only
+
+# Output formats
+python manage.py check_users --format table    # Default: Rich table
+python manage.py check_users --format json     # JSON output
+python manage.py check_users --format simple   # Simple text
+```
+
+#### Author & Co-Author Management
+
+Manage the site's author and co-author system:
+
+```bash
+# List current authors and co-authors
+python manage.py manage_authors list
+
+# Set main author (removes current author)
+python manage.py manage_authors set-author --user username
+python manage.py manage_authors set-author --user "user@email.com" --force
+
+# Add co-author (max 2, FIFO removal)
+python manage.py manage_authors add-co-author --user username
+python manage.py manage_authors add-co-author --user userid --force
+
+# Remove co-author
+python manage.py manage_authors remove-co-author --user username
+
+# Clear all author/co-author roles
+python manage.py manage_authors clear-all --force
+```
+
+### Features
+
+- **Rich Table Output**: Beautiful colored tables with user statistics
+- **FIFO Co-Author Management**: Automatically removes oldest co-author when adding a third
+- **Multi-Provider Support**: Displays OAuth provider information (Google/GitHub)
+- **Safe Operations**: Confirmation prompts for destructive actions (bypass with --force)
+- **Flexible User Selection**: Target users by username, email, or user ID
+- **Comprehensive Summaries**: User counts, provider breakdowns, and role statistics
 
 ## Contributing
 
@@ -824,7 +839,7 @@ This portfolio represents more than just a personal website—it's a **technolog
 - ✅ **Performance Excellence**: 97/100 desktop, 91/100 mobile PageSpeed scores
 - ✅ **Enterprise Security**: Advanced CSP, HSTS, XSS protection, and comprehensive security headers
 - ✅ **API Integration**: Real-time GitHub and WakaTime analytics with live data visualization
-- ✅ **Interactive Guestbook**: Secure chat-like messaging system with real-time features
+- ✅ **Interactive Guestbook**: Secure chat-like messaging with author/co-author system, multi-provider OAuth, and management commands
 - ✅ **Scalable Architecture**: Production-ready system supporting unlimited content growth
 
 ### 📊 **Portfolio Statistics**
@@ -844,7 +859,7 @@ This portfolio represents more than just a personal website—it's a **technolog
 - **⚡ Performance Optimization**: Sub-second loading times with intelligent caching and lazy loading
 - **🔒 Security Excellence**: Comprehensive security implementation with A+ ratings and XSS protection
 - **📊 Real-time Analytics**: Live GitHub contributions and WakaTime coding statistics
-- **💬 Interactive Guestbook**: Secure chat-like messaging system with real-time features and reply threading
+- **💬 Interactive Guestbook**: Advanced messaging system with author/co-author roles, multi-provider OAuth (Google/GitHub), FIFO management, and CLI administration tools
 - **🎨 Modern UI/UX**: Responsive design with interactive animations and micro-interactions
 
 This project showcases the perfect blend of **technical innovation**, **professional execution**, and **scalable architecture**—representing the pinnacle of modern web development practices.

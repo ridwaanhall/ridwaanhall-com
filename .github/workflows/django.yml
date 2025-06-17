@@ -30,6 +30,8 @@ jobs:
                     WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
                     GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
                     GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+                    GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
+                    GH_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
                     POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
                     POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
                     POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}

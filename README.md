@@ -275,6 +275,10 @@ WAKATIME_API_KEY="your-wakatime-api-key"
 GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
 
+# GitHub OAuth (Required for Guestbook Authentication)
+GITHUB_CLIENT_ID="your-github-client-id"
+GITHUB_CLIENT_SECRET="your-github-client-secret"
+
 # PostgreSQL Database (Production)
 POSTGRES_DATABASE="your-database"
 POSTGRES_HOST="your-host"
@@ -296,6 +300,8 @@ PROJECT_BASE_IMG_URL="https://your-domain.com/static/img/project"
 | `WAKATIME_API_KEY` | WakaTime API Secret Key | Yes | [Get from WakaTime](https://wakatime.com/settings/account) |
 | `GOOGLE_CLIENT_ID` | Google OAuth Client ID | Yes | [Google Cloud Console](https://console.cloud.google.com/) |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret | Yes | [Google Cloud Console](https://console.cloud.google.com/) |
+| `GITHUB_CLIENT_ID` | GitHub OAuth Client ID | Yes | [GitHub Developer Settings](https://github.com/settings/developers) |
+| `GITHUB_CLIENT_SECRET` | GitHub OAuth Client Secret | Yes | [GitHub Developer Settings](https://github.com/settings/developers) |
 | `POSTGRES_DATABASE` | PostgreSQL database name | Production | `your_portfolio_db` |
 | `POSTGRES_HOST` | PostgreSQL host address | Production | `localhost` or cloud host |
 | `POSTGRES_USER` | PostgreSQL username | Production | `your_db_user` |
@@ -334,6 +340,28 @@ The guestbook feature requires Google OAuth for user authentication. Follow thes
 4. **Add Credentials to Environment**
    - Copy Client ID to `GOOGLE_CLIENT_ID`
    - Copy Client Secret to `GOOGLE_CLIENT_SECRET`
+
+### GitHub OAuth Setup (Required for Guestbook Authentication)
+
+GitHub OAuth provides a second authentication option alongside Google for the guestbook system:
+
+1. **Create GitHub OAuth App**
+   - Go to [GitHub Developer Settings](https://github.com/settings/developers)
+   - Click "New OAuth App"
+   - Fill in application details:
+     - Application name: "Your Portfolio Guestbook"
+     - Homepage URL: `https://your-domain.com`
+     - Application description: "Portfolio guestbook authentication"
+
+2. **Configure Authorization Callback URL**
+   - Development: `http://localhost:8000/accounts/github/login/callback/`
+   - Production: `https://your-domain.com/accounts/github/login/callback/`
+
+3. **Add Credentials to Environment**
+   - Copy Client ID to `GITHUB_CLIENT_ID`
+   - Copy Client Secret to `GITHUB_CLIENT_SECRET`
+
+**Note**: Both Google and GitHub OAuth are required for full guestbook functionality, allowing users to choose their preferred authentication method.
 
 ### PostgreSQL Setup (Production Database)
 

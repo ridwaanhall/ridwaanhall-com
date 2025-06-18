@@ -66,7 +66,6 @@ CONTENT_SECURITY_POLICY = {
             SELF,
             'ridwaanhall.com',
             '*.googleapis.com',
-            "cloud.umami.is",
         ],
         'default-src': [SELF],
         'font-src': [
@@ -98,7 +97,6 @@ CONTENT_SECURITY_POLICY = {
             SELF,
             'ridwaanhall.com',
             'static.cloudflareinsights.com',
-            'cloud.umami.is',
             '*.googleapis.com',
             # Consider replacing UNSAFE_INLINE with nonces or hashes
             UNSAFE_INLINE,
@@ -171,9 +169,10 @@ INSTALLED_APPS = [
     
     # Security apps
     "csp",
+    
+    # Sign-in and authentication
     'allauth',
     'allauth.account',
-    
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',

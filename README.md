@@ -471,7 +471,7 @@ ridwaanhall-com/                   # 🏗️ Revolutionary Portfolio Architectur
 ├── CONTRIBUTING.md                # 🤝 Contribution guidelines
 ├── db.sqlite3                     # 🗄️ SQLite database
 ├── INDIVIDUAL_FILES_DOCS.md       # 📖 Individual files system documentation
-├── LICENSE                        # 📜 MIT License
+├── LICENSE                        # 📜 Apache-2.0 license
 ├── manage.py                      # 🛠️ Django Management Interface
 ├── README.md                      # 📖 Project documentation (this file)
 ├── requirements.txt               # 📋 Python Dependencies
@@ -819,7 +819,7 @@ We welcome contributions! Please follow these guidelines:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache-2.0 license - see the [LICENSE](LICENSE) file for details.
 
 ## Contact & Support
 

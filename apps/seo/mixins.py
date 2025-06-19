@@ -29,48 +29,50 @@ class SEOMixin:
     
     def get_seo_data(self, **kwargs):
         """
-        Generate SEO data based on seo_type.
-        Override this method for custom SEO data.
+        Generate SEO data based on the seo_type attribute.
+        Can be overridden in subclasses for custom SEO logic.
         """
         seo_manager = self.get_seo_manager()
-        
-        if self.seo_type == 'homepage':
-            return seo_manager.get_homepage_seo()
-        elif self.seo_type == 'about':
-            return seo_manager.get_about_seo()
-        elif self.seo_type == 'contact':
-            return seo_manager.get_contact_seo()
-        elif self.seo_type == 'dashboard':
-            return seo_manager.get_dashboard_seo()
-        elif self.seo_type == 'blog_list':
-            blogs = kwargs.get('blogs', [])
-            page = kwargs.get('page', 1)
-            return seo_manager.get_blog_list_seo(blogs, page)
-        elif self.seo_type == 'blog_detail':
-            blog_data = kwargs.get('blog_data', {})
-            return seo_manager.get_blog_detail_seo(blog_data)
-        elif self.seo_type == 'projects_list':
-            projects = kwargs.get('projects', [])
-            page = kwargs.get('page', 1)
-            return seo_manager.get_projects_list_seo(projects, page)
-        elif self.seo_type == 'project_detail':
-            project_data = kwargs.get('project_data', {})
-            return seo_manager.get_project_detail_seo(project_data)
-        elif self.seo_type == 'guestbook':
-            return seo_manager.get_guestbook_seo()
-        elif self.seo_type == 'privacy_policy':
-            return seo_manager.get_privacy_policy_seo()
-        else:
-            # Default SEO data
-            return {
-                'title': 'ridwaanhall.com',
-                'description': 'Ridwan Halim - Software Developer & AI Engineer',
-                'keywords': 'Ridwan Halim, ridwaanhall, software developer, ai engineer',
-                'og_image': self.get_about_data().get('image_url', ''),
-                'og_type': 'website',
-                'twitter_card': 'summary_large_image',
-                'schemas': []
-            }
+
+        match self.seo_type:
+            case 'homepage':
+                return seo_manager.get_homepage_seo()
+            case 'about':
+                return seo_manager.get_about_seo()
+            case 'contact':
+                return seo_manager.get_contact_seo()
+            case 'dashboard':
+                return seo_manager.get_dashboard_seo()
+            case 'blog_list':
+                blogs = kwargs.get('blogs', [])
+                page = kwargs.get('page', 1)
+                return seo_manager.get_blog_list_seo(blogs, page)
+            case 'blog_detail':
+                blog_data = kwargs.get('blog_data', {})
+                return seo_manager.get_blog_detail_seo(blog_data)
+            case 'projects_list':
+                projects = kwargs.get('projects', [])
+                page = kwargs.get('page', 1)
+                return seo_manager.get_projects_list_seo(projects, page)
+            case 'project_detail':
+                project_data = kwargs.get('project_data', {})
+                return seo_manager.get_project_detail_seo(project_data)
+            case 'guestbook':
+                return seo_manager.get_guestbook_seo()
+            case 'privacy_policy':
+                return seo_manager.get_privacy_policy_seo()
+            case _:
+                # Fallback/default SEO data
+                about_data = self.get_about_data()
+                return {
+                    'title': 'ridwaanhall.com',
+                    'description': 'Ridwan Halim - Software Developer & ML Engineer',
+                    'keywords': 'Ridwan Halim, ridwaanhall, software developer, ml engineer',
+                    'og_image': about_data.get('image_url', ''),
+                    'og_type': 'website',
+                    'twitter_card': 'summary_large_image',
+                    'schemas': []
+                }
     
     def get_context_data(self, **kwargs):
         """Add SEO data to context."""

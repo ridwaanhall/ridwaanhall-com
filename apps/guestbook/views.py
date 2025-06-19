@@ -31,6 +31,11 @@ class UserProfileMixin:
                 profile_data['is_author'] = user.userprofile.is_author
                 profile_data['is_co_author'] = user.userprofile.is_co_author
                 profile_data['co_author_order'] = user.userprofile.co_author_order if user.userprofile.is_co_author else 0
+            else:
+                # Fallback if userprofile does not exist
+                profile_data['is_author'] = user.is_staff
+                profile_data['is_co_author'] = False
+                profile_data['co_author_order'] = 0
         except:
             pass
         
@@ -42,16 +47,25 @@ class UserProfileMixin:
                 google_name = google_account.extra_data.get('name', '')
                 if google_name:
                     profile_data['full_name'] = google_name
+                else:
+                    # Fallback to username if no name is available
+                    profile_data['full_name'] = user.username
                 
                 # Get profile image from Google
                 profile_image = google_account.extra_data.get('picture', '')
                 if profile_image:
                     profile_data['profile_image'] = profile_image
-                
+                else:
+                    # Fallback to default avatar if no image is available
+                    profile_data['profile_image'] = 'https://www.gravatar.com/avatar/'
+
                 # Get email from Google if available
                 google_email = google_account.extra_data.get('email', '')
                 if google_email:
                     profile_data['email'] = google_email
+                else:
+                    # Fallback to Django user email if Google email is not available
+                    profile_data['email'] = user.email
             
             # Get GitHub social account data if Google is not available
             elif not profile_data['profile_image']:
@@ -65,11 +79,17 @@ class UserProfileMixin:
                     avatar_url = github_account.extra_data.get('avatar_url', '')
                     if avatar_url:
                         profile_data['profile_image'] = avatar_url
+                    else:
+                        # Fallback to default avatar if no image is available
+                        profile_data['profile_image'] = 'https://www.gravatar.com/avatar/'
                     
                     # Get email from GitHub if available
                     github_email = github_account.extra_data.get('email', '')
                     if github_email:
                         profile_data['email'] = github_email
+                    else:
+                        # Fallback to Django user email if GitHub email is not available
+                        profile_data['email'] = user.email
                     
         except Exception as e:
             # Fallback to Django user data
@@ -114,13 +134,23 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
                 message.reply_to.user_is_author = reply_profile_data['is_author']
                 message.reply_to.user_is_co_author = reply_profile_data['is_co_author']
                 message.reply_to.user_co_author_order = reply_profile_data['co_author_order']
-            
+            else:
+                message.reply_to = None
             enriched_messages.append(message)
         
         # Get current user profile data
         current_user_profile = None
         if request.user.is_authenticated:
             current_user_profile = self.get_user_profile_data(request.user)
+        else:
+            current_user_profile = {
+                'full_name': 'Guest',
+                'profile_image': 'https://www.gravatar.com/avatar/',
+                'is_author': False,
+                'is_co_author': False,
+                'co_author_order': 0,
+                'email': ''
+            }
         
         # Get the base context with SEO data
         context = self.get_context_data()
@@ -182,6 +212,8 @@ class SendMessageView(LoginRequiredMixin, UserProfileMixin, View):
                 'is_co_author': reply_profile_data['is_co_author'],
                 'co_author_order': reply_profile_data['co_author_order']
             }
+        else:
+            reply_data = None
         
         return JsonResponse({
             'success': True,

@@ -35,11 +35,16 @@ class DashboardView(DashboardSEOMixin, BaseView):
         github_data = self._get_github_data()
         if github_data:
             context.update(github_data)
+        else:
+            context['github_activity'] = None
+            context['github_last_update'] = None
         
         # Get Wakatime statistics
         wakatime_stats = self._get_wakatime_data()
         if wakatime_stats:
             context['wakatime_stats'] = wakatime_stats
+        else:
+            context['wakatime_stats'] = None
         
         # Add SEO data from mixin
         mixin_context = super(DashboardView, self).get_context_data(**context)
@@ -83,7 +88,9 @@ class DashboardView(DashboardSEOMixin, BaseView):
                     }
                     
                     cache.set(cache_key, github_data, CACHE_TIMEOUT)
-                    
+                else:
+                    logger.error("GitHub activity data is missing or malformed.")
+                    github_data = None
             except Exception as e:
                 logger.error(f"Error fetching GitHub data: {e}")
                 github_data = None
@@ -104,9 +111,15 @@ class DashboardView(DashboardSEOMixin, BaseView):
                     wakatime_stats = WakatimeStatsCalculator.calculate_stats(wakatime_activity)
                     if wakatime_stats:
                         cache.set(cache_key, wakatime_stats, CACHE_TIMEOUT)
-                        
+                    else:
+                        logger.error("Wakatime statistics calculation failed.")
+                else:
+                    logger.error("Wakatime activity data is missing or malformed.")
+                    wakatime_stats = None
             except Exception as e:
                 logger.error(f"Error fetching Wakatime data: {e}")
                 wakatime_stats = None
+        else:
+            logger.info("Using cached Wakatime statistics.")
         
         return wakatime_stats

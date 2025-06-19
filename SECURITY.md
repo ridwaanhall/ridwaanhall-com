@@ -31,7 +31,7 @@ This project supports the following versions of dependencies as specified in `re
 | rich                      | 14.0.0    | Rich text formatting |
 | sqlparse                  | 0.5.3     | SQL parsing library |
 | tzdata                    | 2025.1    | Timezone data |
-| urllib3                   | 2.3.0     | HTTP client with security fixes |
+| urllib3                   | 2.5.0     | HTTP client with security fixes |
 | whitenoise                | 6.9.0     | Static file serving |
 
 We regularly update dependencies to address security vulnerabilities. Users are encouraged to keep their installations updated to the latest supported versions.

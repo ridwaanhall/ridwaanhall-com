@@ -3,7 +3,7 @@ SEO Manager
 Main interface for SEO operations and metadata generation.
 """
 
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 from .data import SEOData
 from .schema import SEOSchemaGenerator
 from .config import SEOConfig

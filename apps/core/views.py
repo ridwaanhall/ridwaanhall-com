@@ -4,7 +4,6 @@ Handles homepage, contact, and privacy policy views with proper SEO integration.
 """
 
 import random
-from django.shortcuts import render
 from django.utils import timezone
 
 from apps.core.base_views import BaseView

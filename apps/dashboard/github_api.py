@@ -89,15 +89,21 @@ class GitHubStatsCalculator:
                 
                 if count > best_day_count:
                     best_day_count = count
+                else:
+                    best_day_count = best_day_count
                 
                 if count > 0:
                     total_days_with_contributions += 1
+                else:
+                    total_days_with_contributions = total_days_with_contributions
         
         # Calculate this week's contributions if current week was found
         if current_week:
             for day in current_week['contributionDays']:
                 this_week_contributions += day['contributionCount']
-        
+        else:
+            this_week_contributions = 0
+
         all_days.sort(key=lambda x: x['date'])
         
         # Calculate streaks
@@ -127,6 +133,8 @@ class GitHubStatsCalculator:
                 day_diff = (today - day_data['date']).days
                 if day_diff <= 1:
                     current_streak = temp_streak
+                else:
+                    current_streak = 0
             else:
                 if temp_streak > longest_streak:
                     longest_streak = temp_streak
@@ -134,11 +142,17 @@ class GitHubStatsCalculator:
         
         if temp_streak > longest_streak:
             longest_streak = temp_streak
-        
+        else:
+            temp_streak = 0
+
         if all_days:
             last_day = all_days[-1]
             days_since_last_contribution = (today - last_day['date']).days
             if days_since_last_contribution > 1 or last_day['count'] == 0:
                 current_streak = 0
+            else:
+                current_streak = temp_streak if last_day['count'] > 0 else 0
+        else:
+            current_streak = 0
                 
         return current_streak, longest_streak

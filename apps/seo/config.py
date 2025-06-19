@@ -94,14 +94,14 @@ class SEOConfig:
     # Common keywords by category
     COMMON_KEYWORDS = {
         'personal': [
-            'Ridwan Hall', 'ridwaanhall', 'ridwaan hall', 
+            'ridwaanhall', 'Ridwan Halim', 'ridwaanhall.com',
+            'ridwaanhall blog', 'ridwaanhall portfolio',
             'software developer', 'web developer', 'python developer',
             'machine learning engineer', 'AI engineer', 'full stack developer'
         ],
         'technical': [
-            'Django', 'Python', 'JavaScript', 'React', 'Vue.js',
-            'Machine Learning', 'AI', 'Data Science', 'Web Development',
-            'API Development', 'Backend Development', 'Frontend Development'
+            'Django', 'Python', 'JavaScript',
+            'Machine Learning', 'AI', 'Data Science', 'Web Development'
         ],
         'content': [
             'portfolio', 'blog', 'tutorials', 'coding', 'programming',
@@ -109,7 +109,7 @@ class SEOConfig:
         ],
         'location': [
             'Indonesia', 'Indonesian developer', 'Southeast Asia',
-            'Jakarta developer', 'Indonesian tech'
+            'Jakarta developer', 'Indonesian tech', 'Southeast Asian tech'
         ]
     }
     

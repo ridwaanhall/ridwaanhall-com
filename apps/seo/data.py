@@ -6,7 +6,6 @@ Handles SEO metadata generation and management.
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 from django.utils.text import slugify
-from django.urls import reverse
 from .config import SEOConfig
 
 

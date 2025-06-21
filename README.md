@@ -436,7 +436,7 @@ ridwaanhall-com/                   # 🏗️ Revolutionary Portfolio Architectur
 │       ├── management/            # Django management commands
 │       ├── templates/             # SEO templates
 │       └── templatetags/          # Custom template tags
-├── ridwaanhall_com/               # ⚙️ Django Project Configuration
+├── FlexForge/                     # ⚙️ Django Project Configuration
 │   ├── __init__.py
 │   ├── asgi.py                    # ASGI configuration
 │   ├── error_handlers.py          # Custom error handling

@@ -1,5 +1,5 @@
 """
-Django settings for ridwaanhall_com project.
+Django settings for FlexForge project.
 Contains security configurations and environment-specific settings.
 
 Author: Ridwan Halim (ridwaanhall.com)
@@ -228,7 +228,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-ROOT_URLCONF = 'ridwaanhall_com.urls'
+ROOT_URLCONF = 'FlexForge.urls'
 
 TEMPLATES = [
     {
@@ -248,7 +248,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ridwaanhall_com.wsgi.application'
+WSGI_APPLICATION = 'FlexForge.wsgi.application'
 
 # ------------------------------------------------------------------------------
 # DATABASE SETTINGS (PostgreSQL)

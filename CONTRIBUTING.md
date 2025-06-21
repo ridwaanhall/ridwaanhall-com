@@ -111,7 +111,7 @@ ridwaanhall_com/
 │   ├── data/                      # Individual file data management system
 │   ├── seo/                       # SEO, sitemaps, robots.txt
 │   └── projects/                  # Portfolio management
-├── ridwaanhall_com/               # Django project configuration
+├── FlexForge/                     # Django project configuration
 ├── static/                        # Development static files
 ├── staticfiles/                   # Production static files (auto-generated)
 ├── templates/                     # HTML templates

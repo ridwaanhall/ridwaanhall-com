@@ -15,4 +15,4 @@ urlpatterns = [
 ]
 
 # Custom error handlers
-handler404 = 'ridwaanhall_com.views.custom_404_view'
+handler404 = 'FlexForge.views.custom_404_view'

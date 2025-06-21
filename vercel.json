@@ -1,11 +1,11 @@
 {
 	"builds": [
-            {
-            "src": "ridwaanhall_com/wsgi.py",
+        {
+            "src": "FlexForge/wsgi.py",
             "use": "@vercel/python",
             "config": {
                 "maxLambdaSize": "15mb",
-                "runtime": "python3.12.0"
+                "runtime": "python3.12"
             }
         }
     ],
@@ -16,7 +16,7 @@
 		},
 		{
 			"src": "/(.*)",
-			"dest": "ridwaanhall_com/wsgi.py"
+			"dest": "FlexForge/wsgi.py"
 		}
 	]
 }

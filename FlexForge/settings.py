@@ -157,6 +157,9 @@ APPEND_SLASH = True  # Automatically redirect URLs without trailing slash
 # APPLICATION SETTINGS
 # ------------------------------------------------------------------------------
 
+# Feature toggles
+GUESTBOOK_PAGE = config('GUESTBOOK_PAGE', default=True, cast=bool)
+
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
     'django.contrib.admin',
@@ -170,13 +173,6 @@ INSTALLED_APPS = [
     # Security apps
     "csp",
     
-    # Sign-in and authentication
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.github',
-    
     # Project apps
     'apps.core',
     'apps.about',
@@ -185,8 +181,21 @@ INSTALLED_APPS = [
     'apps.projects',
     'apps.blog',
     'apps.seo',
-    'apps.guestbook',
 ]
+
+# Conditionally add authentication and guestbook apps
+if GUESTBOOK_PAGE:
+    INSTALLED_APPS.extend([
+        # Sign-in and authentication (only needed for guestbook)
+        'allauth',
+        'allauth.account',
+        'allauth.socialaccount',
+        'allauth.socialaccount.providers.google',
+        'allauth.socialaccount.providers.github',
+        
+        # Guestbook app
+        'apps.guestbook',
+    ])
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -199,34 +208,38 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
-    "allauth.account.middleware.AccountMiddleware",
 ]
 
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': config('GOOGLE_CLIENT_ID'),
-            'secret': config('GOOGLE_CLIENT_SECRET'),
+# Conditionally add allauth middleware (only needed for guestbook)
+if GUESTBOOK_PAGE:
+    MIDDLEWARE.append("allauth.account.middleware.AccountMiddleware")
+
+# Social account providers (only needed for guestbook)
+if GUESTBOOK_PAGE:
+    SOCIALACCOUNT_PROVIDERS = {
+        'google': {
+            'APP': {
+                'client_id': config('GOOGLE_CLIENT_ID', default=''),
+                'secret': config('GOOGLE_CLIENT_SECRET', default=''),
+            },
+            'SCOPE': [
+                'profile',
+                'email',
+            ],
+            'AUTH_PARAMS': {
+                'access_type': 'online',
+            }
         },
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
+        'github': {
+            'APP': {
+                'client_id': config('GH_CLIENT_ID', default=''),
+                'secret': config('GH_CLIENT_SECRET', default=''),
+            },
+            'SCOPE': [
+                'user:email',
+            ],
         }
-    },
-    'github': {
-        'APP': {
-            'client_id': config('GH_CLIENT_ID'),
-            'secret': config('GH_CLIENT_SECRET'),
-        },
-        'SCOPE': [
-            'user:email',
-        ],
     }
-}
 
 ROOT_URLCONF = 'FlexForge.urls'
 
@@ -237,12 +250,12 @@ TEMPLATES = [
             BASE_DIR / 'templates',
         ],
         'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
+        'OPTIONS': {            'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'FlexForge.context_processors.feature_flags',
             ],
         },
     },
@@ -315,15 +328,20 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-SOCIALACCOUNT_LOGIN_ON_GET = True
-
-# Allauth settings
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "none"
-SOCIALACCOUNT_AUTO_SIGNUP = True
-SOCIALACCOUNT_EMAIL_REQUIRED = True
+# Allauth settings (only needed for guestbook)
+if GUESTBOOK_PAGE:
+    SOCIALACCOUNT_LOGIN_ON_GET = True
+    ACCOUNT_EMAIL_REQUIRED = True
+    ACCOUNT_EMAIL_VERIFICATION = "none"
+    SOCIALACCOUNT_AUTO_SIGNUP = True
+    SOCIALACCOUNT_EMAIL_REQUIRED = True
 
 # Login/Logout redirect URLs
-LOGIN_REDIRECT_URL = "guestbook"
-LOGOUT_REDIRECT_URL = "guestbook"
-ACCOUNT_LOGOUT_REDIRECT_URL = "guestbook"
+if GUESTBOOK_PAGE:
+    LOGIN_REDIRECT_URL = "guestbook"
+    LOGOUT_REDIRECT_URL = "guestbook"
+    ACCOUNT_LOGOUT_REDIRECT_URL = "guestbook"
+else:
+    LOGIN_REDIRECT_URL = "home"
+    LOGOUT_REDIRECT_URL = "home"
+    ACCOUNT_LOGOUT_REDIRECT_URL = "home"

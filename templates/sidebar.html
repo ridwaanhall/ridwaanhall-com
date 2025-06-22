@@ -38,6 +38,59 @@
                 </span>
             </div>
         </div>
+
+        <!-- Theme Switcher for Mobile -->
+        <div class="px-3 mb-3">
+            <div class="relative">
+                <button id="mobile-theme-button" class="flex items-center w-full px-3 py-2 rounded-lg border border-zinc-700 hover:bg-zinc-800 transition-colors" tabindex="-1">
+                    <svg id="mobile-theme-icon" class="w-5 h-5 text-zinc-400" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <span id="mobile-theme-text" class="ml-2.5">Theme</span>
+                    <svg class="w-4 h-4 ml-auto text-zinc-400" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6,9 12,15 18,9"></polyline>
+                    </svg>
+                </button>
+                <div id="mobile-theme-dropdown" class="absolute top-full left-0 right-0 mt-1 bg-black border border-zinc-700 rounded-lg shadow-lg z-50 hidden">
+                    <button class="theme-option w-full px-3 py-2 text-left hover:bg-zinc-800 flex items-center rounded-t-lg" data-theme="light">
+                        <svg class="w-4 h-4 text-zinc-400 mr-3" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <span class="text-sm">Light</span>
+                    </button>
+                    <button class="theme-option w-full px-3 py-2 text-left hover:bg-zinc-800 flex items-center" data-theme="dark">
+                        <svg class="w-4 h-4 text-zinc-400 mr-3" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                        <span class="text-sm">Dark</span>
+                    </button>
+                    <button class="theme-option w-full px-3 py-2 text-left hover:bg-zinc-800 flex items-center rounded-b-lg" data-theme="system">
+                        <svg class="w-4 h-4 text-zinc-400 mr-3" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                        <span class="text-sm">System</span>
+                    </button>
+                </div>
+            </div>
+        </div>
         
         <nav class="px-3 flex-grow">
             <a {% if request.resolver_match.url_name != 'home' %}href="{% url 'home' %}"{% else %}role="button"{% endif %} class="flex group items-center px-3 py-2 mb-1 rounded-lg {% if request.resolver_match.url_name == 'home' %}bg-zinc-800{% else %} hover:bg-zinc-800{% endif %}" tabindex="-1">
@@ -186,8 +239,7 @@
                 <div class="hidden text-[15px] text-zinc-400 hover:text-zinc-300 transition-all duration-300 hover: lg:flex">@{{ about.username }}</div>
             </div>
         </div>
-    </div>
-      <!-- Search Section for Desktop -->
+    </div>      <!-- Search Section for Desktop -->
     <div class="px-3 mb-3">
         <div class="flex items-center px-3 py-2 mb-1 rounded-lg border border-zinc-700" id="desktop-search-trigger">
             <svg class="w-5 h-5 text-zinc-400" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -203,6 +255,59 @@
                     <span>k</span>
                 </div>
             </span>
+        </div>
+    </div>
+
+    <!-- Theme Switcher for Desktop -->
+    <div class="px-3 mb-3">
+        <div class="relative">
+            <button id="desktop-theme-button" class="flex items-center w-full px-3 py-2 rounded-lg border border-zinc-700 hover:bg-zinc-800 transition-colors">
+                <svg id="desktop-theme-icon" class="w-5 h-5 text-zinc-400" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <span id="desktop-theme-text" class="ml-2.5">Theme</span>
+                <svg class="w-4 h-4 ml-auto text-zinc-400" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6,9 12,15 18,9"></polyline>
+                </svg>
+            </button>
+            <div id="desktop-theme-dropdown" class="absolute top-full left-0 right-0 mt-1 bg-black border border-zinc-700 rounded-lg shadow-lg z-50 hidden">
+                <button class="theme-option w-full px-3 py-2 text-left hover:bg-zinc-800 flex items-center rounded-t-lg" data-theme="light">
+                    <svg class="w-4 h-4 text-zinc-400 mr-3" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <span class="text-sm">Light</span>
+                </button>
+                <button class="theme-option w-full px-3 py-2 text-left hover:bg-zinc-800 flex items-center" data-theme="dark">
+                    <svg class="w-4 h-4 text-zinc-400 mr-3" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <span class="text-sm">Dark</span>
+                </button>
+                <button class="theme-option w-full px-3 py-2 text-left hover:bg-zinc-800 flex items-center rounded-b-lg" data-theme="system">
+                    <svg class="w-4 h-4 text-zinc-400 mr-3" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                    <span class="text-sm">System</span>
+                </button>
+            </div>
         </div>
     </div>
     
@@ -613,9 +718,183 @@
                 
                 <div id="no-results" class="hidden py-8 text-center text-zinc-400">
                     <div class="text-sm">No results found</div>
-                    <div class="text-xs mt-1">Try searching for something else</div>
-                </div>
+                    <div class="text-xs mt-1">Try searching for something else</div>                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+// Theme Switcher Functionality
+(function() {
+    const themes = {
+        light: {
+            icon: `<circle cx="12" cy="12" r="5"></circle>
+                   <line x1="12" y1="1" x2="12" y2="3"></line>
+                   <line x1="12" y1="21" x2="12" y2="23"></line>
+                   <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                   <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                   <line x1="1" y1="12" x2="3" y2="12"></line>
+                   <line x1="21" y1="12" x2="23" y2="12"></line>
+                   <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                   <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`,
+            text: 'Light'
+        },
+        dark: {
+            icon: `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`,
+            text: 'Dark'
+        },
+        system: {
+            icon: `<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                   <line x1="8" y1="21" x2="16" y2="21"></line>
+                   <line x1="12" y1="17" x2="12" y2="21"></line>`,
+            text: 'System'
+        }
+    };
+
+    // Get current theme from localStorage or default to system
+    function getCurrentTheme() {
+        return localStorage.getItem('theme') || 'system';
+    }
+
+    // Set theme in localStorage and apply it
+    function setTheme(theme) {
+        localStorage.setItem('theme', theme);
+        applyTheme(theme);
+        updateThemeUI(theme);
+    }
+
+    // Apply theme to document
+    function applyTheme(theme) {
+        const root = document.documentElement;
+        
+        if (theme === 'light') {
+            root.classList.remove('dark');
+        } else if (theme === 'dark') {
+            root.classList.add('dark');
+        } else if (theme === 'system') {
+            // Follow system preference
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (prefersDark) {
+                root.classList.add('dark');
+            } else {
+                root.classList.remove('dark');
+            }
+        }
+    }
+
+    // Update theme button UI
+    function updateThemeUI(theme) {
+        const themeData = themes[theme];
+        
+        // Update mobile UI
+        const mobileIcon = document.getElementById('mobile-theme-icon');
+        const mobileText = document.getElementById('mobile-theme-text');
+        if (mobileIcon && mobileText) {
+            mobileIcon.innerHTML = themeData.icon;
+            mobileText.textContent = themeData.text;
+        }
+
+        // Update desktop UI
+        const desktopIcon = document.getElementById('desktop-theme-icon');
+        const desktopText = document.getElementById('desktop-theme-text');
+        if (desktopIcon && desktopText) {
+            desktopIcon.innerHTML = themeData.icon;
+            desktopText.textContent = themeData.text;
+        }
+    }
+
+    // Toggle dropdown visibility
+    function toggleDropdown(dropdownId, isOpen) {
+        const dropdown = document.getElementById(dropdownId);
+        if (dropdown) {
+            if (isOpen) {
+                dropdown.classList.remove('hidden');
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        }
+    }
+
+    // Initialize theme
+    function initTheme() {
+        const currentTheme = getCurrentTheme();
+        applyTheme(currentTheme);
+        updateThemeUI(currentTheme);
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (getCurrentTheme() === 'system') {
+                applyTheme('system');
+            }
+        });
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+        // Mobile theme button
+        const mobileButton = document.getElementById('mobile-theme-button');
+        const mobileDropdown = document.getElementById('mobile-theme-dropdown');
+        if (mobileButton && mobileDropdown) {
+            mobileButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = mobileDropdown.classList.contains('hidden');
+                toggleDropdown('mobile-theme-dropdown', isHidden);
+                toggleDropdown('desktop-theme-dropdown', false); // Close desktop dropdown
+            });
+        }
+
+        // Desktop theme button
+        const desktopButton = document.getElementById('desktop-theme-button');
+        const desktopDropdown = document.getElementById('desktop-theme-dropdown');
+        if (desktopButton && desktopDropdown) {
+            desktopButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = desktopDropdown.classList.contains('hidden');
+                toggleDropdown('desktop-theme-dropdown', isHidden);
+                toggleDropdown('mobile-theme-dropdown', false); // Close mobile dropdown
+            });
+        }
+
+        // Theme option clicks
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.theme-option')) {
+                const themeOption = e.target.closest('.theme-option');
+                const theme = themeOption.getAttribute('data-theme');
+                setTheme(theme);
+                toggleDropdown('mobile-theme-dropdown', false);
+                toggleDropdown('desktop-theme-dropdown', false);
+            }
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#mobile-theme-button') && !e.target.closest('#mobile-theme-dropdown')) {
+                toggleDropdown('mobile-theme-dropdown', false);
+            }
+            if (!e.target.closest('#desktop-theme-button') && !e.target.closest('#desktop-theme-dropdown')) {
+                toggleDropdown('desktop-theme-dropdown', false);
+            }
+        });
+
+        // Close dropdowns on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                toggleDropdown('mobile-theme-dropdown', false);
+                toggleDropdown('desktop-theme-dropdown', false);
+            }
+        });
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            setupEventListeners();
+        });
+    } else {
+        initTheme();
+        setupEventListeners();
+    }
+})();
+</script>

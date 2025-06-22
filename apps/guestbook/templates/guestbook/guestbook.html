@@ -217,7 +217,7 @@
                             <span>Signed in as {{ current_user_profile.full_name|default:user.username }}{% if user.email %} ({{ user.email }}){% endif %} • </span>
                             <form method="post" action="{% url 'account_logout' %}" class="inline">
                                 {% csrf_token %}
-                                <button type="submit" class="text-zinc-400 hover:text-zinc-400 underline transition-colors">
+                                <button type="submit" class="text-zinc-400 hover:text-zinc-300 underline transition-colors">
                                     Sign Out
                                 </button>
                             </form>

@@ -60,8 +60,8 @@ class SEOData:
                   ['contact', 'hire', 'freelance', 'collaboration', 'get in touch']
         
         return {
-            'title': f"Hit Me Up - Connect with {about_data['username']}",
-            'description': f"Wanna chat? Reach out to {about_data['username']} for collabs, gigs, or just to say hi! Available for freelance projects and collaborations.",
+            'title': f"Hit Me Up - Connect with {about_data['name']}",
+            'description': f"Wanna chat? Reach out to {about_data['name']} for collabs, gigs, or just to say hi! Available for freelance projects and collaborations.",
             'keywords': ', '.join(keywords),
             'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
             'og_type': SEOConfig.CONTENT_TYPES['contact']['og_type'],

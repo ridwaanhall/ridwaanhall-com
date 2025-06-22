@@ -95,20 +95,18 @@ CONTENT_SECURITY_POLICY = {
         'object-src': [NONE],
         'script-src': [
             SELF,
+            UNSAFE_INLINE,
             'ridwaanhall.com',
             'static.cloudflareinsights.com',
             '*.googleapis.com',
-            # Consider replacing UNSAFE_INLINE with nonces or hashes
-            UNSAFE_INLINE,
             'cdn.jsdelivr.net',
         ],
         'style-src': [
             SELF,
+            UNSAFE_INLINE,
             'ridwaanhall.com',
             '*.googleapis.com',
             '*.gstatic.com',
-            # Consider replacing UNSAFE_INLINE with nonces or hashes
-            UNSAFE_INLINE,
             'cdn.jsdelivr.net',
         ],
         'upgrade-insecure-requests': True,  # Enable in production only

@@ -25,14 +25,10 @@ class HomeView(HomepageSEOMixin, BaseView):
     def _get(self, request, *args, **kwargs):
         about = self.get_about_data()
         
-        # Randomize skills for dynamic display
-        skills_data = DataService.get_skills()
-        skills_top = list(skills_data)
-        random.shuffle(skills_top)
-        skills_middle = list(skills_data)
-        random.shuffle(skills_middle)
-        skills_bottom = list(skills_data)
-        random.shuffle(skills_bottom)
+        skills = list(DataService.get_skills())
+        skills_top, skills_middle, skills_bottom = (
+            random.sample(skills, k=len(skills)) for _ in range(3)
+        )
         
         context = {
             'view': True,

@@ -5,6 +5,7 @@ Handles homepage, contact, and privacy policy views with proper SEO integration.
 
 import random
 from django.utils import timezone
+from django.http import HttpResponsePermanentRedirect
 
 from apps.core.base_views import BaseView
 from apps.data.data_service import DataService
@@ -93,3 +94,45 @@ class PrivacyPolicyView(PrivacyPolicySEOMixin, BaseView):
         # Add SEO data from mixin
         context.update(self.get_context_data(**context))
         return self.render_to_response(context)
+
+
+class CVRedirectView(BaseView):
+    """
+    Professional CV redirect view.
+    Redirects to Google Drive CV document with a permanent redirect.
+    """
+    
+    def get(self, request, *args, **kwargs):
+        """
+        Redirect to CV on Google Drive.
+        Using permanent redirect (301) for better SEO and caching.
+        """
+        about_data = self.get_about_data()
+        cv_url = about_data.get('cv')
+        
+        if not cv_url:
+            # Fallback to homepage if CV URL is not configured
+            return HttpResponsePermanentRedirect('/')
+            
+        return HttpResponsePermanentRedirect(cv_url)
+
+
+class CVTemplateRedirectView(BaseView):
+    """
+    CV Template redirect view.
+    Redirects to Google Docs CV template with a permanent redirect.
+    """
+    
+    def get(self, request, *args, **kwargs):
+        """
+        Redirect to CV template on Google Docs.
+        Using permanent redirect (301) for better SEO and caching.
+        """
+        about_data = self.get_about_data()
+        template_url = about_data.get('cv_template')
+        
+        if not template_url:
+            # Fallback to homepage if CV template URL is not configured
+            return HttpResponsePermanentRedirect('/')
+            
+        return HttpResponsePermanentRedirect(template_url)

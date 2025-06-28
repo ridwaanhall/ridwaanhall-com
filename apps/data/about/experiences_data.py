@@ -26,7 +26,8 @@ class ExperiencesData:
         "co": "Contract",
         "in": "Internship",
         "ap": "Apprenticeship",
-        "sn": "Seasonal"
+        "sn": "Seasonal",
+        "sc": "Scholarship"
     }
     
     location_types = {
@@ -48,9 +49,9 @@ class ExperiencesData:
             "location": "Bandung, Indonesia 🇮🇩",
             "is_current": True,
             "responsibilities": [
-                "Guiding 25 students (Feb-Jul 2025) with weekly sessions to hit an 88% grad rate—let’s get ‘em there!",
+                "Guiding 24 students with weekly sessions to hit an 80% grad rate—let's get 'em there!",
                 "Dropping 7+ hours a week on 1-hour consults, tracking progress, and hyping up team vibes.",
-                "Coaching 50-75 students with 2-hour weekly tech and soft skills classes across groups.",
+                "Coordinating 50-75 students with slick 2-hour weekly tech and soft skills sessions across groups.",
                 "Jumping into 1.5-hour monthly meetings and mentor glow-up sessions."
             ]
         },
@@ -61,7 +62,7 @@ class ExperiencesData:
             "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
             "website": "https://go.dbs.com/dbsfcodingcamp",
             "period": "Dec 2024 - Jan 2025",
-            "employment_type": employment_types["ap"],
+            "employment_type": employment_types["sc"],
             "location_type": location_types["rm"],
             "location": "Bandung, Indonesia 🇮🇩",
             "is_current": False,
@@ -77,7 +78,7 @@ class ExperiencesData:
             "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
             "website": "https://go.dbs.com/dbsfcodingcamp",
             "period": "Oct 2024 - Dec 2024",
-            "employment_type": employment_types["ap"],
+            "employment_type": employment_types["sc"],
             "location_type": location_types["rm"],
             "location": "Bandung, Indonesia 🇮🇩",
             "is_current": False,
@@ -96,7 +97,7 @@ class ExperiencesData:
             "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
             "website": "https://go.dbs.com/dbsfcodingcamp",
             "period": "Jul 2024 - Sep 2024",
-            "employment_type": employment_types["ap"],
+            "employment_type": employment_types["sc"],
             "location_type": location_types["rm"],
             "location": "Bandung, Indonesia 🇮🇩",
             "is_current": False,
@@ -115,14 +116,14 @@ class ExperiencesData:
             "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
             "website": "https://go.dbs.com/dbsfcodingcamp",
             "period": "Jan 2024 - Jun 2024",
-            "employment_type": employment_types["ap"],
+            "employment_type": employment_types["sc"],
             "location_type": location_types["rm"],
             "location": "Bandung, Indonesia 🇮🇩",
             "is_current": False,
             "responsibilities": [
                 "Kicked off with data viz in Google Sheets—charts never looked so good.",
-                "Mastered Python basics and OOP—coding’s my jam now!",
-                "Dived into supervised and unsupervised ML algorithms—brain’s buzzing."
+                "Mastered Python basics and OOP—coding's my jam now!",
+                "Dived into supervised and unsupervised ML algorithms—brain's buzzing."
             ]
         },
         {
@@ -221,7 +222,7 @@ class ExperiencesData:
             "location": "Islamabad, Pakistan 🇵🇰",
             "is_current": False,
             "responsibilities": [
-                "Built predictive models with Python and Scikit-Learn—data’s my playground.",
+                "Built predictive models with Python and Scikit-Learn—data's my playground.",
                 "Cooked up classification and regression models that hit the mark!"
             ]
         },
@@ -255,7 +256,7 @@ class ExperiencesData:
             "responsibilities": [
                 "Rallied 50 boarding school students to teach in local villages—community vibes!",
                 "Teamed up to run epic competitions for 500+ students—energy was unreal.",
-                "Kept the boarding school’s discipline game tight and inspiring."
+                "Kept the boarding school's discipline game tight and inspiring."
             ]
         }
     ]

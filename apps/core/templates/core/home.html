@@ -22,7 +22,11 @@
                         
                         <!-- Optimized LCP element with font preloading hint -->
                         <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed mb-4" style="font-display: swap;">
-                            {% if about.short_description|length > 0 %}{{ about.short_description }} {{ about.short_bio }} {{ about.short_cta }}{% else %}Coding by day, memorizing Quran by heart—who else but me? I'm a passionate Python developer and DevOps engineer crafting digital solutions that matter.{% endif %}
+                            {% if about.short_description|length > 0 %}
+                                {{ about.short_bio }} {{ about.short_cta }}
+                            {% else %}
+                                Coding by day, memorizing Quran by heart—who else but me? I'm a passionate Python developer and DevOps engineer crafting digital solutions that matter.
+                            {% endif %}
                         </p>
                         
                         <div class="flex flex-row mb-6 sm:mb-6 md:mb-8 justify-start gap-2 sm:gap-3">

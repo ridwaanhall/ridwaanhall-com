@@ -1,103 +1,6 @@
 {% extends 'base_seo.html' %}
 
-{% block head_seo %}
-
-<title>{{ seo.title }}</title>
-
-<meta name="author" content="{{ about.username }}">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="{{ request.build_absolute_uri }}">
-
-<meta name="description" content="{{ seo.description }}">
-<meta name="keywords" content="{{ seo.keywords }}">
-
-<meta property="og:type" content="{{ seo.og_type }}">
-<meta property="og:url" content="{{ request.build_absolute_uri }}">
-<meta property="og:title" content="{{ seo.title }}">
-<meta property="og:description" content="{{ seo.description }}">
-<meta property="og:image" content="{{ seo.og_image }}">
-
-<meta name="twitter:card" content="{{ seo.twitter_card }}">
-<meta name="twitter:url" content="{{ request.build_absolute_uri }}">
-<meta name="twitter:title" content="{{ seo.title }}">
-<meta name="twitter:description" content="{{ seo.description }}">
-<meta name="twitter:image" content="{{ seo.og_image }}">
-
-<script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "AboutPage",
-        "mainEntity": {
-            "@type": "Person",
-            "name": "{{ about.name }}",
-            "description": "{{ seo.description }}",
-            "image": "{{ about.image_url }}",
-            "jobTitle": "{{ about.role }}",
-            "url": "{{ request.build_absolute_uri }}",
-            "sameAs": [
-                {% if about.social_media.github %}"{{ about.social_media.github }}"{% else %}null{% endif %},
-                {% if about.social_media.linkedin %}"{{ about.social_media.linkedin }}"{% else %}null{% endif %},
-                {% if about.social_media.x %}"{{ about.social_media.x }}"{% else %}null{% endif %},
-                {% if about.social_media.medium %}"{{ about.social_media.medium }}"{% else %}null{% endif %},
-                {% if about.social_media.instagram %}"{{ about.social_media.instagram }}"{% else %}null{% endif %}
-            ]
-        }
-    }
-</script>
-
-<script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "name": "Site Navigation",
-        "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "{{ request.scheme }}://{{ request.get_host }}/"
-            },
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "About",
-                "item": "{{ request.scheme }}://{{ request.get_host }}/about"
-            },
-            {
-                "@type": "ListItem",
-                "position": 3,
-                "name": "Career",
-                "item": "{{ request.scheme }}://{{ request.get_host }}/career"
-            },
-            {
-                "@type": "ListItem",
-                "position": 4,
-                "name": "Dashboard",
-                "item": "{{ request.scheme }}://{{ request.get_host }}/dashboard"
-            },
-            {
-                "@type": "ListItem",
-                "position": 5,
-                "name": "Projects",
-                "item": "{{ request.scheme }}://{{ request.get_host }}/projects"
-            },
-            {
-                "@type": "ListItem",
-                "position": 6,
-                "name": "Blog",
-                "item": "{{ request.scheme }}://{{ request.get_host }}/blog"
-            },
-            {
-                "@type": "ListItem",
-                "position": 7,
-                "name": "Contact",
-                "item": "{{ request.scheme }}://{{ request.get_host }}/contact"
-            }
-        ]
-    }
-</script>
-
-{% endblock %}
+{% load static %}
 
 {% block content %}
 <div class="flex-1 md:ml-62">
@@ -117,15 +20,37 @@
 
                 <!-- Overview Section -->
                 <div class="border border-zinc-700 rounded-lg p-4">
-                    <h2 class="text-xl font-medium mb-2 flex items-center">
-                        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                        </svg>
-                        Overview
-                    </h2>
+                    <div class="flex flex-wrap items-start justify-between w-full gap-2">
+                        <!-- Overview title -->
+                        <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex-1 flex items-center">
+                            <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                            Overview
+                        </h2>
+                        
+                        <!-- Last updated date - consistently on the right -->
+                        <span class="inline-flex flex-shrink-0 text-indigo-300 text-xs font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 py-1 rounded-full border border-zinc-700 shadow-sm whitespace-nowrap">
+                            <svg class="w-4 h-4 text-zinc-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span class="text-zinc-400">Last updated: {{ privacy_policy.last_updated|date:"g:i A T, D F j, Y" }}</span>
+                        </span>
+                    </div>
                     <p class="leading-relaxed">
                         We understand that your privacy is important. This policy explains how we collect, use, and protect your information when you visit our website.
                     </p>
+                </div>
+
+                <!-- Policy Updates -->
+                <div class="border border-zinc-700 rounded-lg p-4">
+                    <h2 class="text-xl font-medium mb-2 flex items-center">
+                        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Policy Updates
+                    </h2>
+                    <p class="leading-relaxed">{{ privacy_policy.policy_updates }}</p>
                 </div>
 
                 <!-- Data Collection -->
@@ -140,11 +65,11 @@
                     <div class="space-y-2">
                         {% for service, data in privacy_policy.data_collected.items %}
                         <div class="bg-zinc-900/50 rounded-lg">
-                            <h3 class="text-lg font-medium text-indigo-400 mb-3">{{ service|title }}</h3>
+                            <h3 class="text-lg font-medium text-indigo-400 mb-3">{{ service }}</h3>
                             <div class="space-y-2">
                                 {% for item, description in data.items %}
                                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-zinc-800/30 rounded">
-                                    <span class="font-medium text-zinc-300">{{ item|title }}</span>
+                                    <span class="font-medium">{{ item }}</span>
                                     <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ description }}</span>
                                 </div>
                                 {% endfor %}
@@ -164,9 +89,10 @@
                     </h2>
                     
                     <div class="space-y-2">
-                        {% for usage in privacy_policy.data_usage %}
-                        <div class="flex items-start p-3 bg-zinc-800/30 rounded">
-                            <span>{{ usage }}</span>
+                        {% for usage, description in privacy_policy.data_usage.items %}
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-zinc-800/30 rounded">
+                            <span class="font-medium">{{ usage }}</span>
+                            <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ description }}</span>
                         </div>
                         {% endfor %}
                     </div>
@@ -183,94 +109,96 @@
                     
                     <div class="space-y-2">
                         {% for service, purpose in privacy_policy.third_party_services.items %}
-                        <div class="p-4 bg-zinc-800/30 rounded">
-                            <h3 class="font-medium text-indigo-400 mb-2">{{ service }}</h3>
-                            <p class="text-zinc-300">{{ purpose }}</p>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-zinc-800/30 rounded">
+                            <span class="font-medium">{{ service }}</span>
+                            <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ purpose }}</span>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
 
-                <!-- Data Protection & User Rights -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <!-- Data Protection -->
-                    <div class="border border-zinc-700 rounded-lg p-4">
-                        <h2 class="text-xl font-medium mb-2 flex items-center">
-                            <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                            </svg>
-                            Data Protection
-                        </h2>
-                        
-                        <div class="space-y-2">
-                            {% for item, details in privacy_policy.data_protection.items %}
-                            <div class="p-3 bg-zinc-800/30 rounded">
-                                <h4 class="font-medium text-indigo-400 mb-2">{{ item|title }}</h4>
-                                <p class="text-sm text-zinc-300">{{ details }}</p>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <!-- User Rights -->
-                    <div class="border border-zinc-700 rounded-lg p-4">
-                        <h2 class="text-xl font-medium mb-2 flex items-center">
-                            <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                            Your Rights
-                        </h2>
-                        
-                        <div class="space-y-2">
-                            {% for right, description in privacy_policy.user_rights.items %}
-                            <div class="p-3 bg-zinc-800/30 rounded">
-                                <h4 class="font-medium text-indigo-400 mb-2">{{ right|title }}</h4>
-                                <p class="text-sm text-zinc-300">{{ description }}</p>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Policy Updates & Contact -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <!-- Policy Updates -->
-                    <div class="border border-zinc-700 rounded-lg p-4">
-                        <h2 class="text-xl font-medium mb-2 flex items-center">
-                            <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                            </svg>
-                            Policy Updates
-                        </h2>
-                        <p class="leading-relaxed">{{ privacy_policy.policy_updates }}</p>
-                    </div>
-
-                    <!-- Contact -->
-                    <div class="border border-zinc-700 rounded-lg p-4">
-                        <h2 class="text-xl font-medium mb-2 flex items-center">
-                            <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                            </svg>
-                            Get in Touch
-                        </h2>
-                        <p class="mb-4">Questions about our privacy practices? We're here to help.</p>
-                        <a href="mailto:{{ privacy_policy.contact_email }}" 
-                           class="inline-flex items-center px-4 py-2 bg-indigo-800 hover:bg-indigo-700 text-white font-medium rounded-lg transition-all duration-200">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                            </svg>
-                            {{ privacy_policy.contact_email }}
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Last Updated -->
-                <div class="text-center py-6">
-                    <div class="inline-flex items-center px-4 py-2 border border-zinc-700 rounded-lg">
-                        <svg class="w-4 h-4 text-zinc-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <!-- Data Protection -->
+                <div class="border border-zinc-700 rounded-lg p-4">
+                    <h2 class="text-xl font-medium mb-2 flex items-center">
+                        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                         </svg>
-                        <span class="text-zinc-400">Last updated: {{ privacy_policy.last_updated|date:"F j, Y" }}</span>
+                        Data Protection
+                    </h2>
+                    
+                    <div class="space-y-2">
+                        {% for protection, details in privacy_policy.data_protection.items %}
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-zinc-800/30 rounded">
+                            <span class="font-medium">{{ protection }}</span>
+                            <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ details }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- User Rights -->
+                <div class="border border-zinc-700 rounded-lg p-4">
+                    <h2 class="text-xl font-medium mb-2 flex items-center">
+                        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        Your Rights
+                    </h2>
+                    
+                    <div class="space-y-2">
+                        {% for right, description in privacy_policy.user_rights.items %}
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-zinc-800/30 rounded">
+                            <span class="font-medium">{{ right }}</span>
+                            <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ description }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Cookies Section -->
+                <div class="border border-zinc-700 rounded-lg p-4">
+                    <h2 class="text-xl font-medium mb-2 flex items-center">
+                        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                        </svg>
+                        Cookies & Website Data
+                    </h2>
+                    
+                    <div class="space-y-2">
+                        {% for cookie_type, cookies in privacy_policy.cookies.items %}
+                        {% if cookie_type != 'cookie_policy' %}
+                        <div class="bg-zinc-900/50 rounded-lg">
+                            <h3 class="text-lg font-medium text-indigo-400 mb-3">{{ cookie_type }}</h3>
+                            <div class="space-y-2">
+                                {% for cookie, description in cookies.items %}
+                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-zinc-800/30 rounded">
+                                    <span class="font-medium">{{ cookie }}</span>
+                                    <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ description }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Legal Basis Section -->
+                <div class="border border-zinc-700 rounded-lg p-4">
+                    <h2 class="text-xl font-medium mb-2 flex items-center">
+                        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Legal Basis for Data Processing
+                    </h2>
+                    
+                    <div class="space-y-2">
+                        {% for basis, description in privacy_policy.legal_basis.items %}
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-zinc-800/30 rounded">
+                            <span class="font-medium">{{ basis }}</span>
+                            <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ description }}</span>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -278,4 +206,22 @@
         </div>
     </main>
 </div>
+
+<div class="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
+    <!-- Scroll to top button -->
+    <button id="scrollToTopBtn" class="relative p-3 rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 translate-y-10 group" aria-label="Scroll to top">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 48 48">
+            <path d="M22.77 2.46 3.59 17.42A2 2 0 0 0 4.82 21H17.5v4a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4h12.68a2 2 0 0 0 1.23-3.58L25.23 2.46a2 2 0 0 0-2.46 0ZM17.5 31a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-4ZM17.5 41a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v3a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2v-3Z"></path>
+        </svg>
+        <span class="absolute right-full top-1/2 -translate-y-1/2 mr-3 px-3 py-2 bg-zinc-900/95 backdrop-blur-sm text-white text-sm font-medium rounded-lg shadow-xl border border-zinc-700/50 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 ease-out pointer-events-none whitespace-nowrap
+            before:content-[''] before:absolute before:left-full before:top-1/2 before:-translate-y-1/2 before:border-[6px] before:border-transparent before:border-l-zinc-900/95">
+            Scroll to top
+        </span>
+    </button>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/backScroll.js' %}"></script>
 {% endblock %}

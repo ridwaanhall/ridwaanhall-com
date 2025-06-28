@@ -25,9 +25,9 @@ class AboutData:
             "role": "Machine Learning Mentor",
             "is_active": cls.is_working_hours(),
             # "is_active": False,
-            "short_description": "Coding by day, memorizing Quran by heart—who else but me?",
-            "short_bio": "I'm a passionate Python programmer with a love for machine learning, web development, and open-source. I focus on building practical AI that solves real problems.",
-            "short_cta": "Let's whip up something epic that'll leave everyone stunned!",
+            "short_description": "Coding by day, memorizing the Quran by heart—who else but me?",
+            "short_bio": "I'm a passionate Python programmer with a love for machine learning, web development, and open-source projects. I focus on building practical AI to solve real-world problems.",
+            "short_cta": "Let's create something epic that leaves everyone stunned!",
             "long_description": "I'm a machine learning engineer and web developer, building AI apps and slick websites that solve real problems. I've memorized nearly 30 Juz of the Quran, which has wired me for grit, focus, and discipline. I've mentored 50+ coders at DBS Foundation's Coding Camp and guided 100+ interns at GAOTek Inc. I've shipped 30+ projects using TensorFlow, PyTorch, and more. I'm all in on using AI to tackle big challenges fast, growing Copilot ID, and dropping value in open-source communities.",
             "stories": [
                 "Hi, I'm Ridwan also known as ridwaanhall —a Python programmer, machine learning mentor, and open-source contributor with a focus on ML and web development. Based in Central Java, Indonesia, I lead Copilot ID, where I build intelligent systems and modern web apps using Django, Flask, and cutting-edge AI tools to solve real-world problems with purpose.",

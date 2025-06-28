@@ -105,103 +105,175 @@
         <div class="max-w-7xl mx-auto">
 
             <div class="mb-6 sm:mb-8">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
-                    <div class="w-full">
-                        <h1 class="text-3xl sm:text-4xl font-semibold mb-2 tracking-tight">Privacy <span class="text-indigo-400">Stuff</span></h1>
-                        <p class="mt-2 text-base sm:text-lg text-zinc-300 leading-relaxed">
-                            For {{ privacy_policy.website }} - Keeping it chill and transparent!
-                        </p>
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-4">
+                    <div>
+                        <h1 class="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">Privacy <span class="text-indigo-400">Policy</span></h1>
+                        <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">Your privacy matters to us. Here's how we protect and handle your information on {{ privacy_policy.website }}.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Main content -->
-            <div class="grid grid-cols-1 gap-6 sm:gap-8">
-                <div class="w-full">
-                    <div class="space-y-4 sm:space-y-6">
-                        <!-- Introduction -->
-                        <div class="border border-zinc-700 rounded-xl p-4 sm:p-6 hover:border-indigo-500 transition-all duration-300">
-                            <p class="text-base sm:text-lg text-zinc-300 mb-4">
-                                We totally get that your privacy is a big deal. Here's the lowdown on how we handle your info when you hang out on our site.
-                            </p>
-                            
-                            <!-- Data Collection -->
-                            <div class="mb-6">
-                                <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-indigo-400">What We Grab</h2>
-                                
-                                {% for service, data in privacy_policy.data_collected.items %}
-                                <div class="mb-4">
-                                    <h3 class="text-lg font-medium mb-2">{{ service|title }}</h3>
-                                    <ul class="list-disc pl-5 text-zinc-300">
-                                        {% for item, status in data.items %}
-                                        <li>{{ item }}: {{ status }}</li>
-                                        {% endfor %}
-                                    </ul>
+            <div class="space-y-4">
+
+                <!-- Overview Section -->
+                <div class="border border-zinc-700 rounded-lg p-4">
+                    <h2 class="text-xl font-medium mb-2 flex items-center">
+                        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                        Overview
+                    </h2>
+                    <p class="leading-relaxed">
+                        We understand that your privacy is important. This policy explains how we collect, use, and protect your information when you visit our website.
+                    </p>
+                </div>
+
+                <!-- Data Collection -->
+                <div class="border border-zinc-700 rounded-lg p-4">
+                    <h2 class="text-xl font-medium mb-2 flex items-center">
+                        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        Data Collection
+                    </h2>
+                    
+                    <div class="space-y-2">
+                        {% for service, data in privacy_policy.data_collected.items %}
+                        <div class="bg-zinc-900/50 rounded-lg">
+                            <h3 class="text-lg font-medium text-indigo-400 mb-3">{{ service|title }}</h3>
+                            <div class="space-y-2">
+                                {% for item, description in data.items %}
+                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-zinc-800/30 rounded">
+                                    <span class="font-medium text-zinc-300">{{ item|title }}</span>
+                                    <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ description }}</span>
                                 </div>
                                 {% endfor %}
                             </div>
-                            
-                            <!-- Data Usage -->
-                            <div class="mb-6">
-                                <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-indigo-400">What We Do With It</h2>
-                                <ul class="list-disc pl-5 text-zinc-300">
-                                    {% for usage in privacy_policy.data_usage %}
-                                    <li>{{ usage }}</li>
-                                    {% endfor %}
-                                </ul>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Data Usage -->
+                <div class="border border-zinc-700 rounded-lg p-4">
+                    <h2 class="text-xl font-medium mb-2 flex items-center">
+                        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        How We Use Your Data
+                    </h2>
+                    
+                    <div class="space-y-2">
+                        {% for usage in privacy_policy.data_usage %}
+                        <div class="flex items-start p-3 bg-zinc-800/30 rounded">
+                            <span>{{ usage }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Third Party Services -->
+                <div class="border border-zinc-700 rounded-lg p-4">
+                    <h2 class="text-xl font-medium mb-2 flex items-center">
+                        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        Third-Party Services
+                    </h2>
+                    
+                    <div class="space-y-2">
+                        {% for service, purpose in privacy_policy.third_party_services.items %}
+                        <div class="p-4 bg-zinc-800/30 rounded">
+                            <h3 class="font-medium text-indigo-400 mb-2">{{ service }}</h3>
+                            <p class="text-zinc-300">{{ purpose }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Data Protection & User Rights -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <!-- Data Protection -->
+                    <div class="border border-zinc-700 rounded-lg p-4">
+                        <h2 class="text-xl font-medium mb-2 flex items-center">
+                            <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                            Data Protection
+                        </h2>
+                        
+                        <div class="space-y-2">
+                            {% for item, details in privacy_policy.data_protection.items %}
+                            <div class="p-3 bg-zinc-800/30 rounded">
+                                <h4 class="font-medium text-indigo-400 mb-2">{{ item|title }}</h4>
+                                <p class="text-sm text-zinc-300">{{ details }}</p>
                             </div>
-                            
-                            <!-- Third Party Services -->
-                            <div class="mb-6">
-                                <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-indigo-400">Our Buddies</h2>
-                                <ul class="list-disc pl-5 text-zinc-300">
-                                    {% for service, purpose in privacy_policy.third_party_services.items %}
-                                    <li><strong>{{ service }}</strong>: {{ purpose }}</li>
-                                    {% endfor %}
-                                </ul>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- User Rights -->
+                    <div class="border border-zinc-700 rounded-lg p-4">
+                        <h2 class="text-xl font-medium mb-2 flex items-center">
+                            <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            Your Rights
+                        </h2>
+                        
+                        <div class="space-y-2">
+                            {% for right, description in privacy_policy.user_rights.items %}
+                            <div class="p-3 bg-zinc-800/30 rounded">
+                                <h4 class="font-medium text-indigo-400 mb-2">{{ right|title }}</h4>
+                                <p class="text-sm text-zinc-300">{{ description }}</p>
                             </div>
-                            
-                            <!-- Data Protection -->
-                            <div class="mb-6">
-                                <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-indigo-400">Keeping It Safe</h2>
-                                <ul class="list-disc pl-5 text-zinc-300">
-                                    {% for item, details in privacy_policy.data_protection.items %}
-                                    <li><strong>{{ item|title }}</strong>: {{ details }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            
-                            <!-- User Rights -->
-                            <div class="mb-6">
-                                <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-indigo-400">Your Power Moves</h2>
-                                <ul class="list-disc pl-5 text-zinc-300">
-                                    {% for right, description in privacy_policy.user_rights.items %}
-                                    <li><strong>{{ right|title }}</strong>: {{ description }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            
-                            <!-- Policy Updates -->
-                            <div class="mb-6">
-                                <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-indigo-400">Keeping It Fresh</h2>
-                                <p class="text-zinc-300">{{ privacy_policy.policy_updates }}</p>
-                            </div>
-                            
-                            <!-- Contact -->
-                            <div class="mb-4">
-                                <h2 class="text-xl sm:text-2xl font-semibold mb-3 text-indigo-400">Hit Us Up</h2>
-                                <p class="text-zinc-300">Got questions? Slide into our DMs at: 
-                                    <a href="mailto:{{ privacy_policy.contact_email }}" class="text-indigo-400 hover:underline">{{ privacy_policy.contact_email }}</a>
-                                </p>
-                            </div>
-                            
-                            <!-- Last Updated -->
-                            <div class="mt-6 pt-4 border-t border-zinc-700">
-                                <p class="text-sm text-zinc-400">Last vibe check: {{ privacy_policy.last_updated|date:"g:i A T, D F j, Y" }}</p>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
+
+                <!-- Policy Updates & Contact -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <!-- Policy Updates -->
+                    <div class="border border-zinc-700 rounded-lg p-4">
+                        <h2 class="text-xl font-medium mb-2 flex items-center">
+                            <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            Policy Updates
+                        </h2>
+                        <p class="leading-relaxed">{{ privacy_policy.policy_updates }}</p>
+                    </div>
+
+                    <!-- Contact -->
+                    <div class="border border-zinc-700 rounded-lg p-4">
+                        <h2 class="text-xl font-medium mb-2 flex items-center">
+                            <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            Get in Touch
+                        </h2>
+                        <p class="mb-4">Questions about our privacy practices? We're here to help.</p>
+                        <a href="mailto:{{ privacy_policy.contact_email }}" 
+                           class="inline-flex items-center px-4 py-2 bg-indigo-800 hover:bg-indigo-700 text-white font-medium rounded-lg transition-all duration-200">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            {{ privacy_policy.contact_email }}
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Last Updated -->
+                <div class="text-center py-6">
+                    <div class="inline-flex items-center px-4 py-2 border border-zinc-700 rounded-lg">
+                        <svg class="w-4 h-4 text-zinc-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="text-zinc-400">Last updated: {{ privacy_policy.last_updated|date:"F j, Y" }}</span>
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>

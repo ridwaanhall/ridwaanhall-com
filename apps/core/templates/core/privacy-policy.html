@@ -1,12 +1,9 @@
 {% extends 'base_seo.html' %}
-
 {% load static %}
-
 {% block content %}
 <div class="flex-1 md:ml-62">
     <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
-
             <div class="mb-6 sm:mb-8">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-4">
                     <div>
@@ -17,18 +14,22 @@
             </div>
 
             <div class="space-y-4">
-
                 <!-- Overview Section -->
                 <div class="border border-zinc-700 rounded-lg p-4">
                     <div class="flex flex-wrap items-start justify-between w-full gap-2">
                         <!-- Overview title -->
                         <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex-1 flex items-center">
                             <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                                ></path>
                             </svg>
                             Overview
                         </h2>
-                        
+
                         <!-- Last updated date - consistently on the right -->
                         <span class="inline-flex flex-shrink-0 text-indigo-300 text-xs font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 py-1 rounded-full border border-zinc-700 shadow-sm whitespace-nowrap">
                             <svg class="w-4 h-4 text-zinc-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,11 +58,16 @@
                 <div class="border border-zinc-700 rounded-lg p-4">
                     <h2 class="text-xl font-medium mb-2 flex items-center">
                         <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                            ></path>
                         </svg>
                         Data Collection
                     </h2>
-                    
+
                     <div class="space-y-2">
                         {% for service, data in privacy_policy.data_collected.items %}
                         <div class="bg-zinc-900/50 rounded-lg">
@@ -87,7 +93,7 @@
                         </svg>
                         How We Use Your Data
                     </h2>
-                    
+
                     <div class="space-y-2">
                         {% for usage, description in privacy_policy.data_usage.items %}
                         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-zinc-800/30 rounded">
@@ -102,11 +108,16 @@
                 <div class="border border-zinc-700 rounded-lg p-4">
                     <h2 class="text-xl font-medium mb-2 flex items-center">
                         <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                            ></path>
                         </svg>
                         Third-Party Services
                     </h2>
-                    
+
                     <div class="space-y-2">
                         {% for service, purpose in privacy_policy.third_party_services.items %}
                         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-zinc-800/30 rounded">
@@ -125,7 +136,7 @@
                         </svg>
                         Data Protection
                     </h2>
-                    
+
                     <div class="space-y-2">
                         {% for protection, details in privacy_policy.data_protection.items %}
                         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-zinc-800/30 rounded">
@@ -144,7 +155,7 @@
                         </svg>
                         Your Rights
                     </h2>
-                    
+
                     <div class="space-y-2">
                         {% for right, description in privacy_policy.user_rights.items %}
                         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-zinc-800/30 rounded">
@@ -159,26 +170,31 @@
                 <div class="border border-zinc-700 rounded-lg p-4">
                     <h2 class="text-xl font-medium mb-2 flex items-center">
                         <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                            ></path>
                         </svg>
                         Cookies & Website Data
                     </h2>
-                    
+
                     <div class="space-y-2">
                         {% for cookie_type, cookies in privacy_policy.cookies.items %}
-                        {% if cookie_type != 'cookie_policy' %}
-                        <div class="bg-zinc-900/50 rounded-lg">
-                            <h3 class="text-lg font-medium text-indigo-400 mb-3">{{ cookie_type }}</h3>
-                            <div class="space-y-2">
-                                {% for cookie, description in cookies.items %}
-                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-zinc-800/30 rounded">
-                                    <span class="font-medium">{{ cookie }}</span>
-                                    <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ description }}</span>
+                            {% if cookie_type != 'cookie_policy' %}
+                            <div class="bg-zinc-900/50 rounded-lg">
+                                <h3 class="text-lg font-medium text-indigo-400 mb-3">{{ cookie_type }}</h3>
+                                <div class="space-y-2">
+                                    {% for cookie, description in cookies.items %}
+                                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-zinc-800/30 rounded">
+                                        <span class="font-medium">{{ cookie }}</span>
+                                        <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ description }}</span>
+                                    </div>
+                                    {% endfor %}
                                 </div>
-                                {% endfor %}
                             </div>
-                        </div>
-                        {% endif %}
+                            {% endif %}
                         {% endfor %}
                     </div>
                 </div>
@@ -191,7 +207,7 @@
                         </svg>
                         Legal Basis for Data Processing
                     </h2>
-                    
+
                     <div class="space-y-2">
                         {% for basis, description in privacy_policy.legal_basis.items %}
                         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-zinc-800/30 rounded">
@@ -201,7 +217,6 @@
                         {% endfor %}
                     </div>
                 </div>
-
             </div>
         </div>
     </main>
@@ -211,17 +226,18 @@
     <!-- Scroll to top button -->
     <button id="scrollToTopBtn" class="relative p-3 rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 translate-y-10 group" aria-label="Scroll to top">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 48 48">
-            <path d="M22.77 2.46 3.59 17.42A2 2 0 0 0 4.82 21H17.5v4a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4h12.68a2 2 0 0 0 1.23-3.58L25.23 2.46a2 2 0 0 0-2.46 0ZM17.5 31a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-4ZM17.5 41a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v3a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2v-3Z"></path>
+            <path
+                d="M22.77 2.46 3.59 17.42A2 2 0 0 0 4.82 21H17.5v4a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4h12.68a2 2 0 0 0 1.23-3.58L25.23 2.46a2 2 0 0 0-2.46 0ZM17.5 31a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-4ZM17.5 41a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v3a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2v-3Z"
+            ></path>
         </svg>
-        <span class="absolute right-full top-1/2 -translate-y-1/2 mr-3 px-3 py-2 bg-zinc-900/95 backdrop-blur-sm text-white text-sm font-medium rounded-lg shadow-xl border border-zinc-700/50 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 ease-out pointer-events-none whitespace-nowrap
-            before:content-[''] before:absolute before:left-full before:top-1/2 before:-translate-y-1/2 before:border-[6px] before:border-transparent before:border-l-zinc-900/95">
+        <span
+            class="absolute right-full top-1/2 -translate-y-1/2 mr-3 px-3 py-2 bg-zinc-900/95 backdrop-blur-sm text-white text-sm font-medium rounded-lg shadow-xl border border-zinc-700/50 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 ease-out pointer-events-none whitespace-nowrap before:content-[''] before:absolute before:left-full before:top-1/2 before:-translate-y-1/2 before:border-[6px] before:border-transparent before:border-l-zinc-900/95"
+        >
             Scroll to top
         </span>
     </button>
-
 </div>
 {% endblock %}
-
 {% block scripts %}
 <script src="{% static 'js/backScroll.js' %}"></script>
 {% endblock %}

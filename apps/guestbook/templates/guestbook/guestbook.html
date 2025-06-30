@@ -55,16 +55,16 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                         </svg>
                                         {% if user.is_authenticated and message.user == user %}
-                                            <span>You replied to</span>
+                                            {% if message.reply_to.user == user %}
+                                                <span>You replied to yourself: "{{ message.reply_to.message|truncatechars:30 }}"</span>
+                                            {% else %}
+                                                <span>You replied to <span class="font-medium">{{ message.reply_to.user_full_name }}</span>: "{{ message.reply_to.message|truncatechars:30 }}"</span>
+                                            {% endif %}
                                         {% elif user.is_authenticated and message.reply_to.user == user %}
-                                            <span>Replied to you</span>
+                                            <span>Replied to you: "{{ message.reply_to.message|truncatechars:30 }}"</span>
                                         {% else %}
-                                            <span>Replied to</span>
+                                            <span>Replied to <span class="font-medium">{{ message.reply_to.user_full_name }}</span>: "{{ message.reply_to.message|truncatechars:30 }}"</span>
                                         {% endif %}
-                                        {% if not user.is_authenticated or message.reply_to.user != user %}
-                                            <span class="font-medium mx-1">{{ message.reply_to.user_full_name }}</span>
-                                        {% endif %}
-                                        <span>: "{{ message.reply_to.message|truncatechars:30 }}"</span>
                                     </div>
                                     {% endif %}
 
@@ -420,15 +420,33 @@
                             // Create reply indicator if this is a reply
                             let replyHtml = "";
                             if (data.message.reply_to) {
-                                replyHtml = `
-                                    <div class="flex items-center text-zinc-400 text-xs mb-1">
-                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
-                                        </svg>
-                                        <span>Replied to ${escapeHtml(data.message.reply_to.user)}: "${escapeHtml(data.message.reply_to.message.substring(0, 30))}..."</span>
-                                    </div>
-                                `;
+                                // Check if replying to self by comparing emails (since we have masked emails, we need to check the actual user)
+                                const isReplyToSelf = data.message.email === data.message.reply_to.email;
+                                
+                                if (isReplyToSelf) {
+                                    replyHtml = `
+                                        <div class="flex items-center text-zinc-400 text-xs mb-1">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                            </svg>
+                                            <span>You replied to yourself: "${escapeHtml(data.message.reply_to.message.substring(0, 30))}..."</span>
+                                        </div>
+                                    `;
+                                } else {
+                                    replyHtml = `
+                                        <div class="flex items-center text-zinc-400 text-xs mb-1">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                            </svg>
+                                            <span>You replied to <span class="font-medium">${escapeHtml(data.message.reply_to.user)}</span>: "${escapeHtml(data.message.reply_to.message.substring(0, 30))}..."</span>
+                                        </div>
+                                    `;
+                                }
                             }
+
+                            // Use timestamp directly from server (already in Jakarta time)
+                            // The server already returns the correct Jakarta time format
+                            const jakartaTime = data.message.timestamp;
 
                             // Add message to guestbook
                             const messageHtml = `
@@ -441,7 +459,7 @@
                                                 <div class="text-sm font-medium">${escapeHtml(data.message.user)}</div>
                                                 ${authorBadgeHtml}
                                                 <div class="hidden md:flex">
-                                                    <div class="text-xs text-zinc-400">${escapeHtml(data.message.timestamp)}</div>
+                                                    <div class="text-xs text-zinc-400">${jakartaTime}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -472,7 +490,7 @@
                                             </div>
                                         </div>
                                         <div class="flex md:hidden">
-                                            <div class="text-xs text-zinc-400">${escapeHtml(data.message.timestamp)}</div>
+                                            <div class="text-xs text-zinc-400">${jakartaTime}</div>
                                         </div>
                                     </div>
                                 </div>

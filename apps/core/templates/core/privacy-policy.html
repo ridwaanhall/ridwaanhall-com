@@ -35,11 +35,11 @@
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            <span>Last updated: {{ privacy_policy.last_updated|date:"g:i A T, D F j, Y" }}</span>
+                            <span>{{ privacy_policy.last_updated|date:"F j, Y \a\t g:i A T" }}</span>
                         </span>
                     </div>
                     <p class="leading-relaxed">
-                        We understand that your privacy is important. This policy explains how we collect, use, and protect your information when you visit our website.
+                        {{ privacy_policy.overview }}
                     </p>
                 </div>
 

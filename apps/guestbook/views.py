@@ -5,6 +5,7 @@ from allauth.socialaccount.models import SocialAccount
 from apps.core.base_views import BaseView
 from .models import ChatMessage
 from apps.seo.mixins import GuestbookSEOMixin
+import pytz
 
 
 class UserProfileMixin:
@@ -249,13 +250,17 @@ class SendMessageView(LoginRequiredMixin, UserProfileMixin, View):
         else:
             reply_data = None
         
+        # Convert timestamp to Jakarta timezone for consistency with template
+        jakarta_tz = pytz.timezone('Asia/Jakarta')
+        jakarta_timestamp = chat_message.timestamp.astimezone(jakarta_tz)
+        
         return JsonResponse({
             'success': True,
             'message': {
                 'id': chat_message.pk,
                 'user': profile_data['full_name'],
                 'message': chat_message.message,
-                'timestamp': chat_message.timestamp.strftime('%d/%m/%Y, %H:%M'),
+                'timestamp': jakarta_timestamp.strftime('%d/%m/%Y, %H:%M'),
                 'profile_image': profile_data['profile_image'],
                 'is_author': profile_data['is_author'],
                 'is_co_author': profile_data['is_co_author'],

@@ -1,50 +1,71 @@
 {% extends 'base_seo.html' %}
 {% load static %}
-
 {% block content %}
 <div class="flex-1 md:ml-62">
     <main class="px-4 py-6 md:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
-            
             <section class="py-0">
                 <div class="mx-auto lg:mx-0">
                     <!-- Hero content with consistent left alignment -->
                     <div class="text-left">
-                        <h1 class="text-2xl lg:text-3xl font-medium mb-2">
-                            Hi, I'm <span class="text-indigo-400">{{ about.first_name }}</span>
-                        </h1>
-                        
+                        <h1 class="text-2xl lg:text-3xl font-medium mb-2">Hi, I'm <span class="text-indigo-400">{{ about.first_name }}</span></h1>
+
                         <div class="flex flex-wrap items-center justify-start my-3">
                             <span>{{ about.role }}</span>
                             <span class="mx-2">•</span>
                             <span>{{ about.location.residency }}, {{ about.location.country }} {{ about.location.flag }}</span>
                         </div>
-                        
+
                         <!-- Optimized LCP element with font preloading hint -->
                         <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed mb-4" style="font-display: swap;">
-                            {% if about.short_description|length > 0 %}
-                                {{ about.short_bio }} {{ about.short_cta }}
-                            {% else %}
-                                Coding by day, memorizing Quran by heart—who else but me? I'm a passionate Python developer and DevOps engineer crafting digital solutions that matter.
-                            {% endif %}
+                            {% if about.short_description|length > 0 %} {{ about.short_bio }} {{ about.short_cta }} {% else %} Coding by day, memorizing Quran by heart—who else but me? I'm a passionate Python developer and DevOps engineer
+                            crafting digital solutions that matter. {% endif %}
                         </p>
-                        
+
                         <div class="flex flex-row mb-6 sm:mb-6 md:mb-8 justify-start gap-2 sm:gap-3">
-                            <a href="{% url 'about' %}" class="group inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full bg-indigo-800 hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-indigo-700/30">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 group-hover:animate-pulse group-hover:-rotate-12 transition-transform duration-300" fill="currentColor" viewBox="0 0 48 48" stroke="currentColor">
-                                    <path d="M24 3a10 10 0 1 1 0 20 10 10 0 0 1 0-20Zm0 4a6 6 0 1 0 0 12.00A6 6 0 0 0 24 7Zm0 19c10.3 0 16.67 6.99 17 17 .02.55-.43 1-1 1h-2c-.54 0-.98-.45-1-1-.3-7.84-4.9-13-13-13s-12.7 5.16-13 13c-.02.55-.46 1-1.02 1h-2c-.55 0-1-.45-.98-1 .33-10.01 6.7-17 17-17Z"></path>
+                            <a
+                                href="{% url 'about' %}"
+                                class="group inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full bg-indigo-800 hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-indigo-700/30"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 group-hover:animate-pulse group-hover:-rotate-12 transition-transform duration-300"
+                                    fill="currentColor"
+                                    viewBox="0 0 48 48"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        d="M24 3a10 10 0 1 1 0 20 10 10 0 0 1 0-20Zm0 4a6 6 0 1 0 0 12.00A6 6 0 0 0 24 7Zm0 19c10.3 0 16.67 6.99 17 17 .02.55-.43 1-1 1h-2c-.54 0-.98-.45-1-1-.3-7.84-4.9-13-13-13s-12.7 5.16-13 13c-.02.55-.46 1-1.02 1h-2c-.55 0-1-.45-.98-1 .33-10.01 6.7-17 17-17Z"
+                                    ></path>
                                 </svg>
                                 <span>About</span>
                             </a>
-                            <a href="{% url 'contact' %}" class="group inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full bg-zinc-800 hover:bg-zinc-700 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-zinc-700/30">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 group-hover:animate-pulse group-hover:-rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            <a
+                                href="{% url 'contact' %}"
+                                class="group inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full bg-zinc-800 hover:bg-zinc-700 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-zinc-700/30"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 group-hover:animate-pulse group-hover:-rotate-12 transition-transform duration-300"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                    />
                                 </svg>
                                 <span>Contact</span>
                             </a>
-                            <a href="{{ about.donate.0.github_sponsor }}" class="group inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full bg-pink-800 hover:bg-pink-700 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-pink-700/30">
+                            <a
+                                href="{{ about.donate.0.github_sponsor }}"
+                                class="group inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full bg-pink-800 hover:bg-pink-700 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-pink-700/30"
+                            >
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 animate-pulse group-hover:animate-bounce group-hover:-rotate-12 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                                 </svg>
                                 <span>Sponsor</span>
                             </a>
@@ -60,54 +81,51 @@
                 {% include 'blog/latest-blogs.html' %}
 
                 <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
-                
-                {% include 'core/skills.html' %}
 
+                {% include 'core/skills.html' %}
                 {% include 'about/sponsor-me.html' %}
             </div>
-            
         </div>
     </main>
 </div>
 {% endblock %}
-
 {% block scripts %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Defer slider initialization to improve LCP
-    setTimeout(() => {
-        const slider = document.getElementById('blogSlider');
-        if (!slider) return;
-        
-        const cardWidth = 285;
-        let autoSlideInterval;
-        
-        function slideNext() {
-            const maxScroll = slider.scrollWidth - slider.clientWidth;
-            if (slider.scrollLeft >= maxScroll) {
-                slider.scrollTo({ left: 0, behavior: 'smooth' });
-            } else {
-                slider.scrollBy({ left: cardWidth, behavior: 'smooth' });
+    document.addEventListener("DOMContentLoaded", function () {
+        // Defer slider initialization to improve LCP
+        setTimeout(() => {
+            const slider = document.getElementById("blogSlider");
+            if (!slider) return;
+
+            const cardWidth = 285;
+            let autoSlideInterval;
+
+            function slideNext() {
+                const maxScroll = slider.scrollWidth - slider.clientWidth;
+                if (slider.scrollLeft >= maxScroll) {
+                    slider.scrollTo({ left: 0, behavior: "smooth" });
+                } else {
+                    slider.scrollBy({ left: cardWidth, behavior: "smooth" });
+                }
             }
-        }
-        
-        function startAutoSlide() {
-            autoSlideInterval = setInterval(slideNext, 6000);
-        }
-        
-        function stopAutoSlide() {
-            if (autoSlideInterval) {
-                clearInterval(autoSlideInterval);
+
+            function startAutoSlide() {
+                autoSlideInterval = setInterval(slideNext, 6000);
             }
-        }
-        
-        slider.addEventListener('mouseenter', stopAutoSlide);
-        slider.addEventListener('mouseleave', startAutoSlide);
-        slider.addEventListener('touchstart', stopAutoSlide);
-        slider.addEventListener('touchend', startAutoSlide);
-        
-        startAutoSlide();
-    }, 100);
-});
+
+            function stopAutoSlide() {
+                if (autoSlideInterval) {
+                    clearInterval(autoSlideInterval);
+                }
+            }
+
+            slider.addEventListener("mouseenter", stopAutoSlide);
+            slider.addEventListener("mouseleave", startAutoSlide);
+            slider.addEventListener("touchstart", stopAutoSlide);
+            slider.addEventListener("touchend", startAutoSlide);
+
+            startAutoSlide();
+        }, 100);
+    });
 </script>
 {% endblock %}

@@ -1,136 +1,132 @@
 {% extends 'base_seo.html' %}
-
 {% load static %}
-
 {% block head_seo %}
 
 <title>{{ seo.title }}</title>
 
-<meta name="author" content="{{ about.username }}">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="{{ request.build_absolute_uri }}">
+<meta name="author" content="{{ about.username }}" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="{{ request.build_absolute_uri }}" />
 
-<meta name="description" content="{{ seo.description }}">
-<meta name="keywords" content="{{ seo.keywords }}">
+<meta name="description" content="{{ seo.description }}" />
+<meta name="keywords" content="{{ seo.keywords }}" />
 
-<meta property="og:type" content="{{ seo.og_type }}">
-<meta property="og:url" content="{{ request.build_absolute_uri }}">
-<meta property="og:title" content="{{ seo.title }}">
-<meta property="og:description" content="{{ seo.description }}">
-<meta property="og:image" content="{{ seo.og_image }}">
+<meta property="og:type" content="{{ seo.og_type }}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:title" content="{{ seo.title }}" />
+<meta property="og:description" content="{{ seo.description }}" />
+<meta property="og:image" content="{{ seo.og_image }}" />
 
-<meta name="twitter:card" content="{{ seo.twitter_card }}">
-<meta name="twitter:url" content="{{ request.build_absolute_uri }}">
-<meta name="twitter:title" content="{{ seo.title }}">
-<meta name="twitter:description" content="{{ seo.description }}">
-<meta name="twitter:image" content="{{ seo.og_image }}">
+<meta name="twitter:card" content="{{ seo.twitter_card }}" />
+<meta name="twitter:url" content="{{ request.build_absolute_uri }}" />
+<meta name="twitter:title" content="{{ seo.title }}" />
+<meta name="twitter:description" content="{{ seo.description }}" />
+<meta name="twitter:image" content="{{ seo.og_image }}" />
 
 <script type="application/ld+json">
-[
-    {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "{{ seo.title }}",
-        "description": "{{ seo.description }}",
-        "url": "{{ request.build_absolute_uri }}",
-        "author": {
-            "@type": "Person", 
-            "name": "{{ about.name }}",
-            "username": "{{ about.username }}",
-            "image": "{{ about.image_url }}",
-            "url": "{{ request.scheme }}://{{ request.get_host }}/"
-        },
-        "primaryImageOfPage": {
-            "@type": "ImageObject",
-            "url": "{{ seo.og_image }}"
-        },
-        "dateModified": "{{ github_last_update }}",
-        "specialty": "Developer Metrics",
-        "mainContentOfPage": {
-            "@type": "Dataset",
-            "name": "Developer Activity Metrics",
+    [
+        {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "{{ seo.title }}",
             "description": "{{ seo.description }}",
-            "keywords": "GitHub, WakaTime, coding, contributions, programming, developer metrics",
-            "temporalCoverage": "{{ wakatime_stats.start_date }} to {{ wakatime_stats.end_date }}",
+            "url": "{{ request.build_absolute_uri }}",
+            "author": {
+                "@type": "Person",
+                "name": "{{ about.name }}",
+                "username": "{{ about.username }}",
+                "image": "{{ about.image_url }}",
+                "url": "{{ request.scheme }}://{{ request.get_host }}/"
+            },
+            "primaryImageOfPage": {
+                "@type": "ImageObject",
+                "url": "{{ seo.og_image }}"
+            },
+            "dateModified": "{{ github_last_update }}",
+            "specialty": "Developer Metrics",
+            "mainContentOfPage": {
+                "@type": "Dataset",
+                "name": "Developer Activity Metrics",
+                "description": "{{ seo.description }}",
+                "keywords": "GitHub, WakaTime, coding, contributions, programming, developer metrics",
+                "temporalCoverage": "{{ wakatime_stats.start_date }} to {{ wakatime_stats.end_date }}",
+                "license": "Apache-2.0",
+                "creator": {
+                    "@type": "Person",
+                    "name": "{{ about.name }}"
+                }
+            }
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "name": "Site Navigation",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'home' %}"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Dashboard",
+                    "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'dashboard' %}"
+                }
+            ]
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "Dataset",
+            "name": "GitHub Activity Metrics",
             "license": "Apache-2.0",
+            "description": "{{ seo.description }}",
             "creator": {
                 "@type": "Person",
                 "name": "{{ about.name }}"
-            }
+            },
+            "dateModified": "{{ github_last_update }}",
+            "variableMeasured": [
+                {
+                    "@type": "PropertyValue",
+                    "name": "Total Contributions",
+                    "value": "{{ total_contributions }}"
+                },
+                {
+                    "@type": "PropertyValue",
+                    "name": "This Week's Contributions",
+                    "value": "{{ this_week }}"
+                },
+                {
+                    "@type": "PropertyValue",
+                    "name": "Best Day",
+                    "value": "{{ best_day }} contributions"
+                },
+                {
+                    "@type": "PropertyValue",
+                    "name": "Daily Average",
+                    "value": "{{ average }}"
+                },
+                {
+                    "@type": "PropertyValue",
+                    "name": "Longest Streak",
+                    "value": "{{ longest_streak }} days"
+                },
+                {
+                    "@type": "PropertyValue",
+                    "name": "Current Streak",
+                    "value": "{{ current_streak }} days"
+                }
+            ]
         }
-    },
-    {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "name": "Site Navigation",
-        "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'home' %}"
-            },
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Dashboard",
-                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'dashboard' %}"
-            }
-        ]
-    },
-    {
-        "@context": "https://schema.org",
-        "@type": "Dataset",
-        "name": "GitHub Activity Metrics",
-        "license": "Apache-2.0",
-        "description": "{{ seo.description }}",
-        "creator": {
-            "@type": "Person",
-            "name": "{{ about.name }}"
-        },
-        "dateModified": "{{ github_last_update }}",
-        "variableMeasured": [
-            {
-                "@type": "PropertyValue",
-                "name": "Total Contributions",
-                "value": "{{ total_contributions }}"
-            },
-            {
-                "@type": "PropertyValue",
-                "name": "This Week's Contributions",
-                "value": "{{ this_week }}"
-            },
-            {
-                "@type": "PropertyValue",
-                "name": "Best Day",
-                "value": "{{ best_day }} contributions"
-            },
-            {
-                "@type": "PropertyValue",
-                "name": "Daily Average",
-                "value": "{{ average }}"
-            },
-            {
-                "@type": "PropertyValue",
-                "name": "Longest Streak",
-                "value": "{{ longest_streak }} days"
-            },
-            {
-                "@type": "PropertyValue",
-                "name": "Current Streak",
-                "value": "{{ current_streak }} days"
-            }
-        ]
-    }
-]
+    ]
 </script>
 {% endblock %}
-
 {% block content %}
 <div class="flex-1 md:ml-62">
     <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
-
             <div class="mb-6 md:mb-8">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
                     <div>
@@ -145,52 +141,52 @@
                     <h2 class="text-xl sm:text-2xl font-medium">Wakatime <span class="text-indigo-400">Statistics</span></h2>
                     <p class="text-xs sm:text-sm">Last update: <span class="text-indigo-400 font-medium">{{ wakatime_stats.last_update_time }}</span></p>
                 </div>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
 
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
                     <div class="bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg overflow-hidden p-4 sm:p-5 border border-indigo-500/50 transition-all duration-300 hover:shadow-indigo-500/20">
                         <h3 class="font-medium text-xs sm:text-sm">Start Date</h3>
                         <div class="flex items-center justify-between">
                             <p class="text-indigo-400 sm:text-xl font-medium">{{ wakatime_stats.start_date }}</p>
                         </div>
                     </div>
-                    
+
                     <div class="bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg overflow-hidden p-4 sm:p-5 border border-indigo-500/50 transition-all duration-300 hover:shadow-indigo-500/20">
                         <h3 class="font-medium text-xs sm:text-sm">End Date</h3>
                         <div class="flex items-center justify-between">
                             <p class="text-indigo-400 sm:text-xl font-medium">{{ wakatime_stats.end_date }}</p>
                         </div>
                     </div>
-                    
+
                     <div class="bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg overflow-hidden p-4 sm:p-5 border border-indigo-500/50 transition-all duration-300 hover:shadow-indigo-500/20">
                         <h3 class="font-medium text-xs sm:text-sm">Coding Average</h3>
                         <div class="flex items-center justify-between">
                             <p class="text-indigo-400 sm:text-xl font-medium">{{ wakatime_stats.daily_average }}</p>
                         </div>
                     </div>
-                    
+
                     <div class="bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg overflow-hidden p-4 sm:p-5 border border-indigo-500/50 transition-all duration-300 hover:shadow-indigo-500/20">
                         <h3 class="font-medium text-xs sm:text-sm">Coding Time</h3>
                         <div class="flex items-center justify-between">
                             <p class="text-indigo-400 sm:text-xl font-medium">{{ wakatime_stats.this_week_coding }}</p>
                         </div>
                     </div>
-                    
+
                     <div class="bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg overflow-hidden p-4 sm:p-5 border border-indigo-500/50 transition-all duration-300 hover:shadow-indigo-500/20">
                         <h3 class="font-medium text-xs sm:text-sm">Best Day</h3>
                         <div class="flex items-center justify-between">
                             <p class="text-indigo-400 sm:text-xl font-medium truncate">{{ wakatime_stats.best_day_date }} ({{ wakatime_stats.best_day_coding }})</p>
                         </div>
                     </div>
-                    
+
                     <div class="relative z-10 bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg overflow-visible p-4 sm:p-5 border border-indigo-500/50 transition-all duration-300 hover:shadow-indigo-500/20">
                         <h3 class="font-medium text-xs sm:text-sm">
                             All Time
                             <span class="relative cursor-help group inline-block align-middle">
                                 *
                                 <!-- Tooltip -->
-                                <span class="absolute left-0 -top-7 w-max bg-zinc-800 text-xs px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 pointer-events-none whitespace-nowrap border border-indigo-500/30 
-                                    before:content-[''] before:absolute before:left-1/2 before:top-full before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-zinc-800">
+                                <span
+                                    class="absolute left-0 -top-7 w-max bg-zinc-800 text-xs px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 pointer-events-none whitespace-nowrap border border-indigo-500/30 before:content-[''] before:absolute before:left-1/2 before:top-full before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-zinc-800"
+                                >
                                     Since {{ wakatime_stats.all_time_start }}
                                 </span>
                             </span>
@@ -209,7 +205,11 @@
                                     <div class="flex items-center justify-between gap-3">
                                         <div class="w-20 text-sm">{{ language.name }}</div>
                                         <div class="relative flex h-3 flex-1 justify-center rounded-full bg-zinc-800/50">
-                                            <span class="bg-gradient-to-r from-indigo-400 to-purple-600 absolute left-0 top-0 h-3 rounded-full transition-all duration-1000 ease-out animate-bar" data-width="{{ language.percent }}%" style="width: 0%;"></span>
+                                            <span
+                                                class="bg-gradient-to-r from-indigo-400 to-purple-600 absolute left-0 top-0 h-3 rounded-full transition-all duration-1000 ease-out animate-bar"
+                                                data-width="{{ language.percent }}%"
+                                                style="width: 0%;"
+                                            ></span>
                                         </div>
                                         <div class="w-10 text-right text-sm font-medium animate-percent" data-target="{{ language.percent|floatformat:0 }}">0%</div>
                                     </div>
@@ -228,7 +228,11 @@
                                     <div class="flex items-center justify-between gap-3">
                                         <div class="w-20 text-sm">{{ category.name }}</div>
                                         <div class="relative flex h-3 flex-1 justify-center rounded-full bg-zinc-800/50">
-                                            <span class="bg-gradient-to-r from-purple-500 to-pink-600 absolute left-0 top-0 h-3 rounded-full transition-all duration-1000 ease-out animate-bar" data-width="{{ category.percent }}%" style="width: 0%;"></span>
+                                            <span
+                                                class="bg-gradient-to-r from-purple-500 to-pink-600 absolute left-0 top-0 h-3 rounded-full transition-all duration-1000 ease-out animate-bar"
+                                                data-width="{{ category.percent }}%"
+                                                style="width: 0%;"
+                                            ></span>
                                         </div>
                                         <div class="w-10 text-right text-sm font-medium animate-percent" data-target="{{ category.percent|floatformat:0 }}">0%</div>
                                     </div>
@@ -239,7 +243,11 @@
                                     <div class="flex items-center justify-between gap-3">
                                         <div class="w-20 text-sm">{{ os.name }}</div>
                                         <div class="relative flex h-3 flex-1 justify-center rounded-full bg-zinc-800/50">
-                                           <span class="bg-gradient-to-r from-purple-500 to-pink-600 absolute left-0 top-0 h-3 rounded-full transition-all duration-1000 ease-out animate-bar" data-width="{{ os.percent }}%" style="width: 0%;"></span>
+                                            <span
+                                                class="bg-gradient-to-r from-purple-500 to-pink-600 absolute left-0 top-0 h-3 rounded-full transition-all duration-1000 ease-out animate-bar"
+                                                data-width="{{ os.percent }}%"
+                                                style="width: 0%;"
+                                            ></span>
                                         </div>
                                         <div class="w-10 text-right text-sm font-medium animate-percent" data-target="{{ os.percent|floatformat:0 }}">0%</div>
                                     </div>
@@ -248,18 +256,18 @@
                             </ul>
                         </div>
                     </div>
-
                 </div>
             </div>
 
             <div class="mb-6">
                 <div class="flex flex-row items-center justify-between mb-3 md:mb-4 gap-2">
                     <h2 class="text-xl sm:text-2xl font-medium">GitHub <span class="text-green-600">Statistics</span></h2>
-                    <p class="font-mono text-xs sm:text-sm text-zinc-400 hover:text-zinc-300 transition-all duration-300 hover:text-zinc-300 truncate"><a href="{{ about.social_media.github }}" class="font-medium">@{{ about.username }}</a></p>
+                    <p class="font-mono text-xs sm:text-sm text-zinc-400 hover:text-zinc-300 transition-all duration-300 hover:text-zinc-300 truncate">
+                        <a href="{{ about.social_media.github }}" class="font-medium">@{{ about.username }}</a>
+                    </p>
                 </div>
-                
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                    
                     <div class="bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg overflow-hidden px-4 py-3 border border-green-500/50 transition-all duration-300 hover:shadow-green-500/20">
                         <h3 class="font-medium text-xs sm:text-sm">Total</h3>
                         <div class="flex items-center justify-between">
@@ -268,7 +276,7 @@
                             </p>
                         </div>
                     </div>
-                    
+
                     <div class="bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg overflow-hidden px-4 py-3 border border-green-500/50 transition-all duration-300 hover:shadow-green-500/20">
                         <h3 class="font-medium text-xs sm:text-sm">This Week</h3>
                         <div class="flex items-center justify-between">
@@ -277,7 +285,7 @@
                             </p>
                         </div>
                     </div>
-                    
+
                     <div class="bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg overflow-hidden px-4 py-3 border border-green-500/50 transition-all duration-300 hover:shadow-green-500/20">
                         <h3 class="font-medium text-xs sm:text-sm">Best Day</h3>
                         <div class="flex items-center justify-between">
@@ -286,19 +294,16 @@
                             </p>
                         </div>
                     </div>
-                    
+
                     <div class="bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg overflow-hidden px-4 py-3 border border-green-500/50 transition-all duration-300 hover:shadow-green-500/20">
                         <h3 class="font-medium text-xs sm:text-sm">Average</h3>
                         <div class="flex items-center justify-between">
-                            <p class="text-xl sm:text-2xl md:text-2xl font-medium">
-                                <span class="text-green-600 count-up" data-target="{{ average }}">0</span><span class="text-sm">/day</span>
-                            </p>
+                            <p class="text-xl sm:text-2xl md:text-2xl font-medium"><span class="text-green-600 count-up" data-target="{{ average }}">0</span><span class="text-sm">/day</span></p>
                         </div>
                     </div>
-                    
                 </div>
             </div>
-            
+
             <div class="mb-0">
                 <div class="flex flex-row items-center justify-between mb-3 md:mb-4 gap-2">
                     <h2 class="text-xl sm:text-2xl font-medium">Activity <span class="text-green-600">Graph</span></h2>
@@ -314,7 +319,7 @@
                         <span class="font-medium">More</span>
                     </div>
                 </div>
-                
+
                 <div class="overflow-x-auto mb-0">
                     <div class="min-w-[650px] sm:min-w-max">
                         <div class="relative h-6">
@@ -336,58 +341,56 @@
                         </div>
                     </div>
                 </div>
-                
             </div>
         </div>
     </main>
 </div>
 {% endblock %}
-
 {% block scripts %}
 <script src="{% static 'js/countUp.js' %}"></script>
 <script src="{% static 'js/githubContributions.js' %}"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize GitHub contributions graph
-    const githubData = {{ github_activity|safe }};
-    const contributionsGraph = new GitHubContributions(githubData);
-    contributionsGraph.init();
-    
-    // Animate progress bars and percentages
-    function animateProgressBars() {
-        const bars = document.querySelectorAll('.animate-bar');
-        const percentages = document.querySelectorAll('.animate-percent');
-        
-        bars.forEach((bar, index) => {
-            const targetWidth = bar.getAttribute('data-width');
-            setTimeout(() => {
-                bar.style.width = targetWidth;
-            }, 300 + (index * 200));
-        });
-        
-        percentages.forEach((percent, index) => {
-            const target = parseInt(percent.getAttribute('data-target'));
-            let current = 0;
-            const duration = 1000; // Match the CSS transition duration
-            const steps = 50;
-            const increment = target / steps;
-            const stepDuration = duration / steps;
-            
-            setTimeout(() => {
-                const timer = setInterval(() => {
-                    current += increment;
-                    if (current >= target) {
-                        current = target;
-                        clearInterval(timer);
-                    }
-                    percent.textContent = Math.round(current) + '%';
-                }, stepDuration);
-            }, 300 + (index * 200));
-        });
-    }
-    
-    // Start animations after a short delay
-    setTimeout(animateProgressBars, 500);
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize GitHub contributions graph
+        const githubData = {{ github_activity|safe }};
+        const contributionsGraph = new GitHubContributions(githubData);
+        contributionsGraph.init();
+
+        // Animate progress bars and percentages
+        function animateProgressBars() {
+            const bars = document.querySelectorAll('.animate-bar');
+            const percentages = document.querySelectorAll('.animate-percent');
+
+            bars.forEach((bar, index) => {
+                const targetWidth = bar.getAttribute('data-width');
+                setTimeout(() => {
+                    bar.style.width = targetWidth;
+                }, 300 + (index * 200));
+            });
+
+            percentages.forEach((percent, index) => {
+                const target = parseInt(percent.getAttribute('data-target'));
+                let current = 0;
+                const duration = 1000; // Match the CSS transition duration
+                const steps = 50;
+                const increment = target / steps;
+                const stepDuration = duration / steps;
+
+                setTimeout(() => {
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        percent.textContent = Math.round(current) + '%';
+                    }, stepDuration);
+                }, 300 + (index * 200));
+            });
+        }
+
+        // Start animations after a short delay
+        setTimeout(animateProgressBars, 500);
+    });
 </script>
 {% endblock %}

@@ -12,6 +12,36 @@ class UserProfileMixin:
     Mixin to handle user profile data extraction
     """
     @staticmethod
+    def mask_email(email):
+        """
+        Mask email for privacy: 1234567@gmail.com -> 12****7@gmail.com
+        The number of asterisks matches the number of hidden characters.
+        """
+        if not email or '@' not in email:
+            return email
+        
+        local, domain = email.split('@', 1)
+        local_len = len(local)
+        
+        if local_len <= 1:
+            # If only 1 character, show as is (no masking needed)
+            return email
+        elif local_len == 2:
+            # For 2 characters: 12@gmail.com -> 1*@gmail.com
+            return f"{local[0]}*@{domain}"
+        elif local_len == 3:
+            # For 3 characters: 123@gmail.com -> 1*3@gmail.com
+            return f"{local[0]}*{local[-1]}@{domain}"
+        elif local_len == 4:
+            # For 4 characters: 1234@gmail.com -> 1**4@gmail.com
+            return f"{local[0]}{'*' * 2}{local[-1]}@{domain}"
+        else:
+            # For 5+ characters: show first 2, mask middle, show last 1
+            # 1234567@gmail.com -> 12****7@gmail.com
+            hidden_count = local_len - 3  # Total - first 2 - last 1
+            return f"{local[:2]}{'*' * hidden_count}{local[-1]}@{domain}"
+    
+    @staticmethod
     def get_user_profile_data(user):
         """
         Get user's full name, profile image from OAuth providers, and author/co-author status
@@ -125,6 +155,7 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
             message.user_is_author = profile_data['is_author']
             message.user_is_co_author = profile_data['is_co_author']
             message.user_co_author_order = profile_data['co_author_order']
+            message.user_email = self.mask_email(profile_data['email'])
             
             # Add reply_to profile data if it exists
             if message.reply_to:
@@ -134,6 +165,7 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
                 message.reply_to.user_is_author = reply_profile_data['is_author']
                 message.reply_to.user_is_co_author = reply_profile_data['is_co_author']
                 message.reply_to.user_co_author_order = reply_profile_data['co_author_order']
+                message.reply_to.user_email = self.mask_email(reply_profile_data['email'])
             else:
                 message.reply_to = None
             enriched_messages.append(message)
@@ -142,6 +174,7 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
         current_user_profile = None
         if request.user.is_authenticated:
             current_user_profile = self.get_user_profile_data(request.user)
+            current_user_profile['email'] = self.mask_email(current_user_profile['email'])
         else:
             current_user_profile = {
                 'full_name': 'Guest',
@@ -210,7 +243,8 @@ class SendMessageView(LoginRequiredMixin, UserProfileMixin, View):
                 'profile_image': reply_profile_data['profile_image'],
                 'is_author': reply_profile_data['is_author'],
                 'is_co_author': reply_profile_data['is_co_author'],
-                'co_author_order': reply_profile_data['co_author_order']
+                'co_author_order': reply_profile_data['co_author_order'],
+                'email': self.mask_email(reply_profile_data['email'])
             }
         else:
             reply_data = None
@@ -226,6 +260,7 @@ class SendMessageView(LoginRequiredMixin, UserProfileMixin, View):
                 'is_author': profile_data['is_author'],
                 'is_co_author': profile_data['is_co_author'],
                 'co_author_order': profile_data['co_author_order'],
+                'email': self.mask_email(profile_data['email']),
                 'reply_to': reply_data
             }
         })

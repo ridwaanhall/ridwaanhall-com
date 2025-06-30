@@ -240,6 +240,7 @@ class SendMessageView(LoginRequiredMixin, UserProfileMixin, View):
             reply_data = {
                 'id': reply_to_message.pk,
                 'user': reply_profile_data['full_name'],
+                'user_id': reply_to_message.user.id,
                 'message': reply_to_message.message[:50] + ('...' if len(reply_to_message.message) > 50 else ''),
                 'profile_image': reply_profile_data['profile_image'],
                 'is_author': reply_profile_data['is_author'],
@@ -259,6 +260,7 @@ class SendMessageView(LoginRequiredMixin, UserProfileMixin, View):
             'message': {
                 'id': chat_message.pk,
                 'user': profile_data['full_name'],
+                'user_id': chat_message.user.id,
                 'message': chat_message.message,
                 'timestamp': jakarta_timestamp.strftime('%d/%m/%Y, %H:%M'),
                 'profile_image': profile_data['profile_image'],

@@ -54,15 +54,21 @@
                                         <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                         </svg>
-                                        {% if user.is_authenticated and message.user == user %}
-                                            {% if message.reply_to.user == user %}
+                                        {% if message.user == message.reply_to.user %}
+                                            <!-- Self-reply: always show "[Author] Replied to self" regardless of current viewer -->
+                                            {% if user.is_authenticated and message.user == user %}
                                                 <span>You replied to yourself: "{{ message.reply_to.message|truncatechars:30 }}"</span>
                                             {% else %}
-                                                <span>You replied to <span class="font-medium">{{ message.reply_to.user_full_name }}</span>: "{{ message.reply_to.message|truncatechars:30 }}"</span>
+                                                <span><span class="font-medium">{{ message.user_full_name }}</span> Replied to self: "{{ message.reply_to.message|truncatechars:30 }}"</span>
                                             {% endif %}
+                                        {% elif user.is_authenticated and message.user == user %}
+                                            <!-- Current user replied to someone else -->
+                                            <span>You replied to <span class="font-medium">{{ message.reply_to.user_full_name }}</span>: "{{ message.reply_to.message|truncatechars:30 }}"</span>
                                         {% elif user.is_authenticated and message.reply_to.user == user %}
+                                            <!-- Someone replied to current user -->
                                             <span>Replied to you: "{{ message.reply_to.message|truncatechars:30 }}"</span>
                                         {% else %}
+                                            <!-- Someone replied to someone else -->
                                             <span>Replied to <span class="font-medium">{{ message.reply_to.user_full_name }}</span>: "{{ message.reply_to.message|truncatechars:30 }}"</span>
                                         {% endif %}
                                     </div>
@@ -420,25 +426,59 @@
                             // Create reply indicator if this is a reply
                             let replyHtml = "";
                             if (data.message.reply_to) {
-                                // Check if replying to self by comparing emails (since we have masked emails, we need to check the actual user)
-                                const isReplyToSelf = data.message.email === data.message.reply_to.email;
+                                // Check if replying to self by comparing user IDs
+                                const isReplyToSelf = data.message.user_id === data.message.reply_to.user_id;
+                                const currentUserId = {% if user.is_authenticated %}{{ user.id }}{% else %}null{% endif %};
                                 
                                 if (isReplyToSelf) {
+                                    // Self-reply: check if current user is the author
+                                    if (currentUserId === data.message.user_id) {
+                                        replyHtml = `
+                                            <div class="flex items-center text-zinc-400 text-xs mb-1">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                                </svg>
+                                                <span>You replied to yourself: "${escapeHtml(data.message.reply_to.message)}"</span>
+                                            </div>
+                                        `;
+                                    } else {
+                                        replyHtml = `
+                                            <div class="flex items-center text-zinc-400 text-xs mb-1">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                                </svg>
+                                                <span><span class="font-medium">${escapeHtml(data.message.user)}</span> Replied to self: "${escapeHtml(data.message.reply_to.message)}"</span>
+                                            </div>
+                                        `;
+                                    }
+                                } else if (currentUserId === data.message.user_id) {
+                                    // Current user replied to someone else
                                     replyHtml = `
                                         <div class="flex items-center text-zinc-400 text-xs mb-1">
                                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                             </svg>
-                                            <span>You replied to yourself: "${escapeHtml(data.message.reply_to.message.substring(0, 30))}..."</span>
+                                            <span>You replied to <span class="font-medium">${escapeHtml(data.message.reply_to.user)}</span>: "${escapeHtml(data.message.reply_to.message)}"</span>
+                                        </div>
+                                    `;
+                                } else if (currentUserId === data.message.reply_to.user_id) {
+                                    // Someone replied to current user
+                                    replyHtml = `
+                                        <div class="flex items-center text-zinc-400 text-xs mb-1">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                            </svg>
+                                            <span>Replied to you: "${escapeHtml(data.message.reply_to.message)}"</span>
                                         </div>
                                     `;
                                 } else {
+                                    // Someone replied to someone else
                                     replyHtml = `
                                         <div class="flex items-center text-zinc-400 text-xs mb-1">
                                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                             </svg>
-                                            <span>You replied to <span class="font-medium">${escapeHtml(data.message.reply_to.user)}</span>: "${escapeHtml(data.message.reply_to.message.substring(0, 30))}..."</span>
+                                            <span>Replied to <span class="font-medium">${escapeHtml(data.message.reply_to.user)}</span>: "${escapeHtml(data.message.reply_to.message)}"</span>
                                         </div>
                                     `;
                                 }

@@ -16,7 +16,7 @@
             <div class="space-y-4">
                 <!-- Overview Section -->
                 <div class="border border-zinc-700 rounded-lg p-4">
-                    <div class="flex flex-wrap items-start justify-between w-full gap-2">
+                    <div class="flex flex-wrap items-start justify-between w-full gap-2 mb-3">
                         <!-- Overview title -->
                         <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex-1 flex items-center">
                             <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,11 +31,11 @@
                         </h2>
 
                         <!-- Last updated date - consistently on the right -->
-                        <span class="inline-flex flex-shrink-0 text-indigo-300 text-xs font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 py-1 rounded-full border border-zinc-700 shadow-sm whitespace-nowrap">
-                            <svg class="w-4 h-4 text-zinc-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <span class="inline-flex flex-shrink-0 text-xs font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 py-1 rounded-full border border-zinc-700 shadow-sm whitespace-nowrap">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            <span class="text-zinc-400">Last updated: {{ privacy_policy.last_updated|date:"g:i A T, D F j, Y" }}</span>
+                            <span>Last updated: {{ privacy_policy.last_updated|date:"g:i A T, D F j, Y" }}</span>
                         </span>
                     </div>
                     <p class="leading-relaxed">

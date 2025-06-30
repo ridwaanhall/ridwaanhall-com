@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Result:', result);
                 
                 if (result.success) {
-                    showMessage('Thank you! Your message has been sent successfully. I\'ll get back to you soon.', 'success');
+                    showMessage('Thank you! Your message has been sent successfully. {{ about.first_name }} will get back to you soon.', 'success');
                     form.reset(); // Clear the form
                 } else {
                     showMessage(result.message || 'There was an error sending your message. Please try again.', 'error');

@@ -1,101 +1,99 @@
 <div class="mt-4">
     <div class="space-y-4">
         {% if applications %}
-        {% for application in applications %}
-        <!-- application card -->
-        <div class="group mb-4 rounded-xl overflow-hidden border border-zinc-700/50 transition-all duration-300 hover:border-zinc-700">
-            <div class="p-3 sm:p-4">
-                <div class="flex flex-col md:flex-row md:items-start gap-3 sm:gap-5">
-                    <div class="flex-grow w-full">
-                        <div class="flex flex-row items-center justify-between gap-1 sm:gap-2 mb-1 sm:mb-2">
-                            <div class="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2">
-                                <h3 class="text-base sm:text-lg font-medium text-zinc-300 break-words">{{ application.company_name }}</h3>
-                            </div>
-                            <span class="inline-flex items-center rounded-full px-2 sm:px-2.5 py-1 text-xs font-medium shadow-inner whitespace-nowrap
-                                {% if application.status == 'In Progress' %}bg-blue-950/60 text-blue-300 ring-1 ring-blue-700/70{% endif %}
-                                {% if application.status == 'Accepted' %}bg-green-950/60 text-green-300 ring-1 ring-green-700/70{% endif %}
-                                {% if application.status == 'Rejected' %}bg-red-950/60 text-red-300 ring-1 ring-red-700/70{% endif %}
-                                {% if application.status == 'Ghosted' %}bg-yellow-950/60 text-yellow-300 ring-1 ring-yellow-700/70{% endif %}">
-                                <span class="relative flex h-1.5 w-1.5 mr-1.5">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75
-                                        {% if application.status == 'In Progress' %}bg-blue-600{% endif %}
-                                        {% if application.status == 'Accepted' %}bg-green-600{% endif %}
-                                        {% if application.status == 'Rejected' %}bg-red-600{% endif %}
-                                        {% if application.status == 'Ghosted' %}bg-yellow-600{% endif %}"></span>
-                                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 
-                                        {% if application.status == 'In Progress' %}bg-blue-700{% endif %}
-                                        {% if application.status == 'Accepted' %}bg-green-700{% endif %}
-                                        {% if application.status == 'Rejected' %}bg-red-700{% endif %}
-                                        {% if application.status == 'Ghosted' %}bg-yellow-700{% endif %}"></span>
+            {% for application in applications %}
+            <!-- application card -->
+            <div class="group mb-4 rounded-xl overflow-hidden border border-zinc-700/50 transition-all duration-300 hover:border-zinc-700">
+                <div class="p-3 sm:p-4">
+                    <div class="flex flex-col md:flex-row md:items-start gap-3 sm:gap-5">
+                        <div class="flex-grow w-full">
+                            <div class="flex flex-row items-center justify-between gap-1 sm:gap-2 mb-1 sm:mb-2">
+                                <div class="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2">
+                                    <h3 class="text-base sm:text-lg font-medium text-zinc-300 break-words">{{ application.company_name }}</h3>
+                                </div>
+                                <span
+                                    class="inline-flex items-center rounded-full px-2 sm:px-2.5 py-1 text-xs font-medium shadow-inner whitespace-nowrap {% if application.status == 'In Progress' %}bg-blue-950/60 text-blue-300 ring-1 ring-blue-700/70{% endif %} {% if application.status == 'Accepted' %}bg-green-950/60 text-green-300 ring-1 ring-green-700/70{% endif %} {% if application.status == 'Rejected' %}bg-red-950/60 text-red-300 ring-1 ring-red-700/70{% endif %} {% if application.status == 'Ghosted' %}bg-yellow-950/60 text-yellow-300 ring-1 ring-yellow-700/70{% endif %}"
+                                >
+                                    <span class="relative flex h-1.5 w-1.5 mr-1.5">
+                                        <span
+                                            class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 {% if application.status == 'In Progress' %}bg-blue-600{% endif %} {% if application.status == 'Accepted' %}bg-green-600{% endif %} {% if application.status == 'Rejected' %}bg-red-600{% endif %} {% if application.status == 'Ghosted' %}bg-yellow-600{% endif %}"
+                                        ></span>
+                                        <span
+                                            class="relative inline-flex rounded-full h-1.5 w-1.5 {% if application.status == 'In Progress' %}bg-blue-700{% endif %} {% if application.status == 'Accepted' %}bg-green-700{% endif %} {% if application.status == 'Rejected' %}bg-red-700{% endif %} {% if application.status == 'Ghosted' %}bg-yellow-700{% endif %}"
+                                        ></span>
+                                    </span>
+                                    {{ application.status }}
                                 </span>
-                                {{ application.status }}
-                            </span>
-                        </div>
+                            </div>
 
-                        <p class="text-blue-200 italic text-xs sm:text-sm font-medium">- {{ application.position }}</p>
+                            <p class="text-blue-200 italic text-xs sm:text-sm font-medium">- {{ application.position }}</p>
 
-                        <div class="mt-4 sm:mt-5 flex flex-wrap gap-2">
-                            <button
-                                type="button"
-                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 border border-zinc-700 hover:border-zinc-600"
-                                onclick="toggleJourney('journey-details-{{ forloop.counter }}')"
-                                aria-expanded="false"
-                                aria-controls="journey-details-{{ forloop.counter }}"
+                            <div class="mt-4 sm:mt-5 flex flex-wrap gap-2">
+                                <button
+                                    type="button"
+                                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 border border-zinc-700 hover:border-zinc-600"
+                                    onclick="toggleJourney('journey-details-{{ forloop.counter }}')"
+                                    aria-expanded="false"
+                                    aria-controls="journey-details-{{ forloop.counter }}"
+                                >
+                                    <span id="show-journey-{{ forloop.counter }}">View Application Journey</span>
+                                    <span id="hide-journey-{{ forloop.counter }}" class="hidden">Hide Application Journey</span>
+                                    <svg class="w-4 h-4 ml-2 transition-transform duration-200 ease-out" id="arrow-journey-{{ forloop.counter }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div
+                                id="journey-details-{{ forloop.counter }}"
+                                class="hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out opacity-0 max-h-0"
+                                style="transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;"
                             >
-                                <span id="show-journey-{{ forloop.counter }}">View Application Journey</span>
-                                <span id="hide-journey-{{ forloop.counter }}" class="hidden">Hide Application Journey</span>
-                                <svg class="w-4 h-4 ml-2 transition-transform duration-200 ease-out" id="arrow-journey-{{ forloop.counter }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </button>
-                        </div>
-        
-                        <div id="journey-details-{{ forloop.counter }}" class="hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out opacity-0 max-h-0" style="transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;">
-                            <div class="overflow-y-auto overflow-x-auto max-h-[60vh] sm:max-h-[70vh]">
-                                <div class="min-w-full">
-                                    <table class="w-full divide-y divide-zinc-700/30 text-sm table-auto">
-                                        <thead>
-                                            <tr>
-                                                <th class="px-2 sm:px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Step</th>
-                                                <th class="px-2 sm:px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Details</th>
-                                                <th class="px-2 sm:px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Notes</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-zinc-700/20">
-                                            {% for step in application.journey %}
-                                            <tr class="hover:bg-zinc-800/30 transition-colors duration-150">
-                                                <td class="px-2 sm:px-3 py-2 align-top">
-                                                    <span class="font-medium text-indigo-300 text-xs sm:text-sm">{{ step.title }}</span>
-                                                </td>
-                                                <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">{{ step.details }}</td>
-                                                <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">{{ step.notes|safe }}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
+                                <div class="overflow-y-auto overflow-x-auto max-h-[60vh] sm:max-h-[70vh]">
+                                    <div class="min-w-full">
+                                        <table class="w-full divide-y divide-zinc-700/30 text-sm table-auto">
+                                            <thead>
+                                                <tr>
+                                                    <th class="px-2 sm:px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Step</th>
+                                                    <th class="px-2 sm:px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Details</th>
+                                                    <th class="px-2 sm:px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Notes</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-zinc-700/20">
+                                                {% for step in application.journey %}
+                                                <tr class="hover:bg-zinc-800/30 transition-colors duration-150">
+                                                    <td class="px-2 sm:px-3 py-2 align-top">
+                                                        <span class="font-medium text-indigo-300 text-xs sm:text-sm">{{ step.title }}</span>
+                                                    </td>
+                                                    <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">{{ step.details }}</td>
+                                                    <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">{{ step.notes|safe }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- For the Lessons Learned section -->
-                        <div class="mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-zinc-800/80">
-                            <div class="text-xs sm:text-sm py-1 px-2">
-                                <p><span class="font-semibold">Lessons Learned:</span> {{ application.lessons_learned|safe }}</p>
+                            <!-- For the Lessons Learned section -->
+                            <div class="mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-zinc-800/80">
+                                <div class="text-xs sm:text-sm py-1 px-2">
+                                    <p><span class="font-semibold">Lessons Learned:</span> {{ application.lessons_learned|safe }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
         {% else %}
-        <!-- Empty state -->
-        <div class="text-center py-8 sm:py-12 px-3 sm:px-4">
-            <svg class="mx-auto h-12 w-12 sm:h-16 sm:w-16 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-            </svg>
-            <h3 class="mt-4 text-base sm:text-lg font-medium text-zinc-100">No applications found</h3>
-            <p class="mt-2 text-xs sm:text-sm text-zinc-400">Start adding applications to track your career journey.</p>
-        </div>
-        {% endif %}        
+            <!-- Empty state -->
+            <div class="text-center py-8 sm:py-12 px-3 sm:px-4">
+                <svg class="mx-auto h-12 w-12 sm:h-16 sm:w-16 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+                <h3 class="mt-4 text-base sm:text-lg font-medium text-zinc-100">No applications found</h3>
+                <p class="mt-2 text-xs sm:text-sm text-zinc-400">Start adding applications to track your career journey.</p>
+            </div>
+        {% endif %}
     </div>
 </div>

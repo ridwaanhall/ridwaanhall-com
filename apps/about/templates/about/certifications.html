@@ -1,21 +1,24 @@
 <div class="mt-4 sm:mt-6">
-    
     {% if view_certs %}
     <div class="mb-6 p-4 rounded-lg border border-zinc-700/50 bg-zinc-800/30 hover:border-zinc-600 transition-all duration-200">
         <div class="flex items-center gap-3">
             <div class="flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-indigo-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    <path
+                        d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
+                    />
                 </svg>
             </div>
             <div class="flex-1">
                 <h3 class="text-sm font-medium text-blue-200">View All Certifications</h3>
                 <p class="text-xs text-blue-300/80 mt-1">See my complete certification portfolio on LinkedIn</p>
             </div>
-            <a href="https://linkedin.com/in/{{ about.username }}/details/certifications/" 
-               target="_blank"
-               rel="noopener noreferrer"
-               class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md border border-zinc-600 hover:border-zinc-500 hover:bg-zinc-700/50 text-blue-200 transition-all duration-200">
+            <a
+                href="https://linkedin.com/in/{{ about.username }}/details/certifications/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md border border-zinc-600 hover:border-zinc-500 hover:bg-zinc-700/50 text-blue-200 transition-all duration-200"
+            >
                 <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                 </svg>
@@ -34,96 +37,106 @@
                     <div class="flex items-center justify-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
                         {% if certification.logo %}
                             {% if certification.website %}
-                                <a href="{{ certification.website }}" target="_blank" rel="noopener" aria-label="Visit {{ certification.institution }}" class="hover:scale-110 transition-transform duration-300">
-                                    <img src="{{ certification.logo }}" alt="{{ certification.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow-md object-cover" />
-                                </a>
-                            {% else %}
+                            <a href="{{ certification.website }}" target="_blank" rel="noopener" aria-label="Visit {{ certification.institution }}" class="hover:scale-110 transition-transform duration-300">
                                 <img src="{{ certification.logo }}" alt="{{ certification.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow-md object-cover" />
-                            {% endif %}
+                            </a>
+                            {% else %}
+                            <img src="{{ certification.logo }}" alt="{{ certification.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow-md object-cover" />
+                        {% endif %}
                         {% else %}
                             {% if certification.website %}
-                                <a href="{{ certification.website }}" target="_blank" rel="noopener" aria-label="Visit {{ certification.institution }}" class="hover:scale-110 transition-transform duration-300">
-                                    <svg class="w-12 h-12 sm:w-14 sm:h-14 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                                    </svg>
-                                </a>
-                            {% else %}
+                            <a href="{{ certification.website }}" target="_blank" rel="noopener" aria-label="Visit {{ certification.institution }}" class="hover:scale-110 transition-transform duration-300">
                                 <svg class="w-12 h-12 sm:w-14 sm:h-14 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                                    ></path>
                                 </svg>
-                            {% endif %}
+                            </a>
+                        {% else %}
+                            <svg class="w-12 h-12 sm:w-14 sm:h-14 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                                ></path>
+                            </svg>
+                        {% endif %}
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <div class="flex-grow">
                     <div class="flex flex-wrap items-start justify-between w-full gap-2">
                         <!-- Certification title -->
                         <h3 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex-1">{{ certification.title }}</h3>
-                        
+
                         <!-- Issued date - consistently on the right -->
                         <span class="inline-flex flex-shrink-0 text-indigo-300 text-xs font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 py-1 rounded-full border border-zinc-700 shadow-sm whitespace-nowrap">
                             {{ certification.issued }}
                         </span>
                     </div>
-                    
+
                     <!-- Institution -->
                     <p class="text-blue-200 mt-1 mb-2 sm:mb-3 italic text-xs sm:text-sm md:text-base">
                         {% if certification.website %}
-                            <a class="text-indigo-300 hover:text-indigo-200 transition-colors duration-200 underline-offset-2 hover:underline" href="{{ certification.website }}" target="_blank" rel="noopener">{{ certification.institution }}</a>
+                        <a class="text-indigo-300 hover:text-indigo-200 transition-colors duration-200 underline-offset-2 hover:underline" href="{{ certification.website }}" target="_blank" rel="noopener">{{ certification.institution }}</a>
                         {% else %}
                             {{ certification.institution }}
                         {% endif %}
                     </p>
-        
+
                     <div class="mt-1 sm:mt-2 flex flex-wrap gap-2">
                         {% if certification.achievements %}
-                            <button
-                                type="button"
-                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 border border-zinc-700 hover:border-zinc-600"onclick="toggleAchievementsCerts('achievementscert-{{ certification.id }}')"
-
-                                aria-expanded="false"
-                                aria-controls="achievementscert-{{ certification.id }}"
-                            >
-                                <span id="show-text-cert-{{ certification.id }}">Show Achievements</span>
-                                <span id="hide-text-cert-{{ certification.id }}" class="hidden">Hide Achievements</span>
-                                <svg class="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-1.5 transition-transform duration-300" id="arrow-cert-{{ certification.id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </button>
+                        <button
+                            type="button"
+                            class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 border border-zinc-700 hover:border-zinc-600"
+                            onclick="toggleAchievementsCerts('achievementscert-{{ certification.id }}')"
+                            aria-expanded="false"
+                            aria-controls="achievementscert-{{ certification.id }}"
+                        >
+                            <span id="show-text-cert-{{ certification.id }}">Show Achievements</span>
+                            <span id="hide-text-cert-{{ certification.id }}" class="hidden">Hide Achievements</span>
+                            <svg class="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-1.5 transition-transform duration-300" id="arrow-cert-{{ certification.id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
                         {% endif %}
                         {% if certification.credential_url %}
-                            <a
-                                href="{{ certification.credential_url }}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="group inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 border border-zinc-700 hover:border-zinc-600"
-                            >
-                                <span>View Credential</span>
-                                <svg class="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-1.5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                                </svg>
-                            </a>
+                        <a
+                            href="{{ certification.credential_url }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="group inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 border border-zinc-700 hover:border-zinc-600"
+                        >
+                            <span>View Credential</span>
+                            <svg class="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-1.5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                            </svg>
+                        </a>
                         {% endif %}
                     </div>
-        
+
                     {% if certification.achievements %}
-                        <div id="achievementscert-{{ certification.id }}" class="hidden mt-2 sm:mt-3 transition-all duration-300 ease-in-out">
-                            <div class="space-y-1 mt-2">
-                                {% for achievement in certification.achievements %}
-                                <div class="flex items-start group">
-                                    <div class="flex-shrink-0 w-5 h-5 mt-0.5">
-                                        <div class="w-2 h-2 bg-zinc-400 rounded-full mt-1"></div>
-                                    </div>
-                                    <p class="text-sm leading-relaxed text-zinc-400">{{ achievement }}</p>
+                    <div id="achievementscert-{{ certification.id }}" class="hidden mt-2 sm:mt-3 transition-all duration-300 ease-in-out">
+                        <div class="space-y-1 mt-2">
+                            {% for achievement in certification.achievements %}
+                            <div class="flex items-start group">
+                                <div class="flex-shrink-0 w-5 h-5 mt-0.5">
+                                    <div class="w-2 h-2 bg-zinc-400 rounded-full mt-1"></div>
                                 </div>
-                                {% endfor %}
+                                <p class="text-sm leading-relaxed text-zinc-400">{{ achievement }}</p>
                             </div>
+                            {% endfor %}
                         </div>
+                    </div>
                     {% endif %}
                 </div>
             </div>
-        </div>        
+        </div>
         {% endfor %}
     </div>
 </div>

@@ -19,9 +19,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Environment and deployment settings
 DEBUG = config('DEBUG', default=False, cast=bool)
+
 SECRET_KEY = config('SECRET_KEY')
 ACCESS_TOKEN = config('ACCESS_TOKEN')
 WAKATIME_API_KEY = config('WAKATIME_API_KEY')
+WEB3FORM_PAC = config('WEB3FORM_PAC', default='')
 
 BASE_URL = config('BASE_URL', default='https://ridwaanhall.com')
 BLOG_BASE_IMG_URL = config('BLOG_BASE_IMG_URL', default=f'{BASE_URL}/static/img/blog')
@@ -67,6 +69,8 @@ CONTENT_SECURITY_POLICY = {
             SELF,
             'ridwaanhall.com',
             '*.googleapis.com',
+            'https://api.web3forms.com',
+            'api.web3forms.com',
         ],
         'default-src': [SELF],
         'font-src': [
@@ -74,7 +78,10 @@ CONTENT_SECURITY_POLICY = {
             'ridwaanhall.com',
             '*.gstatic.com',
         ],
-        'form-action': [SELF],
+        'form-action': [
+            SELF,
+            'api.web3forms.com',
+        ],
         'frame-ancestors': [NONE],
         'frame-src': [
             SELF,

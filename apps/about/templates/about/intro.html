@@ -1,18 +1,14 @@
 <div class="mt-4 sm:mt-6">
-
     <div class="space-y-3 sm:space-y-4">
         <div class="border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-all duration-300">
             <p class="text-indigo-400 text-lg sm:text-xl font-medium mb-2 sm:mb-3">Assalamu'alaikum</p>
-            
             {% for story in about.stories %}
             <div class="mb-2">
                 <p>{{ story|safe }}</p>
             </div>
             {% endfor %}
-            
             <p class="text-indigo-400 text-lg sm:text-xl font-medium mt-3 sm:mt-3">Wassalamu'alaikum!</p>
         </div>
-
         {% include 'about/sponsor-me.html' %}
     </div>
 </div>

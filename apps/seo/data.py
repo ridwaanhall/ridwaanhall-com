@@ -19,7 +19,7 @@ class SEOData:
                   SEOConfig.COMMON_KEYWORDS['content'][:3]
         
         return {
-            'title': f"Hey, I'm {about_data['name']} — Leaving Traces in Code and Thought",
+            'title': f"Hey, I'm {about_data['name']} - Leaving Traces in Code and Thought",
             'description': f"{about_data['name']}’s personal site—{about_data.get('short_description', 'A place where I share my projects, ideas, and journey.')}",
             'keywords': ', '.join(keywords),
             'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),

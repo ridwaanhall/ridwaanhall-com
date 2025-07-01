@@ -28,6 +28,7 @@ jobs:
                     SECRET_KEY: ${{ secrets.SECRET_KEY }}
                     ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
                     WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+                    WEB3FORM_PAC: ${{ secrets.WEB3FORM_PAC }}
                     GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
                     GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
                     GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}

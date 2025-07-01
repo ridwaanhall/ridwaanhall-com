@@ -29,30 +29,6 @@ class SEOManager:
         ]
         return seo_data
     
-    def get_about_seo(self) -> Dict:
-        """Get complete SEO data for about page."""
-        seo_data = SEOData.get_about_seo(self.about_data)
-        seo_data['schemas'] = [
-            self.schema_generator.generate_profile_page_schema(self.about_data),
-            self.schema_generator.generate_breadcrumb_schema([
-                {"name": "Home", "url": SEOConfig.SITE_URL},
-                {"name": "About", "url": f"{SEOConfig.SITE_URL}/about/"}
-            ])
-        ]
-        return seo_data
-    
-    def get_contact_seo(self) -> Dict:
-        """Get complete SEO data for contact page."""
-        seo_data = SEOData.get_contact_seo(self.about_data)
-        seo_data['schemas'] = [
-            self.schema_generator.generate_contact_page_schema(self.about_data),
-            self.schema_generator.generate_breadcrumb_schema([
-                {"name": "Home", "url": SEOConfig.SITE_URL},
-                {"name": "Contact", "url": f"{SEOConfig.SITE_URL}/contact/"}
-            ])
-        ]
-        return seo_data
-    
     def get_dashboard_seo(self) -> Dict:
         """Get complete SEO data for dashboard page."""
         seo_data = SEOData.get_dashboard_seo(self.about_data)
@@ -61,6 +37,37 @@ class SEOManager:
             self.schema_generator.generate_breadcrumb_schema([
                 {"name": "Home", "url": SEOConfig.SITE_URL},
                 {"name": "Dashboard", "url": f"{SEOConfig.SITE_URL}/dashboard/"}
+            ])
+        ]
+        return seo_data
+    
+    def get_projects_list_seo(self, projects: Optional[List[Dict]] = None, page: int = 1) -> Dict:
+        """Get complete SEO data for projects listing page."""
+        seo_data = SEOData.get_projects_list_seo(self.about_data, projects)
+        
+        # Adjust title and canonical for pagination
+        if page > 1:
+            seo_data['title'] = f"{seo_data['title']} - Page {page}"
+            seo_data['canonical_url'] = f"{SEOConfig.SITE_URL}/projects/?page={page}"
+        
+        seo_data['schemas'] = [
+            self.schema_generator.generate_collection_page_schema(projects or [], self.about_data, "projects"),
+            self.schema_generator.generate_breadcrumb_schema([
+                {"name": "Home", "url": SEOConfig.SITE_URL},
+                {"name": "Projects", "url": f"{SEOConfig.SITE_URL}/projects/"}
+            ])
+        ]
+        return seo_data
+    
+    def get_project_detail_seo(self, project_data: Dict) -> Dict:
+        """Get complete SEO data for individual project."""
+        seo_data = SEOData.get_project_detail_seo(project_data, self.about_data)
+        seo_data['schemas'] = [
+            self.schema_generator.generate_software_source_code_schema(project_data, self.about_data),
+            self.schema_generator.generate_breadcrumb_schema([
+                {"name": "Home", "url": SEOConfig.SITE_URL},
+                {"name": "Projects", "url": f"{SEOConfig.SITE_URL}/projects/"},
+                {"name": project_data.get('title', ''), "url": seo_data['canonical_url']}
             ])
         ]
         return seo_data
@@ -97,33 +104,26 @@ class SEOManager:
         ]
         return seo_data
     
-    def get_projects_list_seo(self, projects: Optional[List[Dict]] = None, page: int = 1) -> Dict:
-        """Get complete SEO data for projects listing page."""
-        seo_data = SEOData.get_projects_list_seo(self.about_data, projects)
-        
-        # Adjust title and canonical for pagination
-        if page > 1:
-            seo_data['title'] = f"{seo_data['title']} - Page {page}"
-            seo_data['canonical_url'] = f"{SEOConfig.SITE_URL}/projects/?page={page}"
-        
+    def get_about_seo(self) -> Dict:
+        """Get complete SEO data for about page."""
+        seo_data = SEOData.get_about_seo(self.about_data)
         seo_data['schemas'] = [
-            self.schema_generator.generate_collection_page_schema(projects or [], self.about_data, "projects"),
+            self.schema_generator.generate_profile_page_schema(self.about_data),
             self.schema_generator.generate_breadcrumb_schema([
                 {"name": "Home", "url": SEOConfig.SITE_URL},
-                {"name": "Projects", "url": f"{SEOConfig.SITE_URL}/projects/"}
+                {"name": "About Me", "url": f"{SEOConfig.SITE_URL}/about/"}
             ])
         ]
         return seo_data
     
-    def get_project_detail_seo(self, project_data: Dict) -> Dict:
-        """Get complete SEO data for individual project."""
-        seo_data = SEOData.get_project_detail_seo(project_data, self.about_data)
+    def get_contact_seo(self) -> Dict:
+        """Get complete SEO data for contact page."""
+        seo_data = SEOData.get_contact_seo(self.about_data)
         seo_data['schemas'] = [
-            self.schema_generator.generate_software_source_code_schema(project_data, self.about_data),
+            self.schema_generator.generate_contact_page_schema(self.about_data),
             self.schema_generator.generate_breadcrumb_schema([
                 {"name": "Home", "url": SEOConfig.SITE_URL},
-                {"name": "Projects", "url": f"{SEOConfig.SITE_URL}/projects/"},
-                {"name": project_data.get('title', ''), "url": seo_data['canonical_url']}
+                {"name": "Contact Me", "url": f"{SEOConfig.SITE_URL}/contact/"}
             ])
         ]
         return seo_data

@@ -8,7 +8,7 @@
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-4">
                     <div>
                         <h1 class="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">Privacy <span class="text-indigo-400">Policy</span></h1>
-                        <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">Your privacy matters to us. Here's how we protect and handle your information on {{ privacy_policy.website }}.</p>
+                        <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">How this site handles your data — clearly, securely, and with respect.</p>
                     </div>
                 </div>
             </div>
@@ -16,7 +16,7 @@
             <div class="space-y-4">
                 <!-- Overview Section -->
                 <div class="border border-zinc-700 rounded-lg p-4">
-                    <div class="flex flex-wrap items-start justify-between w-full gap-2">
+                    <div class="flex flex-wrap items-start justify-between w-full gap-2 mb-3">
                         <!-- Overview title -->
                         <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex-1 flex items-center">
                             <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,15 +31,15 @@
                         </h2>
 
                         <!-- Last updated date - consistently on the right -->
-                        <span class="inline-flex flex-shrink-0 text-indigo-300 text-xs font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 py-1 rounded-full border border-zinc-700 shadow-sm whitespace-nowrap">
-                            <svg class="w-4 h-4 text-zinc-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <span class="inline-flex flex-shrink-0 text-xs font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 py-1 rounded-full border border-zinc-700 shadow-sm whitespace-nowrap">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            <span class="text-zinc-400">Last updated: {{ privacy_policy.last_updated|date:"g:i A T, D F j, Y" }}</span>
+                            <span>{{ privacy_policy.last_updated|date:"F j, Y \a\t g:i A T" }}</span>
                         </span>
                     </div>
                     <p class="leading-relaxed">
-                        We understand that your privacy is important. This policy explains how we collect, use, and protect your information when you visit our website.
+                        {{ privacy_policy.overview }}
                     </p>
                 </div>
 

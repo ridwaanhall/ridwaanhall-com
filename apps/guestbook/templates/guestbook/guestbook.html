@@ -9,10 +9,26 @@
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-6">
                     <div>
                         <h1 class="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">Guest<span class="text-indigo-400">book</span></h1>
-                        <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">Leave a message, share your thoughts, or just say hello! I'd love to hear from you.</p>
+                        <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">Before you wander off—this little corner was made for you, to leave a trace after exploring all that lives here.</p>
                     </div>
                 </div>
             </div>
+
+            {% if messages %}
+                <div class="mt-8" id="messages-container">
+                    {% for message in messages %}
+                        <div class="message-alert mb-4 px-4 py-3 rounded-lg border flex items-center justify-between {% if message.tags == 'success' %}bg-green-900/20 border-green-700 text-green-300{% elif message.tags == 'error' %}bg-red-900/20 border-red-700 text-red-300{% else %}bg-blue-900/20 border-blue-700 text-blue-300{% endif %}">
+                            <span>{{ message }}</span>
+                            <button type="button" class="close-message-btn cursor-pointer ml-3 p-1 rounded hover:bg-zinc-800 transition-colors" title="Close">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
             <div class="grid grid-cols-1 gap-6">
                 <!-- Guestbook Messages -->
                 <div class="border border-zinc-700 rounded-lg shadow-lg">
@@ -54,17 +70,23 @@
                                         <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                         </svg>
-                                        {% if user.is_authenticated and message.user == user %}
-                                            <span>You replied to</span>
+                                        {% if message.user == message.reply_to.user %}
+                                            <!-- Self-reply: always show "[Author] Replied to self" regardless of current viewer -->
+                                            {% if user.is_authenticated and message.user == user %}
+                                                <span>You replied to yourself: "{{ message.reply_to.message|truncatechars:30 }}"</span>
+                                            {% else %}
+                                                <span><span class="font-medium">{{ message.user_full_name }}</span> Replied to self: "{{ message.reply_to.message|truncatechars:30 }}"</span>
+                                            {% endif %}
+                                        {% elif user.is_authenticated and message.user == user %}
+                                            <!-- Current user replied to someone else -->
+                                            <span>You replied to <span class="font-medium">{{ message.reply_to.user_full_name }}</span>: "{{ message.reply_to.message|truncatechars:30 }}"</span>
                                         {% elif user.is_authenticated and message.reply_to.user == user %}
-                                            <span>Replied to you</span>
+                                            <!-- Someone replied to current user -->
+                                            <span>Replied to you: "{{ message.reply_to.message|truncatechars:30 }}"</span>
                                         {% else %}
-                                            <span>Replied to</span>
+                                            <!-- Someone replied to someone else -->
+                                            <span>Replied to <span class="font-medium">{{ message.reply_to.user_full_name }}</span>: "{{ message.reply_to.message|truncatechars:30 }}"</span>
                                         {% endif %}
-                                        {% if not user.is_authenticated or message.reply_to.user != user %}
-                                            <span class="font-medium mx-1">{{ message.reply_to.user_full_name }}</span>
-                                        {% endif %}
-                                        <span>: "{{ message.reply_to.message|truncatechars:30 }}"</span>
                                     </div>
                                     {% endif %}
 
@@ -245,7 +267,7 @@
                         </form>
                         {% if user.is_authenticated %}
                         <div class="mt-3 text-sm text-zinc-400">
-                            <span>Signed in as {{ current_user_profile.full_name|default:user.username }}{% if user.email %} ({{ user.email }}){% endif %} • </span>
+                            <span>Signed in as {{ current_user_profile.full_name|default:user.username }}{% if current_user_profile.email %} ({{ current_user_profile.email }}){% endif %} • </span>
                             <form method="post" action="{% url 'account_logout' %}" class="inline">
                                 {% csrf_token %}
                                 <button type="submit" class="text-zinc-400 hover:text-zinc-300 cursor-pointer underline transition-colors">
@@ -256,12 +278,12 @@
                         {% endif %}
                         {% else %}
                         <div class="text-center py-6">
-                            <p class="text-zinc-400 mb-4 flex items-center justify-center">
+                            <span class="text-zinc-400 mb-4 flex items-center justify-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                                 </svg>
-                                Sign in to begin. Rest assured, your information is secure.
-                            </p>
+                                <p>Sign in to begin. Rest assured, your information is secure. See our <a href="{% url 'privacy' %}" class="text-indigo-400 hover:text-indigo-300 underline">privacy</a> for more.</p>
+                            </span>
                             <div class="flex flex-col sm:flex-row gap-2 justify-center">
                                 <a href="{% provider_login_url 'google' %}" class="inline-flex items-center px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors duration-200 text-sm gap-1">
                                     <svg
@@ -319,6 +341,40 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
+        // Message alerts functionality
+        function removeMessage(messageElement) {
+            if (messageElement) {
+                messageElement.style.transition = "all 0.3s ease";
+                messageElement.style.opacity = "0";
+                messageElement.style.transform = "translateY(-10px)";
+                setTimeout(() => {
+                    messageElement.remove();
+                    
+                    // Remove the entire messages container if no messages left
+                    const messagesContainer = document.getElementById("messages-container");
+                    if (messagesContainer && messagesContainer.children.length === 0) {
+                        messagesContainer.remove();
+                    }
+                }, 300);
+            }
+        }
+
+        // Handle close button clicks
+        document.addEventListener("click", function (e) {
+            if (e.target.closest(".close-message-btn")) {
+                const messageElement = e.target.closest(".message-alert");
+                removeMessage(messageElement);
+            }
+        });
+
+        // Auto-remove messages after 6 seconds
+        const messageAlerts = document.querySelectorAll(".message-alert");
+        messageAlerts.forEach((messageElement) => {
+            setTimeout(() => {
+                removeMessage(messageElement);
+            }, 6000); // 6 seconds
+        });
+
         // Update current time
         function updateTime() {
             const now = new Date();
@@ -420,15 +476,67 @@
                             // Create reply indicator if this is a reply
                             let replyHtml = "";
                             if (data.message.reply_to) {
-                                replyHtml = `
-                                    <div class="flex items-center text-zinc-400 text-xs mb-1">
-                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
-                                        </svg>
-                                        <span>Replied to ${escapeHtml(data.message.reply_to.user)}: "${escapeHtml(data.message.reply_to.message.substring(0, 30))}..."</span>
-                                    </div>
-                                `;
+                                // Check if replying to self by comparing user IDs
+                                const isReplyToSelf = data.message.user_id === data.message.reply_to.user_id;
+                                const currentUserId = {% if user.is_authenticated %}{{ user.id }}{% else %}null{% endif %};
+                                
+                                if (isReplyToSelf) {
+                                    // Self-reply: check if current user is the author
+                                    if (currentUserId === data.message.user_id) {
+                                        replyHtml = `
+                                            <div class="flex items-center text-zinc-400 text-xs mb-1">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                                </svg>
+                                                <span>You replied to yourself: "${escapeHtml(data.message.reply_to.message)}"</span>
+                                            </div>
+                                        `;
+                                    } else {
+                                        replyHtml = `
+                                            <div class="flex items-center text-zinc-400 text-xs mb-1">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                                </svg>
+                                                <span><span class="font-medium">${escapeHtml(data.message.user)}</span> Replied to self: "${escapeHtml(data.message.reply_to.message)}"</span>
+                                            </div>
+                                        `;
+                                    }
+                                } else if (currentUserId === data.message.user_id) {
+                                    // Current user replied to someone else
+                                    replyHtml = `
+                                        <div class="flex items-center text-zinc-400 text-xs mb-1">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                            </svg>
+                                            <span>You replied to <span class="font-medium">${escapeHtml(data.message.reply_to.user)}</span>: "${escapeHtml(data.message.reply_to.message)}"</span>
+                                        </div>
+                                    `;
+                                } else if (currentUserId === data.message.reply_to.user_id) {
+                                    // Someone replied to current user
+                                    replyHtml = `
+                                        <div class="flex items-center text-zinc-400 text-xs mb-1">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                            </svg>
+                                            <span>Replied to you: "${escapeHtml(data.message.reply_to.message)}"</span>
+                                        </div>
+                                    `;
+                                } else {
+                                    // Someone replied to someone else
+                                    replyHtml = `
+                                        <div class="flex items-center text-zinc-400 text-xs mb-1">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                            </svg>
+                                            <span>Replied to <span class="font-medium">${escapeHtml(data.message.reply_to.user)}</span>: "${escapeHtml(data.message.reply_to.message)}"</span>
+                                        </div>
+                                    `;
+                                }
                             }
+
+                            // Use timestamp directly from server (already in Jakarta time)
+                            // The server already returns the correct Jakarta time format
+                            const jakartaTime = data.message.timestamp;
 
                             // Add message to guestbook
                             const messageHtml = `
@@ -441,7 +549,7 @@
                                                 <div class="text-sm font-medium">${escapeHtml(data.message.user)}</div>
                                                 ${authorBadgeHtml}
                                                 <div class="hidden md:flex">
-                                                    <div class="text-xs text-zinc-400">${escapeHtml(data.message.timestamp)}</div>
+                                                    <div class="text-xs text-zinc-400">${jakartaTime}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -472,7 +580,7 @@
                                             </div>
                                         </div>
                                         <div class="flex md:hidden">
-                                            <div class="text-xs text-zinc-400">${escapeHtml(data.message.timestamp)}</div>
+                                            <div class="text-xs text-zinc-400">${jakartaTime}</div>
                                         </div>
                                     </div>
                                 </div>

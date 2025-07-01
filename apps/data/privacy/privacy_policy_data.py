@@ -3,6 +3,8 @@ from datetime import datetime
 class PrivacyPolicyData:
     privacy_policy = {
         "last_updated": datetime.strptime("2025-06-29T01:48:45+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+        "overview": "We understand that your privacy is important. This policy explains how we collect, use, and protect your information when you visit our website.",
+        "policy_updates": "We might give this policy a refresh as the website evolves and grows. Major changes will be reflected in the last updated date above, and we'll do our best to notify users of significant privacy policy updates.",
         "data_collected": {
             "Cloudflare": {
                 "IP address": "Picked up for tracking purposes and security protection",
@@ -54,8 +56,7 @@ class PrivacyPolicyData:
             "Google Analytics": "Helps us get the full scoop on who's visiting and what they're into",
             "Google OAuth": "Secure authentication provider for guestbook user login",
             "GitHub OAuth": "Alternative secure authentication provider for guestbook access",
-            "Vercel": "Hosting platform that may collect deployment and performance metrics",
-            "PostgreSQL": "Database hosting service for secure data storage in production environment"
+            "wsrv": "Image optimization service for faster loading times and better performance"
         },
         "data_protection": {
             "Storage": "Secure database hosting with encrypted connections and access controls",
@@ -72,7 +73,6 @@ class PrivacyPolicyData:
             "Opt-Out Options": "Disable tracking via browser settings, ad blockers, or Do Not Track",
             "Contact": "Reach out to hi@ridwaanhall.com for any privacy questions or requests"
         },
-        "policy_updates": "We might give this policy a refresh as the website evolves and grows. Major changes will be reflected in the last updated date above, and we'll do our best to notify users of significant privacy policy updates.",
         "cookies": {
             "Essential Cookies": {
                 "SessionId": "Django session cookie for maintaining user login state (1 hour expiration)",

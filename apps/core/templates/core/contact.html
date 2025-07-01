@@ -8,7 +8,7 @@
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
                     <div>
                         <h1 class="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">Contact <span class="text-indigo-400">Me</span></h1>
-                        <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">Got a question or ready to team up on an AI project? Hit me up—let's make something awesome!</p>
+                        <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">Some conversations don’t start with code—they begin with a message. If something here sparked a thought, I’d be glad to hear from you.</p>
                     </div>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                     </svg>
                     Send me a message
                 </h2>
-                <p class="text-zinc-400 text-sm mt-2 mb-4">Fill out the form below and I'll get back to you as soon as possible!</p>
+                <p class="text-zinc-400 text-sm mt-2 mb-4">Have a thought, a question, or just want to say hello? Leave a note—I read them all.</p>
 
                 <form id="contact-form">
                     <div class="flex flex-grow flex-col gap-4">
@@ -47,7 +47,7 @@
                             <input
                                 class="w-full rounded-md border border-zinc-600 px-3 py-2 focus:outline-none focus:border-indigo-500 bg-transparent placeholder-zinc-400 text-zinc-200"
                                 type="text"
-                                placeholder="Name*"
+                                placeholder="Name — Your name, simply*"
                                 name="name"
                                 required
                                 value=""
@@ -55,7 +55,7 @@
                             <input
                                 class="w-full rounded-md border border-zinc-600 px-3 py-2 focus:outline-none focus:border-indigo-500 bg-transparent placeholder-zinc-400 text-zinc-200"
                                 type="email"
-                                placeholder="Email*"
+                                placeholder="Email — So I can send something back*"
                                 name="email"
                                 required
                                 value=""
@@ -64,7 +64,7 @@
                         <textarea
                             class="w-full rounded-md border border-zinc-600 px-3 py-2 focus:outline-none focus:border-indigo-500 bg-transparent placeholder-zinc-400 text-zinc-200 resize-vertical"
                             rows="5"
-                            placeholder="Message*"
+                            placeholder="Message — A thought, a question, or just hello*"
                             name="message"
                             required
                         ></textarea>
@@ -73,7 +73,7 @@
                             type="submit"
                             id="submit-btn"
                         >
-                            Send Message
+                            Begin the conversation
                         </button>
                     </div>
                     <div class="my-5 flex items-center gap-2 text-zinc-400 mt-4">
@@ -81,7 +81,7 @@
                             <circle cx="12" cy="12" r="10"></circle>
                             <polyline points="12 6 12 12 16 14"></polyline>
                         </svg>
-                        <div class="text-sm"><span class="font-medium">Avg. response:</span> 1-2 Hours (Working Hours, GMT+7)</div>
+                        <div class="text-sm"><span class="font-medium">Typical response time:</span> 1–2 hours (Weekdays, GMT+7). I reply with care.</div>
                     </div>
                 </form>
             </div>
@@ -161,14 +161,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Result:', result);
                 
                 if (result.success) {
-                    showMessage('Thank you! Your message has been sent successfully. {{ about.first_name }} will get back to you soon.', 'success');
+                    showMessage('Thank you—your message has left a trace. I’ll be in touch soon.', 'success');
                     form.reset(); // Clear the form
                 } else {
-                    showMessage(result.message || 'There was an error sending your message. Please try again.', 'error');
+                    showMessage(result.message || 'Something got in the way—mind trying again in a moment?', 'error');
                 }
             } catch (error) {
                 console.error('Detailed error:', error);
-                showMessage(`Network error: ${error.message}. Please check your connection and try again.`, 'error');
+                showMessage(`Oops—looks like a connection issue: ${error.message}. Try once more when things are stable.`, 'error');
             } finally {
                 // Reset button state
                 submitBtn.innerHTML = originalText;

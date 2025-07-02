@@ -1,25 +1,24 @@
-# 🚀 ridwaanhall-com
+# 🚀 FlexForge - Advanced Developer Portfolio Platform
 
 [![Django](https://img.shields.io/badge/Django-5.2.2-092E20?style=flat&logo=django&logoColor=white)](https://djangoproject.com/)
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=flat&logo=vercel&logoColor=white)](https://vercel.com/)
-[![wakatime](https://wakatime.com/badge/user/018b799e-de53-4f7a-bb65-edc2df9f26d8/project/cc5b6b55-ece5-47ae-b643-512d9d86e93b.svg)](https://wakatime.com/badge/user/018b799e-de53-4f7a-bb65-edc2df9f26d8/project/cc5b6b55-ece5-47ae-b643-512d9d86e93b)
 
-![ridwaanhall.com](https://ridwaanhall.com/static/img/project/ridwaanhall_com_20250607.webp)
+![FlexForge Portfolio](public/ridwaanhall_com.png)
 
-> **A cutting-edge personal portfolio showcasing advanced web development practices, featuring a revolutionary individual file data management system, real-time API integrations, and enterprise-grade performance optimization.**
+> **A cutting-edge personal portfolio template showcasing advanced web development practices, featuring a revolutionary individual file data management system, real-time API integrations, and enterprise-grade performance optimization.**
 
 ## 🎯 Project Highlights
 
 **💬 Configurable Interactive Guestbook** • **⚡ Individual File Architecture for Blog Articles and Projects** • **📊 Real-time Analytics**
 
-This portfolio represents the culmination of modern web development practices, featuring a **groundbreaking individual file system** that revolutionizes content management, coupled with real-time developer metrics, comprehensive performance optimization, and a **configurable interactive guestbook** with chat-like functionality that can be completely disabled when not needed.
+This portfolio template represents the culmination of modern web development practices, featuring a **groundbreaking individual file system** that revolutionizes content management, coupled with real-time developer metrics, comprehensive performance optimization, and a **configurable interactive guestbook** with chat-like functionality that can be completely disabled when not needed.
 
 ### 🌟 Key Innovations
 
 - **🗂️ Individual File System**: Revolutionary modular data architecture for project files and blog files
-- **⚡ Performance Excellence**: 100/100 PageSpeed scores on desktop and mobile
+- **⚡ Performance Excellence**: 97+/100 PageSpeed scores on desktop and mobile
 - **🔗 API Integration**: Real-time GitHub and WakaTime analytics dashboard
 - **💬 Interactive Guestbook**: Real-time chat-like messaging system with replies and authentication
 - **🛡️ Security-First**: Advanced CSP, HSTS, XSS protection, and comprehensive security headers implementation
@@ -30,7 +29,7 @@ This portfolio represents the culmination of modern web development practices, f
 ### 🏠 **Dynamic Homepage**
 
 - **Animated Skills Carousel**: Dual-direction infinite scroll showcasing technical expertise
-- **Featured Projects Grid**: Interactive showcase of 6 flagship projects with tech stack tooltips
+- **Featured Projects Grid**: Interactive showcase of flagship projects with tech stack tooltips
 - **Real-time Status**: Timezone-based work availability indicator
 - **Professional Timeline**: Education and experience visualization with interactive elements
 
@@ -41,17 +40,17 @@ This portfolio represents the culmination of modern web development practices, f
 - **Animated Counters**: Smooth count-up animations for dynamic data visualization
 - **Responsive Charts**: Mobile-optimized data visualization with interactive elements
 
-### 💼 **Projects Showcase (Projects)**
+### 💼 **Projects Showcase**
 
-- **Individual File Architecture**: Each project stored in dedicated modular files (`project-1.py` to `project-47.py`)
+- **Individual File Architecture**: Each project stored in dedicated modular files (`project-1.py` to `project-N.py`)
 - **Advanced Filtering**: Search and categorize by technology, status, and featured content
 - **Interactive Tech Stack**: Hover tooltips for technology details and descriptions
 - **Live Demos & Source Code**: Direct access to deployed applications and GitHub repositories
 - **Smart Pagination**: Optimized loading for large project collections
 
-### 📝 **Blog System (Articles)**
+### 📝 **Blog System**
 
-- **Modular Content Management**: Individual file system for each blog post (`blog-1.py` to `blog-14.py`)
+- **Modular Content Management**: Individual file system for each blog post (`blog-1.py` to `blog-N.py`)
 - **Featured Articles**: Curated content with advanced carousel functionality
 - **Social Sharing**: Integrated sharing for Twitter, LinkedIn, and Facebook
 - **SEO Optimization**: Comprehensive meta tags, structured data, and social media optimization
@@ -73,7 +72,6 @@ This portfolio represents the culmination of modern web development practices, f
 - **Multi-Provider Authentication**: Google OAuth and GitHub OAuth for secure user identification
 - **Author & Co-Author System**:
   - **Main Author**: Site owner with full privileges (message deletion, user management)
-  - **Co-Authors**: Up to 2 co-authors with special badges and recognition
   - **FIFO Management**: Automatic removal of oldest co-author when limit exceeded
 - **Advanced User Management**: Django management commands for author/co-author administration
 - **Profile Integration**: Dynamic profile images and names from OAuth providers
@@ -89,7 +87,7 @@ This portfolio represents the culmination of modern web development practices, f
 **The cornerstone of this project is its groundbreaking individual file system that completely revolutionizes content management:**
 
 - **🗂️ Modular Design**: Each blog post and project exists as an individual Python file
-- **📊 Scale**: Pproject files + Blog files + intelligent indexing system
+- **📊 Scale**: Unlimited project files + Blog files + intelligent indexing system
 - **⚡ Performance**: Lightning-fast loading with intelligent caching
 - **🔄 Maintainability**: Easy content updates without touching large centralized files
 - **🎯 Flexibility**: Switch between individual and centralized systems seamlessly
@@ -108,30 +106,19 @@ apps/data/                 # 🗂️ INDIVIDUAL FILE SYSTEM (Revolutionary!)
 │   ├── blog_index.py      # 🔍 Intelligent Blog File Loader
 │   ├── projects_index.py  # 🔍 Smart Project File Loader
 │   ├── blog/              # 📚 Individual Blog Files
-│   │   ├── blog-1.py      # "Python 101: Your Chill Guide"
-│   │   ├── blog-2.py      # "Whipping Up Web Apps with Django's Magic"
+│   │   ├── blog-1.py      # "Your First Blog Post"
+│   │   ├── blog-2.py      # "Advanced Tutorial"
 │   │   ├── ...            # Each blog as separate module
-│   │   └── blog-14.py     # Latest blog articles
+│   │   └── blog-N.py      # Latest blog articles
 │   ├── projects/          # 💼 Individual Project Files
-│   │   ├── project-1.py   # "MLBB Username Finder"
-│   │   ├── project-2.py   # "TikTok Profile Scraper"
+│   │   ├── project-1.py   # "Your First Project"
+│   │   ├── project-2.py   # "Another Cool Project"
 │   │   ├── ...            # Each project as separate module
-│   │   └── project-47.py  # "Neural Network from Scratch"
+│   │   └── project-N.py   # "Latest Project"
 │   └── __pycache__/
 ├── about/                 # 📄 About section data files
 └── privacy/               # 🔐 Privacy policy data
 ```
-
-#### Featured Projects Showcase
-
-| Project | Description | Tech Stack | Status |
-|---------|-------------|------------|--------|
-| **🚴 Bike Rental Insights Dashboard** | ML-powered analytics with Streamlit UI | Python, Streamlit, TensorFlow | ✅ Live |
-| **⚔️ MLBB API Stats Hub** | Real-time Mobile Legends statistics | Python, Flask, APIs | ✅ Live |
-| **🎓 PDDikti Data Vault** | Indonesian higher education data hub | Python, Django, JavaScript | ✅ Live |
-| **🍯 BeliMadu.com** | E-commerce platform for honey products | Django, Bootstrap, Vercel | ✅ Live |
-| **🌐 ridwaanhall.com** | This very portfolio you're reading! | Django, TailwindCSS, Individual Files | ✅ Live |
-| **🧠 Neural Network from Scratch** | Pure NumPy implementation, 98.06% accuracy | Python, NumPy, Matplotlib | ✅ Complete |
 
 ### 🔧 **Technical Architecture**
 
@@ -141,11 +128,6 @@ apps/data/                 # 🗂️ INDIVIDUAL FILE SYSTEM (Revolutionary!)
 - **Individual File System**: Revolutionary modular data architecture in `apps/data/content/`
 - **Modular App Structure**: Organized into focused Django applications
   - `core`: Homepage and base functionality with DataService integration
-  - `about`: Personal information and background management  - `projects`: Portfolio management with individual file loading system
-  - `blog`: Content management system with modular posts
-  - `dashboard`: Analytics and metrics with real-time GitHub and WakaTime API integration
-  - `guestbook`: Interactive messaging system with real-time chat, author/co-author management, and multi-provider OAuth
-  - `data`: Revolutionary individual file data management system with content controller
   - `seo`: Advanced SEO management, sitemaps, structured data, and meta tag optimization
 
 #### Frontend Technologies
@@ -185,7 +167,35 @@ apps/data/                 # 🗂️ INDIVIDUAL FILE SYSTEM (Revolutionary!)
 | **Security** | ![CSP](https://img.shields.io/badge/-django--csp_4.0-05122A?style=flat&logo=security) ![Permissions Policy](https://img.shields.io/badge/-django--permissions--policy_4.25-05122A?style=flat&logo=security) ![XSS Protection](https://img.shields.io/badge/-XSS_Protection-05122A?style=flat&logo=security) | Enterprise-grade protection with comprehensive vulnerability mitigation |
 | **Configuration** | ![python-decouple](https://img.shields.io/badge/-python--decouple_3.8-05122A?style=flat&logo=python) ![WhiteNoise](https://img.shields.io/badge/-WhiteNoise_6.9-05122A?style=flat&logo=python) | Environment & static files |
 | **Deployment** | ![Vercel](https://img.shields.io/badge/-Vercel-05122A?style=flat&logo=vercel) ![Serverless](https://img.shields.io/badge/-Serverless-05122A?style=flat&logo=serverless) | Global CDN deployment |
-| **Performance** | ![Cloudflare](https://img.shields.io/badge/-Cloudflare-05122A?style=flat&logo=cloudflare) ![GTM](https://img.shields.io/badge/-Google_Tag_Manager-05122A?style=flat&logo=googletagmanager) | 100/100 PageSpeed scores |
+| **Performance** | ![Cloudflare](https://img.shields.io/badge/-Cloudflare-05122A?style=flat&logo=cloudflare) ![GTM](https://img.shields.io/badge/-Google_Tag_Manager-05122A?style=flat&logo=googletagmanager) | High-performance optimization |
+
+### Backend
+
+- **Django 5.2.2** - Modern Python web framework
+- **Python 3.12** - Latest Python runtime
+- **SQLite/PostgreSQL** - Database options for development and production
+- **WhiteNoise** - Static file serving
+- **Django Allauth** - Social authentication
+
+### Frontend
+
+- **Tailwind CSS** - Utility-first CSS framework
+- **Vanilla JavaScript** - Modern ES6+ JavaScript
+- **Responsive Design** - Mobile-first approach
+
+### Security & Performance Features
+
+- **Content Security Policy** - XSS protection
+- **HTTPS Enforcement** - SSL/TLS security
+- **Permissions Policy** - Browser security headers
+- **Caching System** - Django cache framework
+- **Rate Limiting** - API protection
+
+### Deployment & DevOps
+
+- **Vercel** - Serverless deployment platform
+- **Environment Variables** - Secure configuration management
+- **Static File Optimization** - CDN-ready assets
 
 ## 📊 Performance Excellence & Metrics
 
@@ -214,6 +224,111 @@ Desktop performance showcasing 97/100 score with sub-second loading times
 ![PageSpeed Mobile Performance](public/pagespeed_mobile.png)
 
 Mobile performance achieving 91/100 with optimized responsive design
+
+## 📁 Project Structure & Architecture
+
+> **Note**: For detailed documentation about the Individual File System, see [`docs/INDIVIDUAL_FILES.md`](docs/INDIVIDUAL_FILES.md)
+
+```txt
+FlexForge/                         # 🏗️ Revolutionary Portfolio Architecture
+├── apps/                          # 📦 Django Applications (Modular Design)
+│   ├── about/                     # 👤 Personal Information Module
+│   │   └── templates/
+│   ├── blog/                      # 📝 Blog System with Template Management
+│   │   └── templates/
+│   ├── core/                      # 🏠 Homepage & Base Functionality
+│   │   ├── base_views.py
+│   │   └── data_service.py
+│   ├── dashboard/                 # 📊 Real-time Analytics Dashboard
+│   │   ├── github_api.py          # GitHub API Integration
+│   │   ├── wakatime_api.py        # WakaTime API Integration
+│   │   └── templates/
+│   ├── data/                      # 🗂️ INDIVIDUAL FILE SYSTEM (Revolutionary!)
+│   │   ├── __init__.py
+│   │   ├── about_manager.py       # About section data management
+│   │   ├── apps.py
+│   │   ├── content_manager.py     # 🎛️ Central Data Controller
+│   │   ├── data_service.py        # Data service layer
+│   │   ├── content/               # 📚 Individual Content Files
+│   │   │   ├── __init__.py
+│   │   │   ├── blog_index.py      # 🔍 Intelligent Blog File Loader
+│   │   │   ├── projects_index.py  # 🔍 Smart Project File Loader
+│   │   │   ├── blog/              # 📚 Individual Blog Files
+│   │   │   │   ├── blog-1.py      # "Your First Blog Post"
+│   │   │   │   ├── ...            # Each blog as separate module
+│   │   │   │   └── blog-N.py      # Latest blog articles
+│   │   │   └── projects/          # 💼 Individual Project Files
+│   │   │       ├── project-1.py   # "Your First Project"
+│   │   │       ├── ...            # Each project as separate module
+│   │   │       └── project-N.py   # "Latest Project"
+│   │   ├── about/                 # 📄 About section data files
+│   │   └── privacy/               # 🔐 Privacy policy data
+│   ├── guestbook/                 # 💬 Interactive Guestbook System
+│   │   ├── models.py              # ChatMessage and UserProfile models
+│   │   ├── management/            # Custom management commands
+│   │   ├── migrations/            # Database migrations
+│   │   └── templates/             # Guestbook templates
+│   │       └── guestbook/
+│   │           └── guestbook.html # Security-hardened chat interface
+│   ├── projects/                  # 💼 Portfolio Management System
+│   │   └── templates/
+│   └── seo/                       # 🚀 Advanced SEO Management & Sitemaps
+│       ├── config.py              # SEO configuration settings
+│       ├── data.py                # SEO data management
+│       ├── manager.py             # SEO manager class
+│       ├── mixins.py              # SEO mixins for views
+│       ├── schema.py              # Structured data schemas
+│       ├── sitemaps.py            # XML sitemap generation
+│       ├── updated_at_data.py     # Last modified data tracking
+│       ├── management/            # Django management commands
+│       ├── templates/             # SEO templates
+│       └── templatetags/          # Custom template tags
+├── FlexForge/                     # ⚙️ Django Project Configuration
+│   ├── asgi.py                    # ASGI configuration
+│   ├── context_processors.py     # Makes certain settings available in all templates
+│   ├── settings.py                # 🔧 Production-Ready Settings
+│   ├── sitemaps.py                # Sitemap configuration
+│   ├── urls.py                    # 🌐 URL Routing & Configuration
+│   ├── views.py                   # Project-level views
+│   └── wsgi.py                    # 🚀 WSGI Application Gateway
+├── docs/                          # 🚀 Documentation
+│   ├── GUESTBOOK_CONFIGURATION.md # Guestbook feature configuration guide
+│   └── INDIVIDUAL_FILES.md        # Individual file system documentation
+├── static/                        # 🎨 Development Static Assets
+├── staticfiles/                   # 📦 Production Static Files
+│   ├── css/                       # Custom CSS files
+│   ├── favicon/                   # Favicon files
+│   ├── font/                      # Web fonts
+│   │   ├── Onest/
+│   │   └── Plus_Jakarta_Sans/
+│   ├── img/                       # Image assets
+│   ├── js/                        # JavaScript files
+│   └── tailwind/                  # TailwindCSS files
+├── templates/                     # 🎭 HTML Template System
+│   ├── base_seo.html              # 🏗️ SEO-optimized base template
+│   ├── sidebar.html               # 🧭 Navigation Component
+│   └── error.html                 # ❌ Error Handling Pages
+├── public/                        # 🌍 Public Assets & Images
+├── CODE_OF_CONDUCT.md             # 📋 Project conduct guidelines
+├── CONTRIBUTING.md                # 🤝 Contribution guidelines
+├── db.sqlite3                     # 🗄️ SQLite database
+├── LICENSE                        # 📜 Apache-2.0 license
+├── manage.py                      # 🛠️ Django Management Interface
+├── README.md                      # 📖 Project documentation
+├── requirements.txt               # 📋 Python Dependencies
+├── SECURITY.md                    # 🔒 Security policy and guidelines
+└── vercel.json                    # 🚀 Vercel Deployment Configuration
+```
+
+### 🏆 **Individual File System Innovation**
+
+The `apps/data/content/` directory showcases the **revolutionary individual file architecture**:
+
+- **🗂️ Project Files**: Each project exists as a self-contained Python module in `apps/data/content/projects/`
+- **📚 Blog Files**: Individual blog posts with complete content isolation in `apps/data/content/blog/`
+- **🎛️ Smart Loading**: Intelligent file discovery and loading mechanisms via `blog_index.py` and `projects_index.py`
+- **⚡ Performance**: Optimized loading with caching and lazy evaluation through `content_manager.py`
+- **🔧 Maintainability**: Easy content management without touching large files, managed by `data_service.py`
 
 ## Installation & Setup
 
@@ -251,7 +366,7 @@ Create a `.env` file in the project root:
 # Core Settings
 BASE_URL="https://your-domain.com"
 SECRET_KEY="your-django-secret-key"
-DEBUG=False
+DEBUG=True
 
 # Feature Toggles
 GUESTBOOK_PAGE=True
@@ -259,44 +374,54 @@ GUESTBOOK_PAGE=True
 # API Keys
 ACCESS_TOKEN="your-github-personal-access-token"
 WAKATIME_API_KEY="your-wakatime-api-key"
+WEB3FORM_PAC="your-web3forms-key"
 
 # Google OAuth (Required for Guestbook Authentication when GUESTBOOK_PAGE=True)
 GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
 
 # GitHub OAuth (Required for Guestbook Authentication when GUESTBOOK_PAGE=True)
-GITHUB_CLIENT_ID="your-github-client-id"
-GITHUB_CLIENT_SECRET="your-github-client-secret"
+GH_CLIENT_ID="your-github-client-id"
+GH_CLIENT_SECRET="your-github-client-secret"
 
 # PostgreSQL Database (Production)
 POSTGRES_DATABASE="your-database"
 POSTGRES_HOST="your-host"
 POSTGRES_PASSWORD="your-password"
 POSTGRES_USER="your-user"
+POSTGRES_PORT="5432"
 
 # Image URLs (optional customization)
 BLOG_BASE_IMG_URL="https://your-domain.com/static/img/blog"
 PROJECT_BASE_IMG_URL="https://your-domain.com/static/img/project"
+
+# Host Configuration (Development only)
+ALLOWED_HOSTS="localhost,127.0.0.1"
 ```
 
 #### Environment Variables Guide
 
 | Variable | Description | Required | Example |
 |----------|-------------|----------|---------|
-| `BASE_URL` | Production domain URL | Yes | `https://ridwaanhall.com` |
+| `BASE_URL` | Production domain URL | Yes | `https://yourdomain.com` |
 | `SECRET_KEY` | Django secret key | Yes | Generate with Django |
+| `DEBUG` | Development mode | No | `True` (development), `False` (production) |
 | `GUESTBOOK_PAGE` | Enable/disable guestbook feature | No | `True` (default), `False` |
 | `ACCESS_TOKEN` | GitHub Personal Access Token | Yes | [Generate here](https://github.com/settings/tokens) |
 | `WAKATIME_API_KEY` | WakaTime API Secret Key | Yes | [Get from WakaTime](https://wakatime.com/settings/account) |
+| `WEB3FORM_PAC` | Web3Forms API key for contact form | No | [Get from Web3Forms](https://web3forms.com/) |
 | `GOOGLE_CLIENT_ID` | Google OAuth Client ID | When guestbook enabled | [Google Cloud Console](https://console.cloud.google.com/) |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret | When guestbook enabled | [Google Cloud Console](https://console.cloud.google.com/) |
-| `GITHUB_CLIENT_ID` | GitHub OAuth Client ID | When guestbook enabled | [GitHub Developer Settings](https://github.com/settings/developers) |
-| `GITHUB_CLIENT_SECRET` | GitHub OAuth Client Secret | When guestbook enabled | [GitHub Developer Settings](https://github.com/settings/developers) |
+| `GH_CLIENT_ID` | GitHub OAuth Client ID | When guestbook enabled | [GitHub Developer Settings](https://github.com/settings/developers) |
+| `GH_CLIENT_SECRET` | GitHub OAuth Client Secret | When guestbook enabled | [GitHub Developer Settings](https://github.com/settings/developers) |
 | `POSTGRES_DATABASE` | PostgreSQL database name | Production | `your_portfolio_db` |
 | `POSTGRES_HOST` | PostgreSQL host address | Production | `localhost` or cloud host |
 | `POSTGRES_USER` | PostgreSQL username | Production | `your_db_user` |
 | `POSTGRES_PASSWORD` | PostgreSQL password | Production | Strong password |
-| `DEBUG` | Development mode | No | `False` (production) |
+| `POSTGRES_PORT` | PostgreSQL port | Production | `5432` (default) |
+| `BLOG_BASE_IMG_URL` | Base URL for blog images | No | Auto-generated from BASE_URL |
+| `PROJECT_BASE_IMG_URL` | Base URL for project images | No | Auto-generated from BASE_URL |
+| `ALLOWED_HOSTS` | Allowed hosts for development | Development only | `localhost,127.0.0.1` |
 
 ### Feature Configuration
 
@@ -331,7 +456,8 @@ GUESTBOOK_PAGE=False
 **✅ Optional Environment Variables:**
 
 - `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` become optional
-- `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` become optional
+- `GH_CLIENT_ID` and `GH_CLIENT_SECRET` become optional
+- `WEB3FORM_PAC` becomes optional (contact form functionality)
 
 **✅ Performance Benefits:**
 
@@ -363,22 +489,14 @@ The guestbook feature requires Google OAuth for user authentication. Follow thes
 
 1. **Create Google Cloud Project**
    - Go to [Google Cloud Console](https://console.cloud.google.com/)
-   - Create a new project or select existing one
    - Enable the Google+ API
 
 2. **Configure OAuth Consent Screen**
    - Navigate to "APIs & Services" > "OAuth consent screen"
-   - Choose "External" user type
-   - Fill in required application information
    - Add your domain to authorized domains
 
 3. **Create OAuth Credentials**
    - Go to "APIs & Services" > "Credentials"
-   - Click "Create Credentials" > "OAuth 2.0 Client IDs"
-   - Choose "Web application"
-   - Add authorized redirect URIs:
-     - `http://localhost:8000/accounts/google/login/callback/` (development)
-     - `https://your-domain.com/accounts/google/login/callback/` (production)
 
 4. **Add Credentials to Environment**
    - Copy Client ID to `GOOGLE_CLIENT_ID`
@@ -390,19 +508,14 @@ GitHub OAuth provides a second authentication option alongside Google for the gu
 
 1. **Create GitHub OAuth App**
    - Go to [GitHub Developer Settings](https://github.com/settings/developers)
-   - Click "New OAuth App"
-   - Fill in application details:
-     - Application name: "Your Portfolio Guestbook"
-     - Homepage URL: `https://your-domain.com`
-     - Application description: "Portfolio guestbook authentication"
 
 2. **Configure Authorization Callback URL**
    - Development: `http://localhost:8000/accounts/github/login/callback/`
    - Production: `https://your-domain.com/accounts/github/login/callback/`
 
 3. **Add Credentials to Environment**
-   - Copy Client ID to `GITHUB_CLIENT_ID`
-   - Copy Client Secret to `GITHUB_CLIENT_SECRET`
+   - Copy Client ID to `GH_CLIENT_ID`
+   - Copy Client Secret to `GH_CLIENT_SECRET`
 
 **Note**: Both Google and GitHub OAuth are required for full guestbook functionality when `GUESTBOOK_PAGE=True`, allowing users to choose their preferred authentication method. These can be skipped entirely when the guestbook is disabled.
 
@@ -412,124 +525,9 @@ For production deployment, configure PostgreSQL:
 
 1. **Create Database**
 
-   ```sql
-   CREATE DATABASE your_portfolio_db;
-   CREATE USER your_db_user WITH PASSWORD 'strong_password';
-   GRANT ALL PRIVILEGES ON DATABASE your_portfolio_db TO your_db_user;
-   ```
-
 2. **Add Database Settings**
    - Set all `POSTGRES_*` environment variables
    - Ensure database is accessible from your application server
-
-## 📁 Project Structure & Architecture
-
-> **Note**: For detailed documentation about the Individual File System, see [`INDIVIDUAL_FILES_DOCS.md`](docs/GUESTBOOK_CONFIGURATION.md)
-
-```txt
-ridwaanhall-com/                   # 🏗️ Revolutionary Portfolio Architecture
-├── apps/                          # 📦 Django Applications (Modular Design)
-│   ├── about/                     # 👤 Personal Information Module
-│   │   └── templates/
-│   ├── blog/                      # 📝 Blog System with Template Management
-│   │   └── templates/
-│   ├── core/                      # 🏠 Homepage & Base Functionality
-│   │   ├── base_views.py
-│   │   └── data_service.py
-│   ├── dashboard/                 # 📊 Real-time Analytics Dashboard
-│   │   ├── github_api.py          # GitHub API Integration
-│   │   ├── wakatime_api.py        # WakaTime API Integration
-│   │   └── templates/
-│   ├── data/                      # 🗂️ INDIVIDUAL FILE SYSTEM (Revolutionary!)
-│   │   ├── __init__.py
-│   │   ├── about_manager.py       # About section data management
-│   │   ├── apps.py
-│   │   ├── content_manager.py     # 🎛️ Central Data Controller
-│   │   ├── data_service.py        # Data service layer
-│   │   ├── content/               # 📚 Individual Content Files
-│   │   │   ├── __init__.py
-│   │   │   ├── blog_index.py      # 🔍 Intelligent Blog File Loader
-│   │   │   ├── projects_index.py  # 🔍 Smart Project File Loader
-│   │   │   ├── blog/              # 📚 Individual Blog Files
-│   │   │   │   ├── blog-1.py      # "Python 101: Your Chill Guide"
-│   │   │   │   ├── ...            # Each blog as separate module
-│   │   │   │   └── blog-14.py     # Latest blog articles
-│   │   │   └── projects/          # 💼 Individual Project Files
-│   │   │       ├── project-1.py   # "MLBB Username Finder"
-│   │   │       ├── ...            # Each project as separate module
-│   │   │       └── project-47.py  # "Neural Network from Scratch"
-│   │   ├── about/                 # 📄 About section data files
-│   │   └── privacy/               # 🔐 Privacy policy data
-│   ├── guestbook/                 # 💬 Interactive Guestbook System
-│   │   ├── models.py              # ChatMessage and UserProfile models
-│   │   ├── management/            # Custom management commands
-│   │   ├── migrations/            # Database migrations
-│   │   └── templates/             # Guestbook templates
-│   │       └── guestbook/
-│   │           └── guestbook.html # Security-hardened chat interface
-│   ├── projects/                  # 💼 Portfolio Management System
-│   │   └── templates/
-│   └── seo/                       # 🚀 Advanced SEO Management & Sitemaps
-│       ├── config.py              # SEO configuration settings
-│       ├── data.py                # SEO data management
-│       ├── manager.py             # SEO manager class
-│       ├── mixins.py              # SEO mixins for views
-│       ├── schema.py              # Structured data schemas
-│       ├── sitemaps.py            # XML sitemap generation
-│       ├── updated_at_data.py     # Last modified data tracking
-│       ├── management/            # Django management commands
-│       ├── templates/             # SEO templates
-│       └── templatetags/          # Custom template tags
-├── FlexForge/                     # ⚙️ Django Project Configuration
-│   ├── asgi.py                    # ASGI configuration
-│   ├── content_processors.py      # Makes certain settings available in all templates
-│   ├── settings.py                # 🔧 Production-Ready Settings
-│   ├── sitemaps.py                # Sitemap configuration
-│   ├── urls.py                    # 🌐 URL Routing & Configuration
-│   ├── views.py                   # Project-level views
-│   └── wsgi.py                    # 🚀 WSGI Application Gateway
-├── docs/                          # 🚀 Documentation
-│   ├── GUESTBOOK_CONFIGURATION.md # Guestbook feature configuration guide
-│   └── INDIVIDUAL_FILES.md        # Individual file system documentation
-├── static/                        # 🎨 Development Static Assets
-├── staticfiles/                   # 📦 Production Static Files
-│   ├── css/                       # Custom CSS files
-│   ├── favicon/                   # Favicon files
-│   ├── font/                      # Web fonts
-│   │   ├── Onest/
-│   │   └── Plus_Jakarta_Sans/
-│   ├── img/                       # Image assets
-│   ├── js/                        # JavaScript files
-│   └── tailwind/                  # TailwindCSS files
-├── templates/                     # 🎭 HTML Template System
-│   ├── base_seo.html              # 🏗️ SEO-optimized base template
-│   ├── sidebar.html               # 🧭 Navigation Component
-│   └── error.html                 # ❌ Error Handling Pages
-├── public/                        # 🌍 Public Assets & Images
-│   ├── pagespeed_desktop.png      # Performance reports
-│   ├── pagespeed_mobile.png
-│   └── ridwaanhall_com.png
-├── CODE_OF_CONDUCT.md             # 📋 Project conduct guidelines
-├── CONTRIBUTING.md                # 🤝 Contribution guidelines
-├── db.sqlite3                     # 🗄️ SQLite database
-├── INDIVIDUAL_FILES_DOCS.md       # 📖 Individual files system documentation
-├── LICENSE                        # 📜 Apache-2.0 license
-├── manage.py                      # 🛠️ Django Management Interface
-├── README.md                      # 📖 Project documentation (this file)
-├── requirements.txt               # 📋 Python Dependencies
-├── SECURITY.md                    # 🔒 Security policy and guidelines
-└── vercel.json                    # 🚀 Vercel Deployment Configuration
-```
-
-### 🏆 **Individual File System Innovation**
-
-The `apps/data/content/` directory showcases the **revolutionary individual file architecture**:
-
-- **🗂️ Project Files**: Each project exists as a self-contained Python module in `apps/data/content/projects/`
-- **📚 Blog Files**: Individual blog posts with complete content isolation in `apps/data/content/blog/`
-- **🎛️ Smart Loading**: Intelligent file discovery and loading mechanisms via `blog_index.py` and `projects_index.py`
-- **⚡ Performance**: Optimized loading with caching and lazy evaluation through `content_manager.py`
-- **🔧 Maintainability**: Easy content management without touching large files, managed by `data_service.py`
 
 ## Content Management
 
@@ -569,520 +567,259 @@ The guestbook features a modern, chat-like interface with comprehensive security
 - **Modern Zinc Theme**: Dark design with zinc color palette and smooth transitions
 - **Always Visible Actions**: Reply and delete buttons always shown with hover effects
 - **Interactive Elements**: Button hover backgrounds, loading states, and micro-animations
-- **Accessibility**: Proper ARIA labels and keyboard navigation
-- **Infinite Scroll**: Smooth scrolling message container with proper boundaries
-- **Status Indicators**: Clear visual feedback for all user actions
 
-### Adding New Projects
+### Project Data Management
 
-Create a new individual project file `apps/data/content/projects/project-48.py`:
+Projects are stored as individual Python files in `apps/data/content/projects/` for easy management and version control. Each project file contains:
 
-```python
-"""
-Project #48: Your Project Name
-Individual file architecture implementation
-"""
+- Project metadata (title, description, tags, status)
+- Technology stack information
+- Repository and demo links
+- Featured status and display order
 
-from datetime import datetime
-from django.conf import settings
+### Blog Content Management
 
-project_data = {
-    "id": 48,
-    "title": "Your Project Name",
-    "headline": "Short project description",
-    "description": [
-        "Detailed project description paragraph 1",
-        "Detailed project description paragraph 2"
-    ],
-    "github_url": "https://github.com/username/repo",
-    "demo_url": "https://your-demo.com",
-    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/your-project.webp",
-    "img_name": "your-project.webp",
-    "is_featured": True,
-    "features": [
-        {
-            "title": "Feature Name",
-            "description": "Feature description"
-        }
-    ],
-    "tech_stack": [
-        {
-            "name": "Python",
-            "description": "Core development language",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
-        },
-        {
-            "name": "Django",
-            "description": "Web framework",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg"
-        }
-    ],    "status": "completed",
-    "created_at": datetime.strptime("2025-06-09T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-06-09T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "Web Development",
-    "tags": ["Python", "Django", "Web"],
-    "priority": 1,
-    "slug": "your-project-name"
-}
-```
+Blog posts are similarly organized in `apps/data/content/blog/` with structured metadata including:
 
-### Adding Blog Posts
+- Article content and metadata
+- Publication dates and author information
+- Social sharing optimization
+- SEO-friendly URLs and descriptions
 
-Create a new individual blog file `apps/data/content/blog/blog-15.py`:
+### About Information Management
 
-```python
-"""
-Blog Post #15: Your Blog Post Title
-Individual file architecture implementation
-"""
+Professional information is centrally managed in `apps/data/about/` including:
 
-from datetime import datetime
-from django.conf import settings
+- Experience history and career timeline
+- Education background and certifications
+- Skills matrix and technology proficiency
+- Contact information and social links
+- Professional achievements and awards
 
-blog_data = {
-    "id": 15,
-    "title": "Your Blog Post Title",
-    "description": "Brief post description",
-    "content": [
-        "Article paragraph 1",
-        "Article paragraph 2",
-        "<h2 class='text-xl lg:text-2xl text-medium mt-4 md:mt-5 mb-2 md:mb-3'>Subheading</h2>",
-        "<p class='mb-4 text-sm md:text-base lg:text-lg'>More content...</p>"
-    ],
-    "image_url": f"{settings.BLOG_BASE_IMG_URL}/your-post.webp",
-    "img_name": "your-post.webp",
-    "author": "Ridwan Halim",
-    "username": "ridwaanhall",
-    "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
-    "tags": ["tag1", "tag2"],    "is_featured": True,
-    "created_at": datetime.strptime("2025-06-09T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-06-09T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "Technology",
-    "read_time": 5,
-    "views": 0,
-    "slug": "your-blog-post-title"
-}
-```
-
-## Deployment
+## 🚀 Deployment
 
 ### Vercel Deployment (Recommended)
 
-Vercel provides seamless deployment for Django applications with automatic HTTPS, global CDN, and instant deployments.
-
-#### Prerequisites
-
-- Vercel account ([Sign up here](https://vercel.com))
-- Git repository (GitHub, GitLab, or Bitbucket)
-- All environment variables configured
-
-#### Step 1: Prepare Your Repository
-
-1. **Fork or Clone the Repository**
+1. **Install Vercel CLI**
 
    ```bash
-   git clone https://github.com/ridwaanhall/ridwaanhall-com.git
-   cd ridwaanhall-com
+   npm i -g vercel
    ```
 
-2. **Update vercel.json Configuration**
+2. **Deploy to Vercel**
 
-   Ensure your `vercel.json` is configured correctly:
-
-   ```json
-   {
-     "builds": [
-       {
-         "src": "FlexForge/wsgi.py",
-         "use": "@vercel/python",
-         "config": {
-           "maxLambdaSize": "15mb",
-           "runtime": "python3.12.0"
-         }
-       }
-     ],
-     "routes": [
-       {
-         "src": "static/(.*)",
-         "dest": "staticfiles/$1"
-       },
-       {
-         "src": "/(.*)",
-         "dest": "FlexForge/wsgi.py"
-       }
-     ]
-   }
+   ```bash
+   vercel --prod
    ```
 
-#### Step 2: Deploy to Vercel
-
-1. **Connect Repository**
-   - Visit [Vercel Dashboard](https://vercel.com/dashboard)
-   - Click "New Project"
-   - Import your repository
-   - Vercel will auto-detect it as a Python project
-
-2. **Configure Build Settings** (Auto-detected)
-   - **Framework Preset**: Other
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Output Directory**: Leave empty
-   - **Install Command**: Auto-detected
-
-#### Step 3: Environment Variables Configuration
-
-Add these environment variables in Vercel Project Settings → Environment Variables:
-
-**🔧 Required Variables:**
-
-```env
-BASE_URL=https://your-project.vercel.app
-SECRET_KEY=your-django-secret-key-here
-ACCESS_TOKEN=ghp_your_github_personal_access_token
-WAKATIME_API_KEY=waka_your_wakatime_api_key
-DEBUG=False
-```
-
-**💬 Guestbook Variables (when GUESTBOOK_PAGE=True):**
-
-```env
-GUESTBOOK_PAGE=True
-GOOGLE_CLIENT_ID=your-google-oauth-client-id
-GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
-GH_CLIENT_ID=your-github-oauth-client-id
-GH_CLIENT_SECRET=your-github-oauth-client-secret
-```
-
-**🗄️ Database Variables (Production with PostgreSQL):**
-
-```env
-POSTGRES_DATABASE=your_database_name
-POSTGRES_HOST=your.database.host.com
-POSTGRES_USER=your_db_username
-POSTGRES_PASSWORD=your_secure_password
-POSTGRES_PORT=5432
-```
-
-#### Step 4: Custom Domain Setup (Optional)
-
-1. **Add Custom Domain**
-   - Go to Project Settings → Domains
-   - Add your custom domain (e.g., `yourdomain.com`)
-   - Configure DNS records as instructed
-
-2. **Update Environment Variables**
-
-   ```env
-   BASE_URL=https://yourdomain.com
-   ```
-
-3. **Update OAuth Redirect URIs**
-   - Google OAuth: `https://yourdomain.com/guestbook/accounts/google/login/callback/`
-   - GitHub OAuth: `https://yourdomain.com/guestbook/accounts/github/login/callback/`
-
-#### Step 5: Database Setup Options
-
-A. Option A: SQLite (Development/Small Scale)
-
-- Default configuration, no additional setup required
-- Suitable for portfolios with minimal user interaction
-
-B. Option B: PostgreSQL (Recommended for Production)
-
-1. **Choose a Provider:**
-   - [Neon](https://neon.tech/) - Serverless PostgreSQL (Free tier available)
-   - [Supabase](https://supabase.com/) - Open source Firebase alternative
-   - [PlanetScale](https://planetscale.com/) - Serverless MySQL (also compatible)
-   - [Railway](https://railway.app/) - PostgreSQL hosting
-
-2. **Configure Connection:**
-
-   ```env
-   POSTGRES_DATABASE=your_database
-   POSTGRES_HOST=your.provider.host
-   POSTGRES_USER=your_username
-   POSTGRES_PASSWORD=your_password
-   POSTGRES_PORT=5432
-   ```
-
-#### Step 6: Deployment and Verification
-
-1. **Deploy**
-   - Push changes to your repository
-   - Vercel automatically triggers deployment
-   - Monitor build logs in Vercel dashboard
-
-2. **Verify Deployment**
-   - Check your deployment URL
-   - Test all pages and functionality
-   - Verify environment variables are working
-   - Test guestbook authentication (if enabled)
-
-#### Deployment Checklist
-
-- ✅ Repository connected to Vercel
-- ✅ All environment variables configured
-- ✅ vercel.json updated with correct paths
-- ✅ Database configured (if using PostgreSQL)
-- ✅ OAuth providers configured (if guestbook enabled)
-- ✅ Custom domain setup (optional)
-- ✅ SSL certificate automatically provisioned
-- ✅ All functionality tested
-
-#### Troubleshooting Common Issues
-
-**Build Errors:**
-
-- Check Python version compatibility (3.12+)
-- Verify all dependencies in requirements.txt
-- Check build logs for specific error messages
-
-**Environment Variables:**
-
-- Ensure no trailing spaces in variable values
-- Verify all required variables are set
-- Check variable names match exactly
-
-**Database Connections:**
-
-- Test database connectivity
-- Verify PostgreSQL credentials
-- Check firewall settings
-
-**OAuth Issues:**
-
-- Verify redirect URIs match exactly
-- Check OAuth app configuration
-- Ensure environment variables are correct
-
-#### Performance Optimization
-
-- **Static Files**: Automatically served via Vercel's global CDN
-- **Caching**: Configure appropriate cache headers
-- **Image Optimization**: Use WebP format where possible
-- **Database**: Consider connection pooling for PostgreSQL
-
-#### Monitoring and Analytics
-
-- **Vercel Analytics**: Built-in performance monitoring
-- **Error Tracking**: Monitor function errors in dashboard
-- **Usage Statistics**: Track bandwidth and function invocations
+3. **Environment Variables**
+   Configure production environment variables in Vercel dashboard with all required values from the Environment Variables Guide above.
 
 ### Alternative Deployment Options
 
-- **Railway**: Python-friendly with PostgreSQL support
-- **Heroku**: Classic PaaS with extensive add-on ecosystem
-- **DigitalOcean App Platform**: Managed platform with automatic scaling
-- **AWS Lambda**: Serverless deployment with Zappa
+#### Heroku Deployment
 
-## SEO & Performance Features
+1. **Install Heroku CLI**
+2. **Create Heroku App**
+3. **Configure Environment Variables**
+4. **Deploy via Git**
 
-### Search Engine Optimization
+#### VPS/Cloud Server Deployment
 
-- **Structured Data**: JSON-LD markup for rich snippets
-- **Open Graph Tags**: Optimized social media sharing
-- **Twitter Cards**: Enhanced Twitter link previews
-- **Canonical URLs**: Prevent duplicate content issues
-- **XML Sitemaps**: Automated sitemap generation
-- **Robots.txt**: Search engine crawling guidelines
+1. **Server Setup**: Ubuntu/CentOS with Python 3.12+
+2. **Web Server**: Nginx + Gunicorn configuration
+3. **Database**: PostgreSQL for production
+4. **SSL Certificate**: Let's Encrypt or CloudFlare
+5. **Process Management**: Supervisor or systemd
 
-### Performance Optimizations
+### Environment-Specific Settings
 
-- **Image Optimization**: WebP format with lazy loading
-- **Static File Compression**: Gzip compression enabled
-- **Browser Caching**: Optimized cache headers
-- **Code Splitting**: Minimal JavaScript bundles
-- **CSS Purging**: Unused CSS removal in production
-- **Preloading**: Critical resource preloading
+The application automatically adjusts security settings based on the `DEBUG` environment variable:
 
-## API Integrations
+- **Development**: Relaxed security for easier debugging
+- **Production**: Full security headers and HTTPS enforcement
 
-### GitHub API Integration
+### Database Migration
 
-- Repository statistics and information
-- Contribution activity and graphs
-- Latest commit information
-- Repository language statistics
-
-### WakaTime API Integration
-
-- Daily coding time tracking
-- Weekly statistics
-- Productivity metrics
-
-## 🛠️ Management Commands
-
-The project includes powerful Django management commands for administration and monitoring:
-
-### User Management
-
-#### Check Users
-
-Monitor all users with their OAuth provider, email, and roles:
+For production deployment:
 
 ```bash
-# Display all users in a beautiful table
-python manage.py check_users
+# Run database migrations
+python manage.py migrate
 
-# Filter by provider
-python manage.py check_users --filter-provider google
-python manage.py check_users --filter-provider github
+# Create superuser (optional)
+python manage.py createsuperuser
 
-# Show only authors
-python manage.py check_users --authors-only
-
-# Output formats
-python manage.py check_users --format table    # Default: Rich table
-python manage.py check_users --format json     # JSON output
-python manage.py check_users --format simple   # Simple text
+# Collect static files
+python manage.py collectstatic --noinput
 ```
 
-#### Author & Co-Author Management
+## 📊 Dashboard Integration
 
-Manage the site's author and co-author system:
+### GitHub Integration
 
-```bash
-# List current authors and co-authors
-python manage.py manage_authors list
+- **Real-time Contribution Calendar**: Live contribution graphs with daily activity
+- **Repository Statistics**: Public repos, stars, forks, and language breakdown
+- **Commit Activity Tracking**: Recent commits and contribution patterns
+- **Language Usage Analytics**: Most used programming languages with percentages
 
-# Set main author (removes current author)
-python manage.py manage_authors set-author --user username
-python manage.py manage_authors set-author --user "user@email.com" --force
+### WakaTime Integration
 
-# Add co-author (max 2, FIFO removal)
-python manage.py manage_authors add-co-author --user username
-python manage.py manage_authors add-co-author --user userid --force
+- **Coding Time Tracking**: Daily and weekly coding hours with trend analysis
+- **Language Breakdown**: Time spent per programming language
+- **Project Time Allocation**: Time distribution across different projects
+- **Productivity Statistics**: Daily averages, longest coding sessions, and streaks
 
-# Remove co-author
-python manage.py manage_authors remove-co-author --user username
+## 🔒 Security Features
 
-# Clear all author/co-author roles
-python manage.py manage_authors clear-all --force
-```
+### Headers & Security Policies
 
-### Features
+- **Content Security Policy (CSP)**: Advanced XSS protection with strict directives
+- **Permissions Policy**: Browser feature control to enhance security
+- **HTTP Strict Transport Security (HSTS)**: Enforces secure HTTPS connections
+- **X-Content-Type-Options**: Prevents MIME-type sniffing attacks
+- **X-Frame-Options**: Clickjacking protection
+- **Secure Cookies**: Session and CSRF protection with secure flags
 
-- **Rich Table Output**: Beautiful colored tables with user statistics
-- **FIFO Co-Author Management**: Automatically removes oldest co-author when adding a third
-- **Multi-Provider Support**: Displays OAuth provider information (Google/GitHub)
-- **Safe Operations**: Confirmation prompts for destructive actions (bypass with --force)
-- **Flexible User Selection**: Target users by username, email, or user ID
-- **Comprehensive Summaries**: User counts, provider breakdowns, and role statistics
+### Authentication & Authorization
 
-## Contributing
+- **OAuth 2.0 Integration**: Secure authentication with Google and GitHub
+- **Session Management**: Secure session handling with Django's built-in security
+- **CSRF Protection**: Cross-Site Request Forgery protection on all forms
+- **Rate Limiting**: API endpoint protection against abuse
+- **Input Validation**: Comprehensive validation for all user inputs
+- **SQL Injection Protection**: Django ORM prevents SQL injection attacks
 
-We welcome contributions! Please follow these guidelines:
+## 📈 Performance Optimization
 
-### Development Workflow
+### Caching Strategy
 
-1. **Clone**
+- **3-hour Cache**: API data caching for GitHub and WakaTime requests
+- **Static File Optimization**: Efficient serving with WhiteNoise
+- **Database Optimization**: Efficient queries with select_related/prefetch_related
+- **Lazy Loading**: Performance-optimized content loading for images and components
+
+### Image Optimization
+
+- **WebP Format**: Modern image format with better compression
+- **Responsive Sizing**: Multiple image sizes for different screen resolutions
+- **CDN Integration**: Global content delivery for faster access
+- **Compression**: Automatic image compression without quality loss
+
+### Code Optimization
+
+- **Minified Assets**: Compressed CSS and JavaScript files
+- **Database Indexing**: Optimized database queries with proper indexing
+- **Async Loading**: Non-blocking loading for external resources
+- **Efficient Algorithms**: Optimized data processing and rendering
+
+## 🤝 Contributing
+
+We welcome contributions to FlexForge! Here's how you can help:
+
+### Getting Started
+
+1. **Fork the Repository**
 
    ```bash
-   git clone https://github.com/ridwaanhall/ridwaanhall-com.git
-   cd ridwaanhall-com
+   git fork https://github.com/ridwaanhall/ridwaanhall-com.git
    ```
 
-2. **Create Feature Branch**
+2. **Create a Feature Branch**
 
    ```bash
-   git checkout -b feature/your-feature-name
+   git checkout -b feature/amazing-feature
    ```
 
-3. **Development Setup**
-
-   ```bash
-   python -m venv venv
-   venv\Scripts\Activate.ps1  # PowerShell
-   # or venv\Scripts\activate for Command Prompt
-   # or source venv/bin/activate for macOS/Linux
-   pip install -r requirements.txt
-   ```
-
-4. **Make Changes**
-   - Follow PEP 8 style guidelines
+3. **Make Your Changes**
+   - Follow the existing code style and conventions
    - Add tests for new functionality
    - Update documentation as needed
 
-5. **Commit & Push**
+4. **Commit Your Changes**
 
    ```bash
-   git add .
-   git commit -m "feat: descriptive commit message"
-   git push origin feature/your-feature-name
+   git commit -m 'Add some amazing feature'
    ```
 
-6. **Create Pull Request**
-   - Provide clear description of changes
+5. **Push to Your Branch**
+
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+
+6. **Open a Pull Request**
+   - Provide a clear description of your changes
+   - Reference any related issues
    - Include screenshots for UI changes
-   - Reference related issues if applicable
 
-### Code Style Guidelines
+### Contribution Guidelines
 
-- Follow Django best practices
-- Use meaningful variable and function names
-- Add docstrings for complex functions
-- Maintain consistent indentation (4 spaces)
-- Keep line length under 88 characters
+- **Code Style**: Follow PEP 8 for Python code
+- **Documentation**: Update README and code comments
+- **Testing**: Ensure all tests pass and add new tests
+- **Security**: Follow security best practices
+- **Performance**: Consider performance impact of changes
 
-## License
+### Areas for Contribution
 
-This project is licensed under the Apache-2.0 license - see the [LICENSE](LICENSE) file for details.
+- **New Features**: Additional dashboard integrations, new page templates
+- **Bug Fixes**: Report and fix issues you encounter
+- **Documentation**: Improve setup guides and API documentation
+- **Performance**: Optimize loading times and resource usage
+- **Security**: Enhance security measures and best practices
+- **UI/UX**: Improve design and user experience
 
-## Contact & Support
+## 📄 License
 
-| Platform | Link |
-|----------|------|
-| **Website** | [ridwaanhall.com](https://ridwaanhall.com) |
-| **Email** | [hi@ridwaanhall.com](mailto:hi@ridwaanhall.com) |
-| **GitHub** | [@ridwaanhall](https://github.com/ridwaanhall) |
-| **LinkedIn** | [in/ridwaanhall](https://linkedin.com/in/ridwaanhall) |
-| **Twitter** | [@ridwaanhall](https://twitter.com/ridwaanhall) |
+This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
+
+### License Summary
+
+- ✅ **Commercial Use**: You can use this project for commercial purposes
+- ✅ **Modification**: You can modify the source code
+- ✅ **Distribution**: You can distribute the original or modified code
+- ✅ **Private Use**: You can use this project privately
+- ❗ **License and Copyright Notice**: Include the original license and copyright notice
+- ❗ **State Changes**: Document any changes made to the original code
+
+## 👨‍💻 Template Usage
+
+This is a template project designed to help developers create their own portfolio websites. To use this template:
+
+### Customization Steps
+
+1. **Personal Information**: Update personal details in `apps/data/about/`
+2. **Projects**: Add your projects in `apps/data/content/projects/`
+3. **Blog Posts**: Create your blog content in `apps/data/content/blog/`
+4. **Styling**: Customize colors and design in Tailwind CSS files
+5. **API Integration**: Set up your GitHub and WakaTime API keys
+6. **Domain Configuration**: Update environment variables for your domain
+
+### Support Resources
+
+- **Documentation**: Comprehensive guides in the `docs/` directory
+- **Examples**: Sample project and blog files included
+- **Community**: Join discussions in GitHub Issues
+- **Updates**: Follow the repository for latest improvements
+
+## 📞 Support & Community
+
+### Getting Help
+
+- **GitHub Issues**: [Create an issue](https://github.com/ridwaanhall/ridwaanhall-com/issues) for bugs or feature requests
+- **Discussions**: Join [GitHub Discussions](https://github.com/ridwaanhall/ridwaanhall-com/discussions) for questions and ideas
+- **Documentation**: Check the comprehensive guides in the `docs/` folder
+
+### Community Guidelines
+
+- Be respectful and inclusive in all interactions
+- Provide clear and detailed information when reporting issues
+- Search existing issues before creating new ones
+- Help others when you can share knowledge
 
 ---
 
-### Acknowledgments
+## Built with ❤️ using Django and Modern Web Technologies
 
-- Django community for the excellent framework and continuous innovation
-- TailwindCSS team for the utility-first CSS framework and exceptional developer experience
-- Vercel for the seamless deployment platform and global CDN infrastructure
-- GitHub and WakaTime for comprehensive API access and developer analytics
-- Cloudflare for enterprise-grade CDN and security services
-- The open-source community for inspiration and collaborative development
-
----
-
-## 🏆 Revolutionary Achievement Summary
-
-This portfolio represents more than just a personal website—it's a **technological showcase** that demonstrates advanced web development practices and innovative architecture solutions:
-
-### 🎯 **Technical Achievements**
-
-- ✅ **Individual File System**: Revolutionary modular architecture managing projects + blogs
-- ✅ **Performance Excellence**: 97/100 desktop, 91/100 mobile PageSpeed scores
-- ✅ **Enterprise Security**: Advanced CSP, HSTS, XSS protection, and comprehensive security headers
-- ✅ **API Integration**: Real-time GitHub and WakaTime analytics with live data visualization
-- ✅ **Interactive Guestbook**: Secure chat-like messaging with author/co-author system, multi-provider OAuth, and management commands
-- ✅ **Scalable Architecture**: Production-ready system supporting unlimited content growth
-
-### 📊 **Portfolio Statistics**
-
-| Component | Count | Achievement |
-|-----------|-------|-------------|
-| **Technical Projects** | **>47** | Individual file architecture |
-| **Blog Articles** | **>14** | Modular content management |
-| **Guestbook Messages** | **Live** | Real-time chat system |
-| **Performance Score** | **97/100** | Desktop PageSpeed excellence |
-| **Security Headers** | **A+** | Enterprise-grade protection |
-| **API Integrations** | **2+** | Real-time data analytics |
-
-### 🚀 **Innovation Highlights**
-
-- **🗂️ Individual File System**: Each project and blog exists as a separate Python file, revolutionizing content management
-- **⚡ Performance Optimization**: Sub-second loading times with intelligent caching and lazy loading
-- **🔒 Security Excellence**: Comprehensive security implementation with A+ ratings and XSS protection
-- **📊 Real-time Analytics**: Live GitHub contributions and WakaTime coding statistics
-- **💬 Interactive Guestbook**: Advanced messaging system with author/co-author roles, multi-provider OAuth (Google/GitHub), FIFO management, and CLI administration tools
-- **🎨 Modern UI/UX**: Responsive design with interactive animations and micro-interactions
-
-This project showcases the perfect blend of **technical innovation**, **professional execution**, and **scalable architecture**—representing the pinnacle of modern web development practices.
-
-**Built with ❤️ by [Ridwan Halim](https://ridwaanhall.com) - Pushing the boundaries of web development excellence**
+**FlexForge** - Empowering developers to showcase their skills with a professional, feature-rich portfolio platform.

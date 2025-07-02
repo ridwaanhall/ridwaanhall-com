@@ -31,8 +31,8 @@
 
             <div class="grid grid-cols-1 gap-6">
                 <!-- Guestbook Messages -->
-                <div class="border border-zinc-700 rounded-lg shadow-lg">
-                    <div class="bg-zinc-800 p-3 rounded-t-lg">
+                <div class="border border-zinc-700 rounded-lg shadow-lg flex flex-col">
+                    <div class="bg-zinc-800 p-3 rounded-t-lg flex-shrink-0">
                         <h4 class="text-lg font-medium flex items-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path
@@ -47,7 +47,7 @@
                         </h4>
                     </div>
                     <!-- Messages Container -->
-                    <div id="guestbook-messages" class="space-y-4 overflow-y-auto py-4 space-y-4 h-[60vh] max-h-[400px]">
+                    <div id="guestbook-messages" class="overflow-y-auto py-4 space-y-4 min-h-0 flex-1" style="max-height: min(55vh, 800px);">
                         {% if chat_messages %}
                             {% for message in chat_messages reversed %}
                             <div class="flex items-start gap-3 px-3" data-message-id="{{ message.pk }}">
@@ -226,7 +226,7 @@
                     </div>
 
                     <!-- Message Input -->
-                    <div class="border-t border-zinc-700 p-3">
+                    <div class="border-t border-zinc-700 p-3 flex-shrink-0">
                         {% if user.is_authenticated %}
                         <!-- Reply indicator -->
                         <div id="reply-indicator" class="hidden mb-3">

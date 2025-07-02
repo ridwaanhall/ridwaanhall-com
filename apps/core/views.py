@@ -125,7 +125,7 @@ class CVTemplateRedirectView(BaseView):
         Using permanent redirect (301) for better SEO and caching.
         """
         about_data = self.get_about_data()
-        template_url = about_data.get('cv_template')
+        template_url = about_data.get('cv_copy')
         
         if not template_url:
             # Fallback to homepage if CV template URL is not configured

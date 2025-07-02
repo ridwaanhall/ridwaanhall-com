@@ -140,7 +140,7 @@
                             <div class="flex flex-wrap items-center gap-1 sm:gap-2">
                                 <a
                                     href="{% url 'projects' %}"
-                                    class="relative group inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-700 hover:bg-zinc-600 transition-all duration-300 cursor-help shadow-sm hover:shadow-md"
+                                    class="relative group cursor-pointer inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-700 hover:bg-zinc-600 transition-all duration-300 cursor-help shadow-sm hover:shadow-md"
                                     aria-label="Back"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 48 48">
@@ -349,7 +349,7 @@
     <button
         id="toGitHub"
         onclick="window.location.href='{{ project.github_url }}'"
-        class="relative p-3 rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 translate-y-10 group"
+        class="relative p-3 cursor-pointer rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 translate-y-10 group"
         aria-label="Back"
     >
         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -368,7 +368,7 @@
     <button
         id="toDemo"
         onclick="window.location.href='{{ project.demo_url }}'"
-        class="relative p-3 rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 translate-y-10 group"
+        class="relative p-3 cursor-pointer rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 translate-y-10 group"
         aria-label="Live Demo"
     >
         <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
@@ -385,7 +385,7 @@
     {% endif %}
 
     <!-- Scroll to top button -->
-    <button id="scrollToTopBtn" class="relative p-3 rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 translate-y-10 group" aria-label="Scroll to top">
+    <button id="scrollToTopBtn" class="relative p-3 cursor-pointer rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 translate-y-10 group" aria-label="Scroll to top">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 48 48">
             <path
                 d="M22.77 2.46 3.59 17.42A2 2 0 0 0 4.82 21H17.5v4a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4h12.68a2 2 0 0 0 1.23-3.58L25.23 2.46a2 2 0 0 0-2.46 0ZM17.5 31a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-4ZM17.5 41a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v3a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2v-3Z"
@@ -402,7 +402,7 @@
     <button
         id="backToBtn"
         onclick="window.location.href='{% url 'projects' %}'"
-        class="relative p-3 rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 translate-y-10 group"
+        class="relative p-3 cursor-pointer rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 translate-y-10 group"
         aria-label="Back"
     >
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 48 48">

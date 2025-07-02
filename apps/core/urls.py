@@ -8,5 +8,5 @@ urlpatterns = [
     
     # Professional CV redirect endpoints
     path('cv/', views.CVRedirectView.as_view(), name='cv_redirect'),
-    path('cv-template/', views.CVTemplateRedirectView.as_view(), name='cv_template_redirect'),
+    path('cv-copy/', views.CVTemplateRedirectView.as_view(), name='cv_copy_redirect'),
 ]

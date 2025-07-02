@@ -708,41 +708,41 @@
                             message_id: messageId,
                         }),
                     })
-                        .then((response) => response.json())
-                        .then((data) => {
-                            if (data.success) {
-                                // Remove the message from the DOM - find the parent message container
-                                const messageElement = button.closest("[data-message-id]");
-                                if (messageElement) {
-                                    messageElement.style.transition = "all 0.3s ease";
-                                    messageElement.style.opacity = "0";
-                                    messageElement.style.transform = "translateX(-100%)";
-                                    setTimeout(() => {
-                                        messageElement.remove();
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            // Remove the message from the DOM - find the parent message container
+                            const messageElement = button.closest("[data-message-id]");
+                            if (messageElement) {
+                                messageElement.style.transition = "all 0.3s ease";
+                                messageElement.style.opacity = "0";
+                                messageElement.style.transform = "translateX(-100%)";
+                                setTimeout(() => {
+                                    messageElement.remove();
 
-                                        // Update message count
-                                        const messageCountBadge = document.getElementById("message-count");
-                                        if (messageCountBadge) {
-                                            const currentCount = parseInt(messageCountBadge.textContent.split(" ")[0]) || 0;
-                                            const newCount = Math.max(0, currentCount - 1);
-                                            messageCountBadge.textContent = `${newCount} messages`;
-                                        }
-                                    }, 300);
-                                }
-                            } else {
-                                alert("Error: " + (data.error || "Failed to delete message"));
-                                // Restore button
-                                button.disabled = false;
-                                button.innerHTML = originalContent;
+                                    // Update message count
+                                    const messageCountBadge = document.getElementById("message-count");
+                                    if (messageCountBadge) {
+                                        const currentCount = parseInt(messageCountBadge.textContent.split(" ")[0]) || 0;
+                                        const newCount = Math.max(0, currentCount - 1);
+                                        messageCountBadge.textContent = `${newCount} messages`;
+                                    }
+                                }, 300);
                             }
-                        })
-                        .catch((error) => {
-                            console.error("Error:", error);
-                            alert("Failed to delete message. Please try again.");
+                        } else {
+                            alert("Error: " + (data.error || "Failed to delete message"));
                             // Restore button
                             button.disabled = false;
                             button.innerHTML = originalContent;
-                        });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("Failed to delete message. Please try again.");
+                        // Restore button
+                        button.disabled = false;
+                        button.innerHTML = originalContent;
+                    });
                 }
             }
         });

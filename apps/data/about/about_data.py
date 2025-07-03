@@ -20,7 +20,7 @@ class AboutData:
             "username": "ridwaanhall",
             "image_url": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "personal_website": "https://ridwaanhall.com",
-            "cv": "https://drive.google.com/file/d/1nbd2qLm9W_N9ZJ1zuBef1SKENQ0ANQ1v",
+            "cv": "https://drive.google.com/file/d/17FaTvAPK273fzXa9ez36X1vDCuQRLM-1/view?usp=sharing",
             "cv_copy": "https://docs.google.com/document/d/1Sv2VQ95fDn-0a_8lOZxBuFAZ--gJrw7u5EQ-_SLUfpo/copy",
             "role": "Machine Learning Mentor",
             "is_active": cls.is_working_hours(),

@@ -6,7 +6,9 @@
         <meta name="robots" content="noindex" />
         <title>{% block title %}Error{% endblock %} - Ridwan Halim</title>
         {% load static %}
-        <script src="{% static 'tailwind/index.global.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'css/global.css' %}" />
+        <link rel="stylesheet" href="{% static 'font/Onest/Onest.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/clickRipple.css' %}" />
         <style>
             /* Optional: Add subtle transition for hover effects */
             button,
@@ -15,7 +17,7 @@
             }
         </style>
     </head>
-    <body class="bg-gradient-to-br from-zinc-900 to-zinc-800 text-zinc-300 min-h-screen font-sans">
+    <body class="bg-black text-zinc-300 min-h-screen">
         <div class="container mx-auto min-h-screen flex flex-col items-center justify-center px-4 py-12">
             <div class="w-full max-w-md bg-zinc-800/60 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-zinc-700/50">
                 <div class="text-center">

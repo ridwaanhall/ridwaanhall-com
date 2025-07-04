@@ -14,7 +14,7 @@ blog_data = {
     "image_url": f"{settings.BLOG_BASE_IMG_URL}/exoplanet_tale.webp",
     "img_name": "exoplanet_tale.webp",
     "created_at": datetime.strptime("2025-06-30T08:10:55+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-06-30T08:10:55+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-07-05T03:02:55+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",
     "username": "ridwaanhall",
     "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
@@ -25,7 +25,7 @@ blog_data = {
         "<p class='mb-2 text-sm md:text-base lg:text-lg'>And yet, beyond the numbers and diagrams, every exoplanet lights a spark that endures through time: <em>human imagination</em>. Could there be life out there? Strange sunrises? Civilizations gazing at their own stars, pondering the same questions?</p>",
         "<p class='mb-2 text-sm md:text-base lg:text-lg'>So, the next time night falls and you look up at the stars, remember—those glimmering dots may cradle their own spinning worlds, filled with stories we've yet to read.</p>"
     ],
-    "is_featured": True,
+    "is_featured": False,
     "tags": ['Astronomy', 'Exoplanets', 'Space Exploration', 'Science Storytelling'],
     "category": "Science & Space",
     "read_time": 4,

@@ -1,3 +1,6 @@
+from django.conf import settings
+
+
 class SkillsData:
     # Dictionary of all available skills with easy-to-use keys
     tech_stack = {
@@ -446,7 +449,12 @@ class SkillsData:
             "name": "timm",
             "description": "PyTorch image models library with pre-trained models",
             "icon_svg": ""
-        }
+        },
+        "allauth": {
+            "name": "Django Allauth",
+            "description": "Integrated set of Django applications addressing authentication, registration, account management as well as 3rd party (social) account authentication",
+            "icon_svg": f"{settings.BASE_URL}/static/svg/allauth.svg"
+        },
     }
     
     # Legacy list format for backward compatibility

@@ -32,13 +32,14 @@ project_data = {
         SkillsData.tech_stack["vercel"],
         SkillsData.tech_stack["github_api"],
         SkillsData.tech_stack["cloudflare"],
-        SkillsData.tech_stack["wakatime_api"]
+        SkillsData.tech_stack["wakatime_api"],
+        SkillsData.tech_stack["allauth"]
     ],
     "github_url": "https://github.com/ridwaanhall/ridwaanhall-com",
     "demo_url": "https://ridwaanhall.com",
     "status": "completed",
     "created_at": datetime.strptime("2025-03-16T12:03:09+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-07-02T19:32:09+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-07-04T12:57:44+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "portfolio",
     "tags": ["portfolio", "personal site", "django", "tailwindcss", "vercel", "dashboard"],
     "priority": 1,

@@ -1,6 +1,6 @@
 {% extends 'base_seo.html' %}
 {% block head_seo %}
-
+{% load static %}
 <title>{{ seo.title }}</title>
 
 <meta name="author" content="{{ about.username }}" />
@@ -99,6 +99,7 @@
                         <input
                             type="text"
                             name="q"
+                            id="searchInput"
                             value="{{ request.GET.q|default:'' }}"
                             placeholder="Search projects..."
                             class="w-full pl-3 pr-3 py-2 rounded-md text-zinc-300 hover:text-zinc-200 border border-zinc-700 hover:border-zinc-400 transition-all"
@@ -106,7 +107,8 @@
                     </div>
                     <button
                         type="submit"
-                        class="inline-flex cursor-pointer items-center justify-center px-3 py-2 rounded-md border border-zinc-700 bg-zinc-800 hover:border-zinc-400 hover:bg-zinc-900 hover:shadow-md hover:shadow-zinc-400/20 transition-all duration-300 text-sm font-semibold h-full whitespace-nowrap"
+                        id="searchButton"
+                        class="inline-flex items-center justify-center px-3 py-2 rounded-md border transition-all duration-300 text-sm font-semibold h-full whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <svg class="w-5 h-5 text-zinc-400 mr-1" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="11" cy="11" r="8"></circle>
@@ -276,4 +278,8 @@
         </div>
     </main>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/searchEnable.js' %}"></script>
 {% endblock %}

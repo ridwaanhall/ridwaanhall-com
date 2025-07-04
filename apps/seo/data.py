@@ -210,7 +210,7 @@ class SEOData:
         
         return {
             'title': "Privacy Policy - Because Traces Deserve Trust",
-            'description': "Your data matters here. We protect your traces with clarity and quiet intent.",
+            'description': "Your data matters here. I protect your traces with clarity and quiet intent.",
             'keywords': ', '.join(keywords),
             'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
             'og_type': 'website',

@@ -3,12 +3,12 @@ from datetime import datetime
 class PrivacyPolicyData:
     privacy_policy = {
         "last_updated": datetime.strptime("2025-06-29T01:48:45+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-        "overview": "We understand that your privacy is important. This policy explains how we collect, use, and protect your information when you visit our website.",
-        "policy_updates": "We might give this policy a refresh as the website evolves and grows. Major changes will be reflected in the last updated date above, and we'll do our best to notify users of significant privacy policy updates.",
+        "overview": "I understand that your privacy is important. This policy explains how I collect, use, and protect your information when you visit my website.",
+        "policy_updates": "I might give this policy a refresh as the website evolves and grows. Major changes will be reflected in the last updated date above, and I 'll do my best to notify users of significant privacy policy updates.",
         "data_collected": {
             "Cloudflare": {
                 "IP address": "Picked up for tracking purposes and security protection",
-                "Country": "Noted to understand our global audience and content localization",
+                "Country": "Noted to understand my global audience and content localization",
                 "ASN": "Grabbed to keep tabs on network details and prevent abuse",
                 "User agent": "Tracked to see how you're browsing and optimize compatibility",
                 "Method": "Logged to monitor interaction types and API usage",
@@ -17,7 +17,7 @@ class PrivacyPolicyData:
                 "Referrer information": "Collected to understand traffic sources and user navigation patterns"
             },
             "Google Analytics": {
-                "Country": "Noted to map out our worldwide visitors and content preferences",
+                "Country": "Noted to map out my worldwide visitors and content preferences",
                 "Region": "Logged to dive deeper into geographic trends and regional interests",
                 "City": "Tracked to get a vibe on urban engagement and local relevance",
                 "Language": "Picked up to tailor content for you and improve accessibility",
@@ -64,10 +64,10 @@ class PrivacyPolicyData:
             "Encryption": "All data transmission uses HTTPS encryption with secure cookies",
             "Retention": "Cache refreshes every 3 hours, session cookies expire after 1 hour",
             "Security Headers": "CSP, HSTS, and other security headers protect against attacks",
-            "Data Minimization": "We only collect data necessary for site functionality"
+            "Data Minimization": "I only collect data necessary for site functionality"
         },
         "user_rights": {
-            "Data Access": "Request details about what data we have collected about you",
+            "Data Access": "Request details about what data I have collected about you",
             "Data Deletion": "Delete your guestbook messages, profile data, or account",
             "Data Correction": "Update or correct any inaccurate personal information",
             "Opt-Out Options": "Disable tracking via browser settings, ad blockers, or Do Not Track",

@@ -47,7 +47,7 @@
                         </h4>
                     </div>
                     <!-- Messages Container -->
-                    <div id="guestbook-messages" class="overflow-y-auto py-4 space-y-4 min-h-0 flex-1" style="max-height: min(55vh, 800px);">
+                    <div id="guestbook-messages" class="overflow-y-auto py-4 space-y-4 flex-1" style="min-height: min(45vh, 600px); max-height: min(55vh, 800px);">
                         {% if chat_messages %}
                             {% for message in chat_messages reversed %}
                             <div class="flex items-start gap-3 px-3" data-message-id="{{ message.pk }}">

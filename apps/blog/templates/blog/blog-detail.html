@@ -9,7 +9,7 @@
                 <div class="flex flex-col mb-4 gap-3">
                     <div class="flex items-center gap-2 md:gap-3">
                         {% if blog.author_image %}
-                        <img src="{{ blog.author_image }}" alt="{{ blog.author }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full" width="358" height="358" />
+                        <img src="https://wsrv.nl/?url={{ blog.author_image }}&w=50&h=50" alt="{{ blog.author }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full" width="50" height="50" />
                         {% endif %}
                         <div class="flex flex-col">
                             <a href="https://bio.ridwaanhall.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center underline hover:text-zinc-200 hover:underline transition-colors duration-200 w-fit">

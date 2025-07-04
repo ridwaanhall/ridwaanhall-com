@@ -8,10 +8,10 @@
                     <div class="flex items-center justify-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
                         {% if award.logo %} {% if award.website %}
                         <a href="{{ award.website }}" target="_blank" rel="noopener" aria-label="Visit {{ award.institution }}" class="hover:scale-110 transition-transform duration-300">
-                            <img src="{{ award.logo }}" alt="{{ award.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow-md object-cover" />
+                            <img src="https://wsrv.nl/?url={{ award.logo }}&w=150&h=150" alt="{{ award.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow-md object-cover" />
                         </a>
                         {% else %}
-                        <img src="{{ award.logo }}" alt="{{ award.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow-md object-cover" />
+                        <img src="https://wsrv.nl/?url={{ award.logo }}&w=150&h=150" alt="{{ award.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow-md object-cover" />
                         {% endif %} {% else %} {% if award.website %}
                         <a href="{{ award.website }}" target="_blank" rel="noopener" aria-label="Visit {{ award.institution }}" class="hover:scale-110 transition-transform duration-300">
                             <svg class="w-12 h-12 sm:w-14 sm:h-14 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

@@ -9,10 +9,10 @@
                         {% if edu.logo %}
                             {% if edu.website %}
                                 <a href="{{ edu.website }}" target="_blank" rel="noopener" aria-label="Visit {{ edu.institution }}" class="hover:scale-110 transition-transform duration-300">
-                                    <img src="{{ edu.logo }}" alt="{{ edu.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-md object-cover" />
+                                    <img src="https://wsrv.nl/?url={{ edu.logo }}&w=150&h=150" alt="{{ edu.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-md object-cover" />
                                 </a>
                             {% else %}
-                            <img src="{{ edu.logo }}" alt="{{ edu.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-md object-cover" />
+                            <img src="https://wsrv.nl/?url={{ edu.logo }}&w=150&h=150" alt="{{ edu.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-md object-cover" />
                             {% endif %}
                         {% else %}
                         {% if edu.website %}

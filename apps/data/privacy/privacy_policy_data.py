@@ -2,10 +2,25 @@ from datetime import datetime
 
 class PrivacyPolicyData:
     privacy_policy = {
-        "last_updated": datetime.strptime("2025-06-29T01:48:45+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+        "last_updated": datetime.strptime("2025-07-05T16:03:45+07:00", "%Y-%m-%dT%H:%M:%S%z"),
         "overview": "I understand that your privacy is important. This policy explains how I collect, use, and protect your information when you visit my website.",
         "policy_updates": "I might give this policy a refresh as the website evolves and grows. Major changes will be reflected in the last updated date above, and I 'll do my best to notify users of significant privacy policy updates.",
         "data_collected": {
+            "Guestbook Feature": {
+                "User Authentication": "Handled via Google and GitHub OAuth for secure login",
+                "Profile Information": "Name, email, and profile picture from your OAuth provider",
+                "Message Content": "Text messages you post in the guestbook chat (max 500 characters)",
+                "Message Timestamps": "When you posted your messages for proper chronological display",
+                "User Roles": "Author and co-author status for content management purposes",
+                "Reply Associations": "Links between messages and their replies for threaded conversations",
+                "User Session Data": "Temporary session cookies for maintaining login state"
+            },
+            "Technical & Security Data": {
+                "Session Cookies": "Essential cookies for site functionality, authentication, and security (CSRF protection)",
+                "Security Headers": "Content Security Policy violations and security-related browser data",
+                "Navigation Patterns": "Page transitions and user flow data for UX optimization",
+                "Cache Performance": "Temporary data storage metrics for optimizing load times"
+            },
             "Cloudflare": {
                 "IP address": "Picked up for tracking purposes and security protection",
                 "Country": "Noted to understand my global audience and content localization",
@@ -25,21 +40,6 @@ class PrivacyPolicyData:
                 "Browser Information": "Gathered to ensure cross-browser compatibility",
                 "Page Views": "Tracked to understand content popularity and navigation patterns",
                 "Session Duration": "Monitored to analyze user engagement and content effectiveness"
-            },
-            "Guestbook Feature": {
-                "User Authentication": "Handled via Google and GitHub OAuth for secure login",
-                "Profile Information": "Name, email, and profile picture from your OAuth provider",
-                "Message Content": "Text messages you post in the guestbook chat (max 500 characters)",
-                "Message Timestamps": "When you posted your messages for proper chronological display",
-                "User Roles": "Author and co-author status for content management purposes",
-                "Reply Associations": "Links between messages and their replies for threaded conversations",
-                "User Session Data": "Temporary session cookies for maintaining login state"
-            },
-            "Technical & Security Data": {
-                "Session Cookies": "Essential cookies for site functionality, authentication, and security (CSRF protection)",
-                "Security Headers": "Content Security Policy violations and security-related browser data",
-                "Navigation Patterns": "Page transitions and user flow data for UX optimization",
-                "Cache Performance": "Temporary data storage metrics for optimizing load times"
             }
         },
         "data_usage": {

@@ -13,8 +13,9 @@ project_data = {
     "title": """OpenAI Chat Master""",
     "headline": """Get chatty with GPT-3.5 Turbo using Flask and Python swagger.""",
     "description": ['This project taps OpenAI’s API to craft killer conversational systems with GPT-3.5 Turbo.', 'Flask handles the backend, slinging HTTP requests for smooth AI-user vibes.', 'Shows off next-level NLP skills for sharp, accurate responses.'],
-    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/openai_api_dynamic_conversational_system.webp",
-    "img_name": "openai_api_dynamic_conversational_system.webp",
+    "images": {
+        "openai_api_dynamic_conversational_system.webp": f"{settings.PROJECT_BASE_IMG_URL}/openai_api_dynamic_conversational_system.webp"
+    },
     "is_featured": False,
     "features": [{'title': 'AI Chat Vibes', 'description': 'GPT-3.5 Turbo powers dope, engaging convos.'}, {'title': 'Flask Flex', 'description': 'Handles POST and GET requests like a champ.'}, {'title': 'NLP Game Strong', 'description': 'OpenAI’s tech delivers top-tier language processing.'}],
     "tech_stack": [

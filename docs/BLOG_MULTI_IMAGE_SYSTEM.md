@@ -7,6 +7,7 @@ The blog system now supports multiple images per blog post using an enhanced `im
 ## Image Data Structure
 
 ### New Format (Recommended)
+
 ```python
 blog_data = {
     "images": {
@@ -20,6 +21,7 @@ blog_data = {
 ```
 
 ### Legacy Format (Still Supported)
+
 ```python
 blog_data = {
     "image_url": f"{settings.BLOG_BASE_IMG_URL}/single-image.webp",
@@ -31,7 +33,9 @@ blog_data = {
 ## Available Template Features
 
 ### 1. Backward Compatibility Fields
+
 The system automatically generates these fields for existing templates:
+
 - `{{ blog.image_url }}` - First image URL
 - `{{ blog.img_name }}` - First image name
 - `{{ blog.image_list }}` - List of all image URLs
@@ -41,11 +45,13 @@ The system automatically generates these fields for existing templates:
 ### 2. Template Tags
 
 Load the template tags in your template:
+
 ```django
 {% load blog_tags %}
 ```
 
 #### Get Specific Image
+
 ```django
 <!-- Get image by name -->
 {{ blog|get_blog_image:"thumbnail.webp" }}
@@ -55,6 +61,7 @@ Load the template tags in your template:
 ```
 
 #### Check Multiple Images
+
 ```django
 {% if blog|has_multiple_images %}
     <p>This blog has {{ blog|blog_image_count }} images</p>
@@ -62,6 +69,7 @@ Load the template tags in your template:
 ```
 
 #### Image Gallery
+
 ```django
 <!-- Automatic gallery with thumbnails for multiple images -->
 {% blog_image_gallery blog "custom-css-class" %}
@@ -70,11 +78,13 @@ Load the template tags in your template:
 ### 3. Template Usage Examples
 
 #### Basic Single Image (Current Templates)
+
 ```django
 <img src="{{ blog.image_url }}" alt="{{ blog.title }}" />
 ```
 
 #### Enhanced Multi-Image Support
+
 ```django
 {% if blog|has_multiple_images %}
     {% blog_image_gallery blog "mb-4" %}
@@ -85,6 +95,7 @@ Load the template tags in your template:
 ```
 
 #### Custom Image Handling
+
 ```django
 {% for image_name in blog.image_names %}
     <img src="{{ blog|get_blog_image:image_name }}" alt="{{ blog.title }} - {{ image_name }}" />
@@ -94,10 +105,12 @@ Load the template tags in your template:
 ## Gallery Features
 
 ### Single Image
+
 - Displays as a standard responsive image
 - Same behavior as before for backward compatibility
 
 ### Multiple Images
+
 - Main image display with thumbnail strip below
 - Click thumbnails to switch main image
 - Responsive design with horizontal scroll for thumbnails
@@ -106,6 +119,7 @@ Load the template tags in your template:
 ## File Naming Conventions
 
 Recommended image naming patterns:
+
 - `main-hero.webp` - Primary/featured image
 - `gallery-1.webp`, `gallery-2.webp` - Additional gallery images
 - `thumbnail.webp` - Specific thumbnail if needed
@@ -114,13 +128,17 @@ Recommended image naming patterns:
 ## Migration Guide
 
 ### For Existing Templates
+
 No changes needed! The system maintains backward compatibility:
+
 - `{{ blog.image_url }}` still works
 - `{{ blog.img_name }}` still works
 
 ### For New Multi-Image Templates
+
 1. Load the template tags: `{% load blog_tags %}`
 2. Use conditional rendering:
+
    ```django
    {% if blog|has_multiple_images %}
        {% blog_image_gallery blog %}
@@ -130,7 +148,9 @@ No changes needed! The system maintains backward compatibility:
    ```
 
 ### For Blog Data Files
+
 Update your blog data to use the new `images` format:
+
 ```python
 # Old format
 "image_url": f"{settings.BLOG_BASE_IMG_URL}/image.webp",
@@ -146,6 +166,7 @@ Update your blog data to use the new `images` format:
 ## Technical Implementation
 
 The `BlogDataIndex.load_all_blogs()` method automatically:
+
 1. Processes the `images` dictionary
 2. Generates backward compatibility fields
 3. Adds helper fields for template use

@@ -2,7 +2,7 @@ from datetime import datetime
 
 class PrivacyPolicyData:
     privacy_policy = {
-        "last_updated": datetime.strptime("2025-07-05T16:03:45+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+        "last_updated": datetime.strptime("2025-07-06T16:03:45+07:00", "%Y-%m-%dT%H:%M:%S%z"),
         "overview": "I understand that your privacy is important. This policy explains how I collect, use, and protect your information when you visit my website.",
         "policy_updates": "I might give this policy a refresh as the website evolves and grows. Major changes will be reflected in the last updated date above, and I 'll do my best to notify users of significant privacy policy updates.",
         "data_collected": {
@@ -11,7 +11,6 @@ class PrivacyPolicyData:
                 "Profile Information": "Name, email, and profile picture from your OAuth provider",
                 "Message Content": "Text messages you post in the guestbook chat (max 500 characters)",
                 "Message Timestamps": "When you posted your messages for proper chronological display",
-                "User Roles": "Author and co-author status for content management purposes",
                 "Reply Associations": "Links between messages and their replies for threaded conversations",
                 "User Session Data": "Temporary session cookies for maintaining login state"
             },

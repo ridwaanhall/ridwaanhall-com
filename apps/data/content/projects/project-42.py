@@ -15,7 +15,7 @@ project_data = {
     "description": ['This API pulls fresh, juicy data from PDDikti, Indonesia’s higher ed database, covering universities, programs, and more.', 'Built for researchers and devs, it offers clear endpoints to snag structured info like accreditation stats.', 'Caching and optimizations keep it blazing fast under heavy traffic, with docs that make integration a breeze.'],
     "image_url": f"{settings.PROJECT_BASE_IMG_URL}/api_pddikti_kemendiksaintek.webp",
     "img_name": "api_pddikti_kemendiksaintek.webp",
-    "is_featured": True,
+    "is_featured": False,
     "features": [{'title': 'Edu Data', 'description': 'Easy access to uni and program info.'}, {'title': 'Dev-Friendly', 'description': 'Simple setup for coders.'}, {'title': 'Fresh Stats', 'description': 'Always-updated PDDikti data.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],
@@ -27,7 +27,7 @@ project_data = {
     "demo_url": "https://pddikti-docs.ridwaanhall.com/",
     "status": "completed",
     "created_at": None,
-    "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-07-06T16:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "API, Education, Data Integration",
     "tags": [
         "API",

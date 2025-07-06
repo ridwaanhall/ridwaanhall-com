@@ -5,7 +5,7 @@
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=flat&logo=vercel&logoColor=white)](https://vercel.com/)
 
-![FlexForge Portfolio](public/ridwaanhall_com.png)
+![FlexForge Portfolio](https://ridwaanhall.com/static/img/project/ridwaanhall_com_2025070701.webp)
 
 > **A cutting-edge personal portfolio template showcasing advanced web development practices, featuring a revolutionary individual file data management system, real-time API integrations, and enterprise-grade performance optimization.**
 
@@ -649,9 +649,6 @@ python manage.py migrate
 
 # Create superuser (optional)
 python manage.py createsuperuser
-
-# Collect static files
-python manage.py collectstatic --noinput
 ```
 
 ## 📊 Dashboard Integration

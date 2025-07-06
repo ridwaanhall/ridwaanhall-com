@@ -163,7 +163,7 @@
                         <p class="text-sm text-zinc-400 text-center">{{ blog|blog_image_count }} image{{ blog|blog_image_count|pluralize }} • Click thumbnails to view</p>
                     {% else %}
                         <!-- Single image display (backward compatible) -->
-                        <div class="aspect-video rounded-lg md:rounded-xl overflow-hidden">
+                        <div class="aspect-video rounded-lg md:rounded-xl overflow-hidden border border-zinc-700 shadow-lg shadow-zinc-900">
                             <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover" loading="lazy" />
                         </div>
                     {% endif %}
@@ -234,4 +234,5 @@
 {% block scripts %}
 <script src="{% static 'js/copyToClipboard.js' %}"></script>
 <script src="{% static 'js/backScroll.js' %}"></script>
+<script src="{% static 'js/blogImageSlider.js' %}"></script>
 {% endblock %}

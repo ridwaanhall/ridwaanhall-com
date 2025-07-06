@@ -1,13 +1,13 @@
 {% comment %}
 Blog Image Gallery Partial Template
-Renders multiple images in a responsive gallery layout
+Renders multiple images with slider functionality similar to featured blogs
 {% endcomment %}
 
 {% if images %}
 <div class="blog-image-gallery {{ class_name }}">
     {% if images|length == 1 %}
         <!-- Single image display -->
-        <div class="aspect-video rounded-lg md:rounded-xl overflow-hidden">
+        <div class="aspect-video rounded-lg md:rounded-xl overflow-hidden border border-zinc-700 shadow-lg shadow-zinc-900">
             <img 
                 src="{{ images.0.url }}" 
                 alt="{{ images.0.alt }}" 
@@ -16,62 +16,49 @@ Renders multiple images in a responsive gallery layout
             />
         </div>
     {% else %}
-        <!-- Multiple images gallery -->
-        <div class="grid gap-3 mb-6">
-            <!-- Main image -->
-            <div class="aspect-video rounded-lg md:rounded-xl overflow-hidden">
-                <img 
-                    id="main-gallery-image"
-                    src="{{ images.0.url }}" 
-                    alt="{{ images.0.alt }}" 
-                    class="w-full h-full object-cover transition-opacity duration-300" 
-                    loading="lazy" 
-                />
+        <!-- Multiple images slider -->
+        <div class="relative mb-4 overflow-hidden rounded-lg md:rounded-xl border border-zinc-700 shadow-lg shadow-zinc-900">
+            <div class="blog-slider-container relative">
+                <div class="blog-slider-wrapper flex transition-transform duration-500 ease-in-out">
+                    {% for image in images %}
+                    <div class="blog-slide w-full flex-shrink-0 relative aspect-video">
+                        <img src="{{ image.url }}" alt="{{ image.alt }}" class="w-full h-full object-cover object-center" loading="lazy" />
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Navigation buttons -->
+                <div class="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 z-30 flex space-x-1 sm:space-x-2">
+                    <button
+                        class="blog-slider-nav blog-prev bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
+                        title="Previous Image"
+                    >
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    <button
+                        class="blog-slider-nav blog-next bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
+                        title="Next Image"
+                    >
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Dots indicator -->
+                <div class="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex space-x-1 sm:space-x-2">
+                    {% for image in images %}
+                        {% if forloop.first %}
+                            <button class="blog-slider-dot bg-zinc-300 w-4 h-1.5 sm:h-2 rounded-full hover:bg-zinc-300 transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Image {{ forloop.counter }}"></button>
+                        {% else %}
+                            <button class="blog-slider-dot bg-zinc-300/50 w-1.5 h-1.5 sm:h-2 rounded-full hover:bg-zinc-300 transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Image {{ forloop.counter }}"></button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
-            
-            <!-- Thumbnail strip -->
-            {% if images|length > 1 %}
-            <div class="flex gap-2 overflow-x-auto scrollbar-hide">
-                {% for image in images %}
-                <button 
-                    type="button"
-                    class="gallery-thumb flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 {% if forloop.first %}border-blue-500{% else %}border-zinc-600 hover:border-zinc-400{% endif %}"
-                    data-image-url="{{ image.url }}"
-                    data-image-alt="{{ image.alt }}"
-                    onclick="switchGalleryImage(this)"
-                >
-                    <img 
-                        src="{{ image.url }}" 
-                        alt="{{ image.alt }} thumbnail" 
-                        class="w-full h-full object-cover"
-                        loading="lazy"
-                    />
-                </button>
-                {% endfor %}
-            </div>
-            {% endif %}
         </div>
-        
-        <!-- JavaScript for gallery functionality -->
-        <script>
-        function switchGalleryImage(thumb) {
-            const mainImage = document.getElementById('main-gallery-image');
-            const newUrl = thumb.dataset.imageUrl;
-            const newAlt = thumb.dataset.imageAlt;
-            
-            // Update main image
-            mainImage.src = newUrl;
-            mainImage.alt = newAlt;
-            
-            // Update thumbnail borders
-            document.querySelectorAll('.gallery-thumb').forEach(t => {
-                t.classList.remove('border-blue-500');
-                t.classList.add('border-zinc-600');
-            });
-            thumb.classList.remove('border-zinc-600');
-            thumb.classList.add('border-blue-500');
-        }
-        </script>
     {% endif %}
 </div>
 {% endif %}

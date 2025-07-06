@@ -11,8 +11,9 @@ blog_data = {
     "id": 1,
     "title": """Python 101: Your Chill Guide to Getting Started""",
     "description": """New to coding? Let's dive into why Python's the coolest way to kick off your programming adventure!""",
-    "image_url": f"{settings.BLOG_BASE_IMG_URL}/start_with_python.webp",
-    "img_name": "start_with_python.webp",
+    "images": {
+        "start_with_python.webp": f"{settings.BLOG_BASE_IMG_URL}/start_with_python.webp",
+    },
     "created_at": datetime.strptime("2025-03-24T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-05-10T13:13:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",

@@ -11,8 +11,9 @@ blog_data = {
     "id": 15,
     "title": """Coding Camp – Building Future-Ready Talent with DBS Foundation""",
     "description": """Explore how this nationwide initiative equips students across Indonesia with high-demand tech skills, professional readiness, and meaningful support.""",
-    "image_url": f"{settings.BLOG_BASE_IMG_URL}/coding_camp_dbs_dicoding.webp",
-    "img_name": "coding_camp_dbs_dicoding.webp",
+    "images": {
+        "coding_camp_dbs_dicoding.webp": f"{settings.BLOG_BASE_IMG_URL}/coding_camp_dbs_dicoding.webp"
+    },
     "created_at": datetime.strptime("2025-06-29T02:35:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-06-29T02:35:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",

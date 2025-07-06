@@ -11,8 +11,9 @@ blog_data = {
     "id": 16,
     "title": """What Is an Exoplanet? – A Tale from Beyond Our Sky""",
     "description": """Venture into distant star systems as we uncover what exoplanets are and how they fuel our cosmic curiosity.""",
-    "image_url": f"{settings.BLOG_BASE_IMG_URL}/exoplanet_tale.webp",
-    "img_name": "exoplanet_tale.webp",
+    "images": {
+        "exoplanet_tale.webp": f"{settings.BLOG_BASE_IMG_URL}/exoplanet_tale.webp"
+    },
     "created_at": datetime.strptime("2025-06-30T08:10:55+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-07-05T03:02:55+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",

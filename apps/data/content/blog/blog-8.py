@@ -11,8 +11,9 @@ blog_data = {
     "id": 8,
     "title": """Nail Your Git Game with Conventional Commits""",
     "description": """Make your commit messages pop with style and clarity—tell your code's story like a pro!""",
-    "image_url": f"{settings.BLOG_BASE_IMG_URL}/conventional_commits_guide.webp",
-    "img_name": "conventional_commits_guide.webp",
+    "images": {
+        "conventional_commits_guide.webp": f"{settings.BLOG_BASE_IMG_URL}/conventional_commits_guide.webp"
+    },
     "created_at": datetime.strptime("2025-04-04T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-05-10T16:21:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",

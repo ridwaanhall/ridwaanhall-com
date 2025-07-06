@@ -11,8 +11,9 @@ blog_data = {
     "id": 3,
     "title": """Neural Nets Made Easy with TensorFlow & Keras""",
     "description": """Ready to build AI that sees and thinks? Let's get rolling with TensorFlow and Keras for some deep learning fun!""",
-    "image_url": f"{settings.BLOG_BASE_IMG_URL}/deep_learning_with_tensorflow_and_keras.webp",
-    "img_name": "deep_learning_with_tensorflow_and_keras.webp",
+    "images": {
+        "deep_learning_with_tensorflow_and_keras.webp": f"{settings.BLOG_BASE_IMG_URL}/deep_learning_with_tensorflow_and_keras.webp"
+    },
     "created_at": datetime.strptime("2025-03-24T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-05-10T14:56:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",

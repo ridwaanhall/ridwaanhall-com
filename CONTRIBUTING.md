@@ -366,7 +366,7 @@ If applicable, add screenshots.
 - OS: [e.g. Windows 11]
 - Browser: [e.g. Chrome 91]
 - Python Version: [e.g. 3.12]
-- Django Version: [e.g. 5.2.2]
+- Django Version: [e.g. 5.2.4]
 ```
 
 ### Feature Requests

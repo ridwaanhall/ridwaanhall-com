@@ -1,7 +1,7 @@
 # 🗂️ Individual File System Architecture Documentation
 
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org/)
-[![Django](https://img.shields.io/badge/Django-5.2.2-092E20?style=flat&logo=django&logoColor=white)](https://djangoproject.com/)
+[![Django](https://img.shields.io/badge/Django-5.2.4-092E20?style=flat&logo=django&logoColor=white)](https://djangoproject.com/)
 [![Modular Architecture](https://img.shields.io/badge/Architecture-Modular_Files-success?style=flat&logo=files&logoColor=white)](https://github.com/ridwaanhall/ridwaanhall-com)
 
 > **Revolutionary data management system that transforms content organization through individual file architecture, showcasing enterprise-grade modularity and scalability.**

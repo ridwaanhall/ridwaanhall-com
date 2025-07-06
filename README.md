@@ -1,6 +1,6 @@
 # 🚀 FlexForge - Advanced Developer Portfolio Platform
 
-[![Django](https://img.shields.io/badge/Django-5.2.2-092E20?style=flat&logo=django&logoColor=white)](https://djangoproject.com/)
+[![Django](https://img.shields.io/badge/Django-5.2.4-092E20?style=flat&logo=django&logoColor=white)](https://djangoproject.com/)
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=flat&logo=vercel&logoColor=white)](https://vercel.com/)
@@ -124,7 +124,7 @@ apps/data/                 # 🗂️ INDIVIDUAL FILE SYSTEM (Revolutionary!)
 
 #### Backend Framework
 
-- **Django 5.2.2**: Modern Python web framework with advanced features
+- **Django 5.2.4**: Modern Python web framework with advanced features
 - **Individual File System**: Revolutionary modular data architecture in `apps/data/content/`
 - **Modular App Structure**: Organized into focused Django applications
   - `core`: Homepage and base functionality with DataService integration
@@ -160,7 +160,7 @@ apps/data/                 # 🗂️ INDIVIDUAL FILE SYSTEM (Revolutionary!)
 
 | Component | Technologies | Purpose |
 |-----------|-------------|---------|
-| **Backend** | ![Python](https://img.shields.io/badge/-Python_3.12-05122A?style=flat&logo=python) ![Django](https://img.shields.io/badge/-Django_5.2.2-05122A?style=flat&logo=django) | Individual file system architecture |
+| **Backend** | ![Python](https://img.shields.io/badge/-Python_3.12-05122A?style=flat&logo=python) ![Django](https://img.shields.io/badge/-Django_5.2.4-05122A?style=flat&logo=django) | Individual file system architecture |
 | **Frontend** | ![TailwindCSS](https://img.shields.io/badge/-TailwindCSS-05122A?style=flat&logo=tailwindcss) ![JavaScript](https://img.shields.io/badge/-JavaScript-05122A?style=flat&logo=javascript) | Modern responsive UI/UX |
 | **Data Management** | ![Individual Files](https://img.shields.io/badge/-Individual_Files-05122A?style=flat&logo=files) ![Python Modules](https://img.shields.io/badge/-Python_Modules-05122A?style=flat&logo=python) | Revolutionary modular architecture |
 | **APIs** | ![GitHub API](https://img.shields.io/badge/-GitHub_API-05122A?style=flat&logo=github) ![WakaTime API](https://img.shields.io/badge/-WakaTime_API-05122A?style=flat&logo=wakatime) | Real-time developer analytics |
@@ -171,7 +171,7 @@ apps/data/                 # 🗂️ INDIVIDUAL FILE SYSTEM (Revolutionary!)
 
 ### Backend
 
-- **Django 5.2.2** - Modern Python web framework
+- **Django 5.2.4** - Modern Python web framework
 - **Python 3.12** - Latest Python runtime
 - **SQLite/PostgreSQL** - Database options for development and production
 - **WhiteNoise** - Static file serving

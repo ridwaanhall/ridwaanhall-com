@@ -231,6 +231,7 @@ class GitHubContributions {
             let monthLabel = this.MONTH_NAMES[pos.month];
 
             const isFirstMonth = index === 0;
+            const isLastMonth = index === monthPositions.length - 1;
             const currentMonthWeekCount = monthPositions.filter((p) => p.month === pos.month && p.year === pos.year).length;
             const isEndOfMonthScenario = currentMonthWeekCount === 1 && pos.firstDayOfMonth > 25;
 
@@ -241,6 +242,21 @@ class GitHubContributions {
                 return; // Skip rendering this label
             }
 
+            // Special handling for last month in the year period
+            if (isLastMonth) {
+                // If it's the last month and it's in the last few weeks (week >= 50),
+                // only show label if there are at least 2 weeks AND
+                // the month started early enough in the week to warrant a label
+                if (pos.week >= 50) {
+                    // If this is just 1 week of the month at the end, don't show label
+                    if (pos.weekCount < 2) {
+                        return;
+                    }
+                    // If it has 2+ weeks, show the label at the earliest week (first week of the month)
+                    offsetWeek = pos.week;
+                }
+            }
+
             if (isFirstMonth && isEndOfMonthScenario) {
                 const nextMonth = (pos.month + 1) % 12;
                 const nextYear = pos.month === 11 ? pos.year + 1 : pos.year;
@@ -249,7 +265,7 @@ class GitHubContributions {
                 processedMonths.add(monthKey);
                 const nextMonthKey = `${nextYear}-${nextMonth}`;
                 processedMonths.add(nextMonthKey);
-            } else if (isEndOfMonthScenario && !isFirstMonth) {
+            } else if (isEndOfMonthScenario && !isFirstMonth && !isLastMonth) {
                 const nextMonth = (pos.month + 1) % 12;
                 const nextYear = pos.month === 11 ? pos.year + 1 : pos.year;
                 monthLabel = this.MONTH_NAMES[nextMonth];
@@ -257,7 +273,7 @@ class GitHubContributions {
 
                 const nextMonthKey = `${nextYear}-${nextMonth}`;
                 processedMonths.add(nextMonthKey);
-            } else if (!isFirstMonth && !isSundayOrMondayStart) {
+            } else if (!isFirstMonth && !isSundayOrMondayStart && !isLastMonth) {
                 offsetWeek = Math.min(pos.week + 1, this.WEEKS_IN_YEAR - 1);
             }
 

@@ -13,8 +13,9 @@ project_data = {
     "title": """College Data Scout API (Unofficial PDDIKTI)""",
     "headline": """Dig into Indonesian college stats like a pro with this Flask-powered API.""",
     "description": ['This Flask API is your go-to for snagging data on Indonesian colleges, students, lecturers, and programs.', 'Easily pull student names, IDs, lecturer profiles, or program details in a snap.', 'Perfect for researchers or devs who want quick, clean access to higher ed data.'],
-    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/college_insights_api.webp",
-    "img_name": "college_insights_api.webp",
+    "images": {
+        "college_insights_api.webp": f"{settings.PROJECT_BASE_IMG_URL}/college_insights_api.webp"
+    },
     "is_featured": False,
     "features": [{'title': 'Student Scoop', 'description': 'Fetch names, IDs, and more for students.'}, {'title': 'Lecturer Lowdown', 'description': 'Grab lecturer names, IDs, and profiles.'}, {'title': 'Program Playbook', 'description': 'Dive into study programs and college details.'}],
     "tech_stack": [

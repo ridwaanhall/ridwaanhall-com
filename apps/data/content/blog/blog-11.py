@@ -11,8 +11,9 @@ blog_data = {
     "id": 11,
     "title": """What's Good with Brainrot in 2025?""",
     "description": """Brainrot's takin' over the internet in 2025, and it's WILD! From cursed memes to AI vids and slang that's got no chill, here's the tea on what brainrot is and how to not lose your mind in the chaos.""",
-    "image_url": f"{settings.BLOG_BASE_IMG_URL}/brainrot_explained_2025.webp",
-    "img_name": "brainrot_explained_2025.webp",
+    "images": {
+        "brainrot_explained_2025.webp": f"{settings.BLOG_BASE_IMG_URL}/brainrot_explained_2025.webp"
+    },
     "created_at": datetime.strptime("2025-04-21T20:24:34+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-05-11T14:06:56+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",

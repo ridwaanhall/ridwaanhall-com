@@ -36,9 +36,26 @@ class ProjectsDataIndex:
                 if hasattr(module, 'project_data'):
                     project_data = module.project_data.copy()
                     
+                    # Process images for backward compatibility and multi-image support
+                    if 'images' in project_data and project_data['images']:
+                        # Get the first image URL for backward compatibility
+                        first_image_url = list(project_data['images'].values())[0]
+                        first_image_name = list(project_data['images'].keys())[0]
+                        
+                        # Add backward compatibility fields
+                        project_data['image_url'] = first_image_url
+                        project_data['img_name'] = first_image_name
+                        
+                        # Add helper fields for multiple images
+                        project_data['image_list'] = list(project_data['images'].values())
+                        project_data['image_names'] = list(project_data['images'].keys())
+                        project_data['image_count'] = len(project_data['images'])
+                        
+                        # Add a helper method to get image by name
+                        project_data['get_image'] = lambda name: project_data['images'].get(name, '')
+                    
                     # Resolve tech_stack keys to full objects
                     if 'tech_stack' in project_data:
-                        from apps.data.about.skills_data import SkillsData
                         # Extract the key references and resolve them
                         tech_keys = []
                         for tech in project_data['tech_stack']:

@@ -13,8 +13,9 @@ project_data = {
     "title": """BMKG Quake Watcher API (Unofficial)""",
     "headline": """Stay in the loop with real-time earthquake and tsunami updates via Flask.""",
     "description": ['This Flask-based API dishes out earthquake data in XML, JSON, and GeoJSON formats, no cap.', 'Covers quakes over 5 magnitude, recent tremors, tsunami alerts, and seismic news.', 'A must-have for researchers, devs, or anyone vibing with quake info.'],
-    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/bmkg_quake_tracker_api.webp",
-    "img_name": "bmkg_quake_tracker_api.webp",
+    "images": {
+        "bmkg_quake_tracker_api.webp": f"{settings.PROJECT_BASE_IMG_URL}/bmkg_quake_tracker_api.webp"
+    },
     "is_featured": False,
     "features": [{'title': 'Flexi-Format Data', 'description': 'Grab quake info in XML, JSON, or GeoJSON—your pick.'}, {'title': 'Live Alerts', 'description': 'Stay woke with real-time tsunami and seismic updates.'}, {'title': 'Data Deep Dive', 'description': 'Get magnitude, location, PGA Max, MMI, and more.'}],
     "tech_stack": [

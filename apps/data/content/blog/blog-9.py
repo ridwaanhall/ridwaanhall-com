@@ -11,8 +11,9 @@ blog_data = {
     "id": 9,
     "title": """How I Picked the Perfect Domain for My Site""",
     "description": """The wild ride of choosing between .dev, .com, and .id for ridwaanhall.com—here's the tea!""",
-    "image_url": f"{settings.BLOG_BASE_IMG_URL}/choosing_domain.webp",
-    "img_name": "choosing_domain.webp",
+    "images": {
+        "choosing_domain.webp": f"{settings.BLOG_BASE_IMG_URL}/choosing_domain.webp"
+    },
     "created_at": datetime.strptime("2025-04-13T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-05-10T13:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",

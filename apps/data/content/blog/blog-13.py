@@ -11,8 +11,9 @@ blog_data = {
     "id": 13,
     "title": """Complete Guide to Modern Web Development in 2025""",
     "description": """Master modern web development with our comprehensive guide covering frontend frameworks, backend technologies, and DevOps practices for building powerful web applications.""",
-    "image_url": f"{settings.BLOG_BASE_IMG_URL}/modern_web_dev_guide.webp",
-    "img_name": "modern_web_dev_guide.webp",
+    "images": {
+        "modern_web_dev_guide.webp": f"{settings.BLOG_BASE_IMG_URL}/modern_web_dev_guide.webp"
+    },
     "created_at": datetime.strptime("2025-05-10T11:05:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-05-10T11:05:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",

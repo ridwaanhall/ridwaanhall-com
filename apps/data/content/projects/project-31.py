@@ -13,8 +13,9 @@ project_data = {
     "title": """NGL Link Spam""",
     "headline": """Python script to fire off NGL messages, no login required.""",
     "description": ['This Python tool lets you send custom or random messages to NGL without needing an account.', 'Flexes web requests and API skills, automating what’s usually a manual grind.', 'Keeps it cool with built-in rate limits to dodge spamming headaches.'],
-    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/ngl_link_spamming.webp",
-    "img_name": "ngl_link_spamming.webp",
+    "images": {
+        "ngl_link_spamming.webp": f"{settings.PROJECT_BASE_IMG_URL}/ngl_link_spamming.webp"
+    },
     "is_featured": False,
     "features": [{'title': 'Custom Messages', 'description': 'Drop your own texts with zero hassle.'}, {'title': 'Random Texts', 'description': 'Generate quirky messages for kicks.'}, {'title': 'No Login', 'description': 'Jump straight to messaging, no sign-up needed.'}],
     "tech_stack": [

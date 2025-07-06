@@ -1,5 +1,6 @@
 {% extends 'base_seo.html' %}
 {% load static %}
+{% load project_tags %}
 {% block head_seo %}
 
 <title>{{ seo.title }}</title>
@@ -230,29 +231,37 @@
                             </div>
                         </div>
 
-                        <!-- Project Image -->
-                        {% if project.image_url %}
-                        <div class="w-full">
-                            <div class="w-full rounded-lg overflow-hidden shadow-xl transform transition-all duration-500 border border-zinc-800">
-                                <div class="relative w-full">
-                                    <div class="absolute top-0 left-0 right-0 h-8 sm:h-10 flex items-center px-3 sm:px-4 z-10">
-                                        <div class="flex items-center gap-1 sm:gap-1.5">
-                                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500"></div>
-                                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
-                                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
+                        <!-- Project Image(s) -->
+                        {% if project|has_multiple_images %}
+                            <!-- Use gallery for multiple images -->
+                            <div class="w-full">
+                                {% project_image_gallery project %}
+                                <p class="text-sm text-zinc-400 text-center mt-2">{{ project|project_image_count }} image{{ project|project_image_count|pluralize }} • Use arrows or dots to navigate</p>
+                            </div>
+                        {% elif project.image_url %}
+                            <!-- Single image display (backward compatible) -->
+                            <div class="w-full">
+                                <div class="w-full rounded-lg overflow-hidden shadow-xl transform transition-all duration-500 border border-zinc-800">
+                                    <div class="relative w-full">
+                                        <div class="absolute top-0 left-0 right-0 h-8 sm:h-10 flex items-center px-3 sm:px-4 z-10">
+                                            <div class="flex items-center gap-1 sm:gap-1.5">
+                                                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500"></div>
+                                                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
+                                                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
+                                            </div>
+                                            <span class="ml-auto text-xs hidden sm:block">{{ project.img_name }}</span>
                                         </div>
-                                        <span class="ml-auto text-xs hidden sm:block">{{ project.img_name }}</span>
+                                        <div class="aspect-video">
+                                            <img
+                                                src="{{ project.image_url }}"
+                                                alt="{{ project.title }}"
+                                                class="w-full h-full object-cover object-center"
+                                                loading="lazy"
+                                            />
+                                        </div>
                                     </div>
-                                    <img
-                                        src="{{ project.image_url }}"
-                                        alt="{{ project.title }}"
-                                        class="w-full h-full object-cover rounded-b-lg shadow-lg transition-transform duration-700 hover:scale-105"
-                                        style="min-height: 200px;"
-                                        loading="lazy"
-                                    />
                                 </div>
                             </div>
-                        </div>
                         {% endif %}
                     </div>
                 </div>
@@ -418,4 +427,5 @@
 {% endblock %}
 {% block scripts %}
 <script src="{% static 'js/backScroll.js' %}"></script>
+<script src="{% static 'js/projectImageSlider.js' %}"></script>
 {% endblock %}

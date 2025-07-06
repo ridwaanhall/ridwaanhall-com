@@ -13,8 +13,9 @@ project_data = {
     "title": """Electricity Demand Forecaster""",
     "headline": """Tap into RNNs to nail super-accurate electricity demand predictions.""",
     "description": ['This project rocks Recurrent Neural Networks (RNNs) like LSTM and GRU to forecast electricity demand with serious precision.', 'Trained on historical demand data, mixed with weather and calendar features for max accuracy.', 'Perfect for showcasing how RNNs can level up energy management with killer temporal insights.'],
-    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/time_series_forecasting_rnn.webp",
-    "img_name": "time_series_forecasting_rnn.webp",
+    "images": {
+        "time_series_forecasting_rnn.webp": f"{settings.PROJECT_BASE_IMG_URL}/time_series_forecasting_rnn.webp"
+    },
     "is_featured": False,
     "features": [{'title': 'RNN Powerhouse', 'description': 'LSTM and GRU models crush it at capturing time-based patterns.'}, {'title': 'Loaded Dataset', 'description': 'Blends historical demand, weather, and calendar data for sharp predictions.'}, {'title': 'Energy Game-Changer', 'description': 'Delivers spot-on forecasts for real-world energy planning.'}],
     "tech_stack": [

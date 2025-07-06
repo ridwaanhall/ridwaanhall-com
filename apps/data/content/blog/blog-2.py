@@ -11,8 +11,9 @@ blog_data = {
     "id": 2,
     "title": """Whipping Up Web Apps with Django's Magic""",
     "description": """See how Django's all-in-one toolkit makes building secure, speedy web apps a total breeze.""",
-    "image_url": f"{settings.BLOG_BASE_IMG_URL}/building_web_applications_with_django.webp",
-    "img_name": "building_web_applications_with_django.webp",
+    "images": {
+        "building_web_applications_with_django.webp": f"{settings.BLOG_BASE_IMG_URL}/building_web_applications_with_django.webp"
+    },
     "created_at": datetime.strptime("2025-03-24T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-05-10T14:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",

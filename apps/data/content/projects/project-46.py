@@ -19,8 +19,9 @@ project_data = {
         'Slick interactive charts let you visualize trends without wading through boring data.',
         'Whether you’re a hardcore investor or just vibing with gold prices, this tool keeps you plugged in with fresh, reliable updates.'
     ],
-    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/indonesia_gold_price_tracker.webp",
-    "img_name": "indonesia_gold_price_tracker.webp",
+    "images": {
+        "indonesia_gold_price_tracker.webp": f"{settings.PROJECT_BASE_IMG_URL}/indonesia_gold_price_tracker.webp"
+    },
     "is_featured": False,
     "features": [
         {'title': 'Live Price Drops', 'description': 'Gold prices updated on the regular to keep you in sync with the market.'},

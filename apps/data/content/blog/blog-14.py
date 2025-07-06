@@ -11,8 +11,9 @@ blog_data = {
     "id": 14,
     "title": """Top 6 Asian Countries with Better Governance and Religious Harmony""",
     "description": """Exploring Asian nations with strong governance, low corruption, and religious tolerance for Indonesians seeking alternatives.""",
-    "image_url": f"{settings.BLOG_BASE_IMG_URL}/asian_nations_comparison.webp",
-    "img_name": "asian_nations_comparison.webp",
+    "images": {
+        "asian_nations_comparison.webp": f"{settings.BLOG_BASE_IMG_URL}/asian_nations_comparison.webp"
+    },
     "created_at": datetime.strptime("2025-05-10T12:17:08+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-05-10T12:17:08+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",

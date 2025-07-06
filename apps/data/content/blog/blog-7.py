@@ -11,8 +11,9 @@ blog_data = {
     "id": 7,
     "title": """Eid al-Fitr: Celebrating the Prophet's Way""",
     "description": """Dive into how Prophet Muhammad (PBUH) rocked Eid al-Fitr with joy, faith, and community love.""",
-    "image_url": f"{settings.BLOG_BASE_IMG_URL}/eid_al_fitr_prophetic_way.webp",
-    "img_name": "eid_al_fitr_prophetic_way.webp",
+    "images": {
+        "eid_al_fitr_prophetic_way.webp": f"{settings.BLOG_BASE_IMG_URL}/eid_al_fitr_prophetic_way.webp"
+    },
     "created_at": datetime.strptime("2025-03-31T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-05-10T16:06:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",

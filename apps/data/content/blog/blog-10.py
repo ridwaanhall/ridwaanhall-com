@@ -11,8 +11,9 @@ blog_data = {
     "id": 10,
     "title": """Why I'm Coding for Gaza's Truth""",
     "description": """From Islamic boarding school to Python, here's why I'm hustling to amplify Gaza's crisis with facts, faith, and a call to act—no noise, just heart.""",
-    "image_url": f"{settings.BLOG_BASE_IMG_URL}/gaza_crisis.webp",
-    "img_name": "gaza_crisis.webp",
+    "images": {
+        "gaza_crisis.webp": f"{settings.BLOG_BASE_IMG_URL}/gaza_crisis.webp"
+    },
     "created_at": datetime.strptime("2025-04-16T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-05-10T22:32:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",

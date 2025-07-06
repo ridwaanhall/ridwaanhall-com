@@ -11,8 +11,9 @@ blog_data = {
     "id": 6,
     "title": """PyTorch vs. TensorFlow: Pick Your AI Fight Club""",
     "description": """TensorFlow or PyTorch? Let's break down the big dogs of deep learning and find your perfect match.""",
-    "image_url": f"{settings.BLOG_BASE_IMG_URL}/pytorch_vs_tensorflow.webp",
-    "img_name": "pytorch_vs_tensorflow.webp",
+    "images": {
+        "pytorch_vs_tensorflow.webp": f"{settings.BLOG_BASE_IMG_URL}/pytorch_vs_tensorflow.webp"
+    },
     "created_at": datetime.strptime("2025-03-28T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-05-10T15:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",

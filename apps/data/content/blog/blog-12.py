@@ -11,8 +11,9 @@ blog_data = {
     "id": 12,
     "title": """Predicting Gold Prices in Indonesia: AI's Golden Touch""",
     "description": """Gold price forecasting in Indonesia just got smarter! Dive into how AI-powered LSTM models are transforming historical data into actionable insights for investors and analysts.""",
-    "image_url": f"{settings.BLOG_BASE_IMG_URL}/gold_price_prediction.webp",
-    "img_name": "gold_price_prediction.webp",
+    "images": {
+        "gold_price_prediction.webp": f"{settings.BLOG_BASE_IMG_URL}/gold_price_prediction.webp"
+    },
     "created_at": datetime.strptime("2025-04-23T22:20:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-05-10T23:09:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",

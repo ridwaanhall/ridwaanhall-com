@@ -13,8 +13,9 @@ project_data = {
     "title": """Neon AI""",
     "headline": """Next.js-powered AI chatbot with Once UI and slick vibes.""",
     "description": ['Neon AI is a next-level chatbot built on Next.js and Once UI, with seamless routing and unified APIs.', 'Delivers instant, natural responses using streaming tech for a smooth conversational flow.', 'Tracks context for coherent chats and presents data in visually dope formats.'],
-    "image_url": f"{settings.PROJECT_BASE_IMG_URL}/neon_ai.webp",
-    "img_name": "neon_ai.webp",
+    "images": {
+        "neon_ai.webp": f"{settings.PROJECT_BASE_IMG_URL}/neon_ai.webp"
+    },
     "is_featured": False,
     "features": [{'title': 'Smart Routing', 'description': 'Next.js App Router for zippy navigation.'}, {'title': 'AI Power', 'description': 'Unified API for text and tool calls.'}, {'title': 'Data Storage', 'description': 'Vercel Postgres and Blob for efficiency.'}],
     "tech_stack": [

@@ -1,0 +1,77 @@
+{% comment %}
+Blog Image Gallery Partial Template
+Renders multiple images in a responsive gallery layout
+{% endcomment %}
+
+{% if images %}
+<div class="blog-image-gallery {{ class_name }}">
+    {% if images|length == 1 %}
+        <!-- Single image display -->
+        <div class="aspect-video rounded-lg md:rounded-xl overflow-hidden">
+            <img 
+                src="{{ images.0.url }}" 
+                alt="{{ images.0.alt }}" 
+                class="w-full h-full object-cover" 
+                loading="lazy" 
+            />
+        </div>
+    {% else %}
+        <!-- Multiple images gallery -->
+        <div class="grid gap-3 mb-6">
+            <!-- Main image -->
+            <div class="aspect-video rounded-lg md:rounded-xl overflow-hidden">
+                <img 
+                    id="main-gallery-image"
+                    src="{{ images.0.url }}" 
+                    alt="{{ images.0.alt }}" 
+                    class="w-full h-full object-cover transition-opacity duration-300" 
+                    loading="lazy" 
+                />
+            </div>
+            
+            <!-- Thumbnail strip -->
+            {% if images|length > 1 %}
+            <div class="flex gap-2 overflow-x-auto scrollbar-hide">
+                {% for image in images %}
+                <button 
+                    type="button"
+                    class="gallery-thumb flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 {% if forloop.first %}border-blue-500{% else %}border-zinc-600 hover:border-zinc-400{% endif %}"
+                    data-image-url="{{ image.url }}"
+                    data-image-alt="{{ image.alt }}"
+                    onclick="switchGalleryImage(this)"
+                >
+                    <img 
+                        src="{{ image.url }}" 
+                        alt="{{ image.alt }} thumbnail" 
+                        class="w-full h-full object-cover"
+                        loading="lazy"
+                    />
+                </button>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- JavaScript for gallery functionality -->
+        <script>
+        function switchGalleryImage(thumb) {
+            const mainImage = document.getElementById('main-gallery-image');
+            const newUrl = thumb.dataset.imageUrl;
+            const newAlt = thumb.dataset.imageAlt;
+            
+            // Update main image
+            mainImage.src = newUrl;
+            mainImage.alt = newAlt;
+            
+            // Update thumbnail borders
+            document.querySelectorAll('.gallery-thumb').forEach(t => {
+                t.classList.remove('border-blue-500');
+                t.classList.add('border-zinc-600');
+            });
+            thumb.classList.remove('border-zinc-600');
+            thumb.classList.add('border-blue-500');
+        }
+        </script>
+    {% endif %}
+</div>
+{% endif %}

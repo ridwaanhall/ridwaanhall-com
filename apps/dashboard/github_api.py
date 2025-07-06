@@ -122,37 +122,37 @@ class GitHubStatsCalculator:
     @staticmethod
     def _calculate_streaks(all_days: List[Dict], today: datetime) -> tuple:
         """Helper method to calculate contribution streaks. Returns (current_streak, longest_streak)."""
+        if not all_days:
+            return 0, 0
+        
+        # Calculate longest streak by iterating through all days
         temp_streak = 0
-        current_streak = 0
         longest_streak = 0
         
         for day_data in all_days:
             if day_data['count'] > 0:
                 temp_streak += 1
-                
-                day_diff = (today - day_data['date']).days
-                if day_diff <= 1:
-                    current_streak = temp_streak
-                else:
-                    current_streak = 0
+                longest_streak = max(longest_streak, temp_streak)
             else:
-                if temp_streak > longest_streak:
-                    longest_streak = temp_streak
                 temp_streak = 0
         
-        if temp_streak > longest_streak:
-            longest_streak = temp_streak
-        else:
-            temp_streak = 0
-
-        if all_days:
-            last_day = all_days[-1]
-            days_since_last_contribution = (today - last_day['date']).days
-            if days_since_last_contribution > 1 or last_day['count'] == 0:
-                current_streak = 0
+        # Calculate current streak by going backwards from the most recent day with data
+        current_streak = 0
+        
+        # Sort days in reverse order (most recent first)
+        reversed_days = sorted(all_days, key=lambda x: x['date'], reverse=True)
+        
+        if not reversed_days:
+            return current_streak, longest_streak
+        
+        # Start from the most recent day and count backwards
+        for i, day_data in enumerate(reversed_days):
+            if day_data['count'] > 0:
+                current_streak += 1
             else:
-                current_streak = temp_streak if last_day['count'] > 0 else 0
-        else:
-            current_streak = 0
-                
+                # If we hit a day with 0 contributions, check if it's the first day
+                # If it's the first day (most recent), streak is 0
+                # If it's not the first day, we've found the end of the streak
+                break
+        
         return current_streak, longest_streak

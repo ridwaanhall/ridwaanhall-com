@@ -18,7 +18,9 @@ project_data = {
         'The dashboard pulls live GitHub and WakaTime data to flex my coding stats in real time, looking fire on any device.'
     ],
     "images": {
-        "ridwaanhall_com_20250607.webp": f"{settings.PROJECT_BASE_IMG_URL}/ridwaanhall_com_20250607.webp"
+        "ridwaanhall_com_2025070701.webp": f"{settings.PROJECT_BASE_IMG_URL}/ridwaanhall_com_2025070701.webp",
+        "ridwaanhall_com_2025070702.webp": f"{settings.PROJECT_BASE_IMG_URL}/ridwaanhall_com_2025070702.webp",
+        "ridwaanhall_com_2025070703.webp": f"{settings.PROJECT_BASE_IMG_URL}/ridwaanhall_com_2025070703.webp",
     },
     "is_featured": True,
     "features": [
@@ -27,20 +29,20 @@ project_data = {
         {'title': 'Smooth Design', 'description': 'TailwindCSS makes it look good on any screen.'}
     ],
     "tech_stack": [
-        SkillsData.tech_stack["python"],
         SkillsData.tech_stack["django"],
         SkillsData.tech_stack["tailwindcss"],
-        SkillsData.tech_stack["vercel"],
+        SkillsData.tech_stack["python"],
         SkillsData.tech_stack["github_api"],
-        SkillsData.tech_stack["cloudflare"],
         SkillsData.tech_stack["wakatime_api"],
-        SkillsData.tech_stack["allauth"]
+        SkillsData.tech_stack["allauth"],
+        SkillsData.tech_stack["vercel"],
+        SkillsData.tech_stack["cloudflare"],
     ],
     "github_url": "https://github.com/ridwaanhall/ridwaanhall-com",
     "demo_url": "https://ridwaanhall.com",
     "status": "completed",
     "created_at": datetime.strptime("2025-03-16T12:03:09+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-07-04T12:57:44+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-07-07T00:15:44+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "portfolio",
     "tags": ["portfolio", "personal site", "django", "tailwindcss", "vercel", "dashboard"],
     "priority": 1,

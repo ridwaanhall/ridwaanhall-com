@@ -356,7 +356,7 @@
                     <div class="my-2 px-5 text-xs font-medium text-zinc-500" id="pages-header">PAGES</div>
                     <ul class="space-y-1" id="search-results">
                         <!-- Home -->
-                        <li class="search-item" data-name="home" data-url="{% url 'home' %}">
+                        <li class="search-item" data-name="home"{% if request.resolver_match.url_name != 'home' %} data-url="{% url 'home' %}"{% endif %}>
                             <div
                                 class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name == 'home' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}"
                             >
@@ -378,7 +378,7 @@
                         </li>
 
                         <!-- Dashboard -->
-                        <li class="search-item" data-name="dashboard" data-url="{% url 'dashboard' %}">
+                        <li class="search-item" data-name="dashboard"{% if request.resolver_match.url_name != 'dashboard' %} data-url="{% url 'dashboard' %}"{% endif %}>
                             <div
                                 class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name == 'dashboard' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}"
                             >
@@ -408,7 +408,7 @@
                         </li>
 
                         <!-- Projects -->
-                        <li class="search-item" data-name="projects" data-url="{% url 'projects' %}">
+                        <li class="search-item" data-name="projects"{% if request.resolver_match.url_name not in 'projects projects_detail' %} data-url="{% url 'projects' %}"{% endif %}>
                             <div
                                 class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name in 'projects projects_detail' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}"
                             >
@@ -433,7 +433,7 @@
                         </li>
 
                         <!-- Blog -->
-                        <li class="search-item" data-name="blog" data-url="{% url 'blog' %}">
+                        <li class="search-item" data-name="blog"{% if request.resolver_match.url_name not in 'blog blog_detail' %} data-url="{% url 'blog' %}"{% endif %}>
                             <div
                                 class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name in 'blog blog_detail' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}"
                             >
@@ -456,7 +456,7 @@
                         </li>
 
                         <!-- About -->
-                        <li class="search-item" data-name="about" data-url="{% url 'about' %}">
+                        <li class="search-item" data-name="about"{% if request.resolver_match.url_name != 'about' %} data-url="{% url 'about' %}"{% endif %}>
                             <div
                                 class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name == 'about' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}"
                             >
@@ -478,7 +478,7 @@
                         </li>
 
                         <!-- Contact -->
-                        <li class="search-item" data-name="contact" data-url="{% url 'contact' %}">
+                        <li class="search-item" data-name="contact"{% if request.resolver_match.url_name != 'contact' %} data-url="{% url 'contact' %}"{% endif %}>
                             <div
                                 class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name == 'contact' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}"
                             >
@@ -504,7 +504,7 @@
 
                         {% if GUESTBOOK_PAGE %}
                         <!-- Guestbook -->
-                        <li class="search-item" data-name="guestbook" data-url="{% url 'guestbook' %}">
+                        <li class="search-item" data-name="guestbook"{% if request.resolver_match.url_name != 'guestbook' %} data-url="{% url 'guestbook' %}"{% endif %}>
                             <div
                                 class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name == 'guestbook' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}"
                             >
@@ -528,7 +528,7 @@
                         {% endif %}
 
                         <!-- Privacy Policy -->
-                        <li class="search-item" data-name="privacy policy" data-url="{% url 'privacy' %}">
+                        <li class="search-item" data-name="privacy policy"{% if request.resolver_match.url_name != 'privacy' %} data-url="{% url 'privacy' %}"{% endif %}>
                             <div
                                 class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name == 'privacy' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}"
                             >

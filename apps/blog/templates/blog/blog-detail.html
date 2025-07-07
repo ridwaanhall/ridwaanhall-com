@@ -189,11 +189,78 @@
 
             <div class="prose prose-sm sm:prose prose-md lg:prose-lg prose-invert max-w-none mb-8 md:mb-10">
                 {% if blog.content %}
-                    {% for paragraph in blog.content %}
-                        {% if paragraph|slice:":1" == "<" %}
-                            {{ paragraph|safe }}
+                    {% for content_item in blog.content %}
+                        {% if content_item.type == 'p' %}
+                            <p class="{{ content_item.class }}">{{ content_item.text|safe }}</p>
+                        {% elif content_item.type == 'h1' %}
+                            <h1 class="{{ content_item.class }}">{{ content_item.text|safe }}</h1>
+                        {% elif content_item.type == 'h2' %}
+                            <h2 class="{{ content_item.class }}">{{ content_item.text|safe }}</h2>
+                        {% elif content_item.type == 'h3' %}
+                            <h3 class="{{ content_item.class }}">{{ content_item.text|safe }}</h3>
+                        {% elif content_item.type == 'h4' %}
+                            <h4 class="{{ content_item.class }}">{{ content_item.text|safe }}</h4>
+                        {% elif content_item.type == 'h5' %}
+                            <h5 class="{{ content_item.class }}">{{ content_item.text|safe }}</h5>
+                        {% elif content_item.type == 'h6' %}
+                            <h6 class="{{ content_item.class }}">{{ content_item.text|safe }}</h6>
+                        {% elif content_item.type == 'ul' %}
+                            <ul class="{{ content_item.class }}">
+                                {% if content_item.items %}
+                                    {% for item in content_item.items %}
+                                        {% if item.type == 'li' %}
+                                            <li>{{ item.text|safe }}</li>
+                                        {% else %}
+                                            <li>{{ item|safe }}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    {{ content_item.text|safe }}
+                                {% endif %}
+                            </ul>
+                        {% elif content_item.type == 'ol' %}
+                            <ol class="{{ content_item.class }}">
+                                {% if content_item.items %}
+                                    {% for item in content_item.items %}
+                                        {% if item.type == 'li' %}
+                                            <li>{{ item.text|safe }}</li>
+                                        {% else %}
+                                            <li>{{ item|safe }}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    {{ content_item.text|safe }}
+                                {% endif %}
+                            </ol>
+                        {% elif content_item.type == 'li' %}
+                            <li class="{{ content_item.class }}">{{ content_item.text|safe }}</li>
+                        {% elif content_item.type == 'blockquote' %}
+                            <blockquote class="{{ content_item.class }}">{{ content_item.text|safe }}</blockquote>
+                        {% elif content_item.type == 'code' %}
+                            <code class="{{ content_item.class }}">{{ content_item.text|safe }}</code>
+                        {% elif content_item.type == 'pre' %}
+                            <pre class="{{ content_item.class }}">{{ content_item.text|safe }}</pre>
+                        {% elif content_item.type == 'div' %}
+                            <div class="{{ content_item.class }}">{{ content_item.text|safe }}</div>
+                        {% elif content_item.type == 'span' %}
+                            <span class="{{ content_item.class }}">{{ content_item.text|safe }}</span>
+                        {% elif content_item.type == 'a' %}
+                            <a class="{{ content_item.class }}" href="{{ content_item.href|default:'#' }}" {% if content_item.target %}target="{{ content_item.target }}"{% endif %}>{{ content_item.text|safe }}</a>
+                        {% elif content_item.type == 'img' %}
+                            <img class="{{ content_item.class }}" src="{{ content_item.src|default:content_item.text }}" alt="{{ content_item.alt|default:'' }}" />
+                        {% elif content_item.type == 'br' %}
+                            <br class="{{ content_item.class }}" />
+                        {% elif content_item.type == 'hr' %}
+                            <hr class="{{ content_item.class }}" />
                         {% else %}
-                            <p class="mb-2">{{ paragraph|safe }}</p>
+                            <!-- Fallback for unknown types or legacy content -->
+                            {% if content_item|slice:":1" == "<" %}
+                                {{ content_item|safe }}
+                            {% elif content_item.text %}
+                                <p class="mb-2">{{ content_item.text|safe }}</p>
+                            {% else %}
+                                <p class="mb-2">{{ content_item|safe }}</p>
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 {% endif %}

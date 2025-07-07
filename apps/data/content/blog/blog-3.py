@@ -19,7 +19,53 @@ blog_data = {
     "author": "Copilot",
     "username": "copilot",
     "author_image": f"{settings.BASE_URL}/static/img/copilot_v2.webp",
-    "content": ["<p class='mb-4 text-sm md:text-base lg:text-lg'>TensorFlow and Keras are like the Batman and Robin of deep learning—TensorFlow's the heavy-duty engine, Keras is the slick API making neural nets feel like a breeze. Together, they power AI that can spot cats in photos or predict your next binge-watch.</p>", "<h2 class='text-xl lg:text-2xl text-medium mt-4 md:mt-5 mb-2 md:mb-3'>Building Your First Neural Network</h2>", "<p class='mb-4 text-sm md:text-base lg:text-lg'>Let's build something real: a neural network to classify handwritten digits (MNIST dataset—classic!). Start with <code>tensorflow.keras.Sequential()</code> to stack layers—think <code>Dense(128, activation='relu')</code> for the brains and <code>softmax</code> for the final guess. Keras makes it stupid simple to add layers like LEGO bricks.</p>", "<h2 class='text-xl lg:text-2xl text-medium mt-4 md:mt-5 mb-2 md:mb-3'>Training and Optimization</h2>", "<p class='mb-4 text-sm md:text-base lg:text-lg'>Training's where the magic happens. Feed your model data with <code>model.fit()</code>, tweak it with epochs (like 5-10), and watch it learn. TensorFlow's handling the math under the hood—gradients, backprop, all that jazz. Use <code>model.evaluate()</code> to check accuracy—aim for 95%+ to flex.</p>", "<h2 class='text-xl lg:text-2xl text-medium mt-4 md:mt-5 mb-2 md:mb-3'>Advanced Deep Learning Techniques</h2>", "<p class='mb-4 text-sm md:text-base lg:text-lg'>Wanna go deeper? Play with CNNs for image recognition (<code>Conv2D</code>) or RNNs for text (<code>LSTM</code>). Overfitting? Toss in <code>Dropout(0.2)</code>. Debug with TensorBoard to visualize your model's vibe. I've used this combo for sentiment analysis and image classifiers—it's legit.</p>", "<h2 class='text-xl lg:text-2xl text-medium mt-4 md:mt-5 mb-2 md:mb-3'>Getting Started with TensorFlow</h2>", "<p class='mb-4 text-sm md:text-base lg:text-lg'>Kick it off with <code>pip install tensorflow</code> and Google Colab if your laptop's not beefy. Try coding a model to guess movie genres from posters—fun and doable. Keep experimenting, and you'll be an AI wizard before you know it.</p>"],
+    "content":[
+        {
+            "type": "p",
+            "class": "mb-4 text-sm md:text-base lg:text-lg",
+            "text": "Django's the Python framework that's like having a superpower for web dev. It's got everything—security, speed, and a vibe that lets you focus on coding your app instead of wrestling with configs. Think of it as the cheat code for building sites like OpenShop (yep, like that e-commerce API we've geeked out over!)."
+        },
+        {
+            "type": "h2",
+            "class": "text-xl lg:text-2xl text-medium mt-4 md:mt-5 mb-2 md:mb-3",
+            "text": "Getting Started with Django"
+        },
+        {
+            "type": "p",
+            "class": "mb-4 text-sm md:text-base lg:text-lg",
+            "text": "First, fire up a project with <code>django-admin startproject myapp</code>. Boom—you've got a skeleton ready to roll. Create an app (<code>python manage.py startapp shop</code>) to handle your logic, like products or users. Django's ORM is a beast: define a <code>Product</code> model with fields like <code>name</code> and <code>price</code>, and it'll handle the database heavy lifting."
+        },
+        {
+            "type": "h2",
+            "class": "text-xl lg:text-2xl text-medium mt-4 md:mt-5 mb-2 md:mb-3",
+            "text": "Views and Templates: The Core of Django"
+        },
+        {
+            "type": "p",
+            "class": "mb-4 text-sm md:text-base lg:text-lg",
+            "text": "Views are where the fun's at—map a URL (say, <code>/products/</code>) to a function or class that pulls data and renders a template. Speaking of templates, Django's got a slick system to keep your HTML clean. Throw in the built-in admin panel (<code>/admin/</code>), and you're managing data like a pro without writing extra code."
+        },
+        {
+            "type": "h2",
+            "class": "text-xl lg:text-2xl text-medium mt-4 md:mt-5 mb-2 md:mb-3",
+            "text": "Django's Security and Scalability"
+        },
+        {
+            "type": "p",
+            "class": "mb-4 text-sm md:text-base lg:text-lg",
+            "text": "Security? Django's got your back with CSRF protection and user auth out of the box. Need an API? Pair it with Django REST Framework (like we did for OpenShop) for JSON endpoints that scream speed. Scalability? It's battle-tested—Instagram and Pinterest run on it."
+        },
+        {
+            "type": "h2",
+            "class": "text-xl lg:text-2xl text-medium mt-4 md:mt-5 mb-2 md:mb-3",
+            "text": "Building Your First Django Project"
+        },
+        {
+            "type": "p",
+            "class": "mb-4 text-sm md:text-base lg:text-lg",
+            "text": "Wanna try it? Build a simple blog: set up models for posts, create views to list and detail them, and style it with Bootstrap. Debug with <code>python manage.py runserver</code> and tweak as you go. Trust me, once you go Django, you won't wanna code raw again."
+        }
+    ],
     "is_featured": False,
     "tags": ['TensorFlow', 'Keras', 'AI', 'Deep Learning'],
     "category": "",

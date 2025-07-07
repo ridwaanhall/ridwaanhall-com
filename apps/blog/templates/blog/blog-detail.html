@@ -162,9 +162,26 @@
                         {% blog_image_gallery blog "mb-4" %}
                         <p class="text-sm text-zinc-400 text-center">{{ blog|blog_image_count }} image{{ blog|blog_image_count|pluralize }} • Use arrows or dots to navigate</p>
                     {% else %}
-                        <!-- Single image display (backward compatible) -->
-                        <div class="aspect-video rounded-lg md:rounded-xl overflow-hidden border border-zinc-700 shadow-lg shadow-zinc-900">
-                            <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover" loading="lazy" />
+                        <!-- Single image display with Mac-style (backward compatible) -->
+                        <div class="w-full rounded-lg overflow-hidden shadow-xl transform transition-all duration-500 border border-zinc-800">
+                            <div class="relative w-full">
+                                <!-- Mac-style window header -->
+                                <div class="absolute top-0 left-0 right-0 h-8 sm:h-10 flex items-center px-3 sm:px-4 z-20">
+                                    <!-- Mac-style dots (left) -->
+                                    <div class="flex items-center gap-1 sm:gap-1.5">
+                                        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500 hover:bg-red-400 transition-all duration-300 cursor-pointer"></div>
+                                        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 transition-all duration-300 cursor-pointer"></div>
+                                        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500 hover:bg-green-400 transition-all duration-300 cursor-pointer"></div>
+                                    </div>
+                                    
+                                    <!-- Current image filename (right) -->
+                                    <span class="ml-auto text-xs hidden sm:block current-filename">{{ blog.img_name|default:"blog-image" }}</span>
+                                </div>
+
+                                <div class="aspect-video">
+                                    <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover object-center" loading="lazy" />
+                                </div>
+                            </div>
                         </div>
                     {% endif %}
                 </div>

@@ -48,6 +48,15 @@ function initializeBlogSlider(container) {
 
         currentIndex = index;
         sliderWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+        
+        // Update filename in Mac-style header
+        const filenameDisplay = container.closest('.blog-image-gallery')?.querySelector('.current-filename');
+        if (filenameDisplay) {
+            const currentSlide = slides[currentIndex];
+            const currentImage = currentSlide?.querySelector('img');
+            const filename = currentImage?.getAttribute('data-filename') || currentImage?.alt || `image-${currentIndex + 1}`;
+            filenameDisplay.textContent = filename;
+        }
 
         // Update dots
         dots.forEach((dot, i) => {

@@ -6,31 +6,72 @@ Renders multiple images with slider functionality similar to featured blogs
 {% if images %}
 <div class="blog-image-gallery {{ class_name }}">
     {% if images|length == 1 %}
-        <!-- Single image display -->
-        <div class="aspect-video rounded-lg md:rounded-xl overflow-hidden border border-zinc-700 shadow-lg shadow-zinc-900">
-            <img 
-                src="{{ images.0.url }}" 
-                alt="{{ images.0.alt }}" 
-                class="w-full h-full object-cover" 
-                loading="lazy" 
-            />
+        <!-- Single image display with Mac-style -->
+        <div class="w-full rounded-lg overflow-hidden shadow-xl transform transition-all duration-500 border border-zinc-800">
+            <div class="relative w-full">
+                <!-- Mac-style window header -->
+                <div class="absolute top-0 left-0 right-0 h-8 sm:h-10 flex items-center px-3 sm:px-4 z-20">
+                    <!-- Mac-style dots (left) -->
+                    <div class="flex items-center gap-1 sm:gap-1.5">
+                        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500 hover:bg-red-400 transition-all duration-300 cursor-pointer"></div>
+                        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 transition-all duration-300 cursor-pointer"></div>
+                        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500 hover:bg-green-400 transition-all duration-300 cursor-pointer"></div>
+                    </div>
+                    
+                    <!-- Current image filename (right) -->
+                    <span class="ml-auto text-xs hidden sm:block current-filename">{{ images.0.name }}</span>
+                </div>
+
+                <div class="aspect-video">
+                    <img 
+                        src="{{ images.0.url }}" 
+                        alt="{{ images.0.alt }}" 
+                        class="w-full h-full object-cover object-center" 
+                        loading="lazy"
+                        data-filename="{{ images.0.name }}"
+                    />
+                </div>
+            </div>
         </div>
     {% else %}
-        <!-- Multiple images slider -->
-        <div class="relative mb-4 overflow-hidden rounded-lg md:rounded-xl border border-zinc-700 shadow-lg shadow-zinc-900">
-            <div class="blog-slider-container relative">
+        <!-- Multiple images slider with Mac-style -->
+        <div class="w-full rounded-lg overflow-hidden shadow-xl transform transition-all duration-500 border border-zinc-800">
+            <div class="blog-slider-container relative w-full">
+                <!-- Mac-style window header -->
+                <div class="absolute top-0 left-0 right-0 h-8 sm:h-10 flex items-center px-3 sm:px-4 z-20">
+                    <!-- Mac-style dots (left) -->
+                    <div class="flex items-center gap-1 sm:gap-1.5">
+                        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500 hover:bg-red-400 transition-all duration-300 cursor-pointer"></div>
+                        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 transition-all duration-300 cursor-pointer"></div>
+                        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500 hover:bg-green-400 transition-all duration-300 cursor-pointer"></div>
+                    </div>
+                    
+                    <!-- Current image filename (right) -->
+                    <span class="ml-auto text-xs hidden sm:block current-filename">{{ images.0.name }}</span>
+                </div>
+
+                <!-- Slider wrapper -->
                 <div class="blog-slider-wrapper flex transition-transform duration-500 ease-in-out">
                     {% for image in images %}
-                    <div class="blog-slide w-full flex-shrink-0 relative aspect-video">
-                        <img src="{{ image.url }}" alt="{{ image.alt }}" class="w-full h-full object-cover object-center" loading="lazy" />
+                    <div class="blog-slide w-full flex-shrink-0">
+                        <div class="aspect-video">
+                            <img 
+                                src="{{ image.url }}" 
+                                alt="{{ image.alt }}" 
+                                class="w-full h-full object-cover object-center" 
+                                loading="lazy"
+                                data-filename="{{ image.name }}"
+                            />
+                        </div>
                     </div>
                     {% endfor %}
                 </div>
 
-                <!-- Navigation buttons -->
+                <!-- Navigation buttons (for multiple images) -->
+                {% if images|length > 1 %}
                 <div class="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 z-30 flex space-x-1 sm:space-x-2">
                     <button
-                        class="blog-slider-nav blog-prev cursor-pointer bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
+                        class="blog-slider-nav blog-prev cursor-pointer bg-zinc-900/80 hover:bg-zinc-800/90 w-8 h-8 sm:w-10 sm:h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
                         title="Previous Image"
                     >
                         <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,7 +79,7 @@ Renders multiple images with slider functionality similar to featured blogs
                         </svg>
                     </button>
                     <button
-                        class="blog-slider-nav blog-next cursor-pointer bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
+                        class="blog-slider-nav blog-next cursor-pointer bg-zinc-900/80 hover:bg-zinc-800/90 w-8 h-8 sm:w-10 sm:h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
                         title="Next Image"
                     >
                         <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,7 +88,7 @@ Renders multiple images with slider functionality similar to featured blogs
                     </button>
                 </div>
 
-                <!-- Dots indicator -->
+                <!-- Dot indicators (for multiple images) -->
                 <div class="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex space-x-1 sm:space-x-2">
                     {% for image in images %}
                         {% if forloop.first %}
@@ -57,6 +98,7 @@ Renders multiple images with slider functionality similar to featured blogs
                         {% endif %}
                     {% endfor %}
                 </div>
+                {% endif %}
             </div>
         </div>
     {% endif %}

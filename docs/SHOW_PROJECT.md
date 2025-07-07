@@ -12,7 +12,7 @@
 - **Frontend:** TailwindCSS, Vanilla JavaScript, SVG icons, Onest fonts
 - **APIs:** GitHub (GraphQL), WakaTime (REST), OAuth (Google, GitHub), Web3Forms
 - **Deployment:** Vercel (serverless), WhiteNoise, wsrv.nl CDN, Django cache, python-decouple
-- **Security:** SSL/TLS, HSTS, CSP, CSRF protection, Input validation, Logging & monitoring
+- **Security:** SSL/TLS, HSTS, CSP, CSRF protection, Input validation, Error logging
 
 ## Fitur Utama
 

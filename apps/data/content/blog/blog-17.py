@@ -5,7 +5,7 @@ from django.conf import settings
 blog_data = {
     "id": 17,
     "title": """Why mlbb-stats.ridwaanhall.com and api-pddikti.ridwaanhall.com Go Offline Soon""",
-    "description": """Discover the story behind two powerful community-driven APIs at risk of shutting down due to hosting limitations—and how you can help keep them alive.""",
+    "description": """Two community-driven APIs face shutdown due to hosting costs. Learn how you can help keep them alive.""",
     "images": {
         "api_offline_notice.webp": f"{settings.BLOG_BASE_IMG_URL}/api_offline_notice.webp"
     },

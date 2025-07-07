@@ -52,7 +52,7 @@ blog_data = {
         },
         {
             "type": "ul",
-            "class": "mb-4 ml-6 space-y-2",
+            "class": "mb-4 pl-6 list-disc",
             "items": [
                 {
                     "type": "li",

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The blog system now supports multiple images per blog post using an enhanced `images` dictionary format. This provides backward compatibility while enabling rich image galleries.
+The blog system now supports multiple images per blog post using an enhanced `images` dictionary format. This provides backward compatibility while enabling rich image galleries. This documentation focuses specifically on the image system - for complete blog content structure including the new structured content format, see [BLOG_CONTENT_STRUCTURE.md](./BLOG_CONTENT_STRUCTURE.md).
 
 ## Image Data Structure
 

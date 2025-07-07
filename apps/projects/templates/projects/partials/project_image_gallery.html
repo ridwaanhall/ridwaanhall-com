@@ -37,7 +37,7 @@
     <div class="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 z-30 flex space-x-1 sm:space-x-2">
         <button 
             type="button"
-            class="project-prev bg-zinc-900/80 hover:bg-zinc-800/90 w-8 h-8 sm:w-10 sm:h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
+            class="project-prev cursor-pointer bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
             title="Previous Image"
         >
             <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,7 +47,7 @@
         
         <button 
             type="button"
-            class="project-next bg-zinc-900/80 hover:bg-zinc-800/90 w-8 h-8 sm:w-10 sm:h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
+            class="project-next cursor-pointer bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
             title="Next Image"
         >
             <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,7 +61,7 @@
         {% for image in images %}
         <button 
             type="button"
-            class="project-slider-dot w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all duration-300 focus:outline-none {% if forloop.first %}bg-zinc-300 w-4{% else %}bg-zinc-300/50{% endif %}"
+            class="project-slider-dot cursor-pointer w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all duration-300 focus:outline-none hover:bg-zinc-300 {% if forloop.first %}bg-zinc-300 w-4{% else %}bg-zinc-300/50{% endif %}"
             data-slide="{{ forloop.counter0 }}"
             title="Go to image {{ forloop.counter }}"
         ></button>

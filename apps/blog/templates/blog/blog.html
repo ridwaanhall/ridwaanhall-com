@@ -59,7 +59,7 @@
 
                         <div class="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 z-30 flex space-x-1 sm:space-x-2">
                             <button
-                                class="slider-nav prev bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
+                                class="slider-nav prev cursor-pointer bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
                                 title="Previous Slide"
                             >
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,7 +67,7 @@
                                 </svg>
                             </button>
                             <button
-                                class="slider-nav next bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
+                                class="slider-nav next cursor-pointer bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
                                 title="Next Slide"
                             >
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,9 +79,9 @@
                         <div class="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex space-x-1 sm:space-x-2">
                             {% for blog in featured_blogs %}
                                 {% if forloop.first %}
-                                    <button class="slider-dot bg-zinc-300 w-4 h-1.5 sm:h-2 rounded-full hover:bg-zinc-300 transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Slide {{ forloop.counter }}"></button>
+                                    <button class="slider-dot cursor-pointer bg-zinc-300 w-4 h-1.5 sm:h-2 rounded-full hover:bg-zinc-300 transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Slide {{ forloop.counter }}"></button>
                                 {% else %}
-                                    <button class="slider-dot bg-zinc-300/50 w-1.5 h-1.5 sm:h-2 rounded-full hover:bg-zinc-300 transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Slide {{ forloop.counter }}"></button>
+                                    <button class="slider-dot cursor-pointer bg-zinc-300/50 w-1.5 h-1.5 sm:h-2 rounded-full hover:bg-zinc-300 transition-all duration-300" data-index="{{ forloop.counter0 }}" title="Slide {{ forloop.counter }}"></button>
                                 {% endif %}
                             {% endfor %}
                         </div>

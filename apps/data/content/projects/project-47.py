@@ -25,7 +25,7 @@ project_data = {
     "images": {
         "neural_network_scratch.webp": f"{settings.PROJECT_BASE_IMG_URL}/neural_network_scratch.webp"
     },
-    "is_featured": True,
+    "is_featured": False,
     "features": [{'title': 'Pure NumPy Implementation', 'description': 'No TensorFlow or PyTorch, just optimized NumPy operations.'}, {'title': 'High Accuracy', 'description': 'Achieves 98.06% test accuracy on MNIST dataset.'}, {'title': 'Comprehensive CLI', 'description': '20+ configurable parameters for training and optimization.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

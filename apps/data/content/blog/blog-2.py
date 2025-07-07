@@ -16,9 +16,9 @@ blog_data = {
     },
     "created_at": datetime.strptime("2025-03-24T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-05-10T14:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "author": "Ridwan Halim",
-    "username": "ridwaanhall",
-    "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
+    "author": "Copilot",
+    "username": "copilot",
+    "author_image": f"{settings.BASE_URL}/static/img/copilot.webp",
     "content": [
         "<p class='mb-4 text-sm md:text-base lg:text-lg'>Django's the Python framework that's like having a superpower for web dev. It's got everything—security, speed, and a vibe that lets you focus on coding your app instead of wrestling with configs. Think of it as the cheat code for building sites like OpenShop (yep, like that e-commerce API we've geeked out over!).</p>",
         "<h2 class='text-xl lg:text-2xl text-medium mt-4 md:mt-5 mb-2 md:mb-3'>Getting Started with Django</h2>",

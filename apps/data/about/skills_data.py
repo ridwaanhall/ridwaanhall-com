@@ -452,7 +452,7 @@ class SkillsData:
         },
         "allauth": {
             "name": "Django Allauth",
-            "description": "Integrated set of Django applications addressing authentication, registration, account management as well as 3rd party (social) account authentication",
+            "description": "Django apps for authentication, registration, account and social login management",
             "icon_svg": f"{settings.BASE_URL}/static/svg/allauth.svg"
         },
     }

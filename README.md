@@ -175,11 +175,52 @@ project_data = {
 
 ```python
 blog_data = {
+    "id": 1,
     "title": "My First Blog Post",
-    "content": "Blog content here...",
-    "tags": ["Python", "Tutorial"],
-    "published_date": "2024-01-01",
-    "featured": True
+    "description": "A comprehensive guide to getting started...",
+    "images": {
+        "main-hero.webp": f"{settings.BLOG_BASE_IMG_URL}/main-hero.webp",
+        "gallery-1.webp": f"{settings.BLOG_BASE_IMG_URL}/gallery-1.webp"
+    },
+    "created_at": datetime.strptime("2024-01-01T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2024-01-01T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "author": "Author Name",
+    "username": "author_username",
+    "author_image": f"{settings.BASE_URL}/static/img/author.webp",
+    "content": [
+        {
+            "type": "p",
+            "class": "mb-4 text-sm md:text-base lg:text-lg",
+            "text": "Blog content with structured format..."
+        },
+        {
+            "type": "h2",
+            "class": "text-xl md:text-2xl lg:text-3xl font-bold mb-4 mt-8",
+            "text": "Section Title"
+        },
+        {
+            "type": "ul",
+            "class": "mb-4 pl-6 list-disc",
+            "items": [
+                {
+                    "type": "li",
+                    "class": "text-sm md:text-base lg:text-lg",
+                    "text": "List item content"
+                }
+            ]
+        },
+        {
+            "type": "pre",
+            "class": "bg-zinc-800 p-3 rounded-lg mb-4 overflow-x-auto",
+            "text": "<code class=\"language-python\">print('Hello, World!')</code>"
+        }
+    ],
+    "is_featured": True,
+    "tags": ["Python", "Tutorial", "Getting Started"],
+    "category": "Programming",
+    "read_time": 5,
+    "views": 0,
+    "slug": "my-first-blog-post"
 }
 ```
 

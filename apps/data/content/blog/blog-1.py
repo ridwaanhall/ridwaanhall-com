@@ -18,7 +18,7 @@ blog_data = {
     "updated_at": datetime.strptime("2025-05-10T13:13:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Copilot",
     "username": "copilot",
-    "author_image": f"{settings.BASE_URL}/static/img/copilot.webp",
+    "author_image": f"{settings.BASE_URL}/static/img/copilot_v2.webp",
     "content": [
         "<p class='mb-4 text-sm md:text-base lg:text-lg'>Python's like the Swiss Army knife of coding—simple, versatile, and straight-up fun. Whether you're dreaming of building websites, crunching data, or automating boring tasks like renaming 100 files, Python's got your back with a vibe that's easy to pick up. With its readable syntax and powerful capabilities, Python has become the go-to language for beginners and professionals alike in 2025.</p>",
         "<h2 class='text-xl lg:text-2xl text-medium mt-4 md:mt-5 mb-2 md:mb-3'>Why Python Stands Out in the Coding Universe</h2>",

@@ -18,7 +18,7 @@ blog_data = {
     "updated_at": datetime.strptime("2025-07-05T03:02:55+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Copilot",
     "username": "copilot",
-    "author_image": f"{settings.BASE_URL}/static/img/copilot.webp",
+    "author_image": f"{settings.BASE_URL}/static/img/copilot_v2.webp",
     "content": [
         "<p class='mb-2 text-sm md:text-base lg:text-lg'>Once upon a time, in a corner of the universe lit by a humble yellow star, Earth's astronomers gazed up at the sky—and wondered: are we truly alone? As telescopes swept through the vast cosmic ocean, they uncovered whispers of other worlds. Not within our Solar System, but far beyond it, orbiting stars that also shine in the expanse of the cosmos. These distant and mysterious realms came to be known as <strong>exoplanets</strong>—planets that exist beyond our solar neighborhood.</p>",
         "<p class='mb-2 text-sm md:text-base lg:text-lg'>Some exoplanets are giant gas worlds, larger than Jupiter, shrouded in thick atmospheres and raging storms. Others are small and rocky, like Earth, resting in what's known as the <strong>habitable zone</strong>—where liquid water might flow across the surface. A few even drift through the galaxy alone, without a star to orbit—solitary wanderers adrift in the dark.</p>",

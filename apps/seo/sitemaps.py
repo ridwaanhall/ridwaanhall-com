@@ -11,6 +11,7 @@ from math import ceil
 
 from apps.data.data_service import DataService
 from apps.seo.updated_at_data import UpdatedAtData
+from apps.guestbook.models import ChatMessage
 
 
 class StaticPagesSitemap(Sitemap):
@@ -28,7 +29,7 @@ class StaticPagesSitemap(Sitemap):
 
     def items(self):
         """Generate list of static pages including paginated ones."""
-        static_pages = ['home', 'dashboard', 'about', 'contact', 'privacy']
+        static_pages = ['home', 'dashboard', 'about', 'contact', 'privacy', 'guestbook']
 
         # Add blog pagination pages
         all_blogs = DataService.get_blogs()
@@ -53,19 +54,26 @@ class StaticPagesSitemap(Sitemap):
             page = int(obj_str.split('-')[-1])
             return reverse('projects') if page == 1 else f"{reverse('projects')}?page={page}"
 
+        if obj_str == 'guestbook':
+            return reverse('guestbook')
+
         return reverse(obj_str)
 
     def changefreq(self, obj):
         """Set change frequency based on page type."""
         if obj == 'dashboard':
             return 'daily'
-        elif obj in ['about', 'contact', 'privacy'] or obj.startswith('projects-page-'):
+        elif obj == 'home':
+            return 'weekly'
+        elif obj in ['about', 'contact', 'privacy', 'guestbook'] or obj.startswith('projects-page-'):
+            return 'monthly'
+        elif obj.startswith('blog-page-'):
             return 'monthly'
         return 'weekly'
 
     def priority(self, obj):
         """Set priority based on page importance."""
-        if obj in ['home', 'dashboard', 'about', 'contact']:
+        if obj in ['home', 'dashboard', 'about', 'contact', 'guestbook']:
             return 1.0
         elif obj.startswith(('blog-page-', 'projects-page-')):
             page = int(obj.split('-')[-1])
@@ -80,6 +88,16 @@ class StaticPagesSitemap(Sitemap):
         # Handle paginated project pages - use projects data  
         elif obj.startswith('projects-page-'):
             base_item = 'projects'
+        # Handle guestbook - get latest message timestamp
+        elif obj == 'guestbook':
+            try:
+                latest_message = ChatMessage.objects.first()  # Already ordered by -timestamp
+                if latest_message:
+                    return latest_message.timestamp
+            except Exception:
+                pass
+            # Fallback to current time if no messages
+            return timezone.now()
         else:
             base_item = obj
             
@@ -92,6 +110,10 @@ class StaticPagesSitemap(Sitemap):
             except ValueError:
                 pass
         
+        # Special case for dashboard - always current time
+        if base_item == 'dashboard':
+            return timezone.now()
+        
         # Final fallback to a reasonable default date instead of today
         # This should rarely be hit now that we handle all cases properly
         return timezone.datetime(2024, 1, 1, tzinfo=timezone.get_current_timezone())
@@ -102,11 +124,12 @@ class BlogSitemap(Sitemap):
     Sitemap for individual blog posts.
     Integrates with SEO data for better optimization.
     """
-    changefreq = "weekly"
+    changefreq = "monthly"
     
     def priority(self, obj):
         """Higher priority for featured blogs."""
-        return 0.9 if getattr(obj, 'is_featured', False) else 0.8
+        is_featured = obj.get('is_featured', False) if isinstance(obj, dict) else getattr(obj, 'is_featured', False)
+        return 0.9 if is_featured else 0.7
 
     def items(self):
         """Get all blog posts."""
@@ -120,8 +143,13 @@ class BlogSitemap(Sitemap):
     
     def lastmod(self, obj):
         """Get last modification date."""
-        if hasattr(obj, 'updated_at') and obj.updated_at:
-            return obj.updated_at
+        if isinstance(obj, dict):
+            updated_at = obj.get('updated_at')
+        else:
+            updated_at = getattr(obj, 'updated_at', None)
+            
+        if updated_at:
+            return updated_at
         return timezone.now()
 
 
@@ -134,7 +162,8 @@ class ProjectSitemap(Sitemap):
     
     def priority(self, obj):
         """Higher priority for featured projects."""
-        return 0.9 if getattr(obj, 'is_featured', False) else 0.8
+        is_featured = obj.get('is_featured', False) if isinstance(obj, dict) else getattr(obj, 'is_featured', False)
+        return 0.9 if is_featured else 0.7
 
     def items(self):
         """Get all projects."""
@@ -148,6 +177,11 @@ class ProjectSitemap(Sitemap):
     
     def lastmod(self, obj):
         """Get last modification date."""
-        if 'updated_at' in obj and obj['updated_at']:
-            return obj['updated_at']
+        if isinstance(obj, dict):
+            updated_at = obj.get('updated_at')
+        else:
+            updated_at = getattr(obj, 'updated_at', None)
+            
+        if updated_at:
+            return updated_at
         return timezone.now()

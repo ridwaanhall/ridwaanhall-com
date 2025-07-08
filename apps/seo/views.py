@@ -20,7 +20,7 @@ def robots_txt(request):
         "User-agent: *",
         "Allow: /",
         "Disallow: /admin/",
-        "Disallow: /static/admin/",
+        "Disallow: /static/",
         "",
         f"Sitemap: {base_url}/sitemap.xml",
         f"Sitemap: {base_url}/sitemap-static.xml",

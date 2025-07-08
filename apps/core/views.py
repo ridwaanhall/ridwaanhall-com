@@ -111,6 +111,25 @@ class CVRedirectView(BaseView):
             return HttpResponsePermanentRedirect('/')
             
         return HttpResponsePermanentRedirect(cv_url)
+    
+    
+class CVLatestRedirectView(BaseView):
+    """
+    CV Latest redirect view.
+    """
+    def get(self, request, *args, **kwargs):
+        """
+        Redirect to latest CV on Google Drive.
+        Using permanent redirect (301) for better SEO and caching.
+        """
+        about_data = self.get_about_data()
+        cv_latest_url = about_data.get('cv_latest')
+
+        if not cv_latest_url:
+            # Fallback to homepage if CV latest URL is not configured
+            return HttpResponsePermanentRedirect('/')
+
+        return HttpResponsePermanentRedirect(cv_latest_url)
 
 
 class CVTemplateRedirectView(BaseView):

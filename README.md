@@ -13,7 +13,7 @@
 - **🗂️ Individual File System**: Each project and blog post in separate Python files
 - **📊 Real-time Analytics**: GitHub and WakaTime API integration
 - **💬 Interactive Guestbook**: Configurable chat-like messaging (can be disabled)
-- **🚀 High Performance**: 97+/100 PageSpeed scores
+- **🚀 High Performance**: 99+/100 PageSpeed scores
 - **🛡️ Security-First**: CSP, HSTS, XSS protection
 - **📱 Responsive Design**: Mobile-optimized with Tailwind CSS
 - **🖼️ Image Optimization**: wsrv.nl - Image proxy/CDN for automatic resizing
@@ -27,12 +27,18 @@
 - **Security**: django-csp, permissions-policy, XSS protection
 - **Deployment**: Vercel, WhiteNoise
 
-## 📊 Performance Metrics
+## 📊 PageSpeed Insights
 
-### Desktop: 97/100 | Mobile: 91/100 PageSpeed Scores
+[![Desktop: 99.5](https://img.shields.io/badge/Desktop-99.5-success?style=for-the-badge)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/rstqtcxhc0?form_factor=desktop)
+[![Mobile: 99](https://img.shields.io/badge/Mobile-99-success?style=for-the-badge)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/rstqtcxhc0?form_factor=mobile)
 
-[![Performance: 97](https://img.shields.io/badge/Performance-97-success?style=for-the-badge)](https://pagespeed.web.dev/)
-[![SEO: 100](https://img.shields.io/badge/SEO-100-success?style=for-the-badge)](https://pagespeed.web.dev/)
+### 📊 PageSpeed Insights Breakdown
+
+| Platform | Performance | Accessibility | Best Practices | SEO | Average |
+|----------|-------------|---------------|----------------|-----|---------|
+| **Desktop** | 98 | 100 | 100 | 100 | **99.5** |
+| **Mobile** | 96 | 100 | 100 | 100 | **99** |
+| **Average** | **97** | **100** | **100** | **100** | **99.25** |
 
 ## 🏗️ Project Structure
 
@@ -123,7 +129,7 @@ This project requires several environment variables for proper functionality. Cr
 
 #### Core Application Settings
 
-- **BASE_URL**: Your application's domain URL (e.g., <https://yoursite.com>)
+- **BASE_URL**: Your application's domain URL (e.g., <https://ridwaanhall.com>)
 - **SECRET_KEY**: Django's secret key for cryptographic signing - generate using `python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`
 - **DEBUG**: Set to `True` for development, `False` for production
 

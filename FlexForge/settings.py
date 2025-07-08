@@ -148,7 +148,6 @@ PERMISSIONS_POLICY = {
     "sync-xhr": [],
     "usb": [],
     "web-share": [],
-    "xr-spatial-tracking": [],
 }
 
 # Session security settings

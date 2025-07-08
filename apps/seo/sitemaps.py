@@ -73,7 +73,7 @@ class StaticPagesSitemap(Sitemap):
 
     def priority(self, obj):
         """Set priority based on page importance."""
-        if obj in ['home', 'dashboard', 'about', 'contact', 'guestbook']:
+        if obj in ['home', 'dashboard', 'about', 'contact', 'privacy', 'guestbook']:
             return 1.0
         elif obj.startswith(('blog-page-', 'projects-page-')):
             page = int(obj.split('-')[-1])

@@ -8,6 +8,22 @@ from django.utils import timezone
 
 class UpdatedAtData:
     @staticmethod
+    def get_latest_guestbook_message():
+        """Get the latest guestbook message timestamp."""
+        try:
+            # Import here to avoid circular imports
+            from apps.guestbook.models import ChatMessage
+            latest_message = ChatMessage.objects.first()  # Already ordered by -timestamp
+            if latest_message:
+                dt = timezone.localtime(latest_message.timestamp)
+                return dt.strftime('%Y-%m-%d %H:%M:%S%z'), dt
+        except Exception:
+            pass
+        
+        # Fallback to current time if no messages or error
+        now = timezone.now()
+        return now.strftime('%Y-%m-%d %H:%M:%S%z'), now
+    @staticmethod
     def get_updated_at_from_content_files(folder_path, data_key="blog_data"):
         """Extract updated_at from individual content files (blog or project)."""
         latest_dt = None
@@ -103,6 +119,7 @@ class UpdatedAtData:
         blog_formatted, blog_dt = UpdatedAtData.get_latest_blog_updated_at()
         project_formatted, project_dt = UpdatedAtData.get_latest_project_updated_at()
         about_formatted, about_dt = UpdatedAtData.get_about_updated_at()
+        guestbook_formatted, guestbook_dt = UpdatedAtData.get_latest_guestbook_message()
         
         # For home page: use latest between blog, project, and about
         home_latest_dt = None
@@ -147,7 +164,11 @@ class UpdatedAtData:
             {
                 "page": "privacy",
                 "updated_at": UpdatedAtData.get_latest_modified_date([
-                    "apps/data/privacy/privacy_data.py",
-                ]) or about_formatted,
+                    "apps/data/privacy/privacy_policy_data.py",
+                ]),
+            },
+            {
+                "page": "guestbook",
+                "updated_at": guestbook_formatted,
             },
         ]

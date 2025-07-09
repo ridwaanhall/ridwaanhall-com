@@ -10,7 +10,7 @@ blog_data = {
         "api_offline_notice.webp": f"{settings.BLOG_BASE_IMG_URL}/api_offline_notice.webp"
     },
     "created_at": datetime.strptime("2025-07-05T02:53:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-07-05T03:23:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-07-09T21:58:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",
     "username": "ridwaanhall",
     "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
@@ -46,7 +46,7 @@ blog_data = {
             "text": "So if you've benefited from these APIs or believe in accessible community data, now is the time to act. Let’s make sure <strong>mlbb-stats.ridwaanhall.com</strong> and <strong>api-pddikti.ridwaanhall.com</strong> continue to serve their purpose—not fade into memory."
         }
     ],
-    "is_featured": True,
+    "is_featured": False,
     "tags": ['API Shutdown', 'Community Projects', 'Open Data', 'Support Needed'],
     "category": "Technology & Community",
     "read_time": 3,

@@ -27,7 +27,7 @@ class BlogView(BlogListSEOMixin, PaginatedView):
         pagination_data = self.paginate_items(request, all_blogs, self.items_per_page)
         
         # Get featured blogs
-        featured_blogs = DataService.get_blogs(featured_only=True)[:3]
+        featured_blogs = DataService.get_blogs(featured_only=True)[:5]
         context = self.get_common_context()
         context.update({
             'blogs': pagination_data['page_obj'],  # This is the Django page object with pagination methods

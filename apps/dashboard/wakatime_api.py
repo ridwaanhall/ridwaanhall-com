@@ -1,5 +1,5 @@
 """
-Wakatime API client for fetching coding activity data.
+WakaTime API client for fetching coding activity data.
 Separated from views for better organization and reusability.
 """
 
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class WakatimeClient:
-    """Client for interacting with Wakatime API."""
+    """Client for interacting with WakaTime API."""
     
     def __init__(self, api_key: str):
         self.api_key = api_key
@@ -22,7 +22,7 @@ class WakatimeClient:
         self.timeout = 10
     
     def get_activity_data(self) -> Optional[Dict]:
-        """Fetch Wakatime activity data for last 7 days and all time."""
+        """Fetch WakaTime activity data for last 7 days and all time."""
         try:
             last_7_days_url = f"{self.base_url}/users/current/stats/last_7_days?api_key={self.api_key}"
             all_time_url = f"{self.base_url}/users/current/all_time_since_today?api_key={self.api_key}"
@@ -38,15 +38,15 @@ class WakatimeClient:
                 'all_time': all_time_response.json()
             }
         except requests.RequestException as e:
-            logger.error(f"Wakatime API error: {e}")
+            logger.error(f"WakaTime API error: {e}")
             return None
         except Exception as e:
-            logger.error(f"Unexpected error in Wakatime API: {e}")
+            logger.error(f"Unexpected error in WakaTime API: {e}")
             return None
 
 
 class WakatimeStatsCalculator:
-    """Calculator for processing Wakatime API data into statistics."""
+    """Calculator for processing WakaTime API data into statistics."""
     
     @staticmethod
     def _convert_to_gmt7(iso_string: str) -> datetime:
@@ -72,7 +72,7 @@ class WakatimeStatsCalculator:
     
     @staticmethod
     def calculate_stats(data: Dict) -> Optional[Dict]:
-        """Calculate comprehensive Wakatime statistics."""
+        """Calculate comprehensive WakaTime statistics."""
         if not data or 'last_7_days' not in data or 'all_time' not in data:
             return None
         
@@ -150,5 +150,5 @@ class WakatimeStatsCalculator:
             }
         
         except Exception as e:
-            logger.error(f"Error calculating Wakatime stats: {e}")
+            logger.error(f"Error calculating WakaTime stats: {e}")
             return None

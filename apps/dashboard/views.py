@@ -1,5 +1,5 @@
 """
-Dashboard views for displaying GitHub and Wakatime activity statistics.
+Dashboard views for displaying GitHub and WakaTime activity statistics.
 Provides developer activity insights with caching for performance.
 """
 
@@ -22,13 +22,13 @@ CACHE_TIMEOUT = 10800
 
 class DashboardView(DashboardSEOMixin, BaseView):
     """
-    Dashboard view displaying GitHub and Wakatime statistics.
+    Dashboard view displaying GitHub and WakaTime statistics.
     Shows coding activity, contribution patterns, and development insights.
     """
     template_name = 'dashboard/dashboard.html'
     
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        """Build context with GitHub and Wakatime data."""
+        """Build context with GitHub and WakaTime data."""
         context = super().get_context_data(**kwargs)
         
         # Get GitHub statistics
@@ -39,7 +39,7 @@ class DashboardView(DashboardSEOMixin, BaseView):
             context['github_activity'] = None
             context['github_last_update'] = None
         
-        # Get Wakatime statistics
+        # Get WakaTime statistics
         wakatime_stats = self._get_wakatime_data()
         if wakatime_stats:
             context['wakatime_stats'] = wakatime_stats
@@ -98,7 +98,7 @@ class DashboardView(DashboardSEOMixin, BaseView):
         return github_data
     
     def _get_wakatime_data(self) -> Optional[Dict]:
-        """Get Wakatime statistics with caching."""
+        """Get WakaTime statistics with caching."""
         cache_key = 'wakatime_activity_data'
         wakatime_stats = cache.get(cache_key)
         
@@ -112,14 +112,14 @@ class DashboardView(DashboardSEOMixin, BaseView):
                     if wakatime_stats:
                         cache.set(cache_key, wakatime_stats, CACHE_TIMEOUT)
                     else:
-                        logger.error("Wakatime statistics calculation failed.")
+                        logger.error("WakaTime statistics calculation failed.")
                 else:
-                    logger.error("Wakatime activity data is missing or malformed.")
+                    logger.error("WakaTime activity data is missing or malformed.")
                     wakatime_stats = None
             except Exception as e:
-                logger.error(f"Error fetching Wakatime data: {e}")
+                logger.error(f"Error fetching WakaTime data: {e}")
                 wakatime_stats = None
         else:
-            logger.info("Using cached Wakatime statistics.")
+            logger.info("Using cached WakaTime statistics.")
         
         return wakatime_stats

@@ -302,25 +302,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="mb-0">
-                <div class="flex flex-row items-center justify-between mb-3 md:mb-4 gap-2">
-                    <h2 class="text-xl sm:text-2xl font-medium">Activity <span class="text-green-600">Graph</span></h2>
-                    <div class="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm bg-transparent py-1 px-2 sm:px-3 rounded-lg border border-zinc-700 shadow-inner whitespace-nowrap">
-                        <span class="font-medium">Less</span>
-                        <div class="flex space-x-0.5 sm:space-x-1">
-                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-xs bg-zinc-950"></div>
-                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-xs bg-green-600/20"></div>
-                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-xs bg-green-600/50"></div>
-                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-xs bg-green-600/90"></div>
-                            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-xs bg-green-500"></div>
-                        </div>
-                        <span class="font-medium">More</span>
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto mb-0">
+                <div class="overflow-x-auto mb-0 mt-4">
                     <div class="min-w-[650px] sm:min-w-max">
                         <div class="relative h-6">
                             <div id="month-labels"></div>
@@ -330,10 +313,17 @@
                         </div>
                         <div class="mt-2 flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0">
                             <div class="flex items-center text-xs sm:text-sm flex-shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <span class="text-xs text-zinc-500">Contribution activity over the past year</span>
+                                <div class="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm bg-transparent py-1 rounded-lg shadow-inner whitespace-nowrap">
+                                    <span class="font-medium text-zinc-400">Less</span>
+                                    <div class="flex space-x-0.5 sm:space-x-1">
+                                        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-xs hover:border hover:border-green-400/30 transition-opacity duration-300 opacity-100 bg-zinc-950"></div>
+                                        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-xs hover:border hover:border-green-400/30 transition-opacity duration-300 opacity-100 bg-green-600/20"></div>
+                                        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-xs hover:border hover:border-green-400/30 transition-opacity duration-300 opacity-100 bg-green-600/50"></div>
+                                        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-xs hover:border hover:border-green-400/30 transition-opacity duration-300 opacity-100 bg-green-600/90"></div>
+                                        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-xs hover:border hover:border-green-400/30 transition-opacity duration-300 opacity-100 bg-green-500"></div>
+                                    </div>
+                                    <span class="font-medium text-zinc-400">More</span>
+                                </div>
                             </div>
                             <div id="contribution-details" class="text-sm text-zinc-400 h-6 transition-opacity duration-200 opacity-0 flex-shrink">
                                 Hover over a day to see details

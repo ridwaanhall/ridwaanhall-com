@@ -662,40 +662,46 @@
                             </div>
                         </li>
 
-                        <!-- Curriculum Vitae -->
-                        <li class="external-item" data-name="curriculum vitae cv resume" data-url="{% url 'cv_redirect' %}">
+                        <!-- CV PDF -->
+                        <li class="external-item" data-name="curriculum vitae cv resume pdf" data-url="{% url 'cv_redirect' %}">
                             <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-zinc-800">
                                 <div class="flex items-center gap-5">
                                     <div class="transition-all duration-300 group-hover:-rotate-12">
-                                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                            <polyline points="14,2 14,8 20,8"></polyline>
-                                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                                            <polyline points="10,9 9,9 8,9"></polyline>
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                         </svg>
                                     </div>
-                                    <span>Curriculum Vitae</span>
+                                    <span>CV PDF</span>
                                 </div>
                                 <div class="rounded-md border border-zinc-500 px-1.5 py-0.5 text-xs text-zinc-400">Link</div>
                             </div>
                         </li>
 
-                        <!-- Copy CV -->
-                        <li class="external-item" data-name="Copy CV resume" data-url="{% url 'cv_copy_redirect' %}">
+                        <!-- CV Word -->
+                        <li class="external-item" data-name="curriculum vitae cv resume word" data-url="{% url 'cv_latest_redirect' %}">
                             <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-zinc-800">
                                 <div class="flex items-center gap-5">
                                     <div class="transition-all duration-300 group-hover:-rotate-12">
-                                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                                            ></path>
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                         </svg>
                                     </div>
-                                    <span>Copy CV</span>
+                                    <span>CV Word</span>
+                                </div>
+                                <div class="rounded-md border border-zinc-500 px-1.5 py-0.5 text-xs text-zinc-400">Link</div>
+                            </div>
+                        </li>
+
+                        <!-- CV Copy -->
+                        <li class="external-item" data-name="curriculum vitae cv resume copy template" data-url="{% url 'cv_copy_redirect' %}">
+                            <div class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-zinc-800">
+                                <div class="flex items-center gap-5">
+                                    <div class="transition-all duration-300 group-hover:-rotate-12">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <span>CV Copy</span>
                                 </div>
                                 <div class="rounded-md border border-zinc-500 px-1.5 py-0.5 text-xs text-zinc-400">Link</div>
                             </div>

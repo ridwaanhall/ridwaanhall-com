@@ -43,7 +43,7 @@ class ExperiencesData:
             "company": "Coding Camp powered by DBS Foundation",
             "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
             "website": "https://go.dbs.com/dbsfcodingcamp",
-            "period": "Feb 2025 - Present",
+            "period": "Feb 2025 - Jul 2025",
             "employment_type": employment_types["pt"],
             "location_type": location_types["rm"],
             "location": "Bandung, Indonesia 🇮🇩",
@@ -133,9 +133,9 @@ class ExperiencesData:
             "logo": f"{settings.BASE_URL}/static/img/logo/copilot_id.webp",
             "website": "https://github.com/copilot-id",
             "period": "Jan 2023 - Present",
-            "employment_type": employment_types["ft"],
-            "location_type": location_types["hy"],
-            "location": "Yogyakarta, Indonesia 🇮🇩",
+            "employment_type": employment_types["se"],
+            "location_type": location_types["on"],
+            "location": "Solo, Indonesia 🇮🇩",
             "is_current": True,
             "responsibilities": [
                 "Living that AI life, building with Django, TensorFlow, PyTorch, and more—full-stack geek mode!"

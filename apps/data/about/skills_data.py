@@ -264,7 +264,6 @@ class SkillsData:
             "description": "Python SQL toolkit and Object-Relational Mapping library",
             "icon_svg": f"{settings.BASE_URL}/static/svg/icon/sqlalchemy-original.svg"
         },
-        # Additional technologies from projects
         "aco": {
             "name": "ACO",
             "description": "Ant Colony Optimization for solving computational problems",
@@ -353,7 +352,7 @@ class SkillsData:
         "leaflet": {
             "name": "Leaflet",
             "description": "Interactive maps for web apps, easy to use and customize",
-            "icon_svg": ""
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/leaflet.svg"
         },
         "mdx": {
             "name": "MDX",
@@ -438,7 +437,7 @@ class SkillsData:
         "wakatime_api": {
             "name": "WakaTime API",
             "description": "Tracks my coding hours and analytics like a pro",
-            "icon_svg": ""
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/wakatime-white.svg"
         },
         "whitenoise": {
             "name": "Whitenoise",

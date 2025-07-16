@@ -80,7 +80,7 @@ Load the template tags in your template:
 #### Basic Single Image (Current Templates)
 
 ```django
-<img src="{{ blog.image_url }}" alt="{{ blog.title }}" />
+<img src="https://wsrv.nl/?url={{ blog.image_url }}" alt="{{ blog.title }}" />
 ```
 
 #### Enhanced Multi-Image Support
@@ -90,7 +90,7 @@ Load the template tags in your template:
     {% blog_image_gallery blog "mb-4" %}
     <p>Gallery with {{ blog|blog_image_count }} images</p>
 {% else %}
-    <img src="{{ blog.image_url }}" alt="{{ blog.title }}" />
+    <img src="https://wsrv.nl/?url={{ blog.image_url }}" alt="{{ blog.title }}" />
 {% endif %}
 ```
 
@@ -143,7 +143,7 @@ No changes needed! The system maintains backward compatibility:
    {% if blog|has_multiple_images %}
        {% blog_image_gallery blog %}
    {% else %}
-       <img src="{{ blog.image_url }}" alt="{{ blog.title }}" />
+       <img src="https://wsrv.nl/?url={{ blog.image_url }}" alt="{{ blog.title }}" />
    {% endif %}
    ```
 

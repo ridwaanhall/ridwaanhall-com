@@ -30,7 +30,7 @@ project_data = {
     ],
     "tech_stack": [
         SkillsData.tech_stack["python"],
-        SkillsData.tech_stack["scikit-learn"],
+        SkillsData.tech_stack["scikitlearn"],
         SkillsData.tech_stack["pandas"]
     ],
     "github_url": "https://github.com/ridwaanhall/mlbb-draft-assistant",

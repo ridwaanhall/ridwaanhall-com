@@ -1,5 +1,6 @@
 {% extends 'base_seo.html' %}
 {% load static %}
+{% load bundle_tags %}
 {% block head_seo %}
 
 <title>{{ seo.title }}</title>
@@ -337,8 +338,14 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="{% static 'js/countUp.js' %}"></script>
-<script src="{% static 'js/githubContributions.js' %}"></script>
+<!-- Bundled Dashboard JS -->
+{% bundle_js_script 'dashboard' %}
+
+<!-- Fallback for individual JS files if bundle fails -->
+{% bundle_exists 'dashboard' 'js' as dashboard_js_exists %}
+{% if not dashboard_js_exists %}
+    {% load_static_fallback 'js/countUp.js' 'js/githubContributions.js' %}
+{% endif %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize GitHub contributions graph

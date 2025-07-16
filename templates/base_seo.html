@@ -1,4 +1,5 @@
 {% load seo_tags %}
+{% load bundle_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <!--
@@ -44,10 +45,14 @@
 
         <link rel="stylesheet" href="{% static 'font/Onest/Onest.css' %}" />
 
-        <link rel="stylesheet" href="{% static 'css/clickRipple.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/skillSlider.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/hideScroll.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/sidebarSearch.css' %}" />
+        <!-- Bundled Core CSS (replaces individual CSS files) -->
+        {% bundle_css_link 'core' %}
+        
+        <!-- Fallback for individual CSS files if bundle fails -->
+        {% bundle_exists 'core' 'css' as core_css_exists %}
+        {% if not core_css_exists %}
+            {% load_static_fallback 'css/clickRipple.css' 'css/skillSlider.css' 'css/hideScroll.css' 'css/sidebarSearch.css' %}
+        {% endif %}
     </head>
     <body class="bg-black text-zinc-300 transition-colors duration-200">
         <header class="md:hidden bg-black shadow-sm border-b border-zinc-800 fixed top-0 left-0 w-full z-40">
@@ -88,12 +93,14 @@
             </div>
         </div>
 
-        <!-- Scripts -->
-        <script defer src="{% static 'js/progressBar.js' %}"></script>
-        <script defer src="{% static 'js/sidebar.js' %}"></script>
-        <script defer src="{% static 'js/pageTransition.js' %}"></script>
-        <script defer src="{% static 'js/createRipple.js' %}"></script>
-        <script defer src="{% static 'js/sidebarSearch.js' %}"></script>
+        <!-- Bundled Core JS (replaces individual JS files) -->
+        {% bundle_js_script 'core' %}
+        
+        <!-- Fallback for individual JS files if bundle fails -->
+        {% bundle_exists 'core' 'js' as core_js_exists %}
+        {% if not core_js_exists %}
+            {% load_static_fallback 'js/progressBar.js' 'js/sidebar.js' 'js/pageTransition.js' 'js/createRipple.js' 'js/sidebarSearch.js' %}
+        {% endif %}
 
         {% block scripts %}
         {% endblock %}

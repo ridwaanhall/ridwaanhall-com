@@ -1,5 +1,6 @@
 {% extends 'base_seo.html' %}
 {% load static %}
+{% load bundle_tags %}
 {% load blog_tags %}
 {% block content %}
 <article class="flex-1 md:ml-62">
@@ -341,7 +342,12 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="{% static 'js/copyToClipboard.js' %}"></script>
-<script src="{% static 'js/backScroll.js' %}"></script>
-<script src="{% static 'js/blogImageSlider.js' %}"></script>
+<!-- Bundled Blog Detail JS -->
+{% bundle_js_script 'blog-detail' %}
+
+<!-- Fallback for individual JS files if bundle fails -->
+{% bundle_exists 'blog-detail' 'js' as blog_detail_js_exists %}
+{% if not blog_detail_js_exists %}
+    {% load_static_fallback 'js/copyToClipboard.js' 'js/backScroll.js' 'js/blogImageSlider.js' %}
+{% endif %}
 {% endblock %}

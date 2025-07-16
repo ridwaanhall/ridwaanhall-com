@@ -1,5 +1,6 @@
 {% extends 'base_seo.html' %}
 {% load static %}
+{% load bundle_tags %}
 <meta name="keywords" content="{{ seo.keywords }}" />
 <meta name="language" content="en" />
 
@@ -243,6 +244,12 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="{% static 'js/featuredSlider.js' %}"></script>
-<script src="{% static 'js/blogImageSlider.js' %}"></script>
+<!-- Bundled Blog JS -->
+{% bundle_js_script 'blog' %}
+
+<!-- Fallback for individual JS files if bundle fails -->
+{% bundle_exists 'blog' 'js' as blog_js_exists %}
+{% if not blog_js_exists %}
+    {% load_static_fallback 'js/featuredSlider.js' 'js/blogImageSlider.js' %}
+{% endif %}
 {% endblock %}

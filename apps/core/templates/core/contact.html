@@ -1,5 +1,6 @@
 {% extends 'base_seo.html' %}
 {% load static %}
+{% load bundle_tags %}
 {% block content %}
 <div class="flex-1 md:ml-62">
     <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
@@ -91,7 +92,14 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="{% static 'js/updateTime.js' %}"></script>
+<!-- Bundled Contact JS -->
+{% bundle_js_script 'contact' %}
+
+<!-- Fallback for individual JS files if bundle fails -->
+{% bundle_exists 'contact' 'js' as contact_js_exists %}
+{% if not contact_js_exists %}
+    {% load_static_fallback 'js/updateTime.js' %}
+{% endif %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('contact-form');

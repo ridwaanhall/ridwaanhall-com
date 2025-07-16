@@ -1,5 +1,6 @@
 {% extends 'base_seo.html' %}
 {% load static %}
+{% load bundle_tags %}
 {% load project_tags %}
 {% block head_seo %}
 
@@ -426,6 +427,12 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="{% static 'js/backScroll.js' %}"></script>
-<script src="{% static 'js/projectImageSlider.js' %}"></script>
+<!-- Bundled Projects JS -->
+{% bundle_js_script 'projects' %}
+
+<!-- Fallback for individual JS files if bundle fails -->
+{% bundle_exists 'projects' 'js' as projects_js_exists %}
+{% if not projects_js_exists %}
+    {% load_static_fallback 'js/backScroll.js' 'js/projectImageSlider.js' %}
+{% endif %}
 {% endblock %}

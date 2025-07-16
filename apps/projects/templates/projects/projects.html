@@ -1,4 +1,5 @@
 {% extends 'base_seo.html' %}
+{% load bundle_tags %}
 {% block head_seo %}
 {% load static %}
 <title>{{ seo.title }}</title>
@@ -281,5 +282,12 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'js/searchEnable.js' %}"></script>
+<!-- Bundled Projects JS -->
+{% bundle_js_script 'projects' %}
+
+<!-- Fallback for individual JS files if bundle fails -->
+{% bundle_exists 'projects' 'js' as projects_js_exists %}
+{% if not projects_js_exists %}
+    {% load_static_fallback 'js/searchEnable.js' %}
+{% endif %}
 {% endblock %}

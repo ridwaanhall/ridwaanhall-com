@@ -1,5 +1,6 @@
 {% extends 'base_seo.html' %}
 {% load static %}
+{% load bundle_tags %}
 {% block head_seo %}
 <!-- Custom SEO meta tags if needed can be added here -->
 <!-- Schema and basic meta tags are handled by base_seo.html automatically -->
@@ -118,7 +119,12 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="{% static 'js/switchTab.js' %}"></script>
-<script src="{% static 'js/toggleCareer.js' %}"></script>
-<script src="{% static 'js/backScroll.js' %}"></script>
+<!-- Bundled About JS -->
+{% bundle_js_script 'about' %}
+
+<!-- Fallback for individual JS files if bundle fails -->
+{% bundle_exists 'about' 'js' as about_js_exists %}
+{% if not about_js_exists %}
+    {% load_static_fallback 'js/switchTab.js' 'js/toggleCareer.js' 'js/backScroll.js' %}
+{% endif %}
 {% endblock %}

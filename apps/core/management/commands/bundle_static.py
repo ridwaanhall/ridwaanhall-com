@@ -56,6 +56,23 @@ class Command(BaseCommand):
                 'js/backScroll.js',
                 'js/projectImageSlider.js',
             ],
+            'blog.js': [
+                'js/featuredSlider.js',
+                'js/blogImageSlider.js',
+            ],
+            'blog-detail.js': [
+                'js/copyToClipboard.js',
+                'js/backScroll.js',
+                'js/blogImageSlider.js',
+            ],
+            'about.js': [
+                'js/switchTab.js',
+                'js/toggleCareer.js',
+                'js/backScroll.js',
+            ],
+            'contact.js': [
+                'js/updateTime.js',
+            ],
         }
         
         static_root = Path(settings.STATIC_ROOT) if hasattr(settings, 'STATIC_ROOT') else Path(settings.BASE_DIR) / 'staticfiles'

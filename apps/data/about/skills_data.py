@@ -422,7 +422,7 @@ class SkillsData:
         "shadcn_ui": {
             "name": "Shadcn UI",
             "description": "Modern UI components to craft clean, stylish interfaces",
-            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/shadcn-ui.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/shadcnui.svg"
         },
         "telegram_api": {
             "name": "Telegram API",

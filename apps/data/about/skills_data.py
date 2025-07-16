@@ -7,262 +7,262 @@ class SkillsData:
         "python": {
             "name": "Python",
             "description": "Versatile programming language for web development, data science, and automation",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/python-original.svg"
         },
         "php": {
             "name": "PHP",
             "description": "Server-side scripting language for dynamic web applications",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/php-original.svg"
         },
         "javascript": {
             "name": "JavaScript",
             "description": "Dynamic programming language for interactive web experiences",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/javascript-original.svg"
         },
         "django": {
             "name": "Django",
             "description": "High-level Python web framework for rapid development",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/django-plain.svg"
         },
         "flask": {
             "name": "Flask",
             "description": "Lightweight and flexible Python web framework",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/flask-original.svg"
         },
         "react": {
             "name": "React",
             "description": "JavaScript library for building user interfaces",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/react-original.svg"
         },
         "nextjs": {
             "name": "Next.js",
             "description": "React framework for production-ready web applications",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/nextjs-original.svg"
         },
         "html5": {
             "name": "HTML5",
             "description": "Modern markup language for structuring web content",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/html5-original.svg"
         },
         "css3": {
             "name": "CSS3",
             "description": "Styling language for beautiful web design",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/css3-original.svg"
         },
         "bootstrap": {
             "name": "Bootstrap",
             "description": "Popular CSS framework for responsive design",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/bootstrap-original.svg"
         },
         "tailwindcss": {
             "name": "TailwindCSS",
             "description": "Utility-first CSS framework for rapid UI development",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/tailwindcss-original.svg"
         },
         "bulma": {
             "name": "Bulma",
             "description": "Modern CSS framework based on Flexbox",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bulma/bulma-plain.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/bulma-plain.svg"
         },
         "nodejs": {
             "name": "Node.js",
             "description": "JavaScript runtime for server-side development",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/nodejs-original.svg"
         },
         "materialui": {
             "name": "Material-UI",
             "description": "React components implementing Google's Material Design",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/materialui/materialui-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/materialui-original.svg"
         },
         "typescript": {
             "name": "TypeScript",
             "description": "Typed superset of JavaScript for better development",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/typescript-original.svg"
         },
         "laravel": {
             "name": "Laravel",
             "description": "Elegant PHP framework for web artisans",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/laravel-original.svg"
         },
         "tensorflow": {
             "name": "TensorFlow",
             "description": "Open-source machine learning framework",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/tensorflow-original.svg"
         },
         "pytorch": {
             "name": "PyTorch",
             "description": "Deep learning framework with dynamic computation graphs",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/pytorch-original.svg"
         },
         "keras": {
             "name": "Keras",
             "description": "High-level neural networks API for deep learning",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/keras/keras-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/keras-original.svg"
         },
         "scikitlearn": {
             "name": "Scikit-learn",
             "description": "Machine learning library for Python",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/scikitlearn-original.svg"
         },
         "mysql": {
             "name": "MySQL",
             "description": "Popular relational database management system",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/mysql-original.svg"
         },
         "sqlite": {
             "name": "SQLite",
             "description": "Lightweight embedded relational database",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/sqlite-original.svg"
         },
         "mongodb": {
             "name": "MongoDB",
             "description": "NoSQL document database for modern applications",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/mongodb-original.svg"
         },
         "postgresql": {
             "name": "PostgreSQL",
             "description": "Advanced open-source relational database",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/postgresql-original.svg"
         },
         "git": {
             "name": "Git",
             "description": "Distributed version control system for tracking changes",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/git-original.svg"
         },
         "github": {
             "name": "GitHub",
             "description": "Web-based platform for version control and collaboration",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/github-original.svg"
         },
         "django_rest_framework": {
             "name": "Django REST Framework",
             "description": "Powerful toolkit for building Web APIs in Django",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/djangorest/djangorest-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/djangorest-original.svg"
         },
         "postman": {
             "name": "Postman",
             "description": "API development and testing platform",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/postman-original.svg"
         },
         "graphql": {
             "name": "GraphQL",
             "description": "Query language for APIs with flexible data fetching",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/graphql-plain.svg"
         },
         "vercel": {
             "name": "Vercel",
             "description": "Platform for frontend frameworks and static sites",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/vercel-original.svg"
         },
         "netlify": {
             "name": "Netlify",
             "description": "Platform for automated web development workflows",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/netlify/netlify-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/netlify-original.svg"
         },
         "cloudflare_pages": {
             "name": "Cloudflare Pages",
             "description": "JAMstack platform for fast and secure websites",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cloudflare/cloudflare-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/cloudflare-original.svg"
         },
         "cloudflare_workers": {
             "name": "Cloudflare Workers",
             "description": "Serverless execution environment at the edge",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cloudflareworkers/cloudflareworkers-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/cloudflareworkers-original.svg"
         },
         "nginx": {
             "name": "Nginx",
             "description": "High-performance web server and reverse proxy",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/nginx-original.svg"
         },
         "vscode": {
             "name": "Visual Studio Code",
             "description": "Lightweight yet powerful source code editor",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/vscode-original.svg"
         },
         "jetbrains": {
             "name": "JetBrains",
             "description": "Professional IDEs for various programming languages",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jetbrains/jetbrains-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/jetbrains-original.svg"
         },
         "figma": {
             "name": "Figma",
             "description": "Collaborative interface design tool",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/figma-original.svg"
         },
         "canva": {
             "name": "Canva",
             "description": "Online design and publishing platform",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/canva/canva-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/canva-original.svg"
         },
         "jupyter": {
             "name": "Jupyter Notebook",
             "description": "Interactive computing environment for data science",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jupyter/jupyter-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/jupyter-original.svg"
         },
         "anaconda": {
             "name": "Anaconda",
             "description": "Python distribution for data science and machine learning",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/anaconda/anaconda-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/anaconda-original.svg"
         },
         "opencv": {
             "name": "OpenCV",
             "description": "Computer vision and image processing library",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/opencv-original.svg"
         },
         "pandas": {
             "name": "Pandas",
             "description": "Data manipulation and analysis library for Python",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/pandas-original.svg"
         },
         "numpy": {
             "name": "NumPy",
             "description": "Fundamental package for scientific computing in Python",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/numpy-original.svg"
         },
         "matplotlib": {
             "name": "Matplotlib",
             "description": "Comprehensive library for creating visualizations in Python",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/matplotlib/matplotlib-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/matplotlib-original.svg"
         },
         "plotly": {
             "name": "Plotly",
             "description": "Interactive graphing library for data visualization",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/plotly/plotly-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/plotly-original.svg"
         },
         "streamlit": {
             "name": "Streamlit",
             "description": "Framework for building data science web applications",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/streamlit/streamlit-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/streamlit-original.svg"
         },
         "fastapi": {
             "name": "FastAPI",
             "description": "Modern, fast web framework for building APIs with Python",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/fastapi-original.svg"
         },
         "selenium": {
             "name": "Selenium",
             "description": "Web browser automation framework",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/selenium/selenium-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/selenium-original.svg"
         },
         "pypi": {
             "name": "PyPi",
             "description": "Repository of software for the Python programming language",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pypi/pypi-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/pypi-original.svg"
         },
         "woocommerce": {
             "name": "WooCommerce",
             "description": "E-commerce plugin for WordPress websites",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/woocommerce/woocommerce-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/woocommerce-original.svg"
         },
         "wordpress": {
             "name": "WordPress",
             "description": "Popular content management system for websites",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wordpress/wordpress-plain.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/wordpress-plain.svg"
         },
         "sqlalchemy": {
             "name": "SQLAlchemy",
             "description": "Python SQL toolkit and Object-Relational Mapping library",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/sqlalchemy-original.svg"
         },
         # Additional technologies from projects
         "aco": {
@@ -288,7 +288,7 @@ class SkillsData:
         "css": {
             "name": "CSS",
             "description": "Styles web pages to look good and feel right",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/css3-original.svg"
         },
         "chartjs": {
             "name": "Chart.js",
@@ -298,7 +298,7 @@ class SkillsData:
         "cloudflare": {
             "name": "Cloudflare",
             "description": "Speeds up sites and keeps them safe with CDN and security",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cloudflare/cloudflare-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/cloudflare-original.svg"
         },
         "datatables": {
             "name": "DataTables",
@@ -308,7 +308,7 @@ class SkillsData:
         "flask_mail": {
             "name": "Flask-Mail",
             "description": "Email support for Flask applications",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/flask-original.svg"
         },
         "gru": {
             "name": "GRU",
@@ -323,12 +323,12 @@ class SkillsData:
         "github_api": {
             "name": "GitHub API",
             "description": "Grabs project stats and activity straight from my repos",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/github-original.svg"
         },
         "google_maps": {
             "name": "Google Maps",
             "description": "Brings maps and location data to your web apps",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/google-original.svg"
         },
         "hog": {
             "name": "HOG",
@@ -338,7 +338,7 @@ class SkillsData:
         "jwt": {
             "name": "JWT",
             "description": "Securely transmit information between parties as a JSON object",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/json/json-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/json-original.svg"
         },
         "knn": {
             "name": "KNN",
@@ -358,7 +358,7 @@ class SkillsData:
         "mdx": {
             "name": "MDX",
             "description": "Mixes Markdown with JSX for dynamic docs",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/markdown/markdown-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/markdown-original.svg"
         },
         "machine_learning": {
             "name": "Machine Learning",
@@ -408,7 +408,7 @@ class SkillsData:
         "scss": {
             "name": "SCSS",
             "description": "Supercharged CSS with variables and nesting for style",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sass/sass-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/sass-original.svg"
         },
         "svm": {
             "name": "SVM",
@@ -433,7 +433,7 @@ class SkillsData:
         "vercel_postgres": {
             "name": "Vercel Postgres",
             "description": "Managed Postgres database that's easy to scale",
-            "icon_svg": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/postgresql-original.svg"
         },
         "wakatime_api": {
             "name": "WakaTime API",
@@ -453,7 +453,7 @@ class SkillsData:
         "allauth": {
             "name": "Django Allauth",
             "description": "Django apps for authentication, registration, account and social login management",
-            "icon_svg": f"{settings.BASE_URL}/static/svg/allauth.svg"
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/allauth.svg"
         },
     }
     

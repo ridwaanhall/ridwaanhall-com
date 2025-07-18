@@ -175,7 +175,7 @@ class SkillsData:
             "icon_svg": f"{settings.BASE_URL}/static/svg/icon/nginx-original.svg"
         },
         "vscode": {
-            "name": "Visual Studio Code",
+            "name": "VS Code",
             "description": "Lightweight yet powerful source code editor",
             "icon_svg": f"{settings.BASE_URL}/static/svg/icon/vscode-original.svg"
         },

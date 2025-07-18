@@ -254,12 +254,12 @@
                             <hr class="{{ content_item.class }}" />
                         {% elif content_item.type == 'table' %}
                             <div class="overflow-x-auto {{ content_item.class }}">
-                                <table class="min-w-full border-collapse border border-zinc-800">
+                                <table class="min-w-full border-collapse border border-zinc-900">
                                     {% if content_item.headers %}
                                     <thead>
                                         <tr class="bg-zinc-900">
                                             {% for header in content_item.headers %}
-                                            <th class="border border-zinc-800 px-4 py-2 text-left font-semibold">{{ header|safe }}</th>
+                                            <th class="border border-zinc-950 px-4 py-2 text-left font-semibold">{{ header|safe }}</th>
                                             {% endfor %}
                                         </tr>
                                     </thead>
@@ -267,9 +267,9 @@
                                     {% if content_item.rows %}
                                     <tbody>
                                         {% for row in content_item.rows %}
-                                        <tr class="{% cycle 'bg-zinc-600/50' 'bg-zinc-700/70' %}">
+                                        <tr class="{% cycle 'bg-zinc-950' 'bg-zinc-950/80' %}">
                                             {% for cell in row %}
-                                            <td class="border border-zinc-800 px-4 py-2">{{ cell|safe }}</td>
+                                            <td class="border border-zinc-900 px-4 py-2">{{ cell|safe }}</td>
                                             {% endfor %}
                                         </tr>
                                         {% endfor %}

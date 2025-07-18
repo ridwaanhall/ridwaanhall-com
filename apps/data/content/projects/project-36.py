@@ -22,7 +22,7 @@ project_data = {
         SkillsData.tech_stack["nextjs"],
         SkillsData.tech_stack["tailwindcss"],
         SkillsData.tech_stack["typescript"],
-        SkillsData.tech_stack["postgres"],
+        SkillsData.tech_stack["postgresql"],
         SkillsData.tech_stack["radix_ui"]
     ],
     "github_url": "https://github.com/ridwaanhall/neon-ai",

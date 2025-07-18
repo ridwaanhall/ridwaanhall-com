@@ -402,7 +402,7 @@ class SkillsData:
         "radix_ui": {
             "name": "Radix UI",
             "description": "Low-level UI components for accessible, custom designs",
-            "icon_svg": ""
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/radix-ui.svg"
         },
         "scss": {
             "name": "SCSS",
@@ -428,11 +428,6 @@ class SkillsData:
             "name": "Telegram API",
             "description": "Connects your apps to Telegram for messaging and bots",
             "icon_svg": ""
-        },
-        "vercel_postgres": {
-            "name": "Vercel Postgres",
-            "description": "Managed Postgres database that's easy to scale",
-            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/postgresql-original.svg"
         },
         "wakatime_api": {
             "name": "WakaTime API",

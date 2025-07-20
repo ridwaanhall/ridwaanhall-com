@@ -203,7 +203,16 @@
                                 {% for language in wakatime_stats.top_3_languages %}
                                 <li>
                                     <div class="flex items-center justify-between gap-3">
-                                        <div class="w-20 text-sm">{{ language.name }}</div>
+                                        <div class="w-20 text-sm">
+                                            <span class="relative group cursor-help">
+                                                {{ language.name }}
+                                                <span
+                                                    class="absolute left-1/2 -translate-x-1/2 -top-8 w-max bg-zinc-300 text-zinc-900 text-xs px-2 py-1 rounded opacity-0 translate-y-2 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:translate-y-0 pointer-events-none whitespace-nowrap before:content-[''] before:absolute before:left-1/2 before:top-full before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-zinc-300"
+                                                >
+                                                    {{ language.time }}
+                                                </span>
+                                            </span>
+                                        </div>
                                         <div class="relative flex h-3 flex-1 justify-center rounded-full bg-zinc-800/50">
                                             <span
                                                 class="bg-gradient-to-r from-indigo-400 to-purple-600 absolute left-0 top-0 h-3 rounded-full transition-all duration-1000 ease-out animate-bar"
@@ -226,7 +235,16 @@
                                 {% for category in wakatime_stats.top_1_category %}
                                 <li>
                                     <div class="flex items-center justify-between gap-3">
-                                        <div class="w-20 text-sm">{{ category.name }}</div>
+                                        <div class="w-20 text-sm">
+                                            <span class="relative group cursor-help">
+                                                {{ category.name }}
+                                                <span
+                                                    class="absolute left-1/2 -translate-x-1/2 -top-8 w-max bg-zinc-300 text-zinc-900 text-xs px-2 py-1 rounded opacity-0 translate-y-2 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:translate-y-0 pointer-events-none whitespace-nowrap before:content-[''] before:absolute before:left-1/2 before:top-full before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-zinc-300"
+                                                >
+                                                    {{ category.time }}
+                                                </span>
+                                            </span>
+                                        </div>
                                         <div class="relative flex h-3 flex-1 justify-center rounded-full bg-zinc-800/50">
                                             <span
                                                 class="bg-gradient-to-r from-purple-500 to-pink-600 absolute left-0 top-0 h-3 rounded-full transition-all duration-1000 ease-out animate-bar"
@@ -241,7 +259,16 @@
                                 {% for os in wakatime_stats.top_2_os %}
                                 <li>
                                     <div class="flex items-center justify-between gap-3">
-                                        <div class="w-20 text-sm">{{ os.name }}</div>
+                                        <div class="w-20 text-sm">
+                                            <span class="relative group cursor-help">
+                                                {{ os.name }}
+                                                <span
+                                                    class="absolute left-1/2 -translate-x-1/2 -top-8 w-max bg-zinc-300 text-zinc-900 text-xs px-2 py-1 rounded opacity-0 translate-y-2 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:translate-y-0 pointer-events-none whitespace-nowrap before:content-[''] before:absolute before:left-1/2 before:top-full before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-zinc-300"
+                                                >
+                                                    {{ os.time }}
+                                                </span>
+                                            </span>
+                                        </div>
                                         <div class="relative flex h-3 flex-1 justify-center rounded-full bg-zinc-800/50">
                                             <span
                                                 class="bg-gradient-to-r from-purple-500 to-pink-600 absolute left-0 top-0 h-3 rounded-full transition-all duration-1000 ease-out animate-bar"

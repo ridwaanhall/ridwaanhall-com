@@ -95,14 +95,17 @@ class WakatimeStatsCalculator:
                     'time': lang.get('text', '0 mins')
                 })
             
-            # Process top category
-            top_category = []
-            for category in last_7_days.get('categories', [])[:1]:
-                top_category.append({
-                    'name': category.get('name', 'Unknown'),
-                    'percent': category.get('percent', 0),
-                    'time': category.get('text', '0 mins')
-                })
+            # Sum all categories as "Coding"
+            total_seconds = 0
+            total_percent = 0
+            for category in last_7_days.get('categories', []):
+                total_seconds += category.get('total_seconds', 0)
+                total_percent += category.get('percent', 0)
+            top_category = [{
+                'name': 'Coding',
+                'percent': total_percent,
+                'time': WakatimeStatsCalculator._format_time(total_seconds)
+            }]
             
             # Process top operating systems
             top_os = []

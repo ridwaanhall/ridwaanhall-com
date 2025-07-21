@@ -67,7 +67,6 @@ CONTENT_SECURITY_POLICY = {
         'base-uri': [SELF],
         'connect-src': [
             SELF,
-            'ridwaanhall.com',
             '*.googleapis.com',
             'https://api.web3forms.com',
             'api.web3forms.com',
@@ -75,7 +74,6 @@ CONTENT_SECURITY_POLICY = {
         'default-src': [SELF],
         'font-src': [
             SELF,
-            'ridwaanhall.com',
             '*.gstatic.com',
         ],
         'form-action': [
@@ -89,7 +87,6 @@ CONTENT_SECURITY_POLICY = {
         ],
         'img-src': [
             SELF,
-            'ridwaanhall.com',
             'data:',
             BLOG_BASE_IMG_URL,
             PROJECT_BASE_IMG_URL,
@@ -104,7 +101,6 @@ CONTENT_SECURITY_POLICY = {
         'script-src': [
             SELF,
             UNSAFE_INLINE,
-            'ridwaanhall.com',
             'static.cloudflareinsights.com',
             '*.googleapis.com',
             'cdn.jsdelivr.net',
@@ -112,7 +108,6 @@ CONTENT_SECURITY_POLICY = {
         'style-src': [
             SELF,
             UNSAFE_INLINE,
-            'ridwaanhall.com',
             '*.googleapis.com',
             '*.gstatic.com',
             'cdn.jsdelivr.net',

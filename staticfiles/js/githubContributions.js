@@ -149,7 +149,7 @@ class GitHubContributions {
     animateCellsAppearance(cells) {
         const shuffledCells = [...cells].sort(() => Math.random() - 0.5);
 
-        const maxDelay = 1200;
+        const maxDelay = 4000;
 
         shuffledCells.forEach((cell) => {
             const delay = Math.floor(Math.random() * maxDelay);

@@ -55,6 +55,7 @@ class AboutData:
                 "instagram": "https://ig.ridwaanhall.com",
                 "medium": "https://medium.com/@ridwaanhall",
                 "x": "https://x.com/ridwaanhall",
+                "website": "https://roneha.dev",
             },
             "donate": [
                 {
@@ -79,6 +80,6 @@ class AboutData:
                 "Django",
                 "TensorFlow",
                 "PyTorch",
-                # "Flask"
+                "Flask"
             ],
         }

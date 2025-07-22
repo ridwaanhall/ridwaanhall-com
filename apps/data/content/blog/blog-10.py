@@ -15,9 +15,9 @@ blog_data = {
         "gaza_crisis.webp": f"{settings.BLOG_BASE_IMG_URL}/gaza_crisis.webp"
     },
     "created_at": datetime.strptime("2025-04-16T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-05-10T22:32:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-07-22T14:29:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",
-    "username": "ridwaanhall",
+    "username": "roneha",
     "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
     "content": [
         {

@@ -7,7 +7,8 @@ blog_data = {
     "title": "Project Priority: What It Is and How to Master It",
     "description": "Learn how to prioritize projects effectively based on urgency, complexity, and impact to stay focused and meet deadlines.",
     "images": {
-        "project_priority_mastery.webp": f"{settings.BLOG_BASE_IMG_URL}/project_priority_mastery.webp"
+        "project_priority_mastery.webp": f"{settings.BLOG_BASE_IMG_URL}/project_priority_mastery.webp",
+        "project_priority_mastery_2.webp": f"{settings.BLOG_BASE_IMG_URL}/project_priority_mastery_2.webp"
     },
     "created_at": datetime.strptime("2025-07-07T19:17:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-07-07T19:17:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),

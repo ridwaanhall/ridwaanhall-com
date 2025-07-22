@@ -7,7 +7,7 @@ class AboutData:
         now = timezone.localtime()
         
         is_weekday = now.weekday() < 5
-        is_work_hour = 9 <= now.hour < 15
+        is_work_hour = 13 <= now.hour < 20
 
         return is_weekday and is_work_hour
 
@@ -18,6 +18,7 @@ class AboutData:
             "first_name": "Ridwan",
             "last_name": "Halim",
             "username": "ridwaanhall",
+            "aka": "roneha",
             "image_url": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "personal_website": "https://ridwaanhall.com",
             "cv": "https://drive.google.com/file/d/17FaTvAPK273fzXa9ez36X1vDCuQRLM-1/view?usp=sharing",
@@ -31,7 +32,7 @@ class AboutData:
             "short_cta": "Stay a while—see what lives beyond the code.",
             "long_description": "I'm a machine learning engineer and web developer, building AI apps and slick websites that solve real problems. I've memorized nearly 30 Juz of the Quran, which has wired me for grit, focus, and discipline. I've mentored 50+ coders at DBS Foundation's Coding Camp and guided 100+ interns at GAOTek Inc. I've shipped 30+ projects using TensorFlow, PyTorch, and more. I'm all in on using AI to tackle big challenges fast, growing Copilot ID, and dropping value in open-source communities.",
             "stories": [
-                "Hi, I'm Ridwan also known as ridwaanhall —a Python programmer, machine learning mentor, and open-source contributor with a focus on ML and web development. Based in Central Java, Indonesia, I lead Copilot ID, where I build intelligent systems and modern web apps using Django, Flask, and cutting-edge AI tools to solve real-world problems with purpose.",
+                "Hi, I'm Ridwan also known as ridwaanhall aka roneha —a Python programmer, machine learning mentor, and open-source contributor with a focus on ML and web development. Based in Central Java, Indonesia, I lead Copilot ID, where I build intelligent systems and modern web apps using Django, Flask, and cutting-edge AI tools to solve real-world problems with purpose.",
                 "On a personal note, I've memorized nearly 30 Juz of the Quran. It's not just about verses—it's wired me for grit, focus, and discipline, the same energy I pour into every line of code and mentoring session.",
                 "I've had some dope gigs. I mentored 50+ coders at DBS Foundation's Coding Camp, leveling up their Python and people skills. At GAOTek Inc., I guided 100+ interns to crush it. Oh, and I've shipped 30+ projects—AI models, web apps, you name it—using TensorFlow, PyTorch, and more.",
                 "My roots? I studied at Pondok Pesantren Islam Al Mukmin, soaking up Islamic wisdom, then snagged a Bachelor's in Intelligent Systems (AI) from University of Technology Yogyakarta, geeking out on Machine Learning breakthroughs.",
@@ -47,13 +48,13 @@ class AboutData:
                 "flag": "🇮🇩"
             },
             "social_media": {
+                "email": "hi@ridwaanhall.com",
                 "github": "https://gh.ridwaanhall.com",
                 "linkedin": "https://li.ridwaanhall.com",
                 "follow_linkedin": "https://linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=ridwaanhall",
-                "x": "https://x.com/ridwaanhall",
                 "instagram": "https://ig.ridwaanhall.com",
                 "medium": "https://medium.com/@ridwaanhall",
-                "email": "hi@ridwaanhall.com"
+                "x": "https://x.com/ridwaanhall",
             },
             "donate": [
                 {

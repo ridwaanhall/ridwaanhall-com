@@ -1,55 +1,50 @@
 from datetime import datetime
 from django.conf import settings
 
-# Blog data for: Why mlbb-stats.ridwaanhall.com and api-pddikti.ridwaanhall.com Go Offline Soon
+# Blog data for: Why mlbb-stats.ridwaanhall.com and api-pddikti.ridwaanhall.com Remain Online with Memory Usage Threshold
 blog_data = {
     "id": 17,
-    "title": """Why mlbb-stats.ridwaanhall.com and api-pddikti.ridwaanhall.com Go Offline Soon""",
-    "description": """Two community-driven APIs face shutdown due to hosting costs. Learn how you can help keep them alive.""",
+    "title": """mlbb-stats.ridwaanhall.com and api-pddikti.ridwaanhall.com Remain Online with Memory Usage Threshold""",
+    "description": """The planned shutdown is canceled. Both APIs remain accessible, but now operate under a memory usage threshold. Learn more about the changes.""",
     "images": {
         "api_offline_notice.webp": f"{settings.BLOG_BASE_IMG_URL}/api_offline_notice.webp"
     },
     "created_at": datetime.strptime("2025-07-05T02:53:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-07-09T21:58:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-07-22T14:29:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",
-    "username": "ridwaanhall",
+    "username": "roneha",
     "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
     "content": [
         {
             "type": "p",
             "class": "mb-2 text-sm md:text-base lg:text-lg",
-            "text": "In the spirit of open data and community innovation, two API services—<strong>mlbb-stats.ridwaanhall.com</strong> and <strong>api-pddikti.ridwaanhall.com</strong>—were created to empower developers, researchers, and educators across Indonesia and beyond."
+            "text": "Good news for the community! The planned shutdown of <strong>mlbb-stats.ridwaanhall.com</strong> and <strong>api-pddikti.ridwaanhall.com</strong> has been canceled. Both API services will remain accessible to developers, researchers, and educators."
         },
         {
             "type": "p",
             "class": "mb-2 text-sm md:text-base lg:text-lg",
-            "text": "These platforms have served thousands of requests, from Mobile Legends enthusiasts seeking hero statistics, to students and institutions integrating PDDikti education data into apps and systems. But despite their utility and growing reach, they face an urgent threat: <em>discontinuation due to hosting constraints</em>."
+            "text": "However, to ensure sustainability, both platforms now operate under a memory usage threshold. This means that while you can still access the APIs, heavy or excessive usage may be limited to prevent server overload."
         },
         {
             "type": "p",
             "class": "mb-2 text-sm md:text-base lg:text-lg",
-            "text": "Starting <strong>July 5, 2025</strong>, <code>mlbb-stats.ridwaanhall.com</code> is scheduled to go offline. Just days later, on <strong>July 10, 2025</strong>, <code>api-pddikti.ridwaanhall.com</code> may follow suit. The reason is simple: growing traffic demands higher server costs—and right now, there is no financial support sustaining these services."
+            "text": "These changes help keep the services running for everyone, balancing resource constraints with community needs. Please be mindful of your usage and consider optimizing your requests."
         },
         {
             "type": "p",
             "class": "mb-2 text-sm md:text-base lg:text-lg",
-            "text": "To maintain them, just <strong>$50/month</strong> is needed. Small contributions can make a big impact. Even <strong>$1</strong> helps edge closer to keeping these tools active for everyone."
+            "text": "Support is still appreciated to help cover hosting costs and improve service reliability. You can contribute via <a href='https://saweria.co/ridwaanhall' class='underline'>Saweria</a>, <a href='https://sociabuzz.com/ridwaanhall/support' class='underline'>Sociabuzz</a>, or <a href='https://github.com/sponsors/ridwaanhall' class='underline'>GitHub Sponsors</a>."
         },
         {
             "type": "p",
             "class": "mb-2 text-sm md:text-base lg:text-lg",
-            "text": "You can support via platforms like <a href='https://saweria.co/ridwaanhall' class='underline'>Saweria</a>, <a href='https://sociabuzz.com/ridwaanhall/support' class='underline'>Sociabuzz</a>, or through <a href='https://github.com/sponsors/ridwaanhall' class='underline'>GitHub Sponsors</a>."
-        },
-        {
-            "type": "p",
-            "class": "mb-2 text-sm md:text-base lg:text-lg",
-            "text": "So if you've benefited from these APIs or believe in accessible community data, now is the time to act. Let’s make sure <strong>mlbb-stats.ridwaanhall.com</strong> and <strong>api-pddikti.ridwaanhall.com</strong> continue to serve their purpose—not fade into memory."
+            "text": "Thank you for your continued support and understanding. Let's keep <strong>mlbb-stats.ridwaanhall.com</strong> and <strong>api-pddikti.ridwaanhall.com</strong> available for the community!"
         }
     ],
     "is_featured": False,
-    "tags": ['API Shutdown', 'Community Projects', 'Open Data', 'Support Needed'],
+    "tags": ['API Update', 'Community Projects', 'Open Data', 'Support Needed'],
     "category": "Technology & Community",
     "read_time": 3,
     "views": 0,
-    "slug": "why-mlbb-stats-ridwaanhall-com-and-api-pddikti-ridwaanhall-com-go-offline-soon"
+    "slug": "mlbb-stats-ridwaanhall-com-and-api-pddikti-ridwaanhall-com-remain-online-with-memory-threshold"
 }

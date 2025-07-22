@@ -383,8 +383,9 @@ class SEOSchemaGenerator:
             "name": f"Contact {about_data.get('name', '')}",
             "description": f"Get in touch with {about_data.get('name', '')} for professional inquiries, project collaborations, or technical discussions.",
             "url": f"{SEOConfig.SITE_URL}/contact/",
-            "mainEntity": organization,            "author": author,
-            "dateCreated": "2020-01-01",
+            "mainEntity": organization,
+            "author": author,
+            "dateCreated": "2025-03-16",
             "dateModified": datetime.now().strftime("%Y-%m-%d"),
             "inLanguage": "en",
             "isPartOf": {

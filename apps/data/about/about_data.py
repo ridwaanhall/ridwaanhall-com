@@ -26,9 +26,9 @@ class AboutData:
             "cv_copy": "https://docs.google.com/document/d/1Sv2VQ95fDn-0a_8lOZxBuFAZ--gJrw7u5EQ-_SLUfpo/copy",
             "role": "Machine Learning Mentor",
             "is_active": cls.is_working_hours(),
-            # "is_active": False,
             "short_description": "a quiet space where machine learning, open-source, and reflections converge.",
-            "short_bio": "I explore through code, share with empathy, and reflect on every challenge. My journey weaves machine learning, web creation, and open-source work. This site archives the curious, the technical, and the quietly personal.",
+            "short_bio_old": "I explore through code, share with empathy, and reflect on every challenge. My work weaves machine learning, web creation, and open-source. This site archives the curious, the technical, and the quietly thoughtful.",
+            "short_bio": "I explore through code, share with empathy, and reflect on every challenge. My work weaves machine learning, web creation, and open source. I thrive on collaborating with teams to develop smart, user centered AI and web solutions that blend function with clarity.",
             "short_cta": "Stay a while and see what lives beyond the code.",
             "long_description": "I'm a machine learning engineer and web developer, building AI apps and slick websites that solve real problems. I've memorized nearly 30 Juz of the Quran, which has wired me for grit, focus, and discipline. I've mentored 50+ coders at DBS Foundation's Coding Camp and guided 100+ interns at GAOTek Inc. I've shipped 30+ projects using TensorFlow, PyTorch, and more. I'm all in on using AI to tackle big challenges fast, growing Copilot ID, and dropping value in open-source communities.",
             "stories": [

@@ -49,10 +49,10 @@ class ExperiencesData:
             "location": "Bandung, Indonesia 🇮🇩",
             "is_current": True,
             "responsibilities": [
-                "Guiding 24 students with weekly sessions to hit an 80% grad rate—let's get 'em there!",
-                "Dropping 7+ hours a week on 1-hour consults, tracking progress, and hyping up team vibes.",
-                "Coordinating 50-75 students with slick 2-hour weekly tech and soft skills sessions across groups.",
-                "Jumping into 1.5-hour monthly meetings and mentor glow-up sessions."
+                "Led weekly mentoring sessions for 24 students, resulting in a 75% graduation rate and maintaining an average attendance of 84%.",
+                "Provided 1.5 hours per week of personalized one-on-one sessions, addressing individual challenges and academic assignments to support student development.",
+                "Conducted alternating weekly sessions on soft and technical skills (2 hours/week) for 50 participants, managing facilitator coordination, content preparation, session moderation, and cohort engagement monitoring.",
+                "Participated in monthly 1.5-hour meetings and professional development sessions for mentors."
             ]
         },
         {
@@ -67,8 +67,8 @@ class ExperiencesData:
             "location": "Bandung, Indonesia 🇮🇩",
             "is_current": False,
             "responsibilities": [
-                "Got the lowdown on ML Ops to build slick, scalable ML systems.",
-                "Learned the ropes of running ML in real-world production—game-changer!"
+                "Acquired comprehensive knowledge of ML Ops to develop robust and scalable machine learning systems.",
+                "Gained practical experience in deploying machine learning models in real-world production environments."
             ]
         },
         {
@@ -83,11 +83,11 @@ class ExperiencesData:
             "location": "Bandung, Indonesia 🇮🇩",
             "is_current": False,
             "responsibilities": [
-                "Cooked up ML systems for dope projects—full-on problem-solving mode.",
-                "Built predictive models with k-Nearest Neighbor, Random Forest, and AdaBoost—nailed it.",
-                "Whipped up sentiment analysis using Deep Learning and SVM—pretty slick!",
-                "Dabbled in computer vision for image recognition and object detection—mind blown.",
-                "Crafted recommendation systems with Content-based and Collaborative Filtering—user vibes on point."
+                "Developed machine learning systems for various projects, focusing on effective problem-solving.",
+                "Built predictive models using k-Nearest Neighbor, Random Forest, and AdaBoost algorithms.",
+                "Implemented sentiment analysis solutions utilizing Deep Learning and Support Vector Machines.",
+                "Explored computer vision techniques for image recognition and object detection.",
+                "Designed recommendation systems using content-based and collaborative filtering approaches."
             ]
         },
         {
@@ -102,11 +102,11 @@ class ExperiencesData:
             "location": "Bandung, Indonesia 🇮🇩",
             "is_current": False,
             "responsibilities": [
-                "Built beefy neural nets with TensorFlow and Keras—deep learning FTW!",
-                "Tackled NLP for text classification and sentiment analysis—words got no secrets.",
-                "Cranked out deep learning models for time series and image classification—smooth.",
-                "Explored recommendation systems and reinforcement learning—next-level stuff.",
-                "Got cozy with generative AI and model deployment—ready for the real world!"
+                "Developed neural networks using TensorFlow and Keras for deep learning applications.",
+                "Applied natural language processing techniques for text classification and sentiment analysis.",
+                "Created deep learning models for time series and image classification tasks.",
+                "Explored recommendation systems and reinforcement learning methodologies.",
+                "Gained experience with generative AI and model deployment."
             ]
         },
         {
@@ -121,9 +121,9 @@ class ExperiencesData:
             "location": "Bandung, Indonesia 🇮🇩",
             "is_current": False,
             "responsibilities": [
-                "Kicked off with data viz in Google Sheets—charts never looked so good.",
-                "Mastered Python basics and OOP—coding's my jam now!",
-                "Dived into supervised and unsupervised ML algorithms—brain's buzzing."
+                "Initiated data visualization projects using Google Sheets.",
+                "Mastered Python fundamentals and object-oriented programming.",
+                "Studied supervised and unsupervised machine learning algorithms."
             ]
         },
         {
@@ -138,7 +138,11 @@ class ExperiencesData:
             "location": "Solo, Indonesia 🇮🇩",
             "is_current": True,
             "responsibilities": [
-                "Living that AI life, building with Django, TensorFlow, PyTorch, and more—full-stack geek mode!"
+                "Executed AI-driven projects using Django, TensorFlow, PyTorch, and modern web technologies.",
+                "3+ years of Django experience across 15+ full-cycle projects including MTV architecture, ORM, REST APIs, authentication, testing, and debugging.",
+                "Built and deployed 7+ Flask-based microservices with scalable routing and Jinja2 templating.",
+                "Developed 8+ end-to-end neural network systems involving preprocessing, feature engineering, model tuning, evaluation, distributed training, and deployment.",
+                "Applied a broad tech stack: Python, PHP, JavaScript, Django, Flask, React, Next.js, Node.js, WordPress, Material-UI, TypeScript, Laravel, TensorFlow, PyTorch, Keras, Scikit-learn, HTML/CSS, SQL/NoSQL, Git, DRF, Postman, GraphQL, Vercel, Netlify, and Cloudflare."
             ]
         },
         {
@@ -153,9 +157,9 @@ class ExperiencesData:
             "location": "Surakarta, Indonesia 🇮🇩",
             "is_current": True,
             "responsibilities": [
-                "Wrangled data for 200+ alumni with slick filtering and dope graphs.",
-                "Whipped up org docs and meeting notes—keeping it tight.",
-                "Designed clean, user-friendly interfaces for alumni management—UX vibes!"
+                "Managed data for over 200 alumni, including advanced filtering and data visualization.",
+                "Prepared organizational documents and meeting notes.",
+                "Designed user-friendly interfaces for alumni management."
             ]
         },
         {
@@ -170,9 +174,9 @@ class ExperiencesData:
             "location": "New York, USA 🇺🇸",
             "is_current": False,
             "responsibilities": [
-                "Led 100+ interns, keeping everyone on track like a pro.",
-                "Ran daily huddles and kept the team vibe strong.",
-                "Helped interns crush tech and project hurdles—teamwork makes the dream work!"
+                "Supervised and coordinated a team of over 100 interns.",
+                "Facilitated daily meetings and maintained team cohesion.",
+                "Assisted interns in overcoming technical and project-related challenges."
             ]
         },
         {
@@ -187,9 +191,9 @@ class ExperiencesData:
             "location": "New York, USA 🇺🇸",
             "is_current": False,
             "responsibilities": [
-                "Jammed with the crew weekly to plan projects and swap ideas.",
-                "Leveled up on Google Search Console, Analytics, and Tag Manager with 3 solid tasks.",
-                "Dropped reports every weekday for a month—kept it consistent!"
+                "Collaborated with team members to plan projects and exchange ideas.",
+                "Enhanced skills in Google Search Console, Analytics, and Tag Manager through multiple assignments.",
+                "Submitted daily reports consistently throughout the internship period."
             ]
         },
         {
@@ -204,10 +208,10 @@ class ExperiencesData:
             "location": "New York, USA 🇺🇸",
             "is_current": False,
             "responsibilities": [
-                "Joined late-night team huddles (11:30 PM EST) to debug and plan—grind mode!",
-                "Went ham on WooCommerce—added 30+ products, built a contact form, and 30+ product pages.",
-                "Smashed 7+ tasks faster than most interns in just 2 months.",
-                "Churned out daily reports for 2 months—never missed a beat!"
+                "Participated in late-night team meetings to address technical issues and plan development tasks.",
+                "Worked extensively with WooCommerce, adding over 30 products, creating a contact form, and developing more than 30 product pages.",
+                "Completed over 7 tasks within two months, exceeding the average intern performance.",
+                "Maintained a consistent record of daily reports throughout the internship."
             ]
         },
         {
@@ -222,8 +226,8 @@ class ExperiencesData:
             "location": "Islamabad, Pakistan 🇵🇰",
             "is_current": False,
             "responsibilities": [
-                "Built predictive models with Python and Scikit-Learn—data's my playground.",
-                "Cooked up classification and regression models that hit the mark!"
+                "Developed predictive models using Python and Scikit-Learn.",
+                "Implemented classification and regression models for various datasets."
             ]
         },
         {
@@ -238,8 +242,8 @@ class ExperiencesData:
             "location": "Karnataka, India 🇮🇳",
             "is_current": False,
             "responsibilities": [
-                "Tackled a phishing domain detection project—cybersecurity meets ML!",
-                "Used ML to beef up online defenses—pretty dope mission."
+                "Worked on a phishing domain detection project, integrating cybersecurity and machine learning.",
+                "Applied machine learning techniques to enhance online security."
             ]
         },
         {
@@ -254,9 +258,9 @@ class ExperiencesData:
             "location": "Surakarta, Indonesia 🇮🇩",
             "is_current": False,
             "responsibilities": [
-                "Rallied 50 boarding school students to teach in local villages—community vibes!",
-                "Teamed up to run epic competitions for 500+ students—energy was unreal.",
-                "Kept the boarding school's discipline game tight and inspiring."
+                "Coordinated 50 boarding school students in community teaching initiatives.",
+                "Collaborated in organizing competitions for over 500 students.",
+                "Maintained and promoted discipline within the boarding school environment."
             ]
         }
     ]

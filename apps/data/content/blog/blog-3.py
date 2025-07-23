@@ -16,9 +16,9 @@ blog_data = {
     },
     "created_at": datetime.strptime("2025-03-24T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-05-10T14:56:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "author": "Copilot",
-    "username": "copilot",
-    "author_image": f"{settings.BASE_URL}/static/img/copilot_v2.webp",
+    "author": "Ridwan Halim",
+    "username": "roneha",
+    "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
     "content":[
         {
             "type": "p",

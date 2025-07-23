@@ -337,7 +337,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Allauth settings (only needed for guestbook)
 if GUESTBOOK_PAGE:
     SOCIALACCOUNT_LOGIN_ON_GET = True
-    ACCOUNT_EMAIL_REQUIRED = True
+    # ACCOUNT_EMAIL_REQUIRED = True
     ACCOUNT_EMAIL_VERIFICATION = "none"
     SOCIALACCOUNT_AUTO_SIGNUP = True
     SOCIALACCOUNT_EMAIL_REQUIRED = True

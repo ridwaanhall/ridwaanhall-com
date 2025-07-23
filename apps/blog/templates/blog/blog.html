@@ -47,8 +47,8 @@
                                     <p class="text-sm text-zinc-400 mb-2 sm:mb-4 line-clamp-2">{{ blog.description }}</p>
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center space-x-2 sm:space-x-3">
-                                            <img src="https://wsrv.nl/?url={{ blog.author_image }}&w=50&h=50" alt="{{ blog.username }}" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover" width="358" height="358" />
-                                            <span class="text-xs sm:text-sm text-zinc-400">{{ blog.username }}</span>
+                                            <img src="https://wsrv.nl/?url={{ blog.author_image }}&w=50&h=50" alt="{{ blog.author }}" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover" width="358" height="358" />
+                                            <span class="text-xs sm:text-sm text-zinc-400">{{ blog.author }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -137,8 +137,8 @@
 
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center space-x-1 sm:space-x-2">
-                                            <img alt="{{ blog.username }}" loading="lazy" width="24" height="24" class="rounded-full w-4 h-4 sm:w-5 sm:h-5" src="https://wsrv.nl/?url={{ blog.author_image }}&w=50&h=50" width="50" height="50" />
-                                            <span class="text-xs sm:text-sm text-zinc-400 truncate max-w-[100px] sm:max-w-[150px]">{{ blog.username }}</span>
+                                            <img alt="Profile photo of {{ blog.author }}" loading="lazy" width="24" height="24" class="rounded-full w-4 h-4 sm:w-5 sm:h-5" src="https://wsrv.nl/?url={{ blog.author_image }}&w=50&h=50" width="50" height="50" />
+                                            <span class="text-xs sm:text-sm text-zinc-400 truncate max-w-[100px] sm:max-w-[150px]">{{ blog.author }}</span>
                                         </div>
 
                                         <div class="flex items-center min-w-[110px] sm:min-w-[150px] relative">

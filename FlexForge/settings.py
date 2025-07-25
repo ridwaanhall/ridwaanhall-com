@@ -1,5 +1,5 @@
 """
-Django settings for FlexForge project.
+Django 5.2.x settings for FlexForge project.
 Contains security configurations and environment-specific settings.
 
 Author: Ridwan Halim (ridwaanhall.com)

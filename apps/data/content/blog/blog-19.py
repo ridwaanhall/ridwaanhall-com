@@ -13,7 +13,7 @@ blog_data = {
         "api_threshold.webp": f"{settings.BLOG_BASE_IMG_URL}/api_threshold.webp"
     },
     "created_at": datetime.strptime("2025-07-09T21:27:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-07-27T01:09:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-07-27T01:21:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",
     "username": "roneha",
     "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
@@ -137,8 +137,13 @@ blog_data = {
                     "type": "li",
                     "class": "text-sm md:text-base lg:text-lg",
                     "text": "<a href='https://sociabuzz.com/ridwaanhall/support' class='underline'>Sociabuzz</a>"
-                },
+                }
             ]
+        },
+        {
+            "type": "p",
+            "class": "mb-2 text-sm md:text-base lg:text-lg text-yellow-700",
+            "text": "<strong>Suggestion:</strong> To save API usage, you can use caching in your application or browser. With caching, reloading the page will not always fetch data directly from the API, which helps reduce your API usage limits."
         },
     ],
     "is_featured": True,

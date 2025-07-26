@@ -71,7 +71,7 @@ class AboutManager:
     @classmethod
     def get_privacy_policy(cls):
         """Get privacy policy data."""
-        from .privacy.privacy_policy_data import PrivacyPolicyData
+        from ..core.data.privacy_policy_data import PrivacyPolicyData
         return PrivacyPolicyData.privacy_policy
     
     @classmethod

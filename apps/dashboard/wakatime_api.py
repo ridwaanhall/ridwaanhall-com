@@ -110,7 +110,50 @@ class WakatimeStatsCalculator:
                 
             # get most active day
             most_active_day_seconds = 0
-            
+            if isinstance(last_7_days.get('data'), list) and last_7_days['data']:
+                most_active_day_seconds = max(
+                    (day.get('grand_total', {}).get('total_seconds', 0) for day in last_7_days['data']),
+                    default=0
+                )
+            else:
+                most_active_day_seconds = 0
+                
+            # Get the date of the most active day
+            most_active_day_date = None
+            if isinstance(last_7_days.get('data'), list) and last_7_days['data']:
+                # Find the day with the most seconds
+                most_active_day = max(
+                    last_7_days['data'],
+                    key=lambda day: day.get('grand_total', {}).get('total_seconds', 0),
+                    default={}
+                )
+                # Get the date from the 'range' field if available, else fallback to 'date'
+                date_str = most_active_day.get('range', {}).get('date') or most_active_day.get('date', '')
+                if date_str:
+                    most_active_day_date = WakatimeStatsCalculator._convert_to_gmt7(date_str).strftime('%B %d, %Y')
+            else:
+                most_active_day_date = WakatimeStatsCalculator._convert_to_gmt7(
+                    last_7_days.get('start', '')
+                ).strftime('%B %d, %Y')
+                
+            # get today's coding time
+            today_coding_seconds = 0
+            if isinstance(last_7_days.get('data'), list) and last_7_days['data']:
+                jakarta_tz = pytz.timezone('Asia/Jakarta')
+                today_jakarta = timezone.now().astimezone(jakarta_tz).strftime('%Y-%m-%d')
+                
+                today_coding_seconds = next(
+                    (
+                        day.get('grand_total', {}).get('total_seconds', 0)
+                        for day in last_7_days['data']
+                        if day.get('range', {}).get('date') == today_jakarta
+                    ),
+                    0
+                )
+                
+            else:
+                # This fallback logic is fine and handles an alternative data structure
+                today_coding_seconds = last_7_days.get('today', {}).get('grand_total', {}).get('total_seconds', 0)
 
             # Process top languages
             # top_languages = []
@@ -164,6 +207,17 @@ class WakatimeStatsCalculator:
                 'this_week_coding': WakatimeStatsCalculator._format_time(
                     this_week_coding_seconds
                 ),
+                'best_day_coding': WakatimeStatsCalculator._format_time(
+                    most_active_day_seconds
+                ),
+                'best_day_date': most_active_day_date or 'N/A',
+                'today_coding': WakatimeStatsCalculator._format_time(
+                    today_coding_seconds
+                ),
+                'all_time_start': WakatimeStatsCalculator._convert_to_gmt7(
+                    all_time.get('range', {}).get('start', '')
+                ).strftime('%B %d, %Y'),
+                'all_time_coding': all_time.get('text', '0 mins'),
             }
         
         except Exception as e:

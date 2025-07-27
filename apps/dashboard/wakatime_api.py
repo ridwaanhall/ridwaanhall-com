@@ -74,9 +74,16 @@ class WakatimeStatsCalculator:
         try:
             hours = int(seconds // 3600)
             minutes = int((seconds % 3600) // 60)
-            return f"{hours} hrs {minutes} mins"
+            if hours > 0 and minutes == 0:
+                return f"{hours} hrs"
+            elif hours > 0:
+                return f"{hours} hrs {minutes} mins"
+            elif minutes > 0:
+                return f"{minutes} mins"
+            else:
+                return "0 mins"
         except (TypeError, ValueError):
-            return "0 hrs 0 mins"
+            return "0 mins"
     
     @staticmethod
     def calculate_stats(data: Dict) -> Optional[Dict]:
@@ -87,12 +94,6 @@ class WakatimeStatsCalculator:
         try:
             last_7_days = data['last_7_days']
             all_time = data['all_time']['data']
-            
-            # Calculate time differences
-            # modified_at = WakatimeStatsCalculator._convert_to_gmt7(last_7_days['modified_at'])
-            # now_gmt7 = timezone.now().astimezone(pytz.timezone('Asia/Jakarta'))
-            # time_diff = now_gmt7 - modified_at
-            # hours_ago = max(0, int(time_diff.total_seconds() / 3600))
             
             # Get daily average seconds from last 7 days
             daily_avg_seconds = 0
@@ -154,44 +155,41 @@ class WakatimeStatsCalculator:
             else:
                 # This fallback logic is fine and handles an alternative data structure
                 today_coding_seconds = last_7_days.get('today', {}).get('grand_total', {}).get('total_seconds', 0)
+                
+            # get languages used
+            language_total = {}
+            if isinstance(last_7_days.get('languages', []), list):
+                for day_data in last_7_days['data']:
+                    if 'languages' in day_data and isinstance(day_data['languages'], list):
+                        for lang in day_data['languages']:
+                            lang_name = lang.get('name', 'Unknown')
+                            lang_seconds = lang.get('total_seconds', 0)
+                            if lang_name in language_total:
+                                language_total[lang_name] += lang_seconds
+                            else:
+                                language_total[lang_name] = lang_seconds
 
-            # Process top languages
-            # top_languages = []
-            # for lang in last_7_days.get('languages', [])[:3]:
-            #     top_languages.append({
-            #         'name': lang.get('name', 'Unknown'),
-            #         'percent': lang.get('percent', 0),
-            #         'time': lang.get('text', '0 mins')
-            #     })
+            grand_total_seconds = sum(language_total.values())
             
-            # # Sum all categories as "Coding"
-            # total_seconds = 0
-            # total_percent = 0
-            # for category in last_7_days.get('categories', []):
-            #     total_seconds += category.get('total_seconds', 0)
-            #     total_percent += category.get('percent', 0)
-            # top_category = [{
-            #     'name': 'Coding',
-            #     'percent': total_percent,
-            #     'time': WakatimeStatsCalculator._format_time(total_seconds)
-            # }]
-            
-            # # Process top operating systems
-            # top_os = []
-            # for os in last_7_days.get('operating_systems', [])[:2]:
-            #     top_os.append({
-            #         'name': os.get('name', 'Unknown'),
-            #         'percent': os.get('percent', 0),
-            #         'time': os.get('text', '0 mins')
-            #     })
+            languages_with_percentage = []
+            for name, seconds in language_total.items():
+                percent = (seconds / grand_total_seconds * 100) if grand_total_seconds > 0 else 0
+                
+                languages_with_percentage.append({
+                    'name': name,
+                    'seconds': seconds,
+                    'time': WakatimeStatsCalculator._format_time(seconds),
+                    'percent': percent
+                })
+                
+            # Get the top 3 languages based on total_seconds
+            top_3_languages = sorted(
+                languages_with_percentage,
+                key=lambda item: item['seconds'],
+                reverse=True
+            )[:3]
             
             return {
-                # 'created_at': WakatimeStatsCalculator._convert_to_gmt7(
-                #     last_7_days.get('created_at', '')
-                # ).strftime('%B %d, %Y'),
-                # 'updated_at': WakatimeStatsCalculator._convert_to_gmt7(
-                #     last_7_days.get('modified_at', '')
-                # ).strftime('%B %d, %Y'),
                 'start_date': WakatimeStatsCalculator._convert_to_gmt7(
                     last_7_days.get('start', '')
                 ).strftime('%B %d, %Y'),
@@ -218,6 +216,7 @@ class WakatimeStatsCalculator:
                     all_time.get('range', {}).get('start', '')
                 ).strftime('%B %d, %Y'),
                 'all_time_coding': all_time.get('text', '0 mins'),
+                'top_3_languages': top_3_languages
             }
         
         except Exception as e:

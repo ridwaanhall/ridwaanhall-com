@@ -139,7 +139,7 @@
             <div class="mb-6">
                 <div class="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
                     <h2 class="text-xl sm:text-2xl font-medium">WakaTime <span class="text-indigo-400">Statistics</span></h2>
-                    <p class="text-xs sm:text-sm">Last update: <span class="text-indigo-400 font-medium">{{ wakatime_stats.last_update_time }}</span></p>
+                    <p class="text-xs sm:text-sm">Last update: <span class="text-indigo-400 font-medium">real time</span></p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
@@ -172,27 +172,30 @@
                     </div>
 
                     <div class="bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg overflow-hidden p-3 sm:p-4 border border-indigo-500/50 transition-all duration-300 hover:shadow-indigo-500/20">
-                        <h3 class="font-medium text-xs sm:text-sm">Best Day</h3>
+                        <h3 class="font-medium text-xs sm:text-sm">Most Active</h3>
                         <div class="flex items-center justify-between">
-                            <p class="text-indigo-400 sm:text-xl font-medium truncate">{{ wakatime_stats.best_day_date }} ({{ wakatime_stats.best_day_coding }})</p>
+                            <p class="text-indigo-400 sm:text-xl font-medium truncate">
+                                {{ wakatime_stats.best_day_coding }}
+                                <span class="text-xs text-zinc-400">({{ wakatime_stats.best_day_date }})</span>
+                            </p>
                         </div>
                     </div>
 
                     <div class="relative z-10 bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg overflow-visible p-3 sm:p-4 border border-indigo-500/50 transition-all duration-300 hover:shadow-indigo-500/20">
                         <h3 class="font-medium text-xs sm:text-sm">
-                            All Time
+                            Today’s Coding 
                             <span class="relative cursor-help group inline-block align-middle">
                                 *
                                 <!-- Tooltip -->
                                 <span
                                     class="absolute left-1/2 -translate-x-1/2 -top-8 w-max bg-zinc-300 text-zinc-900 text-xs px-2 py-1 rounded opacity-0 translate-y-2 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:translate-y-0 pointer-events-none whitespace-nowrap before:content-[''] before:absolute before:left-1/2 before:top-full before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-zinc-300"
                                 >
-                                    Since {{ wakatime_stats.all_time_start }}
+                                    {{ wakatime_stats.all_time_coding }} Since {{ wakatime_stats.all_time_start }}
                                 </span>
                             </span>
                         </h3>
                         <div class="flex items-center justify-between">
-                            <p class="text-indigo-400 sm:text-xl font-medium">{{ wakatime_stats.all_time_coding }}</p>
+                            <p class="text-indigo-400 sm:text-xl font-medium">{{ wakatime_stats.today_coding }}</p>
                         </div>
                     </div>
 
@@ -220,7 +223,7 @@
                                                 style="width: 0%;"
                                             ></span>
                                         </div>
-                                        <div class="w-10 text-right text-sm font-medium animate-percent" data-target="{{ language.percent|floatformat:0 }}">0%</div>
+                                        <div class="w-10 text-right text-sm font-medium animate-percent" data-target="{{ language.percent }}">0%</div>
                                     </div>
                                 </li>
                                 {% endfor %}
@@ -232,30 +235,30 @@
                         <div class="h-full w-full rounded-lg sm:rounded-xl bg-black p-3 sm:p-4">
                             <h3 class="absolute -top-3 left-3 bg-black px-2">Category & OS</h3>
                             <ul class="flex flex-col gap-3 px-1 py-1">
-                                {% for category in wakatime_stats.top_1_category %}
+                                {% if wakatime_stats.top_1_category %}
                                 <li>
                                     <div class="flex items-center justify-between gap-3">
                                         <div class="w-20 text-sm">
                                             <span class="relative group cursor-help">
-                                                {{ category.name }}
+                                                {{ wakatime_stats.top_1_category.name }}
                                                 <span
                                                     class="absolute left-1/2 -translate-x-1/2 -top-8 w-max bg-zinc-300 text-zinc-900 text-xs px-2 py-1 rounded opacity-0 translate-y-2 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:translate-y-0 pointer-events-none whitespace-nowrap before:content-[''] before:absolute before:left-1/2 before:top-full before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-zinc-300"
                                                 >
-                                                    {{ category.time }}
+                                                    {{ wakatime_stats.top_1_category.time }}
                                                 </span>
                                             </span>
                                         </div>
                                         <div class="relative flex h-3 flex-1 justify-center rounded-full bg-zinc-800/50">
                                             <span
                                                 class="bg-gradient-to-r from-purple-500 to-pink-600 absolute left-0 top-0 h-3 rounded-full transition-all duration-1000 ease-out animate-bar"
-                                                data-width="{{ category.percent }}%"
+                                                data-width="{{ wakatime_stats.top_1_category.percent }}%"
                                                 style="width: 0%;"
                                             ></span>
                                         </div>
-                                        <div class="w-10 text-right text-sm font-medium animate-percent" data-target="{{ category.percent|floatformat:0 }}">0%</div>
+                                        <div class="w-10 text-right text-sm font-medium animate-percent" data-target="{{ wakatime_stats.top_1_category.percent }}">0%</div>
                                     </div>
                                 </li>
-                                {% endfor %}
+                                {% endif %}
                                 {% for os in wakatime_stats.top_2_os %}
                                 <li>
                                     <div class="flex items-center justify-between gap-3">
@@ -276,7 +279,7 @@
                                                 style="width: 0%;"
                                             ></span>
                                         </div>
-                                        <div class="w-10 text-right text-sm font-medium animate-percent" data-target="{{ os.percent|floatformat:0 }}">0%</div>
+                                        <div class="w-10 text-right text-sm font-medium animate-percent" data-target="{{ os.percent }}">0%</div>
                                     </div>
                                 </li>
                                 {% endfor %}

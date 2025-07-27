@@ -3,14 +3,21 @@ from datetime import datetime
 class PrivacyPolicyData:
     privacy_policy = {
         "last_updated": datetime.strptime("2025-07-12T22:27:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-        "overview": "I understand that your privacy is important. This policy explains how I collect, use, and protect your information when you visit my website.",
+        "overview": (
+            "I understand that your privacy is important. This policy explains how I collect, use, and protect your information when you visit my website. "
+            "Please note: All timestamps and times shown on this website use Jakarta time (WIB, UTC+7). There is no localization or time zone adjustment. "
+            "If you are outside Indonesia (e.g., in the US), your message timestamps will be converted and displayed in Jakarta time."
+        ),
         "policy_updates": "I may update this policy as the website evolves and grows. Major changes will be reflected in the last updated date above, and I'll do my best to notify you of significant privacy policy updates.",
         "data_collected": {
             "Guestbook Feature": {
                 "User Authentication": "Handled via Google and GitHub OAuth for secure login.",
                 "Profile Information": "Name, email, and profile picture from your OAuth provider.",
                 "Message Content": "Text messages you post in the guestbook chat (max 500 characters).",
-                "Message Timestamps": "When you posted your messages for proper chronological display.",
+                "Message Timestamps": (
+                    "When you posted your messages for proper chronological display. "
+                    "All message timestamps are stored and shown in Jakarta time (WIB, UTC+7), regardless of your local time zone."
+                ),
                 "Reply Associations": "Links between messages and their replies for threaded conversations.",
                 "User Session Data": "Temporary session cookies for maintaining login state."
             },

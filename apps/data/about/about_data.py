@@ -1,13 +1,15 @@
-from django.utils import timezone
 from django.conf import settings
+from datetime import datetime
+import pytz
 
 class AboutData:
     @staticmethod
     def is_working_hours():
-        now = timezone.localtime()
-        
+        jakarta_tz = pytz.timezone("Asia/Jakarta")
+        now = datetime.now(jakarta_tz)
+
         is_weekday = now.weekday() < 5
-        is_work_hour = 13 <= now.hour < 20
+        is_work_hour = 15 <= now.hour < 20
 
         return is_weekday and is_work_hour
 

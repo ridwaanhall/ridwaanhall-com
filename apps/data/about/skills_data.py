@@ -449,6 +449,11 @@ class SkillsData:
             "description": "Django apps for authentication, registration, account and social login management",
             "icon_svg": f"{settings.BASE_URL}/static/svg/icon/allauth.svg"
         },
+        "pytest": {
+            "name": "pytest",
+            "description": "Framework that makes building simple and scalable test cases easy",
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/pytest.svg"
+        },
     }
     
     # Legacy list format for backward compatibility

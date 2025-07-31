@@ -20,7 +20,8 @@ project_data = {
         'Inspired by the story of Ryu Kintaro and the dilemma between writing your own destiny or keeping the flame that has already been lit.'
     ],
     "images": {
-        "el_perintis.webp": f"{settings.PROJECT_BASE_IMG_URL}/el_perintis.webp"
+        "el_perintis_preview.webp": f"{settings.PROJECT_BASE_IMG_URL}/el_perintis_preview.webp",
+        # "el_perintis.webp": f"{settings.PROJECT_BASE_IMG_URL}/el_perintis.webp"
     },
     "is_featured": True,
     "features": [

@@ -1,3 +1,8 @@
+"""
+Project #49: el-perintis
+Generated from centralized projects data
+"""
+
 from datetime import datetime
 from django.conf import settings
 from apps.data.about.skills_data import SkillsData
@@ -6,22 +11,22 @@ from apps.data.about.skills_data import SkillsData
 project_data = {
     "id": 49,
     "title": """el-perintis""",
-    "headline": """Eksplorasi naratif dan analogi kode tentang perintis dan pewaris dalam konteks perjuangan dan warisan budaya.""",
+    "headline": """A narrative exploration and code analogy about pioneers and inheritors in the context of struggle and cultural legacy.""",
     "description": [
-        "Repositori Python yang memadukan simulasi OOP dan non-OOP untuk menggambarkan filosofi membangun dari nol (perintis) versus melanjutkan warisan (pewaris).",
-        "Dilengkapi dengan fungsi perjuangan dan narasi dinamis yang menghidupkan sudut pandang perjuangan personal dan sosial.",
-        "Inspirasi diambil dari fenomena viral seperti kisah Ryu Kintaro, memberi nuansa aktual dalam perdebatan privilege vs legacy.",
-        "API sederhana memungkinkan pengguna menghasilkan narasi perjuangan sesuai konteks mereka sendiri.",
-        "Setiap baris kode mengundang refleksi: memilih menulis ulang takdir, atau menjaga api yang sudah dinyalakan."
+        'A Python repository blending OOP and non-OOP simulations to illustrate the philosophy of building from scratch (pioneer) versus continuing a legacy (inheritor).',
+        'Equipped with struggle functions and dynamic narratives that bring to life personal and social perspectives on perseverance.',
+        'Inspired by viral phenomena such as the story of Ryu Kintaro, adding a contemporary nuance to the privilege vs legacy debate.',
+        'A simple API allows users to generate struggle narratives tailored to their own context.',
+        'Every line of code invites reflection: choosing to rewrite destiny, or to keep the flame already lit.'
     ],
     "images": {
         "el_perintis.webp": f"{settings.PROJECT_BASE_IMG_URL}/el_perintis.webp"
     },
     "is_featured": True,
     "features": [
-        {"title": "Simulasi Filosofis", "description": "OOP mewakili membangun fondasi, non-OOP melambangkan penerus sistem."},
-        {"title": "Narasi Dinamis", "description": "Fungsi Python menghidupkan cerita perjuangan dalam format yang bisa dikembangkan."},
-        {"title": "API Reflektif", "description": "Endpoint sederhana untuk generate narasi perjuangan secara konteksual."}
+        {'title': 'Philosophical Simulation', 'description': 'OOP represents building the foundation, non-OOP symbolizes inheriting a system.'},
+        {'title': 'Dynamic Narratives', 'description': 'Python functions bring struggle stories to life in an extensible format.'},
+        {'title': 'Reflective API', 'description': 'A simple endpoint to generate contextual struggle narratives.'}
     ],
     "tech_stack": [
         SkillsData.tech_stack["python"],
@@ -31,8 +36,8 @@ project_data = {
     "github_url": "https://github.com/ridwaanhall/el-perintis",
     "demo_url": "",
     "status": "in-progress",
-    "created_at": datetime.strptime("2025-07-31T21:19:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-07-31T21:19:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "created_at": datetime.strptime("2025-07-31T21:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-07-31T21:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "education",
-    "tags": ["narasi", "filosofi", "perintis", "pewaris", "python", "oop", "api", "ryu-kintaro", "privilege", "simulasi"],
+    "tags": ["narrative", "philosophy", "pioneer", "inheritor", "python", "oop", "api", "ryu-kintaro", "privilege", "simulation"],
 }

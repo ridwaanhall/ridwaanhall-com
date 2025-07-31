@@ -35,7 +35,7 @@ project_data = {
     ],
     "github_url": "https://github.com/ridwaanhall/el-perintis",
     "demo_url": "",
-    "status": "in-progress",
+    "status": "completed",
     "created_at": datetime.strptime("2025-07-31T21:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-07-31T21:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "education",

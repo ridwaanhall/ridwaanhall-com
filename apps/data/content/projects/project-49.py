@@ -11,22 +11,22 @@ from apps.data.about.skills_data import SkillsData
 project_data = {
     "id": 49,
     "title": """El-Perintis""",
-    "headline": """A narrative exploration and code analogy about pioneers and inheritors in the context of struggle and cultural legacy.""",
+    "headline": """A philosophical simulation about building from scratch versus continuing a legacy, through Python code and a narrative of struggle.""",
     "description": [
-        'A Python repository blending OOP and non-OOP simulations to illustrate the philosophy of building from scratch (pioneer) versus continuing a legacy (inheritor).',
-        'Equipped with struggle functions and dynamic narratives that bring to life personal and social perspectives on perseverance.',
-        'Inspired by viral phenomena such as the story of Ryu Kintaro, adding a contemporary nuance to the privilege vs legacy debate.',
-        'A simple API allows users to generate struggle narratives tailored to their own context.',
-        'Every line of code invites reflection: choosing to rewrite destiny, or to keep the flame already lit.'
+        'This repository explores the philosophy of building from scratch (pioneer) and continuing a legacy (inheritor) through two approaches: OOP and non-OOP.',
+        'The `perintis` branch contains an OOP-based simulation depicting the struggle of building a new foundation.',
+        'The `pewaris` branch contains a non-OOP approach that continues the old pattern with adaptation and reflection.',
+        'The narrative of struggle is written dynamically through Python functions and a simple API endpoint.',
+        'Inspired by the story of Ryu Kintaro and the dilemma between writing your own destiny or keeping the flame that has already been lit.'
     ],
     "images": {
         "el_perintis.webp": f"{settings.PROJECT_BASE_IMG_URL}/el_perintis.webp"
     },
     "is_featured": True,
     "features": [
-        {'title': 'Philosophical Simulation', 'description': 'OOP represents building the foundation, non-OOP symbolizes inheriting a system.'},
-        {'title': 'Dynamic Narratives', 'description': 'Python functions bring struggle stories to life in an extensible format.'},
-        {'title': 'Reflective API', 'description': 'A simple endpoint to generate contextual struggle narratives.'}
+        {'title': 'OOP vs non-OOP Simulation', 'description': 'The `perintis` branch uses OOP to build a new foundation, while `pewaris` continues the existing system procedurally.'},
+        {'title': 'Struggle Narrative', 'description': 'Python functions illustrate the journey, failures, and victories in a social and personal context.'},
+        {'title': 'Simple API', 'description': 'FastAPI endpoint to generate the struggle narrative dynamically and contextually.'}
     ],
     "tech_stack": [
         SkillsData.tech_stack["python"],
@@ -37,7 +37,7 @@ project_data = {
     "demo_url": "",
     "status": "completed",
     "created_at": datetime.strptime("2025-07-31T21:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-07-31T21:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-08-01T04:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "education",
-    "tags": ["narrative", "philosophy", "pioneer", "inheritor", "python", "oop", "api", "ryu-kintaro", "privilege", "simulation"],
+    "tags": ["pioneer", "inheritor", "philosophy", "narrative", "python", "oop", "api", "ryu-kintaro", "legacy", "simulation"],
 }

@@ -23,6 +23,7 @@ class UpdatedAtData:
         # Fallback to current time if no messages or error
         now = timezone.now()
         return now.strftime('%Y-%m-%d %H:%M:%S%z'), now
+
     @staticmethod
     def get_updated_at_from_content_files(folder_path, data_key="blog_data"):
         """Extract updated_at from individual content files (blog or project)."""

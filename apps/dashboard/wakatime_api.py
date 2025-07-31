@@ -75,13 +75,21 @@ class WakatimeStatsCalculator:
         try:
             hours = int(seconds // 3600)
             minutes = int((seconds % 3600) // 60)
-            
+
+            hour_str = ""
+            minute_str = ""
+
+            if hours > 0:
+                hour_str = f"{hours} hour" if hours == 1 else f"{hours} hours"
+            if minutes > 0:
+                minute_str = f"{minutes} minute" if minutes == 1 else f"{minutes} minutes"
+
             if hours > 0 and minutes > 0:
-                return f"{hours} hrs {minutes} mins"
+                return f"{hour_str} {minute_str}"
             elif hours > 0:
-                return f"{hours} hrs"
+                return hour_str
             elif minutes > 0:
-                return f"{minutes} mins"
+                return minute_str
             elif seconds > 0:
                 return f"{int(seconds)} secs"
             else:
@@ -101,7 +109,7 @@ class WakatimeStatsCalculator:
             all_time = data.get('all_time', {}).get('data', {})
             daily_data = last_7_days.get('data', [])
 
-            # --- Aggregation Step ---
+            # Aggregation Step
             grand_total_seconds_7_days = last_7_days.get('cumulative_total', {}).get('seconds', 0)
             category_total_seconds = 0.0
             os_totals = {}
@@ -120,7 +128,7 @@ class WakatimeStatsCalculator:
                     lang_name = lang_data.get('name', 'Unknown')
                     language_totals[lang_name] = language_totals.get(lang_name, 0) + lang_data.get('total_seconds', 0)
 
-            # --- Calculation and Formatting Step ---
+            # Calculation and Formatting Step
             
             # Find the most active day (once) for efficiency
             most_active_day = max(daily_data, key=lambda d: d.get('grand_total', {}).get('total_seconds', 0), default={})
@@ -160,7 +168,7 @@ class WakatimeStatsCalculator:
             ]
             top_3_languages = sorted(languages_with_percentage, key=lambda x: x['percent'], reverse=True)[:3]
             
-            # --- Construct the Final Result ---
+            # Construct the Final Result
             start_date_obj = WakatimeStatsCalculator._convert_to_gmt7(last_7_days.get('start'))
             end_date_obj = WakatimeStatsCalculator._convert_to_gmt7(last_7_days.get('end'))
             all_time_start_obj = WakatimeStatsCalculator._convert_to_gmt7(all_time.get('range', {}).get('start'))

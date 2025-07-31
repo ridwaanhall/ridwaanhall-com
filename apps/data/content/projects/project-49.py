@@ -1,5 +1,5 @@
 """
-Project #49: el-perintis
+Project #49: El-Perintis
 Generated from centralized projects data
 """
 
@@ -7,10 +7,10 @@ from datetime import datetime
 from django.conf import settings
 from apps.data.about.skills_data import SkillsData
 
-# Project data for: el-perintis
+# Project data for: El-Perintis
 project_data = {
     "id": 49,
-    "title": """el-perintis""",
+    "title": """El-Perintis""",
     "headline": """A narrative exploration and code analogy about pioneers and inheritors in the context of struggle and cultural legacy.""",
     "description": [
         'A Python repository blending OOP and non-OOP simulations to illustrate the philosophy of building from scratch (pioneer) versus continuing a legacy (inheritor).',

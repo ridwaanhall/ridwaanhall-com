@@ -13,7 +13,7 @@ blog_data = {
         "api_threshold.webp": f"{settings.BLOG_BASE_IMG_URL}/api_threshold.webp"
     },
     "created_at": datetime.strptime("2025-07-09T21:27:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-07-27T01:21:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-08-01T18:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",
     "username": "roneha",
     "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
@@ -24,7 +24,7 @@ blog_data = {
             "text": (
                 "Following a previous announcement regarding potential API shutdowns, "
                 "<strong>mlbb-stats.ridwaanhall.com</strong> and <strong>api-pddikti.ridwaanhall.com</strong> "
-                "now remain online, supported by a practical threshold-based control system."
+                "will be available again on <strong>28 August 2025</strong>, or sooner if we receive support with a minimum of <strong>25 USD</strong>."
             )
         },
         {

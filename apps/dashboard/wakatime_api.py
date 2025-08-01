@@ -148,9 +148,7 @@ class WakatimeStatsCalculator:
                 'percent': round(calculate_percentage(category_total_seconds, grand_total_seconds_7_days), 2),
                 'time': WakatimeStatsCalculator._format_time(category_total_seconds)
             }
-            
-            print(f"Top Category: {top_1_category['name']} - {top_1_category['percent']}% ({top_1_category['time']})")
-            
+                        
             top_2_os = sorted([
                 {
                     'name': name,

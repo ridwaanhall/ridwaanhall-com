@@ -24,7 +24,7 @@ blog_data = {
             "text": (
                 "Following a previous announcement regarding potential API shutdowns, "
                 "<strong>mlbb-stats.ridwaanhall.com</strong> and <strong>api-pddikti.ridwaanhall.com</strong> "
-                "will be available again on <strong>28 August 2025</strong>, or sooner if we receive support with a minimum of <strong>25 USD</strong>."
+                "will be available again on <strong class='text-yellow-600'>28 August 2025</strong>, or sooner if we receive support with a minimum of <strong>25 USD</strong>."
             )
         },
         {

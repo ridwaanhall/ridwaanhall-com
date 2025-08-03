@@ -22,9 +22,24 @@ class BlogView(BlogListSEOMixin, PaginatedView):
     def _get(self, request, *args, **kwargs):
         # Get all blogs sorted by ID descending
         all_blogs = DataService.get_blogs()
+
+        # Search filter
+        search_query = request.GET.get('q', '').strip()
+        if search_query:
+            search_lower = search_query.lower()
+            def match(blog):
+                return (
+                    search_lower in blog.get('title', '').lower() or
+                    search_lower in blog.get('description', '').lower() or
+                    search_lower in blog.get('author', '').lower() or
+                    any(search_lower in str(tag).lower() for tag in blog.get('tags', []))
+                )
+            filtered_blogs = list(filter(match, all_blogs))
+        else:
+            filtered_blogs = all_blogs
         
         # Use the base class pagination method
-        pagination_data = self.paginate_items(request, all_blogs, self.items_per_page)
+        pagination_data = self.paginate_items(request, filtered_blogs, self.items_per_page)
         
         # Get featured blogs
         featured_blogs = DataService.get_blogs(featured_only=True)[:5]
@@ -34,7 +49,8 @@ class BlogView(BlogListSEOMixin, PaginatedView):
             'featured_blogs': featured_blogs,
             'paginator': pagination_data['paginator'],
             'is_paginated': pagination_data['is_paginated'],
-            'page_range': pagination_data['page_range']
+            'page_range': pagination_data['page_range'],
+            'search_query': search_query,
         })
           
         # Add SEO data from mixin
@@ -44,7 +60,7 @@ class BlogView(BlogListSEOMixin, PaginatedView):
             page_num = 1
         
         # Get SEO data without overriding the paginated blogs
-        seo_context = self.get_context_data(blogs=all_blogs, page=page_num)
+        seo_context = self.get_context_data(blogs=filtered_blogs, page=page_num)
         # Only add the 'seo' key, not the whole context which might override 'blogs'
         if 'seo' in seo_context:
             context['seo'] = seo_context['seo']

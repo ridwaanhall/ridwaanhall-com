@@ -97,6 +97,38 @@
                     </div>
                 </div>
 
+                <div class="mb-4 flex justify-end">
+                    <form method="get" action="" class="flex flex-row gap-2 items-center w-full sm:max-w-sm md:max-w-md">
+                        <div class="relative flex-1">
+                            <input
+                                type="text"
+                                name="q"
+                                id="searchInput"
+                                value="{{ request.GET.q|default:'' }}"
+                                placeholder="Search blogs..."
+                                class="w-full pl-3 pr-3 py-2 rounded-md text-zinc-300 hover:text-zinc-200 border border-zinc-700 hover:border-zinc-400 transition-all"
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            id="searchButton"
+                            class="inline-flex items-center justify-center px-3 py-2 rounded-md border transition-all duration-300 text-sm font-semibold h-full whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <svg class="w-5 h-5 text-zinc-400 mr-1" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            Search
+                        </button>
+                        {% if request.GET.q %}
+                        <a href="?" class="ml-2 text-sm text-zinc-400 hover:text-zinc-200 underline whitespace-nowrap">Clear</a>
+                        {% endif %}
+                    </form>
+                </div>
+                {% if search_query %}
+                <p class="mt-1 mb-4 text-sm text-zinc-400 text-right">Showing results for <span class="font-semibold text-indigo-300">"{{ search_query }}"</span> ({{ blogs.paginator.count }} found)</p>
+                {% endif %}
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
                     {% for blog in blogs %}
                     <a href="{% url 'blog_detail' title=blog.title|slugify %}">
@@ -164,6 +196,11 @@
                             </div>
                         </div>
                     </a>
+                    {% empty %}
+                    <div class="col-span-full text-center text-zinc-400 py-12">
+                        <h2 class="text-xl font-semibold mb-2">No blogs found.</h2>
+                        <p class="text-base">Try a different search keyword.</p>
+                    </div>
                     {% endfor %}
                 </div>
 
@@ -176,7 +213,7 @@
                             {% if blogs.has_previous %}
                                 <li>
                                     <a
-                                        href="?page={{ blogs.previous_page_number }}"
+                                        href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}page={{ blogs.previous_page_number }}"
                                         class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200"
                                         aria-label="Previous page"
                                     >
@@ -208,7 +245,7 @@
                                     </li>
                                 {% else %}
                                     <li>
-                                        <a href="?page={{ item }}" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-xs sm:text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200">
+                                        <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}page={{ item }}" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-xs sm:text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200">
                                             {{ item }}
                                         </a>
                                     </li>
@@ -218,7 +255,7 @@
                             <!-- Next page -->
                             {% if blogs.has_next %}
                             <li>
-                                <a href="?page={{ blogs.next_page_number }}" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200" aria-label="Next page">
+                                <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}page={{ blogs.next_page_number }}" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200" aria-label="Next page">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                                     </svg>
@@ -245,4 +282,5 @@
 {% block scripts %}
 <script src="{% static 'js/featuredSlider.js' %}"></script>
 <script src="{% static 'js/blogImageSlider.js' %}"></script>
+<script src="{% static 'js/searchEnable.js' %}"></script>
 {% endblock %}

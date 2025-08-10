@@ -1,6 +1,6 @@
 # 🚀 FlexForge - Advanced Developer Portfolio Platform
 
-[![Django](https://img.shields.io/badge/Django-5.2.4-092E20?style=flat&logo=django&logoColor=white)](https://djangoproject.com/)
+[![Django](https://img.shields.io/badge/Django-5.2.5-092E20?style=flat&logo=django&logoColor=white)](https://djangoproject.com/)
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 
@@ -20,7 +20,7 @@
 
 ## 🛠️ Tech Stack
 
-- **Backend**: Django 5.2.4, Python 3.12
+- **Backend**: Django 5.2.5, Python 3.12
 - **Frontend**: TailwindCSS, Vanilla JavaScript
 - **Data**: Individual Python files for content management
 - **APIs**: GitHub API, WakaTime API

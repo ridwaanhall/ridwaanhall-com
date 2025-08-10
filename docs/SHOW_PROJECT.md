@@ -4,11 +4,11 @@
 
 ## Deskripsi Proyek
 
-**FlexForge** adalah platform portfolio developer yang dibikin pakai Django 5.2.4 buat nunjukin karya dan aktivitas coding dengan style maksimal. Ngegabungin performa ngebut, keamanan enterprise-grade, dan sistem manajemen konten inovatif. Template portfolio yang gampang di-customize, bisa nyambungin data real-time dari GitHub & WakaTime, chat-like guestbook, plus sistem file terpisah yang fleksibel. PageSpeed 95+/100 dengan keamanan CSP, HSTS, dan XSS protection.
+**FlexForge** adalah platform portfolio developer yang dibikin pakai Django 5.2.5 buat nunjukin karya dan aktivitas coding dengan style maksimal. Ngegabungin performa ngebut, keamanan enterprise-grade, dan sistem manajemen konten inovatif. Template portfolio yang gampang di-customize, bisa nyambungin data real-time dari GitHub & WakaTime, chat-like guestbook, plus sistem file terpisah yang fleksibel. PageSpeed 95+/100 dengan keamanan CSP, HSTS, dan XSS protection.
 
 ## Tech Stack
 
-- **Backend:** Django 5.2.4, Python 3.12+, SQLite3/PostgreSQL, django-allauth, django-csp, django-permissions-policy
+- **Backend:** Django 5.2.5, Python 3.12+, SQLite3/PostgreSQL, django-allauth, django-csp, django-permissions-policy
 - **Frontend:** TailwindCSS, Vanilla JavaScript, SVG icons, Onest fonts
 - **APIs:** GitHub (GraphQL), WakaTime (REST), OAuth (Google, GitHub), Web3Forms
 - **Deployment:** Vercel (serverless), WhiteNoise, wsrv.nl CDN, Django cache, python-decouple

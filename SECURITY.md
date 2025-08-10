@@ -11,7 +11,7 @@ This project supports the following versions of dependencies as specified in `re
 | cffi                      | 1.17.1    | C extensions for cryptography  |
 | charset-normalizer        | 3.4.1     | Character encoding detection   |
 | cryptography              | 45.0.4    | Core cryptographic library     |
-| Django                    | 5.2.4     | Security-focused framework    |
+| Django                    | 5.2.5     | Security-focused framework    |
 | django-allauth            | 65.9.0    | OAuth authentication          |
 | django-csp                | 4.0       | Content Security Policy       |
 | django-permissions-policy | 4.25.0    | Browser permissions control    |

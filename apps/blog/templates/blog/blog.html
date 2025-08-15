@@ -1,5 +1,6 @@
 {% extends 'base_seo.html' %}
 {% load static %}
+{% load image_filters %}
 <meta name="keywords" content="{{ seo.keywords }}" />
 <meta name="language" content="en" />
 
@@ -21,7 +22,7 @@
                             {% if blog.is_featured %}
                             <div class="featured-slide w-full flex-shrink-0 relative">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black via-zinc-900/80 to-zinc-900/10 z-10"></div>
-                                <img src="https://wsrv.nl/?url={{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-60 sm:h-72 md:h-80 object-cover object-center" />
+                                <img src="{{ blog.image_url|wsrv_image }}" alt="{{ blog.title }}" class="w-full h-60 sm:h-72 md:h-80 object-cover object-center" />
 
                                 <div class="absolute top-2 sm:top-4 right-2 sm:right-4 z-20">
                                     <div class="bg-lime-400 text-emerald-950 text-xs font-bold px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg shadow-lg flex items-center">
@@ -47,7 +48,7 @@
                                     <p class="text-sm text-zinc-400 mb-2 sm:mb-4 line-clamp-2">{{ blog.description }}</p>
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center space-x-2 sm:space-x-3">
-                                            <img src="https://wsrv.nl/?url={{ blog.author_image }}&w=50&h=50" alt="{{ blog.author }}" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover" width="358" height="358" />
+                                            <img src="{{ blog.author_image|wsrv_image:'50x50' }}" alt="{{ blog.author }}" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover" width="358" height="358" />
                                             <span class="text-xs sm:text-sm text-zinc-400">{{ blog.author }}</span>
                                         </div>
                                     </div>
@@ -135,7 +136,7 @@
                         <div style="height: 350px; sm:height: 350px;" class="group relative overflow-hidden rounded-xl border border-zinc-700 transition-all duration-300 transform h-full">
                             <div class="absolute inset-0">
                                 <img
-                                    src="https://wsrv.nl/?url={{ blog.image_url }}&w=300&h=300"
+                                    src="{{ blog.image_url|wsrv_image:'300x300' }}"
                                     alt="{{ blog.title }}"
                                     class="w-full h-full object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-500"
                                     loading="lazy"
@@ -169,7 +170,7 @@
 
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center space-x-1 sm:space-x-2">
-                                            <img alt="Profile photo of {{ blog.author }}" loading="lazy" width="24" height="24" class="rounded-full w-4 h-4 sm:w-5 sm:h-5" src="https://wsrv.nl/?url={{ blog.author_image }}&w=50&h=50" width="50" height="50" />
+                                            <img alt="Profile photo of {{ blog.author }}" loading="lazy" width="24" height="24" class="rounded-full w-4 h-4 sm:w-5 sm:h-5" src="{{ blog.author_image|wsrv_image:'50x50' }}" width="50" height="50" />
                                             <span class="text-xs sm:text-sm text-zinc-400 truncate max-w-[100px] sm:max-w-[150px]">{{ blog.author }}</span>
                                         </div>
 

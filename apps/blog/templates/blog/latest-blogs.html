@@ -1,3 +1,4 @@
+{% load image_filters %}
 <div class="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
     <h2 class="text-xl sm:text-2xl font-medium">Latest <span class="text-indigo-400">Blogs</span></h2>
     <a href="{% url 'blog' %}" class="group flex items-center hover:text-zinc-200 transition-colors duration-300">
@@ -17,7 +18,7 @@
                 <div style="height: 350px;" class="group relative overflow-hidden rounded-xl border border-zinc-700 transition-all duration-300 transform h-full">
                     <div class="absolute inset-0">
                         <img
-                            src="https://wsrv.nl/?url={{ blog.image_url }}&w=300&h=300"
+                            src="{{ blog.image_url|wsrv_image:'300x300' }}"
                             alt="Featured image for blog: {{ blog.title }}"
                             class="w-full h-full object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-500"
                             loading="lazy"
@@ -53,7 +54,7 @@
 
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-1 sm:space-x-2">
-                                    <img alt="Profile photo of {{ blog.author }}" loading="lazy" width="24" height="24" class="rounded-full w-4 h-4 sm:w-5 sm:h-5" src="https://wsrv.nl/?url={{ blog.author_image }}&w=50&h=50" width="50" height="50" />
+                                    <img alt="Profile photo of {{ blog.author }}" loading="lazy" width="24" height="24" class="rounded-full w-4 h-4 sm:w-5 sm:h-5" src="{{ blog.author_image|wsrv_image:'50x50' }}" width="50" height="50" />
                                     <span class="text-xs sm:text-sm text-zinc-400 truncate max-w-[100px] sm:max-w-[150px]">{{ blog.author }}</span>
                                 </div>
 

@@ -164,6 +164,7 @@ APPEND_SLASH = True  # Automatically redirect URLs without trailing slash
 
 # Feature toggles
 GUESTBOOK_PAGE = config('GUESTBOOK_PAGE', default=True, cast=bool)
+WSRV_IMAGE_OPTIMIZATION = config('WSRV_IMAGE_OPTIMIZATION', default=True, cast=bool)
 
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",

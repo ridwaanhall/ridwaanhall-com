@@ -1,3 +1,4 @@
+{% load image_filters %}
 {% comment %}
 Blog Image Gallery Partial Template
 Renders multiple images with slider functionality similar to featured blogs
@@ -56,7 +57,7 @@ Renders multiple images with slider functionality similar to featured blogs
                     <div class="blog-slide w-full flex-shrink-0">
                         <div class="aspect-video">
                             <img 
-                                src="https://wsrv.nl/?url={{ image.url }}" 
+                                src="{{ image.url|wsrv_image }}" 
                                 alt="{{ image.alt }}" 
                                 class="w-full h-full object-cover object-center" 
                                 loading="lazy"

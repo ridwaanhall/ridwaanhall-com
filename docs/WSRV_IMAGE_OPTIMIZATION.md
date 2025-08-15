@@ -43,6 +43,7 @@ Add this to the top of your template:
 ### Using the Filter
 
 #### Basic Usage
+
 ```django
 <!-- Without optimization parameters -->
 <img src="{{ image_url|wsrv_image }}" alt="Image">
@@ -58,6 +59,7 @@ Add this to the top of your template:
 ```
 
 #### Template Tag Usage
+
 ```django
 <!-- More flexible usage -->
 {% wsrv_img image_url width=300 height=300 %}
@@ -68,6 +70,7 @@ Add this to the top of your template:
 ### Examples from Current Templates
 
 #### Blog Images
+
 ```django
 <!-- Featured blog image -->
 <img src="{{ blog.image_url|wsrv_image }}" alt="{{ blog.title }}">
@@ -80,6 +83,7 @@ Add this to the top of your template:
 ```
 
 #### Project Images
+
 ```django
 <!-- Project thumbnail -->
 <img src="{{ project.image_url|wsrv_image:'300x300' }}" alt="{{ project.title }}">
@@ -89,6 +93,7 @@ Add this to the top of your template:
 ```
 
 #### Profile Images
+
 ```django
 <!-- Profile photo -->
 <img src="{{ about.image_url|wsrv_image:'100x100' }}" alt="{{ about.name }}">
@@ -141,11 +146,13 @@ python manage.py wsrv_config --test-url "https://example.com/image.jpg" --width 
 ## How It Works
 
 ### When WSRV_IMAGE_OPTIMIZATION = True (Default)
+
 - Images are processed through wsrv.nl
 - URLs are converted from: `https://example.com/image.jpg`
 - To: `https://wsrv.nl/?url=https://example.com/image.jpg&w=300&h=300`
 
 ### When WSRV_IMAGE_OPTIMIZATION = False
+
 - Images are returned as-is
 - No processing or URL modification occurs
 - Maintains full backward compatibility
@@ -172,15 +179,18 @@ The system supports the following wsrv.nl parameters:
 The following template files have been updated to use the new WSRV system:
 
 ### Core Templates
+
 - `templates/base_seo.html`
 - `templates/sidebar.html`
 
 ### Blog Templates
+
 - `apps/blog/templates/blog/blog.html`
 - `apps/blog/templates/blog/latest-blogs.html`
 - `apps/blog/templates/blog/partials/image_gallery.html`
 
 ### Project Templates
+
 - `apps/projects/templates/projects/projects.html`
 - `apps/projects/templates/projects/projects-detail.html`
 - `apps/projects/templates/projects/partials/project_image_gallery.html`
@@ -188,6 +198,7 @@ The following template files have been updated to use the new WSRV system:
 ## Migration from Hard-coded WSRV URLs
 
 The system automatically replaces hard-coded WSRV URLs like:
+
 ```django
 <!-- Old way -->
 <img src="https://wsrv.nl/?url={{ image_url }}&w=300&h=300">
@@ -206,16 +217,19 @@ The system automatically replaces hard-coded WSRV URLs like:
 ## Troubleshooting
 
 ### Images not loading?
+
 1. Check if WSRV_IMAGE_OPTIMIZATION is set correctly
 2. Verify the original image URLs are accessible
 3. Use the management command to test specific URLs
 
 ### Performance issues?
+
 1. Try disabling WSRV temporarily: `WSRV_IMAGE_OPTIMIZATION=False`
 2. Check if your original images are already optimized
 3. Monitor network requests in browser dev tools
 
 ### Template errors?
+
 1. Ensure `{% load image_filters %}` is at the top of your templates
 2. Check that the core app is installed in INSTALLED_APPS
 3. Verify template syntax is correct

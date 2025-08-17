@@ -26,7 +26,7 @@ class AboutData:
             "cv": "https://drive.google.com/file/d/17FaTvAPK273fzXa9ez36X1vDCuQRLM-1/view?usp=sharing",
             "cv_latest": "https://drive.google.com/file/d/1Sv2VQ95fDn-0a_8lOZxBuFAZ--gJrw7u5EQ-_SLUfpo/view?usp=sharing",
             "cv_copy": "https://docs.google.com/document/d/1Sv2VQ95fDn-0a_8lOZxBuFAZ--gJrw7u5EQ-_SLUfpo/copy",
-            "role": "Machine Learning Mentor",
+            "role": "Python Programmer",
             "is_active": cls.is_working_hours(),
             "short_description": "a quiet space where machine learning, open-source, and reflections converge.",
             "short_bio_old": "I explore through code, share with empathy, and reflect on every challenge. My work weaves machine learning, web creation, and open-source. This site archives the curious, the technical, and the quietly thoughtful.",
@@ -39,7 +39,7 @@ class AboutData:
                 "Professionally, I have had the privilege of guiding over 50 aspiring coders at DBS Foundation’s Coding Camp, nurturing their growth in Python and essential soft skills. At GAOTek Inc., I mentored more than 100 interns, helping them navigate their early steps in the tech world. To date, I have delivered over 30 projects, spanning AI models to full-stack web applications, leveraging tools like TensorFlow, PyTorch, and beyond.",
                 "My academic foundation was laid at Pondok Pesantren Islam Al Mukmin, where I immersed myself in Islamic studies, followed by a Bachelor’s degree in Intelligent Systems (AI) from the University of Technology Yogyakarta, where I delved into the frontiers of machine learning.",
                 "Looking forward, my vision is to elevate Copilot ID, contribute meaningfully to open-source communities, and harness AI to address impactful challenges with precision and integrity. I am committed to fostering innovation that drives sustainable progress.",
-                "If you have a visionary idea or wish to explore the possibilities of technology, I’d be delighted to connect and create something transformative together. Wassalamu'alaikum Warahmatullahi Wabarokatuh.🚀"
+                "If you have a visionary idea or wish to explore the possibilities of technology, I’d be delighted to connect and create something transformative together.🚀"
             ],
             "location": {
                 "regency": "Boyolali",

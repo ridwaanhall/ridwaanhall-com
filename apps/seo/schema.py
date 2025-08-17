@@ -414,7 +414,7 @@ class SEOSchemaGenerator:
                     "name": cert.get('institution', ''),
                     "url": cert.get('website', '')
                 },
-                "validFrom": cert.get('issued', ''),
+                "validFrom": f"{cert.get('issued', {}).get('month', '')} {cert.get('issued', {}).get('year', '')}" if cert.get('issued') else '',
                 "description": ' '.join(cert.get('achievements', []))
             }
             certifications.append(certification)
@@ -428,7 +428,7 @@ class SEOSchemaGenerator:
                 "@type": "Award",
                 "name": award.get('title', ''),
                 "description": award.get('description', ''),
-                "dateReceived": award.get('issued', ''),
+                "dateReceived": f"{award.get('issued', {}).get('month', '')} {award.get('issued', {}).get('year', '')}" if award.get('issued') else '',
                 "awardingOrganization": {
                     "@type": "Organization",
                     "name": award.get('institution', ''),

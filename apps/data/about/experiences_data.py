@@ -43,7 +43,13 @@ class ExperiencesData:
             "company": "Copilot ID",
             "logo": f"{settings.BASE_URL}/static/img/logo/copilot_id.webp",
             "website": "https://github.com/copilot-id",
-            "period": "Jan 2023 - Present",
+            "period": {
+                "start": {
+                    "month": "Jan",
+                    "year": 2023
+                },
+                "end": "Present"
+            },
             "employment_type": employment_types["se"],
             "location_type": location_types["on"],
             "location": "Solo, Indonesia 🇮🇩",
@@ -62,7 +68,13 @@ class ExperiencesData:
             "company": "IKA-PPIM 2021",
             "logo": f"{settings.BASE_URL}/static/img/logo/ikappim_21.webp",
             "website": "https://www.instagram.com/ikappim_21/",
-            "period": "Sep 2021 - Present",
+            "period": {
+                "start": {
+                    "month": "Sep",
+                    "year": 2021
+                },
+                "end": "Present"
+            },
             "employment_type": employment_types["pt"],
             "location_type": location_types["rm"],
             "location": "Surakarta, Indonesia 🇮🇩",
@@ -79,7 +91,16 @@ class ExperiencesData:
             "company": "Coding Camp powered by DBS Foundation",
             "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
             "website": "https://go.dbs.com/dbsfcodingcamp",
-            "period": "Feb 2025 - Jul 2025",
+            "period": {
+                "start": {
+                    "month": "Feb",
+                    "year": 2025
+                },
+                "end": {
+                    "month": "Jul",
+                    "year": 2025
+                }
+            },
             "employment_type": employment_types["pt"],
             "location_type": location_types["rm"],
             "location": "Bandung, Indonesia 🇮🇩",
@@ -97,7 +118,16 @@ class ExperiencesData:
             "company": "Coding Camp powered by DBS Foundation",
             "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
             "website": "https://go.dbs.com/dbsfcodingcamp",
-            "period": "Dec 2024 - Jan 2025",
+            "period": {
+                "start": {
+                    "month": "Dec",
+                    "year": 2024
+                },
+                "end": {
+                    "month": "Jan",
+                    "year": 2025
+                }
+            },
             "employment_type": employment_types["sc"],
             "location_type": location_types["rm"],
             "location": "Bandung, Indonesia 🇮🇩",
@@ -113,7 +143,16 @@ class ExperiencesData:
             "company": "Coding Camp powered by DBS Foundation",
             "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
             "website": "https://go.dbs.com/dbsfcodingcamp",
-            "period": "Oct 2024 - Dec 2024",
+            "period": {
+                "start": {
+                    "month": "Oct",
+                    "year": 2024
+                },
+                "end": {
+                    "month": "Dec",
+                    "year": 2024
+                }
+            },
             "employment_type": employment_types["sc"],
             "location_type": location_types["rm"],
             "location": "Bandung, Indonesia 🇮🇩",
@@ -132,7 +171,16 @@ class ExperiencesData:
             "company": "Coding Camp powered by DBS Foundation",
             "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
             "website": "https://go.dbs.com/dbsfcodingcamp",
-            "period": "Jul 2024 - Sep 2024",
+            "period": {
+                "start": {
+                    "month": "Jul",
+                    "year": 2024
+                },
+                "end": {
+                    "month": "Sep",
+                    "year": 2024
+                }
+            },
             "employment_type": employment_types["sc"],
             "location_type": location_types["rm"],
             "location": "Bandung, Indonesia 🇮🇩",
@@ -151,7 +199,16 @@ class ExperiencesData:
             "company": "Coding Camp powered by DBS Foundation",
             "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
             "website": "https://go.dbs.com/dbsfcodingcamp",
-            "period": "Jan 2024 - Jun 2024",
+            "period": {
+                "start": {
+                    "month": "Jan",
+                    "year": 2024
+                },
+                "end": {
+                    "month": "Jun",
+                    "year": 2024
+                }
+            },
             "employment_type": employment_types["sc"],
             "location_type": location_types["rm"],
             "location": "Bandung, Indonesia 🇮🇩",
@@ -168,7 +225,16 @@ class ExperiencesData:
             "company": "GAOTek Inc.",
             "logo": f"{settings.BASE_URL}/static/img/logo/gaotek_inc.webp",
             "website": "https://gaotek.com",
-            "period": "Apr 2024 - May 2024",
+            "period": {
+                "start": {
+                    "month": "Apr",
+                    "year": 2024
+                },
+                "end": {
+                    "month": "May",
+                    "year": 2024
+                }
+            },
             "employment_type": employment_types["in"],
             "location_type": location_types["rm"],
             "location": "New York, USA 🇺🇸",
@@ -185,7 +251,16 @@ class ExperiencesData:
             "company": "GAOTek Inc.",
             "logo": f"{settings.BASE_URL}/static/img/logo/gaotek_inc.webp",
             "website": "https://gaotek.com",
-            "period": "Apr 2024 - May 2024",
+            "period": {
+                "start": {
+                    "month": "Apr",
+                    "year": 2024
+                },
+                "end": {
+                    "month": "May",
+                    "year": 2024
+                }
+            },
             "employment_type": employment_types["in"],
             "location_type": location_types["rm"],
             "location": "New York, USA 🇺🇸",
@@ -202,7 +277,16 @@ class ExperiencesData:
             "company": "GAOTek Inc.",
             "logo": f"{settings.BASE_URL}/static/img/logo/gaotek_inc.webp",
             "website": "https://gaotek.com",
-            "period": "Feb 2024 - Mar 2024",
+            "period": {
+                "start": {
+                    "month": "Feb",
+                    "year": 2024
+                },
+                "end": {
+                    "month": "Mar",
+                    "year": 2024
+                }
+            },
             "employment_type": employment_types["in"],
             "location_type": location_types["rm"],
             "location": "New York, USA 🇺🇸",
@@ -220,7 +304,16 @@ class ExperiencesData:
             "company": "YoungDev",
             "logo": f"{settings.BASE_URL}/static/img/logo/youngdev.webp",
             "website": "https://youngdevinterns.net",
-            "period": "Apr 2024 - May 2024",
+            "period": {
+                "start": {
+                    "month": "Apr",
+                    "year": 2024
+                },
+                "end": {
+                    "month": "May",
+                    "year": 2024
+                }
+            },
             "employment_type": employment_types["in"],
             "location_type": location_types["rm"],
             "location": "Islamabad, Pakistan 🇵🇰",
@@ -236,7 +329,16 @@ class ExperiencesData:
             "company": "iNeuron.ai",
             "logo": f"{settings.BASE_URL}/static/img/logo/ineuron.webp",
             "website": "https://ineuron.ai",
-            "period": "Jan 2024 - Jan 2024",
+            "period": {
+                "start": {
+                    "month": "Jan",
+                    "year": 2024
+                },
+                "end": {
+                    "month": "Jan",
+                    "year": 2024
+                }
+            },
             "employment_type": employment_types["in"],
             "location_type": location_types["rm"],
             "location": "Karnataka, India 🇮🇳",
@@ -252,7 +354,16 @@ class ExperiencesData:
             "company": "Imaarotu Syu'unith Tholabah",
             "logo": f"{settings.BASE_URL}/static/img/logo/ist.webp",
             "website": "https://istngruki.org",
-            "period": "Sep 2019 - Sep 2020",
+            "period": {
+                "start": {
+                    "month": "Sep",
+                    "year": 2019
+                },
+                "end": {
+                    "month": "Sep",
+                    "year": 2020
+                }
+            },
             "employment_type": employment_types["ft"],
             "location_type": location_types["on"],
             "location": "Surakarta, Indonesia 🇮🇩",

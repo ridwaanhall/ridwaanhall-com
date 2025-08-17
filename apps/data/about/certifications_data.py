@@ -6,7 +6,10 @@ class CertificationsData:
             "id": 7,
             "title": "Certificate of Appreciation for Machine Learning Mentoring",
             "credential_url": "https://drive.google.com/file/d/1aVSs3pzTtyWama-RojPnNDuAcEyDcq7M/view",
-            "issued": "Jul 2025",
+            "issued": {
+                "month": "Jul",
+                "year": 2025
+            },
             "institution": "Coding Camp powered by DBS Foundation",
             "website": "https://go.dbs.com/dbsfcodingcamp",
             "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
@@ -21,7 +24,10 @@ class CertificationsData:
             "id": 6,
             "title": "Crafting REST APIs with Django",
             "credential_url": "https://www.linkedin.com/learning/certificates/75dfc2562365bbe8c92e2d79c8c8b2ddd5313f935086a44ca98c31d2ce5ef43a",
-            "issued": "Dec 2024",
+            "issued": {
+                "month": "Dec",
+                "year": 2024
+            },
             "institution": "LinkedIn Learning",
             "website": "https://www.linkedin.com/learning",
             "logo": f"{settings.BASE_URL}/static/img/logo/linkedin.webp",
@@ -36,7 +42,10 @@ class CertificationsData:
             "id": 5,
             "title": "Applied Machine Learning",
             "credential_url": "https://www.dicoding.com/certificates/NVP74VLKRPR0",
-            "issued": "Dec 2024",
+            "issued": {
+                "month": "Dec",
+                "year": 2024
+            },
             "institution": "Dicoding Indonesia",
             "website": "https://www.dicoding.com",
             "logo": f"{settings.BASE_URL}/static/img/logo/dicoding.webp",
@@ -51,7 +60,10 @@ class CertificationsData:
             "id": 4,
             "title": "Learning Data Analysis with Python",
             "credential_url": "https://www.dicoding.com/certificates/98XW5Q2O0PM3",
-            "issued": "Nov 2024",
+            "issued": {
+                "month": "Nov",
+                "year": 2024
+            },
             "institution": "Dicoding Indonesia",
             "website": "https://www.dicoding.com",
             "logo": f"{settings.BASE_URL}/static/img/logo/dicoding.webp",
@@ -67,7 +79,10 @@ class CertificationsData:
             "id": 3,
             "title": "Building a Portfolio with Django",
             "credential_url": "https://www.linkedin.com/learning/certificates/f8a7650056c8c53c7cd79e25aa0f2fe70a23b1fcf6ce9c9b5e5fb8f928b3c9cb",
-            "issued": "Oct 2023",
+            "issued": {
+                "month": "Oct",
+                "year": 2023
+            },
             "institution": "LinkedIn Learning",
             "website": "https://www.linkedin.com",
             "logo": f"{settings.BASE_URL}/static/img/logo/linkedin.webp",
@@ -84,7 +99,10 @@ class CertificationsData:
             "id": 2,
             "title": "Machine Learning Professional Certification",
             "credential_url": "https://drive.google.com/file/d/1him5Eiho1XrzehFnnto7jljCmHh28gXy/view?usp=drive_link",
-            "issued": "Jun 2023",
+            "issued": {
+                "month": "Jun",
+                "year": 2023
+            },
             "institution": "Altair RapidMiner",
             "website": "https://academy.rapidminer.com",
             "logo": f"{settings.BASE_URL}/static/img/logo/rapidminer.webp",
@@ -99,7 +117,10 @@ class CertificationsData:
             "id": 1,
             "title": "Data Engineering Professional Certification",
             "credential_url": "https://drive.google.com/file/d/19lJPN2KB8NCT6koQhIkL0vYu76_Lo2Vm/view?usp=drive_link",
-            "issued": "Jan 2023",
+            "issued": {
+                "month": "Jan",
+                "year": 2023
+            },
             "institution": "Altair RapidMiner",
             "website": "https://academy.rapidminer.com",
             "logo": f"{settings.BASE_URL}/static/img/logo/rapidminer.webp",

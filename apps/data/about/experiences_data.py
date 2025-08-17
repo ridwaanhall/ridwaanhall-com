@@ -39,95 +39,6 @@ class ExperiencesData:
     experiences = [
         {
             "id": 13,
-            "title": "Machine Learning Mentor",
-            "company": "Coding Camp powered by DBS Foundation",
-            "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
-            "website": "https://go.dbs.com/dbsfcodingcamp",
-            "period": "Feb 2025 - Jul 2025",
-            "employment_type": employment_types["pt"],
-            "location_type": location_types["rm"],
-            "location": "Bandung, Indonesia 🇮🇩",
-            "is_current": True,
-            "responsibilities": [
-                "Led weekly mentoring sessions for 24 students, resulting in a 75% graduation rate and maintaining an average attendance of 84%.",
-                "Provided 1.5 hours per week of personalized one-on-one sessions, addressing individual challenges and academic assignments to support student development.",
-                "Conducted alternating weekly sessions on soft and technical skills (2 hours/week) for 50 participants, managing facilitator coordination, content preparation, session moderation, and cohort engagement monitoring.",
-                "Participated in monthly 1.5-hour meetings and professional development sessions for mentors."
-            ]
-        },
-        {
-            "id": 12,
-            "title": "Machine Learning Ops Cohort",
-            "company": "Coding Camp powered by DBS Foundation",
-            "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
-            "website": "https://go.dbs.com/dbsfcodingcamp",
-            "period": "Dec 2024 - Jan 2025",
-            "employment_type": employment_types["sc"],
-            "location_type": location_types["rm"],
-            "location": "Bandung, Indonesia 🇮🇩",
-            "is_current": False,
-            "responsibilities": [
-                "Acquired comprehensive knowledge of ML Ops to develop robust and scalable machine learning systems.",
-                "Gained practical experience in deploying machine learning models in real-world production environments."
-            ]
-        },
-        {
-            "id": 11,
-            "title": "Machine Learning Expert Cohort",
-            "company": "Coding Camp powered by DBS Foundation",
-            "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
-            "website": "https://go.dbs.com/dbsfcodingcamp",
-            "period": "Oct 2024 - Dec 2024",
-            "employment_type": employment_types["sc"],
-            "location_type": location_types["rm"],
-            "location": "Bandung, Indonesia 🇮🇩",
-            "is_current": False,
-            "responsibilities": [
-                "Developed machine learning systems for various projects, focusing on effective problem-solving.",
-                "Built predictive models using k-Nearest Neighbor, Random Forest, and AdaBoost algorithms.",
-                "Implemented sentiment analysis solutions utilizing Deep Learning and Support Vector Machines.",
-                "Explored computer vision techniques for image recognition and object detection.",
-                "Designed recommendation systems using content-based and collaborative filtering approaches."
-            ]
-        },
-        {
-            "id": 10,
-            "title": "Machine Learning Intermediate Cohort",
-            "company": "Coding Camp powered by DBS Foundation",
-            "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
-            "website": "https://go.dbs.com/dbsfcodingcamp",
-            "period": "Jul 2024 - Sep 2024",
-            "employment_type": employment_types["sc"],
-            "location_type": location_types["rm"],
-            "location": "Bandung, Indonesia 🇮🇩",
-            "is_current": False,
-            "responsibilities": [
-                "Developed neural networks using TensorFlow and Keras for deep learning applications.",
-                "Applied natural language processing techniques for text classification and sentiment analysis.",
-                "Created deep learning models for time series and image classification tasks.",
-                "Explored recommendation systems and reinforcement learning methodologies.",
-                "Gained experience with generative AI and model deployment."
-            ]
-        },
-        {
-            "id": 9,
-            "title": "Machine Learning Beginner Cohort",
-            "company": "Coding Camp powered by DBS Foundation",
-            "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
-            "website": "https://go.dbs.com/dbsfcodingcamp",
-            "period": "Jan 2024 - Jun 2024",
-            "employment_type": employment_types["sc"],
-            "location_type": location_types["rm"],
-            "location": "Bandung, Indonesia 🇮🇩",
-            "is_current": False,
-            "responsibilities": [
-                "Initiated data visualization projects using Google Sheets.",
-                "Mastered Python fundamentals and object-oriented programming.",
-                "Studied supervised and unsupervised machine learning algorithms."
-            ]
-        },
-        {
-            "id": 8,
             "title": "Founder",
             "company": "Copilot ID",
             "logo": f"{settings.BASE_URL}/static/img/logo/copilot_id.webp",
@@ -146,7 +57,7 @@ class ExperiencesData:
             ]
         },
         {
-            "id": 7,
+            "id": 12,
             "title": "Chief Secretary",
             "company": "IKA-PPIM 2021",
             "logo": f"{settings.BASE_URL}/static/img/logo/ikappim_21.webp",
@@ -160,6 +71,95 @@ class ExperiencesData:
                 "Managed data for over 200 alumni, including advanced filtering and data visualization.",
                 "Prepared organizational documents and meeting notes.",
                 "Designed user-friendly interfaces for alumni management."
+            ]
+        },
+        {
+            "id": 11,
+            "title": "Machine Learning Mentor",
+            "company": "Coding Camp powered by DBS Foundation",
+            "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
+            "website": "https://go.dbs.com/dbsfcodingcamp",
+            "period": "Feb 2025 - Jul 2025",
+            "employment_type": employment_types["pt"],
+            "location_type": location_types["rm"],
+            "location": "Bandung, Indonesia 🇮🇩",
+            "is_current": False,
+            "responsibilities": [
+                "Led weekly mentoring sessions for 24 students, resulting in a 75% graduation rate and maintaining an average attendance of 84%.",
+                "Provided 1.5 hours per week of personalized one-on-one sessions, addressing individual challenges and academic assignments to support student development.",
+                "Conducted alternating weekly sessions on soft and technical skills (2 hours/week) for 50 participants, managing facilitator coordination, content preparation, session moderation, and cohort engagement monitoring.",
+                "Participated in monthly 1.5-hour meetings and professional development sessions for mentors."
+            ]
+        },
+        {
+            "id": 10,
+            "title": "Machine Learning Ops Cohort",
+            "company": "Coding Camp powered by DBS Foundation",
+            "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
+            "website": "https://go.dbs.com/dbsfcodingcamp",
+            "period": "Dec 2024 - Jan 2025",
+            "employment_type": employment_types["sc"],
+            "location_type": location_types["rm"],
+            "location": "Bandung, Indonesia 🇮🇩",
+            "is_current": False,
+            "responsibilities": [
+                "Acquired comprehensive knowledge of ML Ops to develop robust and scalable machine learning systems.",
+                "Gained practical experience in deploying machine learning models in real-world production environments."
+            ]
+        },
+        {
+            "id": 9,
+            "title": "Machine Learning Expert Cohort",
+            "company": "Coding Camp powered by DBS Foundation",
+            "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
+            "website": "https://go.dbs.com/dbsfcodingcamp",
+            "period": "Oct 2024 - Dec 2024",
+            "employment_type": employment_types["sc"],
+            "location_type": location_types["rm"],
+            "location": "Bandung, Indonesia 🇮🇩",
+            "is_current": False,
+            "responsibilities": [
+                "Developed machine learning systems for various projects, focusing on effective problem-solving.",
+                "Built predictive models using k-Nearest Neighbor, Random Forest, and AdaBoost algorithms.",
+                "Implemented sentiment analysis solutions utilizing Deep Learning and Support Vector Machines.",
+                "Explored computer vision techniques for image recognition and object detection.",
+                "Designed recommendation systems using content-based and collaborative filtering approaches."
+            ]
+        },
+        {
+            "id": 8,
+            "title": "Machine Learning Intermediate Cohort",
+            "company": "Coding Camp powered by DBS Foundation",
+            "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
+            "website": "https://go.dbs.com/dbsfcodingcamp",
+            "period": "Jul 2024 - Sep 2024",
+            "employment_type": employment_types["sc"],
+            "location_type": location_types["rm"],
+            "location": "Bandung, Indonesia 🇮🇩",
+            "is_current": False,
+            "responsibilities": [
+                "Developed neural networks using TensorFlow and Keras for deep learning applications.",
+                "Applied natural language processing techniques for text classification and sentiment analysis.",
+                "Created deep learning models for time series and image classification tasks.",
+                "Explored recommendation systems and reinforcement learning methodologies.",
+                "Gained experience with generative AI and model deployment."
+            ]
+        },
+        {
+            "id": 7,
+            "title": "Machine Learning Beginner Cohort",
+            "company": "Coding Camp powered by DBS Foundation",
+            "logo": f"{settings.BASE_URL}/static/img/logo/coding_camp_dbs_foundation.webp",
+            "website": "https://go.dbs.com/dbsfcodingcamp",
+            "period": "Jan 2024 - Jun 2024",
+            "employment_type": employment_types["sc"],
+            "location_type": location_types["rm"],
+            "location": "Bandung, Indonesia 🇮🇩",
+            "is_current": False,
+            "responsibilities": [
+                "Initiated data visualization projects using Google Sheets.",
+                "Mastered Python fundamentals and object-oriented programming.",
+                "Studied supervised and unsupervised machine learning algorithms."
             ]
         },
         {

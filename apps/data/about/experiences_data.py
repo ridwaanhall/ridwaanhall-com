@@ -55,6 +55,7 @@ class ExperiencesData:
             "location": "Solo, Indonesia 🇮🇩",
             "is_current": True,
             "responsibilities": [
+                "Collaborative Python Innovations and Learning for Optimal Technologies.",
                 "Executed AI-driven projects using Django, TensorFlow, PyTorch, and modern web technologies.",
                 "3+ years of Django experience across 15+ full-cycle projects including MTV architecture, ORM, REST APIs, authentication, testing, and debugging.",
                 "Built and deployed 7+ Flask-based microservices with scalable routing and Jinja2 templating.",

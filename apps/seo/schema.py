@@ -61,12 +61,19 @@ class SEOSchemaGenerator:
             }
             
             # Parse period for dates
-            period = exp.get('period', '')
-            if ' - ' in period:
-                start_date, end_date = period.split(' - ', 1)
-                work_exp["startDate"] = start_date.strip()
-                if end_date.strip().lower() != 'present':
-                    work_exp["endDate"] = end_date.strip()
+            period = exp.get('period', {})
+            if isinstance(period, dict):
+                start_info = period.get('start', {})
+                end_info = period.get('end', {})
+                
+                if isinstance(start_info, dict):
+                    work_exp["startDate"] = f"{start_info.get('month', '')} {start_info.get('year', '')}"
+                
+                if end_info == "Present":
+                    # Don't set endDate for current positions
+                    pass
+                elif isinstance(end_info, dict):
+                    work_exp["endDate"] = f"{end_info.get('month', '')} {end_info.get('year', '')}"
             
             work_experience.append(work_exp)
         

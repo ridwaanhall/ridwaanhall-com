@@ -28,6 +28,7 @@ class AboutData:
             "cv_copy": "https://docs.google.com/document/d/1Sv2VQ95fDn-0a_8lOZxBuFAZ--gJrw7u5EQ-_SLUfpo/copy",
             "role": "Python Programmer",
             "is_active": cls.is_working_hours(),
+            "is_open_to_work": True,
             "short_description": "a quiet space where machine learning, open-source, and reflections converge.",
             "short_bio_old": "I explore through code, share with empathy, and reflect on every challenge. My work weaves machine learning, web creation, and open-source. This site archives the curious, the technical, and the quietly thoughtful.",
             "short_bio": "I explore through code, share with empathy, and reflect on every challenge. My work weaves machine learning, web creation, and open source. I thrive on collaborating with teams to develop smart, user centered AI and web solutions that blend function with clarity.",

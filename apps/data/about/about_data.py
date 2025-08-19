@@ -19,7 +19,7 @@ class AboutData:
             "name": "Ridwan Halim",
             "first_name": "Ridwan",
             "last_name": "Halim",
-            "username": "ridwaanhall",
+            "username": "ridwaanhall", # GitHub username
             "aka": "roneha",
             "image_url": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
             "personal_website": "https://ridwaanhall.com",

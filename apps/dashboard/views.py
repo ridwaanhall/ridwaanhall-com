@@ -76,6 +76,14 @@ class DashboardView(DashboardSEOMixin, BaseView):
                         contribution_weeks, total_contributions
                     )
                     
+                    # Format streak dates for display
+                    current_streak_start_formatted = None
+                    current_streak_end_formatted = None
+                    
+                    if github_stats['current_streak_start'] and github_stats['current_streak_end']:
+                        current_streak_start_formatted = github_stats['current_streak_start'].strftime('%b %d, %Y')
+                        current_streak_end_formatted = github_stats['current_streak_end'].strftime('%b %d, %Y')
+                    
                     github_data = {
                         'github_activity': github_activity,
                         'total_contributions': total_contributions,
@@ -84,6 +92,8 @@ class DashboardView(DashboardSEOMixin, BaseView):
                         'average': f"{github_stats['average']}",
                         'longest_streak': github_stats['longest_streak'],
                         'current_streak': github_stats['current_streak'],
+                        'current_streak_start': current_streak_start_formatted,
+                        'current_streak_end': current_streak_end_formatted,
                         'github_last_update': timezone.now().strftime('%B %d, %Y %I:%M %p')
                     }
                     

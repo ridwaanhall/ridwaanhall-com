@@ -32,15 +32,15 @@ class DashboardView(DashboardSEOMixin, BaseView):
         context = super().get_context_data(**kwargs)
         
         # Get GitHub statistics
-        github_data = self._get_github_data()
-        if github_data:
-            context.update(github_data)
+        github_stats = self._get_github_stats()
+        if github_stats:
+            context.update(github_stats)
         else:
             context['github_activity'] = None
             context['github_last_update'] = None
         
         # Get WakaTime statistics
-        wakatime_stats = self._get_wakatime_data()
+        wakatime_stats = self._get_wakatime_stats()
         if wakatime_stats:
             context['wakatime_stats'] = wakatime_stats
         else:
@@ -52,12 +52,12 @@ class DashboardView(DashboardSEOMixin, BaseView):
         
         return context
 
-    def _get_github_data(self) -> Optional[Dict]:
+    def _get_github_stats(self) -> Optional[Dict]:
         """Get GitHub statistics with caching."""
         cache_key = 'github_activity_data'
-        github_data = cache.get(cache_key)
+        github_stats = cache.get(cache_key)
         
-        if not github_data:
+        if not github_stats:
             try:
                 about_data = self.get_about_data()
                 github_client = GitHubClient(
@@ -66,48 +66,22 @@ class DashboardView(DashboardSEOMixin, BaseView):
                 )
                 github_activity = github_client.get_contribution_data()
                 
-                if github_activity and 'data' in github_activity:
-                    user_data = github_activity['data']['user']
-                    calendar_data = user_data['contributionsCollection']['contributionCalendar']
-                    contribution_weeks = calendar_data['weeks']
-                    total_contributions = calendar_data['totalContributions']
-                    
-                    github_stats = GitHubStatsCalculator.calculate_stats(
-                        contribution_weeks, total_contributions
-                    )
-                    
-                    # Format streak dates for display
-                    current_streak_start_formatted = None
-                    current_streak_end_formatted = None
-                    
-                    if github_stats['current_streak_start'] and github_stats['current_streak_end']:
-                        current_streak_start_formatted = github_stats['current_streak_start'].strftime('%b %d, %Y')
-                        current_streak_end_formatted = github_stats['current_streak_end'].strftime('%b %d, %Y')
-                    
-                    github_data = {
-                        'github_activity': github_activity,
-                        'total_contributions': total_contributions,
-                        'this_week': github_stats['this_week'],
-                        'best_day': github_stats['best_day'],
-                        'average': f"{github_stats['average']}",
-                        'longest_streak': github_stats['longest_streak'],
-                        'current_streak': github_stats['current_streak'],
-                        'current_streak_start': current_streak_start_formatted,
-                        'current_streak_end': current_streak_end_formatted,
-                        'github_last_update': timezone.now().strftime('%B %d, %Y %I:%M %p')
-                    }
-                    
-                    cache.set(cache_key, github_data, CACHE_TIMEOUT)
+                if github_activity:
+                    github_stats = GitHubStatsCalculator.process_github_data(github_activity)
+                    if github_stats:
+                        cache.set(cache_key, github_stats, CACHE_TIMEOUT)
+                    else:
+                        logger.error("GitHub statistics processing failed.")
                 else:
                     logger.error("GitHub activity data is missing or malformed.")
-                    github_data = None
+                    github_stats = None
             except Exception as e:
                 logger.error(f"Error fetching GitHub data: {e}")
-                github_data = None
+                github_stats = None
         
-        return github_data
+        return github_stats
     
-    def _get_wakatime_data(self) -> Optional[Dict]:
+    def _get_wakatime_stats(self) -> Optional[Dict]:
         """Get WakaTime statistics with caching."""
         cache_key = 'wakatime_activity_data'
         wakatime_stats = cache.get(cache_key)

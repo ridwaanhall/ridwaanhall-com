@@ -187,6 +187,8 @@
                 </div>
                 <div class="hidden lg:flex items-center justify-between w-full">
                     <div class="text-[15px] text-zinc-400 hover:text-zinc-300 transition-all duration-300">@{{ about.username }}</div>
+                    {% if request.resolver_match.url_name == 'home' %}
+                    {% else %}
                     <div class="flex flex-col gap-1">
                         {% if about.is_open_to_work %}
                         <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-900/30 text-green-400 border border-green-800/50">
@@ -201,6 +203,7 @@
                         </span>
                         {% endif %}
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

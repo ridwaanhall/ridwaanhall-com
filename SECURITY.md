@@ -16,7 +16,6 @@ This project supports the following versions of dependencies as specified in `re
 | django-csp                | 4.0       | Content Security Policy       |
 | django-permissions-policy | 4.25.0    | Browser permissions control    |
 | idna                      | 3.10      | International domain names    |
-| markdown-it-py            | 3.0.0     | Markdown parser               |
 | mdurl                     | 0.1.2     | URL utilities for markdown   |
 | oauthlib                  | 3.2.2     | OAuth protocol implementation |
 | packaging                 | 25.0      | Package metadata handling    |

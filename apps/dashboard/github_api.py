@@ -107,7 +107,7 @@ class GitHubStatsCalculator:
         all_days.sort(key=lambda x: x['date'])
         
         # Calculate streaks
-        current_streak, longest_streak = GitHubStatsCalculator._calculate_streaks(all_days, today)
+        current_streak, longest_streak, current_streak_start, current_streak_end = GitHubStatsCalculator._calculate_streaks(all_days, today)
         
         total_days = len(all_days)
         average_contributions = round(total_contributions / total_days, 1) if total_days > 0 else 0
@@ -116,14 +116,16 @@ class GitHubStatsCalculator:
             'best_day': best_day_count,
             'average': f"{average_contributions}",
             'longest_streak': longest_streak,
-            'current_streak': current_streak
+            'current_streak': current_streak,
+            'current_streak_start': current_streak_start,
+            'current_streak_end': current_streak_end
         }
     
     @staticmethod
     def _calculate_streaks(all_days: List[Dict], today: datetime) -> tuple:
-        """Helper method to calculate contribution streaks. Returns (current_streak, longest_streak)."""
+        """Helper method to calculate contribution streaks. Returns (current_streak, longest_streak, current_streak_start, current_streak_end)."""
         if not all_days:
-            return 0, 0
+            return 0, 0, None, None
         
         # Calculate longest streak by iterating through all days
         temp_streak = 0
@@ -138,21 +140,33 @@ class GitHubStatsCalculator:
         
         # Calculate current streak by going backwards from the most recent day with data
         current_streak = 0
+        current_streak_start = None
+        current_streak_end = None
         
         # Sort days in reverse order (most recent first)
         reversed_days = sorted(all_days, key=lambda x: x['date'], reverse=True)
         
         if not reversed_days:
-            return current_streak, longest_streak
+            return current_streak, longest_streak, current_streak_start, current_streak_end
+        
+        # Find the current streak by going backwards from the most recent day
+        streak_days = []
         
         # Start from the most recent day and count backwards
         for i, day_data in enumerate(reversed_days):
             if day_data['count'] > 0:
                 current_streak += 1
+                streak_days.append(day_data)
             else:
                 # If we hit a day with 0 contributions, check if it's the first day
                 # If it's the first day (most recent), streak is 0
                 # If it's not the first day, we've found the end of the streak
                 break
         
-        return current_streak, longest_streak
+        # If we have a current streak, determine start and end dates
+        if current_streak > 0 and streak_days:
+            # streak_days is in reverse order (newest first), so:
+            current_streak_end = streak_days[0]['date']  # Most recent date
+            current_streak_start = streak_days[-1]['date']  # Oldest date in streak
+        
+        return current_streak, longest_streak, current_streak_start, current_streak_end

@@ -170,3 +170,47 @@ class GitHubStatsCalculator:
             current_streak_start = streak_days[-1]['date']  # Oldest date in streak
         
         return current_streak, longest_streak, current_streak_start, current_streak_end
+
+    @staticmethod
+    def process_github_data(github_activity: Dict) -> Optional[Dict]:
+        """Process GitHub activity data and return formatted statistics ready for template use."""
+        if not github_activity or 'data' not in github_activity:
+            logger.error("GitHub activity data is missing or malformed.")
+            return None
+        
+        try:
+            user_data = github_activity['data']['user']
+            calendar_data = user_data['contributionsCollection']['contributionCalendar']
+            contribution_weeks = calendar_data['weeks']
+            total_contributions = calendar_data['totalContributions']
+            
+            # Calculate statistics
+            github_stats = GitHubStatsCalculator.calculate_stats(
+                contribution_weeks, total_contributions
+            )
+            
+            # Format streak dates for display
+            current_streak_start_formatted = None
+            current_streak_end_formatted = None
+            
+            if github_stats['current_streak_start'] and github_stats['current_streak_end']:
+                current_streak_start_formatted = github_stats['current_streak_start'].strftime('%b %d, %Y')
+                current_streak_end_formatted = github_stats['current_streak_end'].strftime('%b %d, %Y')
+            
+            # Return fully processed data ready for template
+            return {
+                'github_activity': github_activity,
+                'total_contributions': total_contributions,
+                'this_week': github_stats['this_week'],
+                'best_day': github_stats['best_day'],
+                'average': f"{github_stats['average']}",
+                'longest_streak': github_stats['longest_streak'],
+                'current_streak': github_stats['current_streak'],
+                'current_streak_start': current_streak_start_formatted,
+                'current_streak_end': current_streak_end_formatted,
+                'github_last_update': timezone.now().strftime('%B %d, %Y %I:%M %p')
+            }
+            
+        except Exception as e:
+            logger.error(f"Error processing GitHub data: {e}", exc_info=True)
+            return None

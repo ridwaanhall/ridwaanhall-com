@@ -269,27 +269,137 @@ class AwardsData:
 
 ### Customizing About Information
 
+The AboutData class provides a comprehensive data structure for personal information with timezone-aware features:
+
 ```python
 # apps/data/about/about_data.py
+from django.conf import settings
+from datetime import datetime
+import pytz
+
 class AboutData:
     @staticmethod
-    def get_about_data():
+    def is_working_hours():
+        """Check if current time is within working hours (timezone-aware)"""
+        jakarta_tz = pytz.timezone("Asia/Jakarta")
+        now = datetime.now(jakarta_tz)
+        
+        is_weekday = now.weekday() < 5  # Monday to Friday
+        is_work_hour = 15 <= now.hour < 20  # 3 PM to 8 PM Jakarta time
+        
+        return is_weekday and is_work_hour
+
+    @classmethod
+    def get_about_data(cls):
         return {
-            "name": "John Developer",
-            "title": "Full-Stack Developer & Tech Enthusiast",
-            "description": "Passionate about creating innovative solutions...",
-            "tagline": "Building the future, one line of code at a time",
-            "location": "San Francisco, CA",
-            "email": "john@example.com",
-            "phone": "+1-555-0123",
-            "website": "https://johndeveloper.com",
-            "social_links": {
-                "github": "https://github.com/johndeveloper",
-                "linkedin": "https://linkedin.com/in/johndeveloper",
-                "twitter": "https://twitter.com/johndeveloper",
-            }
+            # Basic Information
+            "name": "Your Full Name",
+            "first_name": "Your",
+            "last_name": "Name", 
+            "username": "yourusername",  # GitHub username
+            "aka": "nickname",
+            
+            # Profile & Assets
+            "image_url": f"{settings.BASE_URL}/static/img/profile.webp",
+            "personal_website": "https://yoursite.com",
+            "cv": "https://drive.google.com/file/d/your-cv-id/view",
+            "cv_latest": "https://drive.google.com/file/d/latest-cv-id/view", 
+            "cv_copy": "https://docs.google.com/document/d/cv-copy-id/copy",
+            
+            # Professional Status
+            "role": "Python Developer", 
+            "is_active": cls.is_working_hours(),  # Real-time status
+            "is_open_to_work": True,
+            "is_hiring": False,
+            
+            # Descriptions (Multiple Formats)
+            "short_description": "Brief tagline for your work",
+            "short_bio": "A concise professional bio highlighting your expertise and approach",
+            "short_cta": "Call-to-action message for visitors",
+            "long_description": "Extended description covering your background, experience, and achievements",
+            
+            # Personal Stories
+            "stories": [
+                "Your background story - who you are and what drives you",
+                "Your educational and spiritual journey", 
+                "Professional experience and mentoring accomplishments",
+                "Academic background and specializations",
+                "Future vision and goals",
+                "Invitation to collaborate and connect"
+            ],
+            
+            # Location (Detailed Geographic Info)
+            "location": {
+                "regency": "Your City/Regency",
+                "residency": "Your Residency/Region", 
+                "province": "Your Province/State",
+                "prov": "Province Abbreviation",
+                "country": "Your Country",
+                "flag": "🇮🇩"  # Country flag emoji
+            },
+            
+            # Social Media & Contact (Comprehensive Links)
+            "social_media": {
+                "email": "contact@yoursite.com",
+                "github": "https://github.com/yourusername", 
+                "linkedin": "https://linkedin.com/in/yourusername",
+                "follow_linkedin": "https://linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=yourusername",
+                "instagram": "https://instagram.com/yourusername",
+                "medium": "https://medium.com/@yourusername", 
+                "x": "https://x.com/yourusername",
+                "website": "https://yoursite.dev",
+            },
+            
+            # Donation/Support Platforms
+            "donate": [
+                {
+                    "github_sponsor": "https://github.com/sponsors/yourusername",
+                    "donate_text": "Support me on GitHub Sponsors"
+                },
+                {
+                    "sociabuzz": "https://sociabuzz.com/yourusername/support", 
+                    "donate_text": "Become a patron through Sociabuzz"
+                },
+                {
+                    "buy_me_a_coffee": "https://www.buymeacoffee.com/yourusername",
+                    "donate_text": "Buy me a coffee" 
+                },
+                {
+                    "saweria": "https://saweria.co/yourusername",
+                    "donate_text": "Support via Saweria"
+                }
+            ],
+            
+            # Skills/Technologies
+            "skills": [
+                "Python",
+                "Django", 
+                "Machine Learning",
+                "TensorFlow",
+                "PyTorch",
+                "Flask",
+                "AI Development"
+            ]
         }
 ```
+
+#### Key Features:
+
+**Dynamic Status**: The `is_working_hours()` method provides real-time availability status based on your timezone and schedule.
+
+**Multiple Bio Formats**: Different length descriptions for various contexts:
+- `short_description`: Tagline for headers
+- `short_bio`: Professional summary
+- `long_description`: Detailed background
+- `stories`: Array of narrative segments
+
+**Comprehensive Social Presence**: Complete social media and professional links including specialized LinkedIn follow links.
+
+**Support Integration**: Multiple donation/support platforms for community funding.
+
+**Geographic Detail**: Structured location information from local to country level.
+
+**Professional Assets**: Direct links to CV, portfolio, and downloadable resources.
 
 ## Troubleshooting
 

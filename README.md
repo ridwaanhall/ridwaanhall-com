@@ -94,6 +94,41 @@ GH_CLIENT_SECRET="your-github-client-secret"
 | `GH_CLIENT_ID` | If guestbook enabled | GitHub OAuth client ID |
 | `GH_CLIENT_SECRET` | If guestbook enabled | GitHub OAuth secret |
 
+### Environment Variables Documentation
+
+This project requires several environment variables for proper functionality. Create a `.env` file in your project root with the following configuration:
+
+#### Core Application Settings
+
+- **BASE_URL**: Your application's domain URL (e.g., <https://ridwaanhall.com>)
+- **SECRET_KEY**: Django's secret key for cryptographic signing - generate using `python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`
+- **DEBUG**: Set to `True` for development, `False` for production
+
+#### API Integration Keys
+
+- **ACCESS_TOKEN**: GitHub Personal Access Token
+  - Go to GitHub Settings → Developer settings → Personal access tokens
+  - Generate new token with repo and user permissions
+- **WAKATIME_API_KEY**: WakaTime API key for coding statistics
+  - Visit WakaTime Settings → API Key section
+  - Copy your secret API key
+
+#### Feature Configuration
+
+- **GUESTBOOK_PAGE**: Boolean to enable/disable guestbook functionality
+  - Set to `True` to enable guestbook with authentication
+  - Set to `False` to disable and skip OAuth setup
+
+#### OAuth Configuration (Required only when GUESTBOOK_PAGE=True)
+
+- **GOOGLE_CLIENT_ID** & **GOOGLE_CLIENT_SECRET**: Google OAuth credentials
+  - Create project at Google Cloud Console
+  - Enable Google+ API
+  - Create OAuth 2.0 credentials
+- **GH_CLIENT_ID** & **GH_CLIENT_SECRET**: GitHub OAuth credentials
+  - Go to GitHub Settings → Developer settings → OAuth Apps
+  - Create new OAuth app with your callback URLs
+
 ## 📚 Documentation
 
 Comprehensive documentation for each application component:

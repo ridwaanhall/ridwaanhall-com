@@ -237,39 +237,47 @@ blog_data = {
             "text": "Python is a high-level, interpreted programming language known for its simplicity and readability. It's perfect for beginners and powerful enough for experts."
         },
         {
-            "type": "img",
-            "src": "gallery-1.webp",
-            "alt": "Python code example",
-            "class": "w-full rounded-lg shadow-md my-6"
-        },
-        {
             "type": "h3",
+            "class": "text-xl lg:text-2xl text-medium mt-4 md:mt-5 mb-2 md:mb-3",
             "text": "Why Choose Python?"
         },
         {
             "type": "ul",
+            "class": "list-disc pl-6 mb-4 text-sm md:text-base lg:text-lg",
             "items": [
-                "Easy to learn and read",
-                "Versatile - web development, data science, AI/ML",
-                "Large community and extensive libraries",
-                "Cross-platform compatibility"
+                {
+                    "type": "li",
+                    "text": "<strong>Easy to learn:</strong> Simple, readable syntax similar to plain English"
+                },
+                {
+                    "type": "li", 
+                    "text": "<strong>Versatile:</strong> Web development, data science, AI/ML, automation"
+                },
+                {
+                    "type": "li",
+                    "text": "<strong>Large community:</strong> Extensive libraries and active support"
+                },
+                {
+                    "type": "li",
+                    "text": "<strong>Cross-platform:</strong> Runs on Windows, Mac, and Linux"
+                }
             ]
         },
         {
-            "type": "code",
-            "language": "python",
-            "code": '''
-# Your first Python program
-def hello_world():
-    print("Hello, Python World!")
-    
-hello_world()
-            '''
+            "type": "pre",
+            "class": "bg-zinc-800 p-3 rounded-lg mb-4 overflow-x-auto",
+            "text": "<code class=\"language-python\"># Your first Python program\ndef hello_world():\n    print(\"Hello, Python World!\")\n    \nhello_world()</code>"
         },
         {
-            "type": "blockquote",
-            "text": "Python is not just a programming language; it's a gateway to endless possibilities in the digital world.",
-            "author": "Ridwan Hall"
+            "type": "table",
+            "class": "mb-4 text-sm md:text-base lg:text-lg",
+            "headers": ["Feature", "Beginner Friendly", "Advanced Use"],
+            "rows": [
+                ["Syntax", "Very readable", "Complex applications"],
+                ["Learning Curve", "Gentle", "Deep ecosystem"],
+                ["Applications", "Scripts & automation", "AI, ML, web development"],
+                ["Community", "Helpful beginners", "Expert contributors"]
+            ]
         }
     ]
 }
@@ -293,6 +301,97 @@ hello_world()
 | `category` | String | No | Main category of the post |
 | `reading_time` | String | No | Estimated reading time |
 | `content` | List | Yes | Structured content array |
+
+### Available Content Types
+
+The blog system supports the following content types in the `content` array:
+
+#### Text Content Types
+
+**Paragraph (`p`)**
+```python
+{
+    "type": "p",
+    "class": "mb-4 text-sm md:text-base lg:text-lg",
+    "text": "Your paragraph content with <strong>HTML formatting</strong> and <a href='#'>links</a>."
+}
+```
+
+**Headings (`h2`, `h3`, `h4`)**
+```python
+{
+    "type": "h2",
+    "class": "text-xl lg:text-2xl text-medium mt-4 md:mt-5 mb-2 md:mb-3",
+    "text": "Section Heading"
+}
+```
+
+**Code Blocks (`pre`)**
+```python
+{
+    "type": "pre",
+    "class": "bg-zinc-800 p-3 rounded-lg mb-4 overflow-x-auto",
+    "text": "<code class=\"language-python\">print('Hello World!')</code>"
+}
+```
+
+#### List Content Types
+
+**Unordered Lists (`ul`)**
+```python
+{
+    "type": "ul",
+    "class": "list-disc pl-6 mb-4 text-sm md:text-base lg:text-lg",
+    "items": [
+        {
+            "type": "li",
+            "text": "First list item with <strong>formatting</strong>"
+        },
+        {
+            "type": "li", 
+            "text": "Second list item"
+        }
+    ]
+}
+```
+
+#### Table Content Type
+
+**Tables (`table`)**
+```python
+{
+    "type": "table",
+    "class": "mb-4 text-sm md:text-base lg:text-lg",
+    "headers": ["Column 1", "Column 2", "Column 3"],
+    "rows": [
+        ["Row 1 Col 1", "Row 1 Col 2", "Row 1 Col 3"],
+        ["Row 2 Col 1", "Row 2 Col 2", "Row 2 Col 3"],
+        ["Row 3 Col 1", "Row 3 Col 2", "Row 3 Col 3"]
+    ]
+}
+```
+
+**Real Table Example** (from API monitoring blog):
+```python
+{
+    "type": "table",
+    "class": "mb-4 text-sm md:text-base lg:text-lg",
+    "headers": ["Metric", "Open (≤40%)", "Close (85%)", "Max Quota"],
+    "rows": [
+        ["Function Duration", "≤ 40 GB-Hrs", "85 GB-Hrs", "100 GB-Hrs"],
+        ["Edge Requests", "≤ 400K", "850K", "1M"],
+        ["Function Invocations", "≤ 400K", "850K", "1M"],
+        ["Fast Origin Transfer", "≤ 4 GB", "8.5 GB", "10 GB"]
+    ]
+}
+```
+
+#### Content Type Notes
+
+- **Images**: Images are handled at the blog post level via the `images` dictionary, not as content types
+- **HTML Support**: Most text fields support HTML formatting for links, emphasis, and styling
+- **CSS Classes**: All content types support custom CSS classes for styling
+- **Responsive Design**: Use responsive CSS classes (e.g., `text-sm md:text-base lg:text-lg`) for mobile compatibility
 
 ## Content Creation Guide
 

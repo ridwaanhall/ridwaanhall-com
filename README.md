@@ -270,13 +270,6 @@ When disabled:
 2. Deploy: `vercel --prod`
 3. Set environment variables in Vercel dashboard
 
-### Alternative Platforms
-
-- **Heroku**: Full Django support
-- **DigitalOcean**: App Platform
-- **Railway**: Simple deployment
-- **VPS**: Nginx + Gunicorn setup
-
 ## 🔒 Security Features
 
 - **Content Security Policy**: XSS protection

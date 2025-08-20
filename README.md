@@ -67,32 +67,57 @@ Create `.env` file:
 BASE_URL="https://your-domain.com"
 SECRET_KEY="your-django-secret-key"
 DEBUG=True
+ALLOWED_HOSTS=""
+
+# Feature Toggles
+GUESTBOOK_PAGE=True  # Set to False to disable guestbook
+WSRV_IMAGE_OPTIMIZATION=True
 
 # API Keys
 ACCESS_TOKEN="your-github-token"
 WAKATIME_API_KEY="your-wakatime-key"
-
-# Feature Toggle
-GUESTBOOK_PAGE=True  # Set to False to disable guestbook
+WEB3FORM_PAC=""
 
 # OAuth (Required only when GUESTBOOK_PAGE=True)
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
-GH_CLIENT_ID="your-github-client-id"
-GH_CLIENT_SECRET="your-github-client-secret"
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+GH_CLIENT_ID=""
+GH_CLIENT_SECRET=""
+
+# PostgreSQL Database (Production only)
+POSTGRES_DATABASE="your-database"
+POSTGRES_HOST="your-host"
+POSTGRES_PASSWORD="your-password"
+POSTGRES_USER="your-user"
+POSTGRES_PORT="5432"
+
+# Image URLs (Optional)
+BLOG_BASE_IMG_URL=""
+PROJECT_BASE_IMG_URL=""
 ```
 
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `BASE_URL` | Yes | Your domain URL |
 | `SECRET_KEY` | Yes | Django secret key |
+| `DEBUG` | No | Enable debug mode (default: False) |
+| `ALLOWED_HOSTS` | No | Comma-separated allowed hosts for development |
 | `ACCESS_TOKEN` | Yes | GitHub personal access token |
 | `WAKATIME_API_KEY` | Yes | WakaTime API key |
+| `WEB3FORM_PAC` | No | Web3Forms access key for contact forms |
 | `GUESTBOOK_PAGE` | No | Enable/disable guestbook (default: True) |
+| `WSRV_IMAGE_OPTIMIZATION` | No | Enable wsrv.nl image optimization (default: True) |
 | `GOOGLE_CLIENT_ID` | If guestbook enabled | Google OAuth client ID |
 | `GOOGLE_CLIENT_SECRET` | If guestbook enabled | Google OAuth secret |
 | `GH_CLIENT_ID` | If guestbook enabled | GitHub OAuth client ID |
 | `GH_CLIENT_SECRET` | If guestbook enabled | GitHub OAuth secret |
+| `POSTGRES_DATABASE` | Production only | PostgreSQL database name |
+| `POSTGRES_HOST` | Production only | PostgreSQL host |
+| `POSTGRES_PASSWORD` | Production only | PostgreSQL password |
+| `POSTGRES_USER` | Production only | PostgreSQL username |
+| `POSTGRES_PORT` | Production only | PostgreSQL port (default: 5432) |
+| `BLOG_BASE_IMG_URL` | No | Base URL for blog images (defaults to BASE_URL/static/img/blog) |
+| `PROJECT_BASE_IMG_URL` | No | Base URL for project images (defaults to BASE_URL/static/img/project) |
 
 ### Environment Variables Documentation
 
@@ -103,6 +128,7 @@ This project requires several environment variables for proper functionality. Cr
 - **BASE_URL**: Your application's domain URL (e.g., <https://ridwaanhall.com>)
 - **SECRET_KEY**: Django's secret key for cryptographic signing - generate using `python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`
 - **DEBUG**: Set to `True` for development, `False` for production
+- **ALLOWED_HOSTS**: Comma-separated list of allowed hosts for development (only used when DEBUG=True)
 
 #### API Integration Keys
 
@@ -112,12 +138,18 @@ This project requires several environment variables for proper functionality. Cr
 - **WAKATIME_API_KEY**: WakaTime API key for coding statistics
   - Visit WakaTime Settings → API Key section
   - Copy your secret API key
+- **WEB3FORM_PAC**: Web3Forms access key for contact forms (optional)
+  - Visit Web3Forms dashboard
+  - Get your access key for form submissions
 
 #### Feature Configuration
 
 - **GUESTBOOK_PAGE**: Boolean to enable/disable guestbook functionality
   - Set to `True` to enable guestbook with authentication
   - Set to `False` to disable and skip OAuth setup
+- **WSRV_IMAGE_OPTIMIZATION**: Enable wsrv.nl image optimization proxy
+  - Set to `True` for optimized images (recommended)
+  - Set to `False` to use original images
 
 #### OAuth Configuration (Required only when GUESTBOOK_PAGE=True)
 
@@ -128,6 +160,23 @@ This project requires several environment variables for proper functionality. Cr
 - **GH_CLIENT_ID** & **GH_CLIENT_SECRET**: GitHub OAuth credentials
   - Go to GitHub Settings → Developer settings → OAuth Apps
   - Create new OAuth app with your callback URLs
+
+#### Database Configuration (Production Only)
+
+- **POSTGRES_DATABASE**: PostgreSQL database name
+- **POSTGRES_HOST**: PostgreSQL host address
+- **POSTGRES_PASSWORD**: PostgreSQL password
+- **POSTGRES_USER**: PostgreSQL username
+- **POSTGRES_PORT**: PostgreSQL port (default: 5432)
+
+*Note: SQLite is used automatically in development mode (DEBUG=True)*
+
+#### Image URL Configuration (Optional)
+
+- **BLOG_BASE_IMG_URL**: Base URL for blog images
+  - Defaults to `{BASE_URL}/static/img/blog` if not set
+- **PROJECT_BASE_IMG_URL**: Base URL for project images
+  - Defaults to `{BASE_URL}/static/img/project` if not set
 
 ## 📚 Documentation
 

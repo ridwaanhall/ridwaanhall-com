@@ -32,38 +32,11 @@
 [![Desktop: 99.5](https://img.shields.io/badge/Desktop-99.5-success?style=for-the-badge)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/rstqtcxhc0?form_factor=desktop)
 [![Mobile: 99](https://img.shields.io/badge/Mobile-99-success?style=for-the-badge)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/rstqtcxhc0?form_factor=mobile)
 
-### 📊 PageSpeed Insights Breakdown
-
 | Platform | Performance | Accessibility | Best Practices | SEO | Average |
 |----------|-------------|---------------|----------------|-----|---------|
 | **Desktop** | 98 | 100 | 100 | 100 | **99.5** |
 | **Mobile** | 96 | 100 | 100 | 100 | **99** |
 | **Average** | **97** | **100** | **100** | **100** | **99.25** |
-
-## 🏗️ Project Structure
-
-```txt
-FlexForge/
-├── apps/
-│   ├── data/                    # Individual File System
-│   │   ├── content_manager.py   # Central data controller
-│   │   └── content/
-│   │       ├── projects/        # Individual project files
-│   │       │   ├── project-1.py
-│   │       │   └── project-N.py
-│   │       └── blog/           # Individual blog files
-│   │           ├── blog-1.py
-│   │           └── blog-N.py
-│   ├── core/                   # Homepage & base functionality
-│   ├── dashboard/              # Analytics dashboard
-│   ├── guestbook/              # Interactive guestbook (optional)
-│   ├── projects/               # Project showcase
-│   ├── blog/                   # Blog system
-│   └── seo/                    # SEO management
-├── templates/                  # HTML templates
-├── static/                     # Static assets
-└── docs/                      # Documentation
-```
 
 ## ⚡ Quick Start
 
@@ -94,34 +67,57 @@ Create `.env` file:
 BASE_URL="https://your-domain.com"
 SECRET_KEY="your-django-secret-key"
 DEBUG=True
+ALLOWED_HOSTS=""
+
+# Feature Toggles
+GUESTBOOK_PAGE=True  # Set to False to disable guestbook
+WSRV_IMAGE_OPTIMIZATION=True
 
 # API Keys
 ACCESS_TOKEN="your-github-token"
 WAKATIME_API_KEY="your-wakatime-key"
-
-# Feature Toggle
-GUESTBOOK_PAGE=True  # Set to False to disable guestbook
+WEB3FORM_PAC=""
 
 # OAuth (Required only when GUESTBOOK_PAGE=True)
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
-GH_CLIENT_ID="your-github-client-id"
-GH_CLIENT_SECRET="your-github-client-secret"
-```
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+GH_CLIENT_ID=""
+GH_CLIENT_SECRET=""
 
-### Environment Variables
+# PostgreSQL Database (Production only)
+POSTGRES_DATABASE="your-database"
+POSTGRES_HOST="your-host"
+POSTGRES_PASSWORD="your-password"
+POSTGRES_USER="your-user"
+POSTGRES_PORT="5432"
+
+# Image URLs (Optional)
+BLOG_BASE_IMG_URL=""
+PROJECT_BASE_IMG_URL=""
+```
 
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `BASE_URL` | Yes | Your domain URL |
 | `SECRET_KEY` | Yes | Django secret key |
+| `DEBUG` | No | Enable debug mode (default: False) |
+| `ALLOWED_HOSTS` | No | Comma-separated allowed hosts for development |
 | `ACCESS_TOKEN` | Yes | GitHub personal access token |
 | `WAKATIME_API_KEY` | Yes | WakaTime API key |
+| `WEB3FORM_PAC` | No | Web3Forms access key for contact forms |
 | `GUESTBOOK_PAGE` | No | Enable/disable guestbook (default: True) |
+| `WSRV_IMAGE_OPTIMIZATION` | No | Enable wsrv.nl image optimization (default: True) |
 | `GOOGLE_CLIENT_ID` | If guestbook enabled | Google OAuth client ID |
 | `GOOGLE_CLIENT_SECRET` | If guestbook enabled | Google OAuth secret |
 | `GH_CLIENT_ID` | If guestbook enabled | GitHub OAuth client ID |
 | `GH_CLIENT_SECRET` | If guestbook enabled | GitHub OAuth secret |
+| `POSTGRES_DATABASE` | Production only | PostgreSQL database name |
+| `POSTGRES_HOST` | Production only | PostgreSQL host |
+| `POSTGRES_PASSWORD` | Production only | PostgreSQL password |
+| `POSTGRES_USER` | Production only | PostgreSQL username |
+| `POSTGRES_PORT` | Production only | PostgreSQL port (default: 5432) |
+| `BLOG_BASE_IMG_URL` | No | Base URL for blog images (defaults to BASE_URL/static/img/blog) |
+| `PROJECT_BASE_IMG_URL` | No | Base URL for project images (defaults to BASE_URL/static/img/project) |
 
 ### Environment Variables Documentation
 
@@ -132,6 +128,7 @@ This project requires several environment variables for proper functionality. Cr
 - **BASE_URL**: Your application's domain URL (e.g., <https://ridwaanhall.com>)
 - **SECRET_KEY**: Django's secret key for cryptographic signing - generate using `python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`
 - **DEBUG**: Set to `True` for development, `False` for production
+- **ALLOWED_HOSTS**: Comma-separated list of allowed hosts for development (only used when DEBUG=True)
 
 #### API Integration Keys
 
@@ -141,12 +138,18 @@ This project requires several environment variables for proper functionality. Cr
 - **WAKATIME_API_KEY**: WakaTime API key for coding statistics
   - Visit WakaTime Settings → API Key section
   - Copy your secret API key
+- **WEB3FORM_PAC**: Web3Forms access key for contact forms (optional)
+  - Visit Web3Forms dashboard
+  - Get your access key for form submissions
 
 #### Feature Configuration
 
 - **GUESTBOOK_PAGE**: Boolean to enable/disable guestbook functionality
   - Set to `True` to enable guestbook with authentication
   - Set to `False` to disable and skip OAuth setup
+- **WSRV_IMAGE_OPTIMIZATION**: Enable wsrv.nl image optimization proxy
+  - Set to `True` for optimized images (recommended)
+  - Set to `False` to use original images
 
 #### OAuth Configuration (Required only when GUESTBOOK_PAGE=True)
 
@@ -158,134 +161,46 @@ This project requires several environment variables for proper functionality. Cr
   - Go to GitHub Settings → Developer settings → OAuth Apps
   - Create new OAuth app with your callback URLs
 
-## 🗂️ Individual File System
+#### Database Configuration (Production Only)
 
-### Revolutionary Content Management
+- **POSTGRES_DATABASE**: PostgreSQL database name
+- **POSTGRES_HOST**: PostgreSQL host address
+- **POSTGRES_PASSWORD**: PostgreSQL password
+- **POSTGRES_USER**: PostgreSQL username
+- **POSTGRES_PORT**: PostgreSQL port (default: 5432)
 
-Each project and blog post exists as a separate Python file:
+*Note: SQLite is used automatically in development mode (DEBUG=True)*
 
-**Projects**: `apps/data/content/projects/project-1.py`
+#### Image URL Configuration (Optional)
 
-```python
-project_data = {
-    "title": "My Amazing Project",
-    "description": "Project description",
-    "technologies": ["Python", "Django", "React"],
-    "github_url": "https://github.com/user/repo",
-    "demo_url": "https://demo.com",
-    "featured": True
-}
-```
+- **BLOG_BASE_IMG_URL**: Base URL for blog images
+  - Defaults to `{BASE_URL}/static/img/blog` if not set
+- **PROJECT_BASE_IMG_URL**: Base URL for project images
+  - Defaults to `{BASE_URL}/static/img/project` if not set
 
-**Blog Posts**: `apps/data/content/blog/blog-1.py`
+## 📚 Documentation
 
-```python
-blog_data = {
-    "id": 1,
-    "title": "My First Blog Post",
-    "description": "A comprehensive guide to getting started...",
-    "images": {
-        "main-hero.webp": f"{settings.BLOG_BASE_IMG_URL}/main-hero.webp",
-        "gallery-1.webp": f"{settings.BLOG_BASE_IMG_URL}/gallery-1.webp"
-    },
-    "created_at": datetime.strptime("2024-01-01T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2024-01-01T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "author": "Author Name",
-    "username": "author_username",
-    "author_image": f"{settings.BASE_URL}/static/img/author.webp",
-    "content": [
-        {
-            "type": "p",
-            "class": "mb-4 text-sm md:text-base lg:text-lg",
-            "text": "Blog content with structured format..."
-        },
-        {
-            "type": "h2",
-            "class": "text-xl md:text-2xl lg:text-3xl font-bold mb-4 mt-8",
-            "text": "Section Title"
-        },
-        {
-            "type": "ul",
-            "class": "mb-4 pl-6 list-disc",
-            "items": [
-                {
-                    "type": "li",
-                    "class": "text-sm md:text-base lg:text-lg",
-                    "text": "List item content"
-                }
-            ]
-        },
-        {
-            "type": "pre",
-            "class": "bg-zinc-800 p-3 rounded-lg mb-4 overflow-x-auto",
-            "text": "<code class=\"language-python\">print('Hello, World!')</code>"
-        }
-    ],
-    "is_featured": True,
-    "tags": ["Python", "Tutorial", "Getting Started"],
-    "category": "Programming",
-    "read_time": 5,
-    "views": 0,
-    "slug": "my-first-blog-post"
-}
-```
+Comprehensive documentation for each application component:
 
-### Benefits
-
-- **Easy Management**: Add/edit content without touching large files
-- **Version Control**: Each post/project tracked separately
-- **Performance**: Intelligent caching and lazy loading
-- **Scalability**: Unlimited content with organized structure
-
-## 💬 Guestbook Configuration
-
-### Enable Guestbook (Default)
-
-```env
-GUESTBOOK_PAGE=True
-```
-
-### Disable Guestbook
-
-```env
-GUESTBOOK_PAGE=False
-```
-
-When disabled:
-
-- No authentication required
-- Smaller bundle size
-- Faster loading
-- OAuth variables become optional
+- **[About App Documentation](docs/about.md)** - Personal information management and display
+- **[Blog System Documentation](docs/blog.md)** - Individual File System blog with content creation
+- **[Core Application Documentation](docs/core.md)** - Base functionality, templates, and utilities
+- **[Dashboard & Analytics Documentation](docs/dashboard.md)** - GitHub/WakaTime API integration and visualization
+- **[Individual File System Documentation](docs/data.md)** - Revolutionary content management system
+- **[Guestbook Documentation](docs/guestbook.md)** - OAuth authentication and interactive messaging
+- **[Projects Showcase Documentation](docs/projects.md)** - Portfolio gallery with advanced features
+- **[SEO Management Documentation](docs/seo.md)** - Search engine optimization and meta tag management
 
 ## 🚀 Deployment
 
-### One-Click Vercel Deployment
-
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?demo-description=Advanced%20developer%20portfolio%20platform%20with%20individual%20file%20data%20management%2C%20real-time%20API%20integrations%2C%20and%20enterprise-grade%20security.&demo-image=https%3A%2F%2Fridwaanhall.com%2Fstatic%2Fimg%2Fproject%2Fridwaanhall_com_2025070701.webp&demo-title=FlexForge%20Portfolio&demo-url=https%3A%2F%2Fridwaanhall.com&from=templates&project-name=FlexForge%20Portfolio&repository-name=flexforge-portfolio&repository-url=https%3A%2F%2Fgithub.com%2Fridwaanhall%2Fridwaanhall-com)
 
-### Manual Vercel Setup
+### Manual Setup
 
-1. Install Vercel CLI: `npm i -g vercel`
-2. Deploy: `vercel --prod`
-3. Set environment variables in Vercel dashboard
-
-## 🔒 Security Features
-
-- **Content Security Policy**: XSS protection
-- **HSTS**: HTTPS enforcement
-- **Secure Headers**: X-Frame-Options, X-Content-Type-Options
-- **CSRF Protection**: All forms protected
-- **Input Validation**: User input sanitization
-- **OAuth Security**: Secure authentication flow
-
-## 📈 Performance Optimization
-
-- **Caching**: 3-hour API cache
-- **Image Optimization**: WebP format, responsive sizing
-- **Static Files**: WhiteNoise compression
-- **Database**: Optimized queries
-- **Lazy Loading**: Non-blocking resources
+1. Fork this repository
+2. Install Vercel CLI: `npm i -g vercel`
+3. Deploy: `vercel --prod`
+4. Configure environment variables in Vercel dashboard
 
 ## 🤝 Contributing
 
@@ -298,16 +213,6 @@ When disabled:
 ## 📄 License
 
 Apache License 2.0 - See [LICENSE](LICENSE) for details.
-
-## 👨‍💻 Template Usage
-
-To customize this template:
-
-1. Update personal info in `apps/data/about/`
-2. Add projects in `apps/data/content/projects/`
-3. Create blog posts in `apps/data/content/blog/`
-4. Configure API keys
-5. Deploy to your preferred platform
 
 ---
 

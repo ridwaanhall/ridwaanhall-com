@@ -1,0 +1,31 @@
+.click-ripple {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(161, 161, 170, 0.3) 0%, rgba(161, 161, 170, 0.1) 50%, transparent 100%);
+    border: 2px solid rgba(161, 161, 170, 0.5);
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple 0.6s ease-out forwards;
+}
+
+@keyframes ripple {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .click-ripple {
+        display: none;
+    }
+}

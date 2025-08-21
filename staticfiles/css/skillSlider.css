@@ -1,0 +1,52 @@
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes scroll-reverse {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.skills-carousel {
+    display: flex;
+    animation: scroll 550s linear infinite;
+    will-change: transform;
+}
+
+.skills-carousel-reverse {
+    display: flex;
+    animation: scroll-reverse 550s linear infinite;
+    will-change: transform;
+}
+
+.skills-carousel:hover,
+.skills-carousel-reverse:hover {
+    animation-play-state: paused; /* Pause animation on hover */
+}
+
+.skills-carousel > div,
+.skills-carousel-reverse > div {
+    flex: 0 0 auto; /* Prevent shrinking or growing */
+}
+
+.overflow-hidden-skills {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    mask-image: linear-gradient(
+        to right,
+        transparent,
+        white 10%,
+        white 90%,
+        transparent
+    ); /* Fade edges for a polished look */
+}

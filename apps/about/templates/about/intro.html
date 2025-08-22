@@ -125,13 +125,13 @@
                     {% if about.is_open_to_work %}
                     <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-green-900/30 text-green-400 border border-green-800/50">
                         <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-                        Currently Open to Work
+                        <span class="hidden sm:inline mr-1">Currently </span>Open to Work
                     </span>
                     {% endif %}
                     {% if about.is_hiring %}
                     <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-blue-900/30 text-blue-400 border border-blue-800/50">
                         <span class="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></span>
-                        Currently Hiring
+                        <span class="hidden sm:inline mr-1">Currently </span>Hiring
                     </span>
                     {% endif %}
                 </div>

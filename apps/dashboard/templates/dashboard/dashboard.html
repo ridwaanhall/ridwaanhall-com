@@ -198,7 +198,16 @@
                             </span>
                         </h3>
                         <div class="flex items-center justify-between">
-                            <p class="text-indigo-400 sm:text-xl font-medium">{{ wakatime_stats.today_coding }}</p>
+                            <p class="text-indigo-400 sm:text-xl font-medium">
+                                {{ wakatime_stats.today_coding }}
+                                {% if wakatime_stats.today_change_type != "same" %}
+                                    {% if wakatime_stats.today_change_type == "increase" %}
+                                    <span class="text-xs text-green-500">↑ {{ wakatime_stats.today_change_percent }}%</span>
+                                    {% else %}
+                                    <span class="text-xs text-red-500">↓ {{ wakatime_stats.today_change_percent }}%</span>
+                                    {% endif %}
+                                {% endif %}
+                            </p>
                         </div>
                     </div>
 

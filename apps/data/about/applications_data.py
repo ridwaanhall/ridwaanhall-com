@@ -1,5 +1,5 @@
 class ApplicationsData:
-    """ # Can be "Accepted", "Rejected", or "In Progress"
+    """ # Can be "In Progress", "Accepted", "Rejected", "Ghosted"
     {
         "company_name": ",
         "status": ",

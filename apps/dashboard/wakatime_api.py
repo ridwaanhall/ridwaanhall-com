@@ -139,6 +139,17 @@ class WakatimeStatsCalculator:
             today_str = timezone.now().astimezone(pytz.timezone('Asia/Jakarta')).strftime('%Y-%m-%d')
             today_coding_seconds = next((d.get('grand_total', {}).get('total_seconds', 0) for d in daily_data if d.get('range', {}).get('date') == today_str), 0)
 
+            # Calculate daily average seconds for comparison
+            daily_average_seconds = last_7_days.get('daily_average', {}).get('seconds_including_other_language', 0)
+            
+            # Calculate today's coding change percentage vs daily average
+            today_change_percent = 0
+            today_change_type = "same"
+            if daily_average_seconds > 0:
+                change_ratio = ((today_coding_seconds - daily_average_seconds) / daily_average_seconds) * 100
+                today_change_percent = abs(change_ratio)
+                today_change_type = "increase" if change_ratio > 0 else "decrease" if change_ratio < 0 else "same"
+
             # Process stats
             def calculate_percentage(value, total):
                 return (value / total) * 100 if total > 0 else 0
@@ -179,6 +190,8 @@ class WakatimeStatsCalculator:
                 'daily_average': WakatimeStatsCalculator._format_time(last_7_days.get('daily_average', {}).get('seconds_including_other_language', 0)),
                 'this_week_coding': WakatimeStatsCalculator._format_time(grand_total_seconds_7_days),
                 'today_coding': WakatimeStatsCalculator._format_time(today_coding_seconds),
+                'today_change_percent': round(today_change_percent, 1),
+                'today_change_type': today_change_type,
                 'best_day_coding': WakatimeStatsCalculator._format_time(most_active_day_seconds),
                 'best_day_date': most_active_day_date_obj.strftime('%B %d, %Y') if most_active_day_date_obj else 'N/A',
                 'top_1_category': top_1_category,

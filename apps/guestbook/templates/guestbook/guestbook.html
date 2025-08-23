@@ -132,21 +132,20 @@
                                         >
                                             {{ message.message|escape|linebreaksbr }}
                                         </p>
-                                        <!-- Action buttons -->
-                                        {% if user.is_authenticated %}
-                                        <div class="flex items-center gap-1">
+                                        <!-- Action buttons - Always show reply button, delete only for authors -->
+                                        <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button
-                                                class="reply-btn p-1.5 rounded-lg hover:bg-zinc-600 transition-colors"
+                                                class="{% if user.is_authenticated %}reply-btn{% else %}login-required-btn{% endif %} p-1.5 rounded-lg hover:bg-zinc-600 transition-colors"
                                                 data-message-id="{{ message.pk }}"
                                                 data-user="{{ message.user_full_name }}"
                                                 data-message="{{ message.message|escape }}"
-                                                title="Reply to this message"
+                                                title="{% if user.is_authenticated %}Reply to this message{% else %}Sign in to reply{% endif %}"
                                             >
                                                 <svg class="w-4 h-4 text-zinc-400 hover:text-zinc-200 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                                 </svg>
                                             </button>
-                                            {% if current_user_profile.is_author %}
+                                            {% if user.is_authenticated and current_user_profile.is_author %}
                                             <button class="delete-btn p-1.5 rounded-lg hover:bg-red-900/30 transition-colors" data-message-id="{{ message.pk }}" title="Delete this message">
                                                 <svg class="w-4 h-4 text-zinc-400 hover:text-red-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path
@@ -159,7 +158,6 @@
                                             </button>
                                             {% endif %}
                                         </div>
-                                        {% endif %}
                                     </div>
 
                                     <!-- Mobile timestamp -->
@@ -673,6 +671,36 @@
             if (replyIndicator) replyIndicator.classList.add("hidden");
             if (replyToId) replyToId.value = "";
             if (messageInput) messageInput.placeholder = "Type your message...";
+        }
+
+        // Function to show login required message
+        function showLoginMessage(userName) {
+            // Create and show a temporary message
+            const messagesContainer = document.getElementById("messages-container") || document.querySelector(".max-w-7xl");
+            
+            // Create message element
+            const messageElement = document.createElement("div");
+            messageElement.className = "message-alert mb-4 px-4 py-3 rounded-lg border flex items-center justify-between bg-blue-900/20 border-blue-700 text-blue-300";
+            messageElement.innerHTML = `
+                <span>You must <a href="{% provider_login_url 'google' %}" class="text-blue-200 hover:text-blue-100 underline">sign in</a> to reply to ${escapeHtml(userName)}'s message.</span>
+                <button type="button" class="close-message-btn cursor-pointer ml-3 p-1 rounded hover:bg-zinc-800 transition-colors" title="Close">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            `;
+            
+            // Insert at the top of the page
+            const mainContent = document.querySelector(".max-w-7xl");
+            if (mainContent) {
+                const firstChild = mainContent.children[1] || mainContent.firstElementChild; // After the header
+                mainContent.insertBefore(messageElement, firstChild);
+                
+                // Auto-remove after 5 seconds
+                setTimeout(() => {
+                    removeMessage(messageElement);
+                }, 5000);
+            }
         } // Handle reply button clicks
         document.addEventListener("click", function (e) {
             if (e.target.closest(".reply-btn")) {
@@ -681,6 +709,15 @@
                 const userName = button.dataset.user;
                 const messageText = button.dataset.message;
                 setReply(messageId, userName, messageText);
+            }
+        });
+
+        // Handle login-required button clicks
+        document.addEventListener("click", function (e) {
+            if (e.target.closest(".login-required-btn")) {
+                const button = e.target.closest(".login-required-btn");
+                const userName = button.dataset.user;
+                showLoginMessage(userName);
             }
         });
 

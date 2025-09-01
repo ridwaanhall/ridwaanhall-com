@@ -35,11 +35,15 @@ def save_user_profile(sender, instance, **kwargs):
 class ChatMessage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.TextField(max_length=500)
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=timezone.now, db_index=True)
     reply_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
     
     class Meta:
         ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['-timestamp']),  # For recent messages query
+            models.Index(fields=['user', '-timestamp']),  # For user's messages
+        ]
     
     def __str__(self):
         return f"{self.user.username}: {self.message[:50]}..."

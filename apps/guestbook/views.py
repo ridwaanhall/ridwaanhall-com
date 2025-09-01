@@ -46,6 +46,7 @@ class UserProfileMixin:
     def get_user_profile_data(user):
         """
         Get user's full name, profile image from OAuth providers, and author/co-author status
+        Optimized to use prefetched social account data to avoid N+1 queries
         """
         profile_data = {
             'full_name': user.get_full_name() or user.username,
@@ -56,7 +57,7 @@ class UserProfileMixin:
             'email': user.email
         }
         
-        # Check if user is author or co-author
+        # Check if user is author or co-author using prefetched userprofile
         try:
             if hasattr(user, 'userprofile'):
                 profile_data['is_author'] = user.userprofile.is_author
@@ -71,8 +72,19 @@ class UserProfileMixin:
             pass
         
         try:
+            # Use prefetched social accounts to avoid database queries
+            # This assumes socialaccount_set is already prefetched
+            google_account = None
+            github_account = None
+            
+            # Process prefetched social accounts
+            for account in user.socialaccount_set.all():
+                if account.provider == 'google':
+                    google_account = account
+                elif account.provider == 'github':
+                    github_account = account
+            
             # Get Google social account data first
-            google_account = SocialAccount.objects.filter(user=user, provider='google').first()
             if google_account and google_account.extra_data:
                 # Get full name from Google
                 google_name = google_account.extra_data.get('name', '')
@@ -99,8 +111,7 @@ class UserProfileMixin:
                     profile_data['email'] = user.email
             
             # Get GitHub social account data if Google is not available
-            elif not profile_data['profile_image']:
-                github_account = SocialAccount.objects.filter(user=user, provider='github').first()
+            elif not profile_data['profile_image'] and github_account:
                 if github_account and github_account.extra_data:
                     # Get full name from GitHub
                     github_name = github_account.extra_data.get('name', '') or github_account.extra_data.get('login', '')
@@ -121,6 +132,10 @@ class UserProfileMixin:
                     else:
                         # Fallback to Django user email if GitHub email is not available
                         profile_data['email'] = user.email
+            
+            # Set default profile image if none found
+            if not profile_data['profile_image']:
+                profile_data['profile_image'] = 'https://www.gravatar.com/avatar/'
                     
         except Exception as e:
             # Fallback to Django user data
@@ -141,16 +156,36 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
     def _get(self, request, *args, **kwargs):
         about = self.get_about_data()
         
-        # Get all chat messages with user profile data and replies
-        chat_messages = ChatMessage.objects.select_related('user', 'reply_to__user').all()[:50]  # Latest 50 messages
+        # Get all chat messages with optimized prefetching to avoid N+1 queries
+        chat_messages = ChatMessage.objects.select_related(
+            'user', 
+            'user__userprofile',
+            'reply_to__user',
+            'reply_to__user__userprofile'
+        ).prefetch_related(
+            'user__socialaccount_set',
+            'reply_to__user__socialaccount_set'
+        )[:50]  # Latest 50 messages
         
         # Get total message count
         total_message_count = ChatMessage.objects.count()
         
-        # Add profile data to each message
+        # Collect all users to process and create a cache of profile data
+        all_users = set()
+        for message in chat_messages:
+            all_users.add(message.user)
+            if message.reply_to:
+                all_users.add(message.reply_to.user)
+        
+        # Batch process user profile data to avoid redundant processing
+        user_profile_cache = {}
+        for user in all_users:
+            user_profile_cache[user.id] = self.get_user_profile_data(user)
+        
+        # Add profile data to each message using cache
         enriched_messages = []
         for message in chat_messages:
-            profile_data = self.get_user_profile_data(message.user)
+            profile_data = user_profile_cache[message.user.id]
             message.user_full_name = profile_data['full_name']
             message.user_profile_image = profile_data['profile_image']
             message.user_is_author = profile_data['is_author']
@@ -160,7 +195,7 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
             
             # Add reply_to profile data if it exists
             if message.reply_to:
-                reply_profile_data = self.get_user_profile_data(message.reply_to.user)
+                reply_profile_data = user_profile_cache[message.reply_to.user.id]
                 message.reply_to.user_full_name = reply_profile_data['full_name']
                 message.reply_to.user_profile_image = reply_profile_data['profile_image']
                 message.reply_to.user_is_author = reply_profile_data['is_author']
@@ -219,7 +254,12 @@ class SendMessageView(LoginRequiredMixin, UserProfileMixin, View):
         reply_to_message = None
         if reply_to_id:
             try:
-                reply_to_message = ChatMessage.objects.get(id=reply_to_id)
+                # Optimize reply_to message fetch with prefetch
+                reply_to_message = ChatMessage.objects.select_related(
+                    'user', 'user__userprofile'
+                ).prefetch_related(
+                    'user__socialaccount_set'
+                ).get(id=reply_to_id)
             except ChatMessage.DoesNotExist:
                 pass
         

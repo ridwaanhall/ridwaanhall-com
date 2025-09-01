@@ -1,4 +1,10 @@
 <!-- SEO Meta Tags Template -->
+<!-- Viewport and mobile optimization -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
 <!-- Primary Meta Tags -->
 <title>{{ seo.title }}</title>
 <meta name="author" content="{{ seo.author|default:'ridwaanhall' }}">
@@ -7,6 +13,16 @@
 <meta name="description" content="{{ seo.description }}">
 <meta name="keywords" content="{{ seo.keywords }}">
 <meta name="language" content="en">
+<meta http-equiv="content-language" content="en-US">
+
+<!-- Google Search Console Verification -->
+<meta name="google-site-verification" content="{{ seo.google_site_verification|default:'' }}">
+
+<!-- Bing/Microsoft Webmaster Tools Verification -->
+<meta name="msvalidate.01" content="{{ seo.bing_verification|default:'' }}">
+
+<!-- Pinterest verification -->
+<meta name="p:domain_verify" content="{{ seo.pinterest_verification|default:'' }}">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="{{ seo.og_type|default:'website' }}">
@@ -14,7 +30,10 @@
 <meta property="og:title" content="{{ seo.og_title|default:seo.title }}">
 <meta property="og:description" content="{{ seo.og_description|default:seo.description }}">
 <meta property="og:image" content="{{ seo.og_image }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:site_name" content="ridwaanhall.com">
+<meta property="og:locale" content="en_US">
 {% if seo.published_date %}<meta property="article:published_time" content="{{ seo.published_date }}">{% endif %}
 {% if seo.modified_date %}<meta property="article:modified_time" content="{{ seo.modified_date }}">{% endif %}
 {% if seo.author %}<meta property="article:author" content="{{ seo.author }}">{% endif %}
@@ -26,5 +45,27 @@
 <meta name="twitter:title" content="{{ seo.twitter_title|default:seo.title }}">
 <meta name="twitter:description" content="{{ seo.twitter_description|default:seo.description }}">
 <meta name="twitter:image" content="{{ seo.twitter_image|default:seo.og_image }}">
+<meta name="twitter:image:alt" content="{{ seo.twitter_image_alt|default:seo.title }}">
 {% if seo.twitter_site %}<meta name="twitter:site" content="{{ seo.twitter_site }}">{% endif %}
 {% if seo.twitter_creator %}<meta name="twitter:creator" content="{{ seo.twitter_creator }}">{% endif %}
+
+<!-- Language and localization -->
+<link rel="alternate" hreflang="en" href="{% if request %}{{ request.build_absolute_uri }}{% else %}{{ seo.canonical_url }}{% endif %}">
+<link rel="alternate" hreflang="x-default" href="{% if request %}{{ request.build_absolute_uri }}{% else %}{{ seo.canonical_url }}{% endif %}">
+
+<!-- Additional SEO Tags -->
+<meta name="rating" content="general">
+<meta name="distribution" content="global">
+<meta name="revisit-after" content="1 days">
+<meta name="expires" content="never">
+<meta name="copyright" content="{{ seo.author|default:'ridwaanhall' }}">
+
+<!-- Preconnect to external domains -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.github.com">
+
+<!-- DNS prefetch for performance -->
+<link rel="dns-prefetch" href="//github.com">
+<link rel="dns-prefetch" href="//linkedin.com">
+<link rel="dns-prefetch" href="//twitter.com">

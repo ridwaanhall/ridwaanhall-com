@@ -12,6 +12,33 @@ class SEOData:
     """Centralized SEO data definitions for different pages and content types."""
     
     @staticmethod
+    def optimize_description(description: str, max_length: int = 160) -> str:
+        """Optimize meta description length for SEO."""
+        if len(description) <= max_length:
+            return description
+        
+        # Truncate at word boundary to avoid cutting words
+        truncated = description[:max_length]
+        last_space = truncated.rfind(' ')
+        
+        if last_space > max_length * 0.8:  # Only truncate at word boundary if it's not too short
+            return truncated[:last_space] + '...'
+        else:
+            return truncated + '...'
+    
+    @staticmethod
+    def get_base_seo_data() -> Dict:
+        """Get base SEO data with verification tags."""
+        return {
+            'google_site_verification': '',  # Add your Google Search Console verification code
+            'bing_verification': '',  # Add your Bing verification code  
+            'pinterest_verification': '',  # Add your Pinterest verification code
+            'twitter_site': '@ridwaanhall',
+            'twitter_creator': '@ridwaanhall',
+            'twitter_image_alt': 'ridwaanhall.com - Ridwan Halim Portfolio'
+        }
+    
+    @staticmethod
     def get_homepage_seo(about_data: Dict) -> Dict:
         """Generate SEO data for homepage."""
         keywords = SEOConfig.COMMON_KEYWORDS['personal'][:5] + \
@@ -26,7 +53,8 @@ class SEOData:
             'og_type': SEOConfig.CONTENT_TYPES['homepage']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['homepage']['twitter_card'],
             'canonical_url': SEOConfig.SITE_URL,
-            'content_type': 'homepage'
+            'content_type': 'homepage',
+            **SEOData.get_base_seo_data()
         }
         
     @staticmethod
@@ -38,13 +66,14 @@ class SEOData:
         
         return {
             'title': "Focused Hours & Quiet Commits - Coding Traces That Tell",
-            'description': f"Focused hours and quiet commits. This is where {about_data['first_name']}'s coding traces unfold.",
+            'description': SEOData.optimize_description(f"Focused hours and quiet commits. This is where {about_data.get('first_name', about_data.get('name', ''))}'s coding traces unfold."),
             'keywords': ', '.join(keywords),
             'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
             'og_type': SEOConfig.CONTENT_TYPES['dashboard']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['dashboard']['twitter_card'],
             'canonical_url': f"{SEOConfig.SITE_URL}/dashboard/",
-            'content_type': 'dashboard'
+            'content_type': 'dashboard',
+            **SEOData.get_base_seo_data()
         }
         
     @staticmethod

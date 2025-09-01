@@ -3,7 +3,7 @@ SEO URL patterns for sitemaps, robots.txt, and other SEO endpoints.
 Provides comprehensive SEO URL routing.
 """
 
-from django.contrib.sitemaps.views import sitemap
+from django.contrib.sitemaps.views import sitemap, index
 from django.urls import path
 
 from .sitemaps import StaticPagesSitemap, BlogSitemap, ProjectSitemap
@@ -24,12 +24,13 @@ urlpatterns = [
     # SEO files
     path('robots.txt', robots_txt, name='robots_txt'),
     
-    # Sitemap URLs
+    # Main sitemap (combined)
     path('sitemap.xml', 
          sitemap, 
          {'sitemaps': sitemaps}, 
          name='sitemap'),
     
+    # Individual sitemap URLs
     path('sitemap-static.xml', 
          sitemap, 
          {'sitemaps': static_sitemap}, 

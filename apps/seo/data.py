@@ -12,6 +12,40 @@ class SEOData:
     """Centralized SEO data definitions for different pages and content types."""
     
     @staticmethod
+    def optimize_description(description: str, max_length: int = 160) -> str:
+        """Optimize meta description length for SEO."""
+        if len(description) <= max_length:
+            return description
+        
+        # Truncate at word boundary to avoid cutting words
+        truncated = description[:max_length]
+        last_space = truncated.rfind(' ')
+        
+        if last_space > max_length * 0.8:  # Only truncate at word boundary if it's not too short
+            return truncated[:last_space] + '...'
+        else:
+            return truncated + '...'
+    
+    @staticmethod
+    def get_base_seo_data() -> Dict:
+        """Get base SEO data with verification tags."""
+        return {
+            'google_site_verification': '',  # Add your Google Search Console verification code
+            'bing_verification': '',  # Add your Bing verification code  
+            'pinterest_verification': '',  # Add your Pinterest verification code
+            'twitter_site': '@ridwaanhall',
+            'twitter_creator': '@ridwaanhall',
+            'twitter_image_alt': 'ridwaanhall.com - Ridwan Halim Portfolio'
+        }
+    
+    @staticmethod
+    def generate_image_alt_text(title: str, context: str = 'ridwaanhall.com') -> str:
+        """Generate SEO-optimized alt text for images."""
+        if not title:
+            return f"{context} - Portfolio and Blog"
+        return f"{title} - {context}"
+    
+    @staticmethod
     def get_homepage_seo(about_data: Dict) -> Dict:
         """Generate SEO data for homepage."""
         keywords = SEOConfig.COMMON_KEYWORDS['personal'][:5] + \
@@ -26,8 +60,11 @@ class SEOData:
             'og_type': SEOConfig.CONTENT_TYPES['homepage']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['homepage']['twitter_card'],
             'canonical_url': SEOConfig.SITE_URL,
-            'content_type': 'homepage'
+            'content_type': 'homepage',
+            **SEOData.get_base_seo_data(),
+            'twitter_image_alt': SEOData.generate_image_alt_text(f"Hey, I'm {about_data['name']}")
         }
+        
         
     @staticmethod
     def get_dashboard_seo(about_data: Dict) -> Dict:
@@ -38,13 +75,14 @@ class SEOData:
         
         return {
             'title': "Focused Hours & Quiet Commits - Coding Traces That Tell",
-            'description': f"Focused hours and quiet commits. This is where {about_data['first_name']}'s coding traces unfold.",
+            'description': SEOData.optimize_description(f"Focused hours and quiet commits. This is where {about_data.get('first_name', about_data.get('name', ''))}'s coding traces unfold."),
             'keywords': ', '.join(keywords),
             'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
             'og_type': SEOConfig.CONTENT_TYPES['dashboard']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['dashboard']['twitter_card'],
             'canonical_url': f"{SEOConfig.SITE_URL}/dashboard/",
-            'content_type': 'dashboard'
+            'content_type': 'dashboard',
+            **SEOData.get_base_seo_data()
         }
         
     @staticmethod
@@ -65,13 +103,14 @@ class SEOData:
         
         return {
             'title': "Where Code Meets Purpose - Projects That Persist",
-            'description': "Projects built from curiosity and care. Practical explorations through machine learning and the web.",
+            'description': SEOData.optimize_description("Projects built from curiosity and care. Practical explorations through machine learning and the web."),
             'keywords': ', '.join(keywords[:15]),
             'og_image': projects[0].get('image_url', about_data.get('image_url', SEOConfig.DEFAULT_IMAGE)) if projects else about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
             'og_type': SEOConfig.CONTENT_TYPES['project_list']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['project_list']['twitter_card'],
             'canonical_url': f"{SEOConfig.SITE_URL}/projects/",
-            'content_type': 'project_list'
+            'content_type': 'project_list',
+            **SEOData.get_base_seo_data()
         }
         
     @staticmethod
@@ -83,17 +122,19 @@ class SEOData:
                   ['project', 'github', 'demo', 'code']
         
         description = ' '.join(project_data.get('description', [''])[:2])[:SEOConfig.DEFAULT_DESCRIPTION_LENGTH]
+        full_description = f"{project_data.get('headline', '')} {description}"
         
         return {
             'title': f"{project_data['title']} - {about_data['name']}'s Project",
-            'description': f"{project_data.get('headline', '')} {description}",
+            'description': SEOData.optimize_description(full_description),
             'keywords': ', '.join(keywords[:15]),
             'og_image': project_data.get('image_url', about_data.get('image_url', SEOConfig.DEFAULT_IMAGE)),
             'og_type': SEOConfig.CONTENT_TYPES['project_detail']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['project_detail']['twitter_card'],
             'canonical_url': f"{SEOConfig.SITE_URL}/projects/{slugify(project_data['title'])}/",
             'content_type': 'project_detail',
-            'tech_stack': tech_keywords
+            'tech_stack': tech_keywords,
+            **SEOData.get_base_seo_data()
         }
     
     @staticmethod
@@ -112,13 +153,14 @@ class SEOData:
         
         return {
             'title': "Beyond Syntax - Reflections in Thought and Trace",
-            'description': "Reflections beyond syntax. Thoughts, questions and quiet technical discoveries.",
+            'description': SEOData.optimize_description("Reflections beyond syntax. Thoughts, questions and quiet technical discoveries."),
             'keywords': ', '.join(keywords[:15]),
             'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
             'og_type': SEOConfig.CONTENT_TYPES['blog_list']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['blog_list']['twitter_card'],
             'canonical_url': f"{SEOConfig.SITE_URL}/blog/",
-            'content_type': 'blog_list'
+            'content_type': 'blog_list',
+            **SEOData.get_base_seo_data()
         }
     
     @staticmethod
@@ -130,7 +172,7 @@ class SEOData:
         
         return {
             'title': f"{blog_data['title']} | {about_data['name']}'s Blog",
-            'description': blog_data.get('description', '')[:SEOConfig.DEFAULT_DESCRIPTION_LENGTH],
+            'description': SEOData.optimize_description(blog_data.get('description', '')),
             'keywords': ', '.join(keywords[:15]),
             'og_image': blog_data.get('image_url', about_data.get('image_url', SEOConfig.DEFAULT_IMAGE)),
             'og_type': SEOConfig.CONTENT_TYPES['blog_detail']['og_type'],
@@ -140,7 +182,8 @@ class SEOData:
             'published_date': blog_data.get('created_at', ''),
             'modified_date': blog_data.get('updated_at', ''),
             'tags': blog_data.get('tags', []),
-            'author': about_data['name']
+            'author': about_data['name'],
+            **SEOData.get_base_seo_data()
         }
     
     @staticmethod

@@ -125,13 +125,48 @@ class SEOSchemaGenerator:
     
     @staticmethod
     def generate_website_schema() -> Dict:
-        """Generate WebSite schema."""
+        """Generate enhanced WebSite schema with search functionality."""
         schema = SEOConfig.SCHEMA_TEMPLATES['website'].copy()
         schema.update({
-            "potentialAction": {
-                "@type": "SearchAction",
-                "target": f"{SEOConfig.SITE_URL}/search?q={{search_term_string}}",
-                "query-input": "required name=search_term_string"
+            "description": "Personal portfolio and blog showcasing software development projects, technical insights, and professional journey",
+            "inLanguage": "en-US",
+            "keywords": [
+                "ridwaanhall",
+                "ridwan halim", 
+                "software developer",
+                "web development",
+                "python",
+                "django",
+                "machine learning",
+                "portfolio"
+            ],
+            "potentialAction": [
+                {
+                    "@type": "SearchAction",
+                    "target": {
+                        "@type": "EntryPoint",
+                        "urlTemplate": f"{SEOConfig.SITE_URL}/search?q={{search_term_string}}"
+                    },
+                    "query-input": "required name=search_term_string"
+                },
+                {
+                    "@type": "ReadAction",
+                    "target": f"{SEOConfig.SITE_URL}/blog/"
+                },
+                {
+                    "@type": "ViewAction", 
+                    "target": f"{SEOConfig.SITE_URL}/projects/"
+                }
+            ],
+            "mainEntity": {
+                "@type": "Person",
+                "name": SEOConfig.AUTHOR,
+                "url": SEOConfig.SITE_URL,
+                "sameAs": [
+                    "https://github.com/ridwaanhall",
+                    "https://linkedin.com/in/ridwaanhall",
+                    "https://twitter.com/ridwaanhall"
+                ]
             }
         })
         return schema
@@ -520,4 +555,50 @@ class SEOSchemaGenerator:
                     "contactType": "customer service"
                 }
             }
+        }
+    
+    @staticmethod
+    def generate_faq_schema(faqs: List[Dict]) -> Dict:
+        """Generate FAQ schema for improved search visibility."""
+        if not faqs:
+            return {}
+            
+        return {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": faq.get('question', ''),
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": faq.get('answer', '')
+                    }
+                }
+                for faq in faqs[:10]  # Limit to 10 FAQs
+            ]
+        }
+    
+    @staticmethod
+    def generate_how_to_schema(steps: List[Dict], title: str = '', description: str = '') -> Dict:
+        """Generate HowTo schema for tutorial content."""
+        if not steps:
+            return {}
+            
+        return {
+            "@context": "https://schema.org",
+            "@type": "HowTo",
+            "name": title,
+            "description": description,
+            "step": [
+                {
+                    "@type": "HowToStep",
+                    "position": i + 1,
+                    "name": step.get('title', f"Step {i + 1}"),
+                    "text": step.get('description', ''),
+                    "url": step.get('url', ''),
+                    "image": step.get('image', '')
+                }
+                for i, step in enumerate(steps)
+            ]
         }

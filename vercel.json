@@ -7,8 +7,16 @@
                 "maxLambdaSize": "15mb",
                 "runtime": "python3.12"
             }
+        },
+        {
+            "src": "package.json",
+            "use": "@vercel/node",
+            "config": {
+                "includeFiles": ["static/**", "staticfiles/**"]
+            }
         }
     ],
+    "buildCommand": "npm install && npm run build",
 	"routes": [
 		{
 			"src": "static/(.*)",

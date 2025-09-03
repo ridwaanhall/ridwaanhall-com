@@ -1,0 +1,16 @@
+{
+  "name": "ridwaanhall-com",
+  "version": "1.0.0",
+  "description": "Advanced developer portfolio platform with TailwindCSS build system",
+  "scripts": {
+    "build:css": "npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global.css --minify",
+    "dev:css": "npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global.css --watch",
+    "build": "npm run build:css && python manage.py collectstatic --noinput"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.10"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

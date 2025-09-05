@@ -120,7 +120,6 @@ dmypy.json
 # add by me
 *.zip
 *.tgz
-static/
 building_web_apps_with_django.webp
 data.html
 *.json

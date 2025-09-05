@@ -54,8 +54,35 @@ venv\Scripts\activate     # Windows
 # Install dependencies
 pip install -r requirements.txt
 
-# Run development server
+# Install Node.js dependencies for Tailwind CSS
+npm install
+
+# Install Tailwind CSS
+npm install tailwindcss @tailwindcss/cli
+
+# Build Tailwind CSS (for development with watch mode)
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global.css --watch
+
+# In a separate terminal, run development server
 python manage.py runserver
+```
+
+### Tailwind CSS Development
+
+For styling changes, ensure Tailwind CSS is running in watch mode:
+
+```bash
+# Development (with watch and minification)
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global.css --watch --minify
+
+# Production build
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global.css --minify
+```
+
+Make sure your `static/css/input.css` contains:
+
+```css
+@import "tailwindcss";
 ```
 
 ## 🔧 Environment Configuration
@@ -169,7 +196,9 @@ This project requires several environment variables for proper functionality. Cr
 - **POSTGRES_USER**: PostgreSQL username
 - **POSTGRES_PORT**: PostgreSQL port (default: 5432)
 
-*Note: SQLite is used automatically in development mode (DEBUG=True)*
+##### Development Database Note
+
+SQLite is used automatically in development mode (DEBUG=True)
 
 #### Image URL Configuration (Optional)
 

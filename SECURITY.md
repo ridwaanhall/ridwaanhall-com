@@ -29,7 +29,7 @@ This project supports the following versions of dependencies as specified in `re
 | requests-oauthlib         | 2.0.0     | OAuth support for requests   |
 | rich                      | 14.0.0    | Rich text formatting         |
 | sqlparse                  | 0.5.3     | SQL parsing library          |
-| tzdata                    | 2025.1    | Timezone data               |
+| tzdata                    | 2025.2    | Timezone data               |
 | urllib3                   | 2.5.0     | HTTP client with security fixes |
 | whitenoise                | 6.9.0     | Static file serving          |
 

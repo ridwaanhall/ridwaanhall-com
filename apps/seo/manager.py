@@ -151,6 +151,17 @@ class SEOManager:
         ]
         return seo_data
     
+    def get_openhire_seo(self) -> Dict:
+        """Get complete SEO data for openhire page."""
+        seo_data = SEOData.get_openhire_seo(self.about_data)
+        seo_data['schemas'] = [
+            self.schema_generator.generate_breadcrumb_schema([
+                {"name": "Home", "url": SEOConfig.SITE_URL},
+                {"name": "Open Hire", "url": f"{SEOConfig.SITE_URL}/openhire/"}
+            ])
+        ]
+        return seo_data
+    
     @staticmethod
     def get_sitemap_priority(content_type: str) -> float:
         """Get sitemap priority for content type."""

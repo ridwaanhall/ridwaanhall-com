@@ -186,6 +186,7 @@ INSTALLED_APPS = [
     'apps.dashboard',
     'apps.projects',
     'apps.blog',
+    'apps.openhire',
     'apps.seo',
 ]
 

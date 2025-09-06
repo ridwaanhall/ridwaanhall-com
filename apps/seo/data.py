@@ -261,3 +261,36 @@ class SEOData:
             'canonical_url': f"{SEOConfig.SITE_URL}/privacy-policy/",
             'content_type': 'privacy_policy'
         }
+    
+    @staticmethod
+    def get_openhire_seo(about_data: Dict) -> Dict:
+        """Generate SEO data for openhire page."""
+        keywords = SEOConfig.COMMON_KEYWORDS['personal'][:3] + \
+                  ['open to work', 'hiring', 'career', 'job opportunities', 'recruitment']
+        
+        # Dynamic title based on status
+        title_parts = []
+        if about_data.get('is_open_to_work'):
+            title_parts.append("Open to Work")
+        if about_data.get('is_hiring'):
+            title_parts.append("Hiring")
+        
+        title = " & ".join(title_parts) if title_parts else "Career Opportunities"
+        
+        description = "Explore career opportunities and work availability. "
+        if about_data.get('is_open_to_work'):
+            description += "Currently open to new opportunities. "
+        if about_data.get('is_hiring'):
+            description += "Actively hiring talented individuals. "
+        description += "Let's build something amazing together."
+        
+        return {
+            'title': f"{title} - Connecting Talent with Opportunity",
+            'description': description,
+            'keywords': ', '.join(keywords),
+            'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
+            'og_type': 'website',
+            'twitter_card': 'summary_large_image',
+            'canonical_url': f"{SEOConfig.SITE_URL}/openhire/",
+            'content_type': 'openhire'
+        }

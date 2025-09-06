@@ -1,0 +1,119 @@
+{% extends 'base_seo.html' %}
+{% load static %}
+{% block head_seo %}
+<!-- Custom SEO meta tags if needed can be added here -->
+<!-- Schema and basic meta tags are handled by base_seo.html automatically -->
+{% endblock %}
+
+{% block content %}
+<div class="flex-1 md:ml-62">
+    <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-4 md:mb-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
+                    <div>
+                        <h1 class="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
+                            Career <span class="text-indigo-400">Opportunities</span>
+                        </h1>
+                        <p class="mt-2 text-base sm:text-lg text-zinc-300 leading-relaxed">
+                            {% if about.is_open_to_work and about.is_hiring %}
+                                Connecting talent with opportunity. I'm open to new roles and actively hiring great people.
+                            {% elif about.is_open_to_work %}
+                                Currently open to new opportunities and exciting challenges.
+                            {% elif about.is_hiring %}
+                                Building amazing teams and looking for passionate individuals to join us.
+                            {% else %}
+                                Explore career opportunities and professional connections.
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Only show tabs if both are available -->
+            {% if about.is_open_to_work and about.is_hiring %}
+                <div class="mb-6 border-b border-zinc-700">
+                    <div class="flex flex-wrap min-w-full -mb-px text-sm font-medium text-center" role="tablist">
+                        <button
+                            id="tab-opentowork"
+                            onclick="switchTab('opentowork')"
+                            class="inline-block cursor-pointer p-2 sm:p-4 border-b-2 border-zinc-300 text-zinc-300 rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none whitespace-nowrap"
+                            aria-selected="true"
+                            role="tab"
+                        >
+                            Open to Work
+                        </button>
+                        <button
+                            id="tab-hiring"
+                            onclick="switchTab('hiring')"
+                            class="inline-block cursor-pointer p-2 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none whitespace-nowrap"
+                            aria-selected="false"
+                            role="tab"
+                        >
+                            Hiring
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tab-content w-full">
+                    <div id="content-opentowork" class="block w-full">
+                        {% if open_to_work_data %}
+                            {% include 'openhire/open_to_work.html' %}
+                        {% else %}
+                            <p class="text-zinc-400">Open to work information is not available at the moment.</p>
+                        {% endif %}
+                    </div>
+                    <div id="content-hiring" class="hidden w-full">
+                        {% if hiring_data %}
+                            {% include 'openhire/hiring.html' %}
+                        {% else %}
+                            <p class="text-zinc-400">Hiring information is not available at the moment.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% elif about.is_open_to_work %}
+                <!-- Show only open to work content -->
+                <div class="w-full">
+                    {% if open_to_work_data %}
+                        {% include 'openhire/open_to_work.html' %}
+                    {% else %}
+                        <p class="text-zinc-400">Open to work information is not available at the moment.</p>
+                    {% endif %}
+                </div>
+            {% elif about.is_hiring %}
+                <!-- Show only hiring content -->
+                <div class="w-full">
+                    {% if hiring_data %}
+                        {% include 'openhire/hiring.html' %}
+                    {% else %}
+                        <p class="text-zinc-400">Hiring information is not available at the moment.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </main>
+</div>
+
+<div class="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
+    <!-- Scroll to top button -->
+    <button id="scrollToTopBtn" class="relative p-3 cursor-pointer rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 translate-y-10 group" aria-label="Scroll to top">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 48 48">
+            <path
+                d="M22.77 2.46 3.59 17.42A2 2 0 0 0 4.82 21H17.5v4a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4h12.68a2 2 0 0 0 1.23-3.58L25.23 2.46a2 2 0 0 0-2.46 0ZM17.5 31a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-4ZM17.5 41a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v3a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2v-3Z"
+            ></path>
+        </svg>
+        <span
+            class="absolute right-full top-1/2 -translate-y-1/2 mr-3 px-3 py-2 bg-zinc-900/95 backdrop-blur-sm text-white text-sm font-medium rounded-lg shadow-xl border border-zinc-700/50 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 ease-out pointer-events-none whitespace-nowrap before:content-[''] before:absolute before:left-full before:top-1/2 before:-translate-y-1/2 before:border-[6px] before:border-transparent before:border-l-zinc-900/95"
+        >
+            Scroll to top
+        </span>
+    </button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if about.is_open_to_work and about.is_hiring %}
+<script src="{% static 'js/switchTab.js' %}"></script>
+{% endif %}
+<script src="{% static 'js/backScroll.js' %}"></script>
+{% endblock %}

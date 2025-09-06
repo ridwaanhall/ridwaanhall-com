@@ -61,6 +61,8 @@ class SEOMixin:
                 return seo_manager.get_guestbook_seo()
             case 'privacy_policy':
                 return seo_manager.get_privacy_policy_seo()
+            case 'openhire':
+                return seo_manager.get_openhire_seo()
             case _:
                 # Fallback/default SEO data
                 about_data = self.get_about_data()
@@ -153,3 +155,8 @@ class GuestbookSEOMixin(SEOMixin):
 class PrivacyPolicySEOMixin(SEOMixin):
     """SEO mixin specifically for privacy policy page."""
     seo_type = 'privacy_policy'
+
+
+class OpenHireSEOMixin(SEOMixin):
+    """SEO mixin specifically for openhire page."""
+    seo_type = 'openhire'

@@ -1,0 +1,182 @@
+<div class="space-y-6">
+    <!-- Status and Availability -->
+    <div class="bg-zinc-800/50 rounded-xl p-6 border border-zinc-700/50">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+            <h2 class="text-xl font-semibold text-zinc-100">{{ open_to_work_data.status }}</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div>
+                <span class="text-zinc-400">Availability:</span>
+                <span class="text-zinc-200 ml-2">{{ open_to_work_data.availability }}</span>
+            </div>
+            <div>
+                <span class="text-zinc-400">Employment Type:</span>
+                <span class="text-zinc-200 ml-2">{{ open_to_work_data.type }}</span>
+            </div>
+            <div>
+                <span class="text-zinc-400">Remote Work:</span>
+                <span class="text-zinc-200 ml-2">
+                    {% if open_to_work_data.remote %}
+                        <span class="text-green-400">✓ Available</span>
+                    {% else %}
+                        <span class="text-red-400">✗ Not Available</span>
+                    {% endif %}
+                </span>
+            </div>
+            <div>
+                <span class="text-zinc-400">Relocation:</span>
+                <span class="text-zinc-200 ml-2">
+                    {% if open_to_work_data.relocation %}
+                        <span class="text-green-400">✓ Open to Relocate</span>
+                    {% else %}
+                        <span class="text-red-400">✗ No Relocation</span>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preferred Roles -->
+    <div class="bg-zinc-800/50 rounded-xl p-6 border border-zinc-700/50">
+        <h3 class="text-lg font-semibold text-zinc-100 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 12l2-2m0 0l2-2m-2 2l-2-2m2 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6a2 2 0 012-2h4a2 2 0 012 2v6z"></path>
+            </svg>
+            Preferred Roles
+        </h3>
+        <div class="flex flex-wrap gap-2">
+            {% for role in open_to_work_data.preferred_roles %}
+                <span class="px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-sm border border-indigo-500/30">
+                    {{ role }}
+                </span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Skills Highlight -->
+    <div class="bg-zinc-800/50 rounded-xl p-6 border border-zinc-700/50">
+        <h3 class="text-lg font-semibold text-zinc-100 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+            </svg>
+            Key Skills
+        </h3>
+        <div class="flex flex-wrap gap-2">
+            {% for skill in open_to_work_data.skills_highlight %}
+                <span class="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-sm border border-yellow-500/30">
+                    {{ skill }}
+                </span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Professional Details -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-zinc-800/50 rounded-xl p-6 border border-zinc-700/50">
+            <h3 class="text-lg font-semibold text-zinc-100 mb-4">Professional Details</h3>
+            <div class="space-y-3 text-sm">
+                <div>
+                    <span class="text-zinc-400">Experience Level:</span>
+                    <p class="text-zinc-200">{{ open_to_work_data.experience_level }}</p>
+                </div>
+                <div>
+                    <span class="text-zinc-400">Salary Expectation:</span>
+                    <p class="text-zinc-200">{{ open_to_work_data.salary_expectation }}</p>
+                </div>
+                <div>
+                    <span class="text-zinc-400">Notice Period:</span>
+                    <p class="text-zinc-200">{{ open_to_work_data.notice_period }}</p>
+                </div>
+                <div>
+                    <span class="text-zinc-400">Work Authorization:</span>
+                    <p class="text-zinc-200">{{ open_to_work_data.work_authorization }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-zinc-800/50 rounded-xl p-6 border border-zinc-700/50">
+            <h3 class="text-lg font-semibold text-zinc-100 mb-4">Languages & Preferences</h3>
+            <div class="space-y-3 text-sm">
+                <div>
+                    <span class="text-zinc-400">Languages:</span>
+                    <div class="flex flex-wrap gap-1 mt-1">
+                        {% for language in open_to_work_data.languages %}
+                            <span class="px-2 py-1 bg-zinc-700 text-zinc-300 rounded text-xs">{{ language }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+                    <span class="text-zinc-400">Contact Preference:</span>
+                    <p class="text-zinc-200">{{ open_to_work_data.contact_preference }}</p>
+                </div>
+                <div>
+                    <span class="text-zinc-400">Interview Availability:</span>
+                    <p class="text-zinc-200">{{ open_to_work_data.interview_availability }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preferred Locations -->
+    <div class="bg-zinc-800/50 rounded-xl p-6 border border-zinc-700/50">
+        <h3 class="text-lg font-semibold text-zinc-100 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+            </svg>
+            Preferred Locations
+        </h3>
+        <div class="flex flex-wrap gap-2">
+            {% for location in open_to_work_data.preferred_locations %}
+                <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm border border-green-500/30">
+                    {{ location }}
+                </span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Portfolio Highlights -->
+    <div class="bg-zinc-800/50 rounded-xl p-6 border border-zinc-700/50">
+        <h3 class="text-lg font-semibold text-zinc-100 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+            </svg>
+            Portfolio Highlights
+        </h3>
+        <div class="space-y-4">
+            {% for highlight in open_to_work_data.portfolio_highlights %}
+                <div class="border-l-4 border-purple-500 pl-4">
+                    <h4 class="font-medium text-zinc-200">{{ highlight.title }}</h4>
+                    <p class="text-sm text-zinc-400 mt-1">{{ highlight.description }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Additional Notes -->
+    {% if open_to_work_data.additional_notes %}
+    <div class="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-xl p-6 border border-indigo-500/30">
+        <h3 class="text-lg font-semibold text-zinc-100 mb-3 flex items-center gap-2">
+            <svg class="w-5 h-5 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+            </svg>
+            About Me
+        </h3>
+        <p class="text-zinc-300 leading-relaxed">{{ open_to_work_data.additional_notes }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Contact CTA -->
+    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-center">
+        <h3 class="text-xl font-semibold text-white mb-2">Let's Work Together</h3>
+        <p class="text-indigo-100 mb-4">Interested in discussing opportunities? I'd love to hear from you.</p>
+        <a href="mailto:{{ about.social_media.email }}" 
+           class="inline-flex items-center gap-2 bg-white text-indigo-600 px-6 py-2 rounded-lg font-medium hover:bg-indigo-50 transition-colors">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+            </svg>
+            Get in Touch
+        </a>
+    </div>
+</div>

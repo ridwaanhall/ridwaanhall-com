@@ -18,7 +18,7 @@ blog_data = {
     "updated_at": datetime.strptime("2025-07-05T03:02:55+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",
     "username": "roneha",
-    "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall_20250913.webp",
+    "author_image": settings.AUTHOR_IMG,
     "content": [
         {
             "type": "p",

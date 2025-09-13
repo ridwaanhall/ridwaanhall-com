@@ -1,3 +1,4 @@
+{% load image_filters %}
 <div class="mt-4 sm:mt-6">
     {% if view_certs %}
     <div class="mb-6 p-4 rounded-lg border border-zinc-700/50 bg-zinc-800/30 hover:border-zinc-600 transition-all duration-200">
@@ -38,10 +39,10 @@
                         {% if certification.logo %}
                             {% if certification.website %}
                             <a href="{{ certification.website }}" target="_blank" rel="noopener" aria-label="Visit {{ certification.institution }}" class="hover:scale-110 transition-transform duration-300">
-                                <img src="https://wsrv.nl/?url={{ certification.logo }}&w=150&h=150" alt="{{ certification.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow-md object-cover" />
+                                <img src="{{ certification.logo|wsrv_image:'150x150' }}" alt="{{ certification.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow-md object-cover" />
                             </a>
                             {% else %}
-                            <img src="https://wsrv.nl/?url={{ certification.logo }}&w=150&h=150" alt="{{ certification.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow-md object-cover" />
+                            <img src="{{ certification.logo|wsrv_image:'150x150' }}" alt="{{ certification.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow-md object-cover" />
                         {% endif %}
                         {% else %}
                             {% if certification.website %}

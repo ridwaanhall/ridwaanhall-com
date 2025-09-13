@@ -1,6 +1,7 @@
 {% extends 'base_seo.html' %}
 {% load static %}
 {% load blog_tags %}
+{% load image_filters %}
 {% block content %}
 <article class="flex-1 md:ml-62">
     <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
@@ -10,7 +11,7 @@
                 <div class="flex flex-col mb-4 gap-3">
                     <div class="flex items-center gap-2 md:gap-3">
                         {% if blog.author_image %}
-                        <img src="https://wsrv.nl/?url={{ blog.author_image }}&w=50&h=50" alt="{{ blog.author }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full" width="50" height="50" />
+                        <img src="{{ blog.author_image|wsrv_image:'50x50' }}" alt="{{ blog.author }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full" width="50" height="50" />
                         {% endif %}
                         <div class="flex flex-col">
                             <a href="https://bio.ridwaanhall.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center underline hover:text-zinc-200 hover:underline transition-colors duration-200 w-fit">
@@ -179,7 +180,7 @@
                                 </div>
 
                                 <div class="aspect-video">
-                                    <img src="https://wsrv.nl/?url={{ blog.image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover object-center" loading="lazy" />
+                                    <img src="{{ blog.image_url|wsrv_image }}" alt="{{ blog.title }}" class="w-full h-full object-cover object-center" loading="lazy" />
                                 </div>
                             </div>
                         </div>

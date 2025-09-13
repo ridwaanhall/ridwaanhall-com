@@ -21,7 +21,7 @@ class AboutData:
             "last_name": "Halim",
             "username": "ridwaanhall", # GitHub username
             "aka": "roneha",
-            "image_url": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
+            "image_url": f"{settings.BASE_URL}/static/img/ridwaanhall_20250913.webp",
             "personal_website": "https://ridwaanhall.com",
             "cv": "https://drive.google.com/file/d/17FaTvAPK273fzXa9ez36X1vDCuQRLM-1/view?usp=sharing",
             "cv_latest": "https://drive.google.com/file/d/1Sv2VQ95fDn-0a_8lOZxBuFAZ--gJrw7u5EQ-_SLUfpo/view?usp=sharing",

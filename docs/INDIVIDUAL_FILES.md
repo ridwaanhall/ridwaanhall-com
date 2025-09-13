@@ -128,7 +128,7 @@ blog_data = {
     "updated_at": datetime.strptime("2025-05-10T13:13:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",
     "username": "ridwaanhall",
-    "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
+    "author_image": settings.AUTHOR_IMG,
     "content": [
         # Rich HTML content with TailwindCSS styling
         "<p class='mb-4 text-sm md:text-base lg:text-lg'>Python's like the Swiss Army knife of coding...</p>",
@@ -393,7 +393,7 @@ blog_data = {
     "updated_at": datetime.strptime("2025-06-09T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Halim",
     "username": "ridwaanhall",
-    "author_image": f"{settings.BASE_URL}/static/img/ridwaanhall.webp",
+    "author_image": settings.AUTHOR_IMG,
     "content": [
         # Your comprehensive blog content here
     ],

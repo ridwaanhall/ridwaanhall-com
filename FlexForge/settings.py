@@ -25,9 +25,10 @@ ACCESS_TOKEN = config('ACCESS_TOKEN')
 WAKATIME_API_KEY = config('WAKATIME_API_KEY')
 WEB3FORM_PAC = config('WEB3FORM_PAC', default='')
 
-BASE_URL = config('BASE_URL', default='https://ridwaanhall.com')
+BASE_URL = config('BASE_URL', default='http://127.0.0.1:8000' if DEBUG else 'https://ridwaanhall.com')
 BLOG_BASE_IMG_URL = config('BLOG_BASE_IMG_URL', default=f'{BASE_URL}/static/img/blog')
 PROJECT_BASE_IMG_URL = config('PROJECT_BASE_IMG_URL', default=f'{BASE_URL}/static/img/project')
+AUTHOR_IMG = config('AUTHOR_IMG', default=f'{BASE_URL}/static/img/ridwaanhall_20250913_2.webp')
 
 # Host configuration
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=Csv()) if DEBUG else [
@@ -164,7 +165,7 @@ APPEND_SLASH = True  # Automatically redirect URLs without trailing slash
 
 # Feature toggles
 GUESTBOOK_PAGE = config('GUESTBOOK_PAGE', default=True, cast=bool)
-WSRV_IMAGE_OPTIMIZATION = config('WSRV_IMAGE_OPTIMIZATION', default=True, cast=bool)
+WSRV_IMAGE_OPTIMIZATION = config('WSRV_IMAGE_OPTIMIZATION', default=not DEBUG, cast=bool)
 
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",

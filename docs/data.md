@@ -491,7 +491,7 @@ blog_data = {
     "updated_at": datetime.strptime("2024-03-15T09:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "author": "Ridwan Hall",
     "username": "ridwaanhall",
-    "author_image": f"{settings.BASE_URL}/static/img/author/ridwaanhall_20250913.webp",
+    "author_image": f"{settings.BASE_URL}/static/img/author/ridwaanhall_20250913_2.webp",
     "is_featured": True,
     "tags": ["python", "design-patterns", "web-development", "advanced", "architecture"],
     "category": "Web Development",

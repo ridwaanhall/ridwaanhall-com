@@ -54,9 +54,6 @@ venv\Scripts\activate     # Windows
 # Install dependencies
 pip install -r requirements.txt
 
-# Install Node.js dependencies for Tailwind CSS
-npm install
-
 # Install Tailwind CSS
 npm install tailwindcss @tailwindcss/cli
 

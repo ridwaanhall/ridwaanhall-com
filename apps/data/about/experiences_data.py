@@ -58,7 +58,7 @@ class ExperiencesData:
                 "Collaborative Python Innovations and Learning for Optimal Technologies.",
                 "Executed AI-driven projects using Django, TensorFlow, PyTorch, and modern web technologies.",
                 "3+ years of Django experience across 15+ full-cycle projects including MTV architecture, ORM, REST APIs, authentication, testing, and debugging.",
-                "Built and deployed 7+ Flask-based microservices with scalable routing and Jinja2 templating.",
+                "Built and deployed 7+ Flask-based with scalable routing and Jinja2 templating.",
                 "Developed 8+ end-to-end neural network systems involving preprocessing, feature engineering, model tuning, evaluation, distributed training, and deployment.",
                 "Applied a broad tech stack: Python, PHP, JavaScript, Django, Flask, React, Next.js, Node.js, WordPress, Material-UI, TypeScript, Laravel, TensorFlow, PyTorch, Keras, Scikit-learn, HTML/CSS, SQL/NoSQL, Git, DRF, Postman, GraphQL, Vercel, Netlify, and Cloudflare."
             ]

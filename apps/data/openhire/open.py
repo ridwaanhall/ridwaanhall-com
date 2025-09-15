@@ -13,17 +13,16 @@ class OpenToWorkData:
         """Get open to work data."""
         return {
             "status": "Actively Looking",
-            "availability": "Immediately Available",
-            "type": "Full-time, Part-time, Contract, Freelance",
+            "availability": "Immediately, I am actively applying",
+            "type": "Full-time, Part-time, Contract",
             "remote": True,
             "relocation": False,
             "preferred_roles": [
-                "Python Developer",
-                "Machine Learning Engineer", 
-                "Full Stack Developer",
-                "Backend Developer",
+                "Machine Learning Engineer",
                 "AI Engineer",
-                "Django Developer"
+                "Python Developer",
+                "Django Developer",
+                "Data Analyst",
             ],
             "skills_highlight": [
                 "Python",
@@ -40,12 +39,28 @@ class OpenToWorkData:
             "salary_expectation": "Competitive",
             "notice_period": "Immediately",
             "work_authorization": "Indonesian Citizen",
-            "languages": ["Indonesian (Native)", "English (Professional)"],
+            "languages": [
+                "Indonesian (Native)",
+                "English (Professional)",
+                "Arabic (Limited)"
+            ],
             "preferred_locations": [
-                "Remote",
                 "Jakarta, Indonesia",
-                "Yogyakarta, Indonesia",
-                "Surakarta, Indonesia"
+                "Greater Yogyakarta, Indonesia",
+                "Surakarta, Central Java, Indonesia",
+                "Boyolali, Central Java, Indonesia"
+            ],
+            "location_types": [
+                "On-site",
+                "Hybrid", 
+                "Remote"
+            ],
+            "remote_locations": [
+                "Indonesia",
+                "United Arab Emirates",
+                "Brunei",
+                "Singapore",
+                "Malaysia"
             ],
             "portfolio_highlights": [
                 {
@@ -58,10 +73,10 @@ class OpenToWorkData:
                 },
                 {
                     "title": "Open Source Contributions",
-                    "description": "Active contributor to Python and AI communities with 30+ projects"
+                    "description": "Active contributor to Python and AI communities with 45+ projects"
                 }
             ],
-            "contact_preference": "Email",
+            "contact_preference": "LinkedIn, Email",
             "interview_availability": "Flexible with timezone adjustments",
             "additional_notes": "Passionate about building impactful AI solutions and mentoring upcoming developers. Looking for opportunities that allow growth in machine learning and leadership roles."
         }

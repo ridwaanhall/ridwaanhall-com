@@ -119,20 +119,49 @@
             </div>
         </div>
 
-        <!-- Preferred Locations -->
+        <!-- Location Preferences -->
         <div class="border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-all duration-300">
             <h3 class="text-lg font-semibold text-zinc-100 mb-3 sm:mb-4 flex items-center gap-2">
                 <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                 </svg>
-                Preferred Locations
+                Location Preferences
             </h3>
-            <div class="flex flex-wrap gap-2">
-                {% for location in open_to_work_data.preferred_locations %}
-                    <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm border border-green-500/30">
-                        {{ location }}
-                    </span>
-                {% endfor %}
+            
+            <!-- Location Types -->
+            <div class="mb-4">
+                <h4 class="text-sm font-medium text-zinc-300 mb-2">Work Arrangements</h4>
+                <div class="flex flex-wrap gap-2">
+                    {% for location_type in open_to_work_data.location_types %}
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm border border-blue-500/30">
+                            {{ location_type }}
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- On-site Locations -->
+            <div class="mb-4">
+                <h4 class="text-sm font-medium text-zinc-300 mb-2">On-site Locations</h4>
+                <div class="flex flex-wrap gap-2">
+                    {% for location in open_to_work_data.preferred_locations %}
+                        <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm border border-green-500/30">
+                            {{ location }}
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Remote Locations -->
+            <div>
+                <h4 class="text-sm font-medium text-zinc-300 mb-2">Remote Work Locations</h4>
+                <div class="flex flex-wrap gap-2">
+                    {% for remote_location in open_to_work_data.remote_locations %}
+                        <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm border border-purple-500/30">
+                            {{ remote_location }}
+                        </span>
+                    {% endfor %}
+                </div>
             </div>
         </div>
 

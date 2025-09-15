@@ -39,7 +39,7 @@ class ExperiencesData:
     experiences = [
         {
             "id": 13,
-            "title": "Founder",
+            "title": "Founder (Personal Projects)",
             "company": "Copilot ID",
             "logo": f"{settings.BASE_URL}/static/img/logo/copilot_id.webp",
             "website": "https://github.com/copilot-id",
@@ -108,6 +108,7 @@ class ExperiencesData:
             "is_current": False,
             "responsibilities": [
                 "Led weekly mentoring sessions for 24 students, resulting in a 75% graduation rate and maintaining an average attendance of 84%.",
+                "Led weekly mentoring sessions on beginner-friendly machine learning and soft skills for non-tech audiences, using simplified concepts and relatable examples.",
                 "Provided 1.5 hours per week of personalized one-on-one sessions, addressing individual challenges and academic assignments to support student development.",
                 "Conducted alternating weekly sessions on soft and technical skills (2 hours/week) for 50 participants, managing facilitator coordination, content preparation, session moderation, and cohort engagement monitoring.",
                 "Participated in monthly 1.5-hour meetings and professional development sessions for mentors."

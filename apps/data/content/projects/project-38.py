@@ -17,6 +17,7 @@ project_data = {
         "lumina.webp": f"{settings.PROJECT_BASE_IMG_URL}/lumina.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Code Generator', 'description': 'Spits out secure codes instantly.'}, {'title': 'Easy UI', 'description': 'No fuss, even under pressure.'}, {'title': 'Safe Codes', 'description': 'Encryption keeps things legit.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

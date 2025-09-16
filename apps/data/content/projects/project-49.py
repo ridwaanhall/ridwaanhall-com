@@ -24,6 +24,7 @@ project_data = {
         # "el_perintis.webp": f"{settings.PROJECT_BASE_IMG_URL}/el_perintis.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [
         {'title': 'OOP vs non-OOP Simulation', 'description': 'The `perintis` branch uses OOP to build a new foundation, while `pewaris` continues the existing system procedurally.'},
         {'title': 'Struggle Narrative', 'description': 'Python functions illustrate the journey, failures, and victories in a social and personal context.'},

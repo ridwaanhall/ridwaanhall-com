@@ -17,6 +17,7 @@ project_data = {
         "mobile_legends_bang_bang_api_and_website.webp": f"{settings.PROJECT_BASE_IMG_URL}/mobile_legends_bang_bang_api_and_website.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Game API', 'description': 'GET endpoints for hero stats and rankings.'}, {'title': 'Dev Docs', 'description': 'Next.js-powered guide for easy API use.'}, {'title': 'Player Hub', 'description': 'Simple site for browsing game insights.'}],
     "tech_stack": [
         SkillsData.tech_stack["django"],

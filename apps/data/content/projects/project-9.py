@@ -17,6 +17,7 @@ project_data = {
         "college_insights_api.webp": f"{settings.PROJECT_BASE_IMG_URL}/college_insights_api.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Student Scoop', 'description': 'Fetch names, IDs, and more for students.'}, {'title': 'Lecturer Lowdown', 'description': 'Grab lecturer names, IDs, and profiles.'}, {'title': 'Program Playbook', 'description': 'Dive into study programs and college details.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

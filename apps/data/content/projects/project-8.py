@@ -17,6 +17,7 @@ project_data = {
         "bmkg_quake_tracker_api.webp": f"{settings.PROJECT_BASE_IMG_URL}/bmkg_quake_tracker_api.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Flexi-Format Data', 'description': 'Grab quake info in XML, JSON, or GeoJSON—your pick.'}, {'title': 'Live Alerts', 'description': 'Stay woke with real-time tsunami and seismic updates.'}, {'title': 'Data Deep Dive', 'description': 'Get magnitude, location, PGA Max, MMI, and more.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

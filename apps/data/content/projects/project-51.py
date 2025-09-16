@@ -75,6 +75,7 @@ project_data = {
 
     # Status & Meta
     "is_featured": False,
+    "featured_priority": None,
     "status": "completed",
     "created_at": datetime.strptime("2024-05-24T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2024-05-25T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),

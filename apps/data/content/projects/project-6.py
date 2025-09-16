@@ -17,6 +17,7 @@ project_data = {
         "mlbb_game_stats_api.webp": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_game_stats_api.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Username Grabber', 'description': 'Scoop up player usernames fast via mainlagiaja.com’s API.'}, {'title': 'MPL Stats Connect', 'description': 'Dives into id-mpl.com for juicy stats and insights.'}, {'title': 'Winrate Wizard', 'description': 'Cranks out accurate winrates using takapadia.com data.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

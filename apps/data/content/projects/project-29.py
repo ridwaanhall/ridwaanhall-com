@@ -17,6 +17,7 @@ project_data = {
         "mlbb_mabar_vip_manager.webp": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_mabar_vip_manager.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Session Coordinator', 'description': 'Manages Mabar sessions with donor and user details.'}, {'title': 'Skin Request Flow', 'description': 'Automates skin delivery status for VIPs.'}, {'title': 'Hero Pick System', 'description': 'Handles hero preferences, lanes, and meta choices.'}, {'title': 'Feedback Tracker', 'description': 'Logs donor comments for quick resolution.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

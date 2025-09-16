@@ -17,6 +17,7 @@ project_data = {
         "openai_function_calling.webp": f"{settings.PROJECT_BASE_IMG_URL}/openai_function_calling.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Task-Targeted APIs', 'description': 'Query weather or author data with built-in functions.'}, {'title': 'Smooth Connect', 'description': 'Python’s requests library links up with OpenAI flawlessly.'}, {'title': 'Text Powerhouse', 'description': 'GPT-3.5 Turbo delivers smart, spot-on responses.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

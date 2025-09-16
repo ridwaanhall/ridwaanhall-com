@@ -17,6 +17,7 @@ project_data = {
         "emotion_recognition_timm_cnn.webp": f"{settings.PROJECT_BASE_IMG_URL}/emotion_recognition_timm_cnn.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'TIMM Model Swagger', 'description': 'High-performance pretrained models for reliable emotion detection.'}, {'title': 'Augmentation All-Stars', 'description': 'CutMix, MixUp, and more spice up data for better results.'}, {'title': 'Training Smarts', 'description': 'Optimized splits for max accuracy and generalization.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

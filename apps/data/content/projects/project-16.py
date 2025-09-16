@@ -17,6 +17,7 @@ project_data = {
         "neural_number_recognition.webp": f"{settings.PROJECT_BASE_IMG_URL}/neural_number_recognition.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Slider Shenanigans', 'description': 'Adjust features for instant number predictions.'}, {'title': 'MLP Muscle', 'description': 'Neural nets nail number recognition with precision.'}, {'title': 'Training Peek', 'description': 'See epoch counts and error trends for clarity.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

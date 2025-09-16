@@ -17,6 +17,7 @@ project_data = {
         "sentiment_analysis_tokopedia_app.webp": f"{settings.PROJECT_BASE_IMG_URL}/sentiment_analysis_tokopedia_app.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Review Scraper', 'description': 'Grabs fresh feedback from Play Store.'}, {'title': 'Text Cleanup', 'description': 'Tames messy text for clean analysis.'}, {'title': 'Feature Extraction', 'description': 'Uses TF-IDF and Word2Vec for deep insights.'}, {'title': 'Model Testing', 'description': 'Battles ML models to crown the best.'}, {'title': 'Sentiment Scores', 'description': 'Nails review vibes with precision.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

@@ -17,6 +17,7 @@ project_data = {
         "planetary_api_explore_universe.webp": f"{settings.PROJECT_BASE_IMG_URL}/planetary_api_explore_universe.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Planet Data Galore', 'description': 'Scoop up details on planets, types, and distances.'}, {'title': 'Locked & Loaded', 'description': 'JWT secures user access, registration, and recovery.'}, {'title': 'Dev-Friendly', 'description': 'CRUD ops keep data management clean and tight.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

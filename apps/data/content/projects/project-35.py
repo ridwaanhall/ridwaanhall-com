@@ -17,6 +17,7 @@ project_data = {
         "ridwaanhall_me.webp": f"{settings.PROJECT_BASE_IMG_URL}/ridwaanhall_me.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Once UI', 'description': 'Sleek design system for fire components.'}, {'title': 'SEO Boost', 'description': 'Auto-generated meta for max search visibility.'}, {'title': 'Responsive Layout', 'description': 'Flawless on any screen size.'}, {'title': 'Customizable', 'description': 'Tweak everything with data attributes.'}, {'title': 'Multilingual', 'description': 'Ready for global audiences with next-intl.'}],
     "tech_stack": [
         SkillsData.tech_stack["nextjs"],

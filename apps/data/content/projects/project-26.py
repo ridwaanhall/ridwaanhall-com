@@ -17,6 +17,7 @@ project_data = {
         "default_project_image.webp": f"{settings.PROJECT_BASE_IMG_URL}/default_project_image.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Instant Khodam Check', 'description': 'Find your Khodam color with zero fuss.'}, {'title': 'Open to All', 'description': 'Publicly accessible during its live run.'}, {'title': 'Django Swagger', 'description': 'Rock-solid backend for seamless performance.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

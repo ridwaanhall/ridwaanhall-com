@@ -17,6 +17,7 @@ project_data = {
         "time_series_forecasting_rnn.webp": f"{settings.PROJECT_BASE_IMG_URL}/time_series_forecasting_rnn.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'RNN Powerhouse', 'description': 'LSTM and GRU models crush it at capturing time-based patterns.'}, {'title': 'Loaded Dataset', 'description': 'Blends historical demand, weather, and calendar data for sharp predictions.'}, {'title': 'Energy Game-Changer', 'description': 'Delivers spot-on forecasts for real-world energy planning.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

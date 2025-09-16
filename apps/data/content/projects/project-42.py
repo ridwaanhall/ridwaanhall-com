@@ -17,6 +17,7 @@ project_data = {
         "api_pddikti_kemendiksaintek.webp": f"{settings.PROJECT_BASE_IMG_URL}/api_pddikti_kemendiksaintek.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Edu Data', 'description': 'Easy access to uni and program info.'}, {'title': 'Dev-Friendly', 'description': 'Simple setup for coders.'}, {'title': 'Fresh Stats', 'description': 'Always-updated PDDikti data.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

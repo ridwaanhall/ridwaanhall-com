@@ -17,6 +17,7 @@ project_data = {
         "pemilu_2024_website.webp": f"{settings.PROJECT_BASE_IMG_URL}/pemilu_2024_website.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Region-Specific Insights', 'description': 'Dive into vote data from national to TPS levels.'}, {'title': 'Trusted Evidence', 'description': 'Verified data ensures transparency and reliability.'}, {'title': 'Slick Responsive Design', 'description': 'Bootstrap makes it look fire on any screen.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

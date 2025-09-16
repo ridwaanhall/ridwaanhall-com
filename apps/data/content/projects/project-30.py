@@ -17,6 +17,7 @@ project_data = {
         "default_project_image.webp": f"{settings.PROJECT_BASE_IMG_URL}/default_project_image.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Real-World Mapping', 'description': 'Optimizes routes using Indonesia’s actual geography.'}, {'title': 'Visual Progress', 'description': 'Watch the algorithm work with clear visualizations.'}, {'title': 'Tuning Mastery', 'description': 'Fine-tune parameters for peak optimization results.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

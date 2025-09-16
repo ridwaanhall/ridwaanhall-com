@@ -17,6 +17,7 @@ project_data = {
         "instagram_media_downloader.webp": f"{settings.PROJECT_BASE_IMG_URL}/instagram_media_downloader.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'HD Profile Pics', 'description': 'Grab crystal-clear profile pictures in a snap.'}, {'title': 'Story Swiper', 'description': 'Download Instagram stories like it’s nothing.'}, {'title': 'Post Media Magic', 'description': 'Scoop up images and videos from posts in a heartbeat.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

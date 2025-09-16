@@ -17,6 +17,7 @@ project_data = {
         "bmkg_weather_forecast_api.webp": f"{settings.PROJECT_BASE_IMG_URL}/bmkg_weather_forecast_api.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Nationwide Reach', 'description': 'Covers weather data for every corner of Indonesia.'}, {'title': 'Flexi-Filters', 'description': 'Mix and match area, parameter, and time for custom results.'}, {'title': 'Flask Flow', 'description': 'Smooth routing and fast data handling with Flask.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

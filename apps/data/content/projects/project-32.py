@@ -17,6 +17,7 @@ project_data = {
         "ridwaanhall_pythonanywhere_com.webp": f"{settings.PROJECT_BASE_IMG_URL}/ridwaanhall_pythonanywhere_com.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Loaded Pages', 'description': 'Packed with sections like About, Projects, and beyond.'}, {'title': 'Clean UI', 'description': 'Vuexy HTML delivers a pro-grade look.'}, {'title': 'Git.callbacks', 'description': 'Yearly coding insights pulled via API.'}, {'title': 'Mobile-Friendly', 'description': 'Looks dope on any device.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

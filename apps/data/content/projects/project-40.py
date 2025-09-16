@@ -17,6 +17,7 @@ project_data = {
         "bike_sharing_analysis_dashboard.webp": f"{settings.PROJECT_BASE_IMG_URL}/bike_sharing_analysis_dashboard.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Season Trends', 'description': 'Shows peak biking seasons.'}, {'title': 'Weather Impact', 'description': 'Links conditions to rental spikes.'}, {'title': 'Day Breakdown', 'description': 'Compares weekdays vs. weekends.'}, {'title': 'Streamlit UI', 'description': 'Interactive charts for easy insights.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

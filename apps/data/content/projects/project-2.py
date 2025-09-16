@@ -17,6 +17,7 @@ project_data = {
         "tiktok_data_extractor.webp": f"{settings.PROJECT_BASE_IMG_URL}/tiktok_data_extractor.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Ultimate Data Grab', 'description': 'Snatches username, bio, followers, following, and likes in one swoop.'}, {'title': 'BeautifulSoup Magic', 'description': 'Parses TikTok’s HTML like a boss with BeautifulSoup.'}, {'title': 'Curiosity Crusher', 'description': 'Ideal for research, insights, or just feeding your TikTok obsession.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

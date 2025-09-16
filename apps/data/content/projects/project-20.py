@@ -17,6 +17,7 @@ project_data = {
         "pddikti_api_django.webp": f"{settings.PROJECT_BASE_IMG_URL}/pddikti_api_django.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Academic Data Drop', 'description': 'Grab student, lecturer, college, and program info.'}, {'title': 'DRF Power', 'description': 'Django REST Framework fuels scalable API vibes.'}, {'title': 'Clean Endpoints', 'description': 'Structured routes for smooth data integration.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

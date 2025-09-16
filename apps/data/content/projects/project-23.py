@@ -17,6 +17,7 @@ project_data = {
         "pemilu_2024_api.webp": f"{settings.PROJECT_BASE_IMG_URL}/pemilu_2024_api.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Versatile Endpoints', 'description': 'Scoop up candidate names, dispute stats, or voting details effortlessly.'}, {'title': 'Bulletproof Handling', 'description': 'Error-proof design keeps your app running like a dream.'}, {'title': 'Deep Data Dives', 'description': 'Grab election insights at any level for epic analysis.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

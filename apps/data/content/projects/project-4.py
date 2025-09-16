@@ -17,6 +17,7 @@ project_data = {
         "bmkg_weather_quake_hub.webp": f"{settings.PROJECT_BASE_IMG_URL}/bmkg_weather_quake_hub.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Live Weather Vibes', 'description': 'Check 3-day forecasts with wind speed, direction, and more.'}, {'title': 'Quake Watch', 'description': 'Stay in the loop with the latest earthquake updates from BMKG.'}, {'title': 'Indonesia Focus', 'description': 'Tailored for local data, keeping it real and relevant.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

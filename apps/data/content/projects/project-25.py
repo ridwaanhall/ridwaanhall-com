@@ -17,6 +17,7 @@ project_data = {
         "default_project_image.webp": f"{settings.PROJECT_BASE_IMG_URL}/default_project_image.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'HOG Feature Magic', 'description': 'Extracts edges and gradients for pinpoint digit recognition.'}, {'title': 'SVM & KNN Power', 'description': 'Drops 97%+ accuracy with killer classification algorithms.'}, {'title': 'Performance Breakdown', 'description': 'Compares extraction vs. no-extraction for clear wins.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

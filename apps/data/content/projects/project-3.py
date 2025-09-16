@@ -17,6 +17,7 @@ project_data = {
         "quran_website_frontend_api.webp": f"{settings.PROJECT_BASE_IMG_URL}/quran_website_frontend_api.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Killer APIs', 'description': 'Drops endpoints for chapters, Juz, verses, and translations like a champ.'}, {'title': 'Script Swag', 'description': 'Get verses in Uthmani, Uthmani Simple, Imlaei, or Imlaei Simple—your call.'}, {'title': 'Translation Hunt', 'description': 'Zero in on translations by chapter, Surah, Aya, or keyword.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

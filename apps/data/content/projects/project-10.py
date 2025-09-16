@@ -17,6 +17,7 @@ project_data = {
         "chatbot_gateway.webp": f"{settings.PROJECT_BASE_IMG_URL}/chatbot_gateway.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Flask Flow', 'description': 'Routes messages like a boss for seamless bot chats.'}, {'title': 'App-Agnostic', 'description': 'Works like a charm on Telegram and WhatsApp.'}, {'title': 'OpenAI Smarts', 'description': 'Drops AI-powered replies for sharper convos.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

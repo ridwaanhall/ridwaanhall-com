@@ -17,6 +17,7 @@ project_data = {
         "restful_drink_service.webp": f"{settings.PROJECT_BASE_IMG_URL}/restful_drink_service.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'CRUD Crush', 'description': 'Create, read, update, or delete drinks like a pro.'}, {'title': 'DRF Domination', 'description': 'Django REST Framework brings scalable API heat.'}, {'title': 'RESTful Rules', 'description': 'Clean, efficient endpoints built on REST principles.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

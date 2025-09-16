@@ -17,6 +17,7 @@ project_data = {
         "openai_api_dynamic_conversational_system.webp": f"{settings.PROJECT_BASE_IMG_URL}/openai_api_dynamic_conversational_system.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'AI Chat Vibes', 'description': 'GPT-3.5 Turbo powers dope, engaging convos.'}, {'title': 'Flask Flex', 'description': 'Handles POST and GET requests like a champ.'}, {'title': 'NLP Game Strong', 'description': 'OpenAI’s tech delivers top-tier language processing.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

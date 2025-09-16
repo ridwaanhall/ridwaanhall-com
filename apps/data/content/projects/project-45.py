@@ -17,6 +17,7 @@ project_data = {
         "indonesia_gold_price_prediction.webp": f"{settings.PROJECT_BASE_IMG_URL}/indonesia_gold_price_prediction.webp",
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Deep Learning Drip', 'description': 'LSTM neural nets bringin’ that A-game for predictions across all timeframes.'}, {'title': 'Visuals Poppin’', 'description': 'Dynamic plots make price forecasts look clean and easy to roll with.'}, {'title': 'Full-Range Forecast', 'description': 'From next-day vibes to 5-year plans, it’s got trends covered with style.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

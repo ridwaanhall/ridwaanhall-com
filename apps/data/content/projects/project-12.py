@@ -17,6 +17,7 @@ project_data = {
         "college_data_hub.webp": f"{settings.PROJECT_BASE_IMG_URL}/college_data_hub.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Stats Dashboard', 'description': 'Visualize student, lecturer, and program counts like a pro.'}, {'title': 'Search Superstar', 'description': 'Find students, lecturers, colleges, or programs in a flash.'}, {'title': 'Deep Dives', 'description': 'Explore detailed data on students, lecturers, and more.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

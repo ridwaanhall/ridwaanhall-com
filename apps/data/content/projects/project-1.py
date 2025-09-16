@@ -17,6 +17,7 @@ project_data = {
         "mlbb_username_checker.webp": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_username_checker.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Lightning-Fast Lookups', 'description': 'Get usernames in a flash with just a user ID and zone ID.'}, {'title': 'Python-Powered Swagger', 'description': 'Rocking Python for speed and smooth performance.'}, {'title': 'API Awesomeness', 'description': 'Taps into APIs for spot-on, reliable data.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"]

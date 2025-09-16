@@ -23,6 +23,7 @@ project_data = {
         "mlbb_draft_assistant_preview.webp": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_draft_assistant_preview.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [
         {'title': 'Smart Draft Picks', 'description': 'Pinpoint heroes that synergize or counter with precision.'},
         {'title': 'Flexible Input', 'description': 'Supports case-insensitive hero names and IDs with relaxed formatting.'},

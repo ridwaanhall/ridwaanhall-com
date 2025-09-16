@@ -17,6 +17,7 @@ project_data = {
         "ngl_link_spamming.webp": f"{settings.PROJECT_BASE_IMG_URL}/ngl_link_spamming.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Custom Messages', 'description': 'Drop your own texts with zero hassle.'}, {'title': 'Random Texts', 'description': 'Generate quirky messages for kicks.'}, {'title': 'No Login', 'description': 'Jump straight to messaging, no sign-up needed.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"]

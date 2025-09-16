@@ -17,6 +17,7 @@ project_data = {
         "crm_simple_user_management.webp": f"{settings.PROJECT_BASE_IMG_URL}/crm_simple_user_management.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'CRUD Mastery', 'description': 'Add, view, edit, or delete records with ease.'}, {'title': 'Secure Access', 'description': 'Rock-solid registration and login flows.'}, {'title': 'Slick Dashboard', 'description': 'Intuitive tools for quick sorting and access.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

@@ -17,6 +17,7 @@ project_data = {
         "inatews_dashboard.webp": f"{settings.PROJECT_BASE_IMG_URL}/inatews_dashboard.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Live Quake Data', 'description': 'Get historical and real-time earthquake info from BMKG.'}, {'title': 'Tsunami Heads-Up', 'description': 'Stay alert with live tsunami warnings across Indonesia.'}, {'title': 'Visual Feast', 'description': 'Interactive maps, shakemaps, and charts for epic insights.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

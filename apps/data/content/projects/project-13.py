@@ -17,6 +17,7 @@ project_data = {
         "student_search_bot_telegram.webp": f"{settings.PROJECT_BASE_IMG_URL}/student_search_bot_telegram.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Slick Search', 'description': 'Find students by name, ID, or both in seconds.'}, {'title': 'Full Profiles', 'description': 'Get name, ID, college, and program details instantly.'}, {'title': 'Flask Finesse', 'description': 'Runs smooth with Flask and Telegram webhooks.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

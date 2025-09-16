@@ -23,6 +23,7 @@ project_data = {
         "indonesia_gold_price_tracker.webp": f"{settings.PROJECT_BASE_IMG_URL}/indonesia_gold_price_tracker.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [
         {'title': 'Live Price Drops', 'description': 'Gold prices updated on the regular to keep you in sync with the market.'},
         {'title': 'Throwback Trends', 'description': 'Deep dive into past price action across different timeframes.'},

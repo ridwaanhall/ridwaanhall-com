@@ -24,6 +24,7 @@ project_data = {
         "bsjp.webp": f"{settings.PROJECT_BASE_IMG_URL}/bsjp.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [
         {'title': 'Technical Analysis Engine', 'description': 'Implements 5-day moving averages, volume trends, and price evaluations for stock selection.'},
         {'title': 'Trading Calendar Management', 'description': 'Handles normalized trading dates and schedules for accurate data alignment.'},

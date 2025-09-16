@@ -17,6 +17,7 @@ project_data = {
         "gold_price_prediction_and_music_recommendation_system.webp": f"{settings.PROJECT_BASE_IMG_URL}/gold_price_prediction_and_music_recommendation_system.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Gold Forecasts', 'description': 'Predicts prices to guide investment moves.'}, {'title': 'Music Picks', 'description': 'Curates tracks based on your taste.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

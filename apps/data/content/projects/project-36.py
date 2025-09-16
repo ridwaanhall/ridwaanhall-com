@@ -17,6 +17,7 @@ project_data = {
         "neon_ai.webp": f"{settings.PROJECT_BASE_IMG_URL}/neon_ai.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Smart Routing', 'description': 'Next.js App Router for zippy navigation.'}, {'title': 'AI Power', 'description': 'Unified API for text and tool calls.'}, {'title': 'Data Storage', 'description': 'Vercel Postgres and Blob for efficiency.'}],
     "tech_stack": [
         SkillsData.tech_stack["nextjs"],

@@ -17,6 +17,7 @@ project_data = {
         "openshop_restful_api.webp": f"{settings.PROJECT_BASE_IMG_URL}/openshop_restful_api.webp"
     },
     "is_featured": False,
+    "featured_priority": None,
     "features": [{'title': 'Full CRUD', 'description': 'Create, read, update, and delete products with ease.'}, {'title': 'Search by Name', 'description': 'Find products by name with a clean query.'}, {'title': 'HATEOAS Links', 'description': 'Navigate resources with embedded API links.'}, {'title': 'Soft Delete', 'description': 'Mark products as deleted without losing data.'}],
     "tech_stack": [
         SkillsData.tech_stack["python"],

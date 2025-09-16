@@ -9,16 +9,36 @@ from apps.data.about.skills_data import SkillsData
 
 # Project data for: College Data Playground
 project_data = {
+    # Identity
     "id": 12,
-    "title": """College Data Playground""",
-    "headline": """Explore Indonesian college stats with a slick Flask-powered hub.""",
-    "description": ['This Flask site is your one-stop shop for college data—students, lecturers, programs, and more.', 'Comes with a dope dashboard for stats, a search tool, and detailed pages for everything.', 'Built to make digging through academic data fun, fast, and easy.'],
+    "title": "College Data Playground",
+    "headline": "Explore Indonesian college stats with a slick Flask-powered hub.",
+
+    # Core Content
+    "description": [
+        "This Flask site is your one-stop shop for college data—students, lecturers, programs, and more.",
+        "Comes with a dope dashboard for stats, a search tool, and detailed pages for everything.",
+        "Built to make digging through academic data fun, fast, and easy."
+    ],
+    "features": [
+        {
+            "title": "Stats Dashboard",
+            "description": "Visualize student, lecturer, and program counts like a pro."
+        },
+        {
+            "title": "Search Superstar",
+            "description": "Find students, lecturers, colleges, or programs in a flash."
+        },
+        {
+            "title": "Deep Dives",
+            "description": "Explore detailed data on students, lecturers, and more."
+        }
+    ],
     "images": {
         "college_data_hub.webp": f"{settings.PROJECT_BASE_IMG_URL}/college_data_hub.webp"
     },
-    "is_featured": False,
-    "featured_priority": None,
-    "features": [{'title': 'Stats Dashboard', 'description': 'Visualize student, lecturer, and program counts like a pro.'}, {'title': 'Search Superstar', 'description': 'Find students, lecturers, colleges, or programs in a flash.'}, {'title': 'Deep Dives', 'description': 'Explore detailed data on students, lecturers, and more.'}],
+
+    # Tech & Resources
     "tech_stack": [
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["flask"],
@@ -26,9 +46,8 @@ project_data = {
     ],
     "github_url": "",
     "demo_url": "https://replit.com/@ridwaanhall/web-college",
-    "status": "completed",
-    "created_at": datetime.strptime("2023-09-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2023-09-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+
+    # Classification
     "category": "Web App, Education, Data Visualization",
     "tags": [
         "College Data",
@@ -40,5 +59,12 @@ project_data = {
         "Data Visualization",
         "Academic Data",
         "Search Tool"
-    ]
+    ],
+
+    # Status & Meta
+    "is_featured": False,
+    "featured_priority": None,
+    "status": "completed",
+    "created_at": datetime.strptime("2023-09-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2023-09-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 }

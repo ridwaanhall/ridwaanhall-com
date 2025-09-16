@@ -9,25 +9,44 @@ from apps.data.about.skills_data import SkillsData
 
 # Project data for: Indonesia Route Optimizer
 project_data = {
+    # Identity
     "id": 30,
-    "title": """Indonesia Route Optimizer""",
-    "headline": """Find the best paths across Indonesia with ACO and slick visualizations.""",
-    "description": ['This project brings Ant Colony Optimization (ACO) to life on a real map of Indonesia for next-level route planning.', 'Tweakable parameters and visualization tools let you track the algorithm’s progress in style.', 'Built to deliver practical insights and boost efficiency for pathfinding challenges.'],
+    "title": "Indonesia Route Optimizer",
+    "headline": "Find the best paths across Indonesia with ACO and slick visualizations.",
+
+    # Core Content
+    "description": [
+        "This project brings Ant Colony Optimization (ACO) to life on a real map of Indonesia for next-level route planning.",
+        "Tweakable parameters and visualization tools let you track the algorithm’s progress in style.",
+        "Built to deliver practical insights and boost efficiency for pathfinding challenges."
+    ],
+    "features": [
+        {
+            "title": "Real-World Mapping",
+            "description": "Optimizes routes using Indonesia’s actual geography."
+        },
+        {
+            "title": "Visual Progress",
+            "description": "Watch the algorithm work with clear visualizations."
+        },
+        {
+            "title": "Tuning Mastery",
+            "description": "Fine-tune parameters for peak optimization results."
+        }
+    ],
     "images": {
         "default_project_image.webp": f"{settings.PROJECT_BASE_IMG_URL}/default_project_image.webp"
     },
-    "is_featured": False,
-    "featured_priority": None,
-    "features": [{'title': 'Real-World Mapping', 'description': 'Optimizes routes using Indonesia’s actual geography.'}, {'title': 'Visual Progress', 'description': 'Watch the algorithm work with clear visualizations.'}, {'title': 'Tuning Mastery', 'description': 'Fine-tune parameters for peak optimization results.'}],
+
+    # Tech & Resources
     "tech_stack": [
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["aco"]
     ],
     "github_url": "https://github.com/ridwaanhall/aco-algorithm",
     "demo_url": "",
-    "status": "completed",
-    "created_at": datetime.strptime("2024-12-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2024-12-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+
+    # Classification
     "category": "Optimization, Algorithm, Visualization, Mapping",
     "tags": [
         "Ant Colony Optimization",
@@ -39,5 +58,12 @@ project_data = {
         "Mapping",
         "Pathfinding",
         "Algorithm"
-    ]
+    ],
+
+    # Status & Meta
+    "is_featured": False,
+    "featured_priority": None,
+    "status": "completed",
+    "created_at": datetime.strptime("2024-12-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2024-12-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 }

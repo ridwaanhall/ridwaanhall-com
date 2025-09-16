@@ -9,25 +9,44 @@ from apps.data.about.skills_data import SkillsData
 
 # Project data for: TikTok Profile Digger
 project_data = {
+    # Identity
     "id": 2,
-    "title": """TikTok Profile Digger""",
-    "headline": """Scoop all the hot TikTok profile deets with Python and BeautifulSoup flair.""",
-    "description": ['This Python project dives deep into TikTok profiles, snagging all the good stuff.', 'With BeautifulSoup, it pulls username, bio, followers, following, and likes straight from the page.', 'Perfect for data nerds and TikTok stalkers—saves time and sparks curiosity!'],
+    "title": "TikTok Profile Digger",
+    "headline": "Extract TikTok profile data with Python and BeautifulSoup.",
+
+    # Core Content
+    "description": [
+        "This Python project scrapes TikTok profiles to extract structured data for analysis.",
+        "Uses BeautifulSoup to parse HTML and capture key details such as username, bio, followers, following, and likes.",
+        "Designed for developers, researchers, or analysts who need quick access to TikTok profile insights."
+    ],
+    "features": [
+        {
+            "title": "Profile Data Extraction",
+            "description": "Collects username, bio, followers, following, and likes in one request."
+        },
+        {
+            "title": "BeautifulSoup Parsing",
+            "description": "Leverages BeautifulSoup to efficiently parse TikTok’s HTML structure."
+        },
+        {
+            "title": "Research-Ready",
+            "description": "Ideal for social media analysis, trend research, or data-driven insights."
+        }
+    ],
     "images": {
         "tiktok_data_extractor.webp": f"{settings.PROJECT_BASE_IMG_URL}/tiktok_data_extractor.webp"
     },
-    "is_featured": False,
-    "featured_priority": None,
-    "features": [{'title': 'Ultimate Data Grab', 'description': 'Snatches username, bio, followers, following, and likes in one swoop.'}, {'title': 'BeautifulSoup Magic', 'description': 'Parses TikTok’s HTML like a boss with BeautifulSoup.'}, {'title': 'Curiosity Crusher', 'description': 'Ideal for research, insights, or just feeding your TikTok obsession.'}],
+
+    # Tech & Resources
     "tech_stack": [
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["beautifulsoup"]
     ],
     "github_url": "",
     "demo_url": "",
-    "status": "completed",
-    "created_at": datetime.strptime("2023-04-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2023-04-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+
+    # Classification
     "category": "Web Scraping, Social Media, Data Extraction",
     "tags": [
         "TikTok",
@@ -39,5 +58,12 @@ project_data = {
         "Bio Extraction",
         "Social Media",
         "Data Mining"
-    ]
+    ],
+
+    # Status & Meta
+    "is_featured": False,
+    "featured_priority": None,
+    "status": "completed",
+    "created_at": datetime.strptime("2023-04-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2023-04-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 }

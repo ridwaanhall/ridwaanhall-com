@@ -9,16 +9,36 @@ from apps.data.about.skills_data import SkillsData
 
 # Project data for: Tsunami & Quake Dashboard
 project_data = {
+    # Identity
     "id": 11,
-    "title": """Tsunami & Quake Dashboard""",
-    "headline": """Track Indonesia’s quakes and tsunami alerts with real-time flair.""",
-    "description": ['This Flask frontend serves up earthquake and tsunami data straight from BMKG, no filter.', 'With Chart.js visuals, Leaflet maps, OpenStreetMap, and Google Maps, it’s a seismic data party.', 'Rocking Bootstrap and OverlayScrollbars for a clean, responsive vibe.'],
+    "title": "Tsunami & Quake Dashboard",
+    "headline": "Track Indonesia’s quakes and tsunami alerts with real-time flair.",
+
+    # Core Content
+    "description": [
+        "This Flask frontend serves up earthquake and tsunami data straight from BMKG, no filter.",
+        "With Chart.js visuals, Leaflet maps, OpenStreetMap, and Google Maps, it’s a seismic data party.",
+        "Rocking Bootstrap and OverlayScrollbars for a clean, responsive vibe."
+    ],
+    "features": [
+        {
+            "title": "Live Quake Data",
+            "description": "Get historical and real-time earthquake info from BMKG."
+        },
+        {
+            "title": "Tsunami Heads-Up",
+            "description": "Stay alert with live tsunami warnings across Indonesia."
+        },
+        {
+            "title": "Visual Feast",
+            "description": "Interactive maps, shakemaps, and charts for epic insights."
+        }
+    ],
     "images": {
         "inatews_dashboard.webp": f"{settings.PROJECT_BASE_IMG_URL}/inatews_dashboard.webp"
     },
-    "is_featured": False,
-    "featured_priority": None,
-    "features": [{'title': 'Live Quake Data', 'description': 'Get historical and real-time earthquake info from BMKG.'}, {'title': 'Tsunami Heads-Up', 'description': 'Stay alert with live tsunami warnings across Indonesia.'}, {'title': 'Visual Feast', 'description': 'Interactive maps, shakemaps, and charts for epic insights.'}],
+
+    # Tech & Resources
     "tech_stack": [
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["flask"],
@@ -31,9 +51,8 @@ project_data = {
     ],
     "github_url": "",
     "demo_url": "",
-    "status": "completed",
-    "created_at": datetime.strptime("2023-09-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2023-09-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+
+    # Classification
     "category": "Dashboard, Data Visualization, Disaster Monitoring",
     "tags": [
         "Dashboard",
@@ -49,5 +68,12 @@ project_data = {
         "Bootstrap",
         "Data Visualization",
         "Disaster Monitoring"
-    ]
+    ],
+
+    # Status & Meta
+    "is_featured": False,
+    "featured_priority": None,
+    "status": "completed",
+    "created_at": datetime.strptime("2023-09-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2023-09-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 }

@@ -9,16 +9,36 @@ from apps.data.about.skills_data import SkillsData
 
 # Project data for: Electricity Demand Forecaster
 project_data = {
+    # Identity
     "id": 21,
-    "title": """Electricity Demand Forecaster""",
-    "headline": """Tap into RNNs to nail super-accurate electricity demand predictions.""",
-    "description": ['This project rocks Recurrent Neural Networks (RNNs) like LSTM and GRU to forecast electricity demand with serious precision.', 'Trained on historical demand data, mixed with weather and calendar features for max accuracy.', 'Perfect for showcasing how RNNs can level up energy management with killer temporal insights.'],
+    "title": "Electricity Demand Forecaster",
+    "headline": "Tap into RNNs to nail super-accurate electricity demand predictions.",
+
+    # Core Content
+    "description": [
+        "This project rocks Recurrent Neural Networks (RNNs) like LSTM and GRU to forecast electricity demand with serious precision.",
+        "Trained on historical demand data, mixed with weather and calendar features for max accuracy.",
+        "Perfect for showcasing how RNNs can level up energy management with killer temporal insights."
+    ],
+    "features": [
+        {
+            "title": "RNN Powerhouse",
+            "description": "LSTM and GRU models crush it at capturing time-based patterns."
+        },
+        {
+            "title": "Loaded Dataset",
+            "description": "Blends historical demand, weather, and calendar data for sharp predictions."
+        },
+        {
+            "title": "Energy Game-Changer",
+            "description": "Delivers spot-on forecasts for real-world energy planning."
+        }
+    ],
     "images": {
         "time_series_forecasting_rnn.webp": f"{settings.PROJECT_BASE_IMG_URL}/time_series_forecasting_rnn.webp"
     },
-    "is_featured": False,
-    "featured_priority": None,
-    "features": [{'title': 'RNN Powerhouse', 'description': 'LSTM and GRU models crush it at capturing time-based patterns.'}, {'title': 'Loaded Dataset', 'description': 'Blends historical demand, weather, and calendar data for sharp predictions.'}, {'title': 'Energy Game-Changer', 'description': 'Delivers spot-on forecasts for real-world energy planning.'}],
+
+    # Tech & Resources
     "tech_stack": [
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["pytorch"],
@@ -28,9 +48,8 @@ project_data = {
     ],
     "github_url": "",
     "demo_url": "",
-    "status": "completed",
-    "created_at": datetime.strptime("2024-01-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2024-01-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+
+    # Classification
     "category": "Machine Learning, Forecasting, Energy, Time Series",
     "tags": [
         "RNN",
@@ -43,5 +62,12 @@ project_data = {
         "Python",
         "PyTorch",
         "Weather Data"
-    ]
+    ],
+
+    # Status & Meta
+    "is_featured": False,
+    "featured_priority": None,
+    "status": "completed",
+    "created_at": datetime.strptime("2024-01-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2024-01-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 }

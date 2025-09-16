@@ -9,16 +9,32 @@ from apps.data.about.skills_data import SkillsData
 
 # Project data for: Gold Price & Music Recommender
 project_data = {
+    # Identity
     "id": 33,
-    "title": """Gold Price & Music Recommender""",
-    "headline": """ML vibes forecasting gold prices and curating your next music banger.""",
-    "description": ['This project uses machine learning to predict gold prices and drop music recs that match your mood.', 'For gold, it crunches historical data and economic trends, testing multiple models for tight accuracy.', 'The music recommender scans your listening habits and song features to serve up tracks and artists you’ll vibe with.'],
+    "title": "Gold Price & Music Recommender",
+    "headline": "ML vibes forecasting gold prices and curating your next music banger.",
+
+    # Core Content
+    "description": [
+        "This project uses machine learning to predict gold prices and drop music recs that match your mood.",
+        "For gold, it crunches historical data and economic trends, testing multiple models for tight accuracy.",
+        "The music recommender scans your listening habits and song features to serve up tracks and artists you’ll vibe with."
+    ],
+    "features": [
+        {
+            "title": "Gold Forecasts",
+            "description": "Predicts prices to guide investment moves."
+        },
+        {
+            "title": "Music Picks",
+            "description": "Curates tracks based on your taste."
+        }
+    ],
     "images": {
         "gold_price_prediction_and_music_recommendation_system.webp": f"{settings.PROJECT_BASE_IMG_URL}/gold_price_prediction_and_music_recommendation_system.webp"
     },
-    "is_featured": False,
-    "featured_priority": None,
-    "features": [{'title': 'Gold Forecasts', 'description': 'Predicts prices to guide investment moves.'}, {'title': 'Music Picks', 'description': 'Curates tracks based on your taste.'}],
+
+    # Tech & Resources
     "tech_stack": [
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["tensorflow"],
@@ -27,9 +43,8 @@ project_data = {
     ],
     "github_url": "https://github.com/ridwaanhall/applied-machine-learning",
     "demo_url": "",
-    "status": "completed",
-    "created_at": datetime.strptime("2025-04-24T13:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-04-24T13:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+
+    # Classification
     "category": "Machine Learning, Forecasting, Recommendation System",
     "tags": [
         "Gold Price Prediction",
@@ -41,5 +56,12 @@ project_data = {
         "Forecasting",
         "Recommender System",
         "Dicoding"
-    ]
+    ],
+
+    # Status & Meta
+    "is_featured": False,
+    "featured_priority": None,
+    "status": "completed",
+    "created_at": datetime.strptime("2025-04-24T13:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-04-24T13:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 }

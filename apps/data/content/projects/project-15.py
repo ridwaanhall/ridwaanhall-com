@@ -9,16 +9,36 @@ from apps.data.about.skills_data import SkillsData
 
 # Project data for: Planetary API | Cosmic Data Hub
 project_data = {
+    # Identity
     "id": 15,
-    "title": """Planetary API | Cosmic Data Hub""",
-    "headline": """Explore the solar system with Flask and SQLAlchemy—space data, unlocked.""",
-    "description": ['This RESTful Planetary API dishes out juicy details on planets in our solar system.', 'Get names, types, home stars, masses, radii, and Earth distances with ease.', 'Rocking JWT for secure access, CRUD ops, and Flask-Mail for email notifications.'],
+    "title": "Planetary API | Cosmic Data Hub",
+    "headline": "Explore the solar system with Flask and SQLAlchemy—space data, unlocked.",
+
+    # Core Content
+    "description": [
+        "This RESTful Planetary API dishes out juicy details on planets in our solar system.",
+        "Get names, types, home stars, masses, radii, and Earth distances with ease.",
+        "Rocking JWT for secure access, CRUD ops, and Flask-Mail for email notifications."
+    ],
+    "features": [
+        {
+            "title": "Planet Data Galore",
+            "description": "Scoop up details on planets, types, and distances."
+        },
+        {
+            "title": "Locked & Loaded",
+            "description": "JWT secures user access, registration, and recovery."
+        },
+        {
+            "title": "Dev-Friendly",
+            "description": "CRUD ops keep data management clean and tight."
+        }
+    ],
     "images": {
         "planetary_api_explore_universe.webp": f"{settings.PROJECT_BASE_IMG_URL}/planetary_api_explore_universe.webp"
     },
-    "is_featured": False,
-    "featured_priority": None,
-    "features": [{'title': 'Planet Data Galore', 'description': 'Scoop up details on planets, types, and distances.'}, {'title': 'Locked & Loaded', 'description': 'JWT secures user access, registration, and recovery.'}, {'title': 'Dev-Friendly', 'description': 'CRUD ops keep data management clean and tight.'}],
+
+    # Tech & Resources
     "tech_stack": [
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["flask"],
@@ -28,9 +48,8 @@ project_data = {
     ],
     "github_url": "",
     "demo_url": "",
-    "status": "completed",
-    "created_at": datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+
+    # Classification
     "category": "API, Space, Data, Education",
     "tags": [
         "API",
@@ -44,5 +63,12 @@ project_data = {
         "Python",
         "Education",
         "CRUD"
-    ]
+    ],
+
+    # Status & Meta
+    "is_featured": False,
+    "featured_priority": None,
+    "status": "completed",
+    "created_at": datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 }

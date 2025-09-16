@@ -9,16 +9,36 @@ from apps.data.about.skills_data import SkillsData
 
 # Project data for: OpenAI Function Flex
 project_data = {
+    # Identity
     "id": 17,
-    "title": """OpenAI Function Flex""",
-    "headline": """Unleash GPT-3.5 Turbo for slick tasks with Python and Flask.""",
-    "description": ['This project shows off OpenAI API skills, firing structured POST requests with Python’s requests library.', 'Comes with cool functions like ‘locationQuery’ for weather and ‘authorQuery’ for author info.', 'A dope showcase of OpenAI’s NLP for versatile, text-based tasks.'],
+    "title": "OpenAI Function Flex",
+    "headline": "Unleash GPT-3.5 Turbo for slick tasks with Python and Flask.",
+
+    # Core Content
+    "description": [
+        "This project shows off OpenAI API skills, firing structured POST requests with Python’s requests library.",
+        "Comes with cool functions like ‘locationQuery’ for weather and ‘authorQuery’ for author info.",
+        "A dope showcase of OpenAI’s NLP for versatile, text-based tasks."
+    ],
+    "features": [
+        {
+            "title": "Task-Targeted APIs",
+            "description": "Query weather or author data with built-in functions."
+        },
+        {
+            "title": "Smooth Connect",
+            "description": "Python’s requests library links up with OpenAI flawlessly."
+        },
+        {
+            "title": "Text Powerhouse",
+            "description": "GPT-3.5 Turbo delivers smart, spot-on responses."
+        }
+    ],
     "images": {
         "openai_function_calling.webp": f"{settings.PROJECT_BASE_IMG_URL}/openai_function_calling.webp"
     },
-    "is_featured": False,
-    "featured_priority": None,
-    "features": [{'title': 'Task-Targeted APIs', 'description': 'Query weather or author data with built-in functions.'}, {'title': 'Smooth Connect', 'description': 'Python’s requests library links up with OpenAI flawlessly.'}, {'title': 'Text Powerhouse', 'description': 'GPT-3.5 Turbo delivers smart, spot-on responses.'}],
+
+    # Tech & Resources
     "tech_stack": [
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["flask"],
@@ -26,9 +46,8 @@ project_data = {
     ],
     "github_url": "",
     "demo_url": "",
-    "status": "completed",
-    "created_at": datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+
+    # Classification
     "category": "AI, API, OpenAI, NLP",
     "tags": [
         "OpenAI",
@@ -39,5 +58,12 @@ project_data = {
         "Python",
         "Function Calling",
         "Text Processing"
-    ]
+    ],
+
+    # Status & Meta
+    "is_featured": False,
+    "featured_priority": None,
+    "status": "completed",
+    "created_at": datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 }

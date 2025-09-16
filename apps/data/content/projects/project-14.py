@@ -9,16 +9,36 @@ from apps.data.about.skills_data import SkillsData
 
 # Project data for: OpenAI Chat Master
 project_data = {
+    # Identity
     "id": 14,
-    "title": """OpenAI Chat Master""",
-    "headline": """Get chatty with GPT-3.5 Turbo using Flask and Python swagger.""",
-    "description": ['This project taps OpenAI’s API to craft killer conversational systems with GPT-3.5 Turbo.', 'Flask handles the backend, slinging HTTP requests for smooth AI-user vibes.', 'Shows off next-level NLP skills for sharp, accurate responses.'],
+    "title": "OpenAI Chat Master",
+    "headline": "Get chatty with GPT-3.5 Turbo using Flask and Python swagger.",
+
+    # Core Content
+    "description": [
+        "This project taps OpenAI’s API to craft killer conversational systems with GPT-3.5 Turbo.",
+        "Flask handles the backend, slinging HTTP requests for smooth AI-user vibes.",
+        "Shows off next-level NLP skills for sharp, accurate responses."
+    ],
+    "features": [
+        {
+            "title": "AI Chat Vibes",
+            "description": "GPT-3.5 Turbo powers dope, engaging convos."
+        },
+        {
+            "title": "Flask Flex",
+            "description": "Handles POST and GET requests like a champ."
+        },
+        {
+            "title": "NLP Game Strong",
+            "description": "OpenAI’s tech delivers top-tier language processing."
+        }
+    ],
     "images": {
         "openai_api_dynamic_conversational_system.webp": f"{settings.PROJECT_BASE_IMG_URL}/openai_api_dynamic_conversational_system.webp"
     },
-    "is_featured": False,
-    "featured_priority": None,
-    "features": [{'title': 'AI Chat Vibes', 'description': 'GPT-3.5 Turbo powers dope, engaging convos.'}, {'title': 'Flask Flex', 'description': 'Handles POST and GET requests like a champ.'}, {'title': 'NLP Game Strong', 'description': 'OpenAI’s tech delivers top-tier language processing.'}],
+
+    # Tech & Resources
     "tech_stack": [
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["flask"],
@@ -26,9 +46,8 @@ project_data = {
     ],
     "github_url": "",
     "demo_url": "",
-    "status": "completed",
-    "created_at": datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+
+    # Classification
     "category": "AI, Chatbot, OpenAI, NLP",
     "tags": [
         "OpenAI",
@@ -39,5 +58,12 @@ project_data = {
         "Python",
         "Conversational AI",
         "API"
-    ]
+    ],
+
+    # Status & Meta
+    "is_featured": False,
+    "featured_priority": None,
+    "status": "completed",
+    "created_at": datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 }

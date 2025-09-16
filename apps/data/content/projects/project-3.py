@@ -9,16 +9,36 @@ from apps.data.about.skills_data import SkillsData
 
 # Project data for: Quran Explorer Web
 project_data = {
+    # Identity
     "id": 3,
-    "title": """Quran Explorer Web""",
-    "headline": """Dive into the Quran with a sleek, modern twist—holy wisdom meets dope tech.""",
-    "description": ['This Flask-powered site lets you explore Quran chapters, verses, and translations with style.', 'Rocking AdminLTE for a slick look and feel, it’s as functional as it is beautiful.', 'Pulls legit data from quranenc.com and quran.api-docs.io for a deep, trustworthy experience.'],
+    "title": "Quran Explorer Web",
+    "headline": "Explore Quran chapters, verses, and translations with a modern Flask-powered web app.",
+
+    # Core Content
+    "description": [
+        "This Flask-based web app enables users to explore Quran chapters, verses, and translations in a clean, modern interface.",
+        "Built with AdminLTE for a responsive and intuitive design, combining functionality with aesthetics.",
+        "Integrates trusted data sources from quranenc.com and quran.api-docs.io to ensure accuracy and reliability."
+    ],
+    "features": [
+        {
+            "title": "Comprehensive APIs",
+            "description": "Access endpoints for chapters, Juz, verses, and translations."
+        },
+        {
+            "title": "Multiple Scripts",
+            "description": "View verses in Uthmani, Uthmani Simple, Imlaei, or Imlaei Simple formats."
+        },
+        {
+            "title": "Translation Search",
+            "description": "Find translations by chapter, Surah, Aya, or keyword for deeper study."
+        }
+    ],
     "images": {
         "quran_website_frontend_api.webp": f"{settings.PROJECT_BASE_IMG_URL}/quran_website_frontend_api.webp"
     },
-    "is_featured": False,
-    "featured_priority": None,
-    "features": [{'title': 'Killer APIs', 'description': 'Drops endpoints for chapters, Juz, verses, and translations like a champ.'}, {'title': 'Script Swag', 'description': 'Get verses in Uthmani, Uthmani Simple, Imlaei, or Imlaei Simple—your call.'}, {'title': 'Translation Hunt', 'description': 'Zero in on translations by chapter, Surah, Aya, or keyword.'}],
+
+    # Tech & Resources
     "tech_stack": [
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["flask"],
@@ -26,9 +46,8 @@ project_data = {
     ],
     "github_url": "",
     "demo_url": "",
-    "status": "completed",
-    "created_at": datetime.strptime("2023-07-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2023-07-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+
+    # Classification
     "category": "Web App, Religion, Quran, Flask",
     "tags": [
         "Quran",
@@ -40,5 +59,12 @@ project_data = {
         "Islamic",
         "Data Visualization",
         "Religious Study"
-    ]
+    ],
+
+    # Status & Meta
+    "is_featured": False,
+    "featured_priority": None,
+    "status": "completed",
+    "created_at": datetime.strptime("2023-07-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2023-07-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 }

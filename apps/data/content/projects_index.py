@@ -4,7 +4,6 @@ Projects data index - imports all individual project files
 
 from pathlib import Path
 import importlib.util
-import os
 
 class ProjectsDataIndex:
     """Dynamic loader for individual project files."""

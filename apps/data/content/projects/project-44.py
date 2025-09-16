@@ -16,14 +16,15 @@ project_data = {
 
     # Core Content
     "description": [
-        "FlexForge is a modern portfolio template built with Django and TailwindCSS, featuring an innovative individual file system where each project and blog post exists as a separate Python file for easy management and version control.",
+        "FlexForge is a modern portfolio template built with Django and TailwindCSS, featuring an innovative individual file system inspired by Once UI (Magic Portfolio) where each project and blog post exists as a separate Python file for easy management and version control.",
         "Achieves exceptional performance with 99+/100 PageSpeed scores across all metrics (Performance: 98, Accessibility: 100, Best Practices: 100, SEO: 100). The platform includes real-time GitHub and WakaTime API integrations, configurable guestbook with OAuth authentication, and enterprise-grade security features.",
-        "Built with scalability in mind, featuring intelligent caching, image optimization, and a responsive design that works perfectly on any device. The dashboard displays live coding statistics and analytics in real-time."
+        "Built with scalability in mind, featuring intelligent caching, image optimization, and a responsive design that works perfectly on any device. The dashboard displays live coding statistics and analytics in real-time.",
+        "Interface design is inspired by X (formerly Twitter), TikTok, and Aulianza for a modern and familiar user experience."
     ],
     "features": [
         {
             "title": "Individual File System",
-            "description": "Revolutionary content management with each project and blog post as separate Python files."
+            "description": "Revolutionary content management inspired by Once UI (Magic Portfolio) with each project and blog post as separate Python files."
         },
         {
             "title": "High Performance",
@@ -86,5 +87,5 @@ project_data = {
     "featured_priority": 1,
     "status": "completed",
     "created_at": datetime.strptime("2025-03-16T12:03:09+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-07-08T15:23:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-09-16T15:23:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 }

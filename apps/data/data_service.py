@@ -4,6 +4,7 @@ Consolidates data access patterns and provides caching where appropriate.
 """
 
 import logging
+from datetime import datetime
 from typing import List, Dict, Any, Optional
 from django.core.cache import cache
 
@@ -47,14 +48,16 @@ class DataService:
             
     @staticmethod
     def get_projects(sort_by_featured: bool = True) -> List[Dict[str, Any]]:
-        """Get project data with optional sorting by featured status."""
+        """Get project data with optional sorting by featured status and creation date."""
         try:
             projects = ContentManager.get_projects()
             
             if sort_by_featured:
                 projects = sorted(
                     projects,
-                    key=lambda x: (-x.get('is_featured', 0), -x.get('id', 0))
+                    # key=lambda x: (-x.get('is_featured', 0), -x.get('id', 0))
+                    key=lambda x: (x.get('is_featured', False), x.get('created_at', datetime.min)),
+                    reverse=True
                 )
                 
             return projects

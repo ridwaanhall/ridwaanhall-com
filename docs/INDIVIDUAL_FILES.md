@@ -170,6 +170,7 @@ project_data = {
     "image_url": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_username_checker.webp",
     "img_name": "mlbb_username_checker.webp",
     "is_featured": False,
+    "featured_priority": None,
     "features": [
         {
             "title": "Lightning-Fast Lookups",

@@ -48,17 +48,30 @@ class DataService:
             
     @staticmethod
     def get_projects(sort_by_featured: bool = True) -> List[Dict[str, Any]]:
-        """Get project data with optional sorting by featured status and creation date."""
+        """Get project data with optional sorting by featured priority and creation date."""
         try:
             projects = ContentManager.get_projects()
             
             if sort_by_featured:
-                projects = sorted(
-                    projects,
-                    # key=lambda x: (-x.get('is_featured', 0), -x.get('id', 0))
-                    key=lambda x: (x.get('is_featured', False), x.get('created_at', datetime.min)),
+                # Separate featured and non-featured projects
+                featured_projects = [p for p in projects if p.get('is_featured', False)]
+                non_featured_projects = [p for p in projects if not p.get('is_featured', False)]
+                
+                # Sort featured projects by featured_priority (ascending: 1, 2, 3, 4)
+                featured_projects = sorted(
+                    featured_projects,
+                    key=lambda x: x.get('featured_priority', 999)
+                )
+                
+                # Sort non-featured projects by created_at (descending: newest first)
+                non_featured_projects = sorted(
+                    non_featured_projects,
+                    key=lambda x: x.get('created_at', datetime.min),
                     reverse=True
                 )
+                
+                # Combine: featured first, then non-featured
+                projects = featured_projects + non_featured_projects
                 
             return projects
         except Exception as e:

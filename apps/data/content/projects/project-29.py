@@ -25,7 +25,7 @@ project_data = {
     "github_url": "https://github.com/ridwaanhall/management-mabar-VIP-MLBB",
     "demo_url": "",
     "status": "completed",
-    "created_at": None,
+    "created_at": datetime.strptime("2024-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2024-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "Web App, Gaming, Management, Django",
     "tags": [

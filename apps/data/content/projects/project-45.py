@@ -28,7 +28,7 @@ project_data = {
     "github_url": "https://github.com/ridwaanhall/indonesia-gold-price-prediction",
     "demo_url": "",
     "status": "completed",
-    "created_at": None,
+    "created_at": datetime.strptime("2025-04-23T22:07:45+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-04-23T22:07:45+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "finance",
     "tags": ["gold", "price tracker", "indonesia", "analytics", "finance", "lstm"],

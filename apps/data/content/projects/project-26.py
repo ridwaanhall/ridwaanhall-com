@@ -25,7 +25,7 @@ project_data = {
     "github_url": "https://github.com/ridwaanhall/website-cek-khodam",
     "demo_url": "",
     "status": "completed",
-    "created_at": None,
+    "created_at": datetime.strptime("2024-06-25T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2024-06-25T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "Web App, Entertainment, Personality, Django",
     "tags": [

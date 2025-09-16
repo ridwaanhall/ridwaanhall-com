@@ -26,7 +26,7 @@ project_data = {
     "github_url": "",
     "demo_url": "",
     "status": "completed",
-    "created_at": None,
+    "created_at": datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "AI, Chatbot, OpenAI, NLP",
     "tags": [

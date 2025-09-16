@@ -27,7 +27,7 @@ project_data = {
     "github_url": "https://github.com/ridwaanhall/applied-machine-learning",
     "demo_url": "",
     "status": "completed",
-    "created_at": None,
+    "created_at": datetime.strptime("2025-04-24T13:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-04-24T13:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "Machine Learning, Forecasting, Recommendation System",
     "tags": [

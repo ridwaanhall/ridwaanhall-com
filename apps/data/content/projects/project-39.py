@@ -27,7 +27,7 @@ project_data = {
     "github_url": "https://github.com/ridwaanhall/a743-backend-pemula-python/tree/submission",
     "demo_url": "",
     "status": "completed",
-    "created_at": None,
+    "created_at": datetime.strptime("2025-06-14T00:49:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-06-14T00:49:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "API, E-commerce, Product Management, Django",
     "tags": [

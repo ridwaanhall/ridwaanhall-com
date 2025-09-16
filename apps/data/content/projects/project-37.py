@@ -27,7 +27,7 @@ project_data = {
     "github_url": "https://github.com/ridwaanhall/instagram-following-followers",
     "demo_url": "https://igstats.ridwaanhall.com",
     "status": "completed",
-    "created_at": None,
+    "created_at": datetime.strptime("2025-07-15T02:39:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-07-15T02:39:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "Social Media, Analytics, Instagram, Python Script",
     "tags": [

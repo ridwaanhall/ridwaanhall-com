@@ -27,7 +27,7 @@ project_data = {
     "github_url": "https://github.com/ridwaanhall/realcount-pemilu-2024",
     "demo_url": "",
     "status": "completed",
-    "created_at": None,
+    "created_at": datetime.strptime("2024-04-30T23:59:59+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2024-04-30T23:59:59+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "Web App, Dashboard, Election, Indonesia",
     "tags": [

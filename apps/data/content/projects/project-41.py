@@ -29,7 +29,7 @@ project_data = {
     "github_url": "https://github.com/ridwaanhall/api-mobilelegends",
     "demo_url": "https://mlbb-stats.ridwaanhall.com/",
     "status": "completed",
-    "created_at": None,
+    "created_at": datetime.strptime("2025-07-06T16:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-07-06T16:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "API, Gaming, MLBB, Web App, Data Visualization",
     "tags": [

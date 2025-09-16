@@ -28,7 +28,7 @@ project_data = {
     "github_url": "https://github.com/ridwaanhall/neon-ai",
     "demo_url": "https://chat.ridwaanhall.com",
     "status": "completed",
-    "created_at": None,
+    "created_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "AI, Chatbot, Web App, Next.js",
     "tags": [

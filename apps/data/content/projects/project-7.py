@@ -25,7 +25,7 @@ project_data = {
     "github_url": "",
     "demo_url": "https://instagram-api-v1.ridwaanhall.repl.co/",
     "status": "completed",
-    "created_at": None,
+    "created_at": datetime.strptime("2023-08-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2023-08-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "API, Social Media, Instagram, Flask",
     "tags": [

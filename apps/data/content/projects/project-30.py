@@ -25,7 +25,7 @@ project_data = {
     "github_url": "https://github.com/ridwaanhall/aco-algorithm",
     "demo_url": "",
     "status": "completed",
-    "created_at": None,
+    "created_at": datetime.strptime("2024-12-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2024-12-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "Optimization, Algorithm, Visualization, Mapping",
     "tags": [

@@ -39,7 +39,7 @@ class DataService:
                 blogs = [blog for blog in blogs if blog.get('is_featured')]
             
             if sort_by_id:
-                blogs = sorted(blogs, key=lambda x: -x.get('id', 0))
+                blogs = sorted(blogs, key=lambda x: -x.get('created_at', datetime.min).timestamp())
                 
             return blogs
         except Exception as e:

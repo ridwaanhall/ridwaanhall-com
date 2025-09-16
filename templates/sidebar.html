@@ -183,8 +183,14 @@
 
         <div class="px-6 py-4 mt-auto text-xs text-zinc-400 border-t border-zinc-800/50">
             <div class="flex items-center gap-1 mb-2">
-                <a href="{% url 'openhire' %}" class="hover:text-zinc-300 transition-colors">OpenHire</a>
-                <span class="text-zinc-600">•</span>
+                {% if about.is_open_to_work or about.is_hiring %}
+                    {% if request.resolver_match.url_name != 'openhire' %}
+                        <a href="{% url 'openhire' %}" class="hover:text-zinc-300 transition-colors">OpenHire</a>
+                    {% else %}
+                        <span class="text-zinc-300">OpenHire</span>
+                    {% endif %}
+                    <span class="text-zinc-600">•</span>
+                {% endif %}
                 {% if request.resolver_match.url_name != 'privacy' %}
                     <a href="{% url 'privacy' %}" class="hover:text-zinc-300 transition-colors">Privacy</a>
                 {% else %}
@@ -397,8 +403,14 @@
 
     <div class="px-6 py-4 mt-auto text-xs text-zinc-400 border-t border-zinc-800/50">
         <div class="flex items-center gap-1 mb-2">
-            <a href="{% url 'openhire' %}" class="hover:text-zinc-300 transition-colors">OpenHire</a>
-            <span class="text-zinc-600">•</span>
+            {% if about.is_open_to_work or about.is_hiring %}
+                {% if request.resolver_match.url_name != 'openhire' %}
+                    <a href="{% url 'openhire' %}" class="hover:text-zinc-300 transition-colors">OpenHire</a>
+                {% else %}
+                    <span class="text-zinc-300">OpenHire</span>
+                {% endif %}
+                <span class="text-zinc-600">•</span>
+            {% endif %}
             {% if request.resolver_match.url_name != 'privacy' %}
                 <a href="{% url 'privacy' %}" class="hover:text-zinc-300 transition-colors">Privacy</a>
             {% else %}

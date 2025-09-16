@@ -36,6 +36,5 @@ project_data = {
         "Game Utility",
         "User Lookup",
         "Gaming Tool"
-    ],
-    "priority": 1
+    ]
 }

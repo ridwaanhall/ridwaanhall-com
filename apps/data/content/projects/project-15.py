@@ -43,6 +43,5 @@ project_data = {
         "Python",
         "Education",
         "CRUD"
-    ],
-    "priority": 1
+    ]
 }

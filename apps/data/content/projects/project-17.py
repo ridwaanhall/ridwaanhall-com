@@ -38,6 +38,5 @@ project_data = {
         "Python",
         "Function Calling",
         "Text Processing"
-    ],
-    "priority": 1
+    ]
 }

@@ -42,6 +42,5 @@ project_data = {
         "Soft Delete",
         "Backend",
         "Dicoding"
-    ],
-    "priority": 1
+    ]
 }

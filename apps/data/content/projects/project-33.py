@@ -40,6 +40,5 @@ project_data = {
         "Forecasting",
         "Recommender System",
         "Dicoding"
-    ],
-    "priority": 1
+    ]
 }

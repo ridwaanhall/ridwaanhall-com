@@ -39,6 +39,5 @@ project_data = {
         "Islamic",
         "Data Visualization",
         "Religious Study"
-    ],
-    "priority": 1
+    ]
 }

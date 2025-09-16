@@ -40,6 +40,5 @@ project_data = {
         "Interactive Charts",
         "Business Intelligence",
         "Dicoding"
-    ],
-    "priority": 1
+    ]
 }

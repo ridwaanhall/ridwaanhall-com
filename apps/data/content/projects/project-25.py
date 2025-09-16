@@ -41,6 +41,5 @@ project_data = {
         "Indonesia",
         "Handwritten Data",
         "2024 Election"
-    ],
-    "priority": 1
+    ]
 }

@@ -38,6 +38,5 @@ project_data = {
         "Dashboard",
         "HR",
         "Support Tool"
-    ],
-    "priority": 1
+    ]
 }

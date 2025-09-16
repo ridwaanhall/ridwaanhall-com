@@ -38,6 +38,5 @@ project_data = {
         "Python",
         "Conversational AI",
         "API"
-    ],
-    "priority": 1
+    ]
 }

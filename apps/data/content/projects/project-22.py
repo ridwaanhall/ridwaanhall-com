@@ -41,6 +41,5 @@ project_data = {
         "MixUp",
         "Python",
         "Computer Vision"
-    ],
-    "priority": 1
+    ]
 }

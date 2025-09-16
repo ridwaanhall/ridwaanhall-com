@@ -42,6 +42,5 @@ project_data = {
         "Streaming API",
         "Conversational AI",
         "Web App"
-    ],
-    "priority": 1
+    ]
 }

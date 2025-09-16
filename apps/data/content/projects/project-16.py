@@ -38,6 +38,5 @@ project_data = {
         "Education",
         "Real-time Prediction",
         "Training Visualization"
-    ],
-    "priority": 1
+    ]
 }

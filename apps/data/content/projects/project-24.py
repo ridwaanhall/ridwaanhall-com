@@ -41,6 +41,5 @@ project_data = {
         "Indonesia",
         "Vote Tracking",
         "Data Visualization"
-    ],
-    "priority": 1
+    ]
 }

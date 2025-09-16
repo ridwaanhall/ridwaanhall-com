@@ -38,6 +38,5 @@ project_data = {
         "Player Data",
         "Python",
         "Gaming"
-    ],
-    "priority": 1
+    ]
 }

@@ -40,6 +40,5 @@ project_data = {
         "Academic Data",
         "Student Data",
         "Lecturer Data"
-    ],
-    "priority": 1
+    ]
 }

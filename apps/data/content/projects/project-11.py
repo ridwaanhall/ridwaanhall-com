@@ -48,6 +48,5 @@ project_data = {
         "Bootstrap",
         "Data Visualization",
         "Disaster Monitoring"
-    ],
-    "priority": 1
+    ]
 }

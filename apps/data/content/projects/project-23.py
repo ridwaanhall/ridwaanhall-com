@@ -38,6 +38,5 @@ project_data = {
         "Voting Stats",
         "Candidate Data",
         "Real-time Data"
-    ],
-    "priority": 1
+    ]
 }

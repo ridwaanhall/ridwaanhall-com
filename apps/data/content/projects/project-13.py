@@ -38,6 +38,5 @@ project_data = {
         "Education",
         "Search Tool",
         "Academic Data"
-    ],
-    "priority": 1
+    ]
 }

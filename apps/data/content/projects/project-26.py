@@ -37,6 +37,5 @@ project_data = {
         "Entertainment",
         "Online Checker",
         "Mystical"
-    ],
-    "priority": 1
+    ]
 }

@@ -39,6 +39,5 @@ project_data = {
         "Python",
         "Stats Visualization",
         "Mobile Friendly"
-    ],
-    "priority": 1
+    ]
 }

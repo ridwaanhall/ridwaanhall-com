@@ -47,6 +47,5 @@ project_data = {
         "Python",
         "Gaming",
         "Data Visualization"
-    ],
-    "priority": 1
+    ]
 }

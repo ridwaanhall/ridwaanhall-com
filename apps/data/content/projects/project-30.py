@@ -38,6 +38,5 @@ project_data = {
         "Mapping",
         "Pathfinding",
         "Algorithm"
-    ],
-    "priority": 1
+    ]
 }

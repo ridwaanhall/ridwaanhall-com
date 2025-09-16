@@ -38,6 +38,5 @@ project_data = {
         "Program Data",
         "Indonesia",
         "Academic Data"
-    ],
-    "priority": 1
+    ]
 }

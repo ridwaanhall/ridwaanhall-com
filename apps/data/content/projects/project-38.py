@@ -42,6 +42,5 @@ project_data = {
         "Student Tool",
         "Code Generator",
         "School"
-    ],
-    "priority": 1
+    ]
 }

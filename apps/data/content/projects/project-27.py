@@ -37,6 +37,5 @@ project_data = {
         "Data Collection",
         "Deployment",
         "Web App"
-    ],
-    "priority": 1
+    ]
 }

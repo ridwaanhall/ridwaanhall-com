@@ -39,6 +39,5 @@ project_data = {
         "Messaging",
         "Automation",
         "Bot Integration"
-    ],
-    "priority": 1
+    ]
 }

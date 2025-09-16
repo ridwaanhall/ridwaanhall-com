@@ -39,6 +39,5 @@ project_data = {
         "GeoJSON",
         "XML",
         "JSON"
-    ],
-    "priority": 1
+    ]
 }

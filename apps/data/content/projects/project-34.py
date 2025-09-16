@@ -40,6 +40,5 @@ project_data = {
         "TF-IDF",
         "Word2Vec",
         "Dicoding"
-    ],
-    "priority": 1
+    ]
 }

@@ -38,6 +38,5 @@ project_data = {
         "External API",
         "Mission Tracking",
         "HTML Templates"
-    ],
-    "priority": 1
+    ]
 }

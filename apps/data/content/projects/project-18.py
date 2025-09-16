@@ -38,6 +38,5 @@ project_data = {
         "Python",
         "RESTful",
         "Backend"
-    ],
-    "priority": 1
+    ]
 }

@@ -39,6 +39,5 @@ project_data = {
         "Real-time Data",
         "Disaster Monitoring",
         "Forecast"
-    ],
-    "priority": 1
+    ]
 }

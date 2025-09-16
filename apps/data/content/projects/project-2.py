@@ -38,6 +38,5 @@ project_data = {
         "Bio Extraction",
         "Social Media",
         "Data Mining"
-    ],
-    "priority": 1
+    ]
 }

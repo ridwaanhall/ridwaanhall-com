@@ -38,6 +38,5 @@ project_data = {
         "Post Media",
         "Python",
         "HD Download"
-    ],
-    "priority": 1
+    ]
 }

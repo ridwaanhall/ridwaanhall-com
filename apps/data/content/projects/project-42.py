@@ -41,6 +41,5 @@ project_data = {
         "Accreditation",
         "University Data",
         "Open Data"
-    ],
-    "priority": 1
+    ]
 }

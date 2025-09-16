@@ -42,6 +42,5 @@ project_data = {
         "Python",
         "PyTorch",
         "Weather Data"
-    ],
-    "priority": 1
+    ]
 }

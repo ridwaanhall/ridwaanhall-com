@@ -39,6 +39,5 @@ project_data = {
         "Session Management",
         "Skin Requests",
         "Hero Picks"
-    ],
-    "priority": 1
+    ]
 }

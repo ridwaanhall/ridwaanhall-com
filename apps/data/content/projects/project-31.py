@@ -37,6 +37,5 @@ project_data = {
         "Rate Limiting",
         "Social Media"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

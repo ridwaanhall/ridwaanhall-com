@@ -43,6 +43,5 @@ project_data = {
         "Conversational AI",
         "Web App"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

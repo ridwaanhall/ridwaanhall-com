@@ -42,6 +42,5 @@ project_data = {
         "Python",
         "Computer Vision"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

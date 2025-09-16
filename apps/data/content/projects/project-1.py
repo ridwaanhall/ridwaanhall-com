@@ -37,6 +37,5 @@ project_data = {
         "User Lookup",
         "Gaming Tool"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

@@ -39,6 +39,5 @@ project_data = {
         "Mission Tracking",
         "HTML Templates"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

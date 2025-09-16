@@ -39,6 +39,5 @@ project_data = {
         "Candidate Data",
         "Real-time Data"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

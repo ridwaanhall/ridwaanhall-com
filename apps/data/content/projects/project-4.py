@@ -40,6 +40,5 @@ project_data = {
         "Disaster Monitoring",
         "Forecast"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

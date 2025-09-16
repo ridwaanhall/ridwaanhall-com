@@ -44,6 +44,5 @@ project_data = {
         "Multilingual",
         "Personal Website"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

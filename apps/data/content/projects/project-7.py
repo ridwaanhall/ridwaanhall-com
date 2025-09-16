@@ -39,6 +39,5 @@ project_data = {
         "Python",
         "HD Download"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

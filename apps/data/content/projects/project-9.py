@@ -39,6 +39,5 @@ project_data = {
         "Indonesia",
         "Academic Data"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

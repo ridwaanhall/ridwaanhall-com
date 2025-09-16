@@ -39,6 +39,5 @@ project_data = {
         "Forecast",
         "API"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

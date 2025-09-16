@@ -32,6 +32,5 @@ project_data = {
     "updated_at": datetime.strptime("2025-04-23T22:07:45+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "category": "finance",
     "tags": ["gold", "price tracker", "indonesia", "analytics", "finance", "lstm"],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

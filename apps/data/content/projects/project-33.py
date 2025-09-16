@@ -41,6 +41,5 @@ project_data = {
         "Recommender System",
         "Dicoding"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

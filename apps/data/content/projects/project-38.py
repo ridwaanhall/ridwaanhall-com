@@ -43,6 +43,5 @@ project_data = {
         "Code Generator",
         "School"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

@@ -39,6 +39,5 @@ project_data = {
         "RESTful",
         "Backend"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

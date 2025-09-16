@@ -40,6 +40,5 @@ project_data = {
         "Stats Visualization",
         "Mobile Friendly"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

@@ -39,6 +39,5 @@ project_data = {
         "Real-time Prediction",
         "Training Visualization"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

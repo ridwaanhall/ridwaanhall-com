@@ -40,6 +40,5 @@ project_data = {
         "XML",
         "JSON"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

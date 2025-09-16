@@ -39,6 +39,5 @@ project_data = {
         "Search Tool",
         "Academic Data"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

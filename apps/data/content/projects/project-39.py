@@ -43,6 +43,5 @@ project_data = {
         "Backend",
         "Dicoding"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

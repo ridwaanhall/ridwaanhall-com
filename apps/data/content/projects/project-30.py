@@ -39,6 +39,5 @@ project_data = {
         "Pathfinding",
         "Algorithm"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

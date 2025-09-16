@@ -9,9 +9,12 @@ from apps.data.about.skills_data import SkillsData
 
 # Project data for: Neural Network from Scratch
 project_data = {
+    # Identity
     "id": 47,
-    "title": """Neural Network from Scratch""",
-    "headline": """A professional implementation of a neural network using only NumPy for MNIST digit classification.""",
+    "title": "Neural Network from Scratch",
+    "headline": "A professional implementation of a neural network using only NumPy for MNIST digit classification.",
+
+    # Core Content
     "description": [
         "This project is a deep dive into neural networks built entirely from scratch using NumPy, offering a comprehensive understanding of how neural networks function at a fundamental level. Unlike typical frameworks such as TensorFlow or PyTorch, this implementation directly leverages raw numerical computations, enabling users to grasp the mathematical foundations behind artificial intelligence in a structured and practical way.",
         "It achieves an impressive 98.06% test accuracy on the MNIST dataset, demonstrating its efficiency in classifying handwritten digits. Designed with a clean, object-oriented architecture, it ensures modularity, flexibility, and ease of use for experimenting with different neural network configurations.",
@@ -22,11 +25,25 @@ project_data = {
         "Comprehensive visualization tools are embedded within the project, generating organized reports on model performance, including accuracy curves, loss graphs, confusion matrices, and sample misclassifications. This provides users with deeper insights into model behavior and enables data-driven refinement.",
         "Ideal for researchers, students, and AI enthusiasts, this project serves as both a learning tool and a solid foundation for custom neural network experiments. Whether you’re diving into deep learning principles or developing specialized models, this implementation offers a streamlined, intuitive environment for gaining hands-on experience."
     ],
+    "features": [
+        {
+            "title": "Pure NumPy Implementation",
+            "description": "No TensorFlow or PyTorch, just optimized NumPy operations."
+        },
+        {
+            "title": "High Accuracy",
+            "description": "Achieves 98.06% test accuracy on MNIST dataset."
+        },
+        {
+            "title": "Comprehensive CLI",
+            "description": "20+ configurable parameters for training and optimization."
+        }
+    ],
     "images": {
         "neural_network_scratch.webp": f"{settings.PROJECT_BASE_IMG_URL}/neural_network_scratch.webp"
     },
-    "is_featured": True,
-    "features": [{'title': 'Pure NumPy Implementation', 'description': 'No TensorFlow or PyTorch, just optimized NumPy operations.'}, {'title': 'High Accuracy', 'description': 'Achieves 98.06% test accuracy on MNIST dataset.'}, {'title': 'Comprehensive CLI', 'description': '20+ configurable parameters for training and optimization.'}],
+
+    # Tech & Resources
     "tech_stack": [
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["numpy"],
@@ -34,11 +51,23 @@ project_data = {
     ],
     "github_url": "https://github.com/ridwaanhall/Neural-Network-from-Scratch",
     "demo_url": "",
+
+    # Classification
+    "category": "machine learning",
+    "tags": [
+        "neural network",
+        "deep learning",
+        "from scratch",
+        "numpy",
+        "mnist",
+        "classification",
+        "machine learning"
+    ],
+
+    # Status & Meta
+    "is_featured": True,
+    "featured_priority": 2,
     "status": "completed",
     "created_at": datetime.strptime("2025-06-04T18:57:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     "updated_at": datetime.strptime("2025-06-06T18:57:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "category": "machine learning",
-    "tags": ["neural network", "deep learning", "from scratch", "numpy", "mnist", "classification", "machine learning"],
-    "priority": 1,
-    "slug": ""
 }

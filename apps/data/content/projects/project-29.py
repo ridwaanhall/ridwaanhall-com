@@ -40,6 +40,5 @@ project_data = {
         "Skin Requests",
         "Hero Picks"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

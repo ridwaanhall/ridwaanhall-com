@@ -41,6 +41,5 @@ project_data = {
         "Business Intelligence",
         "Dicoding"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

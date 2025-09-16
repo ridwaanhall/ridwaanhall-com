@@ -42,6 +42,5 @@ project_data = {
         "University Data",
         "Open Data"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

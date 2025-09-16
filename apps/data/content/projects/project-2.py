@@ -39,6 +39,5 @@ project_data = {
         "Social Media",
         "Data Mining"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

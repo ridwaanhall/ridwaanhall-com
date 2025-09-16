@@ -42,6 +42,5 @@ project_data = {
         "Handwritten Data",
         "2024 Election"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

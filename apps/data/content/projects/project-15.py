@@ -44,6 +44,5 @@ project_data = {
         "Education",
         "CRUD"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

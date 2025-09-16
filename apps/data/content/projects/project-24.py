@@ -42,6 +42,5 @@ project_data = {
         "Vote Tracking",
         "Data Visualization"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

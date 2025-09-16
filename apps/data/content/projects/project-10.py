@@ -40,6 +40,5 @@ project_data = {
         "Automation",
         "Bot Integration"
     ],
-    "priority": 1,
-    "slug": ""
+    "priority": 1
 }

@@ -13,10 +13,10 @@ class OpenToWorkData:
         """Get open to work data."""
         return {
             "status": "Actively Looking",
-            "availability": "Immediately, I am actively applying",
+            "availability": "Immediately",
             "type": "Full-time, Part-time, Contract",
             "remote": True,
-            "relocation": False,
+            "relocation": True,
             "preferred_roles": [
                 "Machine Learning Engineer",
                 "AI Engineer",

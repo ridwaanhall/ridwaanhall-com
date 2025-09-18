@@ -15,6 +15,26 @@ class ApplicationsData:
     },
     """
     applications = [
+
+        {
+            "id": 15,
+            "company_name": "Indocyber Global Teknologi",
+            "status": "In Progress",
+            "position": "Fullstack Developer (Python)",
+            "journey": [
+                {
+                    "title": "Job Discovery",
+                    "details": "Found the job posting on LinkedIn that matched my qualifications.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Application Submission",
+                    "details": "Applied for the position on September 4, 2025 via LinkedIn, redirect to techinasia.",
+                    "notes": "-"
+                },
+            ],
+            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates."
+        },
         {
             "id": 14,
             "company_name": "Coding Camp Powered by DBS Foundation (Dicoding Indonesia)",
@@ -100,7 +120,7 @@ class ApplicationsData:
         },
         {
             "id": 12,
-            "company_name": "Indigoshi Digital Indonesia",
+            "company_name": "Skyshi Digital Indonesia",
             "status": "Rejected",
             "position": "Python Developer (Junior Level)",
             "journey": [

@@ -15,7 +15,78 @@ class ApplicationsData:
     },
     """
     applications = [
-
+        {
+            "id": 18,
+            "company_name": "Lumoshive",
+            "status": "In Progress",
+            "position": "AI Engineer",
+            "journey": [
+                {
+                    "title": "Job Discovery",
+                    "details": "Found the job posting on LinkedIn that matched my qualifications.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Application Submited",
+                    "details": "Applied for the position on September 17, 2025 via LinkedIn.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Application Viewed",
+                    "details": "The application was viewed by the hiring manager.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Application Downloaded",
+                    "details": "The application was downloaded by the hiring manager.",
+                    "notes": "-"
+                },
+            ],
+            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates."
+        },
+        {
+            "id": 17,
+            "company_name": "Avows Global IT Technologies Private Limited",
+            "status": "In Progress",
+            "position": "Python Developer",
+            "journey": [
+                {
+                    "title": "Job Discovery",
+                    "details": "Found the job posting on LinkedIn that matched my qualifications.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Application Submited",
+                    "details": "Applied for the position on September 17, 2025 via LinkedIn.",
+                    "notes": "-"
+                },
+            ],
+            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates."
+        },
+        {
+            "id": 16,
+            "company_name": "Urban CV",
+            "status": "In Progress",
+            "position": "AI Developer",
+            "journey": [
+                {
+                    "title": "Job Discovery",
+                    "details": "Found the job posting on LinkedIn that matched my qualifications.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Application Submited",
+                    "details": "Applied for the position on September 13, 2025 via LinkedIn.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Application Viewed",
+                    "details": "The application was viewed by the hiring manager.",
+                    "notes": "-"
+                },
+            ],
+            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates."
+        },
         {
             "id": 15,
             "company_name": "Indocyber Global Teknologi",

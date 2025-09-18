@@ -16,6 +16,25 @@ class ApplicationsData:
     """
     applications = [
         {
+            "id": 19,
+            "company_name": "PT Appfuxion Consulting Indonesia",
+            "status": "In Progress",
+            "position": "Machine Learning Engineer",
+            "journey": [
+                {
+                    "title": "Job Discovery",
+                    "details": "Found the job posting on LinkedIn that matched my qualifications.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Application Submited",
+                    "details": "Applied for the position on September 18, 2025 via LinkedIn.",
+                    "notes": "-"
+                },
+            ],
+            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates."
+        },
+        {
             "id": 18,
             "company_name": "Lumoshive",
             "status": "In Progress",

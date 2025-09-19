@@ -20,6 +20,33 @@ class ApplicationsData:
     applications = [
         {
             "id": 19,
+            "company_name": "PT Appfuxion Consulting Indonesia",
+            "status": "In Progress",
+            "position": "Machine Learning Engineer",
+            "journey": [
+                {
+                    "date": datetime.strptime("2025-09-19T15:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found the job posting on LinkedIn that matched my qualifications.",
+                    "notes": "-"
+                },
+                {
+                    "date": datetime.strptime("2025-09-19T15:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied for the position via LinkedIn.",
+                    "notes": "-"
+                },
+                {
+                    "date": datetime.strptime("2025-09-19T16:01:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Viewed",
+                    "details": "The application was viewed by the hiring manager.",
+                    "notes": "-"
+                },
+            ],
+            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates."
+        },
+        {
+            "id": 19,
             "company_name": "Tritronik",
             "status": "In Progress",
             "position": "AI/ML Presales Engineer",
@@ -33,7 +60,7 @@ class ApplicationsData:
                 {
                     "date": datetime.strptime("2025-09-19T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
-                    "details": "Applied for the position on September 19, 2025 via LinkedIn.",
+                    "details": "Applied for the position via LinkedIn.",
                     "notes": "-"
                 },
             ],
@@ -58,6 +85,11 @@ class ApplicationsData:
                 {
                     "title": "Application Viewed",
                     "details": "The application was viewed by the hiring manager on September 19, 2025.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Application Closed",
+                    "details": "The application was closed on September 19, 2025.",
                     "notes": "-"
                 },
             ],

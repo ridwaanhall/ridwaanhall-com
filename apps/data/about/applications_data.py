@@ -37,7 +37,13 @@ class ApplicationsData:
                     "title": "Application Submitted",
                     "details": "Applied for the position via LinkedIn. Submitted resume and tailored cover letter highlighting relevant annotation and mentoring experience.",
                     "notes": "Used LinkedIn Easy Apply"
-                }
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-19T20:58:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Acknowledgement Received",
+                    "details": "Received confirmation email from Toloka Annotators. Application is under review. If selected, next step will be a short assessment to evaluate attention to detail and task performance.",
+                    "notes": "Email from noreply@candidates.workablemail.com"
+                },
             ],
             "lessons_learned": "Customizing application materials to match the job’s linguistic and technical requirements improves relevance and increases chances of progressing in the hiring process."
         },

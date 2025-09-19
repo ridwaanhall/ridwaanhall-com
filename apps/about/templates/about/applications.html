@@ -54,6 +54,7 @@
                                         <table class="w-full divide-y divide-zinc-700/30 text-sm table-auto">
                                             <thead>
                                                 <tr>
+                                                    <th class="px-2 sm:px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Time</th>
                                                     <th class="px-2 sm:px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Step</th>
                                                     <th class="px-2 sm:px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Details</th>
                                                     <th class="px-2 sm:px-3 py-2 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider">Notes</th>
@@ -62,7 +63,16 @@
                                             <tbody class="divide-y divide-zinc-700/20">
                                                 {% for step in application.journey %}
                                                 <tr class="hover:bg-zinc-800/30 transition-colors duration-150">
-                                                    <td class="px-2 sm:px-3 py-2 align-top">
+                                                    <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm">
+                                                        {% if step.timestamp %}
+                                                            <span class="text-zinc-400">{{ step.timestamp|date:"M j, Y" }}</span>
+                                                            <br>
+                                                            <span class="text-zinc-500 text-xs">{{ step.timestamp|time:"g:i A" }}</span>
+                                                        {% else %}
+                                                            <span class="text-zinc-600 italic">-</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="px-2 sm:px-3 py-2">
                                                         <span class="font-medium text-indigo-300 text-xs sm:text-sm">{{ step.title }}</span>
                                                     </td>
                                                     <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">{{ step.details }}</td>

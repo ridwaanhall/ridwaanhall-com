@@ -17,6 +17,25 @@ class ApplicationsData:
     applications = [
         {
             "id": 19,
+            "company_name": "Tritronik",
+            "status": "In Progress",
+            "position": "AI/ML Presales Engineer",
+            "journey": [
+                {
+                    "title": "Job Discovery",
+                    "details": "Found the job posting on LinkedIn that matched my qualifications.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Application Submitted",
+                    "details": "Applied for the position on September 19, 2025 via LinkedIn.",
+                    "notes": "-"
+                },
+            ],
+            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates."
+        },
+        {
+            "id": 19,
             "company_name": "PT Appfuxion Consulting Indonesia",
             "status": "In Progress",
             "position": "Machine Learning Engineer",
@@ -27,8 +46,13 @@ class ApplicationsData:
                     "notes": "-"
                 },
                 {
-                    "title": "Application Submited",
+                    "title": "Application Submitted",
                     "details": "Applied for the position on September 18, 2025 via LinkedIn.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Application Viewed",
+                    "details": "The application was viewed by the hiring manager.",
                     "notes": "-"
                 },
             ],
@@ -46,7 +70,7 @@ class ApplicationsData:
                     "notes": "-"
                 },
                 {
-                    "title": "Application Submited",
+                    "title": "Application Submitted",
                     "details": "Applied for the position on September 17, 2025 via LinkedIn.",
                     "notes": "-"
                 },
@@ -75,8 +99,13 @@ class ApplicationsData:
                     "notes": "-"
                 },
                 {
-                    "title": "Application Submited",
+                    "title": "Application Submitted",
                     "details": "Applied for the position on September 17, 2025 via LinkedIn.",
+                    "notes": "-"
+                },
+                {
+                    "title": "Application Viewed",
+                    "details": "The application was viewed by the hiring manager.",
                     "notes": "-"
                 },
             ],
@@ -94,22 +123,32 @@ class ApplicationsData:
                     "notes": "-"
                 },
                 {
-                    "title": "Application Submited",
+                    "title": "Application Submitted",
                     "details": "Applied for the position on September 13, 2025 via LinkedIn.",
                     "notes": "-"
                 },
                 {
                     "title": "Application Viewed",
-                    "details": "The application was viewed by the hiring manager.",
+                    "details": "The application was viewed by the hiring manager on September 17, 2025.",
                     "notes": "-"
                 },
+                {
+                    "title": "Recruiter Email Received",
+                    "details": "Received instructions from Madison at 9cv9 via email on September 18, 2025, including registration and contact steps.",
+                    "notes": "Included links to 9cv9 registration, TikTok channel, and Telegram contact for Ms. Meryl."
+                },
+                {
+                    "title": "Recruiter Contacted",
+                    "details": "Sent a message to Ms. Meryl via Telegram on September 19, 2025 to follow up on the application.",
+                    "notes": "Included registration confirmation and request for next steps."
+                }
             ],
-            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates."
+            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates. Timely and respectful follow-up helps maintain momentum and shows initiative."
         },
         {
             "id": 15,
             "company_name": "Indocyber Global Teknologi",
-            "status": "In Progress",
+            "status": "Rejected",
             "position": "Fullstack Developer (Python)",
             "journey": [
                 {
@@ -122,8 +161,13 @@ class ApplicationsData:
                     "details": "Applied for the position on September 4, 2025 via LinkedIn, redirect to techinasia.",
                     "notes": "-"
                 },
+                {
+                    "title": "Application Outcome",
+                    "details": "Received rejection email on September 18, 2025 from Tech in Asia Jobs. The team decided not to move forward with the application.",
+                    "notes": "Albert Martono suggested alternative roles at Antikode, Kompas Gramedia, and PT Tiga Daya Digital Indonesia."
+                }
             ],
-            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates."
+            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates. Rejections can open doors to new opportunities—stay proactive and explore adjacent roles."
         },
         {
             "id": 14,

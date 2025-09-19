@@ -2,19 +2,19 @@ from datetime import datetime
 
 
 class ApplicationsData:
-    """ # Can be "In Progress", "Accepted", "Rejected", "Ghosted"
+    """
     {
-        "company_name": ",
-        "status": ",
-        "position": ",
+        "company_name": "",
+        "status": "", # Can be "In Progress", "Accepted", "Rejected", "Ghosted"
+        "position": "",
         "journey": [
             {
-                "title": ",
-                "details": ",
-                "notes": "
+                "title": "",
+                "details": "",
+                "notes": ""
             },
         ],
-        "lessons_learned": "
+        "lessons_learned": ""
     },
     """
     applications = [

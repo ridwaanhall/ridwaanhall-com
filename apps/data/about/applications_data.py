@@ -25,19 +25,19 @@ class ApplicationsData:
             "position": "Machine Learning Engineer",
             "journey": [
                 {
-                    "date": datetime.strptime("2025-09-19T15:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-09-19T15:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found the job posting on LinkedIn that matched my qualifications.",
                     "notes": "-"
                 },
                 {
-                    "date": datetime.strptime("2025-09-19T15:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-09-19T15:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
                     "details": "Applied for the position via LinkedIn.",
                     "notes": "-"
                 },
                 {
-                    "date": datetime.strptime("2025-09-19T16:01:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-09-19T16:01:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Viewed",
                     "details": "The application was viewed by the hiring manager.",
                     "notes": "-"
@@ -52,13 +52,13 @@ class ApplicationsData:
             "position": "AI/ML Presales Engineer",
             "journey": [
                 {
-                    "date": datetime.strptime("2023-03-30T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2023-03-30T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found the job posting on LinkedIn that matched my qualifications.",
                     "notes": "-"
                 },
                 {
-                    "date": datetime.strptime("2025-09-19T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-09-19T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
                     "details": "Applied for the position via LinkedIn.",
                     "notes": "-"

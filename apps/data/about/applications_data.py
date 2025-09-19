@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 class ApplicationsData:
     """ # Can be "In Progress", "Accepted", "Rejected", "Ghosted"
     {
@@ -22,11 +25,13 @@ class ApplicationsData:
             "position": "AI/ML Presales Engineer",
             "journey": [
                 {
+                    "date": datetime.strptime("2023-03-30T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found the job posting on LinkedIn that matched my qualifications.",
                     "notes": "-"
                 },
                 {
+                    "date": datetime.strptime("2025-09-19T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
                     "details": "Applied for the position on September 19, 2025 via LinkedIn.",
                     "notes": "-"
@@ -52,7 +57,7 @@ class ApplicationsData:
                 },
                 {
                     "title": "Application Viewed",
-                    "details": "The application was viewed by the hiring manager.",
+                    "details": "The application was viewed by the hiring manager on September 19, 2025.",
                     "notes": "-"
                 },
             ],
@@ -76,12 +81,12 @@ class ApplicationsData:
                 },
                 {
                     "title": "Application Viewed",
-                    "details": "The application was viewed by the hiring manager.",
+                    "details": "The application was viewed by the hiring manager on September 18, 2025.",
                     "notes": "-"
                 },
                 {
                     "title": "Application Downloaded",
-                    "details": "The application was downloaded by the hiring manager.",
+                    "details": "The application was downloaded by the hiring manager on September 18, 2025.",
                     "notes": "-"
                 },
             ],
@@ -105,7 +110,7 @@ class ApplicationsData:
                 },
                 {
                     "title": "Application Viewed",
-                    "details": "The application was viewed by the hiring manager.",
+                    "details": "The application was viewed by the hiring manager on September 19, 2025.",
                     "notes": "-"
                 },
             ],

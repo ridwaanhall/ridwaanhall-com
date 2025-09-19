@@ -4,11 +4,13 @@ from datetime import datetime
 class ApplicationsData:
     """
     {
+        "id": 0,
         "company_name": "",
         "status": "", # Can be "In Progress", "Accepted", "Rejected", "Ghosted"
         "position": "",
         "journey": [
             {
+                "timestamp": datetime.strptime("2023-01-01T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                 "title": "",
                 "details": "",
                 "notes": ""

@@ -21,6 +21,27 @@ class ApplicationsData:
     """
     applications = [
         {
+            "id": 23,
+            "company_name": "Toloka Annotators",
+            "status": "In Progress",
+            "position": "Data Annotator with Indonesian – AI Trainer",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-19T20:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found the Data Annotator with Indonesian – AI Trainer role. The position aligns with my experience in AI/ML workflows, Python frameworks, and multilingual documentation.",
+                    "notes": "Posted on LinkedIn"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-19T20:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied for the position via LinkedIn. Submitted resume and tailored cover letter highlighting relevant annotation and mentoring experience.",
+                    "notes": "Used LinkedIn Easy Apply"
+                }
+            ],
+            "lessons_learned": "Customizing application materials to match the job’s linguistic and technical requirements improves relevance and increases chances of progressing in the hiring process."
+        },
+        {
             "id": 22,
             "company_name": "Michael Page",
             "status": "In Progress",

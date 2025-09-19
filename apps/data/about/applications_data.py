@@ -42,7 +42,7 @@ class ApplicationsData:
                     "timestamp": datetime.strptime("2025-09-19T20:58:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Acknowledgement Received",
                     "details": "Received confirmation email from Toloka Annotators. Application is under review. If selected, next step will be a short assessment to evaluate attention to detail and task performance.",
-                    "notes": "Email from noreply@candidates.workablemail.com"
+                    "notes": "Email"
                 },
             ],
             "lessons_learned": "Customizing application materials to match the job’s linguistic and technical requirements improves relevance and increases chances of progressing in the hiring process."

@@ -178,7 +178,12 @@ class ApplicationsData:
                     "title": "Recruiter Contacted",
                     "details": "Sent a message to Ms. Meryl via Telegram on September 19, 2025 to follow up on the application.",
                     "notes": "Included registration confirmation and request for next steps."
-                }
+                },
+                {
+                    "title": "Awaiting Response",
+                    "details": "Currently waiting for a response from the recruiter after sending the cv links.",
+                    "notes": "-"
+                },
             ],
             "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates. Timely and respectful follow-up helps maintain momentum and shows initiative."
         },

@@ -19,6 +19,48 @@ class ApplicationsData:
     """
     applications = [
         {
+            "id": 21,
+            "company_name": "Elitez Indonesia (Client in North Jakarta)",
+            "status": "In Progress",
+            "position": "Machine Learning Engineer",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-19T17:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found the Machine Learning Engineer opening posted by Elitez Indonesia. The role matches my experience in ML/DL and Python frameworks.",
+                    "notes": "Posted on LinkedIn, recruiter contact: Andrew Nasution"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-19T17:07:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Message Sent",
+                    "details": "Sent a direct message to Andrew Nasution expressing interest and sharing relevant experience.",
+                    "notes": "Included portfolio link and summary of ML/DL experience"
+                }
+            ],
+            "lessons_learned": "Matching your message to the job post and highlighting relevant tools (TensorFlow, PyTorch, Django) helps recruiters quickly assess fit."
+        },
+        {
+            "id": 20,
+            "company_name": "PT InMotion Inovasi Teknologi",
+            "status": "In Progress",
+            "position": "Python Developer",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-11T15:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found the job posting on LinkedIn that matched my qualifications.",
+                    "notes": "-"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-19T15:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied for the position via Kalibrr.",
+                    "notes": "-"
+                },
+            ],
+            "lessons_learned": "-"
+        },
+        {
             "id": 19,
             "company_name": "PT Appfuxion Consulting Indonesia",
             "status": "In Progress",
@@ -43,7 +85,7 @@ class ApplicationsData:
                     "notes": "-"
                 },
             ],
-            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates."
+            "lessons_learned": "Tailoring your resume to highlight relevant skills increases visibility and engagement."
         },
         {
             "id": 19,
@@ -64,36 +106,7 @@ class ApplicationsData:
                     "notes": "-"
                 },
             ],
-            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates."
-        },
-        {
-            "id": 19,
-            "company_name": "PT Appfuxion Consulting Indonesia",
-            "status": "In Progress",
-            "position": "Machine Learning Engineer",
-            "journey": [
-                {
-                    "title": "Job Discovery",
-                    "details": "Found the job posting on LinkedIn that matched my qualifications.",
-                    "notes": "-"
-                },
-                {
-                    "title": "Application Submitted",
-                    "details": "Applied for the position on September 18, 2025 via LinkedIn.",
-                    "notes": "-"
-                },
-                {
-                    "title": "Application Viewed",
-                    "details": "The application was viewed by the hiring manager on September 19, 2025.",
-                    "notes": "-"
-                },
-                {
-                    "title": "Application Closed",
-                    "details": "The application was closed on September 19, 2025.",
-                    "notes": "-"
-                },
-            ],
-            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates."
+            "lessons_learned": "Understanding the business model helps craft better presales narratives."
         },
         {
             "id": 18,
@@ -102,27 +115,31 @@ class ApplicationsData:
             "position": "AI Engineer",
             "journey": [
                 {
+                    "timestamp": datetime.strptime("2025-09-17T09:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found the job posting on LinkedIn that matched my qualifications.",
                     "notes": "-"
                 },
                 {
+                    "timestamp": datetime.strptime("2025-09-17T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
-                    "details": "Applied for the position on September 17, 2025 via LinkedIn.",
+                    "details": "Applied for the position via LinkedIn.",
                     "notes": "-"
                 },
                 {
+                    "timestamp": datetime.strptime("2025-09-18T08:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Viewed",
-                    "details": "The application was viewed by the hiring manager on September 18, 2025.",
+                    "details": "The application was viewed by the hiring manager.",
                     "notes": "-"
                 },
                 {
+                    "timestamp": datetime.strptime("2025-09-18T09:15:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Downloaded",
-                    "details": "The application was downloaded by the hiring manager on September 18, 2025.",
+                    "details": "The application was downloaded by the hiring manager.",
                     "notes": "-"
                 },
             ],
-            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates."
+            "lessons_learned": "Early application submission improves chances of visibility before the role closes."
         },
         {
             "id": 17,
@@ -131,22 +148,25 @@ class ApplicationsData:
             "position": "Python Developer",
             "journey": [
                 {
+                    "timestamp": datetime.strptime("2025-09-17T07:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found the job posting on LinkedIn that matched my qualifications.",
                     "notes": "-"
                 },
                 {
+                    "timestamp": datetime.strptime("2025-09-17T08:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
-                    "details": "Applied for the position on September 17, 2025 via LinkedIn.",
+                    "details": "Applied for the position via LinkedIn.",
                     "notes": "-"
                 },
                 {
+                    "timestamp": datetime.strptime("2025-09-19T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Viewed",
-                    "details": "The application was viewed by the hiring manager on September 19, 2025.",
+                    "details": "The application was viewed by the hiring manager.",
                     "notes": "-"
                 },
             ],
-            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates."
+            "lessons_learned": "Clear and concise project descriptions in your portfolio help recruiters assess fit quickly."
         },
         {
             "id": 16,
@@ -155,37 +175,43 @@ class ApplicationsData:
             "position": "AI Developer",
             "journey": [
                 {
+                    "timestamp": datetime.strptime("2025-09-13T11:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found the job posting on LinkedIn that matched my qualifications.",
                     "notes": "-"
                 },
                 {
+                    "timestamp": datetime.strptime("2025-09-13T12:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
-                    "details": "Applied for the position on September 13, 2025 via LinkedIn.",
+                    "details": "Applied for the position via LinkedIn.",
                     "notes": "-"
                 },
                 {
+                    "timestamp": datetime.strptime("2025-09-17T14:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Viewed",
-                    "details": "The application was viewed by the hiring manager on September 17, 2025.",
+                    "details": "The application was viewed by the hiring manager.",
                     "notes": "-"
                 },
                 {
+                    "timestamp": datetime.strptime("2025-09-18T09:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Recruiter Email Received",
-                    "details": "Received instructions from Madison at 9cv9 via email on September 18, 2025, including registration and contact steps.",
-                    "notes": "Included links to 9cv9 registration, TikTok channel, and Telegram contact for Ms. Meryl."
+                    "details": "Received instructions from Madison at 9cv9 via email.",
+                    "notes": "Included registration and contact steps."
                 },
                 {
+                    "timestamp": datetime.strptime("2025-09-19T10:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Recruiter Contacted",
-                    "details": "Sent a message to Ms. Meryl via Telegram on September 19, 2025 to follow up on the application.",
-                    "notes": "Included registration confirmation and request for next steps."
+                    "details": "Sent a message to Ms. Meryl via Telegram.",
+                    "notes": "Included registration confirmation."
                 },
                 {
+                    "timestamp": datetime.strptime("2025-09-19T16:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Awaiting Response",
-                    "details": "Currently waiting for a response from the recruiter after sending the cv links.",
+                    "details": "Currently waiting for a response from the recruiter.",
                     "notes": "-"
                 },
             ],
-            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates. Timely and respectful follow-up helps maintain momentum and shows initiative."
+            "lessons_learned": "Timely follow-up and polite communication show initiative and professionalism."
         },
         {
             "id": 15,
@@ -194,22 +220,25 @@ class ApplicationsData:
             "position": "Fullstack Developer (Python)",
             "journey": [
                 {
+                    "timestamp": datetime.strptime("2025-09-04T09:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found the job posting on LinkedIn that matched my qualifications.",
                     "notes": "-"
                 },
                 {
+                    "timestamp": datetime.strptime("2025-09-04T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submission",
-                    "details": "Applied for the position on September 4, 2025 via LinkedIn, redirect to techinasia.",
+                    "details": "Applied for the position via LinkedIn, redirected to Tech in Asia.",
                     "notes": "-"
                 },
                 {
+                    "timestamp": datetime.strptime("2025-09-18T08:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Outcome",
-                    "details": "Received rejection email on September 18, 2025 from Tech in Asia Jobs. The team decided not to move forward with the application.",
-                    "notes": "Albert Martono suggested alternative roles at Antikode, Kompas Gramedia, and PT Tiga Daya Digital Indonesia."
+                    "details": "Received rejection email from Tech in Asia Jobs.",
+                    "notes": "Suggested alternative roles at Antikode, Kompas Gramedia, and PT Tiga Daya Digital Indonesia."
                 }
             ],
-            "lessons_learned": "Thoroughly researching company information and requirements significantly improves application success rates. Rejections can open doors to new opportunities—stay proactive and explore adjacent roles."
+            "lessons_learned": "Rejections are redirections—each one refines your strategy and expands your network."
         },
         {
             "id": 14,

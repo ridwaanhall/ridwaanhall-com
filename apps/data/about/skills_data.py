@@ -454,6 +454,11 @@ class SkillsData:
             "description": "Framework that makes building simple and scalable test cases easy",
             "icon_svg": f"{settings.BASE_URL}/static/svg/icon/pytest.svg"
         },
+        "boto3": {
+            "name": "boto3",
+            "description": "AWS SDK for Python to interact with AWS services like S3",
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/boto3.svg"
+        },
     }
     
     # Legacy list format for backward compatibility

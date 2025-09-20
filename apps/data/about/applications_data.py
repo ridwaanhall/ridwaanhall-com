@@ -2,22 +2,93 @@ from datetime import datetime
 
 
 class ApplicationsData:
-    """ # Can be "In Progress", "Accepted", "Rejected", "Ghosted"
+    """
     {
-        "company_name": ",
-        "status": ",
-        "position": ",
+        "id": 0,
+        "company_name": "",
+        "status": "", # Can be "In Progress", "Accepted", "Rejected", "Ghosted"
+        "position": "",
         "journey": [
             {
-                "title": ",
-                "details": ",
-                "notes": "
+                "timestamp": datetime.strptime("2023-01-01T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                "title": "",
+                "details": "",
+                "notes": ""
             },
         ],
-        "lessons_learned": "
+        "lessons_learned": ""
     },
     """
     applications = [
+        {
+            "id": 24,
+            "company_name": "PT Karisma Zona Kreatifku (KAZOKKU)",
+            "status": "In Progress",
+            "position": "Backend Engineer (Python & AI Integration)",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-20T15:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found the Backend Engineer (Python & AI Integration) role posted by PT Karisma Zona Kreatifku (KAZOKKU). The position aligns with my experience in AI/ML workflows, Python frameworks (FastAPI), and multilingual documentation.",
+                    "notes": "Discovered via LinkedIn"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-20T09:15:50+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied for the position through Glints. Submitted cv.",
+                    "notes": "Used Glints platform"
+                }
+            ],
+            "lessons_learned": "Cross-platform job discovery can expand opportunities. Applying through the employer’s preferred channel (Glints) while referencing LinkedIn insights ensures alignment and visibility."
+        },
+        {
+            "id": 23,
+            "company_name": "Toloka Annotators",
+            "status": "In Progress",
+            "position": "Data Annotator with Indonesian – AI Trainer",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-19T20:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found the Data Annotator with Indonesian – AI Trainer role. The position aligns with my experience in AI/ML workflows, Python frameworks, and multilingual documentation.",
+                    "notes": "Posted on LinkedIn"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-19T20:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied for the position via LinkedIn. Submitted resume and tailored cover letter highlighting relevant annotation and mentoring experience.",
+                    "notes": "Used LinkedIn Easy Apply"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-19T20:58:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Acknowledgement Received",
+                    "details": "Received confirmation email from Toloka Annotators. Application is under review. If selected, next step will be a short assessment to evaluate attention to detail and task performance.",
+                    "notes": "Email"
+                },
+            ],
+            "lessons_learned": "Customizing application materials to match the job’s linguistic and technical requirements improves relevance and increases chances of progressing in the hiring process."
+        },
+        {
+            "id": 22,
+            "company_name": "Michael Page",
+            "status": "In Progress",
+            "position": "AI Engineer",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-19T17:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found the AI Engineer. The role aligns with my experience in AI/ML and Python frameworks.",
+                    "notes": "Posted on LinkedIn"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-19T17:35:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied for the position via Michael Page website.",
+                    "notes": "Submitted resume"
+                }
+            ],
+            "lessons_learned": "Customizing application materials to highlight relevant skills and experiences improves chances of progressing in the hiring process."
+        },
         {
             "id": 21,
             "company_name": "Elitez Indonesia (Client in North Jakarta)",

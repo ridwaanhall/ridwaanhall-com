@@ -21,6 +21,27 @@ class ApplicationsData:
     """
     applications = [
         {
+            "id": 24,
+            "company_name": "PT Karisma Zona Kreatifku (KAZOKKU)",
+            "status": "In Progress",
+            "position": "Backend Engineer (Python & AI Integration)",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-20T15:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found the Backend Engineer (Python & AI Integration) role posted by PT Karisma Zona Kreatifku (KAZOKKU). The position aligns with my experience in AI/ML workflows, Python frameworks (FastAPI), and multilingual documentation.",
+                    "notes": "Discovered via LinkedIn"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-20T09:15:50+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied for the position through Glints. Submitted cv.",
+                    "notes": "Used Glints platform"
+                }
+            ],
+            "lessons_learned": "Cross-platform job discovery can expand opportunities. Applying through the employer’s preferred channel (Glints) while referencing LinkedIn insights ensures alignment and visibility."
+        },
+        {
             "id": 23,
             "company_name": "Toloka Annotators",
             "status": "In Progress",

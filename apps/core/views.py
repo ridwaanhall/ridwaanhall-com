@@ -5,7 +5,8 @@ Handles homepage, contact, and privacy policy views with proper SEO integration.
 
 import random
 from django.utils import timezone
-from django.http import HttpResponsePermanentRedirect
+from django.http import HttpResponsePermanentRedirect, HttpResponse
+from django.shortcuts import render
 
 from apps.core.base_views import BaseView
 from apps.data.data_service import DataService
@@ -151,3 +152,23 @@ class CVTemplateRedirectView(BaseView):
             return HttpResponsePermanentRedirect('/')
             
         return HttpResponsePermanentRedirect(template_url)
+
+
+def dynamic_css_view(request, css_name):
+    """
+    Serve CSS files with template variables processed.
+    Allows using Django template variables like {{ BASE_URL }} in CSS files.
+    """
+    valid_css_files = ['onest', 'plus_jakarta_sans']
+    
+    if css_name not in valid_css_files:
+        return HttpResponse('CSS file not found', status=404)
+    
+    template_name = f'css/{css_name}.css'
+    
+    response = render(request, template_name, content_type='text/css')
+    
+    # Set caching headers for better performance
+    response['Cache-Control'] = 'public, max-age=86400'  # Cache for 24 hours
+    
+    return response

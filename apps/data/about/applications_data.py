@@ -149,6 +149,18 @@ class ApplicationsData:
                     "details": "Applied for the position via Kalibrr.",
                     "notes": "-"
                 },
+                {
+                    "timestamp": datetime.strptime("2025-09-21T21:17:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Reviewed",
+                    "details": "The application was reviewed by the hiring manager.",
+                    "notes": "-"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-21T21:17:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Shortlisted",
+                    "details": "Application advanced to the shortlist stage, as confirmed by Kalibrr notification.",
+                    "notes": "Consider sending a thank-you note to express enthusiasm."
+                },
             ],
             "lessons_learned": "-"
         },

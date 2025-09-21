@@ -7,7 +7,7 @@
         <title>{% block title %}Error{% endblock %} - Ridwan Halim</title>
         {% load static %}
         <link rel="stylesheet" href="{% static 'css/global.css' %}" />
-        <link rel="stylesheet" href="{% static 'font/Onest/Onest.css' %}" />
+        <link rel="stylesheet" href="{% url 'dynamic_css' 'onest' %}" />
         <link rel="stylesheet" href="{% static 'css/clickRipple.css' %}" />
         <style>
             /* Optional: Add subtle transition for hover effects */

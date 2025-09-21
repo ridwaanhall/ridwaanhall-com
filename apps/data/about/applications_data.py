@@ -21,6 +21,27 @@ class ApplicationsData:
     """
     applications = [
         {
+            "id": 25,
+            "company_name": "PT Amman Mineral Nusa Tenggara",
+            "status": "In Progress",
+            "position": "Data Analyst",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-21T14:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found the Data Analyst role at PT Amman Mineral Nusa Tenggara via LinkedIn. The position emphasizes data-driven decision support, mining operations analysis, and stakeholder reporting—well-aligned with my experience in Python, data pipelines, and multilingual documentation.",
+                    "notes": "Discovered via LinkedIn Jobs"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-21T14:01:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied for the Data Analyst position through LinkedIn. Submitted CV and tailored cover letter highlighting experience in scalable data systems and cohort mentoring.",
+                    "notes": "Used LinkedIn platform"
+                }
+            ],
+            "lessons_learned": "Tailoring application materials to emphasize domain relevance—such as mining analytics and stakeholder reporting—can strengthen positioning. LinkedIn remains a high-visibility platform for strategic outreach."
+        },
+        {
             "id": 24,
             "company_name": "PT Karisma Zona Kreatifku (KAZOKKU)",
             "status": "In Progress",
@@ -134,11 +155,11 @@ class ApplicationsData:
         {
             "id": 19,
             "company_name": "PT Appfuxion Consulting Indonesia",
-            "status": "In Progress",
+            "status": "Rejected",
             "position": "Machine Learning Engineer",
             "journey": [
                 {
-                    "timestamp": datetime.strptime("2025-09-19T15:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-09-18T15:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found the job posting on LinkedIn that matched my qualifications.",
                     "notes": "-"
@@ -155,8 +176,14 @@ class ApplicationsData:
                     "details": "The application was viewed by the hiring manager.",
                     "notes": "-"
                 },
+                {
+                    "timestamp": datetime.strptime("2025-09-21T15:33:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Rejection Received",
+                    "details": "Received rejection email via LinkedIn notification.",
+                    "notes": "Thank you for your interest... Unfortunately, we will not be moving forward with your application."
+                }
             ],
-            "lessons_learned": "Tailoring your resume to highlight relevant skills increases visibility and engagement."
+            "lessons_learned": "Tailoring your resume to highlight relevant skills increases visibility and engagement. For ML roles, consider emphasizing deployment experience and measurable impact in project outcomes."
         },
         {
             "id": 19,

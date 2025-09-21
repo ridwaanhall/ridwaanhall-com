@@ -20,3 +20,12 @@ def feature_flags(request):
         'AUTHENTICATION_ENABLED': guestbook_enabled,  # Auth is only enabled when guestbook is enabled
         'WSRV_IMAGE_OPTIMIZATION': wsrv_enabled,
     }
+
+
+def base_settings(request):
+    """
+    Context processor to make base settings available in templates.
+    """
+    return {
+        'BASE_URL': getattr(settings, 'BASE_URL', 'https://ridwaanhall.com'),
+    }

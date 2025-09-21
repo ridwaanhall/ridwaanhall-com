@@ -265,6 +265,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'FlexForge.context_processors.feature_flags',
+                'FlexForge.context_processors.base_settings',
             ],
         },
     },

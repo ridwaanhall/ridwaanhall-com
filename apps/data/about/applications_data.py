@@ -21,6 +21,27 @@ class ApplicationsData:
     """
     applications = [
         {
+            "id": 26,
+            "company_name": "Nawatech",
+            "status": "In Progress",
+            "position": "Machine Learning Engineer",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-22T13:10:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Received the Nawatech Machine Learning Engineer job post from a friend via WhatsApp.",
+                    "notes": "Link opened in LinkedIn"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-22T13:17:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied via LinkedIn Easy Apply.",
+                    "notes": "Confirmed via Gmail notification"
+                }
+            ],
+            "lessons_learned": "Personal referrals can surface relevant opportunities faster. Even with Easy Apply, aligning your LinkedIn profile and resume with the role’s technical focus—especially ML deployment and Python—remains key."
+        },
+        {
             "id": 25,
             "company_name": "PT Amman Mineral Nusa Tenggara",
             "status": "In Progress",

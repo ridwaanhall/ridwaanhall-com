@@ -338,8 +338,14 @@ class ApplicationsData:
                     "details": "The application was viewed by the hiring manager.",
                     "notes": "-"
                 },
+                {
+                    "timestamp": datetime.strptime("2025-09-23T10:53:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Downloaded",
+                    "details": "My application was downloaded from LinkedIn by the recruiter.",
+                    "notes": "Confirmed via LinkedIn activity feed"
+                },
             ],
-            "lessons_learned": "Clear and concise project descriptions in your portfolio help recruiters assess fit quickly."
+            "lessons_learned": "Clear and concise project descriptions in your portfolio help recruiters assess fit quickly. Application downloads signal deeper interest—keep your LinkedIn profile aligned and updated."
         },
         {
             "id": 16,

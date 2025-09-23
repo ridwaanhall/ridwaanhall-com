@@ -21,6 +21,48 @@ class ApplicationsData:
     """
     applications = [
         {
+            "id": 28,
+            "company_name": "Vodjo",
+            "status": "In Progress",
+            "position": "Python Developer",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-23T11:18:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found the Vodjo Python Developer listing via LinkedIn job recommendations.",
+                    "notes": "Opened from LinkedIn job feed and reviewed full role description on Vodjo’s career page"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-23T11:21:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied via Vodjo’s OrangeHRM portal.",
+                    "notes": "Confirmed via success message on OrangeHRM page"
+                }
+            ],
+            "lessons_learned": "Direct company portals often offer clearer role expectations than LinkedIn summaries. Matching keywords like RESTful API, Django, and scalable systems to your CV and notes field improves alignment. Consent checkbox is standard for data retention."
+        },
+        {
+            "id": 27,
+            "company_name": "Dattabot",
+            "status": "In Progress",
+            "position": "Data Python Engineer",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-23T11:17:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found the Dattabot Data Python Engineer listing while browsing LinkedIn job recommendations.",
+                    "notes": "Opened from LinkedIn job feed"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-23T11:21:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied via LinkedIn Easy Apply.",
+                    "notes": "Confirmed via Gmail notification"
+                }
+            ],
+            "lessons_learned": "Timely browsing of LinkedIn job feeds can surface relevant openings. For data-focused roles, emphasizing Python backend experience, API integration, and scalable systems in your profile increases alignment."
+        },
+        {
             "id": 26,
             "company_name": "Nawatech",
             "status": "In Progress",

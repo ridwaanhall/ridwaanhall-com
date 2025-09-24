@@ -21,6 +21,27 @@ class ApplicationsData:
     """
     applications = [
         {
+            "id": 29,
+            "company_name": "10Pearls",
+            "status": "In Progress",
+            "position": "Backend Python/Django Developer",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-24T11:06:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Discovered the Backend Python/Django role at 10Pearls via LinkedIn job recommendations.",
+                    "notes": "Reviewed job listing on LinkedIn; noted remote setup and tech stack alignment."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-24T11:09:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied directly through LinkedIn’s Easy Apply feature.",
+                    "notes": "Received confirmation email from LinkedIn stating application was sent to 10Pearls."
+                }
+            ],
+            "lessons_learned": "LinkedIn Easy Apply simplifies submission but may lack full role context. Reviewing company site or external listings can help clarify expectations. Always ensure CV keywords (e.g. Django, RESTful API, scalable systems) match the job description. Email confirmations are automated—no recruiter contact yet."
+        },
+        {
             "id": 28,
             "company_name": "Vodjo",
             "status": "In Progress",

@@ -172,3 +172,16 @@ def dynamic_css_view(request, css_name):
     response['Cache-Control'] = 'public, max-age=86400'  # Cache for 24 hours
     
     return response
+
+
+def dynamic_webmanifest_view(request):
+    """
+    Serve site.webmanifest with template variables processed.
+    Allows using Django template variables like {{ BASE_URL }} in webmanifest.
+    """
+    response = render(request, 'site.webmanifest', content_type='application/manifest+json')
+    
+    # Set caching headers for better performance
+    response['Cache-Control'] = 'public, max-age=86400'  # Cache for 24 hours
+    
+    return response

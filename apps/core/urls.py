@@ -13,4 +13,7 @@ urlpatterns = [
     
     # Dynamic CSS endpoints
     path('css/<str:css_name>.css', views.dynamic_css_view, name='dynamic_css'),
+    
+    # Dynamic webmanifest endpoint
+    path('site.webmanifest', views.dynamic_webmanifest_view, name='dynamic_webmanifest'),
 ]

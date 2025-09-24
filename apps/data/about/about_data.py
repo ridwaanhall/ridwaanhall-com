@@ -26,7 +26,7 @@ class AboutData:
             "cv": "https://drive.google.com/file/d/17FaTvAPK273fzXa9ez36X1vDCuQRLM-1/view?usp=sharing",
             "cv_latest": "https://drive.google.com/file/d/1Sv2VQ95fDn-0a_8lOZxBuFAZ--gJrw7u5EQ-_SLUfpo/view?usp=sharing",
             "cv_copy": "https://docs.google.com/document/d/1Sv2VQ95fDn-0a_8lOZxBuFAZ--gJrw7u5EQ-_SLUfpo/copy",
-            "role": "Python Programmer",
+            "role": "Python Developer",
             "is_active": cls.is_working_hours(),
             "is_open_to_work": True,
             "is_hiring": False,

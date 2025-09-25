@@ -33,7 +33,7 @@ class ApplicationsData:
                     "notes": "Remote role based in Canada; aligned with Python expertise."
                 },
                 {
-                    "timestamp": datetime.strptime("2025-09-25T11:19:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-09-25T11:05:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
                     "details": "Applied through LinkedIn Easy Apply.",
                     "notes": "Application confirmation received; no recruiter contact yet."
@@ -48,17 +48,23 @@ class ApplicationsData:
             "position": "Junior Python Developer",
             "journey": [
                 {
-                    "timestamp": datetime.strptime("2025-09-25T11:05:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-09-25T10:55:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Discovered Junior Python Developer role at Improvado.",
                     "notes": "Remote role based in Georgia; entry-level Python focus."
                 },
                 {
-                    "timestamp": datetime.strptime("2025-09-25T11:20:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-09-25T11:01:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
                     "details": "Applied via LinkedIn Easy Apply.",
                     "notes": "Application confirmation received."
-                }
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-25T11:01:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Response Received",
+                    "details": "Received automated acknowledgment email from Improvado confirming resume submission.",
+                    "notes": "Message stated: 'Thank you for your interest… If your qualifications match our needs, we will contact you.'"
+                },
             ],
             "lessons_learned": "Entry-level roles may have high competition; tailoring CV to highlight mentoring and open-source contributions could stand out."
         },
@@ -69,13 +75,13 @@ class ApplicationsData:
             "position": "Junior Django Developer",
             "journey": [
                 {
-                    "timestamp": datetime.strptime("2025-09-25T11:06:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-09-25T10:55:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found Junior Django Developer role at Codesis Technologies.",
                     "notes": "Remote role in India; Django-specific focus."
                 },
                 {
-                    "timestamp": datetime.strptime("2025-09-25T11:23:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-09-25T10:59:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
                     "details": "Applied through LinkedIn Easy Apply.",
                     "notes": "Confirmation received."
@@ -90,13 +96,13 @@ class ApplicationsData:
             "position": "Python Developer (CAN START IMMEDIATELY)",
             "journey": [
                 {
-                    "timestamp": datetime.strptime("2025-09-25T11:07:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-09-25T10:44:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Came across urgent Python Developer role at Innodata Inc.",
                     "notes": "Remote role in the Philippines; immediate availability emphasized."
                 },
                 {
-                    "timestamp": datetime.strptime("2025-09-25T11:35:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-09-25T10:48:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
                     "details": "Applied via LinkedIn Easy Apply.",
                     "notes": "Application confirmation received."
@@ -111,13 +117,13 @@ class ApplicationsData:
             "position": "Junior Python Developer",
             "journey": [
                 {
-                    "timestamp": datetime.strptime("2025-09-25T11:08:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-09-25T10:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Discovered Junior Python Developer role at Logix Guru.",
                     "notes": "Remote role based in Pittsburgh, PA."
                 },
                 {
-                    "timestamp": datetime.strptime("2025-09-25T11:37:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-09-25T10:44:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
                     "details": "Applied via LinkedIn Easy Apply.",
                     "notes": "Application confirmation received."

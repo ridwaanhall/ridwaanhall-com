@@ -424,10 +424,10 @@ class SkillsData:
             "description": "Modern UI components to craft clean, stylish interfaces",
             "icon_svg": f"{settings.BASE_URL}/static/svg/icon/shadcnui.svg"
         },
-        "telegram_api": {
-            "name": "Telegram API",
+        "telegram": {
+            "name": "Telegram",
             "description": "Connects your apps to Telegram for messaging and bots",
-            "icon_svg": ""
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/telegram.svg"
         },
         "wakatime_api": {
             "name": "WakaTime API",
@@ -458,6 +458,21 @@ class SkillsData:
             "name": "boto3",
             "description": "AWS SDK for Python to interact with AWS services like S3",
             "icon_svg": f"{settings.BASE_URL}/static/svg/icon/boto3.svg"
+        },
+        "n8n": {
+            "name": "n8n",
+            "description": "Workflow automation tool that enables visual programming for integrating APIs, services, and custom logic without writing code.",
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/n8n.svg"
+        },
+        "google_sheets": {
+            "name": "Google Sheets",
+            "description": "Cloud-based spreadsheet tool used for storing, analyzing, and visualizing structured data. Commonly integrated via API for automation and data pipelines.",
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/google-sheets.svg"
+        },
+        "gemini": {
+            "name": "Gemini",
+            "description": "Google’s multimodal AI model designed for advanced reasoning, image understanding, and natural language tasks. Commonly used for OCR, summarization, and intelligent automation.",
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/gemini.svg"
         },
     }
     

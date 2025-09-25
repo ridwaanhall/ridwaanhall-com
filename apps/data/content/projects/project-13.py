@@ -42,7 +42,7 @@ project_data = {
     "tech_stack": [
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["flask"],
-        SkillsData.tech_stack["telegram_api"]
+        SkillsData.tech_stack["telegram"]
     ],
     "github_url": "",
     "demo_url": "",

@@ -466,12 +466,12 @@ class SkillsData:
         },
         "google_sheets": {
             "name": "Google Sheets",
-            "description": "Cloud-based spreadsheet tool used for storing, analyzing, and visualizing structured data. Commonly integrated via API for automation and data pipelines.",
+            "description": "Cloud-based spreadsheet platform for storing, analyzing, and automating structured data workflows.",
             "icon_svg": f"{settings.BASE_URL}/static/svg/icon/google-sheets.svg"
         },
         "gemini": {
             "name": "Gemini",
-            "description": "Google’s multimodal AI model designed for advanced reasoning, image understanding, and natural language tasks. Commonly used for OCR, summarization, and intelligent automation.",
+            "description": "Google’s multimodal AI model for OCR, summarization, and intelligent automation across text and image inputs.",
             "icon_svg": f"{settings.BASE_URL}/static/svg/icon/gemini.svg"
         },
     }

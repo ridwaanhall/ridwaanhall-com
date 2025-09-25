@@ -461,17 +461,17 @@ class SkillsData:
         },
         "n8n": {
             "name": "n8n",
-            "description": "Workflow automation tool that enables visual programming for integrating APIs, services, and custom logic without writing code.",
+            "description": "Visual automation for APIs, services, and logic—no code needed.",
             "icon_svg": f"{settings.BASE_URL}/static/svg/icon/n8n.svg"
         },
         "google_sheets": {
             "name": "Google Sheets",
-            "description": "Cloud-based spreadsheet platform for storing, analyzing, and automating structured data workflows.",
+            "description": "Online spreadsheets for data storage and automation.",
             "icon_svg": f"{settings.BASE_URL}/static/svg/icon/google-sheets.svg"
         },
         "gemini": {
             "name": "Gemini",
-            "description": "Google’s multimodal AI model for OCR, summarization, and intelligent automation across text and image inputs.",
+            "description": "Google AI for OCR, summarization, and smart automation.",
             "icon_svg": f"{settings.BASE_URL}/static/svg/icon/gemini.svg"
         },
     }

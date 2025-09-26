@@ -6,7 +6,6 @@ Consolidates data access patterns and provides caching where appropriate.
 import logging
 from datetime import datetime
 from typing import List, Dict, Any, Optional
-from django.core.cache import cache
 
 from apps.data.content_manager import ContentManager
 from apps.data.about_manager import AboutManager

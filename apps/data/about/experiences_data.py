@@ -52,7 +52,7 @@ class ExperiencesData:
             },
             "employment_type": employment_types["se"],
             "location_type": location_types["on"],
-            "location": "Solo, Indonesia 🇮🇩",
+            "location": "Boyolali, Indonesia 🇮🇩",
             "is_current": True,
             "responsibilities": [
                 "Collaborative Python Innovations and Learning for Optimal Technologies.",

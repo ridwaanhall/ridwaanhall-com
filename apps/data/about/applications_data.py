@@ -6,7 +6,7 @@ class ApplicationsData:
     {
         "id": 0,
         "company_name": "",
-        "status": "", # Can be "In Progress", "Accepted", "Rejected", "Ghosted"
+        "status": "", # Can be "Applied", "In Progress", "Accepted", "Rejected", "Ghosted"
         "position": "",
         "journey": [
             {

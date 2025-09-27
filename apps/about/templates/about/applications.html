@@ -12,14 +12,14 @@
                                     <h3 class="text-base sm:text-lg font-medium text-zinc-300 break-words">{{ application.company_name }}</h3>
                                 </div>
                                 <span
-                                    class="inline-flex items-center rounded-full px-2 sm:px-2.5 py-1 text-xs font-medium shadow-inner whitespace-nowrap {% if application.status == 'In Progress' %}bg-blue-950/60 text-blue-300 ring-1 ring-blue-700/70{% endif %} {% if application.status == 'Accepted' %}bg-green-950/60 text-green-300 ring-1 ring-green-700/70{% endif %} {% if application.status == 'Rejected' %}bg-red-950/60 text-red-300 ring-1 ring-red-700/70{% endif %} {% if application.status == 'Ghosted' %}bg-yellow-950/60 text-yellow-300 ring-1 ring-yellow-700/70{% endif %}"
+                                    class="inline-flex items-center rounded-full px-2 sm:px-2.5 py-1 text-xs font-medium shadow-inner whitespace-nowrap {% if application.status == 'In Progress' %}bg-blue-950/60 text-blue-300 ring-1 ring-blue-700/70{% endif %} {% if application.status == 'Accepted' %}bg-green-950/60 text-green-300 ring-1 ring-green-700/70{% endif %} {% if application.status == 'Rejected' %}bg-red-950/60 text-red-300 ring-1 ring-red-700/70{% endif %} {% if application.status == 'Ghosted' %}bg-yellow-950/60 text-yellow-300 ring-1 ring-yellow-700/70{% endif %} {% if application.status == 'Applied' %}bg-zinc-950/60 text-zinc-300 ring-1 ring-zinc-700/70{% endif %}"
                                 >
                                     <span class="relative flex h-1.5 w-1.5 mr-1.5">
                                         <span
-                                            class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 {% if application.status == 'In Progress' %}bg-blue-600{% endif %} {% if application.status == 'Accepted' %}bg-green-600{% endif %} {% if application.status == 'Rejected' %}bg-red-600{% endif %} {% if application.status == 'Ghosted' %}bg-yellow-600{% endif %}"
+                                            class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 {% if application.status == 'In Progress' %}bg-blue-600{% endif %} {% if application.status == 'Accepted' %}bg-green-600{% endif %} {% if application.status == 'Rejected' %}bg-red-600{% endif %} {% if application.status == 'Ghosted' %}bg-yellow-600{% endif %} {% if application.status == 'Applied' %}bg-zinc-600{% endif %}"
                                         ></span>
                                         <span
-                                            class="relative inline-flex rounded-full h-1.5 w-1.5 {% if application.status == 'In Progress' %}bg-blue-700{% endif %} {% if application.status == 'Accepted' %}bg-green-700{% endif %} {% if application.status == 'Rejected' %}bg-red-700{% endif %} {% if application.status == 'Ghosted' %}bg-yellow-700{% endif %}"
+                                            class="relative inline-flex rounded-full h-1.5 w-1.5 {% if application.status == 'In Progress' %}bg-blue-700{% endif %} {% if application.status == 'Accepted' %}bg-green-700{% endif %} {% if application.status == 'Rejected' %}bg-red-700{% endif %} {% if application.status == 'Ghosted' %}bg-yellow-700{% endif %} {% if application.status == 'Applied' %}bg-zinc-700{% endif %}"
                                         ></span>
                                     </span>
                                     {{ application.status }}

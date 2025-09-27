@@ -3,6 +3,16 @@ from datetime import datetime
 
 class ApplicationsData:
     """
+    Applied: You submitted an application but haven't received any response from the company.
+    In Progress:
+     - You received a direct message, email, or call from the company.
+     - You got an automated response (e.g. bot reply, email confirmation, or acknowledgment message).
+     - You were invited to interview, submit additional documents, or complete a test.
+     - The application status changed on the platform (e.g. “Under Review,” “Shortlisted”).
+    Accepted: You've been officially accepted to work at the company.
+    Rejected: You received a message indicating that your application was not successful.
+    Ghosted: You applied, but after more than 3 months, there's been no response—no rejection, acceptance, or interview invitation.
+    
     {
         "id": 0,
         "company_name": "",
@@ -39,12 +49,12 @@ class ApplicationsData:
                     "notes": "Application confirmation received; no recruiter contact yet."
                 }
             ],
-            "lessons_learned": "Quick apply is efficient, but reviewing company’s own site may provide more context."
+            "lessons_learned": "Quick apply is efficient, but reviewing company's own site may provide more context."
         },
         {
             "id": 33,
             "company_name": "Improvado",
-            "status": "Applied",
+            "status": "In Progress",
             "position": "Junior Python Developer",
             "journey": [
                 {
@@ -134,7 +144,7 @@ class ApplicationsData:
         {
             "id": 29,
             "company_name": "10Pearls",
-            "status": "In Progress",
+            "status": "Applied",
             "position": "Backend Python/Django Developer",
             "journey": [
                 {
@@ -146,7 +156,7 @@ class ApplicationsData:
                 {
                     "timestamp": datetime.strptime("2025-09-24T11:09:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
-                    "details": "Applied directly through LinkedIn’s Easy Apply feature.",
+                    "details": "Applied directly through LinkedIn's Easy Apply feature.",
                     "notes": "Received confirmation email from LinkedIn stating application was sent to 10Pearls."
                 }
             ],
@@ -155,19 +165,19 @@ class ApplicationsData:
         {
             "id": 28,
             "company_name": "Vodjo",
-            "status": "In Progress",
+            "status": "Applied",
             "position": "Python Developer",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-23T11:18:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found the Vodjo Python Developer listing via LinkedIn job recommendations.",
-                    "notes": "Opened from LinkedIn job feed and reviewed full role description on Vodjo’s career page"
+                    "notes": "Opened from LinkedIn job feed and reviewed full role description on Vodjo's career page"
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-23T11:21:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
-                    "details": "Applied via Vodjo’s OrangeHRM portal.",
+                    "details": "Applied via Vodjo's OrangeHRM portal.",
                     "notes": "Confirmed via success message on OrangeHRM page"
                 }
             ],
@@ -176,7 +186,7 @@ class ApplicationsData:
         {
             "id": 27,
             "company_name": "Dattabot",
-            "status": "In Progress",
+            "status": "Applied",
             "position": "Data Python Engineer",
             "journey": [
                 {
@@ -197,7 +207,7 @@ class ApplicationsData:
         {
             "id": 26,
             "company_name": "Nawatech",
-            "status": "In Progress",
+            "status": "Applied",
             "position": "Machine Learning Engineer",
             "journey": [
                 {
@@ -213,12 +223,12 @@ class ApplicationsData:
                     "notes": "Confirmed via Gmail notification"
                 }
             ],
-            "lessons_learned": "Personal referrals can surface relevant opportunities faster. Even with Easy Apply, aligning your LinkedIn profile and resume with the role’s technical focus—especially ML deployment and Python—remains key."
+            "lessons_learned": "Personal referrals can surface relevant opportunities faster. Even with Easy Apply, aligning your LinkedIn profile and resume with the role's technical focus—especially ML deployment and Python—remains key."
         },
         {
             "id": 25,
             "company_name": "PT Amman Mineral Nusa Tenggara",
-            "status": "In Progress",
+            "status": "Applied",
             "position": "Data Analyst",
             "journey": [
                 {
@@ -239,7 +249,7 @@ class ApplicationsData:
         {
             "id": 24,
             "company_name": "PT Karisma Zona Kreatifku (KAZOKKU)",
-            "status": "In Progress",
+            "status": "Applied",
             "position": "Backend Engineer (Python & AI Integration)",
             "journey": [
                 {
@@ -255,12 +265,12 @@ class ApplicationsData:
                     "notes": "Used Glints platform"
                 }
             ],
-            "lessons_learned": "Cross-platform job discovery can expand opportunities. Applying through the employer’s preferred channel (Glints) while referencing LinkedIn insights ensures alignment and visibility."
+            "lessons_learned": "Cross-platform job discovery can expand opportunities. Applying through the employer's preferred channel (Glints) while referencing LinkedIn insights ensures alignment and visibility."
         },
         {
             "id": 23,
             "company_name": "Toloka Annotators",
-            "status": "In Progress",
+            "status": "Applied",
             "position": "Data Annotator with Indonesian – AI Trainer",
             "journey": [
                 {
@@ -282,7 +292,7 @@ class ApplicationsData:
                     "notes": "Email"
                 },
             ],
-            "lessons_learned": "Customizing application materials to match the job’s linguistic and technical requirements improves relevance and increases chances of progressing in the hiring process."
+            "lessons_learned": "Customizing application materials to match the job's linguistic and technical requirements improves relevance and increases chances of progressing in the hiring process."
         },
         {
             "id": 22,
@@ -301,14 +311,24 @@ class ApplicationsData:
                     "title": "Application Submitted",
                     "details": "Applied for the position via Michael Page website.",
                     "notes": "Submitted resume"
-                }
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-19T16:08:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Acknowledged",
+                    "details": "Received acknowledgment email from Michael Page Indonesia regarding AI Engineer application (Ref: JN-092025-6837391).",
+                    "notes": (
+                        "Message stated: 'Thank you for your application… "
+                        "Your application is being reviewed by Hermawan Rahardjo. "
+                        "Due to high application volumes, we’ll reach out if your skills align with our current openings.'"
+                    )
+                },
             ],
             "lessons_learned": "Customizing application materials to highlight relevant skills and experiences improves chances of progressing in the hiring process."
         },
         {
             "id": 21,
             "company_name": "Elitez Indonesia (Client in North Jakarta)",
-            "status": "In Progress",
+            "status": "Applied",
             "position": "Machine Learning Engineer",
             "journey": [
                 {
@@ -395,11 +415,11 @@ class ApplicationsData:
         {
             "id": 19,
             "company_name": "Tritronik",
-            "status": "In Progress",
+            "status": "Applied",
             "position": "AI/ML Presales Engineer",
             "journey": [
                 {
-                    "timestamp": datetime.strptime("2023-03-30T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-09-19T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found the job posting on LinkedIn that matched my qualifications.",
                     "notes": "-"
@@ -510,16 +530,53 @@ class ApplicationsData:
                     "notes": "Included registration and contact steps."
                 },
                 {
-                    "timestamp": datetime.strptime("2025-09-19T10:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-                    "title": "Recruiter Contacted",
-                    "details": "Sent a message to Ms. Meryl via Telegram.",
-                    "notes": "Included registration confirmation."
+                    "timestamp": datetime.strptime("2025-09-19T15:42:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Telegram Instructions Received",
+                    "details": "Received message from Meryl at 9cv9/Jobsrefer Team via Telegram.",
+                    "notes": (
+                        "Asked to complete 3 steps: register at 9cv9.com, create CV at urbancv.com, "
+                        "and subscribe to their TikTok channel. Response time may be delayed due to high volume."
+                    )
                 },
                 {
-                    "timestamp": datetime.strptime("2025-09-19T16:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-                    "title": "Awaiting Response",
-                    "details": "Currently waiting for a response from the recruiter.",
-                    "notes": "-"
+                    "timestamp": datetime.strptime("2025-09-19T16:31:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Profile Links Submitted",
+                    "details": "Sent UrbanCV, 9cv9, and full CV links via Telegram.",
+                    "notes": (
+                        "UrbanCV: https://urbancv.com/share-cv/hi44/8abIprz, "
+                        "9cv9: https://9cv9.com/candidate/detail/GruaGOy?candidate=Ridwan, "
+                        "Full CV: https://ridwaanhall.com/cv"
+                    )
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-24T11:59:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Alternative Role Offered",
+                    "details": "Received offer to explore Freelance HR and Talent Acquisition role.",
+                    "notes": "Role offered while original application is under evaluation."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-24T12:06:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Freelance Role Response",
+                    "details": "Expressed openness to explore Freelance HR and Talent Acquisition role.",
+                    "notes": "Requested scope and expectations for proper evaluation."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-24T12:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Program Details Shared",
+                    "details": "Received link to Jobsrefer Freelance Recruiter and HR Partner Program 2025.",
+                    "notes": "Link: https://bit.ly/3f6QCbz"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-24T13:23:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Program Declined",
+                    "details": "Decided to wait for the original job application instead of joining the freelance program.",
+                    "notes": "Concerned about personal data sharing in the program."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-24T13:46:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Recruiter Confirmation",
+                    "details": "Recruiter confirmed awareness of the original job application.",
+                    "notes": "Acknowledged decision to wait for initial role."
                 },
             ],
             "lessons_learned": "Timely follow-up and polite communication show initiative and professionalism."

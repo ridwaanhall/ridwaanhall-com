@@ -174,7 +174,7 @@
                     <div class="bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl hover:shadow-lg overflow-hidden p-3 sm:p-4 border border-indigo-500/50 transition-all duration-300 hover:shadow-indigo-500/10">
                         <h3 class="font-medium text-xs sm:text-sm">Peak Day</h3>
                         <div class="flex items-center justify-between">
-                            <p class="text-indigo-400 sm:text-xl font-medium truncate">
+                            <p class="text-indigo-400 sm:text-xl font-medium">
                                 {{ wakatime_stats.best_day_coding }}
                                 <span class="text-xs text-zinc-400">({{ wakatime_stats.best_day_date }})</span>
                             </p>
@@ -202,7 +202,7 @@
                                 {{ wakatime_stats.today_coding }}
                                 {% if wakatime_stats.today_change_type != "same" %}
                                     {% if wakatime_stats.today_change_type == "increase" %}
-                                    <span class="text-xs text-green-500">
+                                    <span class="text-xs text-green-500 -ml-1">
                                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline">
                                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -212,7 +212,7 @@
                                         </svg>{{ wakatime_stats.today_change_percent }}%
                                     </span>
                                     {% else %}
-                                    <span class="text-xs text-red-500">
+                                    <span class="text-xs text-red-500 -ml-1">
                                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="rotate(180)" class="w-4 h-4 inline">
                                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>

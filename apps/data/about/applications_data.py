@@ -31,6 +31,27 @@ class ApplicationsData:
     """
     applications = [
         {
+            "id": 35,
+            "company_name": "Techmanion",
+            "status": "Applied",
+            "position": "Django/Python Developer",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-28T11:19:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found Django/Python Developer role at Techmanion via LinkedIn Jobs.",
+                    "notes": "Remote-friendly role; emphasizes Django, Python, and REST API development."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-28T11:19:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied through LinkedIn Easy Apply.",
+                    "notes": "No recruiter contact yet; job post highlights backend development and team collaboration."
+                }
+            ],
+            "lessons_learned": "Job post includes clear tech stack expectations; reviewing team culture and project scope could strengthen application alignment."
+        },
+        {
             "id": 34,
             "company_name": "Resource Informatics Group, Inc",
             "status": "Applied",

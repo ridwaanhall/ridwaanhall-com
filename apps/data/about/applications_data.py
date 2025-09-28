@@ -75,7 +75,7 @@ class ApplicationsData:
         {
             "id": 34,
             "company_name": "Resource Informatics Group, Inc",
-            "status": "Applied",
+            "status": "Rejected",
             "position": "Python Developer",
             "journey": [
                 {
@@ -89,9 +89,15 @@ class ApplicationsData:
                     "title": "Application Submitted",
                     "details": "Applied through LinkedIn Easy Apply.",
                     "notes": "Application confirmation received; no recruiter contact yet."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-28T11:03:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Rejected",
+                    "details": "Received rejection email from Resource Informatics Group, Inc.",
+                    "notes": "No interview scheduled; thanked for interest."
                 }
             ],
-            "lessons_learned": "Quick apply is efficient, but reviewing company's own site may provide more context."
+            "lessons_learned": "Quick apply is efficient, but reviewing the company’s own site may provide more context. Rejections help refine targeting and highlight the importance of tailored outreach."
         },
         {
             "id": 33,
@@ -165,7 +171,7 @@ class ApplicationsData:
         {
             "id": 30,
             "company_name": "Logix Guru",
-            "status": "Applied",
+            "status": "Rejected",
             "position": "Junior Python Developer",
             "journey": [
                 {
@@ -175,13 +181,13 @@ class ApplicationsData:
                     "notes": "Remote role based in Pittsburgh, PA."
                 },
                 {
-                    "timestamp": datetime.strptime("2025-09-25T10:44:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-                    "title": "Application Submitted",
-                    "details": "Applied via LinkedIn Easy Apply.",
-                    "notes": "Application confirmation received."
+                    "timestamp": datetime.strptime("2025-09-28T10:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Rejected",
+                    "details": "Received rejection email from Logix Guru.",
+                    "notes": "No further steps; thanked for interest."
                 }
             ],
-            "lessons_learned": "US-based roles may require timezone flexibility; emphasize ability to collaborate asynchronously."
+            "lessons_learned": "US-based roles may require timezone flexibility and asynchronous collaboration. Rejections are part of the process—each one refines positioning and outreach strategy."
         },
         {
             "id": 29,

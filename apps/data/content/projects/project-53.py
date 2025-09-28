@@ -54,7 +54,7 @@ project_data = {
     "tech_stack": [
         SkillsData.tech_stack["n8n"],
         SkillsData.tech_stack["telegram"],
-        SkillsData.tech_stack["google_sheets"],
+        SkillsData.tech_stack["sheets"],
         SkillsData.tech_stack["gemini"],
     ],
     "github_url": "https://github.com/ridwaanhall/n8n-pendataan-shopping",

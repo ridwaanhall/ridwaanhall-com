@@ -464,8 +464,8 @@ class SkillsData:
             "description": "Visual automation for APIs, services, and logic—no code needed.",
             "icon_svg": f"{settings.BASE_URL}/static/svg/icon/n8n.svg"
         },
-        "google_sheets": {
-            "name": "Google Sheets",
+        "sheets": {
+            "name": "Sheets",
             "description": "Online spreadsheets for data storage and automation.",
             "icon_svg": f"{settings.BASE_URL}/static/svg/icon/google-sheets.svg"
         },

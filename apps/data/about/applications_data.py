@@ -31,6 +31,27 @@ class ApplicationsData:
     """
     applications = [
         {
+            "id": 36,
+            "company_name": "BrightCHAMPS",
+            "status": "Applied",
+            "position": "Coding Teacher",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-28T11:56:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found Coding Teacher role at BrightCHAMPS via LinkedIn Jobs.",
+                    "notes": "Remote, part-time role focused on teaching kids aged 6–14 through 1:1 sessions. Emphasizes creativity, logic, and international exposure (USA/UK)."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-28T11:56:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied through LinkedIn Easy Apply.",
+                    "notes": "Form included questions about coding instructor experience, CTC in lakhs, and night shift availability. No recruiter contact yet."
+                }
+            ],
+            "lessons_learned": "Edtech roles often blend teaching and tech fluency. Highlighting bilingual skills and mentoring experience could improve alignment with global student needs."
+        },
+        {
             "id": 35,
             "company_name": "Techmanion",
             "status": "Applied",

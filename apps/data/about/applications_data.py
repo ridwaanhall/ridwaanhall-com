@@ -465,6 +465,9 @@ class ApplicationsData:
             "company_name": "Nawatech",
             "status": "Applied",
             "position": "Machine Learning Engineer",
+            "employment_type": emp_type["co"],
+            "location_type": loc_types["on"],
+            "location": "Pondok Aren, Banten, Indonesia",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-22T13:10:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -486,6 +489,9 @@ class ApplicationsData:
             "company_name": "PT Amman Mineral Nusa Tenggara",
             "status": "Applied",
             "position": "Data Analyst",
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["on"],
+            "location": "Jakarta Metropolitan Area, Indonesia",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-21T14:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -507,6 +513,9 @@ class ApplicationsData:
             "company_name": "PT Karisma Zona Kreatifku (KAZOKKU)",
             "status": "Applied",
             "position": "Backend Engineer (Python & AI Integration)",
+            "employment_type": emp_type["co"],
+            "location_type": loc_types["rm"],
+            "location": "Semarang, Central Java, Indonesia",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-20T15:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -519,6 +528,18 @@ class ApplicationsData:
                     "title": "Application Submitted",
                     "details": "Applied for the position through Glints. Submitted cv.",
                     "notes": "Used Glints platform"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-20T15:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Received",
+                    "details": "HRD sudah menerima lamaranmu.",
+                    "notes": "Status update from Glints"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-24T11:28:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application in Review",
+                    "details": "Lamaranmu direview lebih lanjut.",
+                    "notes": "Status update from Glints"
                 }
             ],
             "lessons_learned": "Cross-platform job discovery can expand opportunities. Applying through the employer's preferred channel (Glints) while referencing LinkedIn insights ensures alignment and visibility."
@@ -528,6 +549,9 @@ class ApplicationsData:
             "company_name": "Toloka Annotators",
             "status": "Applied",
             "position": "Data Annotator with Indonesian – AI Trainer",
+            "employment_type": emp_type["pt"],
+            "location_type": loc_types["rm"],
+            "location": "Jakarta, Indonesia",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-19T20:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -607,6 +631,9 @@ class ApplicationsData:
             "company_name": "PT InMotion Inovasi Teknologi",
             "status": "In Progress",
             "position": "Python Developer",
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["on"],
+            "location": "Jakarta, Indonesia",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-11T15:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -640,6 +667,9 @@ class ApplicationsData:
             "company_name": "PT Appfuxion Consulting Indonesia",
             "status": "Rejected",
             "position": "Machine Learning Engineer",
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["on"],
+            "location": "Tangerang, Banten, Indonesia",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-18T15:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -673,6 +703,9 @@ class ApplicationsData:
             "company_name": "Tritronik",
             "status": "Applied",
             "position": "AI/ML Presales Engineer",
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["on"],
+            "location": "Jakarta, Indonesia",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-19T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -694,6 +727,9 @@ class ApplicationsData:
             "company_name": "Lumoshive",
             "status": "In Progress",
             "position": "AI Engineer",
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["on"],
+            "location": "Kebon Jeruk, Jakarta, Indonesia",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-17T09:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -727,6 +763,9 @@ class ApplicationsData:
             "company_name": "Avows Global IT Technologies Private Limited",
             "status": "In Progress",
             "position": "Python Developer",
+            "employment_type": emp_type["co"],
+            "location_type": loc_types["on"],
+            "location": "Jakarta, Indonesia",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-17T07:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -760,6 +799,9 @@ class ApplicationsData:
             "company_name": "Urban CV",
             "status": "In Progress",
             "position": "AI Developer",
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["rm"],
+            "location": "Indonesia",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-13T11:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -842,6 +884,9 @@ class ApplicationsData:
             "company_name": "Indocyber Global Teknologi",
             "status": "Rejected",
             "position": "Fullstack Developer (Python)",
+            "employment_type": emp_type["co"],
+            "location_type": loc_types["on"],
+            "location": "Jakarta, Indonesia",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-04T09:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -869,6 +914,9 @@ class ApplicationsData:
             "company_name": "Coding Camp Powered by DBS Foundation (Dicoding Indonesia)",
             "status": "Accepted",
             "position": "Machine Learning Mentor",
+            "employment_type": emp_type["pt"],
+            "location_type": loc_types["rm"],
+            "location": "Jakarta, Indonesia",
             "journey": [
                 {
                     "title": "Initial Contact",

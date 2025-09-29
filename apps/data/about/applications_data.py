@@ -93,6 +93,9 @@ class ApplicationsData:
             "company_name": "Seargin",
             "status": "Applied",
             "position": "Python Developer",
+            "employment_type": employment_types["ft"],
+            "location_type": location_types["rm"],
+            "location": "Poland",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-29T20:15:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -114,6 +117,9 @@ class ApplicationsData:
             "company_name": "BayOne Solutions",
             "status": "Applied",
             "position": "Python Developer",
+            "employment_type": employment_types["co"],
+            "location_type": location_types["rm"],
+"location": "United States",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-29T19:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -135,6 +141,9 @@ class ApplicationsData:
             "company_name": "People Prime Worldwide",
             "status": "Applied",
             "position": "Python Developer",
+            "employment_type": employment_types["co"],
+            "location_type": location_types["rm"],
+            "location": "India",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-29T18:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -156,6 +165,9 @@ class ApplicationsData:
             "company_name": "Reggie & Cole",
             "status": "Applied",
             "position": "Python Developer",
+            "employment_type": employment_types["ft"],
+            "location_type": location_types["rm"],
+            "location": "United Kingdom / Europe",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-29T18:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -177,6 +189,9 @@ class ApplicationsData:
             "company_name": "Zortik Technologies",
             "status": "Applied",
             "position": "Python Developer",
+            "employment_type": employment_types["ft"],
+            "location_type": location_types["rm"],
+            "location": "Pakistan",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-29T18:54:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -198,6 +213,9 @@ class ApplicationsData:
             "company_name": "BrightCHAMPS",
             "status": "Applied",
             "position": "Coding Teacher",
+            "employment_type": employment_types["pt"],
+            "location_type": location_types["rm"],
+            "location": "Indonesia",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-28T11:56:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -219,6 +237,9 @@ class ApplicationsData:
             "company_name": "Techmanion",
             "status": "Applied",
             "position": "Django/Python Developer",
+            "employment_type": employment_types["ft"],
+            "location_type": location_types["hy"],
+            "location": "Lahore, Pakistan",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-28T11:19:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -240,6 +261,9 @@ class ApplicationsData:
             "company_name": "Resource Informatics Group, Inc",
             "status": "Rejected",
             "position": "Python Developer",
+            "employment_type": employment_types["co"],
+            "location_type": location_types["rm"],
+            "location": "Canada",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-25T11:04:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -267,6 +291,9 @@ class ApplicationsData:
             "company_name": "Improvado",
             "status": "In Progress",
             "position": "Junior Python Developer",
+            "employment_type": employment_types["ft"],
+            "location_type": location_types["rm"],
+            "location": "Georgia, United States",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-25T10:55:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -294,6 +321,9 @@ class ApplicationsData:
             "company_name": "Codesis Technologies Private Limited",
             "status": "Applied",
             "position": "Junior Django Developer",
+            "employment_type": employment_types["ft"],
+            "location_type": location_types["rm"],
+            "location": "India",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-25T10:55:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -315,6 +345,9 @@ class ApplicationsData:
             "company_name": "Innodata Inc.",
             "status": "Applied",
             "position": "Python Developer (CAN START IMMEDIATELY)",
+            "employment_type": employment_types["ft"],
+            "location_type": location_types["rm"],
+            "location": "Philippines",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-25T10:44:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -336,6 +369,9 @@ class ApplicationsData:
             "company_name": "Logix Guru",
             "status": "Rejected",
             "position": "Junior Python Developer",
+            "employment_type": employment_types["co"],
+            "location_type": location_types["rm"],
+            "location": "Pittsburgh, PA, United States",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-25T10:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -357,6 +393,9 @@ class ApplicationsData:
             "company_name": "10Pearls",
             "status": "Applied",
             "position": "Backend Python/Django Developer",
+            "employment_type": employment_types["ft"],
+            "location_type": location_types["rm"],
+            "location": "Malaysia",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-24T11:06:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -378,6 +417,9 @@ class ApplicationsData:
             "company_name": "Vodjo",
             "status": "Applied",
             "position": "Python Developer",
+            "employment_type": employment_types["ft"],
+            "location_type": location_types["on"],
+            "location": "Bandung, West Java, Indonesia",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-23T11:18:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -399,6 +441,9 @@ class ApplicationsData:
             "company_name": "Dattabot",
             "status": "Applied",
             "position": "Data Python Engineer",
+            "employment_type": employment_types["co"],
+            "location_type": location_types["on"],
+            "location": "Jakarta Metropolitan Area, Indonesia",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-23T11:17:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),

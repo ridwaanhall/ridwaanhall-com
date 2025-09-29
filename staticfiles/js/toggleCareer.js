@@ -108,27 +108,36 @@ function toggleJourney(id) {
     const hideText = document.getElementById('hide-journey-' + cardId);
     const arrow = document.getElementById('arrow-journey-' + cardId);
     
-    if (content.classList.contains('hidden')) {
-        content.classList.remove('hidden');
-        content.classList.add('block');
+    const isCollapsed = content.style.maxHeight === '0px' || content.style.maxHeight === '';
+    
+    if (isCollapsed) {
+        // Show content
         showText.classList.add('hidden');
         hideText.classList.remove('hidden');
         arrow.classList.add('rotate-180');
         
+        // Set max-height to scrollHeight for smooth expansion
+        content.style.maxHeight = content.scrollHeight + 'px';
+        content.style.opacity = '1';
+        
+        // After transition, set max-height to auto for dynamic content
         setTimeout(() => {
-            content.style.maxHeight = content.scrollHeight + 'px';
-            content.style.opacity = '1';
-        }, 10);
+            content.style.maxHeight = 'auto';
+        }, 300);
     } else {
+        // Hide content
+        // First set explicit height, then animate to 0
+        content.style.maxHeight = content.scrollHeight + 'px';
+        
+        // Force reflow
+        content.offsetHeight;
+        
+        // Animate to collapsed state
         content.style.maxHeight = '0px';
         content.style.opacity = '0';
+        
         showText.classList.remove('hidden');
         hideText.classList.add('hidden');
         arrow.classList.remove('rotate-180');
-        
-        setTimeout(() => {
-            content.classList.add('hidden');
-            content.classList.remove('block');
-        }, 300);
     }
 }

@@ -31,6 +31,111 @@ class ApplicationsData:
     """
     applications = [
         {
+            "id": 41,
+            "company_name": "Seargin",
+            "status": "Applied",
+            "position": "Python Developer",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-29T20:15:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found Python Developer role at Seargin via LinkedIn Jobs.",
+                    "notes": "Remote role based in Poland. Likely backend-focused with Python frameworks such as Django/Flask, with emphasis on scalable systems."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-29T20:15:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied through LinkedIn Easy Apply.",
+                    "notes": "Application confirmed via LinkedIn email notification."
+                }
+            ],
+            "lessons_learned": "Poland-based roles require PLN benchmarking; prepare tailored CV highlighting remote collaboration and timezone flexibility."
+        },
+        {
+            "id": 40,
+            "company_name": "BayOne Solutions",
+            "status": "Applied",
+            "position": "Python Developer",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-29T19:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found Python Developer role at BayOne Solutions via LinkedIn Jobs.",
+                    "notes": "Remote role based in the United States. Likely backend-focused with Python frameworks such as Django/Flask and scalable deployment experience."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-29T19:20:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied through LinkedIn Easy Apply.",
+                    "notes": "Application confirmed via LinkedIn email notification."
+                }
+            ],
+            "lessons_learned": "Easy Apply is fast but less tailored; prepare US-focused CV for stronger positioning."
+        },
+        {
+            "id": 39,
+            "company_name": "People Prime Worldwide",
+            "status": "Applied",
+            "position": "Python Developer",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-29T18:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found Python Developer role at People Prime Worldwide via LinkedIn Jobs.",
+                    "notes": "Remote role based in India. Likely backend-focused with Python frameworks such as Django/Flask."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-29T19:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied through LinkedIn Easy Apply.",
+                    "notes": "Application confirmed via LinkedIn email notification."
+                }
+            ],
+            "lessons_learned": "Easy Apply works well for quick submissions; prepare tailored CV for India-based remote roles."
+        },
+        {
+            "id": 38,
+            "company_name": "Reggie & Cole",
+            "status": "Applied",
+            "position": "Python Developer",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-29T18:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found Python Developer role at Reggie & Cole via LinkedIn Jobs.",
+                    "notes": "Remote role based in the United Kingdom. Likely focused on backend Python development."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-29T18:55:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied through LinkedIn Easy Apply.",
+                    "notes": "Application confirmed via LinkedIn email notification."
+                }
+            ],
+            "lessons_learned": "Easy Apply is quick but less personalized; prepare tailored CV for UK roles."
+        },
+        {
+            "id": 37,
+            "company_name": "Zortik Technologies",
+            "status": "Applied",
+            "position": "Python Developer",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-29T18:54:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found Python Developer role at Zortik Technologies via LinkedIn Jobs.",
+                    "notes": "Remote role based in Pakistan. Focused on backend development with Python, likely requiring Django/Flask expertise and scalable deployment experience."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-29T18:54:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied through LinkedIn Easy Apply.",
+                    "notes": "Application confirmed via LinkedIn email notification."
+                }
+            ],
+            "lessons_learned": "-"
+        },
+        {
             "id": 36,
             "company_name": "BrightCHAMPS",
             "status": "Applied",

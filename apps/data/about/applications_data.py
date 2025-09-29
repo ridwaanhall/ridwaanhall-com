@@ -45,7 +45,7 @@ class ApplicationsData:
     - Remote: Sepenuhnya bekerja jarak jauh (contoh: dari rumah).
     """
     
-    employment_types = {
+    emp_type = {
         "ft": "Full-time",
         "pt": "Part-time",
         "se": "Self-employed",
@@ -57,7 +57,7 @@ class ApplicationsData:
         "sc": "Scholarship"
     }
     
-    location_types = {
+    loc_types = {
         "on": "On-site",
         "hy": "Hybrid",
         "rm": "Remote"
@@ -69,8 +69,8 @@ class ApplicationsData:
             "company_name": "Passivae®",
             "status": "Applied",
             "position": "Founder's Accelerator | Recruitment Entrepreneur-in-Residence",
-            "employment_type": employment_types["se"],
-            "location_type": location_types["rm"],
+            "employment_type": emp_type["se"],
+            "location_type": loc_types["rm"],
             "location": "Global / Anywhere",
             "journey": [
                 {
@@ -93,8 +93,8 @@ class ApplicationsData:
             "company_name": "Seargin",
             "status": "Applied",
             "position": "Python Developer",
-            "employment_type": employment_types["ft"],
-            "location_type": location_types["rm"],
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["rm"],
             "location": "Poland",
             "journey": [
                 {
@@ -117,8 +117,8 @@ class ApplicationsData:
             "company_name": "BayOne Solutions",
             "status": "Applied",
             "position": "Python Developer",
-            "employment_type": employment_types["co"],
-            "location_type": location_types["rm"],
+            "employment_type": emp_type["co"],
+            "location_type": loc_types["rm"],
 "location": "United States",
             "journey": [
                 {
@@ -141,8 +141,8 @@ class ApplicationsData:
             "company_name": "People Prime Worldwide",
             "status": "Applied",
             "position": "Python Developer",
-            "employment_type": employment_types["co"],
-            "location_type": location_types["rm"],
+            "employment_type": emp_type["co"],
+            "location_type": loc_types["rm"],
             "location": "India",
             "journey": [
                 {
@@ -165,8 +165,8 @@ class ApplicationsData:
             "company_name": "Reggie & Cole",
             "status": "Applied",
             "position": "Python Developer",
-            "employment_type": employment_types["ft"],
-            "location_type": location_types["rm"],
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["rm"],
             "location": "United Kingdom / Europe",
             "journey": [
                 {
@@ -189,8 +189,8 @@ class ApplicationsData:
             "company_name": "Zortik Technologies",
             "status": "Applied",
             "position": "Python Developer",
-            "employment_type": employment_types["ft"],
-            "location_type": location_types["rm"],
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["rm"],
             "location": "Pakistan",
             "journey": [
                 {
@@ -213,8 +213,8 @@ class ApplicationsData:
             "company_name": "BrightCHAMPS",
             "status": "Applied",
             "position": "Coding Teacher",
-            "employment_type": employment_types["pt"],
-            "location_type": location_types["rm"],
+            "employment_type": emp_type["pt"],
+            "location_type": loc_types["rm"],
             "location": "Indonesia",
             "journey": [
                 {
@@ -237,8 +237,8 @@ class ApplicationsData:
             "company_name": "Techmanion",
             "status": "Applied",
             "position": "Django/Python Developer",
-            "employment_type": employment_types["ft"],
-            "location_type": location_types["hy"],
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["hy"],
             "location": "Lahore, Pakistan",
             "journey": [
                 {
@@ -261,8 +261,8 @@ class ApplicationsData:
             "company_name": "Resource Informatics Group, Inc",
             "status": "Rejected",
             "position": "Python Developer",
-            "employment_type": employment_types["co"],
-            "location_type": location_types["rm"],
+            "employment_type": emp_type["co"],
+            "location_type": loc_types["rm"],
             "location": "Canada",
             "journey": [
                 {
@@ -291,8 +291,8 @@ class ApplicationsData:
             "company_name": "Improvado",
             "status": "In Progress",
             "position": "Junior Python Developer",
-            "employment_type": employment_types["ft"],
-            "location_type": location_types["rm"],
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["rm"],
             "location": "Georgia, United States",
             "journey": [
                 {
@@ -321,8 +321,8 @@ class ApplicationsData:
             "company_name": "Codesis Technologies Private Limited",
             "status": "Applied",
             "position": "Junior Django Developer",
-            "employment_type": employment_types["ft"],
-            "location_type": location_types["rm"],
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["rm"],
             "location": "India",
             "journey": [
                 {
@@ -345,8 +345,8 @@ class ApplicationsData:
             "company_name": "Innodata Inc.",
             "status": "Applied",
             "position": "Python Developer (CAN START IMMEDIATELY)",
-            "employment_type": employment_types["ft"],
-            "location_type": location_types["rm"],
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["rm"],
             "location": "Philippines",
             "journey": [
                 {
@@ -369,8 +369,8 @@ class ApplicationsData:
             "company_name": "Logix Guru",
             "status": "Rejected",
             "position": "Junior Python Developer",
-            "employment_type": employment_types["co"],
-            "location_type": location_types["rm"],
+            "employment_type": emp_type["co"],
+            "location_type": loc_types["rm"],
             "location": "Pittsburgh, PA, United States",
             "journey": [
                 {
@@ -393,8 +393,8 @@ class ApplicationsData:
             "company_name": "10Pearls",
             "status": "Applied",
             "position": "Backend Python/Django Developer",
-            "employment_type": employment_types["ft"],
-            "location_type": location_types["rm"],
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["rm"],
             "location": "Malaysia",
             "journey": [
                 {
@@ -417,8 +417,8 @@ class ApplicationsData:
             "company_name": "Vodjo",
             "status": "Applied",
             "position": "Python Developer",
-            "employment_type": employment_types["ft"],
-            "location_type": location_types["on"],
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["on"],
             "location": "Bandung, West Java, Indonesia",
             "journey": [
                 {
@@ -441,8 +441,8 @@ class ApplicationsData:
             "company_name": "Dattabot",
             "status": "Applied",
             "position": "Data Python Engineer",
-            "employment_type": employment_types["co"],
-            "location_type": location_types["on"],
+            "employment_type": emp_type["co"],
+            "location_type": loc_types["on"],
             "location": "Jakarta Metropolitan Area, Indonesia",
             "journey": [
                 {

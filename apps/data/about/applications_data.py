@@ -65,6 +65,30 @@ class ApplicationsData:
     
     applications = [
         {
+            "id": 42,
+            "company_name": "Passivae®",
+            "status": "Applied",
+            "position": "Founder's Accelerator | Recruitment Entrepreneur-in-Residence",
+            "employment_type": employment_types["se"],
+            "location_type": location_types["rm"],
+            "location": "Global / Anywhere",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-29T22:10:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Program Discovery",
+                    "details": "Found Founder's Accelerator | Recruitment Entrepreneur-in-Residence program via LinkedIn Jobs.",
+                    "notes": "Remote/Global program. Not a typical job, but an accelerator to build a niche-focused recruitment business with mentorship, tech stack, and branding support."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-29T22:15:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied through LinkedIn Easy Apply.",
+                    "notes": "Application confirmed via LinkedIn email notification."
+                }
+            ],
+            "lessons_learned": "Different from developer roles; this is a founder-style accelerator. Useful to track but requires entrepreneurial positioning, not just technical skills."
+        },
+        {
             "id": 41,
             "company_name": "Seargin",
             "status": "Applied",

@@ -76,7 +76,7 @@ class ApplicationsData:
                 {
                     "timestamp": datetime.strptime("2025-09-29T22:10:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Program Discovery",
-                    "details": "Found Founder's Accelerator | Recruitment Entrepreneur-in-Residence program via LinkedIn Jobs.",
+                    "details": "Found via LinkedIn Jobs.",
                     "notes": "Remote/Global program. Not a typical job, but an accelerator to build a niche-focused recruitment business with mentorship, tech stack, and branding support."
                 },
                 {
@@ -100,7 +100,7 @@ class ApplicationsData:
                 {
                     "timestamp": datetime.strptime("2025-09-29T20:15:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
-                    "details": "Found Python Developer role at Seargin via LinkedIn Jobs.",
+                    "details": "Found via LinkedIn Jobs.",
                     "notes": "Remote role based in Poland. Likely backend-focused with Python frameworks such as Django/Flask, with emphasis on scalable systems."
                 },
                 {
@@ -119,12 +119,12 @@ class ApplicationsData:
             "position": "Python Developer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["rm"],
-"location": "United States",
+            "location": "United States",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-29T19:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
-                    "details": "Found Python Developer role at BayOne Solutions via LinkedIn Jobs.",
+                    "details": "Found via LinkedIn Jobs.",
                     "notes": "Remote role based in the United States. Likely backend-focused with Python frameworks such as Django/Flask and scalable deployment experience."
                 },
                 {
@@ -148,7 +148,7 @@ class ApplicationsData:
                 {
                     "timestamp": datetime.strptime("2025-09-29T18:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
-                    "details": "Found Python Developer role at People Prime Worldwide via LinkedIn Jobs.",
+                    "details": "Found via LinkedIn Jobs.",
                     "notes": "Remote role based in India. Likely backend-focused with Python frameworks such as Django/Flask."
                 },
                 {
@@ -172,7 +172,7 @@ class ApplicationsData:
                 {
                     "timestamp": datetime.strptime("2025-09-29T18:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
-                    "details": "Found Python Developer role at Reggie & Cole via LinkedIn Jobs.",
+                    "details": "Found via LinkedIn Jobs.",
                     "notes": "Remote role based in the United Kingdom. Likely focused on backend Python development."
                 },
                 {
@@ -196,7 +196,7 @@ class ApplicationsData:
                 {
                     "timestamp": datetime.strptime("2025-09-29T18:54:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
-                    "details": "Found Python Developer role at Zortik Technologies via LinkedIn Jobs.",
+                    "details": "Found via LinkedIn Jobs.",
                     "notes": "Remote role based in Pakistan. Focused on backend development with Python, likely requiring Django/Flask expertise and scalable deployment experience."
                 },
                 {
@@ -220,7 +220,7 @@ class ApplicationsData:
                 {
                     "timestamp": datetime.strptime("2025-09-28T11:56:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
-                    "details": "Found Coding Teacher role at BrightCHAMPS via LinkedIn Jobs.",
+                    "details": "Found via LinkedIn Jobs.",
                     "notes": "Remote, part-time role focused on teaching kids aged 6–14 through 1:1 sessions. Emphasizes creativity, logic, and international exposure (USA/UK)."
                 },
                 {
@@ -244,7 +244,7 @@ class ApplicationsData:
                 {
                     "timestamp": datetime.strptime("2025-09-28T11:19:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
-                    "details": "Found Django/Python Developer role at Techmanion via LinkedIn Jobs.",
+                    "details": "Found via LinkedIn Jobs.",
                     "notes": "Remote-friendly role; emphasizes Django, Python, and REST API development."
                 },
                 {
@@ -268,7 +268,7 @@ class ApplicationsData:
                 {
                     "timestamp": datetime.strptime("2025-09-25T11:04:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
-                    "details": "Found Python Developer role at Resource Informatics Group, Inc via LinkedIn Jobs.",
+                    "details": "Found via LinkedIn Jobs.",
                     "notes": "Remote role based in Canada; aligned with Python expertise."
                 },
                 {

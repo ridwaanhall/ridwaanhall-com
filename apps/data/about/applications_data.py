@@ -645,7 +645,7 @@ class ApplicationsData:
                     "timestamp": datetime.strptime("2025-09-11T15:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found the job posting on LinkedIn that matched my qualifications.",
-                    "notes": "-"
+                    "notes": "Apply before 22 Jan, 2026"
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-19T15:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),

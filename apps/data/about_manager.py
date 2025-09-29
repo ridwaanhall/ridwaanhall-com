@@ -3,6 +3,8 @@ About Manager - Central controller for about-related data
 Loads data from individual about files.
 """
 
+from datetime import datetime
+
 class AboutManager:
     """
     Central about data manager that loads data from individual files.
@@ -64,9 +66,24 @@ class AboutManager:
     
     @classmethod
     def get_applications(cls):
-        """Get applications data."""
+        """Get applications data sorted by ID (descending) and journey dates (ascending)."""
         from .about.applications_data import ApplicationsData
-        return ApplicationsData.applications
+        
+        applications = ApplicationsData.applications.copy()
+        
+        # Sort each application's journey by timestamp (oldest to latest)
+        for app in applications:
+            if app.get('journey'):
+                app['journey'] = sorted(
+                    app['journey'], 
+                    key=lambda x: x.get('timestamp', datetime.min)
+                )
+        
+        # Sort applications by ID (descending - newest first)
+        # If we want to sort by earliest journey date, we can add that logic here
+        applications = sorted(applications, key=lambda x: x.get('id', 0), reverse=True)
+        
+        return applications
     
     @classmethod
     def get_privacy_policy(cls):

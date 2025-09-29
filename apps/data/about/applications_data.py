@@ -28,7 +28,41 @@ class ApplicationsData:
         ],
         "lessons_learned": ""
     },
+    
+    employment type:
+    - Full-time (Pekerjaan penuh waktu)
+    - Part-time (Pekerjaan paruh waktu)
+    - Self-employed (Pekerjaan mandiri)
+    - Freelance (Pekerjaan lepas)
+    - Contract (Pekerjaan berdasarkan kontrak)
+    - Internship (Magang)
+    - Apprenticeship (Pelatihan kerja atau magang kejuruan)
+    - Seasonal (Pekerjaan musiman)
+    
+    location type:
+    - On-site: Bekerja langsung di lokasi fisik (contoh: kantor).
+    - Hybrid: Kombinasi antara bekerja dari lokasi fisik dan jarak jauh.
+    - Remote: Sepenuhnya bekerja jarak jauh (contoh: dari rumah).
     """
+    
+    employment_types = {
+        "ft": "Full-time",
+        "pt": "Part-time",
+        "se": "Self-employed",
+        "fr": "Freelance",
+        "co": "Contract",
+        "in": "Internship",
+        "ap": "Apprenticeship",
+        "sn": "Seasonal",
+        "sc": "Scholarship"
+    }
+    
+    location_types = {
+        "on": "On-site",
+        "hy": "Hybrid",
+        "rm": "Remote"
+    }
+    
     applications = [
         {
             "id": 41,

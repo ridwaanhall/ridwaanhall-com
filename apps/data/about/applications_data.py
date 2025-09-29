@@ -289,7 +289,7 @@ class ApplicationsData:
         {
             "id": 33,
             "company_name": "Improvado",
-            "status": "In Progress",
+            "status": "Rejected",
             "position": "Junior Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -517,7 +517,7 @@ class ApplicationsData:
         {
             "id": 24,
             "company_name": "PT Karisma Zona Kreatifku (KAZOKKU)",
-            "status": "Applied",
+            "status": "In Progress",
             "position": "Backend Engineer (Python & AI Integration)",
             "employment_type": emp_type["co"],
             "location_type": loc_types["rm"],
@@ -538,15 +538,15 @@ class ApplicationsData:
                 {
                     "timestamp": datetime.strptime("2025-09-20T15:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Received",
-                    "details": "HRD sudah menerima lamaranmu.",
+                    "details": "Your application has been received by HR.",
                     "notes": "Status update from Glints"
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-24T11:28:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application in Review",
-                    "details": "Lamaranmu direview lebih lanjut.",
+                    "details": "Your application is under further review.",
                     "notes": "Status update from Glints"
-                }
+                },
             ],
             "lessons_learned": "Cross-platform job discovery can expand opportunities. Applying through the employer's preferred channel (Glints) while referencing LinkedIn insights ensures alignment and visibility."
         },

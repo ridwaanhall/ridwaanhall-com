@@ -421,7 +421,7 @@ class ApplicationsData:
         {
             "id": 28,
             "company_name": "Vodjo",
-            "status": "Applied",
+            "status": "In Progress",
             "position": "Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -553,7 +553,7 @@ class ApplicationsData:
         {
             "id": 23,
             "company_name": "Toloka Annotators",
-            "status": "Applied",
+            "status": "In Progress",
             "position": "Data Annotator with Indonesian – AI Trainer",
             "employment_type": emp_type["pt"],
             "location_type": loc_types["rm"],

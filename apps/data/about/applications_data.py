@@ -77,7 +77,7 @@ class ApplicationsData:
                     "timestamp": datetime.strptime("2025-09-29T22:10:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Program Discovery",
                     "details": "Found via LinkedIn Jobs.",
-                    "notes": "Remote/Global program. Not a typical job, but an accelerator to build a niche-focused recruitment business with mentorship, tech stack, and branding support."
+                    "notes": "Not a typical job, but an accelerator to build a niche-focused recruitment business with mentorship, tech stack, and branding support."
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-29T22:15:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -101,7 +101,7 @@ class ApplicationsData:
                     "timestamp": datetime.strptime("2025-09-29T20:15:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found via LinkedIn Jobs.",
-                    "notes": "Remote role based in Poland. Likely backend-focused with Python frameworks such as Django/Flask, with emphasis on scalable systems."
+                    "notes": "Likely backend-focused with Python frameworks such as Django/Flask, with emphasis on scalable systems."
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-29T20:15:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -125,7 +125,7 @@ class ApplicationsData:
                     "timestamp": datetime.strptime("2025-09-29T19:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found via LinkedIn Jobs.",
-                    "notes": "Remote role based in the United States. Likely backend-focused with Python frameworks such as Django/Flask and scalable deployment experience."
+                    "notes": "Likely backend-focused with Python frameworks such as Django/Flask and scalable deployment experience."
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-29T19:20:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -149,7 +149,7 @@ class ApplicationsData:
                     "timestamp": datetime.strptime("2025-09-29T18:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found via LinkedIn Jobs.",
-                    "notes": "Remote role based in India. Likely backend-focused with Python frameworks such as Django/Flask."
+                    "notes": "Likely backend-focused with Python frameworks such as Django/Flask."
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-29T19:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -173,7 +173,7 @@ class ApplicationsData:
                     "timestamp": datetime.strptime("2025-09-29T18:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found via LinkedIn Jobs.",
-                    "notes": "Remote role based in the United Kingdom. Likely focused on backend Python development."
+                    "notes": "Likely focused on backend Python development."
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-29T18:55:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -197,7 +197,7 @@ class ApplicationsData:
                     "timestamp": datetime.strptime("2025-09-29T18:54:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found via LinkedIn Jobs.",
-                    "notes": "Remote role based in Pakistan. Focused on backend development with Python, likely requiring Django/Flask expertise and scalable deployment experience."
+                    "notes": "Focused on backend development with Python, likely requiring Django/Flask expertise and scalable deployment experience."
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-29T18:54:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -245,13 +245,13 @@ class ApplicationsData:
                     "timestamp": datetime.strptime("2025-09-28T11:19:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found via LinkedIn Jobs.",
-                    "notes": "Remote-friendly role; emphasizes Django, Python, and REST API development."
+                    "notes": "-"
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-28T11:19:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
                     "details": "Applied through LinkedIn Easy Apply.",
-                    "notes": "No recruiter contact yet; job post highlights backend development and team collaboration."
+                    "notes": "Job post highlights backend development and team collaboration."
                 }
             ],
             "lessons_learned": "Job post includes clear tech stack expectations; reviewing team culture and project scope could strengthen application alignment."
@@ -269,7 +269,7 @@ class ApplicationsData:
                     "timestamp": datetime.strptime("2025-09-25T11:04:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found via LinkedIn Jobs.",
-                    "notes": "Remote role based in Canada; aligned with Python expertise."
+                    "notes": "-"
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-25T11:05:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -299,7 +299,7 @@ class ApplicationsData:
                     "timestamp": datetime.strptime("2025-09-25T10:55:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Discovered Junior Python Developer role at Improvado.",
-                    "notes": "Remote role based in Georgia; entry-level Python focus."
+                    "notes": "-"
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-25T11:01:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -329,7 +329,7 @@ class ApplicationsData:
                     "timestamp": datetime.strptime("2025-09-25T10:55:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found Junior Django Developer role at Codesis Technologies.",
-                    "notes": "Remote role in India; Django-specific focus."
+                    "notes": "-"
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-25T10:59:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -353,7 +353,7 @@ class ApplicationsData:
                     "timestamp": datetime.strptime("2025-09-25T10:44:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Came across urgent Python Developer role at Innodata Inc.",
-                    "notes": "Remote role in the Philippines; immediate availability emphasized."
+                    "notes": "Immediate availability emphasized."
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-25T10:48:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -376,14 +376,20 @@ class ApplicationsData:
                 {
                     "timestamp": datetime.strptime("2025-09-25T10:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
-                    "details": "Discovered Junior Python Developer role at Logix Guru.",
-                    "notes": "Remote role based in Pittsburgh, PA."
+                    "details": "Discovered via LinkedIn",
+                    "notes": "-"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-25T10:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied for the Junior Python Developer position through LinkedIn.",
+                    "notes": "Used LinkedIn platform"
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-28T10:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Rejected",
-                    "details": "Received rejection email from Logix Guru.",
-                    "notes": "No further steps; thanked for interest."
+                    "details": "Received rejection email from Logix Guru: application will not be moving forward.",
+                    "notes": "No further steps; thanked for interest"
                 }
             ],
             "lessons_learned": "US-based roles may require timezone flexibility and asynchronous collaboration. Rejections are part of the process—each one refines positioning and outreach strategy."

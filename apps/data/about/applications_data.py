@@ -65,6 +65,30 @@ class ApplicationsData:
     
     applications = [
         {
+            "id": 43,
+            "company_name": "PT Akasha Wira International, Tbk",
+            "status": "Applied",
+            "position": "AI Developer",
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["on"],
+            "location": "Jakarta Selatan, Indonesia",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-09-30T16:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found via WhatsApp group.",
+                    "notes": "-"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-30T16:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied via Dealls platform using quick apply.",
+                    "notes": "Confirmed submission through Dealls interface. Recruiter listed as active recently."
+                }
+            ],
+            "lessons_learned": "Standard AI developer role with emphasis on cross-functional collaboration. Useful for benchmarking Jakarta-based on-site roles in FMCG sector."
+        },
+        {
             "id": 42,
             "company_name": "Passivae®",
             "status": "Applied",

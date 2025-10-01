@@ -11,7 +11,7 @@ class ApplicationsData:
      - The application status changed on the platform (e.g. “Under Review,” “Shortlisted”).
     Accepted: You've been officially accepted to work at the company.
     Rejected: You received a message indicating that your application was not successful.
-    Ghosted: You applied, but after more than 3 months, there's been no response—no rejection, acceptance, or interview invitation.
+    Ghosted: You applied, but got no response at all—no rejection, no interview, nothing—for over 3 months. Even if the job post says silence after 1 month means rejection, not replying at all is still unprofessional.
     
     employment type:
     - Full-time (Pekerjaan penuh waktu)
@@ -1163,7 +1163,7 @@ class ApplicationsData:
         {
             "id": 9,
             "company_name": "National Fair Housing Alliance",
-            "status": "Rejected",
+            "status": "Ghosted",
             "position": "AI Engineer Intern",
             "journey": [
                 {
@@ -1187,7 +1187,7 @@ class ApplicationsData:
         {
             "id": 8,
             "company_name": "Reality AI Lab",
-            "status": "Rejected",
+            "status": "Ghosted",
             "position": "AI Engineer Intern",
             "journey": [
                 {

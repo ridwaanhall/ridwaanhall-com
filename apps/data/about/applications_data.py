@@ -259,7 +259,7 @@ class ApplicationsData:
         {
             "id": 35,
             "company_name": "Techmanion",
-            "status": "Applied",
+            "status": "Rejected",
             "position": "Django/Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["hy"],
@@ -276,9 +276,15 @@ class ApplicationsData:
                     "title": "Application Submitted",
                     "details": "Applied through LinkedIn Easy Apply.",
                     "notes": "Job post highlights backend development and team collaboration."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-01T11:19:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Rejection Received",
+                    "details": "Received rejection email from Techmanion via LinkedIn.",
+                    "notes": "-"
                 }
             ],
-            "lessons_learned": "Job post includes clear tech stack expectations; reviewing team culture and project scope could strengthen application alignment."
+            "lessons_learned": "No interview stage; consider tailoring application more closely to company culture and project scope in future submissions."
         },
         {
             "id": 34,

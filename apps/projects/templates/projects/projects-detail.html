@@ -426,7 +426,12 @@
     </button>
 </div>
 {% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/imageLightbox.css' %}">
+{% endblock %}
+
 {% block scripts %}
 <script src="{% static 'js/backScroll.js' %}"></script>
 <script src="{% static 'js/projectImageSlider.js' %}"></script>
+<script src="{% static 'js/imageLightbox.js' %}"></script>
 {% endblock %}

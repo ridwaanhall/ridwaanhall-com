@@ -18,6 +18,9 @@ class ApplicationsData:
         "company_name": "",
         "status": "", # Can be "Applied", "In Progress", "Accepted", "Rejected", "Ghosted"
         "position": "",
+        "employment_type": emp_type["ft"],
+        "location_type": loc_types["on"],
+        "location": "",
         "journey": [
             {
                 "timestamp": datetime.strptime("2023-01-01T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -64,6 +67,30 @@ class ApplicationsData:
     }
     
     applications = [
+        {
+            "id": 44,
+            "company_name": "PT. Prima Sejati Sejahtera",
+            "status": "Applied",  # Application submitted, awaiting employer response
+            "position": "MES Staff (MES Programmer)",
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["on"],
+            "location": "Boyolali, Central Java, Indonesia",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-10-01T18:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job opportunity received",
+                    "details": "Received job listing via Karirhub.",
+                    "notes": "Fida (girlfriend) pointed me to this opportunity."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-01T19:53:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application submitted",
+                    "details": "-",
+                    "notes": "Status: Awaiting employer response."
+                },
+            ],
+            "lessons_learned": "Personal referrals can surface relevant openings faster."
+        },
         {
             "id": 43,
             "company_name": "PT Akasha Wira International, Tbk",

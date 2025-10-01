@@ -3,7 +3,7 @@ About Manager - Central controller for about-related data
 Loads data from individual about files.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 class AboutManager:
     """
@@ -66,7 +66,7 @@ class AboutManager:
     
     @classmethod
     def get_applications(cls):
-        """Get applications data sorted by ID (descending) and journey dates (ascending)."""
+        """Get applications data sorted by latest journey timestamp (descending) and journey dates (ascending)."""
         from .about.applications_data import ApplicationsData
         
         applications = ApplicationsData.applications.copy()
@@ -79,9 +79,21 @@ class AboutManager:
                     key=lambda x: x.get('timestamp', datetime.min)
                 )
         
-        # Sort applications by ID (descending - newest first)
-        # If we want to sort by earliest journey date, we can add that logic here
-        applications = sorted(applications, key=lambda x: x.get('id', 0), reverse=True)
+        # Sort applications by the latest timestamp in their journey (most recent first)
+        # If no journey or no timestamps, fall back to ID-based timestamp
+        def get_latest_timestamp(app):
+            if app.get('journey'):
+                timestamps = [step.get('timestamp') for step in app['journey'] if step.get('timestamp')]
+                if timestamps:
+                    return max(timestamps)
+            # Fallback: create a timezone-aware datetime based on ID
+            # Lower IDs get earlier timestamps, so they appear last when sorted descending
+            app_id = app.get('id', 0)
+            # Use epoch + ID seconds to create unique timestamps, with timezone
+            fallback_timestamp = datetime.fromtimestamp(app_id, tz=timezone.utc)
+            return fallback_timestamp
+        
+        applications = sorted(applications, key=get_latest_timestamp, reverse=True)
         
         return applications
     

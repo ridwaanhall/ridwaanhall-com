@@ -50,6 +50,9 @@
         <link rel="stylesheet" href="{% static 'css/hideScroll.css' %}" />
         <link rel="stylesheet" href="{% static 'css/sidebarSearch.css' %}" />
         <link rel="stylesheet" href="{% static 'css/globalScrollbar.css' %}" />
+        {% block extra_css %}
+        {% endblock %}
+
     </head>
     <body class="bg-black text-zinc-300 transition-colors duration-200">
         <header class="md:hidden bg-black shadow-sm border-b border-zinc-800 fixed top-0 left-0 w-full z-40">

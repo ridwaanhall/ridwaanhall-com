@@ -68,6 +68,42 @@ class ApplicationsData:
     
     applications = [
         {
+            "id": 47,
+            "company_name": "Talenta IT (Client: IT Solution)",
+            "status": "Applied",
+            "position": "AI Engineer (Machine Learning)",
+            "employment_type": emp_type["co"],
+            "location_type": loc_types["on"],
+            "location": "Indonesia",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-10-02T16:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "AI Engineer role found on Talenta IT.",
+                    "notes": "6-month contract, salary up to Rp 20M/month."
+                },
+            ],
+            "lessons_learned": "AI roles require full-cycle ML deployment skills and strong collaboration with client teams."
+        },
+        {
+            "id": 45,
+            "company_name": "Talenta IT (Client: Finance Industry)",
+            "status": "Applied",
+            "position": "Python Developer",
+            "employment_type": emp_type["co"],
+            "location_type": loc_types["on"],
+            "location": "Indonesia",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-10-02T16:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Python Developer role found on Talenta IT.",
+                    "notes": "6-month contract, salary Rp 10–15M/month."
+                },
+            ],
+            "lessons_learned": "Contract roles in finance often demand strong API, DB, and testing skills."
+        },
+        {
             "id": 44,
             "company_name": "PT. Prima Sejati Sejahtera",
             "status": "Applied",  # Application submitted, awaiting employer response

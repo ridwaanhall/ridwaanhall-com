@@ -206,7 +206,7 @@ class ApplicationsData:
         {
             "id": 40,
             "company_name": "BayOne Solutions",
-            "status": "Applied",
+            "status": "Rejected",
             "position": "Python Developer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["rm"],
@@ -223,9 +223,15 @@ class ApplicationsData:
                     "title": "Application Submitted",
                     "details": "Applied through LinkedIn Easy Apply.",
                     "notes": "Application confirmed via LinkedIn email notification."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-02T19:02:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Rejected",
+                    "details": "Received rejection email from BayOne Solutions via LinkedIn.",
+                    "notes": "No interview stage; consider tailoring CV and cover letter for future US-based backend roles."
                 }
             ],
-            "lessons_learned": "Easy Apply is fast but less tailored; prepare US-focused CV for stronger positioning."
+            "lessons_learned": "Easy Apply is fast but less tailored; rejection confirms need for US-optimized CV and deeper backend positioning."
         },
         {
             "id": 39,

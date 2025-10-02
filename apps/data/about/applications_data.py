@@ -36,6 +36,7 @@ class ApplicationsData:
         "employment_type": emp_type["ft"],
         "location_type": loc_types["on"],
         "location": "",
+        "salary_range": "Up to IDR 20M", # IDR 20M - 100M
         "journey": [
             {
                 "timestamp": datetime.strptime("2023-01-01T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -74,13 +75,14 @@ class ApplicationsData:
             "position": "AI Engineer (Machine Learning)",
             "employment_type": emp_type["co"],
             "location_type": loc_types["on"],
-            "location": "Indonesia",
+            "location": "Jakarta Pusat, Indonesia",
+            "salary_range": "Up to IDR 20M",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-10-02T16:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
                     "details": "AI Engineer role found on Talenta IT.",
-                    "notes": "6-month contract, salary up to Rp 20M/month."
+                    "notes": "6-month contract."
                 },
             ],
             "lessons_learned": "AI roles require full-cycle ML deployment skills and strong collaboration with client teams."
@@ -92,13 +94,14 @@ class ApplicationsData:
             "position": "Python Developer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["on"],
-            "location": "Indonesia",
+            "location": "Jakarta Pusat, Indonesia",
+            "salary_range": "IDR 10M - 15M",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-10-02T16:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
                     "details": "Python Developer role found on Talenta IT.",
-                    "notes": "6-month contract, salary Rp 10–15M/month."
+                    "notes": "6-month contract."
                 },
             ],
             "lessons_learned": "Contract roles in finance often demand strong API, DB, and testing skills."
@@ -111,6 +114,7 @@ class ApplicationsData:
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
             "location": "Boyolali, Central Java, Indonesia",
+            "salary_range": "IDR 3.5M - 5M",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-10-01T18:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),

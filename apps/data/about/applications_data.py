@@ -69,6 +69,31 @@ class ApplicationsData:
     
     applications = [
         {
+            "id": 50,
+            "company_name": "BitHealth",
+            "status": "Applied",
+            "position": "Associate AI Engineer",
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["hy"],
+            "location": "Tangerang, Indonesia",
+            "salary_range": "Negotiable",
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-10-03T23:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Review",
+                    "details": "BitHealth reviewed the application for Associate AI Engineer.",
+                    "notes": "Status updated on Dealls"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-03T23:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Received",
+                    "details": "Application for Associate AI Engineer was received by BitHealth.",
+                    "notes": "Timestamp matched with review"
+                },
+            ],
+            "lessons_learned": "Freshgrad-friendly AI roles often emphasize eagerness to learn, Python fluency, and cross-functional collaboration."
+        },
+        {
             "id": 49,
             "company_name": "AJARI TECHNOLOGIES",
             "status": "Applied",

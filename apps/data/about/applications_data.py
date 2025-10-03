@@ -69,6 +69,50 @@ class ApplicationsData:
     
     applications = [
         {
+            "id": 49,
+            "company_name": "AJARI TECHNOLOGIES",
+            "status": "Applied",
+            "position": "AI Engineer - NLP",
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["on"],
+            "location": "Jakarta Metropolitan Area, Indonesia",
+            "salary_range": None,  # Not listed
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-10-03T18:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "AI Engineer - NLP role found on LinkedIn.",
+                    "notes": "Easy Apply"
+                },
+            ],
+            "lessons_learned": "NLP roles emphasize deep learning, robust Python code, and domain-specific modeling."
+        },
+        {
+            "id": 48,
+            "company_name": "Kata.ai",
+            "status": "On Progress",
+            "position": "Backend Engineer (Freelance)",
+            "employment_type": emp_type["fr"],
+            "location_type": loc_types["rm"],
+            "location": "South Jakarta, Indonesia",
+            "salary_range": None,
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-10-03T17:56:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Backend Engineer freelance role found via Katrecs.",
+                    "notes": "Entry-level freelance position with flexible hours."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-03T17:58:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Shortlisted",
+                    "details": "Application progressed to shortlisted stage on Katrecs.",
+                    "notes": "Awaiting next steps or interview invitation."
+                },
+            ],
+            "lessons_learned": "Conversational AI companies value cross-functional teamwork, asynchronous programming, and foundational backend skills including OOP and Git."
+        },
+        {
             "id": 47,
             "company_name": "Talenta IT (Client: IT Solution)",
             "status": "Applied",
@@ -182,7 +226,7 @@ class ApplicationsData:
         {
             "id": 41,
             "company_name": "Seargin",
-            "status": "Applied",
+            "status": "Rejected",
             "position": "Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -199,6 +243,12 @@ class ApplicationsData:
                     "title": "Application Submitted",
                     "details": "Applied through LinkedIn Easy Apply.",
                     "notes": "Application confirmed via LinkedIn email notification."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-02T20:17:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Rejected",
+                    "details": "Received rejection email from LinkedIn.",
+                    "notes": "Seargin thanked Ridwan for his interest but did not move forward with the application."
                 }
             ],
             "lessons_learned": "Poland-based roles require PLN benchmarking; prepare tailored CV highlighting remote collaboration and timezone flexibility."

@@ -71,7 +71,7 @@ class ApplicationsData:
         {
             "id": 50,
             "company_name": "BitHealth",
-            "status": "Applied",
+            "status": "In Progress",
             "position": "Associate AI Engineer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["hy"],
@@ -80,16 +80,28 @@ class ApplicationsData:
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-10-03T23:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Received",
+                    "details": "Application for Associate AI Engineer was received by BitHealth.",
+                    "notes": "-"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-03T23:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Review",
                     "details": "BitHealth reviewed the application for Associate AI Engineer.",
                     "notes": "Status updated on Dealls"
                 },
                 {
                     "timestamp": datetime.strptime("2025-10-03T23:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-                    "title": "Application Received",
-                    "details": "Application for Associate AI Engineer was received by BitHealth.",
-                    "notes": "Timestamp matched with review"
+                    "title": "Priority Candidate Confirmation",
+                    "details": "Dealls confirmed Ridwan is registered as a priority candidate for BitHealth.",
+                    "notes": "Automated email from Ivana@Dealls"
                 },
+                {
+                    "timestamp": datetime.strptime("2025-10-03T23:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Result Timeline Shared",
+                    "details": "Dealls stated results will be shared within 14 working days via app or email.",
+                    "notes": "Email reminder to update contact info"
+                }
             ],
             "lessons_learned": "Freshgrad-friendly AI roles often emphasize eagerness to learn, Python fluency, and cross-functional collaboration."
         },
@@ -115,7 +127,7 @@ class ApplicationsData:
         {
             "id": 48,
             "company_name": "Kata.ai",
-            "status": "On Progress",
+            "status": "In Progress",
             "position": "Backend Engineer (Freelance)",
             "employment_type": emp_type["fr"],
             "location_type": loc_types["rm"],
@@ -145,13 +157,13 @@ class ApplicationsData:
             "employment_type": emp_type["co"],
             "location_type": loc_types["on"],
             "location": "Jakarta Pusat, Indonesia",
-            "salary_range": "Up to IDR 20M",
+            "salary_range": "IDR 20M",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-10-02T16:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
                     "details": "AI Engineer role found on Talenta IT.",
-                    "notes": "6-month contract."
+                    "notes": "6-month contract. Up to IDR 20M"
                 },
             ],
             "lessons_learned": "AI roles require full-cycle ML deployment skills and strong collaboration with client teams."
@@ -203,7 +215,7 @@ class ApplicationsData:
         {
             "id": 43,
             "company_name": "PT Akasha Wira International, Tbk",
-            "status": "Applied",
+            "status": "In Progress",
             "position": "AI Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -220,6 +232,18 @@ class ApplicationsData:
                     "title": "Application Submitted",
                     "details": "Applied via Dealls platform using quick apply.",
                     "notes": "Confirmed submission through Dealls interface. Recruiter listed as active recently."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-30T16:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Received",
+                    "details": "Dealls confirmed receipt of application and marked candidate as priority.",
+                    "notes": "Automated email from Ivana@Dealls"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-30T16:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Review",
+                    "details": "Dealls stated application result will be shared within 14 working days.",
+                    "notes": "Email confirmation with contact update reminder"
                 }
             ],
             "lessons_learned": "Standard AI developer role with emphasis on cross-functional collaboration. Useful for benchmarking Jakarta-based on-site roles in FMCG sector."
@@ -1133,7 +1157,7 @@ class ApplicationsData:
         {
             "id": 13,
             "company_name": "HashMicro",
-            "status": "Rejected",
+            "status": "Ghosted",
             "position": "Python Developer (Django)",
             "journey": [
                 {

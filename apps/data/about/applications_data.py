@@ -201,7 +201,7 @@ class ApplicationsData:
                     "timestamp": datetime.strptime("2025-10-01T18:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job opportunity received",
                     "details": "Received job listing via Karirhub.",
-                    "notes": "Fida (girlfriend) pointed me to this opportunity."
+                    "notes": "Pointed me to this opportunity."
                 },
                 {
                     "timestamp": datetime.strptime("2025-10-01T19:53:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),

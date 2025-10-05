@@ -220,6 +220,7 @@ class ApplicationsData:
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
             "location": "Jakarta Selatan, Indonesia",
+            "salary_range": "Negotiable",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-30T16:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),

@@ -724,6 +724,7 @@ class ApplicationsData:
             "employment_type": emp_type["co"],
             "location_type": loc_types["rm"],
             "location": "Semarang, Central Java, Indonesia",
+            "salary_range": "IDR 10M - 13M",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-20T15:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),

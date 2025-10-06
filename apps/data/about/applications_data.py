@@ -52,9 +52,10 @@ class ApplicationsData:
     status = {
         "ap": "Applied",
         "ip": "In Progress",
+        "wd": "Withdrawn",
         "ac": "Accepted",
         "re": "Rejected",
-        "gh": "Ghosted"
+        "gh": "Ghosted",
     }
     
     emp_type = {

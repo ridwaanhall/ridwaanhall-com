@@ -10,6 +10,7 @@ class ApplicationsData:
      - You were invited to interview, submit additional documents, or complete a test.
      - The application status changed on the platform (e.g. “Under Review,” “Shortlisted”).
     Accepted: You've been officially accepted to work at the company.
+    Withdrawn: You decided to withdraw your application or interview process.
     Rejected: You received a message indicating that your application was not successful.
     Ghosted: You applied, but got no response at all—no rejection, no interview, nothing—for over 3 months. Even if the job post says silence after 1 month means rejection, not replying at all is still unprofessional.
     

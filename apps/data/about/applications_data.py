@@ -31,7 +31,7 @@ class ApplicationsData:
     {
         "id": 0,
         "company_name": "",
-        "status": "", # Can be "Applied", "In Progress", "Accepted", "Rejected", "Ghosted"
+        "status": status["ap"],
         "position": "",
         "employment_type": emp_type["ft"],
         "location_type": loc_types["on"],
@@ -48,6 +48,14 @@ class ApplicationsData:
         "lessons_learned": ""
     },
     """
+    
+    status = {
+        "ap": "Applied",
+        "ip": "In Progress",
+        "ac": "Accepted",
+        "re": "Rejected",
+        "gh": "Ghosted"
+    }
     
     emp_type = {
         "ft": "Full-time",
@@ -71,7 +79,7 @@ class ApplicationsData:
         {
             "id": 50,
             "company_name": "BitHealth",
-            "status": "In Progress",
+            "status": status["ip"],
             "position": "Associate AI Engineer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["hy"],
@@ -108,7 +116,7 @@ class ApplicationsData:
         {
             "id": 49,
             "company_name": "AJARI TECHNOLOGIES",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "AI Engineer - NLP",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -127,7 +135,7 @@ class ApplicationsData:
         {
             "id": 48,
             "company_name": "Kata.ai",
-            "status": "In Progress",
+            "status": status["ip"],
             "position": "Backend Engineer (Freelance)",
             "employment_type": emp_type["fr"],
             "location_type": loc_types["rm"],
@@ -152,7 +160,7 @@ class ApplicationsData:
         {
             "id": 47,
             "company_name": "Talenta IT (Client: IT Solution)",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "AI Engineer (Machine Learning)",
             "employment_type": emp_type["co"],
             "location_type": loc_types["on"],
@@ -171,7 +179,7 @@ class ApplicationsData:
         {
             "id": 45,
             "company_name": "Talenta IT (Client: Finance Industry)",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "Python Developer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["on"],
@@ -190,7 +198,7 @@ class ApplicationsData:
         {
             "id": 44,
             "company_name": "PT. Prima Sejati Sejahtera",
-            "status": "Applied",  # Application submitted, awaiting employer response
+            "status": status["ap"],  # Application submitted, awaiting employer response
             "position": "MES Staff (MES Programmer)",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -215,7 +223,7 @@ class ApplicationsData:
         {
             "id": 43,
             "company_name": "PT Akasha Wira International, Tbk",
-            "status": "In Progress",
+            "status": status["ip"],
             "position": "AI Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -252,7 +260,7 @@ class ApplicationsData:
         {
             "id": 42,
             "company_name": "Passivae®",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "Founder's Accelerator | Recruitment Entrepreneur-in-Residence",
             "employment_type": emp_type["se"],
             "location_type": loc_types["rm"],
@@ -276,7 +284,7 @@ class ApplicationsData:
         {
             "id": 41,
             "company_name": "Seargin",
-            "status": "Rejected",
+            "status": status["re"],
             "position": "Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -306,7 +314,7 @@ class ApplicationsData:
         {
             "id": 40,
             "company_name": "BayOne Solutions",
-            "status": "Rejected",
+            "status": status["re"],
             "position": "Python Developer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["rm"],
@@ -336,7 +344,7 @@ class ApplicationsData:
         {
             "id": 39,
             "company_name": "People Prime Worldwide",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "Python Developer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["rm"],
@@ -360,7 +368,7 @@ class ApplicationsData:
         {
             "id": 38,
             "company_name": "Reggie & Cole",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -384,7 +392,7 @@ class ApplicationsData:
         {
             "id": 37,
             "company_name": "Zortik Technologies",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -408,7 +416,7 @@ class ApplicationsData:
         {
             "id": 36,
             "company_name": "BrightCHAMPS",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "Coding Teacher",
             "employment_type": emp_type["pt"],
             "location_type": loc_types["rm"],
@@ -432,7 +440,7 @@ class ApplicationsData:
         {
             "id": 35,
             "company_name": "Techmanion",
-            "status": "Rejected",
+            "status": status["re"],
             "position": "Django/Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["hy"],
@@ -462,7 +470,7 @@ class ApplicationsData:
         {
             "id": 34,
             "company_name": "Resource Informatics Group, Inc",
-            "status": "Rejected",
+            "status": status["re"],
             "position": "Python Developer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["rm"],
@@ -492,7 +500,7 @@ class ApplicationsData:
         {
             "id": 33,
             "company_name": "Improvado",
-            "status": "Rejected",
+            "status": status["re"],
             "position": "Junior Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -522,7 +530,7 @@ class ApplicationsData:
         {
             "id": 32,
             "company_name": "Codesis Technologies Private Limited",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "Junior Django Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -546,7 +554,7 @@ class ApplicationsData:
         {
             "id": 31,
             "company_name": "Innodata Inc.",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "Python Developer (CAN START IMMEDIATELY)",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -570,7 +578,7 @@ class ApplicationsData:
         {
             "id": 30,
             "company_name": "Logix Guru",
-            "status": "Rejected",
+            "status": status["re"],
             "position": "Junior Python Developer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["rm"],
@@ -600,7 +608,7 @@ class ApplicationsData:
         {
             "id": 29,
             "company_name": "10Pearls",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "Backend Python/Django Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -624,7 +632,7 @@ class ApplicationsData:
         {
             "id": 28,
             "company_name": "Vodjo",
-            "status": "In Progress",
+            "status": status["ip"],
             "position": "Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -648,7 +656,7 @@ class ApplicationsData:
         {
             "id": 27,
             "company_name": "Dattabot",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "Data Python Engineer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["on"],
@@ -672,7 +680,7 @@ class ApplicationsData:
         {
             "id": 26,
             "company_name": "Nawatech",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "Machine Learning Engineer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["on"],
@@ -696,7 +704,7 @@ class ApplicationsData:
         {
             "id": 25,
             "company_name": "PT Amman Mineral Nusa Tenggara",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "Data Analyst",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -720,7 +728,7 @@ class ApplicationsData:
         {
             "id": 24,
             "company_name": "PT Karisma Zona Kreatifku (KAZOKKU)",
-            "status": "In Progress",
+            "status": status["ip"],
             "position": "Backend Engineer (Python & AI Integration)",
             "employment_type": emp_type["co"],
             "location_type": loc_types["rm"],
@@ -757,7 +765,7 @@ class ApplicationsData:
         {
             "id": 23,
             "company_name": "Toloka Annotators",
-            "status": "In Progress",
+            "status": status["ip"],
             "position": "Data Annotator with Indonesian – AI Trainer",
             "employment_type": emp_type["pt"],
             "location_type": loc_types["rm"],
@@ -787,7 +795,7 @@ class ApplicationsData:
         {
             "id": 22,
             "company_name": "Michael Page",
-            "status": "In Progress",
+            "status": status["ip"],
             "position": "AI Engineer",
             "journey": [
                 {
@@ -818,7 +826,7 @@ class ApplicationsData:
         {
             "id": 21,
             "company_name": "Elitez Indonesia (Client in North Jakarta)",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "Machine Learning Engineer",
             "journey": [
                 {
@@ -839,7 +847,7 @@ class ApplicationsData:
         {
             "id": 20,
             "company_name": "PT InMotion Inovasi Teknologi",
-            "status": "In Progress",
+            "status": status["ip"],
             "position": "Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -875,7 +883,7 @@ class ApplicationsData:
         {
             "id": 19,
             "company_name": "PT Appfuxion Consulting Indonesia",
-            "status": "Rejected",
+            "status": status["re"],
             "position": "Machine Learning Engineer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -911,7 +919,7 @@ class ApplicationsData:
         {
             "id": 19,
             "company_name": "Tritronik",
-            "status": "Applied",
+            "status": status["ap"],
             "position": "AI/ML Presales Engineer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -935,7 +943,7 @@ class ApplicationsData:
         {
             "id": 18,
             "company_name": "Lumoshive",
-            "status": "In Progress",
+            "status": status["ip"],
             "position": "AI Engineer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -971,7 +979,7 @@ class ApplicationsData:
         {
             "id": 17,
             "company_name": "Avows Global IT Technologies Private Limited",
-            "status": "In Progress",
+            "status": status["ip"],
             "position": "Python Developer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["on"],
@@ -1007,7 +1015,7 @@ class ApplicationsData:
         {
             "id": 16,
             "company_name": "Urban CV",
-            "status": "In Progress",
+            "status": status["ip"],
             "position": "AI Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -1092,7 +1100,7 @@ class ApplicationsData:
         {
             "id": 15,
             "company_name": "Indocyber Global Teknologi",
-            "status": "Rejected",
+            "status": status["re"],
             "position": "Fullstack Developer (Python)",
             "employment_type": emp_type["co"],
             "location_type": loc_types["on"],
@@ -1122,7 +1130,7 @@ class ApplicationsData:
         {
             "id": 14,
             "company_name": "Coding Camp Powered by DBS Foundation (Dicoding Indonesia)",
-            "status": "Accepted",
+            "status": status["ac"],
             "position": "Machine Learning Mentor",
             "employment_type": emp_type["pt"],
             "location_type": loc_types["rm"],
@@ -1159,7 +1167,7 @@ class ApplicationsData:
         {
             "id": 13,
             "company_name": "HashMicro",
-            "status": "Ghosted",
+            "status": status["gh"],
             "position": "Python Developer (Django)",
             "journey": [
                 {
@@ -1208,7 +1216,7 @@ class ApplicationsData:
         {
             "id": 12,
             "company_name": "Skyshi Digital Indonesia",
-            "status": "Rejected",
+            "status": status["re"],
             "position": "Python Developer (Junior Level)",
             "journey": [
                 {
@@ -1247,7 +1255,7 @@ class ApplicationsData:
         {
             "id": 11,
             "company_name": "Shortlyst AI",
-            "status": "Ghosted",
+            "status": status["gh"],
             "position": "Backend Engineer Intern",
             "journey": [
                 {
@@ -1276,7 +1284,7 @@ class ApplicationsData:
         {
             "id": 10,
             "company_name": "Speechify",
-            "status": "Rejected",
+            "status": status["re"],
             "position": "Frontend Developer",
             "journey": [
                 {
@@ -1310,7 +1318,7 @@ class ApplicationsData:
         {
             "id": 9,
             "company_name": "National Fair Housing Alliance",
-            "status": "Ghosted",
+            "status": status["gh"],
             "position": "AI Engineer Intern",
             "journey": [
                 {
@@ -1334,7 +1342,7 @@ class ApplicationsData:
         {
             "id": 8,
             "company_name": "Reality AI Lab",
-            "status": "Ghosted",
+            "status": status["gh"],
             "position": "AI Engineer Intern",
             "journey": [
                 {
@@ -1358,7 +1366,7 @@ class ApplicationsData:
         {
             "id": 7,
             "company_name": "Copilot ID",
-            "status": "Accepted",
+            "status": status["ac"],
             "position": "Founder",
             "journey": [
                 {
@@ -1382,7 +1390,7 @@ class ApplicationsData:
         {
             "id": 6,
             "company_name": "GaoTek Inc.",
-            "status": "Accepted",
+            "status": status["ac"],
             "position": "Assistant Squad Leader of Web Developer Intern",
             "journey": [
                 {
@@ -1401,7 +1409,7 @@ class ApplicationsData:
         {
             "id": 5,
             "company_name": "GAOTek Inc.",
-            "status": "Accepted",
+            "status": status["ac"],
             "position": "Main Team of Web Developer Intern",
             "journey": [
                 {
@@ -1420,7 +1428,7 @@ class ApplicationsData:
         {
             "id": 4,
             "company_name": "GaoTek Inc.",
-            "status": "Accepted",
+            "status": status["ac"],
             "position": "Web Developer Intern",
             "journey": [
                 {
@@ -1449,7 +1457,7 @@ class ApplicationsData:
         {
             "id": 3,
             "company_name": "YoungDev",
-            "status": "Accepted",
+            "status": status["ac"],
             "position": "Machine Learning Intern",
             "journey": [
                 {
@@ -1473,7 +1481,7 @@ class ApplicationsData:
         {
             "id": 2,
             "company_name": "iNeuron.ai",
-            "status": "Accepted",
+            "status": status["ac"],
             "position": "Machine Learning Intern",
             "journey": [
                 {
@@ -1497,7 +1505,7 @@ class ApplicationsData:
         {
             "id": 1,
             "company_name": "Imaarotu Syu'unith Tholabah",
-            "status": "Accepted",
+            "status": status["ac"],
             "position": "Deputy of Da'wah",
             "journey": [
                 {

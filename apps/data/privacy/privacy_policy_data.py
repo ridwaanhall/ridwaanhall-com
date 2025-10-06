@@ -2,7 +2,7 @@ from datetime import datetime
 
 class PrivacyPolicyData:
     privacy_policy = {
-        "last_updated": datetime.strptime("2025-08-01T19:19:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+        "last_updated": datetime.strptime("2025-10-06T20:15:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
         "overview": "I understand that your privacy is important. This policy explains how I collect, use, and protect your information when you visit my website.",
         "policy_updates": "I may update this policy as the website evolves and grows. Major changes will be reflected in the last updated date above, and I'll do my best to notify you of significant privacy policy updates.",
         "data_collected": {
@@ -73,7 +73,7 @@ class PrivacyPolicyData:
             "Contact": "Reach out to hi@ridwaanhall.com for any privacy questions or requests."
         },
         "guestbook_limitations": {
-            "Timestamp Display": "All message timestamps are stored and shown in Jakarta time (WIB, UTC+7), regardless of your local time zone.",
+            "Timestamp Display": "All message timestamps are stored and shown in Jakarta time (WIB, UTC+7).",
             "Message Management": "You can send messages and reply to other messages or your own messages.",
             "No Self-Deletion": "You cannot delete your own messages through the interface.",
             "No Message Editing": "Posted messages cannot be edited once submitted.",

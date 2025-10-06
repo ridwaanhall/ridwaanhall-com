@@ -18,7 +18,7 @@
 
 .skills-carousel {
     display: flex;
-    animation: scroll-left 45s linear infinite;
+    animation: scroll-left 30s linear infinite;
     will-change: transform;
     white-space: nowrap;
     /* Performance optimizations */
@@ -31,7 +31,7 @@
 
 .skills-carousel-reverse {
     display: flex;
-    animation: scroll-right 45s linear infinite;
+    animation: scroll-right 30s linear infinite;
     will-change: transform;
     white-space: nowrap;
     /* Performance optimizations */
@@ -84,21 +84,21 @@
 /* Responsive animation speeds */
 @media (max-width: 768px) {
     .skills-carousel {
-        animation-duration: 35s;
+        animation-duration: 25s;
     }
     
     .skills-carousel-reverse {
-        animation-duration: 35s;
+        animation-duration: 25s;
     }
 }
 
 @media (max-width: 480px) {
     .skills-carousel {
-        animation-duration: 25s;
+        animation-duration: 20s;
     }
     
     .skills-carousel-reverse {
-        animation-duration: 25s;
+        animation-duration: 20s;
     }
 }
 

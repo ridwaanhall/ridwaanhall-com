@@ -1,41 +1,58 @@
-@keyframes scroll {
-    0% {
-        transform: translateX(0);
+@keyframes scroll-left {
+    from {
+        transform: translate3d(0, 0, 0);
     }
-    100% {
-        transform: translateX(-100%);
+    to {
+        transform: translate3d(-50%, 0, 0);
     }
 }
 
-@keyframes scroll-reverse {
-    0% {
-        transform: translateX(-100%);
+@keyframes scroll-right {
+    from {
+        transform: translate3d(-50%, 0, 0);
     }
-    100% {
-        transform: translateX(0);
+    to {
+        transform: translate3d(0, 0, 0);
     }
 }
 
 .skills-carousel {
     display: flex;
-    animation: scroll 800s linear infinite;
+    animation: scroll-left 45s linear infinite;
     will-change: transform;
+    white-space: nowrap;
+    /* Performance optimizations */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    /* Prevent any gaps */
+    gap: 0;
 }
 
 .skills-carousel-reverse {
     display: flex;
-    animation: scroll-reverse 800s linear infinite;
+    animation: scroll-right 45s linear infinite;
     will-change: transform;
+    white-space: nowrap;
+    /* Performance optimizations */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    /* Prevent any gaps */
+    gap: 0;
 }
 
 .skills-carousel:hover,
 .skills-carousel-reverse:hover {
-    animation-play-state: paused; /* Pause animation on hover */
+    animation-play-state: paused;
 }
 
 .skills-carousel > div,
 .skills-carousel-reverse > div {
-    flex: 0 0 auto; /* Prevent shrinking or growing */
+    flex: 0 0 auto;
+    white-space: nowrap;
+    /* Ensure smooth rendering */
+    transform: translateZ(0);
 }
 
 .overflow-hidden-skills {
@@ -48,5 +65,47 @@
         white 10%,
         white 90%,
         transparent
-    ); /* Fade edges for a polished look */
+    );
+    -webkit-mask-image: linear-gradient(
+        to right,
+        transparent,
+        white 10%,
+        white 90%,
+        transparent
+    );
+    /* Improve performance */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    /* Ensure consistent height */
+    min-height: 2.5rem;
+}
+
+/* Responsive animation speeds */
+@media (max-width: 768px) {
+    .skills-carousel {
+        animation-duration: 35s;
+    }
+    
+    .skills-carousel-reverse {
+        animation-duration: 35s;
+    }
+}
+
+@media (max-width: 480px) {
+    .skills-carousel {
+        animation-duration: 25s;
+    }
+    
+    .skills-carousel-reverse {
+        animation-duration: 25s;
+    }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .skills-carousel,
+    .skills-carousel-reverse {
+        animation-duration: 200s;
+    }
 }

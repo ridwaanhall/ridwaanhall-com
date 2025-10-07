@@ -40,7 +40,7 @@ class OpenToWorkData:
             "notice_period": "Immediately",
             "work_authorization": "Indonesian Citizen",
             "languages": [
-                "Indonesian (Native)",
+                "Indonesia (Native)",
                 "English (Professional)",
                 "Arabic (Limited)"
             ],
@@ -78,5 +78,5 @@ class OpenToWorkData:
             ],
             "contact_preference": "LinkedIn, Email",
             "interview_availability": "Flexible with timezone adjustments",
-            "additional_notes": "Passionate about building impactful AI solutions and mentoring upcoming developers. Looking for opportunities that allow growth in machine learning and leadership roles."
+            "additional_notes": "Passionate about building intelligent web applications and scalable AI solutions using Python. Actively seeking opportunities to grow in machine learning, deep learning, and modern web frameworks."
         }

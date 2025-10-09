@@ -118,7 +118,7 @@ class ApplicationsData:
         {
             "id": 49,
             "company_name": "AJARI TECHNOLOGIES",
-            "status": status["ap"],
+            "status": status["ip"],
             "position": "AI Engineer - NLP",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -130,6 +130,18 @@ class ApplicationsData:
                     "title": "Application Submitted",
                     "details": "AI Engineer - NLP role found on LinkedIn.",
                     "notes": "Easy Apply"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-08T14:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Viewed",
+                    "details": "LinkedIn showed that the recruiter viewed my application.",
+                    "notes": "Likely passed initial screening."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-08T15:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Resume Downloaded",
+                    "details": "Resume was downloaded by the recruiter.",
+                    "notes": "Indicates deeper interest or internal sharing."
                 },
             ],
             "lessons_learned": "NLP roles emphasize deep learning, robust Python code, and domain-specific modeling."
@@ -921,7 +933,7 @@ class ApplicationsData:
         {
             "id": 19,
             "company_name": "Tritronik",
-            "status": status["ap"],
+            "status": status["ip"],
             "position": "AI/ML Presales Engineer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -938,6 +950,18 @@ class ApplicationsData:
                     "title": "Application Submitted",
                     "details": "Applied for the position via LinkedIn.",
                     "notes": "-"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-08T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Viewed",
+                    "details": "LinkedIn notified that the recruiter viewed my application.",
+                    "notes": "Positive signal—resume likely passed initial screening."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-08T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Resume Downloaded",
+                    "details": "LinkedIn confirmed the recruiter downloaded my resume.",
+                    "notes": "Indicates deeper interest or internal sharing."
                 },
             ],
             "lessons_learned": "Understanding the business model helps craft better presales narratives."

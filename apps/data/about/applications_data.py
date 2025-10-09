@@ -86,7 +86,7 @@ class ApplicationsData:
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
             "location": "Pittsburgh, PA",
-            "salary_range": "USD 74K/yr - 140K/yr",  # USD 50K – 55K Based on your submitted expectation
+            "salary_range": "USD 74K/yr - 140K/yr",  # USD 55K Based on your submitted expectation
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-10-09T18:32:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),

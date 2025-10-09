@@ -85,7 +85,7 @@ class ApplicationsData:
             "position": "Django/Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
-            "location": "Pittsburgh, PA",
+            "location": "Pittsburgh, Pennsylvania (PA)",
             "salary_range": "USD 74K/yr - 140K/yr",  # USD 55K Based on your submitted expectation
             "journey": [
                 {

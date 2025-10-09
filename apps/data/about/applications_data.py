@@ -106,8 +106,14 @@ class ApplicationsData:
                     "details": "Received automated email from Resource Innovations confirming that your application is under review.",
                     "notes": "They mentioned that a Talent Acquisition team member will contact you if your profile matches the role. No personalized response yet."
                 },
+                {
+                    "timestamp": datetime.strptime("2025-10-09T18:56:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "EEO Survey Invitation",
+                    "details": "Received email from Resource Innovations inviting you to complete an Equal Employment Opportunity form.",
+                    "notes": "Survey is optional and used for government reporting only. Indicates application is being processed."
+                }
             ],
-            "lessons_learned": "Submitted with a clear compensation expectation and strong technical alignment. Awaiting feedback to assess company responsiveness and potential for negotiation."
+            "lessons_learned": "Submitted with a clear compensation expectation and strong technical alignment. Received automated acknowledgment and EEO survey request, indicating active processing. Monitoring responsiveness and preparing for potential negotiation or follow-up."
         },
         {
             "id": 50,

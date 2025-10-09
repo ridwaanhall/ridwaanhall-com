@@ -79,6 +79,31 @@ class ApplicationsData:
     
     applications = [
         {
+            "id": 51,
+            "company_name": "Resource Innovations",
+            "status": status["ap"],
+            "position": "Django/Python Developer",
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["rm"],
+            "location": "Pittsburgh, PA",
+            "salary_range": "USD 74K/yr - 140K/yr",  # USD 50K – 55K Based on your submitted expectation
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-10-09T18:32:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied via LinkedIn job portal for Django/Python Developer role.",
+                    "notes": "No confirmation or response received yet."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-09T18:39:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Automated Confirmation Received",
+                    "details": "Received email from Workable confirming successful submission of application.",
+                    "notes": "Includes copy of submitted data and resume. No personalized response yet."
+                },
+            ],
+            "lessons_learned": "Submitted with a clear compensation expectation and strong technical alignment. Awaiting feedback to assess company responsiveness and potential for negotiation."
+        },
+        {
             "id": 50,
             "company_name": "BitHealth",
             "status": status["ip"],

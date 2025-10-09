@@ -81,7 +81,7 @@ class ApplicationsData:
         {
             "id": 51,
             "company_name": "Resource Innovations",
-            "status": status["ap"],
+            "status": status["ip"],
             "position": "Django/Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],

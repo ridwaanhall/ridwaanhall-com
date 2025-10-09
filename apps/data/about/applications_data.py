@@ -100,6 +100,12 @@ class ApplicationsData:
                     "details": "Received email from Workable confirming successful submission of application.",
                     "notes": "Includes copy of submitted data and resume. No personalized response yet."
                 },
+                {
+                    "timestamp": datetime.strptime("2025-10-09T18:53:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Acknowledged",
+                    "details": "Received automated email from Resource Innovations confirming that your application is under review.",
+                    "notes": "They mentioned that a Talent Acquisition team member will contact you if your profile matches the role. No personalized response yet."
+                },
             ],
             "lessons_learned": "Submitted with a clear compensation expectation and strong technical alignment. Awaiting feedback to assess company responsiveness and potential for negotiation."
         },

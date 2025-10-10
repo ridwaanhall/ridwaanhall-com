@@ -32,12 +32,12 @@ class ApplicationsData:
     {
         "id": 0,
         "company_name": "",
-        "status": status["ap"],
+        "status": status["ap"], # ap, ip, wd, ac, re, gh
         "position": "",
-        "employment_type": emp_type["ft"],
-        "location_type": loc_types["on"],
+        "employment_type": emp_type["ft"], # ft, pt, se, fr, co, in, ap, sn, sc
+        "location_type": loc_types["on"], # on, hy, rm
         "location": "",
-        "salary_range": "Up to IDR 20M", # IDR 20M - 100M
+        "salary_range": "" # IDR 20M - 100M, Up to IDR 20M
         "journey": [
             {
                 "timestamp": datetime.strptime("2023-01-01T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),

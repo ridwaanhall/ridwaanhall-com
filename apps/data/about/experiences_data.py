@@ -56,7 +56,7 @@ class ExperiencesData:
             "is_current": True,
             "responsibilities": [
                 "Collaborative Python Innovations and Learning for Optimal Technologies.",
-                "Averaging 15k+ unique visitors and 250k+ total requests per month, with 161+ GitHub stars earned across public repositories.",
+                "Averaging 15.66k unique visitors, 262.07k total requests, and 33k active users over 30 days, with 161+ GitHub stars earned across public repositories.",
                 "Executed AI-driven projects using Django, TensorFlow, PyTorch, and modern web technologies.",
                 "3+ years of Django experience across 15+ full-cycle projects including MTV architecture, ORM, REST APIs, authentication, testing, and debugging.",
                 "Built and deployed 7+ Flask-based with scalable routing and Jinja2 templating.",

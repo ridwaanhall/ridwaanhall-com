@@ -79,6 +79,31 @@ class ApplicationsData:
     
     applications = [
         {
+            "id": 52,
+            "company_name": "filerskeepers",
+            "status": status["ap"],
+            "position": "Junior Python Developer",
+            "employment_type": emp_type["co"],
+            "location_type": loc_types["rm"],
+            "location": "Indonesia",
+            "salary_range": None,
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-10-11T19:25:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found the job posting on LinkedIn. Legaltech focus and Python crawler role matched my interests.",
+                    "notes": "-"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-11T19:26:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied via LinkedIn. Resume tailored to highlight Python scraping, AI exposure, and modular documentation.",
+                    "notes": "Company review time is typically 1 week."
+                }
+            ],
+            "lessons_learned": "Strong alignment with legaltech and data crawling. Highlighted relevant Python experience and modular documentation. Awaiting confirmation or next steps—may follow up if no response within a week."
+        },
+        {
             "id": 51,
             "company_name": "Resource Innovations",
             "status": status["ip"],

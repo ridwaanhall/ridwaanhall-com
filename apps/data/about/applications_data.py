@@ -1279,7 +1279,7 @@ class ApplicationsData:
         {
             "id": 12,
             "company_name": "Skyshi Digital Indonesia",
-            "status": status["re"],
+            "status": status["gh"],
             "position": "Python Developer (Junior Level)",
             "journey": [
                 {

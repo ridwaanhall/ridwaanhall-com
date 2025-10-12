@@ -902,20 +902,26 @@ class ApplicationsData:
         {
             "id": 21,
             "company_name": "Elitez Indonesia (Client in North Jakarta)",
-            "status": status["ap"],
+            "status": status["gh"],
             "position": "Machine Learning Engineer",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-09-19T17:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
                     "details": "Found the Machine Learning Engineer opening posted by Elitez Indonesia. The role matches my experience in ML/DL and Python frameworks.",
-                    "notes": "Posted on LinkedIn, recruiter contact: Andrew Nasution"
+                    "notes": "Posted on LinkedIn, recruiter contact: Andrew M."
                 },
                 {
                     "timestamp": datetime.strptime("2025-09-19T17:07:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Message Sent",
-                    "details": "Sent a direct message to Andrew Nasution expressing interest and sharing relevant experience.",
+                    "details": "Sent a direct message to Andrew M. expressing interest and sharing relevant experience.",
                     "notes": "Included portfolio link and summary of ML/DL experience"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-09-20T11:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Profile Viewed",
+                    "details": "Andrew M. viewed LinkedIn profile after receiving message.",
+                    "notes": "No clear follow-up or response after initial outreach. Status remains passive."
                 }
             ],
             "lessons_learned": "Matching your message to the job post and highlighting relevant tools (TensorFlow, PyTorch, Django) helps recruiters quickly assess fit."

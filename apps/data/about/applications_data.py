@@ -79,6 +79,31 @@ class ApplicationsData:
     
     applications = [
         {
+            "id": 53,
+            "company_name": "Canonbury",
+            "status": status["ap"],
+            "position": "Python Developer",
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["rm"],
+            "location": "Philippines",
+            "salary_range": None,
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-10-13T05:56:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Job Discovery",
+                    "details": "Found the job posting on LinkedIn. Full-time remote Python Developer role promoted by hirer. Location listed as Philippines, but remote setup matches preferences.",
+                    "notes": "-"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-13T05:57:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied via LinkedIn. Resume tailored to highlight Python backend experience, async architecture, and modular documentation. Over 100 applicants noted.",
+                    "notes": "No response insights available yet. Will follow up if no update within 7 days."
+                }
+            ],
+            "lessons_learned": "Remote full-time Python role aligns with backend and async strengths. Application emphasized modularity and real-time architecture. Monitoring for response—may follow up if silent after a week."
+        },
+        {
             "id": 52,
             "company_name": "filerskeepers",
             "status": status["ap"],

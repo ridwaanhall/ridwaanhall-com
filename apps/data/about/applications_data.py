@@ -83,25 +83,25 @@ class ApplicationsData:
             "company_name": "Canonbury",
             "status": status["ap"],
             "position": "Python Developer",
-            "employment_type": emp_type["ft"],  # Full-time
-            "location_type": loc_types["rm"],   # Remote
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["rm"],
             "location": "Philippines",
             "salary_range": None,
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-10-13T05:58:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
-                    "details": "Found the job on LinkedIn. Canonbury is a UK-based holding company with long-established, profitable businesses. Role offers real ownership, async Python work, and AI-assisted tooling. Remote-first for PH.",
-                    "notes": "Promoted by hirer. Over 100 applicants."
+                    "details": "Found on LinkedIn. UK-based company, remote-first role with real ownership and AI-assisted coding.",
+                    "notes": "Over 100 applicants."
                 },
                 {
                     "timestamp": datetime.strptime("2025-10-13T05:59:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
-                    "details": "Applied via LinkedIn. Resume tailored to highlight Python (Flask, Pandas), async architecture, test-driven development, and AI-assisted workflows. Emphasized modular documentation and real-time backend experience.",
-                    "notes": "No response insights yet. Will follow up if no update within 7 days."
+                    "details": "Applied via LinkedIn. Highlighted Python (Flask, Pandas), async backend, and modular docs.",
+                    "notes": "Will follow up in 7 days if no response."
                 }
             ],
-            "lessons_learned": "Canonbury values autonomy, clean Python code, and AI-assisted development—strong match for my async backend and modular workflow strengths. Application emphasized real-world impact and collaboration. Monitoring for response."
+            "lessons_learned": "Strong match for async Python and AI tooling. Application focused on backend and modular strengths."
         },
         {
             "id": 52,

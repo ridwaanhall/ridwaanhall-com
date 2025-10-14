@@ -79,6 +79,37 @@ class ApplicationsData:
     
     applications = [
         {
+            "id": 54,
+            "company_name": "Mindo Small Business Solutions",
+            "status": status["ap"],
+            "position": "Tech Lead / Senior Software Developer (Python/Django)",
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["os"],
+            "location": "Yogyakarta, Indonesia",
+            "salary_range": None,
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-10-13T05:03:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied via LinkedIn. Highlighted Django, CI/CD, mentoring, and startup fit.",
+                    "notes": "-"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-13T12:03:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Viewed",
+                    "details": "Company viewed application.",
+                    "notes": "-"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-13T12:03:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Resume Downloaded",
+                    "details": "Company downloaded resume.",
+                    "notes": "-"
+                }
+            ],
+            "lessons_learned": "Strong match for Django and DevOps. Resume viewed and downloaded—monitoring next steps."
+        },
+        {
             "id": 53,
             "company_name": "Canonbury",
             "status": status["ap"],

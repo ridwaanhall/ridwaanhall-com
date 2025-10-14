@@ -83,25 +83,25 @@ class ApplicationsData:
             "company_name": "Canonbury",
             "status": status["ap"],
             "position": "Python Developer",
-            "employment_type": emp_type["ft"],
-            "location_type": loc_types["rm"],
+            "employment_type": emp_type["ft"],  # Full-time
+            "location_type": loc_types["rm"],   # Remote
             "location": "Philippines",
             "salary_range": None,
             "journey": [
                 {
-                    "timestamp": datetime.strptime("2025-10-13T05:56:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-10-13T05:58:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Job Discovery",
-                    "details": "Found the job posting on LinkedIn. Full-time remote Python Developer role promoted by hirer. Location listed as Philippines, but remote setup matches preferences.",
-                    "notes": "-"
+                    "details": "Found the job on LinkedIn. Canonbury is a UK-based holding company with long-established, profitable businesses. Role offers real ownership, async Python work, and AI-assisted tooling. Remote-first for PH.",
+                    "notes": "Promoted by hirer. Over 100 applicants."
                 },
                 {
-                    "timestamp": datetime.strptime("2025-10-13T05:57:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-10-13T05:59:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Submitted",
-                    "details": "Applied via LinkedIn. Resume tailored to highlight Python backend experience, async architecture, and modular documentation. Over 100 applicants noted.",
-                    "notes": "No response insights available yet. Will follow up if no update within 7 days."
+                    "details": "Applied via LinkedIn. Resume tailored to highlight Python (Flask, Pandas), async architecture, test-driven development, and AI-assisted workflows. Emphasized modular documentation and real-time backend experience.",
+                    "notes": "No response insights yet. Will follow up if no update within 7 days."
                 }
             ],
-            "lessons_learned": "Remote full-time Python role aligns with backend and async strengths. Application emphasized modularity and real-time architecture. Monitoring for response—may follow up if silent after a week."
+            "lessons_learned": "Canonbury values autonomy, clean Python code, and AI-assisted development—strong match for my async backend and modular workflow strengths. Application emphasized real-world impact and collaboration. Monitoring for response."
         },
         {
             "id": 52,

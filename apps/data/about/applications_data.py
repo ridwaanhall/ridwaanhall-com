@@ -80,11 +80,11 @@ class ApplicationsData:
     applications = [
         {
             "id": 54,
+            "status": status["ip"],
             "company_name": "Mindo Small Business Solutions",
-            "status": status["ap"],
             "position": "Tech Lead / Senior Software Developer (Python/Django)",
             "employment_type": emp_type["ft"],
-            "location_type": loc_types["os"],
+            "location_type": loc_types["on"],
             "location": "Yogyakarta, Indonesia",
             "salary_range": None,
             "journey": [

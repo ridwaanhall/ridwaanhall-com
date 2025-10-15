@@ -474,6 +474,16 @@ class SkillsData:
             "description": "Google AI for OCR, summarization, and smart automation.",
             "icon_svg": f"{settings.BASE_URL}/static/svg/icon/gemini.svg"
         },
+        "redis": {
+            "name": "Redis",
+            "description": "In-memory data structure store, used as a database, cache, and message broker.",
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/redis.svg"
+        },
+        "docker": {
+            "name": "Docker",
+            "description": "Containerization platform for consistent development and deployment.",
+            "icon_svg": f"{settings.BASE_URL}/static/svg/icon/docker.svg"
+        },
     }
     
     # Legacy list format for backward compatibility

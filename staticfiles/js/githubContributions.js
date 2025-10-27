@@ -41,9 +41,9 @@ class GitHubContributions {
         if (isFuture) return "";
 
         if (contributions === 0) return "bg-zinc-950";
-        if (contributions >= 1 && contributions <= 8) return "bg-green-600/20";
-        if (contributions >= 9 && contributions <= 21) return "bg-green-600/50";
-        if (contributions >= 22 && contributions <= 30) return "bg-green-600/90";
+        if (contributions >= 1 && contributions <= 5) return "bg-green-600/20";
+        if (contributions >= 6 && contributions <= 11) return "bg-green-600/50";
+        if (contributions >= 12 && contributions <= 20) return "bg-green-600/90";
         return "bg-green-500";
     }
 

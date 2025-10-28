@@ -137,7 +137,7 @@ class ApplicationsData:
         {
             "id": 52,
             "company_name": "filerskeepers",
-            "status": status["ap"],
+            "status": status["ip"],
             "position": "Junior Python Developer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["rm"],
@@ -155,6 +155,18 @@ class ApplicationsData:
                     "title": "Application Submitted",
                     "details": "Applied via LinkedIn. Resume tailored to highlight Python scraping, AI exposure, and modular documentation.",
                     "notes": "Company review time is typically 1 week."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-18T09:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Viewed",
+                    "details": "LinkedIn showed that the application was viewed by the recruiter.",
+                    "notes": "Viewed within expected review window."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-21T09:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Downloaded One Week Ago",
+                    "details": "Resume was downloaded by the company, indicating interest.",
+                    "notes": "May expect follow-up or interview scheduling soon."
                 }
             ],
             "lessons_learned": "Strong alignment with legaltech and data crawling. Highlighted relevant Python experience and modular documentation. Awaiting confirmation or next steps—may follow up if no response within a week."

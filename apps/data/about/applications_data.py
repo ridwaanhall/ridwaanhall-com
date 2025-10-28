@@ -78,7 +78,31 @@ class ApplicationsData:
     }
     
     applications = [
-
+        {
+            "id": 57,
+            "status": status["ip"],
+            "company_name": "Asosiasi FinTech Indonesia",
+            "position": "Personal Assistant & Admin",
+            "employment_type": emp_type["co"],
+            "location_type": loc_types["on"],
+            "location": "Jakarta, Indonesia",
+            "salary_range": None,
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-10-22T13:08:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied via LinkedIn. Role matched admin experience and bilingual communication skills.",
+                    "notes": "Promoted by hirer and actively reviewing applicants."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-28T13:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Viewed",
+                    "details": "Confirmed via LinkedIn email notification.",
+                    "notes": "Viewed 6 days after submission."
+                }
+            ],
+            "lessons_learned": "Strong match for bilingual admin role. Application viewed—monitoring for follow-up or interview invitation."
+        },
         {
             "id": 56,
             "status": status["ip"],

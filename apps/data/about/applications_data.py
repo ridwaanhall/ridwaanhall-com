@@ -199,7 +199,7 @@ class ApplicationsData:
         {
             "id": 50,
             "company_name": "BitHealth",
-            "status": status["ip"],
+            "status": status["re"],
             "position": "Associate AI Engineer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["hy"],
@@ -229,6 +229,12 @@ class ApplicationsData:
                     "title": "Result Timeline Shared",
                     "details": "Dealls stated results will be shared within 14 working days via app or email.",
                     "notes": "Email reminder to update contact info"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-17T00:37:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Rejected",
+                    "details": "BitHealth rejected the application for Associate AI Engineer.",
+                    "notes": "Status updated on Dealls"
                 }
             ],
             "lessons_learned": "Freshgrad-friendly AI roles often emphasize eagerness to learn, Python fluency, and cross-functional collaboration."
@@ -355,7 +361,7 @@ class ApplicationsData:
         {
             "id": 43,
             "company_name": "PT Akasha Wira International, Tbk",
-            "status": status["ip"],
+            "status": status["re"],
             "position": "AI Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -385,6 +391,12 @@ class ApplicationsData:
                     "title": "Application Review",
                     "details": "Dealls stated application result will be shared within 14 working days.",
                     "notes": "Email confirmation with contact update reminder"
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-14T01:03:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Rejected",
+                    "details": "PT Akasha Wira International, Tbk rejected the application for AI Developer.",
+                    "notes": "Status updated on Dealls"
                 }
             ],
             "lessons_learned": "Standard AI developer role with emphasis on cross-functional collaboration. Useful for benchmarking Jakarta-based on-site roles in FMCG sector."

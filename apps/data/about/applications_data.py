@@ -211,9 +211,15 @@ class ApplicationsData:
                     "title": "Downloaded One Week Ago",
                     "details": "Resume was downloaded by the company, indicating interest.",
                     "notes": "May expect follow-up or interview scheduling soon."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-10-18T00:46:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Assessment Invitation",
+                    "details": "Received TestGorilla assessment link via email from filerskeepers.",
+                    "notes": "Email landed in spam folder and was not opened promptly due to family health emergencies—uncle, grandmother, and grandfather were ill. Prioritized reading short urgent emails in the primary inbox. Will complete the assessment ASAP at 2025-10-29."
                 }
             ],
-            "lessons_learned": "Strong alignment with legaltech and data crawling. Highlighted relevant Python experience and modular documentation. Awaiting confirmation or next steps—may follow up if no response within a week."
+            "lessons_learned": "Strong alignment with legaltech and data crawling. Highlighted relevant Python experience and modular documentation. Assessment invitation was missed due to email filtering and personal emergencies—consider setting alerts or filters for future applications."
         },
         {
             "id": 51,

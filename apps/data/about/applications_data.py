@@ -78,6 +78,26 @@ class ApplicationsData:
     }
     
     applications = [
+
+        {
+            "id": 56,
+            "status": status["ip"],
+            "company_name": "Glints",
+            "position": "Back End Developer (Python)",
+            "employment_type": emp_type["ft"],
+            "location_type": loc_types["rm"],
+            "location": "Indonesia",
+            "salary_range": None,
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-10-21T13:08:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied via LinkedIn. Role matched Python backend experience and remote preference.",
+                    "notes": "Promoted by hirer and actively reviewing applicants."
+                }
+            ],
+            "lessons_learned": "Strong match for remote backend role. Application submitted and acknowledged—monitoring for further activity or response."
+        },
         {
             "id": 54,
             "status": status["ip"],

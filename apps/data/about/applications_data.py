@@ -201,17 +201,17 @@ class ApplicationsData:
                     "notes": "Company review time is typically 1 week."
                 },
                 {
-                    "timestamp": datetime.strptime("2025-10-18T09:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "timestamp": datetime.strptime("2025-10-18T00:40:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Viewed",
                     "details": "LinkedIn showed that the application was viewed by the recruiter.",
                     "notes": "Viewed within expected review window."
                 },
-                {
-                    "timestamp": datetime.strptime("2025-10-21T09:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-                    "title": "Downloaded One Week Ago",
-                    "details": "Resume was downloaded by the company, indicating interest.",
-                    "notes": "May expect follow-up or interview scheduling soon."
-                },
+                # {
+                #     "timestamp": datetime.strptime("2025-10-21T09:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                #     "title": "Downloaded One Week Ago",
+                #     "details": "Resume was downloaded by the company, indicating interest.",
+                #     "notes": "May expect follow-up or interview scheduling soon."
+                # },
                 {
                     "timestamp": datetime.strptime("2025-10-18T00:46:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Assessment Invitation",

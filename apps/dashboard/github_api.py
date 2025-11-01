@@ -18,27 +18,27 @@ class GitHubClient:
     def get_contribution_data(self) -> Optional[Dict]:
         """Fetch GitHub contribution data for the user."""
         query = """
-          query {
-            user(login: "%s") {
-              contributionsCollection {
-                contributionCalendar {
-                  totalContributions
-                  months {
-                    firstDay
-                    name
-                    totalWeeks
-                  }
-                  weeks {
-                    firstDay
-                    contributionDays {
-                      contributionCount
-                      date
+            query {
+                user(login: "%s") {
+                    contributionsCollection {
+                        contributionCalendar {
+                            totalContributions
+                            months {
+                                firstDay
+                                name
+                                totalWeeks
+                            }
+                            weeks {
+                                firstDay
+                                contributionDays {
+                                    contributionCount
+                                    date
+                                }
+                            }
+                        }
                     }
-                  }
                 }
-              }
             }
-          }
         """ % self.username
 
         headers = {

@@ -217,7 +217,7 @@ class ApplicationsData:
                     "title": "Assessment Invitation",
                     "details": "Received TestGorilla assessment link via email from filerskeepers.",
                     "notes": "Email landed in spam folder and was not opened promptly due to family health emergencies—uncle, grandmother, and grandfather were ill. Prioritized reading short urgent emails in the primary inbox. Will complete the assessment ASAP at 2025-11-05."
-                }
+                },
             ],
             "lessons_learned": "Strong alignment with legaltech and data crawling. Highlighted relevant Python experience and modular documentation. Assessment invitation was missed due to email filtering and personal emergencies—consider setting alerts or filters for future applications."
         },

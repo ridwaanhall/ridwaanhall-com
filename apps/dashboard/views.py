@@ -16,8 +16,8 @@ from apps.dashboard.wakatime_api import WakatimeClient, WakatimeStatsCalculator
 
 logger = logging.getLogger(__name__)
 
-# Cache timeout: 3 hours
-CACHE_TIMEOUT = 10800
+# Cache timeout: 15 minutes
+CACHE_TIMEOUT = 900 # 15 minutes in seconds
 
 
 class DashboardView(DashboardSEOMixin, BaseView):

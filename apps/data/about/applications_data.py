@@ -108,12 +108,12 @@ class ApplicationsData:
                 },
                 {
                     "timestamp": datetime.strptime("2025-11-13T06:21:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-                    "title": "Accepted",
+                    "title": "Accepted by Company",
                     "details": "Received confirmation from Ruang Media Solusi of acceptance into the program.",
-                    "notes": "Finalized application process—officially accepted."
-                }
+                    "notes": "Awaiting final validation and onboarding response from MagangHub Kemnaker."
+                },
             ],
-            "lessons_learned": "Application accepted—strong alignment with fullstack developer role."
+            "lessons_learned": "Company acceptance received—now monitoring for official confirmation from MagangHub Kemnaker."
         },
         {
             "id": 57,

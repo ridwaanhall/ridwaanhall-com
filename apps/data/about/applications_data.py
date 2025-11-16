@@ -79,6 +79,43 @@ class ApplicationsData:
     
     applications = [
         {
+            "id": 58,
+            "status": status["ac"],
+            "company_name": "Ruang Media Solusi",
+            "position": "Fullstack Developer",
+            "employment_type": emp_type["in"],
+            "location_type": loc_types["on"],
+            "location": "Yogyakarta, Indonesia", # Jalan Pramuka 92A, Giwangan, Umbulharjo, Yogyakarta
+            "salary_range": None, # "IDR 2.655M"
+            "journey": [
+                {
+                    "timestamp": datetime.strptime("2025-11-12T17:17:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Application Submitted",
+                    "details": "Applied via MagangHub. Role matched fullstack development experience.",
+                    "notes": "Company actively hiring and reviewing applicants."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-11-12T17:35:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Contacted by Company",
+                    "details": "Received message from PT. Kapasitas Global Indonesia & Ruang Media Solusi regarding next stage.",
+                    "notes": "Message included screening form link and request for confirmation."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-11-12T17:59:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Form Submitted",
+                    "details": "Completed and submitted the screening form via Google Forms.",
+                    "notes": "Confirmed submission back to company as requested."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-11-13T06:21:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Accepted",
+                    "details": "Received confirmation from Ruang Media Solusi of acceptance into the program.",
+                    "notes": "Finalized application process—officially accepted."
+                }
+            ],
+            "lessons_learned": "Application accepted—strong alignment with fullstack developer role."
+        },
+        {
             "id": 57,
             "status": status["ip"],
             "company_name": "Asosiasi FinTech Indonesia",

@@ -50,8 +50,8 @@ class ExperiencesData:
                 },
                 "end": "Present"
             },
-            "employment_type": employment_types["in"],  # Internship
-            "location_type": location_types["on"],      # On-site
+            "employment_type": employment_types["in"], # Internship
+            "location_type": location_types["on"],     # On-site
             "location": "Yogyakarta, Indonesia 🇮🇩",
             "is_current": True,
             "responsibilities": [

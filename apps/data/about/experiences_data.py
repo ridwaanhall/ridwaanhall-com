@@ -38,6 +38,33 @@ class ExperiencesData:
     
     experiences = [
         {
+            "id": 58,
+            "title": "Fullstack Developer Intern",
+            "company": "Ruang Media Solusi",
+            "logo": f"{settings.BASE_URL}/static/img/logo/ruang_media_solusi.webp",
+            "website": "https://itoez.com",
+            "period": {
+                "start": {
+                    "month": "Nov",
+                    "year": 2025
+                },
+                "end": "Present"
+            },
+            "employment_type": employment_types["in"],  # Internship
+            "location_type": location_types["on"],      # On-site
+            "location": "Yogyakarta, Indonesia 🇮🇩",
+            "is_current": True,
+            "responsibilities": [
+                "At the start of the internship, introduced previously built projects with measurable results of 3+ applications.",
+                "Discussed future plans together with the founder and 7 other interns, setting a clear target of delivering at least one SaaS product ready for public use.",
+            ],
+            # "skills": [
+            #     "Python (Programming Language)",
+            #     "Time Management",
+            #     "+1 skill"
+            # ]
+        },
+        {
             "id": 13,
             "title": "Founder (Personal Projects)",
             "company": "Copilot ID",

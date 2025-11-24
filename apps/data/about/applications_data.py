@@ -85,7 +85,7 @@ class ApplicationsData:
             "position": "Fullstack Developer",
             "employment_type": emp_type["in"],
             "location_type": loc_types["on"],
-            "location": "Yogyakarta, Indonesia", # Jalan Pramuka 92A, Giwangan, Umbulharjo, Yogyakarta
+            "location": "Yogyakarta, Indonesia",  # Jalan Pramuka 92A, Giwangan, Umbulharjo, Yogyakarta
             "salary_range": None, # "IDR 2.655M"
             "journey": [
                 {
@@ -112,8 +112,14 @@ class ApplicationsData:
                     "details": "Received confirmation from Ruang Media Solusi of acceptance into the program.",
                     "notes": "Awaiting final validation and onboarding response from MagangHub Kemnaker."
                 },
+                {
+                    "timestamp": datetime.strptime("2025-11-21T18:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Accepted by MagangHub Kemnaker",
+                    "details": "Received official acceptance notification from MagangHub Kemnaker.",
+                    "notes": "Onboarding process to begin soon."
+                }
             ],
-            "lessons_learned": "Company acceptance received—now monitoring for official confirmation from MagangHub Kemnaker."
+            "lessons_learned": "The process requires both company and Kemnaker acceptance—company confirmation comes first, but only Kemnaker’s validation makes the internship official and ready for onboarding."
         },
         {
             "id": 57,

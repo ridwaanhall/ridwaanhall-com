@@ -36,19 +36,19 @@ class AboutData:
             "short_cta": "Stay a while and see what lives beyond the code.",
             "long_description": "I'm a machine learning engineer and web developer, building AI apps and slick websites that solve real problems. I've memorized nearly 30 Juz of the Quran, which has wired me for grit, focus, and discipline. I've mentored 50+ coders at DBS Foundation's Coding Camp and guided 100+ interns at GAOTek Inc. I've shipped 45+ projects using TensorFlow, PyTorch, and more. I'm all in on using AI to tackle big challenges fast, growing Copilot ID, and dropping value in open-source communities.",
             "stories": [
-                "I am Ridwan, known as ridwaanhall or roneha. A Python developer with hands-on experience in machine learning and web development from Central Java, Indonesia. I lead Copilot ID, my creative hub for building intelligent systems and web applications with Django, Flask, and ML tools with PyTorch and TensorFlow, crafting each project with purpose.",
+                "I am Ridwan, known as ridwaanhall or roneha. A Python developer with hands-on experience in machine learning and web development based in Yogyakarta, Indonesia. I lead Copilot ID, my creative hub for building intelligent systems and web applications with Django, Flask, and ML tools with PyTorch and TensorFlow.",
+                "In my professional experience, I’ve mentored over 50 aspiring developers through DBS Foundation’s Coding Camp, helping them grow in Machine Learning with Python and soft skills. At GAOTek Inc., I supported more than 100 interns as they took their first steps into the tech world. So far, I’ve completed over 40 projects, ranging from AI models to full-stack web apps.",
                 "Outside of tech, I’ve been on a spiritual journey that shaped how I think and work. I’ve memorized nearly 30 Juz of the Quran, a path that taught me discipline, clarity, and resilience. These qualities naturally influence how I approach coding and mentorship.",
-                "In my professional experience, I’ve mentored over 50 aspiring developers through DBS Foundation’s Coding Camp, helping them grow in Python and soft skills. At GAOTek Inc., I supported more than 100 interns as they took their first steps into the tech world. So far, I’ve completed over 40 projects, ranging from AI models to full-stack web apps.",
                 "My academic journey began at Al Mukmin Islamic Boarding School, where I focused on Islamic studies. Later, I earned a bachelor’s degree in informatics with a concentration in Intelligent Systems (AI) from the University of Technology Yogyakarta, graduating with a GPA of 3.58.",
-                "I stay sharply focused on both AI advancements and Indonesia’s financial market—especially IHSG—to stay ahead in tech, achieve financial freedom as soon as possible, and enjoy the fruits of my work in retirement.",
+                "I stay sharply focused on both AI web advancements and Indonesia’s financial market—especially IHSG—to stay ahead in tech, achieve financial freedom as soon as possible, and enjoy the fruits of my work in retirement.",
                 "Looking forward, my vision is to elevate Copilot ID, contribute meaningfully to open-source communities, and harness AI to address impactful challenges with precision and integrity. I am committed to fostering innovation that drives sustainable progress.",
                 "If you have a visionary idea or wish to explore the possibilities of technology, I’d be delighted to connect and create something transformative together.🚀"
             ],
             "location": {
-                "regency": "Boyolali",
-                "residency": "Surakarta Residency",
-                "province": "Central Java",
-                "prov": "Central Java",
+                "regency": "Yogyakarta City",
+                "residency": "Yogyakarta Residency",
+                "province": "Special Region of Yogyakarta",
+                "prov": "Yogyakarta",
                 "country": "Indonesia",
                 "flag": "🇮🇩"
             },

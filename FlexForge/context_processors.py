@@ -28,4 +28,5 @@ def base_settings(request):
     """
     return {
         'BASE_URL': getattr(settings, 'BASE_URL', 'https://ridwaanhall.com'),
+        'WEB3FORM_ACCESS_KEY': getattr(settings, 'WEB3FORM_PAC', ''),
     }

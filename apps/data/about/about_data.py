@@ -46,7 +46,7 @@ class AboutData:
             ],
             "location": {
                 "regency": "Yogyakarta City",
-                "residency": "Yogyakarta Residency",
+                "residency": "Yogyakarta",
                 "province": "Special Region of Yogyakarta",
                 "prov": "Yogyakarta",
                 "country": "Indonesia",

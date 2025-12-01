@@ -2,7 +2,7 @@ from datetime import datetime
 
 class PrivacyPolicyData:
     privacy_policy = {
-        "last_updated": datetime.strptime("2025-10-06T20:15:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+        "last_updated": datetime.strptime("2025-12-01T11:42:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
         "overview": "I understand that your privacy is important. This policy explains how I collect, use, and protect your information when you visit my website.",
         "policy_updates": "I may update this policy as the website evolves and grows. Major changes will be reflected in the last updated date above, and I'll do my best to notify you of significant privacy policy updates.",
         "data_collected": {
@@ -99,5 +99,22 @@ class PrivacyPolicyData:
             "Consent": "Guestbook participation and social authentication require your explicit consent.",
             "Contract": "Your content storage is necessary for providing guestbook functionality.",
             "Legal Compliance": "Security measures and data protection are implemented to comply with privacy regulations."
+        },
+        "copyright_credits": {
+            "owner": "Ridwan Halim (ridwaanhall.com)",
+            "license": "Apache License 2.0",
+            "third_party_services": {
+                "Cloudflare": "Provides security, DDoS protection, and performance optimization.",
+                "Google Analytics": "Analyzes website traffic, user behavior, and engagement.",
+                "Google OAuth": "Enables secure authentication through Google accounts.",
+                "GitHub OAuth": "Allows login with GitHub credentials for authentication.",
+                "wsrv": "Optimizes images for faster loading and better performance."
+            },
+            "inspiration": {
+                "TikTok": "Provides icon inspiration and modern visual design elements for engaging user interfaces.",
+                "X (Twitter)": "Offers theme design concepts and card layout structures for streamlined content presentation.",
+                "Once UI": "Guides structure management and supports organized file system workflows for scalable projects.",
+                "Aulianza": "Inspires content page layouts and presentation styles to enhance readability and aesthetics."
+            }
         }
     }

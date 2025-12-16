@@ -4,7 +4,7 @@ cffi==2.0.0
 charset-normalizer==3.4.1
 cryptography==45.0.4
 Django==5.2.9
-django-allauth==65.9.0
+django-allauth==65.13.0
 django-csp==4.0
 django-permissions-policy==4.25.0
 idna==3.10

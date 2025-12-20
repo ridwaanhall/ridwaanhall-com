@@ -14,12 +14,10 @@
         {% load static %}
 
         <!-- Essential favicons (not all from manifest) -->
-        <link rel="icon" href="{% static 'favicon/favicon.ico' %}" />
-        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}" />
-        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}" />
-
-        <!-- Apple touch icon -->
-        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}" />
+        <link rel="icon" href="{% static 'favicon/favicon.ico' %}" type="image/x-icon">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}">
 
         <!-- Link to the web manifest -->
         <link rel="manifest" href="{% url 'dynamic_webmanifest' %}" type="application/manifest+json" />

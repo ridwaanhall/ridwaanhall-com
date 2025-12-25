@@ -617,7 +617,7 @@ class ApplicationsData:
         {
             "id": 38,
             "company_name": "Reggie & Cole",
-            "status": status["ap"],
+            "status": status["gh"],
             "position": "Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],

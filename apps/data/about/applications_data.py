@@ -123,7 +123,7 @@ class ApplicationsData:
         },
         {
             "id": 57,
-            "status": status["ip"],
+            "status": status["gh"],
             "company_name": "Asosiasi FinTech Indonesia",
             "position": "Personal Assistant & Admin",
             "employment_type": emp_type["co"],
@@ -148,7 +148,7 @@ class ApplicationsData:
         },
         {
             "id": 56,
-            "status": status["ip"],
+            "status": status["gh"],
             "company_name": "Glints",
             "position": "Back End Developer (Python)",
             "employment_type": emp_type["ft"],
@@ -167,7 +167,7 @@ class ApplicationsData:
         },
         {
             "id": 54,
-            "status": status["ip"],
+            "status": status["gh"],
             "company_name": "Mindo Small Business Solutions",
             "position": "Tech Lead / Senior Software Developer (Python/Django)",
             "employment_type": emp_type["ft"],
@@ -199,7 +199,7 @@ class ApplicationsData:
         {
             "id": 53,
             "company_name": "Canonbury",
-            "status": status["ap"],
+            "status": status["gh"],
             "position": "Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -267,7 +267,7 @@ class ApplicationsData:
         {
             "id": 51,
             "company_name": "Resource Innovations",
-            "status": status["ip"],
+            "status": status["gh"],
             "position": "Django/Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -347,7 +347,7 @@ class ApplicationsData:
         {
             "id": 49,
             "company_name": "AJARI TECHNOLOGIES",
-            "status": status["ip"],
+            "status": status["gh"],
             "position": "AI Engineer - NLP",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -378,7 +378,7 @@ class ApplicationsData:
         {
             "id": 48,
             "company_name": "Kata.ai",
-            "status": status["ip"],
+            "status": status["gh"],
             "position": "Backend Engineer (Freelance)",
             "employment_type": emp_type["fr"],
             "location_type": loc_types["rm"],
@@ -403,7 +403,7 @@ class ApplicationsData:
         {
             "id": 47,
             "company_name": "Talenta IT (Client: IT Solution)",
-            "status": status["ap"],
+            "status": status["gh"],
             "position": "AI Engineer (Machine Learning)",
             "employment_type": emp_type["co"],
             "location_type": loc_types["on"],
@@ -422,7 +422,7 @@ class ApplicationsData:
         {
             "id": 45,
             "company_name": "Talenta IT (Client: Finance Industry)",
-            "status": status["ap"],
+            "status": status["gh"],
             "position": "Python Developer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["on"],
@@ -509,7 +509,7 @@ class ApplicationsData:
         {
             "id": 42,
             "company_name": "Passivae®",
-            "status": status["ap"],
+            "status": status["gh"],
             "position": "Founder's Accelerator | Recruitment Entrepreneur-in-Residence",
             "employment_type": emp_type["se"],
             "location_type": loc_types["rm"],
@@ -593,7 +593,7 @@ class ApplicationsData:
         {
             "id": 39,
             "company_name": "People Prime Worldwide",
-            "status": status["ap"],
+            "status": status["gh"],
             "position": "Python Developer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["rm"],
@@ -641,7 +641,7 @@ class ApplicationsData:
         {
             "id": 37,
             "company_name": "Zortik Technologies",
-            "status": status["ap"],
+            "status": status["gh"],
             "position": "Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -665,7 +665,7 @@ class ApplicationsData:
         {
             "id": 36,
             "company_name": "BrightCHAMPS",
-            "status": status["ap"],
+            "status": status["gh"],
             "position": "Coding Teacher",
             "employment_type": emp_type["pt"],
             "location_type": loc_types["rm"],
@@ -779,7 +779,7 @@ class ApplicationsData:
         {
             "id": 32,
             "company_name": "Codesis Technologies Private Limited",
-            "status": status["ap"],
+            "status": status["gh"],
             "position": "Junior Django Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -803,7 +803,7 @@ class ApplicationsData:
         {
             "id": 31,
             "company_name": "Innodata Inc.",
-            "status": status["ap"],
+            "status": status["gh"],
             "position": "Python Developer (CAN START IMMEDIATELY)",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -857,7 +857,7 @@ class ApplicationsData:
         {
             "id": 29,
             "company_name": "10Pearls",
-            "status": status["ap"],
+            "status": status["gh"],
             "position": "Backend Python/Django Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
@@ -881,7 +881,7 @@ class ApplicationsData:
         {
             "id": 28,
             "company_name": "Vodjo",
-            "status": status["ip"],
+            "status": status["gh"],
             "position": "Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -905,7 +905,7 @@ class ApplicationsData:
         {
             "id": 27,
             "company_name": "Dattabot",
-            "status": status["ap"],
+            "status": status["gh"],
             "position": "Data Python Engineer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["on"],
@@ -929,7 +929,7 @@ class ApplicationsData:
         {
             "id": 26,
             "company_name": "Nawatech",
-            "status": status["ap"],
+            "status": status["gh"],
             "position": "Machine Learning Engineer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["on"],
@@ -953,7 +953,7 @@ class ApplicationsData:
         {
             "id": 25,
             "company_name": "PT Amman Mineral Nusa Tenggara",
-            "status": status["ap"],
+            "status": status["gh"],
             "position": "Data Analyst",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -977,7 +977,7 @@ class ApplicationsData:
         {
             "id": 24,
             "company_name": "PT Karisma Zona Kreatifku (KAZOKKU)",
-            "status": status["ip"],
+            "status": status["gh"],
             "position": "Backend Engineer (Python & AI Integration)",
             "employment_type": emp_type["co"],
             "location_type": loc_types["rm"],
@@ -1014,7 +1014,7 @@ class ApplicationsData:
         {
             "id": 23,
             "company_name": "Toloka Annotators",
-            "status": status["ip"],
+            "status": status["gh"],
             "position": "Data Annotator with Indonesian – AI Trainer",
             "employment_type": emp_type["pt"],
             "location_type": loc_types["rm"],
@@ -1044,7 +1044,7 @@ class ApplicationsData:
         {
             "id": 22,
             "company_name": "Michael Page",
-            "status": status["ip"],
+            "status": status["gh"],
             "position": "AI Engineer",
             "journey": [
                 {
@@ -1102,7 +1102,7 @@ class ApplicationsData:
         {
             "id": 20,
             "company_name": "PT InMotion Inovasi Teknologi",
-            "status": status["ip"],
+            "status": status["gh"],
             "position": "Python Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -1174,7 +1174,7 @@ class ApplicationsData:
         {
             "id": 19,
             "company_name": "Tritronik",
-            "status": status["ip"],
+            "status": status["gh"],
             "position": "AI/ML Presales Engineer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -1210,7 +1210,7 @@ class ApplicationsData:
         {
             "id": 18,
             "company_name": "Lumoshive",
-            "status": status["ip"],
+            "status": status["gh"],
             "position": "AI Engineer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["on"],
@@ -1246,7 +1246,7 @@ class ApplicationsData:
         {
             "id": 17,
             "company_name": "Avows Global IT Technologies Private Limited",
-            "status": status["ip"],
+            "status": status["gh"],
             "position": "Python Developer",
             "employment_type": emp_type["co"],
             "location_type": loc_types["on"],
@@ -1282,7 +1282,7 @@ class ApplicationsData:
         {
             "id": 16,
             "company_name": "Urban CV",
-            "status": status["ip"],
+            "status": status["gh"],
             "position": "AI Developer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],

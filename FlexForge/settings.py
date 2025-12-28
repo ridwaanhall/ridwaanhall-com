@@ -33,7 +33,6 @@ AUTHOR_IMG = config('AUTHOR_IMG', default=f'{BASE_URL}/static/img/ridwaanhall_20
 # Host configuration
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=Csv()) if DEBUG else [
     '.vercel.app',
-    '.ridwaanhall.me',
     '.ridwaanhall.com',
 ]
 

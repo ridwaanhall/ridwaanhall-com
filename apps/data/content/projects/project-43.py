@@ -12,40 +12,50 @@ project_data = {
     # Identity
     "id": 43,
     "title": "BeliMadu.com",
-    "headline": "E-commerce hotspot for honey treats, built with Django and Bootstrap on Vercel.",
+    "headline": "Premium honey e-commerce platform built with Django, TailwindCSS, and deployed on Vercel.",
 
     # Core Content
     "description": [
-        "Belimadu.com is your go-to e-commerce hub for honey products, crafted with Django and Bootstrap, hosted on Vercel. It’s loaded with a product catalog, health tips, WhatsApp ordering, and monthly deals.",
-        "A sweet spot for honey fans, mixing helpful articles with a smooth shopping experience. SEO tweaks make it shine on Google.",
-        "Customers can hit up WhatsApp for quick orders, and monthly promos keep the buzz alive with fresh offers."
+        "BeliMadu.com is a premium e-commerce platform for high-quality honey sourced directly from local beekeepers. Built with Django and TailwindCSS, and deployed on Vercel, it delivers a secure, scalable, and SEO-optimized shopping experience.",
+        "The platform features a curated honey catalog, enhanced contact form security with Cloudflare Turnstile, and improved error pages for better user experience.",
+        "Optimized caching, analytics hooks, and production-ready security settings make it a reliable choice for customers and developers alike."
     ],
     "features": [
         {
             "title": "Honey Catalog",
-            "description": "Lists products with crisp images and details."
+            "description": "Showcases premium honey products with detailed descriptions, pricing, and stock availability."
         },
         {
-            "title": "WhatsApp Orders",
-            "description": "Chat directly to place orders fast."
+            "title": "Secure Contact Form",
+            "description": "Integrated with Cloudflare Turnstile and Gmail app password for safe communication."
         },
         {
-            "title": "Hot Deals",
-            "description": "Monthly specials on seasonal honey picks."
+            "title": "SEO & Error Pages",
+            "description": "Enhanced 404 and 500 pages with clear layouts and subtitles for better search visibility."
+        },
+        {
+            "title": "Production-Ready Deployment",
+            "description": "Configured for Redis caching, SSL, and secure cookies on Vercel."
         }
     ],
     "images": {
-        "belimadu_com.webp": f"{settings.PROJECT_BASE_IMG_URL}/belimadu_com.webp"
+        "belimadu_com_home.webp": f"{settings.PROJECT_BASE_IMG_URL}/belimadu_com_home.webp",
+        "belimadu_com_product.webp": f"{settings.PROJECT_BASE_IMG_URL}/belimadu_com_product.webp",        
+        "belimadu_com_product_detail.webp": f"{settings.PROJECT_BASE_IMG_URL}/belimadu_com_product_detail.webp",
+        "belimadu_com_articles.webp": f"{settings.PROJECT_BASE_IMG_URL}/belimadu_com_articles.webp",        
+        "belimadu_com_articles_detail.webp": f"{settings.PROJECT_BASE_IMG_URL}/belimadu_com_articles_detail.webp",
+        "belimadu_com_about.webp": f"{settings.PROJECT_BASE_IMG_URL}/belimadu_com_about.webp",
+        "belimadu_com_contact.webp": f"{settings.PROJECT_BASE_IMG_URL}/belimadu_com_contact.webp",
     },
 
     # Tech & Resources
     "tech_stack": [
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["django"],
-        SkillsData.tech_stack["bootstrap"],
+        SkillsData.tech_stack["tailwindcss"],
         SkillsData.tech_stack["vercel"]
     ],
-    "github_url": "",
+    "github_url": "https://github.com/ridwaanhall/belimadu-com",
     "demo_url": "https://belimadu.com",
 
     # Classification
@@ -53,17 +63,17 @@ project_data = {
     "tags": [
         "django",
         "e-commerce",
-        "bootstrap",
+        "tailwindcss",
         "vercel",
         "honey",
-        "whatsapp",
-        "seo"
+        "seo",
+        "cloudflare",
     ],
 
     # Status & Meta
-    "is_featured": False,
-    "featured_priority": None,
+    "is_featured": True,
+    "featured_priority": 1,
     "status": "completed",
     "created_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2025-12-28T15:29:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 }

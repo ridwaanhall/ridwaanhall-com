@@ -36,15 +36,22 @@ def send_contact_email(contact_data: Dict[str, str]) -> bool:
     text_content = generate_text_email(name, sender_email, message_text)
     
     try:
+        # Determine recipient(s) from settings, with a safe fallback
+        contact_recipient = getattr(settings, 'CONTACT_EMAIL_RECIPIENT', 'hi@ridwaanhall.com')
+        if isinstance(contact_recipient, str):
+            to_recipients = [contact_recipient]
+        else:
+            to_recipients = list(contact_recipient)
+
         # Create email message
         # FROM: notify@rone.dev (alias of notif.rone@gmail.com)
-        # TO: hi@ridwaanhall.com
+        # TO: configurable contact recipient(s)
         # REPLY-TO: user's email from the form
         email = EmailMultiAlternatives(
             subject=subject,
             body=text_content,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            to=['hi@ridwaanhall.com'],
+            to=to_recipients,
             reply_to=[sender_email],  # Reply goes directly to sender
         )
         

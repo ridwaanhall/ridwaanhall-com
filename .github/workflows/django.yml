@@ -39,3 +39,5 @@ jobs:
                     EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
                     EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
                     DEFAULT_FROM_EMAIL: ${{ secrets.DEFAULT_FROM_EMAIL }}
+                    CF_TURNSTILE_SITE_KEY: ${{ secrets.CF_TURNSTILE_SITE_KEY }}
+                    CF_TURNSTILE_SECRET_KEY: ${{ secrets.CF_TURNSTILE_SECRET_KEY }}

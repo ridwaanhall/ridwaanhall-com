@@ -23,104 +23,198 @@ def generate_html_email(name: str, sender_email: str, message_text: str) -> str:
     <!DOCTYPE html>
     <html>
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
+            * {{
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }}
             body {{
-                font-family: Arial, sans-serif;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
                 line-height: 1.6;
-                color: #333;
+                background-color: #09090b;
+                color: #d4d4d8;
+                padding: 20px;
             }}
             .container {{
                 max-width: 600px;
                 margin: 0 auto;
-                padding: 20px;
+                background-color: #18181b;
+                border-radius: 12px;
+                overflow: hidden;
+                border: 1px solid #27272a;
             }}
             .header {{
-                background-color: #7367f0;
-                color: white;
-                padding: 20px;
+                background: linear-gradient(135deg, #27272a 0%, #3f3f46 100%);
+                color: #fafafa;
+                padding: 32px 24px;
                 text-align: center;
-                border-radius: 5px 5px 0 0;
+                border-bottom: 2px solid #52525b;
+            }}
+            .header h1 {{
+                font-size: 24px;
+                font-weight: 600;
+                margin-bottom: 8px;
+                letter-spacing: -0.025em;
+                color: #fafafa;
+            }}
+            .header p {{
+                font-size: 14px;
+                opacity: 0.85;
+                color: #e4e4e7;
             }}
             .content {{
-                background-color: #f8f9fa;
+                padding: 32px 24px;
+            }}
+            .intro {{
+                color: #a1a1aa;
+                margin-bottom: 24px;
+                font-size: 15px;
+            }}
+            .info-card {{
+                background-color: #27272a;
+                border: 1px solid #3f3f46;
+                border-radius: 8px;
                 padding: 20px;
-                border: 1px solid #ddd;
+                margin-bottom: 20px;
             }}
-            table {{
-                width: 100%;
-                border-collapse: collapse;
-                margin: 20px 0;
-                background-color: white;
+            .info-card h2 {{
+                color: #a78bfa;
+                font-size: 14px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                margin-bottom: 16px;
             }}
-            th {{
-                background-color: #7367f0;
-                color: white;
-                padding: 12px;
-                text-align: left;
-                font-weight: bold;
+            .info-row {{
+                display: flex;
+                padding: 12px 0;
+                border-bottom: 1px solid #3f3f46;
             }}
-            td {{
-                padding: 12px;
-                border-bottom: 1px solid #ddd;
+            .info-row:last-child {{
+                border-bottom: none;
             }}
-            .label {{
-                font-weight: bold;
-                color: #7367f0;
-                width: 150px;
+            .info-label {{
+                font-weight: 600;
+                color: #a78bfa;
+                min-width: 120px;
+                font-size: 14px;
+            }}
+            .info-value {{
+                color: #d4d4d8;
+                font-size: 14px;
+            }}
+            .info-value a {{
+                color: #818cf8;
+                text-decoration: none;
+            }}
+            .info-value a:hover {{
+                text-decoration: underline;
+            }}
+            .message-card {{
+                background-color: #27272a;
+                border: 1px solid #3f3f46;
+                border-radius: 8px;
+                padding: 20px;
+                margin-bottom: 20px;
+            }}
+            .message-card h2 {{
+                color: #a78bfa;
+                font-size: 14px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                margin-bottom: 16px;
             }}
             .message-box {{
-                background-color: #fff;
-                padding: 15px;
-                border-left: 4px solid #7367f0;
-                margin: 10px 0;
+                background-color: #18181b;
+                padding: 16px;
+                border-left: 4px solid #6366f1;
+                border-radius: 4px;
+                color: #d4d4d8;
+                font-size: 14px;
+                line-height: 1.8;
+            }}
+            .note {{
+                background-color: #3730a3;
+                background: linear-gradient(135deg, #312e81 0%, #3730a3 100%);
+                padding: 16px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+            }}
+            .note strong {{
+                color: #c7d2fe;
+                font-weight: 600;
+            }}
+            .note p {{
+                color: #e0e7ff;
+                font-size: 14px;
+                margin: 0;
             }}
             .footer {{
                 text-align: center;
-                margin-top: 20px;
-                color: #666;
+                padding: 24px;
+                color: #71717a;
+                font-size: 13px;
+                border-top: 1px solid #27272a;
+            }}
+            .footer a {{
+                color: #818cf8;
+                text-decoration: none;
+            }}
+            .badge {{
+                display: inline-block;
+                background-color: #3f3f46;
+                color: #d4d4d8;
+                padding: 4px 12px;
+                border-radius: 12px;
                 font-size: 12px;
+                font-weight: 500;
+                margin-top: 8px;
             }}
         </style>
     </head>
     <body>
         <div class="container">
             <div class="header">
-                <h2>New Contact Form Submission</h2>
+                <h1>New Contact Message</h1>
+                <p>You've received a new message from ridwaanhall.com</p>
             </div>
+            
             <div class="content">
-                <p>You have received a new message from your website contact form:</p>
+                <p class="intro">
+                    Someone has reached out to you through your website contact form. Here are the details:
+                </p>
                 
-                <table>
-                    <tr>
-                        <th colspan="2">Contact Information</th>
-                    </tr>
-                    <tr>
-                        <td class="label">Name:</td>
-                        <td>{name}</td>
-                    </tr>
-                    <tr>
-                        <td class="label">Email Address:</td>
-                        <td><a href="mailto:{sender_email}">{sender_email}</a></td>
-                    </tr>
-                </table>
+                <div class="info-card">
+                    <h2>Contact Information</h2>
+                    <div class="info-row">
+                        <div class="info-label">Name:</div>
+                        <div class="info-value">{name}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Email:</div>
+                        <div class="info-value"><a href="mailto:{sender_email}">{sender_email}</a></div>
+                    </div>
+                </div>
                 
-                <table>
-                    <tr>
-                        <th>Message</th>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="message-box">
-                                {formatted_message}
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                <div class="message-card">
+                    <h2>Message Content</h2>
+                    <div class="message-box">
+                        {formatted_message}
+                    </div>
+                </div>
                 
-                <p><strong>Note:</strong> You can reply directly to this email, and your response will be sent to {sender_email}.</p>
+                <div class="note">
+                    <p><strong>Quick Reply:</strong> You can reply directly to this email, and your response will be sent to {sender_email}.</p>
+                </div>
             </div>
+            
             <div class="footer">
-                <p>This email was sent from the contact form at ridwaanhall.com</p>
+                <p>This email was automatically sent from the contact form at <a href="https://ridwaanhall.com">ridwaanhall.com</a></p>
+                <span class="badge">Automated Notification</span>
             </div>
         </div>
     </body>
@@ -141,19 +235,31 @@ def generate_text_email(name: str, sender_email: str, message_text: str) -> str:
         str: Formatted plain text email content
     """
     return f"""
-New Contact Form Submission
-============================
+╔════════════════════════════════════════════════════════╗
+║        NEW CONTACT MESSAGE FROM RIDWAANHALL.COM        ║
+╚════════════════════════════════════════════════════════╝
 
-Contact Information:
--------------------
-Name: {name}
+You've received a new message from your website contact form!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CONTACT INFORMATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Name:  {name}
 Email: {sender_email}
 
-Message:
---------
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MESSAGE CONTENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 {message_text}
 
----
-You can reply directly to this email to respond to {sender_email}.
-This email was sent from the contact form at ridwaanhall.com
-    """
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+QUICK REPLY: You can reply directly to this email, and your 
+response will be sent to {sender_email}.
+
+───────────────────────────────────────────────────────────
+Automated notification from ridwaanhall.com contact form
+───────────────────────────────────────────────────────────
+"""

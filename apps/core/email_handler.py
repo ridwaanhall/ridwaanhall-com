@@ -7,6 +7,9 @@ from django.core.mail import EmailMultiAlternatives
 from typing import Dict
 from .email_templates import generate_html_email, generate_text_email
 from django.conf import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def send_contact_email(contact_data: Dict[str, str]) -> bool:
@@ -53,5 +56,5 @@ def send_contact_email(contact_data: Dict[str, str]) -> bool:
         return True
         
     except Exception as e:
-        print(f"Email sending error: {e}")
+        logger.error(f"Email sending error: {e}")
         return False

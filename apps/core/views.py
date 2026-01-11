@@ -17,8 +17,6 @@ from apps.seo.mixins import HomepageSEOMixin, ContactSEOMixin, PrivacyPolicySEOM
 from apps.core.forms import ContactForm
 from apps.core.email_handler import send_contact_email
 from apps.core.validators import TurnstileValidator
-from apps.core.forms import ContactForm
-from apps.core.email_handler import send_contact_email
 
 
 class HomeView(HomepageSEOMixin, BaseView):

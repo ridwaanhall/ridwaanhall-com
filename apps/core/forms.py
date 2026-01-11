@@ -26,6 +26,7 @@ class ContactForm(forms.Form):
     )
     
     message = forms.CharField(
+        max_length=5000,
         required=True,
         widget=forms.Textarea(attrs={
             'class': 'w-full rounded-md border border-zinc-700 hover:border-zinc-400 px-3 py-2 focus:outline-none focus:border-zinc-400 bg-transparent placeholder-zinc-400 text-zinc-300 hover:text-zinc-200 resize-vertical transition-all duration-300',

@@ -28,7 +28,6 @@ jobs:
                     SECRET_KEY: ${{ secrets.SECRET_KEY }}
                     ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
                     WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
-                    WEB3FORM_PAC: ${{ secrets.WEB3FORM_PAC }}
                     GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
                     GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
                     GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
@@ -37,3 +36,8 @@ jobs:
                     POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
                     POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
                     POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+                    EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+                    EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+                    DEFAULT_FROM_EMAIL: ${{ secrets.DEFAULT_FROM_EMAIL }}
+                    CF_TURNSTILE_SITE_KEY: ${{ secrets.CF_TURNSTILE_SITE_KEY }}
+                    CF_TURNSTILE_SECRET_KEY: ${{ secrets.CF_TURNSTILE_SECRET_KEY }}

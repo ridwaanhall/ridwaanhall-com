@@ -25,6 +25,7 @@ ACCESS_TOKEN = config('ACCESS_TOKEN')
 WAKATIME_API_KEY = config('WAKATIME_API_KEY')
 
 # Cloudflare Turnstile settings
+USE_CF_TURNSTILE = config('USE_CF_TURNSTILE', default=True, cast=bool)
 CF_TURNSTILE_SITE_KEY = config('CF_TURNSTILE_SITE_KEY', default='')
 CF_TURNSTILE_SECRET_KEY = config('CF_TURNSTILE_SECRET_KEY', default='')
 

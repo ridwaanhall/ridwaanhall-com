@@ -28,5 +28,6 @@ def base_settings(request):
     """
     return {
         'BASE_URL': getattr(settings, 'BASE_URL', 'https://ridwaanhall.com'),
+        'USE_CF_TURNSTILE': getattr(settings, 'USE_CF_TURNSTILE', True),
         'CF_TURNSTILE_SITE_KEY': getattr(settings, 'CF_TURNSTILE_SITE_KEY', ''),
     }

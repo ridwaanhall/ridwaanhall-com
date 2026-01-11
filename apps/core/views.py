@@ -9,6 +9,7 @@ from django.http import HttpResponsePermanentRedirect, HttpResponse, JsonRespons
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.conf import settings
 
 from apps.core.base_views import BaseView
 from apps.data.data_service import DataService
@@ -82,13 +83,14 @@ class ContactView(ContactSEOMixin, BaseView):
     def post(self, request, *args, **kwargs):
         """Handle contact form submission via AJAX"""
         try:
-            # Verify Cloudflare Turnstile token
-            turnstile_token = request.POST.get('cf-turnstile-response')
-            if not TurnstileValidator.verify(turnstile_token):
-                return JsonResponse({
-                    "success": False,
-                    "message": "Security verification failed. Please try again."
-                }, status=400)
+            # Verify Cloudflare Turnstile token (if enabled)
+            if settings.USE_CF_TURNSTILE:
+                turnstile_token = request.POST.get('cf-turnstile-response')
+                if not TurnstileValidator.verify(turnstile_token):
+                    return JsonResponse({
+                        "success": False,
+                        "message": "Security verification failed. Please try again."
+                    }, status=400)
             
             form = ContactForm(request.POST)
             

@@ -2,11 +2,13 @@
 {% load static %}
 
 {% block extra_css %}
+{% if USE_CF_TURNSTILE %}
 <script
     src="https://challenges.cloudflare.com/turnstile/v0/api.js"
     async
     defer
 ></script>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -78,7 +80,9 @@
                             name="message"
                             required
                         ></textarea>
+                        {% if USE_CF_TURNSTILE %}
                         <div class="cf-turnstile" data-sitekey="{{ CF_TURNSTILE_SITE_KEY }}" data-callback="onTurnstileSuccess" data-theme="dark"></div>
+                        {% endif %}
                         <button
                             class="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-700 hover:border-zinc-400 bg-zinc-800 px-2 py-2 text-base font-medium text-zinc-300 hover:text-zinc-200 hover:bg-zinc-900 hover:shadow-md hover:shadow-zinc-400/20 transition-all duration-300 justify-center"
                             type="submit"
@@ -145,12 +149,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Get Turnstile token
+            // Get Turnstile token (if enabled)
+            {% if USE_CF_TURNSTILE %}
             const turnstileResponse = form.querySelector('[name="cf-turnstile-response"]');
             if (!turnstileResponse || !turnstileResponse.value) {
                 showMessage('Please complete the security verification.', 'error');
                 return;
             }
+            {% endif %}
             
             // Show loading state
             const originalText = submitBtn.innerHTML;
@@ -172,24 +178,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (result.success) {
                     showMessage(result.message, 'success');
                     form.reset(); // Clear the form
+                    {% if USE_CF_TURNSTILE %}
                     // Reset Turnstile widget
                     if (typeof turnstile !== 'undefined') {
                         turnstile.reset();
                     }
+                    {% endif %}
                 } else {
                     showMessage(result.message || 'Something went wrong. Please try again.', 'error');
+                    {% if USE_CF_TURNSTILE %}
                     // Reset Turnstile widget on error
                     if (typeof turnstile !== 'undefined') {
                         turnstile.reset();
                     }
+                    {% endif %}
                 }
             } catch (error) {
                 console.error('Error:', error);
                 showMessage('An unexpected error occurred. Please try again later.', 'error');
+                {% if USE_CF_TURNSTILE %}
                 // Reset Turnstile widget on error
                 if (typeof turnstile !== 'undefined') {
                     turnstile.reset();
                 }
+                {% endif %}
             } finally {
                 // Reset button state
                 submitBtn.innerHTML = originalText;

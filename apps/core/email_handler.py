@@ -14,31 +14,34 @@ def send_contact_email(contact_data: Dict[str, str]) -> bool:
     Send a professional contact form email.
     
     Args:
-        contact_data: Dictionary containing 'full_name', 'email', and 'message'
+        contact_data: Dictionary containing 'name', 'email', and 'message'
         
     Returns:
         bool: True if email sent successfully, False otherwise
     """
-    full_name = contact_data.get('full_name', '')
+    name = contact_data.get('name', '')
     sender_email = contact_data.get('email', '')
     message_text = contact_data.get('message', '')
     
     # Prepare email subject
-    subject = f'RoneAI: Inquiry from {full_name}'
+    subject = f'New Contact Form Message from {name}'
     
     # Generate HTML email content
-    html_content = generate_html_email(full_name, sender_email, message_text)
+    html_content = generate_html_email(name, sender_email, message_text)
     
     # Generate plain text content
-    text_content = generate_text_email(full_name, sender_email, message_text)
+    text_content = generate_text_email(name, sender_email, message_text)
     
     try:
         # Create email message
+        # FROM: notify@rone.dev (alias of notif.rone@gmail.com)
+        # TO: hi@ridwaanhall.com
+        # REPLY-TO: user's email from the form
         email = EmailMultiAlternatives(
             subject=subject,
             body=text_content,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            to=[settings.EMAIL_HOST_USER],
+            to=['hi@ridwaanhall.com'],
             reply_to=[sender_email],  # Reply goes directly to sender
         )
         

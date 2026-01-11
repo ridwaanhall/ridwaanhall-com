@@ -86,7 +86,7 @@ class ContactView(ContactSEOMixin, BaseView):
             if form.is_valid():
                 # Get cleaned data
                 contact_data = {
-                    "full_name": form.cleaned_data["name"],
+                    "name": form.cleaned_data["name"],
                     "email": form.cleaned_data["email"],
                     "message": form.cleaned_data["message"],
                 }

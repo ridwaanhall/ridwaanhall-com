@@ -127,7 +127,7 @@ class ContactView(ContactSEOMixin, BaseView):
         except Exception as e:
             return JsonResponse({
                 "success": False,
-                "message": f"An unexpected error occurred: {str(e)}"
+                "message": "An internal error has occurred!"
             }, status=500)
 
 

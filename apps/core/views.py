@@ -5,12 +5,18 @@ Handles homepage, contact, and privacy policy views with proper SEO integration.
 
 import random
 from django.utils import timezone
-from django.http import HttpResponsePermanentRedirect, HttpResponse
+from django.http import HttpResponsePermanentRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 from apps.core.base_views import BaseView
 from apps.data.data_service import DataService
 from apps.seo.mixins import HomepageSEOMixin, ContactSEOMixin, PrivacyPolicySEOMixin
+from apps.core.forms import ContactForm
+from apps.core.email_handler import send_contact_email
+from apps.core.forms import ContactForm
+from apps.core.email_handler import send_contact_email
 
 
 class HomeView(HomepageSEOMixin, BaseView):
@@ -53,6 +59,7 @@ class HomeView(HomepageSEOMixin, BaseView):
 class ContactView(ContactSEOMixin, BaseView):
     """
     Contact page view with current time and contact information.
+    Handles both GET and POST requests for contact form.
     """
     template_name = 'core/contact.html'
 
@@ -70,6 +77,47 @@ class ContactView(ContactSEOMixin, BaseView):
         # Add SEO data from mixin
         context.update(self.get_context_data(**context))
         return self.render_to_response(context)
+    
+    def post(self, request, *args, **kwargs):
+        """Handle contact form submission via AJAX"""
+        try:
+            form = ContactForm(request.POST)
+            
+            if form.is_valid():
+                # Get cleaned data
+                contact_data = {
+                    "full_name": form.cleaned_data["name"],
+                    "email": form.cleaned_data["email"],
+                    "message": form.cleaned_data["message"],
+                }
+                
+                # Send email
+                email_sent = send_contact_email(contact_data)
+                
+                if email_sent:
+                    return JsonResponse({
+                        "success": True,
+                        "message": "Thank you—your message has left a trace. I'll be in touch soon."
+                    })
+                else:
+                    return JsonResponse({
+                        "success": False,
+                        "message": "Something went wrong while sending your message. Please try again."
+                    }, status=500)
+            else:
+                # Return form errors
+                errors = form.errors.as_json()
+                return JsonResponse({
+                    "success": False,
+                    "message": "Please check your form data.",
+                    "errors": errors
+                }, status=400)
+                
+        except Exception as e:
+            return JsonResponse({
+                "success": False,
+                "message": f"An unexpected error occurred: {str(e)}"
+            }, status=500)
 
 
 class PrivacyPolicyView(PrivacyPolicySEOMixin, BaseView):

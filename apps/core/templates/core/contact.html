@@ -41,7 +41,8 @@
                 </h2>
                 <p class="text-zinc-400 text-sm mt-2 mb-4">Have a thought, a question, or just want to say hello? Leave a note—I read them all.</p>
 
-                <form id="contact-form">
+                <form id="contact-form" method="post" action="{% url 'contact' %}">
+                    {% csrf_token %}
                     <div class="flex flex-grow flex-col gap-4">
                         <div class="flex flex-col gap-4 md:flex-row">
                             <input
@@ -136,39 +137,26 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.disabled = true;
             
             try {
-                // Prepare form data for Web3Forms
-                const formData = new FormData();
-                formData.append('access_key', '{{ WEB3FORM_ACCESS_KEY }}');
-                formData.append('name', name);
-                formData.append('email', email);
-                formData.append('message', message);
-                formData.append('subject', `New Contact Form Message from ${name}`);
-                formData.append('from_name', `ridwaanhall.com`);
-                formData.append('replyto', email);
+                // Prepare form data using FormData from the form directly (includes CSRF token)
+                const formData = new FormData(form);
                 
-                console.log('Submitting form data...');
-                
-                // Submit to Web3Forms
-                const response = await fetch('https://api.web3forms.com/submit', {
+                // Submit to Django backend
+                const response = await fetch(form.action, {
                     method: 'POST',
                     body: formData
                 });
                 
-                console.log('Response status:', response.status);
-                console.log('Response:', response);
-                
                 const result = await response.json();
-                console.log('Result:', result);
                 
                 if (result.success) {
-                    showMessage('Thank you—your message has left a trace. I’ll be in touch soon.', 'success');
+                    showMessage(result.message, 'success');
                     form.reset(); // Clear the form
                 } else {
-                    showMessage(result.message || 'Something got in the way—mind trying again in a moment?', 'error');
+                    showMessage(result.message || 'Something went wrong. Please try again.', 'error');
                 }
             } catch (error) {
-                console.error('Detailed error:', error);
-                showMessage(`Oops—looks like a connection issue: ${error.message}. Try once more when things are stable.`, 'error');
+                console.error('Error:', error);
+                showMessage('An unexpected error occurred. Please try again later.', 'error');
             } finally {
                 // Reset button state
                 submitBtn.innerHTML = originalText;

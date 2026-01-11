@@ -23,7 +23,6 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 SECRET_KEY = config('SECRET_KEY')
 ACCESS_TOKEN = config('ACCESS_TOKEN')
 WAKATIME_API_KEY = config('WAKATIME_API_KEY')
-WEB3FORM_PAC = config('WEB3FORM_PAC', default='')
 
 BASE_URL = config('BASE_URL', default='http://127.0.0.1:8000' if DEBUG else 'https://ridwaanhall.com')
 BLOG_BASE_IMG_URL = config('BLOG_BASE_IMG_URL', default=f'{BASE_URL}/static/img/blog')
@@ -35,6 +34,18 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=Csv()) if DEBUG else [
     '.vercel.app',
     '.ridwaanhall.com',
 ]
+
+# ------------------------------------------------------------------------------
+# EMAIL SETTINGS
+# ------------------------------------------------------------------------------
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # ------------------------------------------------------------------------------
 # SECURITY SETTINGS
@@ -69,8 +80,6 @@ CONTENT_SECURITY_POLICY = {
             SELF,
             'ridwaanhall.com',
             '*.googleapis.com',
-            'https://api.web3forms.com',
-            'api.web3forms.com',
         ],
         'default-src': [SELF],
         'font-src': [
@@ -78,10 +87,7 @@ CONTENT_SECURITY_POLICY = {
             'ridwaanhall.com',
             '*.gstatic.com',
         ],
-        'form-action': [
-            SELF,
-            'api.web3forms.com',
-        ],
+        'form-action': [SELF],
         'frame-ancestors': [NONE],
         'frame-src': [
             SELF,

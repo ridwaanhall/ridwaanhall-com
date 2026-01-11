@@ -15,6 +15,7 @@ from apps.data.data_service import DataService
 from apps.seo.mixins import HomepageSEOMixin, ContactSEOMixin, PrivacyPolicySEOMixin
 from apps.core.forms import ContactForm
 from apps.core.email_handler import send_contact_email
+from apps.core.validators import TurnstileValidator
 from apps.core.forms import ContactForm
 from apps.core.email_handler import send_contact_email
 
@@ -81,6 +82,14 @@ class ContactView(ContactSEOMixin, BaseView):
     def post(self, request, *args, **kwargs):
         """Handle contact form submission via AJAX"""
         try:
+            # Verify Cloudflare Turnstile token
+            turnstile_token = request.POST.get('cf-turnstile-response')
+            if not TurnstileValidator.verify(turnstile_token):
+                return JsonResponse({
+                    "success": False,
+                    "message": "Security verification failed. Please try again."
+                }, status=400)
+            
             form = ContactForm(request.POST)
             
             if form.is_valid():

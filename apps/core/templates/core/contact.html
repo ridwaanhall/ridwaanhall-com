@@ -1,5 +1,14 @@
 {% extends 'base_seo.html' %}
 {% load static %}
+
+{% block extra_css %}
+<script
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+    async
+    defer
+></script>
+{% endblock %}
+
 {% block content %}
 <div class="flex-1 md:ml-62">
     <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
@@ -69,6 +78,7 @@
                             name="message"
                             required
                         ></textarea>
+                        <div class="cf-turnstile" data-sitekey="{{ CF_TURNSTILE_SITE_KEY }}" data-callback="onTurnstileSuccess" data-theme="dark"></div>
                         <button
                             class="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-700 hover:border-zinc-400 bg-zinc-800 px-2 py-2 text-base font-medium text-zinc-300 hover:text-zinc-200 hover:bg-zinc-900 hover:shadow-md hover:shadow-zinc-400/20 transition-all duration-300 justify-center"
                             type="submit"
@@ -94,6 +104,10 @@
 {% block scripts %}
 <script src="{% static 'js/updateTime.js' %}"></script>
 <script>
+    // Callback function for Turnstile
+    function onTurnstileSuccess(token) {
+        document.getElementById('id_turnstile_token').value = token;
+    }
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('contact-form');
     const submitBtn = document.getElementById('submit-btn');
@@ -131,13 +145,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            // Get Turnstile token
+            const turnstileResponse = form.querySelector('[name="cf-turnstile-response"]');
+            if (!turnstileResponse || !turnstileResponse.value) {
+                showMessage('Please complete the security verification.', 'error');
+                return;
+            }
+            
             // Show loading state
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = 'Sending...';
             submitBtn.disabled = true;
             
             try {
-                // Prepare form data using FormData from the form directly (includes CSRF token)
+                // Prepare form data using FormData from the form directly (includes CSRF token and Turnstile)
                 const formData = new FormData(form);
                 
                 // Submit to Django backend
@@ -151,12 +172,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (result.success) {
                     showMessage(result.message, 'success');
                     form.reset(); // Clear the form
+                    // Reset Turnstile widget
+                    if (typeof turnstile !== 'undefined') {
+                        turnstile.reset();
+                    }
                 } else {
                     showMessage(result.message || 'Something went wrong. Please try again.', 'error');
+                    // Reset Turnstile widget on error
+                    if (typeof turnstile !== 'undefined') {
+                        turnstile.reset();
+                    }
                 }
             } catch (error) {
                 console.error('Error:', error);
                 showMessage('An unexpected error occurred. Please try again later.', 'error');
+                // Reset Turnstile widget on error
+                if (typeof turnstile !== 'undefined') {
+                    turnstile.reset();
+                }
             } finally {
                 // Reset button state
                 submitBtn.innerHTML = originalText;

@@ -24,6 +24,10 @@ SECRET_KEY = config('SECRET_KEY')
 ACCESS_TOKEN = config('ACCESS_TOKEN')
 WAKATIME_API_KEY = config('WAKATIME_API_KEY')
 
+# Cloudflare Turnstile settings
+CF_TURNSTILE_SITE_KEY = config('CF_TURNSTILE_SITE_KEY', default='')
+CF_TURNSTILE_SECRET_KEY = config('CF_TURNSTILE_SECRET_KEY', default='')
+
 BASE_URL = config('BASE_URL', default='http://127.0.0.1:8000' if DEBUG else 'https://ridwaanhall.com')
 BLOG_BASE_IMG_URL = config('BLOG_BASE_IMG_URL', default=f'{BASE_URL}/static/img/blog')
 PROJECT_BASE_IMG_URL = config('PROJECT_BASE_IMG_URL', default=f'{BASE_URL}/static/img/project')
@@ -80,6 +84,8 @@ CONTENT_SECURITY_POLICY = {
             SELF,
             'ridwaanhall.com',
             '*.googleapis.com',
+            'https://challenges.cloudflare.com',
+            'challenges.cloudflare.com',
         ],
         'default-src': [SELF],
         'font-src': [
@@ -92,6 +98,8 @@ CONTENT_SECURITY_POLICY = {
         'frame-src': [
             SELF,
             '*.google.com',
+            'https://challenges.cloudflare.com',
+            'challenges.cloudflare.com',
         ],
         'img-src': [
             SELF,
@@ -114,6 +122,8 @@ CONTENT_SECURITY_POLICY = {
             'static.cloudflareinsights.com',
             '*.googleapis.com',
             'cdn.jsdelivr.net',
+            'https://challenges.cloudflare.com',
+            'challenges.cloudflare.com',
         ],
         'style-src': [
             SELF,

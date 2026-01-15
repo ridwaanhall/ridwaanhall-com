@@ -32,7 +32,8 @@ def send_guestbook_email_notification(sender, instance, created, **kwargs):
         # Get user profile data
         user = instance.user
         name = user.get_full_name() or user.username
-        email = user.email or 'no-email@example.com'
+        # Use a more descriptive fallback for missing email
+        email = user.email or 'noreply@ridwaanhall.com'
         
         # Get guestbook URL
         base_url = getattr(settings, 'BASE_URL', 'https://ridwaanhall.com')

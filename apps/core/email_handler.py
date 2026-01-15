@@ -5,7 +5,12 @@ Handles email composition and delivery with professional HTML formatting.
 
 from django.core.mail import EmailMultiAlternatives
 from typing import Dict
-from .email_templates import generate_html_email, generate_text_email
+from .email_templates import (
+    generate_html_email, 
+    generate_text_email,
+    generate_guestbook_html_email,
+    generate_guestbook_text_email
+)
 from django.conf import settings
 import logging
 
@@ -77,8 +82,6 @@ def send_guestbook_notification(guestbook_data: Dict[str, str]) -> bool:
     Returns:
         bool: True if email sent successfully, False otherwise
     """
-    from .email_templates import generate_guestbook_html_email, generate_guestbook_text_email
-    
     name = guestbook_data.get('name', '')
     sender_email = guestbook_data.get('email', '')
     message_text = guestbook_data.get('message', '')

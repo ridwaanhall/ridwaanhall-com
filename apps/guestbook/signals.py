@@ -38,8 +38,13 @@ def send_guestbook_email_notification(sender, instance, created, **kwargs):
         base_url = getattr(settings, 'BASE_URL', 'https://ridwaanhall.com')
         guestbook_url = f"{base_url}/guestbook/"
         
-        # Format timestamp in a readable way
-        timestamp = instance.timestamp.strftime('%B %d, %Y at %H:%M:%S %Z')
+        # Format timestamp in a readable way with timezone-aware formatting
+        # Use strftime without %Z to avoid empty string issues
+        timestamp = instance.timestamp.strftime('%B %d, %Y at %H:%M:%S')
+        # Add timezone name manually if available
+        tz_name = instance.timestamp.tzname()
+        if tz_name:
+            timestamp = f"{timestamp} {tz_name}"
         
         # Prepare data for email
         guestbook_data = {

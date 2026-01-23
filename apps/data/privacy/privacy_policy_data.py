@@ -2,17 +2,25 @@ from datetime import datetime
 
 class PrivacyPolicyData:
     privacy_policy = {
-        "last_updated": datetime.strptime("2025-12-01T11:42:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+        "last_updated": datetime.strptime("2026-01-23T23:37:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
         "overview": "I understand that your privacy is important. This policy explains how I collect, use, and protect your information when you visit my website.",
         "policy_updates": "I may update this policy as the website evolves and grows. Major changes will be reflected in the last updated date above, and I'll do my best to notify you of significant privacy policy updates.",
         "data_collected": {
+            "Contact Form": {
+                "Personal Information": "Name and email address when you submit the contact form.",
+                "Message Content": "Text messages and inquiries you send through the contact form.",
+                "Contact Confirmation": "Your email is used to send you an automated confirmation that your message was received.",
+                "Site Owner Notification": "Your email and message are forwarded to the site owner for review and response.",
+                "Reply Communication": "Your email enables the site owner to reply to your message.",
+            },
             "Guestbook Feature": {
                 "User Authentication": "Handled via Google and GitHub OAuth for secure login.",
                 "Profile Information": "Name, email, and profile picture from your OAuth provider.",
                 "Message Content": "Text messages you post in the guestbook chat (max 500 characters).",
                 "Message Timestamps": "When you posted your messages for proper chronological display.",
                 "Reply Associations": "Links between messages and their replies for threaded conversations.",
-                "User Session Data": "Temporary session cookies for maintaining login state."
+                "User Session Data": "Temporary session cookies for maintaining login state.",
+                "Guestbook Notifications": "Email notifications are sent to the site owner when you post new messages.",
             },
             "Technical & Security Data": {
                 "Session Cookies": "Essential cookies for site functionality, authentication, and security (CSRF protection).",
@@ -42,10 +50,14 @@ class PrivacyPolicyData:
             }
         },
         "data_usage": {
+            "Contact Form Processing": "Collect and process contact form submissions to communicate with you.",
+            "Contact Confirmation Emails": "Send you an automated confirmation email when you submit the contact form.",
+            "Site Owner Notification": "Forward your contact information and message to the site owner for response.",
+            "Reply Communication": "Enable the site owner to contact you via your provided email address.",
+            "Guestbook Management": "Handle your authentication, profiles, message threading, and notifications.",
             "Website Analytics": "Track visits, page views, and content interaction patterns.",
             "Security & Optimization": "Keep the site secure, optimized, and running smoothly.",
             "User Experience": "Analyze your trends to improve site functionality and design.",
-            "Guestbook Management": "Handle your authentication, profiles, and message threading.",
             "Content Improvement": "Understand popular content to enhance blog posts and projects.",
             "Geographic Insights": "Analyze your distribution for content localization.",
             "Session Management": "Maintain login state and protect against security threats."
@@ -61,9 +73,10 @@ class PrivacyPolicyData:
             "Storage": "Secure database hosting with encrypted connections and access controls.",
             "Data Privacy": "Most data is aggregated and anonymized to protect your privacy.",
             "Encryption": "All data transmission uses HTTPS encryption with secure cookies.",
+            "Email Security": "All outgoing emails are sent via secure SMTP with TLS encryption.",
             "Retention": "Cache refreshes every 3 hours; session cookies expire after 1 hour.",
             "Security Headers": "CSP, HSTS, and other security headers protect against attacks.",
-            "Data Minimization": "I only collect data necessary for site functionality."
+            "Data Minimization": "I only collect data necessary for site functionality.",
         },
         "user_rights": {
             "Data Access": "Request details about what data I have collected about you.",
@@ -80,11 +93,24 @@ class PrivacyPolicyData:
             "Deletion Requests": "To delete your messages, contact hi@ridwaanhall.com with your request.",
             "Permanent Nature": "Consider your messages permanent once posted, as self-deletion is not available."
         },
+        "email_communications": {
+            "Contact Form Emails": "When you submit the contact form, you receive an automated confirmation email from ridwaanhall.com.",
+            "Confirmation Content": "The confirmation email includes a copy of your message and confirms receipt.",
+            "Reply Configuration": "Replies to confirmation emails are forwarded to hi@ridwaanhall.com for response.",
+            "Guestbook Notifications": "When you post a message in the guestbook, the site owner receives a notification email.",
+            "Email Frequency": "You will only receive emails in response to actions you initiate (contact form, guestbook posts).",
+            "Unsubscribe": "You can request to opt-out of contact confirmations by contacting hi@ridwaanhall.com.",
+            "No Spam": "We do not send promotional or marketing emails without your explicit consent.",
+            "Noreply Email": "Guestbook author emails default to noreply@ridwaanhall.com if not available, used only for notifications.",
+        },
         "cookies": {
             "Essential Cookies": {
                 "SessionId": "Django session cookie for maintaining your login state (1 hour expiration).",
                 "CsrfToken": "CSRF protection token to prevent cross-site request forgery attacks.",
                 "Messages": "Temporary cookies for displaying system messages and notifications."
+            },
+            "Email Cookies": {
+                "Contact Confirmation": "Email tracking for contact form confirmation messages (if enabled).",
             },
             "Analytics Cookies": {
                 "Google Analytics": "Website usage analytics and behavior tracking."
@@ -95,6 +121,8 @@ class PrivacyPolicyData:
             }
         },
         "legal_basis": {
+            "Contact Form Communications": "Legitimate interest in responding to user inquiries and maintaining communication.",
+            "Email Sending": "Consent given through contact form submission and guestbook participation.",
             "Legitimate Interest": "Analytics and site improvement based on legitimate business interests.",
             "Consent": "Guestbook participation and social authentication require your explicit consent.",
             "Contract": "Your content storage is necessary for providing guestbook functionality.",

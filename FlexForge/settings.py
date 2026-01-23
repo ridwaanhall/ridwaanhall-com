@@ -1,45 +1,14 @@
 """
 Django 5.2.x settings for FlexForge project.
-Contains security configurations and environment-specific settings.
+Core application settings, middleware, and security configurations.
 
 Author: Ridwan Halim (ridwaanhall.com)
 License: Apache License 2.0
 Created at: March 16, 2025
 """
 
-from pathlib import Path
-from decouple import config, Csv
 from csp.constants import SELF, NONE, UNSAFE_INLINE
-
-# ------------------------------------------------------------------------------
-# BASE SETTINGS
-# ------------------------------------------------------------------------------
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Environment and deployment settings
-DEBUG = config('DEBUG', default=False, cast=bool)
-
-SECRET_KEY = config('SECRET_KEY')
-ACCESS_TOKEN = config('ACCESS_TOKEN')
-WAKATIME_API_KEY = config('WAKATIME_API_KEY')
-
-# Cloudflare Turnstile settings
-USE_CF_TURNSTILE = config('USE_CF_TURNSTILE', default=True, cast=bool)
-CF_TURNSTILE_SITE_KEY = config('CF_TURNSTILE_SITE_KEY', default='')
-CF_TURNSTILE_SECRET_KEY = config('CF_TURNSTILE_SECRET_KEY', default='')
-
-BASE_URL = config('BASE_URL', default='http://127.0.0.1:8000' if DEBUG else 'https://ridwaanhall.com')
-BLOG_BASE_IMG_URL = config('BLOG_BASE_IMG_URL', default=f'{BASE_URL}/static/img/blog')
-PROJECT_BASE_IMG_URL = config('PROJECT_BASE_IMG_URL', default=f'{BASE_URL}/static/img/project')
-AUTHOR_IMG = config('AUTHOR_IMG', default=f'{BASE_URL}/static/img/ridwaanhall_20250913_2.webp')
-
-# Host configuration
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=Csv()) if DEBUG else [
-    '.vercel.app',
-    '.ridwaanhall.com',
-    '.ridwaanhall.me',
-]
+from .config import *
 
 # ------------------------------------------------------------------------------
 # EMAIL SETTINGS
@@ -48,11 +17,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = f"ridwaanhall.com <{config('DEFAULT_FROM_EMAIL')}>"
+EMAIL_HOST_USER = EMAIL_HOST_USER_CREDENTIAL
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD_CREDENTIAL
+DEFAULT_FROM_EMAIL = f"ridwaanhall.com <{DEFAULT_FROM_EMAIL_ADDR}>"
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
-CONTACT_EMAIL_RECIPIENT = config('CONTACT_EMAIL_RECIPIENT', default='hi@ridwaanhall.com')
 
 # ------------------------------------------------------------------------------
 # SECURITY SETTINGS
@@ -181,10 +149,6 @@ APPEND_SLASH = True  # Automatically redirect URLs without trailing slash
 # APPLICATION SETTINGS
 # ------------------------------------------------------------------------------
 
-# Feature toggles
-GUESTBOOK_PAGE = config('GUESTBOOK_PAGE', default=True, cast=bool)
-WSRV_IMAGE_OPTIMIZATION = config('WSRV_IMAGE_OPTIMIZATION', default=not DEBUG, cast=bool)
-
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
     'django.contrib.admin',
@@ -245,8 +209,8 @@ if GUESTBOOK_PAGE:
     SOCIALACCOUNT_PROVIDERS = {
         'google': {
             'APP': {
-                'client_id': config('GOOGLE_CLIENT_ID', default=''),
-                'secret': config('GOOGLE_CLIENT_SECRET', default=''),
+                'client_id': GOOGLE_CLIENT_ID,
+                'secret': GOOGLE_CLIENT_SECRET,
             },
             'SCOPE': [
                 'profile',
@@ -258,8 +222,8 @@ if GUESTBOOK_PAGE:
         },
         'github': {
             'APP': {
-                'client_id': config('GH_CLIENT_ID', default=''),
-                'secret': config('GH_CLIENT_SECRET', default=''),
+                'client_id': GH_CLIENT_ID,
+                'secret': GH_CLIENT_SECRET,
             },
             'SCOPE': [
                 'user:email',
@@ -306,11 +270,11 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': config('POSTGRES_DATABASE', default='ridwaanhall_db'),
-            'USER': config('POSTGRES_USER', default='postgres'),
-            'PASSWORD': config('POSTGRES_PASSWORD', default=''),
-            'HOST': config('POSTGRES_HOST', default='localhost'),
-            'PORT': config('POSTGRES_PORT', default='5432'),
+            'NAME': POSTGRES_DB_NAME,
+            'USER': POSTGRES_USER,
+            'PASSWORD': POSTGRES_PASSWORD,
+            'HOST': POSTGRES_HOST,
+            'PORT': POSTGRES_PORT,
         }
     }
 

@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django.core.exceptions import SuspiciousOperation
 from django.http import Http404, HttpResponse
 
-from apps.data.about.about_data import AboutData
+from apps.data.about_manager import AboutManager
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ class BaseView(TemplateView):
     def get_about_data(self) -> Dict[str, Any]:
         """Safely get about data with proper error handling."""
         try:
-            about_data = AboutData.get_about_data()
+            about_data = AboutManager.get_about_data()
             if not about_data:
                 raise FileNotFoundError("About data is missing.")
             return about_data

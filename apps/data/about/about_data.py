@@ -2,6 +2,7 @@ from django.conf import settings
 from datetime import datetime
 import pytz
 
+
 class AboutData:
     @staticmethod
     def is_working_hours():
@@ -16,27 +17,33 @@ class AboutData:
     @classmethod
     def get_about_data(cls):
         return {
-            "name": "Ridwan Halim",
-            "first_name": "Ridwan",
-            "last_name": "Halim",
-            "username": "ridwaanhall", # GitHub username
-            "aka": "roneha",
-            "image_url": settings.AUTHOR_IMG,
-            "personal_website": "https://ridwaanhall.com",
-            "cv": "https://drive.google.com/file/d/17FaTvAPK273fzXa9ez36X1vDCuQRLM-1/view?usp=sharing",
-            "cv_latest": "https://drive.google.com/file/d/1Sv2VQ95fDn-0a_8lOZxBuFAZ--gJrw7u5EQ-_SLUfpo/view?usp=sharing",
-            "cv_copy": "https://docs.google.com/document/d/1Sv2VQ95fDn-0a_8lOZxBuFAZ--gJrw7u5EQ-_SLUfpo/copy",
-            "role": "Python Developer",
-            "is_active": cls.is_working_hours(),
-            "is_open_to_work": False,
-            "is_hiring": False,
-            "short_description": "a quiet space where machine learning, open-source, and reflections converge.",
-            "short_bio_old": "I explore through code, share with empathy, and reflect on every challenge. My work weaves machine learning, web creation, and open-source. This site archives the curious, the technical, and the quietly thoughtful.",
-            "short_bio": "I explore through code, share with empathy, and reflect on every challenge. My work weaves machine learning, web creation, and open source. I thrive on collaborating with teams to develop AI and web solutions that blend function with clarity.",
-            "short_cta": "Stay a while and see what lives beyond the code.",
-            "long_description": "I'm a machine learning engineer and web developer, building AI apps and slick websites that solve real problems. I've memorized nearly 30 Juz of the Quran, which has wired me for grit, focus, and discipline. I've mentored 50+ coders at DBS Foundation's Coding Camp and guided 100+ interns at GAOTek Inc. I've shipped 45+ projects using TensorFlow, PyTorch, and more. I'm all in on using AI to tackle big challenges fast, growing RoneAI, and dropping value in open-source communities.",
+            "personal": {
+                "name": "Ridwan Halim",
+                "first_name": "Ridwan",
+                "last_name": "Halim",
+                "username": "ridwaanhall",  # GitHub username
+                "aka": "roneha",
+                "image_url": settings.AUTHOR_IMG,
+                "personal_website": "https://ridwaanhall.com",
+                "cv": {
+                    "main": "https://drive.google.com/file/d/17FaTvAPK273fzXa9ez36X1vDCuQRLM-1/view",
+                    "latest": "https://drive.google.com/file/d/1Sv2VQ95fDn-0a_8lOZxBuFAZ--gJrw7u5EQ-_SLUfpo/view",
+                    "copy": "https://docs.google.com/document/d/1Sv2VQ95fDn-0a_8lOZxBuFAZ--gJrw7u5EQ-_SLUfpo/copy",
+                },
+                "role": "Python Developer",
+                "is_active": cls.is_working_hours(),
+                "is_open_to_work": False,
+                "is_hiring": False,
+            },
+            "bio": {
+                "short_description": "a quiet space where machine learning, open-source, and reflections converge.",
+                "short_bio": "I explore through code, share with empathy, and reflect on every challenge. My work weaves machine learning, web creation, and open source. I thrive on collaborating with teams to develop AI and web solutions that blend function with clarity.",
+                "short_cta": "Stay a while and see what lives beyond the code.",
+                "long_description": "I'm a machine learning engineer and web developer, building AI apps and slick websites that solve real problems. I've memorized nearly 30 Juz of the Quran, which has wired me for grit, focus, and discipline. I've mentored 50+ coders at DBS Foundation's Coding Camp and guided 100+ interns at GAOTek Inc. I've shipped 45+ projects using TensorFlow, PyTorch, and more. I'm all in on using AI to tackle big challenges fast, growing RoneAI, and dropping value in open-source communities.",
+            },
             "stories": [
                 "I am Ridwan, known as ridwaanhall or roneha. A Python developer with hands-on experience in machine learning and web development based in Yogyakarta, Indonesia. I lead RoneAI, my creative hub for building intelligent systems and web applications with Django, Flask, and ML tools with PyTorch and TensorFlow.",
+                "During my internship at Ruang Media Solusi, I developed a reporting website similar to lapor.go.id using Django, integrated 5+ API endpoints from a Laravel backend, and styled the frontend with Vuexy. I successfully completed 3 core modules (report submission, admin dashboard, user tracking) and improved API integration performance by ~20%.",
                 "In my professional experience, I’ve mentored over 50 aspiring developers through DBS Foundation’s Coding Camp, helping them grow in Machine Learning with Python and soft skills. At GAOTek Inc., I supported more than 100 interns as they took their first steps into the tech world. So far, I’ve completed over 40 projects, ranging from AI models to full-stack web apps.",
                 "My academic journey began at Al Mukmin Islamic Boarding School, where I focused on Islamic studies. Later, I earned a bachelor’s degree in informatics with a concentration in Intelligent Systems (AI) from the University of Technology Yogyakarta, graduating with a GPA of 3.58.",
                 "Outside of tech, I’ve been on a spiritual journey that shaped how I think and work. I’ve memorized nearly 30 Juz of the Quran, a path that taught me discipline, clarity, and resilience. These qualities naturally influence how I approach coding and mentorship.",
@@ -50,7 +57,7 @@ class AboutData:
                 "province": "Special Region of Yogyakarta",
                 "prov": "Yogyakarta",
                 "country": "Indonesia",
-                "flag": "🇮🇩"
+                "flag": "🇮🇩",
             },
             "social_media": {
                 "email": "hi@ridwaanhall.com",
@@ -64,20 +71,20 @@ class AboutData:
             },
             "donate": [
                 {
-                    "github_sponsor": "https://github.com/sponsors/ridwaanhall",
-                    "donate_text": "Back me on GitHub Sponsors"
+                    "platform": "GitHub Sponsors",
+                    "url": "https://github.com/sponsors/ridwaanhall"
                 },
                 {
-                    "sociabuzz": "https://sociabuzz.com/ridwaanhall/support",
-                    "donate_text": "Become a patron through Sociabuzz"
+                    "platform": "Sociabuzz",
+                    "url": "https://sociabuzz.com/ridwaanhall/support"
                 },
                 {
-                    "buy_me_a_coffee": "https://www.buymeacoffee.com/ridwaanhall",
-                    "donate_text": "Support my work with a coffee"
+                    "platform": "Buy Me a Coffee",
+                    "url": "https://www.buymeacoffee.com/ridwaanhall"
                 },
                 {
-                    "saweria": "https://saweria.co/ridwaanhall",
-                    "donate_text": "Support my journey on Saweria"
+                    "platform": "Saweria",
+                    "url": "https://saweria.co/ridwaanhall"
                 },
             ],
             "skills": [

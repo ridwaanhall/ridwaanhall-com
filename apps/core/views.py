@@ -5,7 +5,9 @@ Handles homepage, contact, and privacy policy views with proper SEO integration.
 
 import random
 from django.utils import timezone
-from django.http import HttpResponsePermanentRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponsePermanentRedirect, HttpResponseRedirect, HttpResponse, JsonResponse
+from django.utils.encoding import iri_to_uri
+import logging
 from django.shortcuts import render
 from django.conf import settings
 
@@ -160,13 +162,21 @@ class CVRedirectView(BaseView):
         Using permanent redirect (301) for better SEO and caching.
         """
         about_data = self.get_about_data()
-        cv_url = about_data.get('cv')
+        cv_url = None
+        if about_data:
+            cv_url = about_data.get('cv', {}).get('main')
+            if not cv_url:
+                # Fallback to nested structure if not flattened (backward compatibility)
+                cv_url = about_data.get('personal', {}).get('cv', {}).get('main')
         
         if not cv_url:
             # Fallback to homepage if CV URL is not configured
             return HttpResponsePermanentRedirect('/')
             
-        return HttpResponsePermanentRedirect(cv_url)
+        # Encode to a proper URI and redirect via Location header (302)
+        resp = HttpResponse(status=302)
+        resp['Location'] = iri_to_uri(cv_url)
+        return resp
     
     
 class CVLatestRedirectView(BaseView):
@@ -179,13 +189,20 @@ class CVLatestRedirectView(BaseView):
         Using permanent redirect (301) for better SEO and caching.
         """
         about_data = self.get_about_data()
-        cv_latest_url = about_data.get('cv_latest')
+        cv_latest_url = None
+        if about_data:
+            cv_latest_url = about_data.get('cv', {}).get('latest')
+            if not cv_latest_url:
+                # Fallback to nested structure if not flattened (backward compatibility)
+                cv_latest_url = about_data.get('personal', {}).get('cv', {}).get('latest')
 
         if not cv_latest_url:
             # Fallback to homepage if CV latest URL is not configured
             return HttpResponsePermanentRedirect('/')
 
-        return HttpResponsePermanentRedirect(cv_latest_url)
+        resp = HttpResponse(status=302)
+        resp['Location'] = iri_to_uri(cv_latest_url)
+        return resp
 
 
 class CVTemplateRedirectView(BaseView):
@@ -200,13 +217,20 @@ class CVTemplateRedirectView(BaseView):
         Using permanent redirect (301) for better SEO and caching.
         """
         about_data = self.get_about_data()
-        template_url = about_data.get('cv_copy')
+        template_url = None
+        if about_data:
+            template_url = about_data.get('cv', {}).get('copy')
+            if not template_url:
+                # Fallback to nested structure if not flattened (backward compatibility)
+                template_url = about_data.get('personal', {}).get('cv', {}).get('copy')
         
         if not template_url:
             # Fallback to homepage if CV template URL is not configured
             return HttpResponsePermanentRedirect('/')
             
-        return HttpResponsePermanentRedirect(template_url)
+        resp = HttpResponse(status=302)
+        resp['Location'] = iri_to_uri(template_url)
+        return resp
 
 
 def dynamic_css_view(request, css_name):

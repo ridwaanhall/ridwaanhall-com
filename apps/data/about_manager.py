@@ -12,10 +12,28 @@ class AboutManager:
     
     @classmethod
     def get_about_data(cls):
-        """Get about data."""
+        """Get about data with flattened structure for backward compatibility."""
         from .about.about_data import AboutData
         about_data = AboutData.get_about_data()
-        return about_data if about_data else None
+        
+        if not about_data:
+            return None
+        
+        # Flatten the nested structure for backward compatibility
+        flattened = {
+            # Personal fields (flattened to root level)
+            **about_data.get('personal', {}),
+            # Bio fields (flattened to root level)
+            **about_data.get('bio', {}),
+            # Keep these as nested structures
+            'stories': about_data.get('stories', []),
+            'location': about_data.get('location', {}),
+            'social_media': about_data.get('social_media', {}),
+            'donate': about_data.get('donate', []),
+            'skills': about_data.get('skills', []),
+        }
+        
+        return flattened
     
     @classmethod
     def get_experiences(cls, current_only=False):

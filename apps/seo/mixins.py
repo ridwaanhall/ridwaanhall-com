@@ -3,7 +3,7 @@ SEO Mixins
 Reusable mixins for views to automatically include SEO functionality.
 """
 
-from apps.data.about.about_data import AboutData
+from apps.data.about_manager import AboutManager
 from .manager import SEOManager
 
 
@@ -17,7 +17,7 @@ class SEOMixin:
     
     def get_about_data(self):
         """Get about data with fallback."""
-        about_data = AboutData.get_about_data()
+        about_data = AboutManager.get_about_data()
         if not about_data:
             raise FileNotFoundError("About data is missing.")
         return about_data

@@ -10,8 +10,8 @@ from typing import Dict, Any
 class EmailTemplateLoader:
     """Loads and renders email templates from files."""
 
-    # Point to templates/core/email from the Django project root
-    BASE_PATH = Path(__file__).resolve().parent.parent.parent / "templates" / "core" / "email"
+    # Point to apps/core/templates/core/email
+    BASE_PATH = Path(__file__).resolve().parent / "templates" / "core" / "email"
 
     @staticmethod
     def _load_template(filename: str) -> str:
@@ -57,10 +57,12 @@ class EmailTemplateLoader:
         """Render contact autoreply HTML email template."""
         template = EmailTemplateLoader._load_template("contact_autoreply.html")
         display_name = name or "there"
+        name_display = name if name else sender_email
         formatted_message = message_text.replace("\n", "<br>")
         context = {
             "display_name": display_name,
-            "name": name or sender_email,
+            "name": name if name else "",
+            "name_display": name_display,
             "sender_email": sender_email,
             "message_html": formatted_message,
         }
@@ -71,9 +73,11 @@ class EmailTemplateLoader:
         """Render contact autoreply text email template."""
         template = EmailTemplateLoader._load_template("contact_autoreply.txt")
         display_name = name or "there"
+        name_display = name if name else sender_email
         context = {
             "display_name": display_name,
-            "name": name or sender_email,
+            "name": name if name else "",
+            "name_display": name_display,
             "sender_email": sender_email,
             "message_text": message_text,
         }

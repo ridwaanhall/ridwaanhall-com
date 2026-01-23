@@ -130,10 +130,16 @@
                 <div class="message-box">
                     {{ message_html }}
                 </div>
-                <p class="meta">
-                    Name: {{ name or sender_email }}<br>
-                    Email: {{ sender_email }}
-                </p>
+                <table style="width: 100%; margin-top: 12px; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 6px 0; color: #a78bfa; font-weight: 600; font-size: 13px; width: 45px;">Name:</td>
+                        <td style="padding: 6px 0; color: #a1a1aa; font-size: 13px;">{{ name_display }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 6px 0; color: #a78bfa; font-weight: 600; font-size: 13px;">Email:</td>
+                        <td style="padding: 6px 0; color: #a1a1aa; font-size: 13px;">{{ sender_email }}</td>
+                    </tr>
+                </table>
             </div>
         </div>
 

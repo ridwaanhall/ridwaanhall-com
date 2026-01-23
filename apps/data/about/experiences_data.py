@@ -57,6 +57,8 @@ class ExperiencesData:
             "responsibilities": [
                 "At the start of the internship, introduced previously built projects with measurable results of 3+ applications.",
                 "Discussed future plans together with the founder and 7 other interns, setting a clear target of delivering at least one SaaS product ready for public use.",
+                "Built a reporting website similar to lapor.go.id using Django, integrating 5+ API endpoints from a Laravel backend.",
+                "Styled the frontend with Vuexy, completing 3 core modules (report submission, admin dashboard, and user tracking) within the first sprint.",
             ],
             # "skills": [
             #     "Python (Programming Language)",

@@ -76,9 +76,7 @@ blog_data = {
             "text": "Fully online, 100% free, and globally aligned—the Coding Camp offers career-ready certification, personalized mentoring, and exposure to job placement programs by DBS and Dicoding. For many, it’s a game-changer toward a digital future."
         }
     ],
-    "is_featured": True,
-    "tags": ['Coding Camp', 'dicoding', 'DBS Foundation', 'Digital Literacy', 'Tech Education', 'Indonesia'],
-    "category": "Digital Skills",
+    "is_featured": False,
     "read_time": 6,
     "views": 0,
     "slug": "coding-camp-2025-dbs-foundation"

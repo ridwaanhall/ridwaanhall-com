@@ -1,6 +1,9 @@
-"""
-Email templates for contact form submissions.
-Contains HTML and plain text email formatting functions.
+"""Email templates for contact and guestbook emails.
+
+Contains HTML and plain text email formatting functions for:
+- Contact form notifications to site owner
+- Contact form auto-replies to visitors
+- Guestbook notifications
 """
 
 
@@ -262,6 +265,206 @@ response will be sent to {sender_email}.
 ───────────────────────────────────────────────────────────
 Automated notification from ridwaanhall.com contact form
 ───────────────────────────────────────────────────────────
+"""
+
+
+def generate_contact_autoreply_html(name: str, sender_email: str, message_text: str) -> str:
+    """Generate HTML auto-reply email for contact form visitors.
+
+    Args:
+        name: Visitor's name
+        sender_email: Visitor's email address
+        message_text: Original message content
+
+    Returns:
+        str: Formatted HTML email content for the visitor
+    """
+    display_name = name or "there"
+    formatted_message = message_text.replace("\n", "<br>")
+
+    return f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            * {{
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }}
+            body {{
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                line-height: 1.6;
+                background-color: #09090b;
+                color: #d4d4d8;
+                padding: 20px;
+            }}
+            .container {{
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #18181b;
+                border-radius: 12px;
+                overflow: hidden;
+                border: 1px solid #27272a;
+            }}
+            .header {{
+                background: linear-gradient(135deg, #27272a 0%, #3f3f46 100%);
+                color: #fafafa;
+                padding: 32px 24px;
+                text-align: center;
+                border-bottom: 2px solid #52525b;
+            }}
+            .header h1 {{
+                font-size: 24px;
+                font-weight: 600;
+                margin-bottom: 8px;
+                letter-spacing: -0.025em;
+                color: #fafafa;
+            }}
+            .header p {{
+                font-size: 14px;
+                opacity: 0.85;
+                color: #e4e4e7;
+            }}
+            .content {{
+                padding: 32px 24px;
+            }}
+            .intro {{
+                color: #a1a1aa;
+                margin-bottom: 20px;
+                font-size: 15px;
+            }}
+            .card {{
+                background-color: #27272a;
+                border: 1px solid #3f3f46;
+                border-radius: 8px;
+                padding: 20px;
+                margin-bottom: 20px;
+            }}
+            .card h2 {{
+                color: #a78bfa;
+                font-size: 14px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                margin-bottom: 12px;
+            }}
+            .message-box {{
+                background-color: #18181b;
+                padding: 16px;
+                border-left: 4px solid #6366f1;
+                border-radius: 4px;
+                color: #d4d4d8;
+                font-size: 14px;
+                line-height: 1.8;
+            }}
+            .meta {{
+                font-size: 13px;
+                color: #a1a1aa;
+                margin-top: 8px;
+            }}
+            .footer {{
+                text-align: center;
+                padding: 24px;
+                color: #71717a;
+                font-size: 13px;
+                border-top: 1px solid #27272a;
+            }}
+            .footer a {{
+                color: #818cf8;
+                text-decoration: none;
+            }}
+            .badge {{
+                display: inline-block;
+                background-color: #3f3f46;
+                color: #d4d4d8;
+                padding: 4px 12px;
+                border-radius: 12px;
+                font-size: 12px;
+                font-weight: 500;
+                margin-top: 8px;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Thanks for reaching out</h1>
+                <p>Your message to ridwaanhall.com has been received</p>
+            </div>
+
+            <div class="content">
+                <p class="intro">
+                    Hi {display_name},<br><br>
+                    Thanks for contacting <strong>Ridwan Halim</strong> through <strong>ridwaanhall.com</strong>.
+                    This is a quick confirmation that your message has safely landed in the inbox.
+                </p>
+
+                <div class="card">
+                    <h2>What happens next</h2>
+                    <div class="message-box">
+                        Ridwan usually replies within <strong>3 days</strong>.
+                        If your message is time-sensitive, feel free to reply directly to this email with any additional details.
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Your original message</h2>
+                    <div class="message-box">
+                        {formatted_message}
+                    </div>
+                    <p class="meta">
+                        Name: {name or sender_email}<br>
+                        Email: {sender_email}
+                    </p>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>Sent automatically from the contact form at <a href="https://ridwaanhall.com">ridwaanhall.com</a></p>
+                <span class="badge">Confirmation Copy</span>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+
+def generate_contact_autoreply_text(name: str, sender_email: str, message_text: str) -> str:
+    """Generate plain text auto-reply for contact form visitors.
+
+    Args:
+        name: Visitor's name
+        sender_email: Visitor's email address
+        message_text: Original message content
+
+    Returns:
+        str: Formatted plain text email content for the visitor
+    """
+    display_name = name or "there"
+
+    return f"""
+Hi {display_name},
+
+Thanks for contacting Ridwan Halim through ridwaanhall.com.
+
+This is a quick confirmation that your message has been received.
+Ridwan usually replies within 3 days.
+
+For your reference, here is a copy of what you sent:
+--------------------------------------------------
+From:   {name or sender_email}
+Email:  {sender_email}
+
+Message:
+{message_text}
+--------------------------------------------------
+
+If you need to add anything, you can simply reply to this email.
+
+— ridwaanhall.com
 """
 
 

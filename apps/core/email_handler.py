@@ -5,7 +5,7 @@ Handles email composition and delivery with professional HTML formatting.
 
 from django.core.mail import EmailMultiAlternatives
 from typing import Dict
-from .email.loader import EmailTemplateLoader
+from .email_templates import EmailTemplateLoader
 from django.conf import settings
 import logging
 

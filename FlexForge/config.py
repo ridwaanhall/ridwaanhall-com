@@ -50,7 +50,7 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="", cast=Csv()) if DEBUG else [
 # --------------------------------------------------------------------------
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = f"ridwaanhall.com <{config("DEFAULT_FROM_EMAIL")}>"
+DEFAULT_FROM_EMAIL = f"ridwaanhall.com <{config('DEFAULT_FROM_EMAIL')}>"
 CONTACT_EMAIL_RECIPIENT = config("CONTACT_EMAIL_RECIPIENT", default="hi@ridwaanhall.com")
 
 # --------------------------------------------------------------------------

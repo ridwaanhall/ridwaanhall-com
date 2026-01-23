@@ -5,14 +5,7 @@ Handles email composition and delivery with professional HTML formatting.
 
 from django.core.mail import EmailMultiAlternatives
 from typing import Dict
-from .email_templates import (
-    generate_html_email,
-    generate_text_email,
-    generate_contact_autoreply_html,
-    generate_contact_autoreply_text,
-    generate_guestbook_html_email,
-    generate_guestbook_text_email,
-)
+from .email.loader import EmailTemplateLoader
 from django.conf import settings
 import logging
 
@@ -37,10 +30,14 @@ def send_contact_email(contact_data: Dict[str, str]) -> bool:
     subject = f'New Contact Form Message from {name}'
     
     # Generate HTML email content for site owner
-    html_content = generate_html_email(name, sender_email, message_text)
-    
+    html_content = EmailTemplateLoader.render_contact_notification_html(
+        name, sender_email, message_text
+    )
+
     # Generate plain text content for site owner
-    text_content = generate_text_email(name, sender_email, message_text)
+    text_content = EmailTemplateLoader.render_contact_notification_text(
+        name, sender_email, message_text
+    )
     
     try:
         # Determine recipient(s) from settings, with a safe fallback
@@ -72,8 +69,12 @@ def send_contact_email(contact_data: Dict[str, str]) -> bool:
         try:
             if sender_email:
                 auto_subject = "Thanks for contacting Ridwan Halim"
-                auto_html = generate_contact_autoreply_html(name, sender_email, message_text)
-                auto_text = generate_contact_autoreply_text(name, sender_email, message_text)
+                auto_html = EmailTemplateLoader.render_contact_autoreply_html(
+                    name, sender_email, message_text
+                )
+                auto_text = EmailTemplateLoader.render_contact_autoreply_text(
+                    name, sender_email, message_text
+                )
 
                 auto_reply = EmailMultiAlternatives(
                     subject=auto_subject,
@@ -112,13 +113,17 @@ def send_guestbook_notification(guestbook_data: Dict[str, str]) -> bool:
     guestbook_url = guestbook_data.get('guestbook_url', '')
     
     # Prepare email subject
-    subject = f'New Guestbook Message from {name}'
-    
+    subject = f"New Guestbook Message from {name}"
+
     # Generate HTML email content
-    html_content = generate_guestbook_html_email(name, sender_email, message_text, timestamp, guestbook_url)
-    
+    html_content = EmailTemplateLoader.render_guestbook_notification_html(
+        name, sender_email, message_text, timestamp, guestbook_url
+    )
+
     # Generate plain text content
-    text_content = generate_guestbook_text_email(name, sender_email, message_text, timestamp, guestbook_url)
+    text_content = EmailTemplateLoader.render_guestbook_notification_text(
+        name, sender_email, message_text, timestamp, guestbook_url
+    )
     
     try:
         # Determine recipient(s) from settings, with a safe fallback

@@ -1,0 +1,27 @@
+╔════════════════════════════════════════════════════════╗
+║        NEW CONTACT MESSAGE FROM RIDWAANHALL.COM        ║
+╚════════════════════════════════════════════════════════╝
+
+You've received a new message from your website contact form!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CONTACT INFORMATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Name:  {{ name }}
+Email: {{ sender_email }}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MESSAGE CONTENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+{{ message_text }}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+QUICK REPLY: You can reply directly to this email, and your 
+response will be sent to {{ sender_email }}.
+
+───────────────────────────────────────────────────────────
+Automated notification from ridwaanhall.com contact form
+───────────────────────────────────────────────────────────

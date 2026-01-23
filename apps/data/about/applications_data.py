@@ -1632,7 +1632,7 @@ class ApplicationsData:
         },
         {
             "id": 7,
-            "company_name": "Copilot ID",
+            "company_name": "RoneAI",
             "status": status["ac"],
             "position": "Founder",
             "journey": [

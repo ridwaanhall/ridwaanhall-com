@@ -12,7 +12,7 @@ class HiringData:
     def get_hiring_data(cls):
         """Get hiring data."""
         return {
-            "company_name": "Copilot ID",
+            "company_name": "RoneAI",
             "company_description": "A creative hub building intelligent systems and web applications",
             "website": "https://copilot.my.id",
             "hiring_status": "Currently Hiring",

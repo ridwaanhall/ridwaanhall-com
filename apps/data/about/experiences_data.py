@@ -68,10 +68,10 @@ class ExperiencesData:
         },
         {
             "id": 13,
-            "title": "Founder (Personal Projects)",
-            "company": "Copilot ID",
-            "logo": f"{settings.BASE_URL}/static/img/logo/copilot_id.webp",
-            "website": "https://github.com/copilot-id",
+            "title": "Founder",
+            "company": "RoneAI",
+            "logo": f"{settings.BASE_URL}/static/img/logo/roneai.webp",
+            "website": "https://github.com/RoneAI",
             "period": {
                 "start": {
                     "month": "Jan",

@@ -1,27 +1,17 @@
-╔════════════════════════════════════════════════════════╗
-║       NEW GUESTBOOK MESSAGE FROM RIDWAANHALL.COM       ║
-╚════════════════════════════════════════════════════════╝
+Hi there,
 
-Someone has left a message in your guestbook!
+This is to confirm that a new entry has been added to your guestbook at ridwaanhall.com.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-MESSAGE INFORMATION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+For your reference, here’s a copy of the entry:
+--------------------------------------------------
 From:      {{ name }}
 Email:     {{ sender_email }}
 Timestamp: {{ timestamp }}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-MESSAGE CONTENT
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+Message:
 {{ message_text }}
+--------------------------------------------------
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+You can view your guestbook online here: {{ guestbook_url }}
 
-View your guestbook: {{ guestbook_url }}
-
-───────────────────────────────────────────────────────────
-Automated notification from ridwaanhall.com guestbook
-───────────────────────────────────────────────────────────
+— ridwaanhall.com

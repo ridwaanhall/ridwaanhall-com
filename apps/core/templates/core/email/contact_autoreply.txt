@@ -1,11 +1,11 @@
 Hi {{ display_name }},
 
-Thanks for contacting Ridwan Halim through ridwaanhall.com.
+Thank you for reaching out to Ridwan Halim via ridwaanhall.com.
 
-This is a quick confirmation that your message has been received.
-Ridwan usually replies within 3 days.
+This is a confirmation that your message has been delivered successfully.
+Ridwan typically responds within 3 days.
 
-For your reference, here is a copy of what you sent:
+For your reference, here’s a copy of what you submitted:
 --------------------------------------------------
 From:   {{ name_display }}
 Email:  {{ sender_email }}
@@ -14,6 +14,6 @@ Message:
 {{ message_text }}
 --------------------------------------------------
 
-If you need to add anything, you can simply reply to this email.
+If you’d like to add more details, just reply to this email and your update will be included.
 
 — ridwaanhall.com

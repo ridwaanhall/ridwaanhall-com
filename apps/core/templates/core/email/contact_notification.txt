@@ -1,27 +1,16 @@
-╔════════════════════════════════════════════════════════╗
-║        NEW CONTACT MESSAGE FROM RIDWAANHALL.COM        ║
-╚════════════════════════════════════════════════════════╝
+Hi there,
 
-You've received a new message from your website contact form!
+This is to notify you that a new message has been submitted through the contact form at ridwaanhall.com.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-CONTACT INFORMATION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Here are the details of the submission:
+--------------------------------------------------
+Name:   {{ name }}
+Email:  {{ sender_email }}
 
-Name:  {{ name }}
-Email: {{ sender_email }}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-MESSAGE CONTENT
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+Message:
 {{ message_text }}
+--------------------------------------------------
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Quick response: Simply reply to this email and your message will reach {{ sender_email }} directly.
 
-QUICK REPLY: You can reply directly to this email, and your 
-response will be sent to {{ sender_email }}.
-
-───────────────────────────────────────────────────────────
-Automated notification from ridwaanhall.com contact form
-───────────────────────────────────────────────────────────
+— ridwaanhall.com

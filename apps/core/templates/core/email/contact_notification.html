@@ -3,46 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Notification</title>
 </head>
-<body style="margin:0;padding:20px;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;line-height:1.6;background-color:#09090b;color:#d4d4d8;">
-    <div style="max-width:600px;margin:0 auto;background-color:#18181b;border-radius:12px;overflow:hidden;border:1px solid #27272a;">
-        <div style="background:linear-gradient(135deg,#27272a 0%,#3f3f46 100%);color:#fafafa;padding:32px 24px;text-align:center;border-bottom:2px solid #52525b;">
-            <h1 style="font-size:24px;font-weight:600;margin:0 0 8px 0;letter-spacing:-0.025em;color:#fafafa;">New Contact Message</h1>
-            <p style="font-size:14px;opacity:0.85;color:#e4e4e7;margin:0;">You've received a new message from ridwaanhall.com</p>
+<body style="margin:0; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; line-height:1.6; background-color:#0f172a; color:#e2e8f0;">
+    <div style="max-width:600px; margin:auto; background-color:#1e293b; border-radius:12px; overflow:hidden; border:1px solid #334155;">
+        
+        <!-- Header -->
+        <div style="background:linear-gradient(135deg,#3b82f6 0%,#1e40af 100%); color:#fff; padding:32px 24px; text-align:center; border-bottom:2px solid #475569;">
+            <h1 style="font-size:22px; font-weight:700; margin:0 0 8px; letter-spacing:-0.02em;">New Contact Message</h1>
+            <p style="font-size:14px; opacity:0.9; margin:0;">You've received a new message from ridwaanhall.com</p>
         </div>
 
+        <!-- Body -->
         <div style="padding:32px 24px;">
-            <p style="color:#a1a1aa;margin:0 0 24px 0;font-size:15px;">Someone has reached out to you through your website contact form. Here are the details:</p>
+            <p style="color:#cbd5e1; margin:0 0 24px; font-size:15px;">
+                Someone has reached out to you through your website contact form. Here are the details:
+            </p>
 
-            <div style="background-color:#27272a;border:1px solid #3f3f46;border-radius:8px;padding:20px;margin-bottom:20px;">
-                <h2 style="color:#a78bfa;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin:0 0 16px 0;">Contact Information</h2>
-                <div style="display:flex;padding:12px 0;border-bottom:1px solid #3f3f46;">
-                    <div style="font-weight:600;color:#a78bfa;min-width:50px;font-size:14px;">Name</div>
-                    <div style="color:#d4d4d8;font-size:14px;">{{ name }}</div>
+            <!-- Contact Information -->
+            <div style="background-color:#0f172a; border:1px solid #334155; border-radius:8px; padding:20px; margin-bottom:20px;">
+                <h2 style="color:#38bdf8; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin:0 0 16px;">Contact Information</h2>
+                
+                <div style="display:flex; padding:12px 0; border-bottom:1px solid #334155;">
+                    <div style="font-weight:600; color:#38bdf8; min-width:70px; font-size:14px;">Name</div>
+                    <div style="color:#f1f5f9; font-size:14px;">{{ name }}</div>
                 </div>
-                <div style="display:flex;padding:12px 0;">
-                    <div style="font-weight:600;color:#a78bfa;min-width:50px;font-size:14px;">Email</div>
-                    <div style="color:#d4d4d8;font-size:14px;">
-                        <a href="mailto:{{ sender_email }}" style="color:#818cf8;text-decoration:none;">{{ sender_email }}</a>
+                
+                <div style="display:flex; padding:12px 0;">
+                    <div style="font-weight:600; color:#38bdf8; min-width:70px; font-size:14px;">Email</div>
+                    <div style="color:#f1f5f9; font-size:14px;">
+                        <a href="mailto:{{ sender_email }}" style="color:#3b82f6; text-decoration:none;">{{ sender_email }}</a>
                     </div>
                 </div>
             </div>
 
-            <div style="background-color:#27272a;border:1px solid #3f3f46;border-radius:8px;padding:20px;margin-bottom:20px;">
-                <h2 style="color:#a78bfa;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin:0 0 16px 0;">Message Content</h2>
-                <div style="background-color:#18181b;padding:16px;border-left:4px solid #6366f1;border-radius:4px;color:#d4d4d8;font-size:14px;line-height:1.8;">
+            <!-- Message Content -->
+            <div style="background-color:#0f172a; border:1px solid #334155; border-radius:8px; padding:20px; margin-bottom:20px;">
+                <h2 style="color:#38bdf8; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin:0 0 16px;">Message Content</h2>
+                <div style="background-color:#1e293b; padding:16px; border-left:4px solid #3b82f6; border-radius:4px; color:#f1f5f9; font-size:14px; line-height:1.7;">
                     {{ message_html }}
                 </div>
             </div>
 
-            <div style="background-color:#3730a3;background:linear-gradient(135deg,#312e81 0%,#3730a3 100%);padding:16px;border-radius:8px;margin-bottom:20px;">
-                <p style="color:#e0e7ff;font-size:14px;margin:0;"><strong style="color:#c7d2fe;font-weight:600;">Quick Reply:</strong> You can reply directly to this email, and your response will be sent to {{ sender_email }}.</p>
+            <!-- Quick Reply -->
+            <div style="background:linear-gradient(135deg,#3b82f6 0%,#1e40af 100%); padding:16px; border-radius:8px; margin-bottom:20px;">
+                <p style="color:#e0f2fe; font-size:14px; margin:0;">
+                    <strong style="color:#bae6fd; font-weight:600;">Quick Reply:</strong> You can reply directly to this email, and your response will be sent to {{ sender_email }}.
+                </p>
             </div>
         </div>
 
-        <div style="text-align:center;padding:24px;color:#71717a;font-size:13px;border-top:1px solid #27272a;">
-            <p style="margin:0 0 8px 0;">This email was automatically sent from the contact form at <a href="https://ridwaanhall.com" style="color:#818cf8;text-decoration:none;">ridwaanhall.com</a></p>
-            <span style="display:inline-block;background-color:#3f3f46;color:#d4d4d8;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:500;">Automated Notification</span>
+        <!-- Footer -->
+        <div style="text-align:center; padding:24px; color:#94a3b8; font-size:13px; border-top:1px solid #334155;">
+            <p style="margin:0 0 8px;">This email was automatically sent from the contact form at 
+                <a href="https://ridwaanhall.com" style="color:#3b82f6; text-decoration:none;">ridwaanhall.com</a>
+            </p>
+            <span style="display:inline-block; background-color:#334155; color:#f1f5f9; padding:4px 12px; border-radius:12px; font-size:12px; font-weight:500;">
+                Automated Notification
+            </span>
         </div>
     </div>
 </body>

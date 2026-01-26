@@ -71,7 +71,7 @@ class ExperiencesData:
             "title": "Founder",
             "company": "RoneAI",
             "logo": f"{settings.BASE_URL}/static/img/logo/roneai.webp",
-            "website": "https://github.com/RoneAI",
+            "website": "https://rone.dev",
             "period": {
                 "start": {
                     "month": "Jan",

@@ -117,6 +117,12 @@ class ApplicationsData:
                     "title": "Accepted by MagangHub Kemnaker",
                     "details": "Received official acceptance notification from MagangHub Kemnaker.",
                     "notes": "Onboarding process to begin soon."
+                },
+                {
+                    "timestamp": datetime.strptime("2025-11-24T11:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Onboarding Completed",
+                    "details": "Completed onboarding process with Ruang Media Solusi and MagangHub Kemnaker.",
+                    "notes": "Ready to start internship."
                 }
             ],
             "lessons_learned": "The process requires both company and Kemnaker acceptance—company confirmation comes first, but only Kemnaker’s validation makes the internship official and ready for onboarding."

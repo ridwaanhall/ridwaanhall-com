@@ -121,7 +121,7 @@ class ImageLightbox {
         // Collect images from this gallery
         const slides = container.querySelectorAll('.project-slide img');
         const galleryImages = Array.from(slides).map(img => ({
-            src: img.src.replace(/[?&]w=\d+&h=\d+/, '').replace(/\?.*$/, ''), // Remove all URL parameters for full resolution
+            src: this.getFullResolutionSrc(img.src),
             alt: img.alt,
             filename: img.dataset.filename || img.alt || 'image.jpg'
         }));
@@ -157,7 +157,7 @@ class ImageLightbox {
         
         if (img) {
             const singleImage = [{
-                src: img.src.replace(/[?&]w=\d+&h=\d+/, '').replace(/\?.*$/, ''), // Remove all URL parameters
+                src: this.getFullResolutionSrc(img.src),
                 alt: img.alt,
                 filename: img.alt || 'image.jpg'
             }];
@@ -378,6 +378,28 @@ class ImageLightbox {
         }
         
         return 0;
+    }
+
+    getFullResolutionSrc(src) {
+        try {
+            const url = new URL(src);
+
+            // Preserve wsrv proxy while stripping size/output params
+            if (url.hostname.includes('wsrv.nl')) {
+                url.searchParams.delete('w');
+                url.searchParams.delete('h');
+                url.searchParams.delete('output');
+                return url.toString();
+            }
+
+            // For non-wsrv sources, only remove explicit dimension params
+            url.searchParams.delete('w');
+            url.searchParams.delete('h');
+            return url.toString();
+        } catch (error) {
+            // Fallback to raw src without query on parse failure
+            return src.split('?')[0];
+        }
     }
 }
 

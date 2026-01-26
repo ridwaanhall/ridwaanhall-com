@@ -56,7 +56,7 @@ project_data = {
         SkillsData.tech_stack["javascript"]
     ],
     "github_url": "https://github.com/ridwaanhall/ridwaanhall.me",
-    "demo_url": "",
+    "demo_url": "https://v2.ridwaanhall.com",
 
     # Classification
     "category": "Portfolio, Web App, Next.js, Personal Website",
@@ -78,5 +78,5 @@ project_data = {
     "featured_priority": None,
     "status": "completed",
     "created_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    "updated_at": datetime.strptime("2026-01-26T21:02:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 }

@@ -310,7 +310,7 @@ class ApplicationsData:
         {
             "id": 50,
             "company_name": "BitHealth",
-            "status": status["re"],
+            "status": status["ip"],
             "position": "Associate AI Engineer",
             "employment_type": emp_type["ft"],
             "location_type": loc_types["hy"],
@@ -346,9 +346,15 @@ class ApplicationsData:
                     "title": "Application Rejected",
                     "details": "BitHealth rejected the application for Associate AI Engineer.",
                     "notes": "Status updated on Dealls"
-                }
+                },
+                {
+                    "timestamp": datetime.strptime("2026-02-03T16:25:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "Interview Invitation",
+                    "details": "BitHealth HR (Rani Mela Mulyani) invited me for HR initial call via Google Meet.",
+                    "notes": "Message received via email; I was asked to confirm via WhatsApp and already informed that I cannot attend on Feb 4, 2026."
+                },
             ],
-            "lessons_learned": "Freshgrad-friendly AI roles often emphasize eagerness to learn, Python fluency, and cross-functional collaboration."
+            "lessons_learned": "Recruitment status on platforms (such as Dealls) may differ from direct communication with HR. It is important to remain responsive when HR reaches out, even if the application status shows as rejected. Freshgrad-friendly AI roles emphasize eagerness to learn, Python fluency, and cross-functional collaboration skills."
         },
         {
             "id": 49,

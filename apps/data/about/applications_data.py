@@ -72,6 +72,11 @@ class ApplicationsData:
     }
     
     loc_types = {
+        '''
+        on is On-site
+        hy is Hybrid
+        rm is Remote
+        '''
         "on": "On-site",
         "hy": "Hybrid",
         "rm": "Remote"
@@ -313,9 +318,9 @@ class ApplicationsData:
             "status": status["ip"],
             "position": "Associate AI Engineer",
             "employment_type": emp_type["ft"],
-            "location_type": loc_types["hy"],
-            "location": "Tangerang, Indonesia",
-            "salary_range": "Negotiable",
+            "location_type": loc_types["os"], # previously "on"
+            "location": "Yogyakarta, Indonesia", # previously "Jakarta, Indonesia"
+            "salary_range": "IDR 3.5M - 4M", # previously Negotiable
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-10-03T23:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),

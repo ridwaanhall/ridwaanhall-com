@@ -42,7 +42,7 @@ class EducationLocation:
 
 @dataclass(frozen=True)
 class JourneyStep:
-    timestamp: datetime
+    timestamp: datetime | None
     title: str
     details: str
     notes: str = ""

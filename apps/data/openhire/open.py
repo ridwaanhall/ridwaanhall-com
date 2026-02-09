@@ -3,46 +3,9 @@ Open to Work Data - Information about availability for work opportunities
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict
 
-
-@dataclass(frozen=True)
-class PortfolioHighlight:
-    title: str
-    description: str
-
-
-@dataclass(frozen=True)
-class OpenToWorkModel:
-    """Typed model for open-to-work information."""
-    # Status
-    status: str
-    availability: str
-    type: str
-    remote: bool
-    relocation: bool
-
-    # Preferences
-    preferred_roles: list[str] = field(default_factory=list)
-    skills_highlight: list[str] = field(default_factory=list)
-    experience_level: str = ""
-    salary_expectation: str = ""
-    notice_period: str = ""
-    work_authorization: str = ""
-
-    # Location & language
-    languages: list[str] = field(default_factory=list)
-    preferred_locations: list[str] = field(default_factory=list)
-    location_types: list[str] = field(default_factory=list)
-    remote_locations: list[str] = field(default_factory=list)
-
-    # Portfolio
-    portfolio_highlights: list[PortfolioHighlight] = field(default_factory=list)
-
-    # Contact
-    contact_preference: str = ""
-    interview_availability: str = ""
-    additional_notes: str = ""
+from .types import OpenToWorkModel, PortfolioHighlight
 
 
 class OpenToWorkData:

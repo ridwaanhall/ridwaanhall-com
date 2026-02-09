@@ -1,92 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from django.conf import settings
 
-
-# ---------- nested value objects ----------
-
-@dataclass(frozen=True)
-class CV:
-    main: str
-    latest: str
-    copy: str
-
-
-@dataclass(frozen=True)
-class PersonalInfo:
-    name: str
-    first_name: str
-    last_name: str
-    username: str  # GitHub username
-    aka: str
-    image_url: str
-    personal_website: str
-    cv: CV
-    role: str
-    is_active: bool
-    is_open_to_work: bool
-    is_hiring: bool
-
-
-@dataclass(frozen=True)
-class Bio:
-    short_description: str
-    short_bio: str
-    short_cta: str
-    long_description: str
-
-
-@dataclass(frozen=True)
-class Location:
-    regency: str
-    residency: str
-    province: str
-    prov: str
-    country: str
-    flag: str
-
-
-@dataclass(frozen=True)
-class SocialMedia:
-    email: str
-    github: str
-    linkedin: str
-    follow_linkedin: str
-    instagram: str
-    medium: str
-    x: str
-    website: str
-
-
-@dataclass(frozen=True)
-class DonateLink:
-    platform: str
-    url: str
-
-
-@dataclass(frozen=True)
-class AboutDataModel:
-    # Identity
-    personal: PersonalInfo
-    bio: Bio
-
-    # Core Content
-    stories: list[str] = field(default_factory=list)
-    skills: list[str] = field(default_factory=list)
-
-    # Location & Social
-    location: Location = field(default_factory=lambda: Location(
-        regency="", residency="", province="", prov="", country="", flag="",
-    ))
-    social_media: SocialMedia = field(default_factory=lambda: SocialMedia(
-        email="", github="", linkedin="", follow_linkedin="",
-        instagram="", medium="", x="", website="",
-    ))
-    donate: list[DonateLink] = field(default_factory=list)
+from .types import (
+    CV, PersonalInfo, Bio, AboutLocation, SocialMedia, DonateLink, AboutDataModel,
+)
 
 
 class AboutData:
@@ -136,7 +58,7 @@ class AboutData:
                 "Looking forward, my vision is to elevate RoneAI, contribute meaningfully to open-source communities, and harness AI to address impactful challenges with precision and integrity. I am committed to fostering innovation that drives sustainable progress.",
                 "If you have a visionary idea or wish to explore the possibilities of technology, I’d be delighted to connect and create something transformative together.🚀"
             ],
-            location=Location(
+            location=AboutLocation(
                 regency="Yogyakarta City",
                 residency="Yogyakarta",
                 province="Special Region of Yogyakarta",

@@ -72,11 +72,9 @@ class ApplicationsData:
     }
     
     loc_types = {
-        '''
-        on is On-site
-        hy is Hybrid
-        rm is Remote
-        '''
+        # on is On-site
+        # hy is Hybrid
+        # rm is Remote
         "on": "On-site",
         "hy": "Hybrid",
         "rm": "Remote"
@@ -278,8 +276,8 @@ class ApplicationsData:
         {
             "id": 51,
             "company_name": "Resource Innovations",
-            "status": status["gh"],
             "position": "Django/Python Developer",
+            "status": status["gh"],
             "employment_type": emp_type["ft"],
             "location_type": loc_types["rm"],
             "location": "Pittsburgh, Pennsylvania (PA)",
@@ -315,29 +313,29 @@ class ApplicationsData:
         {
             "id": 50,
             "company_name": "BitHealth",
-            "status": status["ip"],
             "position": "Associate AI Engineer",
+            "status": status["ip"],
             "employment_type": emp_type["ft"],
-            "location_type": loc_types["os"], # previously "on"
-            "location": "Yogyakarta, Indonesia", # previously "Jakarta, Indonesia"
-            "salary_range": "IDR 3.5M - 4M", # previously Negotiable
+            "location_type": loc_types["on"],
+            "location": "Yogyakarta, Indonesia",
+            "salary_range": "IDR 3.5M - 4M",
             "journey": [
                 {
                     "timestamp": datetime.strptime("2025-10-03T23:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Received",
-                    "details": "Application for Associate AI Engineer was received by BitHealth.",
+                    "details": "Application for Associate AI Engineer was received.",
                     "notes": "-"
                 },
                 {
                     "timestamp": datetime.strptime("2025-10-03T23:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Review",
-                    "details": "BitHealth reviewed the application for Associate AI Engineer.",
+                    "details": "Application was reviewed.",
                     "notes": "Status updated on Dealls"
                 },
                 {
                     "timestamp": datetime.strptime("2025-10-03T23:16:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Priority Candidate Confirmation",
-                    "details": "Dealls confirmed Ridwan is registered as a priority candidate for BitHealth.",
+                    "details": "Dealls confirmed Ridwan as a priority candidate.",
                     "notes": "Automated email from Ivana@Dealls"
                 },
                 {
@@ -349,14 +347,20 @@ class ApplicationsData:
                 {
                     "timestamp": datetime.strptime("2025-10-17T00:37:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Application Rejected",
-                    "details": "BitHealth rejected the application for Associate AI Engineer.",
+                    "details": "Application was rejected.",
                     "notes": "Status updated on Dealls"
                 },
                 {
                     "timestamp": datetime.strptime("2026-02-03T16:25:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     "title": "Interview Invitation",
-                    "details": "BitHealth HR (Rani Mela Mulyani) invited me for HR initial call via Google Meet.",
-                    "notes": "Message received via email; I was asked to confirm via WhatsApp and already informed that I cannot attend on Feb 4, 2026."
+                    "details": "Rani Mela Mulyani invited me for HR initial call via Google Meet.",
+                    "notes": "Received via email; confirmed via WhatsApp. Declined Feb 4."
+                },
+                {
+                    "timestamp": datetime.strptime("2026-02-05T09:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    "title": "HR Initial Call",
+                    "details": "Rani Mela Mulyani scheduled HR initial call via Google Meet.",
+                    "notes": "HR requested oncam; I complied, she did not."                
                 },
             ],
             "lessons_learned": "Recruitment status on platforms (such as Dealls) may differ from direct communication with HR. It is important to remain responsive when HR reaches out, even if the application status shows as rejected. Freshgrad-friendly AI roles emphasize eagerness to learn, Python fluency, and cross-functional collaboration skills."

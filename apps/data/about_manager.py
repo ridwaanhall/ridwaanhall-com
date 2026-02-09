@@ -94,7 +94,7 @@ class AboutManager:
             if app.get('journey'):
                 app['journey'] = sorted(
                     app['journey'], 
-                    key=lambda x: x.get('timestamp', datetime.min)
+                    key=lambda x: x.get('timestamp') or datetime.min
                 )
         
         # Sort applications by the latest timestamp in their journey (most recent first)

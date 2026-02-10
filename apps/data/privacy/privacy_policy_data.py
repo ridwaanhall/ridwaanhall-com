@@ -1,11 +1,19 @@
+from __future__ import annotations
+
+from dataclasses import asdict
 from datetime import datetime
 
+from .types import PrivacyPolicyModel
+
+
 class PrivacyPolicyData:
-    privacy_policy = {
-        "last_updated": datetime.strptime("2026-01-23T23:37:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-        "overview": "I understand that your privacy is important. This policy explains how I collect, use, and protect your information when you visit my website.",
-        "policy_updates": "I may update this policy as the website evolves and grows. Major changes will be reflected in the last updated date above, and I'll do my best to notify you of significant privacy policy updates.",
-        "data_collected": {
+    """Backward-compatible wrapper – exposes *privacy_policy* as a plain dict."""
+
+    _model = PrivacyPolicyModel(
+        last_updated=datetime.strptime("2026-01-23T23:37:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+        overview="I understand that your privacy is important. This policy explains how I collect, use, and protect your information when you visit my website.",
+        policy_updates="I may update this policy as the website evolves and grows. Major changes will be reflected in the last updated date above, and I\u2019ll do my best to notify you of significant privacy policy updates.",
+        data_collected={
             "Contact Form": {
                 "Personal Information": "Name and email address when you submit the contact form.",
                 "Message Content": "Text messages and inquiries you send through the contact form.",
@@ -32,7 +40,7 @@ class PrivacyPolicyData:
                 "IP address": "Collected for tracking purposes and security protection.",
                 "Country": "Noted to understand my global audience and content localization.",
                 "ASN": "Collected to monitor network details and prevent abuse.",
-                "User agent": "Tracked to see how you're browsing and optimize compatibility.",
+                "User agent": "Tracked to see how you\u2019re browsing and optimize compatibility.",
                 "Method": "Logged to monitor interaction types and API usage.",
                 "Scheme": "Captured to ensure secure connections (HTTPS enforcement).",
                 "OS device type": "Collected to optimize device compatibility and responsive design.",
@@ -49,7 +57,7 @@ class PrivacyPolicyData:
                 "Session Duration": "Monitored to analyze your engagement and content effectiveness."
             }
         },
-        "data_usage": {
+        data_usage={
             "Contact Form Processing": "Collect and process contact form submissions to communicate with you.",
             "Contact Confirmation Emails": "Send you an automated confirmation email when you submit the contact form.",
             "Site Owner Notification": "Forward your contact information and message to the site owner for response.",
@@ -62,14 +70,14 @@ class PrivacyPolicyData:
             "Geographic Insights": "Analyze your distribution for content localization.",
             "Session Management": "Maintain login state and protect against security threats."
         },
-        "third_party_services": {
+        third_party_services={
             "Cloudflare": "My provider for security, DDoS protection, and detailed web analytics.",
-            "Google Analytics": "Helps us understand who is visiting and what they're interested in.",
+            "Google Analytics": "Helps us understand who is visiting and what they\u2019re interested in.",
             "Google OAuth": "Secure authentication provider for guestbook user login.",
             "GitHub OAuth": "Alternative secure authentication provider for guestbook access.",
             "wsrv": "Image optimization service for faster loading times and better performance."
         },
-        "data_protection": {
+        data_protection={
             "Storage": "Secure database hosting with encrypted connections and access controls.",
             "Data Privacy": "Most data is aggregated and anonymized to protect your privacy.",
             "Encryption": "All data transmission uses HTTPS encryption with secure cookies.",
@@ -78,14 +86,14 @@ class PrivacyPolicyData:
             "Security Headers": "CSP, HSTS, and other security headers protect against attacks.",
             "Data Minimization": "I only collect data necessary for site functionality.",
         },
-        "user_rights": {
+        user_rights={
             "Data Access": "Request details about what data I have collected about you.",
             "Data Deletion": "Delete your guestbook messages, profile data, or account.",
             "Data Correction": "Update or correct any inaccurate personal information.",
             "Opt-Out Options": "Disable tracking via browser settings, ad blockers, or Do Not Track.",
             "Contact": "Reach out to hi@ridwaanhall.com for any privacy questions or requests."
         },
-        "guestbook_limitations": {
+        guestbook_limitations={
             "Timestamp Display": "All message timestamps are stored and shown in Jakarta time (WIB, UTC+7).",
             "Message Management": "You can send messages and reply to other messages or your own messages.",
             "No Self-Deletion": "You cannot delete your own messages through the interface.",
@@ -93,7 +101,7 @@ class PrivacyPolicyData:
             "Deletion Requests": "To delete your messages, contact hi@ridwaanhall.com with your request.",
             "Permanent Nature": "Consider your messages permanent once posted, as self-deletion is not available."
         },
-        "email_communications": {
+        email_communications={
             "Contact Form Emails": "When you submit the contact form, you receive an automated confirmation email from ridwaanhall.com.",
             "Confirmation Content": "The confirmation email includes a copy of your message and confirms receipt.",
             "Reply Configuration": "Replies to confirmation emails are forwarded to hi@ridwaanhall.com for response.",
@@ -103,7 +111,7 @@ class PrivacyPolicyData:
             "No Spam": "We do not send promotional or marketing emails without your explicit consent.",
             "Noreply Email": "Guestbook author emails default to noreply@ridwaanhall.com if not available, used only for notifications.",
         },
-        "cookies": {
+        cookies={
             "Essential Cookies": {
                 "SessionId": "Django session cookie for maintaining your login state (1 hour expiration).",
                 "CsrfToken": "CSRF protection token to prevent cross-site request forgery attacks.",
@@ -120,7 +128,7 @@ class PrivacyPolicyData:
                 "Static File Cache": "Cached static assets (CSS, JS, images) for faster subsequent visits."
             }
         },
-        "legal_basis": {
+        legal_basis={
             "Contact Form Communications": "Legitimate interest in responding to user inquiries and maintaining communication.",
             "Email Sending": "Consent given through contact form submission and guestbook participation.",
             "Legitimate Interest": "Analytics and site improvement based on legitimate business interests.",
@@ -128,7 +136,7 @@ class PrivacyPolicyData:
             "Contract": "Your content storage is necessary for providing guestbook functionality.",
             "Legal Compliance": "Security measures and data protection are implemented to comply with privacy regulations."
         },
-        "copyright_credits": {
+        copyright_credits={
             "owner": "Ridwan Halim (ridwaanhall.com)",
             "license": "Apache License 2.0",
             "third_party_services": {
@@ -144,5 +152,8 @@ class PrivacyPolicyData:
                 "Once UI": "Guides structure management and supports organized file system workflows for scalable projects.",
                 "Aulianza": "Inspires content page layouts and presentation styles to enhance readability and aesthetics."
             }
-        }
-    }
+        },
+    )
+
+    # Expose as class-level dict for backward compatibility
+    privacy_policy = asdict(_model)

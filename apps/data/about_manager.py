@@ -90,11 +90,12 @@ class AboutManager:
         applications = ApplicationsData.applications.copy()
         
         # Sort each application's journey by timestamp (oldest to latest)
+        # Steps without timestamps are placed at the end
         for app in applications:
             if app.get('journey'):
                 app['journey'] = sorted(
                     app['journey'], 
-                    key=lambda x: x.get('timestamp', datetime.min)
+                    key=lambda x: (x.get('timestamp') is None, x.get('timestamp') or datetime.min)
                 )
         
         # Sort applications by the latest timestamp in their journey (most recent first)

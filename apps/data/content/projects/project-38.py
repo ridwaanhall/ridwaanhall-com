@@ -1,73 +1,43 @@
 """
 Project #38: Lumina Attendance Saver
-Generated from centralized projects data
 """
 
+from dataclasses import asdict
 from datetime import datetime
+
 from django.conf import settings
+
+from apps.data.content.types import Feature, ProjectData
 from apps.data.about.skills_data import SkillsData
 
-# Project data for: Lumina Attendance Saver
-project_data = {
-    # Identity
-    "id": 38,
-    "title": "Lumina Attendance Saver",
-    "headline": "Auto-attendance tool for students who forget the roll call.",
 
-    # Core Content
-    "description": [
-        "Lumina pumps out encrypted attendance codes in a flash, saving students from missing class check-ins.",
-        "Built for schools, it adapts to different course setups with secure, valid codes.",
-        "The interface is stupid simple, perfect for those last-second scrambles."
+project_data = asdict(ProjectData(
+    id=38,
+    title='Lumina Attendance Saver',
+    headline='Auto-attendance tool for students who forget the roll call.',
+    description=['Lumina pumps out encrypted attendance codes in a flash, saving students from missing class check-ins.', 'Built for schools, it adapts to different course setups with secure, valid codes.', 'The interface is stupid simple, perfect for those last-second scrambles.'],
+    features=[
+        Feature(title='Code Generator', description='Spits out secure codes instantly.'),
+        Feature(title='Easy UI', description='No fuss, even under pressure.'),
+        Feature(title='Safe Codes', description='Encryption keeps things legit.'),
     ],
-    "features": [
-        {
-            "title": "Code Generator",
-            "description": "Spits out secure codes instantly."
-        },
-        {
-            "title": "Easy UI",
-            "description": "No fuss, even under pressure."
-        },
-        {
-            "title": "Safe Codes",
-            "description": "Encryption keeps things legit."
-        }
-    ],
-    "images": {
-        "lumina.webp": f"{settings.PROJECT_BASE_IMG_URL}/lumina.webp"
+    images={
+        "lumina.webp": f"{settings.PROJECT_BASE_IMG_URL}/lumina.webp",
     },
-
-    # Tech & Resources
-    "tech_stack": [
+    tech_stack=[
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["django"],
         SkillsData.tech_stack["bulma"],
         SkillsData.tech_stack["vercel"],
-        SkillsData.tech_stack["cloudflare"]
+        SkillsData.tech_stack["cloudflare"],
     ],
-    "github_url": "https://github.com/ridwaanhall/Lumina",
-    "demo_url": "https://lumina.ridwaanhall.com",
-
-    # Classification
-    "category": "Education, Attendance, Automation, Django",
-    "tags": [
-        "Attendance",
-        "Automation",
-        "Django",
-        "Python",
-        "Bulma",
-        "Vercel",
-        "Cloudflare",
-        "Student Tool",
-        "Code Generator",
-        "School"
-    ],
-
-    # Status & Meta
-    "is_featured": False,
-    "featured_priority": None,
-    "status": "completed",
-    "created_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    "updated_at": datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-}
+    github_url='https://github.com/ridwaanhall/Lumina',
+    demo_url='https://lumina.ridwaanhall.com',
+    category='Education, Attendance, Automation, Django',
+    tags=['Attendance', 'Automation', 'Django', 'Python', 'Bulma', 'Vercel', 'Cloudflare', 'Student Tool', 'Code Generator', 'School'],
+    is_featured=False,
+    featured_priority=None,
+    status='completed',
+    created_at=datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    updated_at=datetime.strptime("2025-04-16T21:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+))

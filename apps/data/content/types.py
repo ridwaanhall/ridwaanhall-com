@@ -11,6 +11,8 @@ class BlogContentItem:
     type: str
     text: str = ""
     items: list[dict[str, str]] = field(default_factory=list)
+    headers: list[str] = field(default_factory=list)
+    rows: list[list[str]] = field(default_factory=list)
 
     # styling
     class_: str = ""  # mapped from 'class' key
@@ -41,8 +43,8 @@ class BlogData:
     category: str = ""
     slug: str = ""
     is_featured: bool = False
-    read_time: str = ""
-    word_count: int = 0
+    read_time: int | None = None
+    views: int | None = None
 
 
 # ---------- project types ----------

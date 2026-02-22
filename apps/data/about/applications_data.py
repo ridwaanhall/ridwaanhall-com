@@ -87,6 +87,25 @@ class ApplicationsData:
 
     applications = [
         asdict(Application(
+            id=60,
+            status=status["ap"],
+            company_name='SoftwareSeni',
+            position='Python Developer',
+            employment_type=emp_type["ft"],
+            location_type=loc_types["on"],   # on-site
+            location='Yogyakarta, Indonesia',
+            salary_range='Competitive Salary',
+            journey=[
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-02-22T06:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Application Submitted',
+                    details='Applied via LinkedIn. Role matched Python/Django expertise and bilingual communication skills.',
+                    notes='Application submitted and visible to recruiter Hanifah S.',
+                ),
+            ],
+            lessons_learned='Strong fit for Python/Django role. Benefits include competitive salary, flexible schedules, English classes, and relocation allowance. Monitoring for recruiter follow-up or interview invitation.',
+        )),
+        asdict(Application(
             id=58,
             status=status["ac"],
             company_name='Ruang Media Solusi',

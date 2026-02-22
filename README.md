@@ -12,7 +12,7 @@
 
 - **🗂️ Individual File System**: Each project and blog post in separate Python files
 - **📊 Real-time Analytics**: GitHub and WakaTime API integration
-- **💬 Interactive Guestbook**: Configurable chat-like messaging (can be disabled)
+- **💬 Interactive Guestbook**: Configurable chat-like messaging with email notifications (can be disabled)
 - **🚀 High Performance**: 99+/100 PageSpeed scores
 - **🛡️ Security-First**: CSP, HSTS, XSS protection
 - **📱 Responsive Design**: Mobile-optimized with Tailwind CSS
@@ -97,6 +97,9 @@ ALLOWED_HOSTS=""
 GUESTBOOK_PAGE=True  # Set to False to disable guestbook
 WSRV_IMAGE_OPTIMIZATION=True
 
+# Email
+CONTACT_EMAIL_RECIPIENT="hi@ridwaanhall.com"
+
 # API Keys
 ACCESS_TOKEN="your-github-token"
 WAKATIME_API_KEY="your-wakatime-key"
@@ -131,6 +134,7 @@ PROJECT_BASE_IMG_URL=""
 | `WEB3FORM_PAC` | No | Web3Forms access key for contact forms |
 | `GUESTBOOK_PAGE` | No | Enable/disable guestbook (default: True) |
 | `WSRV_IMAGE_OPTIMIZATION` | No | Enable wsrv.nl image optimization (default: True) |
+| `CONTACT_EMAIL_RECIPIENT` | No | Email that receives contact/guestbook notifications (default: hi@ridwaanhall.com) |
 | `GOOGLE_CLIENT_ID` | If guestbook enabled | Google OAuth client ID |
 | `GOOGLE_CLIENT_SECRET` | If guestbook enabled | Google OAuth secret |
 | `GH_CLIENT_ID` | If guestbook enabled | GitHub OAuth client ID |
@@ -208,14 +212,18 @@ SQLite is used automatically in development mode (DEBUG=True)
 
 Comprehensive documentation for each application component:
 
-- **[About App Documentation](docs/about.md)** - Personal information management and display
-- **[Blog System Documentation](docs/blog.md)** - Individual File System blog with content creation
-- **[Core Application Documentation](docs/core.md)** - Base functionality, templates, and utilities
-- **[Dashboard & Analytics Documentation](docs/dashboard.md)** - GitHub/WakaTime API integration and visualization
-- **[Individual File System Documentation](docs/data.md)** - Revolutionary content management system
-- **[Guestbook Documentation](docs/guestbook.md)** - OAuth authentication and interactive messaging
-- **[Projects Showcase Documentation](docs/projects.md)** - Portfolio gallery with advanced features
-- **[SEO Management Documentation](docs/seo.md)** - Search engine optimization and meta tag management
+| Document | Description |
+|----------|-------------|
+| [Core App](docs/core.md) | Base views, contact form, email handler, image optimization, validators |
+| [Guestbook App](docs/guestbook.md) | OAuth messaging, threaded replies, email notifications, author management |
+| [About App](docs/about.md) | Personal info display (experiences, education, certifications, awards) |
+| [Blog App](docs/blog.md) | Paginated blog with search, multi-image support, template tags |
+| [Projects App](docs/projects.md) | Project showcase with search, featured sorting, multi-image support |
+| [Dashboard App](docs/dashboard.md) | GitHub and WakaTime API integration with 15-min cache |
+| [SEO App](docs/seo.md) | Meta tags, Open Graph, JSON-LD schemas, sitemaps, robots.txt |
+| [OpenHire App](docs/openhire.md) | Open-to-work and hiring status display |
+| [Data App](docs/data.md) | Individual File System (IFS) for file-based content management |
+| [FlexForge Config](docs/flexforge.md) | Django settings, URL routing, context processors, deployment |
 
 ## 🚀 Deployment
 

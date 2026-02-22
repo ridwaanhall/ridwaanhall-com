@@ -1,0 +1,19 @@
+Hi {{ display_name }},
+
+Thank you for leaving a message in Ridwan Halim's guestbook at ridwaanhall.com.
+
+This is a confirmation that your message has been posted successfully.
+
+For your reference, here's a copy of what you submitted:
+--------------------------------------------------
+From:      {{ name_display }}
+Email:     {{ sender_email }}
+Timestamp: {{ timestamp }}
+
+Message:
+{{ message_text }}
+--------------------------------------------------
+
+You can view the guestbook online here: {{ guestbook_url }}
+
+— ridwaanhall.com

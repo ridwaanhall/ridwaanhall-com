@@ -3,33 +3,24 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Contact Confirmation</title>
+        <title>Guestbook Confirmation</title>
     </head>
     <body style="margin:0; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; line-height:1.6; color:#e2e8f0;">
         <div style="max-width:600px; margin:auto; background-color:#1e293b; border-radius:12px; overflow:hidden; border:1px solid #334155;">
             
             <!-- Header -->
             <div style="background:linear-gradient(135deg,#3b82f6 0%,#1e40af 100%); color:#fff; padding:32px 24px; text-align:center; border-bottom:2px solid #475569;">
-                <h1 style="font-size:22px; font-weight:700; margin:0 0 8px; letter-spacing:-0.02em;">Message Received</h1>
-                <p style="font-size:14px; opacity:0.9; margin:0;">We’ve successfully logged your message to ridwaanhall.com</p>
+                <h1 style="font-size:22px; font-weight:700; margin:0 0 8px; letter-spacing:-0.02em;">Message Sent</h1>
+                <p style="font-size:14px; opacity:0.9; margin:0;">Your message has been posted to the guestbook at ridwaanhall.com</p>
             </div>
 
             <!-- Body -->
             <div style="padding:32px 24px;">
                 <p style="color:#cbd5e1; margin:0 0 20px; font-size:15px;">
                     Hi {{ display_name }},<br><br>
-                    Thank you for reaching out to <strong>Ridwan Halim</strong> via <strong>ridwaanhall.com</strong>.
-                    This is a confirmation that your message has been delivered safely.
+                    Thank you for leaving a message in <strong>Ridwan Halim</strong>'s guestbook at <strong>ridwaanhall.com</strong>.
+                    This is a confirmation that your message has been posted successfully.
                 </p>
-
-                <!-- Next Steps -->
-                <div style="background-color:#0f172a; border:1px solid #334155; border-radius:8px; padding:20px; margin-bottom:20px;">
-                    <h2 style="color:#38bdf8; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin:0 0 12px;">What’s Next</h2>
-                    <div style="background-color:#1e293b; padding:16px; border-left:4px solid #3b82f6; border-radius:4px; color:#f1f5f9; font-size:14px; line-height:1.7;">
-                        Ridwan typically responds within <strong>3 days</strong>.
-                        If your request is urgent, you can reply directly to this email with more details.
-                    </div>
-                </div>
 
                 <!-- Original Message -->
                 <div style="background-color:#0f172a; border:1px solid #334155; border-radius:8px; padding:20px; margin-bottom:0px;">
@@ -39,20 +30,31 @@
                     </div>
                     <table style="width:100%; margin-top:12px; border-collapse:collapse;">
                         <tr>
-                            <td style="padding:6px 0; color:#38bdf8; font-weight:600; font-size:13px; width:50px;">Name</td>
+                            <td style="padding:6px 0; color:#38bdf8; font-weight:600; font-size:13px; width:80px;">Name</td>
                             <td style="padding:6px 0; color:#cbd5e1; font-size:13px;">{{ name_display }}</td>
                         </tr>
                         <tr>
                             <td style="padding:6px 0; color:#38bdf8; font-weight:600; font-size:13px;">Email</td>
                             <td style="padding:6px 0; color:#cbd5e1; font-size:13px;">{{ sender_email }}</td>
                         </tr>
+                        <tr>
+                            <td style="padding:6px 0; color:#38bdf8; font-weight:600; font-size:13px;">Timestamp</td>
+                            <td style="padding:6px 0; color:#cbd5e1; font-size:13px;">{{ timestamp }}</td>
+                        </tr>
                     </table>
+                </div>
+
+                <!-- CTA -->
+                <div style="text-align:center; margin-top:24px;">
+                    <a href="{{ guestbook_url }}" title="View Guestbook" style="display:inline-block; background:linear-gradient(135deg,#3b82f6 0%,#1e40af 100%); color:#fff; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:600; font-size:14px;">
+                        View Guestbook
+                    </a>
                 </div>
             </div>
 
             <!-- Footer -->
             <div style="text-align:center; padding:24px; color:#94a3b8; font-size:13px; border-top:1px solid #334155;">
-                <p style="margin:0 0 8px;">This confirmation was generated automatically by the contact form at 
+                <p style="margin:0 0 8px;">This confirmation was generated automatically by the guestbook at 
                     <a href="https://ridwaanhall.com" style="color:#3b82f6; text-decoration:none;">ridwaanhall.com</a>
                 </p>
                 <span style="display:inline-block; background-color:#334155; color:#f1f5f9; padding:4px 12px; border-radius:12px; font-size:12px; font-weight:500;">

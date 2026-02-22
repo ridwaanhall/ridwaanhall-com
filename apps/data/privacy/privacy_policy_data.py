@@ -10,7 +10,7 @@ class PrivacyPolicyData:
     """Backward-compatible wrapper – exposes *privacy_policy* as a plain dict."""
 
     _model = PrivacyPolicyModel(
-        last_updated=datetime.strptime("2026-01-23T23:37:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+        last_updated=datetime.strptime("2026-02-22T23:37:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
         overview="I understand that your privacy is important. This policy explains how I collect, use, and protect your information when you visit my website.",
         policy_updates="I may update this policy as the website evolves and grows. Major changes will be reflected in the last updated date above, and I\u2019ll do my best to notify you of significant privacy policy updates.",
         data_collected={
@@ -28,7 +28,9 @@ class PrivacyPolicyData:
                 "Message Timestamps": "When you posted your messages for proper chronological display.",
                 "Reply Associations": "Links between messages and their replies for threaded conversations.",
                 "User Session Data": "Temporary session cookies for maintaining login state.",
-                "Guestbook Notifications": "Email notifications are sent to the site owner when you post new messages.",
+                "Guestbook Owner Notification": "The site owner receives an email notification when you post a new message.",
+                "Guestbook Sender Confirmation": "You receive a confirmation email when your guestbook message is posted.",
+                "Guestbook Reply Notification": "You receive an email notification when someone replies to your guestbook message.",
             },
             "Technical & Security Data": {
                 "Session Cookies": "Essential cookies for site functionality, authentication, and security (CSRF protection).",
@@ -62,7 +64,7 @@ class PrivacyPolicyData:
             "Contact Confirmation Emails": "Send you an automated confirmation email when you submit the contact form.",
             "Site Owner Notification": "Forward your contact information and message to the site owner for response.",
             "Reply Communication": "Enable the site owner to contact you via your provided email address.",
-            "Guestbook Management": "Handle your authentication, profiles, message threading, and notifications.",
+            "Guestbook Management": "Handle your authentication, profiles, message threading, and email notifications (owner alerts, sender confirmations, and reply notifications).",
             "Website Analytics": "Track visits, page views, and content interaction patterns.",
             "Security & Optimization": "Keep the site secure, optimized, and running smoothly.",
             "User Experience": "Analyze your trends to improve site functionality and design.",
@@ -105,11 +107,14 @@ class PrivacyPolicyData:
             "Contact Form Emails": "When you submit the contact form, you receive an automated confirmation email from ridwaanhall.com.",
             "Confirmation Content": "The confirmation email includes a copy of your message and confirms receipt.",
             "Reply Configuration": "Replies to confirmation emails are forwarded to hi@ridwaanhall.com for response.",
-            "Guestbook Notifications": "When you post a message in the guestbook, the site owner receives a notification email.",
-            "Email Frequency": "You will only receive emails in response to actions you initiate (contact form, guestbook posts).",
+            "Guestbook Owner Notification": "When you post a message in the guestbook, the site owner receives an email notification (unless you are the owner).",
+            "Guestbook Sender Confirmation": "After posting a guestbook message, you receive a confirmation email with a copy of your message (unless you are the owner).",
+            "Guestbook Reply Notification": "When someone replies to your guestbook message, you receive an email notification identifying who replied.",
+            "Email Frequency": "You will only receive emails in response to actions you initiate (contact form, guestbook posts) or replies to your guestbook messages.",
             "Unsubscribe": "You can request to opt-out of contact confirmations by contacting hi@ridwaanhall.com.",
             "No Spam": "We do not send promotional or marketing emails without your explicit consent.",
-            "Noreply Email": "Guestbook author emails default to noreply@ridwaanhall.com if not available, used only for notifications.",
+            "Noreply Email": "Guestbook author emails default to noreply@ridwaanhall.com if not available, used only for owner notifications.",
+            "Self-Notification Prevention": "If your email matches the site owner email, owner notifications and sender confirmations are skipped to avoid self-notification.",
         },
         cookies={
             "Essential Cookies": {

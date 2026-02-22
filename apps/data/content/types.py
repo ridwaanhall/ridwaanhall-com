@@ -79,6 +79,6 @@ class ProjectData:
     # Status & Meta
     is_featured: bool = False
     featured_priority: int | None = None
-    status: str = "completed"
+    status: str = "completed" # completed, in-progress, planned
     created_at: datetime | None = None
     updated_at: datetime | None = None

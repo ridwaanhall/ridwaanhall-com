@@ -25,7 +25,7 @@ class SEOConfig:
     SITE_NAME = "ridwaanhall.com"
     AUTHOR = "Ridwan Halim"
     SITE_URL = getattr(settings, 'BASE_URL', 'https://ridwaanhall.com')
-    DEFAULT_IMAGE = f"{SITE_URL}/static/img/default-og-image.webp"
+    DEFAULT_IMAGE = f"{SITE_URL}/staticfiles/img/ridwaanhall.webp"
     
     # Content type specific settings
     CONTENT_TYPES = {

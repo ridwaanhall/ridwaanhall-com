@@ -1,0 +1,18 @@
+Hi {{ original_name }},
+
+{{ reply_name }} has replied to your message in the guestbook at ridwaanhall.com.
+
+--------------------------------------------------
+Reply from {{ reply_name }}:
+{{ reply_message_text }}
+
+({{ timestamp }})
+--------------------------------------------------
+
+Your original message:
+{{ original_message_text }}
+--------------------------------------------------
+
+You can view the full conversation here: {{ guestbook_url }}
+
+— ridwaanhall.com

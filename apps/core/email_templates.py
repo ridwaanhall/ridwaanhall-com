@@ -113,3 +113,74 @@ class EmailTemplateLoader:
             "guestbook_url": guestbook_url,
         }
         return EmailTemplateLoader._render_template(template, context)
+
+    @staticmethod
+    def render_guestbook_autoreply_html(
+        name: str, sender_email: str, message_text: str, timestamp: str, guestbook_url: str
+    ) -> str:
+        """Render guestbook autoreply HTML email template."""
+        template = EmailTemplateLoader._load_template("guestbook_autoreply.html")
+        display_name = name or "there"
+        name_display = name if name else sender_email
+        formatted_message = message_text.replace("\n", "<br>")
+        context = {
+            "display_name": display_name,
+            "name_display": name_display,
+            "sender_email": sender_email,
+            "message_html": formatted_message,
+            "timestamp": timestamp,
+            "guestbook_url": guestbook_url,
+        }
+        return EmailTemplateLoader._render_template(template, context)
+
+    @staticmethod
+    def render_guestbook_autoreply_text(
+        name: str, sender_email: str, message_text: str, timestamp: str, guestbook_url: str
+    ) -> str:
+        """Render guestbook autoreply text email template."""
+        template = EmailTemplateLoader._load_template("guestbook_autoreply.txt")
+        display_name = name or "there"
+        name_display = name if name else sender_email
+        context = {
+            "display_name": display_name,
+            "name_display": name_display,
+            "sender_email": sender_email,
+            "message_text": message_text,
+            "timestamp": timestamp,
+            "guestbook_url": guestbook_url,
+        }
+        return EmailTemplateLoader._render_template(template, context)
+
+    @staticmethod
+    def render_guestbook_reply_notification_html(
+        original_name: str, reply_name: str, reply_message: str,
+        original_message: str, timestamp: str, guestbook_url: str
+    ) -> str:
+        """Render guestbook reply notification HTML email template."""
+        template = EmailTemplateLoader._load_template("guestbook_reply_notification.html")
+        context = {
+            "original_name": original_name or "there",
+            "reply_name": reply_name,
+            "reply_message_html": reply_message.replace("\n", "<br>"),
+            "original_message_html": original_message.replace("\n", "<br>"),
+            "timestamp": timestamp,
+            "guestbook_url": guestbook_url,
+        }
+        return EmailTemplateLoader._render_template(template, context)
+
+    @staticmethod
+    def render_guestbook_reply_notification_text(
+        original_name: str, reply_name: str, reply_message: str,
+        original_message: str, timestamp: str, guestbook_url: str
+    ) -> str:
+        """Render guestbook reply notification text email template."""
+        template = EmailTemplateLoader._load_template("guestbook_reply_notification.txt")
+        context = {
+            "original_name": original_name or "there",
+            "reply_name": reply_name,
+            "reply_message_text": reply_message,
+            "original_message_text": original_message,
+            "timestamp": timestamp,
+            "guestbook_url": guestbook_url,
+        }
+        return EmailTemplateLoader._render_template(template, context)

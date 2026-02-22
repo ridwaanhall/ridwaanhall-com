@@ -14,6 +14,11 @@ def _skill(name: str, description: str, icon_svg: str = "") -> dict:
 class SkillsData:
     # Dictionary of all available skills with easy-to-use keys
     tech_stack = {
+        "vuexy": _skill(
+            name="Vuexy",
+            description="A premium admin dashboard template created by PixInvent.",
+            icon_svg=f"{settings.BASE_URL}/static/svg/icon/vuexy.svg",
+        ),
         "python": _skill(
             name="Python",
             description="Versatile programming language for web development, data science, and automation",

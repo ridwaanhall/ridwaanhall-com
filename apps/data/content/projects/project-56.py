@@ -24,7 +24,7 @@ project_data = asdict(ProjectData(
         Feature(title='ASGI Deployment Ready', description='Configured for production deployment with ASGI servers like Daphne or Uvicorn.'),
     ],
     images={
-        "default_image.webp": f"{settings.PROJECT_BASE_IMG_URL}/default_image.webp",
+        "default_project_image.webp": f"{settings.PROJECT_BASE_IMG_URL}/default_project_image.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],

@@ -80,7 +80,7 @@ def send_guestbook_email_notification(sender, instance, created, **kwargs):
             original_name = original_user.get_full_name() or original_user.username
             original_email = original_user.email or ''
 
-            if original_email:
+            if original_email and original_email != email:
                 reply_data = {
                     'original_name': original_name,
                     'original_email': original_email,

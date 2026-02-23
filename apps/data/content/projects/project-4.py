@@ -29,7 +29,7 @@ project_data = asdict(ProjectData(
         SkillsData.tech_stack["flask"],
         SkillsData.tech_stack["adminlte"],
     ],
-    github_url='',
+    github_url='https://github.com/ridwaanhall/WEB-FOR-BMKG',
     demo_url='',
     category='Web App, Weather, Disaster Monitoring, Flask',
     tags=['BMKG', 'Weather', 'Earthquake', 'Flask', 'AdminLTE', 'Indonesia', 'Real-time Data', 'Disaster Monitoring', 'Forecast'],

@@ -105,7 +105,7 @@ class ApplicationsData:
             location_type=loc_types["on"],   # on-site
             location='Yogyakarta, Indonesia',
             applied_via=via["li"],
-            salary_range='Competitive Salary',
+            salary_range='Competitive Salary', # sent expected salary of IDR 8.5M
             journey=[
                 JourneyStep(
                     timestamp=datetime.strptime("2026-02-22T06:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
@@ -130,6 +130,7 @@ class ApplicationsData:
             employment_type=emp_type["in"],
             location_type=loc_types["on"],
             location='Yogyakarta, Indonesia',  # Jalan Pramuka 92A, Giwangan, Umbulharjo, Yogyakarta
+            applied_via=via["mh"],
             salary_range=None,  # "IDR 2.655M"
             journey=[
                 JourneyStep(
@@ -179,12 +180,13 @@ class ApplicationsData:
             employment_type=emp_type["co"],
             location_type=loc_types["on"],
             location='Jakarta, Indonesia',
+            applied_via=via["li"],
             salary_range=None,
             journey=[
                 JourneyStep(
                     timestamp=datetime.strptime("2025-10-22T13:08:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     title='Application Submitted',
-                    details='Applied via LinkedIn. Role matched admin experience and bilingual communication skills.',
+                    details='Role matched admin experience and bilingual communication skills.',
                     notes='Promoted by hirer and actively reviewing applicants.',
                 ),
                 JourneyStep(
@@ -204,12 +206,13 @@ class ApplicationsData:
             employment_type=emp_type["ft"],
             location_type=loc_types["rm"],
             location='Indonesia',
+            applied_via=via["li"],
             salary_range=None,
             journey=[
                 JourneyStep(
                     timestamp=datetime.strptime("2025-10-21T13:08:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     title='Application Submitted',
-                    details='Applied via LinkedIn. Role matched Python backend experience and remote preference.',
+                    details='Role matched Python backend experience and remote preference.',
                     notes='Promoted by hirer and actively reviewing applicants.',
                 ),
             ],
@@ -254,12 +257,13 @@ class ApplicationsData:
             employment_type=emp_type["ft"],
             location_type=loc_types["rm"],
             location='Philippines',
+            applied_via=via["li"],
             salary_range=None,
             journey=[
                 JourneyStep(
                     timestamp=datetime.strptime("2025-10-13T05:58:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     title='Job Discovery',
-                    details='Found on LinkedIn. UK-based company, remote-first role with real ownership and AI-assisted coding.',
+                    details='UK-based company, remote-first role with real ownership and AI-assisted coding.',
                     notes='Over 100 applicants.',
                 ),
                 JourneyStep(
@@ -279,12 +283,13 @@ class ApplicationsData:
             employment_type=emp_type["co"],
             location_type=loc_types["rm"],
             location='Indonesia',
+            applied_via=via["li"],
             salary_range=None,
             journey=[
                 JourneyStep(
                     timestamp=datetime.strptime("2025-10-11T19:25:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     title='Job Discovery',
-                    details='Found the job posting on LinkedIn. Legaltech focus and Python crawler role matched my interests.',
+                    details='Legaltech focus and Python crawler role matched my interests.',
                     notes='-',
                 ),
                 JourneyStep(
@@ -322,6 +327,7 @@ class ApplicationsData:
             employment_type=emp_type["ft"],
             location_type=loc_types["rm"],
             location='Pittsburgh, Pennsylvania (PA)',
+            applied_via=via["li"],
             salary_range='USD 74K/yr - 140K/yr',  # USD 55K Based on your submitted expectation
             journey=[
                 JourneyStep(
@@ -359,6 +365,7 @@ class ApplicationsData:
             employment_type=emp_type["ft"],
             location_type=loc_types["on"],
             location='Yogyakarta, Indonesia',
+            applied_via=via["de"],
             salary_range='IDR 3.5M - 4M',
             journey=[
                 JourneyStep(

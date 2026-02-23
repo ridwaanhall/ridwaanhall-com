@@ -84,23 +84,40 @@ class ApplicationsData:
         "hy": "Hybrid",
         "rm": "Remote",
     }
+    
+    via = {
+        "li": "LinkedIn",
+        "gh": "GitHub",
+        "mh": "MagangHub",
+        "th": "Talenta IT",
+        "de": "Dealls",
+        "ka": "Katrecs",
+        "ot": "Other",
+    }
 
     applications = [
         asdict(Application(
             id=60,
-            status=status["ap"],
+            status=status["ip"],
             company_name='SoftwareSeni',
             position='Python Developer',
             employment_type=emp_type["ft"],
             location_type=loc_types["on"],   # on-site
             location='Yogyakarta, Indonesia',
+            applied_via=via["li"],
             salary_range='Competitive Salary',
             journey=[
                 JourneyStep(
                     timestamp=datetime.strptime("2026-02-22T06:45:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
                     title='Application Submitted',
-                    details='Applied via LinkedIn. Role matched Python/Django expertise and bilingual communication skills.',
+                    details='Role matched Python/Django expertise and bilingual communication skills.',
                     notes='Application submitted and visible to recruiter Hanifah S.',
+                ),
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-02-23T08:27:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Application Viewed',
+                    details='Recruiter viewed the application.',
+                    notes='Notification received via Gmail confirming application was opened.',
                 ),
             ],
             lessons_learned='Strong fit for Python/Django role. Benefits include competitive salary, flexible schedules, English classes, and relocation allowance. Monitoring for recruiter follow-up or interview invitation.',

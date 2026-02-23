@@ -212,6 +212,7 @@ class Application:
     employment_type: str
     location_type: str
     location: str
+    applied_via: str | None = None
     salary_range: str | None = None
     journey: list[JourneyStep] = field(default_factory=list)
     lessons_learned: str = ""

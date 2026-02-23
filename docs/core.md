@@ -4,7 +4,7 @@ The `apps/core` app provides the foundational views, forms, email handling, imag
 
 ## File Structure
 
-```
+```txt
 apps/core/
 ├── base_views.py          # Reusable base view classes
 ├── views.py               # Page views (home, contact, privacy, CV, dynamic assets)

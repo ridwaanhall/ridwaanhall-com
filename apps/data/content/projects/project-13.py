@@ -23,6 +23,7 @@ project_data = asdict(ProjectData(
     ],
     images={
         "student_search_bot_telegram.webp": f"{settings.PROJECT_BASE_IMG_URL}/student_search_bot_telegram.webp",
+        # "student_search_bot_telegram_result.webp": f"{settings.PROJECT_BASE_IMG_URL}/student_search_bot_telegram_result.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],

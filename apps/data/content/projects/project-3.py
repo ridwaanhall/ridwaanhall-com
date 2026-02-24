@@ -23,6 +23,7 @@ project_data = asdict(ProjectData(
     ],
     images={
         "quran_website_frontend_api.webp": f"{settings.PROJECT_BASE_IMG_URL}/quran_website_frontend_api.webp",
+        "quran_website_frontend.webp": f"{settings.PROJECT_BASE_IMG_URL}/quran_website_frontend.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],

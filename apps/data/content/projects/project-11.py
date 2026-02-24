@@ -34,7 +34,7 @@ project_data = asdict(ProjectData(
         SkillsData.tech_stack["google_maps"],
         SkillsData.tech_stack["openstreetmap"],
     ],
-    github_url='',
+    github_url='https://github.com/ridwaanhall/web-earthquake-bmkg',
     demo_url='',
     category='Dashboard, Data Visualization, Disaster Monitoring',
     tags=['Dashboard', 'Earthquake', 'Tsunami', 'BMKG', 'Indonesia', 'Flask', 'Chart.js', 'Leaflet', 'OpenStreetMap', 'Google Maps', 'Bootstrap', 'Data Visualization', 'Disaster Monitoring'],

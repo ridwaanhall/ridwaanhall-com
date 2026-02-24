@@ -22,7 +22,7 @@ project_data = asdict(ProjectData(
         Feature(title='Slick Responsive Design', description='Bootstrap makes it look fire on any screen.'),
     ],
     images={
-        "pemilu_2024_website.webp": f"{settings.PROJECT_BASE_IMG_URL}/pemilu_2024_website.webp",
+        "pemilu_2024_website_nasional.webp": f"{settings.PROJECT_BASE_IMG_URL}/pemilu_2024_website_nasional.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],

@@ -39,7 +39,7 @@ class AboutData:
                 ),
                 role="Python Developer",
                 is_active=cls.is_working_hours(),
-                is_open_to_work=False,
+                is_open_to_work=True,
                 is_hiring=False,
             ),
             bio=Bio(

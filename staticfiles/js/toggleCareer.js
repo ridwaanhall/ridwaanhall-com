@@ -101,6 +101,40 @@ function toggleResponsibilities(id) {
     }
 }
 
+function togglePositionDetails(id) {
+    const element = document.getElementById(id);
+    const counter = id.split('-').pop();
+    const showText = document.getElementById('show-text-position-' + counter);
+    const hideText = document.getElementById('hide-text-position-' + counter);
+    const arrow = document.getElementById('arrow-position-' + counter);
+
+    if (element.classList.contains('hidden')) {
+        element.classList.remove('hidden');
+        element.style.maxHeight = '0';
+        element.style.opacity = '0';
+        element.style.overflow = 'hidden';
+        element.style.transition = 'max-height 0.3s ease-out, opacity 0.3s ease-out';
+        showText.classList.add('hidden');
+        hideText.classList.remove('hidden');
+        arrow.classList.add('rotate-180');
+
+        setTimeout(() => {
+            element.style.maxHeight = element.scrollHeight + 'px';
+            element.style.opacity = '1';
+        }, 10);
+    } else {
+        element.style.maxHeight = '0';
+        element.style.opacity = '0';
+        showText.classList.remove('hidden');
+        hideText.classList.add('hidden');
+        arrow.classList.remove('rotate-180');
+
+        setTimeout(() => {
+            element.classList.add('hidden');
+        }, 300);
+    }
+}
+
 function toggleJourney(id) {
     const content = document.getElementById(id);
     const cardId = id.split('-').pop();

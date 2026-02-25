@@ -22,7 +22,8 @@ project_data = asdict(ProjectData(
         Feature(title='Visual Feast', description='Interactive maps, shakemaps, and charts for epic insights.'),
     ],
     images={
-        "inatews_dashboard.webp": f"{settings.PROJECT_BASE_IMG_URL}/inatews_dashboard.webp",
+        "inatews_dashboard_page.webp": f"{settings.PROJECT_BASE_IMG_URL}/inatews_dashboard_page.webp",
+        "inatews_maps_page.webp": f"{settings.PROJECT_BASE_IMG_URL}/inatews_maps_page.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],

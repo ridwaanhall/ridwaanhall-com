@@ -22,7 +22,7 @@ project_data = asdict(ProjectData(
         Feature(title='Performance Breakdown', description='Compares extraction vs. no-extraction for clear wins.'),
     ],
     images={
-        "default_project_image.webp": f"{settings.PROJECT_BASE_IMG_URL}/default_project_image.webp",
+        "election_digits_training.webp": f"{settings.PROJECT_BASE_IMG_URL}/election_digits_training.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],

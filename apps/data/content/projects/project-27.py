@@ -22,7 +22,8 @@ project_data = asdict(ProjectData(
         Feature(title='End-to-End Flow', description='Covers data gathering, training, and website rollout.'),
     ],
     images={
-        "zeronine_handwritten_recognition.webp": f"{settings.PROJECT_BASE_IMG_URL}/zeronine_handwritten_recognition.webp",
+        "zeronine_arabic_digits.webp": f"{settings.PROJECT_BASE_IMG_URL}/zeronine_arabic_digits.webp",
+        "zeronine_english_digits.webp": f"{settings.PROJECT_BASE_IMG_URL}/zeronine_english_digits.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],

@@ -22,7 +22,8 @@ project_data = asdict(ProjectData(
         Feature(title='Django Dynamism', description='Robust and scalable thanks to Django’s framework.'),
     ],
     images={
-        "follow_dragon_spacex.webp": f"{settings.PROJECT_BASE_IMG_URL}/follow_dragon_spacex.webp",
+        "follow_dragon_spacex_dark.webp": f"{settings.PROJECT_BASE_IMG_URL}/follow_dragon_spacex_dark.webp",
+        "follow_dragon_spacex_satelite.webp": f"{settings.PROJECT_BASE_IMG_URL}/follow_dragon_spacex_satelite.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],

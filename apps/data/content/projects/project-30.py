@@ -22,7 +22,7 @@ project_data = asdict(ProjectData(
         Feature(title='Tuning Mastery', description='Fine-tune parameters for peak optimization results.'),
     ],
     images={
-        "default_project_image.webp": f"{settings.PROJECT_BASE_IMG_URL}/default_project_image.webp",
+        "aco_algorithm_indonesia_province_city.webp": f"{settings.PROJECT_BASE_IMG_URL}/aco_algorithm_indonesia_province_city.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],

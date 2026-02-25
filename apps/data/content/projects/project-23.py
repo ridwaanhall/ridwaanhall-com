@@ -22,7 +22,7 @@ project_data = asdict(ProjectData(
         Feature(title='Deep Data Dives', description='Grab election insights at any level for epic analysis.'),
     ],
     images={
-        "pemilu_2024_api.webp": f"{settings.PROJECT_BASE_IMG_URL}/pemilu_2024_api.webp",
+        "pemilu_2024_api_django.webp": f"{settings.PROJECT_BASE_IMG_URL}/pemilu_2024_api_django.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],

@@ -2,22 +2,18 @@
     <div class="space-y-4">
 
         <!-- CV Download section -->
-        <div class="p-4 rounded-lg border border-zinc-700/50 hover:border-zinc-600 transition-all duration-200">
+        <div class="border border-zinc-700 rounded-lg p-4">
+            <div class="flex flex-wrap items-start justify-between w-full gap-2 mb-3">
+                <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex-1 flex items-center">
+                    <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Curriculum Vitae
+                </h2>
+            </div>
             <!-- Mobile Layout (stacked) -->
             <div class="block md:hidden">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="flex-shrink-0">
-                        <svg class="w-6 h-6 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="text-sm font-medium">Curriculum Vitae</h3>
-                        <p class="text-xs text-zinc-400 mt-1">Access my CV in different formats</p>
-                    </div>
-                </div>
-
-                <!-- Mobile Buttons -->
+                <p class="text-xs text-zinc-400 mb-3">Access my CV in different formats</p>
                 <div class="flex gap-2">
                     <a
                         href="{% url 'cv_redirect' %}"
@@ -25,11 +21,10 @@
                         rel="noopener"
                         class="inline-flex items-center justify-center px-2.5 py-1.5 text-xs font-medium rounded-md border border-zinc-600 hover:border-zinc-500 hover:bg-zinc-700/30 transition-all duration-200 group"
                     >
-                        <svg class="w-3.5 h-3.5 mr-1 group-hover:scale-110 transition-transform duration-200" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor">
+                        <svg class="w-3.5 h-3.5 mr-1 group-hover:scale-110 transition-transform duration-200" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                             <g id="SVGRepo_iconCarrier">
-                                <title>pdf-document</title>
                                 <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                     <g id="add" fill="currentColor" transform="translate(85.333333, 42.666667)">
                                         <path d="M75.9466667,285.653333 C63.8764997,278.292415 49.6246897,275.351565 35.6266667,277.333333 L1.42108547e-14,277.333333 L1.42108547e-14,405.333333 L28.3733333,405.333333 L28.3733333,356.48 L40.5333333,356.48 C53.1304778,357.774244 65.7885986,354.68506 76.3733333,347.733333 C85.3576891,340.027178 90.3112817,328.626053 89.8133333,316.8 C90.4784904,304.790173 85.3164923,293.195531 75.9466667,285.653333 L75.9466667,285.653333 Z M53.12,332.373333 C47.7608867,334.732281 41.8687051,335.616108 36.0533333,334.933333 L27.7333333,334.933333 L27.7333333,298.666667 L36.0533333,298.666667 C42.094796,298.02451 48.1897668,299.213772 53.5466667,302.08 C58.5355805,305.554646 61.3626692,311.370371 61.0133333,317.44 C61.6596233,323.558965 58.5400493,329.460862 53.12,332.373333 L53.12,332.373333 Z M150.826667,277.333333 L115.413333,277.333333 L115.413333,405.333333 L149.333333,405.333333 C166.620091,407.02483 184.027709,403.691457 199.466667,395.733333 C216.454713,383.072462 225.530463,362.408923 223.36,341.333333 C224.631644,323.277677 218.198313,305.527884 205.653333,292.48 C190.157107,280.265923 170.395302,274.806436 150.826667,277.333333 L150.826667,277.333333 Z M178.986667,376.32 C170.098963,381.315719 159.922142,383.54422 149.76,382.72 L144.213333,382.72 L144.213333,299.946667 L149.333333,299.946667 C167.253333,299.946667 174.293333,301.653333 181.333333,308.053333 C189.877212,316.948755 194.28973,329.025119 193.493333,341.333333 C194.590843,354.653818 189.18793,367.684372 178.986667,376.32 L178.986667,376.32 Z M254.506667,405.333333 L283.306667,405.333333 L283.306667,351.786667 L341.333333,351.786667 L341.333333,329.173333 L283.306667,329.173333 L283.306667,299.946667 L341.333333,299.946667 L341.333333,277.333333 L254.506667,277.333333 L254.506667,405.333333 L254.506667,405.333333 Z M234.666667,7.10542736e-15 L9.52127266e-13,7.10542736e-15 L9.52127266e-13,234.666667 L42.6666667,234.666667 L42.6666667,192 L42.6666667,169.6 L42.6666667,42.6666667 L216.96,42.6666667 L298.666667,124.373333 L298.666667,169.6 L298.666667,192 L298.666667,234.666667 L341.333333,234.666667 L341.333333,106.666667 L234.666667,7.10542736e-15 L234.666667,7.10542736e-15 Z" id="document-pdf"></path>
@@ -57,57 +52,46 @@
                 </div>
             </div>
 
-            <div class="hidden md:flex items-center gap-4">
-                <div class="flex-1 flex items-center gap-3">
-                    <div class="flex-shrink-0">
-                        <svg class="w-6 h-6 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-medium">Curriculum Vitae</h3>
-                        <p class="text-xs text-zinc-400 mt-1">Access my CV in different formats</p>
-                    </div>
-                </div>
-
-                <div class="flex gap-2 w-1/2">
-                    <a
-                        href="{% url 'cv_redirect' %}"
-                        target="_blank"
-                        rel="noopener"
-                        class="flex-1 inline-flex items-center justify-center px-2.5 py-1.5 text-xs font-medium rounded-md border border-zinc-600 hover:border-zinc-500 hover:bg-zinc-700/30 transition-all duration-200 group"
-                    >
-                        <svg class="w-3.5 h-3.5 mr-1 group-hover:scale-110 transition-transform duration-200" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <title>pdf-document</title>
-                                <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <g id="add" fill="currentColor" transform="translate(85.333333, 42.666667)">
-                                        <path d="M75.9466667,285.653333 C63.8764997,278.292415 49.6246897,275.351565 35.6266667,277.333333 L1.42108547e-14,277.333333 L1.42108547e-14,405.333333 L28.3733333,405.333333 L28.3733333,356.48 L40.5333333,356.48 C53.1304778,357.774244 65.7885986,354.68506 76.3733333,347.733333 C85.3576891,340.027178 90.3112817,328.626053 89.8133333,316.8 C90.4784904,304.790173 85.3164923,293.195531 75.9466667,285.653333 L75.9466667,285.653333 Z M53.12,332.373333 C47.7608867,334.732281 41.8687051,335.616108 36.0533333,334.933333 L27.7333333,334.933333 L27.7333333,298.666667 L36.0533333,298.666667 C42.094796,298.02451 48.1897668,299.213772 53.5466667,302.08 C58.5355805,305.554646 61.3626692,311.370371 61.0133333,317.44 C61.6596233,323.558965 58.5400493,329.460862 53.12,332.373333 L53.12,332.373333 Z M150.826667,277.333333 L115.413333,277.333333 L115.413333,405.333333 L149.333333,405.333333 C166.620091,407.02483 184.027709,403.691457 199.466667,395.733333 C216.454713,383.072462 225.530463,362.408923 223.36,341.333333 C224.631644,323.277677 218.198313,305.527884 205.653333,292.48 C190.157107,280.265923 170.395302,274.806436 150.826667,277.333333 L150.826667,277.333333 Z M178.986667,376.32 C170.098963,381.315719 159.922142,383.54422 149.76,382.72 L144.213333,382.72 L144.213333,299.946667 L149.333333,299.946667 C167.253333,299.946667 174.293333,301.653333 181.333333,308.053333 C189.877212,316.948755 194.28973,329.025119 193.493333,341.333333 C194.590843,354.653818 189.18793,367.684372 178.986667,376.32 L178.986667,376.32 Z M254.506667,405.333333 L283.306667,405.333333 L283.306667,351.786667 L341.333333,351.786667 L341.333333,329.173333 L283.306667,329.173333 L283.306667,299.946667 L341.333333,299.946667 L341.333333,277.333333 L254.506667,277.333333 L254.506667,405.333333 L254.506667,405.333333 Z M234.666667,7.10542736e-15 L9.52127266e-13,7.10542736e-15 L9.52127266e-13,234.666667 L42.6666667,234.666667 L42.6666667,192 L42.6666667,169.6 L42.6666667,42.6666667 L216.96,42.6666667 L298.666667,124.373333 L298.666667,169.6 L298.666667,192 L298.666667,234.666667 L341.333333,234.666667 L341.333333,106.666667 L234.666667,7.10542736e-15 L234.666667,7.10542736e-15 Z" id="document-pdf"></path>
+            <!-- Desktop Layout -->
+            <div class="hidden md:block">
+                <div class="flex items-center gap-4">
+                    <p class="flex-1 text-xs text-zinc-400">Access my CV in different formats</p>
+                    <div class="flex gap-2">
+                        <a
+                            href="{% url 'cv_redirect' %}"
+                            target="_blank"
+                            rel="noopener"
+                            class="inline-flex items-center justify-center px-2.5 py-1.5 text-xs font-medium rounded-md border border-zinc-600 hover:border-zinc-500 hover:bg-zinc-700/30 transition-all duration-200 group"
+                        >
+                            <svg class="w-3.5 h-3.5 mr-1 group-hover:scale-110 transition-transform duration-200" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <g id="add" fill="currentColor" transform="translate(85.333333, 42.666667)">
+                                            <path d="M75.9466667,285.653333 C63.8764997,278.292415 49.6246897,275.351565 35.6266667,277.333333 L1.42108547e-14,277.333333 L1.42108547e-14,405.333333 L28.3733333,405.333333 L28.3733333,356.48 L40.5333333,356.48 C53.1304778,357.774244 65.7885986,354.68506 76.3733333,347.733333 C85.3576891,340.027178 90.3112817,328.626053 89.8133333,316.8 C90.4784904,304.790173 85.3164923,293.195531 75.9466667,285.653333 L75.9466667,285.653333 Z M53.12,332.373333 C47.7608867,334.732281 41.8687051,335.616108 36.0533333,334.933333 L27.7333333,334.933333 L27.7333333,298.666667 L36.0533333,298.666667 C42.094796,298.02451 48.1897668,299.213772 53.5466667,302.08 C58.5355805,305.554646 61.3626692,311.370371 61.0133333,317.44 C61.6596233,323.558965 58.5400493,329.460862 53.12,332.373333 L53.12,332.373333 Z M150.826667,277.333333 L115.413333,277.333333 L115.413333,405.333333 L149.333333,405.333333 C166.620091,407.02483 184.027709,403.691457 199.466667,395.733333 C216.454713,383.072462 225.530463,362.408923 223.36,341.333333 C224.631644,323.277677 218.198313,305.527884 205.653333,292.48 C190.157107,280.265923 170.395302,274.806436 150.826667,277.333333 L150.826667,277.333333 Z M178.986667,376.32 C170.098963,381.315719 159.922142,383.54422 149.76,382.72 L144.213333,382.72 L144.213333,299.946667 L149.333333,299.946667 C167.253333,299.946667 174.293333,301.653333 181.333333,308.053333 C189.877212,316.948755 194.28973,329.025119 193.493333,341.333333 C194.590843,354.653818 189.18793,367.684372 178.986667,376.32 L178.986667,376.32 Z M254.506667,405.333333 L283.306667,405.333333 L283.306667,351.786667 L341.333333,351.786667 L341.333333,329.173333 L283.306667,329.173333 L283.306667,299.946667 L341.333333,299.946667 L341.333333,277.333333 L254.506667,277.333333 L254.506667,405.333333 L254.506667,405.333333 Z M234.666667,7.10542736e-15 L9.52127266e-13,7.10542736e-15 L9.52127266e-13,234.666667 L42.6666667,234.666667 L42.6666667,192 L42.6666667,169.6 L42.6666667,42.6666667 L216.96,42.6666667 L298.666667,124.373333 L298.666667,169.6 L298.666667,192 L298.666667,234.666667 L341.333333,234.666667 L341.333333,106.666667 L234.666667,7.10542736e-15 L234.666667,7.10542736e-15 Z" id="document-pdf"></path>
+                                        </g>
                                     </g>
                                 </g>
-                            </g>
-                        </svg>
-                        PDF
-                    </a>
-
-                    <a
-                        href="{% url 'cv_latest_redirect' %}"
-                        target="_blank"
-                        rel="noopener"
-                        class="flex-1 inline-flex items-center justify-center px-2.5 py-1.5 text-xs font-medium rounded-md border border-zinc-600 hover:border-zinc-500 hover:bg-zinc-700/30 transition-all duration-200 group"
-                    >
-                        <svg class="w-3.5 h-3.5 mr-1 group-hover:scale-110 transition-transform duration-200" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H10C10.5523 23 11 22.5523 11 22C11 21.4477 10.5523 21 10 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM12.952 12.694C12.783 12.1682 12.2198 11.879 11.694 12.048C11.1682 12.217 10.879 12.7802 11.048 13.306L13.298 20.306C13.4309 20.7196 13.8156 21 14.25 21C14.6844 21 15.0691 20.7196 15.202 20.306L16.5 16.2679L17.798 20.306C17.9309 20.7196 18.3156 21 18.75 21C19.1844 21 19.5691 20.7196 19.702 20.306L21.952 13.306C22.121 12.7802 21.8318 12.217 21.306 12.048C20.7802 11.879 20.217 12.1682 20.048 12.694L18.75 16.7321L17.452 12.694C17.3191 12.2804 16.9344 12 16.5 12C16.0656 12 15.6809 12.2804 15.548 12.694L14.25 16.7321L12.952 12.694Z" fill="currentColor"></path>
-                            </g>
-                        </svg>
-                        Word
-                    </a>
-
+                            </svg>
+                            PDF
+                        </a>
+                        <a
+                            href="{% url 'cv_latest_redirect' %}"
+                            target="_blank"
+                            rel="noopener"
+                            class="inline-flex items-center justify-center px-2.5 py-1.5 text-xs font-medium rounded-md border border-zinc-600 hover:border-zinc-500 hover:bg-zinc-700/30 transition-all duration-200 group"
+                        >
+                            <svg class="w-3.5 h-3.5 mr-1 group-hover:scale-110 transition-transform duration-200" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H10C10.5523 23 11 22.5523 11 22C11 21.4477 10.5523 21 10 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM12.952 12.694C12.783 12.1682 12.2198 11.879 11.694 12.048C11.1682 12.217 10.879 12.7802 11.048 13.306L13.298 20.306C13.4309 20.7196 13.8156 21 14.25 21C14.6844 21 15.0691 20.7196 15.202 20.306L16.5 16.2679L17.798 20.306C17.9309 20.7196 18.3156 21 18.75 21C19.1844 21 19.5691 20.7196 19.702 20.306L21.952 13.306C22.121 12.7802 21.8318 12.217 21.306 12.048C20.7802 11.879 20.217 12.1682 20.048 12.694L18.75 16.7321L17.452 12.694C17.3191 12.2804 16.9344 12 16.5 12C16.0656 12 15.6809 12.2804 15.548 12.694L14.25 16.7321L12.952 12.694Z" fill="currentColor"></path>
+                                </g>
+                            </svg>
+                            Word
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -123,37 +107,45 @@
         </div>
 
         <!-- Status and Availability -->
-        <div class="border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-all duration-300">
-            <div class="flex items-center gap-3 mb-3 sm:mb-4">
-                <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                <h2 class="text-lg sm:text-xl font-semibold text-zinc-100">{{ open_to_work_data.status }}</h2>
+        <div class="border border-zinc-700 rounded-lg p-4">
+            <div class="flex flex-wrap items-start justify-between w-full gap-2 mb-3">
+                <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex-1 flex items-center">
+                    <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Status & Availability
+                </h2>
+                <span class="inline-flex flex-shrink-0 items-center text-xs font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 py-1 rounded-full border border-zinc-700 shadow-sm whitespace-nowrap">
+                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full mr-1.5 animate-pulse"></span>
+                    {{ open_to_work_data.status }}
+                </span>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 text-sm">
-                <div>
-                    <span class="text-zinc-400">Availability:</span>
-                    <span class="text-zinc-200 ml-2">{{ open_to_work_data.availability }}</span>
+            <div class="space-y-2">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+                    <span class="font-medium text-sm">Availability</span>
+                    <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.availability }}</span>
                 </div>
-                <div>
-                    <span class="text-zinc-400">Employment Type:</span>
-                    <span class="text-zinc-200 ml-2">{{ open_to_work_data.type }}</span>
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+                    <span class="font-medium text-sm">Employment Type</span>
+                    <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.type }}</span>
                 </div>
-                <div>
-                    <span class="text-zinc-400">Remote Work:</span>
-                    <span class="text-zinc-200 ml-2">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+                    <span class="font-medium text-sm">Remote Work</span>
+                    <span class="text-sm mt-1 sm:mt-0">
                         {% if open_to_work_data.remote %}
-                            <span class="text-green-400">✓ Available</span>
+                            <span class="text-emerald-400">Available</span>
                         {% else %}
-                            <span class="text-red-400">✗ Not Available</span>
+                            <span class="text-red-400">Not Available</span>
                         {% endif %}
                     </span>
                 </div>
-                <div>
-                    <span class="text-zinc-400">Relocation:</span>
-                    <span class="text-zinc-200 ml-2">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+                    <span class="font-medium text-sm">Relocation</span>
+                    <span class="text-sm mt-1 sm:mt-0">
                         {% if open_to_work_data.relocation %}
-                            <span class="text-green-400">✓ Open to Relocate</span>
+                            <span class="text-emerald-400">Open to Relocate</span>
                         {% else %}
-                            <span class="text-red-400">✗ No Relocation</span>
+                            <span class="text-red-400">No Relocation</span>
                         {% endif %}
                     </span>
                 </div>
@@ -161,185 +153,136 @@
         </div>
 
         <!-- Preferred Roles -->
-        <div class="border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-all duration-300">
-            <h3 class="text-lg font-semibold text-zinc-100 mb-3 sm:mb-4 flex items-center gap-2">
-                <svg class="w-5 h-5 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 12l2-2m0 0l2-2m-2 2l-2-2m2 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6a2 2 0 012-2h4a2 2 0 012 2v6z"></path>
+        <div class="border border-zinc-700 rounded-lg p-4">
+            <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex items-center mb-3">
+                <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                 </svg>
                 Preferred Roles
-            </h3>
+            </h2>
             <div class="flex flex-wrap gap-2">
                 {% for role in open_to_work_data.preferred_roles %}
-                    <span class="px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-sm border border-indigo-500/30">
-                        {{ role }}
-                    </span>
+                    <span class="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded text-xs border border-zinc-700/50">{{ role }}</span>
                 {% endfor %}
             </div>
         </div>
 
-        <!-- Skills Highlight -->
-        <div class="border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-all duration-300">
-            <h3 class="text-lg font-semibold text-zinc-100 mb-3 sm:mb-4 flex items-center gap-2">
-                <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+        <!-- Key Skills -->
+        <div class="border border-zinc-700 rounded-lg p-4">
+            <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex items-center mb-3">
+                <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                 </svg>
                 Key Skills
-            </h3>
+            </h2>
             <div class="flex flex-wrap gap-2">
                 {% for skill in open_to_work_data.skills_highlight %}
-                    <span class="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-sm border border-yellow-500/30">
-                        {{ skill }}
-                    </span>
+                    <span class="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded text-xs border border-zinc-700/50">{{ skill }}</span>
                 {% endfor %}
             </div>
         </div>
 
-        <!-- Professional Details -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-            <div class="border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-all duration-300">
-                <h3 class="text-lg font-semibold text-zinc-100 mb-3 sm:mb-4">Professional Details</h3>
-                <div class="space-y-3 text-sm">
-                    <div>
-                        <span class="text-zinc-400">Experience Level:</span>
-                        <p class="text-zinc-200">{{ open_to_work_data.experience_level }}</p>
+        <!-- Professional Details & Languages -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Professional Details -->
+            <div class="border border-zinc-700 rounded-lg p-4">
+                <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex items-center mb-3">
+                    <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path>
+                    </svg>
+                    Professional Details
+                </h2>
+                <div class="space-y-2">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+                        <span class="font-medium text-sm">Experience Level</span>
+                        <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.experience_level }}</span>
                     </div>
-                    <div>
-                        <span class="text-zinc-400">Salary Expectation:</span>
-                        <p class="text-zinc-200">{{ open_to_work_data.salary_expectation }}</p>
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+                        <span class="font-medium text-sm">Salary Expectation</span>
+                        <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.salary_expectation }}</span>
                     </div>
-                    <div>
-                        <span class="text-zinc-400">Notice Period:</span>
-                        <p class="text-zinc-200">{{ open_to_work_data.notice_period }}</p>
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+                        <span class="font-medium text-sm">Notice Period</span>
+                        <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.notice_period }}</span>
                     </div>
-                    <div>
-                        <span class="text-zinc-400">Work Authorization:</span>
-                        <p class="text-zinc-200">{{ open_to_work_data.work_authorization }}</p>
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+                        <span class="font-medium text-sm">Work Authorization</span>
+                        <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.work_authorization }}</span>
                     </div>
                 </div>
             </div>
 
-            <div class="border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-all duration-300">
-                <h3 class="text-lg font-semibold text-zinc-100 mb-3 sm:mb-4">Languages & Preferences</h3>
-                <div class="space-y-3 text-sm">
-                    <div>
-                        <span class="text-zinc-400">Languages:</span>
-                        <div class="flex flex-wrap gap-1 mt-1">
+            <!-- Languages & Preferences -->
+            <div class="border border-zinc-700 rounded-lg p-4">
+                <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex items-center mb-3">
+                    <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                    </svg>
+                    Languages & Preferences
+                </h2>
+                <div class="space-y-2">
+                    <div class="p-2 bg-zinc-800/30 rounded">
+                        <span class="font-medium text-sm">Languages</span>
+                        <div class="flex flex-wrap gap-1 mt-1.5">
                             {% for language in open_to_work_data.languages %}
-                                <span class="px-2 py-1 bg-zinc-700 text-zinc-300 rounded text-xs">{{ language }}</span>
+                                <span class="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded text-xs border border-zinc-700/50">{{ language }}</span>
                             {% endfor %}
                         </div>
                     </div>
-                    <div>
-                        <span class="text-zinc-400">Contact Preference:</span>
-                        <p class="text-zinc-200">{{ open_to_work_data.contact_preference }}</p>
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+                        <span class="font-medium text-sm">Contact Preference</span>
+                        <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.contact_preference }}</span>
                     </div>
-                    <div>
-                        <span class="text-zinc-400">Interview Availability:</span>
-                        <p class="text-zinc-200">{{ open_to_work_data.interview_availability }}</p>
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+                        <span class="font-medium text-sm">Interview Availability</span>
+                        <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.interview_availability }}</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Location Preferences -->
-        <div class="border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-all duration-300">
-            <h3 class="text-lg font-semibold text-zinc-100 mb-3 sm:mb-4 flex items-center gap-2">
-                <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+        <div class="border border-zinc-700 rounded-lg p-4">
+            <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex items-center mb-3">
+                <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 </svg>
                 Location Preferences
-            </h3>
-            
-            <!-- Location Types -->
-            <div class="mb-4">
-                <h4 class="text-sm font-medium text-zinc-300 mb-2">Work Arrangements</h4>
-                <div class="flex flex-wrap gap-2">
-                    {% for location_type in open_to_work_data.location_types %}
-                        <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm border border-blue-500/30">
-                            {{ location_type }}
-                        </span>
-                    {% endfor %}
-                </div>
-            </div>
+            </h2>
 
-            <!-- On-site Locations -->
-            <div class="mb-4">
-                <h4 class="text-sm font-medium text-zinc-300 mb-2">On-site Locations</h4>
-                <div class="flex flex-wrap gap-2">
-                    {% for location in open_to_work_data.preferred_locations %}
-                        <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm border border-green-500/30">
-                            {{ location }}
-                        </span>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Remote Locations -->
-            <div>
-                <h4 class="text-sm font-medium text-zinc-300 mb-2">Remote Work Locations</h4>
-                <div class="flex flex-wrap gap-2">
-                    {% for remote_location in open_to_work_data.remote_locations %}
-                        <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm border border-purple-500/30">
-                            {{ remote_location }}
-                        </span>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-
-        <!-- Portfolio Highlights -->
-        <div class="border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-all duration-300">
-            <h3 class="text-lg font-semibold text-zinc-100 mb-3 sm:mb-4 flex items-center gap-2">
-                <svg class="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
-                </svg>
-                Portfolio Highlights
-            </h3>
-            <div class="space-y-3 sm:space-y-4">
-                {% for highlight in open_to_work_data.portfolio_highlights %}
-                    <div class="border-l-4 border-purple-500 pl-4">
-                        <h4 class="font-medium text-zinc-200">{{ highlight.title }}</h4>
-                        <p class="text-sm text-zinc-400 mt-1">{{ highlight.description }}</p>
+            <div class="space-y-3">
+                <!-- Work Arrangements -->
+                <div class="p-2">
+                    <span class="font-medium text-sm">Work Arrangements</span>
+                    <div class="flex flex-wrap gap-2 mt-1.5">
+                        {% for location_type in open_to_work_data.location_types %}
+                            <span class="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded text-xs border border-zinc-700/50">{{ location_type }}</span>
+                        {% endfor %}
                     </div>
-                {% endfor %}
+                </div>
+
+                <!-- On-site Locations -->
+                <div class="p-2">
+                    <span class="font-medium text-sm">On-site Locations</span>
+                    <div class="flex flex-wrap gap-2 mt-1.5">
+                        {% for location in open_to_work_data.preferred_locations %}
+                            <span class="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded text-xs border border-zinc-700/50">{{ location }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Remote Locations -->
+                <div class="p-2">
+                    <span class="font-medium text-sm">Remote Work Locations</span>
+                    <div class="flex flex-wrap gap-2 mt-1.5">
+                        {% for remote_location in open_to_work_data.remote_locations %}
+                            <span class="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded text-xs border border-zinc-700/50">{{ remote_location }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Additional Notes -->
-        {% if open_to_work_data.additional_notes %}
-        <div class="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-xl p-4 border border-indigo-500/30">
-            <h3 class="text-lg font-semibold text-zinc-100 mb-2 sm:mb-3 flex items-center gap-2">
-                <svg class="w-5 h-5 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                </svg>
-                About Me
-            </h3>
-            <p class="text-zinc-300 leading-relaxed">{{ open_to_work_data.additional_notes }}</p>
-        </div>
-        {% endif %}
-
-        <!-- Contact CTA -->
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-4 text-center">
-            <h3 class="text-lg sm:text-xl font-semibold text-white mb-2">Let's Work Together</h3>
-            <p class="text-indigo-100 mb-3 sm:mb-4">Interested in discussing opportunities? I'd love to hear from you.</p>
-            <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
-            <a href="mailto:{{ about.social_media.email }}" 
-               class="inline-flex items-center gap-2 bg-white text-indigo-600 px-4 sm:px-6 py-2 rounded-lg font-medium hover:bg-indigo-50 transition-colors">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                </svg>
-                Get in Touch
-            </a>
-            <a href="{{ about.social_media.linkedin }}" 
-               target="_blank"
-               class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.39 0-1.601 1.086-1.601 2.207v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-.003-3.096 1.548 1.548 0 01.003 3.096zm-1.337 9.763H6.34v-8.59H3.667v8.59zM17.668 1H2.328C1.595 1 1 1.581 1 2.298v15.403C1 18.418 1.595 19 2.328 19h15.34c.734 0 1.332-.582 1.332-1.299V2.298C19 1.581 18.402 1 17.668 1z" clip-rule="evenodd"></path>
-                </svg>
-                LinkedIn
-            </a>
-            </div>
-        </div>
     </div>
 </div>

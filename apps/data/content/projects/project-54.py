@@ -24,8 +24,8 @@ project_data = asdict(ProjectData(
         Feature(title='RESTful Architecture', description='Clean URL patterns and HTTP methods for module endpoints.'),
     ],
     images={
-        "architecture_diagram.webp": f"{settings.PROJECT_BASE_IMG_URL}/architecture_diagram.webp",
-        "flowchart.webp": f"{settings.PROJECT_BASE_IMG_URL}/flowchart.webp",
+        "django_modular_flowchart.webp": f"{settings.PROJECT_BASE_IMG_URL}/django_modular_flowchart.webp",
+        "django_modular_architecture.webp": f"{settings.PROJECT_BASE_IMG_URL}/django_modular_architecture.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["django"],

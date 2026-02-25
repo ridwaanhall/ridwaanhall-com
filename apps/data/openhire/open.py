@@ -40,7 +40,7 @@ class OpenToWorkData:
         ],
         experience_level="Mid-Level (2-4 years)",
         salary_expectation="Competitive",
-        notice_period="Immediately",
+        notice_period="1 month",
         work_authorization="Indonesian Citizen",
         languages=[
             "Indonesia (Native)",
@@ -80,7 +80,7 @@ class OpenToWorkData:
             )
         ],
         contact_preference="LinkedIn, Email",
-        interview_availability="Flexible with timezone adjustments",
+        interview_availability="Flexible",
         additional_notes="Passionate about building intelligent web applications and scalable AI solutions using Python. Actively seeking opportunities to grow in machine learning, deep learning, and modern web frameworks."
     )
 

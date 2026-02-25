@@ -23,7 +23,7 @@ project_data = asdict(ProjectData(
         Feature(title='Feedback Tracker', description='Logs donor comments for quick resolution.'),
     ],
     images={
-        "mlbb_mabar_vip_manager.webp": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_mabar_vip_manager.webp",
+        "mlbb_mabar_vip.webp": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_mabar_vip.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],

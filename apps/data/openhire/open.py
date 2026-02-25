@@ -21,10 +21,10 @@ class OpenToWorkData:
         remote=True,
         relocation=True,
         preferred_roles=[
+            "Django Developer",
+            "Python Developer",
             "Machine Learning Engineer",
             "AI Engineer",
-            "Python Developer",
-            "Django Developer",
             "Data Analyst",
         ],
         skills_highlight=[

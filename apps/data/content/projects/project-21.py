@@ -22,7 +22,7 @@ project_data = asdict(ProjectData(
         Feature(title='Energy Game-Changer', description='Delivers spot-on forecasts for real-world energy planning.'),
     ],
     images={
-        "time_series_forecasting_rnn.webp": f"{settings.PROJECT_BASE_IMG_URL}/time_series_forecasting_rnn.webp",
+        "time_series_forecasting_rnn_actual_predicted.webp": f"{settings.PROJECT_BASE_IMG_URL}/time_series_forecasting_rnn_actual_predicted.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],

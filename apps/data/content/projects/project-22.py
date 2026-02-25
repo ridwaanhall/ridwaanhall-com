@@ -22,6 +22,7 @@ project_data = asdict(ProjectData(
         Feature(title='Training Smarts', description='Optimized splits for max accuracy and generalization.'),
     ],
     images={
+        "emotion_face_detection.webp": f"{settings.PROJECT_BASE_IMG_URL}/emotion_face_detection.webp",
         "emotion_recognition_timm_cnn.webp": f"{settings.PROJECT_BASE_IMG_URL}/emotion_recognition_timm_cnn.webp",
     },
     tech_stack=[
@@ -30,7 +31,7 @@ project_data = asdict(ProjectData(
         SkillsData.tech_stack["cnn"],
         SkillsData.tech_stack["timm"],
     ],
-    github_url='',
+    github_url='https://github.com/ridwaanhall/Jaringan-Syaraf-Tiruan/blob/main/02_project_2/PBL03_Kel04_CNN.ipynb',
     demo_url='',
     category='Machine Learning, Computer Vision, Emotion Recognition',
     tags=['CNN', 'Emotion Detection', 'TIMM', 'PyTorch', 'Image Classification', 'Augmentation', 'CutMix', 'MixUp', 'Python', 'Computer Vision'],

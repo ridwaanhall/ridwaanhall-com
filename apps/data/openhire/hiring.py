@@ -17,7 +17,7 @@ class HiringData:
     _model = HiringModel(
         company_name="RoneAI",
         company_description="A creative hub building intelligent systems and web applications",
-        website="https://copilot.my.id",
+        website="https://rone.dev",
         hiring_status="Currently Hiring",
         positions=[
             Position(

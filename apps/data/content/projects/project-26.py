@@ -22,7 +22,8 @@ project_data = asdict(ProjectData(
         Feature(title='Django Swagger', description='Rock-solid backend for seamless performance.'),
     ],
     images={
-        "default_project_image.webp": f"{settings.PROJECT_BASE_IMG_URL}/default_project_image.webp",
+        "khodam_form.webp": f"{settings.PROJECT_BASE_IMG_URL}/khodam_form.webp",
+        "khodam_result.webp": f"{settings.PROJECT_BASE_IMG_URL}/khodam_result.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],

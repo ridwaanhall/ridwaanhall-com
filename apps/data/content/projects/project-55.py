@@ -24,7 +24,8 @@ project_data = asdict(ProjectData(
         Feature(title='Easy Training Interface', description='Simple scripts for collecting and training face images.'),
     ],
     images={
-        "default_project_image.webp": f"{settings.PROJECT_BASE_IMG_URL}/default_project_image.webp",
+        "face_recognition.webp": f"{settings.PROJECT_BASE_IMG_URL}/face_recognition.webp",
+        "face_recognition_result.webp": f"{settings.PROJECT_BASE_IMG_URL}/face_recognition_result.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],

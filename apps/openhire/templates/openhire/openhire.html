@@ -115,5 +115,8 @@
 {% if about.is_open_to_work and about.is_hiring %}
 <script src="{% static 'js/switchTab.js' %}"></script>
 {% endif %}
+{% if about.is_hiring %}
+<script src="{% static 'js/toggleCareer.js' %}"></script>
+{% endif %}
 <script src="{% static 'js/backScroll.js' %}"></script>
 {% endblock %}

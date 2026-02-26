@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from apps.core.types import PrivacyPolicyModel
-from apps.data.data_service import DataService
+from apps.core.data_service import DataService
 
 
 class CoreTypesTest(TestCase):

@@ -4,7 +4,7 @@ Provides information about work availability and hiring opportunities.
 """
 
 from apps.core.base_views import BaseView
-from apps.data.data_service import DataService
+from apps.core.data_service import DataService
 from apps.seo.mixins import OpenHireSEOMixin
 
 

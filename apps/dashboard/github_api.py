@@ -2,7 +2,6 @@ import json
 import logging
 from django.utils import timezone
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional
 
 import requests
 
@@ -15,7 +14,7 @@ class GitHubClient:
         self.access_token = access_token
         self.api_url = "https://api.github.com/graphql"
         
-    def get_contribution_data(self) -> Optional[Dict]:
+    def get_contribution_data(self) -> dict | None:
         """Fetch GitHub contribution data for the user."""
         query = """
             query {
@@ -58,7 +57,7 @@ class GitHubClient:
 
 class GitHubStatsCalculator:
     @staticmethod
-    def calculate_stats(contribution_weeks: List[Dict], total_contributions: int) -> Dict:
+    def calculate_stats(contribution_weeks: list[dict], total_contributions: int) -> dict:
         """Calculate GitHub contribution statistics."""
         today = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
         
@@ -122,7 +121,7 @@ class GitHubStatsCalculator:
         }
     
     @staticmethod
-    def _calculate_streaks(all_days: List[Dict], today: datetime) -> tuple:
+    def _calculate_streaks(all_days: list[dict], today: datetime) -> tuple:
         """Helper method to calculate contribution streaks. Returns (current_streak, longest_streak, current_streak_start, current_streak_end)."""
         if not all_days:
             return 0, 0, None, None
@@ -172,7 +171,7 @@ class GitHubStatsCalculator:
         return current_streak, longest_streak, current_streak_start, current_streak_end
 
     @staticmethod
-    def process_github_data(github_activity: Dict) -> Optional[Dict]:
+    def process_github_data(github_activity: dict) -> dict | None:
         """Process GitHub activity data and return formatted statistics ready for template use."""
         if not github_activity or 'data' not in github_activity:
             logger.error("GitHub activity data is missing or malformed.")

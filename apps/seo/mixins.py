@@ -3,7 +3,7 @@ SEO Mixins
 Reusable mixins for views to automatically include SEO functionality.
 """
 
-from apps.data.about_manager import AboutManager
+from apps.about.manager import AboutManager
 from .manager import SEOManager
 
 

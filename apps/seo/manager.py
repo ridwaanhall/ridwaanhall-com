@@ -3,7 +3,6 @@ SEO Manager
 Main interface for SEO operations and metadata generation.
 """
 
-from typing import Dict, List, Optional
 from .data import SEOData
 from .schema import SEOSchemaGenerator
 from .config import SEOConfig
@@ -15,12 +14,12 @@ class SEOManager:
     Use this class in your views to generate SEO metadata.
     """
     
-    def __init__(self, about_data: Dict):
+    def __init__(self, about_data: dict):
         """Initialize with about data that's used across all SEO operations."""
         self.about_data = about_data
         self.schema_generator = SEOSchemaGenerator()
     
-    def get_homepage_seo(self) -> Dict:
+    def get_homepage_seo(self) -> dict:
         """Get complete SEO data for homepage."""
         seo_data = SEOData.get_homepage_seo(self.about_data)
         seo_data['schemas'] = [
@@ -29,7 +28,7 @@ class SEOManager:
         ]
         return seo_data
     
-    def get_dashboard_seo(self) -> Dict:
+    def get_dashboard_seo(self) -> dict:
         """Get complete SEO data for dashboard page."""
         seo_data = SEOData.get_dashboard_seo(self.about_data)
         seo_data['schemas'] = [
@@ -41,7 +40,7 @@ class SEOManager:
         ]
         return seo_data
     
-    def get_projects_list_seo(self, projects: Optional[List[Dict]] = None, page: int = 1) -> Dict:
+    def get_projects_list_seo(self, projects: list[dict] | None = None, page: int = 1) -> dict:
         """Get complete SEO data for projects listing page."""
         seo_data = SEOData.get_projects_list_seo(self.about_data, projects)
         
@@ -59,7 +58,7 @@ class SEOManager:
         ]
         return seo_data
     
-    def get_project_detail_seo(self, project_data: Dict) -> Dict:
+    def get_project_detail_seo(self, project_data: dict) -> dict:
         """Get complete SEO data for individual project."""
         seo_data = SEOData.get_project_detail_seo(project_data, self.about_data)
         seo_data['schemas'] = [
@@ -72,7 +71,7 @@ class SEOManager:
         ]
         return seo_data
     
-    def get_blog_list_seo(self, blogs: Optional[List[Dict]] = None, page: int = 1) -> Dict:
+    def get_blog_list_seo(self, blogs: list[dict] | None = None, page: int = 1) -> dict:
         """Get complete SEO data for blog listing page."""
         seo_data = SEOData.get_blog_list_seo(self.about_data, blogs)
         
@@ -91,7 +90,7 @@ class SEOManager:
         ]
         return seo_data
     
-    def get_blog_detail_seo(self, blog_data: Dict) -> Dict:
+    def get_blog_detail_seo(self, blog_data: dict) -> dict:
         """Get complete SEO data for individual blog post."""
         seo_data = SEOData.get_blog_detail_seo(blog_data, self.about_data)
         seo_data['schemas'] = [
@@ -104,7 +103,7 @@ class SEOManager:
         ]
         return seo_data
     
-    def get_about_seo(self) -> Dict:
+    def get_about_seo(self) -> dict:
         """Get complete SEO data for about page."""
         seo_data = SEOData.get_about_seo(self.about_data)
         seo_data['schemas'] = [
@@ -116,7 +115,7 @@ class SEOManager:
         ]
         return seo_data
     
-    def get_contact_seo(self) -> Dict:
+    def get_contact_seo(self) -> dict:
         """Get complete SEO data for contact page."""
         seo_data = SEOData.get_contact_seo(self.about_data)
         seo_data['schemas'] = [
@@ -128,7 +127,7 @@ class SEOManager:
         ]
         return seo_data
     
-    def get_guestbook_seo(self) -> Dict:
+    def get_guestbook_seo(self) -> dict:
         """Get complete SEO data for guestbook page."""
         seo_data = SEOData.get_guestbook_seo(self.about_data)
         seo_data['schemas'] = [
@@ -139,7 +138,7 @@ class SEOManager:
         ]
         return seo_data
     
-    def get_privacy_policy_seo(self) -> Dict:
+    def get_privacy_policy_seo(self) -> dict:
         """Get complete SEO data for privacy policy page."""
         seo_data = SEOData.get_privacy_policy_seo(self.about_data)
         seo_data['schemas'] = [
@@ -151,7 +150,7 @@ class SEOManager:
         ]
         return seo_data
     
-    def get_openhire_seo(self) -> Dict:
+    def get_openhire_seo(self) -> dict:
         """Get complete SEO data for openhire page."""
         seo_data = SEOData.get_openhire_seo(self.about_data)
         seo_data['schemas'] = [
@@ -172,7 +171,7 @@ class SEOManager:
         """Get sitemap change frequency for content type."""
         return SEOConfig.CONTENT_TYPES.get(content_type, {}).get('changefreq', 'monthly')
     
-    def get_meta_tags(self, seo_data: Dict, request=None) -> Dict:
+    def get_meta_tags(self, seo_data: dict, request=None) -> dict:
         """Generate complete meta tags for templates."""
         canonical_url = seo_data.get('canonical_url', SEOConfig.SITE_URL)
         if request:

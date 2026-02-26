@@ -166,7 +166,6 @@ INSTALLED_APPS = [
 
     "apps.core",
     "apps.about",
-    "apps.data",
     "apps.dashboard",
     "apps.projects",
     "apps.blog",

@@ -5,7 +5,7 @@ from apps.about.types import (
     IssuedDate, PeriodDate, Period, Experience, EducationDate, EducationLocation,
     Education, Certification, Award, Skill, JourneyStep, Application,
 )
-from apps.data.data_service import DataService
+from apps.core.data_service import DataService
 
 
 class AboutTypesTest(TestCase):

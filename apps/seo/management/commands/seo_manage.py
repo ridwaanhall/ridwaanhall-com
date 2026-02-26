@@ -7,11 +7,10 @@ from django.urls import reverse
 from django.test import Client, override_settings
 from django.conf import settings
 import requests
-from typing import Dict, List
 import json
 
 from apps.seo.sitemaps import StaticPagesSitemap, BlogSitemap, ProjectSitemap
-from apps.data.data_service import DataService
+from apps.core.data_service import DataService
 
 
 class Command(BaseCommand):
@@ -164,7 +163,7 @@ class Command(BaseCommand):
         self.stdout.write('Checking meta tags...')
         
         # Import here to avoid circular imports
-        from apps.data.content_manager import ContentManager
+        from apps.core.content_manager import ContentManager
         from django.utils.text import slugify
         
         # Basic static pages
@@ -242,7 +241,7 @@ class Command(BaseCommand):
         # Summary
         self.stdout.write(f'\n📊 Meta Tags Summary: {passed_pages}/{total_pages} pages passed ({(passed_pages/total_pages)*100:.1f}%)')
     
-    def validate_specific_pages(self, pages: List[str]):
+    def validate_specific_pages(self, pages: list[str]):
         """Validate specific pages by URL path."""
         self.stdout.write(
             self.style.SUCCESS(f'🔍 Validating {len(pages)} specific pages...\n')

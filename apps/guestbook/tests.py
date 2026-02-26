@@ -92,7 +92,7 @@ class GuestbookPerformanceTestCase(TransactionTestCase):
         connection.queries_log.clear()
         
         # Call the view method that was causing performance issues
-        with self.assertNumQueries(10):  # Should be a reasonable number of queries
+        with self.assertNumQueries(5):  # Should be a reasonable number of queries
             response = view._get(request)
         
         # Verify the response contains the expected data
@@ -139,7 +139,7 @@ class GuestbookPerformanceTestCase(TransactionTestCase):
         view.request = request  # Set request attribute
         
         # This should work without additional queries for social accounts
-        with self.assertNumQueries(10):  # Reasonable number including prefetch
+        with self.assertNumQueries(5):  # Reasonable number including prefetch
             response = view._get(request)
             
         self.assertEqual(response.status_code, 200)

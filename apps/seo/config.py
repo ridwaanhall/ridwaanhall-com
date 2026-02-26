@@ -3,7 +3,6 @@ SEO Configuration Manager
 Centralized settings for SEO management across the application.
 """
 
-from typing import Dict, List, Optional
 from django.conf import settings
 
 

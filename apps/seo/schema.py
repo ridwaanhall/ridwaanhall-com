@@ -3,7 +3,7 @@ SEO Schema Generator
 Handles structured data (JSON-LD) generation for search engines.
 """
 
-from typing import Dict, List, Optional, Any
+from typing import Any
 from datetime import datetime
 from django.utils.text import slugify
 from .config import SEOConfig
@@ -17,7 +17,7 @@ class SEOSchemaGenerator:
     """Generate structured data for different content types."""
     
     @staticmethod
-    def generate_person_schema(about_data: Dict) -> Dict:
+    def generate_person_schema(about_data: dict) -> dict:
         """Generate comprehensive Person schema for about pages with full profile data."""
         social_links = []
         social_media = about_data.get('social_media', {})
@@ -124,7 +124,7 @@ class SEOSchemaGenerator:
         return schema
     
     @staticmethod
-    def generate_website_schema() -> Dict:
+    def generate_website_schema() -> dict:
         """Generate enhanced WebSite schema with search functionality."""
         schema = SEOConfig.SCHEMA_TEMPLATES['website'].copy()
         schema.update({
@@ -172,7 +172,7 @@ class SEOSchemaGenerator:
         return schema
     
     @staticmethod
-    def generate_blog_schema(about_data: Dict, blogs: Optional[List[Dict]] = None) -> Dict:
+    def generate_blog_schema(about_data: dict, blogs: list[dict] | None = None) -> dict:
         """Generate Blog schema for blog listing."""
         schema = SEOConfig.SCHEMA_TEMPLATES['blog'].copy()
         
@@ -201,7 +201,7 @@ class SEOSchemaGenerator:
         return schema
 
     @staticmethod
-    def generate_blog_posting_schema(blog_data: Dict, about_data: Dict) -> Dict:
+    def generate_blog_posting_schema(blog_data: dict, about_data: dict) -> dict:
         """Generate BlogPosting schema for individual blog post."""
         # Convert datetime objects to ISO format strings
         created_at = blog_data.get('created_at', '')
@@ -244,7 +244,7 @@ class SEOSchemaGenerator:
         }
     
     @staticmethod
-    def generate_software_source_code_schema(project_data: Dict, about_data: Dict) -> Dict:
+    def generate_software_source_code_schema(project_data: dict, about_data: dict) -> dict:
         """Generate SoftwareSourceCode schema for projects."""
         tech_stack = [tech.get('name', '') for tech in project_data.get('tech_stack', [])]
         
@@ -277,7 +277,7 @@ class SEOSchemaGenerator:
         }
     
     @staticmethod
-    def generate_collection_page_schema(items: List[Dict], about_data: Dict, collection_type: str = "projects") -> Dict:
+    def generate_collection_page_schema(items: list[dict], about_data: dict, collection_type: str = "projects") -> dict:
         """Generate CollectionPage schema for project/blog listings."""
         return {
             "@context": "https://schema.org",
@@ -307,7 +307,7 @@ class SEOSchemaGenerator:
         }
     
     @staticmethod
-    def generate_breadcrumb_schema(breadcrumbs: List[Dict]) -> Dict:
+    def generate_breadcrumb_schema(breadcrumbs: list[dict]) -> dict:
         """Generate BreadcrumbList schema."""
         return {
             "@context": "https://schema.org",
@@ -324,7 +324,7 @@ class SEOSchemaGenerator:
         }
     
     @staticmethod
-    def generate_organization_schema(about_data: Dict) -> Dict:
+    def generate_organization_schema(about_data: dict) -> dict:
         """Generate Organization schema if applicable."""
         email = about_data.get('social_media', {}).get('email', '')
         return {
@@ -344,7 +344,7 @@ class SEOSchemaGenerator:
         }
     
     @staticmethod
-    def generate_contact_page_schema(about_data: Dict) -> Dict:
+    def generate_contact_page_schema(about_data: dict) -> dict:
         """Generate comprehensive ContactPage schema with organization and contact information."""
         email = about_data.get('social_media', {}).get('email', '')
         social_media = about_data.get('social_media', {})
@@ -438,7 +438,7 @@ class SEOSchemaGenerator:
         }
     
     @staticmethod
-    def generate_profile_page_schema(about_data: Dict) -> Dict:
+    def generate_profile_page_schema(about_data: dict) -> dict:
         """Generate ProfilePage schema with comprehensive profile information including certifications and awards."""
         # Generate the main Person entity
         person_schema = SEOSchemaGenerator.generate_person_schema(about_data)
@@ -501,7 +501,7 @@ class SEOSchemaGenerator:
         }
     
     @staticmethod
-    def generate_privacy_policy_schema(about_data: Dict) -> Dict:
+    def generate_privacy_policy_schema(about_data: dict) -> dict:
         """Generate comprehensive PrivacyPolicy schema for privacy policy page."""
         return {
             "@context": "https://schema.org",
@@ -558,7 +558,7 @@ class SEOSchemaGenerator:
         }
     
     @staticmethod
-    def generate_faq_schema(faqs: List[Dict]) -> Dict:
+    def generate_faq_schema(faqs: list[dict]) -> dict:
         """Generate FAQ schema for improved search visibility."""
         if not faqs:
             return {}
@@ -580,7 +580,7 @@ class SEOSchemaGenerator:
         }
     
     @staticmethod
-    def generate_how_to_schema(steps: List[Dict], title: str = '', description: str = '') -> Dict:
+    def generate_how_to_schema(steps: list[dict], title: str = '', description: str = '') -> dict:
         """Generate HowTo schema for tutorial content."""
         if not steps:
             return {}

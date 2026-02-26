@@ -4,7 +4,7 @@ Provides comprehensive portfolio information with proper error handling.
 """
 
 from apps.core.base_views import BaseView
-from apps.data.data_service import DataService
+from apps.core.data_service import DataService
 from apps.seo.mixins import AboutSEOMixin
 
 

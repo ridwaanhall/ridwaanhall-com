@@ -3,7 +3,7 @@ from django.test import TestCase
 from apps.openhire.types import (
     PortfolioHighlight, OpenToWorkModel, Position, Requirements, ContactInfo, HiringModel,
 )
-from apps.data.data_service import DataService
+from apps.core.data_service import DataService
 
 
 class OpenHireTypesTest(TestCase):

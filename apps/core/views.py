@@ -12,7 +12,7 @@ from django.shortcuts import render
 from django.conf import settings
 
 from apps.core.base_views import BaseView
-from apps.data.data_service import DataService
+from apps.core.data_service import DataService
 from apps.seo.mixins import HomepageSEOMixin, ContactSEOMixin, PrivacyPolicySEOMixin
 from apps.core.forms import ContactForm
 from apps.core.email_handler import send_contact_email

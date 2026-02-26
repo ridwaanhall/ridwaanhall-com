@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from apps.blog.types import BlogContentItem, BlogData
-from apps.data.data_service import DataService
+from apps.core.data_service import DataService
 
 
 class BlogTypesTest(TestCase):

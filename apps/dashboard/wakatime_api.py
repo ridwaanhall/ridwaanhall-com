@@ -6,7 +6,6 @@ import logging
 import requests
 import pytz
 from datetime import datetime, timedelta
-from typing import Dict, Optional, List
 from django.utils import timezone
 
 logger = logging.getLogger(__name__)
@@ -20,7 +19,7 @@ class WakatimeClient:
         self.base_url = "https://wakatime.com/api/v1"
         self.timeout = 10
 
-    def get_activity_data(self) -> Optional[Dict]:
+    def get_activity_data(self) -> dict | None:
         """Fetch WakaTime activity data for the last 7 days and all time."""
         try:
             jakarta_tz = pytz.timezone('Asia/Jakarta')
@@ -55,7 +54,7 @@ class WakatimeStatsCalculator:
     """Calculator for processing WakaTime API data into statistics."""
     
     @staticmethod
-    def _convert_to_gmt7(iso_string: str) -> Optional[datetime]:
+    def _convert_to_gmt7(iso_string: str) -> datetime | None:
         """Convert ISO string to GMT+7 timezone."""
         if not iso_string:
             return None
@@ -98,7 +97,7 @@ class WakatimeStatsCalculator:
             return "0 mins"
     
     @staticmethod
-    def calculate_stats(data: Dict) -> Optional[Dict]:
+    def calculate_stats(data: dict) -> dict | None:
         """Calculate comprehensive WakaTime statistics."""
         if not data or 'last_7_days' not in data or 'all_time' not in data:
             logger.warning("WakaTime stats calculation skipped: Invalid or missing data.")

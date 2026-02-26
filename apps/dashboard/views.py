@@ -4,7 +4,7 @@ Provides developer activity insights with caching for performance.
 """
 
 import logging
-from typing import Dict, Optional, Any
+from typing import Any
 from django.conf import settings
 from django.core.cache import cache
 from django.utils import timezone
@@ -27,7 +27,7 @@ class DashboardView(DashboardSEOMixin, BaseView):
     """
     template_name = 'dashboard/dashboard.html'
     
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         """Build context with GitHub and WakaTime data."""
         context = super().get_context_data(**kwargs)
         
@@ -52,7 +52,7 @@ class DashboardView(DashboardSEOMixin, BaseView):
         
         return context
 
-    def _get_github_stats(self) -> Optional[Dict]:
+    def _get_github_stats(self) -> dict | None:
         """Get GitHub statistics with caching."""
         cache_key = 'github_activity_data'
         github_stats = cache.get(cache_key)
@@ -81,7 +81,7 @@ class DashboardView(DashboardSEOMixin, BaseView):
         
         return github_stats
     
-    def _get_wakatime_stats(self) -> Optional[Dict]:
+    def _get_wakatime_stats(self) -> dict | None:
         """Get WakaTime statistics with caching."""
         cache_key = 'wakatime_activity_data'
         wakatime_stats = cache.get(cache_key)

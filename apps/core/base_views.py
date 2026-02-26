@@ -4,13 +4,13 @@ This module contains shared error handling, context generation, and utility meth
 """
 
 import logging
-from typing import Dict, Any, Optional, Union
+from typing import Any
 from django.views.generic import TemplateView
 from django.shortcuts import render
 from django.core.exceptions import SuspiciousOperation
 from django.http import Http404, HttpResponse
 
-from apps.data.about_manager import AboutManager
+from apps.about.manager import AboutManager
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ class BaseView(TemplateView):
     Includes error handling, about data access, and consistent context management.
     """
     
-    def get_about_data(self) -> Dict[str, Any]:
+    def get_about_data(self) -> dict[str, Any]:
         """Safely get about data with proper error handling."""
         try:
             about_data = AboutManager.get_about_data()
@@ -32,15 +32,15 @@ class BaseView(TemplateView):
             logger.error(f"Error fetching about data: {e}")
             raise
     
-    def get_common_context(self) -> Dict[str, Any]:
+    def get_common_context(self) -> dict[str, Any]:
         """Get common context data that all views need."""
         return {
             'about': self.get_about_data()
         }
     
-    def render_error(self, request, status_code: int, message: Optional[str] = None) -> HttpResponse:
+    def render_error(self, request, status_code: int, message: str | None = None) -> HttpResponse:
         """Render error page with consistent formatting."""
-        context: Dict[str, Union[int, str]] = {'error_code': status_code}
+        context: dict[str, int | str] = {'error_code': status_code}
         if message:
             context['error_message'] = message
         return render(request, 'error.html', context, status=status_code)
@@ -70,7 +70,7 @@ class BaseView(TemplateView):
                 return self.render_error(request, 500, 'An unexpected error occurred.')
         return wrapper
     
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         """Override to add common context to all views."""
         context = super().get_context_data(**kwargs)
         try:

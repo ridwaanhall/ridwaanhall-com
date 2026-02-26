@@ -8,6 +8,7 @@ Created at: March 16, 2025
 """
 
 from pathlib import Path
+import sys
 from csp.constants import SELF, NONE, UNSAFE_INLINE
 from .config import *  # Import all environment configs
 
@@ -249,8 +250,15 @@ WSGI_APPLICATION = "FlexForge.wsgi.application"
 # --------------------------------------------------------------------------
 # DATABASE SETTINGS
 # --------------------------------------------------------------------------
-if DEBUG:
-    # Use SQLite for local development
+
+if "test" in sys.argv:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+elif DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",

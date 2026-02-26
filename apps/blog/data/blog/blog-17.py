@@ -7,7 +7,7 @@ from datetime import datetime
 
 from django.conf import settings
 
-from apps.data.content.types import BlogData
+from apps.blog.types import BlogData
 
 
 blog_data = asdict(BlogData(

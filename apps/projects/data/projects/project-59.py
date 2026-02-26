@@ -5,8 +5,8 @@ Project #28: My Portfolio in Django integrated with Database
 from dataclasses import asdict
 from datetime import datetime
 from django.conf import settings
-from apps.data.content.types import Feature, ProjectData
-from apps.data.about.skills_data import SkillsData
+from apps.projects.types import Feature, ProjectData
+from apps.about.data.skills_data import SkillsData
 
 
 project_data = asdict(ProjectData(

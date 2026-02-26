@@ -16,7 +16,7 @@ class OpenToWorkData:
 
     _model = OpenToWorkModel(
         status="Actively Looking",
-        availability="Immediately",
+        availability="Max after 1 month",
         type="Full-time, Part-time, Contract",
         remote=True,
         relocation=True,
@@ -34,9 +34,9 @@ class OpenToWorkData:
             "TensorFlow",
             "PyTorch",
             "REST APIs",
+            "Git",
             "PostgreSQL",
             "Docker",
-            "Git"
         ],
         experience_level="Mid-Level (2-4 years)",
         salary_expectation="Competitive",

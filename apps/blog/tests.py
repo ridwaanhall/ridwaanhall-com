@@ -50,7 +50,7 @@ class BlogDataServiceTest(TestCase):
     def test_get_blogs_sorted_by_created_at(self):
         blogs = DataService.get_blogs(sort_by_id=True)
         dates = [b.get("created_at") for b in blogs if b.get("created_at")]
-        self.assertEqual(dates, sorted(dates, reverse=True))
+        self.assertEqual(dates, sorted([d for d in dates if d is not None], reverse=True))
 
     def test_get_blogs_featured_only(self):
         featured = DataService.get_blogs(featured_only=True)

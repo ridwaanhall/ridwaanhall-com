@@ -10,6 +10,15 @@ apps/projects/
 ├── urls.py                # URL routing
 ├── models.py              # (empty - no models)
 ├── admin.py               # (empty)
+├── data/
+│   ├── projects_index.py  # Dynamic project file loader
+│   └── projects/
+│       ├── project-1.py   # Individual project
+│       ├── project-2.py
+│       └── ...
+├── types/
+│   ├── project.py         # Feature, ProjectData
+│   └── __init__.py
 ├── templatetags/
 │   └── project_tags.py    # Multi-image template filters/tags
 └── templates/projects/
@@ -57,7 +66,7 @@ Renders `projects/partials/project_image_gallery.html` with all project images.
 
 ## How Project Data Works
 
-Projects have no database models. Each project is an individual Python file in `apps/data/content/projects/` (e.g., `project-1.py`). The file exports a `project_data` dict:
+Projects have no database models. Each project is an individual Python file in `apps/projects/data/projects/` (e.g., `project-1.py`). The file exports a `project_data` dict:
 
 ```python
 project_data = {
@@ -85,6 +94,12 @@ project_data = {
 
 The `ProjectsDataIndex` loader dynamically imports all `project-*.py` files and extracts `image_url`, `img_name`, `image_list`, `image_names`, and `image_count` for backward compatibility.
 
+OOP types for project data are defined in `apps/projects/types/`:
+
+```python
+from apps.projects.types import ProjectData, Feature
+```
+
 See [Data App](data.md) for details on the Individual File System.
 
 ## URL Configuration
@@ -96,7 +111,7 @@ See [Data App](data.md) for details on the Individual File System.
 
 ## Adding a New Project
 
-1. Create a new file: `apps/data/content/projects/project-<id>.py`
+1. Create a new file: `apps/projects/data/projects/project-<id>.py`
 2. Export a `project_data` dict following the structure above
 3. The project will appear automatically — no migrations or database changes needed
 4. Set `is_featured: True` and `featured_priority: <number>` to feature it at the top

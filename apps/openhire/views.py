@@ -3,8 +3,9 @@ OpenHire views for displaying open to work and hiring information.
 Provides information about work availability and hiring opportunities.
 """
 
+from django.http import Http404
 from apps.core.base_views import BaseView
-from apps.data.data_service import DataService
+from apps.core.data_service import DataService
 from apps.seo.mixins import OpenHireSEOMixin
 
 
@@ -23,7 +24,7 @@ class OpenHireView(OpenHireSEOMixin, BaseView):
         
         # Check if the user should access this page
         if not (about.get('is_open_to_work') or about.get('is_hiring')):
-            return self.handle_404()
+            return Http404("OpenHire page not available")
 
         context = {
             'about': about,

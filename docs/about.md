@@ -10,8 +10,25 @@ apps/about/
 ├── urls.py        # URL routing
 ├── models.py      # (empty - no models)
 ├── admin.py       # (empty)
+├── data/
+│   ├── about_data.py          # Personal info, bio, location, social media, skills
+│   ├── experiences_data.py    # Work experience entries
+│   ├── education_data.py      # Education records
+│   ├── certifications_data.py # Certifications list
+│   ├── awards_data.py         # Awards list
+│   ├── applications_data.py   # Application journey entries with timestamps
+│   └── skills_data.py         # Skills with SVG icons
+├── types/
+│   ├── personal.py            # CV, PersonalInfo, Bio, AboutLocation, SocialMedia, DonateLink, AboutDataModel
+│   ├── experience.py          # IssuedDate, PeriodDate, Period, Experience
+│   ├── education.py           # EducationDate, EducationLocation, Education
+│   ├── certification.py       # Certification
+│   ├── award.py               # Award
+│   ├── skill.py               # Skill
+│   ├── application.py         # JourneyStep, Application
+│   └── __init__.py            # Re-exports all types
 └── templates/about/
-    └── about.html # About page template
+    └── about.html             # About page template
 ```
 
 ## View (`views.py`)
@@ -30,9 +47,17 @@ Renders the about page with data fetched from `DataService`:
 | `applications` | `DataService.get_applications()` | Application journey entries (sorted by latest timestamp) |
 | `awards` | `DataService.get_awards()` | Awards sorted by ID descending |
 
-All data is loaded from individual Python files in `apps/data/about/` (see [Data App](data.md)).
+All data is loaded from individual Python files in `apps/about/data/` (see [Data App](data.md)).
 
 Uses `AboutSEOMixin` for automatic SEO metadata generation.
+
+## OOP Types (`apps/about/types/`)
+
+Type classes are organized by domain into individual modules and use `@dataclass(frozen=True)` with `to_dict()` methods:
+
+```python
+from apps.about.types import Skill, Experience, Education, Certification, Award, Application
+```
 
 ## URL Configuration
 
@@ -42,12 +67,12 @@ Uses `AboutSEOMixin` for automatic SEO metadata generation.
 
 ## Data Source
 
-The about app has no database models. All data comes from the `data` app's file-based system:
+The about app owns its data files in `apps/about/data/`:
 
-- `apps/data/about/about_data.py` — personal info, bio, location, social media, skills
-- `apps/data/about/experiences_data.py` — work experience entries
-- `apps/data/about/education_data.py` — education records
-- `apps/data/about/certifications_data.py` — certifications list
-- `apps/data/about/awards_data.py` — awards list
-- `apps/data/about/applications_data.py` — application journey entries with timestamps
-- `apps/data/about/skills_data.py` — skills with SVG icons
+- `apps/about/data/about_data.py` — personal info, bio, location, social media, skills
+- `apps/about/data/experiences_data.py` — work experience entries
+- `apps/about/data/education_data.py` — education records
+- `apps/about/data/certifications_data.py` — certifications list
+- `apps/about/data/awards_data.py` — awards list
+- `apps/about/data/applications_data.py` — application journey entries with timestamps
+- `apps/about/data/skills_data.py` — skills with SVG icons

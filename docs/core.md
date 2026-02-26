@@ -15,6 +15,11 @@ apps/core/
 ├── email_templates.py     # HTML/text email template loader
 ├── image_utils.py         # wsrv.nl image optimization
 ├── models.py              # (empty - no models)
+├── data/
+│   └── privacy_policy_data.py  # Privacy policy content (PrivacyPolicyData)
+├── types/
+│   ├── privacy.py              # PrivacyPolicyModel
+│   └── __init__.py
 ├── management/
 │   └── commands/
 │       └── wsrv_config.py # WSRV management command

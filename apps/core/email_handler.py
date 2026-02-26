@@ -4,7 +4,6 @@ Handles email composition and delivery with professional HTML formatting.
 """
 
 from django.core.mail import EmailMultiAlternatives
-from typing import Dict
 from .email_templates import EmailTemplateLoader
 from django.conf import settings
 import logging
@@ -20,7 +19,7 @@ def _get_owner_emails() -> list:
     return list(contact_recipient)
 
 
-def send_contact_email(contact_data: Dict[str, str]) -> bool:
+def send_contact_email(contact_data: dict[str, str]) -> bool:
     """
     Send a professional contact form email.
     
@@ -100,7 +99,7 @@ def send_contact_email(contact_data: Dict[str, str]) -> bool:
         return False
 
 
-def send_guestbook_notification(guestbook_data: Dict[str, str]) -> bool:
+def send_guestbook_notification(guestbook_data: dict[str, str]) -> bool:
     """
     Send notification email when a new guestbook message is posted.
     
@@ -157,7 +156,7 @@ def send_guestbook_notification(guestbook_data: Dict[str, str]) -> bool:
         return False
 
 
-def send_guestbook_user_confirmation(guestbook_data: Dict[str, str]) -> bool:
+def send_guestbook_user_confirmation(guestbook_data: dict[str, str]) -> bool:
     """
     Send confirmation email to the user who posted a new guestbook message.
 
@@ -205,7 +204,7 @@ def send_guestbook_user_confirmation(guestbook_data: Dict[str, str]) -> bool:
         return False
 
 
-def send_guestbook_reply_notification(reply_data: Dict[str, str]) -> bool:
+def send_guestbook_reply_notification(reply_data: dict[str, str]) -> bool:
     """
     Send notification email to the original poster when the site owner replies.
 

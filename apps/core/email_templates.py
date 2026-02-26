@@ -4,7 +4,7 @@ Loads and renders HTML and text email templates from templates/core/email folder
 """
 
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any
 
 
 class EmailTemplateLoader:
@@ -21,7 +21,7 @@ class EmailTemplateLoader:
             return f.read()
 
     @staticmethod
-    def _render_template(template: str, context: Dict[str, Any]) -> str:
+    def _render_template(template: str, context: dict[str, Any]) -> str:
         """Render template with context variables using simple string replacement."""
         result = template
         for key, value in context.items():

@@ -3,7 +3,6 @@ SEO Data Manager
 Handles SEO metadata generation and management.
 """
 
-from typing import Dict, List, Optional
 from django.utils.text import slugify
 from .config import SEOConfig
 
@@ -27,7 +26,7 @@ class SEOData:
             return truncated + '...'
     
     @staticmethod
-    def get_base_seo_data() -> Dict:
+    def get_base_seo_data() -> dict:
         """Get base SEO data with verification tags."""
         return {
             'google_site_verification': '',  # Add your Google Search Console verification code
@@ -46,7 +45,7 @@ class SEOData:
         return f"{title} - {context}"
     
     @staticmethod
-    def get_homepage_seo(about_data: Dict) -> Dict:
+    def get_homepage_seo(about_data: dict) -> dict:
         """Generate SEO data for homepage."""
         keywords = SEOConfig.COMMON_KEYWORDS['personal'][:5] + \
                   SEOConfig.COMMON_KEYWORDS['technical'][:5] + \
@@ -67,7 +66,7 @@ class SEOData:
         
         
     @staticmethod
-    def get_dashboard_seo(about_data: Dict) -> Dict:
+    def get_dashboard_seo(about_data: dict) -> dict:
         """Generate SEO data for dashboard page."""
         keywords = SEOConfig.COMMON_KEYWORDS['personal'][:3] + \
                   SEOConfig.COMMON_KEYWORDS['technical'][:5] + \
@@ -86,7 +85,7 @@ class SEOData:
         }
         
     @staticmethod
-    def get_projects_list_seo(about_data: Dict, projects: Optional[List[Dict]] = None) -> Dict:
+    def get_projects_list_seo(about_data: dict, projects: list[dict] | None = None) -> dict:
         """Generate SEO data for projects listing page."""
         # Extract tech stack from featured projects
         tech_keywords = []
@@ -114,7 +113,7 @@ class SEOData:
         }
         
     @staticmethod
-    def get_project_detail_seo(project_data: Dict, about_data: Dict) -> Dict:
+    def get_project_detail_seo(project_data: dict, about_data: dict) -> dict:
         """Generate SEO data for individual project."""
         tech_keywords = [tech.get('name', '') for tech in project_data.get('tech_stack', [])]
         keywords = SEOConfig.COMMON_KEYWORDS['personal'][:2] + \
@@ -138,7 +137,7 @@ class SEOData:
         }
     
     @staticmethod
-    def get_blog_list_seo(about_data: Dict, blogs: Optional[List[Dict]] = None) -> Dict:
+    def get_blog_list_seo(about_data: dict, blogs: list[dict] | None = None) -> dict:
         """Generate SEO data for blog listing page."""
         # Extract topics from recent blogs
         topic_keywords = []
@@ -164,7 +163,7 @@ class SEOData:
         }
     
     @staticmethod
-    def get_blog_detail_seo(blog_data: Dict, about_data: Dict) -> Dict:
+    def get_blog_detail_seo(blog_data: dict, about_data: dict) -> dict:
         """Generate SEO data for individual blog post."""
         keywords = SEOConfig.COMMON_KEYWORDS['personal'][:2] + \
                   blog_data.get('tags', []) + \
@@ -187,7 +186,7 @@ class SEOData:
         }
     
     @staticmethod
-    def get_about_seo(about_data: Dict) -> Dict:
+    def get_about_seo(about_data: dict) -> dict:
         """Generate SEO data for about page."""
         keywords = SEOConfig.COMMON_KEYWORDS['personal'] + \
                   ['about', 'biography', 'background', 'experience', 'skills']
@@ -212,7 +211,7 @@ class SEOData:
     
     @staticmethod
 
-    def get_contact_seo(about_data: Dict) -> Dict:
+    def get_contact_seo(about_data: dict) -> dict:
         """Generate SEO data for contact page."""
         keywords = SEOConfig.COMMON_KEYWORDS['personal'][:5] + \
                   ['contact', 'hire', 'freelance', 'collaboration', 'get in touch']
@@ -229,7 +228,7 @@ class SEOData:
         }
         
     @staticmethod
-    def get_guestbook_seo(about_data: Dict) -> Dict:
+    def get_guestbook_seo(about_data: dict) -> dict:
         """Generate SEO data for guestbook page."""
         keywords = SEOConfig.COMMON_KEYWORDS['personal'][:3] + \
                   ['guestbook', 'chat', 'live chat', 'messages', 'community']
@@ -246,7 +245,7 @@ class SEOData:
         }
     
     @staticmethod
-    def get_privacy_policy_seo(about_data: Dict) -> Dict:
+    def get_privacy_policy_seo(about_data: dict) -> dict:
         """Generate SEO data for privacy policy page."""
         keywords = SEOConfig.COMMON_KEYWORDS['personal'][:3] + \
                   ['privacy policy', 'data protection', 'user privacy', 'terms']
@@ -263,7 +262,7 @@ class SEOData:
         }
     
     @staticmethod
-    def get_openhire_seo(about_data: Dict) -> Dict:
+    def get_openhire_seo(about_data: dict) -> dict:
         """Generate SEO data for openhire page."""
         keywords = SEOConfig.COMMON_KEYWORDS['personal'][:3] + \
                   ['open to work', 'hiring', 'career', 'job opportunities', 'recruitment']

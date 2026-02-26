@@ -91,8 +91,8 @@ One entry per project. Featured projects get priority `0.9`, others `0.7`. URLs 
 
 Scans content files and database records to determine the last modification time for each page:
 
-- **Blog/Projects**: Reads `updated_at` from individual content Python files
-- **About**: Checks file modification time of `about_data.py`
+- **Blog/Projects**: Reads `updated_at` from individual content Python files in `apps/blog/data/blog/` and `apps/projects/data/projects/`
+- **About**: Checks file modification time of `apps/about/data/about_data.py`
 - **Guestbook**: Latest `ChatMessage` timestamp
 - **Dashboard**: Always current time (dynamic data)
 - **Home**: Most recent of blog, project, or about update

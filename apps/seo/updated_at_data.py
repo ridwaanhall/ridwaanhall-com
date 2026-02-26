@@ -70,17 +70,17 @@ class UpdatedAtData:
     @staticmethod
     def get_latest_blog_updated_at():
         """Get the latest updated_at from all blog files."""
-        return UpdatedAtData.get_updated_at_from_content_files("apps/data/content/blog", "blog_data")
+        return UpdatedAtData.get_updated_at_from_content_files("apps/blog/data/blog", "blog_data")
 
     @staticmethod
     def get_latest_project_updated_at():
         """Get the latest updated_at from all project files."""
-        return UpdatedAtData.get_updated_at_from_content_files("apps/data/content/projects", "project_data")
+        return UpdatedAtData.get_updated_at_from_content_files("apps/projects/data/projects", "project_data")
 
     @staticmethod
     def get_about_updated_at():
         """Get updated_at from about_data.py (fallback to file modification time since no updated_at field exists)."""
-        return UpdatedAtData.get_template_last_modified("apps/data/about/about_data.py")
+        return UpdatedAtData.get_template_last_modified("apps/about/data/about_data.py")
 
     @staticmethod
     def get_template_last_modified(template_path):
@@ -150,12 +150,12 @@ class UpdatedAtData:
             {
                 "page": "about",
                 "updated_at": UpdatedAtData.get_latest_modified_date([
-                    "apps/data/about/about_data.py",
-                    "apps/data/about/applications_data.py",
-                    "apps/data/about/experiences_data.py",
-                    "apps/data/about/education_data.py",
-                    "apps/data/about/certifications_data.py",
-                    "apps/data/about/awards_data.py",
+                    "apps/about/data/about_data.py",
+                    "apps/about/data/applications_data.py",
+                    "apps/about/data/experiences_data.py",
+                    "apps/about/data/education_data.py",
+                    "apps/about/data/certifications_data.py",
+                    "apps/about/data/awards_data.py",
                 ]),
             },
             {
@@ -165,7 +165,7 @@ class UpdatedAtData:
             {
                 "page": "privacy",
                 "updated_at": UpdatedAtData.get_latest_modified_date([
-                    "apps/data/privacy/privacy_policy_data.py",
+                    "apps/core/data/privacy_policy_data.py",
                 ]),
             },
             {

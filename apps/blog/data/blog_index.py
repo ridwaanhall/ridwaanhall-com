@@ -27,6 +27,8 @@ class BlogDataIndex:
                 spec = importlib.util.spec_from_file_location(
                     f"blog_{blog_file.stem}", blog_file
                 )
+                if spec is None or spec.loader is None:
+                    continue
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
                 

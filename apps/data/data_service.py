@@ -144,7 +144,7 @@ class DataService:
     def get_open_to_work_data() -> Optional[Dict[str, Any]]:
         """Get open to work data."""
         try:
-            from apps.data.openhire.open import OpenToWorkData
+            from apps.openhire.data.open import OpenToWorkData
             return OpenToWorkData.get_open_to_work_data()
         except Exception as e:
             logger.error(f"Error fetching open to work data: {e}")
@@ -154,7 +154,7 @@ class DataService:
     def get_hiring_data() -> Optional[Dict[str, Any]]:
         """Get hiring data."""
         try:
-            from apps.data.openhire.hiring import HiringData
+            from apps.openhire.data.hiring import HiringData
             return HiringData.get_hiring_data()
         except Exception as e:
             logger.error(f"Error fetching hiring data: {e}")

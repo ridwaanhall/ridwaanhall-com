@@ -10,6 +10,15 @@ apps/blog/
 ├── urls.py                # URL routing
 ├── models.py              # (empty - no models)
 ├── admin.py               # (empty)
+├── data/
+│   ├── blog_index.py      # Dynamic blog file loader
+│   └── blog/
+│       ├── blog-1.py      # Individual blog post
+│       ├── blog-2.py
+│       └── ...
+├── types/
+│   ├── blog.py            # BlogContentItem, BlogData
+│   └── __init__.py
 ├── templatetags/
 │   └── blog_tags.py       # Multi-image template filters/tags
 └── templates/blog/
@@ -58,7 +67,7 @@ Renders `blog/partials/image_gallery.html` with all blog images.
 
 ## How Blog Data Works
 
-Blog posts have no database models. Each post is an individual Python file in `apps/data/content/blog/` (e.g., `blog-1.py`). The file exports a `blog_data` dict with fields like:
+Blog posts have no database models. Each post is an individual Python file in `apps/blog/data/blog/` (e.g., `blog-1.py`). The file exports a `blog_data` dict with fields like:
 
 ```python
 blog_data = {
@@ -80,6 +89,12 @@ blog_data = {
 
 The `BlogDataIndex` loader dynamically imports all `blog-*.py` files at runtime, extracting `image_url`, `img_name`, `image_list`, `image_names`, and `image_count` from the `images` dict for backward compatibility.
 
+OOP types for blog data are defined in `apps/blog/types/`:
+
+```python
+from apps.blog.types import BlogData, BlogContentItem
+```
+
 See [Data App](data.md) for details on the Individual File System.
 
 ## URL Configuration
@@ -91,6 +106,6 @@ See [Data App](data.md) for details on the Individual File System.
 
 ## Adding a New Blog Post
 
-1. Create a new file: `apps/data/content/blog/blog-<id>.py`
+1. Create a new file: `apps/blog/data/blog/blog-<id>.py`
 2. Export a `blog_data` dict following the structure above
 3. The post will appear automatically — no migrations or database changes needed

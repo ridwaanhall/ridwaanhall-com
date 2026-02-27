@@ -62,8 +62,8 @@ class WakatimeStatsCalculator:
             utc_dt = datetime.fromisoformat(iso_string.replace('Z', '+00:00'))
             gmt7 = pytz.timezone('Asia/Jakarta')
             return utc_dt.astimezone(gmt7)
-        except (ValueError, TypeError) as e:
-            logger.error(f"Error converting timezone for string '{iso_string}': {e}")
+        except (ValueError, TypeError):
+            logger.error("Error converting timezone from ISO string.", exc_info=True)
             return None
     
     @staticmethod

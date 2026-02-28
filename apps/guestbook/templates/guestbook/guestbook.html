@@ -50,7 +50,7 @@
                     <div id="guestbook-messages" class="overflow-y-auto py-4 space-y-4 flex-1 scrollbar-hide" style="min-height: min(45vh, 600px); max-height: min(55vh, 800px); scrollbar-width: none; -ms-overflow-style: none;">
                         {% if chat_messages %}
                             {% for message in chat_messages reversed %}
-                            <div class="flex items-start gap-3 px-3" data-message-id="{{ message.pk }}">
+                            <div class="flex items-start gap-3 px-3" data-message-id="{{ message.id }}">
                                 <!-- User Avatar -->
                                 {% if message.user_profile_image %}
                                     <img src="{{ message.user_profile_image }}" alt="{{ message.user_full_name }}" width="40" height="40" class="mt-1 rounded-full border border-zinc-800" />
@@ -70,17 +70,17 @@
                                         <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                         </svg>
-                                        {% if message.user == message.reply_to.user %}
+                                        {% if message.user_id == message.reply_to.user_id %}
                                             <!-- Self-reply: always show "[Author] Replied to self" regardless of current viewer -->
-                                            {% if user.is_authenticated and message.user == user %}
+                                            {% if user.is_authenticated and message.user_id == user.pk %}
                                                 <span>You replied to yourself: "{{ message.reply_to.message|truncatechars:30 }}"</span>
                                             {% else %}
                                                 <span><span class="font-medium">{{ message.user_full_name }}</span> Replied to self: "{{ message.reply_to.message|truncatechars:30 }}"</span>
                                             {% endif %}
-                                        {% elif user.is_authenticated and message.user == user %}
+                                        {% elif user.is_authenticated and message.user_id == user.pk %}
                                             <!-- Current user replied to someone else -->
                                             <span>You replied to <span class="font-medium">{{ message.reply_to.user_full_name }}</span>: "{{ message.reply_to.message|truncatechars:30 }}"</span>
-                                        {% elif user.is_authenticated and message.reply_to.user == user %}
+                                        {% elif user.is_authenticated and message.reply_to.user_id == user.pk %}
                                             <!-- Someone replied to current user -->
                                             <span>Replied to you: "{{ message.reply_to.message|truncatechars:30 }}"</span>
                                         {% else %}
@@ -126,7 +126,7 @@
                                     <div class="group flex items-center gap-3">
                                         <p
                                             class="w-fit rounded-xl rounded-tl-none bg-zinc-800 px-3 py-2 group-hover:bg-zinc-700 transition-colors"
-                                            data-message-id="{{ message.pk }}"
+                                            data-message-id="{{ message.id }}"
                                             data-user="{{ message.user_full_name }}"
                                             data-message="{{ message.message|escape }}"
                                         >
@@ -136,7 +136,7 @@
                                         <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button
                                                 class="{% if user.is_authenticated %}reply-btn{% else %}login-required-btn{% endif %} p-1.5 rounded-lg hover:bg-zinc-600 transition-colors"
-                                                data-message-id="{{ message.pk }}"
+                                                data-message-id="{{ message.id }}"
                                                 data-user="{{ message.user_full_name }}"
                                                 data-message="{{ message.message|escape }}"
                                                 title="{% if user.is_authenticated %}Reply to this message{% else %}Sign in to reply{% endif %}"
@@ -146,7 +146,7 @@
                                                 </svg>
                                             </button>
                                             {% if user.is_authenticated and current_user_profile.is_author %}
-                                            <button class="delete-btn p-1.5 rounded-lg hover:bg-red-900/30 transition-colors" data-message-id="{{ message.pk }}" title="Delete this message">
+                                            <button class="delete-btn p-1.5 rounded-lg hover:bg-red-900/30 transition-colors" data-message-id="{{ message.id }}" title="Delete this message">
                                                 <svg class="w-4 h-4 text-zinc-400 hover:text-red-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path
                                                         stroke-linecap="round"

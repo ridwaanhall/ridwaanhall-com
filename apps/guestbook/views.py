@@ -180,31 +180,41 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
         # Batch process user profile data to avoid redundant processing
         user_profile_cache = {}
         for user in all_users:
-            user_profile_cache[user.id] = self.get_user_profile_data(user)
+            user_profile_cache[user.pk] = self.get_user_profile_data(user)
         
         # Add profile data to each message using cache
         enriched_messages = []
         for message in chat_messages:
-            profile_data = user_profile_cache[message.user.id]
-            message.user_full_name = profile_data['full_name']
-            message.user_profile_image = profile_data['profile_image']
-            message.user_is_author = profile_data['is_author']
-            message.user_is_co_author = profile_data['is_co_author']
-            message.user_co_author_order = profile_data['co_author_order']
-            message.user_email = self.mask_email(profile_data['email'])
+            profile_data = user_profile_cache[message.user.pk]
+            enriched_message = {
+                'id': message.pk,
+                'message': message.message,
+                'timestamp': message.timestamp,
+                'user_full_name': profile_data['full_name'],
+                'user_profile_image': profile_data['profile_image'],
+                'user_is_author': profile_data['is_author'],
+                'user_is_co_author': profile_data['is_co_author'],
+                'user_co_author_order': profile_data['co_author_order'],
+                'user_email': self.mask_email(profile_data['email']),
+                'user_id': message.user.pk,
+                'reply_to': None
+            }
             
             # Add reply_to profile data if it exists
             if message.reply_to:
-                reply_profile_data = user_profile_cache[message.reply_to.user.id]
-                message.reply_to.user_full_name = reply_profile_data['full_name']
-                message.reply_to.user_profile_image = reply_profile_data['profile_image']
-                message.reply_to.user_is_author = reply_profile_data['is_author']
-                message.reply_to.user_is_co_author = reply_profile_data['is_co_author']
-                message.reply_to.user_co_author_order = reply_profile_data['co_author_order']
-                message.reply_to.user_email = self.mask_email(reply_profile_data['email'])
-            else:
-                message.reply_to = None
-            enriched_messages.append(message)
+                reply_profile_data = user_profile_cache[message.reply_to.user.pk]
+                enriched_message['reply_to'] = {
+                    'id': message.reply_to.pk,
+                    'message': message.reply_to.message,
+                    'user_full_name': reply_profile_data['full_name'],
+                    'user_profile_image': reply_profile_data['profile_image'],
+                    'user_is_author': reply_profile_data['is_author'],
+                    'user_is_co_author': reply_profile_data['is_co_author'],
+                    'user_co_author_order': reply_profile_data['co_author_order'],
+                    'user_email': self.mask_email(reply_profile_data['email']),
+                    'user_id': message.reply_to.user.pk
+                }
+            enriched_messages.append(enriched_message)
         
         # Get current user profile data
         current_user_profile = None
@@ -280,7 +290,7 @@ class SendMessageView(LoginRequiredMixin, UserProfileMixin, View):
             reply_data = {
                 'id': reply_to_message.pk,
                 'user': reply_profile_data['full_name'],
-                'user_id': reply_to_message.user.id,
+                'user_id': reply_to_message.user.pk,
                 'message': reply_to_message.message[:50] + ('...' if len(reply_to_message.message) > 50 else ''),
                 'profile_image': reply_profile_data['profile_image'],
                 'is_author': reply_profile_data['is_author'],
@@ -300,7 +310,7 @@ class SendMessageView(LoginRequiredMixin, UserProfileMixin, View):
             'message': {
                 'id': chat_message.pk,
                 'user': profile_data['full_name'],
-                'user_id': chat_message.user.id,
+                'user_id': chat_message.user.pk,
                 'message': chat_message.message,
                 'timestamp': jakarta_timestamp.strftime('%d/%m/%Y, %H:%M'),
                 'profile_image': profile_data['profile_image'],

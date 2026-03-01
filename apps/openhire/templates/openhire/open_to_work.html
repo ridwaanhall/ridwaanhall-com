@@ -299,7 +299,7 @@
                         {% for category, tools in open_to_work_data.used_tools_skills.items %}
                         <tr class="hover:bg-zinc-800/30 transition-colors">
                             <td class="py-2 px-3 font-medium text-zinc-300 text-xs sm:text-sm align-top whitespace-nowrap">{{ category }}</td>
-                            <td class="py-2 px-3 text-zinc-400 text-xs sm:text-sm">{% for tool in tools %}{{ tool.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                            <td class="py-2 px-3 text-zinc-400 text-xs">{% for tool in tools %}{{ tool.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

@@ -77,10 +77,10 @@ class OpenToWorkData:
         ],
         remote_locations=[
             "Indonesia",
-            "United Arab Emirates",
             "Brunei",
+            "Malaysia",
             "Singapore",
-            "Malaysia"
+            "Japan",
         ],
         
         # portfolio highlights

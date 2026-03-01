@@ -43,7 +43,7 @@ class OpenToWorkData:
         notice_period="1 month",
         work_authorization="Indonesian Citizen",
         languages=[
-            "Indonesia (Native)",
+            "Indonesian (Native)",
             "English (Professional)",
             "Arabic (Limited)"
         ],

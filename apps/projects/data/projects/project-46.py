@@ -31,7 +31,7 @@ project_data = asdict(ProjectData(
         SkillsData.tech_stack["vercel"],
     ],
     github_url='',
-    demo_url='https://finance.ridwaanhall.com',
+    demo_url='https://harga-emas-id.rone.dev',
     category='finance',
     tags=['gold', 'price tracker', 'indonesia', 'analytics', 'finance', 'lstm'],
     is_featured=False,

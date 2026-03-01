@@ -18,9 +18,9 @@ class OpenToWorkModel:
     """Typed model for open-to-work information."""
     status: str
     availability: str
-    type: str
     remote: bool
     relocation: bool
+    type: list[str] = field(default_factory=list)
     preferred_roles: list[str] = field(default_factory=list)
     skills_highlight: list[str] = field(default_factory=list)
     experience_level: str = ""

@@ -17,7 +17,7 @@ class OpenHireTypesTest(TestCase):
 
     def test_open_to_work_model_to_dict(self):
         model = OpenToWorkModel(
-            status="Open", availability="Immediately", type="Full-time",
+            status="Open", availability="Immediately", type=["Full-time"],
             remote=True, relocation=False,
         )
         d = model.to_dict()
@@ -26,7 +26,7 @@ class OpenHireTypesTest(TestCase):
         self.assertFalse(d["relocation"])
 
     def test_open_to_work_model_defaults(self):
-        model = OpenToWorkModel(status="Open", availability="ASAP", type="Contract", remote=True, relocation=False)
+        model = OpenToWorkModel(status="Open", availability="ASAP", type=["Contract"], remote=True, relocation=False)
         self.assertEqual(model.experience_level, "")
         self.assertEqual(model.preferred_roles, [])
 

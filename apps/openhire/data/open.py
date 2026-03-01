@@ -15,18 +15,27 @@ class OpenToWorkData:
     """
 
     _model = OpenToWorkModel(
+        
+        # status & availability
         status="Actively Looking",
-        availability="Max after 1 month",
-        type="Full-time, Part-time, Contract",
+        availability="Within 1 month",
+        type=[
+            "Full-time",
+            "Contract",
+            "Part-time",
+        ],
         remote=True,
         relocation=True,
+        
+        # preferred roles
         preferred_roles=[
-            "Django Developer",
-            "Python Developer",
-            "Machine Learning Engineer",
             "AI Engineer",
+            "Machine Learning Engineer",
+            "Python/Django/Full Stack Developer",
             "Data Analyst",
         ],
+        
+        # key skills
         skills_highlight=[
             "Python",
             "Django",
@@ -38,25 +47,33 @@ class OpenToWorkData:
             "PostgreSQL",
             "Docker",
         ],
+        
+        # professional details
         experience_level="Mid-Level (2-4 years)",
-        salary_expectation="Competitive",
+        salary_expectation="Competitive / Negotiable",
         notice_period="1 month",
         work_authorization="Indonesian Citizen",
+        
+        # languages & preferences
         languages=[
             "Indonesian (Native)",
             "English (Professional)",
             "Arabic (Limited)"
+        ],
+        contact_preference="LinkedIn, Email",
+        interview_availability="Flexible",
+        
+        # location preferences
+        location_types=[
+            "On-site",
+            "Hybrid",
+            "Remote"
         ],
         preferred_locations=[
             "Jakarta, Indonesia",
             "Greater Yogyakarta, Indonesia",
             "Surakarta, Central Java, Indonesia",
             "Boyolali, Central Java, Indonesia"
-        ],
-        location_types=[
-            "On-site",
-            "Hybrid",
-            "Remote"
         ],
         remote_locations=[
             "Indonesia",
@@ -65,6 +82,8 @@ class OpenToWorkData:
             "Singapore",
             "Malaysia"
         ],
+        
+        # portfolio highlights
         portfolio_highlights=[
             PortfolioHighlight(
                 title="AI-Powered Web Applications",
@@ -79,8 +98,8 @@ class OpenToWorkData:
                 description="Active contributor to Python and AI communities with 45+ projects"
             )
         ],
-        contact_preference="LinkedIn, Email",
-        interview_availability="Flexible",
+        
+        # additional notes
         additional_notes="Passionate about building intelligent web applications and scalable AI solutions using Python. Actively seeking opportunities to grow in machine learning, deep learning, and modern web frameworks."
     )
 

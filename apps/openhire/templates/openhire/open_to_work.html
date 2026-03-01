@@ -101,7 +101,7 @@
                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
                 </svg>
                 <p class="text-xs text-zinc-400">
-                    View in PDF, Word format, or get the editable template
+                    View in PDF or Word format
                 </p>
             </div>
         </div>
@@ -127,7 +127,7 @@
                 </div>
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
                     <span class="font-medium text-sm">Employment Type</span>
-                    <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.type }}</span>
+                    <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.type|join:", " }}</span>
                 </div>
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
                     <span class="font-medium text-sm">Remote Work</span>

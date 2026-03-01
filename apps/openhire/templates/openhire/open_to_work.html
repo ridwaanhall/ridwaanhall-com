@@ -221,14 +221,6 @@
             <div class="space-y-2">
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
                     <span class="font-medium text-sm">Languages</span>
-                    <div class="flex flex-wrap gap-1 mt-1.5">
-                        {% for language in open_to_work_data.languages %}
-                            <span class="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded text-xs border border-zinc-700/50">{{ language }}</span>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
-                    <span class="font-medium text-sm">Languages</span>
                     <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.languages|join:", " }}</span>
                 </div>
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">

@@ -23,6 +23,7 @@ class OpenToWorkModel:
     type: list[str] = field(default_factory=list)
     preferred_roles: list[str] = field(default_factory=list)
     skills_highlight: list[str] = field(default_factory=list)
+    used_tools_skills: dict[str, list[dict]] = field(default_factory=dict)
     experience_level: str = ""
     salary_expectation: str = ""
     notice_period: str = ""

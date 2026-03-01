@@ -481,6 +481,11 @@ class SkillsData:
             description="Containerization platform for consistent development and deployment.",
             icon_svg=f"{settings.BASE_URL}/static/svg/icon/docker.svg",
         ),
+        "chatgpt": _skill(
+            name="ChatGPT",
+            description="AI chatbot by OpenAI for conversational tasks and code assistance.",
+            icon_svg=f"{settings.BASE_URL}/static/svg/icon/chatgpt.svg",
+        ),
     }
     
     # Legacy list format for backward compatibility

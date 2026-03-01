@@ -251,10 +251,10 @@
                 Location Preferences
             </h2>
 
-            <div class="space-y-3">
+            <div class="space-y-0">
                 <!-- Work Arrangements -->
                 <div class="p-2">
-                    <span class="font-medium text-sm">Work Arrangements</span>
+                    <h3 class="text-lg font-medium text-indigo-400 mb-3">Work Arrangements</h3>
                     <div class="flex flex-wrap gap-2 mt-1.5">
                         {% for location_type in open_to_work_data.location_types %}
                             <span class="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded text-xs border border-zinc-700/50">{{ location_type }}</span>
@@ -264,7 +264,7 @@
 
                 <!-- On-site Locations -->
                 <div class="p-2">
-                    <span class="font-medium text-sm">On-site Locations</span>
+                    <h3 class="text-lg font-medium text-indigo-400 mb-3">On-site Locations</h3>
                     <div class="flex flex-wrap gap-2 mt-1.5">
                         {% for location in open_to_work_data.preferred_locations %}
                             <span class="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded text-xs border border-zinc-700/50">{{ location }}</span>
@@ -274,7 +274,7 @@
 
                 <!-- Remote Locations -->
                 <div class="p-2">
-                    <span class="font-medium text-sm">Remote Work Locations</span>
+                    <h3 class="text-lg font-medium text-indigo-400 mb-3">Remote Work Locations</h3>
                     <div class="flex flex-wrap gap-2 mt-1.5">
                         {% for remote_location in open_to_work_data.remote_locations %}
                             <span class="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded text-xs border border-zinc-700/50">{{ remote_location }}</span>

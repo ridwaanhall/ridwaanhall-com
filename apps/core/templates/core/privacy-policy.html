@@ -281,31 +281,27 @@
 
                         <!-- Third-Party Services -->
                         {% if privacy_policy.copyright_credits.third_party_services %}
-                        <div class="rounded-lg">
-                            <h3 class="text-lg font-medium text-indigo-400 mb-3">Third-Party Services</h3>
-                            <div class="space-y-2">
-                                {% for service, description in privacy_policy.copyright_credits.third_party_services.items %}
-                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
-                                    <span class="font-medium">{{ service }}</span>
-                                    <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ description }}</span>
-                                </div>
-                                {% endfor %}
+                        <h3 class="text-lg font-medium text-indigo-400 mb-3">Third-Party Services</h3>
+                        <div class="space-y-2">
+                            {% for service, description in privacy_policy.copyright_credits.third_party_services.items %}
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+                                <span class="font-medium">{{ service }}</span>
+                                <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ description }}</span>
                             </div>
+                            {% endfor %}
                         </div>
                         {% endif %}
 
                         <!-- Inspiration -->
                         {% if privacy_policy.copyright_credits.inspiration %}
-                        <div class="rounded-lg">
-                            <h3 class="text-lg font-medium text-indigo-400 mb-3">Inspiration</h3>
-                            <div class="space-y-2">
-                                {% for source, description in privacy_policy.copyright_credits.inspiration.items %}
-                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
-                                    <span class="font-medium">{{ source }}</span>
-                                    <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ description }}</span>
-                                </div>
-                                {% endfor %}
+                        <h3 class="text-lg font-medium text-indigo-400 mb-3">Inspiration</h3>
+                        <div class="space-y-2">
+                            {% for source, description in privacy_policy.copyright_credits.inspiration.items %}
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+                                <span class="font-medium">{{ source }}</span>
+                                <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ description }}</span>
                             </div>
+                            {% endfor %}
                         </div>
                         {% endif %}
                     </div>

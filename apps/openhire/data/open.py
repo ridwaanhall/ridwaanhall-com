@@ -35,7 +35,7 @@ class OpenToWorkData:
             "Data Analyst",
         ],
         
-        # key skills
+        # skills highlight
         skills_highlight=[
             "Python",
             "Django",

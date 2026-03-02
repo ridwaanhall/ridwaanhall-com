@@ -10,7 +10,7 @@ from apps.about.data.skills_data import SkillsData
 
 
 project_data = asdict(ProjectData(
-    id=28,
+    id=59,
     title='My Portfolio in Django integrated with Database',
     headline='A full-featured personal portfolio website built with Django, backed by a relational database, and integrated with the GitHub API.',
     description=[

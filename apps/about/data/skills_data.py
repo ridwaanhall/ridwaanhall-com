@@ -14,6 +14,12 @@ def _skill(name: str, description: str, icon_svg: str = "", category: str = "") 
 class SkillsData:
     # Dictionary of all available skills with easy-to-use keys
     tech_stack = {
+        "jquery": _skill(
+            name="jQuery",
+            description="Fast, small, and feature-rich JavaScript library",
+            icon_svg=f"{settings.BASE_URL}/static/svg/icon/jquery.svg",
+            category="Frontend Frameworks",
+        ),
         "replit": _skill(
             name="Replit",
             description="Online IDE and hosting platform for web applications",

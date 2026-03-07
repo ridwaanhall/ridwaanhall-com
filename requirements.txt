@@ -3,7 +3,7 @@ certifi==2025.1.31
 cffi==2.0.0
 charset-normalizer==3.4.1
 cryptography==46.0.5
-Django==5.2.11
+Django==5.2.12
 django-allauth==65.14.1
 django-csp==4.0
 django-permissions-policy==4.25.0

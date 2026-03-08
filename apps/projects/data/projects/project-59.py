@@ -5,7 +5,7 @@ Project #28: My Portfolio in Django integrated with Database
 from dataclasses import asdict
 from datetime import datetime
 from django.conf import settings
-from apps.projects.types import Feature, ProjectData
+from apps.projects.types import Feature, ProjectData, ProjectStatus
 from apps.about.data.skills_data import SkillsData
 
 
@@ -73,7 +73,7 @@ project_data = asdict(ProjectData(
     ],
     is_featured=False,
     featured_priority=None,
-    status='completed',
+    status=ProjectStatus.COMPLETED,
     created_at=datetime.strptime("2023-11-26T17:05:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     updated_at=datetime.strptime("2024-12-30T15:06:58+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 ))

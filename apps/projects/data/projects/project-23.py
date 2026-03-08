@@ -7,7 +7,7 @@ from datetime import datetime
 
 from django.conf import settings
 
-from apps.projects.types import Feature, ProjectData
+from apps.projects.types import Feature, ProjectData, ProjectStatus
 from apps.about.data.skills_data import SkillsData
 
 
@@ -34,7 +34,7 @@ project_data = asdict(ProjectData(
     tags=['API', 'Pemilu 2024', 'Election Data', 'Django REST Framework', 'Python', 'Indonesia', 'Voting Stats', 'Candidate Data', 'Real-time Data'],
     is_featured=False,
     featured_priority=None,
-    status='completed',
+    status=ProjectStatus.COMPLETED,
     created_at=datetime.strptime("2024-03-01T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     updated_at=datetime.strptime("2024-03-01T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 ))

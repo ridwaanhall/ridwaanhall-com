@@ -2,7 +2,23 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
+from enum import Enum
 from typing import Any
+
+
+class ProjectStatus(str, Enum):
+    PLANNING_REQUIREMENTS = "planning_requirements"
+    DESIGN = "design"
+    DEVELOPMENT_IN_PROGRESS = "development_in_progress"
+    CODE_REVIEW = "code_review"
+    TESTING_QA = "testing_qa"
+    DEPLOYMENT_RELEASED = "deployment_released"
+    MAINTENANCE_SUPPORT = "maintenance_support"
+    COMPLETED = "completed"
+    ON_HOLD = "on_hold"
+    CANCELLED = "cancelled"
+    REOPENED = "reopened"
+    UPDATE_REQUIRED = "update_required"
 
 
 @dataclass(frozen=True)
@@ -29,7 +45,7 @@ class ProjectData:
     tags: list[str] = field(default_factory=list)
     is_featured: bool = False
     featured_priority: int | None = None
-    status: str = "completed"  # completed, in-progress, planned
+    status: ProjectStatus = ProjectStatus.COMPLETED
     created_at: datetime | None = None
     updated_at: datetime | None = None
 

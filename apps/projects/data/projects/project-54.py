@@ -39,7 +39,7 @@ project_data = asdict(ProjectData(
     tags=['django', 'modular-system', 'role-based-access', 'dynamic-modules', 'rest-api', 'postgresql', 'python', 'extensible-architecture', 'automation', 'web-app'],
     is_featured=False,
     featured_priority=None,
-    status='active',
+    status='completed',
     created_at=datetime.strptime("2025-03-06T15:33:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     updated_at=datetime.strptime("2025-09-29T20:42:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 ))

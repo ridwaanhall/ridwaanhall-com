@@ -103,3 +103,96 @@ def has_multiple_images(project):
     if project and 'images' in project:
         return len(project['images']) > 1
     return False
+
+
+STATUS_DISPLAY = {
+    "planning_requirements": "Planning",
+    "design": "Design",
+    "development_in_progress": "In Development",
+    "code_review": "Code Review",
+    "testing_qa": "Testing",
+    "deployment_released": "Released",
+    "maintenance_support": "Maintenance",
+    "completed": "Completed",
+    "on_hold": "On Hold",
+    "cancelled": "Cancelled",
+    "reopened": "Reopened",
+    "update_required": "Update Required",
+}
+
+STATUS_COLORS = {
+    "planning_requirements": "bg-purple-500/20 text-purple-300 border-purple-500/30",
+    "design": "bg-violet-500/20 text-violet-300 border-violet-500/30",
+    "development_in_progress": "bg-blue-500/20 text-blue-300 border-blue-500/30",
+    "code_review": "bg-amber-500/20 text-amber-300 border-amber-500/30",
+    "testing_qa": "bg-orange-500/20 text-orange-300 border-orange-500/30",
+    "deployment_released": "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
+    "maintenance_support": "bg-sky-500/20 text-sky-300 border-sky-500/30",
+    "completed": "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
+    "on_hold": "bg-zinc-500/20 text-zinc-300 border-zinc-500/30",
+    "cancelled": "bg-red-500/20 text-red-300 border-red-500/30",
+    "reopened": "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
+    "update_required": "bg-rose-500/20 text-rose-300 border-rose-500/30",
+}
+
+STATUS_DOT_COLORS = {
+    "planning_requirements": "bg-purple-400",
+    "design": "bg-violet-400",
+    "development_in_progress": "bg-blue-400",
+    "code_review": "bg-amber-400",
+    "testing_qa": "bg-orange-400",
+    "deployment_released": "bg-cyan-400",
+    "maintenance_support": "bg-sky-400",
+    "completed": "bg-emerald-400",
+    "on_hold": "bg-zinc-400",
+    "cancelled": "bg-red-400",
+    "reopened": "bg-yellow-400",
+    "update_required": "bg-rose-400",
+}
+
+
+def _resolve_status(status):
+    """Extract the plain status string, handling both enum members and raw strings."""
+    if hasattr(status, 'value'):
+        return status.value.lower()
+    return str(status).lower()
+
+
+@register.filter
+def format_status(status):
+    """
+    Format a project status string for display.
+
+    Usage:
+    {{ project.status|format_status }}
+    """
+    if not status:
+        return ""
+    key = _resolve_status(status)
+    return STATUS_DISPLAY.get(key, key.replace("_", " ").title())
+
+
+@register.filter
+def status_color(status):
+    """
+    Return Tailwind CSS classes for a project status badge.
+
+    Usage:
+    <span class="{{ project.status|status_color }}">...</span>
+    """
+    if not status:
+        return "bg-zinc-500/20 text-zinc-300 border-zinc-500/30"
+    return STATUS_COLORS.get(_resolve_status(status), "bg-zinc-500/20 text-zinc-300 border-zinc-500/30")
+
+
+@register.filter
+def status_dot_color(status):
+    """
+    Return Tailwind CSS class for the status indicator dot.
+
+    Usage:
+    <span class="{{ project.status|status_dot_color }}"></span>
+    """
+    if not status:
+        return "bg-zinc-400"
+    return STATUS_DOT_COLORS.get(_resolve_status(status), "bg-zinc-400")

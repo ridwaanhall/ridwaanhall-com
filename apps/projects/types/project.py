@@ -5,8 +5,26 @@ from datetime import datetime
 from enum import Enum
 from typing import Any
 
-
 class ProjectStatus(str, Enum):
+    """
+    ProjectStatus defines the standardized lifecycle states for a project.
+    This Enum ensures consistency across all project data files and prevents
+    the use of arbitrary string values.
+
+    Values:
+        PLANNING_REQUIREMENTS   → Project is in requirements gathering or analysis stage.
+        DESIGN                  → Project is in design phase (architecture, database schema, UI/UX).
+        DEVELOPMENT_IN_PROGRESS → Coding and implementation are actively ongoing.
+        CODE_REVIEW             → Code has been completed and is awaiting peer/team review.
+        TESTING_QA              → Project is under testing (unit, integration, or QA).
+        DEPLOYMENT_RELEASED     → Project has been deployed to staging or production.
+        MAINTENANCE_SUPPORT     → Project is live, receiving bug fixes, updates, or support.
+        COMPLETED               → Project is fully finished with no further work required.
+        ON_HOLD                 → Project is temporarily paused.
+        CANCELLED               → Project has been discontinued and will not continue.
+        REOPENED                → Project was previously completed or closed but has been reopened.
+        UPDATE_REQUIRED         → Project requires updates due to external changes (e.g., dependencies).
+    """
     PLANNING_REQUIREMENTS = "planning_requirements"
     DESIGN = "design"
     DEVELOPMENT_IN_PROGRESS = "development_in_progress"

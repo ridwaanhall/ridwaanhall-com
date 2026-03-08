@@ -154,7 +154,7 @@
 
                             {% if project.status %}
                             <div class="absolute top-0 left-0 z-20">
-                                <div class="{{ project.status|status_color }} text-xs font-medium px-2 py-1 sm:px-3 sm:py-1.5 rounded-br-lg border backdrop-blur-sm flex items-center gap-1.5 transition-all duration-300">
+                                <div class="{{ project.status|status_color }} text-xs font-bold px-2 py-1 sm:px-3 sm:py-1.5 rounded-br-lg border backdrop-blur-sm flex items-center gap-1.5 transition-all duration-300">
                                     <span class="w-1.5 h-1.5 rounded-full {{ project.status|status_dot_color }}"></span>
                                     <span class="tracking-wide">{{ project.status|format_status }}</span>
                                 </div>

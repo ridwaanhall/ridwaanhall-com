@@ -121,18 +121,18 @@ STATUS_DISPLAY = {
 }
 
 STATUS_COLORS = {
-    "planning_requirements": "bg-purple-500/20 text-purple-300 border-purple-500/30",
-    "design": "bg-violet-500/20 text-violet-300 border-violet-500/30",
-    "development_in_progress": "bg-blue-500/20 text-blue-300 border-blue-500/30",
-    "code_review": "bg-amber-500/20 text-amber-300 border-amber-500/30",
-    "testing_qa": "bg-orange-500/20 text-orange-300 border-orange-500/30",
-    "deployment_released": "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
-    "maintenance_support": "bg-sky-500/20 text-sky-300 border-sky-500/30",
-    "completed": "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
-    "on_hold": "bg-zinc-500/20 text-zinc-300 border-zinc-500/30",
-    "cancelled": "bg-red-500/20 text-red-300 border-red-500/30",
-    "reopened": "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
-    "update_required": "bg-rose-500/20 text-rose-300 border-rose-500/30",
+    "planning_requirements": "bg-purple-400/90 text-purple-950",
+    "design": "bg-violet-400/90 text-violet-950",
+    "development_in_progress": "bg-blue-400/90 text-blue-950",
+    "code_review": "bg-amber-400/90 text-amber-950",
+    "testing_qa": "bg-orange-400/90 text-orange-950",
+    "deployment_released": "bg-cyan-400/90 text-cyan-950",
+    "maintenance_support": "bg-sky-400/90 text-sky-950",
+    "completed": "bg-emerald-400/90 text-emerald-950",
+    "on_hold": "bg-zinc-400/90 text-zinc-950",
+    "cancelled": "bg-red-400/90 text-red-950",
+    "reopened": "bg-yellow-400/90 text-yellow-950",
+    "update_required": "bg-rose-400/90 text-rose-950",
 }
 
 STATUS_DOT_COLORS = {

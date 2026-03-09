@@ -5,6 +5,8 @@ Project template tags for handling multiple images and other project-specific fu
 from django import template
 from django.utils.safestring import mark_safe
 
+from apps.projects.types import ProjectStatus
+
 register = template.Library()
 
 
@@ -106,48 +108,48 @@ def has_multiple_images(project):
 
 
 STATUS_DISPLAY = {
-    "planning_requirements": "Planning",
-    "design": "Design",
-    "development_in_progress": "In Development",
-    "code_review": "Code Review",
-    "testing_qa": "Testing",
-    "deployment_released": "Released",
-    "maintenance_support": "Maintenance",
-    "completed": "Completed",
-    "on_hold": "On Hold",
-    "cancelled": "Cancelled",
-    "reopened": "Reopened",
-    "update_required": "Update Required",
+    ProjectStatus.PLANNING_REQUIREMENTS.value: "Planning",
+    ProjectStatus.DESIGN.value: "Design",
+    ProjectStatus.DEVELOPMENT_IN_PROGRESS.value: "In Development",
+    ProjectStatus.CODE_REVIEW.value: "Code Review",
+    ProjectStatus.TESTING_QA.value: "Testing",
+    ProjectStatus.DEPLOYMENT_RELEASED.value: "Released",
+    ProjectStatus.MAINTENANCE_SUPPORT.value: "Maintenance",
+    ProjectStatus.COMPLETED.value: "Completed",
+    ProjectStatus.ON_HOLD.value: "On Hold",
+    ProjectStatus.CANCELLED.value: "Cancelled",
+    ProjectStatus.REOPENED.value: "Reopened",
+    ProjectStatus.UPDATE_REQUIRED.value: "Update Required",
 }
 
 STATUS_COLORS = {
-    "planning_requirements": "bg-purple-400/90 text-purple-950",
-    "design": "bg-violet-400/90 text-violet-950",
-    "development_in_progress": "bg-blue-400/90 text-blue-950",
-    "code_review": "bg-amber-400/90 text-amber-950",
-    "testing_qa": "bg-orange-400/90 text-orange-950",
-    "deployment_released": "bg-cyan-400/90 text-cyan-950",
-    "maintenance_support": "bg-sky-400/90 text-sky-950",
-    "completed": "bg-emerald-400/90 text-emerald-950",
-    "on_hold": "bg-zinc-400/90 text-zinc-950",
-    "cancelled": "bg-red-400/90 text-red-950",
-    "reopened": "bg-yellow-400/90 text-yellow-950",
-    "update_required": "bg-rose-400/90 text-rose-950",
+    ProjectStatus.PLANNING_REQUIREMENTS.value: "bg-purple-400/90 text-purple-950",
+    ProjectStatus.DESIGN.value: "bg-violet-400/90 text-violet-950",
+    ProjectStatus.DEVELOPMENT_IN_PROGRESS.value: "bg-blue-400/90 text-blue-950",
+    ProjectStatus.CODE_REVIEW.value: "bg-amber-400/90 text-amber-950",
+    ProjectStatus.TESTING_QA.value: "bg-orange-400/90 text-orange-950",
+    ProjectStatus.DEPLOYMENT_RELEASED.value: "bg-cyan-400/90 text-cyan-950",
+    ProjectStatus.MAINTENANCE_SUPPORT.value: "bg-sky-400/90 text-sky-950",
+    ProjectStatus.COMPLETED.value: "bg-emerald-400/90 text-emerald-950",
+    ProjectStatus.ON_HOLD.value: "bg-zinc-400/90 text-zinc-950",
+    ProjectStatus.CANCELLED.value: "bg-red-400/90 text-red-950",
+    ProjectStatus.REOPENED.value: "bg-yellow-400/90 text-yellow-950",
+    ProjectStatus.UPDATE_REQUIRED.value: "bg-rose-400/90 text-rose-950",
 }
 
 STATUS_DOT_COLORS = {
-    "planning_requirements": "bg-purple-400",
-    "design": "bg-violet-400",
-    "development_in_progress": "bg-blue-400",
-    "code_review": "bg-amber-400",
-    "testing_qa": "bg-orange-400",
-    "deployment_released": "bg-cyan-400",
-    "maintenance_support": "bg-sky-400",
-    "completed": "bg-emerald-400",
-    "on_hold": "bg-zinc-400",
-    "cancelled": "bg-red-400",
-    "reopened": "bg-yellow-400",
-    "update_required": "bg-rose-400",
+    ProjectStatus.PLANNING_REQUIREMENTS.value: "bg-purple-400",
+    ProjectStatus.DESIGN.value: "bg-violet-400",
+    ProjectStatus.DEVELOPMENT_IN_PROGRESS.value: "bg-blue-400",
+    ProjectStatus.CODE_REVIEW.value: "bg-amber-400",
+    ProjectStatus.TESTING_QA.value: "bg-orange-400",
+    ProjectStatus.DEPLOYMENT_RELEASED.value: "bg-cyan-400",
+    ProjectStatus.MAINTENANCE_SUPPORT.value: "bg-sky-400",
+    ProjectStatus.COMPLETED.value: "bg-emerald-400",
+    ProjectStatus.ON_HOLD.value: "bg-zinc-400",
+    ProjectStatus.CANCELLED.value: "bg-red-400",
+    ProjectStatus.REOPENED.value: "bg-yellow-400",
+    ProjectStatus.UPDATE_REQUIRED.value: "bg-rose-400",
 }
 
 

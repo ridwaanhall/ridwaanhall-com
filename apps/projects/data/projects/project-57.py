@@ -7,7 +7,7 @@ from datetime import datetime
 
 from django.conf import settings
 
-from apps.projects.types import Feature, ProjectData
+from apps.projects.types import Feature, ProjectData, ProjectStatus
 from apps.about.data.skills_data import SkillsData
 
 
@@ -40,7 +40,7 @@ project_data = asdict(ProjectData(
     tags=['django', 'landing-page', 'seo', 'python', 'vercel', 'responsive-design', 'whitenoise', 'modern-web', 'ai-solutions', 'open-api', 'portfolio', 'production-ready', 'security', 'asgi', 'wsgi'],
     is_featured=False,
     featured_priority=None,
-    status='completed',
+    status=ProjectStatus.COMPLETED,
     created_at=datetime.strptime("2025-12-28T09:15:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     updated_at=datetime.strptime("2026-01-04T08:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 ))

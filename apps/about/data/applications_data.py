@@ -278,7 +278,7 @@ class ApplicationsData:
         asdict(Application(
             id=52,
             company_name='filerskeepers',
-            status=status["ip"],
+            status=status["re"],
             position='Junior Python Developer',
             employment_type=emp_type["co"],
             location_type=loc_types["rm"],

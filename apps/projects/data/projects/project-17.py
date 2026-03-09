@@ -7,7 +7,7 @@ from datetime import datetime
 
 from django.conf import settings
 
-from apps.projects.types import Feature, ProjectData
+from apps.projects.types import Feature, ProjectData, ProjectStatus
 from apps.about.data.skills_data import SkillsData
 
 
@@ -35,7 +35,7 @@ project_data = asdict(ProjectData(
     tags=['OpenAI', 'GPT-3.5 Turbo', 'API', 'NLP', 'Flask', 'Python', 'Function Calling', 'Text Processing'],
     is_featured=False,
     featured_priority=None,
-    status='completed',
+    status=ProjectStatus.COMPLETED,
     created_at=datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     updated_at=datetime.strptime("2023-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 ))

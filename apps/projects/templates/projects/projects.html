@@ -2,6 +2,7 @@
 {% block head_seo %}
 {% load static %}
 {% load image_filters %}
+{% load project_tags %}
 <title>{{ seo.title }}</title>
 
 <meta name="author" content="{{ about.username }}" />
@@ -150,6 +151,14 @@
                                     </svg>
                                 </div>
                             </div>
+
+                            {% if project.status %}
+                            <div class="absolute top-0 left-0 z-20">
+                                <div class="{{ project.status|status_color }} text-xs px-2 py-1 sm:px-3 sm:py-1.5 rounded-br-lg backdrop-blur-sm flex items-center gap-1.5 transition-all duration-300">
+                                    <span class="tracking-wide">{{ project.status|format_status }}</span>
+                                </div>
+                            </div>
+                            {% endif %}
 
                             {% if project.is_featured %}
                             <div class="absolute top-0 right-0 z-20">

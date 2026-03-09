@@ -5,6 +5,8 @@ Project template tags for handling multiple images and other project-specific fu
 from django import template
 from django.utils.safestring import mark_safe
 
+from apps.projects.types import ProjectStatus
+
 register = template.Library()
 
 
@@ -103,3 +105,96 @@ def has_multiple_images(project):
     if project and 'images' in project:
         return len(project['images']) > 1
     return False
+
+
+STATUS_DISPLAY = {
+    ProjectStatus.PLANNING_REQUIREMENTS.value: "Planning",
+    ProjectStatus.DESIGN.value: "Design",
+    ProjectStatus.DEVELOPMENT_IN_PROGRESS.value: "In Development",
+    ProjectStatus.CODE_REVIEW.value: "Code Review",
+    ProjectStatus.TESTING_QA.value: "Testing",
+    ProjectStatus.DEPLOYMENT_RELEASED.value: "Released",
+    ProjectStatus.MAINTENANCE_SUPPORT.value: "Maintenance",
+    ProjectStatus.COMPLETED.value: "Completed",
+    ProjectStatus.ON_HOLD.value: "On Hold",
+    ProjectStatus.CANCELLED.value: "Cancelled",
+    ProjectStatus.REOPENED.value: "Reopened",
+    ProjectStatus.UPDATE_REQUIRED.value: "Update Required",
+}
+
+STATUS_COLORS = {
+    ProjectStatus.PLANNING_REQUIREMENTS.value: "bg-purple-400/90 text-purple-950",
+    ProjectStatus.DESIGN.value: "bg-violet-400/90 text-violet-950",
+    ProjectStatus.DEVELOPMENT_IN_PROGRESS.value: "bg-blue-400/90 text-blue-950",
+    ProjectStatus.CODE_REVIEW.value: "bg-amber-400/90 text-amber-950",
+    ProjectStatus.TESTING_QA.value: "bg-orange-400/90 text-orange-950",
+    ProjectStatus.DEPLOYMENT_RELEASED.value: "bg-cyan-400/90 text-cyan-950",
+    ProjectStatus.MAINTENANCE_SUPPORT.value: "bg-sky-400/90 text-sky-950",
+    ProjectStatus.COMPLETED.value: "bg-emerald-400/90 text-emerald-950",
+    ProjectStatus.ON_HOLD.value: "bg-zinc-400/90 text-zinc-950",
+    ProjectStatus.CANCELLED.value: "bg-red-400/90 text-red-950",
+    ProjectStatus.REOPENED.value: "bg-yellow-400/90 text-yellow-950",
+    ProjectStatus.UPDATE_REQUIRED.value: "bg-rose-400/90 text-rose-950",
+}
+
+STATUS_DOT_COLORS = {
+    ProjectStatus.PLANNING_REQUIREMENTS.value: "bg-purple-400",
+    ProjectStatus.DESIGN.value: "bg-violet-400",
+    ProjectStatus.DEVELOPMENT_IN_PROGRESS.value: "bg-blue-400",
+    ProjectStatus.CODE_REVIEW.value: "bg-amber-400",
+    ProjectStatus.TESTING_QA.value: "bg-orange-400",
+    ProjectStatus.DEPLOYMENT_RELEASED.value: "bg-cyan-400",
+    ProjectStatus.MAINTENANCE_SUPPORT.value: "bg-sky-400",
+    ProjectStatus.COMPLETED.value: "bg-emerald-400",
+    ProjectStatus.ON_HOLD.value: "bg-zinc-400",
+    ProjectStatus.CANCELLED.value: "bg-red-400",
+    ProjectStatus.REOPENED.value: "bg-yellow-400",
+    ProjectStatus.UPDATE_REQUIRED.value: "bg-rose-400",
+}
+
+
+def _resolve_status(status):
+    """Extract the plain status string, handling both enum members and raw strings."""
+    if hasattr(status, 'value'):
+        return status.value.lower()
+    return str(status).lower()
+
+
+@register.filter
+def format_status(status):
+    """
+    Format a project status string for display.
+
+    Usage:
+    {{ project.status|format_status }}
+    """
+    if not status:
+        return ""
+    key = _resolve_status(status)
+    return STATUS_DISPLAY.get(key, key.replace("_", " ").title())
+
+
+@register.filter
+def status_color(status):
+    """
+    Return Tailwind CSS classes for a project status badge.
+
+    Usage:
+    <span class="{{ project.status|status_color }}">...</span>
+    """
+    if not status:
+        return "bg-zinc-500/20 text-zinc-300 border-zinc-500/30"
+    return STATUS_COLORS.get(_resolve_status(status), "bg-zinc-500/20 text-zinc-300 border-zinc-500/30")
+
+
+@register.filter
+def status_dot_color(status):
+    """
+    Return Tailwind CSS class for the status indicator dot.
+
+    Usage:
+    <span class="{{ project.status|status_dot_color }}"></span>
+    """
+    if not status:
+        return "bg-zinc-400"
+    return STATUS_DOT_COLORS.get(_resolve_status(status), "bg-zinc-400")

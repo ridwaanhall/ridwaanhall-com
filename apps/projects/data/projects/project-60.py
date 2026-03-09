@@ -53,7 +53,8 @@ project_data = asdict(ProjectData(
         ),
     ],
     images={
-        "gempa_dashboard.webp": f"{settings.PROJECT_BASE_IMG_URL}/gempa_dashboard.webp",
+        "gempa_home.webp": f"{settings.PROJECT_BASE_IMG_URL}/gempa_home.webp",
+        "gempa_realtime.webp": f"{settings.PROJECT_BASE_IMG_URL}/gempa_realtime.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],

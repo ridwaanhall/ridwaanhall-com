@@ -132,7 +132,7 @@ class ApplicationsData:
             location_type=loc_types["on"],    # on-site
             location='Malang, East Java, Indonesia',
             applied_via=via["li"],
-            salary_range='Expected IDR 6M - 9M',  # Sent expected salary of IDR 6M - 9M
+            salary_range='IDR 5.5M - 9M',  # Sent expected salary of IDR 5.5M - 9M
             journey=[
                 JourneyStep(
                     timestamp=datetime.strptime("2026-03-09T16:56:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),

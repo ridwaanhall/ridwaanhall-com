@@ -92,10 +92,81 @@ class ApplicationsData:
         "th": "Talenta IT",
         "de": "Dealls",
         "ka": "Katrecs",
+        "hu": "Humanis.id",
         "ot": "Other",
     }
 
     applications = [
+        asdict(Application(
+            id=62,
+            status=status["ip"],  # in progress
+            company_name='Why Hiring',
+            position='Junior Data Scientist',
+            employment_type=emp_type["ft"],   # full-time
+            location_type=loc_types["rm"],    # remote
+            location='United Kingdom',
+            applied_via=via["li"],            # via LinkedIn
+            salary_range='Not specified',
+            journey=[
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-03-09T16:31:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Application Submitted',
+                    details='Application submitted via LinkedIn for Junior Data Scientist role.',
+                    notes='Visible in Gmail and LinkedIn job application history.',
+                ),
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-03-10T14:50:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Application Viewed',
+                    details='Application was viewed by Why Hiring hiring team via LinkedIn.',
+                    notes='Notification received: "Your application was viewed by Why Hiring".',
+                ),
+            ],
+            lessons_learned='Why Hiring role offers remote opportunity in data science. Application actively reviewed but marked as no longer accepting applications. Monitoring recruiter response for potential next steps.',
+        )),
+        asdict(Application(
+            id=61,
+            status=status["ip"],  # in progress
+            company_name='VENTURO',
+            position='Web Programmer',
+            employment_type=emp_type["ft"],   # full-time
+            location_type=loc_types["on"],    # on-site
+            location='Malang, East Java, Indonesia',
+            applied_via=via["li"],
+            salary_range='Expected IDR 6M - 9M',  # Sent expected salary of IDR 6M - 9M
+            journey=[
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-03-09T16:56:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Application Submitted',
+                    details='Application submitted via LinkedIn, aligned with Python/Django expertise.',
+                    notes='Visible in Gmail and LinkedIn job application history.',
+                ),
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-03-10T09:05:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Application Viewed',
+                    details='Application was viewed by VENTURO hiring team via LinkedIn.',
+                    notes='Notification received: "Your application was viewed by VENTURO | Professional Programmer".',
+                ),
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-03-10T09:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Resume Downloaded',
+                    details='Resume downloaded by Job Poster on LinkedIn.',
+                    notes='Application status updated: Resume downloaded by recruiter.',
+                ),
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-03-10T09:34:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='HR Contact (LinkedIn)',
+                    details='Received LinkedIn message from Riski Rahmawati (HR) encouraging direct application via recruitment website.',
+                    notes='Message: "Hi Ridwan, thank you for your application... please apply directly through https://jobs.humanis.id/venturo-pro-indonesia/67".',
+                ),
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-03-11T09:34:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='HR Pre-Interview Request',
+                    details='Received WhatsApp message from HR Venturo Pro Indonesia requesting a Loom video (±10 minutes) as pre-interview stage.',
+                    notes='Message included 2 technical questions and deadline: submit Loom link by Thursday, 12 March 2026, 10:00 WIB.',
+                ),
+            ],
+            lessons_learned='VENTURO role aligns with fullstack and Python/Django skills. Application actively reviewed, recruiter downloaded resume, HR contacted via LinkedIn and WhatsApp with pre-interview Loom video assignment. Preparing video response before deadline to proceed in selection process.',
+        )),
         asdict(Application(
             id=60,
             status=status["ip"],
@@ -361,7 +432,7 @@ class ApplicationsData:
             id=50,
             company_name='BitHealth',
             position='Associate AI Engineer',
-            status=status["ip"],
+            status=status["gh"],
             employment_type=emp_type["ft"],
             location_type=loc_types["on"],
             location='Yogyakarta, Indonesia',

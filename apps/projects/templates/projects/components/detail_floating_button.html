@@ -19,6 +19,15 @@
             Source Code
         </span>
     </a>
+    {% else %}
+    <!-- Placeholder element to ensure #toGitHub always exists for JS, but remains hidden/inert when no GitHub URL -->
+    <a
+        id="toGitHub"
+        class="relative p-3 rounded-full bg-zinc-800/90 backdrop-blur-sm opacity-0 translate-y-10 group hidden pointer-events-none"
+        aria-hidden="true"
+        tabindex="-1"
+    >
+    </a>
     {% endif %}
     {% if project.demo_url %}
     <a
@@ -39,6 +48,15 @@
         >
             Live Demo
         </span>
+    </a>
+    {% else %}
+    <!-- Placeholder element to ensure #toDemo always exists for JS, but remains hidden/inert when no Demo URL -->
+    <a
+        id="toDemo"
+        class="relative p-3 rounded-full bg-zinc-800/90 backdrop-blur-sm opacity-0 translate-y-10 group hidden pointer-events-none"
+        aria-hidden="true"
+        tabindex="-1"
+    >
     </a>
     {% endif %}
 

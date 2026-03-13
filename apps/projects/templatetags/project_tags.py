@@ -57,11 +57,11 @@ def get_project_image_name(project, index=0):
     return ''
 
 
-@register.inclusion_tag('projects/partials/project_image_gallery.html')
+@register.inclusion_tag('projects/components/image-gallery.html')
 def project_image_gallery(project, class_name=""):
     """
     Render a gallery of all project images with Mac-style styling.
-    
+
     Usage:
     {% project_image_gallery project "gallery-class" %}
     """

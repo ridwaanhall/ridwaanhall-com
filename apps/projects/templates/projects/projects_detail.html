@@ -31,7 +31,7 @@
         "@context": "https://schema.org",
         "@type": "SoftwareSourceCode",
         "name": "{{ project.title }}",
-        "description": "{{ project.description }}",
+        "description": "{{ project.description|join:' '|escapejs }}",
         "codeRepository": "{{ project.github_url }}",
         "url": "{{ request.build_absolute_uri }}",
         "programmingLanguage": "{% for tech in project.tech_stack %}{{ tech.name|join:'' }}{% if not forloop.last %}, {% endif %}{% endfor %}",
@@ -65,7 +65,7 @@
         "@context": "https://schema.org",
         "@type": "HowTo",
         "name": "How to use {{ project.title }}",
-        "description": "{{ project.description }}",
+        "description": "{{ project.description|join:' '|escapejs }}",
         "step": [
             {% for feature in project.features %}
             {
@@ -111,7 +111,9 @@
                 "@type": "ListItem",
                 "position": 3,
                 "name": "{{ project.title }}",
-                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'projects' %}{{ project.title|slugify }}"
+                {% with project.title|slugify as project_slug %}
+                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'projects_detail' project_slug %}"
+                {% endwith %}
             }
         ]
     }

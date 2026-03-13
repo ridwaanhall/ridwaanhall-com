@@ -1,8 +1,10 @@
 <div class="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
     {% if project.github_url %}
-    <button
+    <a
         id="toGitHub"
-        onclick="window.location.href='{{ project.github_url }}'"
+        href="{{ project.github_url }}"
+        target="_blank"
+        rel="noopener noreferrer"
         class="relative p-3 cursor-pointer rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 translate-y-10 group"
         aria-label="Source Code"
     >
@@ -16,12 +18,23 @@
         >
             Source Code
         </span>
-    </button>
+    </a>
+    {% else %}
+    <!-- Placeholder element to ensure #toGitHub always exists for JS, but remains hidden/inert when no GitHub URL -->
+    <a
+        id="toGitHub"
+        class="relative p-3 rounded-full bg-zinc-800/90 backdrop-blur-sm opacity-0 translate-y-10 group hidden pointer-events-none"
+        aria-hidden="true"
+        tabindex="-1"
+    >
+    </a>
     {% endif %}
     {% if project.demo_url %}
-    <button
+    <a
         id="toDemo"
-        onclick="window.location.href='{{ project.demo_url }}'"
+        href="{{ project.demo_url }}"
+        target="_blank"
+        rel="noopener noreferrer"
         class="relative p-3 cursor-pointer rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 translate-y-10 group"
         aria-label="Live Demo"
     >
@@ -35,7 +48,16 @@
         >
             Live Demo
         </span>
-    </button>
+    </a>
+    {% else %}
+    <!-- Placeholder element to ensure #toDemo always exists for JS, but remains hidden/inert when no Demo URL -->
+    <a
+        id="toDemo"
+        class="relative p-3 rounded-full bg-zinc-800/90 backdrop-blur-sm opacity-0 translate-y-10 group hidden pointer-events-none"
+        aria-hidden="true"
+        tabindex="-1"
+    >
+    </a>
     {% endif %}
 
     <!-- Scroll to top button -->

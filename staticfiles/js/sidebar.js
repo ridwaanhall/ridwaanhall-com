@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const openSidebar = () => {
         mobileSidebar.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
         setTimeout(() => {
             mobileMenu.classList.remove('translate-y-full');
         }, 50);
@@ -15,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
         mobileMenu.classList.add('translate-y-full');
         setTimeout(() => {
             mobileSidebar.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
         }, 300);
     };
     

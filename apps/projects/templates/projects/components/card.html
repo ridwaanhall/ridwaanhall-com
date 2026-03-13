@@ -1,3 +1,4 @@
+{% load project_tags %}
 {% load image_filters %}
 <a href="{% url 'projects_detail' title=project.title|slugify %}" class="block h-full">
     <div class="group backdrop-blur-sm rounded-xl overflow-hidden flex flex-col h-full transition-all duration-300 border border-zinc-800">

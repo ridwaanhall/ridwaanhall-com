@@ -13,9 +13,8 @@
                     {% endif %}
                 </div>
                 <div class="ml-3">
-                    <span class="text-xl font-semibold">{{ about.name }}</span>
-                    <div class="flex flex-col gap-1">
-                        <p class="text-xs text-zinc-400 hover:text-zinc-300">@{{ about.username }}</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl font-semibold">{{ about.name }}</span>
                         <!-- Status badges for mobile -->
                         <div class="flex gap-1">
                             {% if about.is_open_to_work or about.is_hiring %}
@@ -35,6 +34,9 @@
                             </a>
                             {% endif %}
                         </div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <p class="text-xs text-zinc-400 hover:text-zinc-300">@{{ about.username }}</p>
                     </div>
                 </div>
             </div>

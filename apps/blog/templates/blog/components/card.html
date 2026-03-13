@@ -1,6 +1,6 @@
 {% load image_filters %}
 <a href="{% url 'blog_detail' title=blog.title|slugify %}">
-    <div style="height: 350px; sm:height: 350px;" class="group relative overflow-hidden rounded-xl border border-zinc-700 transition-all duration-300 transform h-full">
+    <div style="height: 350px;" class="group relative overflow-hidden rounded-xl border border-zinc-700 transition-all duration-300 transform h-full">
         <div class="absolute inset-0">
             <img
                 src="{{ blog.image_url|wsrv_image:'300x300' }}"

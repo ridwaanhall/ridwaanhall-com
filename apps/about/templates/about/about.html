@@ -23,24 +23,36 @@
 
             <div class="tab-content w-full">
                 <div id="content-intro" class="block w-full">
-                    {% if about %} {% include 'about/sections/intro.html' %} {% else %}
-                    <p class="text-zinc-400">No introduction available.</p>
+                    {% if about %}
+                        {% include 'about/sections/intro.html' %}
+                    {% else %}
+                        <p class="text-zinc-400">No introduction available.</p>
                     {% endif %}
                 </div>
                 <div id="content-experiences" class="hidden w-full">
-                    {% if experiences %} {% include 'about/sections/experiences.html' %} {% endif %}
+                    {% if experiences %}
+                        {% include 'about/sections/experiences.html' %}
+                    {% endif %}
                 </div>
                 <div id="content-education" class="hidden w-full">
-                    {% if education %} {% include 'about/sections/education.html' %} {% endif %}
+                    {% if education %}
+                        {% include 'about/sections/education.html' %}
+                    {% endif %}
                 </div>
                 <div id="content-awards" class="hidden w-full">
-                    {% if awards %} {% include 'about/sections/awards.html' %} {% endif %}
+                    {% if awards %}
+                        {% include 'about/sections/awards.html' %}
+                    {% endif %}
                 </div>
                 <div id="content-certifications" class="hidden w-full">
-                    {% if certifications %} {% include 'about/sections/certifications.html' %} {% endif %}
+                    {% if certifications %}
+                        {% include 'about/sections/certifications.html' %}
+                    {% endif %}
                 </div>
                 <div id="content-applications" class="hidden w-full">
-                    {% include 'about/sections/applications.html' %}
+                    {% if applications %}
+                        {% include 'about/sections/applications.html' %}
+                    {% endif %}
                 </div>
             </div>
         </div>

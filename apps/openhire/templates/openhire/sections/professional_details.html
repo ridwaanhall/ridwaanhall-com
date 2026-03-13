@@ -1,0 +1,30 @@
+{% comment %}
+Professional Details section
+Displays experience, salary, notice period, and work authorization
+{% endcomment %}
+<div class="border border-zinc-700 rounded-lg p-4">
+    <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex items-center mb-3">
+        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path>
+        </svg>
+        Professional Details
+    </h2>
+    <div class="space-y-2">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+            <span class="font-medium text-sm">Experience Level</span>
+            <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.experience_level }}</span>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+            <span class="font-medium text-sm">Salary Expectation</span>
+            <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.salary_expectation }}</span>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+            <span class="font-medium text-sm">Notice Period</span>
+            <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.notice_period }}</span>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+            <span class="font-medium text-sm">Work Authorization</span>
+            <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.work_authorization }}</span>
+        </div>
+    </div>
+</div>

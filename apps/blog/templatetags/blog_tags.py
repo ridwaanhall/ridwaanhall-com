@@ -55,11 +55,11 @@ def get_blog_image_name(blog, index=0):
     return ''
 
 
-@register.inclusion_tag('blog/partials/image_gallery.html')
+@register.inclusion_tag('blog/components/image_gallery.html')
 def blog_image_gallery(blog, class_name=""):
     """
     Render a gallery of all blog images.
-    
+
     Usage:
     {% blog_image_gallery blog "gallery-class" %}
     """

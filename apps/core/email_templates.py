@@ -3,6 +3,7 @@
 Loads and renders HTML and text email templates from templates/core/email folder.
 """
 
+import html
 from pathlib import Path
 from typing import Any
 
@@ -12,6 +13,11 @@ class EmailTemplateLoader:
 
     # Point to apps/core/templates/core/email
     BASE_PATH = Path(__file__).resolve().parent / "templates" / "core" / "email"
+
+    @staticmethod
+    def _escape_html(text: str) -> str:
+        """Escape HTML special characters to prevent XSS attacks."""
+        return html.escape(str(text))
 
     @staticmethod
     def _load_template(filename: str) -> str:
@@ -33,10 +39,12 @@ class EmailTemplateLoader:
     def render_contact_notification_html(name: str, sender_email: str, message_text: str) -> str:
         """Render contact notification HTML email template."""
         template = EmailTemplateLoader._load_template("contact_notification.html")
-        formatted_message = message_text.replace("\n", "<br>")
+        # Escape HTML and then convert newlines to <br> tags
+        escaped_message = EmailTemplateLoader._escape_html(message_text)
+        formatted_message = escaped_message.replace("\n", "<br>")
         context = {
-            "name": name,
-            "sender_email": sender_email,
+            "name": EmailTemplateLoader._escape_html(name),
+            "sender_email": EmailTemplateLoader._escape_html(sender_email),
             "message_html": formatted_message,
         }
         return EmailTemplateLoader._render_template(template, context)
@@ -58,12 +66,14 @@ class EmailTemplateLoader:
         template = EmailTemplateLoader._load_template("contact_autoreply.html")
         display_name = name or "there"
         name_display = name if name else sender_email
-        formatted_message = message_text.replace("\n", "<br>")
+        # Escape HTML and then convert newlines to <br> tags
+        escaped_message = EmailTemplateLoader._escape_html(message_text)
+        formatted_message = escaped_message.replace("\n", "<br>")
         context = {
-            "display_name": display_name,
-            "name": name if name else "",
-            "name_display": name_display,
-            "sender_email": sender_email,
+            "display_name": EmailTemplateLoader._escape_html(display_name),
+            "name": EmailTemplateLoader._escape_html(name) if name else "",
+            "name_display": EmailTemplateLoader._escape_html(name_display),
+            "sender_email": EmailTemplateLoader._escape_html(sender_email),
             "message_html": formatted_message,
         }
         return EmailTemplateLoader._render_template(template, context)
@@ -89,13 +99,15 @@ class EmailTemplateLoader:
     ) -> str:
         """Render guestbook notification HTML email template."""
         template = EmailTemplateLoader._load_template("guestbook_notification.html")
-        formatted_message = message_text.replace("\n", "<br>")
+        # Escape HTML and then convert newlines to <br> tags
+        escaped_message = EmailTemplateLoader._escape_html(message_text)
+        formatted_message = escaped_message.replace("\n", "<br>")
         context = {
-            "name": name,
-            "sender_email": sender_email,
-            "timestamp": timestamp,
+            "name": EmailTemplateLoader._escape_html(name),
+            "sender_email": EmailTemplateLoader._escape_html(sender_email),
+            "timestamp": EmailTemplateLoader._escape_html(timestamp),
             "message_html": formatted_message,
-            "guestbook_url": guestbook_url,
+            "guestbook_url": guestbook_url,  # URL should not be escaped
         }
         return EmailTemplateLoader._render_template(template, context)
 
@@ -122,14 +134,16 @@ class EmailTemplateLoader:
         template = EmailTemplateLoader._load_template("guestbook_autoreply.html")
         display_name = name or "there"
         name_display = name if name else sender_email
-        formatted_message = message_text.replace("\n", "<br>")
+        # Escape HTML and then convert newlines to <br> tags
+        escaped_message = EmailTemplateLoader._escape_html(message_text)
+        formatted_message = escaped_message.replace("\n", "<br>")
         context = {
-            "display_name": display_name,
-            "name_display": name_display,
-            "sender_email": sender_email,
+            "display_name": EmailTemplateLoader._escape_html(display_name),
+            "name_display": EmailTemplateLoader._escape_html(name_display),
+            "sender_email": EmailTemplateLoader._escape_html(sender_email),
             "message_html": formatted_message,
-            "timestamp": timestamp,
-            "guestbook_url": guestbook_url,
+            "timestamp": EmailTemplateLoader._escape_html(timestamp),
+            "guestbook_url": guestbook_url,  # URL should not be escaped
         }
         return EmailTemplateLoader._render_template(template, context)
 
@@ -158,13 +172,16 @@ class EmailTemplateLoader:
     ) -> str:
         """Render guestbook reply notification HTML email template."""
         template = EmailTemplateLoader._load_template("guestbook_reply_notification.html")
+        # Escape HTML and then convert newlines to <br> tags
+        escaped_reply_message = EmailTemplateLoader._escape_html(reply_message)
+        escaped_original_message = EmailTemplateLoader._escape_html(original_message)
         context = {
-            "original_name": original_name or "there",
-            "reply_name": reply_name,
-            "reply_message_html": reply_message.replace("\n", "<br>"),
-            "original_message_html": original_message.replace("\n", "<br>"),
-            "timestamp": timestamp,
-            "guestbook_url": guestbook_url,
+            "original_name": EmailTemplateLoader._escape_html(original_name or "there"),
+            "reply_name": EmailTemplateLoader._escape_html(reply_name),
+            "reply_message_html": escaped_reply_message.replace("\n", "<br>"),
+            "original_message_html": escaped_original_message.replace("\n", "<br>"),
+            "timestamp": EmailTemplateLoader._escape_html(timestamp),
+            "guestbook_url": guestbook_url,  # URL should not be escaped
         }
         return EmailTemplateLoader._render_template(template, context)
 

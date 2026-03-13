@@ -1,0 +1,12 @@
+{% load image_filters %}
+<div class="mt-4 sm:mt-6">
+    {% if view_certs %}
+        {% include 'about/components/certification_view.html' %}
+    {% endif %}
+
+    <div class="space-y-3 sm:space-y-4">
+        {% for certification in certifications %}
+            {% include 'about/components/certification_card.html' %}
+        {% endfor %}
+    </div>
+</div>

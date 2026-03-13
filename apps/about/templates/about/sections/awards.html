@@ -1,0 +1,8 @@
+{% load image_filters %}
+<div class="mt-4 sm:mt-6">
+    <div class="space-y-3 sm:space-y-4">
+        {% for award in awards %}
+            {% include 'about/components/award_card.html' %}
+        {% endfor %}
+    </div>
+</div>

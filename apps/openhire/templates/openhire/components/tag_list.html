@@ -1,0 +1,15 @@
+{% comment %}
+Tag/pill list component for displaying items with badges
+Parameters:
+- items: List of items to display as tags (can be string or list)
+- tag_class: Optional CSS classes for tags (default: bg-zinc-700 text-zinc-300)
+{% endcomment %}
+<div class="flex flex-wrap gap-2">
+    {% if items %}
+        {% for item in items %}
+            <span class="px-3 py-1 rounded-full text-sm {% if tag_class %}{{ tag_class }}{% else %}bg-zinc-700 text-zinc-300{% endif %} border border-zinc-600">
+                {{ item }}
+            </span>
+        {% endfor %}
+    {% endif %}
+</div>

@@ -1,0 +1,11 @@
+{% comment %}
+Detail row component for displaying key-value pairs
+Parameters:
+- label: The label/key text
+- value: The value text
+- value_class: Optional CSS classes for the value (default: text-zinc-300)
+{% endcomment %}
+<div class="flex justify-between items-start">
+    <span class="text-zinc-400">{{ label }}</span>
+    <span class="{% if value_class %}{{ value_class }}{% else %}text-zinc-300{% endif %} text-right">{{ value }}</span>
+</div>

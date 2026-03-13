@@ -1,9 +1,12 @@
 {% extends 'base_seo.html' %}
 {% load static %}
+
 {% block head_seo %}
 <!-- Custom SEO meta tags if needed can be added here -->
 <!-- Schema and basic meta tags are handled by base_seo.html automatically -->
-{% endblock %} {% block content %}
+{% endblock head_seo %}
+
+{% block content %}
 <div class="flex-1 md:ml-62">
     <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
@@ -16,85 +19,40 @@
                 </div>
             </div>
 
-            <div class="mb-6 border-b border-zinc-700">
-                <div class="flex flex-wrap min-w-full -mb-px text-sm font-medium text-center" role="tablist">
-                    <button
-                        id="tab-intro"
-                        onclick="switchTab('intro')"
-                        class="inline-block cursor-pointer p-2 sm:p-4 border-b-2 border-zinc-300 text-zinc-300 rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none whitespace-nowrap"
-                        aria-selected="false"
-                        role="tab"
-                    >
-                        Intro
-                    </button>
-                    <button
-                        id="tab-experiences"
-                        onclick="switchTab('experiences')"
-                        class="inline-block cursor-pointer p-2 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none whitespace-nowrap"
-                        aria-selected="false"
-                        role="tab"
-                    >
-                        Experiences
-                    </button>
-                    <button
-                        id="tab-education"
-                        onclick="switchTab('education')"
-                        class="inline-block cursor-pointer p-2 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none whitespace-nowrap"
-                        aria-selected="false"
-                        role="tab"
-                    >
-                        Educations
-                    </button>
-                    <button
-                        id="tab-awards"
-                        onclick="switchTab('awards')"
-                        class="inline-block cursor-pointer p-2 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none whitespace-nowrap"
-                        aria-selected="false"
-                        role="tab"
-                    >
-                        Awards
-                    </button>
-                    <button
-                        id="tab-certifications"
-                        onclick="switchTab('certifications')"
-                        class="inline-block cursor-pointer p-2 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none whitespace-nowrap"
-                        aria-selected="false"
-                        role="tab"
-                    >
-                        Certifications
-                    </button>
-                    <button
-                        id="tab-applications"
-                        onclick="switchTab('applications')"
-                        class="inline-block cursor-pointer p-2 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-zinc-300 hover:border-zinc-300 flex-1 sm:flex-none whitespace-nowrap"
-                        aria-selected="false"
-                        role="tab"
-                    >
-                        Applications
-                    </button>
-                </div>
-            </div>
+            {% include 'about/sections/about_tabs.html' %}
 
             <div class="tab-content w-full">
                 <div id="content-intro" class="block w-full">
-                    {% if about %} {% include 'about/intro.html' %} {% else %}
-                    <p class="text-zinc-400">No introduction available.</p>
+                    {% if about %}
+                        {% include 'about/sections/intro.html' %}
+                    {% else %}
+                        <p class="text-zinc-400">No introduction available.</p>
                     {% endif %}
                 </div>
                 <div id="content-experiences" class="hidden w-full">
-                    {% if experiences %} {% include 'about/experiences.html' %} {% endif %}
+                    {% if experiences %}
+                        {% include 'about/sections/experiences.html' %}
+                    {% endif %}
                 </div>
                 <div id="content-education" class="hidden w-full">
-                    {% if education %} {% include 'about/education.html' %} {% endif %}
+                    {% if education %}
+                        {% include 'about/sections/education.html' %}
+                    {% endif %}
                 </div>
                 <div id="content-awards" class="hidden w-full">
-                    {% if awards %} {% include 'about/awards.html' %} {% endif %}
+                    {% if awards %}
+                        {% include 'about/sections/awards.html' %}
+                    {% endif %}
                 </div>
                 <div id="content-certifications" class="hidden w-full">
-                    {% if certifications %} {% include 'about/certifications.html' %} {% endif %}
+                    {% if certifications %}
+                        {% include 'about/sections/certifications.html' %}
+                    {% endif %}
                 </div>
                 <div id="content-applications" class="hidden w-full">
-                    {% include 'about/applications.html' %}
+                    {% if applications %}
+                        {% include 'about/sections/applications.html' %}
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -116,9 +74,10 @@
         </span>
     </button>
 </div>
-{% endblock %}
+{% endblock content %}
+
 {% block scripts %}
 <script src="{% static 'js/switchTab.js' %}"></script>
 <script src="{% static 'js/toggleCareer.js' %}"></script>
 <script src="{% static 'js/backScroll.js' %}"></script>
-{% endblock %}
+{% endblock scripts %}

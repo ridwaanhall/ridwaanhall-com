@@ -1,0 +1,33 @@
+{% comment %}
+Tools & Technologies section
+Displays used tools and skills in a table format
+{% endcomment %}
+{% if open_to_work_data.used_tools_skills %}
+<div class="border border-zinc-700 rounded-lg p-4">
+    <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex items-center mb-3">
+        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        </svg>
+        Tools & Technologies
+    </h2>
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-zinc-700">
+                    <th class="text-left py-2 px-3 text-zinc-400 font-medium text-xs uppercase tracking-wider w-28 sm:w-36">Category</th>
+                    <th class="text-left py-2 px-3 text-zinc-400 font-medium text-xs uppercase tracking-wider">Tools</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-700/50">
+                {% for category, tools in open_to_work_data.used_tools_skills.items %}
+                <tr class="hover:bg-zinc-800/30 transition-colors">
+                    <td class="py-2 px-3 font-medium text-zinc-300 text-xs sm:text-sm align-top whitespace-nowrap">{{ category }}</td>
+                    <td class="py-2 px-3 text-zinc-400 text-xs">{% for tool in tools %}{{ tool.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}

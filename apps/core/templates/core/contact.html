@@ -3,13 +3,13 @@
 
 {% block extra_css %}
 {% if USE_CF_TURNSTILE %}
-<script
-    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-    async
-    defer
-></script>
+    <script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        async
+        defer
+    ></script>
 {% endif %}
-{% endblock %}
+{% endblock extra_css %}
 
 {% block content %}
 <div class="flex-1 md:ml-62">
@@ -24,87 +24,19 @@
                 </div>
             </div>
 
-            {% include 'core/social.html' %}
+            {% include 'core/sections/social.html' %}
 
             <!-- Messages -->
-            <div id="message-container" class="mt-8" style="display: none;">
-                <div id="message-content" class="mb-4 px-4 py-3 rounded-lg border">
-                </div>
-            </div>
-            
-            {% if messages %}
-                <div class="mt-8">
-                    {% for message in messages %}
-                        <div class="mb-4 px-4 py-3 rounded-lg border {% if message.tags == 'success' %}bg-green-900/20 border-green-700 text-green-300{% elif message.tags == 'error' %}bg-red-900/20 border-red-700 text-red-300{% else %}bg-blue-900/20 border-blue-700 text-blue-300{% endif %}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+            {% include 'core/components/contact_messages.html' %}
 
             <!-- Contact Form -->
-            <div class="mt-8">
-                <h2 class="text-xl font-medium flex items-center">
-                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                    </svg>
-                    Send me a message
-                </h2>
-                <p class="text-zinc-400 text-sm mt-2 mb-4">Have a thought, a question, or just want to say hello? Leave a note—I read them all.</p>
-
-                <form id="contact-form" method="post" action="{% url 'contact' %}">
-                    {% csrf_token %}
-                    <div class="flex flex-grow flex-col gap-4">
-                        <div class="flex flex-col gap-4 md:flex-row">
-                            <input
-                                class="w-full rounded-md border border-zinc-700 hover:border-zinc-400 px-3 py-2 focus:outline-none focus:border-zinc-400 bg-transparent placeholder-zinc-400 text-zinc-300 hover:text-zinc-200 transition-all duration-300"
-                                type="text"
-                                placeholder="Name*"
-                                name="name"
-                                required
-                                value=""
-                            />
-                            <input
-                                class="w-full rounded-md border border-zinc-700 hover:border-zinc-400 px-3 py-2 focus:outline-none focus:border-zinc-400 bg-transparent placeholder-zinc-400 text-zinc-300 hover:text-zinc-200 transition-all duration-300"
-                                type="email"
-                                placeholder="Email*"
-                                name="email"
-                                required
-                                value=""
-                            />
-                        </div>
-                        <textarea
-                            class="w-full rounded-md border border-zinc-700 hover:border-zinc-400 px-3 py-2 focus:outline-none focus:border-zinc-400 bg-transparent placeholder-zinc-400 text-zinc-300 hover:text-zinc-200 resize-vertical transition-all duration-300"
-                            rows="5"
-                            placeholder="Message*"
-                            name="message"
-                            required
-                        ></textarea>
-                        {% if USE_CF_TURNSTILE %}
-                        <div class="cf-turnstile" data-sitekey="{{ CF_TURNSTILE_SITE_KEY }}" data-callback="onTurnstileSuccess" data-theme="dark"></div>
-                        {% endif %}
-                        <button
-                            class="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-700 hover:border-zinc-400 bg-zinc-800 px-2 py-2 text-base font-medium text-zinc-300 hover:text-zinc-200 hover:bg-zinc-900 hover:shadow-md hover:shadow-zinc-400/20 transition-all duration-300 justify-center"
-                            type="submit"
-                            id="submit-btn"
-                        >
-                            Begin the conversation
-                        </button>
-                    </div>
-                    <div class="my-5 flex items-center gap-2 text-zinc-400 mt-4">
-                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 6 12 12 16 14"></polyline>
-                        </svg>
-                        <div class="text-sm"><span class="font-medium">Typical response time:</span> 1–2 hours (Weekdays, GMT+7). I reply with care.</div>
-                    </div>
-                </form>
-            </div>
+            {% include 'core/sections/contact_form.html' %}
 
         </div>
     </main>
 </div>
-{% endblock %}
+{% endblock content %}
+
 {% block scripts %}
 <script src="{% static 'js/updateTime.js' %}"></script>
 <script>
@@ -112,103 +44,103 @@
     function onTurnstileSuccess(token) {
         document.getElementById('id_turnstile_token').value = token;
     }
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('contact-form');
-    const submitBtn = document.getElementById('submit-btn');
-    const messageContainer = document.getElementById('message-container');
-    const messageContent = document.getElementById('message-content');
-    
-    function showMessage(message, type) {
-        messageContent.textContent = message;
-        messageContent.className = `mb-4 px-4 py-3 rounded-lg border ${
-            type === 'success' 
-                ? 'bg-green-900/20 border-green-700 text-green-300' 
-                : 'bg-red-900/20 border-red-700 text-red-300'
-        }`;
-        messageContainer.style.display = 'block';
-        messageContainer.scrollIntoView({ behavior: 'smooth' });
-    }
-    
-    function hideMessage() {
-        messageContainer.style.display = 'none';
-    }
-    
-    if (form && submitBtn) {
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            hideMessage();
-            
-            // Get form data
-            const name = form.querySelector('input[name="name"]').value.trim();
-            const email = form.querySelector('input[name="email"]').value.trim();
-            const message = form.querySelector('textarea[name="message"]').value.trim();
-            
-            // Validation
-            if (!name || !email || !message) {
-                showMessage('Please fill in all required fields.', 'error');
-                return;
-            }
-            
-            // Get Turnstile token (if enabled)
-            {% if USE_CF_TURNSTILE %}
-            const turnstileResponse = form.querySelector('[name="cf-turnstile-response"]');
-            if (!turnstileResponse || !turnstileResponse.value) {
-                showMessage('Please complete the security verification.', 'error');
-                return;
-            }
-            {% endif %}
-            
-            // Show loading state
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = 'Sending...';
-            submitBtn.disabled = true;
-            
-            try {
-                // Prepare form data using FormData from the form directly (includes CSRF token and Turnstile)
-                const formData = new FormData(form);
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('contact-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const messageContainer = document.getElementById('message-container');
+        const messageContent = document.getElementById('message-content');
+        
+        function showMessage(message, type) {
+            messageContent.textContent = message;
+            messageContent.className = `mb-4 px-4 py-3 rounded-lg border ${
+                type === 'success' 
+                    ? 'bg-green-900/20 border-green-700 text-green-300' 
+                    : 'bg-red-900/20 border-red-700 text-red-300'
+            }`;
+            messageContainer.style.display = 'block';
+            messageContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function hideMessage() {
+            messageContainer.style.display = 'none';
+        }
+        
+        if (form && submitBtn) {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                hideMessage();
                 
-                // Submit to Django backend
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formData
-                });
+                // Get form data
+                const name = form.querySelector('input[name="name"]').value.trim();
+                const email = form.querySelector('input[name="email"]').value.trim();
+                const message = form.querySelector('textarea[name="message"]').value.trim();
                 
-                const result = await response.json();
+                // Validation
+                if (!name || !email || !message) {
+                    showMessage('Please fill in all required fields.', 'error');
+                    return;
+                }
                 
-                if (result.success) {
-                    showMessage(result.message, 'success');
-                    form.reset(); // Clear the form
-                    {% if USE_CF_TURNSTILE %}
-                    // Reset Turnstile widget
-                    if (typeof turnstile !== 'undefined') {
-                        turnstile.reset();
+                // Get Turnstile token (if enabled)
+                {% if USE_CF_TURNSTILE %}
+                const turnstileResponse = form.querySelector('[name="cf-turnstile-response"]');
+                if (!turnstileResponse || !turnstileResponse.value) {
+                    showMessage('Please complete the security verification.', 'error');
+                    return;
+                }
+                {% endif %}
+                
+                // Show loading state
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = 'Sending...';
+                submitBtn.disabled = true;
+                
+                try {
+                    // Prepare form data using FormData from the form directly (includes CSRF token and Turnstile)
+                    const formData = new FormData(form);
+                    
+                    // Submit to Django backend
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showMessage(result.message, 'success');
+                        form.reset(); // Clear the form
+                        {% if USE_CF_TURNSTILE %}
+                        // Reset Turnstile widget
+                        if (typeof turnstile !== 'undefined') {
+                            turnstile.reset();
+                        }
+                        {% endif %}
+                    } else {
+                        showMessage(result.message || 'Something went wrong. Please try again.', 'error');
+                        {% if USE_CF_TURNSTILE %}
+                        // Reset Turnstile widget on error
+                        if (typeof turnstile !== 'undefined') {
+                            turnstile.reset();
+                        }
+                        {% endif %}
                     }
-                    {% endif %}
-                } else {
-                    showMessage(result.message || 'Something went wrong. Please try again.', 'error');
+                } catch (error) {
+                    console.error('Error:', error);
+                    showMessage('An unexpected error occurred. Please try again later.', 'error');
                     {% if USE_CF_TURNSTILE %}
                     // Reset Turnstile widget on error
                     if (typeof turnstile !== 'undefined') {
                         turnstile.reset();
                     }
                     {% endif %}
+                } finally {
+                    // Reset button state
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                showMessage('An unexpected error occurred. Please try again later.', 'error');
-                {% if USE_CF_TURNSTILE %}
-                // Reset Turnstile widget on error
-                if (typeof turnstile !== 'undefined') {
-                    turnstile.reset();
-                }
-                {% endif %}
-            } finally {
-                // Reset button state
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
-        });
-    }
-});
+            });
+        }
+    });
 </script>
-{% endblock %}
+{% endblock scripts %}

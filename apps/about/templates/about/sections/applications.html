@@ -1,0 +1,11 @@
+<div class="mt-4">
+    <div class="space-y-4">
+        {% if applications %}
+            {% for application in applications %}
+                {% include 'about/components/application_card.html' %}
+            {% endfor %}
+        {% else %}
+            {% include 'about/components/application_empty_state.html' with message="No applications found." %}
+        {% endif %}
+    </div>
+</div>

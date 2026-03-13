@@ -166,6 +166,40 @@ When deploying this project, we recommend:
    - Prevent spam and abuse through request throttling
    - Consider CAPTCHA for additional protection
 
+   **Recommended Rate Limiting Implementation**:
+   ```python
+   # Install django-ratelimit: pip install django-ratelimit
+   # Add to views.py:
+   from django_ratelimit.decorators import ratelimit
+
+   # Limit to 10 messages per hour per user
+   @ratelimit(key='user', rate='10/h', method='POST')
+   def send_message_view(request):
+       # ... existing code ...
+       pass
+
+   # Contact form: 3 submissions per hour per IP
+   @ratelimit(key='ip', rate='3/h', method='POST')
+   def contact_view(request):
+       # ... existing code ...
+       pass
+   ```
+
+   **Alternative: Django REST Framework Throttling**:
+   ```python
+   # For API endpoints, use DRF throttling:
+   REST_FRAMEWORK = {
+       'DEFAULT_THROTTLE_CLASSES': [
+           'rest_framework.throttling.AnonRateThrottle',
+           'rest_framework.throttling.UserRateThrottle'
+       ],
+       'DEFAULT_THROTTLE_RATES': {
+           'anon': '10/hour',
+           'user': '100/hour'
+       }
+   }
+   ```
+
 3. **User Management**
    - Regular review of user accounts and permissions
    - Audit author-level access periodically
@@ -237,6 +271,14 @@ Current security implementation status:
 
 ### 🔍 **Security Audit Log**
 
+- **2026-03-13**: Security audit completed - Fixed critical vulnerabilities
+  - Fixed GraphQL injection vulnerability in GitHub API (using parameterized queries)
+  - Fixed API key exposure in WakaTime API (moved from URL params to Authorization header)
+  - Added HTML sanitization to email templates to prevent XSS
+  - Added input length validation to guestbook messages (2-500 characters)
+  - Fixed unsafe JSON serialization in dashboard template (using json_script)
+  - Removed redundant code in GitHub statistics calculator
+  - Added comprehensive rate limiting recommendations
 - **2025-06-16**: Comprehensive XSS protection implemented in guestbook
 - **2025-06-16**: CSRF protection validated across all forms
 - **2025-06-16**: Input sanitization and validation enhanced
@@ -245,6 +287,6 @@ Current security implementation status:
 
 ---
 
-**Last Updated**: June 16, 2025  
-**Security Review**: Comprehensive security audit completed  
+**Last Updated**: March 13, 2026
+**Security Review**: Comprehensive security audit and vulnerability remediation completed
 **Next Review**: Recommended every 3 months or after major updates

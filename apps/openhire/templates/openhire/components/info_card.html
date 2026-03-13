@@ -1,0 +1,16 @@
+{% comment %}
+Reusable info card component with icon header
+Parameters:
+- title: Card title
+- icon_svg: SVG markup for the icon
+- content: Content to be displayed in the card body (passed via {% with %} block)
+{% endcomment %}
+<div class="bg-zinc-800 rounded-xl p-6 border border-zinc-700">
+    <div class="flex items-center gap-3 mb-4">
+        {{ icon_svg|safe }}
+        <h3 class="text-xl font-semibold">{{ title }}</h3>
+    </div>
+    <div class="space-y-3">
+        {{ content }}
+    </div>
+</div>

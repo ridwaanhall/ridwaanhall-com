@@ -16,9 +16,10 @@ class GitHubClient:
         
     def get_contribution_data(self) -> dict | None:
         """Fetch GitHub contribution data for the user."""
+        # Use parameterized query to prevent GraphQL injection
         query = """
-            query {
-                user(login: "%s") {
+            query($username: String!) {
+                user(login: $username) {
                     contributionsCollection {
                         contributionCalendar {
                             totalContributions
@@ -38,13 +39,15 @@ class GitHubClient:
                     }
                 }
             }
-        """ % self.username
+        """
+
+        variables = {"username": self.username}
 
         headers = {
             "Authorization": f"Bearer {self.access_token}",
             "Content-Type": "application/json",
         }
-        data = json.dumps({"query": query})
+        data = json.dumps({"query": query, "variables": variables})
 
         try:
             response = requests.post(self.api_url, headers=headers, data=data, timeout=10)
@@ -83,18 +86,14 @@ class GitHubStatsCalculator:
                 date = datetime.fromisoformat(day['date'])
                 date = timezone.make_aware(date) if timezone.is_naive(date) else date
                 count = day['contributionCount']
-                
+
                 all_days.append({'date': date, 'count': count})
-                
+
                 if count > best_day_count:
                     best_day_count = count
-                else:
-                    best_day_count = best_day_count
-                
+
                 if count > 0:
                     total_days_with_contributions += 1
-                else:
-                    total_days_with_contributions = total_days_with_contributions
         
         # Calculate this week's contributions if current week was found
         if current_week:

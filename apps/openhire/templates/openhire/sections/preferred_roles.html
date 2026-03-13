@@ -1,0 +1,17 @@
+{% comment %}
+Preferred Roles section
+Displays preferred job roles as tags
+{% endcomment %}
+<div class="border border-zinc-700 rounded-lg p-4">
+    <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex items-center mb-3">
+        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        </svg>
+        Preferred Roles
+    </h2>
+    <div class="flex flex-wrap gap-2">
+        {% for role in open_to_work_data.preferred_roles %}
+            <span class="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded text-xs border border-zinc-700/50">{{ role }}</span>
+        {% endfor %}
+    </div>
+</div>

@@ -15,7 +15,7 @@
     <main class="px-4 py-6 md:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <div class="space-y-8 relative z-10">
-                {% include 'blog/sections/featured-slider.html' %}
+                {% include 'blog/sections/featured_slider.html' %}
 
                 <div class="mt-4 sm:mt-6 mb-4 sm:mb-6">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-6">
@@ -27,7 +27,7 @@
                 </div>
 
                 <div class="mb-4 flex justify-end">
-                    {% include 'blog/components/search-form.html' %}
+                    {% include 'blog/components/search_form.html' %}
                 </div>
                 {% if search_query %}
                 <p class="mt-1 mb-4 text-sm text-zinc-400 text-right">Showing results for <span class="font-semibold text-indigo-300">"{{ search_query }}"</span> ({{ blogs.paginator.count }} found)</p>
@@ -35,12 +35,12 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
                     {% for blog in blogs %}
-                    {% include 'blog/components/card.html' %}
+                        {% include 'blog/components/card.html' %}
                     {% empty %}
-                    <div class="col-span-full text-center text-zinc-400 py-12">
-                        <h2 class="text-xl font-semibold mb-2">No blogs found.</h2>
-                        <p class="text-base">Try a different search keyword.</p>
-                    </div>
+                        <div class="col-span-full text-center text-zinc-400 py-12">
+                            <h2 class="text-xl font-semibold mb-2">No blogs found.</h2>
+                            <p class="text-base">Try a different search keyword.</p>
+                        </div>
                     {% endfor %}
                 </div>
 
@@ -54,9 +54,10 @@
         </div>
     </main>
 </div>
-{% endblock %}
+{% endblock content %}
+
 {% block scripts %}
-<script src="{% static 'js/featuredSlider.js' %}"></script>
-<script src="{% static 'js/blogImageSlider.js' %}"></script>
-<script src="{% static 'js/searchEnable.js' %}"></script>
-{% endblock %}
+    <script src="{% static 'js/featuredSlider.js' %}"></script>
+    <script src="{% static 'js/blogImageSlider.js' %}"></script>
+    <script src="{% static 'js/searchEnable.js' %}"></script>
+{% endblock scripts %}

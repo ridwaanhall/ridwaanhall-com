@@ -1,0 +1,7 @@
+{% if blog.tags %}
+    {% for tag in blog.tags %}
+        <span class="text-xs font-medium rounded-full bg-zinc-900 px-2 py-0.5 sm:px-2.5 sm:py-1 font-mono">
+            #{{ tag|slugify }}
+        </span>
+    {% endfor %}
+{% endif %}

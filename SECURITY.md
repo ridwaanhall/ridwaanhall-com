@@ -2,36 +2,7 @@
 
 ## Supported Versions
 
-This project supports the following versions of dependencies as specified in `requirements.txt`:
-
-| Package                   | Version   | Security Notes |
-|---------------------------|-----------|--------------------------------|
-| asgiref                   | 3.8.1     | Asynchronous framework support |
-| certifi                   | 2025.1.31 | CA certificates bundle        |
-| cffi                      | 1.17.1    | C extensions for cryptography  |
-| charset-normalizer        | 3.4.1     | Character encoding detection   |
-| cryptography              | 45.0.4    | Core cryptographic library     |
-| Django                    | 5.2.7     | Security-focused framework    |
-| django-allauth            | 65.9.0    | OAuth authentication          |
-| django-csp                | 4.0       | Content Security Policy       |
-| django-permissions-policy | 4.25.0    | Browser permissions control    |
-| idna                      | 3.10      | International domain names    |
-| mdurl                     | 0.1.2     | URL utilities for markdown   |
-| oauthlib                  | 3.2.2     | OAuth protocol implementation |
-| packaging                 | 25.0      | Package metadata handling    |
-| psycopg2-binary           | 2.9.10    | PostgreSQL driver with security patches |
-| pycparser                 | 2.22      | C parser for cffi/cryptography |
-| Pygments                  | 2.19.1    | Syntax highlighting          |
-| PyJWT                     | 2.10.1    | JWT authentication          |
-| python-decouple           | 3.8       | Environment variable security |
-| pytz                      | 2025.2    | Timezone support             |
-| requests                  | 2.32.4    | HTTP library with security patches |
-| requests-oauthlib         | 2.0.0     | OAuth support for requests   |
-| rich                      | 14.0.0    | Rich text formatting         |
-| sqlparse                  | 0.5.3     | SQL parsing library          |
-| tzdata                    | 2025.2    | Timezone data               |
-| urllib3                   | 2.5.0     | HTTP client with security fixes |
-| whitenoise                | 6.9.0     | Static file serving          |
+This project supports the following versions of dependencies as specified in `requirements.txt`
 
 We regularly update dependencies to address security vulnerabilities. Users are encouraged to keep their installations updated to the latest supported versions.
 
@@ -167,6 +138,7 @@ When deploying this project, we recommend:
    - Consider CAPTCHA for additional protection
 
    **Recommended Rate Limiting Implementation**:
+
    ```python
    # Install django-ratelimit: pip install django-ratelimit
    # Add to views.py:
@@ -186,6 +158,7 @@ When deploying this project, we recommend:
    ```
 
    **Alternative: Django REST Framework Throttling**:
+
    ```python
    # For API endpoints, use DRF throttling:
    REST_FRAMEWORK = {

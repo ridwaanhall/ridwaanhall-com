@@ -1,8 +1,9 @@
 {% extends 'base_seo.html' %}
-{% block head_seo %}
 {% load static %}
 {% load image_filters %}
 {% load project_tags %}
+
+{% block head_seo %}
 <title>{{ seo.title }}</title>
 
 <meta name="author" content="{{ about.username }}" />
@@ -81,7 +82,8 @@
         ]
     }
 </script>
-{% endblock %}
+{% endblock head_seo %}
+
 {% block content %}
 <div class="flex-1 md:ml-62">
     <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
@@ -96,7 +98,7 @@
             </div>
 
             <div class="mb-4 flex justify-end">
-                {% include 'projects/components/search-form.html' %}
+                {% include 'projects/components/search_form.html' %}
             </div>
             {% if search_query %}
             <p class="mt-1 mb-4 text-sm text-zinc-400 text-right">Showing results for <span class="font-semibold text-indigo-300">"{{ search_query }}"</span> ({{ projects.paginator.count }} found)</p>
@@ -123,8 +125,8 @@
         </div>
     </main>
 </div>
-{% endblock %}
+{% endblock content %}
 
 {% block scripts %}
 <script src="{% static 'js/searchEnable.js' %}"></script>
-{% endblock %}
+{% endblock scripts %}

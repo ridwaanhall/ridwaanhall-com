@@ -1,0 +1,14 @@
+{% if messages %}
+    <div class="mt-8" id="messages-container">
+        {% for message in messages %}
+            <div class="message-alert mb-4 px-4 py-3 rounded-lg border flex items-center justify-between {% if message.tags == 'success' %}bg-green-900/20 border-green-700 text-green-300{% elif message.tags == 'error' %}bg-red-900/20 border-red-700 text-red-300{% else %}bg-blue-900/20 border-blue-700 text-blue-300{% endif %}">
+                <span>{{ message }}</span>
+                <button type="button" class="close-message-btn cursor-pointer ml-3 p-1 rounded hover:bg-zinc-800 transition-colors" title="Close">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

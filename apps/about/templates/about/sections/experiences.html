@@ -1,0 +1,10 @@
+{% load image_filters %}
+<div class="mt-4 sm:mt-6">
+
+    <div class="space-y-3 sm:space-y-4">
+        {% regroup experiences by company as company_list %}
+        {% for company_group in company_list %}
+            {% include 'about/components/experience_card.html' %}
+        {% endfor %}
+    </div>
+</div>

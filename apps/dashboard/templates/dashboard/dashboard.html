@@ -149,12 +149,17 @@
 {% block scripts %}
 <script src="{% static 'js/countUp.js' %}"></script>
 <script src="{% static 'js/githubContributions.js' %}"></script>
+{{ github_activity|json_script:"github-data" }}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize GitHub contributions graph
-        const githubData = {{ github_activity|safe }};
-        const contributionsGraph = new GitHubContributions(githubData);
-        contributionsGraph.init();
+        const githubDataElement = document.getElementById('github-data');
+        const githubData = githubDataElement ? JSON.parse(githubDataElement.textContent) : null;
+
+        if (githubData) {
+            const contributionsGraph = new GitHubContributions(githubData);
+            contributionsGraph.init();
+        }
 
         // Animate progress bars and percentages together
         function animateProgressBars() {

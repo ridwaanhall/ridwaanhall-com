@@ -26,14 +26,19 @@ class WakatimeClient:
             today = timezone.now().astimezone(jakarta_tz).date()
             start_date = today - timedelta(days=6)  # 7 days including today
 
+            # Use headers for API key instead of URL parameters to prevent exposure in logs
+            headers = {
+                'Authorization': f'Bearer {self.api_key}'
+            }
+
             last_7_days_url = (
                 f"{self.base_url}/users/current/summaries"
-                f"?start={start_date}&end={today}&api_key={self.api_key}"
+                f"?start={start_date}&end={today}"
             )
-            all_time_url = f"{self.base_url}/users/current/all_time_since_today?api_key={self.api_key}"
+            all_time_url = f"{self.base_url}/users/current/all_time_since_today"
 
-            last_7_days_response = requests.get(last_7_days_url, timeout=self.timeout)
-            all_time_response = requests.get(all_time_url, timeout=self.timeout)
+            last_7_days_response = requests.get(last_7_days_url, headers=headers, timeout=self.timeout)
+            all_time_response = requests.get(all_time_url, headers=headers, timeout=self.timeout)
 
             last_7_days_response.raise_for_status()
             all_time_response.raise_for_status()

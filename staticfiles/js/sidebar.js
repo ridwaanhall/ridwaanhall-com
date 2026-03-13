@@ -7,12 +7,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const openSidebar = () => {
         mobileSidebar.classList.remove('hidden');
         setTimeout(() => {
-            mobileMenu.classList.remove('-translate-x-full');
+            mobileMenu.classList.remove('translate-y-full');
         }, 50);
     };
     
     const closeSidebar = () => {
-        mobileMenu.classList.add('-translate-x-full');
+        mobileMenu.classList.add('translate-y-full');
         setTimeout(() => {
             mobileSidebar.classList.add('hidden');
         }, 300);

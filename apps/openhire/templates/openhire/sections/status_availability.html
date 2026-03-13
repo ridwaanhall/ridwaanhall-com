@@ -1,0 +1,48 @@
+{% comment %}
+Status and Availability section
+Shows current work status and availability details
+{% endcomment %}
+<div class="border border-zinc-700 rounded-lg p-4">
+    <div class="flex flex-wrap items-start justify-between w-full gap-2 mb-3">
+        <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex-1 flex items-center">
+            <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Status & Availability
+        </h2>
+        <span class="inline-flex flex-shrink-0 items-center text-xs font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 py-1 rounded-full border border-zinc-700 shadow-sm whitespace-nowrap">
+            <span class="w-1.5 h-1.5 bg-green-400 rounded-full mr-1.5 animate-pulse"></span>
+            {{ open_to_work_data.status }}
+        </span>
+    </div>
+    <div class="space-y-2">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+            <span class="font-medium text-sm">Availability</span>
+            <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.availability }}</span>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+            <span class="font-medium text-sm">Employment Type</span>
+            <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.type|join:", " }}</span>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+            <span class="font-medium text-sm">Remote Work</span>
+            <span class="text-sm mt-1 sm:mt-0">
+                {% if open_to_work_data.remote %}
+                    <span class="text-emerald-400">Available</span>
+                {% else %}
+                    <span class="text-red-400">Not Available</span>
+                {% endif %}
+            </span>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+            <span class="font-medium text-sm">Relocation</span>
+            <span class="text-sm mt-1 sm:mt-0">
+                {% if open_to_work_data.relocation %}
+                    <span class="text-emerald-400">Open to Relocate</span>
+                {% else %}
+                    <span class="text-red-400">No Relocation</span>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</div>

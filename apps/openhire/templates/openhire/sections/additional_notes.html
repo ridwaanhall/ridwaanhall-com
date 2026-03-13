@@ -1,0 +1,15 @@
+{% comment %}
+Additional Notes section (Join Our Team)
+Displays additional hiring notes if available
+{% endcomment %}
+{% if hiring_data.additional_notes %}
+<div class="border border-zinc-700 rounded-lg p-4">
+    <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex items-center mb-3">
+        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"></path>
+        </svg>
+        Join Our Team
+    </h2>
+    <p class="text-sm leading-relaxed text-zinc-400">{{ hiring_data.additional_notes }}</p>
+</div>
+{% endif %}

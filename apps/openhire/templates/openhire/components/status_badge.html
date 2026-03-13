@@ -1,0 +1,14 @@
+{% comment %}
+Status badge component
+Parameters:
+- status: Status text to display
+- badge_class: CSS classes for badge styling (default: bg-emerald-500/20 text-emerald-400)
+- dot_class: CSS classes for status dot (default: bg-emerald-400)
+{% endcomment %}
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full {% if badge_class %}{{ badge_class }}{% else %}bg-emerald-500/20 text-emerald-400{% endif %} border border-current/30">
+    <span class="relative flex h-2 w-2">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full {% if dot_class %}{{ dot_class }}{% else %}bg-emerald-400{% endif %} opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 {% if dot_class %}{{ dot_class }}{% else %}bg-emerald-400{% endif %}"></span>
+    </span>
+    <span class="font-medium">{{ status }}</span>
+</div>

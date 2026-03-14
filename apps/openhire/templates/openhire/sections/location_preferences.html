@@ -1,0 +1,45 @@
+{% comment %}
+Location Preferences section
+Displays work arrangements, on-site locations, and remote locations
+{% endcomment %}
+<div class="border border-zinc-700 rounded-lg p-4">
+    <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex items-center mb-3">
+        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        </svg>
+        Location Preferences
+    </h2>
+
+    <div class="space-y-0">
+        <!-- Work Arrangements -->
+        <div class="p-2">
+            <h3 class="text-lg font-medium text-indigo-400 mb-3">Work Arrangements</h3>
+            <div class="flex flex-wrap gap-2 mt-1.5">
+                {% for location_type in open_to_work_data.location_types %}
+                    <span class="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded text-xs border border-zinc-700/50">{{ location_type }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- On-site Locations -->
+        <div class="p-2">
+            <h3 class="text-lg font-medium text-indigo-400 mb-3">On-site Locations</h3>
+            <div class="flex flex-wrap gap-2 mt-1.5">
+                {% for location in open_to_work_data.preferred_locations %}
+                    <span class="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded text-xs border border-zinc-700/50">{{ location }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Remote Locations -->
+        <div class="p-2">
+            <h3 class="text-lg font-medium text-indigo-400 mb-3">Remote Locations</h3>
+            <div class="flex flex-wrap gap-2 mt-1.5">
+                {% for remote_location in open_to_work_data.remote_locations %}
+                    <span class="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded text-xs border border-zinc-700/50">{{ remote_location }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

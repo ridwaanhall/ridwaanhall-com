@@ -1,0 +1,31 @@
+{% comment %}
+Company Overview section for hiring page
+Shows company name, description, and website link
+{% endcomment %}
+<div class="border border-zinc-700 rounded-lg p-4">
+    <div class="flex flex-wrap items-start justify-between w-full gap-2 mb-3">
+        <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex-1 flex items-center">
+            <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+            </svg>
+            Company Overview
+        </h2>
+        <span class="inline-flex flex-shrink-0 items-center text-xs font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 py-1 rounded-full border border-zinc-700 shadow-sm whitespace-nowrap">
+            <span class="w-1.5 h-1.5 bg-blue-400 rounded-full mr-1.5 animate-pulse"></span>
+            {{ hiring_data.hiring_status }}
+        </span>
+    </div>
+    <div class="space-y-2">
+        <h3 class="text-lg font-medium text-zinc-200">{{ hiring_data.company_name }}</h3>
+        <p class="text-sm leading-relaxed text-zinc-400">{{ hiring_data.company_description }}</p>
+        {% if hiring_data.website %}
+        <a href="{{ hiring_data.website }}" target="_blank" rel="noopener"
+           class="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-colors text-sm mt-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+            Visit {{ hiring_data.company_name }}
+        </a>
+        {% endif %}
+    </div>
+</div>

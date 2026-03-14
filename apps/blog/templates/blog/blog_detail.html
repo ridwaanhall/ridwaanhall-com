@@ -1,0 +1,49 @@
+{% extends 'base_seo.html' %}
+{% load static %}
+{% load blog_tags %}
+{% load image_filters %}
+
+{% block content %}
+<article class="flex-1 md:ml-62">
+    <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <header class="mb-6 md:mb-8">
+                <h1 class="text-2xl lg:text-3xl font-medium mb-2 md:mb-3">{{ blog.title }}</h1>
+                <div class="flex flex-col mb-4 gap-3">
+                    {% include "blog/components/detail_author_date.html" %}
+
+                    <div class="flex flex-wrap gap-2 mt-1">
+                        {% include "blog/components/detail_back.html" %}
+
+                        <!-- Vertical Divider -->
+                        <div class="w-px h-6 bg-zinc-600 mx-1 mt-1"></div>
+
+                        {% include "blog/components/detail_share.html" %}
+                    </div>
+                </div>
+
+                {% include "blog/sections/detail_gallery.html" %}
+            </header>
+
+            <div class="prose prose-sm sm:prose prose-md lg:prose-lg prose-invert max-w-none mb-8 md:mb-10">
+                {% include "blog/sections/detail_content.html" %}
+            </div>
+
+            <footer>
+                <h2 class="text-lg sm:text-xl font-semibold mb-2 md:mb-3">Tags</h2>
+                <div class="flex flex-wrap gap-1.5 sm:gap-2">
+                    {% include "blog/components/detail_tag.html" %}
+                </div>
+            </footer>
+        </div>
+    </main>
+</article>
+
+{% include "blog/components/detail_floating_button.html" %}
+{% endblock content %}
+
+{% block scripts %}
+    <script src="{% static 'js/copyToClipboard.js' %}"></script>
+    <script src="{% static 'js/backScroll.js' %}"></script>
+    <script src="{% static 'js/blogImageSlider.js' %}"></script>
+{% endblock %}

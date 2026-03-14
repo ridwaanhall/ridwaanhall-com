@@ -1,0 +1,193 @@
+{% extends 'base_seo.html' %}
+{% load static %}
+{% load image_filters %}
+{% load project_tags %}
+
+{% block head_seo %}
+
+<title>{{ seo.title }}</title>
+
+<meta name="author" content="{{ about.username }}" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="{{ request.build_absolute_uri }}" />
+
+<meta name="description" content="{{ seo.description }}" />
+<meta name="keywords" content="{{ seo.keywords }}" />
+
+<meta property="og:type" content="{{ seo.og_type }}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:title" content="{{ seo.title }}" />
+<meta property="og:description" content="{{ seo.description }}" />
+<meta property="og:image" content="{{ seo.og_image }}" />
+
+<meta name="twitter:card" content="{{ seo.twitter_card }}" />
+<meta name="twitter:url" content="{{ request.build_absolute_uri }}" />
+<meta name="twitter:title" content="{{ seo.title }}" />
+<meta name="twitter:description" content="{{ seo.description }}" />
+<meta name="twitter:image" content="{{ seo.og_image }}" />
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        "name": "{{ project.title }}",
+        "description": "{{ project.description|join:' '|escapejs }}",
+        "codeRepository": "{{ project.github_url }}",
+        "url": "{{ request.build_absolute_uri }}",
+        "programmingLanguage": "{% for tech in project.tech_stack %}{{ tech.name|join:'' }}{% if not forloop.last %}, {% endif %}{% endfor %}",
+        "image": "{{ project.image_url }}",
+        "author": {
+            "@type": "Person",
+            "name": "{{ about.name|default:"N/A" }}",
+            "username": "{{ about.username|default:"N/A" }}",
+            "image": "{{ about.image_url|default:"N/A" }}",
+            "url": "{{ request.scheme|default:"N/A" }}://{{ request.get_host|default:"N/A" }}/"
+        },
+        "runtimePlatform": "{% for tech in project.tech_stack %}{{ tech.name|join:'' }}{% if not forloop.last %}, {% endif %}{% endfor %}",
+        "contentUrl": "{{ project.demo_url }}",
+        "potentialAction": [
+            {
+                "@type": "ViewAction",
+                "target": "{{ project.demo_url }}",
+                "name": "View Demo"
+            },
+            {
+                "@type": "ViewAction",
+                "target": "{{ project.github_url }}",
+                "name": "View Source Code"
+            }
+        ]
+    }
+</script>
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How to use {{ project.title }}",
+        "description": "{{ project.description|join:' '|escapejs }}",
+        "step": [
+            {% for feature in project.features %}
+            {
+                "@type": "HowToStep",
+                "name": "{{ feature.title }}",
+                "text": "{{ feature.description }}",
+                "image": "{{ feature.image_url }}"
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        "supply": [
+            {% for tech in project.tech_stack %}
+            "{{ tech.name }}"{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        "tool": [
+            {% for tech in project.tech_stack %}
+            "{{ tech.name }}"{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ]
+    }
+</script>
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "name": "Site Navigation",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'home' %}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'projects' %}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "{{ project.title }}",
+                {% with project.title|slugify as project_slug %}
+                "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'projects_detail' project_slug %}"
+                {% endwith %}
+            }
+        ]
+    }
+</script>
+{% endblock head_seo %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/imageLightbox.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+<div class="flex-1 md:ml-62">
+    <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Project Header Section -->
+            <div class="relative mb-6 sm:mb-8">
+                <!-- Project Header -->
+                <div class="relative z-10">
+                    <!-- Project Info Container -->
+                    <div class="flex flex-col">
+                        <!-- Title -->
+                        <h1 class="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
+                            {{ project.title }}
+                        </h1>
+
+                        <!-- Headline -->
+                        <p class="text-base sm:text-lg leading-relaxed mb-4 max-w-3xl">
+                            {{ project.headline }}
+                        </p>
+
+                        <!-- Status Badge -->
+                        {% if project.status %}
+                        <div class="mb-4">
+                            <span class="inline-flex items-center gap-1.5 {{ project.status|status_color }} text-sm font-medium px-3 py-1.5 rounded-full backdrop-blur-sm">
+                                {{ project.status|format_status }}
+                            </span>
+                        </div>
+                        {% endif %}
+
+                        <!-- Built With + Action Buttons Container -->
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                            <!-- Tech Stack Pills -->
+                            <div class="flex flex-wrap items-center gap-1 sm:gap-2">
+                                {% include "projects/components/detail_back.html" %}
+                                {% if project.tech_stack %}
+                                    <div class="w-px h-6 bg-zinc-600 mx-1"></div>
+                                    {% include "projects/components/detail_techstack.html" %}
+                                {% endif %}
+                            </div>
+
+                            <!-- Action Buttons (icon pills with hover text like tech stack) -->
+                            {% include "projects/components/detail_action_button.html" %}
+                        </div>
+
+                        {% include "projects/sections/detail_gallery.html" %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timestamps Section -->
+            {% if project.created_at or project.updated_at %}
+                {% include "projects/sections/detail_timestamp.html" %}
+            {% endif %}
+
+            {% include "projects/sections/detail_content.html" %}
+        </div>
+    </main>
+</div>
+
+{% include "projects/components/detail_floating_button.html" %}
+{% endblock content %}
+
+{% block scripts %}
+    <script src="{% static 'js/backScroll.js' %}"></script>
+    <script src="{% static 'js/projectImageSlider.js' %}"></script>
+    <script src="{% static 'js/imageLightbox.js' %}"></script>
+{% endblock scripts %}

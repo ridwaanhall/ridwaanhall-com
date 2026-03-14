@@ -67,7 +67,7 @@ class ProjectsDetailView(ProjectDetailSEOMixin, DetailView):
     Project detail view for individual projects.
     Displays detailed view for a specific project based on slugified title.
     """
-    template_name = 'projects/projects-detail.html'
+    template_name = 'projects/projects_detail.html'
 
     def get(self, request, title, *args, **kwargs):
         return self.handle_exceptions(lambda r, *a, **kw: self._get(r, title, *a, **kw))(request, *args, **kwargs)

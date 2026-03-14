@@ -1,0 +1,26 @@
+{% comment %}
+Languages & Preferences section
+Displays languages, contact preference, and interview availability
+{% endcomment %}
+<div class="border border-zinc-700 rounded-lg p-4">
+    <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex items-center mb-3">
+        <svg class="w-5 h-5 mr-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+        </svg>
+        Languages & Preferences
+    </h2>
+    <div class="space-y-2">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+            <span class="font-medium text-sm">Languages</span>
+            <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.languages|join:", " }}</span>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+            <span class="font-medium text-sm">Contact Preference</span>
+            <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.contact_preference }}</span>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
+            <span class="font-medium text-sm">Interview Availability</span>
+            <span class="text-sm text-zinc-400 mt-1 sm:mt-0">{{ open_to_work_data.interview_availability }}</span>
+        </div>
+    </div>
+</div>

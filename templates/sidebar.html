@@ -1,7 +1,10 @@
 {% load image_filters %}
 <div id="mobile-sidebar" class="fixed inset-0 z-40 bg-transparent bg-opacity-60 backdrop-blur-sm hidden md:hidden" aria-hidden="true">
-    <div class="fixed inset-y-0 left-0 w-72 bg-black transition-all duration-300 transform -translate-x-full shadow-xl flex flex-col" id="mobile-menu">
-        <div class="flex items-center justify-between p-5 mb-4">
+    <div class="fixed inset-x-0 bottom-0 w-full max-h-[85vh] overflow-y-auto rounded-t-2xl bg-black transition-transform duration-300 transform translate-y-full shadow-[0_-10px_40px_rgba(0,0,0,0.5)] flex flex-col border-t border-zinc-800" id="mobile-menu">
+        <div class="w-full flex justify-center pt-3 pb-1">
+            <div class="w-12 h-1.5 bg-zinc-700 rounded-full"></div>
+        </div>
+        <div class="flex items-center justify-between px-5 pb-5 pt-2 mb-2">
             <div class="flex items-center">
                 <div class="relative">
                     <img src="{{ about.image_url|wsrv_image:'100x100' }}" alt="{{ about.name }} Profile Photo" class="w-12 h-12 rounded-full object-cover" width="100" height="100">
@@ -10,9 +13,8 @@
                     {% endif %}
                 </div>
                 <div class="ml-3">
-                    <span class="text-xl font-semibold">{{ about.name }}</span>
-                    <div class="flex flex-col gap-1">
-                        <p class="text-xs text-zinc-400 hover:text-zinc-300">@{{ about.username }}</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl font-semibold">{{ about.name }}</span>
                         <!-- Status badges for mobile -->
                         <div class="flex gap-1">
                             {% if about.is_open_to_work or about.is_hiring %}
@@ -32,6 +34,9 @@
                             </a>
                             {% endif %}
                         </div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <p class="text-xs text-zinc-400 hover:text-zinc-300">@{{ about.username }}</p>
                     </div>
                 </div>
             </div>

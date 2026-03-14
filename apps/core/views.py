@@ -133,7 +133,7 @@ class PrivacyPolicyView(PrivacyPolicySEOMixin, BaseView):
     """
     Privacy policy page view.
     """
-    template_name = 'core/privacy-policy.html'
+    template_name = 'core/privacy_policy.html'
 
     def get(self, request, *args, **kwargs):
         return self.handle_exceptions(self._get)(request, *args, **kwargs)

@@ -1,0 +1,65 @@
+<nav class="flex justify-center" aria-label="Pagination">
+    <ul class="inline-flex items-center gap-0.5 sm:gap-1 rounded-lg p-0.5 sm:p-1 backdrop-blur-sm border border-zinc-700/50">
+        <!-- Previous page -->
+        {% if page_obj.has_previous %}
+            <li>
+                <a
+                    href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}"
+                    class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200"
+                    aria-label="Previous page"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </li>
+        {% else %}
+            <li>
+                <span class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm text-zinc-500 cursor-not-allowed" aria-disabled="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                </span>
+            </li>
+        {% endif %}
+        <!-- Page numbers -->
+        {% for item in page_range %}
+            {% if item == "..." %}
+                <li>
+                    <span class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center text-zinc-500">...</span>
+                </li>
+            {% elif item == page_obj.number %}
+                <li>
+                    <span aria-current="page" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md bg-zinc-800 text-xs sm:text-sm font-medium">
+                        {{ item }}
+                    </span>
+                </li>
+            {% else %}
+                <li>
+                    <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}page={{ item }}" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-xs sm:text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200">
+                        {{ item }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        <!-- Next page -->
+        {% if page_obj.has_next %}
+        <li>
+            <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}page={{ page_obj.next_page_number }}" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200" aria-label="Next page">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+            </a>
+        </li>
+        {% else %}
+        <li>
+            <span class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm text-zinc-500 cursor-not-allowed" aria-disabled="true">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+            </span>
+        </li>
+        {% endif %}
+    </ul>
+</nav>

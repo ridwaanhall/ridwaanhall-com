@@ -72,7 +72,7 @@ class BlogDetailView(BlogDetailSEOMixin, DetailView):
     Blog detail view for individual blog posts.
     Displays a specific blog post by slugified title.
     """
-    template_name = 'blog/blog-detail.html'
+    template_name = 'blog/blog_detail.html'
 
     def get(self, request, title, *args, **kwargs):
         return self.handle_exceptions(lambda r, *a, **kw: self._get(r, title, *a, **kw))(request, *args, **kwargs)

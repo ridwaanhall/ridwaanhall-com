@@ -256,9 +256,16 @@ class SendMessageView(LoginRequiredMixin, UserProfileMixin, View):
         """
         message_text = request.POST.get('message', '').strip()
         reply_to_id = request.POST.get('reply_to', '').strip()
-        
+
+        # Validate message is not empty and within length limits
         if not message_text:
-            return JsonResponse({'success': False, 'error': 'Message cannot be empty'})
+            return JsonResponse({'success': False, 'error': 'Message cannot be empty'}, status=400)
+
+        if len(message_text) < 2:
+            return JsonResponse({'success': False, 'error': 'Message must be at least 2 characters long'}, status=400)
+
+        if len(message_text) > 500:
+            return JsonResponse({'success': False, 'error': 'Message must be 500 characters or less'}, status=400)
         
         # Handle reply
         reply_to_message = None

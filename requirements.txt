@@ -15,7 +15,7 @@ packaging==25.0
 psycopg2-binary==2.9.11
 pycparser==2.22
 Pygments==2.19.1
-PyJWT==2.10.1
+PyJWT==2.12.1
 python-decouple==3.8
 pytz==2025.2
 requests==2.32.4

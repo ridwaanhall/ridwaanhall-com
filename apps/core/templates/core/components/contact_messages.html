@@ -1,0 +1,14 @@
+<div id="message-container" class="mt-8" style="display: none;">
+    <div id="message-content" class="mb-4 px-4 py-3 rounded-lg border">
+    </div>
+</div>
+
+{% if messages %}
+    <div class="mt-8">
+        {% for message in messages %}
+            <div class="mb-4 px-4 py-3 rounded-lg border {% if message.tags == 'success' %}bg-green-900/20 border-green-700 text-green-300{% elif message.tags == 'error' %}bg-red-900/20 border-red-700 text-red-300{% else %}bg-blue-900/20 border-blue-700 text-blue-300{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

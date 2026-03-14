@@ -2,36 +2,7 @@
 
 ## Supported Versions
 
-This project supports the following versions of dependencies as specified in `requirements.txt`:
-
-| Package                   | Version   | Security Notes |
-|---------------------------|-----------|--------------------------------|
-| asgiref                   | 3.8.1     | Asynchronous framework support |
-| certifi                   | 2025.1.31 | CA certificates bundle        |
-| cffi                      | 1.17.1    | C extensions for cryptography  |
-| charset-normalizer        | 3.4.1     | Character encoding detection   |
-| cryptography              | 45.0.4    | Core cryptographic library     |
-| Django                    | 5.2.7     | Security-focused framework    |
-| django-allauth            | 65.9.0    | OAuth authentication          |
-| django-csp                | 4.0       | Content Security Policy       |
-| django-permissions-policy | 4.25.0    | Browser permissions control    |
-| idna                      | 3.10      | International domain names    |
-| mdurl                     | 0.1.2     | URL utilities for markdown   |
-| oauthlib                  | 3.2.2     | OAuth protocol implementation |
-| packaging                 | 25.0      | Package metadata handling    |
-| psycopg2-binary           | 2.9.10    | PostgreSQL driver with security patches |
-| pycparser                 | 2.22      | C parser for cffi/cryptography |
-| Pygments                  | 2.19.1    | Syntax highlighting          |
-| PyJWT                     | 2.10.1    | JWT authentication          |
-| python-decouple           | 3.8       | Environment variable security |
-| pytz                      | 2025.2    | Timezone support             |
-| requests                  | 2.32.4    | HTTP library with security patches |
-| requests-oauthlib         | 2.0.0     | OAuth support for requests   |
-| rich                      | 14.0.0    | Rich text formatting         |
-| sqlparse                  | 0.5.3     | SQL parsing library          |
-| tzdata                    | 2025.2    | Timezone data               |
-| urllib3                   | 2.5.0     | HTTP client with security fixes |
-| whitenoise                | 6.9.0     | Static file serving          |
+This project supports the following versions of dependencies as specified in `requirements.txt`
 
 We regularly update dependencies to address security vulnerabilities. Users are encouraged to keep their installations updated to the latest supported versions.
 
@@ -166,6 +137,42 @@ When deploying this project, we recommend:
    - Prevent spam and abuse through request throttling
    - Consider CAPTCHA for additional protection
 
+   **Recommended Rate Limiting Implementation**:
+
+   ```python
+   # Install django-ratelimit: pip install django-ratelimit
+   # Add to views.py:
+   from django_ratelimit.decorators import ratelimit
+
+   # Limit to 10 messages per hour per user
+   @ratelimit(key='user', rate='10/h', method='POST')
+   def send_message_view(request):
+       # ... existing code ...
+       pass
+
+   # Contact form: 3 submissions per hour per IP
+   @ratelimit(key='ip', rate='3/h', method='POST')
+   def contact_view(request):
+       # ... existing code ...
+       pass
+   ```
+
+   **Alternative: Django REST Framework Throttling**:
+
+   ```python
+   # For API endpoints, use DRF throttling:
+   REST_FRAMEWORK = {
+       'DEFAULT_THROTTLE_CLASSES': [
+           'rest_framework.throttling.AnonRateThrottle',
+           'rest_framework.throttling.UserRateThrottle'
+       ],
+       'DEFAULT_THROTTLE_RATES': {
+           'anon': '10/hour',
+           'user': '100/hour'
+       }
+   }
+   ```
+
 3. **User Management**
    - Regular review of user accounts and permissions
    - Audit author-level access periodically
@@ -237,6 +244,14 @@ Current security implementation status:
 
 ### 🔍 **Security Audit Log**
 
+- **2026-03-13**: Security audit completed - Fixed critical vulnerabilities
+  - Fixed GraphQL injection vulnerability in GitHub API (using parameterized queries)
+  - Fixed API key exposure in WakaTime API (moved from URL params to Authorization header)
+  - Added HTML sanitization to email templates to prevent XSS
+  - Added input length validation to guestbook messages (2-500 characters)
+  - Fixed unsafe JSON serialization in dashboard template (using json_script)
+  - Removed redundant code in GitHub statistics calculator
+  - Added comprehensive rate limiting recommendations
 - **2025-06-16**: Comprehensive XSS protection implemented in guestbook
 - **2025-06-16**: CSRF protection validated across all forms
 - **2025-06-16**: Input sanitization and validation enhanced
@@ -245,6 +260,6 @@ Current security implementation status:
 
 ---
 
-**Last Updated**: June 16, 2025  
-**Security Review**: Comprehensive security audit completed  
+**Last Updated**: March 13, 2026
+**Security Review**: Comprehensive security audit and vulnerability remediation completed
 **Next Review**: Recommended every 3 months or after major updates

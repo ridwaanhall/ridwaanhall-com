@@ -164,8 +164,14 @@ class ApplicationsData:
                     details='Received WhatsApp message from HR Venturo Pro Indonesia requesting a Loom video (±10 minutes) as pre-interview stage.',
                     notes='Message included 2 technical questions and deadline: submit Loom link by Thursday, 12 March 2026, 10:00 WIB.',
                 ),
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-03-16T13:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='On-Cam Interview',
+                    details='Discussed project experience, technical challenges (login system, API traffic handling), coding approach, and salary expectations.',
+                    notes='Transcript recorded via Tactiq during the call. Both interviewer and candidate were on camera.',
+                ),
             ],
-            lessons_learned='VENTURO role aligns with fullstack and Python/Django skills. Application actively reviewed, recruiter downloaded resume, HR contacted via LinkedIn and WhatsApp with pre-interview Loom video assignment. Preparing video response before deadline to proceed in selection process.',
+            lessons_learned='The VENTURO application shows a structured and transparent hiring process, with active review, recruiter engagement, and clear technical and salary discussions. The role aligns well with your fullstack Python/Django skills, but highlights the need to balance technical demonstration with realistic salary negotiation and professional on-cam communication.',
         )),
         asdict(Application(
             id=60,

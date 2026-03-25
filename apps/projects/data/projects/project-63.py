@@ -46,8 +46,9 @@ project_data = asdict(ProjectData(
 
     # Media
     images={
-        "mlbb_identity_card.webp": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_identity_card.webp",
-        "mlbb_identity_card_page.webp": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_identity_card_page.webp",
+        "mlbb_identity_card_page_top_001_beta.webp": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_identity_card_page_top_001_beta.webp",
+        "mlbb_identity_card_page_bottom_001_beta.webp": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_identity_card_page_bottom_001_beta.webp",
+        "mlbb_identity_card_page_match_001_beta.webp": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_identity_card_page_match_001_beta.webp",
     },
 
     # Tech Stack
@@ -71,9 +72,9 @@ project_data = asdict(ProjectData(
     # Status
     is_featured=False,
     featured_priority=0,
-    status=ProjectStatus.DEVELOPMENT_IN_PROGRESS,
+    status=ProjectStatus.DEPLOYMENT_RELEASED,
 
     # Timestamps
     created_at=datetime.strptime("2026-01-16T21:35:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    updated_at=None,
+    updated_at=datetime.strptime("2026-03-24T22:43:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 ))

@@ -22,9 +22,12 @@ project_data = asdict(ProjectData(
         Feature(title='Player Hub', description='Simple site for browsing game insights.'),
     ],
     images={
-        "mobile_legends_bang_bang_api_and_website.webp": f"{settings.PROJECT_BASE_IMG_URL}/mobile_legends_bang_bang_api_and_website.webp",
+        "mlbb_public_api.webp": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_public_api.webp",
+        "mlbb_docs.webp": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_docs.webp",
+        "mlbb_result.webp": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_result.webp",
     },
     tech_stack=[
+        SkillsData.tech_stack["fastapi"],
         SkillsData.tech_stack["django"],
         SkillsData.tech_stack["python"],
         SkillsData.tech_stack["rest_api"],
@@ -40,5 +43,5 @@ project_data = asdict(ProjectData(
     featured_priority=2,
     status=ProjectStatus.COMPLETED,
     created_at=datetime.strptime("2025-07-06T16:51:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    updated_at=datetime.strptime("2026-03-14T06:55:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    updated_at=datetime.strptime("2026-03-25T06:55:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 ))

@@ -23,7 +23,10 @@ project_data = asdict(ProjectData(
         Feature(title='Feedback Tracker', description='Logs donor comments for quick resolution.'),
     ],
     images={
-        "mlbb_mabar_vip.webp": f"{settings.PROJECT_BASE_IMG_URL}/mlbb_mabar_vip.webp",
+        "mabar_list.webp": f"{settings.PROJECT_BASE_IMG_URL}/mabar_list.webp",
+        "mabar_req_hero_list.webp": f"{settings.PROJECT_BASE_IMG_URL}/mabar_req_hero_list.webp",
+        "mabar_edit.webp": f"{settings.PROJECT_BASE_IMG_URL}/mabar_edit.webp",
+        "mabar_add.webp": f"{settings.PROJECT_BASE_IMG_URL}/mabar_add.webp",
     },
     tech_stack=[
         SkillsData.tech_stack["python"],
@@ -37,5 +40,5 @@ project_data = asdict(ProjectData(
     featured_priority=None,
     status=ProjectStatus.COMPLETED,
     created_at=datetime.strptime("2024-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    updated_at=datetime.strptime("2024-10-15T00:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    updated_at=datetime.strptime("2026-03-25T15:37:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 ))

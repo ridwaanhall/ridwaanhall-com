@@ -18,7 +18,7 @@ Pygments==2.19.1
 PyJWT==2.12.1
 python-decouple==3.8
 pytz==2025.2
-requests==2.32.4
+requests==2.33.0
 requests-oauthlib==2.0.0
 rich==14.0.0
 sqlparse==0.5.4

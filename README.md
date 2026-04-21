@@ -1,7 +1,7 @@
 # 🚀 FlexForge - Advanced Developer Portfolio Platform
 
 [![Django](https://img.shields.io/badge/Django-5.2-092E20?style=flat&logo=django&logoColor=white)](https://djangoproject.com/)
-[![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org/)
+[![Python](https://img.shields.io/badge/Python-3.14+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 
 ![FlexForge Portfolio](https://ridwaanhall.com/static/img/project/ridwaanhall_com_2025070701.webp)
@@ -20,7 +20,7 @@
 
 ## 🛠️ Tech Stack
 
-- **Backend**: >Django 5.2, Python 3.12
+- **Backend**: Django, Python 3.14
 - **Frontend**: TailwindCSS, Vanilla JavaScript
 - **Data**: Individual Python files for content management
 - **APIs**: GitHub API, WakaTime API
@@ -45,14 +45,14 @@
 git clone https://github.com/ridwaanhall/ridwaanhall-com.git
 cd ridwaanhall-com
 
-# Setup virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# or
-venv\Scripts\activate     # Windows
+# Install uv (if you don't already have it)
+pip install uv
 
-# Install dependencies
-pip install -r requirements.txt
+# Create local virtual environment (.venv) with Python 3.14
+uv venv --python 3.14
+
+# Sync dependencies from pyproject.toml/uv.lock
+uv sync
 
 # Install Tailwind CSS
 npm install tailwindcss @tailwindcss/cli
@@ -61,7 +61,7 @@ npm install tailwindcss @tailwindcss/cli
 npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global.css --watch
 
 # In a separate terminal, run development server
-python manage.py runserver
+uv run python manage.py runserver
 ```
 
 ### Tailwind CSS Development

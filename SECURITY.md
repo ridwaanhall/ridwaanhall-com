@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-This project supports the following versions of dependencies as specified in `requirements.txt`
+This project supports dependency versions managed through `pyproject.toml` and `uv.lock`.
 
 We regularly update dependencies to address security vulnerabilities. Users are encouraged to keep their installations updated to the latest supported versions.
 

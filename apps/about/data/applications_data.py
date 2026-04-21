@@ -125,7 +125,7 @@ class ApplicationsData:
         )),
         asdict(Application(
             id=61,
-            status=status["ip"],  # in progress
+            status=status["gh"],  # ghosted
             company_name='VENTURO',
             position='Web Programmer',
             employment_type=emp_type["ft"],   # full-time
@@ -169,6 +169,12 @@ class ApplicationsData:
                     title='On-Cam Interview',
                     details='Discussed project experience, technical challenges (login system, API traffic handling), coding approach, and salary expectations.',
                     notes='Transcript recorded via Tactiq during the call. Both interviewer and candidate were on camera.',
+                ),
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-04-14T12:27:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Follow-Up on Interview Process',
+                    details='Sent follow-up message regarding the continuation of the recruitment process.',
+                    notes='No response was received from HR after the follow-up attempt.',
                 ),
             ],
             lessons_learned='The VENTURO application shows a structured and transparent hiring process, with active review, recruiter engagement, and clear technical and salary discussions. The role aligns well with your fullstack Python/Django skills, but highlights the need to balance technical demonstration with realistic salary negotiation and professional on-cam communication.',

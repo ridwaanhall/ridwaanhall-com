@@ -1,4 +1,6 @@
 from django.test import TestCase
+from unittest.mock import patch
+from datetime import datetime, timezone
 
 from apps.projects.types import Feature, ProjectData
 from apps.core.data_service import DataService
@@ -63,4 +65,48 @@ class ProjectsDataServiceTest(TestCase):
         projects = DataService.get_projects()
         first = projects[0]
         self.assertIn("image_url", first)
+
+    @patch("apps.core.data_service.ContentManager.get_projects")
+    def test_get_projects_status_then_date_sort(self, mock_get_projects):
+        mock_get_projects.return_value = [
+            {
+                "title": "Completed Newer",
+                "status": "completed",
+                "created_at": datetime(2026, 1, 2, tzinfo=timezone.utc),
+            },
+            {
+                "title": "Planning Older",
+                "status": "planning_requirements",
+                "created_at": datetime(2026, 1, 1, tzinfo=timezone.utc),
+            },
+            {
+                "title": "Planning Newer",
+                "status": "planning_requirements",
+                "created_at": datetime(2026, 1, 3, tzinfo=timezone.utc),
+            },
+            {
+                "title": "Maintenance",
+                "status": "maintenance_support",
+                "created_at": datetime(2026, 1, 4, tzinfo=timezone.utc),
+            },
+            {
+                "title": "On Hold",
+                "status": "on_hold",
+                "created_at": datetime(2026, 1, 5, tzinfo=timezone.utc),
+            },
+        ]
+
+        projects = DataService.get_projects(sort_by_featured=False, sort_by_status=True)
+        titles = [p["title"] for p in projects]
+
+        self.assertEqual(
+            titles,
+            [
+                "Planning Newer",
+                "Planning Older",
+                "Maintenance",
+                "On Hold",
+                "Completed Newer",
+            ],
+        )
 

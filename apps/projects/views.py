@@ -20,8 +20,8 @@ class ProjectsView(ProjectsListSEOMixin, PaginatedView):
         return self.handle_exceptions(self._get)(request, *args, **kwargs)
 
     def _get(self, request, *args, **kwargs):
-        # Get all projects sorted by featured status and ID
-        all_projects = DataService.get_projects()
+        # Sort by status lifecycle first, then by newest creation date within each status.
+        all_projects = DataService.get_projects(sort_by_featured=True, sort_by_status=True)
 
         # Search filter
         search_query = request.GET.get('q', '').strip()

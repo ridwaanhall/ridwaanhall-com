@@ -31,22 +31,39 @@ class HomeView(HomepageSEOMixin, BaseView):
 
     def _get(self, request, *args, **kwargs):
         about = self.get_about_data()
-        
+        blogs = DataService.get_blogs()[:5]
+        projects = DataService.get_projects()[:2]
+
         skills = list(DataService.get_skills())
-        skills_top, skills_middle, skills_bottom = (
-            random.sample(skills, k=len(skills)) for _ in range(3)
-        )
+        if skills:
+            skills_top = random.sample(skills, k=len(skills))
+            skills_middle = random.sample(skills, k=len(skills))
+            skills_bottom = random.sample(skills, k=len(skills))
+        else:
+            skills_top = []
+            skills_middle = []
+            skills_bottom = []
+
+        sponsor_url = ""
+        if isinstance(about, dict):
+            donate_items = about.get('donate')
+            if isinstance(donate_items, list) and len(donate_items) > 2 and isinstance(donate_items[2], dict):
+                sponsor_url = donate_items[2].get('url', '')
         
         context = {
             'view': True,
             'view_certs': True,
-            'blogs': DataService.get_blogs()[:5],  # Latest 5 blogs
-            'projects': DataService.get_projects()[:2],  # Top 2 featured projects
+            'blogs': blogs,
+            'projects': projects,
             'education': DataService.get_education(last_only=True),
             'experiences': DataService.get_experiences(current_only=True),
             'skills_top': skills_top,
             'skills_middle': skills_middle,
             'skills_bottom': skills_bottom,
+            'has_latest_blogs': bool(blogs),
+            'has_home_skills': bool(skills),
+            'sponsor_url': sponsor_url,
+            'has_sponsor_section': bool(sponsor_url),
             'about': about,
             'certifications': DataService.get_certifications(),
         }

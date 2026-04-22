@@ -9,6 +9,7 @@ from typing import Any
 
 from apps.core.content_manager import ContentManager
 from apps.about.manager import AboutManager
+from apps.projects.types import PROJECT_STATUS_SORT_RANK, normalize_project_status
 
 logger = logging.getLogger(__name__)
 
@@ -46,12 +47,36 @@ class DataService:
             return []
 
     @staticmethod
-    def get_projects(sort_by_featured: bool = True) -> list[dict[str, Any]]:
-        """Get project data with optional sorting by featured priority and creation date."""
+    def get_projects(sort_by_featured: bool = True, sort_by_status: bool = False) -> list[dict[str, Any]]:
+        """
+        Get project data with optional sorting.
+
+        sort_by_status=True sorts by lifecycle status rank first, then by created_at descending.
+        sort_by_featured=True keeps featured projects grouped first.
+        """
         try:
             projects = ContentManager.get_projects()
 
-            if sort_by_featured:
+            if sort_by_status:
+                def created_at_timestamp(project: dict[str, Any]) -> float:
+                    created_at = project.get('created_at')
+                    if hasattr(created_at, 'timestamp'):
+                        try:
+                            return float(created_at.timestamp())
+                        except (TypeError, ValueError, OSError):
+                            return float('-inf')
+                    return float('-inf')
+
+                def project_status_rank(project: dict[str, Any]) -> int:
+                    normalized = normalize_project_status(project.get('status', ''))
+                    return PROJECT_STATUS_SORT_RANK.get(normalized, len(PROJECT_STATUS_SORT_RANK))
+
+                projects = sorted(
+                    projects,
+                    key=lambda p: (project_status_rank(p), -created_at_timestamp(p))
+                )
+
+            if sort_by_featured and not sort_by_status:
                 # Separate featured and non-featured projects
                 featured_projects = [p for p in projects if p.get('is_featured', False)]
                 non_featured_projects = [p for p in projects if not p.get('is_featured', False)]
@@ -70,6 +95,12 @@ class DataService:
                 )
 
                 # Combine: featured first, then non-featured
+                projects = featured_projects + non_featured_projects
+
+            elif sort_by_featured and sort_by_status:
+                # Keep featured grouping while preserving status/date order inside each group.
+                featured_projects = [p for p in projects if p.get('is_featured', False)]
+                non_featured_projects = [p for p in projects if not p.get('is_featured', False)]
                 projects = featured_projects + non_featured_projects
 
             return projects

@@ -1,14 +1,14 @@
-# 🚀 FlexForge - Advanced Developer Portfolio Platform
+# FlexForge - Advanced Developer Portfolio Platform
 
-[![Django](https://img.shields.io/badge/Django-5.2-092E20?style=flat&logo=django&logoColor=white)](https://djangoproject.com/)
-[![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org/)
+[![Django](https://img.shields.io/badge/Django-6.x-092E20?style=flat&logo=django&logoColor=white)](https://djangoproject.com/)
+[![Python](https://img.shields.io/badge/Python-3.14+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 
 ![FlexForge Portfolio](https://ridwaanhall.com/static/img/project/ridwaanhall_com_2025070701.webp)
 
 > **A modern portfolio template with individual file data management, real-time API integrations, configurable guestbook, and enterprise-grade security.**
 
-## ✨ Key Features
+## Key Features
 
 - **🗂️ Individual File System**: Each project and blog post in separate Python files
 - **📊 Real-time Analytics**: GitHub and WakaTime API integration
@@ -18,16 +18,16 @@
 - **📱 Responsive Design**: Mobile-optimized with Tailwind CSS
 - **🖼️ Image Optimization**: wsrv.nl - Image proxy/CDN for automatic resizing
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-- **Backend**: >Django 5.2, Python 3.12
+- **Backend**: Django, Python 3.14
 - **Frontend**: TailwindCSS, Vanilla JavaScript
 - **Data**: Individual Python files for content management
 - **APIs**: GitHub API, WakaTime API
 - **Security**: django-csp, permissions-policy, XSS protection
 - **Deployment**: Vercel, WhiteNoise
 
-## 📊 PageSpeed Insights
+## PageSpeed Insights
 
 [![Desktop: 99.5](https://img.shields.io/badge/Desktop-99.5-success?style=for-the-badge)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/rstqtcxhc0?form_factor=desktop)
 [![Mobile: 99](https://img.shields.io/badge/Mobile-99-success?style=for-the-badge)](https://pagespeed.web.dev/analysis/https-ridwaanhall-com/rstqtcxhc0?form_factor=mobile)
@@ -38,21 +38,21 @@
 | **Mobile** | 96 | 100 | 100 | 100 | **99** |
 | **Average** | **97** | **100** | **100** | **100** | **99.25** |
 
-## ⚡ Quick Start
+## Quick Start
 
 ```bash
 # Clone repository
 git clone https://github.com/ridwaanhall/ridwaanhall-com.git
 cd ridwaanhall-com
 
-# Setup virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# or
-venv\Scripts\activate     # Windows
+# Install uv (if you don't already have it)
+pip install uv
 
-# Install dependencies
-pip install -r requirements.txt
+# Create local virtual environment (.venv) with Python 3.14
+uv venv --python 3.14
+
+# Sync dependencies from pyproject.toml/uv.lock
+uv sync
 
 # Install Tailwind CSS
 npm install tailwindcss @tailwindcss/cli
@@ -61,7 +61,7 @@ npm install tailwindcss @tailwindcss/cli
 npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global.css --watch
 
 # In a separate terminal, run development server
-python manage.py runserver
+uv run python manage.py runserver
 ```
 
 ### Tailwind CSS Development
@@ -82,7 +82,7 @@ Make sure your `static/css/input.css` contains:
 @import "tailwindcss";
 ```
 
-## 🔧 Environment Configuration
+## Environment Configuration
 
 Create `.env` file:
 
@@ -208,7 +208,7 @@ SQLite is used automatically in development mode (DEBUG=True)
 - **PROJECT_BASE_IMG_URL**: Base URL for project images
   - Defaults to `{BASE_URL}/static/img/project` if not set
 
-## 📚 Documentation
+## Documentation
 
 Comprehensive documentation for each application component:
 
@@ -225,7 +225,7 @@ Comprehensive documentation for each application component:
 | [Data App](docs/data.md) | Individual File System (IFS) for file-based content management |
 | [FlexForge Config](docs/flexforge.md) | Django settings, URL routing, context processors, deployment |
 
-## 🚀 Deployment
+## Deployment
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?demo-description=Advanced%20developer%20portfolio%20platform%20with%20individual%20file%20data%20management%2C%20real-time%20API%20integrations%2C%20and%20enterprise-grade%20security.&demo-image=https%3A%2F%2Fridwaanhall.com%2Fstatic%2Fimg%2Fproject%2Fridwaanhall_com_2025070701.webp&demo-title=FlexForge%20Portfolio&demo-url=https%3A%2F%2Fridwaanhall.com&from=templates&project-name=FlexForge%20Portfolio&repository-name=flexforge-portfolio&repository-url=https%3A%2F%2Fgithub.com%2Fridwaanhall%2Fridwaanhall-com)
 
@@ -236,7 +236,7 @@ Comprehensive documentation for each application component:
 3. Deploy: `vercel --prod`
 4. Configure environment variables in Vercel dashboard
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create feature branch: `git checkout -b feature/name`
@@ -244,7 +244,7 @@ Comprehensive documentation for each application component:
 4. Push branch: `git push origin feature/name`
 5. Open pull request
 
-## 📄 License
+## License
 
 Apache License 2.0 - See [LICENSE](LICENSE) for details.
 

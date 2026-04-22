@@ -39,6 +39,34 @@ class ProjectStatus(str, Enum):
     UPDATE_REQUIRED = "update_required"
 
 
+# Main lifecycle statuses first, then branch/transitional states, then terminal states.
+PROJECT_STATUS_SORT_ORDER: list[ProjectStatus] = [
+    ProjectStatus.PLANNING_REQUIREMENTS,
+    ProjectStatus.DESIGN,
+    ProjectStatus.DEVELOPMENT_IN_PROGRESS,
+    ProjectStatus.CODE_REVIEW,
+    ProjectStatus.TESTING_QA,
+    ProjectStatus.DEPLOYMENT_RELEASED,
+    ProjectStatus.MAINTENANCE_SUPPORT,
+    ProjectStatus.UPDATE_REQUIRED,
+    ProjectStatus.REOPENED,
+    ProjectStatus.ON_HOLD,
+    ProjectStatus.CANCELLED,
+    ProjectStatus.COMPLETED,
+]
+
+PROJECT_STATUS_SORT_RANK: dict[str, int] = {
+    status.value: index for index, status in enumerate(PROJECT_STATUS_SORT_ORDER)
+}
+
+
+def normalize_project_status(status: Any) -> str:
+    """Normalize status value from enum/string input to a lowercase key."""
+    if hasattr(status, 'value'):
+        return str(status.value).lower()
+    return str(status).lower()
+
+
 @dataclass(frozen=True)
 class Feature:
     title: str

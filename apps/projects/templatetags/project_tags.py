@@ -115,11 +115,11 @@ STATUS_DISPLAY = {
     ProjectStatus.TESTING_QA.value: "Testing",
     ProjectStatus.DEPLOYMENT_RELEASED.value: "Released",
     ProjectStatus.MAINTENANCE_SUPPORT.value: "Maintenance",
-    ProjectStatus.COMPLETED.value: "Completed",
+    ProjectStatus.UPDATE_REQUIRED.value: "Update Required",
+    ProjectStatus.REOPENED.value: "Reopened",
     ProjectStatus.ON_HOLD.value: "On Hold",
     ProjectStatus.CANCELLED.value: "Cancelled",
-    ProjectStatus.REOPENED.value: "Reopened",
-    ProjectStatus.UPDATE_REQUIRED.value: "Update Required",
+    ProjectStatus.COMPLETED.value: "Completed",
 }
 
 STATUS_COLORS = {

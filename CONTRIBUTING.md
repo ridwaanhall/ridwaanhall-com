@@ -27,10 +27,10 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 
 Before you begin, ensure you have the following installed:
 
-- **Python 3.12+**: [Download Python](https://python.org/downloads/)
+- **Python 3.14+**: [Download Python](https://python.org/downloads/)
 - **Git**: [Download Git](https://git-scm.com/downloads)
 - **Code Editor**: VS Code, PyCharm, or your preferred editor
-- **Virtual Environment**: `venv` or `virtualenv`
+- **Package Manager**: `uv`
 
 ### Fork and Clone
 
@@ -54,20 +54,17 @@ Before you begin, ensure you have the following installed:
 
 ```powershell
 # Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-venv\Scripts\activate
+uv venv --python 3.14
 ```
 
 ### 2. Install Dependencies
 
 ```powershell
 # Install Python dependencies
-pip install -r requirements.txt
+uv sync
 
 # Verify installation
-python manage.py check
+uv run python manage.py check
 ```
 
 ### 3. Environment Configuration

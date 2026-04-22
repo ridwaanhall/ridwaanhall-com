@@ -122,7 +122,7 @@ Serves `staticfiles/favicon/favicon.ico` with proper error handling. Returns 404
 
 The project deploys on **Vercel** using the WSGI entry point. Configuration in `vercel.json`:
 
-- Build: `FlexForge/wsgi.py` with `@vercel/python` (Python 3.12, max 15MB lambda)
+- Build: `FlexForge/wsgi.py` with `@vercel/python` (Python 3.14, max 15MB lambda)
 - Static files route to `staticfiles/`
 - All other routes go through WSGI
 

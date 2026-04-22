@@ -24,12 +24,12 @@ class OpenHireView(OpenHireSEOMixin, BaseView):
         
         # Check if the user should access this page
         if not (about.get('is_open_to_work') or about.get('is_hiring')):
-            return Http404("OpenHire page not available")
+            raise Http404("OpenHire page not available")
 
         open_to_work_data = DataService.get_open_to_work_data()
 
         # Build used_tools_skills from SkillsData if show_all_tools_skills is True
-        if open_to_work_data and open_to_work_data.get('show_all_tools_skills'):
+        if isinstance(open_to_work_data, dict) and open_to_work_data.get('show_all_tools_skills'):
             from apps.about.data.skills_data import SkillsData
             open_to_work_data['used_tools_skills'] = SkillsData.get_skills_by_category()
 

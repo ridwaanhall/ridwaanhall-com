@@ -11,15 +11,25 @@
             <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
 
             <div id="lazy-content">
-                {% include 'blog/sections/latest_blogs.html' %}
+                {% if has_latest_blogs %}
+                    {% include 'blog/sections/latest_blogs.html' %}
 
-                <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
+                    {% if has_home_skills or has_sponsor_section %}
+                        <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
+                    {% endif %}
+                {% endif %}
 
-                {% include 'core/sections/home_skills.html' %}
+                {% if has_home_skills %}
+                    {% include 'core/sections/home_skills.html' %}
 
-                <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
+                    {% if has_sponsor_section %}
+                        <div class="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6"></div>
+                    {% endif %}
+                {% endif %}
 
-                {% include 'about/sections/sponsor_me.html' %}
+                {% if has_sponsor_section %}
+                    {% include 'about/sections/sponsor_me.html' %}
+                {% endif %}
             </div>
         </div>
     </main>

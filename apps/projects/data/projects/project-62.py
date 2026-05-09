@@ -47,6 +47,7 @@ project_data = asdict(ProjectData(
     # Media
     images={
         "ihsg_algotrader_overview.webp": f"{settings.PROJECT_BASE_IMG_URL}/ihsg_algotrader_overview.webp",
+        "ihsg_algotrader_backtesting.webp": f"{settings.PROJECT_BASE_IMG_URL}/ihsg_algotrader_backtesting.webp",
     },
 
     # Tech Stack
@@ -76,5 +77,5 @@ project_data = asdict(ProjectData(
 
     # Timestamps
     created_at=datetime.strptime("2026-03-13T15:28:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
-    updated_at=datetime.strptime("2026-04-21T15:28:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+    updated_at=datetime.strptime("2026-05-07T18:28:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
 ))

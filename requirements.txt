@@ -59,7 +59,7 @@ sqlparse==0.5.5
     # via django
 tzdata==2026.1 ; sys_platform == 'win32'
     # via django
-urllib3==2.6.3
+urllib3==2.7.0
     # via requests
 whitenoise==6.12.0
     # via ridwaanhall-com

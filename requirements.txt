@@ -25,7 +25,7 @@ django-csp==4.0
     # via ridwaanhall-com
 django-permissions-policy==4.29.0
     # via ridwaanhall-com
-idna==3.11
+idna==3.15
     # via requests
 markdown-it-py==4.0.0
     # via rich

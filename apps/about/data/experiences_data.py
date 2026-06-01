@@ -44,32 +44,6 @@ class ExperiencesData:
     
     experiences = [
         asdict(Experience(
-            id=58,
-            title="Fullstack Developer Intern",
-            company="Ruang Media Solusi",
-            logo=f"{settings.BASE_URL}/static/img/logo/ruang_media_solusi.webp",
-            website="https://itoez.com",
-            period=Period(
-                start=PeriodDate(month="Nov", year=2025),
-                end="Present",
-            ),
-            employment_type=employment_types["in"],
-            location_type=location_types["on"],
-            location="Yogyakarta, Indonesia 🇮🇩",
-            is_current=True,
-            responsibilities=[
-                # "At the start of the internship, introduced previously built projects with measurable results of 3+ applications.",
-                # "Discussed future plans together with the founder and 7 other interns, setting a clear target of delivering at least one SaaS product ready for public use.",
-                # "Built a reporting website similar to lapor.go.id using Django, integrating 5+ API endpoints from a Laravel backend.",
-                # "Styled the frontend with Vuexy, completing 3 core modules (report submission, admin dashboard, and user tracking) within the first sprint.",
-                "Developing a public reporting SaaS platform inspired by lapor.go.id, deployed via Vercel with domain management configured through Cloudflare.",
-                "Building backend services with Django, integrating multiple Laravel API endpoints, and implementing secure authentication workflows.",
-                "Designing a custom admin dashboard using Vuexy, featuring modular templates, role-based access control, and DataTables integration.",
-                "Delivering CRUD operations across 20+ entities (users, reports, events, officials, banners, announcements, testimonials, etc.) with pagination, filtering, and dynamic dropdowns.",
-                "Enhancing user experience with localization into Indonesian, profile photo upload, and geospatial features via Leaflet maps for live location tracking.",
-            ],
-        )),
-        asdict(Experience(
             id=13,
             title="Founder",
             company="RoneAI",
@@ -111,6 +85,32 @@ class ExperiencesData:
                 "Managed data for over 200 alumni, including advanced filtering and data visualization.",
                 "Prepared organizational documents and meeting notes.",
                 "Designed user-friendly interfaces for alumni management."
+            ],
+        )),
+        asdict(Experience(
+            id=58,
+            title="Fullstack Developer Intern",
+            company="Ruang Media Solusi",
+            logo=f"{settings.BASE_URL}/static/img/logo/ruang_media_solusi.webp",
+            website="https://itoez.com",
+            period=Period(
+                start=PeriodDate(month="Nov", year=2025),
+                end=PeriodDate(month="May", year=2026),
+            ),
+            employment_type=employment_types["in"],
+            location_type=location_types["on"],
+            location="Yogyakarta, Indonesia 🇮🇩",
+            is_current=False,
+            responsibilities=[
+                # "At the start of the internship, introduced previously built projects with measurable results of 3+ applications.",
+                # "Discussed future plans together with the founder and 7 other interns, setting a clear target of delivering at least one SaaS product ready for public use.",
+                # "Built a reporting website similar to lapor.go.id using Django, integrating 5+ API endpoints from a Laravel backend.",
+                # "Styled the frontend with Vuexy, completing 3 core modules (report submission, admin dashboard, and user tracking) within the first sprint.",
+                "Developed a public reporting SaaS platform inspired by lapor.go.id, deployed via Vercel with domain management configured through Cloudflare.",
+                "Built backend services with Django, integrated multiple Laravel API endpoints, and implemented secure authentication workflows.",
+                "Designed a custom admin dashboard using Vuexy, featuring modular templates, role-based access control, and DataTables integration.",
+                "Delivered CRUD operations across 20+ entities (users, reports, events, officials, banners, announcements, testimonials, etc.) with pagination, filtering, and dynamic dropdowns.",
+                "Enhanced user experience with localization into Indonesian, profile photo upload, and geospatial features via Leaflet maps for live location tracking.",
             ],
         )),
         asdict(Experience(

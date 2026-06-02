@@ -13,10 +13,19 @@ logger = logging.getLogger(__name__)
 
 def _get_owner_emails() -> list:
     """Return the configured contact recipient email(s) as a list."""
-    contact_recipient = getattr(settings, 'CONTACT_EMAIL_RECIPIENT', 'hi@ridwaanhall.com')
+    contact_recipient = getattr(settings, 'CONTACT_EMAIL_RECIPIENT', None)
+    recipients: list[str] = []
+
     if isinstance(contact_recipient, str):
-        return [contact_recipient]
-    return list(contact_recipient)
+        recipients = [email.strip() for email in contact_recipient.split(',') if email.strip()]
+    elif contact_recipient:
+        recipients = [str(email).strip() for email in contact_recipient if str(email).strip()]
+
+    if recipients:
+        return recipients
+
+    fallback = getattr(settings, 'DEFAULT_FROM_EMAIL', None) or getattr(settings, 'EMAIL_HOST_USER', None)
+    return [fallback or 'hi@ridwaanhall.com']
 
 
 def send_contact_email(contact_data: dict[str, str]) -> bool:

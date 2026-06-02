@@ -8,6 +8,7 @@ Created at: March 16, 2025
 """
 
 from decouple import config, Csv
+from email.utils import parseaddr, formataddr
 
 # --------------------------------------------------------------------------
 # ENVIRONMENT FLAGS
@@ -49,8 +50,12 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="", cast=Csv()) if DEBUG else [
 # --------------------------------------------------------------------------
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = f"ridwaanhall.com <{config('DEFAULT_FROM_EMAIL')}>"
-CONTACT_EMAIL_RECIPIENT = config("CONTACT_EMAIL_RECIPIENT", default="hi@ridwaanhall.com")
+_raw_default_from_email = config("DEFAULT_FROM_EMAIL", default=EMAIL_HOST_USER)
+_from_name, _from_addr = parseaddr(_raw_default_from_email)
+if not _from_addr:
+    _from_addr = _raw_default_from_email
+DEFAULT_FROM_EMAIL = formataddr((_from_name or "ridwaanhall.com", _from_addr))
+CONTACT_EMAIL_RECIPIENT = config("CONTACT_EMAIL_RECIPIENT", default="hi@ridwaanhall.com", cast=Csv())
 
 # --------------------------------------------------------------------------
 # FEATURE FLAGS

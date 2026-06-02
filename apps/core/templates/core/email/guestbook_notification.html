@@ -1,70 +1,104 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Guestbook Notification</title>
-    </head>
-    <body style="margin:0; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; color:#e2e8f0; line-height:1.6;">
-        <div style="max-width:600px; margin:auto; background-color:#1e293b; border-radius:12px; overflow:hidden; border:1px solid #334155;">
-            
-            <!-- Header -->
-            <div style="background:linear-gradient(135deg,#3b82f6 0%,#1e40af 100%); color:#fff; padding:32px 24px; text-align:center; border-bottom:2px solid #475569;">
-                <h1 style="margin:0; font-size:22px; font-weight:700; letter-spacing:-0.02em;">Guestbook Update</h1>
-                <p style="margin:6px 0 0; font-size:14px; opacity:0.9;">A new entry has just been added</p>
-            </div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guestbook Notification</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f7f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #334155;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f7f9; padding: 40px 20px;">
+        <tr>
+            <td align="center">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td style="background-color: #0f172a; padding: 40px 30px; text-align: center;">
+                            <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0 0 8px 0; letter-spacing: -0.02em;">Guestbook Update</h1>
+                            <p style="color: #94a3b8; font-size: 15px; margin: 0;">A new entry has just been added</p>
+                        </td>
+                    </tr>
 
-            <!-- Body -->
-            <div style="padding:32px 24px;">
-                <p style="margin:0 0 20px; font-size:15px; color:#cbd5e1;">
-                    A visitor submitted a message in your guestbook. Here’s a quick overview:
-                </p>
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding: 40px 30px;">
+                            <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.6; color: #475569;">
+                                A visitor submitted a message in your guestbook. Here’s a quick overview:
+                            </p>
 
-                <!-- Info Card -->
-                <div style="background-color:#0f172a; border:1px solid #334155; border-radius:8px; padding:20px; margin-bottom:20px;">
-                    <h2 style="margin:0 0 16px; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:#38bdf8;">Entry Details</h2>
-                    <div style="display:flex; padding:10px 0; border-bottom:1px solid #334155;">
-                        <div style="min-width:80px; font-weight:600; color:#38bdf8; font-size:14px;">From</div>
-                        <div style="font-size:14px; color:#f1f5f9;">{{ name }}</div>
-                    </div>
-                    <div style="display:flex; padding:10px 0; border-bottom:1px solid #334155;">
-                        <div style="min-width:80px; font-weight:600; color:#38bdf8; font-size:14px;">Email</div>
-                        <div style="font-size:14px; color:#f1f5f9;">
-                            <a href="mailto:{{ sender_email }}" style="color:#3b82f6; text-decoration:none;">{{ sender_email }}</a>
-                        </div>
-                    </div>
-                    <div style="display:flex; padding:10px 0;">
-                        <div style="min-width:80px; font-weight:600; color:#38bdf8; font-size:14px;">Timestamp</div>
-                        <div style="font-size:14px; color:#f1f5f9;">{{ timestamp }}</div>
-                    </div>
-                </div>
+                            <!-- Entry Details -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 24px;">
+                                <tr>
+                                    <td>
+                                        <h2 style="color: #0f172a; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 12px 0;">Entry Details</h2>
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #ffffff;">
+                                            <tr>
+                                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; width: 80px;">
+                                                    <strong style="color: #64748b; font-size: 14px;">From:</strong>
+                                                </td>
+                                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-size: 14px; font-weight: 500;">
+                                                    {{ name }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">
+                                                    <strong style="color: #64748b; font-size: 14px;">Email:</strong>
+                                                </td>
+                                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-size: 14px; font-weight: 500;">
+                                                    <a href="mailto:{{ sender_email }}" style="color: #2563eb; text-decoration: none;">{{ sender_email }}</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 10px 0;">
+                                                    <strong style="color: #64748b; font-size: 14px;">Timestamp:</strong>
+                                                </td>
+                                                <td style="padding: 10px 0; color: #1e293b; font-size: 14px; font-weight: 500;">
+                                                    {{ timestamp }}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
 
-                <!-- Message Content -->
-                <div style="background-color:#0f172a; border:1px solid #334155; border-radius:8px; padding:20px; margin-bottom:20px;">
-                    <h2 style="margin:0 0 16px; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:#38bdf8;">Message Preview</h2>
-                    <div style="background-color:#1e293b; padding:16px; border-left:4px solid #3b82f6; border-radius:4px; font-size:14px; color:#f1f5f9; line-height:1.7;">
-                        {{ message_html }}
-                    </div>
-                </div>
+                            <!-- Message Content -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 24px;">
+                                <tr>
+                                    <td>
+                                        <h2 style="color: #0f172a; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 12px 0;">Message Preview</h2>
+                                        <div style="background-color: #f8fafc; border-left: 4px solid #2563eb; border-radius: 0 6px 6px 0; padding: 16px 20px; color: #334155; font-size: 15px; line-height: 1.6; font-style: italic;">
+                                            {{ message_html }}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
 
-                <!-- CTA -->
-                <div style="text-align:center; margin-top:24px;">
-                    <a href="{{ guestbook_url }}" title="Open Guestbook" style="display:inline-block; background:linear-gradient(135deg,#3b82f6 0%,#1e40af 100%); color:#fff; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:600; font-size:14px;">
-                        Open Guestbook
-                    </a>
-                </div>
-            </div>
+                            <!-- CTA Button -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding-top: 8px;">
+                                        <a href="{{ guestbook_url }}" style="display: inline-block; background-color: #2563eb; color: #ffffff; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 15px;">Open Guestbook</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
 
-            <!-- Footer -->
-            <div style="text-align:center; padding:20px; font-size:12px; color:#94a3b8; border-top:1px solid #334155;">
-                <p style="margin:0 0 8px;">
-                    This notification was generated by 
-                    <a href="https://ridwaanhall.com" style="color:#3b82f6; text-decoration:none;">ridwaanhall.com</a>
-                </p>
-                <span style="display:inline-block; background-color:#334155; color:#f1f5f9; padding:4px 12px; border-radius:12px; font-size:12px; font-weight:500;">
-                    System Alert
-                </span>
-            </div>
-        </div>
-    </body>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f8fafc; text-align: center; padding: 24px 30px; border-top: 1px solid #e2e8f0;">
+                            <p style="margin: 0 0 12px 0; color: #64748b; font-size: 13px; line-height: 1.5;">
+                                This notification was generated automatically by the guestbook at<br>
+                                <a href="https://ridwaanhall.com" style="color: #2563eb; text-decoration: none; font-weight: 500;">ridwaanhall.com</a>
+                            </p>
+                            <span style="display: inline-block; background-color: #e2e8f0; color: #475569; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
+                                System Alert
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
 </html>

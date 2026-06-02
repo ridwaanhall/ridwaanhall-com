@@ -64,6 +64,12 @@ npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global.css -
 uv run python manage.py runserver
 ```
 
+## Tests
+
+```bash
+uv run pytest
+```
+
 ### Tailwind CSS Development
 
 For styling changes, ensure Tailwind CSS is running in watch mode:

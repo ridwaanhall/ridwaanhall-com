@@ -11,6 +11,8 @@ dependencies = [
     "django-csp>=4.0",
     "django-permissions-policy>=4.29.0",
     "psycopg2-binary>=2.9.12",
+    "pytest>=9.0.3",
+    "pytest-django>=4.12.0",
     "pyjwt>=2.12.1",
     "python-decouple>=3.8",
     "pytz>=2026.2",
@@ -19,3 +21,8 @@ dependencies = [
     "rich>=15.0.0",
     "whitenoise>=6.12.0",
 ]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "FlexForge.settings"
+python_files = ["tests.py", "test_*.py", "*_test.py"]
+testpaths = ["apps"]

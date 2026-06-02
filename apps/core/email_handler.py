@@ -6,17 +6,43 @@ Handles email composition and delivery with professional HTML formatting.
 from django.core.mail import EmailMultiAlternatives
 from .email_templates import EmailTemplateLoader
 from django.conf import settings
+from email.utils import parseaddr
 import logging
 
 logger = logging.getLogger(__name__)
 
 
+def _normalize_email(value: str) -> str:
+    """Return a bare email address from possible display-name formats."""
+    _, address = parseaddr(str(value))
+    normalized = (address or str(value)).strip().lower()
+    return normalized
+
+
 def _get_owner_emails() -> list:
     """Return the configured contact recipient email(s) as a list."""
-    contact_recipient = getattr(settings, 'CONTACT_EMAIL_RECIPIENT', 'hi@ridwaanhall.com')
+    contact_recipient = getattr(settings, 'CONTACT_EMAIL_RECIPIENT', None)
+    recipients: list[str] = []
+
     if isinstance(contact_recipient, str):
-        return [contact_recipient]
-    return list(contact_recipient)
+        recipients = [
+            _normalize_email(email)
+            for email in contact_recipient.split(',')
+            if email.strip()
+        ]
+    elif contact_recipient:
+        recipients = [
+            _normalize_email(email)
+            for email in contact_recipient
+            if str(email).strip()
+        ]
+
+    recipients = [email for email in recipients if email]
+    if recipients:
+        return recipients
+
+    fallback = getattr(settings, 'DEFAULT_FROM_EMAIL', None) or getattr(settings, 'EMAIL_HOST_USER', None)
+    return [_normalize_email(fallback or 'hi@ridwaanhall.com')]
 
 
 def send_contact_email(contact_data: dict[str, str]) -> bool:

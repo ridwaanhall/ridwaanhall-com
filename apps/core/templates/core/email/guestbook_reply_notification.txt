@@ -1,18 +1,24 @@
+ridwaanhall.com  ·  Reply
+────────────────────────────────────────────────────
+
 Hi {{ original_name }},
 
-{{ reply_name }} has replied to your message in the guestbook at ridwaanhall.com.
+{{ reply_name }} replied to your guestbook entry at ridwaanhall.com.
 
---------------------------------------------------
-Reply from {{ reply_name }}:
+YOUR ORIGINAL ENTRY
+────────────────────────────────────────────────────
+{{ original_message_text }}
+────────────────────────────────────────────────────
+
+REPLY FROM {{ reply_name }}
+────────────────────────────────────────────────────
 {{ reply_message_text }}
 
-({{ timestamp }})
---------------------------------------------------
+{{ timestamp }}
+────────────────────────────────────────────────────
 
-Your original message:
-{{ original_message_text }}
---------------------------------------------------
+VIEW FULL CONVERSATION
+{{ guestbook_url }}
 
-You can view the full conversation here: {{ guestbook_url }}
-
-— ridwaanhall.com
+────────────────────────────────────────────────────
+ridwaanhall.com  ·  Reply Notification

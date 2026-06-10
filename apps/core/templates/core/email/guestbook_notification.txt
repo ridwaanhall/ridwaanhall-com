@@ -1,17 +1,20 @@
-Hi there,
+ridwaanhall.com  ·  New Entry
+────────────────────────────────────────────────────
 
-This is to confirm that a new entry has been added to your guestbook at ridwaanhall.com.
+New guestbook entry.
 
-For your reference, here’s a copy of the entry:
---------------------------------------------------
-From:      {{ name }}
+FROM
+Name:      {{ name }}
 Email:     {{ sender_email }}
 Timestamp: {{ timestamp }}
 
-Message:
+ENTRY
+────────────────────────────────────────────────────
 {{ message_text }}
---------------------------------------------------
+────────────────────────────────────────────────────
 
-You can view your guestbook online here: {{ guestbook_url }}
+VIEW GUESTBOOK
+{{ guestbook_url }}
 
-— ridwaanhall.com
+────────────────────────────────────────────────────
+ridwaanhall.com  ·  Automated Notification

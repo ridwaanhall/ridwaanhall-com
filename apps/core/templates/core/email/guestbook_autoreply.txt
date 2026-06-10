@@ -1,19 +1,22 @@
+ridwaanhall.com  ·  Guestbook
+────────────────────────────────────────────────────
+
 Hi {{ display_name }},
 
-Thank you for leaving a message in Ridwan Halim's guestbook at ridwaanhall.com.
+Your guestbook entry is now live at ridwaanhall.com.
 
-This is a confirmation that your message has been posted successfully.
+YOUR ENTRY
+────────────────────────────────────────────────────
+{{ message_text }}
+────────────────────────────────────────────────────
 
-For your reference, here's a copy of what you submitted:
---------------------------------------------------
-From:      {{ name_display }}
+DETAILS
+Name:      {{ name_display }}
 Email:     {{ sender_email }}
 Timestamp: {{ timestamp }}
 
-Message:
-{{ message_text }}
---------------------------------------------------
+VIEW GUESTBOOK
+{{ guestbook_url }}
 
-You can view the guestbook online here: {{ guestbook_url }}
-
-— ridwaanhall.com
+────────────────────────────────────────────────────
+ridwaanhall.com  ·  Automated Notice

@@ -2,112 +2,158 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guestbook Confirmation</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
 </head>
-<body style="margin: 0; padding: 0; background-color: #EEEDFE; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #26215C;">
+<body style="margin:0;padding:0;background:#E5E2DB;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;-webkit-font-smoothing:antialiased;">
 
-    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #EEEDFE; padding: 48px 20px;">
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#E5E2DB">
         <tr>
-            <td align="center">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 580px;">
+            <td align="center" style="padding:40px 16px;">
 
-                    <!-- Logo / Brand strip -->
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:680px;background:#FAF9F7;">
+
                     <tr>
-                        <td align="center" style="padding-bottom: 24px;">
-                            <span style="display: inline-block; background-color: #534AB7; color: #EEEDFE; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 18px; border-radius: 20px;">ridwaanhall.com</span>
+                        <td bgcolor="#F5F3EF" style="border-bottom:1px solid #E2DFD8;padding:14px 24px;">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td valign="middle">
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td bgcolor="#CC6138" width="24" style="width:24px;height:24px;border-radius:50%;text-align:center;vertical-align:middle;line-height:24px;">
+                                                    <span style="color:#fff;font-size:12px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">&#x25D0;</span>
+                                                </td>
+                                                <td style="padding-left:9px;vertical-align:middle;">
+                                                    <span style="color:#1A1918;font-size:14px;font-weight:600;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">ridwaanhall.com</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td align="right" valign="middle">
+                                        <span style="color:#9C9890;font-size:12px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">Guestbook</span>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
 
-                    <!-- Card -->
                     <tr>
-                        <td style="background-color: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #CECBF6;">
+                        <td style="padding:28px 24px 8px;">
 
-                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
-
-                                <!-- Header -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:16px;">
                                 <tr>
-                                    <td style="background-color: #3C3489; padding: 44px 40px 36px; text-align: center;">
-                                        <div style="display: inline-block; background-color: #534AB7; border-radius: 50%; width: 56px; height: 56px; line-height: 56px; text-align: center; margin-bottom: 20px;">
-                                            <span style="color: #EEEDFE; font-size: 26px; line-height: 56px; display: inline-block;">📖</span>
-                                        </div>
-                                        <h1 style="color: #EEEDFE; font-size: 22px; font-weight: 700; margin: 0 0 8px 0; letter-spacing: -0.02em;">Entry Posted</h1>
-                                        <p style="color: #AFA9EC; font-size: 14px; margin: 0; line-height: 1.5;">Your guestbook entry is now live at ridwaanhall.com</p>
-                                    </td>
-                                </tr>
-
-                                <!-- Body -->
-                                <tr>
-                                    <td style="padding: 40px 40px 32px;">
-
-                                        <p style="margin: 0 0 28px 0; font-size: 15px; line-height: 1.7; color: #534AB7;">
-                                            Hello <strong style="color: #26215C;">{{ display_name }}</strong>,
-                                        </p>
-                                        <p style="margin: 0 0 32px 0; font-size: 15px; line-height: 1.7; color: #5F5E5A;">
-                                            Thank you for signing <strong style="color: #26215C;">Ridwan Halim</strong>'s guestbook. Your entry has been posted successfully and is now visible to visitors.
-                                        </p>
-
-                                        <!-- Your Entry -->
-                                        <p style="margin: 0 0 14px 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #888780;">Your Entry</p>
-
-                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 24px;">
+                                    <td width="36" valign="top" style="padding-right:10px;">
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                             <tr>
-                                                <td style="background-color: #F8F8FD; border-radius: 10px; padding: 20px 24px; border-left: 4px solid #CECBF6;">
-                                                    <div style="color: #3C3489; font-size: 14px; line-height: 1.7;">{{ message_html }}</div>
+                                                <td bgcolor="#CC6138" width="24" style="width:24px;height:24px;border-radius:50%;text-align:center;vertical-align:middle;line-height:24px;">
+                                                    <span style="color:#fff;font-size:12px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">&#x25D0;</span>
                                                 </td>
                                             </tr>
                                         </table>
-
-                                        <!-- Entry Metadata -->
-                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 36px;">
-                                            <tr>
-                                                <td style="padding: 8px 0; border-bottom: 1px solid #F1EFE8; width: 64px; vertical-align: top;">
-                                                    <span style="color: #B4B2A9; font-size: 13px; font-weight: 600;">Name</span>
-                                                </td>
-                                                <td style="padding: 8px 0 8px 16px; border-bottom: 1px solid #F1EFE8; color: #26215C; font-size: 13px; font-weight: 600;">{{ name_display }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 8px 0; border-bottom: 1px solid #F1EFE8; vertical-align: top;">
-                                                    <span style="color: #B4B2A9; font-size: 13px; font-weight: 600;">Email</span>
-                                                </td>
-                                                <td style="padding: 8px 0 8px 16px; border-bottom: 1px solid #F1EFE8; color: #534AB7; font-size: 13px;">{{ sender_email }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 8px 0; vertical-align: top;">
-                                                    <span style="color: #B4B2A9; font-size: 13px; font-weight: 600;">Posted</span>
-                                                </td>
-                                                <td style="padding: 8px 0 8px 16px; color: #5F5E5A; font-size: 13px;">{{ timestamp }}</td>
-                                            </tr>
-                                        </table>
-
-                                        <!-- CTA Button -->
-                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                            <tr>
-                                                <td align="center">
-                                                    <a href="{{ guestbook_url }}" style="display: inline-block; background-color: #3C3489; color: #EEEDFE; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; letter-spacing: 0.02em;">View Guestbook →</a>
-                                                </td>
-                                            </tr>
-                                        </table>
-
+                                    </td>
+                                    <td valign="top">
+                                        <p style="margin:0 0 0;font-size:15px;line-height:1.65;color:#66635E;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">Hi <strong style="color:#1A1918;">{{ display_name }}</strong>, your guestbook entry is now live at ridwaanhall.com.</p>
                                     </td>
                                 </tr>
+                            </table>
 
-                                <!-- Footer -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:24px;">
                                 <tr>
-                                    <td style="background-color: #F8F8FD; border-top: 1px solid #EEEDFE; text-align: center; padding: 24px 40px;">
-                                        <p style="margin: 0 0 10px 0; color: #888780; font-size: 12px; line-height: 1.6;">
-                                            Automated confirmation from the guestbook at
-                                            <a href="https://ridwaanhall.com" style="color: #534AB7; text-decoration: none; font-weight: 600;">ridwaanhall.com</a>
-                                        </p>
-                                        <span style="display: inline-block; background-color: #EEEDFE; color: #534AB7; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">Automated Notice</span>
+                                    <td width="80">&nbsp;</td>
+                                    <td>
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td bgcolor="#ECEAE4" style="border-radius:18px;padding:12px 16px;">
+                                                    <div style="font-size:15px;line-height:1.65;color:#1A1918;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">{{ message_html }}</div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <p style="margin:5px 0 0;text-align:right;font-size:12px;color:#9C9890;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">{{ name_display }} &nbsp;&middot;&nbsp; {{ timestamp }}</p>
                                     </td>
                                 </tr>
+                            </table>
 
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:0;">
+                                <tr>
+                                    <td width="36" valign="top" style="padding-right:10px;">
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td bgcolor="#CC6138" width="24" style="width:24px;height:24px;border-radius:50%;text-align:center;vertical-align:middle;line-height:24px;">
+                                                    <span style="color:#fff;font-size:12px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">&#x25D0;</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td valign="top">
+                                        <p style="margin:0 0 10px;font-size:15px;line-height:1.65;color:#66635E;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">Your entry is visible to everyone who visits the guestbook.</p>
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top:14px;">
+                                            <tr>
+                                                <td bgcolor="#F0EEE9" style="border-radius:10px;border:1px solid #E2DFD8;padding:4px 14px;">
+                                                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                        <tr>
+                                                            <td style="padding:8px 0;border-bottom:1px solid #E2DFD8;width:68px;vertical-align:top;">
+                                                                <span style="font-size:12px;color:#9C9890;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">Name</span>
+                                                            </td>
+                                                            <td style="padding:8px 0 8px 12px;border-bottom:1px solid #E2DFD8;vertical-align:top;">
+                                                                <span style="font-size:14px;color:#1A1918;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">{{ name_display }}</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding:8px 0;border-bottom:1px solid #E2DFD8;width:68px;vertical-align:top;">
+                                                                <span style="font-size:12px;color:#9C9890;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">Email</span>
+                                                            </td>
+                                                            <td style="padding:8px 0 8px 12px;border-bottom:1px solid #E2DFD8;vertical-align:top;">
+                                                                <span style="font-size:14px;color:#1A1918;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;"><a href="mailto:{{ sender_email }}" style="color:#CC6138;text-decoration:none;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">{{ sender_email }}</a></span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding:8px 0;width:68px;vertical-align:top;">
+                                                                <span style="font-size:12px;color:#9C9890;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">Posted</span>
+                                                            </td>
+                                                            <td style="padding:8px 0 8px 12px;vertical-align:top;">
+                                                                <span style="font-size:14px;color:#1A1918;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">{{ timestamp }}</span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin-top:12px;">
+                                            <tr>
+                                                <td bgcolor="#1A1918" style="border-radius:8px;padding:10px 20px;">
+                                                    <a href="{{ guestbook_url }}" style="color:#fff;font-size:14px;font-weight:500;text-decoration:none;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">View guestbook →</a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="height:32px;"></td>
+                    </tr>
+
+                    <tr>
+                        <td style="border-top:1px solid #E2DFD8;padding:14px 24px;">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td>
+                                        <span style="font-size:12px;color:#9C9890;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">
+                                            <a href="https://ridwaanhall.com" style="color:#9C9890;text-decoration:none;">ridwaanhall.com</a> &nbsp;&middot;&nbsp; Automated
+                                        </span>
+                                    </td>
+                                    <td align="right">
+                                        <span style="font-size:12px;color:#9C9890;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">Guestbook</span>
+                                    </td>
+                                </tr>
                             </table>
                         </td>
                     </tr>
 
                 </table>
+
             </td>
         </tr>
     </table>

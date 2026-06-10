@@ -1,16 +1,18 @@
-Hi there,
+ridwaanhall.com  ·  New Message
+────────────────────────────────────────────────────
 
-This is to notify you that a new message has been submitted through the contact form at ridwaanhall.com.
+New contact form submission.
 
-Here are the details of the submission:
---------------------------------------------------
+FROM
 Name:   {{ name }}
 Email:  {{ sender_email }}
 
-Message:
+MESSAGE
+────────────────────────────────────────────────────
 {{ message_text }}
---------------------------------------------------
+────────────────────────────────────────────────────
 
-Quick response: Simply reply to this email and your message will reach {{ sender_email }} directly.
+Reply to this email to respond directly to {{ sender_email }}.
 
-— ridwaanhall.com
+────────────────────────────────────────────────────
+ridwaanhall.com  ·  Automated Notification

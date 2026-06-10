@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "cryptography>=48.0.0",
-    "django>=6.0.5",
+    "django==6.0.6",
     "django-allauth>=65.16.1",
     "django-csp>=4.0",
     "django-permissions-policy>=4.29.0",

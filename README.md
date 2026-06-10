@@ -62,6 +62,9 @@ npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global.css -
 
 # In a separate terminal, run development server
 uv run python manage.py runserver
+
+# Upgrade Deps
+uv add cryptography django django-allauth django-csp django-permissions-policy psycopg2-binary pytest pytest-django pyjwt python-decouple pytz requests requests-oauthlib rich whitenoise --upgrade
 ```
 
 ## Tests

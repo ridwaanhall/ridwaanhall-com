@@ -15,7 +15,7 @@ blog_data = asdict(BlogData(
     title='Project Priority: What It Is and How to Master It',
     description='Learn how to prioritize projects effectively based on urgency, complexity, and impact to stay focused and meet deadlines.',
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "project_priority_mastery.webp": f"{settings.BLOG_BASE_IMG_URL}/project_priority_mastery.webp",

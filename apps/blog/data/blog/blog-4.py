@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title='Hacking Your Dev Life: Time Management Tricks',
     description="Wanna crush code and still have a life? Here's how to stay productive without burning out.",
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "effective_time_management_for_developers.webp": f"{settings.BLOG_BASE_IMG_URL}/effective_time_management_for_developers.webp",

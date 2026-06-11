@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title='Top 6 Asian Countries with Better Governance and Religious Harmony',
     description='Exploring Asian nations with strong governance, low corruption, and religious tolerance for Indonesians seeking alternatives.',
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "asian_nations_comparison.webp": f"{settings.BLOG_BASE_IMG_URL}/asian_nations_comparison.webp",

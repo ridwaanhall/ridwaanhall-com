@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title='Python 101: Your Chill Guide to Getting Started',
     description="New to coding? Let's dive into why Python's the coolest way to kick off your programming adventure!",
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "start_with_python.webp": f"{settings.BLOG_BASE_IMG_URL}/start_with_python.webp",

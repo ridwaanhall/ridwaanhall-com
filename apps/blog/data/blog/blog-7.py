@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title="Eid al-Fitr: Celebrating the Prophet's Way",
     description='Dive into how Prophet Muhammad (PBUH) rocked Eid al-Fitr with joy, faith, and community love.',
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "eid_al_fitr_prophetic_way.webp": f"{settings.BLOG_BASE_IMG_URL}/eid_al_fitr_prophetic_way.webp",

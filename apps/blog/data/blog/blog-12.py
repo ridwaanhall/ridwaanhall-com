@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title="Predicting Gold Prices in Indonesia: AI's Golden Touch",
     description='Gold price forecasting in Indonesia just got smarter! Dive into how AI-powered LSTM models are transforming historical data into actionable insights for investors and analysts.',
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "gold_price_prediction.webp": f"{settings.BLOG_BASE_IMG_URL}/gold_price_prediction.webp",

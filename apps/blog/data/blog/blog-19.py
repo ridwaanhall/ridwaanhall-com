@@ -15,7 +15,7 @@ blog_data = asdict(BlogData(
     title='How Usage Monitoring Sustains MLBB and API-PDDIKTI',
     description='Two open APIs remain online through a robust threshold system and manual code-based controls, ensuring sustainable performance and reliability.',
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "api_threshold.webp": f"{settings.BLOG_BASE_IMG_URL}/api_threshold.webp",

@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title="Whipping Up Web Apps with Django's Magic",
     description="See how Django's all-in-one toolkit makes building secure, speedy web apps a total breeze.",
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "building_web_applications_with_django.webp": f"{settings.BLOG_BASE_IMG_URL}/building_web_applications_with_django.webp",

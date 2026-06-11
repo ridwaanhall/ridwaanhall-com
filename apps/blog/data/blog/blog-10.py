@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title="Why I'm Coding for Gaza's Truth",
     description="From Islamic boarding school to Python, here's why I'm hustling to amplify Gaza's crisis with facts, faith, and a call to act—no noise, just heart.",
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "gaza_crisis.webp": f"{settings.BLOG_BASE_IMG_URL}/gaza_crisis.webp",

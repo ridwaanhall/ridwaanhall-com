@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title='Nail Your Git Game with Conventional Commits',
     description="Make your commit messages pop with style and clarity—tell your code's story like a pro!",
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "conventional_commits_guide.webp": f"{settings.BLOG_BASE_IMG_URL}/conventional_commits_guide.webp",

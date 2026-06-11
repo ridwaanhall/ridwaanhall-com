@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title='What Is an Exoplanet? – A Tale from Beyond Our Sky',
     description='Venture into distant star systems as we uncover what exoplanets are and how they fuel our cosmic curiosity.',
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "exoplanet_tale.webp": f"{settings.BLOG_BASE_IMG_URL}/exoplanet_tale.webp",

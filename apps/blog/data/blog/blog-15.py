@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title='Coding Camp – Building Future-Ready Talent with DBS Foundation',
     description='Explore how this nationwide initiative equips students across Indonesia with high-demand tech skills, professional readiness, and meaningful support.',
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "coding_camp_dbs_dicoding.webp": f"{settings.BLOG_BASE_IMG_URL}/coding_camp_dbs_dicoding.webp",

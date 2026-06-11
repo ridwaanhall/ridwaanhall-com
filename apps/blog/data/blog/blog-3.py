@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title='Neural Nets Made Easy with TensorFlow & Keras',
     description="Ready to build AI that sees and thinks? Let's get rolling with TensorFlow and Keras for some deep learning fun!",
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "deep_learning_with_tensorflow_and_keras.webp": f"{settings.BLOG_BASE_IMG_URL}/deep_learning_with_tensorflow_and_keras.webp",

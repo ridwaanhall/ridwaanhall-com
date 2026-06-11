@@ -93,7 +93,7 @@ class SEOConfig:
     # Common keywords by category
     COMMON_KEYWORDS = {
         'personal': [
-            'ridwaanhall', 'roneha', 'Ridwan Halim', 'ridwaanhall.com',
+            'ridwaanhall', 'Ridwan Halim', 'ridwaanhall.com',
             'ridwaanhall blog', 'ridwaanhall portfolio',
             'software developer', 'web developer', 'python developer',
             'machine learning engineer', 'AI engineer', 'full stack developer'

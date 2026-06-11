@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title="What's Good with Brainrot in 2025?",
     description="Brainrot's takin' over the internet in 2025, and it's WILD! From cursed memes to AI vids and slang that's got no chill, here's the tea on what brainrot is and how to not lose your mind in the chaos.",
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "brainrot_explained_2025.webp": f"{settings.BLOG_BASE_IMG_URL}/brainrot_explained_2025.webp",

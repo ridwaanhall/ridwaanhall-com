@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title='Complete Guide to Modern Web Development in 2025',
     description='Master modern web development with our comprehensive guide covering frontend frameworks, backend technologies, and DevOps practices for building powerful web applications.',
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "modern_web_dev_guide.webp": f"{settings.BLOG_BASE_IMG_URL}/modern_web_dev_guide.webp",

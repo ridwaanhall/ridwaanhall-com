@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title='PyTorch vs. TensorFlow: Pick Your AI Fight Club',
     description="TensorFlow or PyTorch? Let's break down the big dogs of deep learning and find your perfect match.",
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "pytorch_vs_tensorflow.webp": f"{settings.BLOG_BASE_IMG_URL}/pytorch_vs_tensorflow.webp",

@@ -15,7 +15,7 @@ blog_data = asdict(BlogData(
     title='mlbb.rone.dev and pddikti.rone.dev Remain Online with Memory Usage Threshold',
     description='The planned shutdown is canceled. Both APIs remain accessible, but now operate under a memory usage threshold. Learn more about the changes.',
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "api_offline_notice.webp": f"{settings.BLOG_BASE_IMG_URL}/api_offline_notice.webp",

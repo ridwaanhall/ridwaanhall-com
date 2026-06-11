@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title='How I Picked the Perfect Domain for My Site',
     description="The wild ride of choosing between .dev, .com, and .id for ridwaanhall.com—here's the tea!",
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "choosing_domain.webp": f"{settings.BLOG_BASE_IMG_URL}/choosing_domain.webp",

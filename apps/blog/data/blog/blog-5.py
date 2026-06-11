@@ -16,7 +16,7 @@ blog_data = asdict(BlogData(
     title='Why Lailatul Qadr Is the Ultimate Night of Blessings',
     description="Get the lowdown on Lailatul Qadr and why it's the most epic night in Islam.",
     author='Ridwan Halim',
-    username='roneha',
+    username='ridwaanhall',
     author_image=settings.AUTHOR_IMG,
     images={
         "lailatul_qadr_night.webp": f"{settings.BLOG_BASE_IMG_URL}/lailatul_qadr_night.webp",

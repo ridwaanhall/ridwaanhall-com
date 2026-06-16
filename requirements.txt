@@ -41,7 +41,7 @@ pycparser==3.0 ; implementation_name != 'PyPy' and platform_python_implementatio
     # via cffi
 pygments==2.20.0
     # via rich
-pyjwt==2.12.1
+pyjwt==2.13.0
     # via ridwaanhall-com
 python-decouple==3.8
     # via ridwaanhall-com

@@ -438,7 +438,7 @@ requires-dist = [
     { name = "django-csp", specifier = ">=4.0" },
     { name = "django-permissions-policy", specifier = ">=4.29.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.12" },
-    { name = "pyjwt", specifier = ">=2.12.1" },
+    { name = "pyjwt", specifier = ">=2.13.0" },
     { name = "pytest", specifier = ">=9.0.3" },
     { name = "pytest-django", specifier = ">=4.12.0" },
     { name = "python-decouple", specifier = ">=3.8" },

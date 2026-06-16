@@ -11,7 +11,7 @@ cffi==2.0.0 ; platform_python_implementation != 'PyPy'
     # via cryptography
 charset-normalizer==3.4.7
     # via requests
-cryptography==46.0.7
+cryptography==48.0.1
     # via ridwaanhall-com
 django==6.0.4
     # via

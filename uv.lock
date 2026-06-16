@@ -432,7 +432,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "cryptography", specifier = ">=48.0.0" },
+    { name = "cryptography", specifier = ">=48.0.1" },
     { name = "django", specifier = "==6.0.6" },
     { name = "django-allauth", specifier = ">=65.16.1" },
     { name = "django-csp", specifier = ">=4.0" },

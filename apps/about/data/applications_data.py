@@ -98,8 +98,46 @@ class ApplicationsData:
 
     applications = [
         asdict(Application(
+            id=63,
+            status=status["ip"],   # in progress
+            company_name='Delta HQ',
+            position='Python Developer',
+            employment_type=emp_type["ft"],   # full-time
+            location_type=loc_types["on"],    # on-site
+            location='Surabaya, Indonesia',
+            applied_via=via["li"],            # via LinkedIn
+            salary_range='Not specified',
+            journey=[
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-06-10T10:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Application Submitted',
+                    details='Applied via LinkedIn posting with embedded form for Python Developer role.',
+                    notes='Form submission recorded on LinkedIn job application.',
+                ),
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-06-10T16:06:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Invitation Received',
+                    details='Received interview invitation from Delta HQ shortly after application.',
+                    notes='Invitation email visible in Gmail inbox.',
+                ),
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-06-17T14:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Initial Call Scheduled',
+                    details='Scheduled initial interview call with Delta HQ recruiter.',
+                    notes='Interview slot confirmed: 14:00–14:30 WIB.',
+                ),
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-06-17T14:30:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Interview Completed',
+                    details='Interview conducted fully in English with both on-mic and on-cam.',
+                    notes='Session ended ~10 minutes earlier than planned, no Q&A session. Recruiter mentioned feedback within 2 weeks.',
+                ),
+            ],
+            lessons_learned='Application progressed quickly from submission to interview. Delta HQ conducted structured English interview but lacked Q&A. Awaiting recruiter feedback within 2 weeks.',
+        )),
+        asdict(Application(
             id=62,
-            status=status["ip"],  # in progress
+            status=status["gh"],
             company_name='Why Hiring',
             position='Junior Data Scientist',
             employment_type=emp_type["ft"],   # full-time
@@ -181,7 +219,7 @@ class ApplicationsData:
         )),
         asdict(Application(
             id=60,
-            status=status["ip"],
+            status=status["gh"],
             company_name='SoftwareSeni',
             position='Python Developer',
             employment_type=emp_type["ft"],

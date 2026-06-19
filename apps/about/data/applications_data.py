@@ -99,7 +99,7 @@ class ApplicationsData:
     applications = [
         asdict(Application(
             id=63,
-            status=status["ip"],   # in progress
+            status=status["re"],   # rejected
             company_name='Delta HQ',
             position='Python Developer',
             employment_type=emp_type["ft"],   # full-time
@@ -132,8 +132,14 @@ class ApplicationsData:
                     details='Interview conducted fully in English with both on-mic and on-cam.',
                     notes='Session ended ~10 minutes earlier than planned, no Q&A session. Recruiter mentioned feedback within 2 weeks.',
                 ),
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-06-19T11:46:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Interview Result',
+                    details='Received rejection email from Delta HQ HR (Putri Rahmawati).',
+                    notes='Message stated application cannot proceed further, but profile will be kept in talent database for future opportunities.',
+                ),
             ],
-            lessons_learned='Application progressed quickly from submission to interview. Delta HQ conducted structured English interview but lacked Q&A. Awaiting recruiter feedback within 2 weeks.',
+            lessons_learned='Despite a quick progression to interview, the application ended with rejection. Delta HQ appreciated the skills and experience but did not proceed. Profile retained in their talent database for future opportunities.',
         )),
         asdict(Application(
             id=62,

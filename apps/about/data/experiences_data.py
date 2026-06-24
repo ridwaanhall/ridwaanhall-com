@@ -58,13 +58,31 @@ class ExperiencesData:
             location="Boyolali, Indonesia 🇮🇩",
             is_current=True,
             responsibilities=[
-                "Collaborative Python Innovations and Learning for Optimal Technologies.",
-                "Averaging 15.66k unique visitors, 262.07k total requests, and 33k active users over 30 days, with 161+ GitHub stars earned across public repositories.",
-                "Executed AI-driven projects using Django, TensorFlow, PyTorch, and modern web technologies.",
-                "3+ years of Django experience across 15+ full-cycle projects including MTV architecture, ORM, REST APIs, authentication, testing, and debugging.",
-                "Built and deployed 7+ Flask-based with scalable routing and Jinja2 templating.",
-                "Developed 8+ end-to-end neural network systems involving preprocessing, feature engineering, model tuning, evaluation, distributed training, and deployment.",
-                "Applied a broad tech stack: Python, PHP, JavaScript, Django, Flask, React, Next.js, Node.js, WordPress, Material-UI, TypeScript, Laravel, TensorFlow, PyTorch, Keras, Scikit-learn, HTML/CSS, SQL/NoSQL, Git, DRF, Postman, GraphQL, Vercel, Netlify, and Cloudflare."
+                "Delivered scalable web/AI solutions, attracting 15k+ monthly unique visitors and earning 161+ GitHub stars across public repositories.",
+                "Founded OpenMLBB (MLBB API/web platform) for hero analytics and resources, gaining 130+ GitHub stars and 2k+ monthly downloads from a global community.",
+                "Executed full-cycle development for 15+ Django and 7+ Flask projects (3+ years), utilizing MTV architecture, ORM, RESTful APIs, and efficient templating.",
+                "Developed 8+ end-to-end neural network systems (AI/ML Engineer), managing the full pipeline from data preprocessing to distributed training and deployment."
+            ],
+        )),
+        asdict(Experience(
+            id=14,
+            title="Full Stack Developer",
+            company="Rawwy LLC",
+            logo=f"{settings.BASE_URL}/static/img/logo/rawwy_llc_logo.webp",
+            website="https://rawwy.ae",
+            period=Period(
+                start=PeriodDate(month="Jun", year=2026),
+                end="Present",
+            ),
+            employment_type=employment_types["fr"],
+            location_type=location_types["rm"],
+            location="United Arab Emirates 🇦🇪",
+            is_current=True,
+            responsibilities=[
+                "Integrate custom mobile gaming API (Open MLBB API) into the fastur.gg tournament platform to deliver real-time data analytics, including hero draft pick simulations, banned rates, and win rates.",
+                "Resolve client-side rendering errors and develop comprehensive user profile management features for getranked.gg, enhancing platform stability for over 1,000 active users.",
+                "Optimize cross-platform security and user onboarding workflows by proposing mandatory email verification protocols, Cloudflare anti-bot integration, and dynamic location APIs to safeguard user data privacy.",
+                "Collaborate proactively within a remote, international development environment alongside a team from the Middle East, conducting independent UI/UX evaluations and executing weekly feature enhancements."
             ],
         )),
         asdict(Experience(

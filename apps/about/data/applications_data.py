@@ -98,6 +98,38 @@ class ApplicationsData:
 
     applications = [
         asdict(Application(
+            id=64,
+            status=status["ac"],   # accepted
+            company_name='Rawwy LLC',
+            position='Full Stack Developer',
+            employment_type=emp_type["fr"],   # freelance
+            location_type=loc_types["rm"],    # remote
+            location='United Arab Emirates',
+            applied_via=via["ot"],            # other
+            salary_range='Not specified',
+            journey=[
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-06-08T15:27:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Initial Contact',
+                    details='Received outreach from CEO of Rawwy LLC via X (t.co/UIHKJ9Obw0) after exploring OpenMLBB API.',
+                    notes='Message praised API work, requested contact, and proposed collaboration. Mentioned creating @RawwyMLBB_Bot as a temporary Telegram infobot.',
+                ),
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-06-17T16:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Introductory Meeting',
+                    details='Conducted background introduction and discussed current web optimization project.',
+                    notes='Requested to prepare a PPT presentation on optimization strategies.',
+                ),
+                JourneyStep(
+                    timestamp=datetime.strptime("2026-06-23T16:00:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
+                    title='Follow-up Meeting',
+                    details='Presented PPT on optimization and discussed freelance collaboration terms.',
+                    notes='Meeting concluded with acceptance into freelance role.',
+                ),
+            ],
+            lessons_learned='Rawwy LLC discovered my OpenMLBB API work and initiated collaboration. After presenting optimization strategies, I was accepted as a freelance Full Stack Developer in a remote setup with a UAE-based team.',
+        )),
+        asdict(Application(
             id=63,
             status=status["re"],   # rejected
             company_name='Delta HQ',

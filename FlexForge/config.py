@@ -64,6 +64,11 @@ GUESTBOOK_PAGE = config("GUESTBOOK_PAGE", default=True, cast=bool)
 WSRV_IMAGE_OPTIMIZATION = config("WSRV_IMAGE_OPTIMIZATION", default=not DEBUG, cast=bool)
 
 # --------------------------------------------------------------------------
+# PAGINATIONS
+# --------------------------------------------------------------------------
+ITEMS_PER_PAGE = 10
+
+# --------------------------------------------------------------------------
 # SOCIAL AUTH KEYS (Guestbook only)
 # --------------------------------------------------------------------------
 GOOGLE_CLIENT_ID = config("GOOGLE_CLIENT_ID", default="")

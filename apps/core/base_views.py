@@ -9,6 +9,7 @@ from django.views.generic import TemplateView
 from django.shortcuts import render
 from django.core.exceptions import SuspiciousOperation
 from django.http import Http404, HttpResponse
+from django.conf import settings
 
 from apps.about.manager import AboutManager
 
@@ -86,7 +87,7 @@ class PaginatedView(BaseView):
     Base view for paginated content.
     Provides consistent pagination functionality.
     """
-    items_per_page = 6
+    items_per_page = settings.ITEMS_PER_PAGE
     
     def paginate_items(self, request, items, items_per_page=None):
         """Paginate items with error handling."""

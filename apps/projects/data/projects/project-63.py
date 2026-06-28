@@ -7,7 +7,7 @@ from apps.about.data.skills_data import SkillsData
 # SEO-Optimized Project Data
 project_data = asdict(ProjectData(
     # Core Identity
-    id=64,
+    id=63,
     title="MLBB Identity Card",
     headline="Web-based identity card displaying authenticated MLBB ranked stats and battle highlights.",
 

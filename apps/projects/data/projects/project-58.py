@@ -76,7 +76,7 @@ project_data = asdict(ProjectData(
     ],
     is_featured=False,
     featured_priority=None,
-    status=ProjectStatus.DEVELOPMENT_IN_PROGRESS,
+    status=ProjectStatus.COMPLETED,
     created_at=datetime.strptime("2026-01-02T10:42:00+07:00", "%Y-%m-%dT%H:%M:%S%z"),
     updated_at=None,
 ))

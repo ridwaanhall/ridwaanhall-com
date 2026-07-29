@@ -58,7 +58,7 @@ uv sync
 npm install tailwindcss @tailwindcss/cli
 
 # Build Tailwind CSS (for development with watch mode)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global.css --watch
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-wvbpenzt.css --watch
 
 # In a separate terminal, run development server
 uv run python manage.py runserver
@@ -79,10 +79,10 @@ For styling changes, ensure Tailwind CSS is running in watch mode:
 
 ```bash
 # Development (with watch and minification)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global.css --watch --minify
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-wvbpenzt.css --watch --minify
 
 # Production build
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global.css --minify
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-wvbpenzt.css --minify
 ```
 
 Make sure your `static/css/input.css` contains:

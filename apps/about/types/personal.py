@@ -28,6 +28,7 @@ class PersonalInfo:
     is_active: bool
     is_open_to_work: bool
     is_hiring: bool
+    is_sick: bool
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

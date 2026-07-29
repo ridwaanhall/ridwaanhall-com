@@ -41,6 +41,7 @@ class AboutData:
                 is_active=cls.is_working_hours(),
                 is_open_to_work=False,
                 is_hiring=False,
+                is_sick=True,
             ),
             bio=Bio(
                 short_description="a quiet space where machine learning, open-source, and reflections converge.",

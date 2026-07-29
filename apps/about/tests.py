@@ -73,7 +73,7 @@ class AboutTypesTest(TestCase):
                 username="testuser", aka="t", image_url="img.png",
                 personal_website="https://example.com",
                 cv=CV(main="c", latest="l", copy="cp"),
-                role="Dev", is_active=True, is_open_to_work=False, is_hiring=False,
+                role="Dev", is_active=True, is_open_to_work=False, is_hiring=False, is_sick=False,
             ),
             bio=Bio(short_description="desc", short_bio="bio", short_cta="cta", long_description="long"),
         )

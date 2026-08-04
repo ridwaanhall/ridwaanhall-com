@@ -46,3 +46,5 @@ Ruff is configured for linting (`uv run ruff check`) — line-length (E501) is i
 ## Environment
 
 Env vars are loaded via `python-decouple` from a local `.env` (see `.env.example` for keys). SQLite (`db.sqlite3`) is used automatically when `DEBUG=True` or during tests; PostgreSQL (`POSTGRES_*`) is used otherwise. Set `GUESTBOOK_PAGE=False` to skip Google/GitHub OAuth setup entirely.
+
+`SECRET_KEY`, `ACCESS_TOKEN`, `EMAIL_HOST_USER`, and `EMAIL_HOST_PASSWORD` (`FlexForge/config.py`) have no defaults — the app won't start locally without a `.env` providing all four, even outside the guestbook/Turnstile flows.

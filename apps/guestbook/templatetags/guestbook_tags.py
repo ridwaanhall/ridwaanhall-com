@@ -27,7 +27,7 @@ def linkify_message(message):
     if stripped.lower().startswith("https://"):
         return format_html(
             '<a href="{0}" target="_blank" rel="noopener noreferrer nofollow" '
-            'class="underline break-all hover:text-indigo-300">{0}</a>',
+            'class="text-indigo-400 underline break-all hover:text-indigo-300">{0}</a>',
             stripped,
         )
 

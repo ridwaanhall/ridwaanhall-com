@@ -235,6 +235,9 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
                 'id': message.pk,
                 'message': message.message,
                 'user_full_name': profile_data['full_name'],
+                'user_profile_image': profile_data['profile_image'],
+                'user_is_author': profile_data['is_author'],
+                'user_is_co_author': profile_data['is_co_author'],
             })
 
         # Get current user profile data
@@ -449,7 +452,20 @@ class PinMessageView(LoginRequiredMixin, UserProfileMixin, View):
         message.is_pinned = True
         message.pinned_at = timezone.now()
         message.save(update_fields=['is_pinned', 'pinned_at'])
-        return JsonResponse({'success': True, 'is_pinned': True, 'message_id': message.pk})
+
+        message_profile = self.get_user_profile_data(message.user)
+        return JsonResponse({
+            'success': True,
+            'is_pinned': True,
+            'message_id': message.pk,
+            'message': {
+                'user': message_profile['full_name'],
+                'message': message.message,
+                'profile_image': message_profile['profile_image'],
+                'is_author': message_profile['is_author'],
+                'is_co_author': message_profile['is_co_author'],
+            },
+        })
 
     def get(self, request, *args, **kwargs):
         """

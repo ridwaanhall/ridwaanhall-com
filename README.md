@@ -217,23 +217,6 @@ SQLite is used automatically in development mode (DEBUG=True)
 - **PROJECT_BASE_IMG_URL**: Base URL for project images
   - Defaults to `{BASE_URL}/static/img/project` if not set
 
-## Documentation
-
-Comprehensive documentation for each application component:
-
-| Document | Description |
-|----------|-------------|
-| [Core App](docs/core.md) | Base views, contact form, email handler, image optimization, validators |
-| [Guestbook App](docs/guestbook.md) | OAuth messaging, threaded replies, email notifications, author management |
-| [About App](docs/about.md) | Personal info display (experiences, education, certifications, awards) |
-| [Blog App](docs/blog.md) | Paginated blog with search, multi-image support, template tags |
-| [Projects App](docs/projects.md) | Project showcase with search, featured sorting, multi-image support |
-| [Dashboard App](docs/dashboard.md) | GitHub and WakaTime API integration with 15-min cache |
-| [SEO App](docs/seo.md) | Meta tags, Open Graph, JSON-LD schemas, sitemaps, robots.txt |
-| [OpenHire App](docs/openhire.md) | Open-to-work and hiring status display |
-| [Data App](docs/data.md) | Individual File System (IFS) for file-based content management |
-| [FlexForge Config](docs/flexforge.md) | Django settings, URL routing, context processors, deployment |
-
 ## Deployment
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?demo-description=Advanced%20developer%20portfolio%20platform%20with%20individual%20file%20data%20management%2C%20real-time%20API%20integrations%2C%20and%20enterprise-grade%20security.&demo-image=https%3A%2F%2Fridwaanhall.com%2Fstatic%2Fimg%2Fproject%2Fridwaanhall_com_2025070701.webp&demo-title=FlexForge%20Portfolio&demo-url=https%3A%2F%2Fridwaanhall.com&from=templates&project-name=FlexForge%20Portfolio&repository-name=flexforge-portfolio&repository-url=https%3A%2F%2Fgithub.com%2Fridwaanhall%2Fridwaanhall-com)

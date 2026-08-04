@@ -1,18 +1,18 @@
-ridwaanhall.com  ·  New Message
-────────────────────────────────────────────────────
+ridwaanhall.com — New Message
+════════════════════════════════════════════════════
 
 New contact form submission.
 
 FROM
-Name:   {{ name }}
-Email:  {{ sender_email }}
+  Name    {{ name }}
+  Email   {{ sender_email }}
 
 MESSAGE
-────────────────────────────────────────────────────
+──────────────────────────────────────────────────────
 {{ message_text }}
-────────────────────────────────────────────────────
+──────────────────────────────────────────────────────
 
 Reply to this email to respond directly to {{ sender_email }}.
 
-────────────────────────────────────────────────────
-ridwaanhall.com  ·  Automated Notification
+════════════════════════════════════════════════════
+ridwaanhall.com · Automated notification

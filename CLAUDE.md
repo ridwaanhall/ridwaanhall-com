@@ -24,6 +24,18 @@ Views inherit from `apps/core/base_views.py`'s `BaseView`/`PaginatedView`/`Detai
 
 Frozen dataclasses under `apps/*/types/` get `to_dict()` from `apps/core/types/mixins.py`'s `DictConvertible` mixin (`class Foo(DictConvertible): ...`) — don't add a per-class `to_dict()` override.
 
+## Guestbook chat messages
+
+`apps/guestbook/templates/guestbook/guestbook.html` renders new messages twice over: once server-side in `apps/guestbook/templates/guestbook/sections/guestbook_messages.html` (initial page load), and once as a hand-built JS template-string literal in `guestbook.html`'s inline `<script>` (for the AJAX-posted message shown without a reload). Any change to how a message is displayed — badges, pin state, link rendering — must be made in **both** places or new messages will render inconsistently until the next page load.
+
+Message text rendering (both places) checks for a `https://` prefix and renders the whole message as a link instead of escaped text: the `linkify_message` filter in `apps/guestbook/templatetags/guestbook_tags.py` server-side, and the `linkifyMessage()` JS function (same logic, kept in sync manually) client-side.
+
+Pinning is a toggle, not separate pin/unpin endpoints: `PinMessageView` (`apps/guestbook/views.py`) flips `ChatMessage.is_pinned` and enforces `ChatMessage.MAX_PINNED_MESSAGES` (3) only on the pin path. `UserProfileMixin.get_user_profile_data()`'s `can_pin` field (`is_author or is_co_author`) is the single source of truth for pin permission — reuse it rather than re-deriving from `is_author`/`is_co_author` separately.
+
+## Gotcha: `{% block head_seo %}` only renders when `seo` is missing from context
+
+`templates/base_seo.html` falls back to `{% block head_seo %}` only in the `{% else %}` branch of `{% if seo %}`. Every view built on `apps/seo/mixins.py`'s `SEOMixin` unconditionally sets `context['seo']`, so `head_seo` never renders for those pages — don't add page-specific meta/JSON-LD there; extend `apps/seo/schema.py`'s `SEOSchemaGenerator` and wire it into `apps/seo/manager.py` instead, matching how existing pages do it.
+
 ## Gotcha: hardcoded compiled CSS filename
 
 The compiled Tailwind output filename (currently `global-wvbpenzt.css`) is a hand-picked string, not an auto-generated hash. It's hardcoded in three places that must stay in sync:

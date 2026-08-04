@@ -12,7 +12,7 @@
 
 - **🗂️ Individual File System (IFS)**: Every blog post and project lives in its own Python file as a typed dataclass — no database, no migrations, just add a file
 - **📊 Real-time Dashboard**: Live GitHub contribution graph and WakaTime coding-activity stats, cached for 15 minutes
-- **💬 Interactive Guestbook**: Google/GitHub OAuth login, threaded replies, author/co-author roles, email notifications — or disable it entirely with one env var
+- **💬 Interactive Guestbook**: Google/GitHub OAuth login, threaded replies, author/co-author roles, message pinning (up to 3 at a time), automatic link detection, email notifications — or disable it entirely with one env var
 - **📝 Blog & Projects**: Paginated, searchable listings with multi-image support, tags, categories, and a project lifecycle status system
 - **🔍 SEO Built In**: Per-page meta tags, Open Graph, Twitter Cards, JSON-LD schema, and auto-generated sitemaps/robots.txt
 - **🛡️ Security-First**: Content-Security-Policy, HSTS, permissions-policy, and optional Cloudflare Turnstile on the contact form

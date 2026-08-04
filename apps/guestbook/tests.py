@@ -146,11 +146,20 @@ class GuestbookPerformanceTestCase(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class PinMessageViewTestCase(TestCase):
     """
     Tests for PinMessageView: permission checks, the MAX_PINNED_MESSAGES cap,
     and handling of a malformed message_id (regression test for a bug where a
     non-numeric id raised an uncaught ValueError instead of a JSON error).
+
+    SECURE_SSL_REDIRECT is forced off here because it's tied to `not DEBUG`
+    (FlexForge/settings.py) and the Django test Client makes plain-HTTP
+    requests: with DEBUG=False (the default in FlexForge/config.py, and what
+    CI runs with since it doesn't set DEBUG), SecurityMiddleware 301-redirects
+    every request here before it reaches the view, which fails on
+    response.json() / status_code assertions rather than exercising
+    PinMessageView at all.
     """
 
     def setUp(self):

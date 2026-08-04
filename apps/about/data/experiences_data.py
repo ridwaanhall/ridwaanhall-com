@@ -79,10 +79,10 @@ class ExperiencesData:
             location="United Arab Emirates 🇦🇪",
             is_current=True,
             responsibilities=[
-                "Integrate custom mobile gaming API (Open MLBB API) into the fastur.gg tournament platform to deliver real-time data analytics, including hero draft pick simulations, banned rates, and win rates.",
-                "Resolve client-side rendering errors and develop comprehensive user profile management features for getranked.gg, enhancing platform stability for over 1,000 active users.",
-                "Optimize cross-platform security and user onboarding workflows by proposing mandatory email verification protocols, Cloudflare anti-bot integration, and dynamic location APIs to safeguard user data privacy.",
-                "Collaborate proactively within a remote, international development environment alongside a team from the Middle East, conducting independent UI/UX evaluations and executing weekly feature enhancements."
+                "Delivered fullstack web development and feature enhancements as an independent contractor on Rawwy/getrankedgg, covering interface refinement, statistics module standardisation, defect resolution, and configuration hardening.",
+                "Redesigned and unified UI components by restoring reverted improvements, refining the site header, and establishing consistent styling across footer, dropdown menus, and card layouts.",
+                "Strengthened platform reliability by standardising game selector controls, correcting icon visibility, unifying verified card structures across multiple game integrations, and resolving defects such as null record handling in Dota 2.",
+                "Enhanced performance and security through environment variable clarification, secret protection, dependency conflict resolution, TypeScript cleanup, and route-level code splitting, while delivering new features including profile setup checklist, rank image integration, and compact statistics update control."
             ],
         )),
         asdict(Experience(

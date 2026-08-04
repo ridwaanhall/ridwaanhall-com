@@ -5,7 +5,7 @@ Author: Ridwan Halim (ridwaanhall.com)
 License: Apache License 2.0
 """
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.conf import settings
 from apps.core.image_utils import get_optimized_image_url, get_wsrv_status
 

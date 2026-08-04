@@ -1,20 +1,18 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
-from typing import Any
+from dataclasses import dataclass, field
+
+from apps.core.types.mixins import DictConvertible
 
 
 @dataclass(frozen=True)
-class PortfolioHighlight:
+class PortfolioHighlight(DictConvertible):
     title: str
     description: str
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
-class OpenToWorkModel:
+class OpenToWorkModel(DictConvertible):
     """Typed model for open-to-work information."""
     status: str
     availability: str
@@ -36,6 +34,3 @@ class OpenToWorkModel:
     contact_preference: str = ""
     interview_availability: str = ""
     additional_notes: str = ""
-
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)

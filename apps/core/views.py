@@ -26,9 +26,6 @@ class HomeView(HomepageSEOMixin, BaseView):
     """
     template_name = 'core/home.html'
 
-    def get(self, request, *args, **kwargs):
-        return self.handle_exceptions(self._get)(request, *args, **kwargs)
-
     def _get(self, request, *args, **kwargs):
         about = self.get_about_data()
         blogs = DataService.get_blogs()[:5]
@@ -79,9 +76,6 @@ class ContactView(ContactSEOMixin, BaseView):
     Handles both GET and POST requests for contact form.
     """
     template_name = 'core/contact.html'
-
-    def get(self, request, *args, **kwargs):
-        return self.handle_exceptions(self._get)(request, *args, **kwargs)
 
     def _get(self, request, *args, **kwargs):
         about = self.get_about_data()
@@ -152,9 +146,6 @@ class PrivacyPolicyView(PrivacyPolicySEOMixin, BaseView):
     """
     template_name = 'core/privacy_policy.html'
 
-    def get(self, request, *args, **kwargs):
-        return self.handle_exceptions(self._get)(request, *args, **kwargs)
-
     def _get(self, request, *args, **kwargs):
         about = self.get_about_data()
         context = {
@@ -167,87 +158,43 @@ class PrivacyPolicyView(PrivacyPolicySEOMixin, BaseView):
         return self.render_to_response(context)
 
 
-class CVRedirectView(BaseView):
-    """
-    Professional CV redirect view.
-    Redirects to Google Drive CV document with a permanent redirect.
-    """
-    
+class _CVLinkRedirectView(BaseView):
+    """Base for redirecting to a CV-related link stored in about data."""
+    cv_key: str = ""
+
     def get(self, request, *args, **kwargs):
-        """
-        Redirect to CV on Google Drive.
-        Using permanent redirect (301) for better SEO and caching.
-        """
+        """Redirect to the configured CV link, falling back to the homepage."""
         about_data = self.get_about_data()
         cv_url = None
         if about_data:
-            cv_url = about_data.get('cv', {}).get('main')
+            cv_url = about_data.get('cv', {}).get(self.cv_key)
             if not cv_url:
                 # Fallback to nested structure if not flattened (backward compatibility)
-                cv_url = about_data.get('personal', {}).get('cv', {}).get('main')
-        
+                cv_url = about_data.get('personal', {}).get('cv', {}).get(self.cv_key)
+
         if not cv_url:
-            # Fallback to homepage if CV URL is not configured
+            # Fallback to homepage if the CV link is not configured
             return HttpResponsePermanentRedirect('/')
-            
+
         # Encode to a proper URI and redirect via Location header (302)
         resp = HttpResponse(status=302)
         resp['Location'] = iri_to_uri(cv_url)
         return resp
-    
-    
-class CVLatestRedirectView(BaseView):
-    """
-    CV Latest redirect view.
-    """
-    def get(self, request, *args, **kwargs):
-        """
-        Redirect to latest CV on Google Drive.
-        Using permanent redirect (301) for better SEO and caching.
-        """
-        about_data = self.get_about_data()
-        cv_latest_url = None
-        if about_data:
-            cv_latest_url = about_data.get('cv', {}).get('latest')
-            if not cv_latest_url:
-                # Fallback to nested structure if not flattened (backward compatibility)
-                cv_latest_url = about_data.get('personal', {}).get('cv', {}).get('latest')
-
-        if not cv_latest_url:
-            # Fallback to homepage if CV latest URL is not configured
-            return HttpResponsePermanentRedirect('/')
-
-        resp = HttpResponse(status=302)
-        resp['Location'] = iri_to_uri(cv_latest_url)
-        return resp
 
 
-class CVTemplateRedirectView(BaseView):
-    """
-    CV Template redirect view.
-    Redirects to Google Docs CV template with a permanent redirect.
-    """
-    
-    def get(self, request, *args, **kwargs):
-        """
-        Redirect to CV template on Google Docs.
-        Using permanent redirect (301) for better SEO and caching.
-        """
-        about_data = self.get_about_data()
-        template_url = None
-        if about_data:
-            template_url = about_data.get('cv', {}).get('copy')
-            if not template_url:
-                # Fallback to nested structure if not flattened (backward compatibility)
-                template_url = about_data.get('personal', {}).get('cv', {}).get('copy')
-        
-        if not template_url:
-            # Fallback to homepage if CV template URL is not configured
-            return HttpResponsePermanentRedirect('/')
-            
-        resp = HttpResponse(status=302)
-        resp['Location'] = iri_to_uri(template_url)
-        return resp
+class CVRedirectView(_CVLinkRedirectView):
+    """Professional CV redirect view. Redirects to the Google Drive CV document."""
+    cv_key = 'main'
+
+
+class CVLatestRedirectView(_CVLinkRedirectView):
+    """CV Latest redirect view."""
+    cv_key = 'latest'
+
+
+class CVTemplateRedirectView(_CVLinkRedirectView):
+    """CV Template redirect view. Redirects to the Google Docs CV template."""
+    cv_key = 'copy'
 
 
 def dynamic_css_view(request, css_name):

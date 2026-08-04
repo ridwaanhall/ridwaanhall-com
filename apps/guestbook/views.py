@@ -150,9 +150,6 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
     """
     template_name = 'guestbook/guestbook.html'
 
-    def get(self, request, *args, **kwargs):
-        return self.handle_exceptions(self._get)(request, *args, **kwargs)
-
     def _get(self, request, *args, **kwargs):
         about = self.get_about_data()
         

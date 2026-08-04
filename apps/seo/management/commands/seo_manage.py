@@ -2,7 +2,7 @@
 SEO management command for comprehensive SEO validation, testing, and reporting.
 """
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.urls import reverse
 from django.test import Client, override_settings
 from django.conf import settings

@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any
+
+from apps.core.types.mixins import DictConvertible
 
 
 @dataclass(frozen=True)
-class BlogContentItem:
+class BlogContentItem(DictConvertible):
     type: str
     text: str = ""
     items: list[dict[str, str]] = field(default_factory=list)
@@ -14,12 +15,9 @@ class BlogContentItem:
     rows: list[list[str]] = field(default_factory=list)
     class_: str = ""  # mapped from 'class' key
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
-class BlogData:
+class BlogData(DictConvertible):
     id: int
     title: str
     description: str
@@ -36,6 +34,3 @@ class BlogData:
     is_featured: bool = False
     read_time: int | None = None
     views: int | None = None
-
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)

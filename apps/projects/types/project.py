@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from typing import Any
+
+from apps.core.types.mixins import DictConvertible
 
 class ProjectStatus(str, Enum):
     """
@@ -68,16 +70,13 @@ def normalize_project_status(status: Any) -> str:
 
 
 @dataclass(frozen=True)
-class Feature:
+class Feature(DictConvertible):
     title: str
     description: str
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
-class ProjectData:
+class ProjectData(DictConvertible):
     id: int
     title: str
     headline: str
@@ -94,6 +93,3 @@ class ProjectData:
     status: ProjectStatus = ProjectStatus.COMPLETED
     created_at: datetime | None = None
     updated_at: datetime | None = None
-
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)

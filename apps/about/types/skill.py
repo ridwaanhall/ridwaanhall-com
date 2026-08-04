@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
-from typing import Any
+from dataclasses import dataclass
+
+from apps.core.types.mixins import DictConvertible
 
 
 @dataclass(frozen=True)
-class Skill:
+class Skill(DictConvertible):
     name: str
     description: str
     icon_svg: str = ""
     category: str | None = None
-
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)

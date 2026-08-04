@@ -1,22 +1,20 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
-from typing import Any
+from dataclasses import dataclass, field
+
+from apps.core.types.mixins import DictConvertible
 
 from .experience import PeriodDate
 
 
 @dataclass(frozen=True)
-class EducationDate:
+class EducationDate(DictConvertible):
     start: PeriodDate
     end: PeriodDate
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
-class EducationLocation:
+class EducationLocation(DictConvertible):
     regency: str
     province: str
     prov: str
@@ -24,12 +22,9 @@ class EducationLocation:
     flag: str
     map_url: str = ""
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
-class Education:
+class Education(DictConvertible):
     degree: str
     institution: str
     logo: str
@@ -40,6 +35,3 @@ class Education:
     date: EducationDate | None = None
     years: str | None = None
     website: str | None = None
-
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)

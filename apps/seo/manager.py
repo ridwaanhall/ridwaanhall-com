@@ -161,16 +161,6 @@ class SEOManager:
         ]
         return seo_data
     
-    @staticmethod
-    def get_sitemap_priority(content_type: str) -> float:
-        """Get sitemap priority for content type."""
-        return SEOConfig.CONTENT_TYPES.get(content_type, {}).get('priority', 0.5)
-    
-    @staticmethod
-    def get_sitemap_changefreq(content_type: str) -> str:
-        """Get sitemap change frequency for content type."""
-        return SEOConfig.CONTENT_TYPES.get(content_type, {}).get('changefreq', 'monthly')
-    
     def get_meta_tags(self, seo_data: dict, request=None) -> dict:
         """Generate complete meta tags for templates."""
         canonical_url = seo_data.get('canonical_url', SEOConfig.SITE_URL)

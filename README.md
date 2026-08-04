@@ -238,8 +238,9 @@ This started as a personal site, but the architecture doesn't assume you're Ridw
    - `FlexForge/config.py`'s `ALLOWED_HOSTS` fallback (production-only; update to your own domain)
    - `FlexForge/settings.py`'s `CONTENT_SECURITY_POLICY` directives (`connect-src`, `font-src`, `script-src`, `style-src` all allowlist `ridwaanhall.com`)
 4. **Your assets** — replace files under `staticfiles/favicon/`, `staticfiles/img/`, and `templates/site.webmanifest`.
-5. **Your env vars** — see the [table above](#environment-configuration); at minimum you need `SECRET_KEY`, `ACCESS_TOKEN`, `EMAIL_HOST_USER`, and `EMAIL_HOST_PASSWORD` to start the app.
-6. **Optional features** — turn off what you don't need: `GUESTBOOK_PAGE=False` skips the whole OAuth/chat system (no OAuth app setup needed), `USE_CF_TURNSTILE=False` skips Turnstile.
+5. **Your emails** — `apps/core/templates/core/email/` has the contact/guestbook notification templates (html + txt pairs); they're plain text-substitution files (not Django templates — see `apps/core/email_templates.py`), styled to match the site's own dark theme.
+6. **Your env vars** — see the [table above](#environment-configuration); at minimum you need `SECRET_KEY`, `ACCESS_TOKEN`, `EMAIL_HOST_USER`, and `EMAIL_HOST_PASSWORD` to start the app.
+7. **Optional features** — turn off what you don't need: `GUESTBOOK_PAGE=False` skips the whole OAuth/chat system (no OAuth app setup needed), `USE_CF_TURNSTILE=False` skips Turnstile.
 
 ## Deployment
 

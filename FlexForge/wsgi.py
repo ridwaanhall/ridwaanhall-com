@@ -6,4 +6,5 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'FlexForge.settings')
 
 application = get_wsgi_application()
 
-app = get_wsgi_application()
+# Vercel's Python runtime looks for a module-level `app`.
+app = application

@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views import View
@@ -423,8 +424,12 @@ class PinMessageView(LoginRequiredMixin, UserProfileMixin, View):
             return JsonResponse({'success': False, 'error': 'Message ID is required'})
 
         try:
-            message = ChatMessage.objects.get(id=message_id)
-        except ChatMessage.DoesNotExist:
+            message = ChatMessage.objects.select_related(
+                'user', 'user__userprofile'
+            ).prefetch_related('user__socialaccount_set').get(id=message_id)
+        except (ChatMessage.DoesNotExist, ValueError):
+            # ValueError covers a non-numeric message_id, which Django's ORM otherwise
+            # raises before DoesNotExist can be checked.
             return JsonResponse({'success': False, 'error': 'Message not found'})
 
         # Check permissions - authors and co-authors can pin/unpin
@@ -442,16 +447,20 @@ class PinMessageView(LoginRequiredMixin, UserProfileMixin, View):
             message.save(update_fields=['is_pinned', 'pinned_at'])
             return JsonResponse({'success': True, 'is_pinned': False, 'message_id': message.pk})
 
-        pinned_count = ChatMessage.objects.filter(is_pinned=True).count()
-        if pinned_count >= ChatMessage.MAX_PINNED_MESSAGES:
-            return JsonResponse({
-                'success': False,
-                'error': f'Maximum of {ChatMessage.MAX_PINNED_MESSAGES} pinned messages reached. Unpin one first.'
-            })
+        # Lock the currently-pinned rows for the duration of the transaction so two
+        # concurrent pin requests can't both read a count under the limit and both
+        # save, pushing the pinned count past MAX_PINNED_MESSAGES.
+        with transaction.atomic():
+            pinned_count = len(ChatMessage.objects.select_for_update().filter(is_pinned=True))
+            if pinned_count >= ChatMessage.MAX_PINNED_MESSAGES:
+                return JsonResponse({
+                    'success': False,
+                    'error': f'Maximum of {ChatMessage.MAX_PINNED_MESSAGES} pinned messages reached. Unpin one first.'
+                })
 
-        message.is_pinned = True
-        message.pinned_at = timezone.now()
-        message.save(update_fields=['is_pinned', 'pinned_at'])
+            message.is_pinned = True
+            message.pinned_at = timezone.now()
+            message.save(update_fields=['is_pinned', 'pinned_at'])
 
         message_profile = self.get_user_profile_data(message.user)
         return JsonResponse({

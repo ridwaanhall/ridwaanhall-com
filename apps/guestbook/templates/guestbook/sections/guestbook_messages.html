@@ -148,15 +148,16 @@
                                 <span class="text-[9px]">Co-Author</span>
                             </div>
                             {% endif %}
-                            {% if message.is_pinned %}
-                            <div class="flex items-center gap-0.5 rounded-full bg-zinc-700 px-1.5 py-0.5 text-amber-400" title="Pinned message">
+                            {# Always rendered (hidden when unpinned) so updatePinButtons() in guestbook.html
+                               can toggle it after an AJAX pin/unpin without a page reload — see CLAUDE.md's
+                               guestbook dual-rendering note. #}
+                            <div class="pinned-badge flex items-center gap-0.5 rounded-full bg-zinc-700 px-1.5 py-0.5 text-amber-400 {% if not message.is_pinned %}hidden{% endif %}" data-message-id="{{ message.id }}" title="Pinned message">
                                 <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M12 17v5"></path>
                                     <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path>
                                 </svg>
                                 <span class="text-[9px]">Pinned</span>
                             </div>
-                            {% endif %}
                             <div class="hidden md:flex">
                                 <div class="text-xs text-zinc-400">{{ message.timestamp|date:"d/m/Y, H:i" }}</div>
                             </div>

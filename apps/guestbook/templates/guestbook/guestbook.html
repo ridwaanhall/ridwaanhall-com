@@ -28,12 +28,16 @@
 
 {% block scripts %}
 <script>
-    // HTML escaping function to prevent XSS
+    // HTML escaping function to prevent XSS. Escapes text-node metacharacters via
+    // textContent/innerHTML, then quotes explicitly since that trick does not encode
+    // them — required because every call site below interpolates the result inside
+    // a "..." HTML attribute (href=, alt=, src=, data-user=, data-message=), where an
+    // unescaped " lets an attacker break out and inject arbitrary attributes/markup.
     function escapeHtml(text) {
         if (typeof text !== "string") return text;
         const div = document.createElement("div");
         div.textContent = text;
-        return div.innerHTML;
+        return div.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     }
 
     // Shared pin icon path (thumbtack), reused across pin buttons and pinned-message cards
@@ -252,6 +256,12 @@
                                             <div class="flex items-center gap-2">
                                                 <div class="text-sm font-medium">${escapeHtml(data.message.user)}</div>
                                                 ${authorBadgeHtml}
+                                                <div class="pinned-badge flex items-center gap-0.5 rounded-full bg-zinc-700 px-1.5 py-0.5 text-amber-400 hidden" data-message-id="${data.message.id}" title="Pinned message">
+                                                    <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        ${PIN_ICON_PATHS}
+                                                    </svg>
+                                                    <span class="text-[9px]">Pinned</span>
+                                                </div>
                                                 <div class="hidden md:flex">
                                                     <div class="text-xs text-zinc-400">${jakartaTime}</div>
                                                 </div>
@@ -467,6 +477,11 @@
                     .then((response) => response.json())
                     .then((data) => {
                         if (data.success) {
+                            // A deleted message may currently be pinned; drop its card too
+                            // (no-op if it isn't pinned) so the sidebar doesn't keep a stale
+                            // reference to a message that no longer exists in the DB.
+                            removePinnedCard(messageId);
+
                             // Remove the message from the DOM - find the parent message container
                             const messageElement = button.closest("[data-message-id]");
                             if (messageElement) {
@@ -516,6 +531,13 @@
                     svg.classList.toggle("hover:text-amber-400", !isPinned);
                 }
             });
+            // Also toggle the inline "Pinned" badge next to the author's name in the
+            // main message list — it's a third place pin state is shown (besides the
+            // pin button and the pinned-card sidebar) and was previously only ever set
+            // server-side at page load, going stale after an AJAX pin/unpin.
+            document.querySelectorAll('.pinned-badge[data-message-id="' + messageId + '"]').forEach((badge) => {
+                badge.classList.toggle("hidden", !isPinned);
+            });
         }
 
         // Show/hide the pinned-messages section and refresh its count based on current cards
@@ -535,7 +557,10 @@
         // Add a card for a newly-pinned message to the pinned-messages section, matching
         // the server-rendered card markup in guestbook_messages.html
         function addPinnedCard(messageId, messageData) {
-            const messageHtml = linkifyMessage(messageData.message) || escapeHtml(messageData.message);
+            // Non-link fallback must also convert newlines to <br>, matching the
+            // linebreaksbr() behavior of the server-side linkify_message filter used
+            // for the same card markup after a page reload (guestbook_messages.html).
+            const messageHtml = linkifyMessage(messageData.message) || escapeHtml(messageData.message).replace(/\n/g, "<br>");
             const avatarHtml = buildPinnedAvatarHtml(messageData.profile_image, messageData.user);
             const badgeHtml = buildRoleBadgeHtml(messageData.is_author, messageData.is_co_author, 9);
 

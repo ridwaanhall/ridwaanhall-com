@@ -36,6 +36,19 @@
         return div.innerHTML;
     }
 
+    // Shared pin icon path (thumbtack), reused across pin buttons and pinned-message cards
+    const PIN_ICON_PATHS = '<path d="M12 17v5"></path><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path>';
+
+    // Render a message's text as a clickable link when it starts with https://, matching
+    // the server-side `linkify_message` template filter in apps/guestbook/templatetags/guestbook_tags.py
+    function linkifyMessage(message) {
+        const trimmed = message.trim();
+        if (/^https:\/\//i.test(trimmed)) {
+            return `<a href="${escapeHtml(trimmed)}" target="_blank" rel="noopener noreferrer nofollow" class="underline break-all hover:text-indigo-300">${escapeHtml(trimmed)}</a>`;
+        }
+        return null; // Caller falls back to safe line-broken text rendering
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         // Message alerts functionality
         function removeMessage(messageElement) {
@@ -70,30 +83,6 @@
                 removeMessage(messageElement);
             }, 6000); // 6 seconds
         });
-
-        // Update current time
-        function updateTime() {
-            const now = new Date();
-            const jakartaTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Jakarta" }));
-            const timeString = jakartaTime.toLocaleString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: true,
-            });
-            const timeElement = document.getElementById("current-time");
-            if (timeElement) {
-                timeElement.textContent = timeString;
-            }
-        }
-
-        // Update time immediately and then every second
-        updateTime();
-        setInterval(updateTime, 1000);
 
         // Guestbook functionality
         const guestbookForm = document.getElementById("guestbook-form");
@@ -264,6 +253,16 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                                     </svg>
                                                 </button>
+                                                {% if current_user_profile.can_pin %}
+                                                <button class="pin-btn p-1.5 rounded-lg hover:bg-amber-900/30 transition-colors"
+                                                        data-message-id="${data.message.id}"
+                                                        data-pinned="false"
+                                                        title="Pin this message">
+                                                    <svg class="w-4 h-4 text-zinc-400 hover:text-amber-400 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        ${PIN_ICON_PATHS}
+                                                    </svg>
+                                                </button>
+                                                {% endif %}
                                                 {% if current_user_profile.is_author %}
                                                 <button class="delete-btn p-1.5 rounded-lg hover:bg-red-900/30 transition-colors"
                                                         data-message-id="${data.message.id}"
@@ -294,16 +293,21 @@
                             const messageContainer = guestbookMessages.lastElementChild;
                             const messageParagraph = messageContainer.querySelector("p");
                             if (messageParagraph) {
-                                messageParagraph.textContent = data.message.message;
-                                // Convert line breaks to HTML for display safely
-                                const lines = messageParagraph.textContent.split("\n");
-                                messageParagraph.textContent = ""; // Clear existing content
-                                lines.forEach((line, index) => {
-                                    if (index > 0) {
-                                        messageParagraph.appendChild(document.createElement("br"));
-                                    }
-                                    messageParagraph.appendChild(document.createTextNode(line));
-                                });
+                                const linkHtml = linkifyMessage(data.message.message);
+                                if (linkHtml) {
+                                    messageParagraph.innerHTML = linkHtml;
+                                } else {
+                                    messageParagraph.textContent = data.message.message;
+                                    // Convert line breaks to HTML for display safely
+                                    const lines = messageParagraph.textContent.split("\n");
+                                    messageParagraph.textContent = ""; // Clear existing content
+                                    lines.forEach((line, index) => {
+                                        if (index > 0) {
+                                            messageParagraph.appendChild(document.createElement("br"));
+                                        }
+                                        messageParagraph.appendChild(document.createTextNode(line));
+                                    });
+                                }
                             }
 
                             messageInput.value = "";
@@ -477,6 +481,108 @@
                         button.innerHTML = originalContent;
                     });
                 }
+            }
+        });
+
+        // Toggle the pinned state on every button + badge for a given message
+        function updatePinButtons(messageId, isPinned) {
+            document.querySelectorAll('.pin-btn[data-message-id="' + messageId + '"]').forEach((btn) => {
+                btn.dataset.pinned = isPinned ? "true" : "false";
+                btn.title = isPinned ? "Unpin this message" : "Pin this message";
+                const svg = btn.querySelector("svg");
+                if (svg) {
+                    svg.setAttribute("fill", isPinned ? "currentColor" : "none");
+                    svg.classList.toggle("text-amber-400", isPinned);
+                    svg.classList.toggle("text-zinc-400", !isPinned);
+                    svg.classList.toggle("hover:text-amber-400", !isPinned);
+                }
+            });
+        }
+
+        // Show/hide the pinned-messages section and refresh its count based on current cards
+        function updatePinnedSectionVisibility() {
+            const section = document.getElementById("pinned-messages-section");
+            const list = document.getElementById("pinned-messages-list");
+            const countLabel = document.getElementById("pinned-messages-count");
+            if (!section || !list) return;
+
+            const count = list.children.length;
+            if (countLabel) {
+                countLabel.textContent = `Pinned Messages (${count}/{{ pin_limit }})`;
+            }
+            section.classList.toggle("hidden", count === 0);
+        }
+
+        // Add a compact card for a newly-pinned message to the pinned-messages section
+        function addPinnedCard(pinButton, messageId) {
+            const messageRow = pinButton.closest("[data-message-id]");
+            const messageParagraph = messageRow ? messageRow.querySelector("p[data-user]") : null;
+            const userName = messageParagraph ? messageParagraph.dataset.user : "";
+            const messageText = messageParagraph ? messageParagraph.dataset.message : "";
+            const messageHtml = linkifyMessage(messageText) || escapeHtml(messageText);
+
+            const card = document.createElement("div");
+            card.className = "flex items-center gap-2 bg-zinc-800 rounded-lg px-3 py-2";
+            card.dataset.pinnedMessageId = messageId;
+            card.innerHTML = `
+                <div class="text-xs font-medium text-zinc-300 flex-shrink-0">${escapeHtml(userName)}:</div>
+                <div class="text-xs text-zinc-400 truncate flex-1">${messageHtml}</div>
+                <button class="pin-btn flex-shrink-0 p-1 rounded hover:bg-amber-900/30 transition-colors" data-message-id="${messageId}" data-pinned="true" title="Unpin this message">
+                    <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${PIN_ICON_PATHS}</svg>
+                </button>
+            `;
+
+            const list = document.getElementById("pinned-messages-list");
+            if (list) list.appendChild(card);
+            updatePinnedSectionVisibility();
+        }
+
+        // Remove a message's card from the pinned-messages section
+        function removePinnedCard(messageId) {
+            const card = document.querySelector('[data-pinned-message-id="' + messageId + '"]');
+            if (card) card.remove();
+            updatePinnedSectionVisibility();
+        }
+
+        // Handle pin/unpin button clicks
+        document.addEventListener("click", function (e) {
+            if (e.target.closest(".pin-btn")) {
+                const button = e.target.closest(".pin-btn");
+                const messageId = button.dataset.messageId;
+
+                const allButtons = document.querySelectorAll('.pin-btn[data-message-id="' + messageId + '"]');
+                allButtons.forEach((btn) => (btn.disabled = true));
+
+                fetch('{% url "pin_message" %}', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                    },
+                    body: new URLSearchParams({
+                        message_id: messageId,
+                    }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            updatePinButtons(messageId, data.is_pinned);
+                            if (data.is_pinned) {
+                                addPinnedCard(button, messageId);
+                            } else {
+                                removePinnedCard(messageId);
+                            }
+                        } else {
+                            alert("Error: " + (data.error || "Failed to update pinned message"));
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("Failed to update pinned message. Please try again.");
+                    })
+                    .finally(() => {
+                        allButtons.forEach((btn) => (btn.disabled = false));
+                    });
             }
         });
 

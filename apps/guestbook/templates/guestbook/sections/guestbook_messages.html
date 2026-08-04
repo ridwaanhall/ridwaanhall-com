@@ -1,5 +1,6 @@
 {% load static %}
 {% load socialaccount %}
+{% load guestbook_tags %}
 
 <div class="border border-zinc-700 rounded-lg shadow-lg flex flex-col">
     <div class="bg-zinc-800 p-3 rounded-t-lg flex-shrink-0">
@@ -16,6 +17,35 @@
             <span id="message-count" class="ml-auto bg-white/20 px-2 py-1 rounded-full text-sm">{{ message_count|default:0 }} messages</span>
         </h4>
     </div>
+
+    <!-- Pinned Messages -->
+    <div id="pinned-messages-section" class="border-b border-zinc-700 p-3 space-y-2 flex-shrink-0 bg-zinc-800/40 {% if not pinned_messages %}hidden{% endif %}">
+        <div class="flex items-center gap-1.5 text-xs font-medium text-amber-400 mb-1">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 17v5"></path>
+                <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path>
+            </svg>
+            <span id="pinned-messages-count">Pinned Messages ({{ pinned_messages|length }}/{{ pin_limit }})</span>
+        </div>
+        <div id="pinned-messages-list" class="space-y-1.5">
+            {% for pinned in pinned_messages %}
+            <div class="flex items-center gap-2 bg-zinc-800 rounded-lg px-3 py-2" data-pinned-message-id="{{ pinned.id }}">
+                <div class="text-xs font-medium text-zinc-300 flex-shrink-0">{{ pinned.user_full_name }}:</div>
+                <div class="text-xs text-zinc-400 truncate flex-1">{{ pinned.message|linkify_message }}</div>
+                {% if user.is_authenticated and current_user_profile.can_pin %}
+                <button class="pin-btn flex-shrink-0 p-1 rounded hover:bg-amber-900/30 transition-colors"
+                        data-message-id="{{ pinned.id }}" data-pinned="true" title="Unpin this message">
+                    <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 17v5"></path>
+                        <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path>
+                    </svg>
+                </button>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
     <!-- Messages Container -->
     <div id="guestbook-messages" class="overflow-y-auto py-4 space-y-4 flex-1 scrollbar-hide" style="min-height: min(45vh, 600px); max-height: min(55vh, 800px); scrollbar-width: none; -ms-overflow-style: none;">
         {% if chat_messages %}
@@ -86,6 +116,15 @@
                                 <span class="text-[9px]">Co-Author</span>
                             </div>
                             {% endif %}
+                            {% if message.is_pinned %}
+                            <div class="flex items-center gap-0.5 rounded-full bg-zinc-700 px-1.5 py-0.5 text-amber-400" title="Pinned message">
+                                <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 17v5"></path>
+                                    <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path>
+                                </svg>
+                                <span class="text-[9px]">Pinned</span>
+                            </div>
+                            {% endif %}
                             <div class="hidden md:flex">
                                 <div class="text-xs text-zinc-400">{{ message.timestamp|date:"d/m/Y, H:i" }}</div>
                             </div>
@@ -100,9 +139,9 @@
                             data-user="{{ message.user_full_name }}"
                             data-message="{{ message.message|escape }}"
                         >
-                            {{ message.message|escape|linebreaksbr }}
+                            {{ message.message|linkify_message }}
                         </p>
-                        <!-- Action buttons - Always show reply button, delete only for authors -->
+                        <!-- Action buttons - Always show reply button, pin/delete only for authors/co-authors -->
                         <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button
                                 class="{% if user.is_authenticated %}reply-btn{% else %}login-required-btn{% endif %} p-1.5 rounded-lg hover:bg-zinc-600 transition-colors"
@@ -115,6 +154,18 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                 </svg>
                             </button>
+                            {% if user.is_authenticated and current_user_profile.can_pin %}
+                            <button class="pin-btn p-1.5 rounded-lg hover:bg-amber-900/30 transition-colors"
+                                    data-message-id="{{ message.id }}"
+                                    data-pinned="{% if message.is_pinned %}true{% else %}false{% endif %}"
+                                    title="{% if message.is_pinned %}Unpin this message{% else %}Pin this message{% endif %}">
+                                <svg class="w-4 h-4 {% if message.is_pinned %}text-amber-400{% else %}text-zinc-400 hover:text-amber-400{% endif %} transition-colors"
+                                     viewBox="0 0 24 24" fill="{% if message.is_pinned %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 17v5"></path>
+                                    <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path>
+                                </svg>
+                            </button>
+                            {% endif %}
                             {% if user.is_authenticated and current_user_profile.is_author %}
                             <button class="delete-btn p-1.5 rounded-lg hover:bg-red-900/30 transition-colors" data-message-id="{{ message.id }}" title="Delete this message">
                                 <svg class="w-4 h-4 text-zinc-400 hover:text-red-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">

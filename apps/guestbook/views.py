@@ -447,11 +447,20 @@ class PinMessageView(LoginRequiredMixin, UserProfileMixin, View):
             message.save(update_fields=['is_pinned', 'pinned_at'])
             return JsonResponse({'success': True, 'is_pinned': False, 'message_id': message.pk})
 
-        # Lock the currently-pinned rows for the duration of the transaction so two
-        # concurrent pin requests can't both read a count under the limit and both
-        # save, pushing the pinned count past MAX_PINNED_MESSAGES.
         with transaction.atomic():
-            pinned_count = len(ChatMessage.objects.select_for_update().filter(is_pinned=True))
+            # Serialize concurrent pin requests on one deterministic row lock (the
+            # lowest-pk message, which every pinner contends on) before counting.
+            # Locking just the currently-pinned rows isn't enough: that set locks
+            # nothing when no message is pinned yet, and it can never cover a row a
+            # concurrent transaction is in the middle of flipping to pinned - so two
+            # requests could both read a count under the limit and both save, pushing
+            # the pinned count past MAX_PINNED_MESSAGES. (No-op on SQLite, which is
+            # dev/test only; production runs PostgreSQL.)
+            ChatMessage.objects.select_for_update().order_by('pk').values_list('pk', flat=True).first()
+
+            # Exclude this message from the count so a concurrent request that already
+            # pinned it doesn't make re-pinning it look like it would exceed the cap.
+            pinned_count = ChatMessage.objects.filter(is_pinned=True).exclude(pk=message.pk).count()
             if pinned_count >= ChatMessage.MAX_PINNED_MESSAGES:
                 return JsonResponse({
                     'success': False,

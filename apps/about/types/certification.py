@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
-from typing import Any
+from dataclasses import dataclass, field
+
+from apps.core.types.mixins import DictConvertible
 
 from .experience import IssuedDate
 
 
 @dataclass(frozen=True)
-class Certification:
+class Certification(DictConvertible):
     id: int
     title: str
     credential_url: str
@@ -17,6 +18,3 @@ class Certification:
     logo: str
     is_featured: bool = False
     achievements: list[str] = field(default_factory=list)
-
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)

@@ -3,7 +3,6 @@ SEO Mixins
 Reusable mixins for views to automatically include SEO functionality.
 """
 
-from apps.about.manager import AboutManager
 from .manager import SEOManager
 
 
@@ -11,17 +10,11 @@ class SEOMixin:
     """
     Mixin to add SEO functionality to any view.
     Automatically generates SEO data based on the view type.
+    Always combined with a BaseView subclass, which provides get_about_data().
     """
-    
+
     seo_type = None  # Override in subclasses: 'homepage', 'blog_list', etc.
-    
-    def get_about_data(self):
-        """Get about data with fallback."""
-        about_data = AboutManager.get_about_data()
-        if not about_data:
-            raise FileNotFoundError("About data is missing.")
-        return about_data
-    
+
     def get_seo_manager(self):
         """Get SEO manager instance."""
         about = self.get_about_data()

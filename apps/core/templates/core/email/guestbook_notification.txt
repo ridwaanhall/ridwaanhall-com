@@ -1,20 +1,20 @@
-ridwaanhall.com  ·  New Entry
-────────────────────────────────────────────────────
+ridwaanhall.com — New Entry
+════════════════════════════════════════════════════
 
 New guestbook entry.
 
 FROM
-Name:      {{ name }}
-Email:     {{ sender_email }}
-Timestamp: {{ timestamp }}
+  Name       {{ name }}
+  Email      {{ sender_email }}
+  Posted     {{ timestamp }}
 
 ENTRY
-────────────────────────────────────────────────────
+──────────────────────────────────────────────────────
 {{ message_text }}
-────────────────────────────────────────────────────
+──────────────────────────────────────────────────────
 
-VIEW GUESTBOOK
-{{ guestbook_url }}
+OPEN GUESTBOOK
+  {{ guestbook_url }}
 
-────────────────────────────────────────────────────
-ridwaanhall.com  ·  Automated Notification
+════════════════════════════════════════════════════
+ridwaanhall.com · Automated notification

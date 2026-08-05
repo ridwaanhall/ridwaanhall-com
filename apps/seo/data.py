@@ -43,6 +43,14 @@ class SEOData:
         if not title:
             return f"{context} - Portfolio and Blog"
         return f"{title} - {context}"
+
+    @staticmethod
+    def _resolve_image(about_data: dict, primary: dict | None = None) -> str:
+        """Resolve an OG image: prefer the primary content's image, then the profile image, then the site default."""
+        fallback = about_data.get('image_url', SEOConfig.DEFAULT_IMAGE)
+        if primary is None:
+            return fallback
+        return primary.get('image_url', fallback)
     
     @staticmethod
     def get_homepage_seo(about_data: dict) -> dict:
@@ -55,7 +63,7 @@ class SEOData:
             'title': f"Hey, I'm {about_data['name']} - Leaving Traces in Code and Thought",
             'description': f"{about_data['name']}’s personal site—{about_data.get('short_description', 'A place where I share my projects, ideas, and journey.')}",
             'keywords': ', '.join(keywords),
-            'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
+            'og_image': SEOData._resolve_image(about_data),
             'og_type': SEOConfig.CONTENT_TYPES['homepage']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['homepage']['twitter_card'],
             'canonical_url': SEOConfig.SITE_URL,
@@ -76,7 +84,7 @@ class SEOData:
             'title': "Focused Hours & Quiet Commits - Coding Traces That Tell",
             'description': SEOData.optimize_description(f"Focused hours and quiet commits. This is where {about_data.get('first_name', about_data.get('name', ''))}'s coding traces unfold."),
             'keywords': ', '.join(keywords),
-            'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
+            'og_image': SEOData._resolve_image(about_data),
             'og_type': SEOConfig.CONTENT_TYPES['dashboard']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['dashboard']['twitter_card'],
             'canonical_url': f"{SEOConfig.SITE_URL}/dashboard/",
@@ -104,7 +112,7 @@ class SEOData:
             'title': "Where Code Meets Purpose - Projects That Persist",
             'description': SEOData.optimize_description("Projects built from curiosity and care. Practical explorations through machine learning and the web."),
             'keywords': ', '.join(keywords[:15]),
-            'og_image': projects[0].get('image_url', about_data.get('image_url', SEOConfig.DEFAULT_IMAGE)) if projects else about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
+            'og_image': SEOData._resolve_image(about_data, projects[0] if projects else None),
             'og_type': SEOConfig.CONTENT_TYPES['project_list']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['project_list']['twitter_card'],
             'canonical_url': f"{SEOConfig.SITE_URL}/projects/",
@@ -127,7 +135,7 @@ class SEOData:
             'title': f"{project_data['title']} - {about_data['name']}'s Project",
             'description': SEOData.optimize_description(full_description),
             'keywords': ', '.join(keywords[:15]),
-            'og_image': project_data.get('image_url', about_data.get('image_url', SEOConfig.DEFAULT_IMAGE)),
+            'og_image': SEOData._resolve_image(about_data, project_data),
             'og_type': SEOConfig.CONTENT_TYPES['project_detail']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['project_detail']['twitter_card'],
             'canonical_url': f"{SEOConfig.SITE_URL}/projects/{slugify(project_data['title'])}/",
@@ -154,7 +162,7 @@ class SEOData:
             'title': "Beyond Syntax - Reflections in Thought and Trace",
             'description': SEOData.optimize_description("Reflections beyond syntax. Thoughts, questions and quiet technical discoveries."),
             'keywords': ', '.join(keywords[:15]),
-            'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
+            'og_image': SEOData._resolve_image(about_data),
             'og_type': SEOConfig.CONTENT_TYPES['blog_list']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['blog_list']['twitter_card'],
             'canonical_url': f"{SEOConfig.SITE_URL}/blog/",
@@ -173,7 +181,7 @@ class SEOData:
             'title': f"{blog_data['title']} | {about_data['name']}'s Blog",
             'description': SEOData.optimize_description(blog_data.get('description', '')),
             'keywords': ', '.join(keywords[:15]),
-            'og_image': blog_data.get('image_url', about_data.get('image_url', SEOConfig.DEFAULT_IMAGE)),
+            'og_image': SEOData._resolve_image(about_data, blog_data),
             'og_type': SEOConfig.CONTENT_TYPES['blog_detail']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['blog_detail']['twitter_card'],
             'canonical_url': f"{SEOConfig.SITE_URL}/blog/{slugify(blog_data['title'])}/",
@@ -202,7 +210,7 @@ class SEOData:
             'title': "In Code, Curiosity, and Care - The Story So Far",
             'description': f"In between {location_str} and Bash scripts. A path shaped by code, community and contemplation.",
             'keywords': ', '.join(keywords[:15]),
-            'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
+            'og_image': SEOData._resolve_image(about_data),
             'og_type': SEOConfig.CONTENT_TYPES['about']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['about']['twitter_card'],
             'canonical_url': f"{SEOConfig.SITE_URL}/about/",
@@ -210,7 +218,6 @@ class SEOData:
         }
     
     @staticmethod
-
     def get_contact_seo(about_data: dict) -> dict:
         """Generate SEO data for contact page."""
         keywords = SEOConfig.COMMON_KEYWORDS['personal'][:5] + \
@@ -220,7 +227,7 @@ class SEOData:
             'title': "Reach Out - Conversations that Begin Beyond Code",
             'description': "Some conversations begin with code. Others start with a quiet hello.",
             'keywords': ', '.join(keywords),
-            'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
+            'og_image': SEOData._resolve_image(about_data),
             'og_type': SEOConfig.CONTENT_TYPES['contact']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['contact']['twitter_card'],
             'canonical_url': f"{SEOConfig.SITE_URL}/contact/",
@@ -237,7 +244,7 @@ class SEOData:
             'title': "Guestbook - Leave a Thought, Leave a Trace",
             'description': "Before you go, leave a trace. This quiet corner is open to your words.",
             'keywords': ', '.join(keywords),
-            'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
+            'og_image': SEOData._resolve_image(about_data),
             'og_type': SEOConfig.CONTENT_TYPES['guestbook']['og_type'],
             'twitter_card': SEOConfig.CONTENT_TYPES['guestbook']['twitter_card'],
             'canonical_url': f"{SEOConfig.SITE_URL}/guestbook/",
@@ -254,7 +261,7 @@ class SEOData:
             'title': "Privacy Policy - Because Traces Deserve Trust",
             'description': "Your data matters here. I protect your traces with clarity and quiet intent.",
             'keywords': ', '.join(keywords),
-            'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
+            'og_image': SEOData._resolve_image(about_data),
             'og_type': 'website',
             'twitter_card': 'summary',
             'canonical_url': f"{SEOConfig.SITE_URL}/privacy-policy/",
@@ -287,7 +294,7 @@ class SEOData:
             'title': f"{title} - Connecting Talent with Opportunity",
             'description': description,
             'keywords': ', '.join(keywords),
-            'og_image': about_data.get('image_url', SEOConfig.DEFAULT_IMAGE),
+            'og_image': SEOData._resolve_image(about_data),
             'og_type': 'website',
             'twitter_card': 'summary_large_image',
             'canonical_url': f"{SEOConfig.SITE_URL}/openhire/",

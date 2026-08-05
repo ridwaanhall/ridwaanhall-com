@@ -7,8 +7,6 @@ from apps.core.base_views import PaginatedView, DetailView
 from apps.core.data_service import DataService
 from apps.seo.mixins import BlogListSEOMixin, BlogDetailSEOMixin
 
-from django.conf import settings
-
 
 class BlogView(BlogListSEOMixin, PaginatedView):
     """
@@ -16,10 +14,6 @@ class BlogView(BlogListSEOMixin, PaginatedView):
     Displays all blog posts with SEO metadata.
     """
     template_name = 'blog/blog.html'
-    items_per_page = settings.ITEMS_PER_PAGE
-
-    def get(self, request, *args, **kwargs):
-        return self.handle_exceptions(self._get)(request, *args, **kwargs)
 
     def _get(self, request, *args, **kwargs):
         # Get all blogs sorted by ID descending
@@ -75,9 +69,6 @@ class BlogDetailView(BlogDetailSEOMixin, DetailView):
     Displays a specific blog post by slugified title.
     """
     template_name = 'blog/blog_detail.html'
-
-    def get(self, request, title, *args, **kwargs):
-        return self.handle_exceptions(lambda r, *a, **kw: self._get(r, title, *a, **kw))(request, *args, **kwargs)
 
     def _get(self, request, title, *args, **kwargs):
         # Get all blogs

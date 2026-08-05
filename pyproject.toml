@@ -26,3 +26,20 @@ dependencies = [
 DJANGO_SETTINGS_MODULE = "FlexForge.settings"
 python_files = ["tests.py", "test_*.py", "*_test.py"]
 testpaths = ["apps"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py314"
+exclude = ["migrations"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "FlexForge"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.1",
+]

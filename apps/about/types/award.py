@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
-from typing import Any
+from dataclasses import dataclass
+
+from apps.core.types.mixins import DictConvertible
 
 from .experience import IssuedDate
 
 
 @dataclass(frozen=True)
-class Award:
+class Award(DictConvertible):
     id: int
     title: str
     credential_url: str
@@ -16,6 +17,3 @@ class Award:
     institution: str
     website: str
     logo: str
-
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)

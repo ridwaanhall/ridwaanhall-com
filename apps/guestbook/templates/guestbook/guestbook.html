@@ -28,12 +28,65 @@
 
 {% block scripts %}
 <script>
-    // HTML escaping function to prevent XSS
+    // HTML escaping function to prevent XSS. Escapes text-node metacharacters via
+    // textContent/innerHTML, then quotes explicitly since that trick does not encode
+    // them — required because every call site below interpolates the result inside
+    // a "..." HTML attribute (href=, alt=, src=, data-user=, data-message=), where an
+    // unescaped " lets an attacker break out and inject arbitrary attributes/markup.
     function escapeHtml(text) {
         if (typeof text !== "string") return text;
         const div = document.createElement("div");
         div.textContent = text;
-        return div.innerHTML;
+        return div.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
+    // Shared pin icon path (thumbtack), reused across pin buttons and pinned-message cards
+    const PIN_ICON_PATHS = '<path d="M12 17v5"></path><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path>';
+
+    // Render a message's text as a clickable link when it starts with https://, matching
+    // the server-side `linkify_message` template filter in apps/guestbook/templatetags/guestbook_tags.py
+    function linkifyMessage(message) {
+        const trimmed = message.trim();
+        if (/^https:\/\//i.test(trimmed)) {
+            return `<a href="${escapeHtml(trimmed)}" target="_blank" rel="noopener noreferrer nofollow" class="text-indigo-400 underline break-all hover:text-indigo-300">${escapeHtml(trimmed)}</a>`;
+        }
+        return null; // Caller falls back to safe line-broken text rendering
+    }
+
+    // Shared author/co-author role badge builder, matching guestbook_messages.html's markup
+    function buildRoleBadgeHtml(isAuthor, isCoAuthor, iconSize) {
+        if (isAuthor) {
+            return `<div class="flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-1.5 py-0.5 text-violet-50">
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="${iconSize}" width="${iconSize}" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="none" d="M0 0h24v24H0z"></path>
+                            <path d="M17 11c.34 0 .67.04 1 .09V6.27L10.5 3 3 6.27v4.91c0 4.54 3.2 8.79 7.5 9.82.55-.13 1.08-.32 1.6-.55-.69-.98-1.1-2.17-1.1-3.45 0-3.31 2.69-6 6-6z"></path>
+                            <path d="M17 13c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 1.38c.62 0 1.12.51 1.12 1.12s-.51 1.12-1.12 1.12-1.12-.51-1.12-1.12.5-1.12 1.12-1.12zm0 5.37c-.93 0-1.74-.46-2.24-1.17.05-.72 1.51-1.08 2.24-1.08s2.19.36 2.24 1.08c-.5.71-1.31 1.17-2.24 1.17z"></path>
+                        </svg>
+                        <span class="text-[9px]">Author</span>
+                    </div>`;
+        }
+        if (isCoAuthor) {
+            return `<div class="flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-amber-700 via-yellow-800 to-amber-700 px-1.5 py-0.5 text-amber-50">
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="${iconSize}" width="${iconSize}" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="none" d="M0 0h24v24H0z"></path>
+                            <path d="M16 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L22 4H16zM10 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L16 4H10zM4 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L10 4H4zM7 14c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm10 0c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path>
+                        </svg>
+                        <span class="text-[9px]">Co-Author</span>
+                    </div>`;
+        }
+        return "";
+    }
+
+    // Shared pinned-card avatar builder, matching the pinned-message markup in guestbook_messages.html
+    function buildPinnedAvatarHtml(profileImage, name) {
+        if (profileImage) {
+            return `<img src="${escapeHtml(profileImage)}" alt="${escapeHtml(name)}" width="28" height="28" class="rounded-full border border-zinc-700 flex-shrink-0">`;
+        }
+        return `<div class="rounded-full border border-zinc-700 w-7 h-7 bg-gradient-to-br from-zinc-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                </div>`;
     }
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -70,30 +123,6 @@
                 removeMessage(messageElement);
             }, 6000); // 6 seconds
         });
-
-        // Update current time
-        function updateTime() {
-            const now = new Date();
-            const jakartaTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Jakarta" }));
-            const timeString = jakartaTime.toLocaleString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: true,
-            });
-            const timeElement = document.getElementById("current-time");
-            if (timeElement) {
-                timeElement.textContent = timeString;
-            }
-        }
-
-        // Update time immediately and then every second
-        updateTime();
-        setInterval(updateTime, 1000);
 
         // Guestbook functionality
         const guestbookForm = document.getElementById("guestbook-form");
@@ -141,24 +170,7 @@
                     .then((data) => {
                         if (data.success) {
                             // Create user name with author/co-author badge if applicable
-                            const authorBadgeHtml = data.message.is_author
-                                ? `<div class="flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-1.5 py-0.5 text-violet-50">
-                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="10" width="10" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill="none" d="M0 0h24v24H0z"></path>
-                                            <path d="M17 11c.34 0 .67.04 1 .09V6.27L10.5 3 3 6.27v4.91c0 4.54 3.2 8.79 7.5 9.82.55-.13 1.08-.32 1.6-.55-.69-.98-1.1-2.17-1.1-3.45 0-3.31 2.69-6 6-6z"></path>
-                                            <path d="M17 13c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 1.38c.62 0 1.12.51 1.12 1.12s-.51 1.12-1.12 1.12-1.12-.51-1.12-1.12.5-1.12 1.12-1.12zm0 5.37c-.93 0-1.74-.46-2.24-1.17.05-.72 1.51-1.08 2.24-1.08s2.19.36 2.24 1.08c-.5.71-1.31 1.17-2.24 1.17z"></path>
-                                        </svg>
-                                        <span class="text-[9px]">Author</span>
-                                    </div>`
-                                : data.message.is_co_author
-                                ? `<div class="flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-amber-700 via-yellow-800 to-amber-700 px-1.5 py-0.5 text-amber-50">
-                                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="10" width="10" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill="none" d="M0 0h24v24H0z"></path>
-                                                <path d="M16 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L22 4H16zM10 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L16 4H10zM4 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L10 4H4zM7 14c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm10 0c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path>
-                                            </svg>
-                                            <span class="text-[9px]">Co-Author</span>
-                                        </div>`
-                                : "";
+                            const authorBadgeHtml = buildRoleBadgeHtml(data.message.is_author, data.message.is_co_author, 10);
 
                             // Create profile image or default avatar
                             const avatarHtml = data.message.profile_image
@@ -244,6 +256,12 @@
                                             <div class="flex items-center gap-2">
                                                 <div class="text-sm font-medium">${escapeHtml(data.message.user)}</div>
                                                 ${authorBadgeHtml}
+                                                <div class="pinned-badge flex items-center gap-0.5 rounded-full bg-zinc-700 px-1.5 py-0.5 text-amber-400 hidden" data-message-id="${data.message.id}" title="Pinned message">
+                                                    <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        ${PIN_ICON_PATHS}
+                                                    </svg>
+                                                    <span class="text-[9px]">Pinned</span>
+                                                </div>
                                                 <div class="hidden md:flex">
                                                     <div class="text-xs text-zinc-400">${jakartaTime}</div>
                                                 </div>
@@ -264,6 +282,16 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                                     </svg>
                                                 </button>
+                                                {% if current_user_profile.can_pin %}
+                                                <button class="pin-btn p-1.5 rounded-lg hover:bg-amber-900/30 transition-colors"
+                                                        data-message-id="${data.message.id}"
+                                                        data-pinned="false"
+                                                        title="Pin this message">
+                                                    <svg class="w-4 h-4 text-zinc-400 hover:text-amber-400 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        ${PIN_ICON_PATHS}
+                                                    </svg>
+                                                </button>
+                                                {% endif %}
                                                 {% if current_user_profile.is_author %}
                                                 <button class="delete-btn p-1.5 rounded-lg hover:bg-red-900/30 transition-colors"
                                                         data-message-id="${data.message.id}"
@@ -294,16 +322,21 @@
                             const messageContainer = guestbookMessages.lastElementChild;
                             const messageParagraph = messageContainer.querySelector("p");
                             if (messageParagraph) {
-                                messageParagraph.textContent = data.message.message;
-                                // Convert line breaks to HTML for display safely
-                                const lines = messageParagraph.textContent.split("\n");
-                                messageParagraph.textContent = ""; // Clear existing content
-                                lines.forEach((line, index) => {
-                                    if (index > 0) {
-                                        messageParagraph.appendChild(document.createElement("br"));
-                                    }
-                                    messageParagraph.appendChild(document.createTextNode(line));
-                                });
+                                const linkHtml = linkifyMessage(data.message.message);
+                                if (linkHtml) {
+                                    messageParagraph.innerHTML = linkHtml;
+                                } else {
+                                    messageParagraph.textContent = data.message.message;
+                                    // Convert line breaks to HTML for display safely
+                                    const lines = messageParagraph.textContent.split("\n");
+                                    messageParagraph.textContent = ""; // Clear existing content
+                                    lines.forEach((line, index) => {
+                                        if (index > 0) {
+                                            messageParagraph.appendChild(document.createElement("br"));
+                                        }
+                                        messageParagraph.appendChild(document.createTextNode(line));
+                                    });
+                                }
                             }
 
                             messageInput.value = "";
@@ -444,6 +477,11 @@
                     .then((response) => response.json())
                     .then((data) => {
                         if (data.success) {
+                            // A deleted message may currently be pinned; drop its card too
+                            // (no-op if it isn't pinned) so the sidebar doesn't keep a stale
+                            // reference to a message that no longer exists in the DB.
+                            removePinnedCard(messageId);
+
                             // Remove the message from the DOM - find the parent message container
                             const messageElement = button.closest("[data-message-id]");
                             if (messageElement) {
@@ -477,6 +515,161 @@
                         button.innerHTML = originalContent;
                     });
                 }
+            }
+        });
+
+        // Toggle the pinned state on every button + badge for a given message
+        function updatePinButtons(messageId, isPinned) {
+            document.querySelectorAll('.pin-btn[data-message-id="' + messageId + '"]').forEach((btn) => {
+                btn.dataset.pinned = isPinned ? "true" : "false";
+                btn.title = isPinned ? "Unpin this message" : "Pin this message";
+                const svg = btn.querySelector("svg");
+                if (svg) {
+                    svg.setAttribute("fill", isPinned ? "currentColor" : "none");
+                    svg.classList.toggle("text-amber-400", isPinned);
+                    svg.classList.toggle("text-zinc-400", !isPinned);
+                    svg.classList.toggle("hover:text-amber-400", !isPinned);
+                }
+            });
+            // Also toggle the inline "Pinned" badge next to the author's name in the
+            // main message list — it's a third place pin state is shown (besides the
+            // pin button and the pinned-card sidebar) and was previously only ever set
+            // server-side at page load, going stale after an AJAX pin/unpin.
+            document.querySelectorAll('.pinned-badge[data-message-id="' + messageId + '"]').forEach((badge) => {
+                badge.classList.toggle("hidden", !isPinned);
+            });
+        }
+
+        // Show/hide the pinned-messages section and refresh its count based on current cards
+        function updatePinnedSectionVisibility() {
+            const section = document.getElementById("pinned-messages-section");
+            const list = document.getElementById("pinned-messages-list");
+            const countLabel = document.getElementById("pinned-messages-count");
+            if (!section || !list) return;
+
+            const count = list.children.length;
+            if (countLabel) {
+                countLabel.textContent = `Pinned Messages (${count}/{{ pin_limit }})`;
+            }
+            section.classList.toggle("hidden", count === 0);
+        }
+
+        // Add a card for a newly-pinned message to the pinned-messages section, matching
+        // the server-rendered card markup in guestbook_messages.html
+        function addPinnedCard(messageId, messageData) {
+            // Non-link fallback must also convert newlines to <br>, matching the
+            // linebreaksbr() behavior of the server-side linkify_message filter used
+            // for the same card markup after a page reload (guestbook_messages.html).
+            const messageHtml = linkifyMessage(messageData.message) || escapeHtml(messageData.message).replace(/\n/g, "<br>");
+            const avatarHtml = buildPinnedAvatarHtml(messageData.profile_image, messageData.user);
+            const badgeHtml = buildRoleBadgeHtml(messageData.is_author, messageData.is_co_author, 9);
+
+            const card = document.createElement("div");
+            card.className = "flex items-start gap-2 bg-zinc-800 rounded-lg px-3 py-2";
+            card.dataset.pinnedMessageId = messageId;
+            card.innerHTML = `
+                ${avatarHtml}
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-1.5 mb-0.5">
+                        <span class="text-xs font-medium text-zinc-300">${escapeHtml(messageData.user)}</span>
+                        ${badgeHtml}
+                    </div>
+                    <div class="pinned-message-text text-xs text-zinc-400 line-clamp-2">${messageHtml}</div>
+                    <button class="pinned-readmore-btn hidden text-[10px] text-indigo-400 hover:text-indigo-300 mt-0.5 cursor-pointer" data-expanded="false" type="button">Read more</button>
+                </div>
+                <button class="pin-btn flex-shrink-0 p-1 rounded hover:bg-amber-900/30 transition-colors" data-message-id="${messageId}" data-pinned="true" title="Unpin this message">
+                    <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${PIN_ICON_PATHS}</svg>
+                </button>
+            `;
+
+            const list = document.getElementById("pinned-messages-list");
+            if (list) list.appendChild(card);
+            updatePinnedSectionVisibility();
+            checkPinnedReadMore(card);
+        }
+
+        // Remove a message's card from the pinned-messages section
+        function removePinnedCard(messageId) {
+            const card = document.querySelector('[data-pinned-message-id="' + messageId + '"]');
+            if (card) card.remove();
+            updatePinnedSectionVisibility();
+        }
+
+        // Show the "Read more" toggle only for pinned messages actually clamped by line-clamp-2
+        function checkPinnedReadMore(scope) {
+            const root = scope || document;
+            root.querySelectorAll(".pinned-message-text").forEach((textEl) => {
+                const btn = textEl.nextElementSibling;
+                if (!btn || !btn.classList.contains("pinned-readmore-btn")) return;
+
+                textEl.classList.add("line-clamp-2");
+                btn.textContent = "Read more";
+                btn.dataset.expanded = "false";
+                btn.classList.toggle("hidden", textEl.scrollHeight <= textEl.clientHeight + 1);
+            });
+        }
+
+        // Handle "Read more" / "Read less" toggle clicks on pinned messages
+        document.addEventListener("click", function (e) {
+            if (e.target.closest(".pinned-readmore-btn")) {
+                const btn = e.target.closest(".pinned-readmore-btn");
+                const textEl = btn.previousElementSibling;
+                if (!textEl) return;
+
+                const expanded = btn.dataset.expanded === "true";
+                textEl.classList.toggle("line-clamp-2", expanded);
+                btn.textContent = expanded ? "Read more" : "Read less";
+                btn.dataset.expanded = expanded ? "false" : "true";
+            }
+        });
+
+        // Initial check for server-rendered pinned messages, re-checked once web fonts settle
+        checkPinnedReadMore();
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => checkPinnedReadMore());
+        } else {
+            setTimeout(() => checkPinnedReadMore(), 300);
+        }
+
+        // Handle pin/unpin button clicks
+        document.addEventListener("click", function (e) {
+            if (e.target.closest(".pin-btn")) {
+                const button = e.target.closest(".pin-btn");
+                const messageId = button.dataset.messageId;
+
+                const allButtons = document.querySelectorAll('.pin-btn[data-message-id="' + messageId + '"]');
+                allButtons.forEach((btn) => (btn.disabled = true));
+
+                fetch('{% url "pin_message" %}', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                    },
+                    body: new URLSearchParams({
+                        message_id: messageId,
+                    }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            updatePinButtons(messageId, data.is_pinned);
+                            if (data.is_pinned) {
+                                addPinnedCard(messageId, data.message);
+                            } else {
+                                removePinnedCard(messageId);
+                            }
+                        } else {
+                            alert("Error: " + (data.error || "Failed to update pinned message"));
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("Failed to update pinned message. Please try again.");
+                    })
+                    .finally(() => {
+                        allButtons.forEach((btn) => (btn.disabled = false));
+                    });
             }
         });
 

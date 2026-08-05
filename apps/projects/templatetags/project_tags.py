@@ -3,58 +3,10 @@ Project template tags for handling multiple images and other project-specific fu
 """
 
 from django import template
-from django.utils.safestring import mark_safe
 
-from apps.projects.types import ProjectStatus
+from apps.projects.types import ProjectStatus, normalize_project_status
 
 register = template.Library()
-
-
-@register.filter
-def get_project_image(project, image_name=None):
-    """
-    Get a specific image from the project's images dictionary.
-    If no image_name is provided, returns the first image.
-    
-    Usage:
-    {{ project|get_project_image:"screenshot.webp" }}
-    {{ project|get_project_image }}  # Returns first image
-    """
-    if not project or 'images' not in project:
-        return project.get('image_url', '') if project else ''
-    
-    images = project.get('images', {})
-    if not images:
-        return project.get('image_url', '')
-    
-    if image_name:
-        return images.get(image_name, '')
-    
-    # Return first image if no specific name requested
-    return list(images.values())[0] if images else ''
-
-
-@register.filter
-def get_project_image_name(project, index=0):
-    """
-    Get the name of an image at a specific index.
-    
-    Usage:
-    {{ project|get_project_image_name:0 }}  # Returns first image name
-    {{ project|get_project_image_name:1 }}  # Returns second image name
-    """
-    if not project or 'images' not in project:
-        return project.get('img_name', '') if project else ''
-    
-    images = project.get('images', {})
-    if not images:
-        return project.get('img_name', '')
-    
-    image_names = list(images.keys())
-    if 0 <= index < len(image_names):
-        return image_names[index]
-    
-    return ''
 
 
 @register.inclusion_tag('projects/components/image_gallery.html')
@@ -137,29 +89,6 @@ STATUS_COLORS = {
     ProjectStatus.UPDATE_REQUIRED.value: "bg-rose-400/90 text-rose-950",
 }
 
-STATUS_DOT_COLORS = {
-    ProjectStatus.PLANNING_REQUIREMENTS.value: "bg-purple-400",
-    ProjectStatus.DESIGN.value: "bg-violet-400",
-    ProjectStatus.DEVELOPMENT_IN_PROGRESS.value: "bg-blue-400",
-    ProjectStatus.CODE_REVIEW.value: "bg-amber-400",
-    ProjectStatus.TESTING_QA.value: "bg-orange-400",
-    ProjectStatus.DEPLOYMENT_RELEASED.value: "bg-cyan-400",
-    ProjectStatus.MAINTENANCE_SUPPORT.value: "bg-sky-400",
-    ProjectStatus.COMPLETED.value: "bg-emerald-400",
-    ProjectStatus.ON_HOLD.value: "bg-zinc-400",
-    ProjectStatus.CANCELLED.value: "bg-red-400",
-    ProjectStatus.REOPENED.value: "bg-yellow-400",
-    ProjectStatus.UPDATE_REQUIRED.value: "bg-rose-400",
-}
-
-
-def _resolve_status(status):
-    """Extract the plain status string, handling both enum members and raw strings."""
-    if hasattr(status, 'value'):
-        return status.value.lower()
-    return str(status).lower()
-
-
 @register.filter
 def format_status(status):
     """
@@ -170,7 +99,7 @@ def format_status(status):
     """
     if not status:
         return ""
-    key = _resolve_status(status)
+    key = normalize_project_status(status)
     return STATUS_DISPLAY.get(key, key.replace("_", " ").title())
 
 
@@ -184,17 +113,4 @@ def status_color(status):
     """
     if not status:
         return "bg-zinc-500/20 text-zinc-300 border-zinc-500/30"
-    return STATUS_COLORS.get(_resolve_status(status), "bg-zinc-500/20 text-zinc-300 border-zinc-500/30")
-
-
-@register.filter
-def status_dot_color(status):
-    """
-    Return Tailwind CSS class for the status indicator dot.
-
-    Usage:
-    <span class="{{ project.status|status_dot_color }}"></span>
-    """
-    if not status:
-        return "bg-zinc-400"
-    return STATUS_DOT_COLORS.get(_resolve_status(status), "bg-zinc-400")
+    return STATUS_COLORS.get(normalize_project_status(status), "bg-zinc-500/20 text-zinc-300 border-zinc-500/30")

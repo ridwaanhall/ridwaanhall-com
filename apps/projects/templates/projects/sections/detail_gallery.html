@@ -24,7 +24,7 @@
                 </div>
                 <div class="aspect-video">
                     <img
-                        src="{{ project.image_url }}"
+                        src="{{ project.image_url|wsrv_image }}"
                         alt="{{ project.title }}"
                         class="w-full h-full object-cover object-center"
                         loading="lazy"

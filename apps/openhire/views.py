@@ -16,9 +16,6 @@ class OpenHireView(OpenHireSEOMixin, BaseView):
     """
     template_name = 'openhire/openhire.html'
 
-    def get(self, request, *args, **kwargs):
-        return self.handle_exceptions(self._get)(request, *args, **kwargs)
-
     def _get(self, request, *args, **kwargs):
         about = self.get_about_data()
         

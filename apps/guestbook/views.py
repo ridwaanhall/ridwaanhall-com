@@ -1,5 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.http import JsonResponse
+from django.utils import timezone
 from django.views import View
 from allauth.socialaccount.models import SocialAccount
 from apps.core.base_views import BaseView
@@ -136,11 +138,14 @@ class UserProfileMixin:
             # Set default profile image if none found
             if not profile_data['profile_image']:
                 profile_data['profile_image'] = 'https://www.gravatar.com/avatar/'
-                    
+
         except Exception as e:
             # Fallback to Django user data
             pass
-        
+
+        # Authors and co-authors can pin/unpin messages
+        profile_data['can_pin'] = profile_data['is_author'] or profile_data['is_co_author']
+
         return profile_data
 
 
@@ -150,15 +155,12 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
     """
     template_name = 'guestbook/guestbook.html'
 
-    def get(self, request, *args, **kwargs):
-        return self.handle_exceptions(self._get)(request, *args, **kwargs)
-
     def _get(self, request, *args, **kwargs):
         about = self.get_about_data()
         
         # Get all chat messages with optimized prefetching to avoid N+1 queries
         chat_messages = ChatMessage.objects.select_related(
-            'user', 
+            'user',
             'user__userprofile',
             'reply_to__user',
             'reply_to__user__userprofile'
@@ -166,22 +168,31 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
             'user__socialaccount_set',
             'reply_to__user__socialaccount_set'
         )[:50]  # Latest 50 messages
-        
+
+        # Get up to MAX_PINNED_MESSAGES pinned messages, most recently pinned first
+        pinned_messages = ChatMessage.objects.filter(is_pinned=True).select_related(
+            'user', 'user__userprofile'
+        ).prefetch_related(
+            'user__socialaccount_set'
+        ).order_by('-pinned_at')[:ChatMessage.MAX_PINNED_MESSAGES]
+
         # Get total message count
         total_message_count = ChatMessage.objects.count()
-        
+
         # Collect all users to process and create a cache of profile data
         all_users = set()
         for message in chat_messages:
             all_users.add(message.user)
             if message.reply_to:
                 all_users.add(message.reply_to.user)
-        
+        for message in pinned_messages:
+            all_users.add(message.user)
+
         # Batch process user profile data to avoid redundant processing
         user_profile_cache = {}
         for user in all_users:
             user_profile_cache[user.pk] = self.get_user_profile_data(user)
-        
+
         # Add profile data to each message using cache
         enriched_messages = []
         for message in chat_messages:
@@ -190,6 +201,7 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
                 'id': message.pk,
                 'message': message.message,
                 'timestamp': message.timestamp,
+                'is_pinned': message.is_pinned,
                 'user_full_name': profile_data['full_name'],
                 'user_profile_image': profile_data['profile_image'],
                 'user_is_author': profile_data['is_author'],
@@ -199,7 +211,7 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
                 'user_id': message.user.pk,
                 'reply_to': None
             }
-            
+
             # Add reply_to profile data if it exists
             if message.reply_to:
                 reply_profile_data = user_profile_cache[message.reply_to.user.pk]
@@ -215,7 +227,20 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
                     'user_id': message.reply_to.user.pk
                 }
             enriched_messages.append(enriched_message)
-        
+
+        # Enrich pinned messages with the same cached profile data
+        enriched_pinned_messages = []
+        for message in pinned_messages:
+            profile_data = user_profile_cache[message.user.pk]
+            enriched_pinned_messages.append({
+                'id': message.pk,
+                'message': message.message,
+                'user_full_name': profile_data['full_name'],
+                'user_profile_image': profile_data['profile_image'],
+                'user_is_author': profile_data['is_author'],
+                'user_is_co_author': profile_data['is_co_author'],
+            })
+
         # Get current user profile data
         current_user_profile = None
         if request.user.is_authenticated:
@@ -228,7 +253,8 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
                 'is_author': False,
                 'is_co_author': False,
                 'co_author_order': 0,
-                'email': ''
+                'email': '',
+                'can_pin': False,
             }
         
         # Get the base context with SEO data
@@ -237,6 +263,8 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
         # Add guestbook-specific context
         context.update({
             'chat_messages': enriched_messages,
+            'pinned_messages': enriched_pinned_messages,
+            'pin_limit': ChatMessage.MAX_PINNED_MESSAGES,
             'message_count': total_message_count,
             'current_user_profile': current_user_profile,
             'about': about,
@@ -372,7 +400,91 @@ class DeleteMessageView(LoginRequiredMixin, UserProfileMixin, View):
             })
         except Exception as e:
             return JsonResponse({'success': False, 'error': 'An error occurred while deleting the message'})
-    
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handle GET requests (not allowed for this endpoint)
+        """
+        return JsonResponse({'success': False, 'error': 'GET method not allowed'})
+
+
+class PinMessageView(LoginRequiredMixin, UserProfileMixin, View):
+    """
+    Handle pinning/unpinning chat messages via AJAX - authors and co-authors only.
+    Toggles the pin state; enforces a maximum of ChatMessage.MAX_PINNED_MESSAGES at a time.
+    """
+
+    def post(self, request, *args, **kwargs):
+        """
+        Toggle the pinned state of a chat message
+        """
+        message_id = request.POST.get('message_id', '').strip()
+
+        if not message_id:
+            return JsonResponse({'success': False, 'error': 'Message ID is required'})
+
+        try:
+            message = ChatMessage.objects.select_related(
+                'user', 'user__userprofile'
+            ).prefetch_related('user__socialaccount_set').get(id=message_id)
+        except (ChatMessage.DoesNotExist, ValueError):
+            # ValueError covers a non-numeric message_id, which Django's ORM otherwise
+            # raises before DoesNotExist can be checked.
+            return JsonResponse({'success': False, 'error': 'Message not found'})
+
+        # Check permissions - authors and co-authors can pin/unpin
+        user_profile = self.get_user_profile_data(request.user)
+
+        if not user_profile['can_pin']:
+            return JsonResponse({
+                'success': False,
+                'error': 'Permission denied - Only authors and co-authors can pin messages'
+            })
+
+        if message.is_pinned:
+            message.is_pinned = False
+            message.pinned_at = None
+            message.save(update_fields=['is_pinned', 'pinned_at'])
+            return JsonResponse({'success': True, 'is_pinned': False, 'message_id': message.pk})
+
+        with transaction.atomic():
+            # Serialize concurrent pin requests on one deterministic row lock (the
+            # lowest-pk message, which every pinner contends on) before counting.
+            # Locking just the currently-pinned rows isn't enough: that set locks
+            # nothing when no message is pinned yet, and it can never cover a row a
+            # concurrent transaction is in the middle of flipping to pinned - so two
+            # requests could both read a count under the limit and both save, pushing
+            # the pinned count past MAX_PINNED_MESSAGES. (No-op on SQLite, which is
+            # dev/test only; production runs PostgreSQL.)
+            ChatMessage.objects.select_for_update().order_by('pk').values_list('pk', flat=True).first()
+
+            # Exclude this message from the count so a concurrent request that already
+            # pinned it doesn't make re-pinning it look like it would exceed the cap.
+            pinned_count = ChatMessage.objects.filter(is_pinned=True).exclude(pk=message.pk).count()
+            if pinned_count >= ChatMessage.MAX_PINNED_MESSAGES:
+                return JsonResponse({
+                    'success': False,
+                    'error': f'Maximum of {ChatMessage.MAX_PINNED_MESSAGES} pinned messages reached. Unpin one first.'
+                })
+
+            message.is_pinned = True
+            message.pinned_at = timezone.now()
+            message.save(update_fields=['is_pinned', 'pinned_at'])
+
+        message_profile = self.get_user_profile_data(message.user)
+        return JsonResponse({
+            'success': True,
+            'is_pinned': True,
+            'message_id': message.pk,
+            'message': {
+                'user': message_profile['full_name'],
+                'message': message.message,
+                'profile_image': message_profile['profile_image'],
+                'is_author': message_profile['is_author'],
+                'is_co_author': message_profile['is_co_author'],
+            },
+        })
+
     def get(self, request, *args, **kwargs):
         """
         Handle GET requests (not allowed for this endpoint)

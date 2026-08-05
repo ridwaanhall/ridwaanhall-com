@@ -1,21 +1,19 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
-from typing import Any
+from dataclasses import dataclass, field
+
+from apps.core.types.mixins import DictConvertible
 
 
 @dataclass(frozen=True)
-class CV:
+class CV(DictConvertible):
     main: str
     latest: str
     copy: str
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
-class PersonalInfo:
+class PersonalInfo(DictConvertible):
     name: str
     first_name: str
     last_name: str
@@ -30,23 +28,17 @@ class PersonalInfo:
     is_hiring: bool
     is_sick: bool
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
-class Bio:
+class Bio(DictConvertible):
     short_description: str
     short_bio: str
     short_cta: str
     long_description: str
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
-class AboutLocation:
+class AboutLocation(DictConvertible):
     regency: str
     residency: str
     province: str
@@ -54,12 +46,9 @@ class AboutLocation:
     country: str
     flag: str
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
-class SocialMedia:
+class SocialMedia(DictConvertible):
     email: str
     github: str
     linkedin: str
@@ -69,21 +58,15 @@ class SocialMedia:
     x: str
     website: str
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
-class DonateLink:
+class DonateLink(DictConvertible):
     platform: str
     url: str
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
-class AboutDataModel:
+class AboutDataModel(DictConvertible):
     personal: PersonalInfo
     bio: Bio
     stories: list[str] = field(default_factory=list)
@@ -96,6 +79,3 @@ class AboutDataModel:
         instagram="", medium="", x="", website="",
     ))
     donate: list[DonateLink] = field(default_factory=list)
-
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)

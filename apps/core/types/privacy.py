@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any
+
+from apps.core.types.mixins import DictConvertible
 
 
 @dataclass(frozen=True)
-class PrivacyPolicyModel:
+class PrivacyPolicyModel(DictConvertible):
     last_updated: datetime
     overview: str
     policy_updates: str
@@ -20,6 +21,3 @@ class PrivacyPolicyModel:
     legal_basis: dict[str, str] = field(default_factory=dict)
     cookies: dict[str, dict[str, str]] = field(default_factory=dict)
     copyright_credits: dict[str, str | dict[str, str]] = field(default_factory=dict)
-
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)

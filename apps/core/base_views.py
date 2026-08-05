@@ -22,6 +22,13 @@ class BaseView(TemplateView):
     Includes error handling, about data access, and consistent context management.
     """
     
+    def get(self, request, *args, **kwargs):
+        return self.handle_exceptions(self._get)(request, *args, **kwargs)
+
+    def _get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+
     def get_about_data(self) -> dict[str, Any]:
         """Safely get about data with proper error handling."""
         try:

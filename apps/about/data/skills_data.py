@@ -652,11 +652,6 @@ class SkillsData:
         """Convert tech_stack dictionary to list format for backward compatibility"""
         return list(cls.tech_stack.values())
     
-    @classmethod
-    def get_tech_stack_for_project(cls, tech_keys):
-        """Convert list of tech keys to list of full tech objects"""
-        return [cls.tech_stack[key] for key in tech_keys if key in cls.tech_stack]
-    
     # Keep the old property for backward compatibility
     @property
     def skills(self):

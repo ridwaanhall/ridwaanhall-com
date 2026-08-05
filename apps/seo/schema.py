@@ -324,26 +324,6 @@ class SEOSchemaGenerator:
         }
     
     @staticmethod
-    def generate_organization_schema(about_data: dict) -> dict:
-        """Generate Organization schema if applicable."""
-        email = about_data.get('social_media', {}).get('email', '')
-        return {
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": about_data.get('name', ''),
-            "url": SEOConfig.SITE_URL,
-            "logo": about_data.get('image_url', ''),
-            "sameAs": [
-                url for url in about_data.get('social_media', {}).values() if url
-            ],
-            "contactPoint": {
-                "@type": "ContactPoint",
-                "email": email,
-                "contactType": "customer service"
-            }
-        }
-    
-    @staticmethod
     def generate_contact_page_schema(about_data: dict) -> dict:
         """Generate comprehensive ContactPage schema with organization and contact information."""
         email = about_data.get('social_media', {}).get('email', '')
@@ -555,50 +535,4 @@ class SEOSchemaGenerator:
                     "contactType": "customer service"
                 }
             }
-        }
-    
-    @staticmethod
-    def generate_faq_schema(faqs: list[dict]) -> dict:
-        """Generate FAQ schema for improved search visibility."""
-        if not faqs:
-            return {}
-            
-        return {
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [
-                {
-                    "@type": "Question",
-                    "name": faq.get('question', ''),
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": faq.get('answer', '')
-                    }
-                }
-                for faq in faqs[:10]  # Limit to 10 FAQs
-            ]
-        }
-    
-    @staticmethod
-    def generate_how_to_schema(steps: list[dict], title: str = '', description: str = '') -> dict:
-        """Generate HowTo schema for tutorial content."""
-        if not steps:
-            return {}
-            
-        return {
-            "@context": "https://schema.org",
-            "@type": "HowTo",
-            "name": title,
-            "description": description,
-            "step": [
-                {
-                    "@type": "HowToStep",
-                    "position": i + 1,
-                    "name": step.get('title', f"Step {i + 1}"),
-                    "text": step.get('description', ''),
-                    "url": step.get('url', ''),
-                    "image": step.get('image', '')
-                }
-                for i, step in enumerate(steps)
-            ]
         }

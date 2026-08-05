@@ -33,17 +33,22 @@ def save_user_profile(sender, instance, **kwargs):
         UserProfile.objects.create(user=instance)
 
 class ChatMessage(models.Model):
+    MAX_PINNED_MESSAGES = 3
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.TextField(max_length=500)
     timestamp = models.DateTimeField(default=timezone.now, db_index=True)
     reply_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
-    
+    is_pinned = models.BooleanField(default=False, help_text="Pinned by an author/co-author (max 3 at a time)")
+    pinned_at = models.DateTimeField(null=True, blank=True, help_text="When this message was pinned")
+
     class Meta:
         ordering = ['-timestamp']
         indexes = [
             models.Index(fields=['-timestamp']),  # For recent messages query
             models.Index(fields=['user', '-timestamp']),  # For user's messages
+            models.Index(fields=['is_pinned', '-pinned_at'], name='guestbook_pinned_idx'),
         ]
-    
+
     def __str__(self):
         return f"{self.user.username}: {self.message[:50]}..."

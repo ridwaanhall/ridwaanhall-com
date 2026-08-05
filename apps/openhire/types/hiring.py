@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
-from typing import Any
+from dataclasses import dataclass, field
+
+from apps.core.types.mixins import DictConvertible
 
 
 @dataclass(frozen=True)
-class Position:
+class Position(DictConvertible):
     title: str
     type: str
     location: str
@@ -15,32 +16,23 @@ class Position:
     responsibilities: list[str] = field(default_factory=list)
     benefits: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
-class Requirements:
+class Requirements(DictConvertible):
     general: list[str] = field(default_factory=list)
     technical: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
-class ContactInfo:
+class ContactInfo(DictConvertible):
     email: str
     application_email: str
     response_time: str
     interview_process: str
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
-class HiringModel:
+class HiringModel(DictConvertible):
     """Typed model for hiring information."""
     company_name: str
     company_description: str
@@ -54,6 +46,3 @@ class HiringModel:
         email="", application_email="", response_time="", interview_process=""
     ))
     additional_notes: str = ""
-
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)

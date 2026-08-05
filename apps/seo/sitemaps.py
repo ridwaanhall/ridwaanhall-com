@@ -119,69 +119,52 @@ class StaticPagesSitemap(Sitemap):
         return timezone.datetime(2024, 1, 1, tzinfo=timezone.get_current_timezone())
 
 
-class BlogSitemap(Sitemap):
+class ContentSitemap(Sitemap):
     """
-    Sitemap for individual blog posts.
+    Base sitemap for individually-detailed content (blog posts, projects).
     Integrates with SEO data for better optimization.
     """
     changefreq = "monthly"
-    
+    detail_url_name: str = ""
+
+    def get_items(self):
+        raise NotImplementedError
+
     def priority(self, obj):
-        """Higher priority for featured blogs."""
+        """Higher priority for featured content."""
         is_featured = obj.get('is_featured', False) if isinstance(obj, dict) else getattr(obj, 'is_featured', False)
         return 0.9 if is_featured else 0.7
 
     def items(self):
-        """Get all blog posts."""
+        return self.get_items()
+
+    def location(self, obj):
+        """Generate detail URLs."""
+        title = obj.get('title') if isinstance(obj, dict) else getattr(obj, 'title', '')
+        title = title or ''  # Ensure title is never None
+        return reverse(self.detail_url_name, kwargs={'title': slugify(title)})
+
+    def lastmod(self, obj):
+        """Get last modification date."""
+        if isinstance(obj, dict):
+            updated_at = obj.get('updated_at')
+        else:
+            updated_at = getattr(obj, 'updated_at', None)
+
+        return updated_at or timezone.now()
+
+
+class BlogSitemap(ContentSitemap):
+    """Sitemap for individual blog posts."""
+    detail_url_name = 'blog_detail'
+
+    def get_items(self):
         return DataService.get_blogs()
 
-    def location(self, obj):
-        """Generate blog detail URLs."""
-        title = obj.get('title') if isinstance(obj, dict) else getattr(obj, 'title', '')
-        title = title or ''  # Ensure title is never None
-        return reverse('blog_detail', kwargs={'title': slugify(title)})
-    
-    def lastmod(self, obj):
-        """Get last modification date."""
-        if isinstance(obj, dict):
-            updated_at = obj.get('updated_at')
-        else:
-            updated_at = getattr(obj, 'updated_at', None)
-            
-        if updated_at:
-            return updated_at
-        return timezone.now()
 
+class ProjectSitemap(ContentSitemap):
+    """Sitemap for individual projects."""
+    detail_url_name = 'projects_detail'
 
-class ProjectSitemap(Sitemap):
-    """
-    Sitemap for individual projects.
-    Integrates with SEO data for better optimization.
-    """
-    changefreq = "monthly"
-    
-    def priority(self, obj):
-        """Higher priority for featured projects."""
-        is_featured = obj.get('is_featured', False) if isinstance(obj, dict) else getattr(obj, 'is_featured', False)
-        return 0.9 if is_featured else 0.7
-
-    def items(self):
-        """Get all projects."""
+    def get_items(self):
         return DataService.get_projects()
-
-    def location(self, obj):
-        """Generate project detail URLs."""
-        title = obj.get('title') if isinstance(obj, dict) else getattr(obj, 'title', '')
-        title = title or ''  # Ensure title is never None
-        return reverse('projects_detail', kwargs={'title': slugify(title)})
-    
-    def lastmod(self, obj):
-        """Get last modification date."""
-        if isinstance(obj, dict):
-            updated_at = obj.get('updated_at')
-        else:
-            updated_at = getattr(obj, 'updated_at', None)
-            
-        if updated_at:
-            return updated_at
-        return timezone.now()

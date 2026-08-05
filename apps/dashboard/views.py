@@ -7,7 +7,6 @@ import logging
 from typing import Any
 from django.conf import settings
 from django.core.cache import cache
-from django.utils import timezone
 
 from apps.core.base_views import BaseView
 from apps.seo.mixins import DashboardSEOMixin
@@ -30,7 +29,7 @@ class DashboardView(DashboardSEOMixin, BaseView):
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         """Build context with GitHub and WakaTime data."""
         context = super().get_context_data(**kwargs)
-        
+
         # Get GitHub statistics
         github_stats = self._get_github_stats()
         if github_stats:
@@ -38,72 +37,58 @@ class DashboardView(DashboardSEOMixin, BaseView):
         else:
             context['github_activity'] = None
             context['github_last_update'] = None
-        
+
         # Get WakaTime statistics
         wakatime_stats = self._get_wakatime_stats()
         if wakatime_stats:
             context['wakatime_stats'] = wakatime_stats
         else:
             context['wakatime_stats'] = None
-        
-        # Add SEO data from mixin
-        mixin_context = super(DashboardView, self).get_context_data(**context)
-        context.update(mixin_context)
-        
+
         return context
+
+    def _get_cached_stats(self, cache_key, fetch, process, label):
+        """Fetch, process, and cache external stats, with consistent error handling."""
+        stats = cache.get(cache_key)
+        if stats:
+            return stats
+
+        try:
+            raw_data = fetch()
+            if not raw_data:
+                logger.error(f"{label} activity data is missing or malformed.")
+                return None
+
+            stats = process(raw_data)
+            if stats:
+                cache.set(cache_key, stats, CACHE_TIMEOUT)
+            else:
+                logger.error(f"{label} statistics processing failed.")
+            return stats
+        except Exception as e:
+            logger.error(f"Error fetching {label} data: {e}")
+            return None
 
     def _get_github_stats(self) -> dict | None:
         """Get GitHub statistics with caching."""
-        cache_key = 'github_activity_data'
-        github_stats = cache.get(cache_key)
-        
-        if not github_stats:
-            try:
-                about_data = self.get_about_data()
-                github_client = GitHubClient(
-                    username=about_data['username'],
-                    access_token=settings.ACCESS_TOKEN
-                )
-                github_activity = github_client.get_contribution_data()
-                
-                if github_activity:
-                    github_stats = GitHubStatsCalculator.process_github_data(github_activity)
-                    if github_stats:
-                        cache.set(cache_key, github_stats, CACHE_TIMEOUT)
-                    else:
-                        logger.error("GitHub statistics processing failed.")
-                else:
-                    logger.error("GitHub activity data is missing or malformed.")
-                    github_stats = None
-            except Exception as e:
-                logger.error(f"Error fetching GitHub data: {e}")
-                github_stats = None
-        
-        return github_stats
-    
+        def fetch():
+            about_data = self.get_about_data()
+            github_client = GitHubClient(
+                username=about_data['username'],
+                access_token=settings.ACCESS_TOKEN
+            )
+            return github_client.get_contribution_data()
+
+        return self._get_cached_stats(
+            'github_activity_data', fetch, GitHubStatsCalculator.process_github_data, 'GitHub'
+        )
+
     def _get_wakatime_stats(self) -> dict | None:
         """Get WakaTime statistics with caching."""
-        cache_key = 'wakatime_activity_data'
-        wakatime_stats = cache.get(cache_key)
-        
-        if not wakatime_stats:
-            try:
-                wakatime_client = WakatimeClient(api_key=settings.WAKATIME_API_KEY)
-                wakatime_activity = wakatime_client.get_activity_data()
-                
-                if wakatime_activity:
-                    wakatime_stats = WakatimeStatsCalculator.calculate_stats(wakatime_activity)
-                    if wakatime_stats:
-                        cache.set(cache_key, wakatime_stats, CACHE_TIMEOUT)
-                    else:
-                        logger.error("WakaTime statistics calculation failed.")
-                else:
-                    logger.error("WakaTime activity data is missing or malformed.")
-                    wakatime_stats = None
-            except Exception as e:
-                logger.error(f"Error fetching WakaTime data: {e}")
-                wakatime_stats = None
-        else:
-            logger.info("Using cached WakaTime statistics.")
-        
-        return wakatime_stats
+        def fetch():
+            wakatime_client = WakatimeClient(api_key=settings.WAKATIME_API_KEY)
+            return wakatime_client.get_activity_data()
+
+        return self._get_cached_stats(
+            'wakatime_activity_data', fetch, WakatimeStatsCalculator.calculate_stats, 'WakaTime'
+        )

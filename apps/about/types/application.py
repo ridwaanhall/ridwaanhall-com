@@ -1,23 +1,21 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any
+
+from apps.core.types.mixins import DictConvertible
 
 
 @dataclass(frozen=True)
-class JourneyStep:
+class JourneyStep(DictConvertible):
     timestamp: datetime | None
     title: str
     details: str
     notes: str = ""
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
-class Application:
+class Application(DictConvertible):
     id: int
     status: str
     company_name: str
@@ -29,6 +27,3 @@ class Application:
     salary_range: str | None = None
     journey: list[JourneyStep] = field(default_factory=list)
     lessons_learned: str = ""
-
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)

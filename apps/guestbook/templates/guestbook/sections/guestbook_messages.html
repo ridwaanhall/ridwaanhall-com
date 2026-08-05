@@ -148,9 +148,6 @@
                                 <span class="text-[9px]">Co-Author</span>
                             </div>
                             {% endif %}
-                            {# Always rendered (hidden when unpinned) so updatePinButtons() in guestbook.html
-                               can toggle it after an AJAX pin/unpin without a page reload — see CLAUDE.md's
-                               guestbook dual-rendering note. #}
                             <div class="pinned-badge flex items-center gap-0.5 rounded-full bg-zinc-700 px-1.5 py-0.5 text-amber-400 {% if not message.is_pinned %}hidden{% endif %}" data-message-id="{{ message.id }}" title="Pinned message">
                                 <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M12 17v5"></path>

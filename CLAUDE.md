@@ -12,7 +12,7 @@ Django 6.0 (Python 3.14+), managed with **uv** (not pip/poetry — always `uv sy
 - Dev server: `uv run python manage.py runserver`
 - Tests: `uv run python manage.py test` (e.g. `uv run python manage.py test apps.blog` for one app) — this is what CI runs and is the canonical command. The README also mentions `uv run pytest`; pytest-django is configured and works, but CI does not use it.
 - Django check: `uv run python manage.py check`
-- Tailwind build: `npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-wvbpenzt.css --minify` (add `--watch` for dev). There is no `collectstatic` step in CI — the built `staticfiles/` output (images, fonts, icons, compiled CSS) is committed directly; Vercel's build handles `collectstatic` itself, which is why the static manifest (`staticfiles/staticfiles.json`) is never committed (it's covered by the repo's blanket `*.json` .gitignore rule) and `{% static %}` tags can 500 locally until you run `manage.py collectstatic` yourself.
+- Tailwind build: `npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-wvbpenzt.css --minify` (add `--watch` for dev). There is no `collectstatic` step anywhere in this project's pipeline (not in CI, not in the Vercel build) — the built `staticfiles/` output (images, fonts, icons, compiled CSS, JS) is committed directly and served as-is. This is why `STORAGES["staticfiles"]` uses WhiteNoise's plain `CompressedStaticFilesStorage`, **not** `CompressedManifestStaticFilesStorage`: none of these pre-built assets live under any `STATICFILES_DIRS` source `collectstatic` could discover (they're placed directly under `STATIC_ROOT`), so a manifest can never be generated for them — `ManifestStaticFilesStorage`'s strict lookup would 500 on every `{% static %}` tag referencing one (this was a real, live bug on the `main` branch — every page extending `templates/base_seo.html` 500'd via its favicon links). If you add a genuinely new static asset with a `{% static %}` reference, just drop the file under `staticfiles/` directly with its final name (matching the hand-picked cache-busted filename convention below) — don't reach for `collectstatic`.
 
 ## Architecture: Django ORM (Supabase-backed)
 
@@ -58,7 +58,7 @@ Renaming it requires updating all three plus regenerating/removing the old file 
 
 ## Gotcha: `STORAGES` setting fully replaces, not merges
 
-`FlexForge/settings.py`'s `STORAGES` dict must declare both `"default"` (the Supabase backend) and `"staticfiles"` (WhiteNoise's `CompressedManifestStaticFilesStorage`) — Django doesn't merge this setting with any implicit default, so omitting `"staticfiles"` silently reverts static file handling and breaks compressed/hashed asset serving with no error at settings-load time.
+`FlexForge/settings.py`'s `STORAGES` dict must declare both `"default"` (the Supabase backend) and `"staticfiles"` (WhiteNoise's `CompressedStaticFilesStorage` — plain compression, deliberately not the `Manifest` variant, see the Commands section above) — Django doesn't merge this setting with any implicit default, so omitting `"staticfiles"` silently reverts static file handling with no error at settings-load time.
 
 ## Gotcha: `DISABLE_SERVER_SIDE_CURSORS` lives inside `DATABASES["default"]`
 

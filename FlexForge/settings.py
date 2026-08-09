@@ -314,27 +314,43 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # --------------------------------------------------------------------------
-# MEDIA / STORAGES (Supabase Storage for uploaded images -- blog, project,
-# logo, profile). Defining STORAGES fully replaces Django's default config
-# (it does not merge with STATICFILES_STORAGE), so "staticfiles" must be
-# re-declared here alongside "default" or WhiteNoise's static serving
-# silently reverts to Django's default.
+# MEDIA / STORAGES
 #
-# Deliberately NOT using CompressedManifestStaticFilesStorage: this repo has
-# no `collectstatic` step in its deploy pipeline (see CLAUDE.md) and its
-# pre-built assets (favicon/, img/, svg/, font/, the compiled CSS) live
-# directly under STATIC_ROOT rather than any STATICFILES_DIRS source
-# collectstatic could discover -- so a manifest can never be generated for
-# them, and ManifestStaticFilesStorage's strict lookup 500s on every
-# {% static %} tag referencing one (e.g. base_seo.html's favicon links).
-# The project already hand-picks cache-busted filenames itself (see the
-# hardcoded compiled CSS filename gotcha in CLAUDE.md), so manifest-based
-# hashing isn't actually needed -- just compression.
+# Local dev/tests use Django's plain local filesystem storage (MEDIA_ROOT
+# below, gitignored) so uploading/viewing images works fully offline and
+# never touches the shared production Supabase bucket. Production uses the
+# custom Supabase Storage backend (apps/core/storage.py's SupabaseStorage).
+#
+# Defining STORAGES fully replaces Django's default config (it does not
+# merge with STATICFILES_STORAGE), so "staticfiles" must be re-declared here
+# alongside "default" or WhiteNoise's static serving silently reverts to
+# Django's default.
+#
+# Deliberately NOT using CompressedManifestStaticFilesStorage for
+# staticfiles: this repo has no `collectstatic` step in its deploy pipeline
+# (see CLAUDE.md) and its pre-built assets (favicon/, img/, svg/, font/, the
+# compiled CSS) live directly under STATIC_ROOT rather than any
+# STATICFILES_DIRS source collectstatic could discover -- so a manifest can
+# never be generated for them, and ManifestStaticFilesStorage's strict
+# lookup 500s on every {% static %} tag referencing one (e.g.
+# base_seo.html's favicon links). The project already hand-picks
+# cache-busted filenames itself (see the hardcoded compiled CSS filename
+# gotcha in CLAUDE.md), so manifest-based hashing isn't actually needed --
+# just compression.
 # --------------------------------------------------------------------------
-STORAGES = {
-    "default": {"BACKEND": "apps.core.storage.SupabaseStorage"},
-    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
-}
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+if "test" in sys.argv or DEBUG:
+    STORAGES = {
+        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
+    }
+else:
+    STORAGES = {
+        "default": {"BACKEND": "apps.core.storage.SupabaseStorage"},
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
+    }
 
 # --------------------------------------------------------------------------
 # DEFAULT SETTINGS

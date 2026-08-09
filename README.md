@@ -29,7 +29,7 @@
 - **APIs**: GitHub GraphQL API, WakaTime API
 - **Security**: django-csp, django-permissions-policy, Cloudflare Turnstile
 - **Database**: SQLite in development, Supabase Postgres in production
-- **Media Storage**: Supabase Storage (custom Django storage backend, `apps/core/storage.py`)
+- **Media Storage**: local filesystem in development/tests (fully offline), Supabase Storage in production (custom Django storage backend, `apps/core/storage.py`)
 - **Deployment**: Vercel (WSGI) with WhiteNoise for static files
 
 ## Project Structure
@@ -54,7 +54,7 @@ templates/           Global templates (base, sidebar, error page, per-app sectio
 
 Content lives as Django ORM models, edited through `/admin` — no code deploy needed to add a blog post, project, experience entry, or award. Each content-bearing app (`about`, `blog`, `projects`, `openhire`, `core`) has its own `models.py` and a fully registered `admin.py` (list views, search, filters, and inline editors for nested items like project features or multi-image galleries).
 
-Images uploaded through admin (`ImageField`s on `BlogImage`, `ProjectImage`, `Profile.image`, logos, etc.) go straight to Supabase Storage via the custom backend in `apps/core/storage.py` — no local file handling, works identically in development and production as long as `STORAGE_SUPABASE_URL`/`STORAGE_SUPABASE_SERVICE_ROLE_KEY` are set.
+Images uploaded through admin (`ImageField`s on `BlogImage`, `ProjectImage`, `Profile.image`, logos, etc.) are stored locally under `media/` (gitignored) in development — fully offline, and never touches the shared production bucket — and go straight to Supabase Storage via the custom backend in `apps/core/storage.py` in production.
 
 To manage content: create a superuser (`uv run python manage.py createsuperuser`) and log into `/admin`.
 

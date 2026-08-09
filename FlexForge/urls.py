@@ -26,5 +26,11 @@ else:
     # But since allauth apps won't be installed, we skip this entirely
     pass
 
+# Serve locally-uploaded media in development (production images live on
+# Supabase Storage and never pass through Django at all).
+if settings.DEBUG:
+    from django.conf.urls.static import static
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 # Custom error handlers
 handler404 = 'FlexForge.views.custom_404_view'

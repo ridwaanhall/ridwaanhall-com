@@ -1,23 +1,31 @@
-from django.test import TestCase, TransactionTestCase
+import time
+
+from allauth.socialaccount.models import SocialAccount, SocialApp
 from django.contrib.auth.models import User
-from django.test.client import RequestFactory
 from django.db import connection
+from django.test import TestCase, TransactionTestCase
+from django.test.client import RequestFactory
 from django.test.utils import override_settings
 from django.urls import reverse
-from allauth.socialaccount.models import SocialAccount, SocialApp
+
+from apps.about.models import Profile
 from apps.guestbook.models import ChatMessage, UserProfile
 from apps.guestbook.views import GuestbookView
-import time
+
 
 class GuestbookPerformanceTestCase(TransactionTestCase):
     """
     Test case to verify the performance optimizations for guestbook queries.
     Tests that the N+1 query problem has been resolved.
     """
-    
+
     def setUp(self):
         self.factory = RequestFactory()
-        
+
+        # BaseView.get_common_context() looks up a Profile row for the 'about'
+        # context (now ORM-backed instead of always-available static data).
+        Profile.objects.create(name="Test Author", role="Developer")
+
         # Create test users
         self.user1 = User.objects.create_user(username='testuser1', email='test1@example.com')
         self.user2 = User.objects.create_user(username='testuser2', email='test2@example.com')
@@ -93,7 +101,7 @@ class GuestbookPerformanceTestCase(TransactionTestCase):
         connection.queries_log.clear()
         
         # Call the view method that was causing performance issues
-        with self.assertNumQueries(6):  # 5 base queries + 1 for pinned messages
+        with self.assertNumQueries(8):  # 5 base queries + 1 for pinned messages + 2 for the now-ORM-backed about data (Profile + its DonateLinks)
             response = view._get(request)
         
         # Verify the response contains the expected data
@@ -140,7 +148,7 @@ class GuestbookPerformanceTestCase(TransactionTestCase):
         view.request = request  # Set request attribute
         
         # This should work without additional queries for social accounts
-        with self.assertNumQueries(6):  # 5 base queries + 1 for pinned messages
+        with self.assertNumQueries(8):  # 5 base queries + 1 for pinned messages + 2 for the now-ORM-backed about data (Profile + its DonateLinks)
             response = view._get(request)
 
         self.assertEqual(response.status_code, 200)

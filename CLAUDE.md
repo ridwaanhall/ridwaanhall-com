@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Stack
 
-Django 6.0 (Python 3.14+), managed with **uv** (not pip/poetry — always `uv sync` / `uv run ...`), Tailwind CSS v4 via CLI, deployed to Vercel (WSGI). Project package is `FlexForge/`; apps live under `apps/`.
+Django 6.0 (Python 3.14+), managed with **uv** (not pip/poetry — always `uv sync` / `uv run ...`), Tailwind CSS v4 via CLI, deployed to Vercel (WSGI). Project package is `FlexForge/`; apps live under `apps/`. Database and media storage are both Supabase (Postgres + Storage) in production; SQLite is used automatically in development/tests.
 
 ## Commands
 
@@ -12,17 +12,23 @@ Django 6.0 (Python 3.14+), managed with **uv** (not pip/poetry — always `uv sy
 - Dev server: `uv run python manage.py runserver`
 - Tests: `uv run python manage.py test` (e.g. `uv run python manage.py test apps.blog` for one app) — this is what CI runs and is the canonical command. The README also mentions `uv run pytest`; pytest-django is configured and works, but CI does not use it.
 - Django check: `uv run python manage.py check`
-- Tailwind build: `npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-wvbpenzt.css --minify` (add `--watch` for dev). There is no `collectstatic` step in CI — the built `staticfiles/` output is committed directly.
+- Tailwind build: `npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-wvbpenzt.css --minify` (add `--watch` for dev). There is no `collectstatic` step in CI — the built `staticfiles/` output (images, fonts, icons, compiled CSS) is committed directly; Vercel's build handles `collectstatic` itself, which is why the static manifest (`staticfiles/staticfiles.json`) is never committed (it's covered by the repo's blanket `*.json` .gitignore rule) and `{% static %}` tags can 500 locally until you run `manage.py collectstatic` yourself.
 
-## Architecture: Individual File System (IFS)
+## Architecture: Django ORM (Supabase-backed)
 
-Content (bio, experience, projects, blog posts, education, awards, etc.) is stored as Python dataclasses in individual files under each app's `data/` subpackage — e.g. `apps/about/data/experiences_data.py`, `apps/projects/data/projects/project-N.py` — not as database rows. No migrations are needed for content changes. It's accessed via `apps/core/data_service.py`'s `DataService`, or per-app managers like `apps/about/manager.py`. Blog posts and projects are loaded dynamically per request via `apps/core/dynamic_loader.py`'s `load_items_from_dir` (shared by `apps/blog/data/blog_index.py` and `apps/projects/data/projects_index.py`).
+Content (bio, experience, projects, blog posts, education, awards, applications, hiring/open-to-work status, privacy policy) lives as real Django models — `apps/about/models.py`, `apps/blog/models.py`, `apps/projects/models.py`, `apps/openhire/models.py`, `apps/core/models.py` (`PrivacyPolicy`) — backed by Postgres (Supabase in prod, SQLite in dev/tests). This replaced an earlier "Individual File System" (dataclasses in per-app `data/` files, no DB) — that whole layer (`apps/*/data/`, `apps/core/dynamic_loader.py`) was migrated and removed; don't recreate it.
+
+- **Access pattern preserved on purpose**: `apps/core/data_service.py`'s `DataService`, `apps/about/manager.py`'s `AboutManager`, `apps/core/content_manager.py`'s `ContentManager`, and `apps/openhire/manager.py`'s `OpenHireManager` are the only things views/templates/`apps/seo/schema.py` talk to. They query the ORM internally but hand back the exact same plain `dict`/`list[dict]` shapes the old dataclass files produced (including derived fields like `image_url`/`img_name`/`image_count` on blog/project dicts, built by `apps/core/content_manager.py`'s `_add_image_compat_fields`). Extend these managers rather than querying models directly from views, and preserve the dict shape when you do.
+- **Singletons** (`Profile`, `HiringProfile`, `OpenToWorkProfile`, `PrivacyPolicy`) extend `apps/core/models.py`'s `SingletonModel` (forces `pk=1`, blocks delete) and use `.load()` (get-or-create) rather than a plain query.
+- **Slugs are computed, not stored data**: `BlogPost.slug`/`Project.slug` are `slugify(title)`, resolved via `apps/core/base_views.py`'s `DetailView.get_item_by_slug(queryset, slug, to_dict_fn)` — an indexed DB lookup (`get_object_or_404`), not a linear scan.
+- **Images**: `ImageField`s use a custom Supabase Storage backend (`apps/core/storage.py`'s `SupabaseStorage`) wired via `STORAGES["default"]` in `FlexForge/settings.py` — talks directly to Supabase's Storage REST API with `requests` (deliberately not django-storages/boto3, to stay well under Vercel's `maxLambdaSize: 15mb`). It overrides `generate_filename`/`get_available_name` to sidestep two real bugs: Django's base `Storage` methods route file paths through `os.path.join`/`os.path.normpath`, which inject backslashes on Windows dev machines and corrupt the object key; and the default exists-check-and-rename collision avoidance is pointless here since uploads are upsert-safe (`x-upsert: true`) — both are overridden to keep names deterministic and forward-slash-only regardless of host OS. Skill icons stay plain URL strings (not `ImageField`) since they're static SVGs and Pillow can't validate SVG anyway.
+- **Admin** (`apps/*/admin.py`) is fully registered — `path('admin/', admin.site.urls)` lives in `FlexForge/urls.py` (it wasn't wired in at all before this existed; don't assume admin is reachable just because models are registered — check both).
 
 ## View pattern
 
-Views inherit from `apps/core/base_views.py`'s `BaseView`/`PaginatedView`/`DetailView` and implement `_get(self, request, *args, **kwargs)`, not `get()` — `BaseView.get()` already wraps `_get` in `handle_exceptions` for consistent error pages across the app. Only override `get()` directly for views with fundamentally different behavior (e.g. the CV redirect views in `apps/core/views.py`).
+Views inherit from `apps/core/base_views.py`'s `BaseView`/`PaginatedView`/`DetailView` and implement `_get(self, request, *args, **kwargs)`, not `get()` — `BaseView.get()` already wraps `_get` in `handle_exceptions` for consistent error pages across the app. Only override `get()` directly for views with fundamentally different behavior (e.g. the CV redirect views in `apps/core/views.py`). `BaseView.get_about_data()` caches its result on the view instance (`self._about_data_cache`) since several views/SEO mixins call it more than once per request — that used to be free (static in-memory data) and is now a real ORM query, so don't remove the cache without checking query counts.
 
-Frozen dataclasses under `apps/*/types/` get `to_dict()` from `apps/core/types/mixins.py`'s `DictConvertible` mixin (`class Foo(DictConvertible): ...`) — don't add a per-class `to_dict()` override.
+`apps/projects/types/project.py` still has `ProjectStatus`/`PROJECT_STATUS_SORT_RANK`/`normalize_project_status` (pure lifecycle-status logic, no DB dependency) — everything else that used to live under `apps/*/types/` (the old IFS dataclasses) is gone.
 
 ## Guestbook chat messages
 
@@ -50,6 +56,18 @@ The compiled Tailwind output filename (currently `global-wvbpenzt.css`) is a han
 
 Renaming it requires updating all three plus regenerating/removing the old file under `staticfiles/css/`.
 
+## Gotcha: `STORAGES` setting fully replaces, not merges
+
+`FlexForge/settings.py`'s `STORAGES` dict must declare both `"default"` (the Supabase backend) and `"staticfiles"` (WhiteNoise's `CompressedManifestStaticFilesStorage`) — Django doesn't merge this setting with any implicit default, so omitting `"staticfiles"` silently reverts static file handling and breaks compressed/hashed asset serving with no error at settings-load time.
+
+## Gotcha: `DISABLE_SERVER_SIDE_CURSORS` lives inside `DATABASES["default"]`
+
+Not a top-level Django setting — it's a key in the database config dict. Required for correctness under Supabase's pooled (pgbouncer transaction-mode) connection, where named/server-side cursors don't work reliably.
+
+## Gotcha: model `post_save` signals must guard `kwargs.get('raw')`
+
+`apps/guestbook/models.py`'s `create_user_profile`/`save_user_profile` and `apps/guestbook/signals.py`'s `send_guestbook_email_notification` all check `if kwargs.get('raw'): return` early. Without this, `manage.py loaddata` (fixture/backup restore) replays every row through normal signal-triggered side effects — auto-creating a `UserProfile` that collides with the fixture's own explicit row, or sending real emails for years-old historical messages. Apply the same guard to any new `post_save` receiver with a side effect (DB write, email, external API call).
+
 ## Code style
 
 Ruff is configured for linting (`uv run ruff check`) — line-length (E501) is intentionally excluded since the codebase predates the 88-char convention and isn't reformatted to it yet; don't "fix" long lines just because ruff would otherwise flag them. No formatter (black/ruff format) is set up, so don't assume one exists.
@@ -61,6 +79,6 @@ Ruff is configured for linting (`uv run ruff check`) — line-length (E501) is i
 
 ## Environment
 
-Env vars are loaded via `python-decouple` from a local `.env` (see `.env.example` for keys). SQLite (`db.sqlite3`) is used automatically when `DEBUG=True` or during tests; PostgreSQL (`POSTGRES_*`) is used otherwise. Set `GUESTBOOK_PAGE=False` to skip Google/GitHub OAuth setup entirely.
+Env vars are loaded via `python-decouple` from a local `.env` (see `.env.example` for keys), plus `.env.local` — a second, gitignored file (Vercel's Supabase integration output via `vercel env pull`) that `FlexForge/config.py`'s `_load_env_local()` merges into `os.environ` at import time (`decouple.config()` doesn't read multiple files natively). SQLite (`db.sqlite3`) is used automatically when `DEBUG=True` or during tests; Supabase Postgres is used otherwise, via `STORAGE_POSTGRES_URL` (pooled/pgbouncer — runtime traffic) or `STORAGE_POSTGRES_URL_NON_POOLING` (direct — `migrate`/`loaddata`/other DDL, since those are unreliable behind transaction-mode pooling). Set `GUESTBOOK_PAGE=False` to skip Google/GitHub OAuth setup entirely.
 
 `SECRET_KEY`, `ACCESS_TOKEN`, `EMAIL_HOST_USER`, and `EMAIL_HOST_PASSWORD` (`FlexForge/config.py`) have no defaults — the app won't start locally without a `.env` providing all four, even outside the guestbook/Turnstile flows.

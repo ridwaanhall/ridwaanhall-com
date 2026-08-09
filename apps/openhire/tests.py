@@ -1,57 +1,47 @@
 from django.test import TestCase
 
-from apps.openhire.types import (
-    PortfolioHighlight, OpenToWorkModel, Position, Requirements, ContactInfo, HiringModel,
-)
 from apps.core.data_service import DataService
 
 
-class OpenHireTypesTest(TestCase):
-    """Tests for OOP type classes in apps/openhire/types/."""
+class OpenHireModelsTest(TestCase):
+    """Tests for the ORM models in apps/openhire/models.py."""
 
-    def test_portfolio_highlight_to_dict(self):
-        ph = PortfolioHighlight(title="Django", description="5+ projects built with Django")
-        d = ph.to_dict()
-        self.assertEqual(d["title"], "Django")
-        self.assertEqual(d["description"], "5+ projects built with Django")
+    def test_portfolio_highlight_ordering(self):
+        from apps.openhire.models import OpenToWorkProfile, PortfolioHighlight
 
-    def test_open_to_work_model_to_dict(self):
-        model = OpenToWorkModel(
-            status="Open", availability="Immediately", type=["Full-time"],
-            remote=True, relocation=False,
+        profile = OpenToWorkProfile.load()
+        PortfolioHighlight.objects.create(
+            open_to_work_profile=profile, title="Django", description="5+ projects built with Django",
         )
-        d = model.to_dict()
-        self.assertEqual(d["status"], "Open")
-        self.assertTrue(d["remote"])
-        self.assertFalse(d["relocation"])
+        self.assertEqual(profile.portfolio_highlights.count(), 1)
 
-    def test_open_to_work_model_defaults(self):
-        model = OpenToWorkModel(status="Open", availability="ASAP", type=["Contract"], remote=True, relocation=False)
-        self.assertEqual(model.experience_level, "")
-        self.assertEqual(model.preferred_roles, [])
+    def test_open_to_work_profile_defaults(self):
+        from apps.openhire.models import OpenToWorkProfile
 
-    def test_position_to_dict(self):
-        pos = Position(
-            title="Python Developer", type="Full-time", location="Remote",
+        profile = OpenToWorkProfile.objects.create(status="Open", availability="Immediately", remote=True)
+        self.assertEqual(profile.experience_level, "")
+        self.assertEqual(profile.preferred_roles, [])
+
+    def test_position_fields(self):
+        from apps.openhire.models import HiringProfile, Position
+
+        hp = HiringProfile.load()
+        pos = Position.objects.create(
+            hiring_profile=hp, title="Python Developer", type="Full-time", location="Remote",
             salary_range="$5k-$10k", experience_required="2 years",
         )
-        d = pos.to_dict()
-        self.assertEqual(d["title"], "Python Developer")
-        self.assertEqual(d["type"], "Full-time")
+        self.assertEqual(pos.title, "Python Developer")
+        self.assertEqual(pos.type, "Full-time")
 
-    def test_requirements_to_dict(self):
-        req = Requirements(general=["Good communication"], technical=["Python", "Django"])
-        d = req.to_dict()
-        self.assertIn("Python", d["technical"])
+    def test_hiring_profile_defaults(self):
+        from apps.openhire.models import HiringProfile
 
-    def test_hiring_model_to_dict(self):
-        model = HiringModel(
+        hp = HiringProfile.objects.create(
             company_name="RoneAI", company_description="AI company", website="https://rone.dev",
             hiring_status="Active",
         )
-        d = model.to_dict()
-        self.assertEqual(d["company_name"], "RoneAI")
-        self.assertEqual(d["hiring_status"], "Active")
+        self.assertEqual(hp.company_name, "RoneAI")
+        self.assertEqual(hp.hiring_status, "Active")
 
 
 class OpenHireDataServiceTest(TestCase):

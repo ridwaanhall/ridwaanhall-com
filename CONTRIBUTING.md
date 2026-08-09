@@ -80,11 +80,9 @@ BASE_URL="http://localhost:8000"
 # API Keys (optional for development)
 ACCESS_TOKEN="your-github-token"
 WAKATIME_API_KEY="your-wakatime-key"
-
-# Image URLs
-BLOG_BASE_IMG_URL="http://localhost:8000/static/img/blog"
-PROJECT_BASE_IMG_URL="http://localhost:8000/static/img/project"
 ```
+
+Local development uses SQLite automatically — no Supabase setup needed to get running. See `.env.example` and the README's [Environment Configuration](README.md#environment-configuration) section for the Supabase (`STORAGE_*`) vars production uses.
 
 ### 4. Run Development Server
 
@@ -105,7 +103,8 @@ ridwaanhall_com/
 │   ├── blog/                      # Blog system with SEO
 │   ├── core/                      # Homepage & base views
 │   ├── dashboard/                 # GitHub/WakaTime analytics
-│   ├── data/                      # Individual file data management system
+│   ├── guestbook/                 # OAuth chat/guestbook (models + admin)
+│   ├── openhire/                  # "Open to work" / "hiring" status
 │   ├── seo/                       # SEO, sitemaps, robots.txt
 │   └── projects/                  # Portfolio management
 ├── FlexForge/                     # Django project configuration
@@ -127,8 +126,10 @@ ridwaanhall_com/
 | `projects` | Portfolio showcase | Project listings, detailed views, tech stack |
 | `blog` | Content management | Articles, featured posts, SEO optimization |
 | `dashboard` | Analytics integration | GitHub stats, WakaTime metrics, charts |
-| `data` | Individual file system | Revolutionary modular data architecture |
+| `guestbook` | OAuth chat/guestbook | Threaded replies, pinning, admin-managed |
 | `seo` | SEO & indexing | Sitemaps, robots.txt, meta tags |
+
+All content-bearing apps (`about`, `blog`, `projects`, `openhire`, `core`) store their content as Django ORM models (`models.py` + `admin.py`), managed through `/admin` — not as data files.
 
 ## Contributing Guidelines
 

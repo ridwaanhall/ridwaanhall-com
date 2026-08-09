@@ -1,89 +1,71 @@
 from django.test import TestCase
 
-from apps.about.types import (
-    CV, PersonalInfo, Bio, AboutLocation, SocialMedia, DonateLink, AboutDataModel,
-    IssuedDate, PeriodDate, Period, Experience, EducationDate, EducationLocation,
-    Education, Certification, Award, Skill, JourneyStep, Application,
-)
 from apps.core.data_service import DataService
 
 
-class AboutTypesTest(TestCase):
-    """Tests for OOP type classes in apps/about/types/."""
+class AboutModelsTest(TestCase):
+    """Tests for the ORM models in apps/about/models.py."""
 
-    def test_cv_to_dict(self):
-        cv = CV(main="https://example.com/cv", latest="https://example.com/cv-latest", copy="https://example.com/cv-copy")
-        d = cv.to_dict()
-        self.assertEqual(d["main"], "https://example.com/cv")
-        self.assertEqual(d["latest"], "https://example.com/cv-latest")
-        self.assertEqual(d["copy"], "https://example.com/cv-copy")
+    def test_profile_defaults(self):
+        from apps.about.models import Profile
 
-    def test_skill_to_dict(self):
-        skill = Skill(name="Python", description="A programming language", icon_svg="<svg/>")
-        d = skill.to_dict()
-        self.assertEqual(d["name"], "Python")
-        self.assertEqual(d["description"], "A programming language")
-        self.assertEqual(d["icon_svg"], "<svg/>")
+        profile = Profile.objects.create(name="Test User", role="Dev")
+        self.assertFalse(profile.is_open_to_work)
+        self.assertEqual(profile.stories, [])
+        self.assertEqual(profile.skills_highlight, [])
 
     def test_skill_default_icon_svg(self):
-        skill = Skill(name="Test", description="Test skill")
+        from apps.about.models import Skill
+
+        skill = Skill.objects.create(slug="test", name="Test", description="Test skill")
         self.assertEqual(skill.icon_svg, "")
 
-    def test_period_date_to_dict(self):
-        pd = PeriodDate(month="Jan", year=2024)
-        d = pd.to_dict()
-        self.assertEqual(d["month"], "Jan")
-        self.assertEqual(d["year"], 2024)
+    def test_experience_current_and_sort_order(self):
+        from apps.about.models import Experience
 
-    def test_experience_to_dict(self):
-        exp = Experience(
-            id=1, title="Developer", company="Acme", logo="logo.png",
-            period=Period(start=PeriodDate("Jan", 2023), end="Present"),
-            employment_type="Full-time", location_type="Remote",
-            location="Jakarta", is_current=True,
+        exp = Experience.objects.create(
+            title="Developer", company="Acme", period_start_month="Jan", period_start_year=2023,
+            employment_type="Full-time", location_type="Remote", location="Jakarta",
+            is_current=True, sort_order=0,
         )
-        d = exp.to_dict()
-        self.assertEqual(d["id"], 1)
-        self.assertEqual(d["title"], "Developer")
-        self.assertTrue(d["is_current"])
+        self.assertTrue(exp.is_current)
+        self.assertIsNone(exp.period_end_month)
 
-    def test_education_to_dict(self):
-        edu = Education(
-            degree="Bachelor", institution="UTY", logo="logo.png",
-            is_last=True,
-            location=EducationLocation(regency="Yogyakarta", province="DIY", prov="DIY", country="Indonesia", flag="🇮🇩"),
-        )
-        d = edu.to_dict()
-        self.assertEqual(d["degree"], "Bachelor")
-        self.assertTrue(d["is_last"])
+    def test_education_is_last(self):
+        from apps.about.models import Education
 
-    def test_application_to_dict(self):
-        app = Application(
-            id=1, status="Applied", company_name="Acme", position="Developer",
+        edu = Education.objects.create(degree="Bachelor", institution="UTY", is_last=True)
+        self.assertTrue(edu.is_last)
+
+    def test_application_defaults(self):
+        from apps.about.models import Application
+
+        app = Application.objects.create(
+            status="Applied", company_name="Acme", position="Developer",
             employment_type="Full-time", location_type="Remote", location="Jakarta",
         )
-        d = app.to_dict()
-        self.assertEqual(d["id"], 1)
-        self.assertEqual(d["status"], "Applied")
-
-    def test_about_data_model_to_dict(self):
-        model = AboutDataModel(
-            personal=PersonalInfo(
-                name="Test User", first_name="Test", last_name="User",
-                username="testuser", aka="t", image_url="img.png",
-                personal_website="https://example.com",
-                cv=CV(main="c", latest="l", copy="cp"),
-                role="Dev", is_active=True, is_open_to_work=False, is_hiring=False, is_sick=False,
-            ),
-            bio=Bio(short_description="desc", short_bio="bio", short_cta="cta", long_description="long"),
-        )
-        d = model.to_dict()
-        self.assertEqual(d["personal"]["name"], "Test User")
-        self.assertEqual(d["bio"]["short_bio"], "bio")
+        self.assertEqual(app.status, "Applied")
+        self.assertEqual(app.lessons_learned, "")
 
 
 class AboutDataServiceTest(TestCase):
-    """Tests that DataService correctly loads about data from apps/about/data/."""
+    """Tests that DataService correctly loads about data (ORM-backed)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from apps.about.models import Education, Experience, Profile
+
+        Profile.objects.create(name="Test Author", role="Developer")
+        Experience.objects.create(
+            title="Current Role", company="Acme", period_start_month="Jan", period_start_year=2024,
+            is_current=True, sort_order=0,
+        )
+        Experience.objects.create(
+            title="Past Role", company="Old Co", period_start_month="Jan", period_start_year=2020,
+            period_end_month="Dec", period_end_year=2023, is_current=False, sort_order=1,
+        )
+        Education.objects.create(degree="Bachelor's", institution="UTY", is_last=True)
+        Education.objects.create(degree="High School", institution="Al Mukmin", is_last=False)
 
     def test_get_about_data_returns_dict(self):
         result = DataService.get_about_data()

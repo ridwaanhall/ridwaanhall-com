@@ -1,119 +1,238 @@
 """
-About Manager - Central controller for about-related data
-Loads data from individual about files.
+About Manager - Central controller for about-related data.
+ORM-backed (previously read from apps/about/data/*.py IFS files) -- builds
+the same plain dict/list shapes the old dataclass-based data files produced,
+so templates, apps/seo/schema.py, and apps/openhire/views.py need no changes.
 """
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+from zoneinfo import ZoneInfo
+
+# Category display order for consistent rendering (moved from the old
+# apps/about/data/skills_data.py::SkillsData.CATEGORY_ORDER).
+SKILL_CATEGORY_ORDER = [
+    "Languages", "Backend Frameworks", "Frontend Frameworks", "Styling & UI",
+    "CMS & E-commerce", "Data Visualization", "Utilities & Auth", "Data Apps",
+    "Automation & Scraping", "ML Frameworks", "ML Algorithms", "LLMs & AI Services",
+    "Data Science", "Databases & ORM", "APIs & Services", "Cloud & DevOps",
+    "Package Management", "PaaS", "Serverless", "Web Server", "Testing",
+    "Version Control", "Editor & IDE", "Design", "Desktop",
+]
+
+
+def _image_url(field) -> str:
+    return field.url if field else ""
+
+
+def _skill_dict(s) -> dict:
+    return {"name": s.name, "description": s.description, "icon_svg": s.icon_svg, "category": s.category}
 
 
 class AboutManager:
-    """
-    Central about data manager that loads data from individual files.
-    """
+    """Central about data manager, backed by the ORM."""
+
+    @staticmethod
+    def is_working_hours() -> bool:
+        jakarta_tz = ZoneInfo("Asia/Jakarta")
+        now = datetime.now(jakarta_tz)
+        return now.weekday() < 5 and 15 <= now.hour < 20
 
     @classmethod
     def get_about_data(cls):
         """Get about data with flattened structure for backward compatibility."""
-        from apps.about.data.about_data import AboutData
-        about_data = AboutData.get_about_data()
+        from apps.about.models import Profile
 
-        if not about_data:
+        profile = Profile.objects.first()
+        if not profile:
             return None
 
-        # Flatten the nested structure for backward compatibility
-        flattened = {
-            # Personal fields (flattened to root level)
-            **about_data.get('personal', {}),
+        return {
+            # Personal fields (flattened to root level, as the old manager did)
+            "name": profile.name, "first_name": profile.first_name, "last_name": profile.last_name,
+            "username": profile.username, "aka": profile.aka,
+            "image_url": _image_url(profile.image), "personal_website": profile.personal_website,
+            "cv": {"main": profile.cv_main, "latest": profile.cv_latest, "copy": profile.cv_copy},
+            "role": profile.role, "is_active": cls.is_working_hours(),
+            "is_open_to_work": profile.is_open_to_work, "is_hiring": profile.is_hiring,
+            "is_sick": profile.is_sick,
             # Bio fields (flattened to root level)
-            **about_data.get('bio', {}),
-            # Keep these as nested structures
-            'stories': about_data.get('stories', []),
-            'location': about_data.get('location', {}),
-            'social_media': about_data.get('social_media', {}),
-            'donate': about_data.get('donate', []),
-            'skills': about_data.get('skills', []),
+            "short_description": profile.short_description, "short_bio": profile.short_bio,
+            "short_cta": profile.short_cta, "long_description": profile.long_description,
+            # Kept as nested structures
+            "stories": profile.stories,
+            "location": {
+                "regency": profile.location_regency, "residency": profile.location_residency,
+                "province": profile.location_province, "prov": profile.location_prov,
+                "country": profile.location_country, "flag": profile.location_flag,
+            },
+            "social_media": {
+                "email": profile.social_email, "github": profile.social_github,
+                "linkedin": profile.social_linkedin, "follow_linkedin": profile.social_follow_linkedin,
+                "instagram": profile.social_instagram, "medium": profile.social_medium,
+                "x": profile.social_x, "website": profile.social_website,
+            },
+            "donate": [{"platform": d.platform, "url": d.url} for d in profile.donate_links.all()],
+            "skills": profile.skills_highlight,
         }
-
-        return flattened
 
     @classmethod
     def get_experiences(cls, current_only=False):
         """Get experience data with optional filtering for current positions."""
-        from apps.about.data.experiences_data import ExperiencesData
-        experiences = ExperiencesData.experiences
+        from apps.about.models import Experience
 
+        qs = Experience.objects.all()
         if current_only:
-            experiences = [exp for exp in experiences if exp.get('is_current')]
+            qs = qs.filter(is_current=True)
 
-        return experiences
+        result = []
+        for e in qs:
+            end = (
+                {"month": e.period_end_month, "year": e.period_end_year}
+                if e.period_end_month else "Present"
+            )
+            result.append({
+                "id": e.id, "title": e.title, "company": e.company, "logo": _image_url(e.logo),
+                "period": {"start": {"month": e.period_start_month, "year": e.period_start_year}, "end": end},
+                "employment_type": e.employment_type, "location_type": e.location_type,
+                "location": e.location, "is_current": e.is_current,
+                "responsibilities": e.responsibilities, "website": e.website,
+            })
+        return result
 
     @classmethod
     def get_education(cls, last_only=False):
         """Get education data with optional filtering for most recent."""
-        from apps.about.data.education_data import EducationData
-        education = EducationData.education
+        from apps.about.models import Education
 
+        qs = Education.objects.all()
         if last_only:
-            education = [edu for edu in education if edu.get('is_last')]
+            qs = qs.filter(is_last=True)
 
-        return education
+        result = []
+        for edu in qs:
+            date = None
+            if edu.date_start_month:
+                date = {
+                    "start": {"month": edu.date_start_month, "year": edu.date_start_year},
+                    "end": {"month": edu.date_end_month, "year": edu.date_end_year},
+                }
+            result.append({
+                "degree": edu.degree, "institution": edu.institution, "logo": _image_url(edu.logo),
+                "is_last": edu.is_last,
+                "location": {
+                    "regency": edu.location_regency, "province": edu.location_province,
+                    "prov": edu.location_prov, "country": edu.location_country,
+                    "flag": edu.location_flag, "map_url": edu.location_map_url,
+                },
+                "achievements": edu.achievements, "alias": edu.alias, "date": date,
+                "years": edu.years, "website": edu.website,
+            })
+        return result
 
     @classmethod
     def get_certifications(cls):
         """Get certification data."""
-        from apps.about.data.certifications_data import CertificationsData
-        return CertificationsData.certifications
+        from apps.about.models import Certification
+
+        return [
+            {
+                "id": c.id, "title": c.title, "credential_url": c.credential_url,
+                "issued": {"month": c.issued_month, "year": c.issued_year},
+                "institution": c.institution, "website": c.website, "logo": _image_url(c.logo),
+                "is_featured": c.is_featured, "achievements": c.achievements,
+            }
+            for c in Certification.objects.all()
+        ]
 
     @classmethod
     def get_skills(cls):
-        """Get skills data - only returns skills with valid icon_svg."""
-        from apps.about.data.skills_data import SkillsData
-        all_skills = SkillsData.get_skills_list()
-        # Filter out skills without icon_svg
-        return [skill for skill in all_skills if skill.get('icon_svg', '').strip()]
+        """Get skills data - only returns skills with a valid icon_svg."""
+        from apps.about.models import Skill
+
+        return [_skill_dict(s) for s in Skill.objects.exclude(icon_svg="").order_by("id")]
+
+    @classmethod
+    def get_skills_by_category(cls) -> dict[str, list[dict]]:
+        """Group all skills by category, ordered by SKILL_CATEGORY_ORDER."""
+        from apps.about.models import Skill
+
+        grouped: dict[str, list[dict]] = {}
+        for s in Skill.objects.order_by("id"):
+            if s.category:
+                grouped.setdefault(s.category, []).append(_skill_dict(s))
+
+        ordered: dict[str, list[dict]] = {}
+        for cat in SKILL_CATEGORY_ORDER:
+            if cat in grouped:
+                ordered[cat] = grouped.pop(cat)
+        for cat, skills in grouped.items():
+            ordered[cat] = skills
+        return ordered
 
     @classmethod
     def get_awards(cls, sort_by_id=True):
         """Get awards data with optional sorting."""
-        from apps.about.data.awards_data import AwardsData
-        awards = AwardsData.awards
+        from apps.about.models import Award
 
-        if sort_by_id:
-            awards = sorted(awards, key=lambda x: x.get('id', 0), reverse=True)
-
-        return awards
+        qs = Award.objects.order_by("-id" if sort_by_id else "id")
+        return [
+            {
+                "id": a.id, "title": a.title, "credential_url": a.credential_url,
+                "description": a.description, "issued": {"month": a.issued_month, "year": a.issued_year},
+                "institution": a.institution, "website": a.website, "logo": _image_url(a.logo),
+            }
+            for a in qs
+        ]
 
     @classmethod
     def get_applications(cls):
         """Get applications data sorted by latest journey timestamp (descending) and journey dates (ascending)."""
-        from apps.about.data.applications_data import ApplicationsData
+        from apps.about.models import Application
 
-        applications = ApplicationsData.applications.copy()
+        applications = []
+        for app in Application.objects.prefetch_related("journey_steps").order_by("-id"):
+            # Steps without timestamps are placed at the end. datetime.min (naive)
+            # is only ever compared against other None-timestamp placeholders --
+            # the tuple's first element short-circuits before reaching a real
+            # (timezone-aware) timestamp, so this never raises naive/aware TypeError.
+            journey = sorted(
+                app.journey_steps.all(),
+                key=lambda s: (s.timestamp is None, s.timestamp or datetime.min),
+            )
+            applications.append({
+                "id": app.id, "status": app.status, "company_name": app.company_name,
+                "position": app.position, "employment_type": app.employment_type,
+                "location_type": app.location_type, "location": app.location,
+                "applied_via": app.applied_via, "salary_range": app.salary_range,
+                "journey": [
+                    {"timestamp": s.timestamp, "title": s.title, "details": s.details, "notes": s.notes}
+                    for s in journey
+                ],
+                "lessons_learned": app.lessons_learned,
+            })
 
-        # Sort each application's journey by timestamp (oldest to latest)
-        # Steps without timestamps are placed at the end
-        for app in applications:
-            if app.get('journey'):
-                app['journey'] = sorted(
-                    app['journey'],
-                    key=lambda x: (x.get('timestamp') is None, x.get('timestamp') or datetime.min)
-                )
-
-        # Sort applications by the latest timestamp in their journey (most recent first)
         def get_latest_timestamp(app):
-            if app.get('journey'):
-                timestamps = [step.get('timestamp') for step in app['journey'] if step.get('timestamp')]
-                if timestamps:
-                    return max(timestamps)
-            app_id = app.get('id', 0)
-            return datetime.fromtimestamp(app_id, tz=timezone.utc)
+            timestamps = [step["timestamp"] for step in app["journey"] if step["timestamp"]]
+            if timestamps:
+                return max(timestamps)
+            return datetime.fromtimestamp(app["id"], tz=UTC)
 
-        applications = sorted(applications, key=get_latest_timestamp, reverse=True)
-
+        applications.sort(key=get_latest_timestamp, reverse=True)
         return applications
 
     @classmethod
     def get_privacy_policy(cls):
         """Get privacy policy data."""
-        from apps.core.data.privacy_policy_data import PrivacyPolicyData
-        return PrivacyPolicyData.privacy_policy
+        from apps.core.models import PrivacyPolicy
+
+        p = PrivacyPolicy.objects.first()
+        if not p:
+            return {}
+        return {
+            "last_updated": p.last_updated, "overview": p.overview, "policy_updates": p.policy_updates,
+            "data_collected": p.data_collected, "data_usage": p.data_usage,
+            "third_party_services": p.third_party_services, "data_protection": p.data_protection,
+            "user_rights": p.user_rights, "guestbook_limitations": p.guestbook_limitations,
+            "email_communications": p.email_communications, "legal_basis": p.legal_basis,
+            "cookies": p.cookies, "copyright_credits": p.copyright_credits,
+        }

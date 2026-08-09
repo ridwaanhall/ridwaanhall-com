@@ -5,11 +5,12 @@ This module contains shared error handling, context generation, and utility meth
 
 import logging
 from typing import Any
-from django.views.generic import TemplateView
-from django.shortcuts import render
+
+from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.http import Http404, HttpResponse
-from django.conf import settings
+from django.shortcuts import render
+from django.views.generic import TemplateView
 
 from apps.about.manager import AboutManager
 
@@ -30,15 +31,22 @@ class BaseView(TemplateView):
         return self.render_to_response(context)
 
     def get_about_data(self) -> dict[str, Any]:
-        """Safely get about data with proper error handling."""
-        try:
-            about_data = AboutManager.get_about_data()
-            if not about_data:
-                raise FileNotFoundError("About data is missing.")
-            return about_data
-        except Exception as e:
-            logger.error(f"Error fetching about data: {e}")
-            raise
+        """Safely get about data with proper error handling.
+
+        Cached on the view instance: several views (and their SEO mixins) call
+        this more than once per request. Under the old IFS data source that
+        was free (static in-memory data); now it's a real ORM lookup, so this
+        cache avoids repeating the same query several times per request."""
+        if not hasattr(self, "_about_data_cache"):
+            try:
+                about_data = AboutManager.get_about_data()
+                if not about_data:
+                    raise FileNotFoundError("About data is missing.")
+                self._about_data_cache = about_data
+            except Exception as e:
+                logger.error(f"Error fetching about data: {e}")
+                raise
+        return self._about_data_cache
     
     def get_common_context(self) -> dict[str, Any]:
         """Get common context data that all views need."""
@@ -98,7 +106,7 @@ class PaginatedView(BaseView):
     
     def paginate_items(self, request, items, items_per_page=None):
         """Paginate items with error handling."""
-        from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+        from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
         
         if items_per_page is None:
             items_per_page = self.items_per_page
@@ -162,20 +170,14 @@ class DetailView(BaseView):
     Base view for detail pages that find items by slug.
     Provides common slug-based item lookup functionality.
     """
-    
-    def get_item_by_slug(self, items, slug, slug_field='title'):
-        """Find item by slug with proper validation."""
-        from django.utils.text import slugify
-        
+
+    def get_item_by_slug(self, queryset, slug, to_dict):
+        """Find an item by an indexed `slug` column lookup, then serialize it
+        to a dict via `to_dict` (e.g. ContentManager.blog_to_dict)."""
+        from django.shortcuts import get_object_or_404
+
         if not isinstance(slug, str):
-            raise SuspiciousOperation(f"Invalid {slug_field} format")
-        
-        item = next(
-            (item for item in items if slugify(item[slug_field]) == slug),
-            None
-        )
-        
-        if not item:
-            raise Http404(f"Item not found")
-        
-        return item
+            raise SuspiciousOperation("Invalid slug format")
+
+        obj = get_object_or_404(queryset, slug=slug)
+        return to_dict(obj)

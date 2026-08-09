@@ -7,8 +7,8 @@ import logging
 from datetime import datetime
 from typing import Any
 
-from apps.core.content_manager import ContentManager
 from apps.about.manager import AboutManager
+from apps.core.content_manager import ContentManager
 from apps.projects.types import PROJECT_STATUS_SORT_RANK, normalize_project_status
 
 logger = logging.getLogger(__name__)
@@ -175,8 +175,8 @@ class DataService:
     def get_open_to_work_data() -> dict[str, Any] | None:
         """Get open to work data."""
         try:
-            from apps.openhire.data.open import OpenToWorkData
-            return OpenToWorkData.get_open_to_work_data()
+            from apps.openhire.manager import OpenHireManager
+            return OpenHireManager.get_open_to_work_data()
         except Exception as e:
             logger.error(f"Error fetching open to work data: {e}")
             return None
@@ -185,8 +185,8 @@ class DataService:
     def get_hiring_data() -> dict[str, Any] | None:
         """Get hiring data."""
         try:
-            from apps.openhire.data.hiring import HiringData
-            return HiringData.get_hiring_data()
+            from apps.openhire.manager import OpenHireManager
+            return OpenHireManager.get_hiring_data()
         except Exception as e:
             logger.error(f"Error fetching hiring data: {e}")
             return None

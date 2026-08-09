@@ -3,14 +3,13 @@ SEO Schema Generator
 Handles structured data (JSON-LD) generation for search engines.
 """
 
-from typing import Any
 from datetime import datetime
+
 from django.utils.text import slugify
+
+from apps.about.manager import AboutManager
+
 from .config import SEOConfig
-from apps.about.data.education_data import EducationData
-from apps.about.data.experiences_data import ExperiencesData
-from apps.about.data.certifications_data import CertificationsData
-from apps.about.data.awards_data import AwardsData
 
 
 class SEOSchemaGenerator:
@@ -28,7 +27,7 @@ class SEOSchemaGenerator:
         
         # Format education data for alumniOf
         alumni_of = []
-        education_data = EducationData.education
+        education_data = AboutManager.get_education()
         for edu in education_data:
             alumni_entry = {
                 "@type": "EducationalOrganization",
@@ -45,7 +44,7 @@ class SEOSchemaGenerator:
         
         # Format work experience
         work_experience = []
-        experiences_data = ExperiencesData.experiences
+        experiences_data = AboutManager.get_experiences()
         for exp in experiences_data:
             work_exp = {
                 "@type": "OrganizationRole",
@@ -86,7 +85,7 @@ class SEOSchemaGenerator:
         
         # Get current work experience
         current_experience = None
-        for exp in ExperiencesData.experiences:
+        for exp in experiences_data:
             if exp.get('is_current', False):
                 current_experience = exp
                 break
@@ -425,7 +424,7 @@ class SEOSchemaGenerator:
         
         # Add certifications as hasCredential
         certifications = []
-        for cert in CertificationsData.certifications:
+        for cert in AboutManager.get_certifications():
             certification = {
                 "@type": "EducationalOccupationalCredential",
                 "name": cert.get('title', ''),
@@ -445,7 +444,7 @@ class SEOSchemaGenerator:
         
         # Add awards as awards array
         awards = []
-        for award in AwardsData.awards:
+        for award in AboutManager.get_awards():
             award_schema = {
                 "@type": "Award",
                 "name": award.get('title', ''),

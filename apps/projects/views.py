@@ -3,9 +3,10 @@ Projects views for listing and displaying project details.
 Handles project listing with pagination and individual project details.
 """
 
-from apps.core.base_views import PaginatedView, DetailView
+from apps.core.base_views import DetailView, PaginatedView
+from apps.core.content_manager import ContentManager
 from apps.core.data_service import DataService
-from apps.seo.mixins import ProjectsListSEOMixin, ProjectDetailSEOMixin
+from apps.seo.mixins import ProjectDetailSEOMixin, ProjectsListSEOMixin
 
 
 class ProjectsView(ProjectsListSEOMixin, PaginatedView):
@@ -66,12 +67,9 @@ class ProjectsDetailView(ProjectDetailSEOMixin, DetailView):
     template_name = 'projects/projects_detail.html'
 
     def _get(self, request, title, *args, **kwargs):
-        # Get all projects
-        all_projects = DataService.get_projects()
-        
-        # Find project by slug
-        project = self.get_item_by_slug(all_projects, title, 'title')
-        
+        # Find project by slug (indexed DB lookup)
+        project = self.get_item_by_slug(ContentManager.project_queryset(), title, ContentManager.project_to_dict)
+
         context = self.get_common_context()
         context['project'] = project
         

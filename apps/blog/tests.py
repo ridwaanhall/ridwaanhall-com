@@ -1,46 +1,60 @@
+from datetime import UTC
+
 from django.test import TestCase
 
-from apps.blog.types import BlogContentItem, BlogData
 from apps.core.data_service import DataService
 
 
-class BlogTypesTest(TestCase):
-    """Tests for OOP type classes in apps/blog/types/."""
+class BlogModelsTest(TestCase):
+    """Tests for the ORM models in apps/blog/models.py."""
 
-    def test_blog_content_item_to_dict(self):
-        item = BlogContentItem(type="paragraph", text="Hello world")
-        d = item.to_dict()
-        self.assertEqual(d["type"], "paragraph")
-        self.assertEqual(d["text"], "Hello world")
-        self.assertEqual(d["items"], [])
+    def test_blog_post_defaults(self):
+        from datetime import datetime
 
-    def test_blog_content_item_defaults(self):
-        item = BlogContentItem(type="list")
-        self.assertEqual(item.text, "")
-        self.assertEqual(item.class_, "")
+        from apps.blog.models import BlogPost
 
-    def test_blog_data_to_dict(self):
-        from datetime import datetime, timezone
-        blog = BlogData(
-            id=1, title="Test Blog", description="A test blog post",
-            author="Test Author", username="testauthor", author_image="img.png",
-            created_at=datetime(2025, 1, 1, tzinfo=timezone.utc),
-            is_featured=True,
+        blog = BlogPost.objects.create(
+            title="Blog 2", slug="blog-2", description="desc", author="A", username="u",
+            created_at=datetime(2025, 1, 1, tzinfo=UTC), updated_at=datetime(2025, 1, 1, tzinfo=UTC),
         )
-        d = blog.to_dict()
-        self.assertEqual(d["id"], 1)
-        self.assertEqual(d["title"], "Test Blog")
-        self.assertTrue(d["is_featured"])
-
-    def test_blog_data_defaults(self):
-        blog = BlogData(id=2, title="Blog 2", description="desc", author="A", username="u", author_image="img.png")
         self.assertEqual(blog.category, "")
-        self.assertEqual(blog.slug, "")
         self.assertFalse(blog.is_featured)
+        self.assertEqual(blog.views, 0)
+
+    def test_blog_image_ordering(self):
+        from datetime import datetime
+
+        from apps.blog.models import BlogImage, BlogPost
+
+        blog = BlogPost.objects.create(
+            title="Gallery Post", slug="gallery-post", description="desc", author="A", username="u",
+            created_at=datetime(2025, 1, 1, tzinfo=UTC), updated_at=datetime(2025, 1, 1, tzinfo=UTC),
+        )
+        BlogImage.objects.create(blog=blog, image="blog/b.webp", original_filename="b.webp", order=1)
+        BlogImage.objects.create(blog=blog, image="blog/a.webp", original_filename="a.webp", order=0)
+        self.assertEqual([img.original_filename for img in blog.images.all()], ["a.webp", "b.webp"])
 
 
 class BlogDataServiceTest(TestCase):
-    """Tests that DataService correctly loads blog data from apps/blog/data/."""
+    """Tests that DataService correctly loads blog data (ORM-backed)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from datetime import datetime
+
+        from apps.blog.models import BlogImage, BlogPost
+
+        featured = BlogPost.objects.create(
+            title="Featured Post", slug="featured-post", description="desc", author="A", username="a",
+            is_featured=True, created_at=datetime(2026, 1, 2, tzinfo=UTC),
+            updated_at=datetime(2026, 1, 2, tzinfo=UTC),
+        )
+        BlogImage.objects.create(blog=featured, image="blog/fake.webp", original_filename="fake.webp")
+        BlogPost.objects.create(
+            title="Older Post", slug="older-post", description="desc", author="A", username="a",
+            is_featured=False, created_at=datetime(2026, 1, 1, tzinfo=UTC),
+            updated_at=datetime(2026, 1, 1, tzinfo=UTC),
+        )
 
     def test_get_blogs_returns_list(self):
         result = DataService.get_blogs()

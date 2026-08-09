@@ -7,15 +7,21 @@ License: Apache License 2.0
 Created at: March 16, 2025
 """
 
-from pathlib import Path
 import sys
-from csp.constants import SELF, NONE, UNSAFE_INLINE
+from pathlib import Path
+from urllib.parse import urlparse
+
+import dj_database_url
+from csp.constants import NONE, SELF, UNSAFE_INLINE
+
 from .config import *  # Import all environment configs
 
 # --------------------------------------------------------------------------
 # BASE SETTINGS
 # --------------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+SUPABASE_STORAGE_HOST = urlparse(SUPABASE_URL).netloc if SUPABASE_URL else None
 
 # --------------------------------------------------------------------------
 # EMAIL SETTINGS
@@ -86,8 +92,7 @@ CONTENT_SECURITY_POLICY = {
             SELF,
             "ridwaanhall.com",
             "data:",
-            BLOG_BASE_IMG_URL,
-            PROJECT_BASE_IMG_URL,
+            SUPABASE_STORAGE_HOST,
             "cdn.jsdelivr.net",
             "wsrv.nl",
             "*.googleapis.com",
@@ -259,17 +264,22 @@ if "test" in sys.argv or DEBUG:
         }
     }
 else:
-    # Use PostgreSQL in production
+    # Supabase Postgres in production, via the pooled (pgbouncer transaction-mode)
+    # connection -- required under Vercel's serverless model, since direct
+    # per-invocation connections would quickly exhaust Postgres's max_connections.
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": POSTGRES_DATABASE,
-            "USER": POSTGRES_USER,
-            "PASSWORD": POSTGRES_PASSWORD,
-            "HOST": POSTGRES_HOST,
-            "PORT": POSTGRES_PORT,
-        }
+        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=0, ssl_require=True)
     }
+    # Supabase/Vercel's connection string includes a non-standard `supa=...`
+    # query param (integration tagging, not a real libpq option) that
+    # dj_database_url dutifully passes through as a connection OPTIONS entry
+    # -- psycopg2 then rejects it with "invalid connection option". Only keep
+    # the option we actually need.
+    DATABASES["default"]["OPTIONS"] = {"sslmode": "require"}
+    # Named/server-side cursors don't work correctly under pgbouncer transaction-mode
+    # pooling -- this is Django's documented fix, and it's a key inside DATABASES,
+    # not a top-level setting.
+    DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
 
 # --------------------------------------------------------------------------
 # AUTHENTICATION AND PASSWORD VALIDATION
@@ -302,7 +312,18 @@ USE_TZ = True
 # --------------------------------------------------------------------------
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# --------------------------------------------------------------------------
+# MEDIA / STORAGES (Supabase Storage for uploaded images -- blog, project,
+# logo, profile). Defining STORAGES fully replaces Django's default config
+# (it does not merge with STATICFILES_STORAGE), so "staticfiles" must be
+# re-declared here alongside "default" or WhiteNoise's compressed/manifest
+# static serving silently reverts to Django's default.
+# --------------------------------------------------------------------------
+STORAGES = {
+    "default": {"BACKEND": "apps.core.storage.SupabaseStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+}
 
 # --------------------------------------------------------------------------
 # DEFAULT SETTINGS

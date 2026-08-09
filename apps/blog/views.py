@@ -3,9 +3,13 @@ Blog views for listing and displaying blog posts.
 Handles blog listing with pagination and individual blog post details.
 """
 
-from apps.core.base_views import PaginatedView, DetailView
+from django.db.models import F
+
+from apps.blog.models import BlogPost
+from apps.core.base_views import DetailView, PaginatedView
+from apps.core.content_manager import ContentManager
 from apps.core.data_service import DataService
-from apps.seo.mixins import BlogListSEOMixin, BlogDetailSEOMixin
+from apps.seo.mixins import BlogDetailSEOMixin, BlogListSEOMixin
 
 
 class BlogView(BlogListSEOMixin, PaginatedView):
@@ -71,12 +75,11 @@ class BlogDetailView(BlogDetailSEOMixin, DetailView):
     template_name = 'blog/blog_detail.html'
 
     def _get(self, request, title, *args, **kwargs):
-        # Get all blogs
-        all_blogs = DataService.get_blogs()
-        
-        # Find blog by slug
-        blog = self.get_item_by_slug(all_blogs, title, 'title')
-        
+        # Find blog by slug (indexed DB lookup) and atomically bump its view count
+        blog = self.get_item_by_slug(ContentManager.blog_queryset(), title, ContentManager.blog_to_dict)
+        BlogPost.objects.filter(pk=blog['id']).update(views=F('views') + 1)
+        blog['views'] += 1
+
         context = self.get_common_context()
         context['blog'] = blog
         

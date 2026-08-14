@@ -101,7 +101,9 @@ class GuestbookPerformanceTestCase(TransactionTestCase):
         connection.queries_log.clear()
         
         # Call the view method that was causing performance issues
-        with self.assertNumQueries(8):  # 5 base queries + 1 for pinned messages + 2 for the now-ORM-backed about data (Profile + its DonateLinks)
+        with self.assertNumQueries(9):  # 5 base + 1 pinned messages + 3 for the
+            # ORM-backed about data: Profile, its DonateLinks, and its
+            # skills_highlight M2M (one prefetch each, not N+1).
             response = view._get(request)
         
         # Verify the response contains the expected data
@@ -148,7 +150,9 @@ class GuestbookPerformanceTestCase(TransactionTestCase):
         view.request = request  # Set request attribute
         
         # This should work without additional queries for social accounts
-        with self.assertNumQueries(8):  # 5 base queries + 1 for pinned messages + 2 for the now-ORM-backed about data (Profile + its DonateLinks)
+        with self.assertNumQueries(9):  # 5 base + 1 pinned messages + 3 for the
+            # ORM-backed about data: Profile, its DonateLinks, and its
+            # skills_highlight M2M (one prefetch each, not N+1).
             response = view._get(request)
 
         self.assertEqual(response.status_code, 200)

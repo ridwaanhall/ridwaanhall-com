@@ -42,7 +42,7 @@ class AboutManager:
         """Get about data with flattened structure for backward compatibility."""
         from apps.about.models import Profile
 
-        profile = Profile.objects.first()
+        profile = Profile.objects.prefetch_related("donate_links", "skills_highlight").first()
         if not profile:
             return None
 
@@ -72,7 +72,10 @@ class AboutManager:
                 "x": profile.social_x, "website": profile.social_website,
             },
             "donate": [{"platform": d.platform, "url": d.url} for d in profile.donate_links.all()],
-            "skills": profile.skills_highlight,
+            # Kept as a plain list[str] so apps/seo/schema.py's `knowsAbout`
+            # is unchanged. Iterating .all() reuses the prefetch above; a
+            # values_list() here would issue a second query.
+            "skills": [s.name for s in profile.skills_highlight.all()],
         }
 
     @classmethod

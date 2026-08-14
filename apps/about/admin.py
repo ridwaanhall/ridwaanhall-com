@@ -47,6 +47,7 @@ class DonateLinkInline(admin.TabularInline):
 class ProfileAdmin(SingletonModelAdmin):
     form = ProfileAdminForm
     inlines = [DonateLinkInline]
+    filter_horizontal = ("skills_highlight",)
     fieldsets = (
         (None, {"fields": ("name", "first_name", "last_name", "username", "aka", "role", "image")}),
         ("Links", {"fields": ("personal_website", "cv_main", "cv_latest", "cv_copy")}),

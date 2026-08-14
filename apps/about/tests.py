@@ -12,7 +12,19 @@ class AboutModelsTest(TestCase):
         profile = Profile.objects.create(name="Test User", role="Dev")
         self.assertFalse(profile.is_open_to_work)
         self.assertEqual(profile.stories, [])
-        self.assertEqual(profile.skills_highlight, [])
+        self.assertEqual(list(profile.skills_highlight.all()), [])
+
+    def test_profile_skills_highlight_surfaces_as_names(self):
+        """AboutManager must keep emitting a list[str] for JSON-LD knowsAbout."""
+        from apps.about.manager import AboutManager
+        from apps.about.models import Profile, Skill
+
+        profile = Profile.objects.create(name="Test User", role="Dev")
+        python = Skill.objects.create(slug="python", name="Python")
+        django_skill = Skill.objects.create(slug="django", name="Django")
+        profile.skills_highlight.set([python, django_skill])
+
+        self.assertEqual(AboutManager.get_about_data()["skills"], ["Python", "Django"])
 
     def test_skill_default_icon_svg(self):
         from apps.about.models import Skill

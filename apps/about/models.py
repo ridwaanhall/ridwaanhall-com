@@ -25,7 +25,12 @@ class Profile(SingletonModel):
     long_description = models.TextField(blank=True)
 
     stories = models.JSONField(default=list, blank=True)
-    skills_highlight = models.JSONField(default=list, blank=True)
+    # Curated subset of the Skill catalogue, surfaced as JSON-LD `knowsAbout`.
+    # A plain M2M (rather than a `through` model with an order column) so the
+    # admin can use the same filter_horizontal picker as Project.tech_stack.
+    skills_highlight = models.ManyToManyField(
+        "about.Skill", related_name="highlighted_by_profiles", blank=True
+    )
 
     location_regency = models.CharField(max_length=100, blank=True)
     location_residency = models.CharField(max_length=100, blank=True)

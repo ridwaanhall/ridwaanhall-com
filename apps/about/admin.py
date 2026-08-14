@@ -12,6 +12,30 @@ from apps.about.models import (
     Skill,
 )
 from apps.core.admin import SingletonModelAdmin
+from apps.core.admin_forms import string_list_form
+
+# `stories` is rendered with |safe (about/sections/intro.html), so entries may
+# contain raw HTML and get multi-line inputs; the rest are plain prose lines.
+ProfileAdminForm = string_list_form(
+    Profile,
+    ["stories"],
+    per_field={"stories": {"multiline": True, "allows_html": True, "item_label": "story"}},
+)
+ExperienceAdminForm = string_list_form(
+    Experience,
+    ["responsibilities"],
+    per_field={"responsibilities": {"multiline": True, "item_label": "responsibility"}},
+)
+EducationAdminForm = string_list_form(
+    Education,
+    ["achievements"],
+    per_field={"achievements": {"multiline": True, "item_label": "achievement"}},
+)
+CertificationAdminForm = string_list_form(
+    Certification,
+    ["achievements"],
+    per_field={"achievements": {"multiline": True, "item_label": "achievement"}},
+)
 
 
 class DonateLinkInline(admin.TabularInline):
@@ -21,6 +45,7 @@ class DonateLinkInline(admin.TabularInline):
 
 @admin.register(Profile)
 class ProfileAdmin(SingletonModelAdmin):
+    form = ProfileAdminForm
     inlines = [DonateLinkInline]
     fieldsets = (
         (None, {"fields": ("name", "first_name", "last_name", "username", "aka", "role", "image")}),
@@ -40,6 +65,7 @@ class ProfileAdmin(SingletonModelAdmin):
 
 @admin.register(Experience)
 class ExperienceAdmin(admin.ModelAdmin):
+    form = ExperienceAdminForm
     list_display = ("title", "company", "sort_order", "is_current")
     list_filter = ("is_current", "employment_type", "location_type")
     search_fields = ("title", "company")
@@ -48,6 +74,7 @@ class ExperienceAdmin(admin.ModelAdmin):
 
 @admin.register(Education)
 class EducationAdmin(admin.ModelAdmin):
+    form = EducationAdminForm
     list_display = ("degree", "institution", "is_last")
     list_filter = ("is_last",)
     search_fields = ("degree", "institution")
@@ -62,6 +89,7 @@ class AwardAdmin(admin.ModelAdmin):
 
 @admin.register(Certification)
 class CertificationAdmin(admin.ModelAdmin):
+    form = CertificationAdminForm
     list_display = ("title", "institution", "is_featured", "issued_year")
     list_filter = ("is_featured", "issued_year")
     search_fields = ("title", "institution")

@@ -190,6 +190,17 @@ class AdminJSONWidgetRoundTripTest(TestCase):
         value = ["a", "b"]
         self.assertFalse(field.has_changed(value, field.prepare_value(value)))
 
+    def test_has_changed_is_false_for_a_blank_extra_formset_row(self):
+        """A blank "add another" inline row must not count as changed.
+
+        Regression test: an unsaved row has initial=None while to_python("")
+        yields [], and reporting that as a change made Django fully validate
+        the empty row and reject the whole page for missing required fields.
+        """
+        self.assertFalse(StringListField(required=False).has_changed(None, ""))
+        self.assertFalse(KeyValueField(required=False).has_changed(None, ""))
+        self.assertFalse(ContentBlockField(required=False).has_changed(None, ""))
+
     def test_has_changed_detects_reordering(self):
         # List order is meaningful (it drives render order), so a reorder must
         # register as a change or the save would be skipped in a formset.

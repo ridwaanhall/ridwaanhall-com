@@ -159,6 +159,13 @@ class BaseJSONField(forms.JSONField):
             parsed = self.to_python(data)
         except ValidationError:
             return True
+        # An unsaved extra row in a formset has initial=None while to_python()
+        # yields the shape's zero value. Treating those as different would mark
+        # every blank "add another" row as changed, so Django would fully
+        # validate it and demand its required fields before letting the page
+        # save at all.
+        if initial is None or initial == "":
+            initial = self.empty_factory()
         return json.dumps(initial, sort_keys=False, ensure_ascii=False) != json.dumps(
             parsed, sort_keys=False, ensure_ascii=False
         )

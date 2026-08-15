@@ -17,7 +17,7 @@ cryptography==50.0.0
     # via ridwaanhall-com
 dj-database-url==3.1.2
     # via ridwaanhall-com
-django==6.0.6
+django==6.0.7
     # via
     #   dj-database-url
     #   django-allauth

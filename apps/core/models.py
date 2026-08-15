@@ -21,6 +21,32 @@ class SingletonModel(models.Model):
         return obj
 
 
+class ContentVersion(models.Model):
+    """Shared invalidation stamp for one content namespace.
+
+    Cached payloads live in each instance's own memory, which on Vercel means
+    an admin edit handled by one lambda would otherwise leave every other
+    lambda serving stale content. Cache keys embed the version read from here,
+    so bumping a row orphans every key derived from that namespace across all
+    instances at once -- no cross-instance messaging required.
+
+    Kept deliberately tiny: the whole table is read in a single indexed query
+    (then memoised locally for a few seconds), which is the only database work
+    a fully warm page does. See ``apps.core.cache``.
+    """
+
+    namespace = models.CharField(max_length=32, primary_key=True)
+    version = models.PositiveBigIntegerField(default=1)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Content Version"
+        verbose_name_plural = "Content Versions"
+
+    def __str__(self):
+        return f"{self.namespace} v{self.version}"
+
+
 class PrivacyPolicy(SingletonModel):
     last_updated = models.DateTimeField(default=timezone.now)
     overview = models.TextField(blank=True)

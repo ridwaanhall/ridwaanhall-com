@@ -256,7 +256,9 @@ WSGI_APPLICATION = "FlexForge.wsgi.application"
 # DATABASE SETTINGS
 # --------------------------------------------------------------------------
 
-if "test" in sys.argv or DEBUG:
+TESTING = "test" in sys.argv
+
+if TESTING or DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -267,8 +269,21 @@ else:
     # Supabase Postgres in production, via the pooled (pgbouncer transaction-mode)
     # connection -- required under Vercel's serverless model, since direct
     # per-invocation connections would quickly exhaust Postgres's max_connections.
+    # Opening a connection to Supabase costs ~190ms (TCP + TLS + auth), which
+    # with conn_max_age=0 was paid on *every* request -- more than all of a
+    # typical page's queries combined. Keeping it open lets a warm Vercel
+    # instance reuse it across requests. This is safe (and intended) against
+    # the transaction-mode pooler: a client connection to pgbouncer is cheap,
+    # since it only claims a real server connection for the duration of a
+    # transaction. CONN_HEALTH_CHECKS stops a socket that died between
+    # requests from surfacing as a failed page.
     DATABASES = {
-        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=0, ssl_require=True)
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=config("DB_CONN_MAX_AGE", default=600, cast=int),
+            conn_health_checks=True,
+            ssl_require=True,
+        )
     }
     # Supabase/Vercel's connection string includes a non-standard `supa=...`
     # query param (integration tagging, not a real libpq option) that
@@ -280,6 +295,40 @@ else:
     # pooling -- this is Django's documented fix, and it's a key inside DATABASES,
     # not a top-level setting.
     DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
+
+# --------------------------------------------------------------------------
+# CACHING
+# --------------------------------------------------------------------------
+# Built content payloads are held in each process's own memory, so a hit costs
+# no network and no Supabase quota. Cross-instance correctness does not come
+# from the backend -- it comes from the shared version stamps in
+# apps.core.models.ContentVersion, which cache keys embed. See apps/core/cache.py.
+#
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "flexforge-content",
+        "TIMEOUT": 900,
+        "OPTIONS": {"MAX_ENTRIES": 1000},
+    }
+}
+
+# How long a version stamp is trusted before being re-read. This is the only
+# staleness window: it bounds how long an instance that didn't handle an edit
+# can keep serving the previous content.
+CONTENT_CACHE_VERSION_TTL = config("CONTENT_CACHE_VERSION_TTL", default=5, cast=int)
+# Expiry floor for built payloads, covering writes that bypass signals
+# (QuerySet.update(), bulk_create) -- the blog view's view-counter increment
+# is one such write.
+CONTENT_CACHE_TTL = config("CONTENT_CACHE_TTL", default=900, cast=int)
+# Off under `manage.py test`, so the suite keeps observing writes the instant
+# they happen and its assertNumQueries counts stay meaningful. Disabling short-
+# circuits get_or_build before it even reads the version stamps, so no query is
+# added either. apps/core/tests/test_content_cache.py turns it back on to
+# exercise the caching itself.
+CONTENT_CACHE_ENABLED = (
+    False if TESTING else config("CONTENT_CACHE_ENABLED", default=True, cast=bool)
+)
 
 # --------------------------------------------------------------------------
 # AUTHENTICATION AND PASSWORD VALIDATION

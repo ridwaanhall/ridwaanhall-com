@@ -11,9 +11,16 @@ Two concerns live here:
 
 import logging
 
-from django.db.models.signals import post_delete, post_migrate, post_save, pre_save
+from django.db.models.signals import (
+    m2m_changed,
+    post_delete,
+    post_migrate,
+    post_save,
+    pre_save,
+)
 from django.dispatch import receiver
 
+from apps.core.cache import invalidate, namespaces_for_model
 from apps.core.file_cleanup import delete_unreferenced_files, file_fields_for
 
 logger = logging.getLogger(__name__)
@@ -118,3 +125,35 @@ def cleanup_deleted_files(sender, instance, **kwargs):
 def _storage_for(model):
     """The storage backend these fields use (they all share one per model)."""
     return file_fields_for(model)[0].storage
+
+
+@receiver(post_save)
+@receiver(post_delete)
+def invalidate_content_cache(sender, instance, **kwargs):
+    """Bump only the namespaces this model feeds.
+
+    Editing a blog post must not throw away the projects, about or privacy
+    caches -- each of those costs a fresh round trip to Supabase to rebuild.
+    """
+    if kwargs.get("raw"):
+        return
+    namespaces = namespaces_for_model(sender)
+    if namespaces:
+        invalidate(namespaces)
+
+
+@receiver(m2m_changed)
+def invalidate_content_cache_on_m2m(sender, instance, action, **kwargs):
+    """Cover relation edits, which don't fire post_save on either side.
+
+    ``Project.tech_stack`` is the live case: attaching a Skill changes the
+    rendered project without touching a column on either row.
+    """
+    if action not in ("post_add", "post_remove", "post_clear"):
+        return
+    namespaces = set(namespaces_for_model(type(instance)))
+    related = kwargs.get("model")
+    if related is not None:
+        namespaces |= set(namespaces_for_model(related))
+    if namespaces:
+        invalidate(namespaces)

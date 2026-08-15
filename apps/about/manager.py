@@ -8,6 +8,8 @@ so templates, apps/seo/schema.py, and apps/openhire/views.py need no changes.
 from datetime import UTC, datetime
 from zoneinfo import ZoneInfo
 
+from apps.core import cache as content_cache
+
 # Category display order for consistent rendering (moved from the old
 # apps/about/data/skills_data.py::SkillsData.CATEGORY_ORDER).
 SKILL_CATEGORY_ORDER = [
@@ -39,7 +41,19 @@ class AboutManager:
 
     @classmethod
     def get_about_data(cls):
-        """Get about data with flattened structure for backward compatibility."""
+        """Get about data with flattened structure for backward compatibility.
+
+        ``is_active`` is deliberately recomputed on every read rather than
+        served from the cache -- it is derived from the current Jakarta time,
+        so a cached copy would freeze the working-hours indicator.
+        """
+        data = content_cache.get_or_build("about_data", cls._build_about_data)
+        if data is None:
+            return None
+        return {**data, "is_active": cls.is_working_hours()}
+
+    @classmethod
+    def _build_about_data(cls):
         from apps.about.models import Profile
 
         profile = Profile.objects.prefetch_related(
@@ -85,6 +99,14 @@ class AboutManager:
     @classmethod
     def get_experiences(cls, current_only=False):
         """Get experience data with optional filtering for current positions."""
+        return content_cache.get_or_build(
+            "experiences",
+            lambda: cls._build_experiences(current_only),
+            params=f"current_only={current_only}",
+        )
+
+    @classmethod
+    def _build_experiences(cls, current_only=False):
         from apps.about.models import Experience
 
         qs = Experience.objects.all()
@@ -109,6 +131,14 @@ class AboutManager:
     @classmethod
     def get_education(cls, last_only=False):
         """Get education data with optional filtering for most recent."""
+        return content_cache.get_or_build(
+            "education",
+            lambda: cls._build_education(last_only),
+            params=f"last_only={last_only}",
+        )
+
+    @classmethod
+    def _build_education(cls, last_only=False):
         from apps.about.models import Education
 
         qs = Education.objects.all()
@@ -139,6 +169,10 @@ class AboutManager:
     @classmethod
     def get_certifications(cls):
         """Get certification data."""
+        return content_cache.get_or_build("certifications", cls._build_certifications)
+
+    @classmethod
+    def _build_certifications(cls):
         from apps.about.models import Certification
 
         return [
@@ -154,6 +188,10 @@ class AboutManager:
     @classmethod
     def get_skills(cls):
         """Get skills data - only returns skills with a valid icon_svg."""
+        return content_cache.get_or_build("skills", cls._build_skills)
+
+    @classmethod
+    def _build_skills(cls):
         from apps.about.models import Skill
 
         return [_skill_dict(s) for s in Skill.objects.exclude(icon_svg="").order_by("id")]
@@ -161,6 +199,10 @@ class AboutManager:
     @classmethod
     def get_skills_by_category(cls) -> dict[str, list[dict]]:
         """Group all skills by category, ordered by SKILL_CATEGORY_ORDER."""
+        return content_cache.get_or_build("skills_by_category", cls._build_skills_by_category)
+
+    @classmethod
+    def _build_skills_by_category(cls) -> dict[str, list[dict]]:
         from apps.about.models import Skill
 
         grouped: dict[str, list[dict]] = {}
@@ -179,6 +221,14 @@ class AboutManager:
     @classmethod
     def get_awards(cls, sort_by_id=True):
         """Get awards data with optional sorting."""
+        return content_cache.get_or_build(
+            "awards",
+            lambda: cls._build_awards(sort_by_id),
+            params=f"sort_by_id={sort_by_id}",
+        )
+
+    @classmethod
+    def _build_awards(cls, sort_by_id=True):
         from apps.about.models import Award
 
         qs = Award.objects.order_by("-id" if sort_by_id else "id")
@@ -194,6 +244,10 @@ class AboutManager:
     @classmethod
     def get_applications(cls):
         """Get applications data sorted by latest journey timestamp (descending) and journey dates (ascending)."""
+        return content_cache.get_or_build("applications", cls._build_applications)
+
+    @classmethod
+    def _build_applications(cls):
         from apps.about.models import Application
 
         applications = []
@@ -230,6 +284,10 @@ class AboutManager:
     @classmethod
     def get_privacy_policy(cls):
         """Get privacy policy data."""
+        return content_cache.get_or_build("privacy_policy", cls._build_privacy_policy)
+
+    @classmethod
+    def _build_privacy_policy(cls):
         from apps.core.models import PrivacyPolicy
 
         p = PrivacyPolicy.objects.first()

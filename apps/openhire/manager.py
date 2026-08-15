@@ -7,6 +7,12 @@ ORM-backed (previously read from apps/openhire/data/*.py IFS files).
 class OpenHireManager:
     @classmethod
     def get_hiring_data(cls) -> dict | None:
+        from apps.core import cache as content_cache
+
+        return content_cache.get_or_build("hiring_data", cls._build_hiring_data)
+
+    @classmethod
+    def _build_hiring_data(cls) -> dict | None:
         from apps.openhire.models import HiringProfile
 
         hp = HiringProfile.objects.first()
@@ -35,6 +41,12 @@ class OpenHireManager:
 
     @classmethod
     def get_open_to_work_data(cls) -> dict | None:
+        from apps.core import cache as content_cache
+
+        return content_cache.get_or_build("open_to_work_data", cls._build_open_to_work_data)
+
+    @classmethod
+    def _build_open_to_work_data(cls) -> dict | None:
         from apps.openhire.models import OpenToWorkProfile
 
         op = OpenToWorkProfile.objects.first()

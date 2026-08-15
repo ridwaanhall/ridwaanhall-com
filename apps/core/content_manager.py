@@ -63,6 +63,12 @@ class ContentManager:
     @classmethod
     def get_blogs(cls):
         """Get all blog posts."""
+        from apps.core import cache as content_cache
+
+        return content_cache.get_or_build("blogs", cls._build_blogs)
+
+    @classmethod
+    def _build_blogs(cls):
         from apps.blog.models import BlogPost
 
         posts = BlogPost.objects.prefetch_related("images")
@@ -71,6 +77,12 @@ class ContentManager:
     @classmethod
     def get_projects(cls):
         """Get all projects."""
+        from apps.core import cache as content_cache
+
+        return content_cache.get_or_build("projects", cls._build_projects)
+
+    @classmethod
+    def _build_projects(cls):
         from apps.projects.models import Project
 
         projects = Project.objects.prefetch_related("features", "images", "tech_stack")

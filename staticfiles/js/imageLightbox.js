@@ -290,12 +290,24 @@ class ImageLightbox {
         const sliderWrapper = document.getElementById('lightboxSliderWrapper');
         sliderWrapper.innerHTML = '';
 
-        this.images.forEach((image, index) => {
+        this.images.forEach((image) => {
             const slide = document.createElement('div');
             slide.className = 'lightbox-slide';
-            slide.innerHTML = `
-                <img class="lightbox-image" src="${image.src}" alt="${image.alt}" loading="lazy" />
-            `;
+
+            // Build the <img> as a node instead of an HTML string. src/alt are
+            // read straight back out of the page's own DOM (img.src / img.alt),
+            // which hands them over already decoded -- so interpolating them
+            // into markup re-parses them as HTML and an alt of
+            //   " onerror="…
+            // escapes the attribute and becomes a real event handler. Setting
+            // the properties assigns the values verbatim, with no HTML parse.
+            const img = document.createElement('img');
+            img.className = 'lightbox-image';
+            img.src = image.src;
+            img.alt = image.alt || '';
+            img.loading = 'lazy';
+
+            slide.appendChild(img);
             sliderWrapper.appendChild(slide);
         });
     }

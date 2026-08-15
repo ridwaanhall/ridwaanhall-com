@@ -6,11 +6,12 @@
 
 ![FlexForge Portfolio](https://ridwaanhall.com/static/img/project/ridwaanhall_com_2025070701.webp)
 
-> **A Django portfolio platform built for [ridwaanhall.com](https://ridwaanhall.com) — file-based content management, real-time GitHub/WakaTime dashboards, a configurable OAuth guestbook, and enterprise-grade security. Fork it and make it your own; see [Making It Your Own](#making-it-your-own) below.**
+> **A Django portfolio platform built for [ridwaanhall.com](https://ridwaanhall.com) — database-backed content management with a full admin panel, real-time GitHub/WakaTime dashboards, a configurable OAuth guestbook, and enterprise-grade security. Fork it and make it your own; see [Making It Your Own](#making-it-your-own) below.**
 
 ## Key Features
 
-- **🗂️ Individual File System (IFS)**: Every blog post and project lives in its own Python file as a typed dataclass — no database, no migrations, just add a file
+- **🗄️ Database-Backed Content**: Blog posts, projects, bio, experience, skills, awards, and more all live as Django ORM models — manage everything from a full-featured `/admin` panel, no code deploy needed to update content
+- **☁️ Supabase-Powered**: Postgres database and Storage (for blog/project images, logos, profile photo) both hosted on Supabase, with local development falling back to SQLite automatically
 - **📊 Real-time Dashboard**: Live GitHub contribution graph and WakaTime coding-activity stats, cached for 15 minutes
 - **💬 Interactive Guestbook**: Google/GitHub OAuth login, threaded replies, author/co-author roles, message pinning (up to 3 at a time), automatic link detection, email notifications — or disable it entirely with one env var
 - **📝 Blog & Projects**: Paginated, searchable listings with multi-image support, tags, categories, and a project lifecycle status system
@@ -23,11 +24,12 @@
 
 - **Backend**: Django 6.0, Python 3.14+, managed with [uv](https://docs.astral.sh/uv/)
 - **Frontend**: Tailwind CSS v4 (CLI-based build, no bundler), vanilla JavaScript
-- **Content**: Individual Python files per blog post/project (see [Content Architecture](#content-architecture-individual-file-system))
+- **Content**: Django ORM models managed via `/admin` (see [Content Architecture](#content-architecture-database-backed))
 - **Auth**: django-allauth (Google + GitHub OAuth) for the guestbook
 - **APIs**: GitHub GraphQL API, WakaTime API
 - **Security**: django-csp, django-permissions-policy, Cloudflare Turnstile
-- **Database**: SQLite in development, PostgreSQL in production
+- **Database**: SQLite in development, Supabase Postgres in production
+- **Media Storage**: local filesystem in development/tests (fully offline), Supabase Storage in production (custom Django storage backend, `apps/core/storage.py`)
 - **Deployment**: Vercel (WSGI) with WhiteNoise for static files
 
 ## Project Structure
@@ -35,10 +37,10 @@
 ```text
 FlexForge/          Django project settings, URLs, WSGI/ASGI, root views
 apps/
-  core/              Homepage, contact form, email, base views, image utils
-  about/             Bio, experience, education, certifications, awards, skills
-  projects/          Project showcase (data/projects/project-N.py, one file per project)
-  blog/              Blog (data/blog/blog-N.py, one file per post)
+  core/              Homepage, contact form, email, base views, Supabase storage backend
+  about/             Bio, experience, education, certifications, awards, skills (models + admin)
+  projects/          Project showcase (models + admin, multi-image + tech-stack M2M)
+  blog/              Blog (models + admin, multi-image support)
   dashboard/         GitHub + WakaTime stats
   guestbook/         OAuth chat/guestbook (optional, toggled via GUESTBOOK_PAGE)
   openhire/          "Open to work" / "hiring" status page
@@ -48,25 +50,13 @@ staticfiles/         Compiled CSS + all served static assets (images, fonts, ico
 templates/           Global templates (base, sidebar, error page, per-app sections)
 ```
 
-## Content Architecture: Individual File System
+## Content Architecture: Database-backed
 
-Content is not stored in a database — it's Python dataclasses in individual files, so adding a blog post or project is just adding a file (no admin panel, no migrations):
+Content lives as Django ORM models, edited through `/admin` — no code deploy needed to add a blog post, project, experience entry, or award. Each content-bearing app (`about`, `blog`, `projects`, `openhire`, `core`) has its own `models.py` and a fully registered `admin.py` (list views, search, filters, and inline editors for nested items like project features or multi-image galleries).
 
-```python
-# apps/blog/data/blog/blog-21.py
-from dataclasses import asdict
-from apps.blog.types import BlogData
+Images uploaded through admin (`ImageField`s on `BlogImage`, `ProjectImage`, `Profile.image`, logos, etc.) are stored locally under `media/` (gitignored) in development — fully offline, and never touches the shared production bucket — and go straight to Supabase Storage via the custom backend in `apps/core/storage.py` in production.
 
-blog_data = asdict(BlogData(
-    id=21,
-    title="My New Post",
-    description="...",
-    author="Your Name",
-    ...
-))
-```
-
-Everything under a `data/` folder (`apps/blog/data/blog/`, `apps/projects/data/projects/`) is picked up automatically at request time by `apps/core/dynamic_loader.py` — just add the next-numbered file and it appears in the listing, no restart or migration needed.
+To manage content: create a superuser (`uv run python manage.py createsuperuser`) and log into `/admin`.
 
 ## PageSpeed Insights
 
@@ -109,7 +99,12 @@ npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-wvbpe
 # In a separate terminal, run migrations and the dev server
 uv run python manage.py migrate
 uv run python manage.py runserver
+
+# Create an admin account so you can add content at /admin
+uv run python manage.py createsuperuser
 ```
+
+Local development uses SQLite automatically (no Supabase setup required to get running) — but it starts **empty**. Content is managed entirely through `/admin`; there's no seed data or fixture step. Production points at Supabase Postgres via `STORAGE_POSTGRES_URL` (see [Environment Configuration](#environment-configuration)).
 
 ## Tests & Linting
 
@@ -182,17 +177,12 @@ GH_CLIENT_SECRET="your-github-client-secret"
 CF_TURNSTILE_SITE_KEY="your-turnstile-site-key"
 CF_TURNSTILE_SECRET_KEY="your-turnstile-secret-key"
 
-# PostgreSQL Database (production only - SQLite is used automatically in development/tests)
-POSTGRES_DATABASE="your-database"
-POSTGRES_HOST="your-host"
-POSTGRES_PASSWORD="your-password"
-POSTGRES_USER="your-user"
-POSTGRES_PORT="5432"
-
-# Optional overrides
-BLOG_BASE_IMG_URL="https://your-domain.com/static/img/blog"
-PROJECT_BASE_IMG_URL="https://your-domain.com/static/img/project"
-AUTHOR_IMG="https://your-domain.com/static/img/your-photo.webp"
+# Supabase Postgres + Storage (production only - SQLite is used automatically in development/tests)
+STORAGE_POSTGRES_URL="postgres://user:password@host:6543/postgres?sslmode=require&pgbouncer=true"
+STORAGE_POSTGRES_URL_NON_POOLING="postgres://user:password@host:5432/postgres?sslmode=require"
+STORAGE_SUPABASE_URL="https://your-project-ref.supabase.co"
+STORAGE_SUPABASE_SERVICE_ROLE_KEY="your-supabase-service-role-key"
+SUPABASE_STORAGE_BUCKET="media"
 ```
 
 | Variable | Required | Description |
@@ -213,9 +203,10 @@ AUTHOR_IMG="https://your-domain.com/static/img/your-photo.webp"
 | `CONTACT_EMAIL_RECIPIENT` | No | Comma-separated recipient(s) for contact/guestbook notifications (default: `hi@ridwaanhall.com`) |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | If guestbook enabled | Google OAuth credentials |
 | `GH_CLIENT_ID` / `GH_CLIENT_SECRET` | If guestbook enabled | GitHub OAuth credentials |
-| `POSTGRES_DATABASE`, `_HOST`, `_USER`, `_PASSWORD`, `_PORT` | Production only | PostgreSQL connection (SQLite is used automatically otherwise) |
-| `BLOG_BASE_IMG_URL` / `PROJECT_BASE_IMG_URL` | No | Base URL for blog/project images (defaults to `{BASE_URL}/static/img/blog` or `/project`) |
-| `AUTHOR_IMG` | No | Your profile photo URL, used as the default author image across blog posts (defaults to the author's own photo) |
+| `STORAGE_POSTGRES_URL` | Production only | Pooled (pgbouncer) Supabase Postgres connection, used for runtime app traffic |
+| `STORAGE_POSTGRES_URL_NON_POOLING` | Production only | Direct Supabase Postgres connection, used for `migrate`/`loaddata`/other DDL |
+| `STORAGE_SUPABASE_URL` / `STORAGE_SUPABASE_SERVICE_ROLE_KEY` | Production only | Supabase project URL + service-role key, used by the custom Storage backend (`apps/core/storage.py`) for uploaded images. The service-role key is server-side only — never expose it to clients |
+| `SUPABASE_STORAGE_BUCKET` | No | Supabase Storage bucket name for uploaded images (default: `media`) |
 
 Getting the API keys:
 
@@ -223,28 +214,25 @@ Getting the API keys:
 - **WAKATIME_API_KEY**: [WakaTime](https://wakatime.com/) → Settings → API Key
 - **GOOGLE_CLIENT_ID/SECRET** & **GH_CLIENT_ID/SECRET**: only needed if `GUESTBOOK_PAGE=True` — create OAuth apps in [Google Cloud Console](https://console.cloud.google.com/) and [GitHub OAuth Apps](https://github.com/settings/developers)
 - **CF_TURNSTILE_SITE_KEY/SECRET_KEY**: only needed if `USE_CF_TURNSTILE=True` — create a widget in the [Cloudflare Turnstile dashboard](https://dash.cloudflare.com/?to=/:account/turnstile)
+- **STORAGE_POSTGRES_URL / STORAGE_SUPABASE_\***: create a project at [Supabase](https://supabase.com/) — these values come from Project Settings → Database (connection strings) and Project Settings → API (URL + service-role key). If you connect the project to Vercel's Supabase integration, `vercel env pull` writes these automatically to `.env.local` (gitignored), which is merged in automatically alongside `.env` — see `FlexForge/config.py`'s `_load_env_local()`.
 
 ## Making It Your Own
 
 This started as a personal site, but the architecture doesn't assume you're Ridwan Halim. To adopt it as your own portfolio:
 
-1. **Your content** — rewrite the data files under `apps/*/data/`:
-   - `apps/about/data/*.py` — bio, experience, education, certifications, awards, skills
-   - `apps/blog/data/blog/blog-N.py` — one file per post (delete the samples, add your own, renumber if you like)
-   - `apps/projects/data/projects/project-N.py` — one file per project
-   - `apps/openhire/data/*.py` — your "open to work" / "hiring" status
+1. **Your content** — create a superuser (`uv run python manage.py createsuperuser`) and add your own bio, experience, education, certifications, awards, skills, blog posts, projects, and open-to-work/hiring status through `/admin`. Nothing is seeded by default; the sample content that used to ship as data files was removed along with the old file-based content system.
 2. **Your branding** — edit `apps/seo/config.py`: `SITE_NAME`, `AUTHOR`, `DEFAULT_TWITTER_SITE`, and `COMMON_KEYWORDS['personal']` are all hardcoded to the author's name/handle and need updating.
 3. **Your domain** — two places hardcode `ridwaanhall.com`/`.vercel.app`:
    - `FlexForge/config.py`'s `ALLOWED_HOSTS` fallback (production-only; update to your own domain)
    - `FlexForge/settings.py`'s `CONTENT_SECURITY_POLICY` directives (`connect-src`, `font-src`, `script-src`, `style-src` all allowlist `ridwaanhall.com`)
-4. **Your assets** — replace files under `staticfiles/favicon/`, `staticfiles/img/`, and `templates/site.webmanifest`.
+4. **Your assets** — replace files under `staticfiles/favicon/` and `templates/site.webmanifest` (site branding); logos/icons referenced from `/admin` still come from `staticfiles/img/`, but blog/project/profile photos are uploaded directly through `/admin` to Supabase Storage, not committed as files.
 5. **Your emails** — `apps/core/templates/core/email/` has the contact/guestbook notification templates (html + txt pairs); they're plain text-substitution files (not Django templates — see `apps/core/email_templates.py`), styled to match the site's own dark theme.
 6. **Your env vars** — see the [table above](#environment-configuration); at minimum you need `SECRET_KEY`, `ACCESS_TOKEN`, `EMAIL_HOST_USER`, and `EMAIL_HOST_PASSWORD` to start the app.
 7. **Optional features** — turn off what you don't need: `GUESTBOOK_PAGE=False` skips the whole OAuth/chat system (no OAuth app setup needed), `USE_CF_TURNSTILE=False` skips Turnstile.
 
 ## Deployment
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?demo-description=Advanced%20developer%20portfolio%20platform%20with%20individual%20file%20data%20management%2C%20real-time%20API%20integrations%2C%20and%20enterprise-grade%20security.&demo-image=https%3A%2F%2Fridwaanhall.com%2Fstatic%2Fimg%2Fproject%2Fridwaanhall_com_2025070701.webp&demo-title=FlexForge%20Portfolio&demo-url=https%3A%2F%2Fridwaanhall.com&from=templates&project-name=FlexForge%20Portfolio&repository-name=flexforge-portfolio&repository-url=https%3A%2F%2Fgithub.com%2Fridwaanhall%2Fridwaanhall-com)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?demo-description=Advanced%20developer%20portfolio%20platform%20with%20database-backed%20content%20management%2C%20real-time%20API%20integrations%2C%20and%20enterprise-grade%20security.&demo-image=https%3A%2F%2Fridwaanhall.com%2Fstatic%2Fimg%2Fproject%2Fridwaanhall_com_2025070701.webp&demo-title=FlexForge%20Portfolio&demo-url=https%3A%2F%2Fridwaanhall.com&from=templates&project-name=FlexForge%20Portfolio&repository-name=flexforge-portfolio&repository-url=https%3A%2F%2Fgithub.com%2Fridwaanhall%2Fridwaanhall-com)
 
 ### Manual Setup
 

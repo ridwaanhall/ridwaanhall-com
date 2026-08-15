@@ -4,6 +4,7 @@ Provides information about work availability and hiring opportunities.
 """
 
 from django.http import Http404
+
 from apps.core.base_views import BaseView
 from apps.core.data_service import DataService
 from apps.seo.mixins import OpenHireSEOMixin
@@ -25,10 +26,10 @@ class OpenHireView(OpenHireSEOMixin, BaseView):
 
         open_to_work_data = DataService.get_open_to_work_data()
 
-        # Build used_tools_skills from SkillsData if show_all_tools_skills is True
+        # Build used_tools_skills from the skills catalog if show_all_tools_skills is True
         if isinstance(open_to_work_data, dict) and open_to_work_data.get('show_all_tools_skills'):
-            from apps.about.data.skills_data import SkillsData
-            open_to_work_data['used_tools_skills'] = SkillsData.get_skills_by_category()
+            from apps.about.manager import AboutManager
+            open_to_work_data['used_tools_skills'] = AboutManager.get_skills_by_category()
 
         context = {
             'about': about,

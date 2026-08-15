@@ -1,17 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import datetime
 from enum import Enum
 from typing import Any
 
-from apps.core.types.mixins import DictConvertible
 
 class ProjectStatus(str, Enum):
     """
     ProjectStatus defines the standardized lifecycle states for a project.
-    This Enum ensures consistency across all project data files and prevents
-    the use of arbitrary string values.
+    This Enum ensures consistency across the codebase and prevents the use
+    of arbitrary string values.
 
     Values:
         PLANNING_REQUIREMENTS   → Project is in requirements gathering or analysis stage.
@@ -67,29 +64,3 @@ def normalize_project_status(status: Any) -> str:
     if hasattr(status, 'value'):
         return str(status.value).lower()
     return str(status).lower()
-
-
-@dataclass(frozen=True)
-class Feature(DictConvertible):
-    title: str
-    description: str
-
-
-@dataclass(frozen=True)
-class ProjectData(DictConvertible):
-    id: int
-    title: str
-    headline: str
-    description: list[str] = field(default_factory=list)
-    features: list[Feature] = field(default_factory=list)
-    images: dict[str, str] = field(default_factory=dict)
-    tech_stack: list[dict[str, str]] = field(default_factory=list)
-    github_url: str | None = None
-    demo_url: str | None = None
-    category: str = ""
-    tags: list[str] = field(default_factory=list)
-    is_featured: bool = False
-    featured_priority: int | None = None
-    status: ProjectStatus = ProjectStatus.COMPLETED
-    created_at: datetime | None = None
-    updated_at: datetime | None = None

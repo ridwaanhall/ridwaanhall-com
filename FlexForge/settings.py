@@ -7,15 +7,21 @@ License: Apache License 2.0
 Created at: March 16, 2025
 """
 
-from pathlib import Path
 import sys
-from csp.constants import SELF, NONE, UNSAFE_INLINE
+from pathlib import Path
+from urllib.parse import urlparse
+
+import dj_database_url
+from csp.constants import NONE, SELF, UNSAFE_INLINE
+
 from .config import *  # Import all environment configs
 
 # --------------------------------------------------------------------------
 # BASE SETTINGS
 # --------------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+SUPABASE_STORAGE_HOST = urlparse(SUPABASE_URL).netloc if SUPABASE_URL else None
 
 # --------------------------------------------------------------------------
 # EMAIL SETTINGS
@@ -86,8 +92,7 @@ CONTENT_SECURITY_POLICY = {
             SELF,
             "ridwaanhall.com",
             "data:",
-            BLOG_BASE_IMG_URL,
-            PROJECT_BASE_IMG_URL,
+            SUPABASE_STORAGE_HOST,
             "cdn.jsdelivr.net",
             "wsrv.nl",
             "*.googleapis.com",
@@ -251,7 +256,9 @@ WSGI_APPLICATION = "FlexForge.wsgi.application"
 # DATABASE SETTINGS
 # --------------------------------------------------------------------------
 
-if "test" in sys.argv or DEBUG:
+TESTING = "test" in sys.argv
+
+if TESTING or DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -259,17 +266,69 @@ if "test" in sys.argv or DEBUG:
         }
     }
 else:
-    # Use PostgreSQL in production
+    # Supabase Postgres in production, via the pooled (pgbouncer transaction-mode)
+    # connection -- required under Vercel's serverless model, since direct
+    # per-invocation connections would quickly exhaust Postgres's max_connections.
+    # Opening a connection to Supabase costs ~190ms (TCP + TLS + auth), which
+    # with conn_max_age=0 was paid on *every* request -- more than all of a
+    # typical page's queries combined. Keeping it open lets a warm Vercel
+    # instance reuse it across requests. This is safe (and intended) against
+    # the transaction-mode pooler: a client connection to pgbouncer is cheap,
+    # since it only claims a real server connection for the duration of a
+    # transaction. CONN_HEALTH_CHECKS stops a socket that died between
+    # requests from surfacing as a failed page.
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": POSTGRES_DATABASE,
-            "USER": POSTGRES_USER,
-            "PASSWORD": POSTGRES_PASSWORD,
-            "HOST": POSTGRES_HOST,
-            "PORT": POSTGRES_PORT,
-        }
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=config("DB_CONN_MAX_AGE", default=600, cast=int),
+            conn_health_checks=True,
+            ssl_require=True,
+        )
     }
+    # Supabase/Vercel's connection string includes a non-standard `supa=...`
+    # query param (integration tagging, not a real libpq option) that
+    # dj_database_url dutifully passes through as a connection OPTIONS entry
+    # -- psycopg2 then rejects it with "invalid connection option". Only keep
+    # the option we actually need.
+    DATABASES["default"]["OPTIONS"] = {"sslmode": "require"}
+    # Named/server-side cursors don't work correctly under pgbouncer transaction-mode
+    # pooling -- this is Django's documented fix, and it's a key inside DATABASES,
+    # not a top-level setting.
+    DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
+
+# --------------------------------------------------------------------------
+# CACHING
+# --------------------------------------------------------------------------
+# Built content payloads are held in each process's own memory, so a hit costs
+# no network and no Supabase quota. Cross-instance correctness does not come
+# from the backend -- it comes from the shared version stamps in
+# apps.core.models.ContentVersion, which cache keys embed. See apps/core/cache.py.
+#
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "flexforge-content",
+        "TIMEOUT": 900,
+        "OPTIONS": {"MAX_ENTRIES": 1000},
+    }
+}
+
+# How long a version stamp is trusted before being re-read. This is the only
+# staleness window: it bounds how long an instance that didn't handle an edit
+# can keep serving the previous content.
+CONTENT_CACHE_VERSION_TTL = config("CONTENT_CACHE_VERSION_TTL", default=5, cast=int)
+# Expiry floor for built payloads, covering writes that bypass signals
+# (QuerySet.update(), bulk_create) -- the blog view's view-counter increment
+# is one such write.
+CONTENT_CACHE_TTL = config("CONTENT_CACHE_TTL", default=900, cast=int)
+# Off under `manage.py test`, so the suite keeps observing writes the instant
+# they happen and its assertNumQueries counts stay meaningful. Disabling short-
+# circuits get_or_build before it even reads the version stamps, so no query is
+# added either. apps/core/tests/test_content_cache.py turns it back on to
+# exercise the caching itself.
+CONTENT_CACHE_ENABLED = (
+    False if TESTING else config("CONTENT_CACHE_ENABLED", default=True, cast=bool)
+)
 
 # --------------------------------------------------------------------------
 # AUTHENTICATION AND PASSWORD VALIDATION
@@ -302,7 +361,45 @@ USE_TZ = True
 # --------------------------------------------------------------------------
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# --------------------------------------------------------------------------
+# MEDIA / STORAGES
+#
+# Local dev/tests use Django's plain local filesystem storage (MEDIA_ROOT
+# below, gitignored) so uploading/viewing images works fully offline and
+# never touches the shared production Supabase bucket. Production uses the
+# custom Supabase Storage backend (apps/core/storage.py's SupabaseStorage).
+#
+# Defining STORAGES fully replaces Django's default config (it does not
+# merge with STATICFILES_STORAGE), so "staticfiles" must be re-declared here
+# alongside "default" or WhiteNoise's static serving silently reverts to
+# Django's default.
+#
+# Deliberately NOT using CompressedManifestStaticFilesStorage for
+# staticfiles: this repo has no `collectstatic` step in its deploy pipeline
+# (see CLAUDE.md) and its pre-built assets (favicon/, img/, svg/, font/, the
+# compiled CSS) live directly under STATIC_ROOT rather than any
+# STATICFILES_DIRS source collectstatic could discover -- so a manifest can
+# never be generated for them, and ManifestStaticFilesStorage's strict
+# lookup 500s on every {% static %} tag referencing one (e.g.
+# base_seo.html's favicon links). The project already hand-picks
+# cache-busted filenames itself (see the hardcoded compiled CSS filename
+# gotcha in CLAUDE.md), so manifest-based hashing isn't actually needed --
+# just compression.
+# --------------------------------------------------------------------------
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+if "test" in sys.argv or DEBUG:
+    STORAGES = {
+        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
+    }
+else:
+    STORAGES = {
+        "default": {"BACKEND": "apps.core.storage.SupabaseStorage"},
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
+    }
 
 # --------------------------------------------------------------------------
 # DEFAULT SETTINGS

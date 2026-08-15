@@ -1,8 +1,11 @@
-from django.urls import path, include
 from django.conf import settings
+from django.contrib import admin
+from django.urls import include, path
+
 from . import views
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path('', include('apps.core.urls')),
     path('', include('apps.seo.urls')),
     path('dashboard/', include('apps.dashboard.urls')),
@@ -22,6 +25,12 @@ else:
     # If guestbook is disabled, we might still want basic allauth URLs for admin access
     # But since allauth apps won't be installed, we skip this entirely
     pass
+
+# Serve locally-uploaded media in development (production images live on
+# Supabase Storage and never pass through Django at all).
+if settings.DEBUG:
+    from django.conf.urls.static import static
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Custom error handlers
 handler404 = 'FlexForge.views.custom_404_view'

@@ -61,6 +61,10 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
+# Local media uploads (dev-only FileSystemStorage; production images live on
+# Supabase Storage and are never committed)
+/media/
+
 # Flask stuff:
 instance/
 .webassets-cache
@@ -92,6 +96,7 @@ celerybeat-schedule
 
 # Environments
 .env
+.env.local
 .venv
 env/
 venv/

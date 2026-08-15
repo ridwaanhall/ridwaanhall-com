@@ -3,17 +3,19 @@ Signal handlers for guestbook app.
 Sends email notifications when new guestbook messages are posted.
 """
 
+import logging
+
+from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.conf import settings
-from apps.guestbook.models import ChatMessage
+
 from apps.core.email_handler import (
     _get_owner_emails,
     send_guestbook_notification,
-    send_guestbook_user_confirmation,
     send_guestbook_reply_notification,
+    send_guestbook_user_confirmation,
 )
-import logging
+from apps.guestbook.models import ChatMessage
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +36,11 @@ def send_guestbook_email_notification(sender, instance, created, **kwargs):
         created: Boolean indicating if this is a new record
         **kwargs: Additional keyword arguments
     """
-    if not created:
+    # Skip during fixture loading (manage.py loaddata) -- raw saves replay
+    # historical messages verbatim; without this guard, restoring/importing a
+    # backup would re-send real emails (and real SMTP round-trips) for every
+    # message in the fixture.
+    if not created or kwargs.get('raw'):
         return
 
     try:

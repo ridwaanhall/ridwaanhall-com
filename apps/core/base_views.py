@@ -181,3 +181,23 @@ class DetailView(BaseView):
 
         obj = get_object_or_404(queryset, slug=slug)
         return to_dict(obj)
+
+    def find_by_slug(self, items, slug):
+        """Resolve a slug against a list the manager has already produced.
+
+        The managers hand back every post/project as a dict, and that list is
+        cached in process memory, so the item is already here -- going back to
+        Postgres for a row we're holding would cost a round trip (~27ms) to
+        learn nothing new. Falls back to exactly the same 404 as the indexed
+        lookup when the slug doesn't exist, and when the cache is disabled the
+        manager simply queries as before.
+        """
+        from django.http import Http404
+
+        if not isinstance(slug, str):
+            raise SuspiciousOperation("Invalid slug format")
+
+        for item in items:
+            if item.get("slug") == slug:
+                return item
+        raise Http404("No item matches the given slug.")

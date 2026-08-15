@@ -75,8 +75,9 @@ class BlogDetailView(BlogDetailSEOMixin, DetailView):
     template_name = 'blog/blog_detail.html'
 
     def _get(self, request, title, *args, **kwargs):
-        # Find blog by slug (indexed DB lookup) and atomically bump its view count
-        blog = self.get_item_by_slug(ContentManager.blog_queryset(), title, ContentManager.blog_to_dict)
+        # Resolve against the cached post list rather than re-querying a row we
+        # already hold, then atomically bump the view count.
+        blog = self.find_by_slug(ContentManager.get_blogs(), title)
         BlogPost.objects.filter(pk=blog['id']).update(views=F('views') + 1)
         blog['views'] += 1
 

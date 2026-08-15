@@ -67,8 +67,9 @@ class ProjectsDetailView(ProjectDetailSEOMixin, DetailView):
     template_name = 'projects/projects_detail.html'
 
     def _get(self, request, title, *args, **kwargs):
-        # Find project by slug (indexed DB lookup)
-        project = self.get_item_by_slug(ContentManager.project_queryset(), title, ContentManager.project_to_dict)
+        # Resolve against the cached project list rather than re-querying a row
+        # the manager already holds in memory.
+        project = self.find_by_slug(ContentManager.get_projects(), title)
 
         context = self.get_common_context()
         context['project'] = project

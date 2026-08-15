@@ -263,7 +263,12 @@ class ContentCacheTest(TestCase):
         ):
             post = BlogPost.objects.get(slug="first")
             post.title = "Saved anyway"
-            post.save()  # must not raise
+            # assertLogs both asserts the failure is reported and keeps the
+            # traceback out of the test runner's output, where it reads as a
+            # crash rather than as the behaviour being exercised.
+            with self.assertLogs("apps.core.cache", level="WARNING") as logs:
+                post.save()  # must not raise
+            self.assertIn("Could not bump content versions", logs.output[0])
 
         self.assertEqual(BlogPost.objects.get(slug="first").title, "Saved anyway")
 
@@ -304,12 +309,16 @@ class ContentCacheTest(TestCase):
 
 
 @override_settings(CONTENT_CACHE_ENABLED=True, CONTENT_CACHE_VERSION_TTL=60,
-                   ALLOWED_HOSTS=["testserver"])
+                   ALLOWED_HOSTS=["testserver"], SECURE_SSL_REDIRECT=False)
 class DetailPageLookupTest(TestCase):
     """Detail pages resolve their slug against the cached list.
 
     The full post/project list is already in memory, so going back to Postgres
     for a row we're holding would buy nothing but a round trip.
+
+    SECURE_SSL_REDIRECT is forced off because it is tied to ``not DEBUG``: with
+    DEBUG=True locally these pages render, but under CI (DEBUG=False) every
+    request 301s to https:// before reaching the view.
     """
 
     def setUp(self):

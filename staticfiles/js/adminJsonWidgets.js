@@ -320,9 +320,40 @@
     var TEXTUAL = {};
     var LISTY = {};
 
+    // Flatten a block's raw HTML down to a plain-text preview.
+    //
+    // A single `replace(/<[^>]*>/g, "")` pass is incomplete sanitisation: it
+    // rewrites "<scr<script>ipt>" into "<script>", i.e. it can *create* the tag
+    // it was meant to strip. Nothing here is written as HTML today (el() assigns
+    // textContent), so that was not exploitable -- but the summary is one
+    // refactor away from an innerHTML sink, and the regex is wrong on its own
+    // terms anyway: it leaves entities like &amp; undecoded and treats ">"
+    // inside an attribute value as the end of a tag.
+    //
+    // DOMParser does the job properly. The document it returns is inert and
+    // detached: no scripts run, no <img onerror> fires, no network requests are
+    // made -- it is only ever read for its text.
+    function htmlToText(raw) {
+        var text = String(raw == null ? "" : raw);
+        if (!text) { return ""; }
+        try {
+            var parsed = new DOMParser().parseFromString(text, "text/html");
+            return (parsed.body && parsed.body.textContent) || "";
+        } catch (err) {
+            // Should be unreachable in any browser the admin supports. Strip
+            // repeatedly rather than once, so the nesting trick above can't
+            // survive the fallback either.
+            var previous;
+            do {
+                previous = text;
+                text = text.replace(/<[^>]*>/g, "");
+            } while (text !== previous);
+            return text;
+        }
+    }
+
     function blockSummary(block) {
-        var raw = block.text || "";
-        var flat = raw.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+        var flat = htmlToText(block.text || "").replace(/\s+/g, " ").trim();
         if (block.type === "table") {
             flat = ((block.headers || []).join(" · ")) || "(table)";
         } else if (LISTY[block.type]) {

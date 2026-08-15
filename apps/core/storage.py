@@ -70,7 +70,16 @@ class SupabaseStorage(Storage):
         )
 
     def _open(self, name, mode="rb"):
-        response = requests.get(self._public_url(name), timeout=_TIMEOUT)
+        # Read through the authenticated object endpoint, not the public URL.
+        # The public one is fronted by a CDN that will happily serve the
+        # previous copy of a file that was just replaced (observed as
+        # CF-Cache-Status: HIT immediately after an upsert), which would make
+        # Storage.open() return superseded content. Browsers still fetch
+        # images from the public URL -- this path is only for server-side reads,
+        # where being authoritative matters more than being edge-cached.
+        response = requests.get(
+            self._object_url(name), headers=self._auth_headers, timeout=_TIMEOUT
+        )
         response.raise_for_status()
         return ContentFile(response.content, name=name)
 

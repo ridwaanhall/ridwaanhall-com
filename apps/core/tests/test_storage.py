@@ -118,6 +118,18 @@ class SupabaseStorageTest(TestCase):
 
     # -- read ------------------------------------------------------------
 
+    def test_open_reads_the_authenticated_endpoint_not_the_cdn(self):
+        """Regression: the public URL sits behind a CDN that served the
+        previous copy of a just-replaced file (CF-Cache-Status: HIT), so a
+        server-side read has to go to the authoritative object endpoint."""
+        stub = response(200)
+        stub.content = b"fresh"
+        with mock.patch("apps.core.storage.requests.get", return_value=stub) as get:
+            self.assertEqual(self.storage._open("logo/a.webp").read(), b"fresh")
+        url = get.call_args.args[0]
+        self.assertNotIn("/public/", url)
+        self.assertIn("Authorization", get.call_args.kwargs["headers"])
+
     def test_exists_reflects_the_head_response(self):
         with mock.patch("apps.core.storage.requests.head", return_value=response(200)):
             self.assertTrue(self.storage.exists("logo/a.webp"))

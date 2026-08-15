@@ -9,6 +9,7 @@ from apps.about.models import (
     Experience,
     JourneyStep,
     Profile,
+    ProfileSkillHighlight,
     Skill,
 )
 from apps.core.admin import SingletonModelAdmin
@@ -43,16 +44,32 @@ class DonateLinkInline(admin.TabularInline):
     extra = 1
 
 
+class ProfileSkillHighlightInline(admin.TabularInline):
+    """Ordered picker for the highlighted skills.
+
+    A through model rules out filter_horizontal (admin.E013), which is the
+    right trade: that widget cannot express order anyway. `autocomplete_fields`
+    keeps picking from the 100+ Skill rows searchable rather than a long
+    <select>, and the `order` column is what JSON-LD `knowsAbout` follows.
+    """
+
+    model = ProfileSkillHighlight
+    extra = 1
+    autocomplete_fields = ["skill"]
+    ordering = ("order",)
+    verbose_name = "highlighted skill"
+    verbose_name_plural = "highlighted skills"
+
+
 @admin.register(Profile)
 class ProfileAdmin(SingletonModelAdmin):
     form = ProfileAdminForm
-    inlines = [DonateLinkInline]
-    filter_horizontal = ("skills_highlight",)
+    inlines = [ProfileSkillHighlightInline, DonateLinkInline]
     fieldsets = (
         (None, {"fields": ("name", "first_name", "last_name", "username", "aka", "role", "image")}),
         ("Links", {"fields": ("personal_website", "cv_main", "cv_latest", "cv_copy")}),
         ("Status", {"fields": ("is_open_to_work", "is_hiring", "is_sick")}),
-        ("Bio", {"fields": ("short_description", "short_bio", "short_cta", "long_description", "stories", "skills_highlight")}),
+        ("Bio", {"fields": ("short_description", "short_bio", "short_cta", "long_description", "stories")}),
         ("Location", {"fields": (
             "location_regency", "location_residency", "location_province",
             "location_prov", "location_country", "location_flag",

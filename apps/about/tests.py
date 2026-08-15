@@ -17,14 +17,47 @@ class AboutModelsTest(TestCase):
     def test_profile_skills_highlight_surfaces_as_names(self):
         """AboutManager must keep emitting a list[str] for JSON-LD knowsAbout."""
         from apps.about.manager import AboutManager
-        from apps.about.models import Profile, Skill
+        from apps.about.models import Profile, ProfileSkillHighlight, Skill
 
         profile = Profile.objects.create(name="Test User", role="Dev")
         python = Skill.objects.create(slug="python", name="Python")
         django_skill = Skill.objects.create(slug="django", name="Django")
-        profile.skills_highlight.set([python, django_skill])
+        ProfileSkillHighlight.objects.create(profile=profile, skill=python, order=0)
+        ProfileSkillHighlight.objects.create(profile=profile, skill=django_skill, order=1)
 
         self.assertEqual(AboutManager.get_about_data()["skills"], ["Python", "Django"])
+
+    def test_profile_skills_highlight_follows_editorial_order_not_pk(self):
+        """The whole point of the through model: order is curated, not by id.
+
+        Skills are created in one order and highlighted in the reverse of it,
+        so a result matching pk order would mean the ordering is being ignored.
+        """
+        from apps.about.manager import AboutManager
+        from apps.about.models import Profile, ProfileSkillHighlight, Skill
+
+        profile = Profile.objects.create(name="Test User", role="Dev")
+        first = Skill.objects.create(slug="alpha", name="Alpha")
+        second = Skill.objects.create(slug="beta", name="Beta")
+        third = Skill.objects.create(slug="gamma", name="Gamma")
+        ProfileSkillHighlight.objects.create(profile=profile, skill=third, order=0)
+        ProfileSkillHighlight.objects.create(profile=profile, skill=first, order=1)
+        ProfileSkillHighlight.objects.create(profile=profile, skill=second, order=2)
+
+        self.assertEqual(
+            AboutManager.get_about_data()["skills"], ["Gamma", "Alpha", "Beta"]
+        )
+
+    def test_profile_skill_highlight_cannot_be_duplicated(self):
+        from django.db import IntegrityError
+
+        from apps.about.models import Profile, ProfileSkillHighlight, Skill
+
+        profile = Profile.objects.create(name="Test User", role="Dev")
+        skill = Skill.objects.create(slug="python", name="Python")
+        ProfileSkillHighlight.objects.create(profile=profile, skill=skill, order=0)
+        with self.assertRaises(IntegrityError):
+            ProfileSkillHighlight.objects.create(profile=profile, skill=skill, order=1)
 
     def test_skill_default_icon_svg(self):
         from apps.about.models import Skill

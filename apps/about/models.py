@@ -26,10 +26,14 @@ class Profile(SingletonModel):
 
     stories = models.JSONField(default=list, blank=True)
     # Curated subset of the Skill catalogue, surfaced as JSON-LD `knowsAbout`.
-    # A plain M2M (rather than a `through` model with an order column) so the
-    # admin can use the same filter_horizontal picker as Project.tech_stack.
+    # Uses an explicit `through` model because the order is editorial and must
+    # survive: a plain M2M has no order column and would return rows in
+    # Skill.Meta.ordering (pk) order instead.
     skills_highlight = models.ManyToManyField(
-        "about.Skill", related_name="highlighted_by_profiles", blank=True
+        "about.Skill",
+        through="about.ProfileSkillHighlight",
+        related_name="highlighted_by_profiles",
+        blank=True,
     )
 
     location_regency = models.CharField(max_length=100, blank=True)
@@ -54,6 +58,35 @@ class Profile(SingletonModel):
 
     def __str__(self):
         return self.name or "Profile"
+
+
+class ProfileSkillHighlight(models.Model):
+    """Ordered join row between Profile and Skill.
+
+    Exists purely to give `Profile.skills_highlight` a stable, editorial order
+    (the JSON-LD `knowsAbout` array), which a plain many-to-many cannot express.
+    """
+
+    profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name="skill_highlights"
+    )
+    skill = models.ForeignKey(
+        "about.Skill", on_delete=models.CASCADE, related_name="profile_highlights"
+    )
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order"]
+        verbose_name = "Highlighted Skill"
+        verbose_name_plural = "Highlighted Skills"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["profile", "skill"], name="unique_profile_skill_highlight"
+            )
+        ]
+
+    def __str__(self):
+        return self.skill.name
 
 
 class DonateLink(models.Model):

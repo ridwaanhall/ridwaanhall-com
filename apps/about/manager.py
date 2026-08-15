@@ -42,7 +42,9 @@ class AboutManager:
         """Get about data with flattened structure for backward compatibility."""
         from apps.about.models import Profile
 
-        profile = Profile.objects.prefetch_related("donate_links", "skills_highlight").first()
+        profile = Profile.objects.prefetch_related(
+            "donate_links", "skill_highlights__skill"
+        ).first()
         if not profile:
             return None
 
@@ -72,10 +74,12 @@ class AboutManager:
                 "x": profile.social_x, "website": profile.social_website,
             },
             "donate": [{"platform": d.platform, "url": d.url} for d in profile.donate_links.all()],
-            # Kept as a plain list[str] so apps/seo/schema.py's `knowsAbout`
-            # is unchanged. Iterating .all() reuses the prefetch above; a
-            # values_list() here would issue a second query.
-            "skills": [s.name for s in profile.skills_highlight.all()],
+            # Read through the ordered join rows, not the bare M2M, so the
+            # editorial order is preserved. Kept as a plain list[str] so
+            # apps/seo/schema.py's `knowsAbout` is unchanged in shape.
+            # Iterating .all() reuses the prefetch above; values_list()
+            # here would issue a second query.
+            "skills": [link.skill.name for link in profile.skill_highlights.all()],
         }
 
     @classmethod

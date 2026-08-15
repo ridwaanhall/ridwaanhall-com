@@ -83,10 +83,30 @@ class SupabaseStorage(Storage):
 
     def delete(self, name):
         response = requests.delete(self._object_url(name), headers=self._auth_headers, timeout=15)
-        if response.status_code not in (200, 404):
-            raise SuspiciousFileOperation(
-                f"Failed to delete '{name}' from Supabase Storage: {response.status_code} {response.text}"
-            )
+        if response.status_code == 200 or self._is_missing(response):
+            return
+        raise SuspiciousFileOperation(
+            f"Failed to delete '{name}' from Supabase Storage: {response.status_code} {response.text}"
+        )
+
+    @staticmethod
+    def _is_missing(response):
+        """Did Supabase say "no such object"?
+
+        Django's Storage.delete() contract is that a missing file is not an
+        error, but Supabase reports one as HTTP *400* carrying a JSON body of
+        ``{"statusCode": "404", "code": "NoSuchKey", ...}`` rather than a plain
+        404 -- so the status code alone is not enough to recognise it.
+        """
+        if response.status_code == 404:
+            return True
+        if response.status_code != 400:
+            return False
+        try:
+            body = response.json()
+        except ValueError:
+            return False
+        return str(body.get("statusCode")) == "404" or body.get("code") == "NoSuchKey"
 
     def size(self, name):
         response = requests.head(self._public_url(name), timeout=15)

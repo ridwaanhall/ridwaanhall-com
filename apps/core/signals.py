@@ -1,16 +1,25 @@
 """
 Signal handlers for the core app.
 
-Ensures Row Level Security is enabled on every public-schema table after
-each `manage.py migrate` run.
+Two concerns live here:
+
+* Row Level Security is re-asserted on every public-schema table after each
+  ``manage.py migrate``.
+* Stored image files are cleaned out of Supabase Storage (and local ``media/``)
+  once no row references them any more.
 """
 
 import logging
 
-from django.db.models.signals import post_migrate
+from django.db.models.signals import post_delete, post_migrate, post_save, pre_save
 from django.dispatch import receiver
 
+from apps.core.file_cleanup import delete_unreferenced_files, file_fields_for
+
 logger = logging.getLogger(__name__)
+
+# Stashed on the instance between pre_save and post_save.
+_OLD_FILES_ATTR = "_core_old_file_names"
 
 
 @receiver(post_migrate)
@@ -43,3 +52,69 @@ def enable_row_level_security(sender, **kwargs):
 
     if tables:
         logger.info("Ensured Row Level Security is enabled on %d public table(s).", len(tables))
+
+
+@receiver(pre_save)
+def remember_replaced_files(sender, instance, **kwargs):
+    """Record the file names currently in the database, before they're overwritten.
+
+    Reading them here (rather than diffing in post_save) is the only chance --
+    once the UPDATE lands the old names are gone.
+    """
+    if kwargs.get("raw") or instance.pk is None:
+        return
+    fields = file_fields_for(sender)
+    if not fields:
+        return
+    try:
+        previous = sender._default_manager.filter(pk=instance.pk).values(
+            *[f.name for f in fields]
+        ).first()
+    except Exception:  # noqa: BLE001 - never block a save over cleanup bookkeeping
+        return
+    if previous:
+        setattr(instance, _OLD_FILES_ATTR, previous)
+
+
+@receiver(post_save)
+def cleanup_replaced_files(sender, instance, **kwargs):
+    """Drop the previous file of any field whose image was swapped out."""
+    previous = getattr(instance, _OLD_FILES_ATTR, None)
+    if kwargs.get("raw") or not previous:
+        return
+    delattr(instance, _OLD_FILES_ATTR)
+
+    stale = []
+    for field in file_fields_for(sender):
+        old = previous.get(field.name)
+        new = getattr(instance, field.name)
+        if old and old != (new.name if new else ""):
+            stale.append(old)
+    if stale:
+        # By now the row holds the new name, so the reference check sees the
+        # real post-save state and won't count this row against itself.
+        delete_unreferenced_files(_storage_for(sender), stale)
+
+
+@receiver(post_delete)
+def cleanup_deleted_files(sender, instance, **kwargs):
+    """Drop the files of a deleted row, if nothing else points at them.
+
+    Also covers cascades: deleting a BlogPost fires post_delete for each of its
+    BlogImage rows, so their files are considered too.
+    """
+    fields = file_fields_for(sender)
+    if not fields:
+        return
+    names = []
+    for field in fields:
+        value = getattr(instance, field.name, None)
+        if value and value.name:
+            names.append(value.name)
+    if names:
+        delete_unreferenced_files(_storage_for(sender), names)
+
+
+def _storage_for(model):
+    """The storage backend these fields use (they all share one per model)."""
+    return file_fields_for(model)[0].storage

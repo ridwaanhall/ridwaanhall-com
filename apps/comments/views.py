@@ -32,14 +32,24 @@ def resolve_target(content_type_label, object_id):
     label = (content_type_label or "").lower()
     if label not in COMMENTABLE:
         raise Http404("Not commentable")
+
+    try:
+        object_id = int(object_id)
+    except (TypeError, ValueError) as exc:
+        raise Http404("Unknown object") from exc
+    if object_id <= 0:
+        raise Http404("Unknown object")
+
     try:
         app_label, model = label.split(".")
         content_type = ContentType.objects.get_by_natural_key(app_label, model)
     except (ValueError, ContentType.DoesNotExist) as exc:
         raise Http404("Unknown content type") from exc
+
     model_class = content_type.model_class()
     if model_class is None:
         raise Http404("Unknown content type")
+
     return content_type, get_object_or_404(model_class, pk=object_id)
 
 

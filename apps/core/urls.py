@@ -1,10 +1,16 @@
 from django.urls import path
+
+from apps.legal.views import LegalDocumentView, PrivacyPolicyView
+
 from . import views
 
 urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
     path('contact/', views.ContactView.as_view(), name='contact'),
-    path('privacy-policy/', views.PrivacyPolicyView.as_view(), name='privacy'),
+    # Served by the legal app now; the path is unchanged because the sitemap,
+    # SEO config, page footer and search modal all reference it.
+    path('privacy-policy/', PrivacyPolicyView.as_view(), name='privacy'),
+    path('terms/', LegalDocumentView.as_view(slug='terms-and-conditions'), name='terms'),
     
     # Professional CV redirect endpoints
     path('cv/', views.CVRedirectView.as_view(), name='cv_redirect'), # Redirects to the main CV in pdf format

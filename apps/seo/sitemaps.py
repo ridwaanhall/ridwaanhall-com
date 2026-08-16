@@ -29,7 +29,7 @@ class StaticPagesSitemap(Sitemap):
 
     def items(self):
         """Generate list of static pages including paginated ones."""
-        static_pages = ['home', 'dashboard', 'about', 'contact', 'privacy', 'guestbook']
+        static_pages = ['home', 'dashboard', 'about', 'contact', 'privacy', 'terms', 'guestbook']
 
         # Add blog pagination pages
         all_blogs = DataService.get_blogs()
@@ -65,7 +65,7 @@ class StaticPagesSitemap(Sitemap):
             return 'daily'
         elif obj == 'home':
             return 'weekly'
-        elif obj in ['about', 'contact', 'privacy', 'guestbook'] or obj.startswith('projects-page-'):
+        elif obj in ['about', 'contact', 'privacy', 'terms', 'guestbook'] or obj.startswith('projects-page-'):
             return 'monthly'
         elif obj.startswith('blog-page-'):
             return 'monthly'
@@ -73,7 +73,7 @@ class StaticPagesSitemap(Sitemap):
 
     def priority(self, obj):
         """Set priority based on page importance."""
-        if obj in ['home', 'dashboard', 'about', 'contact', 'privacy', 'guestbook']:
+        if obj in ['home', 'dashboard', 'about', 'contact', 'privacy', 'terms', 'guestbook']:
             return 1.0
         elif obj.startswith(('blog-page-', 'projects-page-')):
             page = int(obj.split('-')[-1])

@@ -13,7 +13,7 @@ from django.conf import settings
 
 from apps.core.base_views import BaseView
 from apps.core.data_service import DataService
-from apps.seo.mixins import HomepageSEOMixin, ContactSEOMixin, PrivacyPolicySEOMixin
+from apps.seo.mixins import HomepageSEOMixin, ContactSEOMixin
 from apps.core.forms import ContactForm
 from apps.core.email_handler import send_contact_email
 from apps.core.validators import TurnstileValidator
@@ -138,24 +138,6 @@ class ContactView(ContactSEOMixin, BaseView):
                 "success": False,
                 "message": "An internal error has occurred!"
             }, status=500)
-
-
-class PrivacyPolicyView(PrivacyPolicySEOMixin, BaseView):
-    """
-    Privacy policy page view.
-    """
-    template_name = 'core/privacy_policy.html'
-
-    def _get(self, request, *args, **kwargs):
-        about = self.get_about_data()
-        context = {
-            'about': about,
-            'privacy_policy': DataService.get_privacy_policy(),
-        }
-        
-        # Add SEO data from mixin
-        context.update(self.get_context_data(**context))
-        return self.render_to_response(context)
 
 
 class _CVLinkRedirectView(BaseView):

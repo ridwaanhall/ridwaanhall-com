@@ -99,6 +99,7 @@ CONTENT_SECURITY_POLICY = {
             "*.gstatic.com",
             "lh3.googleusercontent.com",
             "avatars.githubusercontent.com",
+            "www.gravatar.com",
         ],
         "object-src": [
             NONE
@@ -176,6 +177,7 @@ INSTALLED_APPS = [
     "apps.projects",
     "apps.blog",
     "apps.openhire",
+    "apps.legal",
     "apps.seo",
 ]
 
@@ -187,6 +189,10 @@ if GUESTBOOK_PAGE:
         "allauth.socialaccount.providers.google",
         "allauth.socialaccount.providers.github",
         "apps.guestbook",
+        # Comments sign in through the same Google/GitHub providers and reuse
+        # the guestbook's author/co-author permissions, so they only make sense
+        # when that stack is installed.
+        "apps.comments",
     ])
 
 MIDDLEWARE = [

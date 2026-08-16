@@ -3,9 +3,12 @@ Projects views for listing and displaying project details.
 Handles project listing with pagination and individual project details.
 """
 
+from django.conf import settings
+
 from apps.core.base_views import DetailView, PaginatedView
 from apps.core.content_manager import ContentManager
 from apps.core.data_service import DataService
+from apps.projects.models import Project
 from apps.seo.mixins import ProjectDetailSEOMixin, ProjectsListSEOMixin
 
 
@@ -73,7 +76,11 @@ class ProjectsDetailView(ProjectDetailSEOMixin, DetailView):
 
         context = self.get_common_context()
         context['project'] = project
-        
+
+        if getattr(settings, 'GUESTBOOK_PAGE', True):
+            from apps.comments.context import comment_context
+            context.update(comment_context(request, Project, project['id'], 'projects.project'))
+
         # Add SEO data from mixin
         context.update(self.get_context_data(project=project))
         return self.render_to_response(context)

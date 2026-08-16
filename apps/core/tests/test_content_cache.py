@@ -17,14 +17,18 @@ from datetime import UTC, datetime
 from unittest import mock
 
 from django.core.cache import cache
+from django.db import connection
 from django.test import TestCase, override_settings
+from django.test.utils import CaptureQueriesContext
 
 from apps.about.manager import AboutManager
 from apps.about.models import Award, Profile, ProfileSkillHighlight, Skill
 from apps.blog.models import BlogPost
 from apps.core import cache as content_cache
 from apps.core.content_manager import ContentManager
-from apps.core.models import ContentVersion, PrivacyPolicy
+from apps.core.models import ContentVersion
+from apps.legal.manager import LegalManager
+from apps.legal.models import LegalDocument
 from apps.openhire.manager import OpenHireManager
 from apps.openhire.models import OpenToWorkProfile
 from apps.projects.models import Project
@@ -57,7 +61,7 @@ class ContentCacheTest(TestCase):
         ContentManager.get_blogs()
         ContentManager.get_projects()
         AboutManager.get_about_data()
-        AboutManager.get_privacy_policy()
+        LegalManager.get_documents()
         AboutManager.get_awards()
 
     # -- the cache works -------------------------------------------------
@@ -113,7 +117,7 @@ class ContentCacheTest(TestCase):
         self.make_blog()
         self.make_project()
         Profile.objects.create(name="Me")
-        PrivacyPolicy.load()
+        LegalDocument.objects.get(slug="privacy-policy")  # seeded by migration
         self.warm()
 
         self.make_blog(title="Second", slug="second")
@@ -124,7 +128,7 @@ class ContentCacheTest(TestCase):
         with self.assertNumQueries(1):
             ContentManager.get_projects()
             AboutManager.get_about_data()
-            AboutManager.get_privacy_policy()
+            LegalManager.get_documents()
             AboutManager.get_awards()
 
     def test_deleting_a_row_refreshes_its_namespace(self):
@@ -175,14 +179,14 @@ class ContentCacheTest(TestCase):
 
     def test_singleton_edits_refresh_their_own_namespace_only(self):
         Profile.objects.create(name="Me")
-        policy = PrivacyPolicy.load()
+        policy = LegalDocument.objects.get(slug="privacy-policy")  # seeded by migration
         self.make_project()
         self.warm()
 
-        policy.overview = "Changed"
+        policy.summary = "Changed"
         policy.save()
 
-        self.assertEqual(AboutManager.get_privacy_policy()["overview"], "Changed")
+        self.assertEqual(LegalManager.get_document("privacy-policy")["summary"], "Changed")
         with self.assertNumQueries(0):
             ContentManager.get_projects()
 
@@ -347,17 +351,34 @@ class DetailPageLookupTest(TestCase):
         self.assertEqual(self.client.get("/blog/no-such-post/").status_code, 404)
         self.assertEqual(self.client.get("/projects/no-such-project/").status_code, 404)
 
-    def test_a_warm_project_detail_makes_no_queries_for_the_project(self):
+    # These assert on the SQL rather than a query count. The pages also load
+    # comments, which are deliberately uncached, so a bare count would move
+    # every time the comment section changes and would stop saying anything
+    # about what it is here to protect: that the post/project itself is served
+    # from cache and never re-fetched.
+
+    def test_a_warm_project_detail_does_not_requery_the_project(self):
         self.client.get("/projects/cached-project/")
-        with self.assertNumQueries(0):
+
+        with CaptureQueriesContext(connection) as queries:
             self.client.get("/projects/cached-project/")
 
-    def test_a_warm_blog_detail_only_writes_the_view_counter(self):
-        """The counter bump is a write and has to stay; everything the page
-        reads should already be in memory."""
+        reads = [q["sql"] for q in queries.captured_queries
+                 if 'FROM "projects_project"' in q["sql"]]
+        self.assertEqual(reads, [], "the project should come from cache, not the DB")
+
+    def test_a_warm_blog_detail_only_touches_the_post_to_bump_views(self):
+        """The counter bump is a write and has to stay; the post's own content
+        should already be in memory."""
         self.client.get("/blog/cached-post/")
-        with self.assertNumQueries(1):
+
+        with CaptureQueriesContext(connection) as queries:
             self.client.get("/blog/cached-post/")
+
+        touching_post = [q["sql"] for q in queries.captured_queries
+                         if "blog_blogpost" in q["sql"]]
+        self.assertEqual(len(touching_post), 1, touching_post)
+        self.assertTrue(touching_post[0].lstrip().upper().startswith("UPDATE"))
 
     def test_the_view_counter_still_increments(self):
         self.client.get("/blog/cached-post/")

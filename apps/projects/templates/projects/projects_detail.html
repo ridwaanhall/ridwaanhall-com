@@ -62,6 +62,10 @@
             {% endif %}
 
             {% include "projects/sections/detail_content.html" %}
+
+            {% if comment_form %}
+                {% include "comments/_section.html" %}
+            {% endif %}
         </div>
     </main>
 </div>
@@ -73,4 +77,5 @@
     <script src="{% static 'js/backScroll.js' %}"></script>
     <script src="{% static 'js/projectImageSlider.js' %}"></script>
     <script src="{% static 'js/imageLightbox.js' %}"></script>
+    <script src="{% static 'js/commentSection.js' %}"></script>
 {% endblock scripts %}

@@ -277,12 +277,16 @@
         {% if user.is_authenticated %}
         <div class="mt-3 text-sm text-zinc-400">
             <span>Signed in as {{ current_user_profile.full_name|default:user.username }}{% if current_user_profile.email %} ({{ current_user_profile.email }}){% endif %} • </span>
-            <form method="post" action="{% url 'account_logout' %}" class="inline">
-                {% csrf_token %}
-                <button type="submit" class="text-zinc-400 hover:text-zinc-300 cursor-pointer underline transition-colors">
-                    Sign Out
-                </button>
-            </form>
+            {# Confirms first, through the shared dialog, rather than signing out on a stray click. #}
+            <button type="button"
+                    class="text-zinc-400 hover:text-zinc-300 cursor-pointer underline transition-colors"
+                    data-confirm-action="{% url 'account_logout' %}"
+                    data-confirm-title="Sign out?"
+                    data-confirm-message="You'll need to sign in again to post or pin messages."
+                    data-confirm-label="Sign out"
+                    data-confirm-next="{{ request.get_full_path }}">
+                Sign Out
+            </button>
         </div>
         {% endif %}
         {% else %}

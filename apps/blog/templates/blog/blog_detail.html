@@ -35,6 +35,10 @@
                     {% include "blog/components/detail_tag.html" %}
                 </div>
             </footer>
+
+            {% if comment_form %}
+                {% include "comments/_section.html" %}
+            {% endif %}
         </div>
     </main>
 </article>
@@ -46,4 +50,5 @@
     <script src="{% static 'js/copyToClipboard.js' %}"></script>
     <script src="{% static 'js/backScroll.js' %}"></script>
     <script src="{% static 'js/blogImageSlider.js' %}"></script>
+    <script src="{% static 'js/commentSection.js' %}"></script>
 {% endblock %}

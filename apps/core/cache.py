@@ -67,7 +67,8 @@ MODEL_NAMESPACES = {
     "openhire.Position": "hiring",
     "openhire.OpenToWorkProfile": "opentowork",
     "openhire.PortfolioHighlight": "opentowork",
-    "core.PrivacyPolicy": "privacy",
+    "legal.LegalDocument": "legal",
+    "legal.LegalSection": "legal",
 }
 
 NAMESPACES = tuple(sorted(set(MODEL_NAMESPACES.values())))
@@ -86,7 +87,7 @@ ENTRY_DEPENDENCIES = {
     "skills_by_category": ("skill",),
     "awards": ("award",),
     "applications": ("application",),
-    "privacy_policy": ("privacy",),
+    "legal_documents": ("legal",),
     "blogs": ("blog",),
     # Project dicts embed whole tech_stack skill records, not just ids.
     "projects": ("project", "skill"),

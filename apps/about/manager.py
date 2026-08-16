@@ -280,24 +280,3 @@ class AboutManager:
 
         applications.sort(key=get_latest_timestamp, reverse=True)
         return applications
-
-    @classmethod
-    def get_privacy_policy(cls):
-        """Get privacy policy data."""
-        return content_cache.get_or_build("privacy_policy", cls._build_privacy_policy)
-
-    @classmethod
-    def _build_privacy_policy(cls):
-        from apps.core.models import PrivacyPolicy
-
-        p = PrivacyPolicy.objects.first()
-        if not p:
-            return {}
-        return {
-            "last_updated": p.last_updated, "overview": p.overview, "policy_updates": p.policy_updates,
-            "data_collected": p.data_collected, "data_usage": p.data_usage,
-            "third_party_services": p.third_party_services, "data_protection": p.data_protection,
-            "user_rights": p.user_rights, "guestbook_limitations": p.guestbook_limitations,
-            "email_communications": p.email_communications, "legal_basis": p.legal_basis,
-            "cookies": p.cookies, "copyright_credits": p.copyright_credits,
-        }

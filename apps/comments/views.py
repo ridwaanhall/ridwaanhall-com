@@ -69,14 +69,19 @@ def is_safe_next(request, target):
 def safe_redirect(request, fallback="/"):
     """Send the user back to the page they posted from.
 
-    Written as a positive guard around the redirect rather than reassigning a
-    rejected target, so the validated value and the constant fallback are two
-    separate returns. That is also the shape static analysis recognises as
-    sanitising -- the previous ``if not ...: target = fallback`` form read as an
-    unchecked redirect to CodeQL even though the check was there.
+    Validate the redirect target immediately before the redirect sink and only
+    redirect to a same-site relative path; otherwise use a constant fallback.
     """
     target = request.POST.get("next")
-    if is_safe_next(request, target):
+    if (
+        target
+        and target.startswith("/")
+        and url_has_allowed_host_and_scheme(
+            target,
+            allowed_hosts={request.get_host()},
+            require_https=request.is_secure(),
+        )
+    ):
         return HttpResponseRedirect(target)
     return HttpResponseRedirect(fallback)
 

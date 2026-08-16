@@ -87,7 +87,10 @@ class LegalPageTest(TestCase):
         response = self.client.get("/terms/")
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Terms &amp; Conditions")
+        # The heading accents its last word in indigo, as the other pages do,
+        # so the title is split across two elements.
+        self.assertContains(response, "Terms &amp;")
+        self.assertContains(response, '<span class="text-indigo-400">Conditions</span>')
 
     def test_a_document_is_reachable_by_its_generic_url(self):
         LegalDocument.objects.create(title="Cookie Policy", slug="cookie-policy")
@@ -127,9 +130,10 @@ class LegalPageTest(TestCase):
 
         self.assertEqual(html.count("A uniquely worded introduction."), 1)
 
-    def test_definition_lists_are_one_panel_not_a_box_per_row(self):
-        """These lists run to eleven entries; a bordered card each turned the
-        page into a wall of boxes."""
+    def test_entries_are_light_rows_inside_one_section_card(self):
+        """These lists run to eleven entries. One bordered card per section with
+        subtle rows inside is the pattern the rest of the site uses; a border
+        per entry turned the page into a wall of boxes."""
         document = LegalDocument.objects.get(slug="privacy-policy")
         document.sections.all().delete()
         LegalSection.objects.create(
@@ -139,10 +143,31 @@ class LegalPageTest(TestCase):
 
         html = self.client.get("/privacy-policy/").content.decode()
 
-        # One bordered panel wrapping eight divided rows.
-        self.assertEqual(html.count("divide-y divide-zinc-800"), 1)
+        # Two bordered cards: the one section, plus the "Related documents"
+        # card at the foot of the page. The eight entries inside carry no
+        # border of their own.
+        self.assertEqual(html.count("border border-zinc-700 rounded-lg p-4"), 2)
+        self.assertEqual(html.count("bg-zinc-800/30 rounded"), 8)
         for i in range(8):
             self.assertIn(f"description {i}", html)
+
+    def test_the_page_uses_the_site_wide_layout_shell(self):
+        """The old page sat in flex-1 md:ml-62 > max-w-7xl like every other
+        page; a narrower wrapper made it look misplaced against the sidebar."""
+        html = self.client.get("/privacy-policy/").content.decode()
+
+        self.assertIn("flex-1 md:ml-62", html)
+        self.assertIn("max-w-7xl", html)
+
+    def test_the_page_has_a_scroll_to_top_button(self):
+        html = self.client.get("/privacy-policy/").content.decode()
+
+        self.assertIn('id="scrollToTopBtn"', html)
+        self.assertIn("js/backScroll.js", html)
+
+    def test_the_terms_page_has_one_too(self):
+        html = self.client.get("/terms/").content.decode()
+        self.assertIn('id="scrollToTopBtn"', html)
 
     def test_documents_cross_link_to_each_other(self):
         html = self.client.get("/privacy-policy/").content.decode()

@@ -1,105 +1,126 @@
 {% extends 'base_seo.html' %}
 {% load static %}
 
+{% comment %}
+Follows the layout the old privacy page used, which is the site-wide shell:
+flex-1 md:ml-62 > main with the standard padding > max-w-7xl. Sections are
+bordered cards with an indigo-accented heading, and entries are subtle
+bg-zinc-800/30 rows rather than bordered boxes.
+{% endcomment %}
+
 {% block content %}
-<div class="px-4 py-6 sm:px-6 sm:py-8">
-    <main class="mx-auto max-w-3xl">
-        <header class="mb-8">
-            <h1 class="text-2xl sm:text-3xl font-semibold text-zinc-100">{{ document.title }}</h1>
-            {% if document.summary %}
-                <p class="mt-2 text-zinc-400 text-sm sm:text-base leading-relaxed">{{ document.summary }}</p>
-            {% endif %}
-            <p class="mt-3 flex items-center gap-1.5 text-xs text-zinc-500 font-mono">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                Last updated {{ document.last_updated|date:"j F Y" }}
-            </p>
-        </header>
+<div class="flex-1 md:ml-62">
+    <main class="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-6 sm:mb-8">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-4">
+                    <div>
+                        <h1 class="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
+                            {{ document.title_lead }} <span class="text-indigo-400">{{ document.title_accent }}</span>
+                        </h1>
+                        {% if document.summary %}
+                            <p class="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">{{ document.summary }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
 
-        {% if document.sections|length > 1 %}
-            <nav aria-label="On this page"
-                 class="mb-8 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 transition-all duration-300 hover:border-zinc-700">
-                <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">On this page</p>
-                <ul class="grid gap-1 sm:grid-cols-2">
-                    {% for section in document.sections %}
-                        <li>
-                            <a href="#section-{{ forloop.counter }}"
-                               class="text-sm text-zinc-400 hover:text-indigo-300 transition-colors duration-300">
+            <div class="space-y-4">
+                {% for section in document.sections %}
+                    <div class="border border-zinc-700 rounded-lg p-4">
+                        <div class="flex flex-wrap items-start justify-between w-full gap-2 mb-3">
+                            <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 break-words flex-1 flex items-center">
+                                <svg class="w-5 h-5 mr-3 flex-shrink-0 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
                                 {{ section.heading }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </nav>
-        {% endif %}
+                            </h2>
 
-        <div class="space-y-8">
-            {% for section in document.sections %}
-                <section id="section-{{ forloop.counter }}" class="scroll-mt-24">
-                    <h2 class="text-lg sm:text-xl font-semibold text-zinc-100 mb-3">{{ section.heading }}</h2>
-
-                    {% if section.body %}
-                        <p class="text-zinc-300 leading-relaxed whitespace-pre-line">{{ section.body|safe }}</p>
-                    {% endif %}
-
-                    {% if section.items %}
-                        {# One panel with divided rows, not a card per entry: these lists
-                           run to eleven items and a box each turns the page into a wall
-                           of borders. #}
-                        <dl class="mt-3 overflow-hidden rounded-xl border border-zinc-800 divide-y divide-zinc-800">
-                            {% for term, description in section.items.items %}
-                                <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 hover:bg-zinc-900/40 transition-colors duration-300">
-                                    <dt class="text-sm font-medium text-zinc-200">{{ term }}</dt>
-                                    <dd class="mt-1 sm:mt-0 sm:col-span-2 text-sm text-zinc-400 leading-relaxed">{{ description|safe }}</dd>
-                                </div>
-                            {% endfor %}
-                        </dl>
-                    {% endif %}
-
-                    {% for child in section.children %}
-                        <div class="mt-5">
-                            <h3 class="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-zinc-500">
-                                <span class="h-px w-4 bg-zinc-700"></span>
-                                {{ child.heading }}
-                            </h3>
-                            {% if child.body %}
-                                <p class="mb-2 text-sm text-zinc-300 leading-relaxed whitespace-pre-line">{{ child.body|safe }}</p>
-                            {% endif %}
-                            {% if child.items %}
-                                <dl class="overflow-hidden rounded-xl border border-zinc-800 divide-y divide-zinc-800">
-                                    {% for term, description in child.items.items %}
-                                        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 hover:bg-zinc-900/40 transition-colors duration-300">
-                                            <dt class="text-sm font-medium text-zinc-200">{{ term }}</dt>
-                                            <dd class="mt-1 sm:mt-0 sm:col-span-2 text-sm text-zinc-400 leading-relaxed">{{ description|safe }}</dd>
-                                        </div>
-                                    {% endfor %}
-                                </dl>
+                            {% if forloop.first %}
+                                <span class="inline-flex flex-shrink-0 items-center text-xs font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 py-1 rounded-full border border-zinc-700 shadow-sm whitespace-nowrap">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span>{{ document.last_updated|date:"F j, Y" }}</span>
+                                </span>
                             {% endif %}
                         </div>
-                    {% endfor %}
-                </section>
-            {% empty %}
-                <p class="text-zinc-500">This document has no content yet.</p>
-            {% endfor %}
-        </div>
 
-        {% if documents|length > 1 %}
-            <footer class="mt-12 pt-6 border-t border-zinc-800">
-                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-zinc-500">Related documents</p>
-                <div class="flex flex-wrap gap-2">
-                    {% for other in documents %}
-                        {% if other.slug != document.slug %}
-                            <a href="{{ other.url }}"
-                               class="inline-flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-200 hover:border-indigo-500/70 hover:bg-zinc-800 hover:shadow-md hover:shadow-indigo-500/10 transition-all duration-300">
-                                {{ other.title }}
-                            </a>
+                        {% if section.body %}
+                            <p class="leading-relaxed whitespace-pre-line">{{ section.body|safe }}</p>
                         {% endif %}
-                    {% endfor %}
-                </div>
-            </footer>
-        {% endif %}
+
+                        {% if section.items %}
+                            <div class="space-y-2 {% if section.body %}mt-3{% endif %}">
+                                {% for term, description in section.items.items %}
+                                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-4 p-2 bg-zinc-800/30 rounded">
+                                        <span class="font-medium">{{ term }}</span>
+                                        <span class="text-sm text-zinc-400 sm:text-right sm:max-w-2xl">{{ description|safe }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% for child in section.children %}
+                            <div class="mt-4 space-y-2">
+                                <h3 class="text-lg font-medium text-indigo-400">{{ child.heading }}</h3>
+                                {% if child.body %}
+                                    <p class="leading-relaxed whitespace-pre-line">{{ child.body|safe }}</p>
+                                {% endif %}
+                                {% for term, description in child.items.items %}
+                                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-4 p-2 bg-zinc-800/30 rounded">
+                                        <span class="font-medium">{{ term }}</span>
+                                        <span class="text-sm text-zinc-400 sm:text-right sm:max-w-2xl">{{ description|safe }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% empty %}
+                    <div class="border border-zinc-700 rounded-lg p-4">
+                        <p class="text-zinc-400">This document has no content yet.</p>
+                    </div>
+                {% endfor %}
+
+                {% if documents|length > 1 %}
+                    <div class="border border-zinc-700 rounded-lg p-4">
+                        <h2 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 mb-3 flex items-center">
+                            <svg class="w-5 h-5 mr-3 flex-shrink-0 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                            </svg>
+                            Related documents
+                        </h2>
+                        <div class="flex flex-wrap gap-2">
+                            {% for other in documents %}
+                                {% if other.slug != document.slug %}
+                                    <a href="{{ other.url }}"
+                                       class="inline-flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-zinc-800/40 px-3 py-2 text-sm text-zinc-200 hover:border-indigo-400 hover:bg-zinc-800 hover:shadow-md hover:shadow-indigo-400/20 transition-all duration-300">
+                                        {{ other.title }}
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     </main>
+</div>
+
+<div class="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
+    <!-- Scroll to top button -->
+    <button id="scrollToTopBtn" class="relative p-3 cursor-pointer rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 translate-y-10 group" aria-label="Scroll to top">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 48 48">
+            <path
+                d="M22.77 2.46 3.59 17.42A2 2 0 0 0 4.82 21H17.5v4a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4h12.68a2 2 0 0 0 1.23-3.58L25.23 2.46a2 2 0 0 0-2.46 0ZM17.5 31a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-4ZM17.5 41a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v3a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2v-3Z"
+            ></path>
+        </svg>
+        <span
+            class="absolute right-full top-1/2 -translate-y-1/2 mr-3 px-3 py-2 bg-zinc-900/95 backdrop-blur-sm text-white text-sm font-medium rounded-lg shadow-xl border border-zinc-700/50 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 ease-out pointer-events-none whitespace-nowrap before:content-[''] before:absolute before:left-full before:top-1/2 before:-translate-y-1/2 before:border-[6px] before:border-transparent before:border-l-zinc-900/95"
+        >
+            Scroll to top
+        </span>
+    </button>
 </div>
 {% endblock content %}
 

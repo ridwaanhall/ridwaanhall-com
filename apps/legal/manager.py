@@ -56,10 +56,24 @@ class LegalManager:
             ],
         }
 
+    @staticmethod
+    def _split_title(title):
+        """Split "Privacy Policy" into ("Privacy", "Policy").
+
+        The page headings on this site accent the last word in indigo; doing the
+        split here keeps that out of the template, where Django has no way to
+        partition a string.
+        """
+        lead, _, accent = title.rpartition(" ")
+        return (lead, accent) if lead else ("", title)
+
     @classmethod
     def _document_to_dict(cls, document):
+        title_lead, title_accent = cls._split_title(document.title)
         return {
             "title": document.title,
+            "title_lead": title_lead,
+            "title_accent": title_accent,
             "slug": document.slug,
             "document_type": document.document_type,
             "summary": document.summary,

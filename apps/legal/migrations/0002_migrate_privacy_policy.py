@@ -69,8 +69,8 @@ def forwards(apps, schema_editor):
             body=body or "", items=items or {}, order=order,
         )
 
-    if policy.overview:
-        add("Overview", body=policy.overview)
+    # `overview` becomes the document summary shown under the title; adding it
+    # again as an "Overview" section would print the same paragraph twice.
 
     for field, heading in NESTED_SECTIONS:
         groups = getattr(policy, field, None) or {}
@@ -141,10 +141,10 @@ def backwards(apps, schema_editor):
     policy, _ = PrivacyPolicy.objects.get_or_create(pk=1)
     heading_to_field = {heading: field for field, heading in FLAT_SECTIONS + NESTED_SECTIONS}
 
+    policy.overview = document.summary
+
     for section in document.sections.filter(parent__isnull=True):
-        if section.heading == "Overview":
-            policy.overview = section.body
-        elif section.heading == "Policy Updates":
+        if section.heading == "Policy Updates":
             policy.policy_updates = section.body
         elif section.heading == "Copyright & Credits":
             restored = dict(section.items or {})

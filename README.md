@@ -94,7 +94,7 @@ npm install tailwindcss @tailwindcss/cli
 cp .env.example .env
 
 # Build Tailwind CSS (for development with watch mode)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-ejukpejo.css --watch
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-urdzalkq.css --watch
 
 # In a separate terminal, run migrations and the dev server
 uv run python manage.py migrate
@@ -125,10 +125,10 @@ For styling changes, ensure Tailwind CSS is running in watch mode:
 
 ```bash
 # Development (with watch and minification)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-ejukpejo.css --watch --minify
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-urdzalkq.css --watch --minify
 
 # Production build
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-ejukpejo.css --minify
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-urdzalkq.css --minify
 ```
 
 Make sure your `static/css/input.css` contains:
@@ -137,7 +137,7 @@ Make sure your `static/css/input.css` contains:
 @import "tailwindcss";
 ```
 
-> **Note:** the compiled filename (`global-ejukpejo.css`) is hand-picked, not auto-hashed. If you rename it, update the `-o` path above **and** the `{% static %}` reference in both `templates/base_seo.html` and `templates/error.html`.
+> **Note:** the compiled filename (`global-urdzalkq.css`) is hand-picked, not auto-hashed. If you rename it, update the `-o` path above **and** the `{% static %}` reference in both `templates/base_seo.html` and `templates/error.html`.
 
 ## Environment Configuration
 

@@ -113,6 +113,37 @@ class LegalPageTest(TestCase):
         self.assertContains(response, "Some term")
         self.assertContains(response, "Its description")
 
+    def test_the_summary_is_not_repeated_as_a_section(self):
+        """The old migration copied `overview` into both the document summary
+        and an "Overview" section, so the same paragraph rendered twice."""
+        document = LegalDocument.objects.get(slug="privacy-policy")
+        document.summary = "A uniquely worded introduction."
+        document.save()
+        LegalSection.objects.create(
+            document=document, heading="Real Section", body="Different text.", order=50,
+        )
+
+        html = self.client.get("/privacy-policy/").content.decode()
+
+        self.assertEqual(html.count("A uniquely worded introduction."), 1)
+
+    def test_definition_lists_are_one_panel_not_a_box_per_row(self):
+        """These lists run to eleven entries; a bordered card each turned the
+        page into a wall of boxes."""
+        document = LegalDocument.objects.get(slug="privacy-policy")
+        document.sections.all().delete()
+        LegalSection.objects.create(
+            document=document, heading="Terms",
+            items={f"term {i}": f"description {i}" for i in range(8)}, order=1,
+        )
+
+        html = self.client.get("/privacy-policy/").content.decode()
+
+        # One bordered panel wrapping eight divided rows.
+        self.assertEqual(html.count("divide-y divide-zinc-800"), 1)
+        for i in range(8):
+            self.assertIn(f"description {i}", html)
+
     def test_documents_cross_link_to_each_other(self):
         html = self.client.get("/privacy-policy/").content.decode()
         self.assertIn("/terms/", html)

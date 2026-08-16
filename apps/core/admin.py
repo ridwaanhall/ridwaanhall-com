@@ -1,48 +1,12 @@
-from django import forms
 from django.contrib import admin
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from apps.core.admin_widgets import (
-    CopyrightCreditsField,
-    GroupedKeyValueField,
-    KeyValueField,
-)
-from apps.core.models import PrivacyPolicy
-
-# Every section renders as label/description rows in
-# core/sections/privacy_policy_content.html, so each is edited as pairs rather
-# than raw JSON. Three shapes are involved, which is precisely why these are
-# declared per-field instead of via formfield_overrides.
-_FLAT_SECTIONS = (
-    "data_usage",
-    "third_party_services",
-    "data_protection",
-    "user_rights",
-    "guestbook_limitations",
-    "email_communications",
-    "legal_basis",
-)
-
-
-PrivacyPolicyAdminForm = type(
-    "PrivacyPolicyAdminForm",
-    (forms.ModelForm,),
-    {
-        **{name: KeyValueField(required=False) for name in _FLAT_SECTIONS},
-        # Two-level: named groups holding label/description pairs.
-        "data_collected": GroupedKeyValueField(
-            required=False, group_label="Source", key_label="Data point",
-        ),
-        "cookies": GroupedKeyValueField(
-            required=False, group_label="Cookie type", key_label="Cookie",
-        ),
-        # Fixed four-key hybrid; the template hardcodes all four, so the editor
-        # cannot add or remove top-level keys.
-        "copyright_credits": CopyrightCreditsField(required=False),
-        "Meta": type("Meta", (), {"model": PrivacyPolicy, "fields": "__all__"}),
-    },
-)
+# The privacy policy used to live here as a singleton with ten hard-coded JSON
+# columns. It is now a row in apps.legal.LegalDocument, so its admin (and the
+# structured widgets it needed) moved to apps/legal/admin.py. What remains here
+# is the shared singleton admin base, still used by Profile, HiringProfile and
+# OpenToWorkProfile.
 
 
 class SingletonModelAdmin(admin.ModelAdmin):
@@ -63,14 +27,3 @@ class SingletonModelAdmin(admin.ModelAdmin):
             args=[obj.pk],
         )
         return redirect(url)
-
-
-@admin.register(PrivacyPolicy)
-class PrivacyPolicyAdmin(SingletonModelAdmin):
-    form = PrivacyPolicyAdminForm
-    fields = (
-        "last_updated", "overview", "policy_updates",
-        "data_collected", "data_usage", "third_party_services", "data_protection",
-        "user_rights", "guestbook_limitations", "email_communications", "legal_basis",
-        "cookies", "copyright_credits",
-    )

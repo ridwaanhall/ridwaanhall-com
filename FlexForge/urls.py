@@ -13,6 +13,7 @@ urlpatterns = [
     path('blog/', include('apps.blog.urls')),
     path('about/', include('apps.about.urls')),
     path('openhire/', include('apps.openhire.urls')),
+    path('', include('apps.legal.urls')),
     
     # Add favicon path before the catch-all
     path('favicon.ico', views.favicon_view, name='favicon'),

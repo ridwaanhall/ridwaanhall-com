@@ -12,7 +12,7 @@ Django 6.0 (Python 3.14+), managed with **uv** (not pip/poetry — always `uv sy
 - Dev server: `uv run python manage.py runserver`
 - Tests: `uv run python manage.py test` (e.g. `uv run python manage.py test apps.blog` for one app) — this is what CI runs and is the canonical command. The README also mentions `uv run pytest`; pytest-django is configured and works, but CI does not use it.
 - Django check: `uv run python manage.py check`
-- Tailwind build: `npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-wdnnxkbe.css --minify` (add `--watch` for dev). There is no `collectstatic` step anywhere in this project's pipeline (not in CI, not in the Vercel build) — the built `staticfiles/` output (images, fonts, icons, compiled CSS, JS) is committed directly and served as-is. This is why `STORAGES["staticfiles"]` uses WhiteNoise's plain `CompressedStaticFilesStorage`, **not** `CompressedManifestStaticFilesStorage`: none of these pre-built assets live under any `STATICFILES_DIRS` source `collectstatic` could discover (they're placed directly under `STATIC_ROOT`), so a manifest can never be generated for them — `ManifestStaticFilesStorage`'s strict lookup would 500 on every `{% static %}` tag referencing one (this was a real, live bug on the `main` branch — every page extending `templates/base_seo.html` 500'd via its favicon links). If you add a genuinely new static asset with a `{% static %}` reference, just drop the file under `staticfiles/` directly with its final name (matching the hand-picked cache-busted filename convention below) — don't reach for `collectstatic`.
+- Tailwind build: `npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-ejukpejo.css --minify` (add `--watch` for dev). There is no `collectstatic` step anywhere in this project's pipeline (not in CI, not in the Vercel build) — the built `staticfiles/` output (images, fonts, icons, compiled CSS, JS) is committed directly and served as-is. This is why `STORAGES["staticfiles"]` uses WhiteNoise's plain `CompressedStaticFilesStorage`, **not** `CompressedManifestStaticFilesStorage`: none of these pre-built assets live under any `STATICFILES_DIRS` source `collectstatic` could discover (they're placed directly under `STATIC_ROOT`), so a manifest can never be generated for them — `ManifestStaticFilesStorage`'s strict lookup would 500 on every `{% static %}` tag referencing one (this was a real, live bug on the `main` branch — every page extending `templates/base_seo.html` 500'd via its favicon links). If you add a genuinely new static asset with a `{% static %}` reference, just drop the file under `staticfiles/` directly with its final name (matching the hand-picked cache-busted filename convention below) — don't reach for `collectstatic`.
 
 ## Architecture: Django ORM (Supabase-backed)
 
@@ -99,7 +99,7 @@ Files under `apps/core/templates/core/email/` are rendered by `EmailTemplateLoad
 
 ## Gotcha: hardcoded compiled CSS filename
 
-The compiled Tailwind output filename (currently `global-wdnnxkbe.css`) is a hand-picked string, not an auto-generated hash. It's hardcoded in three places that must stay in sync:
+The compiled Tailwind output filename (currently `global-ejukpejo.css`) is a hand-picked string, not an auto-generated hash. It's hardcoded in three places that must stay in sync:
 
 1. The Tailwind CLI `-o` path (above)
 2. `templates/base_seo.html`

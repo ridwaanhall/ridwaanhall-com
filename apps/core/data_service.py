@@ -164,11 +164,13 @@ class DataService:
 
     @staticmethod
     def get_privacy_policy() -> dict[str, Any]:
-        """Get privacy policy data."""
+        """The privacy policy, now a legal document rather than a singleton."""
         try:
-            return AboutManager.get_privacy_policy()
+            from apps.legal.manager import LegalManager
+
+            return LegalManager.get_document("privacy-policy") or {}
         except Exception as e:
-            logger.error(f"Error fetching privacy policy data: {e}")
+            logger.error(f"Error fetching privacy policy: {e}")
             return {}
 
     @staticmethod

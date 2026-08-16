@@ -209,6 +209,16 @@
                 {% else %}
                     <span class="text-zinc-300">Privacy</span>
                 {% endif %}
+                <span class="text-zinc-600">•</span>
+                {% if request.resolver_match.url_name != 'terms' %}
+                    <a href="{% url 'terms' %}" class="hover:text-zinc-300 transition-colors">Terms</a>
+                {% else %}
+                    <span class="text-zinc-300">Terms</span>
+                {% endif %}
+                {% if user.is_superuser %}
+                    <span class="text-zinc-600">•</span>
+                    <a href="{% url 'admin:index' %}" class="text-indigo-400 hover:text-indigo-300 transition-colors">Admin</a>
+                {% endif %}
             </div>
             <div class="text-zinc-500">
                 © 2025 - {% now "Y" %} {{ about.name }}
@@ -441,6 +451,16 @@
                 <a href="{% url 'privacy' %}" class="hover:text-zinc-300 transition-colors">Privacy</a>
             {% else %}
                 <span class="text-zinc-300">Privacy</span>
+            {% endif %}
+            <span class="text-zinc-600">•</span>
+            {% if request.resolver_match.url_name != 'terms' %}
+                <a href="{% url 'terms' %}" class="hover:text-zinc-300 transition-colors">Terms</a>
+            {% else %}
+                <span class="text-zinc-300">Terms</span>
+            {% endif %}
+            {% if user.is_superuser %}
+                <span class="text-zinc-600">•</span>
+                <a href="{% url 'admin:index' %}" class="text-indigo-400 hover:text-indigo-300 transition-colors">Admin</a>
             {% endif %}
         </div>
         <div class="text-zinc-500">

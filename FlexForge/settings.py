@@ -99,6 +99,7 @@ CONTENT_SECURITY_POLICY = {
             "*.gstatic.com",
             "lh3.googleusercontent.com",
             "avatars.githubusercontent.com",
+            "www.gravatar.com",
         ],
         "object-src": [
             NONE
@@ -176,6 +177,7 @@ INSTALLED_APPS = [
     "apps.projects",
     "apps.blog",
     "apps.openhire",
+    "apps.legal",
     "apps.seo",
 ]
 

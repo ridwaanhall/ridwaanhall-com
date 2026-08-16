@@ -26,7 +26,9 @@ from apps.about.models import Award, Profile, ProfileSkillHighlight, Skill
 from apps.blog.models import BlogPost
 from apps.core import cache as content_cache
 from apps.core.content_manager import ContentManager
-from apps.core.models import ContentVersion, PrivacyPolicy
+from apps.core.models import ContentVersion
+from apps.legal.manager import LegalManager
+from apps.legal.models import LegalDocument
 from apps.openhire.manager import OpenHireManager
 from apps.openhire.models import OpenToWorkProfile
 from apps.projects.models import Project
@@ -59,7 +61,7 @@ class ContentCacheTest(TestCase):
         ContentManager.get_blogs()
         ContentManager.get_projects()
         AboutManager.get_about_data()
-        AboutManager.get_privacy_policy()
+        LegalManager.get_documents()
         AboutManager.get_awards()
 
     # -- the cache works -------------------------------------------------
@@ -115,7 +117,7 @@ class ContentCacheTest(TestCase):
         self.make_blog()
         self.make_project()
         Profile.objects.create(name="Me")
-        PrivacyPolicy.load()
+        LegalDocument.objects.get(slug="privacy-policy")  # seeded by migration
         self.warm()
 
         self.make_blog(title="Second", slug="second")
@@ -126,7 +128,7 @@ class ContentCacheTest(TestCase):
         with self.assertNumQueries(1):
             ContentManager.get_projects()
             AboutManager.get_about_data()
-            AboutManager.get_privacy_policy()
+            LegalManager.get_documents()
             AboutManager.get_awards()
 
     def test_deleting_a_row_refreshes_its_namespace(self):
@@ -177,14 +179,14 @@ class ContentCacheTest(TestCase):
 
     def test_singleton_edits_refresh_their_own_namespace_only(self):
         Profile.objects.create(name="Me")
-        policy = PrivacyPolicy.load()
+        policy = LegalDocument.objects.get(slug="privacy-policy")  # seeded by migration
         self.make_project()
         self.warm()
 
-        policy.overview = "Changed"
+        policy.summary = "Changed"
         policy.save()
 
-        self.assertEqual(AboutManager.get_privacy_policy()["overview"], "Changed")
+        self.assertEqual(LegalManager.get_document("privacy-policy")["summary"], "Changed")
         with self.assertNumQueries(0):
             ContentManager.get_projects()
 

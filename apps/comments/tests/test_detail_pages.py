@@ -110,6 +110,84 @@ class CommentSectionRenderingTest(TestCase):
 
         self.assertNotContains(response, "blog-only")
 
+    # -- delete confirmation ----------------------------------------------
+
+    def test_deleting_goes_through_a_confirmation_dialog(self):
+        """Delete must not fire straight from the thread -- the button opens a
+        centred dialog and only that dialog holds the posting form."""
+        Comment.objects.create(target=self.post, user=self.user, body="mine")
+        self.client.force_login(self.user)
+
+        html = self.client.get("/blog/post/").content.decode()
+
+        self.assertIn('id="comment-delete-modal"', html)
+        self.assertIn('role="dialog"', html)
+        self.assertIn('aria-modal="true"', html)
+        self.assertIn("Delete this comment?", html)
+        # Centred over the viewport rather than inline in the thread.
+        self.assertIn("fixed inset-0", html)
+        self.assertIn("items-center justify-center", html)
+
+    def test_the_dialog_is_hidden_until_asked_for(self):
+        Comment.objects.create(target=self.post, user=self.user, body="mine")
+        self.client.force_login(self.user)
+
+        html = self.client.get("/blog/post/").content.decode()
+
+        self.assertIn('id="comment-delete-modal" class="hidden', html)
+
+    def test_delete_buttons_only_carry_a_url_not_their_own_form(self):
+        """One dialog for the page: the buttons hand it a URL, so there is no
+        per-comment form duplicated down the thread."""
+        Comment.objects.create(target=self.post, user=self.user, body="mine")
+        self.client.force_login(self.user)
+
+        html = self.client.get("/blog/post/").content.decode()
+
+        self.assertIn("comment-delete-btn", html)
+        self.assertIn("data-delete-url=", html)
+        self.assertEqual(html.count('id="comment-delete-form"'), 1)
+
+    def test_no_dialog_is_rendered_when_nothing_is_deletable(self):
+        Comment.objects.create(target=self.post, user=self.user, body="theirs")
+        # Signed out: nothing is deletable, so the dialog is pointless markup.
+        html = self.client.get("/blog/post/").content.decode()
+
+        self.assertNotIn('id="comment-delete-modal"', html)
+
+    # -- reply tree --------------------------------------------------------
+
+    def test_replies_are_drawn_as_a_tree(self):
+        """Replies hang off a connector rail rather than sitting in a flat list."""
+        parent = Comment.objects.create(target=self.post, user=self.user, body="top")
+        Comment.objects.create(
+            target=self.post, user=self.user, body="reply one", reply_to=parent
+        )
+
+        html = self.client.get("/blog/post/").content.decode()
+
+        self.assertIn("before:left-[1.125rem]", html, "reply rail missing")
+        self.assertIn("after:top-4", html, "elbow into the avatar missing")
+
+    def test_the_last_reply_ends_the_rail(self):
+        """A rail running past the final reply looks broken, so the last one
+        draws a stub instead of a full-height line."""
+        parent = Comment.objects.create(target=self.post, user=self.user, body="top")
+        Comment.objects.create(target=self.post, user=self.user, body="a", reply_to=parent)
+        Comment.objects.create(target=self.post, user=self.user, body="b", reply_to=parent)
+
+        html = self.client.get("/blog/post/").content.decode()
+
+        self.assertIn("before:bottom-[-0.75rem]", html, "continuing rail missing")
+        self.assertIn("before:h-4", html, "terminating stub missing")
+
+    def test_a_thread_without_replies_draws_no_rail(self):
+        Comment.objects.create(target=self.post, user=self.user, body="lonely")
+
+        html = self.client.get("/blog/post/").content.decode()
+
+        self.assertNotIn("before:left-[1.125rem]", html)
+
     def test_the_count_reflects_comments_and_replies(self):
         parent = Comment.objects.create(target=self.post, user=self.user, body="a")
         Comment.objects.create(target=self.post, user=self.user, body="b", reply_to=parent)

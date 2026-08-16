@@ -119,12 +119,60 @@ class PostCommentViewTest(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_redirect_cannot_be_pointed_off_site(self):
+        """Every off-site shape, including the ones that still look relative.
+
+        The backslash cases are built from chr(92) rather than written as
+        literals: an escaped backslash is easy to halve accidentally, which
+        would leave the test asserting something weaker than it appears to.
+        """
+        self.client.force_login(self.user)
+        b = chr(92)
+        hostile = [
+            "https://evil.example/",
+            "http://evil.example/",
+            "//evil.example/",
+            "///evil.example",
+            "https:/evil.example/",
+            "javascript:alert(1)",
+            "/" + b + "evil.example/",      # browsers read this as //evil.example/
+            b + b + "evil.example/",
+            b + "evil.example/",
+            "https://" + self.client.defaults.get("SERVER_NAME", "testserver") + "/blog/",
+        ]
+
+        for target in hostile:
+            with self.subTest(target=target):
+                response = self.client.post(self.url, self.payload(next=target))
+
+                self.assertEqual(response.status_code, 302)
+                self.assertEqual(response["Location"], "/", f"{target!r} was followed")
+
+    def test_a_same_site_path_is_still_honoured(self):
         self.client.force_login(self.user)
 
-        response = self.client.post(self.url, self.payload(next="https://evil.example/"))
+        response = self.client.post(self.url, self.payload(next="/blog/post/#comments"))
 
-        self.assertEqual(response.status_code, 302)
-        self.assertNotIn("evil.example", response["Location"])
+        self.assertEqual(response["Location"], "/blog/post/#comments")
+
+    def test_a_missing_next_falls_back_to_the_home_page(self):
+        self.client.force_login(self.user)
+        data = self.payload()
+        del data["next"]
+
+        response = self.client.post(self.url, data)
+
+        self.assertEqual(response["Location"], "/")
+
+    def test_the_referer_header_is_not_trusted_as_a_destination(self):
+        """It used to be the fallback when `next` was absent. Every form sets
+        `next`, and a header is a weaker signal than a field we emitted."""
+        self.client.force_login(self.user)
+        data = self.payload()
+        del data["next"]
+
+        response = self.client.post(self.url, data, HTTP_REFERER="https://evil.example/")
+
+        self.assertEqual(response["Location"], "/")
 
     def test_success_is_reported_through_django_messages(self):
         self.client.force_login(self.user)

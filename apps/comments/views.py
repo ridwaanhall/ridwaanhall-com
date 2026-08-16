@@ -43,14 +43,42 @@ def resolve_target(content_type_label, object_id):
     return content_type, get_object_or_404(model_class, pk=object_id)
 
 
-def safe_redirect(request, fallback="/"):
-    """Send the user back where they came from, without becoming an open redirect."""
-    target = request.POST.get("next") or request.META.get("HTTP_REFERER") or fallback
-    if not url_has_allowed_host_and_scheme(
+def is_safe_next(request, target):
+    """Is ``target`` a same-site relative path we are willing to redirect to?
+
+    Two checks, doing two different jobs:
+
+    * The leading slash is *policy*, not security. Every form on the site sets
+      ``next`` from ``request.get_full_path()``, which is already relative, so
+      an absolute URL is never legitimate here even when it names our own host.
+      Rejecting them keeps the accepted set small and obvious.
+    * ``url_has_allowed_host_and_scheme`` does the security work, and is what
+      Django's own login flow uses for ``next``. Verified directly against the
+      escapes that matter -- ``//evil.com``, ``/\\evil.com``, ``\\\\evil.com``,
+      ``https://evil.com``, ``https:/evil.com``, ``javascript:``,
+      ``///evil.com`` -- it rejects all of them, including the backslash forms
+      browsers normalise into protocol-relative URLs.
+    """
+    if not target or not target.startswith("/"):
+        return False
+    return url_has_allowed_host_and_scheme(
         target, allowed_hosts={request.get_host()}, require_https=request.is_secure()
-    ):
-        target = fallback
-    return HttpResponseRedirect(target)
+    )
+
+
+def safe_redirect(request, fallback="/"):
+    """Send the user back to the page they posted from.
+
+    Written as a positive guard around the redirect rather than reassigning a
+    rejected target, so the validated value and the constant fallback are two
+    separate returns. That is also the shape static analysis recognises as
+    sanitising -- the previous ``if not ...: target = fallback`` form read as an
+    unchecked redirect to CodeQL even though the check was there.
+    """
+    target = request.POST.get("next")
+    if is_safe_next(request, target):
+        return HttpResponseRedirect(target)
+    return HttpResponseRedirect(fallback)
 
 
 class PostCommentView(UserProfileMixin, View):

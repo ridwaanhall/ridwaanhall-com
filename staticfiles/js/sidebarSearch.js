@@ -1,9 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
     const mobileSearchTrigger = document.getElementById("mobile-search-trigger");
     const desktopSearchTrigger = document.getElementById("desktop-search-trigger");
-    const searchModal = document.getElementById("search-modal");
-    const searchModalBackdrop = document.getElementById("search-modal-backdrop");
-    const searchModalContent = document.getElementById("search-modal-content");
+    // The modal's three elements are looked up by ModalDialog.create() below,
+    // so they are no longer held here.
     const searchInput = document.getElementById("search-input");
     const searchResults = document.getElementById("search-results");
     const noResultsDiv = document.getElementById("no-results");
@@ -17,46 +16,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const socialItems = document.querySelectorAll(".social-item");
     const externalItems = document.querySelectorAll(".external-item");
     const allSearchableItems = document.querySelectorAll(".search-item, .social-item, .external-item"); // Show search modal with smooth animation
+    // The show/hide animation, backdrop dismissal and Escape handling live in
+    // modalDialog.js, shared with the comment delete confirmation. Only the
+    // search-specific bits (focus the input, reset the query on close) stay here.
+    const searchDialog = window.ModalDialog.create({
+        root: "search-modal",
+        backdrop: "search-modal-backdrop",
+        panel: "search-modal-content",
+        onShown: () => searchInput?.focus(),
+        onHidden: () => {
+            if (searchInput) { searchInput.value = ""; }
+            filterResults("");
+        },
+    });
+
     function showSearchModal() {
-        // Disable body scroll
-        document.body.style.overflow = "hidden";
-
-        searchModal.classList.remove("hidden");
-        searchModal.setAttribute("aria-hidden", "false");
-
-        // Trigger animations
-        setTimeout(() => {
-            searchModal.classList.remove("backdrop-blur-none");
-            searchModal.classList.add("backdrop-blur-md");
-            searchModalContent.classList.remove("scale-95", "opacity-0");
-            searchModalContent.classList.add("scale-100", "opacity-100");
-        }, 10);
-
-        // Focus input after animation
-        setTimeout(() => {
-            searchInput.focus();
-        }, 150);
+        searchDialog?.show();
     }
 
-    // Hide search modal with smooth animation
     function hideSearchModal() {
-        // Start hide animation
-        searchModal.classList.remove("backdrop-blur-md");
-        searchModal.classList.add("backdrop-blur-none");
-        searchModalContent.classList.remove("scale-100", "opacity-100");
-        searchModalContent.classList.add("scale-95", "opacity-0");
+        searchDialog?.hide();
+    }
 
-        // Hide modal after animation completes
-        setTimeout(() => {
-            searchModal.classList.add("hidden");
-            searchModal.setAttribute("aria-hidden", "true");
-            searchInput.value = "";
-            filterResults("");
-
-            // Re-enable body scroll
-            document.body.style.overflow = "";
-        }, 300);
-    }    // Filter search results
+    // Filter search results
     function filterResults(query) {
         const searchQuery = query.toLowerCase().trim();
         let hasResults = false;
@@ -141,17 +123,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Event listeners
     mobileSearchTrigger?.addEventListener("click", showSearchModal);
-    desktopSearchTrigger?.addEventListener("click", showSearchModal); // Close modal when clicking outside the modal content
-    searchModal?.addEventListener("click", function (e) {
-        if (e.target === searchModal || e.target === searchModalBackdrop) {
-            hideSearchModal();
-        }
-    });
-
-    // Prevent modal from closing when clicking inside the modal content
-    searchModalContent?.addEventListener("click", function (e) {
-        e.stopPropagation();
-    });
+    desktopSearchTrigger?.addEventListener("click", showSearchModal);
+    // Backdrop dismissal and the click guard on the panel are registered by
+    // ModalDialog.create() above, so they are deliberately not repeated here.
 
     // Search input
     searchInput?.addEventListener("input", function (e) {
@@ -208,19 +182,13 @@ document.addEventListener("DOMContentLoaded", function () {
         // Ctrl/Cmd + K to toggle search modal
         if ((e.ctrlKey || e.metaKey) && e.key === "k") {
             e.preventDefault();
-            
-            // Check if modal is currently visible
-            if (searchModal.classList.contains("hidden")) {
-                showSearchModal();
-            } else {
+            if (searchDialog?.isOpen()) {
                 hideSearchModal();
+            } else {
+                showSearchModal();
             }
         }
-
-        // Escape to close search
-        if (e.key === "Escape" && !searchModal.classList.contains("hidden")) {
-            hideSearchModal();
-        }
+        // Escape is handled by ModalDialog, for every dialog on the page.
     }); // Arrow key navigation
     searchInput?.addEventListener("keydown", function (e) {
         const visibleItems = Array.from(allSearchableItems).filter((item) => item.style.display !== "none");

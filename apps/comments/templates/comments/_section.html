@@ -102,11 +102,11 @@ and any tag inside them is parsed for real.
     buttons only hand it a URL, so there is no per-comment form duplicated
     through the thread.
     {% endcomment %}
-    <div id="comment-delete-modal" class="hidden fixed inset-0 z-50 items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" data-comment-modal-close></div>
+    <div id="comment-delete-modal" class="fixed inset-0 z-50 backdrop-blur-none hidden transition-all duration-300 ease-out" aria-hidden="true">
+        <div id="comment-delete-backdrop" class="flex min-h-full items-center justify-center p-4">
 
-        <div role="dialog" aria-modal="true" aria-labelledby="comment-delete-title"
-             class="relative w-full max-w-md rounded-xl border border-zinc-800 bg-zinc-950 p-5 shadow-xl shadow-black/60">
+        <div id="comment-delete-content" role="dialog" aria-modal="true" aria-labelledby="comment-delete-title"
+             class="relative mx-auto max-w-md w-full overflow-hidden rounded-xl border-2 border-zinc-800 bg-black ring-1 ring-black/5 shadow-2xl shadow-black/60 transform scale-95 opacity-0 transition-all duration-300 ease-out p-5">
             <div class="flex items-start gap-3">
                 <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-red-900/60 bg-red-950/40">
                     <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -137,83 +137,6 @@ and any tag inside them is parsed for real.
                 </form>
             </div>
         </div>
+        </div>
     </div>
 {% endif %}
-
-<script>
-    // Progressive enhancement. Without JS the reply control is simply absent and
-    // the comment form still posts normally.
-    (function () {
-        var replyField = document.getElementById("comment-reply-to");
-        var indicator = document.getElementById("comment-reply-indicator");
-        var replyUser = document.getElementById("comment-reply-user");
-        var cancelReply = document.getElementById("comment-cancel-reply");
-        var form = document.getElementById("comment-form");
-
-        if (replyField) {
-            document.querySelectorAll(".comment-reply-btn").forEach(function (btn) {
-                btn.addEventListener("click", function () {
-                    replyField.value = btn.dataset.commentId;
-                    // textContent, never innerHTML: the display name is user-controlled.
-                    replyUser.textContent = btn.dataset.commentUser || "";
-                    indicator.classList.remove("hidden");
-                    indicator.classList.add("flex");
-                    var box = form.querySelector("textarea");
-                    if (box) { box.focus(); }
-                    form.scrollIntoView({ behavior: "smooth", block: "center" });
-                });
-            });
-
-            if (cancelReply) {
-                cancelReply.addEventListener("click", function () {
-                    replyField.value = "";
-                    indicator.classList.add("hidden");
-                    indicator.classList.remove("flex");
-                });
-            }
-        }
-
-        // ---- delete confirmation -----------------------------------------
-        var modal = document.getElementById("comment-delete-modal");
-        var deleteForm = document.getElementById("comment-delete-form");
-        var excerpt = document.getElementById("comment-delete-excerpt");
-        var cancelBtn = document.getElementById("comment-delete-cancel");
-        var lastFocused = null;
-
-        function closeModal() {
-            if (!modal) { return; }
-            modal.classList.add("hidden");
-            modal.classList.remove("flex");
-            if (lastFocused) { lastFocused.focus(); lastFocused = null; }
-        }
-
-        if (modal && deleteForm) {
-            document.querySelectorAll(".comment-delete-btn").forEach(function (btn) {
-                btn.addEventListener("click", function () {
-                    lastFocused = btn;
-                    deleteForm.setAttribute("action", btn.dataset.deleteUrl);
-                    var text = btn.dataset.excerpt || "";
-                    excerpt.textContent = text.length > 240 ? text.slice(0, 240) + "…" : text;
-                    modal.classList.remove("hidden");
-                    modal.classList.add("flex");
-                    // Focus Cancel, not Delete: a stray Enter should not destroy anything.
-                    if (cancelBtn) { cancelBtn.focus(); }
-                });
-            });
-
-            modal.querySelectorAll("[data-comment-modal-close]").forEach(function (el) {
-                el.addEventListener("click", closeModal);
-            });
-
-            document.addEventListener("keydown", function (event) {
-                if (event.key === "Escape" && !modal.classList.contains("hidden")) {
-                    closeModal();
-                }
-            });
-        }
-
-        document.querySelectorAll("#comment-messages .close-message-btn").forEach(function (btn) {
-            btn.addEventListener("click", function () { btn.closest(".message-alert").remove(); });
-        });
-    })();
-</script>

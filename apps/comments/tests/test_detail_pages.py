@@ -134,7 +134,41 @@ class CommentSectionRenderingTest(TestCase):
 
         html = self.client.get("/blog/post/").content.decode()
 
-        self.assertIn('id="comment-delete-modal" class="hidden', html)
+        modal = html.split('id="comment-delete-modal"')[1].split(">")[0]
+        self.assertIn("hidden", modal)
+        self.assertIn('aria-hidden="true"', modal)
+
+    def test_the_dialog_reuses_the_shared_modal_contract(self):
+        """It is driven by modalDialog.js, the same helper the sidebar search
+        modal uses, so it has to carry the class hooks that helper toggles --
+        otherwise it would open with no animation and never blur the backdrop."""
+        Comment.objects.create(target=self.post, user=self.user, body="mine")
+        self.client.force_login(self.user)
+
+        html = self.client.get("/blog/post/").content.decode()
+
+        self.assertIn("backdrop-blur-none", html)
+        self.assertIn('id="comment-delete-backdrop"', html)
+        self.assertIn('id="comment-delete-content"', html)
+        # The panel starts collapsed; the helper swaps these for scale-100/opacity-100.
+        self.assertIn("scale-95", html)
+        self.assertIn("opacity-0", html)
+
+    def test_the_shared_modal_helper_loads_before_anything_using_it(self):
+        html = self.client.get("/blog/post/").content.decode()
+
+        self.assertIn("js/modalDialog.js", html)
+        self.assertIn("js/commentSection.js", html)
+        self.assertLess(
+            html.index("js/modalDialog.js"),
+            html.index("js/commentSection.js"),
+            "modalDialog.js must load first or ModalDialog is undefined",
+        )
+
+    def test_the_comment_script_is_not_inlined(self):
+        """It lives in staticfiles/js like the rest of the site's behaviour."""
+        html = self.client.get("/blog/post/").content.decode()
+        self.assertNotIn("comment-reply-btn\").forEach", html)
 
     def test_delete_buttons_only_carry_a_url_not_their_own_form(self):
         """One dialog for the page: the buttons hand it a URL, so there is no

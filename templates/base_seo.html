@@ -39,7 +39,7 @@
         {% render_schema seo.schemas %}
         {% endif %}
 
-        <link rel="stylesheet" href="{% static 'css/global-mxjrvdft.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/global-wxlwvsch.css' %}" />
 
         <link rel="stylesheet" href="{% url 'dynamic_css' 'onest' %}" />
 
@@ -98,6 +98,8 @@
         <script defer src="{% static 'js/sidebar.js' %}"></script>
         <script defer src="{% static 'js/pageTransition.js' %}"></script>
         <script defer src="{% static 'js/createRipple.js' %}"></script>
+        {# Shared modal behaviour -- must load before anything that opens a dialog. #}
+        <script defer src="{% static 'js/modalDialog.js' %}"></script>
         <script defer src="{% static 'js/sidebarSearch.js' %}"></script>
 
         {% block scripts %}

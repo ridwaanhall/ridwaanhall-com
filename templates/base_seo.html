@@ -39,7 +39,7 @@
         {% render_schema seo.schemas %}
         {% endif %}
 
-        <link rel="stylesheet" href="{% static 'css/global-wxlwvsch.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/global-wdnnxkbe.css' %}" />
 
         <link rel="stylesheet" href="{% url 'dynamic_css' 'onest' %}" />
 
@@ -93,6 +93,14 @@
             </div>
         </div>
 
+        {% comment %}
+        Outside #page-content on purpose: that element carries a transform, and
+        a transformed ancestor becomes the containing block for position:fixed
+        descendants -- a dialog rendered inside it would blur only the content
+        column and leave the sidebar sharp.
+        {% endcomment %}
+        {% include "components/confirm_dialog.html" %}
+
         <!-- Scripts -->
         <script defer src="{% static 'js/progressBar.js' %}"></script>
         <script defer src="{% static 'js/sidebar.js' %}"></script>
@@ -101,6 +109,7 @@
         {# Shared modal behaviour -- must load before anything that opens a dialog. #}
         <script defer src="{% static 'js/modalDialog.js' %}"></script>
         <script defer src="{% static 'js/sidebarSearch.js' %}"></script>
+        <script defer src="{% static 'js/confirmDialog.js' %}"></script>
 
         {% block scripts %}
         {% endblock %}

@@ -47,7 +47,7 @@ and any tag inside them is parsed for real.
 
                 {{ comment_form.body }}
 
-                <div class="mt-3 flex items-center justify-between gap-3">
+                <div class="mt-3 flex items-center justify-between gap-3 flex-wrap">
                     <span class="text-xs text-zinc-600">Markdown isn't supported — plain text only.</span>
                     <button type="submit"
                             class="inline-flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-100 hover:border-indigo-500/70 hover:bg-zinc-800 hover:shadow-md hover:shadow-indigo-500/10 transition-all duration-300">
@@ -59,6 +59,19 @@ and any tag inside them is parsed for real.
                 </div>
             </div>
         </form>
+
+        <p class="-mt-6 mb-8 text-xs text-zinc-500">
+            Signed in as <span class="text-zinc-400">{{ user.get_full_name|default:user.username }}</span> ·
+            <button type="button"
+                    class="text-zinc-400 underline hover:text-zinc-200 transition-colors duration-300"
+                    data-confirm-action="{% url 'account_logout' %}"
+                    data-confirm-title="Sign out?"
+                    data-confirm-message="You'll need to sign in again to post a comment."
+                    data-confirm-label="Sign out"
+                    data-confirm-next="{{ request.get_full_path }}">
+                Sign out
+            </button>
+        </p>
     {% else %}
         <div class="mb-8">
             {% include "comments/_signin_prompt.html" %}
@@ -95,48 +108,3 @@ and any tag inside them is parsed for real.
         {% endfor %}
     </div>
 </section>
-
-{% if user.is_authenticated %}
-    {% comment %}
-    Centred confirmation dialog. One dialog for the whole page -- the delete
-    buttons only hand it a URL, so there is no per-comment form duplicated
-    through the thread.
-    {% endcomment %}
-    <div id="comment-delete-modal" class="fixed inset-0 z-50 backdrop-blur-none hidden transition-all duration-300 ease-out" aria-hidden="true">
-        <div id="comment-delete-backdrop" class="flex min-h-full items-center justify-center p-4">
-
-        <div id="comment-delete-content" role="dialog" aria-modal="true" aria-labelledby="comment-delete-title"
-             class="relative mx-auto max-w-md w-full overflow-hidden rounded-xl border-2 border-zinc-800 bg-black ring-1 ring-black/5 shadow-2xl shadow-black/60 transform scale-95 opacity-0 transition-all duration-300 ease-out p-5">
-            <div class="flex items-start gap-3">
-                <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-red-900/60 bg-red-950/40">
-                    <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M5.07 19h13.86a2 2 0 001.74-3L13.74 4a2 2 0 00-3.48 0L3.33 16a2 2 0 001.74 3z"></path>
-                    </svg>
-                </div>
-                <div class="min-w-0">
-                    <h3 id="comment-delete-title" class="text-base font-semibold text-zinc-100">Delete this comment?</h3>
-                    <p class="mt-1 text-sm text-zinc-400">This can't be undone. Any replies will stay in the thread.</p>
-                </div>
-            </div>
-
-            <blockquote id="comment-delete-excerpt"
-                        class="mt-4 max-h-24 overflow-y-auto rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-400 italic break-words whitespace-pre-line"></blockquote>
-
-            <div class="mt-5 flex justify-end gap-2">
-                <button type="button" id="comment-delete-cancel" data-comment-modal-close
-                        class="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-800 transition-all duration-300">
-                    Cancel
-                </button>
-                <form method="post" id="comment-delete-form" action="">
-                    {% csrf_token %}
-                    <input type="hidden" name="next" value="{{ request.get_full_path }}" />
-                    <button type="submit"
-                            class="rounded-lg border border-red-800 bg-red-950/60 px-4 py-2 text-sm text-red-200 hover:border-red-500 hover:bg-red-900/50 hover:shadow-md hover:shadow-red-500/20 transition-all duration-300">
-                        Delete
-                    </button>
-                </form>
-            </div>
-        </div>
-        </div>
-    </div>
-{% endif %}

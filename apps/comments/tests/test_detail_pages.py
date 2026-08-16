@@ -110,58 +110,59 @@ class CommentSectionRenderingTest(TestCase):
 
         self.assertNotContains(response, "blog-only")
 
-    # -- delete confirmation ----------------------------------------------
+    # -- confirmation dialog ----------------------------------------------
 
     def test_deleting_goes_through_a_confirmation_dialog(self):
-        """Delete must not fire straight from the thread -- the button opens a
-        centred dialog and only that dialog holds the posting form."""
+        """Delete must not fire straight from the thread -- the button only
+        carries data for the shared dialog, which holds the posting form."""
         Comment.objects.create(target=self.post, user=self.user, body="mine")
         self.client.force_login(self.user)
 
         html = self.client.get("/blog/post/").content.decode()
 
-        self.assertIn('id="comment-delete-modal"', html)
-        self.assertIn('role="dialog"', html)
-        self.assertIn('aria-modal="true"', html)
-        self.assertIn("Delete this comment?", html)
-        # Centred over the viewport rather than inline in the thread.
-        self.assertIn("fixed inset-0", html)
-        self.assertIn("items-center justify-center", html)
+        self.assertIn('data-confirm-action="/comments/', html)
+        self.assertIn('data-confirm-title="Delete this comment?"', html)
+        self.assertIn('data-confirm-variant="danger"', html)
+        # The button itself posts nothing; the one dialog form does.
+        self.assertEqual(html.count('id="confirm-dialog-form"'), 1)
 
     def test_the_dialog_is_hidden_until_asked_for(self):
-        Comment.objects.create(target=self.post, user=self.user, body="mine")
-        self.client.force_login(self.user)
-
         html = self.client.get("/blog/post/").content.decode()
 
-        modal = html.split('id="comment-delete-modal"')[1].split(">")[0]
+        modal = html.split('id="confirm-dialog"')[1].split(">")[0]
         self.assertIn("hidden", modal)
         self.assertIn('aria-hidden="true"', modal)
 
     def test_the_dialog_reuses_the_shared_modal_contract(self):
-        """It is driven by modalDialog.js, the same helper the sidebar search
-        modal uses, so it has to carry the class hooks that helper toggles --
-        otherwise it would open with no animation and never blur the backdrop."""
-        Comment.objects.create(target=self.post, user=self.user, body="mine")
-        self.client.force_login(self.user)
-
+        """Driven by modalDialog.js, the same helper the sidebar search modal
+        uses, so it must carry the class hooks that helper toggles -- otherwise
+        it opens with no animation and never blurs the backdrop."""
         html = self.client.get("/blog/post/").content.decode()
 
         self.assertIn("backdrop-blur-none", html)
-        self.assertIn('id="comment-delete-backdrop"', html)
-        self.assertIn('id="comment-delete-content"', html)
-        # The panel starts collapsed; the helper swaps these for scale-100/opacity-100.
+        self.assertIn('id="confirm-dialog-backdrop"', html)
+        self.assertIn('id="confirm-dialog-content"', html)
         self.assertIn("scale-95", html)
-        self.assertIn("opacity-0", html)
 
-    def test_the_shared_modal_helper_loads_before_anything_using_it(self):
+    def test_the_dialog_is_page_level_not_part_of_the_comment_section(self):
+        """It has to live outside #page-content: that element carries a
+        transform, which makes it the containing block for position:fixed
+        descendants, so a dialog inside it would blur the content column and
+        leave the sidebar sharp. Rendering on a page with no comments at all
+        is what proves it is page-level."""
+        html = self.client.get("/about/").content.decode()
+
+        self.assertIn('id="confirm-dialog"', html)
+        self.assertNotIn("comments/_section", html)
+
+    def test_the_shared_helpers_load_in_dependency_order(self):
         html = self.client.get("/blog/post/").content.decode()
 
-        self.assertIn("js/modalDialog.js", html)
-        self.assertIn("js/commentSection.js", html)
+        for asset in ("js/modalDialog.js", "js/confirmDialog.js", "js/commentSection.js"):
+            self.assertIn(asset, html)
         self.assertLess(
             html.index("js/modalDialog.js"),
-            html.index("js/commentSection.js"),
+            html.index("js/confirmDialog.js"),
             "modalDialog.js must load first or ModalDialog is undefined",
         )
 
@@ -170,24 +171,34 @@ class CommentSectionRenderingTest(TestCase):
         html = self.client.get("/blog/post/").content.decode()
         self.assertNotIn("comment-reply-btn\").forEach", html)
 
-    def test_delete_buttons_only_carry_a_url_not_their_own_form(self):
-        """One dialog for the page: the buttons hand it a URL, so there is no
-        per-comment form duplicated down the thread."""
-        Comment.objects.create(target=self.post, user=self.user, body="mine")
+    # -- sign out ----------------------------------------------------------
+
+    def test_a_signed_in_reader_can_sign_out_from_the_comment_section(self):
         self.client.force_login(self.user)
 
         html = self.client.get("/blog/post/").content.decode()
 
-        self.assertIn("comment-delete-btn", html)
-        self.assertIn("data-delete-url=", html)
-        self.assertEqual(html.count('id="comment-delete-form"'), 1)
+        self.assertIn("Sign out", html)
+        self.assertIn('data-confirm-title="Sign out?"', html)
+        self.assertIn('data-confirm-action="/guestbook/accounts/logout/"', html)
 
-    def test_no_dialog_is_rendered_when_nothing_is_deletable(self):
-        Comment.objects.create(target=self.post, user=self.user, body="theirs")
-        # Signed out: nothing is deletable, so the dialog is pointless markup.
+    def test_signing_out_asks_first(self):
+        """Same dialog as delete -- a stray click must not end the session."""
+        self.client.force_login(self.user)
+
         html = self.client.get("/blog/post/").content.decode()
 
-        self.assertNotIn('id="comment-delete-modal"', html)
+        signout = [line for line in html.splitlines() if 'data-confirm-title="Sign out?"' in line]
+        self.assertTrue(signout, "sign out should route through the confirm dialog")
+
+    def test_signed_out_readers_get_no_sign_out_control(self):
+        html = self.client.get("/blog/post/").content.decode()
+        self.assertNotIn('data-confirm-title="Sign out?"', html)
+
+    def test_the_project_page_offers_sign_out_too(self):
+        self.client.force_login(self.user)
+        html = self.client.get("/projects/proj/").content.decode()
+        self.assertIn('data-confirm-title="Sign out?"', html)
 
     # -- reply tree --------------------------------------------------------
 

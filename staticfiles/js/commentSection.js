@@ -1,12 +1,11 @@
 /**
- * Comment section behaviour: reply targeting and the delete confirmation.
+ * Comment section behaviour: reply targeting and message dismissal.
  *
  * Progressive enhancement only -- without JS the reply control is simply absent
  * and the comment form still posts normally.
  *
- * The confirmation dialog is driven by modalDialog.js, the same helper the
- * sidebar search modal uses, so there is one implementation of the show/hide
- * animation, backdrop dismissal and Escape handling rather than two.
+ * Deleting a comment is handled by confirmDialog.js via the site-wide
+ * confirmation dialog, so none of that lives here.
  */
 document.addEventListener("DOMContentLoaded", function () {
     "use strict";
@@ -39,34 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 indicator.classList.remove("flex");
             });
         }
-    }
-
-    // ---- delete confirmation ---------------------------------------------
-    var deleteForm = document.getElementById("comment-delete-form");
-    var excerpt = document.getElementById("comment-delete-excerpt");
-    var cancelBtn = document.getElementById("comment-delete-cancel");
-
-    var dialog = window.ModalDialog && window.ModalDialog.create({
-        root: "comment-delete-modal",
-        backdrop: "comment-delete-backdrop",
-        panel: "comment-delete-content",
-        // Focus Cancel rather than Delete: a stray Enter must not destroy anything.
-        onShown: function () { if (cancelBtn) { cancelBtn.focus(); } },
-    });
-
-    if (dialog && deleteForm) {
-        document.querySelectorAll(".comment-delete-btn").forEach(function (btn) {
-            btn.addEventListener("click", function () {
-                deleteForm.setAttribute("action", btn.dataset.deleteUrl);
-                var text = btn.dataset.excerpt || "";
-                excerpt.textContent = text.length > 240 ? text.slice(0, 240) + "…" : text;
-                dialog.show();
-            });
-        });
-
-        document.querySelectorAll("[data-comment-modal-close]").forEach(function (el) {
-            el.addEventListener("click", function () { dialog.hide(); });
-        });
     }
 
     // ---- message dismissal ------------------------------------------------

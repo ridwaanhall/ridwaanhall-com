@@ -187,6 +187,10 @@ if GUESTBOOK_PAGE:
         "allauth.socialaccount.providers.google",
         "allauth.socialaccount.providers.github",
         "apps.guestbook",
+        # Comments sign in through the same Google/GitHub providers and reuse
+        # the guestbook's author/co-author permissions, so they only make sense
+        # when that stack is installed.
+        "apps.comments",
     ])
 
 MIDDLEWARE = [

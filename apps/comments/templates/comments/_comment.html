@@ -1,0 +1,49 @@
+{% comment %}
+One comment. Included again for each reply, so a comment's markup exists in
+exactly one place -- the duplication the guestbook's AJAX rendering costs it.
+{% endcomment %}
+<article class="flex gap-3 {% if is_reply %}mt-4 ml-6 sm:ml-12 border-l border-zinc-800 pl-4{% endif %}">
+    {% if comment.user.userprofile.profile_image %}
+        <img src="{{ comment.user.userprofile.profile_image }}" alt="{{ comment.user.username }}"
+             width="36" height="36" class="rounded-full border border-zinc-800 flex-shrink-0 mt-1" loading="lazy" />
+    {% else %}
+        <div class="w-9 h-9 rounded-full bg-zinc-800 border border-zinc-700 flex-shrink-0 mt-1 flex items-center justify-center text-sm text-zinc-400">
+            {{ comment.user.username|slice:":1"|upper }}
+        </div>
+    {% endif %}
+
+    <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 flex-wrap">
+            <span class="font-medium text-zinc-200">{{ comment.user.get_full_name|default:comment.user.username }}</span>
+            {% if comment.user.userprofile.is_author %}
+                <span class="rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-2 py-0.5 text-xs text-violet-50">Author</span>
+            {% elif comment.user.userprofile.is_co_author %}
+                <span class="rounded-full bg-zinc-800 border border-zinc-700 px-2 py-0.5 text-xs text-zinc-300">Co-author</span>
+            {% endif %}
+            <time datetime="{{ comment.created_at|date:'c' }}" class="text-xs text-zinc-500">{{ comment.created_at|date:"j M Y, H:i" }}</time>
+        </div>
+
+        {% if comment.is_deleted %}
+            <p class="mt-1 text-zinc-600 italic">This comment was deleted.</p>
+        {% else %}
+            <p class="mt-1 text-zinc-300 whitespace-pre-line break-words">{{ comment.body }}</p>
+
+            <div class="mt-2 flex items-center gap-3 text-xs">
+                {% if user.is_authenticated and not is_reply %}
+                    <button type="button" class="comment-reply-btn text-zinc-500 hover:text-indigo-400 transition-colors"
+                            data-comment-id="{{ comment.pk }}"
+                            data-comment-user="{{ comment.user.get_full_name|default:comment.user.username }}">
+                        Reply
+                    </button>
+                {% endif %}
+                {% if comment.pk in deletable_ids %}
+                    <form method="post" action="{% url 'comments:delete' comment.pk %}" class="inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+                        <button type="submit" class="text-zinc-500 hover:text-red-400 transition-colors">Delete</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</article>

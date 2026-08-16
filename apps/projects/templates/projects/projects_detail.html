@@ -62,6 +62,10 @@
             {% endif %}
 
             {% include "projects/sections/detail_content.html" %}
+
+            {% if comment_form %}
+                {% include "comments/_section.html" %}
+            {% endif %}
         </div>
     </main>
 </div>

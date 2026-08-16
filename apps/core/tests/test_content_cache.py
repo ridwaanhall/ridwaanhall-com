@@ -17,7 +17,9 @@ from datetime import UTC, datetime
 from unittest import mock
 
 from django.core.cache import cache
+from django.db import connection
 from django.test import TestCase, override_settings
+from django.test.utils import CaptureQueriesContext
 
 from apps.about.manager import AboutManager
 from apps.about.models import Award, Profile, ProfileSkillHighlight, Skill
@@ -347,17 +349,34 @@ class DetailPageLookupTest(TestCase):
         self.assertEqual(self.client.get("/blog/no-such-post/").status_code, 404)
         self.assertEqual(self.client.get("/projects/no-such-project/").status_code, 404)
 
-    def test_a_warm_project_detail_makes_no_queries_for_the_project(self):
+    # These assert on the SQL rather than a query count. The pages also load
+    # comments, which are deliberately uncached, so a bare count would move
+    # every time the comment section changes and would stop saying anything
+    # about what it is here to protect: that the post/project itself is served
+    # from cache and never re-fetched.
+
+    def test_a_warm_project_detail_does_not_requery_the_project(self):
         self.client.get("/projects/cached-project/")
-        with self.assertNumQueries(0):
+
+        with CaptureQueriesContext(connection) as queries:
             self.client.get("/projects/cached-project/")
 
-    def test_a_warm_blog_detail_only_writes_the_view_counter(self):
-        """The counter bump is a write and has to stay; everything the page
-        reads should already be in memory."""
+        reads = [q["sql"] for q in queries.captured_queries
+                 if 'FROM "projects_project"' in q["sql"]]
+        self.assertEqual(reads, [], "the project should come from cache, not the DB")
+
+    def test_a_warm_blog_detail_only_touches_the_post_to_bump_views(self):
+        """The counter bump is a write and has to stay; the post's own content
+        should already be in memory."""
         self.client.get("/blog/cached-post/")
-        with self.assertNumQueries(1):
+
+        with CaptureQueriesContext(connection) as queries:
             self.client.get("/blog/cached-post/")
+
+        touching_post = [q["sql"] for q in queries.captured_queries
+                         if "blog_blogpost" in q["sql"]]
+        self.assertEqual(len(touching_post), 1, touching_post)
+        self.assertTrue(touching_post[0].lstrip().upper().startswith("UPDATE"))
 
     def test_the_view_counter_still_increments(self):
         self.client.get("/blog/cached-post/")

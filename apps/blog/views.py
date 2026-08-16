@@ -3,6 +3,7 @@ Blog views for listing and displaying blog posts.
 Handles blog listing with pagination and individual blog post details.
 """
 
+from django.conf import settings
 from django.db.models import F
 
 from apps.blog.models import BlogPost
@@ -83,7 +84,11 @@ class BlogDetailView(BlogDetailSEOMixin, DetailView):
 
         context = self.get_common_context()
         context['blog'] = blog
-        
+
+        if getattr(settings, 'GUESTBOOK_PAGE', True):
+            from apps.comments.context import comment_context
+            context.update(comment_context(request, BlogPost, blog['id'], 'blog.blogpost'))
+
         # Add SEO data from mixin
         context.update(self.get_context_data(blog=blog))
         return self.render_to_response(context)

@@ -35,6 +35,10 @@
                     {% include "blog/components/detail_tag.html" %}
                 </div>
             </footer>
+
+            {% if comment_form %}
+                {% include "comments/_section.html" %}
+            {% endif %}
         </div>
     </main>
 </article>

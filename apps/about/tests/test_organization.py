@@ -8,7 +8,7 @@ name, logo and website. Across the real data that was 33 rows describing only
 from datetime import date
 
 from django.db import IntegrityError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from apps.about.manager import AboutManager
 from apps.about.models import (
@@ -114,3 +114,71 @@ class RenderedShapeUnchangedTest(TestCase):
 
         with self.assertNumQueries(1):
             AboutManager._build_experiences()
+
+
+@override_settings(SECURE_SSL_REDIRECT=False, ALLOWED_HOSTS=["testserver"])
+class OrganizationAdminTest(TestCase):
+    """The changelist shows how many rows use each organisation.
+
+    Counting per relation inside list_display issued four queries for every
+    row -- 76 sequential round trips to Supabase for 19 organisations, which
+    timed the page out with a 504 in production. The counts are annotated onto
+    the changelist query instead.
+    """
+
+    def setUp(self):
+        from django.contrib.auth.models import User
+
+        self.user = User.objects.create_superuser("root", "root@example.com", "pw")
+        self.client.force_login(self.user)
+
+    def seed(self, start, count):
+        for i in range(start, start + count):
+            org = make_org(f"Org {i}")
+            make_experience(org=org, title=f"Role {i}")
+            Certification.objects.create(
+                title=f"Cert {i}", organization=org, issued=date(2024, 1, 1),
+            )
+
+    def changelist_queries(self):
+        from django.db import connection
+        from django.test.utils import CaptureQueriesContext
+
+        with CaptureQueriesContext(connection) as captured:
+            response = self.client.get("/admin/about/organization/")
+        self.assertEqual(response.status_code, 200)
+        return len(captured.captured_queries)
+
+    def test_the_changelist_cost_does_not_grow_with_the_row_count(self):
+        """The exact number is not the point -- that it stays flat is. Counting
+        per relation made it 4 queries per row, which is what took the page
+        past the gateway timeout once there were enough organisations.
+        """
+        self.seed(0, 5)
+        with_five = self.changelist_queries()
+
+        self.seed(5, 20)
+        with_twenty_five = self.changelist_queries()
+
+        self.assertEqual(
+            with_five, with_twenty_five,
+            f"cost grew with row count: {with_five} -> {with_twenty_five}",
+        )
+
+    def test_the_counts_are_correct_and_not_multiplied_by_the_joins(self):
+        """Four counts over four joins multiply without distinct=True: an
+        organisation with 3 experiences and 1 certification would report 3
+        certifications."""
+        org = make_org("Acme")
+        for i in range(3):
+            make_experience(org=org, title=f"Role {i}")
+        Certification.objects.create(title="C", organization=org, issued=date(2024, 1, 1))
+
+        html = self.client.get("/admin/about/organization/").content.decode()
+
+        self.assertIn("3 experience", html)
+        self.assertIn("1 certification", html)
+
+    def test_an_unused_organisation_says_so(self):
+        make_org("Nobody")
+        self.assertIn("unused", self.client.get("/admin/about/organization/").content.decode())

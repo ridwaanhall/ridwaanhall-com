@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import Count
 
 from apps.about.models import (
     Application,
@@ -161,12 +162,31 @@ class OrganizationAdmin(admin.ModelAdmin):
     search_fields = ("name", "website")
     prepopulated_fields = {"slug": ("name",)}
 
+    def get_queryset(self, request):
+        """Count the related rows in the changelist query itself.
+
+        Calling .count() per relation inside list_display issued four queries
+        for every organisation -- 76 sequential round trips to Supabase for 19
+        rows, which timed the admin page out with a 504 in production. Annotating
+        folds them into the one query the changelist already runs.
+
+        distinct=True is required: four joins on the same row multiply each
+        other, so without it an organisation with 6 experiences and 1
+        certification reports 6 certifications.
+        """
+        return super().get_queryset(request).annotate(
+            _experiences=Count("experiences", distinct=True),
+            _education=Count("education", distinct=True),
+            _certifications=Count("certifications", distinct=True),
+            _awards=Count("awards", distinct=True),
+        )
+
     @admin.display(description="Used by")
     def used_by(self, obj):
         parts = [
-            (obj.experiences.count(), "experience"),
-            (obj.education.count(), "education"),
-            (obj.certifications.count(), "certification"),
-            (obj.awards.count(), "award"),
+            (obj._experiences, "experience"),
+            (obj._education, "education"),
+            (obj._certifications, "certification"),
+            (obj._awards, "award"),
         ]
         return ", ".join(f"{n} {label}" for n, label in parts if n) or "unused"

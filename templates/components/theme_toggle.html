@@ -1,0 +1,35 @@
+{% comment %}
+Light/dark theme toggle.
+
+Included once per sidebar variant (desktop rail and mobile drawer), so every
+instance shares the `data-theme-toggle` hook rather than an id -- themeToggle.js
+keeps them all in sync.
+
+Which icon shows is decided by CSS from `html[data-theme]`, not by JS (see the
+rules in static/css/input.css). That matters: the theme is applied by a blocking
+script in <head> while themeToggle.js is deferred, so a JS-driven icon would
+flash the wrong one on every page load.
+
+The accessible name is deliberately static ("Toggle...", not "Switch to
+light..."). The page is server-rendered and cached while the theme lives in
+localStorage, so the server cannot know which state to name; a static label is
+always accurate. Current state is exposed via aria-pressed, which the script
+sets on load.
+{% endcomment %}
+<button type="button"
+        data-theme-toggle
+        aria-label="Toggle light or dark theme"
+        title="Toggle light or dark theme"
+        class="group -my-1 -mr-1.5 inline-flex items-center justify-center rounded-md p-1.5 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400">
+    <svg data-theme-icon="dark" class="h-4 w-4 transition-transform duration-300 ease-in-out group-hover:-rotate-12"
+         stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+    <svg data-theme-icon="light" class="h-4 w-4 transition-transform duration-300 ease-in-out group-hover:rotate-45"
+         stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+    </svg>
+</button>

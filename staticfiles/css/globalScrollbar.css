@@ -1,8 +1,28 @@
 /* Global Custom Scrollbar */
+
+/*
+ * Scrollbar pseudo-elements sit outside Tailwind, so the palette remap in
+ * input.css cannot reach them -- they need their own theme swap. Values follow
+ * the same mirror rule as the main palette (zinc-900 -> zinc-100, and so on).
+ */
+:root {
+    --scrollbar-track: #18181b;
+    --scrollbar-thumb: #3f3f46;
+    --scrollbar-thumb-hover: #52525b;
+    --scrollbar-thumb-border: #27272a;
+}
+
+html[data-theme="light"] {
+    --scrollbar-track: #f4f4f5;
+    --scrollbar-thumb: #d4d4d8;
+    --scrollbar-thumb-hover: #a1a1aa;
+    --scrollbar-thumb-border: #e4e4e7;
+}
+
 /* Firefox */
 html {
     scrollbar-width: thin;
-    scrollbar-color: #3f3f46 #18181b;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
 /* WebKit browsers (Chrome, Safari, Edge) */
@@ -12,28 +32,28 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-    background: #18181b;
+    background: var(--scrollbar-track);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #3f3f46;
+    background: var(--scrollbar-thumb);
     border-radius: 4px;
-    border: 1px solid #27272a;
+    border: 1px solid var(--scrollbar-thumb-border);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #52525b;
+    background: var(--scrollbar-thumb-hover);
 }
 
 ::-webkit-scrollbar-corner {
-    background: #18181b;
+    background: var(--scrollbar-track);
 }
 
 /* Custom scrollbar for any scrollable container */
 .custom-scroll {
     scrollbar-width: thin;
-    scrollbar-color: #3f3f46 #18181b;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
 .custom-scroll::-webkit-scrollbar {
@@ -42,20 +62,20 @@ html {
 }
 
 .custom-scroll::-webkit-scrollbar-track {
-    background: #18181b;
+    background: var(--scrollbar-track);
     border-radius: 4px;
 }
 
 .custom-scroll::-webkit-scrollbar-thumb {
-    background: #3f3f46;
+    background: var(--scrollbar-thumb);
     border-radius: 4px;
-    border: 1px solid #27272a;
+    border: 1px solid var(--scrollbar-thumb-border);
 }
 
 .custom-scroll::-webkit-scrollbar-thumb:hover {
-    background: #52525b;
+    background: var(--scrollbar-thumb-hover);
 }
 
 .custom-scroll::-webkit-scrollbar-corner {
-    background: #18181b;
+    background: var(--scrollbar-track);
 }

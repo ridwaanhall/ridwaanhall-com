@@ -1,10 +1,22 @@
+/*
+ * zinc-400 reads well against the dark canvas but washes out on a light one,
+ * so light mode drops to zinc-600 to keep the ripple equally legible.
+ */
+:root {
+    --ripple-rgb: 161, 161, 170;
+}
+
+html[data-theme="light"] {
+    --ripple-rgb: 82, 82, 91;
+}
+
 .click-ripple {
     position: fixed;
     pointer-events: none;
     z-index: 999999;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(161, 161, 170, 0.3) 0%, rgba(161, 161, 170, 0.1) 50%, transparent 100%);
-    border: 2px solid rgba(161, 161, 170, 0.5);
+    background: radial-gradient(circle, rgba(var(--ripple-rgb), 0.3) 0%, rgba(var(--ripple-rgb), 0.1) 50%, transparent 100%);
+    border: 2px solid rgba(var(--ripple-rgb), 0.5);
     transform: translate(-50%, -50%) scale(0);
     animation: ripple 0.6s ease-out forwards;
 }

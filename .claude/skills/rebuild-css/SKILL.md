@@ -3,7 +3,7 @@ name: rebuild-css
 description: Rebuild the compiled Tailwind CSS output, automatically renaming it to a fresh random filename for cache busting, and verify the hardcoded output filename stays in sync across the build command and templates. Use after editing static/css/input.css or after changing Tailwind config.
 ---
 
-This repo does not auto-hash its compiled CSS filename. The output path is a hand-picked string (currently `staticfiles/css/global-ewllzlra.css`) that is hardcoded in three places, which must always agree:
+This repo does not auto-hash its compiled CSS filename. The output path is a hand-picked string (currently `staticfiles/css/global-gdqnmanz.css`) that is hardcoded in three places, which must always agree:
 
 1. The Tailwind CLI `-o` flag (the build command below)
 2. `templates/base_seo.html` — `{% static 'css/<filename>' %}`

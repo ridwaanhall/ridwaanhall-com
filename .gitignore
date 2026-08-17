@@ -130,3 +130,9 @@ data.html
 *.json
 node_modules/
 text.txt
+
+# Design specs written while planning a change. They are working notes:
+# the reasoning that matters ends up in the commit messages and CLAUDE.md,
+# and leaving them here put a directory in the repo with nothing in it for
+# anyone browsing the project.
+docs/superpowers/

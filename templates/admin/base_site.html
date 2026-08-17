@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% comment %}
+Branding and theme for the admin.
+
+Only three blocks are overridden -- title, extrastyle and branding -- so every
+other part of admin/base.html, and therefore every widget, inline, popup and
+piece of admin JavaScript, is left exactly as Django ships it.
+
+extrastyle is the right hook: admin/base.html renders it after base.css and
+dark_mode.css, so the custom properties in adminTheme override Django's own
+without needing more specific selectors.
+
+The nav sidebar, the light/dark toggle and the "View site" link all still come
+from the parent template.
+{% endcomment %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/adminTheme-dbgmteua.css' %}">
+{% endblock %}
+
+{% block branding %}
+<div id="site-name">
+    <a href="{% url 'admin:index' %}" class="site-name">
+        <span class="site-mark" aria-hidden="true">rh</span>
+        <span>{{ site_header|default:_('Django administration') }}</span>
+    </a>
+    <span class="site-tag">console</span>
+</div>
+{% endblock %}

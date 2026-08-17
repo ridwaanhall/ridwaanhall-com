@@ -69,7 +69,7 @@
         {% render_schema seo.schemas %}
         {% endif %}
 
-        <link rel="stylesheet" href="{% static 'css/global-ewllzlra.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/global-gdqnmanz.css' %}" />
 
         <link rel="stylesheet" href="{% url 'dynamic_css' 'onest' %}" />
 
@@ -102,11 +102,16 @@
                         ></path>
                     </svg>
                 </div>
-                <button id="open-sidebar" class="ml-auto hover:text-zinc-200 transition-colors" aria-label="Open Sidebar">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
+                {# Theme toggle and hamburger are a matched pair -- same padding, #}
+                {# radius and hover treatment, so they read as one control group. #}
+                <div class="ml-auto flex items-center gap-0.5">
+                    {% include 'components/theme_toggle.html' with icon_size="h-6 w-6" %}
+                    <button id="open-sidebar" class="inline-flex items-center justify-center rounded-md p-1.5 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400" aria-label="Open Sidebar">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </header>
 

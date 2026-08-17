@@ -77,7 +77,7 @@ requests-oauthlib==2.0.0
 rich==15.0.0
     # via ridwaanhall-com
 ruff==0.16.2
-sqlparse==0.5.5
+sqlparse==0.6.0
     # via django
 tzdata==2026.3 ; sys_platform == 'win32'
     # via django

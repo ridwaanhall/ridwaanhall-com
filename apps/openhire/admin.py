@@ -2,6 +2,8 @@ from django.contrib import admin
 
 from apps.core.admin import SingletonModelAdmin
 from apps.core.admin_forms import string_list_form
+from apps.core.admin_widgets import ChoiceListField
+from apps.core.choices import EMPLOYMENT_TYPE_CHOICES, LOCATION_TYPE_CHOICES
 from apps.openhire.models import (
     HiringProfile,
     OpenToWorkProfile,
@@ -34,14 +36,13 @@ PositionAdminForm = string_list_form(
     exclude=("hiring_profile",),
 )
 
-OpenToWorkProfileAdminForm = string_list_form(
+_OpenToWorkListForm = string_list_form(
     OpenToWorkProfile,
     [
-        "type", "preferred_roles", "skills_highlight", "languages",
-        "preferred_locations", "location_types", "remote_locations",
+        "preferred_roles", "skills_highlight", "languages",
+        "preferred_locations", "remote_locations",
     ],
     per_field={
-        "type": {"item_label": "employment type"},
         "preferred_roles": {"item_label": "role"},
         # Free text, not the Skill catalogue: one current value ("REST APIs")
         # has no matching Skill row, so this stays a plain list rather than
@@ -49,10 +50,30 @@ OpenToWorkProfileAdminForm = string_list_form(
         "skills_highlight": {"item_label": "skill"},
         "languages": {"item_label": "language"},
         "preferred_locations": {"item_label": "location"},
-        "location_types": {"item_label": "arrangement"},
         "remote_locations": {"item_label": "location"},
     },
 )
+
+
+class OpenToWorkProfileAdminForm(_OpenToWorkListForm):
+    """The two fields with a fixed vocabulary get checkboxes.
+
+    `type` and `location_types` hold the same words as Experience's
+    employment_type and location_type. They are JSONField lists, which cannot
+    carry `choices`, so the constraint is applied at the form instead -- the
+    stored shape (list[str]) is unchanged.
+    """
+
+    type = ChoiceListField(
+        choices=EMPLOYMENT_TYPE_CHOICES,
+        label="Employment types",
+        help_text="The arrangements you are open to.",
+    )
+    location_types = ChoiceListField(
+        choices=LOCATION_TYPE_CHOICES,
+        label="Work arrangements",
+        help_text="Where you are willing to work from.",
+    )
 
 
 class PositionInline(admin.StackedInline):

@@ -457,3 +457,42 @@ def _coerce_flat_mapping(value, context=None):
             )
         out[key] = _normalise_newlines(val)
     return out
+
+
+class ChoiceListField(forms.MultipleChoiceField):
+    """A JSONField holding a list of strings, constrained to a fixed vocabulary.
+
+    ``OpenToWorkProfile.type`` and ``.location_types`` hold the same words as
+    ``Experience.employment_type`` and ``.location_type``, but as lists. They
+    were edited through the free-text list widget, so nothing stopped "Fulltime"
+    or "remote " drifting in beside the canonical spellings -- and unlike the
+    single-value columns, a JSONField cannot carry ``choices``.
+
+    This is a plain ``MultipleChoiceField`` rendered as checkboxes rather than
+    another member of the JSON-widget family above: those exist because their
+    shapes have no Django equivalent, whereas "pick several from a fixed list"
+    is exactly what MultipleChoiceField is. ``clean()`` returns ``list[str]``,
+    which is what the column already stores, so no migration is involved.
+    """
+
+    widget = forms.CheckboxSelectMultiple
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("required", False)
+        super().__init__(*args, **kwargs)
+
+    def prepare_value(self, value):
+        # The stored value is already a list; guard against a None column and
+        # against a single string, which would otherwise render as one checked
+        # box per character.
+        if value is None:
+            return []
+        if isinstance(value, str):
+            return [value]
+        return list(value)
+
+    def has_changed(self, initial, data):
+        # Compare as ordered lists of strings: the column preserves list order
+        # (jsonb arrays do), so a reorder is a real change, but None and []
+        # are the same empty value and must not count as one.
+        return [str(v) for v in (initial or [])] != [str(v) for v in (data or [])]

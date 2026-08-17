@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.text import slugify
 
+from apps.core.choices import EMPLOYMENT_TYPE_CHOICES, LOCATION_TYPE_CHOICES
+
 from apps.core.models import SingletonModel
 
 
@@ -150,8 +152,10 @@ class Experience(models.Model):
         blank=True, null=True, help_text="Leave empty for a role you are still in ('Present')."
     )
 
-    employment_type = models.CharField(max_length=50)
-    location_type = models.CharField(max_length=50)
+    # Free text until now, which is how the same idea could be spelled two ways
+    # across rows. Same vocabulary as Application, so the admin filters line up.
+    employment_type = models.CharField(max_length=50, choices=EMPLOYMENT_TYPE_CHOICES)
+    location_type = models.CharField(max_length=50, choices=LOCATION_TYPE_CHOICES)
     location = models.CharField(max_length=255)
     is_current = models.BooleanField(default=False)
     responsibilities = models.JSONField(default=list, blank=True)
@@ -254,22 +258,11 @@ class Application(models.Model):
         ("Rejected", "Rejected"),
         ("Ghosted", "Ghosted"),
     ]
-    EMPLOYMENT_TYPE_CHOICES = [
-        ("Full-time", "Full-time"),
-        ("Part-time", "Part-time"),
-        ("Self-employed", "Self-employed"),
-        ("Freelance", "Freelance"),
-        ("Contract", "Contract"),
-        ("Internship", "Internship"),
-        ("Apprenticeship", "Apprenticeship"),
-        ("Seasonal", "Seasonal"),
-        ("Scholarship", "Scholarship"),
-    ]
-    LOCATION_TYPE_CHOICES = [
-        ("On-site", "On-site"),
-        ("Hybrid", "Hybrid"),
-        ("Remote", "Remote"),
-    ]
+    # Kept as class attributes for the existing references, but the lists
+    # themselves live in apps.core.choices so Experience, Position and the
+    # open-to-work profile all agree on the same wording.
+    EMPLOYMENT_TYPE_CHOICES = EMPLOYMENT_TYPE_CHOICES
+    LOCATION_TYPE_CHOICES = LOCATION_TYPE_CHOICES
     APPLIED_VIA_CHOICES = [
         ("LinkedIn", "LinkedIn"),
         ("GitHub", "GitHub"),

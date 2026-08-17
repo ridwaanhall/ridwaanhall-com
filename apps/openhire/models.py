@@ -1,5 +1,6 @@
 from django.db import models
 
+from apps.core.choices import EMPLOYMENT_TYPE_CHOICES
 from apps.core.models import SingletonModel
 
 
@@ -33,7 +34,8 @@ class HiringProfile(SingletonModel):
 class Position(models.Model):
     hiring_profile = models.ForeignKey(HiringProfile, on_delete=models.CASCADE, related_name="positions")
     title = models.CharField(max_length=255)
-    type = models.CharField(max_length=100, blank=True)
+    # Same vocabulary as Experience and Application.
+    type = models.CharField(max_length=100, blank=True, choices=EMPLOYMENT_TYPE_CHOICES)
     location = models.CharField(max_length=255, blank=True)
     salary_range = models.CharField(max_length=100, blank=True)
     experience_required = models.CharField(max_length=255, blank=True)

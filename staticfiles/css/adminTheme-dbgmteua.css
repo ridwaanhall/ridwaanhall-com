@@ -206,13 +206,25 @@ html[data-theme="dark"] {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 1.6rem;
-    height: 1.6rem;
-    border-radius: 0.5rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    flex: 0 0 auto;
+    /* Circular for both forms, so the photo and the initials fallback occupy
+       the same shape and the header does not shift between them. */
+    border-radius: 50%;
     background: linear-gradient(135deg, #6366f1, #4338ca);
     color: #ffffff;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 700;
+}
+
+#branding .site-mark--photo {
+    /* object-fit keeps a non-square source from stretching; the ring picks up
+       the header background so the circle reads as deliberate at any size. */
+    object-fit: cover;
+    background: none;
+    border: 1px solid rgba(165, 180, 252, 0.45);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.18);
 }
 
 #branding .site-tag {

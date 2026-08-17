@@ -39,6 +39,80 @@ class AdminBrandingTest(TestCase):
     def test_the_brand_mark_renders(self):
         self.assertIn("site-mark", self.client.get("/admin/").content.decode())
 
+    def test_the_profile_photo_is_the_brand_mark(self):
+        """`about` reaches admin templates only through
+        PortfolioAdminSite.each_context -- the admin gets no context from the
+        site's views, so without it this silently falls back to initials."""
+        from apps.about.models import Profile
+
+        profile = Profile.objects.create(name="Me")
+        profile.image.name = "profile/me.webp"
+        profile.save()
+
+        html = self.client.get("/admin/").content.decode()
+
+        self.assertIn("site-mark--photo", html)
+        # wsrv percent-encodes the wrapped URL, so the slashes are escaped.
+        self.assertIn("me.webp", html)
+        self.assertNotIn('aria-hidden="true">rh<', html)
+
+    def test_the_photo_is_requested_at_the_size_it_is_shown(self):
+        """Piped through wsrv_image so the header does not pull the full-size
+        original on every admin page."""
+        from apps.about.models import Profile
+
+        profile = Profile.objects.create(name="Me")
+        profile.image.name = "profile/me.webp"
+        profile.save()
+
+        html = self.client.get("/admin/").content.decode()
+
+        self.assertRegex(html, r'site-mark--photo"[^>]*src="[^"]*(w=100|100x100|me\.webp)')
+
+    def test_it_falls_back_to_initials_without_a_profile(self):
+        """A fresh database has no Profile row, and the admin must still render
+        rather than showing an empty circle or erroring on a None."""
+        from apps.about.models import Profile
+
+        Profile.objects.all().delete()
+
+        html = self.client.get("/admin/").content.decode()
+
+        self.assertIn("site-mark", html)
+        self.assertNotIn("site-mark--photo", html)
+
+
+@override_settings(SECURE_SSL_REDIRECT=False, ALLOWED_HOSTS=["testserver"])
+class AdminSiteWiringTest(TestCase):
+    """The custom AdminSite is reached through AdminConfig.default_site, which
+    is the hook that keeps every existing @admin.register working."""
+
+    def setUp(self):
+        self.user = User.objects.create_superuser("root", "root@example.com", "pw")
+        self.client.force_login(self.user)
+
+    def test_the_default_site_is_this_projects(self):
+        from apps.core.admin_site import PortfolioAdminSite
+
+        self.assertIsInstance(admin.site._wrapped, PortfolioAdminSite)
+
+    def test_no_model_lost_its_registration(self):
+        """Swapping the site class would orphan every ModelAdmin if it were
+        done by instantiating a new site instead of naming it in the config."""
+        from apps.about.models import Experience, Organization
+        from apps.blog.models import BlogPost
+
+        for model in (Experience, Organization, BlogPost):
+            with self.subTest(model=model.__name__):
+                self.assertIn(model, admin.site._registry)
+
+    def test_each_context_survives_a_missing_profile(self):
+        from apps.about.models import Profile
+
+        Profile.objects.all().delete()
+
+        self.assertEqual(self.client.get("/admin/").status_code, 200)
+
     def test_the_login_page_is_branded_and_themed(self):
         """It is the first thing anyone sees, and it renders before login, so
         it uses a different code path from the rest of the admin."""

@@ -161,7 +161,9 @@ APPEND_SLASH = True
 # --------------------------------------------------------------------------
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
-    "django.contrib.admin",
+    # Points at apps.core.admin_site.PortfolioAdminSite, which brands the
+    # admin and puts `about` into every admin template's context.
+    "apps.core.admin_site.PortfolioAdminConfig",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",

@@ -138,6 +138,19 @@ class SEOManager:
         ]
         return seo_data
     
+    def get_legal_document_seo(self, document: dict) -> dict:
+        """Complete SEO for a legal document other than the privacy policy."""
+        seo_data = SEOData.get_legal_document_seo(self.about_data, document)
+        seo_data['schemas'] = [
+            self.schema_generator.generate_legal_document_schema(self.about_data, document),
+            self.schema_generator.generate_breadcrumb_schema([
+                {"name": "Home", "url": SEOConfig.SITE_URL},
+                {"name": document.get('title', 'Legal'),
+                 "url": f"{SEOConfig.SITE_URL}{document.get('url', '/')}"},
+            ])
+        ]
+        return seo_data
+
     def get_privacy_policy_seo(self) -> dict:
         """Get complete SEO data for privacy policy page."""
         seo_data = SEOData.get_privacy_policy_seo(self.about_data)

@@ -4,6 +4,7 @@ from django.http import Http404
 
 from apps.core.base_views import BaseView
 from apps.legal.manager import LegalManager
+from apps.seo.manager import SEOManager
 from apps.seo.mixins import PrivacyPolicySEOMixin
 
 
@@ -22,6 +23,9 @@ class LegalDocumentView(BaseView):
         context["document"] = document
         # Sibling documents, for the cross-links at the foot of the page.
         context["documents"] = LegalManager.get_documents()
+        # Without this the page has no canonical, no meta description and no
+        # structured data -- which is how Terms shipped originally.
+        context["seo"] = SEOManager(context["about"]).get_legal_document_seo(document)
         return self.render_to_response(context)
 
 

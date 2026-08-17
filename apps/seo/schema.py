@@ -4,12 +4,69 @@ Handles structured data (JSON-LD) generation for search engines.
 """
 
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from django.utils.text import slugify
 
 from apps.about.manager import AboutManager
 
 from .config import SEOConfig
+
+#: schema.org Date and DateTime properties must be ISO 8601. Google reports
+#: anything else as an invalid value and drops the property, so every date this
+#: module emits goes through one of the helpers below rather than being
+#: formatted inline.
+SITE_TIMEZONE = ZoneInfo("Asia/Jakarta")
+
+#: When the site first went live. dateCreated is a DateTime property, so a bare
+#: "2025-03-16" was reported invalid; it needs a time and an offset.
+SITE_CREATED_ISO = datetime(2025, 3, 16, tzinfo=SITE_TIMEZONE).isoformat()
+
+
+def _profile_links(social_media: dict) -> list[str]:
+    """Absolute profile URLs for schema.org ``sameAs``.
+
+    ``social_media`` carries an ``email`` key holding a bare address. Left in
+    ``sameAs`` a browser resolves it against the current page, which is how
+    Google came to record "https://ridwaanhall.com/about/hi@ridwaanhall.com" as
+    a profile link. The address is published through the ``email`` property
+    instead, where it belongs.
+    """
+    return [
+        url for platform, url in social_media.items()
+        if url and platform != "email" and "://" in url
+    ]
+
+
+def _now_iso() -> str:
+    """Current time as an ISO 8601 DateTime, for dateModified."""
+    return datetime.now(SITE_TIMEZONE).isoformat(timespec="seconds")
+
+
+def _iso_date(education: dict) -> str | None:
+    """The date an education entry concluded, as ISO 8601.
+
+    Entries that recorded real dates give a year-month; the older ones only
+    have a free-text range like "2018 - 2021", where the end year alone is
+    still valid ISO 8601 while the range itself is not.
+    """
+    dates = education.get('date') or {}
+    end = dates.get('end') or {}
+    if end.get('year'):
+        month = end.get('month')
+        if month:
+            months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            if month in months:
+                return f"{end['year']}-{months.index(month) + 1:02d}"
+        return str(end['year'])
+
+    years = (education.get('years') or '').strip()
+    if years:
+        candidate = years.split('-')[-1].strip()
+        if candidate.isdigit() and len(candidate) == 4:
+            return candidate
+    return None
 
 
 class SEOSchemaGenerator:
@@ -18,12 +75,8 @@ class SEOSchemaGenerator:
     @staticmethod
     def generate_person_schema(about_data: dict) -> dict:
         """Generate comprehensive Person schema for about pages with full profile data."""
-        social_links = []
         social_media = about_data.get('social_media', {})
-        
-        for platform, url in social_media.items():
-            if url:
-                social_links.append(url)
+        social_links = _profile_links(social_media)
         
         # Format education data for alumniOf
         alumni_of = []
@@ -38,7 +91,9 @@ class SEOSchemaGenerator:
                 alumni_entry["hasCredential"] = {
                     "@type": "EducationalOccupationalCredential",
                     "name": edu.get('degree', ''),
-                    "dateReceived": edu.get('years', '').split(' - ')[-1] if edu.get('years') else None
+                    # schema.org Date: a bare year is valid ISO 8601, a range
+                    # is not, so only the end year is used.
+                    "dateReceived": _iso_date(edu)
                 }
             alumni_of.append(alumni_entry)
         
@@ -136,15 +191,12 @@ class SEOSchemaGenerator:
                 "machine learning",
                 "portfolio"
             ],
+            # No SearchAction: this site has no /search endpoint, and
+            # advertising one made Google crawl
+            # "/search?q={search_term_string}" literally and log it as a 404.
+            # The sidebar search filters a fixed list client-side; there is no
+            # server-side query URL to point at.
             "potentialAction": [
-                {
-                    "@type": "SearchAction",
-                    "target": {
-                        "@type": "EntryPoint",
-                        "urlTemplate": f"{SEOConfig.SITE_URL}/search?q={{search_term_string}}"
-                    },
-                    "query-input": "required name=search_term_string"
-                },
                 {
                     "@type": "ReadAction",
                     "target": f"{SEOConfig.SITE_URL}/blog/"
@@ -303,6 +355,35 @@ class SEOSchemaGenerator:
         }
     
     @staticmethod
+    def generate_legal_document_schema(about_data: dict, document: dict) -> dict:
+        """WebPage schema for a legal document.
+
+        dateModified comes from the document's own last_updated rather than the
+        clock, so it reflects when the terms actually changed.
+        """
+        modified = document.get('last_updated')
+        return {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": document.get('title', ''),
+            "description": document.get('summary', ''),
+            "url": f"{SEOConfig.SITE_URL}{document.get('url', '/')}",
+            "inLanguage": "en",
+            "dateCreated": SITE_CREATED_ISO,
+            "dateModified": modified.isoformat(timespec="seconds") if modified else _now_iso(),
+            "isPartOf": {
+                "@type": "WebSite",
+                "name": f"{about_data.get('name', '')}'s Portfolio",
+                "url": SEOConfig.SITE_URL,
+            },
+            "publisher": {
+                "@type": "Person",
+                "name": about_data.get('name', ''),
+                "url": SEOConfig.SITE_URL,
+            },
+        }
+
+    @staticmethod
     def generate_breadcrumb_schema(breadcrumbs: list[dict]) -> dict:
         """Generate BreadcrumbList schema."""
         return {
@@ -368,7 +449,7 @@ class SEOSchemaGenerator:
             "url": SEOConfig.SITE_URL,
             "logo": about_data.get('image_url', ''),
             "email": email,
-            "sameAs": [url for url in social_media.values() if url],
+            "sameAs": _profile_links(social_media),
             "contactPoint": contact_points,
             "openingHoursSpecification": [
                 {
@@ -391,7 +472,7 @@ class SEOSchemaGenerator:
             "image": about_data.get('image_url', ''),
             "jobTitle": about_data.get('role', 'Software Developer'),
             "email": email,
-            "sameAs": [url for url in social_media.values() if url]
+            "sameAs": _profile_links(social_media)
         }
         
         # Create ContactPage schema
@@ -403,8 +484,8 @@ class SEOSchemaGenerator:
             "url": f"{SEOConfig.SITE_URL}/contact/",
             "mainEntity": organization,
             "author": author,
-            "dateCreated": "2025-03-16",
-            "dateModified": datetime.now().strftime("%Y-%m-%d"),
+            "dateCreated": SITE_CREATED_ISO,
+            "dateModified": _now_iso(),
             "inLanguage": "en",
             "isPartOf": {
                 "@type": "WebSite",
@@ -432,7 +513,8 @@ class SEOSchemaGenerator:
                     "name": cert.get('institution', ''),
                     "url": cert.get('website', '')
                 },
-                "validFrom": f"{cert.get('issued', {}).get('month', '')} {cert.get('issued', {}).get('year', '')}" if cert.get('issued') else '',
+                # ISO 8601, not "Jul 2025" -- validFrom is a Date property.
+                "validFrom": cert.get('issued_iso', ''),
                 "description": ' '.join(cert.get('achievements', []))
             }
             certifications.append(certification)
@@ -446,7 +528,8 @@ class SEOSchemaGenerator:
                 "@type": "Award",
                 "name": award.get('title', ''),
                 "description": award.get('description', ''),
-                "dateReceived": f"{award.get('issued', {}).get('month', '')} {award.get('issued', {}).get('year', '')}" if award.get('issued') else '',
+                # ISO 8601, not "Feb 2020" -- dateReceived is a Date property.
+                "dateReceived": award.get('issued_iso', ''),
                 "awardingOrganization": {
                     "@type": "Organization",
                     "name": award.get('institution', ''),
@@ -471,8 +554,8 @@ class SEOSchemaGenerator:
                 "name": about_data.get('name', ''),
                 "url": SEOConfig.SITE_URL
             },
-            "dateCreated": "2025-03-16",
-            "dateModified": datetime.now().strftime("%Y-%m-%d"),
+            "dateCreated": SITE_CREATED_ISO,
+            "dateModified": _now_iso(),
             "inLanguage": "en"
         }
     
@@ -485,8 +568,8 @@ class SEOSchemaGenerator:
             "name": "Privacy Policy - ridwaanhall.com",
             "description": "Comprehensive privacy policy outlining how we collect, use, and protect your personal information on ridwaanhall.com",
             "url": f"{SEOConfig.SITE_URL}/privacy-policy/",
-            "dateCreated": "2025-03-16",
-            "dateModified": datetime.now().strftime("%Y-%m-%d"),
+            "dateCreated": SITE_CREATED_ISO,
+            "dateModified": _now_iso(),
             "inLanguage": "en",
             "publisher": {
                 "@type": "Person",

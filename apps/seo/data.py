@@ -269,6 +269,29 @@ class SEOData:
         }
     
     @staticmethod
+    def get_legal_document_seo(about_data: dict, document: dict) -> dict:
+        """SEO for any legal document that is not the privacy policy.
+
+        Terms had none at all: no canonical, no meta, no structured data, which
+        left it indistinguishable from a duplicate of any other page.
+        """
+        keywords = SEOConfig.COMMON_KEYWORDS['personal'][:3] +                   ['terms', 'conditions', 'legal', 'policy']
+
+        title = document.get('title', 'Legal')
+        summary = document.get('summary') or f"{title} for {SEOConfig.SITE_URL}."
+        return {
+            'title': f"{title} - Clear Terms, Plainly Stated",
+            'description': SEOData.optimize_description(summary),
+            'keywords': ', '.join(keywords),
+            'og_image': SEOData._resolve_image(about_data),
+            'og_type': 'website',
+            'twitter_card': 'summary',
+            'canonical_url': f"{SEOConfig.SITE_URL}{document.get('url', '/')}",
+            'content_type': 'privacy_policy',
+            **SEOData.get_base_seo_data()
+        }
+
+    @staticmethod
     def get_openhire_seo(about_data: dict) -> dict:
         """Generate SEO data for openhire page."""
         keywords = SEOConfig.COMMON_KEYWORDS['personal'][:3] + \

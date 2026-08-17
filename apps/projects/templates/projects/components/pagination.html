@@ -1,10 +1,11 @@
+{% load pagination_tags %}
 <nav class="flex justify-center" aria-label="Pagination">
     <ul class="inline-flex items-center gap-0.5 sm:gap-1 rounded-lg p-0.5 sm:p-1 backdrop-blur-sm border border-zinc-800">
         <!-- Previous page -->
         {% if page_obj.has_previous %}
             <li>
                 <a
-                    href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}"
+                    href="{% page_url page_obj.previous_page_number search_query %}"
                     class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200"
                     aria-label="Previous page"
                 >
@@ -37,7 +38,7 @@
             {% else %}
                 <li>
                     <a
-                        href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}page={{ item }}"
+                        href="{% page_url item search_query %}"
                         class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-xs sm:text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200"
                     >
                         {{ item }}
@@ -50,7 +51,7 @@
         {% if page_obj.has_next %}
         <li>
             <a
-                href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}page={{ page_obj.next_page_number }}"
+                href="{% page_url page_obj.next_page_number search_query %}"
                 class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-md text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200"
                 aria-label="Next page"
             >

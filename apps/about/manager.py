@@ -26,6 +26,28 @@ def _image_url(field) -> str:
     return field.url if field else ""
 
 
+MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+
+def _month_year(value) -> dict | None:
+    """A stored date as the {"month": "Jan", "year": 2024} pair templates expect.
+
+    The columns are real dates now, but the rendered output is unchanged: the
+    templates and the about dict have always spoken in month/year, and only the
+    storage was wrong. Keeping the shape here is what let this change stay
+    inside the model and manager layers.
+    """
+    if value is None:
+        return None
+    return {"month": MONTHS[value.month - 1], "year": value.year}
+
+
+def _iso_month(value) -> str:
+    """ISO 8601 year-month, for schema.org date properties."""
+    return value.strftime("%Y-%m") if value else ""
+
+
 def _skill_dict(s) -> dict:
     return {"name": s.name, "description": s.description, "icon_svg": s.icon_svg, "category": s.category}
 
@@ -115,13 +137,15 @@ class AboutManager:
 
         result = []
         for e in qs:
-            end = (
-                {"month": e.period_end_month, "year": e.period_end_year}
-                if e.period_end_month else "Present"
-            )
+            # A role with no end date is one you are still in.
+            end = _month_year(e.period_end) or "Present"
             result.append({
                 "id": e.id, "title": e.title, "company": e.company, "logo": _image_url(e.logo),
-                "period": {"start": {"month": e.period_start_month, "year": e.period_start_year}, "end": end},
+                "period": {
+                    "start": _month_year(e.period_start), "end": end,
+                    # ISO forms for JSON-LD, which needs 8601 rather than "Jan 2024".
+                    "start_iso": _iso_month(e.period_start), "end_iso": _iso_month(e.period_end),
+                },
                 "employment_type": e.employment_type, "location_type": e.location_type,
                 "location": e.location, "is_current": e.is_current,
                 "responsibilities": e.responsibilities, "website": e.website,
@@ -148,10 +172,10 @@ class AboutManager:
         result = []
         for edu in qs:
             date = None
-            if edu.date_start_month:
+            if edu.date_start:
                 date = {
-                    "start": {"month": edu.date_start_month, "year": edu.date_start_year},
-                    "end": {"month": edu.date_end_month, "year": edu.date_end_year},
+                    "start": _month_year(edu.date_start),
+                    "end": _month_year(edu.date_end),
                 }
             result.append({
                 "degree": edu.degree, "institution": edu.institution, "logo": _image_url(edu.logo),
@@ -178,7 +202,7 @@ class AboutManager:
         return [
             {
                 "id": c.id, "title": c.title, "credential_url": c.credential_url,
-                "issued": {"month": c.issued_month, "year": c.issued_year},
+                "issued": _month_year(c.issued), "issued_iso": _iso_month(c.issued),
                 "institution": c.institution, "website": c.website, "logo": _image_url(c.logo),
                 "is_featured": c.is_featured, "achievements": c.achievements,
             }
@@ -235,7 +259,7 @@ class AboutManager:
         return [
             {
                 "id": a.id, "title": a.title, "credential_url": a.credential_url,
-                "description": a.description, "issued": {"month": a.issued_month, "year": a.issued_year},
+                "description": a.description, "issued": _month_year(a.issued), "issued_iso": _iso_month(a.issued),
                 "institution": a.institution, "website": a.website, "logo": _image_url(a.logo),
             }
             for a in qs

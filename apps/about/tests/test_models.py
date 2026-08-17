@@ -1,5 +1,7 @@
 """About-app model behaviour."""
 
+from datetime import date
+
 from django.test import TestCase
 
 
@@ -69,12 +71,13 @@ class AboutModelsTest(TestCase):
         from apps.about.models import Experience
 
         exp = Experience.objects.create(
-            title="Developer", company="Acme", period_start_month="Jan", period_start_year=2023,
+            title="Developer", company="Acme", period_start=date(2023, 1, 1),
             employment_type="Full-time", location_type="Remote", location="Jakarta",
             is_current=True, sort_order=0,
         )
         self.assertTrue(exp.is_current)
-        self.assertIsNone(exp.period_end_month)
+        # No end date is what makes a role "Present".
+        self.assertIsNone(exp.period_end)
 
     def test_education_is_last(self):
         from apps.about.models import Education

@@ -1,6 +1,7 @@
 """End-to-end admin saves for JSON-backed fields."""
 
 import json
+from datetime import date
 
 from django.test import TestCase, override_settings
 
@@ -23,7 +24,7 @@ class AdminJSONFieldSaveTest(TestCase):
         )
         cls.experience = Experience.objects.create(
             title="Dev", company="Acme",
-            period_start_month="Jan", period_start_year=2024,
+            period_start=date(2024, 1, 1),
             employment_type="Full-time", location_type="Remote", location="Remote",
             is_current=True, sort_order=0,
             responsibilities=["Ship things", "Fix things"],
@@ -37,10 +38,8 @@ class AdminJSONFieldSaveTest(TestCase):
             "title": self.experience.title,
             "company": self.experience.company,
             "website": "",
-            "period_start_month": self.experience.period_start_month,
-            "period_start_year": self.experience.period_start_year,
-            "period_end_month": "",
-            "period_end_year": "",
+            "period_start": self.experience.period_start.isoformat(),
+            "period_end": "",
             "employment_type": self.experience.employment_type,
             "location_type": self.experience.location_type,
             "location": self.experience.location,

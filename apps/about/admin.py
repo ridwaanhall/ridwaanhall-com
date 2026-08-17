@@ -84,8 +84,9 @@ class ProfileAdmin(SingletonModelAdmin):
 @admin.register(Experience)
 class ExperienceAdmin(admin.ModelAdmin):
     form = ExperienceAdminForm
-    list_display = ("title", "company", "sort_order", "is_current")
-    list_filter = ("is_current", "employment_type", "location_type")
+    list_display = ("title", "company", "period_start", "period_end", "sort_order", "is_current")
+    list_filter = ("is_current", "employment_type", "location_type",
+                   ("period_start", admin.DateFieldListFilter))
     search_fields = ("title", "company")
     ordering = ("sort_order",)
 
@@ -93,23 +94,27 @@ class ExperienceAdmin(admin.ModelAdmin):
 @admin.register(Education)
 class EducationAdmin(admin.ModelAdmin):
     form = EducationAdminForm
-    list_display = ("degree", "institution", "is_last")
+    list_display = ("degree", "institution", "years", "date_start", "is_last")
     list_filter = ("is_last",)
     search_fields = ("degree", "institution")
 
 
 @admin.register(Award)
 class AwardAdmin(admin.ModelAdmin):
-    list_display = ("title", "institution", "issued_year")
-    list_filter = ("issued_year",)
+    # DateFieldListFilter gives "today / past 7 days / this month / this year"
+    # rather than the flat list of years the integer column produced.
+    list_display = ("title", "institution", "issued")
+    list_filter = (("issued", admin.DateFieldListFilter),)
+    date_hierarchy = "issued"
     search_fields = ("title", "institution")
 
 
 @admin.register(Certification)
 class CertificationAdmin(admin.ModelAdmin):
     form = CertificationAdminForm
-    list_display = ("title", "institution", "is_featured", "issued_year")
-    list_filter = ("is_featured", "issued_year")
+    list_display = ("title", "institution", "is_featured", "issued")
+    list_filter = ("is_featured", ("issued", admin.DateFieldListFilter))
+    date_hierarchy = "issued"
     search_fields = ("title", "institution")
 
 

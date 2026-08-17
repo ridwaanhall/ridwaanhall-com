@@ -9,6 +9,7 @@ delete images still in use on the live site.
 import io
 import shutil
 import tempfile
+from datetime import date
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
@@ -33,7 +34,7 @@ def upload(name, colour="red"):
 def make_experience(**kwargs):
     defaults = {
         "title": "Dev", "company": "Acme",
-        "period_start_month": "Jan", "period_start_year": 2024,
+        "period_start": date(2024, 1, 1),
         "employment_type": "Full-time", "location_type": "Remote",
         "location": "Remote", "is_current": True, "sort_order": 0,
     }
@@ -99,13 +100,13 @@ class FileCleanupTest(TestCase):
     def test_cleanup_spans_models_not_just_the_one_being_deleted(self):
         """An Award and a Certification really do share a logo in the real data."""
         award = Award.objects.create(
-            title="A", institution="Inst", issued_month="Jan", issued_year=2024,
+            title="A", institution="Inst", issued=date(2024, 1, 1),
             logo=upload("cross-model.png"),
         )
         name = award.logo.name
         storage = award.logo.storage
         cert = Certification.objects.create(
-            title="C", institution="Inst", issued_month="Jan", issued_year=2024,
+            title="C", institution="Inst", issued=date(2024, 1, 1),
         )
         cert.logo.name = name
         cert.save()

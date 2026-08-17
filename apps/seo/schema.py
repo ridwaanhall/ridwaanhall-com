@@ -59,20 +59,17 @@ class SEOSchemaGenerator:
                 "workLocation": exp.get('location', '')
             }
             
-            # Parse period for dates
+            # schema.org startDate/endDate are Date properties, so they need
+            # ISO 8601. This used to emit "Jan 2024", which is not a valid date
+            # and was silently ignored by consumers; the manager now supplies a
+            # "2024-01" form alongside the display month/year.
             period = exp.get('period', {})
             if isinstance(period, dict):
-                start_info = period.get('start', {})
-                end_info = period.get('end', {})
-                
-                if isinstance(start_info, dict):
-                    work_exp["startDate"] = f"{start_info.get('month', '')} {start_info.get('year', '')}"
-                
-                if end_info == "Present":
-                    # Don't set endDate for current positions
-                    pass
-                elif isinstance(end_info, dict):
-                    work_exp["endDate"] = f"{end_info.get('month', '')} {end_info.get('year', '')}"
+                if period.get('start_iso'):
+                    work_exp["startDate"] = period['start_iso']
+                # A current role has no endDate at all, rather than an empty one.
+                if period.get('end') != "Present" and period.get('end_iso'):
+                    work_exp["endDate"] = period['end_iso']
             
             work_experience.append(work_exp)
         

@@ -108,10 +108,14 @@ class Experience(models.Model):
     logo = models.ImageField(upload_to="logo/", blank=True, null=True)
     website = models.URLField(blank=True)
 
-    period_start_month = models.CharField(max_length=10)
-    period_start_year = models.IntegerField()
-    period_end_month = models.CharField(max_length=10, blank=True, null=True)
-    period_end_year = models.IntegerField(blank=True, null=True)
+    # Only month and year are meaningful, so the day is pinned to the 1st.
+    # Stored as real dates rather than a month name plus an integer year: that
+    # pair could not be sorted or compared, and fed a non-ISO string straight
+    # into the JSON-LD startDate, which schema.org rejects.
+    period_start = models.DateField(help_text="Day is ignored; only month and year are shown.")
+    period_end = models.DateField(
+        blank=True, null=True, help_text="Leave empty for a role you are still in ('Present')."
+    )
 
     employment_type = models.CharField(max_length=50)
     location_type = models.CharField(max_length=50)
@@ -137,11 +141,13 @@ class Education(models.Model):
     is_last = models.BooleanField(default=False)
     achievements = models.JSONField(default=list, blank=True)
 
+    # `years` is a free-text range ("2018 - 2021") used by the older entries,
+    # which never recorded a month. It is kept rather than parsed into dates:
+    # storing "2018 - 2021" as January 2018 would claim a precision the data
+    # never had. Newer entries fill in the real dates below instead.
     years = models.CharField(max_length=50, blank=True, null=True)
-    date_start_month = models.CharField(max_length=10, blank=True, null=True)
-    date_start_year = models.IntegerField(blank=True, null=True)
-    date_end_month = models.CharField(max_length=10, blank=True, null=True)
-    date_end_year = models.IntegerField(blank=True, null=True)
+    date_start = models.DateField(blank=True, null=True, help_text="Day is ignored.")
+    date_end = models.DateField(blank=True, null=True, help_text="Day is ignored.")
 
     location_regency = models.CharField(max_length=100, blank=True)
     location_province = models.CharField(max_length=100, blank=True)
@@ -164,8 +170,7 @@ class Award(models.Model):
     institution = models.CharField(max_length=255)
     website = models.URLField(blank=True)
     logo = models.ImageField(upload_to="logo/", blank=True, null=True)
-    issued_month = models.CharField(max_length=10)
-    issued_year = models.IntegerField()
+    issued = models.DateField(help_text="Day is ignored; only month and year are shown.")
 
     class Meta:
         ordering = ["-id"]
@@ -182,8 +187,7 @@ class Certification(models.Model):
     logo = models.ImageField(upload_to="logo/", blank=True, null=True)
     is_featured = models.BooleanField(default=False)
     achievements = models.JSONField(default=list, blank=True)
-    issued_month = models.CharField(max_length=10)
-    issued_year = models.IntegerField()
+    issued = models.DateField(help_text="Day is ignored; only month and year are shown.")
 
     class Meta:
         ordering = ["-id"]

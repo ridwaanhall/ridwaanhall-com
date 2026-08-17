@@ -13,7 +13,7 @@ Two properties carry the design and are what these tests are really for:
   round trip to Supabase to rebuild.
 """
 
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from unittest import mock
 
 from django.core.cache import cache
@@ -202,8 +202,8 @@ class ContentCacheTest(TestCase):
         self.assertEqual(OpenHireManager.get_open_to_work_data()["status"], "Closed")
 
     def test_filtered_variants_are_cached_separately(self):
-        Award.objects.create(title="A", institution="I", issued_month="Jan", issued_year=2024)
-        Award.objects.create(title="B", institution="I", issued_month="Jan", issued_year=2024)
+        Award.objects.create(title="A", institution="I", issued=date(2024, 1, 1))
+        Award.objects.create(title="B", institution="I", issued=date(2024, 1, 1))
 
         descending = [a["title"] for a in AboutManager.get_awards(sort_by_id=True)]
         ascending = [a["title"] for a in AboutManager.get_awards(sort_by_id=False)]

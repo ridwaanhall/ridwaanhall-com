@@ -1,5 +1,7 @@
 """DataService's about-data accessors."""
 
+from datetime import date
+
 from django.test import TestCase
 
 from apps.core.data_service import DataService
@@ -14,12 +16,12 @@ class AboutDataServiceTest(TestCase):
 
         Profile.objects.create(name="Test Author", role="Developer")
         Experience.objects.create(
-            title="Current Role", company="Acme", period_start_month="Jan", period_start_year=2024,
+            title="Current Role", company="Acme", period_start=date(2024, 1, 1),
             is_current=True, sort_order=0,
         )
         Experience.objects.create(
-            title="Past Role", company="Old Co", period_start_month="Jan", period_start_year=2020,
-            period_end_month="Dec", period_end_year=2023, is_current=False, sort_order=1,
+            title="Past Role", company="Old Co", period_start=date(2020, 1, 1),
+            period_end=date(2023, 12, 1), is_current=False, sort_order=1,
         )
         Education.objects.create(degree="Bachelor's", institution="UTY", is_last=True)
         Education.objects.create(degree="High School", institution="Al Mukmin", is_last=False)

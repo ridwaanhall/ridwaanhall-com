@@ -131,7 +131,7 @@ class AboutManager:
     def _build_experiences(cls, current_only=False):
         from apps.about.models import Experience
 
-        qs = Experience.objects.all()
+        qs = Experience.objects.select_related("organization")
         if current_only:
             qs = qs.filter(is_current=True)
 
@@ -140,7 +140,8 @@ class AboutManager:
             # A role with no end date is one you are still in.
             end = _month_year(e.period_end) or "Present"
             result.append({
-                "id": e.id, "title": e.title, "company": e.company, "logo": _image_url(e.logo),
+                "id": e.id, "title": e.title, "company": e.organization.name,
+                "logo": _image_url(e.organization.logo),
                 "period": {
                     "start": _month_year(e.period_start), "end": end,
                     # ISO forms for JSON-LD, which needs 8601 rather than "Jan 2024".
@@ -148,7 +149,7 @@ class AboutManager:
                 },
                 "employment_type": e.employment_type, "location_type": e.location_type,
                 "location": e.location, "is_current": e.is_current,
-                "responsibilities": e.responsibilities, "website": e.website,
+                "responsibilities": e.responsibilities, "website": e.organization.website,
             })
         return result
 
@@ -165,7 +166,7 @@ class AboutManager:
     def _build_education(cls, last_only=False):
         from apps.about.models import Education
 
-        qs = Education.objects.all()
+        qs = Education.objects.select_related("organization")
         if last_only:
             qs = qs.filter(is_last=True)
 
@@ -178,7 +179,8 @@ class AboutManager:
                     "end": _month_year(edu.date_end),
                 }
             result.append({
-                "degree": edu.degree, "institution": edu.institution, "logo": _image_url(edu.logo),
+                "degree": edu.degree, "institution": edu.organization.name,
+                "logo": _image_url(edu.organization.logo),
                 "is_last": edu.is_last,
                 "location": {
                     "regency": edu.location_regency, "province": edu.location_province,
@@ -186,7 +188,7 @@ class AboutManager:
                     "flag": edu.location_flag, "map_url": edu.location_map_url,
                 },
                 "achievements": edu.achievements, "alias": edu.alias, "date": date,
-                "years": edu.years, "website": edu.website,
+                "years": edu.years, "website": edu.organization.website,
             })
         return result
 
@@ -203,10 +205,11 @@ class AboutManager:
             {
                 "id": c.id, "title": c.title, "credential_url": c.credential_url,
                 "issued": _month_year(c.issued), "issued_iso": _iso_month(c.issued),
-                "institution": c.institution, "website": c.website, "logo": _image_url(c.logo),
+                "institution": c.organization.name, "website": c.organization.website,
+                "logo": _image_url(c.organization.logo),
                 "is_featured": c.is_featured, "achievements": c.achievements,
             }
-            for c in Certification.objects.all()
+            for c in Certification.objects.select_related("organization")
         ]
 
     @classmethod
@@ -255,12 +258,13 @@ class AboutManager:
     def _build_awards(cls, sort_by_id=True):
         from apps.about.models import Award
 
-        qs = Award.objects.order_by("-id" if sort_by_id else "id")
+        qs = Award.objects.select_related("organization").order_by("-id" if sort_by_id else "id")
         return [
             {
                 "id": a.id, "title": a.title, "credential_url": a.credential_url,
                 "description": a.description, "issued": _month_year(a.issued), "issued_iso": _iso_month(a.issued),
-                "institution": a.institution, "website": a.website, "logo": _image_url(a.logo),
+                "institution": a.organization.name, "website": a.organization.website,
+                "logo": _image_url(a.organization.logo),
             }
             for a in qs
         ]

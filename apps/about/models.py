@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 
 from apps.core.models import SingletonModel
 
@@ -102,11 +103,43 @@ class DonateLink(models.Model):
         return self.platform
 
 
-class Experience(models.Model):
-    title = models.CharField(max_length=255)
-    company = models.CharField(max_length=255)
+class Organization(models.Model):
+    """A company, school or issuing body, shared by everything that references it.
+
+    Experience, Education, Certification and Award each used to carry their own
+    name, logo and website. Across 33 rows that was only 19 distinct
+    organisations, so one logo change meant editing up to six rows and they
+    could silently drift apart.
+
+    Keyed on the name, not the logo: several organisations legitimately share a
+    logo file. "LinkedIn" and "LinkedIn Learning" are separate issuers on one
+    mark, and three Al-Mukmin schools share theirs.
+    """
+
+    name = models.CharField(max_length=255, unique=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
     logo = models.ImageField(upload_to="logo/", blank=True, null=True)
     website = models.URLField(blank=True)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "Organization"
+        verbose_name_plural = "Organizations"
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+
+class Experience(models.Model):
+    title = models.CharField(max_length=255)
+    organization = models.ForeignKey(
+        Organization, on_delete=models.PROTECT, related_name="experiences"
+    )
 
     # Only month and year are meaningful, so the day is pinned to the 1st.
     # Stored as real dates rather than a month name plus an integer year: that
@@ -129,15 +162,17 @@ class Experience(models.Model):
         ordering = ["sort_order"]
 
     def __str__(self):
-        return f"{self.title} @ {self.company}"
+        # organization_id is checked first so __str__ still works on an unsaved
+        # instance, which the admin does when rendering validation errors.
+        return f"{self.title} @ {self.organization.name}" if self.organization_id else self.title
 
 
 class Education(models.Model):
     degree = models.CharField(max_length=255)
-    institution = models.CharField(max_length=255)
-    logo = models.ImageField(upload_to="logo/", blank=True, null=True)
+    organization = models.ForeignKey(
+        Organization, on_delete=models.PROTECT, related_name="education"
+    )
     alias = models.CharField(max_length=100, blank=True, null=True)
-    website = models.URLField(blank=True, null=True)
     is_last = models.BooleanField(default=False)
     achievements = models.JSONField(default=list, blank=True)
 
@@ -160,16 +195,16 @@ class Education(models.Model):
         ordering = ["id"]
 
     def __str__(self):
-        return f"{self.degree} @ {self.institution}"
+        return f"{self.degree} @ {self.organization.name}" if self.organization_id else self.degree
 
 
 class Award(models.Model):
     title = models.CharField(max_length=255)
     credential_url = models.URLField(blank=True)
     description = models.TextField(blank=True)
-    institution = models.CharField(max_length=255)
-    website = models.URLField(blank=True)
-    logo = models.ImageField(upload_to="logo/", blank=True, null=True)
+    organization = models.ForeignKey(
+        Organization, on_delete=models.PROTECT, related_name="awards"
+    )
     issued = models.DateField(help_text="Day is ignored; only month and year are shown.")
 
     class Meta:
@@ -182,9 +217,9 @@ class Award(models.Model):
 class Certification(models.Model):
     title = models.CharField(max_length=255)
     credential_url = models.URLField(blank=True)
-    institution = models.CharField(max_length=255)
-    website = models.URLField(blank=True)
-    logo = models.ImageField(upload_to="logo/", blank=True, null=True)
+    organization = models.ForeignKey(
+        Organization, on_delete=models.PROTECT, related_name="certifications"
+    )
     is_featured = models.BooleanField(default=False)
     achievements = models.JSONField(default=list, blank=True)
     issued = models.DateField(help_text="Day is ignored; only month and year are shown.")

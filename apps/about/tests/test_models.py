@@ -5,6 +5,16 @@ from datetime import date
 from django.test import TestCase
 
 
+def _org(name):
+    """Organisations are shared, so tests reuse one by name rather than
+    creating a duplicate (the name is unique)."""
+    from apps.about.models import Organization
+
+    org, _ = Organization.objects.get_or_create(name=name)
+    return org
+
+
+
 class AboutModelsTest(TestCase):
     """Tests for the ORM models in apps/about/models.py."""
 
@@ -71,7 +81,7 @@ class AboutModelsTest(TestCase):
         from apps.about.models import Experience
 
         exp = Experience.objects.create(
-            title="Developer", company="Acme", period_start=date(2023, 1, 1),
+            title="Developer", organization=_org("Acme"), period_start=date(2023, 1, 1),
             employment_type="Full-time", location_type="Remote", location="Jakarta",
             is_current=True, sort_order=0,
         )
@@ -82,7 +92,7 @@ class AboutModelsTest(TestCase):
     def test_education_is_last(self):
         from apps.about.models import Education
 
-        edu = Education.objects.create(degree="Bachelor", institution="UTY", is_last=True)
+        edu = Education.objects.create(degree="Bachelor", organization=_org("UTY"), is_last=True)
         self.assertTrue(edu.is_last)
 
     def test_application_defaults(self):

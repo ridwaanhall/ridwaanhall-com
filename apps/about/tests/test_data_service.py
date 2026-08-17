@@ -7,6 +7,16 @@ from django.test import TestCase
 from apps.core.data_service import DataService
 
 
+def _org(name):
+    """Organisations are shared, so tests reuse one by name rather than
+    creating a duplicate (the name is unique)."""
+    from apps.about.models import Organization
+
+    org, _ = Organization.objects.get_or_create(name=name)
+    return org
+
+
+
 class AboutDataServiceTest(TestCase):
     """Tests that DataService correctly loads about data (ORM-backed)."""
 
@@ -16,15 +26,15 @@ class AboutDataServiceTest(TestCase):
 
         Profile.objects.create(name="Test Author", role="Developer")
         Experience.objects.create(
-            title="Current Role", company="Acme", period_start=date(2024, 1, 1),
+            title="Current Role", organization=_org("Acme"), period_start=date(2024, 1, 1),
             is_current=True, sort_order=0,
         )
         Experience.objects.create(
-            title="Past Role", company="Old Co", period_start=date(2020, 1, 1),
+            title="Past Role", organization=_org("Old Co"), period_start=date(2020, 1, 1),
             period_end=date(2023, 12, 1), is_current=False, sort_order=1,
         )
-        Education.objects.create(degree="Bachelor's", institution="UTY", is_last=True)
-        Education.objects.create(degree="High School", institution="Al Mukmin", is_last=False)
+        Education.objects.create(degree="Bachelor's", organization=_org("UTY"), is_last=True)
+        Education.objects.create(degree="High School", organization=_org("Al Mukmin"), is_last=False)
 
     def test_get_about_data_returns_dict(self):
         result = DataService.get_about_data()

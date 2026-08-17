@@ -1,20 +1,25 @@
 """Storage cleanup when image rows are deleted or their file is replaced.
 
 The shared-file cases matter most: several stored files are deliberately reused
-across rows (the author photo appears on every BlogPost, one company logo
-covers six Experience rows), so cleanup that ignored reference counting would
-delete images still in use on the live site.
+across rows (the author photo appears on every BlogPost), so cleanup that
+ignored reference counting would delete images still in use on the live site.
+
+Logos now live on Organization rather than on each Experience or Certification,
+which removes most of that duplication -- but not all of it. Distinct
+organisations still share a logo file where they share a brand: "LinkedIn" and
+"LinkedIn Learning" are separate issuers on one mark, as are three Al-Mukmin
+schools. Those are the cases below.
 """
 
 import io
+import itertools
 import shutil
 import tempfile
-from datetime import date
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 
-from apps.about.models import Award, Certification, Experience
+from apps.about.models import Organization
 from apps.core.file_cleanup import is_file_referenced
 
 
@@ -31,15 +36,14 @@ def upload(name, colour="red"):
     return SimpleUploadedFile(name, make_image(colour), content_type="image/png")
 
 
-def make_experience(**kwargs):
-    defaults = {
-        "title": "Dev", "company": "Acme",
-        "period_start": date(2024, 1, 1),
-        "employment_type": "Full-time", "location_type": "Remote",
-        "location": "Remote", "is_current": True, "sort_order": 0,
-    }
+_counter = itertools.count()
+
+
+def make_org(**kwargs):
+    """An organisation, which is where logos live now."""
+    defaults = {"name": f"Org {next(_counter)}"}
     defaults.update(kwargs)
-    return Experience.objects.create(**defaults)
+    return Organization.objects.create(**defaults)
 
 
 class FileCleanupTest(TestCase):
@@ -59,22 +63,22 @@ class FileCleanupTest(TestCase):
     # -- deletion --------------------------------------------------------
 
     def test_deleting_a_row_deletes_its_unreferenced_file(self):
-        experience = make_experience(logo=upload("solo.png"))
-        name = experience.logo.name
-        storage = experience.logo.storage
+        org = make_org(logo=upload("solo.png"))
+        name = org.logo.name
+        storage = org.logo.storage
         self.assertTrue(storage.exists(name))
 
-        experience.delete()
+        org.delete()
 
         self.assertFalse(storage.exists(name), "the file should be gone with its only row")
 
     def test_deleting_one_row_keeps_a_file_another_row_still_uses(self):
-        first = make_experience(logo=upload("shared.png"))
+        first = make_org(logo=upload("shared.png"))
         name = first.logo.name
         storage = first.logo.storage
         # A second row pointing at the very same stored file, exactly as the
         # real data does for repeated company logos.
-        second = make_experience(company="Other")
+        second = make_org()
         second.logo.name = name
         second.save()
 
@@ -85,10 +89,10 @@ class FileCleanupTest(TestCase):
         self.assertEqual(second.logo.name, name)
 
     def test_shared_file_is_removed_once_the_last_row_goes(self):
-        first = make_experience(logo=upload("last.png"))
+        first = make_org(logo=upload("last.png"))
         name = first.logo.name
         storage = first.logo.storage
-        second = make_experience(company="Other")
+        second = make_org()
         second.logo.name = name
         second.save()
 
@@ -97,46 +101,43 @@ class FileCleanupTest(TestCase):
 
         self.assertFalse(storage.exists(name))
 
-    def test_cleanup_spans_models_not_just_the_one_being_deleted(self):
-        """An Award and a Certification really do share a logo in the real data."""
-        award = Award.objects.create(
-            title="A", institution="Inst", issued=date(2024, 1, 1),
-            logo=upload("cross-model.png"),
-        )
-        name = award.logo.name
-        storage = award.logo.storage
-        cert = Certification.objects.create(
-            title="C", institution="Inst", issued=date(2024, 1, 1),
-        )
-        cert.logo.name = name
-        cert.save()
+    def test_two_organisations_can_share_one_logo_file(self):
+        """"LinkedIn" and "LinkedIn Learning" really do share a mark in the real
+        data, as do three Al-Mukmin schools -- so deleting one organisation must
+        not take the other's logo with it."""
+        first = make_org(name="LinkedIn", logo=upload("brand.png"))
+        name = first.logo.name
+        storage = first.logo.storage
+        second = make_org(name="LinkedIn Learning")
+        second.logo.name = name
+        second.save()
 
-        award.delete()
+        first.delete()
 
-        self.assertTrue(storage.exists(name), "still referenced by a different model")
+        self.assertTrue(storage.exists(name), "still referenced by the other organisation")
 
     def test_deleting_a_row_without_a_file_is_harmless(self):
-        make_experience().delete()  # no logo set; must not raise
+        make_org().delete()  # no logo set; must not raise
 
     # -- replacement -----------------------------------------------------
 
     def test_replacing_an_image_deletes_the_previous_file(self):
-        experience = make_experience(logo=upload("before.png"))
-        old_name = experience.logo.name
-        storage = experience.logo.storage
+        org = make_org(logo=upload("before.png"))
+        old_name = org.logo.name
+        storage = org.logo.storage
 
-        experience.logo = upload("after.png", "blue")
-        experience.save()
+        org.logo = upload("after.png", "blue")
+        org.save()
 
-        self.assertNotEqual(experience.logo.name, old_name)
+        self.assertNotEqual(org.logo.name, old_name)
         self.assertFalse(storage.exists(old_name), "the replaced file should be gone")
-        self.assertTrue(storage.exists(experience.logo.name))
+        self.assertTrue(storage.exists(org.logo.name))
 
     def test_replacing_an_image_keeps_a_file_another_row_still_uses(self):
-        first = make_experience(logo=upload("keepme.png"))
+        first = make_org(logo=upload("keepme.png"))
         shared_name = first.logo.name
         storage = first.logo.storage
-        second = make_experience(company="Other")
+        second = make_org()
         second.logo.name = shared_name
         second.save()
 
@@ -146,20 +147,20 @@ class FileCleanupTest(TestCase):
         self.assertTrue(storage.exists(shared_name), "still used by the second row")
 
     def test_saving_without_touching_the_image_keeps_it(self):
-        experience = make_experience(logo=upload("stable.png"))
-        name = experience.logo.name
-        storage = experience.logo.storage
+        org = make_org(logo=upload("stable.png"))
+        name = org.logo.name
+        storage = org.logo.storage
 
-        experience.title = "Renamed"
-        experience.save()
+        org.name = "Renamed"
+        org.save()
 
         self.assertTrue(storage.exists(name))
 
     # -- helper ----------------------------------------------------------
 
     def test_is_file_referenced_reports_usage_across_all_models(self):
-        experience = make_experience(logo=upload("counted.png"))
-        self.assertTrue(is_file_referenced(experience.logo.name))
+        org = make_org(logo=upload("counted.png"))
+        self.assertTrue(is_file_referenced(org.logo.name))
         self.assertFalse(is_file_referenced("logo/never-existed.png"))
         # An empty name means "nothing to delete", so it counts as in use.
         self.assertTrue(is_file_referenced(""))

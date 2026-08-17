@@ -8,6 +8,7 @@ from apps.about.models import (
     Education,
     Experience,
     JourneyStep,
+    Organization,
     Profile,
     ProfileSkillHighlight,
     Skill,
@@ -84,38 +85,46 @@ class ProfileAdmin(SingletonModelAdmin):
 @admin.register(Experience)
 class ExperienceAdmin(admin.ModelAdmin):
     form = ExperienceAdminForm
-    list_display = ("title", "company", "period_start", "period_end", "sort_order", "is_current")
+    list_display = ("title", "organization", "period_start", "period_end", "sort_order", "is_current")
+    autocomplete_fields = ("organization",)
+    list_select_related = ("organization",)
     list_filter = ("is_current", "employment_type", "location_type",
                    ("period_start", admin.DateFieldListFilter))
-    search_fields = ("title", "company")
+    search_fields = ("title", "organization__name")
     ordering = ("sort_order",)
 
 
 @admin.register(Education)
 class EducationAdmin(admin.ModelAdmin):
     form = EducationAdminForm
-    list_display = ("degree", "institution", "years", "date_start", "is_last")
+    list_display = ("degree", "organization", "years", "date_start", "is_last")
+    autocomplete_fields = ("organization",)
+    list_select_related = ("organization",)
     list_filter = ("is_last",)
-    search_fields = ("degree", "institution")
+    search_fields = ("degree", "organization__name")
 
 
 @admin.register(Award)
 class AwardAdmin(admin.ModelAdmin):
     # DateFieldListFilter gives "today / past 7 days / this month / this year"
     # rather than the flat list of years the integer column produced.
-    list_display = ("title", "institution", "issued")
+    list_display = ("title", "organization", "issued")
+    autocomplete_fields = ("organization",)
+    list_select_related = ("organization",)
     list_filter = (("issued", admin.DateFieldListFilter),)
     date_hierarchy = "issued"
-    search_fields = ("title", "institution")
+    search_fields = ("title", "organization__name")
 
 
 @admin.register(Certification)
 class CertificationAdmin(admin.ModelAdmin):
     form = CertificationAdminForm
-    list_display = ("title", "institution", "is_featured", "issued")
+    list_display = ("title", "organization", "is_featured", "issued")
+    autocomplete_fields = ("organization",)
+    list_select_related = ("organization",)
     list_filter = ("is_featured", ("issued", admin.DateFieldListFilter))
     date_hierarchy = "issued"
-    search_fields = ("title", "institution")
+    search_fields = ("title", "organization__name")
 
 
 @admin.register(Skill)
@@ -137,3 +146,27 @@ class ApplicationAdmin(admin.ModelAdmin):
     list_display = ("company_name", "position", "status", "employment_type", "location_type")
     list_filter = ("status", "employment_type", "location_type")
     search_fields = ("company_name", "position")
+
+
+@admin.register(Organization)
+class OrganizationAdmin(admin.ModelAdmin):
+    """The shared company/school/issuer record.
+
+    `search_fields` is required, not cosmetic: the four models above reference
+    Organization through autocomplete_fields, and Django refuses to render an
+    autocomplete widget whose target admin has no search_fields (admin.E040).
+    """
+
+    list_display = ("name", "website", "used_by")
+    search_fields = ("name", "website")
+    prepopulated_fields = {"slug": ("name",)}
+
+    @admin.display(description="Used by")
+    def used_by(self, obj):
+        parts = [
+            (obj.experiences.count(), "experience"),
+            (obj.education.count(), "education"),
+            (obj.certifications.count(), "certification"),
+            (obj.awards.count(), "award"),
+        ]
+        return ", ".join(f"{n} {label}" for n, label in parts if n) or "unused"

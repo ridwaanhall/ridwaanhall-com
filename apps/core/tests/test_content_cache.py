@@ -33,6 +33,16 @@ from apps.openhire.manager import OpenHireManager
 from apps.openhire.models import OpenToWorkProfile
 from apps.projects.models import Project
 
+
+def _org(name):
+    """Organisations are shared, so tests reuse one by name rather than
+    creating a duplicate (the name is unique)."""
+    from apps.about.models import Organization
+
+    org, _ = Organization.objects.get_or_create(name=name)
+    return org
+
+
 AT = datetime(2026, 1, 1, tzinfo=UTC)
 
 
@@ -202,8 +212,8 @@ class ContentCacheTest(TestCase):
         self.assertEqual(OpenHireManager.get_open_to_work_data()["status"], "Closed")
 
     def test_filtered_variants_are_cached_separately(self):
-        Award.objects.create(title="A", institution="I", issued=date(2024, 1, 1))
-        Award.objects.create(title="B", institution="I", issued=date(2024, 1, 1))
+        Award.objects.create(title="A", organization=_org("I"), issued=date(2024, 1, 1))
+        Award.objects.create(title="B", organization=_org("I"), issued=date(2024, 1, 1))
 
         descending = [a["title"] for a in AboutManager.get_awards(sort_by_id=True)]
         ascending = [a["title"] for a in AboutManager.get_awards(sort_by_id=False)]

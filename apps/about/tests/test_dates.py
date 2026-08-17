@@ -11,12 +11,20 @@ from datetime import date
 from django.test import TestCase
 
 from apps.about.manager import AboutManager
-from apps.about.models import Award, Certification, Education, Experience
+from apps.about.models import Award, Certification, Education, Experience, Organization
+
+
+def make_org(name="Acme"):
+    """Organisations are shared now, so tests reuse one rather than inventing
+    a company name per row."""
+    org, _ = Organization.objects.get_or_create(name=name, defaults={"website": "https://acme.test"})
+    return org
 
 
 def make_experience(**kwargs):
+    company = kwargs.pop("company", "Acme")
     defaults = {
-        "title": "Dev", "company": "Acme", "period_start": date(2024, 3, 1),
+        "title": "Dev", "organization": make_org(company), "period_start": date(2024, 3, 1),
         "employment_type": "Full-time", "location_type": "Remote",
         "location": "Remote", "is_current": False, "sort_order": 0,
     }
@@ -36,7 +44,7 @@ class StoredAsDatesTest(TestCase):
         make_experience(company="Newer", period_start=date(2024, 3, 1))
         make_experience(company="Middle", period_start=date(2021, 6, 1))
 
-        ordered = Experience.objects.order_by("period_start").values_list("company", flat=True)
+        ordered = Experience.objects.order_by("period_start").values_list("organization__name", flat=True)
 
         self.assertEqual(list(ordered), ["Older", "Middle", "Newer"])
 
@@ -46,7 +54,7 @@ class StoredAsDatesTest(TestCase):
 
         recent = Experience.objects.filter(period_start__gte=date(2023, 1, 1))
 
-        self.assertEqual([e.company for e in recent], ["Recent"])
+        self.assertEqual([e.organization.name for e in recent], ["Recent"])
 
 
 class RenderedShapeUnchangedTest(TestCase):
@@ -67,9 +75,9 @@ class RenderedShapeUnchangedTest(TestCase):
 
     def test_certification_and_award_keep_their_issued_shape(self):
         Certification.objects.create(
-            title="C", institution="I", issued=date(2023, 12, 1),
+            title="C", organization=make_org("I"), issued=date(2023, 12, 1),
         )
-        Award.objects.create(title="A", institution="I", issued=date(2022, 8, 1))
+        Award.objects.create(title="A", organization=make_org("I"), issued=date(2022, 8, 1))
 
         self.assertEqual(
             AboutManager._build_certifications()[0]["issued"], {"month": "Dec", "year": 2023}
@@ -81,7 +89,7 @@ class RenderedShapeUnchangedTest(TestCase):
     def test_education_without_dates_still_uses_its_year_range(self):
         """Older entries never recorded a month, so they keep the free-text
         range rather than being given an invented January."""
-        Education.objects.create(degree="BSc", institution="Uni", years="2018 - 2021")
+        Education.objects.create(degree="BSc", organization=make_org("Uni"), years="2018 - 2021")
 
         entry = AboutManager._build_education()[0]
 
@@ -90,7 +98,7 @@ class RenderedShapeUnchangedTest(TestCase):
 
     def test_education_with_dates_reports_them(self):
         Education.objects.create(
-            degree="MSc", institution="Uni",
+            degree="MSc", organization=make_org("Uni"),
             date_start=date(2021, 9, 1), date_end=date(2023, 6, 1),
         )
 

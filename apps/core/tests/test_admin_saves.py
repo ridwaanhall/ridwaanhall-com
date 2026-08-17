@@ -6,6 +6,16 @@ from datetime import date
 from django.test import TestCase, override_settings
 
 
+def _org(name):
+    """Organisations are shared, so tests reuse one by name rather than
+    creating a duplicate (the name is unique)."""
+    from apps.about.models import Organization
+
+    org, _ = Organization.objects.get_or_create(name=name)
+    return org
+
+
+
 class AdminJSONFieldSaveTest(TestCase):
     """End-to-end admin saves for the two bugs the widget work uncovered.
 
@@ -23,7 +33,7 @@ class AdminJSONFieldSaveTest(TestCase):
             username="admin-test", email="a@example.com", password="pw",
         )
         cls.experience = Experience.objects.create(
-            title="Dev", company="Acme",
+            title="Dev", organization=_org("Acme"),
             period_start=date(2024, 1, 1),
             employment_type="Full-time", location_type="Remote", location="Remote",
             is_current=True, sort_order=0,
@@ -36,8 +46,9 @@ class AdminJSONFieldSaveTest(TestCase):
     def _experience_payload(self, **overrides):
         payload = {
             "title": self.experience.title,
-            "company": self.experience.company,
-            "website": "",
+            # Name, logo and website live on the shared Organization now, so the
+            # form posts a reference rather than repeating them.
+            "organization": self.experience.organization_id,
             "period_start": self.experience.period_start.isoformat(),
             "period_end": "",
             "employment_type": self.experience.employment_type,

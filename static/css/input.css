@@ -359,3 +359,30 @@ html[data-theme="light"] [data-theme-icon="light"] {
 html[data-theme="light"] [data-theme-icon="dark"] {
     display: none;
 }
+
+/* ---------------------------------------------------------------------------
+   Switching the theme must not animate
+
+   Flipping `data-theme` changes the computed colour of nearly every element on
+   the page at once, and each one then animates that change over whatever
+   duration it happens to declare. The result is a visible cascade rather than
+   a switch: `<body>` is `transition-colors duration-200`, `#page-content` is
+   `transition-all duration-700`, and 148 elements sit on `duration-300` -- so
+   the sidebar arrives first and the content column trails half a second
+   behind.
+
+   Suppressing transitions for the single frame in which the swap happens makes
+   the whole page change together. themeToggle.js adds this class, flips the
+   attribute, forces a style flush so the new colours are committed with
+   transitions off, then removes it again -- all synchronously, so no animation
+   is ever started and normal hover transitions are unaffected afterwards.
+
+   Deliberately `transition`, not `animation`: `animate-pulse` on the status
+   dots and active-nav arrows should keep running throughout.
+   --------------------------------------------------------------------------- */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+    transition: none !important;
+}

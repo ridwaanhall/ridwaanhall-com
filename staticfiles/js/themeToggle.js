@@ -26,13 +26,31 @@
         }
     }
 
-    function applyTheme(theme) {
-        document.documentElement.dataset.theme = theme;
+    // The visual swap. Every path that changes the theme goes through here, so
+    // a change arriving from another tab is as flicker-free as a local click.
+    function setTheme(theme) {
+        var root = document.documentElement;
+
+        // Swap the whole page in one frame rather than letting every element
+        // animate the colour change over its own duration -- see the
+        // .theme-switching rule in input.css. Reading offsetHeight forces the
+        // new palette to be committed while transitions are still off, so
+        // removing the class immediately after cannot start an animation.
+        root.classList.add("theme-switching");
+        root.dataset.theme = theme;
+        void root.offsetHeight;
+        root.classList.remove("theme-switching");
 
         var meta = document.querySelector('meta[name="theme-color"]');
         if (meta) {
             meta.setAttribute("content", THEME_COLOR[theme]);
         }
+
+        syncControls(theme);
+    }
+
+    function applyTheme(theme) {
+        setTheme(theme);
 
         // localStorage throws in some privacy modes; a theme that does not
         // persist is a far better outcome than a toggle that does nothing.
@@ -41,8 +59,6 @@
         } catch (e) {
             /* not persisted */
         }
-
-        syncControls(theme);
     }
 
     document.addEventListener("click", function (event) {
@@ -59,12 +75,9 @@
             return;
         }
         if (event.newValue === "light" || event.newValue === "dark") {
-            document.documentElement.dataset.theme = event.newValue;
-            var meta = document.querySelector('meta[name="theme-color"]');
-            if (meta) {
-                meta.setAttribute("content", THEME_COLOR[event.newValue]);
-            }
-            syncControls(event.newValue);
+            // setTheme, not applyTheme -- following another tab must not write
+            // back to storage.
+            setTheme(event.newValue);
         }
     });
 

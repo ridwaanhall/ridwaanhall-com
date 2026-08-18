@@ -26,7 +26,6 @@
     var ANGLE_JITTER = 0.12; // radians, so the star is not perfectly mechanical
 
     var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    var coarsePointer = window.matchMedia("(hover: none) and (pointer: coarse)");
 
     var canvas = null;
     var ctx = null;
@@ -35,7 +34,7 @@
     var dpr = 1;
 
     function enabled() {
-        return !reduceMotion.matches && !coarsePointer.matches;
+        return !reduceMotion.matches;
     }
 
     function resize() {
@@ -185,9 +184,21 @@
         ctx = null;
     }
 
+    /*
+     * `mousedown`, deliberately not `pointerdown`, and this is what makes the
+     * effect safe on touch.
+     *
+     * On a touch device `mousedown` is a *compatibility* event, and the browser
+     * only dispatches it once it knows the touch was a tap. If the gesture
+     * turns into a scroll or a pinch, the compatibility mouse events are never
+     * sent -- so taps spark and scrolling does not, for free.
+     *
+     * `pointerdown` fires at the very start of every gesture, before the
+     * browser knows what it is, so it would throw a burst on each scroll.
+     */
     document.addEventListener("mousedown", function (event) {
         // Primary button only -- a right-click opening a context menu should
-        // not throw sparks.
+        // not throw sparks. Touch taps report button 0.
         if (event.button !== 0 || !enabled()) {
             return;
         }

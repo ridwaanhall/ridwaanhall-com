@@ -33,16 +33,13 @@ html[data-theme="light"] {
 }
 
 /*
- * Both guards are enforced in JS too -- the script never even starts a loop.
- * These are here so the canvas cannot be seen if it somehow gets drawn, and so
- * the intent is visible to anyone reading the stylesheet.
+ * Enforced in JS too -- the script never even starts a loop. This is here so
+ * the canvas cannot be seen if it somehow gets drawn, and so the intent is
+ * visible to anyone reading the stylesheet.
+ *
+ * Note there is deliberately no coarse-pointer guard: the effect runs on touch
+ * as well. See clickSpark.js for why that does not fire on every scroll.
  */
-@media (hover: none) and (pointer: coarse) {
-    .click-spark-canvas {
-        display: none;
-    }
-}
-
 @media (prefers-reduced-motion: reduce) {
     .click-spark-canvas {
         display: none;

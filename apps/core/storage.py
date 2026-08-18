@@ -15,8 +15,32 @@ from django.core.exceptions import SuspiciousFileOperation
 from django.core.files.base import ContentFile
 from django.core.files.storage import Storage
 
-_TIMEOUT = 30
+_TIMEOUT = 10
 _MAX_ATTEMPTS = 3
+
+# Hard ceiling on how long a single upload may occupy the request, retries and
+# backoff included.
+#
+# This exists because the per-attempt timeout is not a limit on the call: a
+# 30s `timeout=` with three attempts and 1.5s/3.0s backoff added up to 94.5s,
+# past every Vercel function limit, so a struggling upload returned a 504 from
+# the gateway rather than either saving or failing cleanly. Worse, `requests`'
+# timeout is the gap allowed between socket reads rather than a deadline for
+# the whole call, so a slow-but-progressing upload had no bound at all.
+#
+# A healthy upload takes a couple of seconds; this only governs what happens
+# when Supabase is unhealthy, and there the useful behaviour is to give up
+# while the request still belongs to us.
+_TOTAL_BUDGET = 25
+
+# Retrying these can plausibly succeed. Anything else -- a bad key, a malformed
+# request, an object too large -- will fail identically every time, so retrying
+# only spends the budget that the retryable cases need.
+_RETRYABLE_STATUSES = frozenset({408, 429})
+
+
+def _is_retryable(status_code):
+    return status_code in _RETRYABLE_STATUSES or 500 <= status_code < 600
 
 
 class SupabaseStorage(Storage):
@@ -57,16 +81,38 @@ class SupabaseStorage(Storage):
         data = content.read()
         content_type = mimetypes.guess_type(name)[0] or "application/octet-stream"
         headers = {**self._auth_headers, "Content-Type": content_type, "x-upsert": "true"}
+        deadline = time.monotonic() + _TOTAL_BUDGET
         response = None
+        attempts = 0
         for attempt in range(_MAX_ATTEMPTS):
-            response = requests.post(self._object_url(name), headers=headers, data=data, timeout=_TIMEOUT)
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                break
+            attempts += 1
+            response = requests.post(
+                self._object_url(name),
+                headers=headers,
+                data=data,
+                # Never let one attempt outlive the budget meant for all of them.
+                timeout=min(_TIMEOUT, remaining),
+            )
             if response.status_code in (200, 201):
                 return name
+            if not _is_retryable(response.status_code):
+                break
             if attempt < _MAX_ATTEMPTS - 1:
-                time.sleep(1.5 * (attempt + 1))
+                backoff = 1.5 * (attempt + 1)
+                # Sleeping past the deadline would only delay the failure.
+                if time.monotonic() + backoff >= deadline:
+                    break
+                time.sleep(backoff)
+
+        detail = (
+            f"{response.status_code} {response.text}" if response is not None
+            else f"no attempt completed within {_TOTAL_BUDGET}s"
+        )
         raise SuspiciousFileOperation(
-            f"Failed to upload '{name}' to Supabase Storage after {_MAX_ATTEMPTS} attempts: "
-            f"{response.status_code} {response.text}"
+            f"Failed to upload '{name}' to Supabase Storage after {attempts} attempt(s): {detail}"
         )
 
     def _open(self, name, mode="rb"):
@@ -91,7 +137,10 @@ class SupabaseStorage(Storage):
         return self._public_url(name)
 
     def delete(self, name):
-        response = requests.delete(self._object_url(name), headers=self._auth_headers, timeout=15)
+        # Deliberately shorter than the cleanup budget in file_cleanup.py: one
+        # delete must not be able to consume the whole allowance on its own,
+        # since a cascade issues one of these per row.
+        response = requests.delete(self._object_url(name), headers=self._auth_headers, timeout=5)
         if response.status_code == 200 or self._is_missing(response):
             return
         raise SuspiciousFileOperation(

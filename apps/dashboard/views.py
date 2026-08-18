@@ -4,6 +4,7 @@ Provides developer activity insights with caching for performance.
 """
 
 import logging
+import time
 from typing import Any
 from django.conf import settings
 from django.core.cache import cache
@@ -18,6 +19,19 @@ logger = logging.getLogger(__name__)
 # Cache timeout: 15 minutes
 CACHE_TIMEOUT = 900 # 15 minutes in seconds
 
+# Ceiling on the time this page may spend on external APIs in one request.
+#
+# The individual clients each carry a 10s timeout, but they run in sequence and
+# WakaTime makes two calls of its own, so a cold cache with both services
+# struggling adds up to 30s of waiting -- past the serverless function limit,
+# which the visitor sees as a gateway timeout rather than as the page they
+# asked for. A per-call timeout says nothing about total time once there is
+# more than one call.
+#
+# Overrunning it hides a panel, which is the degradation this view already
+# implements for an API that errors or returns nothing.
+EXTERNAL_API_BUDGET = 20
+
 
 class DashboardView(DashboardSEOMixin, BaseView):
     """
@@ -29,6 +43,7 @@ class DashboardView(DashboardSEOMixin, BaseView):
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         """Build context with GitHub and WakaTime data."""
         context = super().get_context_data(**kwargs)
+        self._api_deadline = time.monotonic() + EXTERNAL_API_BUDGET
 
         # Get GitHub statistics
         github_stats = self._get_github_stats()
@@ -52,6 +67,18 @@ class DashboardView(DashboardSEOMixin, BaseView):
         stats = cache.get(cache_key)
         if stats:
             return stats
+
+        # A cache hit costs nothing, so the budget is only consulted on the
+        # path that actually reaches the network.
+        if time.monotonic() >= getattr(self, "_api_deadline", float("inf")):
+            logger.warning(
+                "Skipping %s fetch: the %ss external-API budget for this request is "
+                "already spent, so the panel is hidden rather than risking a "
+                "gateway timeout.",
+                label,
+                EXTERNAL_API_BUDGET,
+            )
+            return None
 
         try:
             raw_data = fetch()

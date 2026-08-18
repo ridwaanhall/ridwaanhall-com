@@ -132,6 +132,19 @@ The corollary that matters: **dark mode is the untouched `:root` branch**. Nothi
 - Both the spark and the tooltip animation respect `prefers-reduced-motion`. Before this existed, `grep` for it across the repo returned nothing — check it when adding new motion.
 - The admin (`adminTheme-*.css`) and the transactional email templates are **out of scope by design** and stay dark.
 
+## Gotcha: a per-operation timeout is not a limit on the request
+
+This has now caused a 504 twice, in two different places, and the shape is the same each time: **something has a sensible-looking timeout, but the number of times it runs is unbounded, so the request has no bound at all.** Vercel kills the function and Cloudflare returns a gateway timeout, which looks nothing like the actual fault.
+
+Three places now carry an explicit *total* budget. When adding anything that talks to Supabase Storage or a third-party API inside a request, budget it the same way:
+
+- **`apps/core/storage.py`'s `_save`** — the original 504, hit when saving `/admin/about/profile/1/change/` with a new image. A 30s per-attempt timeout with 3 attempts and 1.5s/3.0s backoff came to **94.5s**, and the replaced file's `delete()` added up to 15s on top — past Cloudflare's 100s origin timeout. `_TOTAL_BUDGET` (25s) now caps the whole upload, each attempt's timeout is clamped to the remaining budget, and a backoff that would overrun the deadline is skipped. Note `requests`' `timeout=` is the gap allowed *between socket reads*, not a deadline for the call, so it never bounded a slow-but-progressing upload at all.
+- **Only transient failures are retried** (`_is_retryable`: 408, 429, 5xx). Retrying a 400/401/413 cannot succeed and just spends the budget the retryable cases need.
+- **`apps/core/file_cleanup.py`'s cleanup budget** — deleting one project cascades to a `post_delete` per image (seven on the largest live row), each its own storage round trip. The budget is **per request**, set from a `request_started` receiver in `apps/core/signals.py`, precisely because the calls arrive one per cascaded row — a per-call limit would reset seven times and bound nothing. Management commands never fire `request_started`, so they stay unbounded, which is correct: no gateway is waiting on them.
+- **`apps/dashboard/views.py`'s `EXTERNAL_API_BUDGET`** — GitHub and WakaTime are fetched in sequence on a cache miss and WakaTime makes two calls of its own, so three 10s timeouts summed to 30s. Overrunning hides a panel, which is the degradation that view already implements for an API that errors.
+
+Overrunning any of these is deliberately not an error: an orphaned storage object or a hidden panel beats losing the request that triggered it. `apps/core/tests/test_storage.py`, `apps/core/tests/test_file_cleanup.py` and `apps/dashboard/tests.py` pin the wall-clock behaviour with a stubbed clock — real `time.sleep` would make the suite unusable, and mocking sleep alone (as the older retry tests did) hides exactly the bug that matters.
+
 ## Gotcha: hardcoded compiled CSS filename
 
 The compiled Tailwind output filename (currently `global-irwrazcl.css`) is a hand-picked string, not an auto-generated hash. It's hardcoded in three places that must stay in sync:

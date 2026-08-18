@@ -11,6 +11,7 @@ Two concerns live here:
 
 import logging
 
+from django.core.signals import request_started
 from django.db.models.signals import (
     m2m_changed,
     post_delete,
@@ -21,7 +22,11 @@ from django.db.models.signals import (
 from django.dispatch import receiver
 
 from apps.core.cache import invalidate, namespaces_for_model
-from apps.core.file_cleanup import delete_unreferenced_files, file_fields_for
+from apps.core.file_cleanup import (
+    delete_unreferenced_files,
+    file_fields_for,
+    start_cleanup_budget,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +64,19 @@ def enable_row_level_security(sender, **kwargs):
 
     if tables:
         logger.info("Ensured Row Level Security is enabled on %d public table(s).", len(tables))
+
+
+@receiver(request_started)
+def begin_cleanup_budget(sender, **kwargs):
+    """Give each request a fresh allowance for storage cleanup.
+
+    Deleting one row can cascade into many storage round trips, and each of
+    those arrives as its own post_delete, so the only place a meaningful bound
+    can be set is the request itself. Management commands never fire this
+    signal, which is what leaves them unbounded -- correctly, since no gateway
+    is waiting on them.
+    """
+    start_cleanup_budget()
 
 
 @receiver(pre_save)

@@ -15,6 +15,7 @@ import io
 import itertools
 import shutil
 import tempfile
+from unittest import mock
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
@@ -164,3 +165,66 @@ class FileCleanupTest(TestCase):
         self.assertFalse(is_file_referenced("logo/never-existed.png"))
         # An empty name means "nothing to delete", so it counts as in use.
         self.assertTrue(is_file_referenced(""))
+
+
+class CleanupTimeBudgetTest(TestCase):
+    """Cleanup must not be able to run a request past the gateway timeout.
+
+    Same shape as the upload 504: a per-operation timeout is not a bound on the
+    work, because the number of operations is not bounded. Deleting one project
+    cascades to a post_delete per image -- seven for the largest live row -- and
+    each of those is its own storage round trip. At the old 15s delete timeout a
+    slow Supabase turned that into ~105s, and nothing about a longer post would
+    have made it better.
+
+    The budget is per request rather than per call precisely because the calls
+    arrive one-per-cascaded-row; a per-call limit would reset seven times over
+    and bound nothing.
+    """
+
+    def setUp(self):
+        from apps.core import file_cleanup
+
+        self.file_cleanup = file_cleanup
+
+    def _slow_storage(self, seconds, clock):
+        storage = mock.Mock()
+
+        def slow_delete(name):
+            clock["t"] += seconds
+
+        storage.delete.side_effect = slow_delete
+        return storage
+
+    def test_a_cascade_of_slow_deletes_stops_at_the_budget(self):
+        clock = {"t": 0.0}
+        storage = self._slow_storage(5.0, clock)
+
+        with mock.patch.object(self.file_cleanup.time, "monotonic", lambda: clock["t"]), \
+                mock.patch.object(self.file_cleanup, "is_file_referenced", return_value=False):
+            self.file_cleanup.start_cleanup_budget()
+            # One call per cascaded row, as the post_delete receiver produces.
+            for i in range(30):
+                self.file_cleanup.delete_unreferenced_files(storage, [f"img/{i}.webp"])
+
+        self.assertLess(
+            clock["t"], 30.0,
+            f"cleanup occupied {clock['t']}s of the request; that is a 504",
+        )
+        self.assertLess(
+            storage.delete.call_count, 30,
+            "cleanup should have abandoned the remaining files once out of budget",
+        )
+
+    def test_without_a_budget_everything_is_still_cleaned(self):
+        """Management commands have no gateway to answer to -- no budget applies."""
+        clock = {"t": 0.0}
+        storage = self._slow_storage(5.0, clock)
+
+        with mock.patch.object(self.file_cleanup.time, "monotonic", lambda: clock["t"]), \
+                mock.patch.object(self.file_cleanup, "is_file_referenced", return_value=False):
+            self.file_cleanup.clear_cleanup_budget()
+            for i in range(30):
+                self.file_cleanup.delete_unreferenced_files(storage, [f"img/{i}.webp"])
+
+        self.assertEqual(storage.delete.call_count, 30)

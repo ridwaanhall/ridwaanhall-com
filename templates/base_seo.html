@@ -69,7 +69,7 @@
         {% render_schema seo.schemas %}
         {% endif %}
 
-        <link rel="stylesheet" href="{% static 'css/global-duizuwmg.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/global-irwrazcl.css' %}" />
 
         <link rel="stylesheet" href="{% url 'dynamic_css' 'onest' %}" />
 
@@ -86,14 +86,7 @@
     <body class="bg-black text-zinc-300 transition-colors duration-200">
         <header class="md:hidden bg-black shadow-sm border-b border-zinc-800 fixed top-0 left-0 w-full z-40">
             <div class="flex items-center gap-3 p-4">
-                <div class="relative">
-                    <img src="{{ about.image_url|wsrv_image:'100x100' }}" alt="{{ about.username }} Profile Photo" class="w-10 h-10 rounded-full object-cover" width="100" height="100" />
-                    {% if about.is_sick %}
-                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-amber-500 rounded-full border-2 border-zinc-950 animate-pulse" title="Currently unwell"></div>
-                    {% elif about.is_active %}
-                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-zinc-950"></div>
-                    {% endif %}
-                </div>
+                {% include 'components/profile_avatar.html' with size="w-10 h-10" %}
                 <div class="flex items-center gap-2">
                     <div class="text-lg font-medium text-zinc-200">{{ about.name }}</div>
                     <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" class="text-blue-400 w-5 h-5" xmlns="http://www.w3.org/2000/svg">

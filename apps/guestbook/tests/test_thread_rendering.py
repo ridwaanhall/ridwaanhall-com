@@ -146,6 +146,53 @@ class ThreadRenderingTest(TestCase):
         self.assertIn("pin me", data["html"])
         self.assertIn(f'data-pinned-message-id="{message.pk}"', data["html"])
 
+    def test_posting_comes_back_with_a_confirmation_to_show(self):
+        """Only failures used to say anything, so a message that posted fine
+        gave no acknowledgement at all -- the panel just redrew."""
+        self.client.force_login(self.visitor)
+
+        response = self.client.post("/guestbook/send-message/", {"message": "hello there"})
+
+        self.assertEqual(json.loads(response.content)["notice"], "Message posted.")
+
+    def test_a_reply_says_reply_rather_than_message(self):
+        parent = ChatMessage.objects.create(user=self.author, message="the parent")
+        self.client.force_login(self.visitor)
+
+        response = self.client.post(
+            "/guestbook/send-message/", {"message": "the reply", "reply_to": parent.pk}
+        )
+
+        self.assertEqual(json.loads(response.content)["notice"], "Reply posted.")
+
+    def test_deleting_comes_back_with_a_confirmation(self):
+        message = ChatMessage.objects.create(user=self.visitor, message="delete me")
+        self.client.force_login(self.author)
+
+        response = self.client.post(
+            "/guestbook/delete-message/", {"message_id": message.pk}
+        )
+
+        self.assertEqual(json.loads(response.content)["notice"], "Message deleted.")
+
+    def test_pinning_and_unpinning_each_say_which_happened(self):
+        message = ChatMessage.objects.create(user=self.visitor, message="pin me")
+        self.client.force_login(self.author)
+
+        pinned = self.client.post("/guestbook/pin-message/", {"message_id": message.pk})
+        unpinned = self.client.post("/guestbook/pin-message/", {"message_id": message.pk})
+
+        self.assertEqual(json.loads(pinned.content)["notice"], "Message pinned.")
+        self.assertEqual(json.loads(unpinned.content)["notice"], "Message unpinned.")
+
+    def test_the_wording_is_worded_server_side_not_in_the_script(self):
+        """So the guestbook and the comment sections, which say the same things
+        through django.contrib.messages, cannot drift apart."""
+        html = self.client.get("/guestbook/").content.decode()
+
+        self.assertNotIn('"Message posted."', html)
+        self.assertIn("data.notice", html)
+
     def test_deleting_uses_the_shared_confirm_dialog_not_a_native_confirm(self):
         ChatMessage.objects.create(user=self.visitor, message="deletable")
         self.client.force_login(self.author)

@@ -157,6 +157,10 @@ Both are site-wide, both live at **body level in `base_seo.html`, outside `#page
 - `z-[60]`, above the dialog's `z-50`, so a toast raised while the dialog is open is readable. Hover and `focusin` hold a toast open — six seconds is not long enough to read a long error, and the close button is inside the element about to disappear.
 - Pass an **element** rather than a string when the message needs markup (the guestbook's "sign in to reply" carries a link); strings go in as `textContent` because they routinely contain user names and server error text.
 
+**Every confirmation is worded server-side, and the two surfaces have to match.** The comment views say theirs through `django.contrib.messages`, which lands in the toast stack after the redirect; the guestbook's AJAX views return the same kind of string in a `notice` field that the script passes straight to `notify()`. Two different mechanisms, deliberately — comments are POST-then-redirect and work without JS — but a reader sees one feature, so "Comment posted." / "Reply posted." / "Comment deleted." are mirrored by "Message posted." / "Reply posted." / "Message deleted." / "Message pinned." / "Message unpinned.". Don't put this wording in the script; a view that sends no `notice` simply shows nothing.
+
+Both comment forms send `next` with a `#comments` fragment, so posting or deleting returns the reader to the thread instead of the top of a long article. The toast is fixed-position and visible either way — the fragment is about not losing your place.
+
 **Confirmation.** `staticfiles/js/confirmDialog.js` + `templates/components/confirm_dialog.html`, driven by `data-confirm-*` attributes. Two modes:
 
 - `data-confirm-action="/url/"` posts the dialog's form — comment deletion, both sign-outs.

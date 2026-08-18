@@ -52,6 +52,15 @@
             return document.querySelector("[name=csrfmiddlewaretoken]").value;
         }
 
+        // Every confirmation is worded server-side, in the view that did the
+        // work, so these match what the comment sections say through
+        // django.contrib.messages. Nothing is shown if a view sends no notice.
+        function notifySuccess(notice) {
+            if (notice) {
+                window.notify(notice, "success");
+            }
+        }
+
         function scrollToBottom() {
             if (guestbookMessages) {
                 guestbookMessages.scrollTop = guestbookMessages.scrollHeight;
@@ -115,6 +124,11 @@
                             const currentCount = parseInt(messageCountBadge.textContent.split(" ")[0]) || 0;
                             messageCountBadge.textContent = `${currentCount + 1} messages`;
                         }
+
+                        // Confirm it landed. The panel is swapped wholesale and
+                        // a short reply well down a thread is easy to miss, so
+                        // success needs saying rather than being left implied.
+                        notifySuccess(data.notice);
                     })
                     .catch((error) => {
                         console.error("Error:", error);
@@ -217,6 +231,8 @@
                         button.innerHTML = originalContent;
                         return;
                     }
+
+                    notifySuccess(data.notice);
 
                     // A deleted message may be pinned; drop its card too (no-op
                     // if it isn't) so the section keeps no stale reference.
@@ -363,6 +379,7 @@
                         window.notify(data.error || "Failed to update pinned message.", "error");
                         return;
                     }
+                    notifySuccess(data.notice);
                     updatePinButtons(messageId, data.is_pinned);
                     if (data.is_pinned) {
                         addPinnedCard(data.html);

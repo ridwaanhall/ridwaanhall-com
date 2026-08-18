@@ -335,10 +335,17 @@ class SendMessageView(LoginRequiredMixin, ThreadedMessagesMixin, View):
         # Hand back the rendered panel rather than the new message's fields: the
         # client used to assemble the markup itself from this JSON, which meant
         # every change to how a message looks had to be made twice.
+        #
+        # `notice` is the confirmation the browser shows. It is worded here, not
+        # in the script, so the AJAX views and the comment views (which say the
+        # same things through django.contrib.messages) stay parallel -- the two
+        # surfaces are the same feature to a reader and shouldn't phrase it
+        # differently. Errors already come back the same way, in `error`.
         return JsonResponse({
             'success': True,
             'message_id': chat_message.pk,
             'html': self.render_thread(request),
+            'notice': 'Reply posted.' if reply_to_message else 'Message posted.',
         })
 
     def get(self, request, *args, **kwargs):
@@ -380,7 +387,7 @@ class DeleteMessageView(LoginRequiredMixin, UserProfileMixin, View):
             message.delete()
             return JsonResponse({
                 'success': True,
-                'message': 'Message deleted successfully'
+                'notice': 'Message deleted.',
             })
         except Exception:
             return JsonResponse({'success': False, 'error': 'An error occurred while deleting the message'})
@@ -429,7 +436,12 @@ class PinMessageView(LoginRequiredMixin, UserProfileMixin, View):
             message.is_pinned = False
             message.pinned_at = None
             message.save(update_fields=['is_pinned', 'pinned_at'])
-            return JsonResponse({'success': True, 'is_pinned': False, 'message_id': message.pk})
+            return JsonResponse({
+                'success': True,
+                'is_pinned': False,
+                'message_id': message.pk,
+                'notice': 'Message unpinned.',
+            })
 
         with transaction.atomic():
             # Serialize concurrent pin requests on one deterministic row lock (the
@@ -479,6 +491,7 @@ class PinMessageView(LoginRequiredMixin, UserProfileMixin, View):
             'is_pinned': True,
             'message_id': message.pk,
             'html': card_html,
+            'notice': 'Message pinned.',
         })
 
     def get(self, request, *args, **kwargs):

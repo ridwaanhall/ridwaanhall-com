@@ -23,7 +23,13 @@ and any tag inside them is parsed for real.
             {% csrf_token %}
             <input type="hidden" name="content_type" value="{{ comment_target_label }}" />
             <input type="hidden" name="object_id" value="{{ comment_target_id }}" />
-            <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+            {% comment %}
+            #comments so posting returns to the thread rather than the top of
+            the article. The toast confirming it is fixed-position and visible
+            either way, but being dropped back at the masthead of a 2000-word
+            post leaves you hunting for what you just wrote.
+            {% endcomment %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}#comments" />
             <input type="hidden" name="reply_to" id="comment-reply-to" value="" />
 
             <div class="rounded-xl border border-zinc-800 bg-zinc-900/40 p-3 sm:p-4 transition-all duration-300 focus-within:border-zinc-700">

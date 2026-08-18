@@ -487,10 +487,14 @@ html.theme-reveal::view-transition-new(root) {
     }
 }
 
-/* The toggle's own icon swap is a hard display change, so it pops mid-wipe.
-   Growing it in over the same curve ties it to the sweep it launched. */
-html.theme-reveal [data-theme-toggle] svg,
-html.theme-crossfade [data-theme-toggle] svg,
+/* The toggle's own icon swap is a hard display change, so it pops. Growing it
+   in ties it to the switch it launched.
+
+   Fallback path only, deliberately. Under a View Transition the live DOM is
+   captured into the "new" snapshot moments after the swap -- an icon caught at
+   its `opacity: 0` keyframe would be baked into that snapshot and simply
+   missing for the whole animation. Nothing is lost: the reveal starts *at* the
+   toggle, so the new icon is the first thing the wipe uncovers. */
 html.theme-fading [data-theme-toggle] svg {
     animation: theme-icon-in var(--theme-transition-duration)
         var(--theme-transition-easing);
@@ -508,8 +512,6 @@ html.theme-fading [data-theme-toggle] svg {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    html.theme-reveal [data-theme-toggle] svg,
-    html.theme-crossfade [data-theme-toggle] svg,
     html.theme-fading [data-theme-toggle] svg {
         animation: none;
     }

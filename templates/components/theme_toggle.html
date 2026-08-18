@@ -16,23 +16,26 @@ localStorage, so the server cannot know which state to name; a static label is
 always accurate. Current state is exposed via aria-pressed, which the script
 sets on load.
 
-Two placements, two sizes:
-    {% include 'components/theme_toggle.html' %}                    footer, 4
-    {% include 'components/theme_toggle.html' with icon_size="h-6 w-6" %}
-The component carries no outer margin so it can sit in either without
+Include arguments:
+    icon_size   default 'h-4 w-4'; the mobile navbar uses 'h-6 w-6'
+    bare        drop the padding and hover plate, leaving just the icon. Used
+                where the toggle sits inline next to text (the desktop rail's
+                @username row) and a hover chip would read as a second control.
+
+The component carries no outer margin so it can sit in any of them without
 fighting the surrounding layout.
 {% endcomment %}
 <button type="button"
         data-theme-toggle
         aria-label="Toggle light or dark theme"
         title="Toggle light or dark theme"
-        class="group inline-flex items-center justify-center rounded-md p-1.5 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400">
-    <svg data-theme-icon="dark" class="{{ icon_size|default:'h-4 w-4' }} transition-transform duration-300 ease-in-out group-hover:-rotate-12"
+        class="group inline-flex cursor-pointer items-center justify-center rounded-md text-zinc-500 transition-colors hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400{% if not bare %} p-1.5 hover:bg-zinc-800{% endif %}">
+    <svg data-theme-icon="dark" class="{{ icon_size|default:'h-4 w-4' }} transition-transform duration-500 ease-out group-hover:-rotate-[18deg] group-hover:scale-110 group-active:scale-90"
          stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24"
          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
     </svg>
-    <svg data-theme-icon="light" class="{{ icon_size|default:'h-4 w-4' }} transition-transform duration-300 ease-in-out group-hover:rotate-45"
+    <svg data-theme-icon="light" class="{{ icon_size|default:'h-4 w-4' }} transition-transform duration-500 ease-out group-hover:rotate-90 group-hover:scale-110 group-active:scale-90"
          stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24"
          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="12" cy="12" r="4"></circle>

@@ -1,10 +1,13 @@
 {% load image_filters %}
 <div id="mobile-sidebar" class="fixed inset-0 z-40 bg-transparent bg-opacity-60 backdrop-blur-sm hidden md:hidden" aria-hidden="true">
     <div class="fixed inset-x-0 bottom-0 w-full max-h-[85vh] overflow-y-auto rounded-t-2xl bg-black transition-transform duration-300 transform translate-y-full flex flex-col border-t border-zinc-800" id="mobile-menu">
-        <div class="w-full flex justify-center pt-3 pb-1">
+        <!-- Drag zone. `touch-none` is what makes the gesture reach sidebar.js at
+             all: #mobile-menu is `overflow-y-auto`, so without it the browser
+             claims a vertical drag as a scroll and the drawer never moves. -->
+        <div class="w-full flex justify-center pt-3 pb-3 touch-none select-none cursor-grab active:cursor-grabbing" data-drawer-handle>
             <div class="w-12 h-1.5 bg-zinc-700 rounded-full"></div>
         </div>
-        <div class="flex items-center justify-between px-5 pb-5 pt-2 mb-2">
+        <div class="flex items-center justify-between px-5 pb-5 mb-2 touch-none select-none cursor-grab active:cursor-grabbing" data-drawer-handle>
             <div class="flex items-center">
                 {% include 'components/profile_avatar.html' with size="w-12 h-12" %}
                 <div class="ml-3">
@@ -42,11 +45,6 @@
                     {% endif %}
                 </div>
             </div>
-            <button id="close-sidebar" class="transition-colors p-2 rounded-full" tabindex="-1">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
         </div>
         
         <!-- Search Section for Mobile -->
@@ -214,9 +212,10 @@
                     <a href="{% url 'admin:index' %}" class="text-indigo-400 hover:text-indigo-300 transition-colors">Admin</a>
                 {% endif %}
             </div>
-            <div class="flex items-center justify-between gap-2 text-zinc-500">
+            <!-- No theme toggle here: the mobile navbar carries one, and it stays
+                 reachable whether the drawer is open or shut. -->
+            <div class="flex items-center gap-2 text-zinc-500">
                 <span>© 2025 - {% now "Y" %} {{ about.name }}</span>
-                <span class="-my-1 -mr-1.5">{% include 'components/theme_toggle.html' %}</span>
             </div>
         </div>
     </div>
@@ -671,6 +670,49 @@
                                 {% endif %}
                             </div>
                         </li>
+
+                        <!-- Terms of Service -->
+                        <li class="search-item" data-name="terms of service"{% if request.resolver_match.url_name != 'terms' %} data-url="{% url 'terms' %}"{% endif %}>
+                            <div
+                                class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name == 'terms' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}"
+                            >
+                                <div class="flex items-center gap-5">
+                                    <div class="transition-all duration-300 group-hover:-rotate-12 {% if request.resolver_match.url_name == 'terms' %}-rotate-12{% endif %}">
+                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path>
+                                        </svg>
+                                    </div>
+                                    <span>Terms of Service</span>
+                                </div>
+                                {% if request.resolver_match.url_name == 'terms' %}
+                                <span class="animate-pulse text-xs text-zinc-400">You are here</span>
+                                {% else %}
+                                <div class="rounded-md border border-zinc-500 px-1.5 py-0.5 text-xs text-zinc-400">Pages</div>
+                                {% endif %}
+                            </div>
+                        </li>
+
+                        {% if user.is_superuser %}
+                        <!-- Django admin. No "You are here" branch: the admin is a
+                             separate URL namespace and never renders this sidebar,
+                             so it can never be the current page here. Indigo matches
+                             how the footer marks the same privileged link. -->
+                        <li class="search-item" data-name="admin django administration" data-url="{% url 'admin:index' %}">
+                            <div
+                                class="text-indigo-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-zinc-800"
+                            >
+                                <div class="flex items-center gap-5">
+                                    <div class="transition-all duration-300 group-hover:-rotate-12">
+                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"></path>
+                                        </svg>
+                                    </div>
+                                    <span>Admin</span>
+                                </div>
+                                <div class="rounded-md border border-indigo-500/60 px-1.5 py-0.5 text-xs text-indigo-300">Pages</div>
+                            </div>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
 

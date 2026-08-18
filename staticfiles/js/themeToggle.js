@@ -4,19 +4,48 @@
  * The theme itself is applied by a blocking inline script in <head> (see
  * base_seo.html) so there is no flash of the wrong palette before this file --
  * which is deferred -- runs. This script only handles interaction:
- * click-to-switch, keeping every toggle instance's aria-pressed accurate, and
- * updating the address-bar color on mobile.
+ * click-to-switch, animating the swap, keeping every toggle instance's
+ * aria-pressed accurate, and updating the address-bar color on mobile.
  *
  * Icon visibility is pure CSS off html[data-theme], not JS. See input.css.
+ *
+ * ANIMATING THE SWAP
+ * ------------------
+ * Flipping `data-theme` restyles nearly every element at once, and each then
+ * animates over whatever duration it declares -- 200ms on <body>, 700ms on
+ * #page-content, 300ms on 148 others. Animating them individually is what
+ * produces a cascade, so all three paths below change the page as one unit:
+ *
+ *   1. View Transitions API: the browser animates between two snapshots of the
+ *      whole document, so the per-element durations are out of the picture
+ *      entirely. A press on a toggle wipes the new theme in from that button;
+ *      a switch with no button behind it (another tab) crossfades.
+ *   2. Without that API: every element is forced onto one shared colour
+ *      transition, so they at least move in lockstep.
+ *   3. prefers-reduced-motion: committed with transitions off, instantly.
+ *
+ * The matching CSS is at the bottom of static/css/input.css.
  */
 (function () {
     "use strict";
 
     var STORAGE_KEY = "theme";
     var THEME_COLOR = { light: "#ffffff", dark: "#000000" };
+    // Keep in step with --theme-transition-duration in input.css.
+    var FADE_MS = 320;
+    var MODE_CLASSES = ["theme-switching", "theme-reveal", "theme-crossfade", "theme-fading"];
+
+    var root = document.documentElement;
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    var supportsViewTransitions = typeof document.startViewTransition === "function";
+    var fadeTimer = null;
+    // Every switch takes a ticket. A switch that lands while an earlier one is
+    // still running supersedes it, and the earlier one must then not clean up
+    // classes the newer one is relying on.
+    var seq = 0;
 
     function currentTheme() {
-        return document.documentElement.dataset.theme === "light" ? "light" : "dark";
+        return root.dataset.theme === "light" ? "light" : "dark";
     }
 
     function syncControls(theme) {
@@ -26,20 +55,10 @@
         }
     }
 
-    // The visual swap. Every path that changes the theme goes through here, so
-    // a change arriving from another tab is as flicker-free as a local click.
-    function setTheme(theme) {
-        var root = document.documentElement;
-
-        // Swap the whole page in one frame rather than letting every element
-        // animate the colour change over its own duration -- see the
-        // .theme-switching rule in input.css. Reading offsetHeight forces the
-        // new palette to be committed while transitions are still off, so
-        // removing the class immediately after cannot start an animation.
-        root.classList.add("theme-switching");
+    // The actual swap. Everything else in this file exists to decide how it
+    // should be dressed.
+    function commit(theme) {
         root.dataset.theme = theme;
-        void root.offsetHeight;
-        root.classList.remove("theme-switching");
 
         var meta = document.querySelector('meta[name="theme-color"]');
         if (meta) {
@@ -49,8 +68,94 @@
         syncControls(theme);
     }
 
-    function applyTheme(theme) {
-        setTheme(theme);
+    function endMode(ticket) {
+        if (ticket !== seq) {
+            return;
+        }
+        root.classList.remove.apply(root.classList, MODE_CLASSES);
+    }
+
+    function beginMode(modes) {
+        root.classList.remove.apply(root.classList, MODE_CLASSES);
+        root.classList.add.apply(root.classList, modes);
+    }
+
+    // No animation: the swap is committed with every transition suppressed, so
+    // not one element can start one. Reading offsetHeight forces the new
+    // palette to be committed while they are still off, which is what makes
+    // removing the class on the next line safe.
+    function swapInstantly(theme) {
+        root.classList.add("theme-switching");
+        commit(theme);
+        void root.offsetHeight;
+        root.classList.remove("theme-switching");
+    }
+
+    // Fallback path. `.theme-fading` has to be committed *before* the palette
+    // changes, or the unified transition is not yet in effect when the colours
+    // move and nothing animates at all.
+    function swapWithFade(theme, ticket) {
+        beginMode(["theme-fading"]);
+        void root.offsetHeight;
+        commit(theme);
+
+        clearTimeout(fadeTimer);
+        fadeTimer = setTimeout(function () {
+            endMode(ticket);
+        }, FADE_MS + 60);
+    }
+
+    function swapWithViewTransition(theme, origin, ticket) {
+        if (origin) {
+            // The circle has to reach whichever viewport corner is furthest
+            // from the button, or the wipe finishes with a wedge of the old
+            // theme still on screen.
+            var dx = Math.max(origin.x, window.innerWidth - origin.x);
+            var dy = Math.max(origin.y, window.innerHeight - origin.y);
+            root.style.setProperty("--theme-reveal-x", origin.x + "px");
+            root.style.setProperty("--theme-reveal-y", origin.y + "px");
+            root.style.setProperty("--theme-reveal-radius", Math.ceil(Math.sqrt(dx * dx + dy * dy)) + "px");
+        }
+
+        // `theme-switching` rides along so the live DOM under the snapshots is
+        // not animating too -- its cascade would otherwise surface the instant
+        // the transition ends and the real page is revealed.
+        beginMode(["theme-switching", origin ? "theme-reveal" : "theme-crossfade"]);
+
+        var transition = document.startViewTransition(function () {
+            commit(theme);
+        });
+
+        function done() {
+            endMode(ticket);
+        }
+        // A superseded transition rejects `finished`; either way the classes
+        // have to come off.
+        transition.finished.then(done, done);
+    }
+
+    // The visual swap. Every path that changes the theme goes through here, so
+    // a change arriving from another tab is as considered as a local click.
+    // `origin` is viewport coordinates to wipe out from, or null.
+    function setTheme(theme, origin) {
+        if (theme === currentTheme()) {
+            commit(theme);
+            return;
+        }
+
+        var ticket = ++seq;
+
+        if (reduceMotion.matches) {
+            swapInstantly(theme);
+        } else if (supportsViewTransitions) {
+            swapWithViewTransition(theme, origin, ticket);
+        } else {
+            swapWithFade(theme, ticket);
+        }
+    }
+
+    function applyTheme(theme, origin) {
+        setTheme(theme, origin);
 
         // localStorage throws in some privacy modes; a theme that does not
         // persist is a far better outcome than a toggle that does nothing.
@@ -66,10 +171,22 @@
         if (!toggle) {
             return;
         }
-        applyTheme(currentTheme() === "light" ? "dark" : "light");
+
+        // The button's own centre rather than the pointer position: a keyboard
+        // activation carries no useful coordinates, and the wipe should start
+        // from the control either way. A toggle with no box is one of the
+        // placements the current breakpoint hides, and would put the origin at
+        // the viewport corner -- crossfade instead of wiping from nowhere.
+        var rect = toggle.getBoundingClientRect();
+        var origin = rect.width && rect.height
+            ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
+            : null;
+        applyTheme(currentTheme() === "light" ? "dark" : "light", origin);
     });
 
-    // Another tab switched theme -- follow it, but do not write back.
+    // Another tab switched theme -- follow it, but do not write back. No
+    // origin, so this crossfades rather than wiping out from a button that was
+    // never pressed here.
     window.addEventListener("storage", function (event) {
         if (event.key !== STORAGE_KEY || !event.newValue) {
             return;
@@ -77,7 +194,7 @@
         if (event.newValue === "light" || event.newValue === "dark") {
             // setTheme, not applyTheme -- following another tab must not write
             // back to storage.
-            setTheme(event.newValue);
+            setTheme(event.newValue, null);
         }
     });
 

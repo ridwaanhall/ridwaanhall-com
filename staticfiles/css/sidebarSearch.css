@@ -16,11 +16,6 @@ html[data-theme="light"] {
     --search-highlight: rgba(0, 0, 0, 0.06);
 }
 
-/* Cast shadow, not painted surface: correctly stays dark in both themes. */
-.shadow-3xl {
-    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
-}
-
 /* Custom scrollbar for search modal */
 #search-modal .overflow-y-auto {
     scrollbar-width: thin;

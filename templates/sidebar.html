@@ -1,6 +1,6 @@
 {% load image_filters %}
 <div id="mobile-sidebar" class="fixed inset-0 z-40 bg-transparent bg-opacity-60 backdrop-blur-sm hidden md:hidden" aria-hidden="true">
-    <div class="fixed inset-x-0 bottom-0 w-full max-h-[85vh] overflow-y-auto rounded-t-2xl bg-black transition-transform duration-300 transform translate-y-full shadow-[0_-10px_40px_rgba(0,0,0,0.5)] flex flex-col border-t border-zinc-800" id="mobile-menu">
+    <div class="fixed inset-x-0 bottom-0 w-full max-h-[85vh] overflow-y-auto rounded-t-2xl bg-black transition-transform duration-300 transform translate-y-full flex flex-col border-t border-zinc-800" id="mobile-menu">
         <div class="w-full flex justify-center pt-3 pb-1">
             <div class="w-12 h-1.5 bg-zinc-700 rounded-full"></div>
         </div>
@@ -221,8 +221,8 @@
     </div>
 </div>
 
-<div class="hidden z-40 md:flex md:flex-col md:w-62 md:fixed md:inset-y-0 bg-black shadow-xl">
-    <div class="fixed mb-2 z-20 w-full px-3 py-2 mt-8 mb-0 shadow-sm relative border-none bg-transparent">
+<div class="hidden z-40 md:flex md:flex-col md:w-62 md:fixed md:inset-y-0 bg-black">
+    <div class="fixed mb-2 z-20 w-full px-3 py-2 mt-8 mb-0 relative border-none bg-transparent">
         <div class="flex items-start justify-between lg:flex-col lg:space-y-4">
             <div class="flex w-full flex-grow items-center gap-4 lg:flex-col lg:items-start lg:gap-0.5 lg:px-1">
                 {% include 'components/profile_avatar.html' with size="w-15 h-15" extra_class="duration-700 ease-in-out scale-100 lg:hover:scale-105" lazy=True %}
@@ -458,7 +458,7 @@
 <!-- Search Modal -->
 <div id="search-modal" class="fixed inset-0 z-50 backdrop-blur-none hidden transition-all duration-300 ease-out" aria-hidden="true">
     <div id="search-modal-backdrop" class="flex min-h-full items-center justify-center p-4">
-        <div id="search-modal-content" class="relative mx-auto max-w-xl w-full overflow-hidden rounded-xl border-2 border-zinc-800 bg-black ring-1 ring-black/5 shadow-3xl transform scale-95 opacity-0 transition-all duration-300 ease-out">
+        <div id="search-modal-content" class="relative mx-auto max-w-xl w-full overflow-hidden rounded-xl border-2 border-zinc-800 bg-black ring-1 ring-black/5 transform scale-95 opacity-0 transition-all duration-300 ease-out">
             <div class="flex items-center gap-3 border-b border-zinc-800 px-4">
                 <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
                     <path

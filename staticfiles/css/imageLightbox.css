@@ -87,7 +87,6 @@ html[data-theme="light"] {
     background: var(--lightbox-chrome);
     border-radius: 12px;
     border: 2px solid var(--lightbox-border);
-    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
     overflow: hidden;
     transform: scale(0.95);
     opacity: 0;

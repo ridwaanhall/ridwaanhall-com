@@ -35,7 +35,7 @@
     </h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {% for feature in project.features %}
-        <div class="rounded-lg border border-zinc-700 hover:border-zinc-600 transition p-4 flex flex-col gap-2 shadow-sm">
+        <div class="rounded-lg border border-zinc-700 hover:border-zinc-600 transition p-4 flex flex-col gap-2">
             {% if feature.image_url %}
             <img src="{{ feature.image_url }}" alt="{{ feature.title }}" class="rounded-md w-full h-32 object-cover mb-2 bg-zinc-900" loading="lazy" />
             {% endif %}
@@ -60,7 +60,7 @@
     </h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         {% for tech in project.tech_stack %}
-        <div class="flex items-center gap-3 border border-zinc-700 rounded-lg px-3 py-3 shadow-sm hover:border-zinc-600 transition">
+        <div class="flex items-center gap-3 border border-zinc-700 rounded-lg px-3 py-3 hover:border-zinc-600 transition">
             <div class="flex items-center justify-center rounded-full bg-zinc-800/70" style="width: 40px; height: 40px; min-width: 40px; min-height: 40px;">
                 {% if tech.icon_svg %}
                 <img src="{{ tech.icon_svg|wsrv_image:'25x25' }}" alt="{{ tech.name }}" class="w-6 h-6" loading="lazy" />

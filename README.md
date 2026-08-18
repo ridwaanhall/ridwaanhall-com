@@ -10,15 +10,17 @@
 
 ## Key Features
 
-- **🗄️ Database-Backed Content**: Blog posts, projects, bio, experience, skills, awards, and more all live as Django ORM models — manage everything from a full-featured `/admin` panel, no code deploy needed to update content
-- **☁️ Supabase-Powered**: Postgres database and Storage (for blog/project images, logos, profile photo) both hosted on Supabase, with local development falling back to SQLite automatically
-- **📊 Real-time Dashboard**: Live GitHub contribution graph and WakaTime coding-activity stats, cached for 15 minutes
-- **💬 Interactive Guestbook**: Google/GitHub OAuth login, threaded replies, author/co-author roles, message pinning (up to 3 at a time), automatic link detection, email notifications — or disable it entirely with one env var
-- **📝 Blog & Projects**: Paginated, searchable listings with multi-image support, tags, categories, and a project lifecycle status system
-- **🔍 SEO Built In**: Per-page meta tags, Open Graph, Twitter Cards, JSON-LD schema, and auto-generated sitemaps/robots.txt
-- **🛡️ Security-First**: Content-Security-Policy, HSTS, permissions-policy, and optional Cloudflare Turnstile on the contact form
-- **🖼️ Image Optimization**: Optional wsrv.nl proxy/CDN integration for automatic resizing and format conversion
-- **📱 Responsive Design**: Mobile-first layout built with Tailwind CSS v4 and vanilla JavaScript (no frontend framework)
+- **Database-backed content**: Blog posts, projects, bio, experience, skills, awards, legal documents, and more all live as Django ORM models — manage everything from a full-featured `/admin` panel, no code deploy needed to update content
+- **Supabase-powered**: Postgres database and Storage (for blog/project images, logos, profile photo) both hosted on Supabase, with local development falling back to SQLite automatically
+- **Light and dark themes**: Dark by default, with a toggle in the sidebar and mobile navbar. Light mode is produced by remapping the Tailwind palette rather than by adding `dark:` variants, so both themes stay in sync automatically — see [Theming](#theming)
+- **Content caching**: Cached manager output keyed by a shared version stamp, taking the nine main pages from 84 queries / 2.6s to 3 queries / 245ms. Designed for serverless, where an edit handled by one instance must not leave the others stale
+- **Real-time dashboard**: Live GitHub contribution graph and WakaTime coding-activity stats, cached for 15 minutes
+- **Interactive guestbook**: Google/GitHub OAuth login, threaded replies, author/co-author roles, message pinning (up to 3 at a time), automatic link detection, email notifications — or disable it entirely with one env var
+- **Blog and projects**: Paginated, searchable listings with multi-image support, tags, categories, threaded comments, and a project lifecycle status system
+- **SEO built in**: Per-page meta tags, Open Graph, Twitter Cards, JSON-LD schema, and auto-generated sitemaps/robots.txt
+- **Security-first**: Content-Security-Policy, HSTS, permissions-policy, row-level security on every Supabase table, and optional Cloudflare Turnstile on the contact form
+- **Image optimization**: Optional wsrv.nl proxy/CDN integration for automatic resizing and format conversion
+- **Built for touch as well as pointer**: Mobile-first Tailwind CSS v4 and vanilla JavaScript (no frontend framework). Tooltips work on tap as well as hover, and the click effect respects `prefers-reduced-motion`
 
 ## Tech Stack
 
@@ -37,26 +39,53 @@
 ```text
 FlexForge/          Django project settings, URLs, WSGI/ASGI, root views
 apps/
-  core/              Homepage, contact form, email, base views, Supabase storage backend
+  core/              Homepage, contact form, email, base views, content cache,
+                     Supabase storage backend, admin JSON widgets
   about/             Bio, experience, education, certifications, awards, skills (models + admin)
   projects/          Project showcase (models + admin, multi-image + tech-stack M2M)
   blog/              Blog (models + admin, multi-image support)
+  comments/          Threaded comments, attachable to any model via ContentType
   dashboard/         GitHub + WakaTime stats
   guestbook/         OAuth chat/guestbook (optional, toggled via GUESTBOOK_PAGE)
+  legal/             Privacy policy, terms, and any other legal document (models + admin)
   openhire/          "Open to work" / "hiring" status page
   seo/               Meta tags, JSON-LD schema, sitemaps, robots.txt
-static/              Tailwind source (input.css)
-staticfiles/         Compiled CSS + all served static assets (images, fonts, icons)
+static/              Tailwind source (input.css) — light/dark palette lives here
+staticfiles/         Compiled CSS + all served static assets (images, fonts, icons, JS)
 templates/           Global templates (base, sidebar, error page, per-app sections)
 ```
 
 ## Content Architecture: Database-backed
 
-Content lives as Django ORM models, edited through `/admin` — no code deploy needed to add a blog post, project, experience entry, or award. Each content-bearing app (`about`, `blog`, `projects`, `openhire`, `core`) has its own `models.py` and a fully registered `admin.py` (list views, search, filters, and inline editors for nested items like project features or multi-image galleries).
+Content lives as Django ORM models, edited through `/admin` — no code deploy needed to add a blog post, project, experience entry, award, or legal document. Each content-bearing app (`about`, `blog`, `projects`, `openhire`, `legal`) has its own `models.py` and a fully registered `admin.py` (list views, search, filters, and inline editors for nested items like project features or multi-image galleries).
 
-Images uploaded through admin (`ImageField`s on `BlogImage`, `ProjectImage`, `Profile.image`, logos, etc.) are stored locally under `media/` (gitignored) in development — fully offline, and never touches the shared production bucket — and go straight to Supabase Storage via the custom backend in `apps/core/storage.py` in production.
+Semi-structured fields stay as `JSONField` but are never shown as a raw JSON textarea — `apps/core/admin_widgets.py` provides structured editors for them (string lists, key/value pairs, rich content blocks).
+
+Images uploaded through admin (`ImageField`s on `BlogImage`, `ProjectImage`, `Profile.image`, logos, etc.) are stored locally under `media/` (gitignored) in development — fully offline, and never touches the shared production bucket — and go straight to Supabase Storage via the custom backend in `apps/core/storage.py` in production. Stored files are reference-counted, so replacing or deleting a row only removes the underlying file once no other row still points at it.
+
+Reads are cached in process memory and invalidated per namespace through a shared version stamp, so an edit made on one serverless instance cannot leave the others serving stale content. `CONTENT_CACHE_TTL` and `CONTENT_CACHE_VERSION_TTL` tune it; the cache is disabled automatically under `manage.py test`.
 
 To manage content: create a superuser (`uv run python manage.py createsuperuser`) and log into `/admin`.
+
+## Theming
+
+The site ships dark by default, with a light theme behind a toggle in the sidebar footer and, on small screens, next to the menu button. The choice is stored in `localStorage`; the OS `prefers-color-scheme` is deliberately not consulted, because dark is the default rather than a fallback.
+
+Light mode is **not** built from `dark:` variants. Templates are written in ordinary dark-mode Tailwind classes, and light mode redefines the palette itself under `html[data-theme="light"]` in `static/css/input.css`. Tailwind v4 compiles every theme color utility to a variable reference (`.bg-zinc-800` becomes `background-color: var(--color-zinc-800)`), so remapping the ramps re-skins the whole site without touching a single template.
+
+Two consequences worth knowing before you edit anything:
+
+- **Dark mode is the untouched `:root` branch**, so palette work can only affect light mode.
+- **Stay inside the palette.** The remap covers the `zinc` ramp, fourteen accent families, and `black`/`white`. An arbitrary value like `bg-[#18181b]`, or a color family that isn't in the list, will render its dark value on a white page with no error.
+
+Foreground shades mirror around 500 (`300` swaps with `700`, and so on); surface and accent shades use hand-tuned tables instead, because a plain mirror preserves contrast against the canvas rather than perceived contrast. Applying it blindly to accents drops the badge text to about 2.9:1. Every text pair and all ten badge hues currently clear WCAG AA in both themes.
+
+Switching themes suppresses CSS transitions for the frame in which the swap happens. Without that, each element animates the color change over whatever duration it declares — 200ms on `<body>`, 700ms on the content column — and the page changes in a visible cascade instead of all at once.
+
+Two related front-end details:
+
+- **Tooltips work on touch.** A native `title` only appears on hover, so on a phone every one of them was unreachable. `staticfiles/js/tooltip.js` upgrades them to show on hover, on keyboard focus, and on tap. Tapping never blocks the trigger, so a tooltip on a link or a button still follows through on the same tap.
+- **The click effect respects motion preferences.** Clicking or tapping throws a short spark burst, drawn on a single canvas overlay. It is skipped entirely under `prefers-reduced-motion: reduce`.
 
 ## PageSpeed Insights
 
@@ -94,7 +123,7 @@ npm install tailwindcss @tailwindcss/cli
 cp .env.example .env
 
 # Build Tailwind CSS (for development with watch mode)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-bijbtigg.css --watch
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-duizuwmg.css --watch
 
 # In a separate terminal, run migrations and the dev server
 uv run python manage.py migrate
@@ -125,10 +154,10 @@ For styling changes, ensure Tailwind CSS is running in watch mode:
 
 ```bash
 # Development (with watch and minification)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-bijbtigg.css --watch --minify
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-duizuwmg.css --watch --minify
 
 # Production build
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-bijbtigg.css --minify
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-duizuwmg.css --minify
 ```
 
 Make sure your `static/css/input.css` contains:
@@ -137,7 +166,7 @@ Make sure your `static/css/input.css` contains:
 @import "tailwindcss";
 ```
 
-> **Note:** the compiled filename (`global-bijbtigg.css`) is hand-picked, not auto-hashed. If you rename it, update the `-o` path above **and** the `{% static %}` reference in both `templates/base_seo.html` and `templates/error.html`.
+> **Note:** the compiled filename (`global-duizuwmg.css`) is hand-picked, not auto-hashed. If you rename it, update the `-o` path above **and** the `{% static %}` reference in both `templates/base_seo.html` and `templates/error.html`.
 
 ## Environment Configuration
 
@@ -220,15 +249,16 @@ Getting the API keys:
 
 This started as a personal site, but the architecture doesn't assume you're Ridwan Halim. To adopt it as your own portfolio:
 
-1. **Your content** — create a superuser (`uv run python manage.py createsuperuser`) and add your own bio, experience, education, certifications, awards, skills, blog posts, projects, and open-to-work/hiring status through `/admin`. Nothing is seeded by default; the sample content that used to ship as data files was removed along with the old file-based content system.
+1. **Your content** — create a superuser (`uv run python manage.py createsuperuser`) and add your own bio, experience, education, certifications, awards, skills, blog posts, projects, legal documents, and open-to-work/hiring status through `/admin`. Nothing is seeded by default; the sample content that used to ship as data files was removed along with the old file-based content system.
 2. **Your branding** — edit `apps/seo/config.py`: `SITE_NAME`, `AUTHOR`, `DEFAULT_TWITTER_SITE`, and `COMMON_KEYWORDS['personal']` are all hardcoded to the author's name/handle and need updating.
 3. **Your domain** — two places hardcode `ridwaanhall.com`/`.vercel.app`:
    - `FlexForge/config.py`'s `ALLOWED_HOSTS` fallback (production-only; update to your own domain)
    - `FlexForge/settings.py`'s `CONTENT_SECURITY_POLICY` directives (`connect-src`, `font-src`, `script-src`, `style-src` all allowlist `ridwaanhall.com`)
 4. **Your assets** — replace files under `staticfiles/favicon/` and `templates/site.webmanifest` (site branding); logos/icons referenced from `/admin` still come from `staticfiles/img/`, but blog/project/profile photos are uploaded directly through `/admin` to Supabase Storage, not committed as files.
 5. **Your emails** — `apps/core/templates/core/email/` has the contact/guestbook notification templates (html + txt pairs); they're plain text-substitution files (not Django templates — see `apps/core/email_templates.py`), styled to match the site's own dark theme.
-6. **Your env vars** — see the [table above](#environment-configuration); at minimum you need `SECRET_KEY`, `ACCESS_TOKEN`, `EMAIL_HOST_USER`, and `EMAIL_HOST_PASSWORD` to start the app.
-7. **Optional features** — turn off what you don't need: `GUESTBOOK_PAGE=False` skips the whole OAuth/chat system (no OAuth app setup needed), `USE_CF_TURNSTILE=False` skips Turnstile.
+6. **Your colors** — the whole palette is the `html[data-theme="light"]` block at the top of `static/css/input.css`, plus Tailwind's own defaults for dark. Changing a ramp re-skins every page at once. If you shift the accents, re-check contrast: the tables there were tuned by measurement, not by eye (see [Theming](#theming)).
+7. **Your env vars** — see the [table above](#environment-configuration); at minimum you need `SECRET_KEY`, `ACCESS_TOKEN`, `EMAIL_HOST_USER`, and `EMAIL_HOST_PASSWORD` to start the app.
+8. **Optional features** — turn off what you don't need: `GUESTBOOK_PAGE=False` skips the whole OAuth/chat system (no OAuth app setup needed), `USE_CF_TURNSTILE=False` skips Turnstile.
 
 ## Deployment
 

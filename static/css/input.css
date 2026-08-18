@@ -1,1 +1,388 @@
 @import "tailwindcss";
+
+/* ===========================================================================
+   Light theme
+   ===========================================================================
+
+   The site is written entirely in dark-mode Tailwind classes -- there are no
+   `dark:` variants anywhere. Light mode is produced by *remapping the palette*
+   rather than by rewriting those ~1,500 class occurrences.
+
+   This works because Tailwind v4 compiles every theme color utility to a
+   variable reference:
+
+       .bg-zinc-800  { background-color: var(--color-zinc-800) }
+       .text-zinc-400 { color: var(--color-zinc-400) }
+
+   so redefining the ramps below re-skins the whole site. Dark mode is the
+   untouched `:root` branch and cannot regress from changes made here.
+
+   HOW THE VALUES WERE CHOSEN
+   --------------------------
+   zinc's text shades mirror around 500:
+
+       50 <-> 950   100 <-> 900   200 <-> 800   300 <-> 700   400 <-> 600
+
+   Mirroring preserves contrast against the canvas, which is the right model
+   for foreground colors and only for those. Three groups depart from it, each
+   because a measurement said so -- the numbers are in the design notes:
+
+   1. zinc's SURFACE shades (700-950) are hand-set. Dark spreads them across
+      the wide dark end above a black canvas; light has only a few points of
+      room below white. Mirroring makes the card a gray slab, but the obvious
+      correction -- a very tight near-white ramp -- is the worse error: it kept
+      just 7-35% of dark's surface separation, and since bg-zinc-800 is also
+      the sidebar's active and hover state, the nav highlight all but vanished.
+      These values spread the ramp back out while staying recognisably light.
+
+   2. ACCENTS use their own table entirely (see below). A mirror preserves
+      distance from the end of a ramp, not perceived contrast, and the bright
+      hues could not survive it -- the green badge measured 2.92:1.
+
+   3. zinc-500, the dimmest text, is nudged darker to hold AA against the
+      darker card rather than only against the canvas.
+
+   ADDING NEW UI
+   -------------
+   Keep to the zinc ramp and the accent families below and light mode comes
+   for free. Arbitrary values (`bg-[#18181b]`) and unlisted color families
+   will silently stay dark. See CLAUDE.md.
+
+   =========================================================================== */
+
+:root {
+    color-scheme: dark;
+}
+
+html[data-theme="light"] {
+    color-scheme: light;
+
+    /* Canvas and the strongest foreground swap outright. `--color-black` is
+       the page canvas (19 uses); `--color-white` is the strongest heading
+       color (23 uses), so in light it must become near-black, not stay white. */
+    --color-black: oklch(100% 0 0);
+    --color-white: oklch(21% 0.006 285.885);
+
+    /* zinc */
+    --color-zinc-50: oklch(14.1% 0.005 285.823);
+    --color-zinc-100: oklch(21% 0.006 285.885);
+    --color-zinc-200: oklch(27.4% 0.006 286.033);
+    --color-zinc-300: oklch(37% 0.013 285.805);
+    --color-zinc-400: oklch(44.2% 0.017 285.786);
+    --color-zinc-500: oklch(50% 0.016 285.938);  /* tuned surface, not mirror(500) */
+    --color-zinc-600: oklch(70.5% 0.015 286.067);
+    --color-zinc-700: oklch(86% 0.004 286.286);  /* tuned surface, not mirror(300) */
+    --color-zinc-800: oklch(93% 0.002 286.375);  /* tuned surface, not mirror(200) */
+    --color-zinc-900: oklch(95.5% 0.001 286.375);  /* tuned surface, not mirror(100) */
+    --color-zinc-950: oklch(97.5% 0.001 286.375);  /* tuned surface, not mirror(50) */
+
+    /* indigo */
+    --color-indigo-50: oklch(25.7% 0.09 281.288);
+    --color-indigo-100: oklch(25.7% 0.09 281.288);
+    --color-indigo-200: oklch(35.9% 0.144 278.697);
+    --color-indigo-300: oklch(35.9% 0.144 278.697);
+    --color-indigo-400: oklch(39.8% 0.195 277.366);
+    --color-indigo-500: oklch(51.1% 0.262 276.966);
+    --color-indigo-600: oklch(58.5% 0.233 277.117);
+    --color-indigo-700: oklch(78.5% 0.115 274.713);
+    --color-indigo-800: oklch(87% 0.065 274.039);
+    --color-indigo-900: oklch(93% 0.034 272.788);
+    --color-indigo-950: oklch(96.2% 0.018 272.314);
+
+    /* green */
+    --color-green-50: oklch(26.6% 0.065 152.934);
+    --color-green-100: oklch(26.6% 0.065 152.934);
+    --color-green-200: oklch(39.3% 0.095 152.535);
+    --color-green-300: oklch(39.3% 0.095 152.535);
+    --color-green-400: oklch(44.8% 0.119 151.328);
+    --color-green-500: oklch(62.7% 0.194 149.214);
+    --color-green-600: oklch(72.3% 0.219 149.579);
+    --color-green-700: oklch(87.1% 0.15 154.449);
+    --color-green-800: oklch(92.5% 0.084 155.995);
+    --color-green-900: oklch(96.2% 0.044 156.743);
+    --color-green-950: oklch(98.2% 0.018 155.826);
+
+    /* blue */
+    --color-blue-50: oklch(28.2% 0.091 267.935);
+    --color-blue-100: oklch(28.2% 0.091 267.935);
+    --color-blue-200: oklch(37.9% 0.146 265.522);
+    --color-blue-300: oklch(37.9% 0.146 265.522);
+    --color-blue-400: oklch(42.4% 0.199 265.638);
+    --color-blue-500: oklch(54.6% 0.245 262.881);
+    --color-blue-600: oklch(62.3% 0.214 259.815);
+    --color-blue-700: oklch(80.9% 0.105 251.813);
+    --color-blue-800: oklch(88.2% 0.059 254.128);
+    --color-blue-900: oklch(93.2% 0.032 255.585);
+    --color-blue-950: oklch(97% 0.014 254.604);
+
+    /* amber */
+    --color-amber-50: oklch(27.9% 0.077 45.635);
+    --color-amber-100: oklch(27.9% 0.077 45.635);
+    --color-amber-200: oklch(41.4% 0.112 45.904);
+    --color-amber-300: oklch(41.4% 0.112 45.904);
+    --color-amber-400: oklch(47.3% 0.137 46.201);
+    --color-amber-500: oklch(66.6% 0.179 58.318);
+    --color-amber-600: oklch(76.9% 0.188 70.08);
+    --color-amber-700: oklch(87.9% 0.169 91.605);
+    --color-amber-800: oklch(92.4% 0.12 95.746);
+    --color-amber-900: oklch(96.2% 0.059 95.617);
+    --color-amber-950: oklch(98.7% 0.022 95.277);
+
+    /* teal */
+    --color-teal-50: oklch(27.7% 0.046 192.524);
+    --color-teal-100: oklch(27.7% 0.046 192.524);
+    --color-teal-200: oklch(38.6% 0.063 188.416);
+    --color-teal-300: oklch(38.6% 0.063 188.416);
+    --color-teal-400: oklch(43.7% 0.078 188.216);
+    --color-teal-500: oklch(60% 0.118 184.704);
+    --color-teal-600: oklch(70.4% 0.14 182.503);
+    --color-teal-700: oklch(85.5% 0.138 181.071);
+    --color-teal-800: oklch(91% 0.096 180.426);
+    --color-teal-900: oklch(95.3% 0.051 180.801);
+    --color-teal-950: oklch(98.4% 0.014 180.72);
+
+    /* red */
+    --color-red-50: oklch(25.8% 0.092 26.042);
+    --color-red-100: oklch(25.8% 0.092 26.042);
+    --color-red-200: oklch(39.6% 0.141 25.723);
+    --color-red-300: oklch(39.6% 0.141 25.723);
+    --color-red-400: oklch(44.4% 0.177 26.899);
+    --color-red-500: oklch(57.7% 0.245 27.325);
+    --color-red-600: oklch(63.7% 0.237 25.331);
+    --color-red-700: oklch(80.8% 0.114 19.571);
+    --color-red-800: oklch(88.5% 0.062 18.334);
+    --color-red-900: oklch(93.6% 0.032 17.717);
+    --color-red-950: oklch(97.1% 0.013 17.38);
+
+    /* pink */
+    --color-pink-50: oklch(28.4% 0.109 3.907);
+    --color-pink-100: oklch(28.4% 0.109 3.907);
+    --color-pink-200: oklch(40.8% 0.153 2.432);
+    --color-pink-300: oklch(40.8% 0.153 2.432);
+    --color-pink-400: oklch(45.9% 0.187 3.815);
+    --color-pink-500: oklch(59.2% 0.249 0.584);
+    --color-pink-600: oklch(65.6% 0.241 354.308);
+    --color-pink-700: oklch(82.3% 0.12 346.018);
+    --color-pink-800: oklch(89.9% 0.061 343.231);
+    --color-pink-900: oklch(94.8% 0.028 342.258);
+    --color-pink-950: oklch(97.1% 0.014 343.198);
+
+    /* purple */
+    --color-purple-50: oklch(29.1% 0.149 302.717);
+    --color-purple-100: oklch(29.1% 0.149 302.717);
+    --color-purple-200: oklch(38.1% 0.176 304.987);
+    --color-purple-300: oklch(38.1% 0.176 304.987);
+    --color-purple-400: oklch(43.8% 0.218 303.724);
+    --color-purple-500: oklch(55.8% 0.288 302.321);
+    --color-purple-600: oklch(62.7% 0.265 303.9);
+    --color-purple-700: oklch(82.7% 0.119 306.383);
+    --color-purple-800: oklch(90.2% 0.063 306.703);
+    --color-purple-900: oklch(94.6% 0.033 307.174);
+    --color-purple-950: oklch(97.7% 0.014 308.299);
+
+    /* emerald */
+    --color-emerald-50: oklch(26.2% 0.051 172.552);
+    --color-emerald-100: oklch(26.2% 0.051 172.552);
+    --color-emerald-200: oklch(37.8% 0.077 168.94);
+    --color-emerald-300: oklch(37.8% 0.077 168.94);
+    --color-emerald-400: oklch(43.2% 0.095 166.913);
+    --color-emerald-500: oklch(59.6% 0.145 163.225);
+    --color-emerald-600: oklch(69.6% 0.17 162.48);
+    --color-emerald-700: oklch(84.5% 0.143 164.978);
+    --color-emerald-800: oklch(90.5% 0.093 164.15);
+    --color-emerald-900: oklch(95% 0.052 163.051);
+    --color-emerald-950: oklch(97.9% 0.021 166.113);
+
+    /* yellow */
+    --color-yellow-50: oklch(28.6% 0.066 53.813);
+    --color-yellow-100: oklch(28.6% 0.066 53.813);
+    --color-yellow-200: oklch(42.1% 0.095 57.708);
+    --color-yellow-300: oklch(42.1% 0.095 57.708);
+    --color-yellow-400: oklch(47.6% 0.114 61.907);
+    --color-yellow-500: oklch(68.1% 0.162 75.834);
+    --color-yellow-600: oklch(79.5% 0.184 86.047);
+    --color-yellow-700: oklch(90.5% 0.182 98.111);
+    --color-yellow-800: oklch(94.5% 0.129 101.54);
+    --color-yellow-900: oklch(97.3% 0.071 103.193);
+    --color-yellow-950: oklch(98.7% 0.026 102.212);
+
+    /* violet */
+    --color-violet-50: oklch(28.3% 0.141 291.089);
+    --color-violet-100: oklch(28.3% 0.141 291.089);
+    --color-violet-200: oklch(38% 0.189 293.745);
+    --color-violet-300: oklch(38% 0.189 293.745);
+    --color-violet-400: oklch(43.2% 0.232 292.759);
+    --color-violet-500: oklch(54.1% 0.281 293.009);
+    --color-violet-600: oklch(60.6% 0.25 292.717);
+    --color-violet-700: oklch(81.1% 0.111 293.571);
+    --color-violet-800: oklch(89.4% 0.057 293.283);
+    --color-violet-900: oklch(94.3% 0.029 294.588);
+    --color-violet-950: oklch(96.9% 0.016 293.756);
+
+    /* cyan */
+    --color-cyan-50: oklch(30.2% 0.056 229.695);
+    --color-cyan-100: oklch(30.2% 0.056 229.695);
+    --color-cyan-200: oklch(39.8% 0.07 227.392);
+    --color-cyan-300: oklch(39.8% 0.07 227.392);
+    --color-cyan-400: oklch(45% 0.085 224.283);
+    --color-cyan-500: oklch(60.9% 0.126 221.723);
+    --color-cyan-600: oklch(71.5% 0.143 215.221);
+    --color-cyan-700: oklch(86.5% 0.127 207.078);
+    --color-cyan-800: oklch(91.7% 0.08 205.041);
+    --color-cyan-900: oklch(95.6% 0.045 203.388);
+    --color-cyan-950: oklch(98.4% 0.019 200.873);
+
+    /* lime */
+    --color-lime-50: oklch(27.4% 0.072 132.109);
+    --color-lime-100: oklch(27.4% 0.072 132.109);
+    --color-lime-200: oklch(40.5% 0.101 131.063);
+    --color-lime-300: oklch(40.5% 0.101 131.063);
+    --color-lime-400: oklch(45.3% 0.124 130.933);
+    --color-lime-500: oklch(64.8% 0.2 131.684);
+    --color-lime-600: oklch(76.8% 0.233 130.85);
+    --color-lime-700: oklch(89.7% 0.196 126.665);
+    --color-lime-800: oklch(93.8% 0.127 124.321);
+    --color-lime-900: oklch(96.7% 0.067 122.328);
+    --color-lime-950: oklch(98.6% 0.031 120.757);
+
+    /* orange */
+    --color-orange-50: oklch(26.6% 0.079 36.259);
+    --color-orange-100: oklch(26.6% 0.079 36.259);
+    --color-orange-200: oklch(40.8% 0.123 38.172);
+    --color-orange-300: oklch(40.8% 0.123 38.172);
+    --color-orange-400: oklch(47% 0.157 37.304);
+    --color-orange-500: oklch(64.6% 0.222 41.116);
+    --color-orange-600: oklch(70.5% 0.213 47.604);
+    --color-orange-700: oklch(83.7% 0.128 66.29);
+    --color-orange-800: oklch(90.1% 0.076 70.697);
+    --color-orange-900: oklch(95.4% 0.038 75.164);
+    --color-orange-950: oklch(98% 0.016 73.684);
+}
+
+/* ===========================================================================
+   Cases the palette remap cannot reach
+   ===========================================================================
+
+   Tailwind's *default* shadow scale is fine and deliberately not touched here:
+   it hardcodes `rgba(0,0,0,·)` rather than routing through a variable, so a
+   plain `shadow-xl` stays correctly dark in light mode -- which is what you
+   want, since shadows are cast light, not painted surface.
+
+   The exceptions are the few places that name a shadow or ring color
+   explicitly. Those *do* resolve through `--color-black`, which light mode
+   swaps to white, so they silently vanish.
+   =========================================================================== */
+
+/* `shadow-black/60` + `ring-black/5` on the two floating panels. Overriding
+   the color variables rather than `box-shadow` keeps Tailwind's own shadow
+   composition intact. */
+html[data-theme="light"] #confirm-dialog-content,
+html[data-theme="light"] #search-modal-content {
+    --tw-shadow-color: rgb(0 0 0 / 0.18);
+    --tw-ring-color: rgb(0 0 0 / 0.06);
+}
+
+/* The mobile drawer carries an arbitrary-value shadow,
+   `shadow-[0_-10px_40px_rgba(0,0,0,0.5)]`, which is a literal and so cannot
+   remap. At 0.5 it reads as a heavy smudge against a light page. */
+html[data-theme="light"] #mobile-menu {
+    box-shadow: 0 -10px 40px rgb(0 0 0 / 0.12);
+}
+
+/* ---------------------------------------------------------------------------
+   GitHub contribution heatmap: the empty cell
+
+   Zero-contribution cells were `bg-zinc-950`, which works in dark (14.1% on a
+   black canvas reads as a recessed square) but cannot survive the remap: the
+   heatmap's container is transparent, so the cells sit directly on the page
+   canvas, and zinc-950 resolves to the same pure white in light mode. The
+   whole "less -> more" ramp would start with an invisible step.
+
+   zinc-950 is not free to retune -- its other use is the ring around the
+   avatar status dot, which is *supposed* to match the canvas exactly. So the
+   cell gets its own token instead. Dark keeps the original value by
+   referencing the same variable.
+   --------------------------------------------------------------------------- */
+.contrib-empty {
+    background-color: var(--color-zinc-950);
+}
+
+/* 96% keeps the ramp reading correctly. The next step up, `bg-green-600/20`,
+   lands at ~94.5% lightness, so a darker empty cell would invert the first
+   rung of a "less -> more" scale. Dark has the same ordering (empty 14.1%
+   sits just above 12.5% for the 1-5 band), so this matches it rather than
+   inventing a new relationship. */
+html[data-theme="light"] .contrib-empty {
+    background-color: oklch(96% 0.001 286.375);
+}
+
+/* ---------------------------------------------------------------------------
+   Scrim over artwork
+
+   Unlike the card gradients -- which veil an image toward the page canvas and
+   so mirror correctly on their own -- this one carries a label, and its
+   contrast is against arbitrary project screenshots rather than against any
+   surface we control.
+
+   `bg-black/60` mirrors to `white/60`, which over a *dark* screenshot settles
+   at roughly mid-grey and drops the label to about 3:1. The light veil is
+   therefore heavier than the dark one it replaces, which lifts the same case
+   back to ~6.8:1.
+   --------------------------------------------------------------------------- */
+.media-scrim {
+    background-color: rgb(0 0 0 / 0.6);
+}
+
+html[data-theme="light"] .media-scrim {
+    background-color: rgb(255 255 255 / 0.82);
+}
+
+/* ---------------------------------------------------------------------------
+   Theme toggle icons
+
+   Driven by CSS rather than JS so the correct icon is painted immediately: the
+   theme is set by a blocking script in <head>, while themeToggle.js is
+   deferred, so a JS-driven swap would flash the wrong icon on every load.
+
+   The moon is the default rather than the sun, so that a reader with JS
+   disabled -- who therefore has no `data-theme` attribute and gets the dark
+   `:root` palette -- still sees exactly one icon, and the right one.
+   --------------------------------------------------------------------------- */
+[data-theme-icon="light"] {
+    display: none;
+}
+
+html[data-theme="light"] [data-theme-icon="light"] {
+    display: block;
+}
+
+html[data-theme="light"] [data-theme-icon="dark"] {
+    display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Switching the theme must not animate
+
+   Flipping `data-theme` changes the computed colour of nearly every element on
+   the page at once, and each one then animates that change over whatever
+   duration it happens to declare. The result is a visible cascade rather than
+   a switch: `<body>` is `transition-colors duration-200`, `#page-content` is
+   `transition-all duration-700`, and 148 elements sit on `duration-300` -- so
+   the sidebar arrives first and the content column trails half a second
+   behind.
+
+   Suppressing transitions for the single frame in which the swap happens makes
+   the whole page change together. themeToggle.js adds this class, flips the
+   attribute, forces a style flush so the new colours are committed with
+   transitions off, then removes it again -- all synchronously, so no animation
+   is ever started and normal hover transitions are unaffected afterwards.
+
+   Deliberately `transition`, not `animation`: `animate-pulse` on the status
+   dots and active-nav arrows should keep running throughout.
+   --------------------------------------------------------------------------- */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+    transition: none !important;
+}

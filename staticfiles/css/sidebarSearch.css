@@ -1,8 +1,22 @@
+/*
+ * The scrollbar colors reuse the --scrollbar-* variables defined in
+ * globalScrollbar.css, which base_seo.html always loads alongside this file.
+ * Literal fallbacks (the dark values) are kept inline so this stylesheet still
+ * renders correctly on its own.
+ */
+
 .search-item.highlighted .group,
 .social-item.highlighted .group {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--search-highlight, rgba(255, 255, 255, 0.1));
 }
 
+/* A white wash is invisible on a light canvas -- keyboard navigation through
+   the search results would lose its selection indicator entirely. */
+html[data-theme="light"] {
+    --search-highlight: rgba(0, 0, 0, 0.06);
+}
+
+/* Cast shadow, not painted surface: correctly stays dark in both themes. */
 .shadow-3xl {
     box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
 }
@@ -10,7 +24,7 @@
 /* Custom scrollbar for search modal */
 #search-modal .overflow-y-auto {
     scrollbar-width: thin;
-    scrollbar-color: #3f3f46 #18181b;
+    scrollbar-color: var(--scrollbar-thumb, #3f3f46) var(--scrollbar-track, #18181b);
 }
 
 #search-modal .overflow-y-auto::-webkit-scrollbar {
@@ -18,20 +32,20 @@
 }
 
 #search-modal .overflow-y-auto::-webkit-scrollbar-track {
-    background: #18181b;
+    background: var(--scrollbar-track, #18181b);
     border-radius: 4px;
 }
 
 #search-modal .overflow-y-auto::-webkit-scrollbar-thumb {
-    background: #3f3f46;
+    background: var(--scrollbar-thumb, #3f3f46);
     border-radius: 4px;
-    border: 1px solid #27272a;
+    border: 1px solid var(--scrollbar-thumb-border, #27272a);
 }
 
 #search-modal .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-    background: #52525b;
+    background: var(--scrollbar-thumb-hover, #52525b);
 }
 
 #search-modal .overflow-y-auto::-webkit-scrollbar-corner {
-    background: #18181b;
+    background: var(--scrollbar-track, #18181b);
 }

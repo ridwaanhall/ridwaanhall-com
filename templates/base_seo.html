@@ -1,7 +1,7 @@
 {% load seo_tags %}
 {% load image_filters %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <!--
 ╦═╗╦╔╦╗╦ ╦╔═╗╔═╗╔╗╔╦ ╦╔═╗╦  ╦  
 ╠╦╝║ ║║║║║╠═╣╠═╣║║║╠═╣╠═╣║  ║  
@@ -25,6 +25,36 @@
         <!-- Theme color for browsers -->
         <meta name="theme-color" content="#000000" />
 
+        {% comment %}
+        Applies the saved theme before first paint. This must stay inline and
+        blocking, and must stay ahead of the stylesheet links below: this is a
+        server-rendered multi-page app, so a deferred script would let every
+        single navigation flash the dark palette at a light-mode reader.
+
+        No `prefers-color-scheme` fallback on purpose -- dark is the site's
+        default, not merely what we pick when the OS is silent.
+        {% endcomment %}
+        <script>
+            (function () {
+                var theme = "dark";
+                try {
+                    var saved = localStorage.getItem("theme");
+                    if (saved === "light" || saved === "dark") {
+                        theme = saved;
+                    }
+                } catch (e) {
+                    /* storage blocked -- fall through to the dark default */
+                }
+                document.documentElement.dataset.theme = theme;
+                if (theme === "light") {
+                    var meta = document.querySelector('meta[name="theme-color"]');
+                    if (meta) {
+                        meta.setAttribute("content", "#ffffff");
+                    }
+                }
+            })();
+        </script>
+
         <!-- SEO Meta Tags -->
         {% if seo %}
             {% render_seo_meta seo request %}
@@ -39,15 +69,16 @@
         {% render_schema seo.schemas %}
         {% endif %}
 
-        <link rel="stylesheet" href="{% static 'css/global-bijbtigg.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/global-duizuwmg.css' %}" />
 
         <link rel="stylesheet" href="{% url 'dynamic_css' 'onest' %}" />
 
-        <link rel="stylesheet" href="{% static 'css/clickRipple.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/clickSpark.css' %}" />
         <link rel="stylesheet" href="{% static 'css/skillSlider.css' %}" />
         <link rel="stylesheet" href="{% static 'css/hideScroll.css' %}" />
         <link rel="stylesheet" href="{% static 'css/sidebarSearch.css' %}" />
         <link rel="stylesheet" href="{% static 'css/globalScrollbar.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/tooltip.css' %}" />
         {% block extra_css %}
         {% endblock %}
 
@@ -72,11 +103,16 @@
                         ></path>
                     </svg>
                 </div>
-                <button id="open-sidebar" class="ml-auto hover:text-zinc-200 transition-colors" aria-label="Open Sidebar">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
+                {# Theme toggle and hamburger are a matched pair -- same padding, #}
+                {# radius and hover treatment, so they read as one control group. #}
+                <div class="ml-auto flex items-center gap-0.5">
+                    {% include 'components/theme_toggle.html' with icon_size="h-6 w-6" %}
+                    <button id="open-sidebar" class="inline-flex items-center justify-center rounded-md p-1.5 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400" aria-label="Open Sidebar">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -105,11 +141,13 @@
         <script defer src="{% static 'js/progressBar.js' %}"></script>
         <script defer src="{% static 'js/sidebar.js' %}"></script>
         <script defer src="{% static 'js/pageTransition.js' %}"></script>
-        <script defer src="{% static 'js/createRipple.js' %}"></script>
+        <script defer src="{% static 'js/clickSpark.js' %}"></script>
         {# Shared modal behaviour -- must load before anything that opens a dialog. #}
         <script defer src="{% static 'js/modalDialog.js' %}"></script>
         <script defer src="{% static 'js/sidebarSearch.js' %}"></script>
         <script defer src="{% static 'js/confirmDialog.js' %}"></script>
+        <script defer src="{% static 'js/themeToggle.js' %}"></script>
+        <script defer src="{% static 'js/tooltip.js' %}"></script>
 
         {% block scripts %}
         {% endblock %}

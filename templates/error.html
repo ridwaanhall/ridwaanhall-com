@@ -1,14 +1,39 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" data-theme="dark">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="robots" content="noindex" />
+        <meta name="theme-color" content="#000000" />
         <title>{% block title %}Error{% endblock %} - Ridwan Halim</title>
         {% load static %}
-        <link rel="stylesheet" href="{% static 'css/global-bijbtigg.css' %}" />
+
+        {# Standalone shell -- does not extend base_seo.html, so it needs its own #}
+        {# copy of the pre-paint theme bootstrap. Kept in sync by hand. #}
+        <script>
+            (function () {
+                var theme = "dark";
+                try {
+                    var saved = localStorage.getItem("theme");
+                    if (saved === "light" || saved === "dark") {
+                        theme = saved;
+                    }
+                } catch (e) {
+                    /* storage blocked -- fall through to the dark default */
+                }
+                document.documentElement.dataset.theme = theme;
+                if (theme === "light") {
+                    var meta = document.querySelector('meta[name="theme-color"]');
+                    if (meta) {
+                        meta.setAttribute("content", "#ffffff");
+                    }
+                }
+            })();
+        </script>
+        <link rel="stylesheet" href="{% static 'css/global-duizuwmg.css' %}" />
         <link rel="stylesheet" href="{% url 'dynamic_css' 'onest' %}" />
-        <link rel="stylesheet" href="{% static 'css/clickRipple.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/clickSpark.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/tooltip.css' %}" />
         <style>
             /* Optional: Add subtle transition for hover effects */
             button,
@@ -109,7 +134,8 @@
         </div>
 
         {% block scripts %}
-        <script defer src="{% static 'js/createRipple.js' %}"></script>
+        <script defer src="{% static 'js/clickSpark.js' %}"></script>
+        <script defer src="{% static 'js/tooltip.js' %}"></script>
         {% endblock %}
     </body>
 </html>

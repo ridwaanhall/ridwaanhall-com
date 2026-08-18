@@ -5,7 +5,8 @@
  * and the comment form still posts normally.
  *
  * Deleting a comment is handled by confirmDialog.js via the site-wide
- * confirmation dialog, so none of that lives here.
+ * confirmation dialog, and post/delete feedback by notify.js via the site-wide
+ * toast stack, so neither lives here.
  */
 document.addEventListener("DOMContentLoaded", function () {
     "use strict";
@@ -39,11 +40,4 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
     }
-
-    // ---- message dismissal ------------------------------------------------
-    document.querySelectorAll("#comment-messages .close-message-btn").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-            btn.closest(".message-alert").remove();
-        });
-    });
 });

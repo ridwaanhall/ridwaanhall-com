@@ -1,13 +1,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.http import JsonResponse
+from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views import View
-from allauth.socialaccount.models import SocialAccount
+
 from apps.core.base_views import BaseView
-from .models import ChatMessage
 from apps.seo.mixins import GuestbookSEOMixin
-import pytz
+
+from .models import ChatMessage
+from .tree import build_thread
 
 
 class UserProfileMixin:
@@ -149,16 +151,26 @@ class UserProfileMixin:
         return profile_data
 
 
-class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
+class ThreadedMessagesMixin(UserProfileMixin):
     """
-    Guestbook page view - displays the live chat page
-    """
-    template_name = 'guestbook/guestbook.html'
+    Builds the threaded message panel.
 
-    def _get(self, request, *args, **kwargs):
-        about = self.get_about_data()
-        
-        # Get all chat messages with optimized prefetching to avoid N+1 queries
+    Shared by the page view and the AJAX post, so both go through exactly the
+    same query, the same profile enrichment and the same call to build_thread().
+    SendMessageView re-renders the whole panel rather than appending one node
+    client-side: where a reply lands depends on the depth cap and on whether its
+    parent fell inside the fetched window, and reimplementing that in JavaScript
+    would be a second copy of apps/guestbook/tree.py free to disagree with this
+    one -- the drift hazard the old hand-built message template already was.
+    """
+
+    # Matches what the panel can usefully scroll through. Threads whose root is
+    # older than this still render; their replies just come back as roots
+    # carrying a caption naming who they answered (see tree.build_thread).
+    MESSAGE_WINDOW = 50
+
+    def get_thread_context(self, request):
+        """chat_messages (roots, oldest first), pinned cards, counts, viewer."""
         chat_messages = ChatMessage.objects.select_related(
             'user',
             'user__userprofile',
@@ -167,19 +179,19 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
         ).prefetch_related(
             'user__socialaccount_set',
             'reply_to__user__socialaccount_set'
-        )[:50]  # Latest 50 messages
+        )[:self.MESSAGE_WINDOW]
 
-        # Get up to MAX_PINNED_MESSAGES pinned messages, most recently pinned first
         pinned_messages = ChatMessage.objects.filter(is_pinned=True).select_related(
             'user', 'user__userprofile'
         ).prefetch_related(
             'user__socialaccount_set'
         ).order_by('-pinned_at')[:ChatMessage.MAX_PINNED_MESSAGES]
 
-        # Get total message count
         total_message_count = ChatMessage.objects.count()
 
-        # Collect all users to process and create a cache of profile data
+        # Collect all users first and derive each profile once: the same person
+        # usually appears many times over in a thread, and get_user_profile_data
+        # walks their social accounts every call.
         all_users = set()
         for message in chat_messages:
             all_users.add(message.user)
@@ -188,12 +200,10 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
         for message in pinned_messages:
             all_users.add(message.user)
 
-        # Batch process user profile data to avoid redundant processing
         user_profile_cache = {}
         for user in all_users:
             user_profile_cache[user.pk] = self.get_user_profile_data(user)
 
-        # Add profile data to each message using cache
         enriched_messages = []
         for message in chat_messages:
             profile_data = user_profile_cache[message.user.pk]
@@ -212,7 +222,6 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
                 'reply_to': None
             }
 
-            # Add reply_to profile data if it exists
             if message.reply_to:
                 reply_profile_data = user_profile_cache[message.reply_to.user.pk]
                 enriched_message['reply_to'] = {
@@ -228,7 +237,6 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
                 }
             enriched_messages.append(enriched_message)
 
-        # Enrich pinned messages with the same cached profile data
         enriched_pinned_messages = []
         for message in pinned_messages:
             profile_data = user_profile_cache[message.user.pk]
@@ -241,8 +249,6 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
                 'user_is_co_author': profile_data['is_co_author'],
             })
 
-        # Get current user profile data
-        current_user_profile = None
         if request.user.is_authenticated:
             current_user_profile = self.get_user_profile_data(request.user)
             current_user_profile['email'] = self.mask_email(current_user_profile['email'])
@@ -256,28 +262,42 @@ class GuestbookView(UserProfileMixin, GuestbookSEOMixin, BaseView):
                 'email': '',
                 'can_pin': False,
             }
-        
-        # Get the base context with SEO data
-        context = self.get_context_data()
-        
-        # Add guestbook-specific context
-        context.update({
-            'chat_messages': enriched_messages,
+
+        return {
+            'chat_messages': build_thread(enriched_messages),
             'pinned_messages': enriched_pinned_messages,
             'pin_limit': ChatMessage.MAX_PINNED_MESSAGES,
             'message_count': total_message_count,
             'current_user_profile': current_user_profile,
-            'about': about,
-        })
-        
+        }
+
+    def render_thread(self, request):
+        """The messages panel as HTML, for the AJAX post to swap in."""
+        return render_to_string(
+            'guestbook/partials/_thread.html',
+            self.get_thread_context(request),
+            request=request,
+        )
+
+
+class GuestbookView(ThreadedMessagesMixin, GuestbookSEOMixin, BaseView):
+    """
+    Guestbook page view - displays the live chat page
+    """
+    template_name = 'guestbook/guestbook.html'
+
+    def _get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        context.update(self.get_thread_context(request))
+        context['about'] = self.get_about_data()
         return self.render_to_response(context)
 
 
-class SendMessageView(LoginRequiredMixin, UserProfileMixin, View):
+class SendMessageView(LoginRequiredMixin, ThreadedMessagesMixin, View):
     """
     Handle sending chat messages via AJAX
     """
-    
+
     def post(self, request, *args, **kwargs):
         """
         Create a new chat message
@@ -294,69 +314,33 @@ class SendMessageView(LoginRequiredMixin, UserProfileMixin, View):
 
         if len(message_text) > 500:
             return JsonResponse({'success': False, 'error': 'Message must be 500 characters or less'}, status=400)
-        
+
         # Handle reply
         reply_to_message = None
         if reply_to_id:
             try:
-                # Optimize reply_to message fetch with prefetch
-                reply_to_message = ChatMessage.objects.select_related(
-                    'user', 'user__userprofile'
-                ).prefetch_related(
-                    'user__socialaccount_set'
-                ).get(id=reply_to_id)
-            except ChatMessage.DoesNotExist:
+                reply_to_message = ChatMessage.objects.get(id=reply_to_id)
+            except (ChatMessage.DoesNotExist, ValueError):
+                # ValueError covers a non-numeric reply_to, which the ORM raises
+                # before DoesNotExist can be checked. Either way the message is
+                # still posted, just not as a reply.
                 pass
-        
-        # Create message
+
         chat_message = ChatMessage.objects.create(
             user=request.user,
             message=message_text,
             reply_to=reply_to_message
         )
-        
-        # Get user profile data
-        profile_data = self.get_user_profile_data(request.user)
-        
-        # Prepare reply data if exists
-        reply_data = None
-        if reply_to_message:
-            reply_profile_data = self.get_user_profile_data(reply_to_message.user)
-            reply_data = {
-                'id': reply_to_message.pk,
-                'user': reply_profile_data['full_name'],
-                'user_id': reply_to_message.user.pk,
-                'message': reply_to_message.message[:50] + ('...' if len(reply_to_message.message) > 50 else ''),
-                'profile_image': reply_profile_data['profile_image'],
-                'is_author': reply_profile_data['is_author'],
-                'is_co_author': reply_profile_data['is_co_author'],
-                'co_author_order': reply_profile_data['co_author_order'],
-                'email': self.mask_email(reply_profile_data['email'])
-            }
-        else:
-            reply_data = None
-        
-        # Convert timestamp to Jakarta timezone for consistency with template
-        jakarta_tz = pytz.timezone('Asia/Jakarta')
-        jakarta_timestamp = chat_message.timestamp.astimezone(jakarta_tz)
-        
+
+        # Hand back the rendered panel rather than the new message's fields: the
+        # client used to assemble the markup itself from this JSON, which meant
+        # every change to how a message looks had to be made twice.
         return JsonResponse({
             'success': True,
-            'message': {
-                'id': chat_message.pk,
-                'user': profile_data['full_name'],
-                'user_id': chat_message.user.pk,
-                'message': chat_message.message,
-                'timestamp': jakarta_timestamp.strftime('%d/%m/%Y, %H:%M'),
-                'profile_image': profile_data['profile_image'],
-                'is_author': profile_data['is_author'],
-                'is_co_author': profile_data['is_co_author'],
-                'co_author_order': profile_data['co_author_order'],
-                'email': self.mask_email(profile_data['email']),
-                'reply_to': reply_data
-            }
+            'message_id': chat_message.pk,
+            'html': self.render_thread(request),
         })
-    
+
     def get(self, request, *args, **kwargs):
         """
         Handle GET requests (not allowed for this endpoint)
@@ -398,7 +382,7 @@ class DeleteMessageView(LoginRequiredMixin, UserProfileMixin, View):
                 'success': True,
                 'message': 'Message deleted successfully'
             })
-        except Exception as e:
+        except Exception:
             return JsonResponse({'success': False, 'error': 'An error occurred while deleting the message'})
 
     def get(self, request, *args, **kwargs):
@@ -472,17 +456,29 @@ class PinMessageView(LoginRequiredMixin, UserProfileMixin, View):
             message.save(update_fields=['is_pinned', 'pinned_at'])
 
         message_profile = self.get_user_profile_data(message.user)
+        # The card comes back rendered, from the same partial the page load uses.
+        # The client used to assemble it from these fields, which meant a change
+        # to the card had to be made in the template and in the script both.
+        card_html = render_to_string(
+            'guestbook/partials/_pinned_card.html',
+            {
+                'pinned': {
+                    'id': message.pk,
+                    'message': message.message,
+                    'user_full_name': message_profile['full_name'],
+                    'user_profile_image': message_profile['profile_image'],
+                    'user_is_author': message_profile['is_author'],
+                    'user_is_co_author': message_profile['is_co_author'],
+                },
+                'current_user_profile': user_profile,
+            },
+            request=request,
+        )
         return JsonResponse({
             'success': True,
             'is_pinned': True,
             'message_id': message.pk,
-            'message': {
-                'user': message_profile['full_name'],
-                'message': message.message,
-                'profile_image': message_profile['profile_image'],
-                'is_author': message_profile['is_author'],
-                'is_co_author': message_profile['is_co_author'],
-            },
+            'html': card_html,
         })
 
     def get(self, request, *args, **kwargs):

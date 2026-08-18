@@ -3,8 +3,24 @@
  *
  * Any control that needs confirming becomes a plain button carrying
  * data-confirm-* attributes; this fills the single dialog in
- * templates/components/confirm_dialog.html and posts its form. One dialog and
- * one handler serve comment deletion, comment sign-out and guestbook sign-out.
+ * templates/components/confirm_dialog.html. One dialog and one handler serve
+ * comment deletion, comment sign-out, guestbook sign-out and guestbook message
+ * deletion.
+ *
+ * Two ways to confirm, because not every action is a form post:
+ *
+ *   data-confirm-action="/some/url/"   posts the dialog's form to that URL
+ *   data-confirm-event="ns:name"       dispatches that CustomEvent on document,
+ *                                      with detail.trigger set to the button
+ *
+ * The event mode exists for actions carried out over fetch -- the guestbook
+ * deletes a message via AJAX and updates the thread in place, so navigating
+ * away to a form POST would throw away the page state it just maintained.
+ *
+ * Triggers are matched by delegation from document rather than bound once at
+ * DOMContentLoaded: the guestbook inserts messages (and their delete buttons)
+ * after load, and a one-shot querySelectorAll would leave those dead. Same
+ * reason tooltip.js delegates.
  *
  * Show/hide, backdrop dismissal and Escape come from modalDialog.js, the same
  * helper the sidebar search modal uses.
@@ -25,6 +41,9 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
+    // The control that opened the dialog, so the confirm knows what it is for.
+    var trigger = null;
+
     var dialog = window.ModalDialog.create({
         root: "confirm-dialog",
         backdrop: "confirm-dialog-backdrop",
@@ -32,6 +51,9 @@ document.addEventListener("DOMContentLoaded", function () {
         // Focus Cancel, never the confirm button: a stray Enter must not carry
         // out a destructive action the user only meant to look at.
         onShown: function () { if (cancelBtn) { cancelBtn.focus(); } },
+        // Escape and backdrop dismissal bypass the cancel button, so the
+        // pending trigger is cleared here rather than on that click alone.
+        onHidden: function () { trigger = null; },
     });
     if (!dialog) {
         return;
@@ -53,36 +75,59 @@ document.addEventListener("DOMContentLoaded", function () {
         icon.querySelector("svg").classList.toggle("text-zinc-300", !danger);
     }
 
-    document.querySelectorAll("[data-confirm-action]").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-            form.setAttribute("action", btn.dataset.confirmAction);
+    document.addEventListener("click", function (event) {
+        var btn = event.target.closest("[data-confirm-action], [data-confirm-event]");
+        if (!btn) {
+            return;
+        }
+        trigger = btn;
 
-            // textContent throughout: titles and excerpts can carry user text.
-            title.textContent = btn.dataset.confirmTitle || "Are you sure?";
-            message.textContent = btn.dataset.confirmMessage || "";
-            confirmBtn.textContent = btn.dataset.confirmLabel || "Confirm";
+        // In event mode there is no URL to post to; clear any action a previous
+        // form-mode trigger left behind so a stray submit cannot reuse it.
+        form.setAttribute("action", btn.dataset.confirmAction || "");
 
-            var text = btn.dataset.confirmDetail || "";
-            if (text) {
-                detail.textContent = text.length > 240 ? text.slice(0, 240) + "…" : text;
-                detail.classList.remove("hidden");
-            } else {
-                detail.textContent = "";
-                detail.classList.add("hidden");
-            }
+        // textContent throughout: titles and excerpts can carry user text.
+        title.textContent = btn.dataset.confirmTitle || "Are you sure?";
+        message.textContent = btn.dataset.confirmMessage || "";
+        confirmBtn.textContent = btn.dataset.confirmLabel || "Confirm";
 
-            if (nextField) {
-                // Let a control override where it lands, e.g. sign-out returning
-                // to the page you were reading rather than the account default.
-                nextField.value = btn.dataset.confirmNext || window.location.pathname + window.location.search;
-            }
+        var text = btn.dataset.confirmDetail || "";
+        if (text) {
+            detail.textContent = text.length > 240 ? text.slice(0, 240) + "…" : text;
+            detail.classList.remove("hidden");
+        } else {
+            detail.textContent = "";
+            detail.classList.add("hidden");
+        }
 
-            applyVariant(btn.dataset.confirmVariant);
-            dialog.show();
-        });
+        if (nextField) {
+            // Let a control override where it lands, e.g. sign-out returning
+            // to the page you were reading rather than the account default.
+            nextField.value = btn.dataset.confirmNext || window.location.pathname + window.location.search;
+        }
+
+        applyVariant(btn.dataset.confirmVariant);
+        dialog.show();
     });
 
-    document.querySelectorAll("[data-confirm-dialog-close]").forEach(function (el) {
-        el.addEventListener("click", function () { dialog.hide(); });
+    form.addEventListener("submit", function (event) {
+        if (!trigger || !trigger.dataset.confirmEvent) {
+            return; // form mode: let the POST go through as normal
+        }
+        event.preventDefault();
+
+        var accepted = trigger;
+        trigger = null;
+        dialog.hide();
+        document.dispatchEvent(new CustomEvent(accepted.dataset.confirmEvent, {
+            detail: { trigger: accepted },
+        }));
+    });
+
+    document.addEventListener("click", function (event) {
+        if (event.target.closest("[data-confirm-dialog-close]")) {
+            trigger = null;
+            dialog.hide();
+        }
     });
 });

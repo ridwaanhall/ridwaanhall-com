@@ -1,5 +1,33 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+   Keep source detection off our own output and off prose
+
+   Tailwind v4 auto-detects sources by walking every non-gitignored file and
+   treating any matching word as a class name. Auto-detection is kept, because
+   class strings here are not confined to templates -- apps/comments/forms.py
+   builds widget attrs, the templatetags assemble class lists, and blog content
+   blocks carry a `class` key whose value only ever exists in the database.
+   Enumerating sources by hand silently dropped `placeholder-zinc-500` and
+   `pl-6` when it was tried.
+
+   What is excluded is everything that only ever *mentions* a class:
+
+     staticfiles/css   the compiled stylesheet Tailwind itself just wrote. A
+                       generated class re-detects itself on the next build, so
+                       without this a utility can never be removed again.
+     staticfiles/admin Django's vendored admin CSS/JS (`box-shadow`, and a
+                       jQuery comment about shadow DOM).
+     docs, *.md        the design notes, which discuss utilities by name.
+
+   Between them those three emitted `shadow`, `shadow-xl` and `shadow-black/60`
+   after every one of those classes had been deleted from all 51 templates.
+   --------------------------------------------------------------------------- */
+@source not "../../staticfiles/css";
+@source not "../../staticfiles/admin";
+@source not "../../docs";
+@source not "../../*.md";
+
 /* ===========================================================================
    Light theme
    ===========================================================================
@@ -263,30 +291,23 @@ html[data-theme="light"] {
    Cases the palette remap cannot reach
    ===========================================================================
 
-   Tailwind's *default* shadow scale is fine and deliberately not touched here:
-   it hardcodes `rgba(0,0,0,·)` rather than routing through a variable, so a
-   plain `shadow-xl` stays correctly dark in light mode -- which is what you
-   want, since shadows are cast light, not painted surface.
+   The site carries no box-shadows: every `shadow-*` utility was removed
+   because a cast shadow is black-on-black in dark mode, so it paid for its
+   paint cost while being invisible on the theme the site is designed around.
+   Depth is carried by the border and surface ramps instead, which both themes
+   render. Don't reintroduce `shadow-*` -- see CLAUDE.md.
 
-   The exceptions are the few places that name a shadow or ring color
-   explicitly. Those *do* resolve through `--color-black`, which light mode
-   swaps to white, so they silently vanish.
+   What is left here is a ring, which is a hairline border rather than a
+   shadow: `ring-black/5` resolves through `--color-black`, and light mode
+   swaps that to white, so it would silently vanish.
    =========================================================================== */
 
-/* `shadow-black/60` + `ring-black/5` on the two floating panels. Overriding
-   the color variables rather than `box-shadow` keeps Tailwind's own shadow
-   composition intact. */
+/* `ring-1 ring-black/5` on the two floating panels. Overriding the color
+   variable rather than `box-shadow` keeps Tailwind's own ring composition
+   intact. */
 html[data-theme="light"] #confirm-dialog-content,
 html[data-theme="light"] #search-modal-content {
-    --tw-shadow-color: rgb(0 0 0 / 0.18);
     --tw-ring-color: rgb(0 0 0 / 0.06);
-}
-
-/* The mobile drawer carries an arbitrary-value shadow,
-   `shadow-[0_-10px_40px_rgba(0,0,0,0.5)]`, which is a literal and so cannot
-   remap. At 0.5 it reads as a heavy smudge against a light page. */
-html[data-theme="light"] #mobile-menu {
-    box-shadow: 0 -10px 40px rgb(0 0 0 / 0.12);
 }
 
 /* ---------------------------------------------------------------------------
@@ -361,28 +382,137 @@ html[data-theme="light"] [data-theme-icon="dark"] {
 }
 
 /* ---------------------------------------------------------------------------
-   Switching the theme must not animate
+   Switching the theme: one movement, never a cascade
 
    Flipping `data-theme` changes the computed colour of nearly every element on
-   the page at once, and each one then animates that change over whatever
-   duration it happens to declare. The result is a visible cascade rather than
-   a switch: `<body>` is `transition-colors duration-200`, `#page-content` is
-   `transition-all duration-700`, and 148 elements sit on `duration-300` -- so
-   the sidebar arrives first and the content column trails half a second
-   behind.
+   the page at once. Left alone, each one animates that change over whatever
+   duration it happens to declare -- `<body>` is `transition-colors
+   duration-200`, `#page-content` is `transition-all duration-700`, and 148
+   elements sit on `duration-300` -- so the sidebar arrives first and the
+   content column trails half a second behind. That is a cascade, not a switch.
 
-   Suppressing transitions for the single frame in which the swap happens makes
-   the whole page change together. themeToggle.js adds this class, flips the
-   attribute, forces a style flush so the new colours are committed with
-   transitions off, then removes it again -- all synchronously, so no animation
-   is ever started and normal hover transitions are unaffected afterwards.
+   The old fix was to suppress transitions entirely for the one frame in which
+   the swap happens. It removed the cascade but left the change instantaneous,
+   which reads as a jarring flash rather than as a deliberate transition.
+
+   The cascade is caused by the *durations disagreeing*, not by animating at
+   all, so both blocks below make every element change in lockstep instead.
+   themeToggle.js picks between them:
+
+     .theme-reveal / .theme-crossfade  a View Transition -- the browser
+       crossfades or wipes between two snapshots of the page. One composited
+       animation for the whole document, so per-element durations cannot
+       disagree by construction. `.theme-switching` rides along to stop the
+       live DOM underneath animating a second time.
+
+     .theme-fading                     no View Transitions API: force every
+       element onto one shared colour transition.
+
+   `prefers-reduced-motion` never reaches either path; themeToggle.js commits
+   the swap under `.theme-switching` alone, which is the old instant behaviour.
+   --------------------------------------------------------------------------- */
+:root {
+    --theme-transition-duration: 320ms;
+    --theme-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+    --theme-reveal-duration: 450ms;
+}
+
+/* Transitions off. Used on its own for the reduced-motion swap, and alongside
+   the View Transition classes so the real page underneath the snapshots is not
+   animating too -- otherwise its cascade surfaces the moment the snapshot is
+   removed and the live DOM is revealed.
 
    Deliberately `transition`, not `animation`: `animate-pulse` on the status
-   dots and active-nav arrows should keep running throughout.
-   --------------------------------------------------------------------------- */
+   dots and active-nav arrows should keep running throughout. */
 html.theme-switching,
 html.theme-switching *,
 html.theme-switching *::before,
 html.theme-switching *::after {
     transition: none !important;
+}
+
+/* Fallback for browsers without the View Transitions API. Overriding
+   `transition-property` as well as the duration is the point: it puts every
+   element on the same colour-only transition, so they move together and the
+   `transition-all duration-700` on #page-content cannot drag behind. */
+html.theme-fading,
+html.theme-fading *,
+html.theme-fading *::before,
+html.theme-fading *::after {
+    transition-property: color, background-color, border-color, outline-color,
+        text-decoration-color, fill, stroke !important;
+    transition-duration: var(--theme-transition-duration) !important;
+    transition-timing-function: var(--theme-transition-easing) !important;
+    transition-delay: 0s !important;
+}
+
+/* ---------------------------------------------------------------------------
+   View Transition snapshots
+
+   Custom properties inherit from the root element into the view-transition
+   pseudo tree, which is how themeToggle.js hands the reveal its origin.
+   --------------------------------------------------------------------------- */
+
+/* Cross-tab sync and any switch with no button to emanate from: retime the
+   browser's own crossfade rather than redefining it, so its `plus-lighter`
+   blending -- which is what stops the two snapshots dipping through grey at
+   the halfway point -- is left intact. */
+html.theme-crossfade::view-transition-old(root),
+html.theme-crossfade::view-transition-new(root) {
+    animation-duration: var(--theme-transition-duration);
+    animation-timing-function: var(--theme-transition-easing);
+}
+
+/* A press on the toggle wipes the new theme in from that button. The outgoing
+   snapshot holds still underneath and the incoming one is clipped to a growing
+   circle, so the two are never both partly transparent -- hence `normal`
+   blending here, where the crossfade above wants `plus-lighter`. */
+html.theme-reveal::view-transition-old(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+html.theme-reveal::view-transition-new(root) {
+    animation: theme-reveal var(--theme-reveal-duration)
+        var(--theme-transition-easing) forwards;
+    mix-blend-mode: normal;
+}
+
+@keyframes theme-reveal {
+    from {
+        clip-path: circle(0 at var(--theme-reveal-x, 50%) var(--theme-reveal-y, 50%));
+    }
+    to {
+        clip-path: circle(var(--theme-reveal-radius, 150vmax) at var(--theme-reveal-x, 50%) var(--theme-reveal-y, 50%));
+    }
+}
+
+/* The toggle's own icon swap is a hard display change, so it pops. Growing it
+   in ties it to the switch it launched.
+
+   Fallback path only, deliberately. Under a View Transition the live DOM is
+   captured into the "new" snapshot moments after the swap -- an icon caught at
+   its `opacity: 0` keyframe would be baked into that snapshot and simply
+   missing for the whole animation. Nothing is lost: the reveal starts *at* the
+   toggle, so the new icon is the first thing the wipe uncovers. */
+html.theme-fading [data-theme-toggle] svg {
+    animation: theme-icon-in var(--theme-transition-duration)
+        var(--theme-transition-easing);
+}
+
+@keyframes theme-icon-in {
+    from {
+        opacity: 0;
+        transform: rotate(-45deg) scale(0.6);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html.theme-fading [data-theme-toggle] svg {
+        animation: none;
+    }
 }

@@ -36,10 +36,10 @@
                 required
             ></textarea>
             {% if USE_CF_TURNSTILE %}
-            <div class="cf-turnstile" data-sitekey="{{ CF_TURNSTILE_SITE_KEY }}" data-callback="onTurnstileSuccess" data-theme="dark"></div>
+            <div class="cf-turnstile" data-sitekey="{{ CF_TURNSTILE_SITE_KEY }}" data-callback="onTurnstileSuccess"></div>
             {% endif %}
             <button
-                class="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-700 hover:border-zinc-400 bg-zinc-800 px-2 py-2 text-base font-medium text-zinc-300 hover:text-zinc-200 hover:bg-zinc-900 hover:shadow-md hover:shadow-zinc-400/20 transition-all duration-300 justify-center"
+                class="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-700 hover:border-zinc-400 bg-zinc-800 px-2 py-2 text-base font-medium text-zinc-300 hover:text-zinc-200 hover:bg-zinc-900 transition-all duration-300 justify-center"
                 type="submit"
                 id="submit-btn"
             >

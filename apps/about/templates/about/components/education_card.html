@@ -1,5 +1,5 @@
 {% load image_filters %}
-<div class="rounded-xl shadow-lg overflow-hidden p-2 sm:p-3 md:p-4 border border-zinc-700/50 transition-all duration-300 hover:border-zinc-700 backdrop-blur-sm">
+<div class="rounded-xl overflow-hidden p-2 sm:p-3 md:p-4 border border-zinc-700/50 transition-all duration-300 hover:border-zinc-700 backdrop-blur-sm">
     <div class="flex items-start gap-3 md:gap-4">
         <!-- Logo always on left -->
         <div class="flex-shrink-0">
@@ -7,10 +7,10 @@
                 {% if edu.logo %}
                     {% if edu.website %}
                         <a href="{{ edu.website }}" target="_blank" rel="noopener" aria-label="Visit {{ edu.institution }}" class="hover:scale-110 transition-transform duration-300">
-                            <img src="{{ edu.logo|wsrv_image:'150x150' }}" alt="{{ edu.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-md object-cover" />
+                            <img src="{{ edu.logo|wsrv_image:'150x150' }}" alt="{{ edu.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover" />
                         </a>
                     {% else %}
-                    <img src="{{ edu.logo|wsrv_image:'150x150' }}" alt="{{ edu.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-md object-cover" />
+                    <img src="{{ edu.logo|wsrv_image:'150x150' }}" alt="{{ edu.institution }} logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover" />
                     {% endif %}
                 {% else %}
                 {% if edu.website %}
@@ -41,10 +41,10 @@
         <div class="flex-grow">
             <div class="flex flex-wrap items-start justify-between w-full gap-2">
                 <!-- Degree title -->
-                <h3 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 text-shadow break-words flex-1">{{ edu.degree }}</h3>
+                <h3 class="text-base sm:text-lg md:text-xl font-medium text-zinc-300 break-words flex-1">{{ edu.degree }}</h3>
 
                 <!-- Years - consistently on the right -->
-                <span class="inline-flex flex-shrink-0 text-indigo-300 text-xs font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 py-1 rounded-full border border-zinc-700 shadow-sm whitespace-nowrap">
+                <span class="inline-flex flex-shrink-0 text-indigo-300 text-xs font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 py-1 rounded-full border border-zinc-700 whitespace-nowrap">
                     {% if edu.years %} {{ edu.years }} {% elif edu.date %} {{ edu.date.start.month }} {{ edu.date.start.year }} - {% if edu.date.end %} {{ edu.date.end.month }} {{ edu.date.end.year }} {% else %} Present {% endif %}
                     {% endif %}
                 </span>

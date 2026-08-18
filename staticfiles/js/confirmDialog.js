@@ -38,8 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     var DANGER_BTN = ["border-red-800", "bg-red-950/60", "text-red-200",
-                      "hover:border-red-500", "hover:bg-red-900/50",
-                      "hover:shadow-md", "hover:shadow-red-500/20"];
+                      "hover:border-red-500", "hover:bg-red-900/50"];
     var NEUTRAL_BTN = ["border-zinc-700", "bg-zinc-900", "text-zinc-100", "hover:bg-zinc-800"];
     var DANGER_ICON = ["border-red-900/60", "bg-red-950/40"];
     var NEUTRAL_ICON = ["border-zinc-700", "bg-zinc-900"];

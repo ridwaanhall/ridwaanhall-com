@@ -123,7 +123,7 @@ class BaseJSONField(forms.JSONField):
 
     # Zero value for this field's shape. Deliberately NOT called `empty_value`:
     # forms.JSONField subclasses CharField, whose __init__ sets an instance
-    # attribute of that name (defaulting to "") and would shadow it.
+    # attribute of that name (defaulting to "") and would take precedence.
     empty_factory = dict
 
     def __init__(self, *args, widget_options=None, **kwargs):

@@ -1,17 +1,24 @@
 {% load image_filters %}
 <div id="mobile-sidebar" class="fixed inset-0 z-40 bg-transparent bg-opacity-60 backdrop-blur-sm hidden md:hidden" aria-hidden="true">
-    <div class="fixed inset-x-0 bottom-0 w-full max-h-[85vh] overflow-y-auto rounded-t-2xl bg-black transition-transform duration-300 transform translate-y-full shadow-[0_-10px_40px_rgba(0,0,0,0.5)] flex flex-col border-t border-zinc-800" id="mobile-menu">
-        <div class="w-full flex justify-center pt-3 pb-1">
+    <div class="fixed inset-x-0 bottom-0 w-full max-h-[85vh] overflow-y-auto rounded-t-2xl bg-black transition-transform duration-300 transform translate-y-full flex flex-col border-t border-zinc-800" id="mobile-menu">
+        <!-- Drag zone. `touch-none` is what makes the gesture reach sidebar.js at
+             all: #mobile-menu is `overflow-y-auto`, so without it the browser
+             claims a vertical drag as a scroll and the drawer never moves. -->
+        <div class="w-full flex justify-center pt-3 pb-3 touch-none select-none cursor-grab active:cursor-grabbing" data-drawer-handle>
             <div class="w-12 h-1.5 bg-zinc-700 rounded-full"></div>
         </div>
-        <div class="flex items-center justify-between px-5 pb-5 pt-2 mb-2">
+        <div class="flex items-center justify-between px-5 pb-5 mb-2 touch-none select-none cursor-grab active:cursor-grabbing" data-drawer-handle>
             <div class="flex items-center">
                 {% include 'components/profile_avatar.html' with size="w-12 h-12" %}
                 <div class="ml-3">
-                    <div class="flex items-center gap-2">
-                        <span class="text-xl font-semibold">{{ about.name }}</span>
-                        <!-- Status badges for mobile -->
-                        <div class="flex flex-wrap gap-1 min-w-0">
+                    <span class="text-xl font-semibold">{{ about.name }}</span>
+                    <div class="flex flex-col gap-1">
+                        <p class="text-xs text-zinc-400 hover:text-zinc-300">@{{ about.username }}</p>
+                    </div>
+                    {% if about.is_open_to_work or about.is_hiring or about.is_sick %}
+                    <!-- Own row below @username. Sharing the name's line, all three
+                         wrapped onto two lines and forced "Ridwan Halim" to wrap too. -->
+                    <div class="flex flex-wrap gap-1 min-w-0 mt-1.5">
                             {% if about.is_open_to_work or about.is_hiring %}
                             <a href="{% url 'openhire' %}" class="flex gap-1">
                                 {% if about.is_open_to_work %}
@@ -34,18 +41,10 @@
                                 Unwell
                             </span>
                             {% endif %}
-                        </div>
                     </div>
-                    <div class="flex flex-col gap-1">
-                        <p class="text-xs text-zinc-400 hover:text-zinc-300">@{{ about.username }}</p>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
-            <button id="close-sidebar" class="transition-colors p-2 rounded-full" tabindex="-1">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
         </div>
         
         <!-- Search Section for Mobile -->
@@ -213,16 +212,17 @@
                     <a href="{% url 'admin:index' %}" class="text-indigo-400 hover:text-indigo-300 transition-colors">Admin</a>
                 {% endif %}
             </div>
-            <div class="flex items-center justify-between gap-2 text-zinc-500">
+            <!-- No theme toggle here: the mobile navbar carries one, and it stays
+                 reachable whether the drawer is open or shut. -->
+            <div class="flex items-center gap-2 text-zinc-500">
                 <span>© 2025 - {% now "Y" %} {{ about.name }}</span>
-                <span class="-my-1 -mr-1.5">{% include 'components/theme_toggle.html' %}</span>
             </div>
         </div>
     </div>
 </div>
 
-<div class="hidden z-40 md:flex md:flex-col md:w-62 md:fixed md:inset-y-0 bg-black shadow-xl">
-    <div class="fixed mb-2 z-20 w-full px-3 py-2 mt-8 mb-0 shadow-sm relative border-none bg-transparent">
+<div class="hidden z-40 md:flex md:flex-col md:w-62 md:fixed md:inset-y-0 bg-black">
+    <div class="fixed mb-2 z-20 w-full px-3 py-2 mt-8 mb-0 relative border-none bg-transparent">
         <div class="flex items-start justify-between lg:flex-col lg:space-y-4">
             <div class="flex w-full flex-grow items-center gap-4 lg:flex-col lg:items-start lg:gap-0.5 lg:px-1">
                 {% include 'components/profile_avatar.html' with size="w-15 h-15" extra_class="duration-700 ease-in-out scale-100 lg:hover:scale-105" lazy=True %}
@@ -233,10 +233,15 @@
                         <path d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z"></path>
                     </svg>
                 </div>
-                <div class="hidden lg:flex items-center justify-between w-full gap-1">
+                <div class="hidden lg:flex items-center justify-between w-full gap-2">
                     <div class="text-[15px] text-zinc-400 hover:text-zinc-300 transition-all duration-300">@{{ about.username }}</div>
-                    {% if about.is_open_to_work or about.is_hiring or about.is_sick %}
-                    <div class="flex flex-wrap items-center justify-end gap-1 min-w-0">
+                    {% include 'components/theme_toggle.html' with bare=True %}
+                </div>
+                {% if about.is_open_to_work or about.is_hiring or about.is_sick %}
+                <!-- Own row rather than sharing the username's line. All three can be
+                     live at once, and in the 248px rail that wrapped the badges onto
+                     two lines and pushed them into @username. -->
+                <div class="hidden lg:flex flex-wrap items-center gap-1 w-full mt-2">
                     {% if about.is_open_to_work or about.is_hiring %}
                     <a href="{% url 'openhire' %}" class="inline-block">
                         {% if about.is_open_to_work and about.is_hiring %}
@@ -270,9 +275,8 @@
                         Unwell
                     </span>
                     {% endif %}
-                    </div>
-                    {% endif %}
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -450,7 +454,10 @@
         </div>
         <div class="flex items-center justify-between gap-2 text-zinc-500">
             <span>© 2025 - {% now "Y" %} {{ about.name }}</span>
-            <span class="-my-1 -mr-1.5">{% include 'components/theme_toggle.html' %}</span>
+            <!-- Only below lg. From lg up the toggle lives beside @username, but that
+                 row is `hidden lg:flex`, so without this the md-width rail -- which
+                 shows the rest of the sidebar -- would have no toggle at all. -->
+            <span class="-my-1 -mr-1.5 lg:hidden">{% include 'components/theme_toggle.html' %}</span>
         </div>
     </div>
 </div>
@@ -458,7 +465,7 @@
 <!-- Search Modal -->
 <div id="search-modal" class="fixed inset-0 z-50 backdrop-blur-none hidden transition-all duration-300 ease-out" aria-hidden="true">
     <div id="search-modal-backdrop" class="flex min-h-full items-center justify-center p-4">
-        <div id="search-modal-content" class="relative mx-auto max-w-xl w-full overflow-hidden rounded-xl border-2 border-zinc-800 bg-black ring-1 ring-black/5 shadow-3xl transform scale-95 opacity-0 transition-all duration-300 ease-out">
+        <div id="search-modal-content" class="relative mx-auto max-w-xl w-full overflow-hidden rounded-xl border-2 border-zinc-800 bg-black ring-1 ring-black/5 transform scale-95 opacity-0 transition-all duration-300 ease-out">
             <div class="flex items-center gap-3 border-b border-zinc-800 px-4">
                 <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -663,6 +670,49 @@
                                 {% endif %}
                             </div>
                         </li>
+
+                        <!-- Terms of Service -->
+                        <li class="search-item" data-name="terms of service"{% if request.resolver_match.url_name != 'terms' %} data-url="{% url 'terms' %}"{% endif %}>
+                            <div
+                                class="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 {% if request.resolver_match.url_name == 'terms' %}bg-zinc-800{% else %}hover:bg-zinc-800{% endif %}"
+                            >
+                                <div class="flex items-center gap-5">
+                                    <div class="transition-all duration-300 group-hover:-rotate-12 {% if request.resolver_match.url_name == 'terms' %}-rotate-12{% endif %}">
+                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path>
+                                        </svg>
+                                    </div>
+                                    <span>Terms of Service</span>
+                                </div>
+                                {% if request.resolver_match.url_name == 'terms' %}
+                                <span class="animate-pulse text-xs text-zinc-400">You are here</span>
+                                {% else %}
+                                <div class="rounded-md border border-zinc-500 px-1.5 py-0.5 text-xs text-zinc-400">Pages</div>
+                                {% endif %}
+                            </div>
+                        </li>
+
+                        {% if user.is_superuser %}
+                        <!-- Django admin. No "You are here" branch: the admin is a
+                             separate URL namespace and never renders this sidebar,
+                             so it can never be the current page here. Indigo matches
+                             how the footer marks the same privileged link. -->
+                        <li class="search-item" data-name="admin django administration" data-url="{% url 'admin:index' %}">
+                            <div
+                                class="text-indigo-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-zinc-800"
+                            >
+                                <div class="flex items-center gap-5">
+                                    <div class="transition-all duration-300 group-hover:-rotate-12">
+                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"></path>
+                                        </svg>
+                                    </div>
+                                    <span>Admin</span>
+                                </div>
+                                <div class="rounded-md border border-indigo-500/60 px-1.5 py-0.5 text-xs text-indigo-300">Pages</div>
+                            </div>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
 

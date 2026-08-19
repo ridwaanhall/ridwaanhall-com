@@ -69,16 +69,15 @@
         {% render_schema seo.schemas %}
         {% endif %}
 
-        <link rel="stylesheet" href="{% static 'css/global-loguyyaf.css' %}" />
+        {% comment %}
+        Every hand-written stylesheet is @imported into input.css and bundled into
+        this one file -- see the note at the top of static/css/input.css. Adding a
+        separate <link> here would reintroduce both the extra request and the
+        stale-cache problem, since only this filename is cache-busted.
+        {% endcomment %}
+        <link rel="stylesheet" href="{% static 'css/global-deixuges.css' %}" />
 
         <link rel="stylesheet" href="{% url 'dynamic_css' 'onest' %}" />
-
-        <link rel="stylesheet" href="{% static 'css/clickSpark.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/skillSlider.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/hideScroll.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/sidebarSearch.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/globalScrollbar.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/tooltip.css' %}" />
         {% block extra_css %}
         {% endblock %}
 

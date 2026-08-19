@@ -1,6 +1,40 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
+   Hand-written stylesheets, bundled rather than <link>ed
+
+   These seven were separate <link> tags in base_seo.html (plus one in
+   projects_detail.html) until they were pulled in here. Each was served raw
+   and, worse, under a *fixed* filename -- so unlike the compiled output, which
+   is renamed on every build to bust caches, an edit to any of them kept being
+   served stale from browser and CDN caches indefinitely. Importing them means
+   the CLI bundles and minifies them into the one cache-busted stylesheet, and
+   the page drops from eight CSS requests to two (this file plus the
+   Django-rendered font CSS).
+
+   Order matches the old <link> order exactly, and they stay *unlayered* --
+   after `@import "tailwindcss"` but outside any `@layer` -- because that is
+   what a later <link> gave them before: an unlayered rule beats every layered
+   one, so anything here still wins over a Tailwind utility, as it did.
+
+   They live in static/css (source) rather than staticfiles/css (output) now,
+   which is why the `@source not` below had to grow a matching exclusion --
+   otherwise Tailwind would scan them for class names and the compiled sheet
+   would start re-detecting its own selectors.
+
+   The two admin stylesheets are deliberately NOT bundled: the admin is out of
+   scope for the site's theming, and its CSS has no business inflating every
+   public page.
+   --------------------------------------------------------------------------- */
+@import "./clickSpark.css";
+@import "./skillSlider.css";
+@import "./hideScroll.css";
+@import "./sidebarSearch.css";
+@import "./globalScrollbar.css";
+@import "./tooltip.css";
+@import "./imageLightbox.css";
+
+/* ---------------------------------------------------------------------------
    Keep source detection off our own output and off prose
 
    Tailwind v4 auto-detects sources by walking every non-gitignored file and
@@ -18,6 +52,11 @@
                        without this a utility can never be removed again.
      staticfiles/admin Django's vendored admin CSS/JS (`box-shadow`, and a
                        jQuery comment about shadow DOM).
+     static/css        the hand-written stylesheets imported above, for the
+                       same reason as the compiled output: they *define*
+                       selectors rather than use utilities, and their property
+                       names (`border-radius`, `text-align`) parse as class
+                       candidates.
      docs, *.md        the design notes, which discuss utilities by name.
 
    Between them those three emitted `shadow`, `shadow-xl` and `shadow-black/60`
@@ -25,6 +64,7 @@
    --------------------------------------------------------------------------- */
 @source not "../../staticfiles/css";
 @source not "../../staticfiles/admin";
+@source not "../../static/css";
 @source not "../../docs";
 @source not "../../*.md";
 

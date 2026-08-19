@@ -222,18 +222,25 @@
 </div>
 
 <div class="hidden z-40 md:flex md:flex-col md:w-62 md:fixed md:inset-y-0 bg-black">
-    <div class="fixed mb-2 z-20 w-full px-3 py-2 mt-8 mb-0 relative border-none bg-transparent">
-        <div class="flex items-start justify-between lg:flex-col lg:space-y-4">
-            <div class="flex w-full flex-grow items-center gap-4 lg:flex-col lg:items-start lg:gap-0.5 lg:px-1">
-                {% include 'components/profile_avatar.html' with size="w-15 h-15" extra_class="duration-700 ease-in-out scale-100 lg:hover:scale-105" lazy=True %}
-                <div class="mt-1 flex items-center gap-2 lg:mt-4">
+    {% comment %}
+    One layout at every rail width. The rail is w-62 (248px) from md up, so there
+    was never a reason for md to render a different header than lg -- it used to
+    lay the avatar beside the name and drop @username and the status badges
+    entirely, which left a tablet reader with a different profile block than a
+    desktop one and no way to see the hiring status the mobile drawer showed.
+    Stacked throughout: avatar, name, @username + theme toggle, then badges.
+    {% endcomment %}
+    <div class="w-full px-3 pt-8 pb-4">
+        <div class="flex w-full flex-col items-start gap-0.5">
+                {% include 'components/profile_avatar.html' with size="w-15 h-15" extra_class="duration-700 ease-in-out scale-100 hover:scale-105" lazy=True %}
+                <div class="mt-4 flex items-center gap-2">
                     <h2 class="text-lg font-medium lg:text-xl">{{ about.name }}</h2>
                     <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" class="text-blue-400" height="18" width="18" xmlns="http://www.w3.org/2000/svg">
                         <path fill="none" d="M0 0h24v24H0z"></path>
                         <path d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z"></path>
                     </svg>
                 </div>
-                <div class="hidden lg:flex items-center justify-between w-full gap-2">
+                <div class="flex items-center justify-between w-full gap-2">
                     <div class="text-[15px] text-zinc-400 hover:text-zinc-300 transition-all duration-300">@{{ about.username }}</div>
                     {% include 'components/theme_toggle.html' with bare=True %}
                 </div>
@@ -241,7 +248,7 @@
                 <!-- Own row rather than sharing the username's line. All three can be
                      live at once, and in the 248px rail that wrapped the badges onto
                      two lines and pushed them into @username. -->
-                <div class="hidden lg:flex flex-wrap items-center gap-1 w-full mt-2">
+                <div class="flex flex-wrap items-center gap-1 w-full mt-2">
                     {% if about.is_open_to_work or about.is_hiring %}
                     <a href="{% url 'openhire' %}" class="inline-block">
                         {% if about.is_open_to_work and about.is_hiring %}
@@ -277,10 +284,10 @@
                     {% endif %}
                 </div>
                 {% endif %}
-            </div>
         </div>
     </div>
-      <!-- Search Section for Desktop -->
+
+    <!-- Search Section for Desktop -->
     <div class="px-3 mb-3">
         <div class="flex items-center px-3 py-2 mb-1 rounded-lg border border-zinc-700" id="desktop-search-trigger">
             <svg class="w-5 h-5 text-zinc-400" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -452,12 +459,14 @@
                 <a href="{% url 'admin:index' %}" class="text-indigo-400 hover:text-indigo-300 transition-colors">Admin</a>
             {% endif %}
         </div>
+        {% comment %}
+        No toggle down here any more. It used to be a matched pair -- this copy
+        covered the md-lg band because the @username row it otherwise lives in was
+        `hidden lg:flex`. That row is now visible at every rail width, so the rail
+        has exactly one toggle at every width and this copy would be a second one.
+        {% endcomment %}
         <div class="flex items-center justify-between gap-2 text-zinc-500">
             <span>© 2025 - {% now "Y" %} {{ about.name }}</span>
-            <!-- Only below lg. From lg up the toggle lives beside @username, but that
-                 row is `hidden lg:flex`, so without this the md-width rail -- which
-                 shows the rest of the sidebar -- would have no toggle at all. -->
-            <span class="-my-1 -mr-1.5 lg:hidden">{% include 'components/theme_toggle.html' %}</span>
         </div>
     </div>
 </div>

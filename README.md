@@ -2,7 +2,7 @@
 
 [![Django](https://img.shields.io/badge/Django-6.x-092E20?style=flat&logo=django&logoColor=white)](https://djangoproject.com/)
 [![Python](https://img.shields.io/badge/Python-3.14+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org/)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.3-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 
 ![FlexForge Portfolio](https://ridwaanhall.com/static/img/project/ridwaanhall_com_2025070701.webp)
 
@@ -50,7 +50,8 @@ apps/
   legal/             Privacy policy, terms, and any other legal document (models + admin)
   openhire/          "Open to work" / "hiring" status page
   seo/               Meta tags, JSON-LD schema, sitemaps, robots.txt
-static/              Tailwind source (input.css) — light/dark palette lives here
+static/css/          Tailwind source: input.css (light/dark palette) plus the
+                     hand-written stylesheets it @imports and bundles
 staticfiles/         Compiled CSS + all served static assets (images, fonts, icons, JS)
 templates/           Global templates (base, sidebar, error page, per-app sections)
 ```
@@ -69,7 +70,7 @@ To manage content: create a superuser (`uv run python manage.py createsuperuser`
 
 ## Theming
 
-The site ships dark by default, with a light theme behind a toggle in the sidebar footer and, on small screens, next to the menu button. The choice is stored in `localStorage`; the OS `prefers-color-scheme` is deliberately not consulted, because dark is the default rather than a fallback.
+The site ships dark by default, with a light theme behind a toggle beside `@username` in the sidebar and, on small screens, next to the menu button. The choice is stored in `localStorage`; the OS `prefers-color-scheme` is deliberately not consulted, because dark is the default rather than a fallback.
 
 Light mode is **not** built from `dark:` variants. Templates are written in ordinary dark-mode Tailwind classes, and light mode redefines the palette itself under `html[data-theme="light"]` in `static/css/input.css`. Tailwind v4 compiles every theme color utility to a variable reference (`.bg-zinc-800` becomes `background-color: var(--color-zinc-800)`), so remapping the ramps re-skins the whole site without touching a single template.
 
@@ -116,14 +117,14 @@ uv venv --python 3.14
 # Sync dependencies from pyproject.toml/uv.lock
 uv sync
 
-# Install Tailwind CSS
-npm install tailwindcss @tailwindcss/cli
+# Install the Tailwind CLI (versions come from package.json/package-lock.json)
+npm ci
 
 # Copy the environment template and fill in your own values (see below)
 cp .env.example .env
 
 # Build Tailwind CSS (for development with watch mode)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-loguyyaf.css --watch
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-deixuges.css --watch
 
 # In a separate terminal, run migrations and the dev server
 uv run python manage.py migrate
@@ -154,10 +155,10 @@ For styling changes, ensure Tailwind CSS is running in watch mode:
 
 ```bash
 # Development (with watch and minification)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-loguyyaf.css --watch --minify
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-deixuges.css --watch --minify
 
 # Production build
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-loguyyaf.css --minify
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-deixuges.css --minify
 ```
 
 Make sure your `static/css/input.css` contains:
@@ -166,7 +167,7 @@ Make sure your `static/css/input.css` contains:
 @import "tailwindcss";
 ```
 
-> **Note:** the compiled filename (`global-loguyyaf.css`) is hand-picked, not auto-hashed. If you rename it, update the `-o` path above **and** the `{% static %}` reference in both `templates/base_seo.html` and `templates/error.html`.
+> **Note:** the compiled filename (`global-deixuges.css`) is hand-picked, not auto-hashed. If you rename it, update the `-o` path above **and** the `{% static %}` reference in both `templates/base_seo.html` and `templates/error.html`.
 
 ## Environment Configuration
 

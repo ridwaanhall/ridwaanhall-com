@@ -516,3 +516,107 @@ html.theme-fading [data-theme-toggle] svg {
         animation: none;
     }
 }
+
+/* ===========================================================================
+   Reusable component classes
+   ===========================================================================
+
+   Each of these bundles a Tailwind utility combination that was hand-repeated,
+   near-identically, across several templates. Built with @apply, so they
+   still compile through the same --color-* variables the theme remap above
+   depends on -- nothing here needs its own light-mode override.
+
+   What genuinely varies per instance (badge color, cell rounding, padding) is
+   left as a plain utility class alongside the custom one rather than baked
+   in, so each shared class only ever captures the part that was always
+   identical.
+
+   Wrapped in `@layer components` deliberately: Tailwind v4 puts its own
+   utilities in `@layer utilities`, and CSS cascade layers give ANY layered
+   rule priority over an unlayered one regardless of specificity or source
+   order. Left unlayered, these classes would permanently beat every
+   Tailwind utility placed alongside them -- e.g. `.card-outline`'s
+   `hover:border-zinc-700` would always win over a per-instance
+   `hover:border-indigo-500/50`, silently, with no error anywhere. Inside
+   `@layer components`, the normal `components` < `utilities` layer order
+   restores the expected "utility wins" behavior.
+   =========================================================================== */
+
+@layer components {
+    /* Circular icon button: blog share row, blog/projects "back" link.
+       `group` / `cursor-pointer` / the copy button's focus ring stay inline
+       since not every instance wants them. */
+    .icon-btn {
+        @apply flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 transition-all duration-300;
+    }
+
+    /* Status/count pill shape (sidebar, about intro, home hero, "Current"/
+       level badges). Color, padding and text size are chosen per badge and
+       stay inline. */
+    .pill-badge {
+        @apply inline-flex items-center rounded-full font-medium;
+    }
+
+    /* Interactive "Show more / Show Details / View Journey" toggle pill.
+       Corner rounding (rounded-full vs rounded-lg) and padding differ per
+       card and stay inline; so does `cursor-pointer`, since the openhire
+       "Apply" instance is an <a>, not a <button>. */
+    .toggle-pill {
+        @apply inline-flex items-center text-xs font-medium transition-all duration-200 border border-zinc-700 hover:border-zinc-600;
+    }
+
+    /* Outlined card shell: about's experience/education/application cards,
+       openhire's position cards. `backdrop-blur-sm` and padding vary per
+       card and stay inline. */
+    .card-outline {
+        @apply rounded-xl overflow-hidden border border-zinc-700/50 transition-all duration-300 hover:border-zinc-700;
+    }
+
+    /* Filled surface card: the comment form shell and sign-in prompt.
+       Padding and the hover/focus-within border pseudo differ per
+       instance. */
+    .surface-card {
+        @apply rounded-xl border border-zinc-800 bg-zinc-900/40 transition-all duration-300;
+    }
+
+    /* Blog/projects search box -- byte-identical in both search_form.html
+       files. */
+    .search-input {
+        @apply w-full pl-3 pr-3 py-2 rounded-md text-zinc-300 hover:text-zinc-200 border border-zinc-700 hover:border-zinc-400 focus:outline-none focus:border-zinc-400 transition-all duration-300;
+    }
+
+    .search-submit-btn {
+        @apply inline-flex items-center justify-center px-3 py-2 rounded-md border transition-all duration-300 text-sm font-semibold h-full whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+
+    /* Mac-style image gallery window frame (blog + projects
+       image_gallery.html). */
+    .gallery-frame {
+        @apply w-full rounded-lg overflow-hidden transform transition-all duration-500 border border-zinc-800;
+    }
+
+    /* Gallery prev/next button. rounded-l-lg / rounded-r-lg stays inline. */
+    .gallery-nav-btn {
+        @apply cursor-pointer border border-zinc-800 bg-zinc-900/70 hover:bg-zinc-800/70 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105;
+    }
+
+    /* Pagination cell (blog + projects pagination.html). Rounding and the
+       current/disabled/hover treatment stay inline since they differ by
+       cell state. */
+    .page-cell {
+        @apply flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center;
+    }
+
+    /* Avatar with a hairline ring: guestbook message + comment author
+       photo. Size stays inline -- comment replies shrink to w-7 h-7. */
+    .avatar-ring {
+        @apply rounded-full border border-zinc-800 flex-shrink-0 object-cover;
+    }
+
+    /* Home hero action button (About/Contact/Hireable/Support). `group`
+       stays inline (it has no CSS of its own to @apply) and so does the
+       background color, since each button uses a different accent. */
+    .action-btn {
+        @apply inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full transition-all duration-300;
+    }
+}

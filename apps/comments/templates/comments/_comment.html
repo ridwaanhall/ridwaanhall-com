@@ -13,7 +13,7 @@ agnostic about where it sits in the thread.
              width="{% if is_reply %}28{% else %}36{% endif %}"
              height="{% if is_reply %}28{% else %}36{% endif %}"
              loading="lazy"
-             class="{% if is_reply %}w-7 h-7{% else %}w-9 h-9{% endif %} rounded-full border border-zinc-800 flex-shrink-0 mt-0.5 object-cover" />
+             class="avatar-ring {% if is_reply %}w-7 h-7{% else %}w-9 h-9{% endif %} mt-0.5" />
     {% else %}
         <div class="{% if is_reply %}w-7 h-7 text-xs{% else %}w-9 h-9 text-sm{% endif %} rounded-full bg-zinc-900 border border-zinc-800 flex-shrink-0 mt-0.5 flex items-center justify-center text-zinc-400 font-medium">
             {{ comment.user.username|slice:":1"|upper }}

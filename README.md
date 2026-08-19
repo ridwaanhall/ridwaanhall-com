@@ -70,7 +70,7 @@ To manage content: create a superuser (`uv run python manage.py createsuperuser`
 
 ## Theming
 
-The site ships dark by default, with a light theme behind a toggle in the sidebar footer and, on small screens, next to the menu button. The choice is stored in `localStorage`; the OS `prefers-color-scheme` is deliberately not consulted, because dark is the default rather than a fallback.
+The site ships dark by default, with a light theme behind a toggle beside `@username` in the sidebar and, on small screens, next to the menu button. The choice is stored in `localStorage`; the OS `prefers-color-scheme` is deliberately not consulted, because dark is the default rather than a fallback.
 
 Light mode is **not** built from `dark:` variants. Templates are written in ordinary dark-mode Tailwind classes, and light mode redefines the palette itself under `html[data-theme="light"]` in `static/css/input.css`. Tailwind v4 compiles every theme color utility to a variable reference (`.bg-zinc-800` becomes `background-color: var(--color-zinc-800)`), so remapping the ramps re-skins the whole site without touching a single template.
 
@@ -124,7 +124,7 @@ npm ci
 cp .env.example .env
 
 # Build Tailwind CSS (for development with watch mode)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-fnrmrtud.css --watch
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-deixuges.css --watch
 
 # In a separate terminal, run migrations and the dev server
 uv run python manage.py migrate
@@ -155,10 +155,10 @@ For styling changes, ensure Tailwind CSS is running in watch mode:
 
 ```bash
 # Development (with watch and minification)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-fnrmrtud.css --watch --minify
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-deixuges.css --watch --minify
 
 # Production build
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-fnrmrtud.css --minify
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-deixuges.css --minify
 ```
 
 Make sure your `static/css/input.css` contains:
@@ -167,7 +167,7 @@ Make sure your `static/css/input.css` contains:
 @import "tailwindcss";
 ```
 
-> **Note:** the compiled filename (`global-fnrmrtud.css`) is hand-picked, not auto-hashed. If you rename it, update the `-o` path above **and** the `{% static %}` reference in both `templates/base_seo.html` and `templates/error.html`.
+> **Note:** the compiled filename (`global-deixuges.css`) is hand-picked, not auto-hashed. If you rename it, update the `-o` path above **and** the `{% static %}` reference in both `templates/base_seo.html` and `templates/error.html`.
 
 ## Environment Configuration
 

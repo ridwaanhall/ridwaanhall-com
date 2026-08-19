@@ -86,14 +86,16 @@ class ImageLightbox {
             });
 
             // Add magnify button to single project image (backward compatible)
-            // Look for single image containers that are not part of a gallery
-            const singleImageContainers = document.querySelectorAll('.aspect-video');
+            // Look for single image containers that are not part of a gallery.
+            // A dedicated data attribute, not the aspect-ratio class -- that's a
+            // layout detail free to change independently of this JS hook.
+            const singleImageContainers = document.querySelectorAll('[data-lightbox-single]');
             singleImageContainers.forEach(container => {
                 // Skip if this is part of a gallery
                 if (container.closest('.project-slider-container')) return;
-                
+
                 const img = container.querySelector('img');
-                const parentContainer = container.closest('.rounded-lg');
+                const parentContainer = container.closest('.gallery-frame');
                 
                 if (img && parentContainer && !parentContainer.querySelector('.magnify-button')) {
                     this.addMagnifyButtonToSingle(parentContainer, img);

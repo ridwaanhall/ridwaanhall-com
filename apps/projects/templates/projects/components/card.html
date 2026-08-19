@@ -2,15 +2,13 @@
 {% load image_filters %}
 <a href="{% url 'projects_detail' title=project.title|slugify %}" class="block h-full">
     <div class="group backdrop-blur-sm rounded-xl overflow-hidden flex flex-col h-full transition-all duration-300 border border-zinc-800">
-        <div class="relative h-40 sm:h-52 overflow-hidden">
+        <div class="relative aspect-[3/2] overflow-hidden">
             <img
                 src="{{ project.image_url|wsrv_image:'300x300' }}"
                 alt="{{ project.title }}"
                 class="w-full h-full object-cover object-center transition-all duration-500 group-hover:scale-105 group-hover:blur-sm"
                 loading="lazy"
             />
-
-            <div class="absolute inset-0 photo-scrim-soft"></div>
 
             <!-- Hover overlay with "View project" text -->
             <div class="absolute inset-0 media-scrim flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">

@@ -11,13 +11,18 @@
  * separate token. They happen to share a value in dark mode, but a photo needs
  * a quiet, near-neutral backdrop rather than whatever the page canvas is.
  *
+ * --lightbox-border references --color-zinc-700 (defined by the compiled
+ * Tailwind stylesheet) rather than a hand-picked hex, so the modal's outline
+ * matches the border-zinc-700 used on the detail page's own feature/tech-stack
+ * cards exactly, in both themes, with no separate light override needed here.
+ *
  * The floating controls sit on top of the image, not the stage, so their
  * contrast is really against arbitrary photo content. They stay high-contrast
  * chips with a border and a backdrop blur in both themes.
  */
 :root {
     --lightbox-chrome: #000;
-    --lightbox-border: #27272a;
+    --lightbox-border: var(--color-zinc-700);
     --lightbox-stage: #000;
     --lightbox-filename: #a1a1aa;
 
@@ -33,7 +38,6 @@
 
 html[data-theme="light"] {
     --lightbox-chrome: #fff;
-    --lightbox-border: #e4e4e7;
     --lightbox-stage: #f4f4f5;
     --lightbox-filename: #52525b;
 
@@ -86,7 +90,7 @@ html[data-theme="light"] {
     flex-direction: column;
     background: var(--lightbox-chrome);
     border-radius: 12px;
-    border: 2px solid var(--lightbox-border);
+    border: 1px solid var(--lightbox-border);
     overflow: hidden;
     transform: scale(0.95);
     opacity: 0;

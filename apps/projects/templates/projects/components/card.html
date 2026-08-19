@@ -6,11 +6,11 @@
             <img
                 src="{{ project.image_url|wsrv_image:'300x300' }}"
                 alt="{{ project.title }}"
-                class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                class="w-full h-full object-cover object-center transition-all duration-500 group-hover:scale-105 group-hover:blur-sm"
                 loading="lazy"
             />
 
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+            <div class="absolute inset-0 photo-scrim-soft"></div>
 
             <!-- Hover overlay with "View project" text -->
             <div class="absolute inset-0 media-scrim flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
@@ -46,19 +46,24 @@
 
         <div class="p-3 sm:p-4 flex flex-col flex-grow">
             <h3 class="text-base sm:text-lg font-semibold mb-1 sm:mb-2 line-clamp-2 relative inline-block">
-                <span class="relative transition-colors duration-300 group-hover:underline group-hover:decoration-2">{{ project.title }}</span>
+                <span class="relative inline-block after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-current group-hover:after:w-full after:transition-all after:duration-300">{{ project.title }}</span>
             </h3>
             <p class="text-xs sm:text-sm text-zinc-400 flex-grow line-clamp-3 mb-3 sm:mb-4">{{ project.headline }}</p>
 
             {% if project.tech_stack %}
             <div class="flex flex-wrap items-center gap-1 sm:gap-2">
-                {% for tech in project.tech_stack %}
+                {% for tech in project.tech_stack|slice:":5" %}
                     {% if tech.icon_svg %}
                         <div class="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-700 hover:bg-zinc-600 transition-all duration-300 cursor-help" title="{{ tech.name }}">
                             <img src="{{ tech.icon_svg|wsrv_image:'25x25' }}" alt="{{ tech.name }}" class="w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
                     {% endif %}
                 {% endfor %}
+                {% if project.tech_stack|length > 5 %}
+                    <div class="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-700 text-xs font-medium cursor-help" title="{{ project.tech_stack|length|add:"-5" }} more technologies">
+                        +{{ project.tech_stack|length|add:"-5" }}
+                    </div>
+                {% endif %}
             </div>
             {% endif %}
         </div>

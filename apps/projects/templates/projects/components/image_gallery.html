@@ -2,20 +2,20 @@
 <!-- Project Image Gallery with Mac-style design -->
 {% if images %}
 <div class="gallery-frame">
-    <div class="project-slider-container relative w-full">
-        <!-- Mac-style window header -->
-        <div class="absolute top-0 left-0 right-0 h-8 sm:h-10 flex items-center px-3 sm:px-4 z-20">
-            <!-- Mac-style dots (left) -->
-            <div class="flex items-center gap-1 sm:gap-1.5">
-                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500"></div>
-                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
-                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
-            </div>
-            
-            <!-- Current image filename (right) -->
-            <span class="ml-auto text-xs hidden sm:block current-filename">{{ images.0.name }}</span>
+    <!-- Mac-style window header -->
+    <div class="gallery-header">
+        <!-- Mac-style dots (left) -->
+        <div class="flex items-center gap-1 sm:gap-1.5">
+            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500"></div>
+            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
+            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
         </div>
 
+        <!-- Current image filename (right) -->
+        <span class="ml-auto text-xs hidden sm:block current-filename">{{ images.0.name }}</span>
+    </div>
+
+    <div class="project-slider-container relative w-full">
         <!-- Slider wrapper -->
         <div class="project-slider-wrapper flex transition-transform duration-500 ease-in-out">
             {% for image in images %}

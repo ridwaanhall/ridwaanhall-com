@@ -26,7 +26,7 @@
                                 width="300"
                                 height="300"
                             />
-                            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-900/80 to-zinc-900/10"></div>
+                            <div class="absolute inset-0 photo-scrim"></div>
                         </div>
 
                         <div class="relative z-10 p-4 sm:p-4 flex flex-col h-full">
@@ -45,10 +45,10 @@
 
                             <div class="flex-grow"></div>
 
-                            <h3 class="text-lg font-medium mb-1 sm:mb-2 line-clamp-2 relative inline-block">
-                                <span class="relative transition-colors duration-300 group-hover:underline group-hover:decoration-2">{{ blog.title }}</span>
+                            <h3 class="text-lg font-medium mb-1 sm:mb-2 line-clamp-2 relative inline-block scrim-text">
+                                <span class="relative inline-block after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-current group-hover:after:w-full after:transition-all after:duration-300">{{ blog.title }}</span>
                             </h3>
-                            <p class="text-xs sm:text-sm text-zinc-400 line-clamp-2 sm:line-clamp-3 mb-2">{{ blog.description }}</p>
+                            <p class="text-xs sm:text-sm scrim-text-muted line-clamp-2 sm:line-clamp-3 mb-2">{{ blog.description }}</p>
 
                             <div class="mt-auto">
                                 <hr class="border-t border-zinc-500 w-full mb-2 sm:mb-3" />
@@ -56,7 +56,7 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center space-x-1 sm:space-x-2">
                                         <img alt="Profile photo of {{ blog.author }}" loading="lazy" width="24" height="24" class="rounded-full w-4 h-4 sm:w-5 sm:h-5" src="{{ blog.author_image|wsrv_image:'50x50' }}" width="50" height="50" />
-                                        <span class="text-xs sm:text-sm text-zinc-400 truncate max-w-[100px] sm:max-w-[150px]">{{ blog.author }}</span>
+                                        <span class="text-xs sm:text-sm scrim-text-muted truncate max-w-[100px] sm:max-w-[150px]">{{ blog.author }}</span>
                                     </div>
 
                                     <div class="flex items-center min-w-[110px] sm:min-w-[150px] relative">
@@ -64,12 +64,12 @@
                                         <span
                                             class="transition-all duration-300 transform group-hover:opacity-0 group-hover:translate-y-4 group-hover:pointer-events-none opacity-100 pointer-events-auto translate-y-0 absolute left-0 w-full flex justify-end"
                                         >
-                                            <time datetime="{{ blog.created_at|date:'c' }}" class="text-xs text-zinc-400 hidden sm:inline">{{ blog.created_at|date:"F j, Y" }}</time>
-                                            <time datetime="{{ blog.created_at|date:'c' }}" class="text-xs text-zinc-400 sm:hidden">{{ blog.created_at|date:"F j, Y" }}</time>
+                                            <time datetime="{{ blog.created_at|date:'c' }}" class="text-xs scrim-text-muted hidden sm:inline">{{ blog.created_at|date:"F j, Y" }}</time>
+                                            <time datetime="{{ blog.created_at|date:'c' }}" class="text-xs scrim-text-muted sm:hidden">{{ blog.created_at|date:"F j, Y" }}</time>
                                         </span>
                                         <!-- Read more: fade in and move down from top on hover -->
                                         <span
-                                            class="transition-all text-zinc-400 duration-300 transform group-hover:opacity-100 group-hover:translate-y-0 opacity-0 pointer-events-none group-hover:pointer-events-auto -translate-y-4 flex items-center text-xs sm:text-sm absolute left-0 w-full justify-end"
+                                            class="transition-all scrim-text-muted duration-300 transform group-hover:opacity-100 group-hover:translate-y-0 opacity-0 pointer-events-none group-hover:pointer-events-auto -translate-y-4 flex items-center text-xs sm:text-sm absolute left-0 w-full justify-end"
                                         >
                                             Read more
                                             <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

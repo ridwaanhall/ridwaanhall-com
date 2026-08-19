@@ -1,5 +1,5 @@
 <!-- application card -->
-<div class="group mb-4 rounded-xl overflow-hidden border border-zinc-700/50 transition-all duration-300 hover:border-zinc-700">
+<div class="card-outline group mb-4">
     <div class="p-3 sm:p-4">
         <div class="flex flex-col md:flex-row md:items-start gap-3 sm:gap-5">
             <div class="flex-grow w-full">
@@ -84,7 +84,7 @@
                     <div class="flex-shrink-0">
                         <button
                             type="button"
-                            class="inline-flex cursor-pointer items-center px-2 py-1 text-xs font-medium rounded-full transition-all duration-200 border border-zinc-700 hover:border-zinc-600"
+                            class="toggle-pill cursor-pointer px-2 py-1 rounded-full"
                             onclick="toggleJourney('journey-details-{{ forloop.counter }}')"
                             aria-expanded="false"
                             aria-controls="journey-details-{{ forloop.counter }}"

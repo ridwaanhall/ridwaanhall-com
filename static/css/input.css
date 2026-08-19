@@ -338,24 +338,43 @@ html[data-theme="light"] .contrib-empty {
 }
 
 /* ---------------------------------------------------------------------------
-   Scrim over artwork
+   Overlays on photography are not surfaces
 
-   Unlike the card gradients -- which veil an image toward the page canvas and
-   so mirror correctly on their own -- this one carries a label, and its
-   contrast is against arbitrary project screenshots rather than against any
-   surface we control.
+   .media-scrim is the project card's hover CTA ("View project"): no veil
+   behind it -- the point of the hover is to see the blurred, zoomed photo,
+   not have it dimmed under a tint. Its contrast target is the *photo*, which
+   doesn't change with the theme, so it's hand-coded in literal rgb() rather
+   than a Tailwind token: pin the label white and give it a dark drop-shadow
+   halo, the same trick map/photo overlays use to stay readable over
+   unpredictable backgrounds without a background of their own. `filter:
+   drop-shadow` (not `text-shadow`) is what reaches the label's icon as well
+   as its text -- the icon is an SVG with no text to shadow.
 
-   `bg-black/60` mirrors to `white/60`, which over a *dark* screenshot settles
-   at roughly mid-grey and drops the label to about 3:1. The light veil is
-   therefore heavier than the dark one it replaces, which lifts the same case
-   back to ~6.8:1.
+   .photo-scrim is the opposite case: a bottom-anchored fade behind real UI
+   text (blog featured slider, blog card, homepage Latest Blogs slider) whose
+   contrast target is deliberately the *page*, so it uses var(--color-black)
+   and is meant to change with the theme -- dark toward a dark canvas, light
+   toward a light one -- which is also why the text sitting on it (title,
+   date, description, author) is plain text-zinc-*, not a pinned color: it
+   already mirrors correctly against whichever canvas tone the scrim is
+   fading toward. color-mix() keeps every stop translucent rather than
+   opaque, so the fade only ever covers roughly the bottom two-thirds of the
+   photo and never reads as a flat panel -- an earlier version pinned this to
+   one literal opaque-at-the-bottom value in both themes, which read as
+   heavier than intended and stopped following the page at all.
    --------------------------------------------------------------------------- */
 .media-scrim {
-    background-color: rgb(0 0 0 / 0.6);
+    color: rgb(255 255 255);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.9)) drop-shadow(0 2px 10px rgb(0 0 0 / 0.7));
 }
 
-html[data-theme="light"] .media-scrim {
-    background-color: rgb(255 255 255 / 0.82);
+.photo-scrim {
+    background-image: linear-gradient(
+        to top,
+        color-mix(in srgb, var(--color-black) 78%, transparent) 0%,
+        color-mix(in srgb, var(--color-black) 40%, transparent) 38%,
+        transparent 68%
+    );
 }
 
 /* ---------------------------------------------------------------------------
@@ -399,14 +418,19 @@ html[data-theme="light"] [data-theme-icon="dark"] {
    all, so both blocks below make every element change in lockstep instead.
    themeToggle.js picks between them:
 
-     .theme-reveal / .theme-crossfade  a View Transition -- the browser
-       crossfades or wipes between two snapshots of the page. One composited
-       animation for the whole document, so per-element durations cannot
-       disagree by construction. `.theme-switching` rides along to stop the
-       live DOM underneath animating a second time.
+     .theme-crossfade   a View Transition -- the browser crossfades between
+       two snapshots of the page. One composited animation for the whole
+       document, so per-element durations cannot disagree by construction.
+       `.theme-switching` rides along to stop the live DOM underneath
+       animating a second time. Every switch takes this path the same way,
+       whether it came from a click or from another tab -- an earlier version
+       wiped the new theme in from the clicked button as a growing
+       `clip-path` circle, but at a resized viewport a different toggle
+       instance is the visible one, so the wipe did not reliably start from
+       the button actually pressed, and it read as heavier than a crossfade.
 
-     .theme-fading                     no View Transitions API: force every
-       element onto one shared colour transition.
+     .theme-fading      no View Transitions API: force every element onto one
+       shared colour transition.
 
    `prefers-reduced-motion` never reaches either path; themeToggle.js commits
    the swap under `.theme-switching` alone, which is the old instant behaviour.
@@ -414,7 +438,6 @@ html[data-theme="light"] [data-theme-icon="dark"] {
 :root {
     --theme-transition-duration: 320ms;
     --theme-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
-    --theme-reveal-duration: 450ms;
 }
 
 /* Transitions off. Used on its own for the reduced-motion swap, and alongside
@@ -447,44 +470,16 @@ html.theme-fading *::after {
 }
 
 /* ---------------------------------------------------------------------------
-   View Transition snapshots
+   View Transition snapshot
 
-   Custom properties inherit from the root element into the view-transition
-   pseudo tree, which is how themeToggle.js hands the reveal its origin.
+   Every switch -- click or cross-tab -- retimes the browser's own crossfade
+   rather than redefining it, so its `plus-lighter` blending -- what stops the
+   two snapshots dipping through grey at the halfway point -- is left intact.
    --------------------------------------------------------------------------- */
-
-/* Cross-tab sync and any switch with no button to emanate from: retime the
-   browser's own crossfade rather than redefining it, so its `plus-lighter`
-   blending -- which is what stops the two snapshots dipping through grey at
-   the halfway point -- is left intact. */
 html.theme-crossfade::view-transition-old(root),
 html.theme-crossfade::view-transition-new(root) {
     animation-duration: var(--theme-transition-duration);
     animation-timing-function: var(--theme-transition-easing);
-}
-
-/* A press on the toggle wipes the new theme in from that button. The outgoing
-   snapshot holds still underneath and the incoming one is clipped to a growing
-   circle, so the two are never both partly transparent -- hence `normal`
-   blending here, where the crossfade above wants `plus-lighter`. */
-html.theme-reveal::view-transition-old(root) {
-    animation: none;
-    mix-blend-mode: normal;
-}
-
-html.theme-reveal::view-transition-new(root) {
-    animation: theme-reveal var(--theme-reveal-duration)
-        var(--theme-transition-easing) forwards;
-    mix-blend-mode: normal;
-}
-
-@keyframes theme-reveal {
-    from {
-        clip-path: circle(0 at var(--theme-reveal-x, 50%) var(--theme-reveal-y, 50%));
-    }
-    to {
-        clip-path: circle(var(--theme-reveal-radius, 150vmax) at var(--theme-reveal-x, 50%) var(--theme-reveal-y, 50%));
-    }
 }
 
 /* The toggle's own icon swap is a hard display change, so it pops. Growing it
@@ -493,8 +488,8 @@ html.theme-reveal::view-transition-new(root) {
    Fallback path only, deliberately. Under a View Transition the live DOM is
    captured into the "new" snapshot moments after the swap -- an icon caught at
    its `opacity: 0` keyframe would be baked into that snapshot and simply
-   missing for the whole animation. Nothing is lost: the reveal starts *at* the
-   toggle, so the new icon is the first thing the wipe uncovers. */
+   missing for the whole animation, and the crossfade covers the icon swap for
+   everyone else anyway. */
 html.theme-fading [data-theme-toggle] svg {
     animation: theme-icon-in var(--theme-transition-duration)
         var(--theme-transition-easing);
@@ -514,5 +509,122 @@ html.theme-fading [data-theme-toggle] svg {
 @media (prefers-reduced-motion: reduce) {
     html.theme-fading [data-theme-toggle] svg {
         animation: none;
+    }
+}
+
+/* ===========================================================================
+   Reusable component classes
+   ===========================================================================
+
+   Each of these bundles a Tailwind utility combination that was hand-repeated,
+   near-identically, across several templates. Built with @apply, so they
+   still compile through the same --color-* variables the theme remap above
+   depends on -- nothing here needs its own light-mode override.
+
+   What genuinely varies per instance (badge color, cell rounding, padding) is
+   left as a plain utility class alongside the custom one rather than baked
+   in, so each shared class only ever captures the part that was always
+   identical.
+
+   Wrapped in `@layer components` deliberately: Tailwind v4 puts its own
+   utilities in `@layer utilities`, and CSS cascade layers give ANY layered
+   rule priority over an unlayered one regardless of specificity or source
+   order. Left unlayered, these classes would permanently beat every
+   Tailwind utility placed alongside them -- e.g. `.card-outline`'s
+   `hover:border-zinc-700` would always win over a per-instance
+   `hover:border-indigo-500/50`, silently, with no error anywhere. Inside
+   `@layer components`, the normal `components` < `utilities` layer order
+   restores the expected "utility wins" behavior.
+   =========================================================================== */
+
+@layer components {
+    /* Circular icon button: blog share row, blog/projects "back" link.
+       `group` / `cursor-pointer` / the copy button's focus ring stay inline
+       since not every instance wants them. */
+    .icon-btn {
+        @apply flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 transition-all duration-300;
+    }
+
+    /* Status/count pill shape (sidebar, about intro, home hero, "Current"/
+       level badges). Color, padding and text size are chosen per badge and
+       stay inline. */
+    .pill-badge {
+        @apply inline-flex items-center rounded-full font-medium;
+    }
+
+    /* Interactive "Show more / Show Details / View Journey" toggle pill.
+       Corner rounding (rounded-full vs rounded-lg) and padding differ per
+       card and stay inline; so does `cursor-pointer`, since the openhire
+       "Apply" instance is an <a>, not a <button>. */
+    .toggle-pill {
+        @apply inline-flex items-center text-xs font-medium transition-all duration-200 border border-zinc-700 hover:border-zinc-600;
+    }
+
+    /* Outlined card shell: about's experience/education/application cards,
+       openhire's position cards. `backdrop-blur-sm` and padding vary per
+       card and stay inline. */
+    .card-outline {
+        @apply rounded-xl overflow-hidden border border-zinc-700/50 transition-all duration-300 hover:border-zinc-700;
+    }
+
+    /* Filled surface card: the comment form shell and sign-in prompt.
+       Padding and the hover/focus-within border pseudo differ per
+       instance. */
+    .surface-card {
+        @apply rounded-xl border border-zinc-800 bg-zinc-900/40 transition-all duration-300;
+    }
+
+    /* Blog/projects search box -- byte-identical in both search_form.html
+       files. */
+    .search-input {
+        @apply w-full pl-3 pr-3 py-2 rounded-md text-zinc-300 hover:text-zinc-200 border border-zinc-700 hover:border-zinc-400 focus:outline-none focus:border-zinc-400 transition-all duration-300;
+    }
+
+    .search-submit-btn {
+        @apply inline-flex items-center justify-center px-3 py-2 rounded-md border transition-all duration-300 text-sm font-semibold h-full whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+
+    /* Mac-style image gallery window frame (blog + projects
+       image_gallery.html). */
+    .gallery-frame {
+        @apply w-full rounded-lg overflow-hidden transform transition-all duration-500 border border-zinc-800;
+    }
+
+    /* Gallery window header: the traffic-light dots + filename bar. Used to
+       be absolutely overlaid on the photo itself, which put its filename
+       text through the exact same "arbitrary photo, unpredictable contrast"
+       problem the scrims above exist to solve; sitting it in its own solid
+       row above the image sidesteps that category of bug entirely rather
+       than working around it, matching how the lightbox's own header is a
+       sibling of its image, never layered on top of it. Ordinary surface
+       colors, so it needs no light-mode override -- it's a card header, not
+       a photo overlay. */
+    .gallery-header {
+        @apply flex items-center h-8 sm:h-10 px-3 sm:px-4 bg-zinc-900 border-b border-zinc-800;
+    }
+
+    /* Gallery prev/next button. rounded-l-lg / rounded-r-lg stays inline. */
+    .gallery-nav-btn {
+        @apply cursor-pointer border border-zinc-800 bg-zinc-900/70 hover:bg-zinc-800/70 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105;
+    }
+
+    /* Pagination cell (blog + projects pagination.html). Rounding and the
+       current/disabled/hover treatment stay inline since they differ by
+       cell state. */
+    .page-cell {
+        @apply flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center;
+    }
+
+    /* Avatar with a hairline ring: guestbook message + comment author
+       photo. Size stays inline -- comment replies shrink to w-7 h-7. */
+    .avatar-ring {
+        @apply rounded-full border border-zinc-800 flex-shrink-0 object-cover;
+    }
+
+    /* Home hero action button (About/Contact/Hireable/Support). `group`
+       stays inline (it has no CSS of its own to @apply) and so does the
+       background color, since each button uses a different accent. */
+    .action-btn {
+        @apply inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full transition-all duration-300;
     }
 }

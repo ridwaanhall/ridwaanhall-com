@@ -23,7 +23,7 @@ nests twice.
     <div class="group/msg flex items-start gap-3">
         {% if message.user_profile_image %}
             <img src="{{ message.user_profile_image }}" alt="{{ message.user_full_name }}" width="36" height="36"
-                 loading="lazy" class="w-9 h-9 rounded-full border border-zinc-800 flex-shrink-0 object-cover" />
+                 loading="lazy" class="avatar-ring w-9 h-9" />
         {% else %}
             <div class="w-9 h-9 rounded-full border border-zinc-800 flex-shrink-0 bg-gradient-to-br from-zinc-500 to-purple-600 flex items-center justify-center">
                 <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">

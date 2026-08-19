@@ -8,7 +8,7 @@
                 class="w-full h-full object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-500"
                 loading="lazy"
             />
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-zinc-900/80 to-zinc-900/10"></div>
+            <div class="absolute inset-0 photo-scrim"></div>
         </div>
 
         <div class="relative z-10 p-3 sm:p-4 flex flex-col h-full">
@@ -28,7 +28,7 @@
             <div class="flex-grow"></div>
 
             <h3 class="text-base sm:text-lg font-semibold mb-1 sm:mb-2 line-clamp-2 relative inline-block">
-                <span class="relative transition-colors duration-300 group-hover:underline group-hover:decoration-2">{{ blog.title }}</span>
+                <span class="relative inline-block after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-current group-hover:after:w-full after:transition-all after:duration-300">{{ blog.title }}</span>
             </h3>
             <p class="text-xs sm:text-sm text-zinc-400 line-clamp-2 sm:line-clamp-3 mb-2">{{ blog.description }}</p>
 

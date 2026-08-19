@@ -1,7 +1,7 @@
 {% load image_filters %}
 <div class="group">
     <!-- Company Card -->
-    <div class="rounded-xl border border-zinc-700/50 transition-all duration-300 hover:border-zinc-700 overflow-hidden backdrop-blur-sm">
+    <div class="card-outline backdrop-blur-sm">
         {% with first_exp=company_group.list.0 %}
 
         <!-- Company Header -->
@@ -64,7 +64,7 @@
                             {{ experience.title }}
                         </h3>
                         {% if experience.is_current %}
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-900/30 text-emerald-400 border border-emerald-700/50">
+                        <span class="pill-badge px-2.5 py-0.5 text-xs bg-emerald-900/30 text-emerald-400 border border-emerald-700/50">
                             <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5 animate-pulse"></span>
                             Current
                         </span>
@@ -75,7 +75,7 @@
                     <div class="flex-shrink-0">
                         <button
                             type="button"
-                            class="inline-flex cursor-pointer items-center px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-200 border border-zinc-700 hover:border-zinc-600"
+                            class="toggle-pill cursor-pointer px-3 py-1.5 rounded-full"
                             onclick="toggleResponsibilities('expresponsibilities-{{ forloop.parentloop.counter }}-{{ forloop.counter }}')"
                             aria-expanded="false"
                             aria-controls="expresponsibilities-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"

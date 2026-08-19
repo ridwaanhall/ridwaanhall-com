@@ -17,7 +17,7 @@ green treatment that a tooltip should not have.
     href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri|urlencode }}&text={{ blog.title|urlencode }}"
     target="_blank"
     rel="noopener noreferrer"
-    class="group flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 transition-all duration-300"
+    class="icon-btn group"
     aria-label="Share on Twitter/X"
     title="Share on Twitter"
 >
@@ -31,7 +31,7 @@ green treatment that a tooltip should not have.
     href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}"
     target="_blank"
     rel="noopener noreferrer"
-    class="group flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 transition-all duration-300"
+    class="icon-btn group"
     aria-label="Share on Facebook"
     title="Share on Facebook"
 >
@@ -45,7 +45,7 @@ green treatment that a tooltip should not have.
     href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri|urlencode }}"
     target="_blank"
     rel="noopener noreferrer"
-    class="group flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 transition-all duration-300"
+    class="icon-btn group"
     aria-label="Share on LinkedIn"
     title="Share on LinkedIn"
 >
@@ -59,7 +59,7 @@ green treatment that a tooltip should not have.
 <!-- Gmail -->
 <a
     href="mailto:?subject={{ blog.title|urlencode }}&body={{ blog.description|urlencode }}%0A%0A{{ request.build_absolute_uri|urlencode }}"
-    class="group flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 transition-all duration-300"
+    class="icon-btn group"
     aria-label="Share via Email"
     title="Share via Email"
 >
@@ -71,7 +71,7 @@ green treatment that a tooltip should not have.
 <!-- Copy Link Button -->
 <button
     onclick="copyToClipboard('{{ request.build_absolute_uri }}')"
-    class="relative group cursor-pointer flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
+    class="icon-btn relative group cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
     aria-label="Copy link to clipboard"
     title="Copy link"
 >

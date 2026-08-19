@@ -16,13 +16,19 @@
  * #page-content, 300ms on 148 others. Animating them individually is what
  * produces a cascade, so all three paths below change the page as one unit:
  *
- *   1. View Transitions API: the browser animates between two snapshots of the
- *      whole document, so the per-element durations are out of the picture
- *      entirely. A press on a toggle wipes the new theme in from that button;
- *      a switch with no button behind it (another tab) crossfades.
+ *   1. View Transitions API: the browser crossfades between two snapshots of
+ *      the whole document, so the per-element durations are out of the
+ *      picture entirely. Every switch takes this path the same way, whether
+ *      it came from a click or from another tab.
  *   2. Without that API: every element is forced onto one shared colour
  *      transition, so they at least move in lockstep.
  *   3. prefers-reduced-motion: committed with transitions off, instantly.
+ *
+ * An earlier version wiped the new theme in from the clicked button as a
+ * growing circle. It was dropped: at a resized viewport a different toggle
+ * instance (mobile navbar vs. desktop rail) is the visible one, so the wipe
+ * did not reliably start from the button that was actually pressed, and the
+ * 450ms circle read as heavier than the plain crossfade.
  *
  * The matching CSS is at the bottom of static/css/input.css.
  */
@@ -33,7 +39,7 @@
     var THEME_COLOR = { light: "#ffffff", dark: "#000000" };
     // Keep in step with --theme-transition-duration in input.css.
     var FADE_MS = 320;
-    var MODE_CLASSES = ["theme-switching", "theme-reveal", "theme-crossfade", "theme-fading"];
+    var MODE_CLASSES = ["theme-switching", "theme-crossfade", "theme-fading"];
 
     var root = document.documentElement;
     var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -105,22 +111,11 @@
         }, FADE_MS + 60);
     }
 
-    function swapWithViewTransition(theme, origin, ticket) {
-        if (origin) {
-            // The circle has to reach whichever viewport corner is furthest
-            // from the button, or the wipe finishes with a wedge of the old
-            // theme still on screen.
-            var dx = Math.max(origin.x, window.innerWidth - origin.x);
-            var dy = Math.max(origin.y, window.innerHeight - origin.y);
-            root.style.setProperty("--theme-reveal-x", origin.x + "px");
-            root.style.setProperty("--theme-reveal-y", origin.y + "px");
-            root.style.setProperty("--theme-reveal-radius", Math.ceil(Math.sqrt(dx * dx + dy * dy)) + "px");
-        }
-
+    function swapWithViewTransition(theme, ticket) {
         // `theme-switching` rides along so the live DOM under the snapshots is
         // not animating too -- its cascade would otherwise surface the instant
         // the transition ends and the real page is revealed.
-        beginMode(["theme-switching", origin ? "theme-reveal" : "theme-crossfade"]);
+        beginMode(["theme-switching", "theme-crossfade"]);
 
         var transition = document.startViewTransition(function () {
             commit(theme);
@@ -136,8 +131,7 @@
 
     // The visual swap. Every path that changes the theme goes through here, so
     // a change arriving from another tab is as considered as a local click.
-    // `origin` is viewport coordinates to wipe out from, or null.
-    function setTheme(theme, origin) {
+    function setTheme(theme) {
         if (theme === currentTheme()) {
             commit(theme);
             return;
@@ -148,14 +142,14 @@
         if (reduceMotion.matches) {
             swapInstantly(theme);
         } else if (supportsViewTransitions) {
-            swapWithViewTransition(theme, origin, ticket);
+            swapWithViewTransition(theme, ticket);
         } else {
             swapWithFade(theme, ticket);
         }
     }
 
-    function applyTheme(theme, origin) {
-        setTheme(theme, origin);
+    function applyTheme(theme) {
+        setTheme(theme);
 
         // localStorage throws in some privacy modes; a theme that does not
         // persist is a far better outcome than a toggle that does nothing.
@@ -172,21 +166,10 @@
             return;
         }
 
-        // The button's own centre rather than the pointer position: a keyboard
-        // activation carries no useful coordinates, and the wipe should start
-        // from the control either way. A toggle with no box is one of the
-        // placements the current breakpoint hides, and would put the origin at
-        // the viewport corner -- crossfade instead of wiping from nowhere.
-        var rect = toggle.getBoundingClientRect();
-        var origin = rect.width && rect.height
-            ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
-            : null;
-        applyTheme(currentTheme() === "light" ? "dark" : "light", origin);
+        applyTheme(currentTheme() === "light" ? "dark" : "light");
     });
 
-    // Another tab switched theme -- follow it, but do not write back. No
-    // origin, so this crossfades rather than wiping out from a button that was
-    // never pressed here.
+    // Another tab switched theme -- follow it, but do not write back.
     window.addEventListener("storage", function (event) {
         if (event.key !== STORAGE_KEY || !event.newValue) {
             return;
@@ -194,7 +177,7 @@
         if (event.newValue === "light" || event.newValue === "dark") {
             // setTheme, not applyTheme -- following another tab must not write
             // back to storage.
-            setTheme(event.newValue, null);
+            setTheme(event.newValue);
         }
     });
 

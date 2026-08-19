@@ -399,14 +399,19 @@ html[data-theme="light"] [data-theme-icon="dark"] {
    all, so both blocks below make every element change in lockstep instead.
    themeToggle.js picks between them:
 
-     .theme-reveal / .theme-crossfade  a View Transition -- the browser
-       crossfades or wipes between two snapshots of the page. One composited
-       animation for the whole document, so per-element durations cannot
-       disagree by construction. `.theme-switching` rides along to stop the
-       live DOM underneath animating a second time.
+     .theme-crossfade   a View Transition -- the browser crossfades between
+       two snapshots of the page. One composited animation for the whole
+       document, so per-element durations cannot disagree by construction.
+       `.theme-switching` rides along to stop the live DOM underneath
+       animating a second time. Every switch takes this path the same way,
+       whether it came from a click or from another tab -- an earlier version
+       wiped the new theme in from the clicked button as a growing
+       `clip-path` circle, but at a resized viewport a different toggle
+       instance is the visible one, so the wipe did not reliably start from
+       the button actually pressed, and it read as heavier than a crossfade.
 
-     .theme-fading                     no View Transitions API: force every
-       element onto one shared colour transition.
+     .theme-fading      no View Transitions API: force every element onto one
+       shared colour transition.
 
    `prefers-reduced-motion` never reaches either path; themeToggle.js commits
    the swap under `.theme-switching` alone, which is the old instant behaviour.
@@ -414,7 +419,6 @@ html[data-theme="light"] [data-theme-icon="dark"] {
 :root {
     --theme-transition-duration: 320ms;
     --theme-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
-    --theme-reveal-duration: 450ms;
 }
 
 /* Transitions off. Used on its own for the reduced-motion swap, and alongside
@@ -447,44 +451,16 @@ html.theme-fading *::after {
 }
 
 /* ---------------------------------------------------------------------------
-   View Transition snapshots
+   View Transition snapshot
 
-   Custom properties inherit from the root element into the view-transition
-   pseudo tree, which is how themeToggle.js hands the reveal its origin.
+   Every switch -- click or cross-tab -- retimes the browser's own crossfade
+   rather than redefining it, so its `plus-lighter` blending -- what stops the
+   two snapshots dipping through grey at the halfway point -- is left intact.
    --------------------------------------------------------------------------- */
-
-/* Cross-tab sync and any switch with no button to emanate from: retime the
-   browser's own crossfade rather than redefining it, so its `plus-lighter`
-   blending -- which is what stops the two snapshots dipping through grey at
-   the halfway point -- is left intact. */
 html.theme-crossfade::view-transition-old(root),
 html.theme-crossfade::view-transition-new(root) {
     animation-duration: var(--theme-transition-duration);
     animation-timing-function: var(--theme-transition-easing);
-}
-
-/* A press on the toggle wipes the new theme in from that button. The outgoing
-   snapshot holds still underneath and the incoming one is clipped to a growing
-   circle, so the two are never both partly transparent -- hence `normal`
-   blending here, where the crossfade above wants `plus-lighter`. */
-html.theme-reveal::view-transition-old(root) {
-    animation: none;
-    mix-blend-mode: normal;
-}
-
-html.theme-reveal::view-transition-new(root) {
-    animation: theme-reveal var(--theme-reveal-duration)
-        var(--theme-transition-easing) forwards;
-    mix-blend-mode: normal;
-}
-
-@keyframes theme-reveal {
-    from {
-        clip-path: circle(0 at var(--theme-reveal-x, 50%) var(--theme-reveal-y, 50%));
-    }
-    to {
-        clip-path: circle(var(--theme-reveal-radius, 150vmax) at var(--theme-reveal-x, 50%) var(--theme-reveal-y, 50%));
-    }
 }
 
 /* The toggle's own icon swap is a hard display change, so it pops. Growing it
@@ -493,8 +469,8 @@ html.theme-reveal::view-transition-new(root) {
    Fallback path only, deliberately. Under a View Transition the live DOM is
    captured into the "new" snapshot moments after the swap -- an icon caught at
    its `opacity: 0` keyframe would be baked into that snapshot and simply
-   missing for the whole animation. Nothing is lost: the reveal starts *at* the
-   toggle, so the new icon is the first thing the wipe uncovers. */
+   missing for the whole animation, and the crossfade covers the icon swap for
+   everyone else anyway. */
 html.theme-fading [data-theme-toggle] svg {
     animation: theme-icon-in var(--theme-transition-duration)
         var(--theme-transition-easing);

@@ -50,7 +50,8 @@ apps/
   legal/             Privacy policy, terms, and any other legal document (models + admin)
   openhire/          "Open to work" / "hiring" status page
   seo/               Meta tags, JSON-LD schema, sitemaps, robots.txt
-static/              Tailwind source (input.css) — light/dark palette lives here
+static/css/          Tailwind source: input.css (light/dark palette) plus the
+                     hand-written stylesheets it @imports and bundles
 staticfiles/         Compiled CSS + all served static assets (images, fonts, icons, JS)
 templates/           Global templates (base, sidebar, error page, per-app sections)
 ```
@@ -123,7 +124,7 @@ npm ci
 cp .env.example .env
 
 # Build Tailwind CSS (for development with watch mode)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-miavzxuw.css --watch
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-fnrmrtud.css --watch
 
 # In a separate terminal, run migrations and the dev server
 uv run python manage.py migrate
@@ -154,10 +155,10 @@ For styling changes, ensure Tailwind CSS is running in watch mode:
 
 ```bash
 # Development (with watch and minification)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-miavzxuw.css --watch --minify
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-fnrmrtud.css --watch --minify
 
 # Production build
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-miavzxuw.css --minify
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-fnrmrtud.css --minify
 ```
 
 Make sure your `static/css/input.css` contains:
@@ -166,7 +167,7 @@ Make sure your `static/css/input.css` contains:
 @import "tailwindcss";
 ```
 
-> **Note:** the compiled filename (`global-miavzxuw.css`) is hand-picked, not auto-hashed. If you rename it, update the `-o` path above **and** the `{% static %}` reference in both `templates/base_seo.html` and `templates/error.html`.
+> **Note:** the compiled filename (`global-fnrmrtud.css`) is hand-picked, not auto-hashed. If you rename it, update the `-o` path above **and** the `{% static %}` reference in both `templates/base_seo.html` and `templates/error.html`.
 
 ## Environment Configuration
 

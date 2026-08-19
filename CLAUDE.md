@@ -14,7 +14,7 @@ Django 6.0 (Python 3.14+), managed with **uv** (not pip/poetry — always `uv sy
 - Dev server: `uv run python manage.py runserver`
 - Tests: `uv run python manage.py test` (e.g. `uv run python manage.py test apps.blog` for one app) — this is what CI runs and is the canonical command. The README also mentions `uv run pytest`; pytest-django is configured and works, but CI does not use it.
 - Django check: `uv run python manage.py check`
-- Tailwind build: `npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-loguyyaf.css --minify` (add `--watch` for dev). There is no `collectstatic` step anywhere in this project's pipeline (not in CI, not in the Vercel build) — the built `staticfiles/` output (images, fonts, icons, compiled CSS, JS) is committed directly and served as-is. This is why `STORAGES["staticfiles"]` uses WhiteNoise's plain `CompressedStaticFilesStorage`, **not** `CompressedManifestStaticFilesStorage`: none of these pre-built assets live under any `STATICFILES_DIRS` source `collectstatic` could discover (they're placed directly under `STATIC_ROOT`), so a manifest can never be generated for them — `ManifestStaticFilesStorage`'s strict lookup would 500 on every `{% static %}` tag referencing one (this was a real, live bug on the `main` branch — every page extending `templates/base_seo.html` 500'd via its favicon links). If you add a genuinely new static asset with a `{% static %}` reference, just drop the file under `staticfiles/` directly with its final name (matching the hand-picked cache-busted filename convention below) — don't reach for `collectstatic`.
+- Tailwind build: `npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-miavzxuw.css --minify` (add `--watch` for dev). There is no `collectstatic` step anywhere in this project's pipeline (not in CI, not in the Vercel build) — the built `staticfiles/` output (images, fonts, icons, compiled CSS, JS) is committed directly and served as-is. This is why `STORAGES["staticfiles"]` uses WhiteNoise's plain `CompressedStaticFilesStorage`, **not** `CompressedManifestStaticFilesStorage`: none of these pre-built assets live under any `STATICFILES_DIRS` source `collectstatic` could discover (they're placed directly under `STATIC_ROOT`), so a manifest can never be generated for them — `ManifestStaticFilesStorage`'s strict lookup would 500 on every `{% static %}` tag referencing one (this was a real, live bug on the `main` branch — every page extending `templates/base_seo.html` 500'd via its favicon links). If you add a genuinely new static asset with a `{% static %}` reference, just drop the file under `staticfiles/` directly with its final name (matching the hand-picked cache-busted filename convention below) — don't reach for `collectstatic`.
 
 ## Architecture: Django ORM (Supabase-backed)
 
@@ -193,9 +193,26 @@ Three places now carry an explicit *total* budget. When adding anything that tal
 
 Overrunning any of these is deliberately not an error: an orphaned storage object or a hidden panel beats losing the request that triggered it. `apps/core/tests/test_storage.py`, `apps/core/tests/test_file_cleanup.py` and `apps/dashboard/tests.py` pin the wall-clock behaviour with a stubbed clock — real `time.sleep` would make the suite unusable, and mocking sleep alone (as the older retry tests did) hides exactly the bug that matters.
 
+## Gotcha: `.gitignore` blanket-ignores `*.json`
+
+`.gitignore` carries a bare `*.json`, deliberately, so a `manage.py dumpdata` backup can never be committed by accident. The cost is that **anything JSON that genuinely belongs in the repo has to be un-ignored by name**, and nothing warns you when that is missed — the file simply never appears in `git status`.
+
+This already bit the Node toolchain: `package.json` and `package-lock.json` were silently untracked for the project's whole life, so a fresh clone had nothing for `npm install` to read and got whatever Tailwind was latest that day instead of the pinned version. That is how the build drifted from 4.1.17 to two minor versions behind upstream without anyone noticing. Both are now un-ignored explicitly (`!package.json`, `!package-lock.json`), as is `vercel.json`, which had been force-added at some point.
+
+If you add any new JSON config (a tool config, a manifest), add a matching `!` line in the same change, and confirm with `git status` that git actually sees it.
+
+## The Node toolchain is dev-only
+
+`package.json` pins exactly two direct dependencies, `tailwindcss` and `@tailwindcss/cli` (currently **4.3.3**), and they exist solely to compile `static/css/input.css` on a developer machine. **Nothing in CI or deploy runs Node**: `.github/workflows/django.yml` never installs it, and `vercel.json` declares only `@vercel/python`. That is by design — `staticfiles/` is committed pre-built and served as-is (see the Commands section), so production never needs the toolchain.
+
+- Keeping `tailwindcss` as a direct dependency is deliberate even though `@tailwindcss/cli` already pins it exactly: `input.css` opens with `@import "tailwindcss"`, so the project references that package by name and should declare it rather than rely on npm hoisting a transitive dep.
+- **`package-lock.json` looks far bigger than two dependencies, and that is normal.** Of its ~67 entries, over half are `optional` per-platform native binaries — Tailwind's Rust `oxide` engine, `lightningcss`, and `@parcel/watcher`, each published as a prebuilt binary for every OS/arch. npm records all of them so one lockfile works on any machine, then installs only the handful matching the current platform (24 packages on Windows x64). They are not bloat and cannot be pruned.
+- **Don't `overrides` the `@parcel/watcher` version.** `@tailwindcss/cli` pins it to an exact version rather than a range, so npm refusing to bump it is correct, not a resolution failure. A newer watcher drops the `micromatch` chain, but forcing it overrides a deliberate upstream pin for five tiny pure-JS glob helpers.
+- Watch mode (`--watch`) cannot be verified from a headless/backgrounded shell — it produces no output there in any version, including the one that shipped before it. Verify CSS changes with a one-off build instead; that is what the `rebuild-css` skill and the documented build command use.
+
 ## Gotcha: hardcoded compiled CSS filename
 
-The compiled Tailwind output filename (currently `global-loguyyaf.css`) is a hand-picked string, not an auto-generated hash. It's hardcoded in three places that must stay in sync:
+The compiled Tailwind output filename (currently `global-miavzxuw.css`) is a hand-picked string, not an auto-generated hash. It's hardcoded in three places that must stay in sync:
 
 1. The Tailwind CLI `-o` path (above)
 2. `templates/base_seo.html`

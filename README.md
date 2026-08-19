@@ -2,7 +2,7 @@
 
 [![Django](https://img.shields.io/badge/Django-6.x-092E20?style=flat&logo=django&logoColor=white)](https://djangoproject.com/)
 [![Python](https://img.shields.io/badge/Python-3.14+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org/)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.3-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 
 ![FlexForge Portfolio](https://ridwaanhall.com/static/img/project/ridwaanhall_com_2025070701.webp)
 
@@ -116,14 +116,14 @@ uv venv --python 3.14
 # Sync dependencies from pyproject.toml/uv.lock
 uv sync
 
-# Install Tailwind CSS
-npm install tailwindcss @tailwindcss/cli
+# Install the Tailwind CLI (versions come from package.json/package-lock.json)
+npm ci
 
 # Copy the environment template and fill in your own values (see below)
 cp .env.example .env
 
 # Build Tailwind CSS (for development with watch mode)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-loguyyaf.css --watch
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-miavzxuw.css --watch
 
 # In a separate terminal, run migrations and the dev server
 uv run python manage.py migrate
@@ -154,10 +154,10 @@ For styling changes, ensure Tailwind CSS is running in watch mode:
 
 ```bash
 # Development (with watch and minification)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-loguyyaf.css --watch --minify
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-miavzxuw.css --watch --minify
 
 # Production build
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-loguyyaf.css --minify
+npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-miavzxuw.css --minify
 ```
 
 Make sure your `static/css/input.css` contains:
@@ -166,7 +166,7 @@ Make sure your `static/css/input.css` contains:
 @import "tailwindcss";
 ```
 
-> **Note:** the compiled filename (`global-loguyyaf.css`) is hand-picked, not auto-hashed. If you rename it, update the `-o` path above **and** the `{% static %}` reference in both `templates/base_seo.html` and `templates/error.html`.
+> **Note:** the compiled filename (`global-miavzxuw.css`) is hand-picked, not auto-hashed. If you rename it, update the `-o` path above **and** the `{% static %}` reference in both `templates/base_seo.html` and `templates/error.html`.
 
 ## Environment Configuration
 

@@ -127,7 +127,18 @@ dmypy.json
 *.tgz
 building_web_apps_with_django.webp
 data.html
+# Blanket-ignore JSON so a `manage.py dumpdata` backup can never be committed
+# by accident. It is deliberately broad, so anything that genuinely belongs in
+# the repo has to be un-ignored by name below.
 *.json
+# The Tailwind toolchain manifest. Without these two the CSS build is not
+# reproducible: a fresh clone has nothing for `npm install` to read, so it
+# installs whatever is latest that day rather than the versions this site was
+# built and verified against -- which is how the pinned build silently drifted
+# two minor versions behind upstream. The lockfile resolves only from the
+# public npm registry and carries no credentials.
+!package.json
+!package-lock.json
 node_modules/
 text.txt
 

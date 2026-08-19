@@ -26,9 +26,6 @@
 
             {% include 'core/sections/social.html' %}
 
-            <!-- Messages -->
-            {% include 'core/components/contact_messages.html' %}
-
             <!-- Contact Form -->
             {% include 'core/sections/contact_form.html' %}
 
@@ -46,28 +43,16 @@
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('contact-form');
         const submitBtn = document.getElementById('submit-btn');
-        const messageContainer = document.getElementById('message-container');
-        const messageContent = document.getElementById('message-content');
-        
+        // Feedback goes through the site-wide toast stack (notify.js) rather
+        // than a container of its own -- this page used to carry a fourth copy
+        // of the same green/red strip.
         function showMessage(message, type) {
-            messageContent.textContent = message;
-            messageContent.className = `mb-4 px-4 py-3 rounded-lg border ${
-                type === 'success' 
-                    ? 'bg-green-900/20 border-green-700 text-green-300' 
-                    : 'bg-red-900/20 border-red-700 text-red-300'
-            }`;
-            messageContainer.style.display = 'block';
-            messageContainer.scrollIntoView({ behavior: 'smooth' });
+            window.notify(message, type === 'success' ? 'success' : 'error');
         }
-        
-        function hideMessage() {
-            messageContainer.style.display = 'none';
-        }
-        
+
         if (form && submitBtn) {
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                hideMessage();
                 
                 // Get form data
                 const name = form.querySelector('input[name="name"]').value.trim();

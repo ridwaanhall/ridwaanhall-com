@@ -15,7 +15,6 @@
                 </div>
             </div>
 
-            {% include 'guestbook/components/messages.html' %}
 
             <div class="grid grid-cols-1 gap-6">
                 <!-- Guestbook Messages -->
@@ -28,118 +27,49 @@
 
 {% block scripts %}
 <script>
-    // HTML escaping function to prevent XSS. Escapes text-node metacharacters via
-    // textContent/innerHTML, then quotes explicitly since that trick does not encode
-    // them — required because every call site below interpolates the result inside
-    // a "..." HTML attribute (href=, alt=, src=, data-user=, data-message=), where an
-    // unescaped " lets an attacker break out and inject arbitrary attributes/markup.
-    function escapeHtml(text) {
-        if (typeof text !== "string") return text;
-        const div = document.createElement("div");
-        div.textContent = text;
-        return div.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-    }
-
-    // Shared pin icon path (thumbtack), reused across pin buttons and pinned-message cards
-    const PIN_ICON_PATHS = '<path d="M12 17v5"></path><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path>';
-
-    // Render a message's text as a clickable link when it starts with https://, matching
-    // the server-side `linkify_message` template filter in apps/guestbook/templatetags/guestbook_tags.py
-    function linkifyMessage(message) {
-        const trimmed = message.trim();
-        if (/^https:\/\//i.test(trimmed)) {
-            return `<a href="${escapeHtml(trimmed)}" target="_blank" rel="noopener noreferrer nofollow" class="text-indigo-400 underline break-all hover:text-indigo-300">${escapeHtml(trimmed)}</a>`;
-        }
-        return null; // Caller falls back to safe line-broken text rendering
-    }
-
-    // Shared author/co-author role badge builder, matching guestbook_messages.html's markup
-    function buildRoleBadgeHtml(isAuthor, isCoAuthor, iconSize) {
-        if (isAuthor) {
-            return `<div class="flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-1.5 py-0.5 text-violet-50">
-                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="${iconSize}" width="${iconSize}" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="none" d="M0 0h24v24H0z"></path>
-                            <path d="M17 11c.34 0 .67.04 1 .09V6.27L10.5 3 3 6.27v4.91c0 4.54 3.2 8.79 7.5 9.82.55-.13 1.08-.32 1.6-.55-.69-.98-1.1-2.17-1.1-3.45 0-3.31 2.69-6 6-6z"></path>
-                            <path d="M17 13c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 1.38c.62 0 1.12.51 1.12 1.12s-.51 1.12-1.12 1.12-1.12-.51-1.12-1.12.5-1.12 1.12-1.12zm0 5.37c-.93 0-1.74-.46-2.24-1.17.05-.72 1.51-1.08 2.24-1.08s2.19.36 2.24 1.08c-.5.71-1.31 1.17-2.24 1.17z"></path>
-                        </svg>
-                        <span class="text-[9px]">Author</span>
-                    </div>`;
-        }
-        if (isCoAuthor) {
-            return `<div class="flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-amber-700 via-yellow-800 to-amber-700 px-1.5 py-0.5 text-amber-50">
-                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="${iconSize}" width="${iconSize}" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="none" d="M0 0h24v24H0z"></path>
-                            <path d="M16 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L22 4H16zM10 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L16 4H10zM4 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L10 4H4zM7 14c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm10 0c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path>
-                        </svg>
-                        <span class="text-[9px]">Co-Author</span>
-                    </div>`;
-        }
-        return "";
-    }
-
-    // Shared pinned-card avatar builder, matching the pinned-message markup in guestbook_messages.html
-    function buildPinnedAvatarHtml(profileImage, name) {
-        if (profileImage) {
-            return `<img src="${escapeHtml(profileImage)}" alt="${escapeHtml(name)}" width="28" height="28" class="rounded-full border border-zinc-700 flex-shrink-0">`;
-        }
-        return `<div class="rounded-full border border-zinc-700 w-7 h-7 bg-gradient-to-br from-zinc-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                    </svg>
-                </div>`;
-    }
-
+    /*
+     * Guestbook behaviour: posting, replying, pinning, deleting.
+     *
+     * This script builds no message markup. It used to hold a ~150-line
+     * template-string copy of guestbook_messages.html for AJAX-posted messages,
+     * plus JS reimplementations of the linkify_message filter, the role badge
+     * and the pinned card -- each one a second definition that had to be edited
+     * in step with its Django original. The views now return rendered HTML from
+     * the same partials the page load uses, so all of that is gone, and with it
+     * the escaping helpers that only existed to build it safely.
+     *
+     * Feedback goes to notify.js (the site-wide toast stack) and confirmation to
+     * confirmDialog.js (the site-wide dialog); neither is reimplemented here.
+     */
     document.addEventListener("DOMContentLoaded", function () {
-        // Message alerts functionality
-        function removeMessage(messageElement) {
-            if (messageElement) {
-                messageElement.style.transition = "all 0.3s ease";
-                messageElement.style.opacity = "0";
-                messageElement.style.transform = "translateY(-10px)";
-                setTimeout(() => {
-                    messageElement.remove();
-                    
-                    // Remove the entire messages container if no messages left
-                    const messagesContainer = document.getElementById("messages-container");
-                    if (messagesContainer && messagesContainer.children.length === 0) {
-                        messagesContainer.remove();
-                    }
-                }, 300);
-            }
-        }
+        "use strict";
 
-        // Handle close button clicks
-        document.addEventListener("click", function (e) {
-            if (e.target.closest(".close-message-btn")) {
-                const messageElement = e.target.closest(".message-alert");
-                removeMessage(messageElement);
-            }
-        });
-
-        // Auto-remove messages after 6 seconds
-        const messageAlerts = document.querySelectorAll(".message-alert");
-        messageAlerts.forEach((messageElement) => {
-            setTimeout(() => {
-                removeMessage(messageElement);
-            }, 6000); // 6 seconds
-        });
-
-        // Guestbook functionality
         const guestbookForm = document.getElementById("guestbook-form");
         const messageInput = document.getElementById("message-input");
         const guestbookMessages = document.getElementById("guestbook-messages");
 
-        // Auto-scroll to bottom of messages
+        function csrfToken() {
+            return document.querySelector("[name=csrfmiddlewaretoken]").value;
+        }
+
+        // Every confirmation is worded server-side, in the view that did the
+        // work, so these match what the comment sections say through
+        // django.contrib.messages. Nothing is shown if a view sends no notice.
+        function notifySuccess(notice) {
+            if (notice) {
+                window.notify(notice, "success");
+            }
+        }
+
         function scrollToBottom() {
             if (guestbookMessages) {
                 guestbookMessages.scrollTop = guestbookMessages.scrollHeight;
             }
         }
 
-        // Initial scroll to bottom
         scrollToBottom();
 
-        // Handle form submission
+        // ---- posting ---------------------------------------------------------
         if (guestbookForm) {
             guestbookForm.addEventListener("submit", function (e) {
                 e.preventDefault();
@@ -147,19 +77,17 @@
                 const message = messageInput.value.trim();
                 if (!message) return;
 
-                // Disable form while sending
                 messageInput.disabled = true;
                 const submitBtn = guestbookForm.querySelector('button[type="submit"]');
                 const originalBtnContent = submitBtn.innerHTML;
                 submitBtn.innerHTML =
                     '<svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>';
 
-                // Send message via AJAX
                 fetch('{% url "send_message" %}', {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
-                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                        "X-CSRFToken": csrfToken(),
                     },
                     body: new URLSearchParams({
                         message: message,
@@ -168,219 +96,65 @@
                 })
                     .then((response) => response.json())
                     .then((data) => {
-                        if (data.success) {
-                            // Create user name with author/co-author badge if applicable
-                            const authorBadgeHtml = buildRoleBadgeHtml(data.message.is_author, data.message.is_co_author, 10);
-
-                            // Create profile image or default avatar
-                            const avatarHtml = data.message.profile_image
-                                ? `<img src="${escapeHtml(data.message.profile_image)}" alt="${escapeHtml(data.message.user)}" width="40" height="40" class="mt-1 rounded-full border border-zinc-800">`
-                                : `<div class="mt-1 rounded-full border border-zinc-800 w-10 h-10 bg-gradient-to-br from-zinc-500 to-purple-600 flex items-center justify-center">
-                                     <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                                     </svg>
-                                   </div>`;
-
-                            // Create reply indicator if this is a reply
-                            let replyHtml = "";
-                            if (data.message.reply_to) {
-                                // Check if replying to self by comparing user IDs
-                                const isReplyToSelf = data.message.user_id === data.message.reply_to.user_id;
-                                const currentUserId = {% if user.is_authenticated %}{{ user.id }}{% else %}null{% endif %};
-                                
-                                if (isReplyToSelf) {
-                                    // Self-reply: check if current user is the author
-                                    if (currentUserId === data.message.user_id) {
-                                        replyHtml = `
-                                            <div class="flex items-center text-zinc-400 text-xs mb-1">
-                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
-                                                </svg>
-                                                <span>You replied to yourself: "${escapeHtml(data.message.reply_to.message)}"</span>
-                                            </div>
-                                        `;
-                                    } else {
-                                        replyHtml = `
-                                            <div class="flex items-center text-zinc-400 text-xs mb-1">
-                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
-                                                </svg>
-                                                <span><span class="font-medium">${escapeHtml(data.message.user)}</span> Replied to self: "${escapeHtml(data.message.reply_to.message)}"</span>
-                                            </div>
-                                        `;
-                                    }
-                                } else if (currentUserId === data.message.user_id) {
-                                    // Current user replied to someone else
-                                    replyHtml = `
-                                        <div class="flex items-center text-zinc-400 text-xs mb-1">
-                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
-                                            </svg>
-                                            <span>You replied to <span class="font-medium">${escapeHtml(data.message.reply_to.user)}</span>: "${escapeHtml(data.message.reply_to.message)}"</span>
-                                        </div>
-                                    `;
-                                } else if (currentUserId === data.message.reply_to.user_id) {
-                                    // Someone replied to current user
-                                    replyHtml = `
-                                        <div class="flex items-center text-zinc-400 text-xs mb-1">
-                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
-                                            </svg>
-                                            <span>Replied to you: "${escapeHtml(data.message.reply_to.message)}"</span>
-                                        </div>
-                                    `;
-                                } else {
-                                    // Someone replied to someone else
-                                    replyHtml = `
-                                        <div class="flex items-center text-zinc-400 text-xs mb-1">
-                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
-                                            </svg>
-                                            <span>Replied to <span class="font-medium">${escapeHtml(data.message.reply_to.user)}</span>: "${escapeHtml(data.message.reply_to.message)}"</span>
-                                        </div>
-                                    `;
-                                }
-                            }
-
-                            // Use timestamp directly from server (already in Jakarta time)
-                            // The server already returns the correct Jakarta time format
-                            const jakartaTime = data.message.timestamp;
-
-                            // Add message to guestbook
-                            const messageHtml = `
-                                <div class="flex items-start gap-3 px-3" data-message-id="${data.message.id}">
-                                    ${avatarHtml}
-                                    <div class="space-y-1 flex-1">
-                                        ${replyHtml}
-                                        <div class="flex flex-col items-start gap-3 md:flex-row md:items-center">
-                                            <div class="flex items-center gap-2">
-                                                <div class="text-sm font-medium">${escapeHtml(data.message.user)}</div>
-                                                ${authorBadgeHtml}
-                                                <div class="pinned-badge flex items-center gap-0.5 rounded-full bg-zinc-700 px-1.5 py-0.5 text-amber-400 hidden" data-message-id="${data.message.id}" title="Pinned message">
-                                                    <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                        ${PIN_ICON_PATHS}
-                                                    </svg>
-                                                    <span class="text-[9px]">Pinned</span>
-                                                </div>
-                                                <div class="hidden md:flex">
-                                                    <div class="text-xs text-zinc-400">${jakartaTime}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="group flex items-center gap-3">
-                                            <p class="w-fit rounded-xl rounded-tl-none bg-zinc-800 px-3 py-2 group-hover:bg-zinc-700 transition-colors"
-                                               data-message-id="${data.message.id}"
-                                               data-user="${escapeHtml(data.message.user)}"
-                                               data-message="${escapeHtml(data.message.message)}"></p>
-                                            <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button class="reply-btn p-1.5 rounded-lg hover:bg-zinc-600 transition-colors"
-                                                        data-message-id="${data.message.id}"
-                                                        data-user="${escapeHtml(data.message.user)}"
-                                                        data-message="${escapeHtml(data.message.message)}"
-                                                        title="Reply to this message">
-                                                    <svg class="w-4 h-4 text-zinc-400 hover:text-zinc-200 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
-                                                    </svg>
-                                                </button>
-                                                {% if current_user_profile.can_pin %}
-                                                <button class="pin-btn p-1.5 rounded-lg hover:bg-amber-900/30 transition-colors"
-                                                        data-message-id="${data.message.id}"
-                                                        data-pinned="false"
-                                                        title="Pin this message">
-                                                    <svg class="w-4 h-4 text-zinc-400 hover:text-amber-400 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                        ${PIN_ICON_PATHS}
-                                                    </svg>
-                                                </button>
-                                                {% endif %}
-                                                {% if current_user_profile.is_author %}
-                                                <button class="delete-btn p-1.5 rounded-lg hover:bg-red-900/30 transition-colors"
-                                                        data-message-id="${data.message.id}"
-                                                        title="Delete this message">
-                                                    <svg class="w-4 h-4 text-zinc-400 hover:text-red-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                    </svg>
-                                                </button>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                        <div class="flex md:hidden">
-                                            <div class="text-xs text-zinc-400">${jakartaTime}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-
-                            // Remove "no messages" placeholder if it exists
-                            const noMessages = guestbookMessages.querySelector(".text-center.text-zinc-400.py-16");
-                            if (noMessages) {
-                                noMessages.remove();
-                            }
-
-                            guestbookMessages.insertAdjacentHTML("beforeend", messageHtml);
-
-                            // Safely set the message content as text to prevent XSS
-                            const messageContainer = guestbookMessages.lastElementChild;
-                            const messageParagraph = messageContainer.querySelector("p");
-                            if (messageParagraph) {
-                                const linkHtml = linkifyMessage(data.message.message);
-                                if (linkHtml) {
-                                    messageParagraph.innerHTML = linkHtml;
-                                } else {
-                                    messageParagraph.textContent = data.message.message;
-                                    // Convert line breaks to HTML for display safely
-                                    const lines = messageParagraph.textContent.split("\n");
-                                    messageParagraph.textContent = ""; // Clear existing content
-                                    lines.forEach((line, index) => {
-                                        if (index > 0) {
-                                            messageParagraph.appendChild(document.createElement("br"));
-                                        }
-                                        messageParagraph.appendChild(document.createTextNode(line));
-                                    });
-                                }
-                            }
-
-                            messageInput.value = "";
-                            scrollToBottom();
-
-                            // Clear reply state
-                            clearReply();
-
-                            // Update message count
-                            const messageCountBadge = document.getElementById("message-count");
-                            if (messageCountBadge) {
-                                const currentCount = parseInt(messageCountBadge.textContent.split(" ")[0]) || 0;
-                                messageCountBadge.textContent = `${currentCount + 1} messages`;
-                            }
-                        } else {
-                            alert("Error: " + data.error);
+                        if (!data.success) {
+                            window.notify(data.error || "Failed to send message.", "error");
+                            return;
                         }
+
+                        // The server returns the whole panel, threaded: where a
+                        // reply lands depends on the depth cap and on whether
+                        // its parent is inside the fetched window, so working it
+                        // out here would duplicate apps/guestbook/tree.py.
+                        guestbookMessages.innerHTML = data.html;
+                        checkPinnedReadMore();
+
+                        messageInput.value = "";
+                        clearReply();
+                        scrollToBottom();
+
+                        const posted = guestbookMessages.querySelector(
+                            '.gb-message[data-message-id="' + data.message_id + '"]'
+                        );
+                        if (posted) {
+                            posted.scrollIntoView({ block: "nearest" });
+                        }
+
+                        const messageCountBadge = document.getElementById("message-count");
+                        if (messageCountBadge) {
+                            const currentCount = parseInt(messageCountBadge.textContent.split(" ")[0]) || 0;
+                            messageCountBadge.textContent = `${currentCount + 1} messages`;
+                        }
+
+                        // Confirm it landed. The panel is swapped wholesale and
+                        // a short reply well down a thread is easy to miss, so
+                        // success needs saying rather than being left implied.
+                        notifySuccess(data.notice);
                     })
                     .catch((error) => {
                         console.error("Error:", error);
-                        alert("Failed to send message. Please try again.");
+                        window.notify("Failed to send message. Please try again.", "error");
                     })
                     .finally(() => {
-                        // Re-enable form
                         messageInput.disabled = false;
                         submitBtn.innerHTML = originalBtnContent;
                         messageInput.focus();
                     });
             });
 
-            // Handle Enter key
             messageInput.addEventListener("keypress", function (e) {
                 if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
                     guestbookForm.dispatchEvent(new Event("submit"));
                 }
             });
-        } // Reply functionality
+        }
+
+        // ---- replying --------------------------------------------------------
         function setReply(messageId, userName, messageText) {
             const replyIndicator = document.getElementById("reply-indicator");
             const replyToUser = document.getElementById("reply-to-user");
             const replyToMessage = document.getElementById("reply-to-message");
             const replyToId = document.getElementById("reply-to-id");
-            const messageInput = document.getElementById("message-input");
 
             if (replyToUser) replyToUser.textContent = userName;
             if (replyToMessage) replyToMessage.textContent = messageText;
@@ -395,130 +169,115 @@
         function clearReply() {
             const replyIndicator = document.getElementById("reply-indicator");
             const replyToId = document.getElementById("reply-to-id");
-            const messageInput = document.getElementById("message-input");
 
             if (replyIndicator) replyIndicator.classList.add("hidden");
             if (replyToId) replyToId.value = "";
             if (messageInput) messageInput.placeholder = "Type your message...";
         }
 
-        // Function to show login required message
-        function showLoginMessage(userName) {
-            // Create and show a temporary message
-            const messagesContainer = document.getElementById("messages-container") || document.querySelector(".max-w-7xl");
-            
-            // Create message element
-            const messageElement = document.createElement("div");
-            messageElement.className = "message-alert mb-4 px-4 py-3 rounded-lg border flex items-center justify-between bg-blue-900/20 border-blue-700 text-blue-300";
-            messageElement.innerHTML = `
-                <span>You must <a href="{% provider_login_url 'google' %}" class="text-blue-200 hover:text-blue-100 underline">sign in</a> to reply to ${escapeHtml(userName)}'s message.</span>
-                <button type="button" class="close-message-btn cursor-pointer ml-3 p-1 rounded hover:bg-zinc-800 transition-colors" title="Close">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            `;
-            
-            // Insert at the top of the page
-            const mainContent = document.querySelector(".max-w-7xl");
-            if (mainContent) {
-                const firstChild = mainContent.children[1] || mainContent.firstElementChild; // After the header
-                mainContent.insertBefore(messageElement, firstChild);
-                
-                // Auto-remove after 5 seconds
-                setTimeout(() => {
-                    removeMessage(messageElement);
-                }, 5000);
-            }
-        } // Handle reply button clicks
+        const cancelReplyBtn = document.getElementById("cancel-reply");
+        if (cancelReplyBtn) {
+            cancelReplyBtn.addEventListener("click", clearReply);
+        }
+
         document.addEventListener("click", function (e) {
-            if (e.target.closest(".reply-btn")) {
-                const button = e.target.closest(".reply-btn");
-                const messageId = button.dataset.messageId;
-                const userName = button.dataset.user;
-                const messageText = button.dataset.message;
-                setReply(messageId, userName, messageText);
+            const replyBtn = e.target.closest(".reply-btn");
+            if (replyBtn) {
+                setReply(replyBtn.dataset.messageId, replyBtn.dataset.user, replyBtn.dataset.message);
+                return;
+            }
+
+            const loginBtn = e.target.closest(".login-required-btn");
+            if (loginBtn) {
+                // A node rather than a string, because this one carries a link;
+                // notify() appends elements as-is and escapes plain text.
+                const prompt = document.createElement("span");
+                prompt.append("You must ");
+                const link = document.createElement("a");
+                link.href = "{% provider_login_url 'google' %}";
+                link.className = "underline hover:text-blue-200";
+                link.textContent = "sign in";
+                prompt.append(link, ` to reply to ${loginBtn.dataset.user}'s message.`);
+                window.notify(prompt, "info");
             }
         });
 
-        // Handle login-required button clicks
-        document.addEventListener("click", function (e) {
-            if (e.target.closest(".login-required-btn")) {
-                const button = e.target.closest(".login-required-btn");
-                const userName = button.dataset.user;
-                showLoginMessage(userName);
-            }
-        });
+        // ---- deleting --------------------------------------------------------
+        // The button carries data-confirm-* attributes, so confirmDialog.js shows
+        // the site-wide dialog and raises this once the user confirms. Replaces a
+        // native confirm(), which rendered outside the page entirely.
+        document.addEventListener("guestbook:delete-message", function (e) {
+            const button = e.detail.trigger;
+            const messageId = button.dataset.messageId;
 
-        // Handle delete button clicks
-        document.addEventListener("click", function (e) {
-            if (e.target.closest(".delete-btn")) {
-                const button = e.target.closest(".delete-btn");
-                const messageId = button.dataset.messageId;
+            button.disabled = true;
+            const originalContent = button.innerHTML;
+            button.innerHTML =
+                '<svg class="w-4 h-4 animate-spin text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>';
 
-                if (confirm("Are you sure you want to delete this message?")) {
-                    // Disable button while deleting
-                    button.disabled = true;
-                    const originalContent = button.innerHTML;
-                    button.innerHTML =
-                        '<svg class="w-4 h-4 animate-spin text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>';
-
-                    // Send delete request
-                    fetch('{% url "delete_message" %}', {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/x-www-form-urlencoded",
-                            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
-                        },
-                        body: new URLSearchParams({
-                            message_id: messageId,
-                        }),
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            // A deleted message may currently be pinned; drop its card too
-                            // (no-op if it isn't pinned) so the sidebar doesn't keep a stale
-                            // reference to a message that no longer exists in the DB.
-                            removePinnedCard(messageId);
-
-                            // Remove the message from the DOM - find the parent message container
-                            const messageElement = button.closest("[data-message-id]");
-                            if (messageElement) {
-                                messageElement.style.transition = "all 0.3s ease";
-                                messageElement.style.opacity = "0";
-                                messageElement.style.transform = "translateX(-100%)";
-                                setTimeout(() => {
-                                    messageElement.remove();
-
-                                    // Update message count
-                                    const messageCountBadge = document.getElementById("message-count");
-                                    if (messageCountBadge) {
-                                        const currentCount = parseInt(messageCountBadge.textContent.split(" ")[0]) || 0;
-                                        const newCount = Math.max(0, currentCount - 1);
-                                        messageCountBadge.textContent = `${newCount} messages`;
-                                    }
-                                }, 300);
-                            }
-                        } else {
-                            alert("Error: " + (data.error || "Failed to delete message"));
-                            // Restore button
-                            button.disabled = false;
-                            button.innerHTML = originalContent;
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                        alert("Failed to delete message. Please try again.");
-                        // Restore button
+            fetch('{% url "delete_message" %}', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": csrfToken(),
+                },
+                body: new URLSearchParams({ message_id: messageId }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (!data.success) {
+                        window.notify(data.error || "Failed to delete message.", "error");
                         button.disabled = false;
                         button.innerHTML = originalContent;
-                    });
-                }
-            }
+                        return;
+                    }
+
+                    notifySuccess(data.notice);
+
+                    // A deleted message may be pinned; drop its card too (no-op
+                    // if it isn't) so the section keeps no stale reference.
+                    removePinnedCard(messageId);
+
+                    // ChatMessage.reply_to cascades, so the server has taken the
+                    // replies with it -- remove the whole branch, not just the
+                    // one node, or the thread would show orphans until reload.
+                    const node = document.querySelector('.gb-message[data-message-id="' + messageId + '"]');
+                    const branch = node ? (node.closest(".gb-branch") || node.parentElement) : null;
+                    if (branch) {
+                        const removed = branch.querySelectorAll(".gb-message").length;
+                        branch.style.transition = "all 0.3s ease";
+                        branch.style.opacity = "0";
+                        branch.style.transform = "translateX(-100%)";
+                        setTimeout(() => {
+                            const parentList = branch.parentElement;
+                            branch.remove();
+                            // A replies container left empty must go back to
+                            // hidden, or it holds open the space its rail drew.
+                            if (parentList && parentList.classList.contains("gb-replies") && !parentList.children.length) {
+                                parentList.classList.add("hidden");
+                            }
+                            const empty = document.getElementById("guestbook-empty");
+                            if (empty && !guestbookMessages.querySelector(".gb-message")) {
+                                empty.classList.remove("hidden");
+                            }
+
+                            const messageCountBadge = document.getElementById("message-count");
+                            if (messageCountBadge) {
+                                const currentCount = parseInt(messageCountBadge.textContent.split(" ")[0]) || 0;
+                                messageCountBadge.textContent = `${Math.max(0, currentCount - removed)} messages`;
+                            }
+                        }, 300);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    window.notify("Failed to delete message. Please try again.", "error");
+                    button.disabled = false;
+                    button.innerHTML = originalContent;
+                });
         });
 
-        // Toggle the pinned state on every button + badge for a given message
+        // ---- pinning ---------------------------------------------------------
         function updatePinButtons(messageId, isPinned) {
             document.querySelectorAll('.pin-btn[data-message-id="' + messageId + '"]').forEach((btn) => {
                 btn.dataset.pinned = isPinned ? "true" : "false";
@@ -531,16 +290,13 @@
                     svg.classList.toggle("hover:text-amber-400", !isPinned);
                 }
             });
-            // Also toggle the inline "Pinned" badge next to the author's name in the
-            // main message list — it's a third place pin state is shown (besides the
-            // pin button and the pinned-card sidebar) and was previously only ever set
-            // server-side at page load, going stale after an AJAX pin/unpin.
+            // The inline "Pinned" badge beside the author's name is a third place
+            // pin state shows, and was previously only ever set at page load.
             document.querySelectorAll('.pinned-badge[data-message-id="' + messageId + '"]').forEach((badge) => {
                 badge.classList.toggle("hidden", !isPinned);
             });
         }
 
-        // Show/hide the pinned-messages section and refresh its count based on current cards
         function updatePinnedSectionVisibility() {
             const section = document.getElementById("pinned-messages-section");
             const list = document.getElementById("pinned-messages-list");
@@ -554,48 +310,21 @@
             section.classList.toggle("hidden", count === 0);
         }
 
-        // Add a card for a newly-pinned message to the pinned-messages section, matching
-        // the server-rendered card markup in guestbook_messages.html
-        function addPinnedCard(messageId, messageData) {
-            // Non-link fallback must also convert newlines to <br>, matching the
-            // linebreaksbr() behavior of the server-side linkify_message filter used
-            // for the same card markup after a page reload (guestbook_messages.html).
-            const messageHtml = linkifyMessage(messageData.message) || escapeHtml(messageData.message).replace(/\n/g, "<br>");
-            const avatarHtml = buildPinnedAvatarHtml(messageData.profile_image, messageData.user);
-            const badgeHtml = buildRoleBadgeHtml(messageData.is_author, messageData.is_co_author, 9);
-
-            const card = document.createElement("div");
-            card.className = "flex items-start gap-2 bg-zinc-800 rounded-lg px-3 py-2";
-            card.dataset.pinnedMessageId = messageId;
-            card.innerHTML = `
-                ${avatarHtml}
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-1.5 mb-0.5">
-                        <span class="text-xs font-medium text-zinc-300">${escapeHtml(messageData.user)}</span>
-                        ${badgeHtml}
-                    </div>
-                    <div class="pinned-message-text text-xs text-zinc-400 line-clamp-2">${messageHtml}</div>
-                    <button class="pinned-readmore-btn hidden text-[10px] text-indigo-400 hover:text-indigo-300 mt-0.5 cursor-pointer" data-expanded="false" type="button">Read more</button>
-                </div>
-                <button class="pin-btn flex-shrink-0 p-1 rounded hover:bg-amber-900/30 transition-colors" data-message-id="${messageId}" data-pinned="true" title="Unpin this message">
-                    <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${PIN_ICON_PATHS}</svg>
-                </button>
-            `;
-
+        function addPinnedCard(html) {
             const list = document.getElementById("pinned-messages-list");
-            if (list) list.appendChild(card);
+            if (!list) return;
+            list.insertAdjacentHTML("beforeend", html);
             updatePinnedSectionVisibility();
-            checkPinnedReadMore(card);
+            checkPinnedReadMore(list.lastElementChild);
         }
 
-        // Remove a message's card from the pinned-messages section
         function removePinnedCard(messageId) {
             const card = document.querySelector('[data-pinned-message-id="' + messageId + '"]');
             if (card) card.remove();
             updatePinnedSectionVisibility();
         }
 
-        // Show the "Read more" toggle only for pinned messages actually clamped by line-clamp-2
+        // Show "Read more" only where line-clamp-2 actually clipped the text.
         function checkPinnedReadMore(scope) {
             const root = scope || document;
             root.querySelectorAll(".pinned-message-text").forEach((textEl) => {
@@ -609,21 +338,18 @@
             });
         }
 
-        // Handle "Read more" / "Read less" toggle clicks on pinned messages
         document.addEventListener("click", function (e) {
-            if (e.target.closest(".pinned-readmore-btn")) {
-                const btn = e.target.closest(".pinned-readmore-btn");
-                const textEl = btn.previousElementSibling;
-                if (!textEl) return;
+            const btn = e.target.closest(".pinned-readmore-btn");
+            if (!btn) return;
+            const textEl = btn.previousElementSibling;
+            if (!textEl) return;
 
-                const expanded = btn.dataset.expanded === "true";
-                textEl.classList.toggle("line-clamp-2", expanded);
-                btn.textContent = expanded ? "Read more" : "Read less";
-                btn.dataset.expanded = expanded ? "false" : "true";
-            }
+            const expanded = btn.dataset.expanded === "true";
+            textEl.classList.toggle("line-clamp-2", expanded);
+            btn.textContent = expanded ? "Read more" : "Read less";
+            btn.dataset.expanded = expanded ? "false" : "true";
         });
 
-        // Initial check for server-rendered pinned messages, re-checked once web fonts settle
         checkPinnedReadMore();
         if (document.fonts && document.fonts.ready) {
             document.fonts.ready.then(() => checkPinnedReadMore());
@@ -631,53 +357,46 @@
             setTimeout(() => checkPinnedReadMore(), 300);
         }
 
-        // Handle pin/unpin button clicks
         document.addEventListener("click", function (e) {
-            if (e.target.closest(".pin-btn")) {
-                const button = e.target.closest(".pin-btn");
-                const messageId = button.dataset.messageId;
+            const button = e.target.closest(".pin-btn");
+            if (!button) return;
+            const messageId = button.dataset.messageId;
 
-                const allButtons = document.querySelectorAll('.pin-btn[data-message-id="' + messageId + '"]');
-                allButtons.forEach((btn) => (btn.disabled = true));
+            const allButtons = document.querySelectorAll('.pin-btn[data-message-id="' + messageId + '"]');
+            allButtons.forEach((btn) => (btn.disabled = true));
 
-                fetch('{% url "pin_message" %}', {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
-                    },
-                    body: new URLSearchParams({
-                        message_id: messageId,
-                    }),
+            fetch('{% url "pin_message" %}', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": csrfToken(),
+                },
+                body: new URLSearchParams({ message_id: messageId }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (!data.success) {
+                        window.notify(data.error || "Failed to update pinned message.", "error");
+                        return;
+                    }
+                    notifySuccess(data.notice);
+                    updatePinButtons(messageId, data.is_pinned);
+                    if (data.is_pinned) {
+                        addPinnedCard(data.html);
+                    } else {
+                        removePinnedCard(messageId);
+                    }
                 })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            updatePinButtons(messageId, data.is_pinned);
-                            if (data.is_pinned) {
-                                addPinnedCard(messageId, data.message);
-                            } else {
-                                removePinnedCard(messageId);
-                            }
-                        } else {
-                            alert("Error: " + (data.error || "Failed to update pinned message"));
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                        alert("Failed to update pinned message. Please try again.");
-                    })
-                    .finally(() => {
-                        allButtons.forEach((btn) => (btn.disabled = false));
-                    });
-            }
+                .catch((error) => {
+                    console.error("Error:", error);
+                    window.notify("Failed to update pinned message. Please try again.", "error");
+                })
+                .finally(() => {
+                    document
+                        .querySelectorAll('.pin-btn[data-message-id="' + messageId + '"]')
+                        .forEach((btn) => (btn.disabled = false));
+                });
         });
-
-        // Handle cancel reply button
-        const cancelReplyBtn = document.getElementById("cancel-reply");
-        if (cancelReplyBtn) {
-            cancelReplyBtn.addEventListener("click", clearReply);
-        }
     });
 </script>
 {% endblock scripts %}

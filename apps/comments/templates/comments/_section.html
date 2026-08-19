@@ -17,14 +17,19 @@ and any tag inside them is parsed for real.
         {{ comment_count }} comment{{ comment_count|pluralize }}
     </h2>
 
-    {% include "comments/_messages.html" %}
 
     {% if user.is_authenticated %}
         <form method="post" action="{% url 'comments:post' %}" class="mb-8" id="comment-form">
             {% csrf_token %}
             <input type="hidden" name="content_type" value="{{ comment_target_label }}" />
             <input type="hidden" name="object_id" value="{{ comment_target_id }}" />
-            <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+            {% comment %}
+            #comments so posting returns to the thread rather than the top of
+            the article. The toast confirming it is fixed-position and visible
+            either way, but being dropped back at the masthead of a 2000-word
+            post leaves you hunting for what you just wrote.
+            {% endcomment %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}#comments" />
             <input type="hidden" name="reply_to" id="comment-reply-to" value="" />
 
             <div class="rounded-xl border border-zinc-800 bg-zinc-900/40 p-3 sm:p-4 transition-all duration-300 focus-within:border-zinc-700">
@@ -94,9 +99,9 @@ and any tag inside them is parsed for real.
                     <div class="mt-3 space-y-3">
                         {% for reply in comment.replies.all %}
                             <div class="relative pl-9 sm:pl-11
-                                        before:content-[''] before:absolute before:left-[1.125rem] before:top-0 before:w-px before:bg-zinc-800
+                                        before:content-[''] before:absolute before:left-[1.125rem] before:top-0 before:w-px before:bg-zinc-700
                                         {% if forloop.last %}before:h-4{% else %}before:bottom-[-0.75rem]{% endif %}
-                                        after:content-[''] after:absolute after:left-[1.125rem] after:top-4 after:h-px after:w-4 sm:after:w-6 after:bg-zinc-800">
+                                        after:content-[''] after:absolute after:left-[1.125rem] after:top-4 after:h-px after:w-4 sm:after:w-6 after:bg-zinc-700">
                                 {% include "comments/_comment.html" with comment=reply is_reply=True %}
                             </div>
                         {% endfor %}

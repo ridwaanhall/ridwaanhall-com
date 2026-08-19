@@ -1,0 +1,46 @@
+{% load guestbook_tags %}
+{% comment %}
+One pinned-message card.
+
+Rendered on page load by guestbook_messages.html, and again by PinMessageView
+when a message is pinned over AJAX -- the client used to build this card itself
+from JSON, which is what addPinnedCard(), buildPinnedAvatarHtml(),
+buildRoleBadgeHtml() and a JS copy of the linkify_message filter all existed for.
+They are gone; this file is the one definition.
+
+Context: `pinned` (id, message, user_full_name, user_profile_image,
+user_is_author, user_is_co_author) and current_user_profile for the unpin
+control.
+{% endcomment %}
+<div class="flex items-start gap-2 bg-zinc-800 rounded-lg px-3 py-2" data-pinned-message-id="{{ pinned.id }}">
+    {% if pinned.user_profile_image %}
+        <img src="{{ pinned.user_profile_image }}" alt="{{ pinned.user_full_name }}" width="28" height="28" loading="lazy" class="w-7 h-7 rounded-full border border-zinc-700 flex-shrink-0 object-cover" />
+    {% else %}
+        <div class="rounded-full border border-zinc-700 w-7 h-7 bg-gradient-to-br from-zinc-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+            <svg class="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+            </svg>
+        </div>
+    {% endif %}
+    <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-1.5 mb-0.5">
+            <span class="text-xs font-medium text-zinc-300">{{ pinned.user_full_name }}</span>
+            {% include "guestbook/partials/_role_badge.html" with is_author=pinned.user_is_author is_co_author=pinned.user_is_co_author small=True %}
+        </div>
+        {% comment %}
+        line-clamp-2 with a JS "Read more" toggle rather than truncate, so the
+        full message stays reachable from the card.
+        {% endcomment %}
+        <div class="pinned-message-text text-xs text-zinc-400 line-clamp-2">{{ pinned.message|linkify_message }}</div>
+        <button class="pinned-readmore-btn hidden text-[10px] text-indigo-400 hover:text-indigo-300 mt-0.5 cursor-pointer" data-expanded="false" type="button">Read more</button>
+    </div>
+    {% if user.is_authenticated and current_user_profile.can_pin %}
+    <button type="button" class="pin-btn flex-shrink-0 p-1 rounded hover:bg-amber-900/30 transition-colors"
+            data-message-id="{{ pinned.id }}" data-pinned="true" title="Unpin this message">
+        <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 17v5"></path>
+            <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path>
+        </svg>
+    </button>
+    {% endif %}
+</div>

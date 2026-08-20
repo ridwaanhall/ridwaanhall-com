@@ -1,3 +1,15 @@
+import type { Metadata } from "next";
+
+import { getAboutData } from "@/lib/data/about";
+import { aboutSeo } from "@/lib/seo/data";
+import { buildMetadata } from "@/lib/seo/metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const about = await getAboutData();
+  if (!about) return {};
+  return buildMetadata(aboutSeo(about), about);
+}
+
 export default function AboutPage() {
   return (
     <main className="px-4 py-6 md:px-6 lg:px-8">

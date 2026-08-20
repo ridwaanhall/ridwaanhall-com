@@ -213,7 +213,8 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
 ---
 
 ## Phase 4 — cutover
-- [ ] Promote `web/` to repo root, delete the Django tree
+- [ ] backup Django project to the new branch with name django
+- [ ] Promote `web/` to repo root, delete the Django tree from nextjs-migration
 - [ ] Replace `vercel.json`, swap CI to Node
 - [ ] **Re-apply RLS as a SQL migration** — `enable_row_level_security` disappears with
       `apps/core/signals.py`, and without it every public table becomes readable

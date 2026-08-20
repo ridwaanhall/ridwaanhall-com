@@ -96,6 +96,11 @@ Windows path before node sees it.
       connected rather than silently doing nothing.
 
 ### Client behaviour to port
+
+All of it is verified against live by `scripts/compare-interactions.mjs` (the
+three document-wide behaviours, which have no markup of their own and so are
+invisible to every layout and text comparison) and `scripts/compare-gallery.mjs`.
+
 - [x] Image lightbox (`imageLightbox.js`, 425 lines + its CSS) — and with it the
       two image sliders it depended on. `blogImageSlider.js` and
       `projectImageSlider.js` were 120 near-identical lines each; they are one
@@ -112,8 +117,16 @@ Windows path before node sees it.
       were wrongly converted along with it: they have numbered slides, arrows,
       dots and an auto-advance, none of which a scroll row provides. They are
       back to a transform track.
-- [ ] Tooltips (`tooltip.js`) — `title` upgraded, must work on touch
-- [ ] Click spark (`clickSpark.js`, canvas, `mousedown` not `pointerdown`)
+- [x] Tooltips (`tooltip.js`) — one mounted component, delegated from `document`,
+      so markup that appears later (gallery controls, lightbox buttons, a panel
+      that was hidden) is covered with no observer and no re-scan. Verified on a
+      real emulated touch device: the chip shows on tap, carries the trigger's
+      own `title` text, and times itself out — which is the entire reason the
+      module exists, since a native `title` renders on hover only.
+- [x] Click spark (`clickSpark.js`, canvas, `mousedown` not `pointerdown`) — the
+      canvas is appended to `document.body`, not rendered in place: it is
+      `position: fixed`, and `#page-content` carries a transform, which would
+      become its containing block and confine the sparks to the content column.
 - [x] GitHub contributions heatmap — markup rather than 295 lines of DOM building
 - [x] Tab switching (`switchTab.js`) and the four career toggles (`toggleCareer.js`
       carried `toggleResponsibilities`, `toggleAchievements`, `toggleAchievementsCerts`
@@ -122,8 +135,12 @@ Windows path before node sees it.
       openhire, matching which templates rendered `#scrollToTopBtn`
 - [x] Copy-to-clipboard (in the blog share row)
 - [x] Count-up (`countUp.js`) — matches the original's integer formatting
-- [ ] `searchEnable.js` — enables the listing search button only once the field has
-      text. A nicety; the form works without it.
+- [x] `searchEnable.js` — the state is known while rendering now, so there is
+      nothing to correct after the fact. The original assigned `button.className`
+      wholesale on DOMContentLoaded, which threw away the `search-submit-btn`
+      class the server had rendered and left the button briefly wearing an
+      uncoloured `border` (Tailwind v4 defaults `border-color` to
+      `currentColor`) until the script ran.
 
 ---
 
@@ -227,6 +244,18 @@ Each is recorded at its call site and in the comparison scripts.
   backslash followed by the start of a group, so the pattern hunts for a literal
   backslash after `translateX` and can never match. Every call fell through to
   `return 0`.
+
+## Known, imperceptible differences
+
+- **The palette is serialised differently by the two build pipelines.** Django's
+  Tailwind CLI emits `--color-zinc-700: oklch(37% .013 285.805)`; the Next
+  pipeline's Lightning CSS pass emits a `#3f3f46` fallback followed by
+  `lab(26.8019% 1.35386 -4.68303)`, because it targets browsers without `oklch`
+  support. Converting through those spaces lands one unit apart in a single
+  channel on some colours — zinc-700 paints as `63,63,71` on live and `63,63,70`
+  here, and the hex is Tailwind's own canonical value for it. Every other colour
+  measured is bit-identical. `scripts/compare-interactions.mjs` allows one step
+  per channel and flags anything larger.
 
 ## Traps that must not be re-introduced
 

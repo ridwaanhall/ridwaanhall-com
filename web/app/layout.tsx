@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 
+import { ClickSpark } from "@/components/providers/click-spark";
 import { ThemeColorSync } from "@/components/providers/theme-color-sync";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { Tooltips } from "@/components/providers/tooltips";
 
 import "./globals.css";
 
@@ -41,6 +43,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-black text-zinc-300 transition-colors duration-200">
         <ThemeProvider>
           <ThemeColorSync />
+          {/*
+            Two document-wide behaviours, mounted once. Both render nothing and
+            append their own element to `document.body` -- the tooltip chip and
+            the spark canvas are `position: fixed`, and `#page-content` carries
+            a transform, which would otherwise become their containing block.
+
+            They are delegated from `document` rather than attached per
+            element, which is what lets them cover markup that appears later
+            (gallery controls, lightbox buttons, a panel that was hidden) with
+            no observer and no re-scan.
+          */}
+          <Tooltips />
+          <ClickSpark />
           {children}
         </ThemeProvider>
       </body>

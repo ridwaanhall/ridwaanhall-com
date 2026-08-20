@@ -65,7 +65,10 @@ Windows path before node sees it.
       (layout verified against live at 375 / 768 / 1440)
 - [ ] Home — the `social.html` section is **not** included on the homepage in Django
       either; it belongs to the contact page. Confirm when contact is built.
-- [ ] About — intro, tabs (experience / education / certifications / awards / applications), CV download, work-together, sponsor
+- [x] About — intro, tabs (experience / education / awards / certifications / applications),
+      CV download, sponsor (layout verified against live at 375 / 768 / 1280)
+- [x] ~~work-together section~~ — `about/sections/work_together.html` exists but is
+      referenced by no template. Dead in Django; not ported.
 - [x] Projects list — cards, search, pagination (layout verified against live)
 - [x] Project detail — gallery, tech stack, features, external links, timestamps, rich-text description
 - [x] Blog list — featured slider, cards, search, pagination (layout verified against live)
@@ -84,7 +87,9 @@ Windows path before node sees it.
 - [ ] Tooltips (`tooltip.js`) — `title` upgraded, must work on touch
 - [ ] Click spark (`clickSpark.js`, canvas, `mousedown` not `pointerdown`)
 - [ ] GitHub contributions heatmap (`githubContributions.js`, 295 lines → SVG)
-- [ ] Tab switching (`switchTab.js`), career toggle (`toggleCareer.js`)
+- [x] Tab switching (`switchTab.js`) and the four career toggles (`toggleCareer.js`
+      carried `toggleResponsibilities`, `toggleAchievements`, `toggleAchievementsCerts`
+      and `toggleJourney` — one `<Disclosure>` replaces all four)
 - [ ] Count-up, back-to-top, copy-to-clipboard, search-enable (small hooks)
 
 ---

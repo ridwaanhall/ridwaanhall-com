@@ -759,3 +759,49 @@ html.theme-fading [data-theme-toggle] svg {
         animation: none;
     }
 }
+
+/* ---------------------------------------------------------------------------
+   About-page tab transition
+
+   The panel slides in from the side it came from -- forward from the right,
+   backward from the left. switchTab.js did this with a pair of nested
+   setTimeouts driving inline styles; a keyframe says the same thing with no
+   timing to fall out of step and nothing to clean up afterwards.
+   --------------------------------------------------------------------------- */
+@keyframes tab-enter-forward {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes tab-enter-back {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.tab-enter-forward {
+    animation: tab-enter-forward 300ms ease-out both;
+}
+
+.tab-enter-back {
+    animation: tab-enter-back 300ms ease-out both;
+}
+
+/* The panel must still appear; only the movement is optional. */
+@media (prefers-reduced-motion: reduce) {
+    .tab-enter-forward,
+    .tab-enter-back {
+        animation: none;
+    }
+}

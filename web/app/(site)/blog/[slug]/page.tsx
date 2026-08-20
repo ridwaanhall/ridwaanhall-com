@@ -5,6 +5,8 @@ import { getAboutData } from "@/lib/data/about";
 import { findBySlug, getBlogs } from "@/lib/data/content";
 import { blogDetailSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
+import { blogDetailSchemas } from "@/lib/seo/schemas-for-page";
+import { JsonLdScript } from "@/components/seo/json-ld";
 
 /**
  * Prerender every known slug.
@@ -38,15 +40,21 @@ export default async function BlogDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = findBySlug(await getBlogs(), slug);
-  if (!post) notFound();
+  const [about, post] = await Promise.all([
+    getAboutData(),
+    getBlogs().then((posts) => findBySlug(posts, slug)),
+  ]);
+  if (!post || !about) notFound();
 
   return (
-    <main className="px-4 py-6 md:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl font-semibold text-white">{post.title}</h1>
-        <p className="mt-2 text-zinc-400">Not migrated yet.</p>
-      </div>
-    </main>
+    <>
+      <JsonLdScript schemas={blogDetailSchemas(about, post)} />
+      <main className="px-4 py-6 md:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-2xl font-semibold text-white">{post.title}</h1>
+          <p className="mt-2 text-zinc-400">Not migrated yet.</p>
+        </div>
+      </main>
+    </>
   );
 }

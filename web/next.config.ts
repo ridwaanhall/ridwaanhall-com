@@ -66,7 +66,13 @@ const nextConfig: NextConfig = {
   // under Cache Components -- including at module scope in a "use client"
   // file, which the server still evaluates while prerendering. Computing it
   // here, in config, happens before prerendering starts.
-  env: { NEXT_PUBLIC_BUILD_YEAR: String(new Date().getFullYear()) },
+  env: {
+    NEXT_PUBLIC_BUILD_YEAR: String(new Date().getFullYear()),
+    // Used as `dateModified` on the pages that track no real modification date
+    // of their own. Django read the clock there, which claimed the page changed
+    // on every request -- and is rejected outright inside a prerendered tree.
+    NEXT_PUBLIC_BUILD_TIME: new Date().toISOString(),
+  },
 };
 
 export default nextConfig;

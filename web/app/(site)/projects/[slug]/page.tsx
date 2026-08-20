@@ -5,6 +5,8 @@ import { getAboutData } from "@/lib/data/about";
 import { findBySlug, getProjects } from "@/lib/data/content";
 import { projectDetailSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
+import { projectDetailSchemas } from "@/lib/seo/schemas-for-page";
+import { JsonLdScript } from "@/components/seo/json-ld";
 
 /**
  * Prerender every known slug.
@@ -38,15 +40,21 @@ export default async function ProjectDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = findBySlug(await getProjects(), slug);
-  if (!project) notFound();
+  const [about, project] = await Promise.all([
+    getAboutData(),
+    getProjects().then((projects) => findBySlug(projects, slug)),
+  ]);
+  if (!project || !about) notFound();
 
   return (
-    <main className="px-4 py-6 md:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl font-semibold text-white">{project.title}</h1>
-        <p className="mt-2 text-zinc-400">Not migrated yet.</p>
-      </div>
-    </main>
+    <>
+      <JsonLdScript schemas={projectDetailSchemas(about, project)} />
+      <main className="px-4 py-6 md:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-2xl font-semibold text-white">{project.title}</h1>
+          <p className="mt-2 text-zinc-400">Not migrated yet.</p>
+        </div>
+      </main>
+    </>
   );
 }

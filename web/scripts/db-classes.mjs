@@ -1,9 +1,24 @@
 /** Extract every CSS class string stored in JSON content columns.
  *  Tailwind cannot see these -- they exist only in the database. */
 import { config } from "dotenv";
-import postgres from "postgres";
+import pg from "pg";
 config({ path: ".env.local", quiet: true });
-const sql = postgres(process.env.STORAGE_POSTGRES_URL, { prepare: false, max: 1, ssl: "require" });
+/**
+ * A minimal tagged-template shim over `pg`, so these scripts read the same way
+ * the app's Drizzle queries do. `pg` rather than `postgres.js` for the reason
+ * given in lib/db/client.ts: postgres.js pipelines onto one socket and stalls
+ * permanently under Supabase's transaction pooler.
+ */
+const url = new URL(process.env.STORAGE_POSTGRES_URL);
+url.searchParams.delete("sslmode");
+const pool = new pg.Pool({ connectionString: url.toString(), max: 5, ssl: { rejectUnauthorized: false } });
+const sql = Object.assign(
+  (strings, ...values) =>
+    pool
+      .query(strings.reduce((q, part, i) => q + part + (i < values.length ? `$${i + 1}` : ""), ""), values)
+      .then((r) => r.rows),
+  { end: () => pool.end() },
+);
 
 const classes = new Set();
 const walk = (v) => {

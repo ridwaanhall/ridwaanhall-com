@@ -5,6 +5,8 @@ import { getAboutData } from "@/lib/data/about";
 import { getLegalDocument } from "@/lib/data/legal";
 import { legalDocumentSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
+import { legalDocumentSchemas } from "@/lib/seo/schemas-for-page";
+import { JsonLdScript } from "@/components/seo/json-ld";
 
 /**
  * Terms keeps its own `/terms/` path rather than living under `/legal/`.
@@ -22,15 +24,18 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function TermsPage() {
-  const document = await getLegalDocument(SLUG);
-  if (!document) notFound();
+  const [about, document] = await Promise.all([getAboutData(), getLegalDocument(SLUG)]);
+  if (!document || !about) notFound();
 
   return (
-    <main className="px-4 py-6 md:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl font-semibold text-white">{document.title}</h1>
-        <p className="mt-2 text-zinc-400">Not migrated yet.</p>
-      </div>
-    </main>
+    <>
+      <JsonLdScript schemas={legalDocumentSchemas(about, document)} />
+      <main className="px-4 py-6 md:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-2xl font-semibold text-white">{document.title}</h1>
+          <p className="mt-2 text-zinc-400">Not migrated yet.</p>
+        </div>
+      </main>
+    </>
   );
 }

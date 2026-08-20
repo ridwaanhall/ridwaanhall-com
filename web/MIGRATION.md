@@ -66,9 +66,9 @@ Windows path before node sees it.
 - [ ] Home — the `social.html` section is **not** included on the homepage in Django
       either; it belongs to the contact page. Confirm when contact is built.
 - [ ] About — intro, tabs (experience / education / certifications / awards / applications), CV download, work-together, sponsor
-- [ ] Projects list — cards, search, pagination
+- [x] Projects list — cards, search, pagination (layout verified against live)
 - [x] Project detail — gallery, tech stack, features, external links, timestamps, rich-text description
-- [ ] Blog list — featured slider, cards, search, pagination
+- [x] Blog list — featured slider, cards, search, pagination (layout verified against live)
 - [x] Blog detail — rich-text body, gallery, share row, author/date, tags
       (typography verified against live across 7 posts at 375 / 768 / 1280)
 - [ ] OpenHire — 14 sections, gated on `is_open_to_work || is_hiring`
@@ -78,7 +78,9 @@ Windows path before node sees it.
 
 ### Client behaviour to port
 - [ ] Image lightbox (`imageLightbox.js`, 425 lines + its CSS)
-- [ ] Blog / project / featured sliders (3 modules → Embla)
+- [x] Blog / project / featured sliders — scroll-snap rows, not Embla: they have no
+      transform track or slide indices, and native scrolling keeps swipe, momentum
+      and keyboard for free
 - [ ] Tooltips (`tooltip.js`) — `title` upgraded, must work on touch
 - [ ] Click spark (`clickSpark.js`, canvas, `mousedown` not `pointerdown`)
 - [ ] GitHub contributions heatmap (`githubContributions.js`, 295 lines → SVG)

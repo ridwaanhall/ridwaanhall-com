@@ -47,6 +47,9 @@ type SearchEntry = {
   { external: true; href: string } | { external?: false; href: Route }
 );
 
+/** Must match the `duration-300` on the root and the panel. */
+const EXIT_MS = 300;
+
 const SearchModalContext = createContext<{ open: () => void; close: () => void } | null>(null);
 
 export function useSearchModal() {
@@ -231,10 +234,59 @@ function SearchModal({
     setHighlighted(0);
   }
 
-  // Focusing the field is a real DOM side effect, so it stays in an effect.
+  /*
+   * The open and close transitions.
+   *
+   * `sidebarSearch.js` drove these through modalDialog.js: reveal the root,
+   * then one tick later swap `backdrop-blur-none` for `backdrop-blur-md` and
+   * the panel's `scale-95 opacity-0` for `scale-100 opacity-100`; on close,
+   * reverse both and only apply `hidden` once the 300ms has elapsed. This port
+   * had the transition classes on the markup but nothing ever changed, so the
+   * palette simply appeared and vanished.
+   *
+   * `mounted` keeps the modal in the tree for the length of the exit, and
+   * `shown` is what the classes read. The `requestAnimationFrame` is the same
+   * beat as the original's 10ms timeout: the browser has to paint the closed
+   * state once before there is anything to transition from.
+   */
+  const [mounted, setMounted] = useState(isOpen);
+  const [shown, setShown] = useState(false);
+
+  // Both entry points into a transition are adjustments during render, the
+  // same pattern the query reset above uses: opening must put the modal in the
+  // tree on this render, and closing must start the exit on this one. Setting
+  // either from the effect body would be a cascading render, which React 19's
+  // lint rejects. What genuinely belongs in an effect is the *timing* -- the
+  // frame to paint the closed state before transitioning, and the wait for the
+  // exit to finish -- so only those remain there.
+  if (isOpen && !mounted) setMounted(true);
+  if (!isOpen && shown) setShown(false);
+
   useEffect(() => {
-    if (isOpen) inputRef.current?.focus();
+    if (isOpen) {
+      const frame = requestAnimationFrame(() => setShown(true));
+      return () => cancelAnimationFrame(frame);
+    }
+    const timer = window.setTimeout(() => setMounted(false), EXIT_MS);
+    return () => window.clearTimeout(timer);
   }, [isOpen]);
+
+  // The page must not scroll behind the palette, as it did not before.
+  useEffect(() => {
+    if (!mounted) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [mounted]);
+
+  // Focusing the field is a real DOM side effect, so it stays in an effect.
+  // It waits on `mounted` rather than `isOpen`: the input does not exist on
+  // the render that opens the modal.
+  useEffect(() => {
+    if (mounted && isOpen) inputRef.current?.focus();
+  }, [mounted, isOpen]);
 
   const activate = useCallback(
     (entry: SearchEntry) => {
@@ -266,7 +318,7 @@ function SearchModal({
     }
   };
 
-  if (!isOpen) return null;
+  if (!mounted) return null;
 
   // The keyboard highlight walks one flat list across all three sections, so
   // each entry needs its position in `matches`. Computed up front rather than
@@ -277,7 +329,9 @@ function SearchModal({
   return (
     <div
       id="search-modal"
-      className="fixed inset-0 z-50 transition-all duration-300 ease-out"
+      className={`fixed inset-0 z-50 transition-all duration-300 ease-out ${
+        shown ? "backdrop-blur-md" : "backdrop-blur-none pointer-events-none"
+      }`}
       role="dialog"
       aria-modal="true"
       aria-label="Search"
@@ -289,7 +343,9 @@ function SearchModal({
       >
         <div
           id="search-modal-content"
-          className="relative mx-auto max-w-xl w-full overflow-hidden rounded-xl border-2 border-zinc-800 bg-black ring-1 ring-black/5 transition-all duration-300 ease-out"
+          className={`relative mx-auto max-w-xl w-full overflow-hidden rounded-xl border-2 border-zinc-800 bg-black ring-1 ring-black/5 transition-all duration-300 ease-out ${
+            shown ? "scale-100 opacity-100" : "scale-95 opacity-0"
+          }`}
           onClick={(event) => event.stopPropagation()}
         >
           <div className="flex items-center gap-3 border-b border-zinc-800 px-4">

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { BlogSummary } from "@/lib/data/content";
 import { isoDateTime, longDateTime } from "@/lib/utils/format";
@@ -10,42 +10,54 @@ import { isoDateTime, longDateTime } from "@/lib/utils/format";
 /**
  * The featured-post slider at the top of the blog listing.
  *
- * A scroll-snap row rather than a transform track: the previous/next buttons
- * scroll it, and swiping does the same thing for free. That also means the
- * slides are real content in the document -- a transform-based carousel with
- * one slide visible tends to leave the rest reachable only by script.
+ * A transform track with previous/next buttons, dot indicators and a five
+ * second auto-advance, matching featuredSlider.js. An earlier version of this
+ * port made it a scroll-snap row with no dots and no auto-advance -- the
+ * indicators are how a reader knows there is more than one post up there at
+ * all, so their absence was a real loss rather than a simplification.
  *
- * Unlike the homepage row this does not auto-advance. It did not before either;
- * the buttons are the only way it moves.
+ * The dot class strings reproduce what the original's `classList.add`/`remove`
+ * calls left on the element rather than a tidied equivalent.
  */
+
+/** Matches featuredSlider.js. */
+const INTERVAL_MS = 5000;
+
 export function FeaturedSlider({ posts }: { posts: BlogSummary[] }) {
-  const trackRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
+  const reduceMotion = useRef(false);
 
-  if (posts.length === 0) return null;
+  const count = posts.length;
+  const multiple = count > 1;
 
-  const go = (delta: number) => {
-    const track = trackRef.current;
-    if (!track) return;
-    // Wrap at both ends, matching the original.
-    const next = (index + delta + posts.length) % posts.length;
-    setIndex(next);
-    track.scrollTo({ left: track.clientWidth * next, behavior: "smooth" });
-  };
+  useEffect(() => {
+    reduceMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }, []);
+
+  // `index` in the dependencies re-arms the timer after a manual move, which
+  // is what the original did by calling startAutoSlide() from every click
+  // handler. It stops entirely under `prefers-reduced-motion`, which the
+  // original did not -- content that moves on its own is what that preference
+  // is about, and the arrows and dots still work.
+  useEffect(() => {
+    if (!multiple || reduceMotion.current) return;
+    const timer = window.setTimeout(() => setIndex((current) => (current + 1) % count), INTERVAL_MS);
+    return () => window.clearTimeout(timer);
+  }, [index, multiple, count]);
+
+  if (count === 0) return null;
+
+  const go = (next: number) => setIndex(((next % count) + count) % count);
 
   return (
     <div className="relative mb-4 sm:mb-6 overflow-hidden rounded-xl border border-zinc-800">
-      <div className="relative">
+      <div className="featured-slider-container relative">
         <div
-          ref={trackRef}
-          className="flex snap-x snap-mandatory overflow-x-auto scrollbar-hide"
-          onScroll={(event) => {
-            const track = event.currentTarget;
-            setIndex(Math.round(track.scrollLeft / track.clientWidth));
-          }}
+          className="featured-slider-wrapper flex transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${index * 100}%)` }}
         >
-          {posts.map((post, i) => (
-            <div key={post.slug} className="w-full flex-shrink-0 snap-center relative">
+          {posts.map((post, position) => (
+            <div key={post.slug} className="featured-slide group w-full flex-shrink-0 relative">
               <div className="absolute inset-0 photo-scrim z-10" />
               {post.image_url && (
                 <Image
@@ -53,8 +65,8 @@ export function FeaturedSlider({ posts }: { posts: BlogSummary[] }) {
                   alt={post.title}
                   width={1200}
                   height={480}
-                  priority={i === 0}
-                  className="w-full h-60 sm:h-72 md:h-80 object-cover object-center"
+                  priority={position === 0}
+                  className={IMAGE_CLASS}
                 />
               )}
 
@@ -109,45 +121,71 @@ export function FeaturedSlider({ posts }: { posts: BlogSummary[] }) {
           ))}
         </div>
 
-        {posts.length > 1 && (
-          <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 z-30 flex space-x-1 sm:space-x-2">
-            <button
-              type="button"
-              onClick={() => go(-1)}
-              className="slider-nav prev cursor-pointer bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
-              title="Previous Slide"
-              aria-label="Previous slide"
-            >
-              <svg
-                className="w-4 h-4 sm:w-5 sm:h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
+        {multiple && (
+          <>
+            <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 z-30 flex space-x-1 sm:space-x-2">
+              <button
+                type="button"
+                onClick={() => go(index - 1)}
+                className="slider-nav prev cursor-pointer bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-l-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
+                title="Previous Slide"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              onClick={() => go(1)}
-              className="slider-nav next cursor-pointer bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
-              title="Next Slide"
-              aria-label="Next slide"
-            >
-              <svg
-                className="w-4 h-4 sm:w-5 sm:h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
+                <ChevronIcon d="M15 19l-7-7 7-7" />
+              </button>
+              <button
+                type="button"
+                onClick={() => go(index + 1)}
+                className="slider-nav next cursor-pointer bg-zinc-900 hover:bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-r-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
+                title="Next Slide"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
+                <ChevronIcon d="M9 5l7 7-7 7" />
+              </button>
+            </div>
+
+            <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex space-x-1 sm:space-x-2">
+              {posts.map((post, position) => (
+                <button
+                  key={post.slug}
+                  type="button"
+                  onClick={() => go(position)}
+                  aria-current={position === index}
+                  className={position === index ? DOT_ACTIVE : DOT_IDLE}
+                  title={`Slide ${position + 1}`}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>
+  );
+}
+
+/*
+ * Hovering the title softens and pushes back the photo behind it, so the words
+ * you are reaching for come forward. The title is the slide's only link, so
+ * `group-has-[a:hover]` on the image is enough to express it. The small scale
+ * is paired with the blur for the same reason the project card pairs them: a
+ * blur alone thins the outermost pixels and shows a seam at the frame's edge.
+ */
+const IMAGE_CLASS =
+  "w-full h-60 sm:h-72 md:h-80 object-cover object-center transition-all duration-500 group-has-[a:hover]:scale-105 group-has-[a:hover]:blur-sm";
+
+const DOT_ACTIVE =
+  "slider-dot cursor-pointer bg-zinc-300 w-4 h-1.5 sm:h-2 rounded-full hover:bg-zinc-300 transition-all duration-300";
+const DOT_IDLE =
+  "slider-dot cursor-pointer bg-zinc-300/50 w-1.5 h-1.5 sm:h-2 rounded-full hover:bg-zinc-300 transition-all duration-300";
+
+function ChevronIcon({ d }: { d: string }) {
+  return (
+    <svg
+      className="w-4 h-4 sm:w-5 sm:h-5"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={d} />
+    </svg>
   );
 }

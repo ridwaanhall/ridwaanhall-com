@@ -1,6 +1,11 @@
 import Image from "next/image";
 
-import { BulletList, Disclosure } from "@/components/site/disclosure";
+import {
+  BulletList,
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@/components/site/disclosure";
 import type { Award, Certification, Education, Experience } from "@/lib/data/about";
 
 /**
@@ -188,59 +193,65 @@ export function ExperienceCard({ company, roles }: { company: string; roles: Exp
 
         <div className="divide-y divide-zinc-700">
           {roles.map((role) => (
-            <div key={`${role.title}-${role.period.start_iso}`} className="p-4">
-              <div className="flex items-center justify-between gap-4 mb-2">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="text-lg font-medium">{role.title}</h3>
-                  {role.is_current && (
-                    <span className="pill-badge px-2.5 py-0.5 text-xs bg-emerald-900/30 text-emerald-400 border border-emerald-700/50">
-                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5 animate-pulse" />
-                      Current
-                    </span>
+            <Disclosure key={`${role.title}-${role.period.start_iso}`}>
+              <div className="p-4">
+                <div className="flex items-center justify-between gap-4 mb-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-lg font-medium">{role.title}</h3>
+                    {role.is_current && (
+                      <span className="pill-badge px-2.5 py-0.5 text-xs bg-emerald-900/30 text-emerald-400 border border-emerald-700/50">
+                        <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5 animate-pulse" />
+                        Current
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex-shrink-0">
+                    <DisclosureButton className="toggle-pill cursor-pointer px-3 py-1.5 rounded-full" />
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-4 text-sm text-zinc-400">
+                  <div className="flex items-center">
+                    <CalendarIcon />
+                    {/* `period_start` is non-null in the model, but the manager
+                        types it as nullable because `_month_year` returns null
+                        for a missing date. Rendering an empty span beats a
+                        crash if a row ever gets one. */}
+                    {role.period.start
+                      ? `${role.period.start.month} ${role.period.start.year}`
+                      : ""}{" "}
+                    -{" "}
+                    {role.period.end === "Present"
+                      ? "Present"
+                      : `${role.period.end.month} ${role.period.end.year}`}
+                  </div>
+                  {role.employment_type && (
+                    <div className="flex items-center">
+                      <BriefcaseIcon />
+                      {role.employment_type}
+                    </div>
+                  )}
+                  {(role.location_type || role.location) && (
+                    <div className="flex items-center">
+                      <PinIcon />
+                      {role.location_type}
+                      {role.location_type && role.location ? " · " : ""}
+                      {role.location}
+                    </div>
                   )}
                 </div>
 
-                <div className="flex-shrink-0">
-                  <Disclosure
-                    showLabel="Show More"
-                    hideLabel="Show Less"
-                    className="toggle-pill cursor-pointer px-3 py-1.5 rounded-full"
-                  >
-                    <div className="ml-1">
-                      <BulletList items={role.responsibilities} />
-                    </div>
-                  </Disclosure>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-4 text-sm text-zinc-400">
-                <div className="flex items-center">
-                  <CalendarIcon />
-                  {/* `period_start` is non-null in the model, but the manager
-                      types it as nullable because `_month_year` returns null
-                      for a missing date. Rendering an empty span beats a
-                      crash if a row ever gets one. */}
-                  {role.period.start ? `${role.period.start.month} ${role.period.start.year}` : ""} -{" "}
-                  {role.period.end === "Present"
-                    ? "Present"
-                    : `${role.period.end.month} ${role.period.end.year}`}
-                </div>
-                {role.employment_type && (
-                  <div className="flex items-center">
-                    <BriefcaseIcon />
-                    {role.employment_type}
+                {/* Below the meta row and full width, which is where the
+                    original put it -- not inside the header's right-hand
+                    cell, where it would be squeezed beside the title. */}
+                <DisclosurePanel>
+                  <div className="ml-1">
+                    <BulletList items={role.responsibilities} />
                   </div>
-                )}
-                {(role.location_type || role.location) && (
-                  <div className="flex items-center">
-                    <PinIcon />
-                    {role.location_type}
-                    {role.location_type && role.location ? " · " : ""}
-                    {role.location}
-                  </div>
-                )}
+                </DisclosurePanel>
               </div>
-            </div>
+            </Disclosure>
           ))}
         </div>
       </div>
@@ -295,11 +306,25 @@ export function EducationCard({ education }: { education: Education }) {
           />
 
           {education.achievements.length > 0 && (
-            <div className="mt-1 sm:mt-2 flex flex-wrap gap-2">
-              <Disclosure showLabel="Show Achievements" hideLabel="Hide Achievements">
-                <BulletList items={education.achievements} />
-              </Disclosure>
-            </div>
+            <Disclosure>
+              <div className="mt-1 sm:mt-2 flex flex-wrap gap-2">
+                <DisclosureButton />
+              </div>
+              {/* The original's `mt-1` sat on the panel element, where it kept
+                  its 4px while collapsed; here it moves inside so a closed card
+                  is exactly the height it was. `pt-1`, not `mt-1`: the list
+                  below carries `mt-2`, and two adjacent top margins collapse to
+                  the larger of the two -- which would swallow the 4px and leave
+                  the open card 4px shorter than the original. The original kept
+                  both because its panel was given `overflow: hidden` inline,
+                  making it a block formatting context; padding does the same
+                  job here without depending on that. */}
+              <DisclosurePanel>
+                <div className="pt-1">
+                  <BulletList items={education.achievements} />
+                </div>
+              </DisclosurePanel>
+            </Disclosure>
           )}
         </div>
       </div>
@@ -376,14 +401,23 @@ export function CertificationCard({ certification }: { certification: Certificat
 
           <Institution name={certification.institution} website={certification.website} />
 
-          <div className="mt-1 sm:mt-2 flex flex-wrap gap-2">
+          <Disclosure>
+            <div className="mt-1 sm:mt-2 flex flex-wrap gap-2">
+              {certification.achievements.length > 0 && <DisclosureButton />}
+              {certification.credential_url && (
+                <CredentialLink href={certification.credential_url} />
+              )}
+            </div>
+            {/* `pt-1` rather than `mt-1`, for the reason given on the
+                education card above. */}
             {certification.achievements.length > 0 && (
-              <Disclosure showLabel="Show Achievements" hideLabel="Hide Achievements">
-                <BulletList items={certification.achievements} />
-              </Disclosure>
+              <DisclosurePanel>
+                <div className="pt-1">
+                  <BulletList items={certification.achievements} />
+                </div>
+              </DisclosurePanel>
             )}
-            {certification.credential_url && <CredentialLink href={certification.credential_url} />}
-          </div>
+          </Disclosure>
         </div>
       </div>
     </div>

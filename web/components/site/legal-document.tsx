@@ -1,7 +1,6 @@
 import type { Route } from "next";
 import Link from "next/link";
 
-import { FloatingActions } from "@/components/site/floating-actions";
 import type { LegalDocument, LegalSection } from "@/lib/data/legal";
 import { longDate } from "@/lib/utils/format";
 import { sanitizeRichText } from "@/lib/utils/sanitize";
@@ -80,8 +79,6 @@ export function LegalDocumentPage({
           </div>
         </div>
       </main>
-
-      <FloatingActions />
     </>
   );
 }

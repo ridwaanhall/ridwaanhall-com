@@ -1,4 +1,8 @@
-import { Disclosure } from "@/components/site/disclosure";
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@/components/site/disclosure";
 import type { Application } from "@/lib/data/about";
 
 /**
@@ -90,81 +94,85 @@ export function ApplicationCard({ application }: { application: Application }) {
               </span>
             </div>
 
-            <div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              {facts.length > 0 ? (
-                <div className="flex flex-wrap gap-2 text-xs">
-                  {facts.map((fact) => (
-                    <span
-                      key={fact.key}
-                      className={`inline-flex items-center px-2 py-1 rounded-md ${FACT_STYLES[fact.key]}`}
-                    >
-                      {fact.label}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                // Keeps the journey button on the right when there are no facts.
-                <div />
-              )}
-
-              <div className="flex-shrink-0">
-                <Disclosure
-                  showLabel="View Application Journey"
-                  hideLabel="Hide Application Journey"
-                  className="toggle-pill cursor-pointer px-2 py-1 rounded-full"
-                >
-                  <div className="overflow-y-auto overflow-x-auto max-h-[60vh] sm:max-h-[70vh] custom-scroll">
-                    <div className="min-w-full">
-                      <table className="w-full divide-y divide-zinc-700/30 text-sm table-auto">
-                        <thead>
-                          <tr>
-                            {["Timestamp", "Step", "Details", "Notes"].map((heading) => (
-                              <th
-                                key={heading}
-                                className="py-1 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider"
-                              >
-                                {heading}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-zinc-700/20">
-                          {application.journey.map((step, index) => (
-                            <tr
-                              key={index}
-                              className="hover:bg-zinc-800/30 transition-colors duration-150"
-                            >
-                              <td className="py-1 text-xs sm:text-sm">
-                                {step.timestamp ? (
-                                  <>
-                                    <span className="text-zinc-400">
-                                      {stepDate(step.timestamp)}
-                                    </span>
-                                    <br />
-                                    <span className="text-zinc-500 text-xs">
-                                      {stepTime(step.timestamp)}
-                                    </span>
-                                  </>
-                                ) : (
-                                  <span className="text-zinc-600 italic">-</span>
-                                )}
-                              </td>
-                              <td className="py-1">
-                                <span className="font-medium text-indigo-300 text-xs sm:text-sm">
-                                  {step.title}
-                                </span>
-                              </td>
-                              <td className="py-1 text-xs sm:text-sm break-words">{step.details}</td>
-                              <td className="py-1 text-xs break-words">{step.notes}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+            <Disclosure>
+              <div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                {facts.length > 0 ? (
+                  <div className="flex flex-wrap gap-2 text-xs">
+                    {facts.map((fact) => (
+                      <span
+                        key={fact.key}
+                        className={`inline-flex items-center px-2 py-1 rounded-md ${FACT_STYLES[fact.key]}`}
+                      >
+                        {fact.label}
+                      </span>
+                    ))}
                   </div>
-                </Disclosure>
+                ) : (
+                  // Keeps the journey button on the right when there are no facts.
+                  <div />
+                )}
+
+                <div className="flex-shrink-0">
+                  <DisclosureButton className="toggle-pill cursor-pointer px-2 py-1 rounded-full" />
+                </div>
               </div>
-            </div>
+
+              {/* Full width, below the badge/button row -- a journey table is
+                  far wider than the narrow right-hand cell the button sits in.
+                  The original kept `mt-1` on the panel even while collapsed, so
+                  it stays on the panel here rather than moving inside it. */}
+              <DisclosurePanel className="mt-1">
+                <div className="overflow-y-auto overflow-x-auto max-h-[60vh] sm:max-h-[70vh] custom-scroll">
+                  <div className="min-w-full">
+                    <table className="w-full divide-y divide-zinc-700/30 text-sm table-auto">
+                      <thead>
+                        <tr>
+                          {["Timestamp", "Step", "Details", "Notes"].map((heading) => (
+                            <th
+                              key={heading}
+                              className="py-1 text-left text-xs font-medium text-indigo-300 uppercase tracking-wider"
+                            >
+                              {heading}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-700/20">
+                        {application.journey.map((step, index) => (
+                          <tr
+                            key={index}
+                            className="hover:bg-zinc-800/30 transition-colors duration-150"
+                          >
+                            <td className="py-1 text-xs sm:text-sm">
+                              {step.timestamp ? (
+                                <>
+                                  <span className="text-zinc-400">
+                                    {stepDate(step.timestamp)}
+                                  </span>
+                                  <br />
+                                  <span className="text-zinc-500 text-xs">
+                                    {stepTime(step.timestamp)}
+                                  </span>
+                                </>
+                              ) : (
+                                <span className="text-zinc-600 italic">-</span>
+                              )}
+                            </td>
+                            <td className="py-1">
+                              <span className="font-medium text-indigo-300 text-xs sm:text-sm">
+                                {step.title}
+                              </span>
+                            </td>
+                            <td className="py-1 text-xs sm:text-sm break-words">{step.details}</td>
+                            <td className="py-1 text-xs break-words">{step.notes}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </DisclosurePanel>
+            </Disclosure>
 
             {application.lessons_learned && (
               <div className="mt-2 pt-2 border-t border-zinc-800/80">

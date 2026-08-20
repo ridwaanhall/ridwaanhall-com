@@ -111,12 +111,19 @@ invisible to every layout and text comparison) and `scripts/compare-gallery.mjs`
       box, filename, track transform, every button's classes and box, and the
       whole lightbox (open, advance, Escape, body scroll lock, body-level
       mount).
-- [x] Featured slider — a scroll-snap row, not Embla: it has no transform track
-      or slide indices, and native scrolling keeps swipe, momentum and keyboard
-      for free. The blog and project *galleries* are not in that category and
-      were wrongly converted along with it: they have numbered slides, arrows,
-      dots and an auto-advance, none of which a scroll row provides. They are
-      back to a transform track.
+- [x] Sliders — the blog and project galleries **and** the blog listing's
+      featured slider are transform tracks with arrows, dot indicators and an
+      auto-advance, as they were. All three were converted to scroll-snap rows
+      early in the port on the reasoning that native scrolling keeps swipe and
+      momentum for free; that trade is right for the homepage's Latest Blogs
+      row, which has no slide indices and no pagination, and wrong for these,
+      which have both. The dots are how a reader knows there is more than one
+      slide at all.
+- [x] Back-to-top — **removed entirely**, by request. It was on about, legal and
+      openhire (matching which Django templates rendered `#scrollToTopBtn`); the
+      floating cluster is gone with it. The detail pages' floating "Back to
+      blog"/"Back to projects" buttons were never ported and remain unported —
+      both pages carry an inline back link instead.
 - [x] Tooltips (`tooltip.js`) — one mounted component, delegated from `document`,
       so markup that appears later (gallery controls, lightbox buttons, a panel
       that was hidden) is covered with no observer and no re-scan. Verified on a
@@ -130,11 +137,34 @@ invisible to every layout and text comparison) and `scripts/compare-gallery.mjs`
 - [x] GitHub contributions heatmap — markup rather than 295 lines of DOM building
 - [x] Tab switching (`switchTab.js`) and the four career toggles (`toggleCareer.js`
       carried `toggleResponsibilities`, `toggleAchievements`, `toggleAchievementsCerts`
-      and `toggleJourney` — one `<Disclosure>` replaces all four)
+      and `toggleJourney` — one `<Disclosure>` replaces all four, and every
+      instance now says "Show more" / "Show less" rather than three different
+      phrasings for one gesture).
+      Button and panel are **separate elements** sharing state through context.
+      They have to be: in every card the button sits in a header row, usually
+      the right-hand cell of a `justify-between` flex, while the panel belongs
+      below the row that follows it, full width. Rendering them together made
+      the panel a flex item of that header, so expanding a role squeezed its
+      responsibilities into the narrow right-hand column and shoved the title
+      sideways.
+- [x] Expand/collapse animation — `grid-template-rows: 0fr → 1fr` rather than
+      the original's measured `max-height`. Same 300ms reveal with no
+      `scrollHeight` probe, no second timeout to restore `hidden`, and no upper
+      bound to overshoot when the content is shorter than the guess.
+      Verified against live: the experience, education, certification and
+      application cards are byte-for-byte the same height **both** collapsed and
+      expanded (132→297, 132→243, 157→388, 181→383), and all four animate.
 - [x] Back-to-top / floating actions (`backScroll.js`) — on about, legal and
       openhire, matching which templates rendered `#scrollToTopBtn`
 - [x] Copy-to-clipboard (in the blog share row)
 - [x] Count-up (`countUp.js`) — matches the original's integer formatting
+- [x] Search palette open/close transition — the original's `modalDialog.js`
+      swapped `backdrop-blur-none`→`backdrop-blur-md` and the panel's
+      `scale-95 opacity-0`→`scale-100 opacity-100` a tick after revealing the
+      root, and reversed it before hiding. The port had the transition classes
+      on the markup but nothing ever changed them, so the palette appeared and
+      vanished instantly. Traced against live: the two opacity curves now sit on
+      top of each other in both directions.
 - [x] `searchEnable.js` — the state is known while rendering now, so there is
       nothing to correct after the fact. The original assigned `button.className`
       wholesale on DOMContentLoaded, which threw away the `search-submit-btn`
@@ -244,6 +274,19 @@ Each is recorded at its call site and in the comparison scripts.
   backslash followed by the start of a group, so the pattern hunts for a literal
   backslash after `translateX` and can never match. Every call fell through to
   `return 0`.
+
+## Deliberate departures from the live site (requested)
+
+- **Every disclosure says "Show more" / "Show less".** Django used three
+  phrasings for one gesture — "Show More", "Show Achievements", "View
+  Application Journey" — and one wording was asked for. The button is otherwise
+  identical, so it measures 1–4px narrower where the label is shorter.
+- **Hovering a featured post's title softens the photo behind it** (`blur-sm`
+  plus a small `scale-105`, the same pairing the project card uses so a blur
+  does not thin the frame's outer pixels into a seam). The live site has no
+  such affordance.
+- **No back-to-top button anywhere.** Django rendered one on about, legal,
+  openhire and both detail pages.
 
 ## Known, imperceptible differences
 

@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { AboutTabs } from "@/components/site/about-tabs";
-import { FloatingActions } from "@/components/site/floating-actions";
 import {
   BulletLines,
   CvSection,
@@ -97,8 +96,6 @@ export default async function OpenHirePage() {
           )}
         </div>
       </main>
-
-      <FloatingActions />
     </>
   );
 }

@@ -10,7 +10,13 @@ Verification harnesses (run all three before calling a phase done):
 node scripts/compare-with-django.mjs   # data layer vs Django, field by field
 node scripts/compare-meta.mjs          # <head> vs the live site, page by page
 node scripts/check-breakpoints.mjs     # one visible theme toggle at every width
+node scripts/compare-jsonld.mjs        # structured data vs the live site
+MSYS_NO_PATHCONV=1 node scripts/compare-layout.mjs [path]   # rendered geometry vs live
 ```
+
+`compare-layout.mjs` takes an optional path and a `WIDTH` env var. On Git Bash,
+`MSYS_NO_PATHCONV=1` is required or a leading-slash argument is rewritten into a
+Windows path before node sees it.
 
 `compare-with-django.mjs` needs a fresh dump first:
 `cd .. && DEBUG=False uv run python web/scripts/django_dump.py`
@@ -53,8 +59,11 @@ node scripts/check-breakpoints.mjs     # one visible theme toggle at every width
       deliberately omitted now rather than advertising a stub
 
 ### Pages
-- [ ] `not-found.tsx` + `error.tsx` (from `templates/error.html`)
-- [ ] Home — intro, latest blogs, skills marquee, sponsor, social
+- [x] `not-found.tsx` + `error.tsx` (from `templates/error.html`)
+- [x] Home — intro, latest blogs, skills marquee, sponsor
+      (layout verified against live at 375 / 768 / 1440)
+- [ ] Home — the `social.html` section is **not** included on the homepage in Django
+      either; it belongs to the contact page. Confirm when contact is built.
 - [ ] About — intro, tabs (experience / education / certifications / awards / applications), CV download, work-together, sponsor
 - [ ] Projects list — cards, search, pagination
 - [ ] Project detail — gallery, tech stack, features, external links, timestamps
@@ -127,6 +136,7 @@ Each is recorded at its call site and in the comparison scripts.
 | Sitemap `lastmod` from real rows | Django's source directory was deleted in the ORM migration, so every page reported 2024-01-01 |
 | Sitemap paginates at 10, not 6 | Django advertised `/blog/?page=3` and 4 more project pages that do not exist |
 | `wordCount` counted from the body | Django read a key the blog dict never had, so it always emitted 0 |
+| Marquee rows shuffled from fixed seeds | `Math.random()` in a prerendered tree is rejected, and a visitor sees one arrangement per load either way |
 
 ## Inherited bugs fixed in passing
 

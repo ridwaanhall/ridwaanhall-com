@@ -74,12 +74,17 @@ Windows path before node sees it.
 - [x] Blog list — featured slider, cards, search, pagination (layout verified against live)
 - [x] Blog detail — rich-text body, gallery, share row, author/date, tags
       (typography verified against live across 7 posts at 375 / 768 / 1280)
-- [ ] OpenHire — 19 templates, gated on `is_open_to_work || is_hiring`.
-      **Cannot be compared against live**: both flags are false in production, so
-      `/openhire/` currently 404s there. The data is fully authored (status
-      "Actively Looking", 4 preferred roles, 9 skills, RoneAI, 2 positions), so the
-      page matters the moment a flag is flipped — it just has no live rendering to
-      diff against. Needs an eyeball check when next enabled.
+- [x] OpenHire — 19 templates, gated on `is_open_to_work || is_hiring`, both now
+      enabled in production. Verified against live at 375 / 768 / 1280: identical
+      geometry, and identical rendered text on **both** tabs with every position
+      expanded (`scripts/compare-openhire.mjs` — the hiring tab is hidden on load, so
+      `compare-layout.mjs` never measures it).
+      Sixteen section templates collapsed into four shared shapes
+      (`components/site/openhire-cards.tsx`): a bordered card with an indigo icon,
+      a label/value row, a pill tag and a bulleted line. The fifth near-copy of the
+      Show/Hide disclosure (`togglePositionDetails`) became `PositionCard`.
+      One deliberate change: the "Apply for …" mailto now percent-encodes its
+      `subject`, which Django emitted raw.
 - [x] Legal / privacy / terms — sections with one level of nesting (layout verified against live)
 - [x] Dashboard — GitHub contributions heatmap + WakaTime stats.
       Grid verified cell-for-cell against live: 371 cells, identical level
@@ -101,7 +106,8 @@ Windows path before node sees it.
 - [x] Tab switching (`switchTab.js`) and the four career toggles (`toggleCareer.js`
       carried `toggleResponsibilities`, `toggleAchievements`, `toggleAchievementsCerts`
       and `toggleJourney` — one `<Disclosure>` replaces all four)
-- [x] Back-to-top / floating actions (`backScroll.js`)
+- [x] Back-to-top / floating actions (`backScroll.js`) — on about, legal and
+      openhire, matching which templates rendered `#scrollToTopBtn`
 - [x] Copy-to-clipboard (in the blog share row)
 - [x] Count-up (`countUp.js`) — matches the original's integer formatting
 - [ ] `searchEnable.js` — enables the listing search button only once the field has

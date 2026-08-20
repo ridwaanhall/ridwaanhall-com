@@ -10,6 +10,7 @@ import {
 import { AboutTabs } from "@/components/site/about-tabs";
 import { ApplicationCard } from "@/components/site/application-card";
 import { CvDownload } from "@/components/site/cv-download";
+import { FloatingActions } from "@/components/site/floating-actions";
 import { SponsorMe } from "@/components/site/sponsor-me";
 import type { AboutData, Experience } from "@/lib/data/about";
 import {
@@ -139,6 +140,8 @@ export default async function AboutPage() {
           <AboutTabs tabs={tabs} />
         </div>
       </main>
+
+      <FloatingActions />
     </>
   );
 }

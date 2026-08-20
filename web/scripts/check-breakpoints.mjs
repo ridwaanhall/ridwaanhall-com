@@ -20,7 +20,13 @@ let failures = 0;
 
 for (const width of WIDTHS) {
   await page.setViewportSize({ width, height: 900 });
-  await page.goto(URL, { waitUntil: "networkidle" });
+  // `load`, not `networkidle`. Every <Link> in the viewport prefetches its RSC
+  // payload (`?_rsc=...`), and navigating to the same URL seven times in a row
+  // keeps a fresh batch of those in flight, so the network never goes idle --
+  // the same reason the other harnesses in this directory wait on `load`. A
+  // fixed settle afterwards covers fonts and layout.
+  await page.goto(URL, { waitUntil: "load", timeout: 60000 });
+  await page.waitForTimeout(600);
 
   const counts = await page.evaluate(() => {
     const visible = (el) => {

@@ -139,6 +139,16 @@ data.html
 # public npm registry and carries no credentials.
 !package.json
 !package-lock.json
+# The Next.js app's TypeScript config, and shadcn/ui's component registry
+# config (added when the admin is built). Same trap as the two above: the bare
+# `*.json` swallows them silently, and a clone without tsconfig.json does not
+# type-check at all.
+!tsconfig.json
+!components.json
+# Drizzle's migration journal and schema snapshots. drizzle-kit diffs future
+# migrations against these, so a clone without them cannot generate a correct
+# migration -- it would emit CREATE TABLE for the entire existing database.
+!web/drizzle/meta/*.json
 node_modules/
 text.txt
 

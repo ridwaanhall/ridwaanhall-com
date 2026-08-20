@@ -20,9 +20,31 @@ const WIDTH = Number(process.env.WIDTH ?? 1280);
 /** Tolerance in px. Sub-pixel layout and font hinting differ harmlessly. */
 const TOLERANCE = 2;
 
+/**
+ * Differences that are expected, per path, with the reason.
+ *
+ * `/contact/` is 88px shorter: the live page renders the Cloudflare Turnstile
+ * widget (72px, plus the form's 16px gap) and the port does not yet -- verifying
+ * the token is part of the form submission, which is phase 2. Remove this entry
+ * when the widget lands.
+ */
+const EXPECTED = [{ path: "/contact/", key: "main", dimension: "h", delta: 88 }];
+
+function expected(dimension, live, next) {
+  return EXPECTED.some(
+    (e) =>
+      e.path === PATH &&
+      e.dimension === dimension &&
+      Math.abs(live - next - e.delta) <= TOLERANCE,
+  );
+}
+
 async function measure(browser, base) {
   const page = await browser.newPage({ viewport: { width: WIDTH, height: 1200 } });
-  await page.goto(base + PATH, { waitUntil: "networkidle" });
+  // `load` rather than `networkidle`: the live contact page embeds Cloudflare
+  // Turnstile, which holds a connection open, so networkidle never fires and the
+  // navigation times out. A fixed settle afterwards covers fonts and images.
+  await page.goto(base + PATH, { waitUntil: "load", timeout: 60000 });
   // Let the entrance animation settle so nothing is measured mid-transform.
   await page.waitForTimeout(1200);
 
@@ -98,7 +120,9 @@ for (const key of keys) {
     console.log(`  DIFF  ${key}  live=${a ? "present" : "absent"} next=${b ? "present" : "absent"}`);
     continue;
   }
-  const deltas = ["x", "y", "w", "h"].filter((d) => Math.abs(a[d] - b[d]) > TOLERANCE);
+  const deltas = ["x", "y", "w", "h"].filter(
+    (d) => Math.abs(a[d] - b[d]) > TOLERANCE && !(key === "main" && expected(d, a[d], b[d])),
+  );
   if (deltas.length) {
     problems++;
     console.log(

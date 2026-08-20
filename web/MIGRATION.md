@@ -82,7 +82,11 @@ Windows path before node sees it.
       diff against. Needs an eyeball check when next enabled.
 - [x] Legal / privacy / terms — sections with one level of nesting (layout verified against live)
 - [ ] Dashboard — GitHub contributions heatmap + WakaTime stats
-- [ ] Contact — form shell (submission is phase 2)
+- [x] Contact — social links and form shell (layout verified against live at 375 / 768 / 1280,
+      allowing for the Turnstile widget the port does not render yet)
+- [ ] Contact — **wire up submission**: POST endpoint, Turnstile widget + server-side
+      verify, and the two emails. Phase 2. The form currently reports that it is not
+      connected rather than silently doing nothing.
 
 ### Client behaviour to port
 - [ ] Image lightbox (`imageLightbox.js`, 425 lines + its CSS)

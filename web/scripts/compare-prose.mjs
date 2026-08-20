@@ -151,7 +151,7 @@ function labToSrgb(L, A, B) {
 
 async function measure(browser, base) {
   const page = await browser.newPage({ viewport: { width: WIDTH, height: 1400 } });
-  await page.goto(`${base}/blog/${SLUG}/`, { waitUntil: "networkidle" });
+  await page.goto(`${base}/blog/${SLUG}/`, { waitUntil: "load", timeout: 60000 });
   await page.waitForTimeout(900);
 
   return page.evaluate(

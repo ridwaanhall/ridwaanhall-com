@@ -186,9 +186,17 @@ function Intro({ about, sponsorUrl }: { about: AboutData; sponsorUrl: string }) 
 
       <div className="space-y-3 sm:space-y-4">
         <div className="border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-all duration-300">
-          <div className="flex items-center justify-between mb-2 sm:mb-3">
+          {/*
+            `flex-wrap` on both rows, which the original had on neither. With
+            all three flags set the badges are 258px of content next to a 148px
+            heading, so at 375px the third one started 24px *past* the right
+            edge of the viewport and the whole page scrolled sideways. Above
+            `sm` there is room for one line and nothing moves, so this only
+            ever takes effect where the original was broken.
+          */}
+          <div className="flex flex-wrap items-center justify-between gap-y-2 mb-2 sm:mb-3">
             <p className="text-indigo-400 text-lg sm:text-xl font-medium">Assalamu&apos;alaikum</p>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {badges.map((badge) => (
                 <span
                   key={badge.key}

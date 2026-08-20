@@ -28,13 +28,31 @@ const TOLERANCE = 2;
  * the token is part of the form submission, which is phase 2. Remove this entry
  * when the widget lands.
  */
-const EXPECTED = [{ path: "/contact/", key: "main", dimension: "h", delta: 88 }];
+const EXPECTED = [
+  { path: "/contact/", key: "main", dimension: "h", delta: 88 },
+  /*
+   * `/about/` is 38px taller at 768: the intro's status badges wrap onto a
+   * second line here rather than being crushed onto one.
+   *
+   * With all three flags set they do not fit beside the heading at any width
+   * below about 1000px, and the original let them shrink instead of wrap --
+   * at 768 that pushes the document to 924px wide, 156px past the viewport,
+   * with each badge 74px tall because its label has wrapped inside the pill.
+   * At 375 it is worse still: the third badge starts past the right edge. The
+   * port wraps the row instead, which costs one badge's height and removes the
+   * horizontal scroll. `widths` pins this to the band where the two layouts
+   * differ -- from about 1000px up there is room for one line and the two are
+   * identical again.
+   */
+  { path: "/about/", key: "main", dimension: "h", delta: -38, widths: [375, 768] },
+];
 
 function expected(dimension, live, next) {
   return EXPECTED.some(
     (e) =>
       e.path === PATH &&
       e.dimension === dimension &&
+      (e.widths === undefined || e.widths.includes(WIDTH)) &&
       Math.abs(live - next - e.delta) <= TOLERANCE,
   );
 }

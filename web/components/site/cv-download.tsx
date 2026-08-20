@@ -15,7 +15,7 @@ import Link from "next/link";
 const FORMATS = [
   { href: "/cv", label: "PDF", icon: DownloadIcon },
   { href: "/cv-latest", label: "Word", icon: DocumentIcon },
-  { href: "/cv-copy", label: "Copy", icon: CopyIcon },
+  { href: "/cv-copy", label: "Copy CV", icon: CopyIcon },
 ] as const;
 
 export function CvDownload() {

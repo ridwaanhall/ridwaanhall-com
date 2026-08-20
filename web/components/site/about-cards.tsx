@@ -207,7 +207,7 @@ export function ExperienceCard({ company, roles }: { company: string; roles: Exp
                   </div>
 
                   <div className="flex-shrink-0">
-                    <DisclosureButton className="toggle-pill cursor-pointer px-3 py-1.5 rounded-full" />
+                    <DisclosureButton />
                   </div>
                 </div>
 

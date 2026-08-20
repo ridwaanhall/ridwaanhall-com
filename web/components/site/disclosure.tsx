@@ -66,8 +66,15 @@ export function Disclosure({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * `rounded-full` everywhere. Django rounded it three different ways -- a pill
+ * on the experience and application cards, `rounded-lg` on education and
+ * certifications -- for what is the same control in all four places. On the
+ * certification card it now sits beside a `rounded-lg` "View Credential" link;
+ * that is the deliberate trade, since the two are not the same kind of thing.
+ */
 export function DisclosureButton({
-  className = "toggle-pill cursor-pointer px-3 py-1.5 rounded-lg",
+  className = "toggle-pill cursor-pointer px-3 py-1.5 rounded-full",
 }: {
   className?: string;
 }) {

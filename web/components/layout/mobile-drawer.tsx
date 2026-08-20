@@ -29,6 +29,8 @@ const CLOSE_FRACTION = 0.25;
 const FLICK_VELOCITY = 0.5; // px per ms
 /** Ignore taps, which are fast but go nowhere. */
 const FLICK_MIN_DISTANCE = 12;
+/** Must match the `duration-300` on the panel. */
+const EXIT_MS = 300;
 
 export function MobileDrawer({
   about,
@@ -41,34 +43,56 @@ export function MobileDrawer({
 }) {
   const menuRef = useRef<HTMLDivElement>(null);
   const drag = useRef({ active: false, startY: 0, startTime: 0, offset: 0 });
-  // Kept out of the DOM until the first open so the drawer's own 300ms slide
-  // plays, rather than the panel appearing already in place.
-  const [entered, setEntered] = useState(false);
   const pathname = usePathname();
 
-  // Reset during render rather than in an effect: React supports adjusting
-  // state when a prop changes this way, and it avoids the extra render pass
-  // that setting it from an effect costs.
-  const [wasOpen, setWasOpen] = useState(isOpen);
-  if (wasOpen !== isOpen) {
-    setWasOpen(isOpen);
-    setEntered(false);
-  }
+  /*
+   * Two pieces of state, because the drawer has to stay on screen while it
+   * leaves. `visible` is whether the backdrop is in the layout at all;
+   * `raised` is whether the panel is up.
+   *
+   * The port previously had only the second. Closing dropped `hidden` back on
+   * the backdrop in the same commit that reset the panel's transform, so the
+   * whole drawer vanished on the spot -- there was no exit animation, which is
+   * exactly what the original spent a 300ms timeout avoiding.
+   *
+   * Both transitions start as adjustments during render rather than from an
+   * effect: opening has to put the panel in the layout on this render, and
+   * closing has to start the slide on this one. Only the *timing* is left in
+   * effects -- a frame for the browser to paint the down position before
+   * animating up, and the wait for the slide down to finish.
+   */
+  const [visible, setVisible] = useState(isOpen);
+  const [raised, setRaised] = useState(false);
+
+  if (isOpen && !visible) setVisible(true);
+  if (!isOpen && raised) setRaised(false);
 
   useEffect(() => {
-    if (!isOpen) return;
-    // One frame with the panel in the DOM but still translated down, so the
-    // transition has a starting point to animate from.
-    const id = window.setTimeout(() => setEntered(true), 50);
+    if (isOpen) {
+      // Two frames, not one: a single rAF callback runs *before* the paint of
+      // the frame it was queued in, so the browser can still coalesce the
+      // panel's arrival and its raise into one paint and skip the transition
+      // entirely. The second frame guarantees the down position was painted.
+      let second = 0;
+      const first = requestAnimationFrame(() => {
+        second = requestAnimationFrame(() => setRaised(true));
+      });
+      return () => {
+        cancelAnimationFrame(first);
+        cancelAnimationFrame(second);
+      };
+    }
+    const id = window.setTimeout(() => setVisible(false), EXIT_MS);
     return () => window.clearTimeout(id);
   }, [isOpen]);
 
-  // Scroll lock while open.
+  // Scroll lock for as long as anything is on screen, so the page underneath
+  // does not lurch back mid-slide.
   useEffect(() => {
-    if (!isOpen) return;
+    if (!visible) return;
     document.body.classList.add("overflow-hidden");
     return () => document.body.classList.remove("overflow-hidden");
-  }, [isOpen]);
+  }, [visible]);
 
   // Escape is the only keyboard dismissal now that the close button is gone.
   useEffect(() => {
@@ -163,7 +187,7 @@ export function MobileDrawer({
       id="mobile-sidebar"
       className={cn(
         "fixed inset-0 z-40 bg-transparent bg-opacity-60 backdrop-blur-sm md:hidden",
-        !isOpen && "hidden",
+        !visible && "hidden",
       )}
       aria-hidden={!isOpen}
       // Anything above the drawer is backdrop.
@@ -175,8 +199,12 @@ export function MobileDrawer({
         ref={menuRef}
         id="mobile-menu"
         className={cn(
-          "fixed inset-x-0 bottom-0 w-full max-h-[85vh] overflow-y-auto rounded-t-2xl bg-black transition-transform duration-300 transform flex flex-col border-t border-zinc-800",
-          !entered && "translate-y-full",
+          "fixed inset-x-0 bottom-0 w-full max-h-[85vh] overflow-y-auto rounded-t-2xl bg-black transition-transform duration-300 ease-out transform flex flex-col border-t border-zinc-800",
+          // `will-change` keeps the panel on its own compositor layer for the
+          // whole gesture rather than being promoted the moment it starts to
+          // move, which is what made the first few frames of the slide stutter.
+          "will-change-transform",
+          !raised && "translate-y-full",
         )}
       >
         {/* `touch-none` on both drag zones is load-bearing, not styling:

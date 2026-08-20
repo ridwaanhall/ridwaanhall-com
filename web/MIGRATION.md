@@ -268,6 +268,14 @@ Each is recorded at its call site and in the comparison scripts.
   element inside `.gallery-frame`, so the lookup returns null and the update is
   skipped. `blogImageSlider.js` walks up to `.blog-image-gallery` first and gets
   it right, which is why only the project gallery is affected.
+- **The about intro overflowed the viewport horizontally on every phone.** See
+  the wrapping note above — the row was `flex` with no `flex-wrap`, so three
+  status badges beside a heading simply ran off the page.
+- **The application cards' fact badges lost their icons in the port.** Five
+  glyphs — employment type, location type, location, salary, applied via — were
+  dropped when the badges were rebuilt from a colour table. Restored from the
+  original markup rather than retyped, so the two solid-fill paths with their
+  own viewBoxes (`0 0 950 950`, `0 0 32 32`) are byte-identical.
 - **The lightbox always opened on the first image**, whichever slide you were
   looking at. `getCurrentSlideIndex` parses the track's inline transform with
   `/translateX\((-?\d+(?:\.\d+)?)%\)/` — in a regex literal `\(` is an escaped
@@ -287,6 +295,17 @@ Each is recorded at its call site and in the comparison scripts.
   such affordance.
 - **No back-to-top button anywhere.** Django rendered one on about, legal,
   openhire and both detail pages.
+- **The about intro's status badges wrap on narrow screens.** With all three
+  flags set they do not fit beside the heading below about 1000px, and the
+  original let them shrink rather than wrap: at 768 that pushes the document to
+  924px wide — 156px past the viewport — with each pill 74px tall because its
+  own label has wrapped inside it; at 375 the third badge starts past the right
+  edge entirely. Wrapping the row costs one badge's height (`/about/` is 38px
+  taller at 375 and 768, recorded in `compare-layout.mjs`) and removes the
+  horizontal scroll. From ~1000px up the two are identical.
+- **Every "Show more" is a `rounded-full` pill.** Django rounded the same
+  control three different ways: a pill on experience and applications,
+  `rounded-lg` on education and certifications.
 
 ## Known, imperceptible differences
 

@@ -805,3 +805,31 @@ html.theme-fading [data-theme-toggle] svg {
         animation: none;
     }
 }
+
+/* ---------------------------------------------------------------------------
+   Dashboard percentage bars
+
+   Grows from zero to the width carried in `--bar-width`. A CSS animation
+   rather than state driven from an effect: no JavaScript is involved, the final
+   width is already in the markup so the bar is right before hydration, and the
+   reduced-motion case is one rule instead of a branch.
+   --------------------------------------------------------------------------- */
+@keyframes bar-grow {
+    from {
+        width: 0;
+    }
+    to {
+        width: var(--bar-width, 0%);
+    }
+}
+
+.percent-bar {
+    width: var(--bar-width, 0%);
+    animation: bar-grow 1000ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .percent-bar {
+        animation: none;
+    }
+}

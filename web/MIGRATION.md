@@ -81,7 +81,9 @@ Windows path before node sees it.
       page matters the moment a flag is flipped — it just has no live rendering to
       diff against. Needs an eyeball check when next enabled.
 - [x] Legal / privacy / terms — sections with one level of nesting (layout verified against live)
-- [ ] Dashboard — GitHub contributions heatmap + WakaTime stats
+- [x] Dashboard — GitHub contributions heatmap + WakaTime stats.
+      Grid verified cell-for-cell against live: 371 cells, identical level
+      distribution and month labels; every stat matches.
 - [x] Contact — social links and form shell (layout verified against live at 375 / 768 / 1280,
       allowing for the Turnstile widget the port does not render yet)
 - [ ] Contact — **wire up submission**: POST endpoint, Turnstile widget + server-side
@@ -95,14 +97,15 @@ Windows path before node sees it.
       and keyboard for free
 - [ ] Tooltips (`tooltip.js`) — `title` upgraded, must work on touch
 - [ ] Click spark (`clickSpark.js`, canvas, `mousedown` not `pointerdown`)
-- [ ] GitHub contributions heatmap (`githubContributions.js`, 295 lines → SVG)
+- [x] GitHub contributions heatmap — markup rather than 295 lines of DOM building
 - [x] Tab switching (`switchTab.js`) and the four career toggles (`toggleCareer.js`
       carried `toggleResponsibilities`, `toggleAchievements`, `toggleAchievementsCerts`
       and `toggleJourney` — one `<Disclosure>` replaces all four)
 - [x] Back-to-top / floating actions (`backScroll.js`)
 - [x] Copy-to-clipboard (in the blog share row)
-- [ ] Count-up (`countUp.js`) and search-enable (`searchEnable.js`) — both are dashboard
-      and listing niceties; still to port
+- [x] Count-up (`countUp.js`) — matches the original's integer formatting
+- [ ] `searchEnable.js` — enables the listing search button only once the field has
+      text. A nicety; the form works without it.
 
 ---
 

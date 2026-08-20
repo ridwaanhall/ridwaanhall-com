@@ -96,10 +96,22 @@ Windows path before node sees it.
       connected rather than silently doing nothing.
 
 ### Client behaviour to port
-- [ ] Image lightbox (`imageLightbox.js`, 425 lines + its CSS)
-- [x] Blog / project / featured sliders — scroll-snap rows, not Embla: they have no
-      transform track or slide indices, and native scrolling keeps swipe, momentum
-      and keyboard for free
+- [x] Image lightbox (`imageLightbox.js`, 425 lines + its CSS) — and with it the
+      two image sliders it depended on. `blogImageSlider.js` and
+      `projectImageSlider.js` were 120 near-identical lines each; they are one
+      `MediaGallery` variant now, with the transform track, prev/next, dots,
+      filename-follows-slide and auto-advance the port had dropped for a
+      scroll-snap row. Verified with `scripts/compare-gallery.mjs` at 375 and
+      1280 on a 7-image project, a 1-image project and a 2-image post: frame
+      box, filename, track transform, every button's classes and box, and the
+      whole lightbox (open, advance, Escape, body scroll lock, body-level
+      mount).
+- [x] Featured slider — a scroll-snap row, not Embla: it has no transform track
+      or slide indices, and native scrolling keeps swipe, momentum and keyboard
+      for free. The blog and project *galleries* are not in that category and
+      were wrongly converted along with it: they have numbered slides, arrows,
+      dots and an auto-advance, none of which a scroll row provides. They are
+      back to a transform track.
 - [ ] Tooltips (`tooltip.js`) — `title` upgraded, must work on touch
 - [ ] Click spark (`clickSpark.js`, canvas, `mousedown` not `pointerdown`)
 - [x] GitHub contributions heatmap — markup rather than 295 lines of DOM building
@@ -203,6 +215,18 @@ Each is recorded at its call site and in the comparison scripts.
   (`text-medium` is not a Tailwind class; `font-medium` is)
 - `text-blue-600` never resolved, so one post's links were the same colour as
   body text
+- **The project gallery's filename never followed the slide.**
+  `projectImageSlider.js` looks for `.current-filename` inside
+  `.project-slider-container`, but the header holding it is a *sibling* of that
+  element inside `.gallery-frame`, so the lookup returns null and the update is
+  skipped. `blogImageSlider.js` walks up to `.blog-image-gallery` first and gets
+  it right, which is why only the project gallery is affected.
+- **The lightbox always opened on the first image**, whichever slide you were
+  looking at. `getCurrentSlideIndex` parses the track's inline transform with
+  `/translateX\((-?\d+(?:\.\d+)?)%\)/` — in a regex literal `\(` is an escaped
+  backslash followed by the start of a group, so the pattern hunts for a literal
+  backslash after `translateX` and can never match. Every call fell through to
+  `return 0`.
 
 ## Traps that must not be re-introduced
 

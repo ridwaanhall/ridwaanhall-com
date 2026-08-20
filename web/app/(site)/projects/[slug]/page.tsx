@@ -121,10 +121,17 @@ export default async function ProjectDetailPage({
                   <ActionButtons project={project} />
                 </div>
 
+                {/*
+                  `w-full`, not the blog's `mb-6 md:mb-8`: Django wraps the two
+                  galleries differently, and the extra 32px pushed everything
+                  below the gallery down by exactly that much.
+                */}
                 <MediaGallery
                   images={project.image_list ?? []}
                   names={project.image_names ?? []}
                   alt={project.title}
+                  variant="project"
+                  className="w-full"
                 />
               </div>
             </div>

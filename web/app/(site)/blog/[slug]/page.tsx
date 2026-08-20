@@ -138,11 +138,8 @@ export default async function BlogDetailPage({
                 images={post.image_list ?? []}
                 names={post.image_names ?? []}
                 alt={post.title}
-                caption={
-                  (post.image_count ?? 0) > 1
-                    ? `${post.image_count} images • Swipe to navigate`
-                    : undefined
-                }
+                variant="blog"
+                className="mb-6 md:mb-8"
               />
             </header>
 

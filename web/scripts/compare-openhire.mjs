@@ -19,14 +19,6 @@ const NEXT = process.argv[2] ?? "http://localhost:3000";
 const LIVE = process.argv[3] ?? "https://ridwaanhall.com";
 const WIDTH = Number(process.env.WIDTH ?? 1280);
 
-function lines(node) {
-  return node.innerText
-    .replace(/[ \t]+/g, " ")
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
-}
-
 async function measure(browser, base) {
   const page = await browser.newPage({ viewport: { width: WIDTH, height: 1200 } });
   await page.goto(`${base}/openhire/`, { waitUntil: "load", timeout: 60000 });

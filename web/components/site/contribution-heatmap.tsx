@@ -56,11 +56,23 @@ export function ContributionHeatmap({
     <div className="overflow-x-auto mb-0 mt-4 custom-scroll">
       <div className="min-w-[650px] sm:min-w-max">
         <div className="relative h-6">
-          <MonthLabels months={months} />
+          <MonthLabels weeks={weeks} months={months} />
         </div>
 
+        {/*
+          The template and gap are matched to the live grid exactly, and they
+          are what decide whether the calendar fits.
+
+          `grid-cols-53` is not a Tailwind class -- the defaults stop at 12 --
+          so without the arbitrary value the columns size themselves to their
+          content. That, plus a `gap-0.5 sm:gap-1` (2px / 4px) instead of the
+          1px / 1.5px the original set inline, made the grid 950px wide against
+          the 840px it has to work with, and the whole calendar scrolled
+          sideways on desktop. With `minmax(0, 1fr)` the 53 columns share the
+          available width instead.
+        */}
         <div
-          className="grid grid-cols-53 gap-0.5 sm:gap-1"
+          className="grid grid-cols-[repeat(53,minmax(0,1fr))] grid-rows-[repeat(7,minmax(0,1fr))] gap-px sm:gap-[1.5px]"
           onMouseLeave={() => setDetail(null)}
           role="img"
           aria-label="GitHub contribution calendar for the past year"
@@ -116,8 +128,11 @@ export function ContributionHeatmap({
 }
 
 function cellClass(cell: Cell | null): string {
+  // 8px below `sm`, 12px at `sm`, 14px from `md` -- the two size sets
+  // githubContributions.js chose between with a `window.innerWidth` read,
+  // expressed as one CSS-only ladder that lands on the same values.
   const base =
-    "w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 rounded-xs hover:border hover:border-green-400/30";
+    "w-2 h-2 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-xs hover:border hover:border-green-400/30";
   if (!cell) return `${base} opacity-30`;
   if (cell.future) return `${base} contrib-empty opacity-30`;
   return `${base} ${levelClass(cell.count)}`;
@@ -144,41 +159,91 @@ function describe(cell: Cell): string {
 /**
  * Month names above the grid.
  *
- * Positioned from GitHub's own `months` array, which gives each month's
- * `totalWeeks` -- so the running sum of those widths *is* the column each month
- * starts in, with no date arithmetic and no drift against the grid below.
+ * Ported from `renderMonthLabels` in githubContributions.js, whose rule is not
+ * the obvious one:
  *
- * A month is labelled only when it spans at least two columns, matching
- * githubContributions.js. The first and last months of a rolling year are
- * usually partial, and labelling a single column crowds its neighbour.
+ *  1. A month's base column is the first column containing any of its days.
+ *  2. **Unless its first visible day falls on a Sunday or Monday, the label
+ *     shifts one column right.** A month that begins on, say, a Wednesday has
+ *     only a sliver of its first column, so the name reads better above the
+ *     first column it actually fills. October 2025 begins on a Wednesday in the
+ *     week of 28 September, and its label belongs at column 7, not 6.
+ *  3. The first and last labels never shift -- there is no column before the
+ *     first, and shifting the last would push it off the end.
+ *  4. A month is labelled only if it occupies at least two columns.
+ *
+ * Summing GitHub's own `months[].totalWeeks` is a tempting shortcut and a wrong
+ * one: `totalWeeks` counts every week *containing* a day of the month, so a
+ * week spanning a boundary is counted by both neighbours and the running total
+ * drifts one column further right with each shared week.
  */
 function MonthLabels({
+  weeks,
   months,
 }: {
+  weeks: ContributionWeek[];
   months: { firstDay: string; name: string; totalWeeks: number }[];
 }) {
-  // Each month's column is the sum of the widths before it. Written as a pure
-  // expression rather than a running counter: reassigning a variable during
-  // render is not allowed, and with thirteen months the repeated sum costs
-  // nothing.
-  const placed = months.map((month, index) => ({
-    ...month,
-    column: months.slice(0, index).reduce((sum, earlier) => sum + earlier.totalWeeks, 0),
-  }));
+  // For each `YYYY-MM`: the columns it appears in, and the weekday and
+  // day-of-month of the earliest day seen.
+  const seen = new Map<
+    string,
+    { columns: Set<number>; weekday: number; dayOfMonth: number }
+  >();
+
+  weeks.forEach((week, index) => {
+    for (const day of week.days) {
+      const key = day.date.slice(0, 7);
+      const existing = seen.get(key);
+      if (existing) {
+        existing.columns.add(index);
+      } else {
+        const date = new Date(`${day.date}T00:00:00Z`);
+        seen.set(key, {
+          columns: new Set([index]),
+          weekday: date.getUTCDay(),
+          dayOfMonth: date.getUTCDate(),
+        });
+      }
+    }
+  });
+
+  const labelled = months
+    .map((month) => ({ month, info: seen.get(month.firstDay.slice(0, 7)) }))
+    .filter((entry) => entry.info !== undefined && entry.info.columns.size >= 2)
+    .map((entry) => ({
+      name: month_name(entry.month.name),
+      key: entry.month.firstDay,
+      column: Math.min(...entry.info!.columns),
+      weekday: entry.info!.weekday,
+      dayOfMonth: entry.info!.dayOfMonth,
+    }));
 
   return (
     <>
-      {placed
-        .filter((month) => month.totalWeeks >= 2)
-        .map((month) => (
+      {labelled.map((month, index) => {
+        const isEdge = index === 0 || index === labelled.length - 1;
+        // Sunday (0) or Monday (1) means the month already fills its first
+        // column well enough to be labelled there.
+        const startsEarlyInWeek = month.weekday === 0 || month.weekday === 1;
+        const column =
+          !isEdge && !startsEarlyInWeek ? Math.min(month.column + 1, 52) : month.column;
+
+        return (
           <div
-            key={month.firstDay}
+            key={month.key}
             className="absolute text-xs text-zinc-400 font-medium"
-            style={{ left: `${(month.column / 53) * 100}%` }}
+            style={{ left: `${(column / 53) * 100}%` }}
           >
             {month.name}
           </div>
-        ))}
+        );
+      })}
     </>
   );
+}
+
+/** GitHub returns the abbreviated name already; kept as a seam if that changes. */
+function month_name(name: string): string {
+  return name;
 }

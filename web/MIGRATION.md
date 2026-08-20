@@ -74,8 +74,13 @@ Windows path before node sees it.
 - [x] Blog list — featured slider, cards, search, pagination (layout verified against live)
 - [x] Blog detail — rich-text body, gallery, share row, author/date, tags
       (typography verified against live across 7 posts at 375 / 768 / 1280)
-- [ ] OpenHire — 14 sections, gated on `is_open_to_work || is_hiring`
-- [ ] Legal / privacy / terms — sections with one level of nesting
+- [ ] OpenHire — 19 templates, gated on `is_open_to_work || is_hiring`.
+      **Cannot be compared against live**: both flags are false in production, so
+      `/openhire/` currently 404s there. The data is fully authored (status
+      "Actively Looking", 4 preferred roles, 9 skills, RoneAI, 2 positions), so the
+      page matters the moment a flag is flipped — it just has no live rendering to
+      diff against. Needs an eyeball check when next enabled.
+- [x] Legal / privacy / terms — sections with one level of nesting (layout verified against live)
 - [ ] Dashboard — GitHub contributions heatmap + WakaTime stats
 - [ ] Contact — form shell (submission is phase 2)
 
@@ -90,7 +95,10 @@ Windows path before node sees it.
 - [x] Tab switching (`switchTab.js`) and the four career toggles (`toggleCareer.js`
       carried `toggleResponsibilities`, `toggleAchievements`, `toggleAchievementsCerts`
       and `toggleJourney` — one `<Disclosure>` replaces all four)
-- [ ] Count-up, back-to-top, copy-to-clipboard, search-enable (small hooks)
+- [x] Back-to-top / floating actions (`backScroll.js`)
+- [x] Copy-to-clipboard (in the blog share row)
+- [ ] Count-up (`countUp.js`) and search-enable (`searchEnable.js`) — both are dashboard
+      and listing niceties; still to port
 
 ---
 

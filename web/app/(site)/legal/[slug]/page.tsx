@@ -7,6 +7,7 @@ import { legalDocumentSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { legalDocumentSchemas } from "@/lib/seo/schemas-for-page";
 import { JsonLdScript } from "@/components/seo/json-ld";
+import { LegalDocumentPage } from "@/components/site/legal-document";
 
 export async function generateStaticParams() {
   const documents = await getLegalDocuments();
@@ -24,24 +25,23 @@ export async function generateMetadata({
   return buildMetadata(legalDocumentSeo(about, document), about);
 }
 
-export default async function LegalDocumentPage({
+export default async function LegalSlugPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [about, document] = await Promise.all([getAboutData(), getLegalDocument(slug)]);
+  const [about, document, siblings] = await Promise.all([
+    getAboutData(),
+    getLegalDocument(slug),
+    getLegalDocuments(),
+  ]);
   if (!document || !about) notFound();
 
   return (
     <>
       <JsonLdScript schemas={legalDocumentSchemas(about, document)} />
-      <main className="px-4 py-6 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-semibold text-white">{document.title}</h1>
-          <p className="mt-2 text-zinc-400">Not migrated yet.</p>
-        </div>
-      </main>
+      <LegalDocumentPage document={document} siblings={siblings} />
     </>
   );
 }

@@ -272,6 +272,14 @@ Each is recorded at its call site and in the comparison scripts.
 - **The about intro overflowed the viewport horizontally on every phone.** See
   the wrapping note above — the row was `flex` with no `flex-wrap`, so three
   status badges beside a heading simply ran off the page.
+- **The search palette never marked the page you were on.** Django gave that
+  row `bg-zinc-800`, a permanently rotated icon and an "You are here" caption
+  in place of its section chip, and dropped its `data-url` so a click did
+  nothing. All of it was missing. Restored, and verified from ten pages --
+  including the two that match nested paths, where `/blog/<slug>/` marks Blog
+  exactly as the sidebar does. The one difference is the cursor: the original
+  left `cursor-pointer` on a row that leads nowhere, and the port uses
+  `cursor-default`, matching the sidebar's own current item.
 - **The application cards' fact badges lost their icons in the port.** Five
   glyphs — employment type, location type, location, salary, applied via — were
   dropped when the badges were rebuilt from a colour table. Restored from the
@@ -307,6 +315,10 @@ Each is recorded at its call site and in the comparison scripts.
 - **Every "Show more" is a `rounded-full` pill.** Django rounded the same
   control three different ways: a pill on experience and applications,
   `rounded-lg` on education and certifications.
+- **The search palette highlights its first navigable result on open**, so
+  Ctrl+K, type, Enter goes somewhere. Django added the highlight only on an
+  arrow key, which meant Enter did nothing until you pressed one. The highlight
+  skips the "You are here" row for the same reason Enter does.
 
 ## Known, imperceptible differences
 

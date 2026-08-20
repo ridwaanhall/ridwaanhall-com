@@ -1,7 +1,7 @@
 "use client";
 
 import type { Route } from "next";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   createContext,
   useCallback,
@@ -28,7 +28,7 @@ import {
   TermsIcon,
   XIcon,
 } from "@/components/icons/link-icons";
-import { NAV_ITEMS } from "@/lib/nav";
+import { isActive, NAV_ITEMS } from "@/lib/nav";
 import type { AboutData } from "@/lib/data/about";
 import { cn } from "@/lib/utils/cn";
 
@@ -40,6 +40,8 @@ type SearchEntry = {
   keywords: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   section: Section;
+  /** Whether a nested path still counts as this page -- see `NavItem`. */
+  matchNested?: boolean;
 } & (
   // An internal destination is a typed route, so a link that stops existing is
   // a build error rather than a 404 someone finds later. External ones are
@@ -115,6 +117,7 @@ function buildEntries(about: AboutData): SearchEntry[] {
       href: item.href,
       icon: item.icon,
       section: "Pages",
+      matchNested: item.matchNested,
     });
   }
 
@@ -203,6 +206,24 @@ function SearchModal({
   onClose: () => void;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
+
+  /**
+   * Is this entry the page being viewed?
+   *
+   * Only the Pages section can be, and only its internal destinations -- the
+   * socials and the CV links go somewhere else entirely. `isActive` is the same
+   * predicate the sidebar's nav uses, so `/blog/<slug>/` marks Blog here for
+   * the same reason it highlights Blog there; Django expressed that as
+   * `url_name not in 'blog blog_detail'` in both places.
+   */
+  const isHere = useCallback(
+    (entry: SearchEntry) =>
+      !entry.external &&
+      entry.section === "Pages" &&
+      isActive({ href: entry.href, matchNested: entry.matchNested }, pathname),
+    [pathname],
+  );
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [highlighted, setHighlighted] = useState(0);
@@ -216,6 +237,18 @@ function SearchModal({
       (entry) => entry.keywords.includes(q) || entry.label.toLowerCase().includes(q),
     );
   }, [entries, query]);
+
+  /*
+   * The rows the keyboard can land on.
+   *
+   * The highlight is a promise about what Enter will do, so it skips the page
+   * you are already on -- that row does nothing when clicked and nothing when
+   * entered. Without this the palette opened on the homepage with the "You are
+   * here" row wearing the highlight wash, advertising a keystroke that had no
+   * effect. The original had no initial highlight at all, so the question did
+   * not arise for it.
+   */
+  const navigable = useMemo(() => matches.filter((entry) => !isHere(entry)), [matches, isHere]);
 
   // Reset the query when the modal closes, and the highlight whenever the
   // query changes, by adjusting state during render. React supports this and
@@ -305,15 +338,15 @@ function SearchModal({
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
-      if (matches.length === 0) return;
+      if (navigable.length === 0) return;
       // Wraps at both ends, as the original did.
       setHighlighted((current) =>
         event.key === "ArrowDown"
-          ? (current + 1) % matches.length
-          : (current - 1 + matches.length) % matches.length,
+          ? (current + 1) % navigable.length
+          : (current - 1 + navigable.length) % navigable.length,
       );
     } else if (event.key === "Enter") {
-      const entry = matches[highlighted];
+      const entry = navigable[highlighted];
       if (entry) activate(entry);
     }
   };
@@ -324,7 +357,7 @@ function SearchModal({
   // each entry needs its position in `matches`. Computed up front rather than
   // by incrementing a counter while rendering, which React 19 rejects as
   // reassignment after render completes.
-  const indexOf = new Map(matches.map((entry, index) => [entry, index]));
+  const indexOf = new Map(navigable.map((entry, index) => [entry, index]));
 
   return (
     <div
@@ -376,6 +409,16 @@ function SearchModal({
                     {sectionMatches.map((entry) => {
                       const index = indexOf.get(entry) ?? -1;
                       const Icon = entry.icon;
+                      /*
+                       * The page you are already on is marked and inert. The
+                       * original dropped the entry's `data-url`, which left the
+                       * click handler with nowhere to go; here there is simply
+                       * no handler. It also keeps the row's `cursor-pointer`,
+                       * which the port does not -- the sidebar's own current
+                       * item is a `role="button"` with no href and therefore no
+                       * pointer cursor, and this was asked to match it.
+                       */
+                      const here = isHere(entry);
                       return (
                         <li
                           key={`${entry.section}-${entry.label}`}
@@ -383,19 +426,38 @@ function SearchModal({
                             SECTION_CLASS[section],
                             index === highlighted && "highlighted",
                           )}
-                          onMouseEnter={() => setHighlighted(index)}
-                          onClick={() => activate(entry)}
+                          onMouseEnter={here ? undefined : () => setHighlighted(index)}
+                          onClick={here ? undefined : () => activate(entry)}
+                          aria-current={here ? "page" : undefined}
                         >
-                          <div className="text-zinc-300 group mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-md px-4 py-2 hover:bg-zinc-800">
+                          <div
+                            className={cn(
+                              "text-zinc-300 group mx-2 flex items-center justify-between gap-3 rounded-md px-4 py-2",
+                              here
+                                ? "cursor-default bg-zinc-800"
+                                : "cursor-pointer hover:bg-zinc-800",
+                            )}
+                          >
                             <div className="flex items-center gap-5">
-                              <div className="transition-all duration-300 group-hover:-rotate-12">
+                              <div
+                                className={cn(
+                                  "transition-all duration-300 group-hover:-rotate-12",
+                                  here && "-rotate-12",
+                                )}
+                              >
                                 <Icon />
                               </div>
                               <span>{entry.label}</span>
                             </div>
-                            <div className="rounded-md border border-zinc-500 px-1.5 py-0.5 text-xs text-zinc-400">
-                              {section === "Pages" ? "Pages" : "Link"}
-                            </div>
+                            {here ? (
+                              <span className="animate-pulse text-xs text-zinc-400">
+                                You are here
+                              </span>
+                            ) : (
+                              <div className="rounded-md border border-zinc-500 px-1.5 py-0.5 text-xs text-zinc-400">
+                                {section === "Pages" ? "Pages" : "Link"}
+                              </div>
+                            )}
                           </div>
                         </li>
                       );

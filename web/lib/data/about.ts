@@ -56,7 +56,6 @@ export type AboutData = {
   personal_website: string;
   cv: { main: string; latest: string; copy: string };
   role: string;
-  is_active: boolean;
   is_open_to_work: boolean;
   is_hiring: boolean;
   is_sick: boolean;
@@ -88,19 +87,29 @@ export type AboutData = {
 };
 
 /**
- * The about payload, with `is_active` recomputed on every read.
+ * `is_active` -- whether the site owner is inside working hours right now.
  *
- * The split matters: everything else is cached, but `is_active` is derived from
- * the current Jakarta time, so serving it from the cache would freeze the
- * availability indicator in the sidebar.
+ * Kept out of `AboutData` on purpose. It is derived from the current Jakarta
+ * clock, and under Cache Components *any* read of the clock inside a
+ * prerendered tree makes the whole tree dynamic. Since the layout renders the
+ * about payload on every page, folding this in would cost the entire site its
+ * prerendering to compute a field that, as it turns out, nothing displays:
+ * the green availability dot it fed was removed from the profile avatar, and a
+ * search of the templates finds no other reader.
+ *
+ * It is still returned by `/api/about`, which is request-time anyway, so the
+ * API contract is unchanged for anything consuming it.
  */
-export async function getAboutData(): Promise<AboutData | null> {
-  const data = await getCachedAboutData();
+export type AboutDataWithStatus = AboutData & { is_active: boolean };
+
+export async function getAboutDataWithStatus(): Promise<AboutDataWithStatus | null> {
+  const data = await getAboutData();
   if (!data) return null;
   return { ...data, is_active: isWorkingHours() };
 }
 
-async function getCachedAboutData(): Promise<AboutData | null> {
+/** The cached about payload. Safe to call from a prerendered tree. */
+export async function getAboutData(): Promise<AboutData | null> {
   "use cache";
   // Depends on `skill` as well as `profile`: the payload embeds highlighted
   // skill *names*, so renaming a Skill changes it even though no Profile row
@@ -138,7 +147,6 @@ async function getCachedAboutData(): Promise<AboutData | null> {
     personal_website: profile.personalWebsite,
     cv: { main: profile.cvMain, latest: profile.cvLatest, copy: profile.cvCopy },
     role: profile.role,
-    is_active: false, // replaced per request by getAboutData()
     is_open_to_work: profile.isOpenToWork,
     is_hiring: profile.isHiring,
     is_sick: profile.isSick,

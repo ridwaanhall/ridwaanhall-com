@@ -9,6 +9,10 @@
  *   1. cd .. && DEBUG=False uv run python web/scripts/django_dump.py
  *   2. start the Next dev server
  *   3. node scripts/compare-with-django.mjs
+ *
+ * Re-run step 1 each time. Both sides read the *live* database, so a stale dump
+ * shows spurious differences in anything visitors change -- `blog.views` is
+ * incremented by every read of a post and will drift within minutes.
  */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";

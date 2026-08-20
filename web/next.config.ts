@@ -60,6 +60,13 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
 
   typedRoutes: true,
+
+  // Inlined as a string literal at build time. The copyright line wants the
+  // current year, but *any* clock read inside a prerendered tree is rejected
+  // under Cache Components -- including at module scope in a "use client"
+  // file, which the server still evaluates while prerendering. Computing it
+  // here, in config, happens before prerendering starts.
+  env: { NEXT_PUBLIC_BUILD_YEAR: String(new Date().getFullYear()) },
 };
 
 export default nextConfig;

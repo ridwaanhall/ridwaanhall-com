@@ -723,3 +723,36 @@ html.theme-fading [data-theme-toggle] svg {
         @apply inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full transition-all duration-300;
     }
 }
+
+/* ---------------------------------------------------------------------------
+   Content column entrance
+
+   Django started #page-content at `opacity-0 translate-y-8` and had
+   progressBar.js strip those classes 100ms after DOMContentLoaded. A CSS
+   animation says the same thing without needing JS to reveal the page -- which
+   also means the content is never stuck invisible if a script fails to run.
+
+   The element is keyed on the pathname in site-shell.tsx, so React remounts it
+   per navigation and the animation replays.
+   --------------------------------------------------------------------------- */
+@keyframes page-enter {
+    from {
+        opacity: 0;
+        transform: translateY(2rem);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+#page-content {
+    animation: page-enter 700ms ease-out both;
+}
+
+/* Motion here is decoration; the page must still appear without it. */
+@media (prefers-reduced-motion: reduce) {
+    #page-content {
+        animation: none;
+    }
+}

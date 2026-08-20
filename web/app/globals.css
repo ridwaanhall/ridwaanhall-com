@@ -27,6 +27,9 @@
 @import "../styles/globalScrollbar.css";
 @import "../styles/tooltip.css";
 @import "../styles/imageLightbox.css";
+/* Rich-text body styling. New in the Next.js port -- it replaces the
+   per-block Tailwind classes the content used to carry. */
+@import "../styles/prose.css";
 
 /* ---------------------------------------------------------------------------
    Keep source detection off prose and off our own stylesheets

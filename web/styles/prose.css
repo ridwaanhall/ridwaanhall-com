@@ -1,0 +1,259 @@
+/*
+ * Rich-text body styling.
+ *
+ * The blog body and project descriptions used to carry their appearance inline:
+ * every paragraph repeated "mb-4 text-sm md:text-base lg:text-lg" as a stored
+ * `class`, 79 headings each repeated the same spacing string, and changing
+ * either meant editing every row. This reproduces those rules from one place,
+ * so content is now only content.
+ *
+ * **Every value here was measured from the live Django rendering**, at 375,
+ * 768 and 1280px, rather than derived from the class strings. Those two are not
+ * the same thing, and the gap is the reason this change is worth making:
+ * Tailwind generates a class only if it can *see* it in a scanned file, and
+ * these classes existed nowhere but in the database. So several silently did
+ * nothing --
+ *
+ *   `lg:text-2xl`   on every h2      -> headings never reached 24px
+ *   `md:mt-5`       on every h2      -> spacing never grew at md
+ *   `text-medium`   on every h2      -> not a Tailwind class at all
+ *                                       (`font-medium` is), so headings
+ *                                       render at weight 400
+ *   `text-blue-600` on some links    -> those links are body-coloured
+ *   `text-red-600`  on some emphasis -> renders as plain text
+ *
+ * -- while `md:text-base`, `lg:text-lg`, `text-green-600` and `text-green-400`
+ * *did* work, because those strings happen to appear in a template somewhere
+ * too. The result was styling that varied by coincidence. Matching the rendered
+ * output rather than the intent keeps the pages identical today; the commented
+ * values below record what the author meant, for when it is worth revisiting.
+ *
+ * Colours go through the palette variables, which is what makes light mode
+ * work -- `globals.css` redefines those under `html[data-theme="light"]`, and
+ * anything written as a raw hex would keep its dark value on a white page.
+ *
+ * Deliberately *not* @tailwindcss/typography: its defaults are a different
+ * design, so adopting it would restyle every existing post.
+ */
+
+/* Base text: text-sm / md:text-base / lg:text-lg, with Tailwind's paired
+   line-heights (20 / 24 / 28px). */
+.prose-content {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+@media (min-width: 768px) {
+    .prose-content {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .prose-content {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+    }
+}
+
+/* --- blocks ------------------------------------------------------------- */
+
+.prose-content p {
+    margin-bottom: 1rem;
+}
+
+/* `text-xl` at every width, weight 400. The stored class also asked for
+   `lg:text-2xl`, `md:mt-5` and `text-medium`; none of the three ever
+   resolved. */
+.prose-content h2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .prose-content h2 {
+        margin-bottom: 0.75rem;
+    }
+}
+
+/* `text-lg md:text-xl font-semibold mt-6 mb-3` -- the dominant of the two
+   stored h3 variants. Its `lg:text-2xl` did not resolve either. */
+.prose-content h3 {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.prose-content h4 {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .prose-content h3 {
+        font-size: 1.25rem;
+    }
+    .prose-content h4 {
+        font-size: 1.125rem;
+    }
+}
+
+.prose-content ul,
+.prose-content ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.prose-content ul {
+    list-style-type: disc;
+}
+
+.prose-content ol {
+    list-style-type: decimal;
+}
+
+/* No margin between items -- the stored lists had none, and adding one would
+   loosen every existing post. */
+.prose-content li {
+    margin: 0;
+}
+
+.prose-content li > ul,
+.prose-content li > ol {
+    margin-bottom: 0;
+}
+
+.prose-content blockquote {
+    border-left: 2px solid var(--color-zinc-700);
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+    color: var(--color-zinc-400);
+}
+
+.prose-content hr {
+    border-color: var(--color-zinc-700);
+    margin-block: 1.5rem;
+}
+
+/* --- inline ------------------------------------------------------------- */
+
+/*
+ * Links are the one deliberate departure from the live rendering.
+ *
+ * Stored links carried their own colour, and whether it appeared was a
+ * coincidence: `text-green-400` resolved, `text-blue-600` did not. So on the
+ * live site the links in one post are green and the links in another are
+ * indistinguishable from body text -- an unstyled link in a wall of prose is
+ * not a style choice, it is an invisible control. One appearance for all of
+ * them, decided here rather than typed per link.
+ */
+.prose-content a {
+    color: var(--color-indigo-400);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 150ms;
+}
+
+.prose-content a:hover {
+    color: var(--color-indigo-300);
+}
+
+/* Browser default weight, which is what `<strong>` rendered at before. */
+.prose-content strong {
+    font-weight: 700;
+}
+
+.prose-content em {
+    font-style: italic;
+}
+
+/*
+ * Inline code takes no chip -- no background, no padding, no radius. Tailwind's
+ * preflight already gives `code` a monospace family, which is the whole of the
+ * distinction the live pages draw. A tinted chip would look better and is a
+ * one-rule change, but it is a visible difference on 23 existing snippets, so
+ * it is left as a decision rather than made silently.
+ */
+
+/* --- code blocks -------------------------------------------------------- */
+
+.prose-content pre {
+    background-color: var(--color-zinc-800);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    /* Fixed at 16px/24px regardless of the surrounding step, as before. */
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+.prose-content pre code {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+    color: inherit;
+    white-space: pre;
+}
+
+/* --- tables ------------------------------------------------------------- */
+
+/*
+ * The block renderer wrapped every table in `<div class="overflow-x-auto">`.
+ * The converted HTML has no wrapper, so the table scrolls itself -- `display:
+ * block` is what allows `overflow-x` on a table element, and is why the width
+ * rules below are needed to keep it filling the column.
+ */
+.prose-content table {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+    width: max-content;
+    min-width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--color-zinc-900);
+    margin-bottom: 1rem;
+}
+
+.prose-content thead tr {
+    background-color: var(--color-zinc-900);
+}
+
+.prose-content th {
+    border: 1px solid var(--color-zinc-950);
+    padding: 0.5rem 1rem;
+    text-align: left;
+    font-weight: 600;
+}
+
+.prose-content td {
+    border: 1px solid var(--color-zinc-900);
+    padding: 0.5rem 1rem;
+}
+
+/* Zebra striping, which the template produced with `{% cycle %}`. */
+.prose-content tbody tr {
+    background-color: var(--color-zinc-950);
+}
+
+.prose-content tbody tr:nth-child(even) {
+    /* `bg-zinc-950/80` -- the same colour at 80% over the page beneath. */
+    background-color: color-mix(in srgb, var(--color-zinc-950) 80%, transparent);
+}
+
+/* --- images ------------------------------------------------------------- */
+
+.prose-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}

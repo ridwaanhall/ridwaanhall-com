@@ -11,6 +11,7 @@ node scripts/compare-with-django.mjs   # data layer vs Django, field by field
 node scripts/compare-meta.mjs          # <head> vs the live site, page by page
 node scripts/check-breakpoints.mjs     # one visible theme toggle at every width
 node scripts/compare-jsonld.mjs        # structured data vs the live site
+node scripts/compare-prose.mjs [slug] [width]   # rich-text typography vs live
 MSYS_NO_PATHCONV=1 node scripts/compare-layout.mjs [path]   # rendered geometry vs live
 ```
 
@@ -66,9 +67,10 @@ Windows path before node sees it.
       either; it belongs to the contact page. Confirm when contact is built.
 - [ ] About — intro, tabs (experience / education / certifications / awards / applications), CV download, work-together, sponsor
 - [ ] Projects list — cards, search, pagination
-- [ ] Project detail — gallery, tech stack, features, external links, timestamps
+- [x] Project detail — gallery, tech stack, features, external links, timestamps, rich-text description
 - [ ] Blog list — featured slider, cards, search, pagination
-- [ ] Blog detail — content blocks, gallery, share row, author/date, tags
+- [x] Blog detail — rich-text body, gallery, share row, author/date, tags
+      (typography verified against live across 7 posts at 375 / 768 / 1280)
 - [ ] OpenHire — 14 sections, gated on `is_open_to_work || is_hiring`
 - [ ] Legal / privacy / terms — sections with one level of nesting
 - [ ] Dashboard — GitHub contributions heatmap + WakaTime stats
@@ -95,6 +97,23 @@ Windows path before node sees it.
 - [ ] Blog view counter
 
 ---
+
+## Rich text (replaces the stored content blocks)
+
+The blog body and project descriptions were authored as JSONB blocks carrying
+hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
+
+- [x] `scripts/blocks-to-html.mjs` — conversion, dry-run by default
+- [x] `blog_blogpost.content_html`, `projects_project.description_html`
+      (additive; `content`/`description` stay until cutover, so Django's admin
+      keeps working and the conversion stays reversible)
+- [x] `styles/prose.css` — every value measured from the live rendering
+- [x] `components/site/rich-text.tsx` + `lib/utils/sanitize.ts`
+- [ ] **Tiptap editor in the admin** (phase 3): headings 2–4, bold, italic,
+      code, link, bullet/ordered list, code block, table, image. Must emit the
+      same vocabulary the sanitiser allows.
+- [ ] At cutover: drop `content` and `description`, and remove the now-unused
+      `@source inline(...)` entries for classes that only existed in blocks
 
 ## Phase 3 — admin
 - [ ] Shell, auth gate on `is_staff`
@@ -137,6 +156,9 @@ Each is recorded at its call site and in the comparison scripts.
 | Sitemap paginates at 10, not 6 | Django advertised `/blog/?page=3` and 4 more project pages that do not exist |
 | `wordCount` counted from the body | Django read a key the blog dict never had, so it always emitted 0 |
 | Marquee rows shuffled from fixed seeds | `Math.random()` in a prerendered tree is rejected, and a visitor sees one arrangement per load either way |
+| Content blocks → rich-text HTML | Requested. Removes hand-typed classes from the content entirely |
+| Uniform list indent, heading weight, paragraph spacing | The stored variants were inconsistent hand-typing, and several never resolved at all |
+| Blog/project links are indigo | Stored link colours were green in one post and unresolved (invisible) in another |
 
 ## Inherited bugs fixed in passing
 
@@ -147,6 +169,12 @@ Each is recorded at its call site and in the comparison scripts.
 - Sitemap `lastmod` was frozen at the 2024-01-01 fallback for every page but the dashboard
 - Sitemap advertised 7 paginated URLs that do not exist, each serving duplicate content
 - `wordCount` in BlogPosting JSON-LD was always 0
+- **`pl-5` was never generated**, so 7 of 19 lists rendered at `padding-left: 0`
+  with their bullets outside the text column
+- `lg:text-2xl`, `md:mt-5` and `text-medium` on every h2 never resolved either
+  (`text-medium` is not a Tailwind class; `font-medium` is)
+- `text-blue-600` never resolved, so one post's links were the same colour as
+  body text
 
 ## Traps that must not be re-introduced
 
@@ -164,3 +192,11 @@ Each is recorded at its call site and in the comparison scripts.
 - **`unstable_rethrow`** must stay first in any catch around a route handler.
 - **No shadows.** `grep -rn 'shadow' app components` should stay empty apart from `ring-*`.
 - **Tooltips are `title` attributes**, never `group-hover` chips — a chip is unreachable on touch.
+- **Never store CSS classes in the database.** Tailwind generates a class only if it can
+  *see* it in a scanned file, so a class that exists only in a row silently does nothing —
+  which is how `pl-5`, `lg:text-2xl` and `text-blue-600` came to be no-ops on the live site.
+  This is the whole reason the content blocks were replaced with rich text.
+- **`drizzle-kit generate` output must be read line by line before running.** It does not
+  model RLS, so it emits `DISABLE ROW LEVEL SECURITY` for all 42 tables, and it round-trips
+  bigint maxvalues through a JS double and emits a corrupted `SET MAXVALUE`. Prefer writing
+  the migration by hand, as `drizzle/0001_add_rich_text_columns.sql` is.

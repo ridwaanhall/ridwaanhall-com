@@ -66,6 +66,14 @@ export type BlogPost = ImageCompat & {
   created_at: Date;
   updated_at: Date;
   content: unknown[];
+  /**
+   * The body as rich-text HTML.
+   *
+   * `content` above is the original block array, kept until cutover so Django's
+   * admin keeps working and the conversion stays reversible. Pages render
+   * `content_html`; nothing reads `content` any more.
+   */
+  content_html: string;
   tags: string[];
   category: string;
   is_featured: boolean;
@@ -81,6 +89,8 @@ export type Project = ImageCompat & {
   slug: string;
   headline: string;
   description: unknown[];
+  /** The description as rich-text HTML. See BlogPost.content_html. */
+  description_html: string;
   features: ProjectFeature[];
   tech_stack: Skill[];
   github_url: string | null;
@@ -97,8 +107,19 @@ export type Project = ImageCompat & {
 /**
  * Every blog post, newest first.
  *
- * Order matches `BlogPost.Meta.ordering = ["-created_at"]`, which is what
- * `ContentManager.get_blogs()` returned.
+ * Order follows `BlogPost.Meta.ordering = ["-created_at"]`, **with `id` added
+ * as a tiebreak**, which Django did not have.
+ *
+ * That is not tidiness. Four posts share the exact timestamp
+ * 2025-03-23T17:00:00Z, and ordering by `created_at` alone leaves their
+ * relative order to Postgres' physical row order -- which is not an order at
+ * all, just wherever the tuples happen to sit. It is stable only until
+ * something rewrites them: adding the `content_html` column and populating it
+ * moved all four, and the blog list silently came back in a different sequence.
+ * A VACUUM would do the same.
+ *
+ * Descending `id`, so the tie resolves to "most recently added first", which is
+ * what "newest first" means for rows that claim the same instant.
  */
 export async function getBlogs(): Promise<BlogPost[]> {
   "use cache";
@@ -106,7 +127,10 @@ export async function getBlogs(): Promise<BlogPost[]> {
   cacheLife("days");
 
   const [posts, images] = await Promise.all([
-    db.select().from(blogBlogpost).orderBy(desc(blogBlogpost.createdAt)),
+    db
+      .select()
+      .from(blogBlogpost)
+      .orderBy(desc(blogBlogpost.createdAt), desc(blogBlogpost.id)),
     db.select().from(blogBlogimage).orderBy(asc(blogBlogimage.order), asc(blogBlogimage.id)),
   ]);
 
@@ -124,6 +148,7 @@ export async function getBlogs(): Promise<BlogPost[]> {
       created_at: new Date(post.createdAt),
       updated_at: new Date(post.updatedAt),
       content: (post.content ?? []) as unknown[],
+      content_html: post.contentHtml ?? "",
       tags: (post.tags ?? []) as string[],
       category: post.category,
       is_featured: post.isFeatured,
@@ -191,6 +216,7 @@ export async function getProjects(): Promise<Project[]> {
       slug: project.slug,
       headline: project.headline,
       description: (project.description ?? []) as unknown[],
+      description_html: project.descriptionHtml ?? "",
       features: featuresByProject.get(project.id) ?? [],
       images: imagesByProject.get(project.id) ?? {},
       tech_stack: skillsByProject.get(project.id) ?? [],

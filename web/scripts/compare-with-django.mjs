@@ -59,6 +59,21 @@ const IGNORED_PATHS = new Set([
 ]);
 
 /**
+ * Keys that exist only on the Next side, matched by name at any depth.
+ *
+ * `content_html` / `description_html` are the rich-text columns added by
+ * scripts/blocks-to-html.mjs. Django has no such field and never will -- its
+ * admin keeps editing the original block array until cutover -- so their
+ * absence on that side is the design, not a regression. The blocks themselves
+ * (`content`, `description`) are still compared, so a conversion that damaged
+ * the source would still be caught.
+ *
+ * `views` is incremented by every read of a post, including the ones this
+ * script performs, so it drifts between the dump and the comparison.
+ */
+const NEW_KEYS = new Set(["content_html", "description_html", "views"]);
+
+/**
  * Paths where a difference is expected and understood.
  *
  * `journey` is the one intentional behavioural change in the data layer.
@@ -72,10 +87,29 @@ const IGNORED_PATHS = new Set([
  * compares both sides as multisets, so a step that went missing or gained a
  * changed field still fails.
  */
-const ORDER_INSENSITIVE = [/^applications\[\d+\]\.journey$/];
+const ORDER_INSENSITIVE = [
+  /^applications\[\d+\]\.journey$/,
+];
+
+/**
+ * Top-level lists whose order may legitimately differ, aligned by `id` before
+ * comparing so every field is still checked.
+ *
+ * `blogs`: four posts share the timestamp 2025-03-23T17:00:00Z, and Django
+ * orders by `-created_at` alone -- so their relative order is Postgres'
+ * physical row order, which is stable only until something rewrites the
+ * tuples. Populating `content_html` did exactly that and the sequence changed
+ * under it. The port adds `id` as a tiebreak; the Django side still has none,
+ * so the two can disagree on those four while holding the same posts.
+ *
+ * Aligning rather than set-comparing matters: a set comparison would also stop
+ * reporting *which field* of a post changed.
+ */
+const ALIGN_BY_ID = new Set(["blogs"]);
 
 function diff(expected, actual, path = "", out = []) {
   if (IGNORED_PATHS.has(path)) return out;
+  if (NEW_KEYS.has(path.split(".").pop())) return out;
 
   if (ORDER_INSENSITIVE.some((re) => re.test(path)) && Array.isArray(expected) && Array.isArray(actual)) {
     const canon = (list) => list.map((item) => JSON.stringify(item)).sort();
@@ -120,7 +154,9 @@ function diff(expected, actual, path = "", out = []) {
   for (const key of keys) {
     const child = path ? `${path}.${key}` : key;
     if (!(key in actual)) out.push({ path: child, expected: expected[key], actual: "<missing>" });
-    else if (!(key in expected)) out.push({ path: child, expected: "<absent in django>", actual: actual[key] });
+    else if (!(key in expected) && !NEW_KEYS.has(key)) {
+      out.push({ path: child, expected: "<absent in django>", actual: actual[key] });
+    }
     else diff(expected[key], actual[key], child, out);
   }
   return out;
@@ -156,7 +192,15 @@ for (const [key, path] of CASES) {
     continue;
   }
 
-  const problems = diff(django[key], body, key);
+  let expected = django[key];
+  let actual = body;
+  if (ALIGN_BY_ID.has(key) && Array.isArray(expected) && Array.isArray(actual)) {
+    const byId = (list) => [...list].sort((a, b) => (a?.id ?? 0) - (b?.id ?? 0));
+    expected = byId(expected);
+    actual = byId(actual);
+  }
+
+  const problems = diff(expected, actual, key);
   if (problems.length === 0) {
     const size = Array.isArray(body) ? `${body.length} items` : "object";
     console.log(`  ok    ${key.padEnd(22)} ${size}`);

@@ -65,6 +65,11 @@ export const projectsProject = pgTable("projects_project", {
 	slug: varchar({ length: 255 }).notNull(),
 	headline: varchar({ length: 500 }).notNull(),
 	description: jsonb().notNull(),
+	/**
+	 * The rich-text description, as HTML. Additive for the same reason as
+	 * blog_blogpost.content_html -- see the note there.
+	 */
+	descriptionHtml: text("description_html").default("").notNull(),
 	githubUrl: varchar("github_url", { length: 200 }),
 	demoUrl: varchar("demo_url", { length: 200 }),
 	category: varchar({ length: 255 }).notNull(),
@@ -804,6 +809,15 @@ export const blogBlogpost = pgTable("blog_blogpost", {
 	username: varchar({ length: 100 }).notNull(),
 	authorImage: varchar("author_image", { length: 100 }),
 	content: jsonb().notNull(),
+	/**
+	 * The rich-text body, as HTML.
+	 *
+	 * Added alongside `content` rather than replacing it. `content` is the
+	 * original JSONB block array, still read by Django's admin, so both stacks
+	 * keep working until the cutover drops it -- and the conversion stays
+	 * reversible, with the old rendering available to compare against.
+	 */
+	contentHtml: text("content_html").default("").notNull(),
 	tags: jsonb().notNull(),
 	category: varchar({ length: 100 }).notNull(),
 	isFeatured: boolean("is_featured").notNull(),

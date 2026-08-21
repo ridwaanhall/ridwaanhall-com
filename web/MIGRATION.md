@@ -203,25 +203,20 @@ invisible to every layout and text comparison) and `scripts/compare-gallery.mjs`
       (Google `openid profile email` + `access_type=online`, GitHub `user:email`,
       matching `SOCIALACCOUNT_PROVIDERS`), and a locally minted token round-trips
       through `/api/auth/session` as `user.id = "1"`.
-- [ ] **Register the new OAuth redirect URIs. Confirmed still missing** — the
-      Django-era registration does not cover them, because the callback path
-      changed: allauth used `/accounts/<provider>/login/callback/`, Auth.js uses
-      `/api/auth/callback/<provider>`.
-      Tested by following the authorize handoff: Google answers
-      `Error 400: redirect_uri_mismatch` and names
-      `http://localhost:3000/api/auth/callback/google` in the payload. Add it,
-      and the production equivalent, to the OAuth client's authorised redirect
-      URIs — Google's console takes a list, so the allauth URI can stay
-      alongside and both stacks keep working.
-      GitHub could not be settled the same way: it defers `redirect_uri`
-      validation until after sign-in, so the handoff reaches its login page
-      either way. An OAuth App has a *single* callback URL matched by prefix, so
-      unless the registered value is the bare origin it needs changing (or a
-      second app) rather than adding.
-      Until then the sign-in *button* cannot work. Building and verifying the
-      signed-in UI is not blocked: a session token minted locally with
-      `AUTH_SECRET` round-trips through `/api/auth/session`, which is enough to
-      drive the guestbook and comments.
+- [x] **OAuth redirect URIs for the new callback path** —
+      `http://localhost:3000/api/auth/callback/{google,github}` are registered
+      alongside the allauth ones, so both stacks work at once. The path changed
+      with the framework: allauth used
+      `/guestbook/accounts/<provider>/login/callback/`, Auth.js uses
+      `/api/auth/callback/<provider>`, and the old registration did not cover it
+      — Google answered `Error 400: redirect_uri_mismatch` until the new URI was
+      added. Re-tested after: Google reaches its consent screen carrying the new
+      `redirect_uri`, GitHub reaches its login page.
+- [ ] **Add the production redirect URIs before cutover.** Only the localhost
+      ones exist for the new path. Google needs
+      `https://ridwaanhall.com/api/auth/callback/google` adding to its list;
+      GitHub needs `https://ridwaanhall.com/api/auth/callback/github`. Missing
+      these fails at the provider, which looks nothing like an app bug.
 - [ ] Guestbook — threaded tree (3 levels), pin, delete branch, `show_reply_to`
 - [ ] Comments — generic relation, single-level flattening, soft delete
 - [ ] Contact form — react-hook-form + zod + Turnstile + Resend

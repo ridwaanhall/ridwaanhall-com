@@ -17,6 +17,7 @@ node scripts/compare-guestbook.mjs     # thread shape and captions vs the live s
 npx tsx scripts/check-comments.mjs     # comment rules vs the live schema, rolled back
 npx tsx scripts/check-emails.mjs       # all five email pairs render, escape, and fill
 npx tsx --conditions=react-server scripts/check-turnstile.mjs   # spam gate fails closed
+npx tsx scripts/check-admin.mjs [base]  # the admin gate leaks nothing; the changelist works
 node scripts/compare-jsonld.mjs        # structured data vs the live site
 node scripts/compare-prose.mjs [slug] [width]   # rich-text typography vs live
 MSYS_NO_PATHCONV=1 node scripts/compare-layout.mjs [path]   # rendered geometry vs live
@@ -354,12 +355,42 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
       `@source inline(...)` entries for classes that only existed in blocks
 
 ## Phase 3 — admin
-- [ ] Shell, auth gate on `is_staff`
-- [ ] List views (TanStack Table) matching each `list_display` / `list_filter` / `search_fields`
+- [x] Shell, auth gate on `is_staff` — `app/admin/`, `lib/auth/staff.ts`,
+      `components/admin/`. The 18 screens are declared up front in
+      `lib/admin/registry.ts`, grouped by Django app; the unbuilt ones render
+      dimmed rather than as links to a 404, so the sidebar shows how much is
+      left. `scripts/check-admin.mjs` covers the gate and the changelist.
+- [x] The generic changelist — `lib/admin/list.ts` + `components/admin/changelist.tsx`.
+      One descriptor per model carries `list_display` / `list_filter` /
+      `search_fields` / `ordering`; a new screen is a descriptor and nothing else.
+- [x] **Blog posts** (`lib/admin/models/blog-post.ts`) — the first list built on it.
+- [ ] The remaining 14 changelists + the 3 singletons
 - [ ] Forms, inlines with dnd-kit ordering, singleton editors
+      (`/admin/<model>/<id>` exists and is **read-only** until this lands)
 - [ ] The five JSON editors (string list, key/value, grouped, credits, content blocks)
 - [ ] Image upload to Supabase Storage + reference-counted cleanup
 - [ ] Users screen (`is_staff` / `is_author` / `is_co_author`)
+
+### Decisions taken while building it
+
+- **Server-rendered, not TanStack Table.** The plan named it, and it earns its
+  weight for *client-side* table state. Sorting, filtering, searching and paging
+  are all answered in SQL here — several of these tables outgrow a page (101
+  skills, 64 projects, 62 applications) and a list that silently sorts only the
+  rows it already has is worse than one that does not sort at all. Expressing it
+  all in the URL instead means the back button works, a filtered list can be
+  bookmarked, and no table state has to be shipped and kept in step. No
+  dependency was added.
+- **Readable query parameters** (`?q=`, `?page=`, `?sort=`, `?dir=`) rather than
+  Django's positional `?o=1.-2` and `?is_featured__exact=1`. Nothing links to the
+  old URLs — the admin is gated and `noindex` — so there was no scheme to keep.
+- **One flat URL segment**, `/admin/blog-post`, not `/admin/blog/blogpost`. Every
+  model name is unique across the eight apps, so the app segment said nothing.
+- **Foreign keys will display through a scalar subquery, not a join.** Django
+  needed `list_select_related` to avoid a query per row; a correlated subquery is
+  likewise one query and keeps a single table in `FROM`, so filtering, ordering,
+  counting and paging compose with no join plumbing duplicated between the row
+  query and the count query.
 
 ---
 
@@ -626,6 +657,37 @@ Each is recorded at its call site and in the comparison scripts.
   `github: {id,login,name,avatar_url,…}`). `lib/auth/profile.ts` reads the
   display name and avatar back out of it, so a "tidied" subset would blank
   every avatar on the guestbook.
+- **A layout is not an auth gate.** Returning a "Not permitted" screen instead of
+  `{children}` does not stop the page underneath running: React renders a layout
+  and its children concurrently, so the layout only decides what is *displayed*.
+  The admin's first version answered a non-staff request with 72KB in which the
+  visible HTML said "Not permitted" and the Flight payload below it carried every
+  blog post, its slug and its edit URL — not rendered, but transmitted, and
+  invisible to any check that reads the page the way a person does. Every admin
+  page calls `requireStaff()` as its first `await`; route handlers and server
+  actions, which do not nest under a layout at all, call `isStaffRequest()`.
+  `scripts/check-admin.mjs` reads whole response bodies, payload included, and
+  fails if row data appears in one. Removing the gate to prove it fails takes ten
+  seconds and is worth doing after touching any of it.
+- **`is_staff` is read from the database per request, never from the token.** Same
+  rule as `is_author`/`is_co_author`, and it matters more here: sessions are
+  thirty-day JWTs, so a token minted while someone was staff would keep asserting
+  it for a month after the flag was cleared.
+- **A dynamic route under `cacheComponents` cannot 404.** The status is committed
+  as soon as the route is known to be dynamic, and reading the session cookie —
+  which every admin page does first, deliberately — is what makes it so. So
+  `notFound()` renders the not-found page under an HTTP **200** on the production
+  build (`next dev` still answers 404). Putting the registry lookup ahead of the
+  gate would fix the status; it is not done, because the gate goes first. Assert
+  the body, not the status.
+- **`contain: layout` on the changelist's scroll container is load-bearing.**
+  Without it the table's `min-w-[46rem]` leaked past its own `overflow-x-auto`
+  into the initial containing block and the whole page scrolled 78px sideways at
+  390px wide — while `body` and every ancestor correctly reported 390, so only
+  `document.documentElement.scrollWidth` showed it. Clipping the container,
+  clipping any wrapper, `overflow-x: clip` on `main` or `html`, `width: 100%`,
+  `min-width: 0` and `flow-root` all changed nothing; only `contain: layout` (or
+  the heavier `contain: paint`) did.
 - **No shadows.** `grep -rn 'shadow' app components` should stay empty apart from `ring-*`.
 - **Tooltips are `title` attributes**, never `group-hover` chips — a chip is unreachable on touch.
 - **A check script that drives a `server-only` module needs

@@ -12,6 +12,7 @@ node scripts/compare-meta.mjs          # <head> vs the live site, page by page
 node scripts/check-breakpoints.mjs     # one visible theme toggle at every width
 node scripts/check-notifications.mjs   # toast stack outside the transformed column
 npx tsx scripts/check-auth-adapter.mjs # Auth.js adapter vs the live schema, rolled back
+node scripts/compare-guestbook.mjs     # thread shape and captions vs the live site
 node scripts/compare-jsonld.mjs        # structured data vs the live site
 node scripts/compare-prose.mjs [slug] [width]   # rich-text typography vs live
 MSYS_NO_PATHCONV=1 node scripts/compare-layout.mjs [path]   # rendered geometry vs live
@@ -217,7 +218,24 @@ invisible to every layout and text comparison) and `scripts/compare-gallery.mjs`
       `https://ridwaanhall.com/api/auth/callback/google` adding to its list;
       GitHub needs `https://ridwaanhall.com/api/auth/callback/github`. Missing
       these fails at the provider, which looks nothing like an app bug.
-- [ ] Guestbook — threaded tree (3 levels), pin, delete branch, `show_reply_to`
+- [x] Guestbook — threaded tree (3 levels), pin, delete branch, `show_reply_to`.
+      Verified against live by `scripts/compare-guestbook.mjs`, which walks both
+      rendered threads and compares every message's id, depth, parent, pinned
+      state, caption and body: **50 messages, 29 roots, max depth 2, 1 caption,
+      identical on both sides**. That is the check worth having — `tree.py` and
+      `lib/data/guestbook-tree.ts` are two implementations of one algorithm, and
+      a unit test would only prove the port agrees with itself.
+      Signed-in UI verified with a locally minted session (author account): all
+      three per-message controls render, the unpin control appears on the pinned
+      card, depths 0–2 only, and the "Signed in as" line masks the address
+      exactly as `mask_email` does (`ri************v@gmail.com`).
+      **The write path is not yet exercised** — posting, pinning and deleting
+      write to the live guestbook, so they need a deliberate go-ahead rather than
+      a test message on the production site.
+- [ ] Guestbook — **email notifications on a new message.** `apps/guestbook/
+      signals.py` emails the author, the message's author and everyone they
+      replied to. The port writes rows directly, so nothing fires; this lands
+      with the email templates.
 - [ ] Comments — generic relation, single-level flattening, soft delete
 - [ ] Contact form — react-hook-form + zod + Turnstile + Resend
 - [ ] Email templates (5 pairs) via react-email
@@ -475,6 +493,18 @@ Each is recorded at its call site and in the comparison scripts.
   every avatar on the guestbook.
 - **No shadows.** `grep -rn 'shadow' app components` should stay empty apart from `ring-*`.
 - **Tooltips are `title` attributes**, never `group-hover` chips — a chip is unreachable on touch.
+- **A client component must not import from a module that touches `db`.** The
+  guestbook panel imported two constants from `lib/data/guestbook.ts` and pulled
+  `pg` into the browser bundle, which fails outright on `Can't resolve 'dns'`.
+  Types alone are erased; it is a *value* import that drags the module in. Pure
+  shapes, limits and logic live in `lib/data/guestbook-tree.ts` for exactly this
+  reason -- and it mirrors the original's own split, `tree.py` issuing no
+  queries.
+- **Under `cacheComponents`, an uncached read outside `<Suspense>` is an error.**
+  The guestbook reads the session cookie and a live thread; both have to sit
+  inside a boundary or the route fails to prerender
+  (`blocking-prerender-dynamic`). The dashboard already had this shape for its
+  two API panels.
 - **Never store CSS classes in the database.** Tailwind generates a class only if it can
   *see* it in a scanned file, so a class that exists only in a row silently does nothing —
   which is how `pl-5`, `lg:text-2xl` and `text-blue-600` came to be no-ops on the live site.

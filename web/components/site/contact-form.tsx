@@ -1,8 +1,8 @@
 "use client";
 
-import Script from "next/script";
 import { useRef, useState, useTransition } from "react";
 
+import { resetTurnstile, TurnstileWidget } from "@/components/site/turnstile-widget";
 import { submitContact } from "@/lib/actions/contact";
 import { notify } from "@/lib/notify";
 
@@ -24,8 +24,6 @@ import { notify } from "@/lib/notify";
  * this check, so a widget that fails to load cannot be the thing that lets
  * spam through.
  */
-const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY;
-
 export function ContactForm() {
   const [status, setStatus] = useState<null | string>(null);
   const [pending, startTransition] = useTransition();
@@ -73,7 +71,7 @@ export function ContactForm() {
               formRef.current?.reset();
               // Turnstile tokens are single-use, so a second send needs a
               // fresh one; without this the next submit fails verification.
-              window.turnstile?.reset();
+              resetTurnstile();
             }
           });
         }}
@@ -90,15 +88,7 @@ export function ContactForm() {
             name="message"
             required
           />
-          {TURNSTILE_SITE_KEY && (
-            <>
-              <Script
-                src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-                strategy="lazyOnload"
-              />
-              <div className="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-theme="dark" />
-            </>
-          )}
+          <TurnstileWidget />
           <button
             className="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-700 hover:border-zinc-400 bg-zinc-800 px-2 py-2 text-base font-medium text-zinc-300 hover:text-zinc-200 hover:bg-zinc-900 transition-all duration-300 justify-center disabled:opacity-60 disabled:cursor-not-allowed"
             type="submit"
@@ -142,10 +132,3 @@ export function ContactForm() {
 
 const FIELD =
   "w-full rounded-md border border-zinc-700 hover:border-zinc-400 px-3 py-2 focus:outline-none focus:border-zinc-400 bg-transparent placeholder-zinc-400 text-zinc-300 hover:text-zinc-200 transition-all duration-300";
-
-declare global {
-  interface Window {
-    /** Injected by Cloudflare's widget script; absent until it loads. */
-    turnstile?: { reset: (widget?: string) => void };
-  }
-}

@@ -229,7 +229,9 @@ function SearchModal({
   );
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
-  const [highlighted, setHighlighted] = useState(0);
+  // Nothing marked until the reader hovers, arrows or types -- see the reset
+  // block below.
+  const [highlighted, setHighlighted] = useState(NO_HIGHLIGHT);
 
   const entries = useMemo(() => buildEntries(about), [about]);
 
@@ -253,21 +255,36 @@ function SearchModal({
    */
   const navigable = useMemo(() => matches.filter((entry) => !isHere(entry)), [matches, isHere]);
 
-  // Reset the query when the modal closes, and the highlight whenever the
-  // query changes, by adjusting state during render. React supports this and
-  // it avoids the extra render pass that setting state from an effect costs --
-  // which React 19's lint rules now flag.
+  /*
+   * Reset the query when the modal closes, and the highlight when either the
+   * query or the open state changes. Adjusting state during render rather than
+   * from an effect: React supports it, and it avoids the extra render pass --
+   * which React 19's lint rules now flag.
+   *
+   * **Opening marks nothing.** The palette used to highlight the first
+   * navigable row on open, which put the hover wash on Home before the pointer
+   * had gone anywhere near it -- or on Dashboard when you were already on Home,
+   * since the current page is skipped. Either way it looked like the palette
+   * had selected a row by itself, which is the same complaint that took the
+   * highlight off `mouseleave`.
+   *
+   * **Typing does mark the first match**, and that is not the same thing: once
+   * there is a query, the top result is a search result rather than a phantom
+   * cursor, and it is what makes Ctrl+K, type, Enter reach a page. Django
+   * required an arrow key first, which is the behaviour that was deliberately
+   * fixed.
+   */
   const [wasOpen, setWasOpen] = useState(isOpen);
   if (wasOpen !== isOpen) {
     setWasOpen(isOpen);
     if (!isOpen) setQuery("");
-    setHighlighted(0);
+    setHighlighted(NO_HIGHLIGHT);
   }
 
   const [lastQuery, setLastQuery] = useState(query);
   if (lastQuery !== query) {
     setLastQuery(query);
-    setHighlighted(0);
+    setHighlighted(query.trim() ? 0 : NO_HIGHLIGHT);
   }
 
   /*

@@ -11,6 +11,7 @@ node scripts/compare-with-django.mjs   # data layer vs Django, field by field
 node scripts/compare-meta.mjs          # <head> vs the live site, page by page
 node scripts/check-breakpoints.mjs     # one visible theme toggle at every width
 node scripts/check-notifications.mjs   # toast stack outside the transformed column
+node scripts/check-ui-state.mjs        # palette highlight rules, Turnstile theme binding
 npx tsx scripts/check-auth-adapter.mjs # Auth.js adapter vs the live schema, rolled back
 node scripts/compare-guestbook.mjs     # thread shape and captions vs the live site
 npx tsx scripts/check-comments.mjs     # comment rules vs the live schema, rolled back
@@ -476,10 +477,28 @@ Each is recorded at its call site and in the comparison scripts.
 - **Every "Show more" is a `rounded-full` pill.** Django rounded the same
   control three different ways: a pill on experience and applications,
   `rounded-lg` on education and certifications.
-- **The search palette highlights its first navigable result on open**, so
-  Ctrl+K, type, Enter goes somewhere. Django added the highlight only on an
-  arrow key, which meant Enter did nothing until you pressed one. The highlight
-  skips the "You are here" row for the same reason Enter does.
+- **The search palette marks nothing until you ask it to, and typing marks the
+  first match.** Opening used to highlight the first navigable row, which put
+  the hover wash on Home before the pointer had gone near it -- or on Dashboard
+  when you were already on Home, since the current page is skipped. Either way
+  it read as the palette selecting a row by itself. Typing is different and
+  keeps its highlight: with a query, the top row is a search result rather than
+  a phantom cursor, and it is what makes Ctrl+K, type, Enter reach a page.
+  Django required an arrow key before Enter did anything, which is the part
+  that was deliberately fixed. The highlight still skips the "You are here" row
+  for the same reason Enter does.
+- **Turnstile follows the site's theme, not the operating system.** Django
+  rendered `<div class="cf-turnstile" data-sitekey="…">` and let the script
+  choose, which resolves to Turnstile's `auto` -- and `auto` reads
+  `prefers-color-scheme`, the one signal this site never consults, so a reader
+  who switched the site to light while their OS was dark got a dark box in a
+  white form. `components/site/turnstile-widget.tsx` passes the resolved theme
+  explicitly. It has to render explicitly rather than by the script's own scan,
+  because that scan runs once on load and because a widget reads its theme only
+  at creation -- so following the toggle means tearing the old widget down and
+  building a new one. `scripts/check-ui-state.mjs` asserts exactly that, and
+  that only one widget survives: leaking a second would submit two tokens and
+  fail verification.
 - **Leaving the palette's list clears the highlight outright.** Hovering a row
   moves the keyboard highlight -- which Django's palette never did -- and
   nothing used to move it back, so a hovered row wore two marks (the row's

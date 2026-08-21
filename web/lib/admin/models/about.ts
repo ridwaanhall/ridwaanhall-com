@@ -17,6 +17,7 @@ import {
 
 import { countWhere, lookup } from "@/lib/admin/sql";
 
+import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
 /**
@@ -482,4 +483,53 @@ export const organizationList: AdminListModel<OrganizationRow> = {
   },
   defaultSort: { key: "name", dir: "asc" },
   rowId: (row) => row.id,
+};
+
+export const skillForm: AdminFormModel = {
+  key: "skill",
+  from: aboutSkill,
+  pk: aboutSkill.id,
+  label: (values) => String(values.name ?? "Skill"),
+  fieldsets: [
+    {
+      fields: [
+        { name: "name", column: aboutSkill.name, label: "Name", kind: "text", required: true, maxLength: 100 },
+        {
+          name: "slug",
+          column: aboutSkill.slug,
+          label: "Slug",
+          kind: "slug",
+          maxLength: 50,
+          slugFrom: "name",
+          help: "Left blank, this is derived from the name.",
+        },
+        {
+          name: "category",
+          column: aboutSkill.category,
+          label: "Category",
+          kind: "text",
+          maxLength: 100,
+          help: "Groups the skill on the about page. Reuse an existing one to join that group.",
+        },
+      ],
+    },
+    {
+      title: "Presentation",
+      fields: [
+        {
+          name: "iconSvg",
+          column: aboutSkill.iconSvg,
+          label: "Icon",
+          kind: "text",
+          maxLength: 500,
+          // Deliberately `text` and not `url`: 78 of these are site-relative
+          // paths under `/static/svg/icon/`, stored in the database and
+          // referenced by nothing in the codebase. Requiring a scheme here
+          // would make every one of them unsaveable.
+          help: "A full URL, or a site path such as /static/svg/icon/python.svg.",
+        },
+        { name: "description", column: aboutSkill.description, label: "Description", kind: "textarea" },
+      ],
+    },
+  ],
 };

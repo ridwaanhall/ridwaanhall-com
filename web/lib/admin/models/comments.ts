@@ -2,6 +2,7 @@ import { username, userEmail } from "@/lib/admin/models/guestbook";
 import { lookup } from "@/lib/admin/sql";
 import { commentsComment, djangoContentType } from "@/lib/db/schema";
 
+import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
 /** `CommentAdmin` in `apps/comments/admin.py`. */
@@ -102,4 +103,55 @@ export const commentList: AdminListModel<CommentRow> = {
   // changelist is not a thread, and the row worth seeing first is the newest.
   defaultSort: { key: "created_at", dir: "desc" },
   rowId: (row) => row.id,
+};
+
+export const commentForm: AdminFormModel = {
+  key: "comment",
+  from: commentsComment,
+  pk: commentsComment.id,
+  label: (values) => {
+    const body = String(values.body ?? "");
+    return body.length > 70 ? `${body.slice(0, 70)}…` : body || "Comment";
+  },
+  // Written by a reader on a post or a project; there is no comment the admin
+  // authored. Deleting here is the *hard* delete Django's admin also offered --
+  // distinct from the soft delete below, which is what the site's own button
+  // does and what leaves a tombstone in the thread.
+  canCreate: false,
+  deleteWarning:
+    "This removes the row outright, and its replies with it. To leave the thread intact, tick Deleted instead.",
+  fieldsets: [
+    {
+      fields: [
+        { name: "body", column: commentsComment.body, label: "Comment", kind: "textarea", required: true },
+        {
+          name: "isDeleted",
+          column: commentsComment.isDeleted,
+          label: "Deleted",
+          kind: "checkbox",
+          help: "A soft delete: the comment is replaced by a tombstone, its replies survive, and it stops being counted.",
+        },
+      ],
+    },
+    {
+      title: "Recorded",
+      fields: [
+        {
+          name: "user",
+          column: commentsComment.userId,
+          display: commentUser,
+          label: "Posted by",
+          kind: "text",
+          readOnly: true,
+        },
+        {
+          name: "createdAt",
+          column: commentsComment.createdAt,
+          label: "Posted",
+          kind: "datetime",
+          readOnly: true,
+        },
+      ],
+    },
+  ],
 };

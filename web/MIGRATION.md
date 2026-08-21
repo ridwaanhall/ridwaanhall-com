@@ -18,6 +18,7 @@ npx tsx scripts/check-comments.mjs     # comment rules vs the live schema, rolle
 npx tsx scripts/check-emails.mjs       # all five email pairs render, escape, and fill
 npx tsx --conditions=react-server scripts/check-turnstile.mjs   # spam gate fails closed
 npx tsx scripts/check-admin.mjs [base]  # the admin gate leaks nothing; the changelist works
+npx tsx scripts/check-admin-forms.mjs [base]  # the change form, driven live and cleaned up after
 node scripts/compare-jsonld.mjs        # structured data vs the live site
 node scripts/compare-prose.mjs [slug] [width]   # rich-text typography vs live
 MSYS_NO_PATHCONV=1 node scripts/compare-layout.mjs [path]   # rendered geometry vs live
@@ -367,8 +368,18 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
       mirroring `apps/<app>/admin.py` one to one. The three singletons
       (`Profile`, `HiringProfile`, `OpenToWorkProfile`) have no list by
       definition and arrive with the forms.
-- [ ] Forms, inlines with dnd-kit ordering, singleton editors
-      (`/admin/<model>/<id>` exists and is **read-only** until this lands)
+- [x] The generic change form — `lib/admin/form.ts`, `lib/actions/admin.ts`,
+      `components/admin/record-form.tsx`. Fields are declared per model and
+      **only declared fields are written**: the save path walks the descriptor
+      rather than the submitted `FormData`, so a hand-crafted POST carrying
+      `is_superuser` reaches no column. Create, edit, delete, per-field
+      validation, unique clashes on the field, and `updateTag` invalidation.
+- [x] **Forms for the five models that need no image, JSON or inline**: Skill,
+      Message, User profile, Comment, User. `canCreate` / `canDelete` are set
+      per model with the reason at the descriptor — an account is made by a
+      sign-in, a message by a reader, a profile row by a signal.
+- [ ] Forms for the remaining ten, which need the pieces below
+- [ ] Inlines with dnd-kit ordering, singleton editors
 - [ ] The five JSON editors (string list, key/value, grouped, credits, content blocks)
 - [ ] Image upload to Supabase Storage + reference-counted cleanup
 - [ ] Users screen (`is_staff` / `is_author` / `is_co_author`)
@@ -405,6 +416,22 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
   not a thread. Where a model's `ordering` names a column `list_display` did not
   include (`Education.id`, `LegalDocument.sort_order`), that column was added —
   otherwise the list is unsortable by the very thing it is sorted by.
+- **Editing is refused where the record is not the admin's to make.** A
+  guestbook message is written by a reader, an account by a sign-in, a
+  `UserProfile` by a `post_save` signal — so none of them offers an add form,
+  and `saveRecord` refuses the same case again on the server. Deleting an
+  account is refused outright: it would cascade through their messages and
+  comments, and there is no re-registration flow to undo it, since the account
+  *is* the provider identity.
+- **You cannot lock yourself out of the admin.** `staffGate` needs
+  `is_active AND is_staff`, both read fresh per request, and every account is
+  OAuth with no password to sign back in with — so clearing either on your own
+  account is unrecoverable. Django's `UserAdmin` allowed exactly that.
+- **Pinning is not offered as a checkbox**, though `is_pinned` is a boolean
+  column. `pinMessage` caps the pinned set under a deterministic row lock and
+  stamps `pinned_at`, which is what the pinned cards are ordered by; a generic
+  form setting the flag alone would skip the cap and break the ordering. The
+  field is read-only in the admin and points at the guestbook.
 - **`auth_user` has no Django counterpart to port.** Django inherited
   `django.contrib.auth`'s `UserAdmin`, so the users screen is built to what the
   accounts are for here: who reaches the admin, and who is credited on the
@@ -701,6 +728,28 @@ Each is recorded at its call site and in the comparison scripts.
   build (`next dev` still answers 404). Putting the registry lookup ahead of the
   gate would fix the status; it is not done, because the gate goes first. Assert
   the body, not the status.
+- **Nothing that holds a Drizzle column may cross to a client component.** A
+  `PgColumn` references its table, which references every column back, so
+  serialising one is an infinite walk — and React answers it with
+  `RangeError: Maximum call stack size exceeded`, which names nothing. Form
+  descriptors go through `toClientFieldsets`, which builds the projection up
+  explicitly rather than destructuring the column away, so a field gaining
+  another non-serialisable property is a compile error and not a stack overflow.
+- **Writes are keyed by the Drizzle property, not the SQL column name.**
+  `insert` and `set` take the schema's own keys (`iconSvg`); `PgColumn.name` is
+  `icon_svg`. Handing over the latter produced an insert Drizzle had no column
+  for and every create silently wrote nothing. `toColumns` resolves the key from
+  the table by column identity — the two happen to match on single-word columns,
+  which is exactly why guessing looked fine.
+- **A driver error is on `error.cause`, not on `error`.** Drizzle wraps a failed
+  query in a `DrizzleQueryError`, so `error.code` is `undefined` and a unique
+  violation falls through as a 500 instead of a message on the field.
+  `driverError` walks the chain.
+- **Django's two spellings of "optional" produce different columns.**
+  `blank=True` alone leaves a `NOT NULL` column holding the empty string;
+  `blank=True, null=True` allows a real null. Writing `null` into the first
+  raises a not-null violation — which is what every optional field on the first
+  form did. `blankValue` reads `column.notNull` rather than assuming.
 - **Never build a correlated subquery as a raw `sql` template.** Drizzle renders
   a column interpolated into `sql` with its *bare* name, not `"table"."column"`,
   and a correlated subquery is exactly where that decides which table a name

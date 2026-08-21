@@ -10,7 +10,7 @@ import {
   relatedChoices,
   type FilterChoice,
 } from "@/lib/admin/list";
-import { listModelFor } from "@/lib/admin/models";
+import { formModelFor, listModelFor } from "@/lib/admin/models";
 import { ADMIN_ENTRIES, ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
 import { requireStaff } from "@/lib/auth/staff";
 
@@ -80,6 +80,7 @@ export default async function AdminListPage({ params, searchParams }: Params) {
    */
   if (!entry || !model) notFound();
 
+  const form = formModelFor(key);
   const listParams = readListParams(model, await searchParams);
 
   // Filters that read their vocabulary from the data need a query each -- the
@@ -116,6 +117,9 @@ export default async function AdminListPage({ params, searchParams }: Params) {
         params={listParams}
         page={page}
         filterChoices={filterChoices}
+        // A model with no form yet cannot create, and one whose descriptor says
+        // `canCreate: false` has a reason recorded there.
+        canCreate={form !== null && form.canCreate !== false}
       />
     </div>
   );

@@ -1,6 +1,7 @@
 import { lookupOr } from "@/lib/admin/sql";
 import { authUser, guestbookUserprofile } from "@/lib/db/schema";
 
+import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
 /**
@@ -97,4 +98,67 @@ export const userList: AdminListModel<UserRow> = {
   },
   defaultSort: { key: "username", dir: "asc" },
   rowId: (row) => row.id,
+};
+
+export const userForm: AdminFormModel = {
+  key: "user",
+  from: authUser,
+  pk: authUser.id,
+  label: (values) => String(values.username ?? "Account"),
+  // Accounts are created by a sign-in and by nothing else: the adapter writes
+  // one the first time a provider hands back an identity. Deleting one would
+  // cascade through their messages and comments, which is a data loss no
+  // checkbox should be able to cause -- and there is no re-registration flow to
+  // undo it, since the account *is* the provider identity.
+  canCreate: false,
+  canDelete: false,
+  fieldsets: [
+    {
+      title: "Identity",
+      help: "Set by the provider at sign-in. Changing either here would not change what the provider sends back.",
+      fields: [
+        { name: "username", column: authUser.username, label: "Username", kind: "text", readOnly: true },
+        { name: "email", column: authUser.email, label: "Email", kind: "email", readOnly: true },
+      ],
+    },
+    {
+      title: "Access",
+      fields: [
+        {
+          name: "isStaff",
+          column: authUser.isStaff,
+          label: "Staff",
+          kind: "checkbox",
+          help: "Grants this admin. Read from the database on every request, so clearing it takes effect at once.",
+        },
+        {
+          name: "isActive",
+          column: authUser.isActive,
+          label: "Active",
+          kind: "checkbox",
+          help: "An inactive account cannot sign in, and cannot reach this admin even as staff.",
+        },
+      ],
+    },
+  ],
+  /*
+   * You cannot lock yourself out.
+   *
+   * `staffGate` requires `is_active AND is_staff`, both read fresh per request,
+   * so clearing either on your own account takes effect on the very next page
+   * load -- with no password to sign back in with, since every account is
+   * OAuth. Django's `UserAdmin` allowed exactly this and it is a known way to
+   * lose an admin; there are three other staff accounts here, but relying on
+   * that is not a guard.
+   *
+   * The author and co-author flags are edited on User profiles, not here: they
+   * live on a different table, and giving one field two homes is how the two
+   * drift.
+   */
+  validate: async (values, { id, actorId }) => {
+    if (id !== actorId) return null;
+    if (!values.isStaff) return "You cannot remove your own staff access.";
+    if (!values.isActive) return "You cannot deactivate your own account.";
+    return null;
+  },
 };

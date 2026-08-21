@@ -5,15 +5,22 @@ import {
   educationList,
   experienceList,
   organizationList,
+  skillForm,
   skillList,
 } from "@/lib/admin/models/about";
 import { blogPostList } from "@/lib/admin/models/blog";
-import { commentList } from "@/lib/admin/models/comments";
-import { chatMessageList, userProfileList } from "@/lib/admin/models/guestbook";
+import { commentForm, commentList } from "@/lib/admin/models/comments";
+import {
+  chatMessageForm,
+  chatMessageList,
+  userProfileForm,
+  userProfileList,
+} from "@/lib/admin/models/guestbook";
 import { legalDocumentList, legalSectionList } from "@/lib/admin/models/legal";
 import { projectList } from "@/lib/admin/models/projects";
-import { userList } from "@/lib/admin/models/users";
+import { userForm, userList } from "@/lib/admin/models/users";
 
+import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
 /**
@@ -67,4 +74,21 @@ export const ADMIN_LIST_MODELS: Record<string, AdminListModel<never>> = Object.f
 
 export function listModelFor(key: string) {
   return ADMIN_LIST_MODELS[key] ?? null;
+}
+
+/**
+ * The form descriptors, for the screens whose editing is built.
+ *
+ * Separate from the changelists rather than folded into them: a list exists for
+ * every model, and a form arrives per model as the fields it needs are built.
+ * A key with a list but no form gets the read-only record view, which says so.
+ */
+const FORMS: AdminFormModel[] = [skillForm, chatMessageForm, userProfileForm, commentForm, userForm];
+
+export const ADMIN_FORM_MODELS: Record<string, AdminFormModel> = Object.fromEntries(
+  FORMS.map((model) => [model.key, model]),
+);
+
+export function formModelFor(key: string): AdminFormModel | null {
+  return ADMIN_FORM_MODELS[key] ?? null;
 }

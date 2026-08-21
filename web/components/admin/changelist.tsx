@@ -1,7 +1,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 
-import { CheckIcon, DashIcon, SortIcon } from "@/components/admin/admin-icons";
+import { CheckIcon, DashIcon, PlusIcon, SortIcon } from "@/components/admin/admin-icons";
 import { FilterSelect } from "@/components/admin/filter-select";
 import { adminDate, adminDateTime } from "@/lib/admin/format";
 import { listHref, sortHref } from "@/lib/admin/href";
@@ -35,6 +35,7 @@ export function Changelist<Row>({
   params,
   page,
   filterChoices,
+  canCreate,
 }: {
   entry: AdminEntry;
   model: AdminListModel<Row>;
@@ -42,6 +43,8 @@ export function Changelist<Row>({
   page: AdminListPage<Row>;
   /** Options for any filter declaring `"distinct"`, resolved by the page. */
   filterChoices: Record<string, FilterChoice[]>;
+  /** Whether this model has a form, and one that may create. */
+  canCreate: boolean;
 }) {
   const { defaultSort } = model;
   const filtered = params.q !== "" || Object.keys(params.filters).length > 0;
@@ -112,9 +115,26 @@ export function Changelist<Row>({
           </Link>
         )}
 
-        <div className="ml-auto text-xs text-zinc-500">
-          {page.total} {page.total === 1 ? entry.label.toLowerCase() : entry.labelPlural.toLowerCase()}
-          {filtered && " matching"}
+        <div className="ml-auto flex items-center gap-3">
+          <span className="text-xs text-zinc-500">
+            {page.total}{" "}
+            {page.total === 1 ? entry.label.toLowerCase() : entry.labelPlural.toLowerCase()}
+            {filtered && " matching"}
+          </span>
+          {/*
+            Outside the `<form>` in reading order but inside it in the DOM, which
+            is deliberate: a `<Link>` nested in a form is still a link, and
+            pulling it out would put the toolbar on two rows at every width.
+          */}
+          {canCreate && (
+            <Link
+              href={`/admin/${entry.key}/new` as Route}
+              className="inline-flex items-center gap-1 rounded-full border border-indigo-800 bg-indigo-500/10 px-3 py-1.5 text-xs text-indigo-300 transition-colors hover:bg-indigo-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+            >
+              <PlusIcon height={13} width={13} />
+              Add
+            </Link>
+          )}
         </div>
       </form>
 

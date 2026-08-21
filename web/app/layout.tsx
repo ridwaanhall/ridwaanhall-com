@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 
 import { ClickSpark } from "@/components/providers/click-spark";
+import { ConfirmDialogProvider } from "@/components/providers/confirm-dialog";
+import { Notifications } from "@/components/providers/notifications";
 import { ThemeColorSync } from "@/components/providers/theme-color-sync";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Tooltips } from "@/components/providers/tooltips";
@@ -56,7 +58,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           */}
           <Tooltips />
           <ClickSpark />
-          {children}
+          {/*
+            The toast stack and the confirm dialog, both at body level and both
+            for the same reason as the two above: `#page-content` animates a
+            transform, and a transformed ancestor becomes the containing block
+            for its `position: fixed` descendants. A stack or a dialog rendered
+            inside it would be positioned against the content column instead of
+            the viewport -- the dialog's backdrop blur would stop at the
+            sidebar. `apps/core/tests/test_notifications.py` asserted this
+            structurally, and nothing else in either tree catches it.
+
+            `ConfirmDialogProvider` wraps `{children}` because `useConfirm`
+            reads its context, but renders the dialog itself as a sibling of
+            them, so the placement holds.
+          */}
+          <Notifications />
+          <ConfirmDialogProvider>{children}</ConfirmDialogProvider>
         </ThemeProvider>
       </body>
     </html>

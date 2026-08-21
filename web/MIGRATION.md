@@ -10,6 +10,7 @@ Verification harnesses (run all three before calling a phase done):
 node scripts/compare-with-django.mjs   # data layer vs Django, field by field
 node scripts/compare-meta.mjs          # <head> vs the live site, page by page
 node scripts/check-breakpoints.mjs     # one visible theme toggle at every width
+node scripts/check-notifications.mjs   # toast stack outside the transformed column
 node scripts/compare-jsonld.mjs        # structured data vs the live site
 node scripts/compare-prose.mjs [slug] [width]   # rich-text typography vs live
 MSYS_NO_PATHCONV=1 node scripts/compare-layout.mjs [path]   # rendered geometry vs live
@@ -191,7 +192,22 @@ invisible to every layout and text comparison) and `scripts/compare-gallery.mjs`
 - [ ] Comments — generic relation, single-level flattening, soft delete
 - [ ] Contact form — react-hook-form + zod + Turnstile + Resend
 - [ ] Email templates (5 pairs) via react-email
-- [ ] Toast stack (sonner) + confirm dialog — **must mount outside `#page-content`**
+- [x] Toast stack (sonner) + confirm dialog — both mounted in `app/layout.tsx`, as
+      siblings of `{children}` and therefore outside `#page-content`. Verified at
+      runtime by `scripts/check-notifications.mjs`, which also proves its own
+      predicate discriminates (moving the region inside flips the assertion).
+      `components/site/toast.tsx` is the only definition of a toast's markup, as
+      `_toast.html` was; sonner supplies only the machinery `notify.js`
+      hand-rolled — timers, the hover hold, stacking, enter/exit — and none of
+      the appearance (`toastOptions.unstyled`). Geometry matches the original:
+      384px (`sm:w-96`) from `sm` up, `calc(100% - 32px)` below it, 16px inset,
+      8px gaps, four visible, `z-[60]` over the dialog's `z-50`. Measured in
+      light mode at 9.1 / 8.8 / 7.95 : 1.
+      The confirm dialog is a promise — `await confirm({...})` — rather than the
+      two `data-confirm-*` modes; see the departures table.
+      `lib/utils/use-modal.ts` now carries the mount/reveal timing, the scroll
+      lock and Escape, shared with the search palette the way `modalDialog.js`
+      was.
 - [ ] Blog view counter
 
 ---
@@ -371,6 +387,23 @@ Each is recorded at its call site and in the comparison scripts.
 - **The dashboard's stat values are unweighted.** `font-medium` came off the six
   WakaTime figures and the four GitHub numbers; the labels above them keep it.
   Live renders all ten at weight 500.
+- **Confirmation is a promise, not two `data-confirm-*` modes.** Django needed
+  both: `data-confirm-action` posted the dialog's own form, and
+  `data-confirm-event` dispatched a `CustomEvent` for actions carried out over
+  fetch, which could not navigate away without discarding the page state they
+  had just updated. Neither problem exists here -- every caller is already a
+  client component doing its own work -- so `await confirm({ ... })` returns a
+  boolean and both modes collapse into one. It also removes the delegation from
+  `document` the original needed, which existed because the guestbook replaced
+  its whole panel after each post and left any load-time handler pointing at
+  dead nodes.
+- **Toasts stack newest-first, and overflow queues rather than being dropped.**
+  The original appended to a column and deleted from the front, so the newest
+  four showed oldest-at-top; sonner's top-anchored stack puts the newest at the
+  top, and a fifth waits at `opacity: 0` until one ahead of it clears instead of
+  being discarded outright. Both keep the newest four visible, which is the
+  property that mattered -- a burst of errors must not push the newest
+  off-screen.
 
 ## Known, imperceptible differences
 

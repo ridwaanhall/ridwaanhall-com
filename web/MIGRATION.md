@@ -240,10 +240,6 @@ invisible to every layout and text comparison) and `scripts/compare-gallery.mjs`
       the right wording, quoted the message and focused Cancel. Database
       afterwards: 50 rows, max id 63, 1 pinned, identical to the baseline, and
       `compare-guestbook.mjs` still matches live.
-- [ ] Guestbook — **email notifications on a new message.** `apps/guestbook/
-      signals.py` emails the author, the message's author and everyone they
-      replied to. The port writes rows directly, so nothing fires; this lands
-      with the email templates.
 - [x] Comments — generic relation, single-level flattening, soft delete. On both
       detail pages, behind a `<Suspense>` boundary.
       The table is empty on live, so there is no rendered thread to compare
@@ -328,7 +324,6 @@ invisible to every layout and text comparison) and `scripts/compare-gallery.mjs`
       `lib/utils/use-modal.ts` now carries the mount/reveal timing, the scroll
       lock and Escape, shared with the search palette the way `modalDialog.js`
       was.
-- [ ] Blog view counter
 
 ---
 

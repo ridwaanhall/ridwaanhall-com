@@ -15,7 +15,23 @@ import type { Route } from "next";
  * The body is `flex-col` below `md`. That is the load-bearing half: an icon, two
  * lines of text and a button group do not fit on one line in a phone-width
  * column, and squeezing them is what the certifications banner used to do.
+ *
+ * **Actions are passed as data, not as nodes**, so the row can size itself from
+ * how many there are rather than taking a flag the caller could set wrong: a
+ * lone button hugs its label, while several share a half-width row and split it
+ * evenly. Rendering `<BannerAction>` from the caller would need that decision
+ * duplicated on both sides -- and these are server components, so there is no
+ * context to carry it.
  */
+export type BannerAction = {
+  href: string;
+  label: string;
+  /** Sized by the banner, so every action's glyph matches. */
+  icon: (props: { className: string }) => React.ReactNode;
+  /** Off-site: a plain anchor in a new tab rather than a typed `next/link`. */
+  external?: boolean;
+};
+
 export function AboutBanner({
   icon,
   title,
@@ -26,10 +42,11 @@ export function AboutBanner({
   icon: React.ReactNode;
   title: string;
   subtitle: string;
-  /** One or more `<BannerAction>`; they share the row and each takes an equal share. */
-  actions: React.ReactNode;
+  actions: BannerAction[];
   note: React.ReactNode;
 }) {
+  const share = actions.length > 1;
+
   return (
     <div className="mb-6 p-4 rounded-lg border border-zinc-700/50 hover:border-zinc-600 transition-all duration-200">
       <div className="flex flex-col md:flex-row md:items-center gap-4">
@@ -41,7 +58,13 @@ export function AboutBanner({
           </div>
         </div>
 
-        <div className="flex gap-2 md:w-1/2">{actions}</div>
+        {/* The text block above is `flex-1`, so a content-width row lands at the
+            right-hand end on its own -- no `ml-auto` needed. */}
+        <div className={share ? "flex gap-2 md:w-1/2" : "flex gap-2"}>
+          {actions.map((action) => (
+            <Action key={action.href} action={action} share={share} />
+          ))}
+        </div>
       </div>
 
       <div className="mt-3 flex items-center gap-2">
@@ -52,30 +75,18 @@ export function AboutBanner({
   );
 }
 
-/**
- * One action button in a banner's row.
- *
- * `external` is what picks the element: an off-site destination is a plain
- * anchor opening in a new tab, everything else goes through `next/link` so the
- * route is type-checked and the navigation stays client-side.
- */
-export function BannerAction({
-  href,
-  label,
-  icon: Icon,
-  external,
-}: {
-  href: string;
-  label: string;
-  /** Rendered with `BANNER_ACTION_ICON` so every banner's glyphs match. */
-  icon: (props: { className: string }) => React.ReactNode;
-  external?: boolean;
-}) {
-  const className =
-    "group flex-1 inline-flex items-center justify-center px-2.5 py-1.5 text-xs font-medium rounded-md border border-zinc-600 hover:border-zinc-500 hover:bg-zinc-700/50 transition-all duration-200";
+function Action({ action, share }: { action: BannerAction; share: boolean }) {
+  const { href, label, icon: Icon, external } = action;
+  const className = [
+    share ? "flex-1" : "",
+    "group inline-flex items-center justify-center px-2.5 py-1.5 text-xs font-medium rounded-md border border-zinc-600 hover:border-zinc-500 hover:bg-zinc-700/50 transition-all duration-200",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   const content = (
     <>
-      <Icon className={BANNER_ACTION_ICON} />
+      <Icon className={ACTION_ICON} />
       {label}
     </>
   );
@@ -94,8 +105,7 @@ export function BannerAction({
   );
 }
 
-const BANNER_ACTION_ICON =
-  "w-3.5 h-3.5 mr-1 group-hover:scale-110 transition-transform duration-200";
+const ACTION_ICON = "w-3.5 h-3.5 mr-1 group-hover:scale-110 transition-transform duration-200";
 
 /** The circled `i` on every banner's footnote row. */
 function InfoIcon() {

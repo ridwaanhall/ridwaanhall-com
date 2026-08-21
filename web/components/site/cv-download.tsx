@@ -1,4 +1,4 @@
-import { AboutBanner, BannerAction } from "@/components/site/about-banner";
+import { AboutBanner } from "@/components/site/about-banner";
 
 /**
  * The CV download banner at the top of the about page's Intro tab.
@@ -40,9 +40,7 @@ export function CvDownload() {
       }
       title="Curriculum Vitae"
       subtitle="Access my CV in different formats"
-      actions={FORMATS.map(({ href, label, icon }) => (
-        <BannerAction key={href} href={href} label={label} icon={icon} />
-      ))}
+      actions={[...FORMATS]}
       note="View in PDF, Word format, or get the editable template"
     />
   );

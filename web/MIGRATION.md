@@ -363,6 +363,11 @@ Each is recorded at its call site and in the comparison scripts.
   again; the footnote states how many certifications the page itself lists.
   Verified geometry-neutral for the CV banner -- 164 / 118 / 102px at 375 / 768 /
   1280, identical to live.
+  **A lone action hugs its label** (137px: 97 text + 14 icon + 4 gap + 20 padding
+  + 2 border) rather than splitting the half-width row the three CV buttons
+  share. The banner takes its actions as *data* and derives this from how many
+  there are, instead of a flag the two callers could set inconsistently -- these
+  are server components, so there is no context to carry the decision.
 - **The dashboard's stat values are unweighted.** `font-medium` came off the six
   WakaTime figures and the four GitHub numbers; the labels above them keep it.
   Live renders all ten at weight 500.

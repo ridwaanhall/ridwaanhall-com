@@ -1,4 +1,4 @@
-import { AboutBanner, BannerAction } from "@/components/site/about-banner";
+import { AboutBanner } from "@/components/site/about-banner";
 
 /**
  * The banner at the top of the about page's Certifications tab.
@@ -37,14 +37,14 @@ export function LinkedInCertifications({
       }
       title="View All 115+ Certifications"
       subtitle="See my complete certification portfolio on LinkedIn"
-      actions={
-        <BannerAction
-          href={`https://linkedin.com/in/${username}/details/certifications/`}
-          label="View on LinkedIn"
-          icon={ExternalArrowIcon}
-          external
-        />
-      }
+      actions={[
+        {
+          href: `https://linkedin.com/in/${username}/details/certifications/`,
+          label: "View on LinkedIn",
+          icon: ExternalArrowIcon,
+          external: true,
+        },
+      ]}
       note={`Showing ${count} here; the full record lives on LinkedIn`}
     />
   );

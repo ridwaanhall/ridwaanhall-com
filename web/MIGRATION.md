@@ -363,8 +363,10 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
 - [x] The generic changelist — `lib/admin/list.ts` + `components/admin/changelist.tsx`.
       One descriptor per model carries `list_display` / `list_filter` /
       `search_fields` / `ordering`; a new screen is a descriptor and nothing else.
-- [x] **Blog posts** (`lib/admin/models/blog-post.ts`) — the first list built on it.
-- [ ] The remaining 14 changelists + the 3 singletons
+- [x] **All 15 changelists**, one module per Django app under `lib/admin/models/`,
+      mirroring `apps/<app>/admin.py` one to one. The three singletons
+      (`Profile`, `HiringProfile`, `OpenToWorkProfile`) have no list by
+      definition and arrive with the forms.
 - [ ] Forms, inlines with dnd-kit ordering, singleton editors
       (`/admin/<model>/<id>` exists and is **read-only** until this lands)
 - [ ] The five JSON editors (string list, key/value, grouped, credits, content blocks)
@@ -386,11 +388,30 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
   old URLs — the admin is gated and `noindex` — so there was no scheme to keep.
 - **One flat URL segment**, `/admin/blog-post`, not `/admin/blog/blogpost`. Every
   model name is unique across the eight apps, so the app segment said nothing.
-- **Foreign keys will display through a scalar subquery, not a join.** Django
-  needed `list_select_related` to avoid a query per row; a correlated subquery is
+- **Foreign keys display through a scalar subquery, not a join.** Django needed
+  `list_select_related` to avoid a query per row; a correlated subquery is
   likewise one query and keeps a single table in `FROM`, so filtering, ordering,
   counting and paging compose with no join plumbing duplicated between the row
-  query and the count query.
+  query and the count query. They are built by `lib/admin/sql.ts` and **must
+  not** be hand-written as `sql` templates — see the trap below.
+- **A foreign-key filter lists only the values present**, which is
+  `RelatedOnlyFieldListFilter` rather than Django's default. The comments filter
+  offered all thirty-odd `django_content_type` rows when comments only ever
+  attach to two.
+- **A few default orderings were changed, each for a stated reason** (all noted
+  at the descriptor): projects and skills open on the name rather than the id,
+  since 64 and 101 rows are past the point of scrolling for one; comments open
+  newest-first rather than in `created_at` thread order, because a changelist is
+  not a thread. Where a model's `ordering` names a column `list_display` did not
+  include (`Education.id`, `LegalDocument.sort_order`), that column was added —
+  otherwise the list is unsortable by the very thing it is sorted by.
+- **`auth_user` has no Django counterpart to port.** Django inherited
+  `django.contrib.auth`'s `UserAdmin`, so the users screen is built to what the
+  accounts are for here: who reaches the admin, and who is credited on the
+  guestbook. No password management — every account is OAuth and
+  `auth_user.password` holds an unusable hash — and no groups or permission
+  matrix, since there are zero `auth_group` rows and every staff account is a
+  superuser.
 
 ---
 
@@ -680,6 +701,16 @@ Each is recorded at its call site and in the comparison scripts.
   build (`next dev` still answers 404). Putting the registry lookup ahead of the
   gate would fix the status; it is not done, because the gate goes first. Assert
   the body, not the status.
+- **Never build a correlated subquery as a raw `sql` template.** Drizzle renders
+  a column interpolated into `sql` with its *bare* name, not `"table"."column"`,
+  and a correlated subquery is exactly where that decides which table a name
+  binds to. Written by hand, the users screen produced `where "user_id" = "id"`
+  — correlating `guestbook_userprofile` with itself instead of with `auth_user`.
+  The lookups that appeared to work did so only because the outer column's name
+  did not exist on the inner table, so Postgres resolved it outward by
+  elimination. Passing the same thing through drizzle's `QueryBuilder` renders
+  it fully qualified; `lib/admin/sql.ts` is that, and every scalar lookup in the
+  admin goes through it.
 - **`contain: layout` on the changelist's scroll container is load-bearing.**
   Without it the table's `min-w-[46rem]` leaked past its own `overflow-x-auto`
   into the initial containing block and the whole page scrolled 78px sideways at

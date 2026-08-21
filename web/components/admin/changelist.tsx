@@ -94,9 +94,11 @@ export function Changelist<Row>({
                   ]
                 : filter.kind === "date"
                   ? DATE_FILTER_CHOICES
-                  : filter.choices === "distinct"
-                    ? (filterChoices[filter.key] ?? [])
-                    : filter.choices
+                  : // A fixed vocabulary is used as declared; anything else --
+                    // `"distinct"` or a foreign key -- was looked up by the page.
+                    Array.isArray(filter.choices)
+                    ? filter.choices
+                    : (filterChoices[filter.key] ?? [])
             }
           />
         ))}

@@ -2,7 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { Changelist } from "@/components/admin/changelist";
-import { distinctChoices, fetchAdminList, readListParams, type FilterChoice } from "@/lib/admin/list";
+import {
+  distinctChoices,
+  fetchAdminList,
+  needsLookup,
+  readListParams,
+  relatedChoices,
+  type FilterChoice,
+} from "@/lib/admin/list";
 import { listModelFor } from "@/lib/admin/models";
 import { ADMIN_ENTRIES, ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
 import { requireStaff } from "@/lib/auth/staff";
@@ -75,21 +82,24 @@ export default async function AdminListPage({ params, searchParams }: Params) {
 
   const listParams = readListParams(model, await searchParams);
 
-  // Filters that read their vocabulary from the data need a query each. They
-  // are independent of the page query and of each other, so they all go at
-  // once rather than in sequence -- the same reason the public data layer fans
+  // Filters that read their vocabulary from the data need a query each -- the
+  // values present for a `"distinct"` filter, the referenced rows for a foreign
+  // key. They are independent of the page query and of each other, so they all
+  // go at once rather than in sequence, the same way the public data layer fans
   // out with `Promise.all`.
-  const distinct = (model.filters ?? []).filter(
-    (filter) => filter.kind === "choice" && filter.choices === "distinct",
-  );
+  const lookups = (model.filters ?? []).filter(needsLookup);
 
   const [page, ...resolved] = await Promise.all([
     fetchAdminList(model, listParams),
-    ...distinct.map((filter) => distinctChoices(model.from, filter.column)),
+    ...lookups.map((filter) =>
+      filter.choices === "distinct"
+        ? distinctChoices(model.from, filter.column)
+        : relatedChoices(model.from, filter.column, filter.choices),
+    ),
   ]);
 
   const filterChoices: Record<string, FilterChoice[]> = {};
-  distinct.forEach((filter, index) => {
+  lookups.forEach((filter, index) => {
     filterChoices[filter.key] = resolved[index] ?? [];
   });
 

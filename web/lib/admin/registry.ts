@@ -73,6 +73,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Experience",
     labelPlural: "Experience",
     group: "About",
+    ready: true,
     blurb: "Roles, ordered by the sort column the about page follows.",
   },
   {
@@ -80,6 +81,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Education",
     labelPlural: "Education",
     group: "About",
+    ready: true,
     blurb: "Degrees and the achievements listed under each.",
   },
   {
@@ -87,6 +89,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Certification",
     labelPlural: "Certifications",
     group: "About",
+    ready: true,
     blurb: "Credentials, and which of them are featured.",
   },
   {
@@ -94,6 +97,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Award",
     labelPlural: "Awards",
     group: "About",
+    ready: true,
     blurb: "Honours and the organisation that issued them.",
   },
   {
@@ -101,6 +105,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Skill",
     labelPlural: "Skills",
     group: "About",
+    ready: true,
     blurb: "The catalogue behind the marquee and the tech stacks.",
   },
   {
@@ -108,6 +113,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Application",
     labelPlural: "Applications",
     group: "About",
+    ready: true,
     blurb: "Job applications and their journey steps.",
   },
   {
@@ -115,6 +121,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Organization",
     labelPlural: "Organizations",
     group: "About",
+    ready: true,
     blurb: "The shared company, school and issuer record.",
   },
   {
@@ -130,6 +137,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Project",
     labelPlural: "Projects",
     group: "Projects",
+    ready: true,
     blurb: "Work, its features, its gallery and its tech stack.",
   },
   {
@@ -153,6 +161,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Legal document",
     labelPlural: "Legal documents",
     group: "Legal",
+    ready: true,
     blurb: "The privacy policy and terms, with their sections.",
   },
   {
@@ -160,6 +169,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Legal section",
     labelPlural: "Legal sections",
     group: "Legal",
+    ready: true,
     blurb: "Sections on their own, for searching across documents.",
   },
   {
@@ -167,6 +177,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Message",
     labelPlural: "Messages",
     group: "Guestbook",
+    ready: true,
     blurb: "The guestbook thread, and which messages are pinned.",
   },
   {
@@ -174,6 +185,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "User profile",
     labelPlural: "User profiles",
     group: "Guestbook",
+    ready: true,
     blurb: "Author and co-author flags, and the co-author order.",
   },
   {
@@ -181,6 +193,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Comment",
     labelPlural: "Comments",
     group: "Comments",
+    ready: true,
     blurb: "Comments on posts and projects, including deleted ones.",
   },
   {
@@ -188,6 +201,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "User",
     labelPlural: "Users",
     group: "Users",
+    ready: true,
     blurb: "Accounts, and who may reach this admin at all.",
   },
 ];

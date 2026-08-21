@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, asc, desc, eq, gte, ilike, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, inArray, or, sql, type SQL } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 
 import { pageRange } from "@/lib/api/pagination";
@@ -54,6 +54,18 @@ export type ListColumn<Row> = {
 export type FilterChoice = { value: string; label: string };
 
 /**
+ * A filter whose options are rows of another table, labelled by a column of it.
+ *
+ * This is Django's `list_filter` on a foreign key -- `LegalSection.document`,
+ * `Comment.content_type`. It differs from Django's default in one way, on
+ * purpose: Django's `RelatedFieldListFilter` lists *every* row of the target,
+ * so the comments filter offered all 30-odd `django_content_type` rows when
+ * comments only ever attach to two. Only values actually present are offered
+ * here, which is what `RelatedOnlyFieldListFilter` would have given.
+ */
+export type RelatedChoices = { table: PgTable; value: PgColumn; label: PgColumn };
+
+/**
  * A `list_filter` entry.
  *
  * `choice` filters may declare `"distinct"` instead of a fixed vocabulary,
@@ -61,13 +73,19 @@ export type FilterChoice = { value: string; label: string };
  * actually present, in alphabetical order.
  */
 export type ListFilter =
-  | { key: string; label: string; kind: "boolean"; column: PgColumn }
+  /**
+   * `column` may be an expression rather than a real column: the users screen
+   * filters on `is_author`, which lives on `guestbook_userprofile` and is read
+   * back through a subquery. The two lookup kinds below cannot do that, since
+   * they select *from* the column's table.
+   */
+  | { key: string; label: string; kind: "boolean"; column: PgColumn | SQL }
   | {
       key: string;
       label: string;
       kind: "choice";
       column: PgColumn;
-      choices: FilterChoice[] | "distinct";
+      choices: FilterChoice[] | "distinct" | RelatedChoices;
     }
   | { key: string; label: string; kind: "date"; column: PgColumn };
 
@@ -309,6 +327,36 @@ export async function distinctChoices(
     .map((row) => String(row.value ?? ""))
     .filter(Boolean)
     .map((value) => ({ value, label: value }));
+}
+
+/** The options for a foreign-key filter -- see `RelatedChoices`. */
+export async function relatedChoices(
+  from: PgTable,
+  column: PgColumn,
+  related: RelatedChoices,
+): Promise<FilterChoice[]> {
+  const rows = await db
+    .selectDistinct({ value: related.value, label: related.label })
+    .from(related.table)
+    .where(inArray(related.value, db.select({ value: column }).from(from)))
+    .orderBy(asc(related.label));
+
+  return rows.map((row) => ({ value: String(row.value), label: String(row.label ?? row.value) }));
+}
+
+/**
+ * A filter whose options have to be queried before it can render.
+ *
+ * A type predicate rather than a boolean, so the caller keeps the narrowing:
+ * only `choice` filters can be looked up, and only those are guaranteed to
+ * carry a real column rather than an expression.
+ */
+export type LookupFilter = Extract<ListFilter, { kind: "choice" }> & {
+  choices: "distinct" | RelatedChoices;
+};
+
+export function needsLookup(filter: ListFilter): filter is LookupFilter {
+  return filter.kind === "choice" && !Array.isArray(filter.choices);
 }
 
 /**

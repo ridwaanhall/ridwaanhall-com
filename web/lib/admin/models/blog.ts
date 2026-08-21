@@ -3,7 +3,7 @@ import { blogBlogpost } from "@/lib/db/schema";
 import type { AdminListModel } from "@/lib/admin/list";
 
 /**
- * The blog changelist, from `BlogPostAdmin` in `apps/blog/admin.py`.
+ * The `blog` changelist, from `BlogPostAdmin` in `apps/blog/admin.py`.
  *
  * `list_display`, `list_filter`, `search_fields` and the model's own
  * `ordering = ["-created_at"]` are carried across unchanged -- including the

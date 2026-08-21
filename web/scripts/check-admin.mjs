@@ -225,11 +225,22 @@ check("staff: the list renders", all.status === 200 && allRows.length > 0, `${al
 const notFound = ({ status, body }) => status === 404 || body.includes("Page Not Found");
 
 {
-  const unbuilt = await get("/admin/project", staff);
+  // Taken from the registry rather than hard-coded, so finishing a screen
+  // cannot quietly turn this into a check that the screen 404s.
+  const pending = ADMIN_ENTRIES.find((entry) => !entry.ready);
+  const unbuilt = pending ? await get(`/admin/${pending.key}`, staff) : null;
   const unknown = await get("/admin/nonsense", staff);
-  check("a registered but unbuilt screen says not found", notFound(unbuilt), `status ${unbuilt.status}`);
+
+  if (unbuilt) {
+    check(
+      `a registered but unbuilt screen says not found (${pending.key})`,
+      notFound(unbuilt),
+      `status ${unbuilt.status}`,
+    );
+    check("and it renders no changelist", !unbuilt.body.includes("<table"));
+  }
   check("an unknown key says not found", notFound(unknown), `status ${unknown.status}`);
-  check("and neither renders a changelist", !unbuilt.body.includes("<table") && !unknown.body.includes("<table"));
+  check("and it renders no changelist either", !unknown.body.includes("<table"));
 }
 
 {
@@ -237,6 +248,66 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Page Not
   const missing = await get("/admin/blog-post/999999", staff);
   check("a record renders", found.status === 200 && found.body.includes("Commit Message Style Guide"));
   check("a record that is not there says not found", notFound(missing), `status ${missing.status}`);
+}
+
+// --- every built screen ------------------------------------------------------
+
+/*
+ * One descriptor drives fifteen screens, so a mistake in a shared helper shows
+ * up on some of them and not others. Two of these did exactly that: the
+ * subqueries behind `legal-section` and `user` were written as raw `sql`
+ * templates, which drizzle renders with *bare* column names -- so
+ * `where "user_id" = "id"` correlated a table with itself and the query failed
+ * outright. The ones that appeared to work did so only because the outer
+ * column's name did not exist on the inner table. Every screen is loaded here,
+ * and the rows are checked for the substituted values, not just a 200.
+ */
+{
+  const empty = new Set(["comment"]); // the comments table is genuinely empty
+  const broken = [];
+  const thin = [];
+
+  for (const entry of ADMIN_ENTRIES.filter((candidate) => candidate.ready)) {
+    const { status, body } = await get(`/admin/${entry.key}`, staff);
+    if (status !== 200 || !body.includes("<table")) {
+      broken.push(`${entry.key} (${status})`);
+      continue;
+    }
+    const cells = [...body.matchAll(/<tbody[\s\S]*?<\/tbody>/g)][0]?.[0] ?? "";
+    const rowCount = [...cells.matchAll(/<tr/g)].length;
+    if (!empty.has(entry.key) && rowCount === 0) thin.push(entry.key);
+  }
+
+  check("every built screen renders", broken.length === 0, broken.join(", "));
+  check("and every one with rows shows them", thin.length === 0, thin.join(", "));
+}
+
+{
+  // The two screens whose columns come from a correlated subquery, checked on
+  // the value rather than the status: a mis-correlated subquery returns wrong
+  // data as readily as it errors.
+  const authors = await get("/admin/user?is_author=1", staff);
+  const coAuthors = await get("/admin/user?is_co_author=1", staff);
+  const authorRows = rows(authors.body);
+  const coAuthorRows = rows(coAuthors.body);
+  check(
+    "the author flag reads from guestbook_userprofile, not auth_user",
+    authorRows.length === 1 && authorRows[0][0] === "ridwan",
+    authorRows.map((row) => row[0]).join(", "),
+  );
+  check(
+    "and so does the co-author flag",
+    coAuthorRows.length === 2 && !coAuthorRows.some((row) => row[0] === "ridwan"),
+    coAuthorRows.map((row) => row[0]).join(", "),
+  );
+
+  const sections = await get("/admin/legal-section", staff);
+  const named = rows(sections.body).filter((row) => row[1] && row[1] !== "—");
+  check(
+    "a section names its document, through a self-aliased lookup",
+    named.length > 0,
+    `${named.length} of ${rows(sections.body).length} on page 1`,
+  );
 }
 
 // --- layout ------------------------------------------------------------------

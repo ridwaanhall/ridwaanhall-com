@@ -23,13 +23,13 @@ const TOLERANCE = 2;
 /**
  * Differences that are expected, per path, with the reason.
  *
- * `/contact/` is 88px shorter: the live page renders the Cloudflare Turnstile
- * widget (72px, plus the form's 16px gap) and the port does not yet -- verifying
- * the token is part of the form submission, which is phase 2. Remove this entry
- * when the widget lands.
+ * `/contact/` used to be listed here, 88px shorter because live rendered the
+ * Cloudflare Turnstile widget and the port did not. The widget landed with the
+ * form's submission, and the entry went with it as its own note said it should:
+ * both sides now measure a 72px widget inside a 752px `main`, delta 0. Leaving
+ * it would have hidden the widget disappearing again.
  */
 const EXPECTED = [
-  { path: "/contact/", key: "main", dimension: "h", delta: 88 },
   /*
    * `/about/` differs at every width, and the whole of it is the intro's status
    * badge row. Measured live vs. port with all three flags set, the `main`,

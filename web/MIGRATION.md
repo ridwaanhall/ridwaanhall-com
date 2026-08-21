@@ -14,6 +14,8 @@ node scripts/check-notifications.mjs   # toast stack outside the transformed col
 npx tsx scripts/check-auth-adapter.mjs # Auth.js adapter vs the live schema, rolled back
 node scripts/compare-guestbook.mjs     # thread shape and captions vs the live site
 npx tsx scripts/check-comments.mjs     # comment rules vs the live schema, rolled back
+npx tsx scripts/check-emails.mjs       # all five email pairs render, escape, and fill
+npx tsx --conditions=react-server scripts/check-turnstile.mjs   # spam gate fails closed
 node scripts/compare-jsonld.mjs        # structured data vs the live site
 node scripts/compare-prose.mjs [slug] [width]   # rich-text typography vs live
 MSYS_NO_PATHCONV=1 node scripts/compare-layout.mjs [path]   # rendered geometry vs live
@@ -268,8 +270,48 @@ invisible to every layout and text comparison) and `scripts/compare-gallery.mjs`
       *soft* delete, so a test comment cannot be removed through the UI without
       leaving a tombstone on a real post; clearing it needs a hard `DELETE`.
       Worth doing with a deliberate go-ahead, as the guestbook's was.
-- [ ] Contact form — react-hook-form + zod + Turnstile + Resend
-- [ ] Email templates (5 pairs) via react-email
+- [x] Contact form — zod + Turnstile + Resend. The two emails go out and **only
+      the owner notification decides the outcome**, as `send_contact_email` did:
+      a form that reports failure because the courtesy auto-reply bounced has
+      thrown away the message it existed to deliver.
+      `scripts/check-turnstile.mjs` asserts it fails closed against Cloudflare's
+      real API — a missing, empty and forged token are all rejected. That is the
+      failure that matters, because a verifier returning `true` on an error path
+      looks identical to a working one until the inbox fills.
+      ~~react-hook-form~~ — three uncontrolled fields with `required` and
+      `type="email"` need no form library; the browser's own validation covers
+      them and works before hydration.
+      The `/contact/` entry in `compare-layout.mjs`'s `EXPECTED` is **gone**, as
+      its own note said it should be once the widget landed: both sides now
+      measure a 72px widget inside a 752px `main`, delta 0.
+- [x] Email templates (5 pairs) — `lib/email/templates.ts`, copied **verbatim**
+      rather than re-authored with react-email. They are 62KB of hand-tuned,
+      table-based markup that renders correctly across mail clients; transcribing
+      that into JSX would risk a divergence that only shows up in someone's
+      inbox. `scripts/inline-email-templates.mjs` regenerates them while the
+      Django tree exists.
+      **Verified byte-identical**: both renderers were driven with the same
+      hostile inputs (a name carrying `<script>`, a multi-line message with
+      `<img onerror>`) and all ten bodies came out `cmp`-identical.
+      `lib/email/render.ts` closes the gotcha CLAUDE.md records: Django filled
+      `{{ key }}` with `str.replace` and left an unmatched token *in the sent
+      email*, with "no automated test covers these". Rendering now throws
+      instead, and `scripts/check-emails.mjs` is that test — 27 checks over
+      placeholders, escaping, the unescaped URL and the empty-name fallbacks.
+- [x] Guestbook — email notifications on a new message. All three of the
+      receiver's dispatch rules: notify the owner unless the sender is the owner,
+      confirm to the sender, and tell whoever was replied to unless that is the
+      same person. Fired through `after()` so three SMTP round trips do not keep
+      the poster waiting, and it can no more fail the post than the original's
+      bare `except` could.
+- [x] Blog view counter — verified live: one page load took the post from 80 to
+      81, with no Strict Mode double-count.
+      It moved to the browser out of necessity and the meaning changed with it.
+      Django incremented in the detail view, but this page is prerendered from
+      `generateStaticParams`, so counting there would record one view per deploy.
+      A beacon counts readers whose browser ran the page, excluding the
+      prerender, crawlers and prefetches — and makes the count best-effort, which
+      is the right trade for a number that must never delay the article.
 - [x] Toast stack (sonner) + confirm dialog — both mounted in `app/layout.tsx`, as
       siblings of `{children}` and therefore outside `#page-content`. Verified at
       runtime by `scripts/check-notifications.mjs`, which also proves its own
@@ -535,6 +577,11 @@ Each is recorded at its call site and in the comparison scripts.
   every avatar on the guestbook.
 - **No shadows.** `grep -rn 'shadow' app components` should stay empty apart from `ring-*`.
 - **Tooltips are `title` attributes**, never `group-hover` chips — a chip is unreachable on touch.
+- **A check script that drives a `server-only` module needs
+  `--conditions=react-server`.** `import "server-only"` throws on purpose
+  outside a server environment, which otherwise makes the email and Turnstile
+  modules unimportable from `tsx` — and testing a copy of them instead would
+  defeat the point. The condition resolves its no-op export.
 - **`compare-layout.mjs`'s `EXPECTED` entries only applied to `main`** until the
   comment work needed one elsewhere: every entry carried a `key`, but the call
   site hard-coded `key === "main"`, so the field was decorative and no exemption

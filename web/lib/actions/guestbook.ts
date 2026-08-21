@@ -2,10 +2,12 @@
 
 import { and, eq, ne, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 
 import { auth } from "@/auth";
 import { getUserProfile } from "@/lib/auth/profile";
 import { db } from "@/lib/db/client";
+import { notifyNewGuestbookMessage } from "@/lib/email/guestbook-notify";
 import { guestbookChatmessage } from "@/lib/db/schema";
 import { MAX_MESSAGE_LENGTH, MAX_PINNED, MIN_MESSAGE_LENGTH } from "@/lib/data/guestbook-tree";
 
@@ -76,14 +78,29 @@ export async function sendMessage(formData: FormData): Promise<ActionResult> {
     replyTo = parent?.id ?? null;
   }
 
-  await db.insert(guestbookChatmessage).values({
-    userId: profile.id,
-    message: text,
-    timestamp: new Date().toISOString(),
-    replyToId: replyTo,
-    isPinned: false,
-    pinnedAt: null,
-  });
+  const [created] = await db
+    .insert(guestbookChatmessage)
+    .values({
+      userId: profile.id,
+      message: text,
+      timestamp: new Date().toISOString(),
+      replyToId: replyTo,
+      isPinned: false,
+      pinnedAt: null,
+    })
+    .returning({ id: guestbookChatmessage.id });
+
+  /*
+   * The emails Django's `post_save` receiver sent: the owner, the sender, and
+   * whoever is being replied to.
+   *
+   * `after` rather than `await`, so the reader is not kept waiting on three
+   * SMTP round trips for a message that is already saved -- and `void` on top,
+   * because `notifyNewGuestbookMessage` never rejects. The receiver made the
+   * same promise with a bare `except`: a mail server having a bad day must not
+   * stop someone leaving a message.
+   */
+  if (created) after(() => void notifyNewGuestbookMessage(created.id));
 
   revalidatePath(GUESTBOOK_PATH);
   return { ok: true, notice: replyTo ? "Reply posted." : "Message posted." };

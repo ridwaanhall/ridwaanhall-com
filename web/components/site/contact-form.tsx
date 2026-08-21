@@ -1,22 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import Script from "next/script";
+import { useRef, useState, useTransition } from "react";
+
+import { submitContact } from "@/lib/actions/contact";
+import { notify } from "@/lib/notify";
 
 /**
  * The contact form.
  *
- * Submission is phase 2 -- the POST endpoint, Turnstile verification and the
- * two emails are not built yet -- so the button reports that rather than
- * silently doing nothing. Rendering the form now keeps the page complete and
- * lets its layout be verified against the live site; wiring it up is a change
- * to this one component.
- *
  * The fields are uncontrolled. They carry no state worth tracking on every
  * keystroke, and `required` plus `type="email"` gives the browser's own
  * validation for free -- which also works before hydration.
+ *
+ * The outcome is a toast rather than a line under the button, which is what
+ * replaced `showMessage()` here and the two Django-message blocks elsewhere:
+ * one notification surface for the whole site. The wording comes back from the
+ * action, so this and the comment views phrase the same event identically.
+ *
+ * Turnstile renders only when both keys are configured. Django gated the whole
+ * verification on `USE_CF_TURNSTILE` for the same reason -- a local run without
+ * Cloudflare credentials still has a working form -- and the server mirrors
+ * this check, so a widget that fails to load cannot be the thing that lets
+ * spam through.
  */
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY;
+
 export function ContactForm() {
   const [status, setStatus] = useState<null | string>(null);
+  const [pending, startTransition] = useTransition();
+  const formRef = useRef<HTMLFormElement>(null);
 
   return (
     <div className="mt-8">
@@ -43,11 +56,26 @@ export function ContactForm() {
       </p>
 
       <form
+        ref={formRef}
         id="contact-form"
-        method="post"
         onSubmit={(event) => {
           event.preventDefault();
-          setStatus("Sending messages is not wired up yet — please use one of the links above.");
+          setStatus(null);
+          const data = new FormData(event.currentTarget);
+          startTransition(async () => {
+            const result = await submitContact(data);
+            notify(result.message, result.ok ? "success" : "error");
+            // Kept alongside the toast: a toast is transient and this is the
+            // one form on the site where losing the outcome means retyping a
+            // long message to find out whether it went.
+            setStatus(result.message);
+            if (result.ok) {
+              formRef.current?.reset();
+              // Turnstile tokens are single-use, so a second send needs a
+              // fresh one; without this the next submit fails verification.
+              window.turnstile?.reset();
+            }
+          });
         }}
       >
         <div className="flex flex-grow flex-col gap-4">
@@ -62,15 +90,25 @@ export function ContactForm() {
             name="message"
             required
           />
+          {TURNSTILE_SITE_KEY && (
+            <>
+              <Script
+                src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+                strategy="lazyOnload"
+              />
+              <div className="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-theme="dark" />
+            </>
+          )}
           <button
-            className="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-700 hover:border-zinc-400 bg-zinc-800 px-2 py-2 text-base font-medium text-zinc-300 hover:text-zinc-200 hover:bg-zinc-900 transition-all duration-300 justify-center"
+            className="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-700 hover:border-zinc-400 bg-zinc-800 px-2 py-2 text-base font-medium text-zinc-300 hover:text-zinc-200 hover:bg-zinc-900 transition-all duration-300 justify-center disabled:opacity-60 disabled:cursor-not-allowed"
             type="submit"
             id="submit-btn"
+            disabled={pending}
           >
-            Begin the conversation
+            {pending ? "Sending…" : "Begin the conversation"}
           </button>
           {status && (
-            <p className="text-sm text-amber-400" role="status">
+            <p className="text-sm text-zinc-400" role="status">
               {status}
             </p>
           )}
@@ -104,3 +142,10 @@ export function ContactForm() {
 
 const FIELD =
   "w-full rounded-md border border-zinc-700 hover:border-zinc-400 px-3 py-2 focus:outline-none focus:border-zinc-400 bg-transparent placeholder-zinc-400 text-zinc-300 hover:text-zinc-200 transition-all duration-300";
+
+declare global {
+  interface Window {
+    /** Injected by Cloudflare's widget script; absent until it loads. */
+    turnstile?: { reset: (widget?: string) => void };
+  }
+}

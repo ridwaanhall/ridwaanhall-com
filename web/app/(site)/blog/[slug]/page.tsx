@@ -13,6 +13,7 @@ import {
 import { MediaGallery } from "@/components/site/media-gallery";
 import { RichText } from "@/components/site/rich-text";
 import { ShareRow } from "@/components/site/share-row";
+import { ViewCounter } from "@/components/site/view-counter";
 import { getAboutData } from "@/lib/data/about";
 import { findBySlug, getBlogs } from "@/lib/data/content";
 import { SITE_URL } from "@/lib/seo/config";
@@ -178,6 +179,8 @@ export default async function BlogDetailPage({
             <Suspense fallback={<CommentSectionSkeleton />}>
               <CommentSectionFor label="blog.blogpost" targetId={post.id} slug={post.slug} />
             </Suspense>
+
+            <ViewCounter slug={post.slug} />
           </div>
         </main>
       </article>

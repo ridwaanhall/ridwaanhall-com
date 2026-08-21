@@ -51,9 +51,9 @@ function splitTitle(title: string): [string, string] {
  * named route in the Django URLconf.
  */
 function documentUrl(slug: string): string {
-  if (slug === "privacy-policy") return "/privacy-policy/";
-  if (slug === "terms-and-conditions") return "/terms/";
-  return `/legal/${slug}/`;
+  if (slug === "privacy-policy") return "/privacy-policy";
+  if (slug === "terms-and-conditions") return "/terms";
+  return `/legal/${slug}`;
 }
 
 export async function getLegalDocuments(): Promise<LegalDocument[]> {

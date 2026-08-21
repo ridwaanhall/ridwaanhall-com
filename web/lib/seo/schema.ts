@@ -169,8 +169,8 @@ export function websiteSchema(): JsonLd {
     ],
     // Deliberately no SearchAction -- see the module note.
     potentialAction: [
-      { "@type": "ReadAction", target: `${SITE_URL}/blog/` },
-      { "@type": "ViewAction", target: `${SITE_URL}/projects/` },
+      { "@type": "ReadAction", target: `${SITE_URL}/blog` },
+      { "@type": "ViewAction", target: `${SITE_URL}/projects` },
     ],
     mainEntity: {
       "@type": "Person",
@@ -190,7 +190,7 @@ export function blogSchema(about: AboutData, blogs?: (BlogPost | BlogSummary)[])
     "@context": "https://schema.org",
     "@type": "Blog",
     name: `${AUTHOR}'s Blog`,
-    url: `${SITE_URL}/blog/`,
+    url: `${SITE_URL}/blog`,
     author: { "@type": "Person", name: AUTHOR },
   };
 
@@ -205,7 +205,7 @@ export function blogSchema(about: AboutData, blogs?: (BlogPost | BlogSummary)[])
       author: { "@type": "Person", name: about.name, url: SITE_URL },
       // From the stored slug, not a re-slugified title -- the column is the
       // authority and cannot drift from it.
-      url: `${SITE_URL}/blog/${blog.slug}/`,
+      url: `${SITE_URL}/blog/${blog.slug}`,
       keywords: blog.tags,
     }));
   }
@@ -216,7 +216,7 @@ export function blogPostingSchema(blog: BlogPost, about: AboutData): JsonLd {
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blog/${blog.slug}/` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blog/${blog.slug}` },
     headline: blog.title,
     description: blog.description,
     image: blog.image_url ?? "",
@@ -295,7 +295,7 @@ export function collectionPageSchema(
     "@type": "CollectionPage",
     name: `${about.name}'s ${label}`,
     description: `Browse through ${about.name}'s ${collectionType}`,
-    url: `${SITE_URL}/${collectionType}/`,
+    url: `${SITE_URL}/${collectionType}`,
     author: { "@type": "Person", name: about.name, url: SITE_URL },
     numberOfItems: items.length,
     mainEntity: {
@@ -305,7 +305,7 @@ export function collectionPageSchema(
         "@type": "ListItem",
         position: index + 1,
         name: item.title,
-        url: `${SITE_URL}/${collectionType}/${item.slug}/`,
+        url: `${SITE_URL}/${collectionType}/${item.slug}`,
       })),
     },
   };
@@ -382,7 +382,7 @@ export function contactPageSchema(about: AboutData): JsonLd {
     "@type": "ContactPage",
     name: `Contact ${about.name}`,
     description: `Get in touch with ${about.name} for professional inquiries, project collaborations, or technical discussions.`,
-    url: `${SITE_URL}/contact/`,
+    url: `${SITE_URL}/contact`,
     mainEntity: {
       "@type": "Organization",
       name: about.name,
@@ -452,7 +452,7 @@ export async function profilePageSchema(about: AboutData): Promise<JsonLd> {
     "@type": "ProfilePage",
     name: `${about.name}'s Professional Profile`,
     description: `Professional profile showcasing ${about.name}'s experience, education, certifications, and achievements`,
-    url: `${SITE_URL}/about/`,
+    url: `${SITE_URL}/about`,
     mainEntity: person,
     author: { "@type": "Person", name: about.name, url: SITE_URL },
     dateCreated: SITE_CREATED_ISO,
@@ -476,7 +476,7 @@ export function privacyPolicySchema(about: AboutData, document?: LegalDocument |
     name: "Privacy Policy - ridwaanhall.com",
     description:
       "Comprehensive privacy policy outlining how we collect, use, and protect your personal information on ridwaanhall.com",
-    url: `${SITE_URL}/privacy-policy/`,
+    url: `${SITE_URL}/privacy-policy`,
     dateCreated: SITE_CREATED_ISO,
     dateModified: document ? iso(document.last_updated) : BUILD_TIME_ISO,
     inLanguage: "en",

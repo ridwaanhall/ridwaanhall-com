@@ -107,7 +107,7 @@ export function dashboardSeo(about: AboutData): SeoData {
     og_image: resolveImage(about),
     og_type: CONTENT_TYPES.dashboard.og_type,
     twitter_card: CONTENT_TYPES.dashboard.twitter_card,
-    canonical_url: `${SITE_URL}/dashboard/`,
+    canonical_url: `${SITE_URL}/dashboard`,
     content_type: "dashboard",
     ...baseSeo(),
   };
@@ -136,14 +136,14 @@ export function projectsListSeo(
     og_image: resolveImage(about, projects?.[0]),
     og_type: CONTENT_TYPES.project_list.og_type,
     twitter_card: CONTENT_TYPES.project_list.twitter_card,
-    canonical_url: `${SITE_URL}/projects/`,
+    canonical_url: `${SITE_URL}/projects`,
     content_type: "project_list",
     ...baseSeo(),
   };
   // Paginated views get their own title and canonical, so page 2 is not a
   // duplicate of page 1 in the index.
   return page > 1
-    ? { ...base, title: `${base.title} - Page ${page}`, canonical_url: `${SITE_URL}/projects/?page=${page}` }
+    ? { ...base, title: `${base.title} - Page ${page}`, canonical_url: `${SITE_URL}/projects?page=${page}` }
     : base;
 }
 
@@ -169,7 +169,7 @@ export function projectDetailSeo(project: Project, about: AboutData): SeoData {
     twitter_card: CONTENT_TYPES.project_detail.twitter_card,
     // Built from the stored slug rather than re-slugifying the title, which is
     // what Django did -- the column is the authority and cannot drift from it.
-    canonical_url: `${SITE_URL}/projects/${project.slug}/`,
+    canonical_url: `${SITE_URL}/projects/${project.slug}`,
     content_type: "project_detail",
     ...baseSeo(),
   };
@@ -197,12 +197,12 @@ export function blogListSeo(
     og_image: resolveImage(about),
     og_type: CONTENT_TYPES.blog_list.og_type,
     twitter_card: CONTENT_TYPES.blog_list.twitter_card,
-    canonical_url: `${SITE_URL}/blog/`,
+    canonical_url: `${SITE_URL}/blog`,
     content_type: "blog_list",
     ...baseSeo(),
   };
   return page > 1
-    ? { ...base, title: `${base.title} - Page ${page}`, canonical_url: `${SITE_URL}/blog/?page=${page}` }
+    ? { ...base, title: `${base.title} - Page ${page}`, canonical_url: `${SITE_URL}/blog?page=${page}` }
     : base;
 }
 
@@ -219,7 +219,7 @@ export function blogDetailSeo(blog: BlogPost, about: AboutData): SeoData {
     og_image: resolveImage(about, blog),
     og_type: CONTENT_TYPES.blog_detail.og_type,
     twitter_card: CONTENT_TYPES.blog_detail.twitter_card,
-    canonical_url: `${SITE_URL}/blog/${blog.slug}/`,
+    canonical_url: `${SITE_URL}/blog/${blog.slug}`,
     content_type: "blog_detail",
     published_date: blog.created_at,
     modified_date: blog.updated_at,
@@ -244,7 +244,7 @@ export function aboutSeo(about: AboutData): SeoData {
     og_image: resolveImage(about),
     og_type: CONTENT_TYPES.about.og_type,
     twitter_card: CONTENT_TYPES.about.twitter_card,
-    canonical_url: `${SITE_URL}/about/`,
+    canonical_url: `${SITE_URL}/about`,
     content_type: "about",
   };
 }
@@ -261,7 +261,7 @@ export function contactSeo(about: AboutData): SeoData {
     og_image: resolveImage(about),
     og_type: CONTENT_TYPES.contact.og_type,
     twitter_card: CONTENT_TYPES.contact.twitter_card,
-    canonical_url: `${SITE_URL}/contact/`,
+    canonical_url: `${SITE_URL}/contact`,
     content_type: "contact",
   };
 }
@@ -278,7 +278,7 @@ export function guestbookSeo(about: AboutData): SeoData {
     og_image: resolveImage(about),
     og_type: CONTENT_TYPES.guestbook.og_type,
     twitter_card: CONTENT_TYPES.guestbook.twitter_card,
-    canonical_url: `${SITE_URL}/guestbook/`,
+    canonical_url: `${SITE_URL}/guestbook`,
     content_type: "guestbook",
   };
 }
@@ -295,7 +295,7 @@ export function privacyPolicySeo(about: AboutData): SeoData {
     og_image: resolveImage(about),
     og_type: "website",
     twitter_card: "summary",
-    canonical_url: `${SITE_URL}/privacy-policy/`,
+    canonical_url: `${SITE_URL}/privacy-policy`,
     content_type: "privacy_policy",
   };
 }
@@ -349,7 +349,7 @@ export function openhireSeo(about: AboutData): SeoData {
     og_image: resolveImage(about),
     og_type: "website",
     twitter_card: "summary_large_image",
-    canonical_url: `${SITE_URL}/openhire/`,
+    canonical_url: `${SITE_URL}/openhire`,
     content_type: "openhire",
   };
 }

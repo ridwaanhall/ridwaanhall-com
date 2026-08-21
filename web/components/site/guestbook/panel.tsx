@@ -245,7 +245,7 @@ export function GuestbookPanel({
                     message: "You'll need to sign in again to post or pin messages.",
                     label: "Sign out",
                   });
-                  if (accepted) await signOutHere("/guestbook/");
+                  if (accepted) await signOutHere("/guestbook");
                 }}
                 className="text-zinc-400 hover:text-zinc-300 cursor-pointer underline transition-colors"
               >
@@ -258,7 +258,7 @@ export function GuestbookPanel({
             <span className="text-zinc-400 mb-4 flex items-center justify-center">
               <span>
                 Sign in to begin. Rest assured, your information is secure. See my{" "}
-                <a href="/privacy-policy/" className="text-indigo-400 hover:text-indigo-300 underline">
+                <a href="/privacy-policy" className="text-indigo-400 hover:text-indigo-300 underline">
                   privacy
                 </a>{" "}
                 for more.
@@ -291,7 +291,7 @@ function ProviderButton({
   return (
     <button
       type="button"
-      onClick={() => signInWith(provider, "/guestbook/")}
+      onClick={() => signInWith(provider, "/guestbook")}
       className="inline-flex items-center px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors duration-200 text-sm gap-1 justify-center cursor-pointer"
     >
       {children}

@@ -129,10 +129,20 @@ const EXPECTED = [
  * exemption could ever be written for anything else. A body that changes height
  * moves every heading below it, and those are separate measurements.
  */
+/**
+ * `/about` and `/about/` are the same page to this table.
+ *
+ * The port dropped its trailing slashes while live still carries Django's, so
+ * either form reaches both sides -- one of them through a 308 the browser
+ * follows. Matching an entry on the exact string would silently disable every
+ * exemption depending on which form was typed.
+ */
+const samePath = (a, b) => a.replace(/\/+$/, "") === b.replace(/\/+$/, "");
+
 function expected(key, dimension, live, next) {
   return EXPECTED.some(
     (e) =>
-      e.path === PATH &&
+      samePath(e.path, PATH) &&
       e.key === key &&
       e.dimension === dimension &&
       (e.widths === undefined || e.widths.includes(WIDTH)) &&

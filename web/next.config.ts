@@ -54,10 +54,21 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 
-  // Django's URLs all carry a trailing slash (APPEND_SLASH = True) and are
-  // indexed that way. Keeping it avoids a site-wide set of redirects and
-  // canonical churn.
-  trailingSlash: true,
+  /*
+   * No trailing slash: `/about/` redirects to `/about`.
+   *
+   * This reverses the port's original choice, which kept Django's
+   * `APPEND_SLASH = True` shape so the indexed URLs stayed put. Flipping it is
+   * a deliberate call to standardise on the slash-free form, taken while the
+   * site is still in development and nothing is deployed.
+   *
+   * What it costs is one 308 per indexed URL, once: Google follows them and
+   * transfers ranking, and every canonical, sitemap entry and JSON-LD `@id` in
+   * this codebase emits the slash-free form directly, so a crawler is never
+   * sent to a redirect by our own markup. Inbound links to the old shape keep
+   * working through the redirect indefinitely.
+   */
+  trailingSlash: false,
 
   typedRoutes: true,
 

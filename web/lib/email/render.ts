@@ -1,20 +1,24 @@
-import * as templates from "@/lib/email/templates";
+import { escapeHtml, messageHtml } from "@/lib/email/escape";
+import { button, fields, heading, lede, note, quote, shell, strong } from "@/lib/email/layout";
+import * as text from "@/lib/email/templates";
 
 /**
- * Render one of the transactional emails.
+ * The five transactional emails.
  *
- * **This is where the port fixes a real trap.** Django rendered these with
- * `str.replace` over `{{ key }}` tokens — not the template engine — so a
- * placeholder the calling method forgot was left *in the sent email*, and a
- * `{% %}` tag did nothing at all. CLAUDE.md records it as a gotcha with "no
- * automated test covers these". Here every template declares its keys in the
- * type, and `render` throws if any `{{ … }}` survives, so the failure lands in
- * a log rather than in someone's inbox.
+ * Each is a few lines of composition over `layout.ts` rather than a 170-line
+ * HTML file. The Django originals were five separate templates that had to be
+ * edited in step; a change to the header or the card now happens once, and no
+ * two of them can drift into different designs.
  *
- * Escaping is explicit per key, exactly as the original was: values go into
- * HTML bodies escaped, into text bodies raw, and URLs unescaped (they are
- * ours). Doing it here rather than in the template is what lets one body carry
- * both a `message_html` and a `guestbook_url` with different treatment.
+ * **The plain-text halves are still the originals**, verbatim, in
+ * `templates.ts`. There is no design in them to redo, and they are what a
+ * client that will not render HTML shows — so they keep the wording the site
+ * has always sent.
+ *
+ * `fill` is what the port added over `str.replace`: Django left an unmatched
+ * `{{ key }}` sitting in the *sent* email, which CLAUDE.md records as a gotcha
+ * with "no automated test covers these". This throws instead, and
+ * `scripts/check-emails.mjs` is that test.
  */
 
 const PLACEHOLDER = /\{\{\s*([\w.]+)\s*\}\}/g;
@@ -28,27 +32,12 @@ function fill(template: string, context: Record<string, string>): string {
   });
 
   if (missing.length > 0) {
-    throw new Error(
-      `Email template is missing values for: ${[...new Set(missing)].join(", ")}`,
-    );
+    throw new Error(`Email template is missing values for: ${[...new Set(missing)].join(", ")}`);
   }
   return out;
 }
 
-/** `html.escape`, matching Django's default (quote=True). */
-export function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;");
-}
-
-/** Escape, then turn newlines into `<br>` — `_format_message_html`. */
-function messageHtml(value: string): string {
-  return escapeHtml(value).replace(/\n/g, "<br>");
-}
+export { escapeHtml };
 
 /** Greeting name, falling back to a generic term — `_display_name`. */
 const displayName = (name: string) => name || "there";
@@ -57,9 +46,7 @@ const displayName = (name: string) => name || "there";
 const nameDisplay = (name: string, email: string) => name || email;
 
 export type ContactEmail = { name: string; senderEmail: string; message: string };
-
 export type GuestbookEmail = ContactEmail & { timestamp: string; guestbookUrl: string };
-
 export type ReplyEmail = {
   originalName: string;
   replyName: string;
@@ -74,12 +61,22 @@ export type Rendered = { html: string; text: string };
 
 export function contactNotification({ name, senderEmail, message }: ContactEmail): Rendered {
   return {
-    html: fill(templates.contactNotificationHtml, {
-      name: escapeHtml(name),
-      sender_email: escapeHtml(senderEmail),
-      message_html: messageHtml(message),
+    html: shell({
+      title: "New contact form message",
+      preheader: `${nameDisplay(name, senderEmail)} sent you a message`,
+      eyebrow: "New message",
+      content: [
+        heading("Someone got in touch"),
+        lede(`A new message came in through the contact form on your site.`),
+        fields([
+          { label: "From", value: nameDisplay(name, senderEmail) },
+          { label: "Email", value: senderEmail, href: `mailto:${senderEmail}` },
+        ]),
+        quote({ label: "Message", messageHtml: messageHtml(message) }),
+        note("Replying to this email goes straight back to them."),
+      ].join("\n"),
     }),
-    text: fill(templates.contactNotificationText, {
+    text: fill(text.contactNotificationText, {
       name,
       sender_email: senderEmail,
       message_text: message,
@@ -89,14 +86,22 @@ export function contactNotification({ name, senderEmail, message }: ContactEmail
 
 export function contactAutoreply({ name, senderEmail, message }: ContactEmail): Rendered {
   return {
-    html: fill(templates.contactAutoreplyHtml, {
-      display_name: escapeHtml(displayName(name)),
-      name: name ? escapeHtml(name) : "",
-      name_display: escapeHtml(nameDisplay(name, senderEmail)),
-      sender_email: escapeHtml(senderEmail),
-      message_html: messageHtml(message),
+    html: shell({
+      title: "Thanks for getting in touch",
+      preheader: "Your message reached me — I'll reply soon.",
+      eyebrow: "Confirmation",
+      content: [
+        heading(`Thanks, ${displayName(name)}`),
+        lede(
+          `Your message reached me and I read every one. I usually reply within a day or two.`,
+        ),
+        quote({ label: "What you sent", messageHtml: messageHtml(message) }),
+        note(
+          `This is an automatic confirmation, sent to ${strong(senderEmail)}. Replying to it reaches me directly.`,
+        ),
+      ].join("\n"),
     }),
-    text: fill(templates.contactAutoreplyText, {
+    text: fill(text.contactAutoreplyText, {
       display_name: displayName(name),
       name: name || "",
       name_display: nameDisplay(name, senderEmail),
@@ -114,15 +119,23 @@ export function guestbookNotification({
   guestbookUrl,
 }: GuestbookEmail): Rendered {
   return {
-    html: fill(templates.guestbookNotificationHtml, {
-      name: escapeHtml(name),
-      sender_email: escapeHtml(senderEmail),
-      timestamp: escapeHtml(timestamp),
-      message_html: messageHtml(message),
-      // Ours, and escaping it would break the href.
-      guestbook_url: guestbookUrl,
+    html: shell({
+      title: "New guestbook message",
+      preheader: `${name} left a message in your guestbook`,
+      eyebrow: "Guestbook",
+      content: [
+        heading("A new guestbook message"),
+        lede(`${strong(name)} left a message in your guestbook.`),
+        fields([
+          { label: "From", value: name },
+          { label: "Email", value: senderEmail, href: `mailto:${senderEmail}` },
+          { label: "Posted", value: timestamp },
+        ]),
+        quote({ label: "Message", messageHtml: messageHtml(message) }),
+        button({ href: guestbookUrl, label: "Open the guestbook" }),
+      ].join("\n"),
     }),
-    text: fill(templates.guestbookNotificationText, {
+    text: fill(text.guestbookNotificationText, {
       name,
       sender_email: senderEmail,
       timestamp,
@@ -140,15 +153,22 @@ export function guestbookAutoreply({
   guestbookUrl,
 }: GuestbookEmail): Rendered {
   return {
-    html: fill(templates.guestbookAutoreplyHtml, {
-      display_name: escapeHtml(displayName(name)),
-      name_display: escapeHtml(nameDisplay(name, senderEmail)),
-      sender_email: escapeHtml(senderEmail),
-      message_html: messageHtml(message),
-      timestamp: escapeHtml(timestamp),
-      guestbook_url: guestbookUrl,
+    html: shell({
+      title: "Your message has been sent",
+      preheader: "Your guestbook message is live.",
+      eyebrow: "Confirmation",
+      content: [
+        heading(`Thanks, ${displayName(name)}`),
+        lede("Your message is up on the guestbook. Thanks for leaving a trace."),
+        fields([{ label: "Posted", value: timestamp }]),
+        quote({ label: "What you wrote", messageHtml: messageHtml(message) }),
+        button({ href: guestbookUrl, label: "See it on the guestbook" }),
+        note(
+          `Sent to ${strong(nameDisplay(name, senderEmail))}. Replying to this email reaches me directly.`,
+        ),
+      ].join("\n"),
     }),
-    text: fill(templates.guestbookAutoreplyText, {
+    text: fill(text.guestbookAutoreplyText, {
       display_name: displayName(name),
       name_display: nameDisplay(name, senderEmail),
       sender_email: senderEmail,
@@ -168,15 +188,20 @@ export function guestbookReplyNotification({
   guestbookUrl,
 }: ReplyEmail): Rendered {
   return {
-    html: fill(templates.guestbookReplyNotificationHtml, {
-      original_name: escapeHtml(displayName(originalName)),
-      reply_name: escapeHtml(replyName),
-      reply_message_html: messageHtml(replyMessage),
-      original_message_html: messageHtml(originalMessage),
-      timestamp: escapeHtml(timestamp),
-      guestbook_url: guestbookUrl,
+    html: shell({
+      title: "You have received a reply",
+      preheader: `${replyName} replied to your guestbook message`,
+      eyebrow: "New reply",
+      content: [
+        heading(`${displayName(originalName)}, you have a reply`),
+        lede(`${strong(replyName)} replied to your message in the guestbook.`),
+        fields([{ label: "Replied", value: timestamp }]),
+        quote({ label: "Their reply", messageHtml: messageHtml(replyMessage) }),
+        quote({ label: "Your message", messageHtml: messageHtml(originalMessage) }),
+        button({ href: guestbookUrl, label: "Read the thread" }),
+      ].join("\n"),
     }),
-    text: fill(templates.guestbookReplyNotificationText, {
+    text: fill(text.guestbookReplyNotificationText, {
       original_name: displayName(originalName),
       reply_name: replyName,
       reply_message_text: replyMessage,

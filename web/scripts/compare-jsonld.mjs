@@ -57,6 +57,19 @@ function extractJsonLd(html) {
   return out;
 }
 
+/**
+ * Normalise a trailing slash off a URL on this site.
+ *
+ * The port serves `/about` where Django serves `/about/`, a deliberate
+ * site-wide change that the old form 308s to. Every `url`, `@id`, `target`
+ * and `item` in the structured data carries it, so comparing the strings
+ * exactly would flag most pages forever and bury the differences that matter.
+ */
+const sameSiteUrl = (value) =>
+  typeof value === "string" && value.startsWith("https://ridwaanhall.com")
+    ? value.replace(/\/+$/, "")
+    : value;
+
 /** Flatten to `path -> value` so two trees can be compared key by key. */
 function flatten(node, prefix = "", out = {}) {
   if (node === null || typeof node !== "object") {
@@ -101,7 +114,7 @@ for (const path of PAGES) {
       const leaf = key.split(".").pop().replace(/\[\d+\]$/, "");
       if (EXPECTED_DIFFS.has(leaf)) continue;
       if (EXPECTED_PATH_DIFFS.some((e) => e.page === path && e.key === key)) continue;
-      if (JSON.stringify(a[key]) !== JSON.stringify(b[key])) {
+      if (JSON.stringify(sameSiteUrl(a[key])) !== JSON.stringify(sameSiteUrl(b[key]))) {
         diffs.push({ block: live[i]["@type"], key, live: a[key], next: b[key] });
       }
     }

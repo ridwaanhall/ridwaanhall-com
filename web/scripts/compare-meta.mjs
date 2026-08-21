@@ -84,17 +84,23 @@ const COMPARE = [
   "article:published_time", "article:modified_time",
 ];
 
-let mismatches = 0;
-for (const path of PAGES) {
-  const [nextHtml, liveHtml] = await Promise.all([
-    fetch(NEXT + path).then((r) => r.text()),
-    fetch(LIVE + path).then((r) => r.text()),
-  ]);
-  const a = extract(liveHtml);
-  const b = extract(nextHtml);
+/**
+ * Tags whose value is a URL on this site.
+ *
+ * Compared with the trailing slash normalised away: the port serves `/about`
+ * where Django serves `/about/`, a deliberate site-wide change, and the old
+ * form 308s to the new one. Comparing the strings exactly would flag every page
+ * forever and drown the differences that matter.
+ */
+const SITE_URL_TAGS = new Set(["link:canonical", "og:url"]);
+const withoutSlash = (value) => value.replace(/\/+(?=$|\?)/, "");
 
-  const diffs = COMPARE.filter((k) => {
-    const [x, y] = [a[k] ?? "", b[k] ?? ""];
+const diffsFor = (a, b) =>
+  COMPARE.filter((k) => {
+    let [x, y] = [a[k] ?? "", b[k] ?? ""];
+    if (SITE_URL_TAGS.has(k)) {
+      [x, y] = [withoutSlash(x), withoutSlash(y)];
+    }
     if (COUNT_ONLY.has(k)) {
       return x.split(",").filter(Boolean).length !== y.split(",").filter(Boolean).length;
     }
@@ -104,6 +110,18 @@ for (const path of PAGES) {
     }
     return x !== y;
   }).map((k) => ({ k, live: a[k] ?? "<absent>", next: b[k] ?? "<absent>" }));
+
+let mismatches = 0;
+for (const path of PAGES) {
+  const [nextHtml, liveHtml] = await Promise.all([
+    fetch(NEXT + path).then((r) => r.text()),
+    fetch(LIVE + path).then((r) => r.text()),
+  ]);
+  const a = extract(liveHtml);
+  const b = extract(nextHtml);
+
+
+  const diffs = diffsFor(a, b);
 
   if (diffs.length === 0) {
     console.log(`  ok    ${path}`);

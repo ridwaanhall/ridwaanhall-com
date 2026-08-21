@@ -19,7 +19,7 @@ import { signIn, signOut } from "@/auth";
  * origin to a browser. Only a plain same-site path is accepted here; anything
  * else falls back to the guestbook.
  */
-const FALLBACK = "/guestbook/";
+const FALLBACK = "/guestbook";
 
 function samePath(target: string | undefined): string {
   if (!target || !target.startsWith("/")) return FALLBACK;

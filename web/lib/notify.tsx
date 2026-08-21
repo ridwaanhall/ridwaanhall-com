@@ -9,7 +9,7 @@ import { Toast, type ToastVariant } from "@/components/site/toast";
  *
  *     notify("Message sent.", "success");
  *     notify("Something went wrong.", "error");
- *     notify(<>Please <a href="/guestbook/">sign in</a> to reply.</>, "info");
+ *     notify(<>Please <a href="/guestbook">sign in</a> to reply.</>, "info");
  *
  * The markup is not built here -- `<Toast>` is the only definition of it, and
  * this hands sonner a render function so the palette cannot drift from the

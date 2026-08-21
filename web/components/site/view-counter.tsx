@@ -36,7 +36,7 @@ export function ViewCounter({ slug }: { slug: string }) {
     // `keepalive` so the request survives a reader who clicks away
     // immediately; a failure is swallowed, since a missed tick on a view
     // counter is not worth a console error on an article page.
-    void fetch(`/api/blog/${encodeURIComponent(slug)}/`, {
+    void fetch(`/api/blog/${encodeURIComponent(slug)}`, {
       method: "POST",
       keepalive: true,
     }).catch(() => {});

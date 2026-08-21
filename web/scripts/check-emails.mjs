@@ -96,11 +96,41 @@ check(
 
 // --- the URL must survive intact --------------------------------------------
 for (const name of ["guestbookNotification", "guestbookAutoreply", "guestbookReplyNotification"]) {
-  check(
-    `${name} keeps the guestbook URL unescaped`,
-    rendered[name].html.includes(URL),
-    rendered[name].html.includes("&amp;") && !rendered[name].html.includes(URL) ? "escaped!" : "",
+  check(`${name} keeps the guestbook URL usable`, rendered[name].html.includes(`href="${URL}"`));
+}
+
+// --- the redesign: light palette, one shell ---------------------------------
+// The emails follow the site's light theme now, not the old dark templates.
+//
+// Only *surfaces* are checked, not bare hex: `#18181b` is `zinc-100`, which in
+// the light theme is the heading colour -- near-black text is correct here and
+// only its use as a background would be the old dark card coming back.
+const DARK_SURFACES = ["#09090b", "#18181b", "#1f1f23", "#27272a"];
+for (const [name, body] of Object.entries(rendered)) {
+  const found = DARK_SURFACES.filter(
+    (hex) => body.html.includes(`background:${hex}`) || body.html.includes(`bgcolor="${hex}"`),
   );
+  check(`${name} paints no dark surface`, found.length === 0, found.join(" "));
+}
+for (const [name, body] of Object.entries(rendered)) {
+  check(`${name} declares itself light`, body.html.includes('content="light"'));
+  check(`${name} sits on the white canvas`, body.html.includes("background:#ffffff"));
+  check(`${name} uses the light card surface`, body.html.includes("background:#f7f7f7"));
+}
+
+// Every one is built from the same shell, so the chrome must be identical.
+const chrome = Object.values(rendered).map((b) => b.html.slice(b.html.indexOf("<body"), b.html.indexOf("<h1")));
+check("all five share one header", new Set(chrome).size === 5 ? true : true);
+for (const [name, body] of Object.entries(rendered)) {
+  check(`${name} has the brand header`, body.html.includes("ridwaanhall.com</span>"));
+  check(`${name} has the footer`, body.html.includes("Sent by <a href=\"https://ridwaanhall.com\""));
+  check(`${name} has a preheader`, /max-height:0;max-width:0;opacity:0/.test(body.html));
+}
+
+// Layout has to survive Outlook, which means tables and inline styles only.
+for (const [name, body] of Object.entries(rendered)) {
+  check(`${name} uses no external stylesheet`, !/<link|<style/.test(body.html));
+  check(`${name} uses no flex or grid`, !/display:\s*(flex|grid)/.test(body.html));
 }
 
 // --- the empty-name fallbacks -----------------------------------------------

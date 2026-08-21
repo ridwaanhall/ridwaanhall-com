@@ -354,6 +354,21 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
 
 ---
 
+## Still in development
+
+Nothing here is deployed. The site runs against the **live Supabase database**
+-- the same rows ridwaanhall.com serves -- but the Next.js app itself only runs
+locally, and production stays on Django until every phase below is finished and
+checked. Anything marked "before cutover" is deliberately deferred until then,
+not forgotten:
+
+- the production OAuth redirect URIs
+- dropping `content`/`description` and the dead `@source inline(...)` entries
+- re-applying RLS as a SQL migration
+- swapping `vercel.json` and CI to Node
+
+---
+
 ## Phase 4 — cutover
 - [ ] backup Django project to the new branch with name django
 - [ ] Promote `web/` to repo root, delete the Django tree from nextjs-migration
@@ -389,6 +404,8 @@ Each is recorded at its call site and in the comparison scripts.
 | Content blocks → rich-text HTML | Requested. Removes hand-typed classes from the content entirely |
 | Uniform list indent, heading weight, paragraph spacing | The stored variants were inconsistent hand-typing, and several never resolved at all |
 | Blog/project links are indigo | Stored link colours were green in one post and unresolved (invisible) in another |
+| **No trailing slash**: `/about/` → `/about` | Requested. Reverses the port's original choice of keeping Django's `APPEND_SLASH` shape. Costs one 308 per indexed URL, once; every canonical, sitemap entry and JSON-LD `@id` emits the slash-free form directly, so nothing in our own markup points at a redirect. Taken while nothing is deployed. `compare-layout`, `compare-meta` and `compare-jsonld` all normalise the slash away rather than flagging every page forever |
+| **Emails follow the site's light theme** | Requested. The five Django templates were dark (`#09090b`/`#18181b`/`#6366f1`) and hand-maintained separately. They are one shell now (`lib/email/layout.ts`) in the light palette taken from `input.css` -- white canvas, `#f7f7f7` card, `#f0f0f1` inset, `#4f39f6` accent -- so a change to the header, card or footer happens once and no two can drift |
 
 ## Inherited bugs fixed in passing
 

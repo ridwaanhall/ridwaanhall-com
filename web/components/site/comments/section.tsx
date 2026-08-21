@@ -237,7 +237,7 @@ function SignInPrompt() {
       <ChatIcon className="mx-auto mb-3 h-6 w-6 text-zinc-600" />
       <p className="text-zinc-400 mb-4 text-sm sm:text-base">
         Sign in to join the conversation. Rest assured, your information is secure. See my{" "}
-        <a href="/privacy-policy/" className="text-indigo-400 hover:text-indigo-300 underline">
+        <a href="/privacy-policy" className="text-indigo-400 hover:text-indigo-300 underline">
           privacy policy
         </a>{" "}
         for more.

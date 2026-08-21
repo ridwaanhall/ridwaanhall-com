@@ -105,7 +105,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // and back to the guestbook afterwards, so there was never an Auth.js-style
     // provider-picker page. Both of these point at the guestbook so a failed or
     // cancelled sign-in lands where it started rather than on a generic page.
-    signIn: "/guestbook/",
-    error: "/guestbook/",
+    signIn: "/guestbook",
+    error: "/guestbook",
   },
 });

@@ -62,17 +62,17 @@ export async function staticEntries(): Promise<SitemapEntry[]> {
     { url: `${SITE_URL}/`, lastModified: homeUpdated, changeFrequency: "weekly", priority: 1.0 },
     // The dashboard reflects GitHub and WakaTime activity, which genuinely
     // changes daily, but it holds no stored timestamp of its own.
-    { url: `${SITE_URL}/dashboard/`, lastModified: homeUpdated, changeFrequency: "daily", priority: 1.0 },
-    { url: `${SITE_URL}/about/`, lastModified: homeUpdated, changeFrequency: "monthly", priority: 1.0 },
-    { url: `${SITE_URL}/contact/`, lastModified: FALLBACK, changeFrequency: "monthly", priority: 1.0 },
+    { url: `${SITE_URL}/dashboard`, lastModified: homeUpdated, changeFrequency: "daily", priority: 1.0 },
+    { url: `${SITE_URL}/about`, lastModified: homeUpdated, changeFrequency: "monthly", priority: 1.0 },
+    { url: `${SITE_URL}/contact`, lastModified: FALLBACK, changeFrequency: "monthly", priority: 1.0 },
     {
-      url: `${SITE_URL}/privacy-policy/`,
+      url: `${SITE_URL}/privacy-policy`,
       lastModified: privacy?.last_updated ?? FALLBACK,
       changeFrequency: "monthly",
       priority: 1.0,
     },
     {
-      url: `${SITE_URL}/terms/`,
+      url: `${SITE_URL}/terms`,
       lastModified: terms?.last_updated ?? FALLBACK,
       changeFrequency: "monthly",
       priority: 1.0,
@@ -94,15 +94,15 @@ export async function staticEntries(): Promise<SitemapEntry[]> {
 
   return [
     ...entries,
-    ...pageEntries("/blog/", blogs.length, blogUpdated),
-    ...pageEntries("/projects/", projects.length, projectUpdated),
+    ...pageEntries("/blog", blogs.length, blogUpdated),
+    ...pageEntries("/projects", projects.length, projectUpdated),
   ];
 }
 
 export async function blogEntries(): Promise<SitemapEntry[]> {
   const blogs = await getBlogs();
   return blogs.map((blog) => ({
-    url: `${SITE_URL}/blog/${blog.slug}/`,
+    url: `${SITE_URL}/blog/${blog.slug}`,
     lastModified: blog.updated_at,
     changeFrequency: "monthly",
     // Featured content is worth crawling more often.
@@ -113,7 +113,7 @@ export async function blogEntries(): Promise<SitemapEntry[]> {
 export async function projectEntries(): Promise<SitemapEntry[]> {
   const projects = await getProjects();
   return projects.map((project) => ({
-    url: `${SITE_URL}/projects/${project.slug}/`,
+    url: `${SITE_URL}/projects/${project.slug}`,
     lastModified: project.updated_at ?? FALLBACK,
     changeFrequency: "monthly",
     priority: project.is_featured ? 0.9 : 0.7,

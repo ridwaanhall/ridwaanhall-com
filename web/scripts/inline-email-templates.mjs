@@ -1,17 +1,16 @@
 /**
- * Inline the Django email templates into a TypeScript module.
+ * Inline the Django *plain-text* email bodies into a TypeScript module.
  *
- * The five HTML/text pairs under `apps/core/templates/core/email/` are 62KB of
- * hand-tuned, table-based email markup that renders correctly across mail
- * clients. Re-authoring them as react-email components -- the original plan --
- * would mean transcribing all of it into JSX, where a silent divergence would
- * only show up in someone's inbox. Copying them verbatim keeps the emails
- * exactly as they are.
+ * Only the five `.txt` halves. Their HTML counterparts were the old dark
+ * templates and have been redesigned in the site's light theme, composed from
+ * `lib/email/layout.ts` -- one shell rather than five files that had to be
+ * edited in step. There is no design in a text body to redo, and it is what a
+ * client that will not render HTML shows, so those keep their original wording.
  *
  * They cannot simply be read at runtime: Next bundles server code, so a
- * `readFileSync` of a template beside the source needs the file traced into the
- * deployment and behaves differently in dev, in a standalone build and on
- * Vercel. Inlining sidesteps all of that -- they become plain strings.
+ * `readFileSync` beside the source needs the file traced into the deployment
+ * and behaves differently in dev, in a standalone build and on Vercel. Inlining
+ * sidesteps all of that -- they become plain strings.
  *
  * Run while the Django tree still exists; after cutover the generated module is
  * the source of truth and this script goes with the templates.
@@ -27,13 +26,13 @@ const OUT = path.resolve(import.meta.dirname, "../lib/email/templates.ts");
 const BACKSLASH = String.fromCharCode(92);
 const BACKTICK = String.fromCharCode(96);
 
-const files = readdirSync(SOURCE).sort();
+const files = readdirSync(SOURCE)
+  .filter((file) => file.endsWith(".txt"))
+  .sort();
+
 const entries = files.map((file) => {
   const body = readFileSync(path.join(SOURCE, file), "utf8").replace(/\r\n/g, "\n");
-  const key = file
-    .replace(/\.html$/, "_html")
-    .replace(/\.txt$/, "_text")
-    .replace(/_(\w)/g, (_, c) => c.toUpperCase());
+  const key = file.replace(/\.txt$/, "_text").replace(/_(\w)/g, (_, c) => c.toUpperCase());
 
   // The three sequences that would end a template literal or open an
   // interpolation. Backslash first, or the escapes added below get re-escaped.
@@ -48,25 +47,27 @@ const entries = files.map((file) => {
   return { key, file, escaped };
 });
 
-const header = `/**
- * The site's transactional email bodies, five HTML/text pairs.
- *
- * Copied **verbatim** from \`apps/core/templates/core/email/\` by
- * \`scripts/inline-email-templates.mjs\` -- not re-authored. They are 62KB of
- * hand-tuned, table-based markup that renders correctly across mail clients,
- * and all five share the dark palette the site uses (\`#09090b\` canvas,
- * \`#18181b\` card, \`#6366f1\` indigo accent).
- *
- * Placeholders are \`{{ key }}\`, filled by \`lib/email/render.ts\`. That module is
- * where the port improves on the original: Django replaced tokens with
- * \`str.replace\` and left an unmatched \`{{ key }}\` sitting in the sent email --
- * exactly the trap CLAUDE.md warns about. Rendering here fails loudly instead.
- *
- * Regenerate with \`node scripts/inline-email-templates.mjs\` while the Django
- * tree still exists; after cutover this file is the source.
- */
-
-`;
+const header = [
+  "/**",
+  " * The **plain-text** halves of the five transactional emails.",
+  " *",
+  " * Copied verbatim from `apps/core/templates/core/email/*.txt` by",
+  " * `scripts/inline-email-templates.mjs`. There is no design in them to redo,",
+  " * and they are what a client that will not render HTML shows, so they keep",
+  " * the wording the site has always sent.",
+  " *",
+  " * Their HTML counterparts are **not** here. Those were the old dark templates",
+  " * and have been redesigned in the site's light theme, composed from",
+  " * `lib/email/layout.ts` -- one shell rather than five files that had to be",
+  " * edited in step.",
+  " *",
+  " * Placeholders are `{{ key }}`, filled by `lib/email/render.ts`, which throws",
+  " * on an unmatched one. Django's `str.replace` left it sitting in the sent",
+  " * email, which CLAUDE.md records as a gotcha with no test covering it.",
+  " */",
+  "",
+  "",
+].join("\n");
 
 const body = entries
   .map(

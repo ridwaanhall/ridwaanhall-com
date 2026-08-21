@@ -229,9 +229,14 @@ invisible to every layout and text comparison) and `scripts/compare-gallery.mjs`
       three per-message controls render, the unpin control appears on the pinned
       card, depths 0–2 only, and the "Signed in as" line masks the address
       exactly as `mask_email` does (`ri************v@gmail.com`).
-      **The write path is not yet exercised** — posting, pinning and deleting
-      write to the live guestbook, so they need a deliberate go-ahead rather than
-      a test message on the production site.
+      Write path exercised end to end against the live guestbook, with the
+      account owner's go-ahead: post (50→51, "Message posted.", threaded at the
+      foot of the panel with the Author badge), pin ("Pinned Messages (2/3)",
+      badge on the message and a card in the section), unpin (back to 1/3, badge
+      gone), then delete through the shared confirm dialog — which opened with
+      the right wording, quoted the message and focused Cancel. Database
+      afterwards: 50 rows, max id 63, 1 pinned, identical to the baseline, and
+      `compare-guestbook.mjs` still matches live.
 - [ ] Guestbook — **email notifications on a new message.** `apps/guestbook/
       signals.py` emails the author, the message's author and everyone they
       replied to. The port writes rows directly, so nothing fires; this lands

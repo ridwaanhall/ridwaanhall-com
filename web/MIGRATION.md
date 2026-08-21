@@ -22,6 +22,17 @@ Windows path before node sees it.
 `compare-with-django.mjs` needs a fresh dump first:
 `cd .. && DEBUG=False uv run python web/scripts/django_dump.py`
 
+**If `compare-layout.mjs /dashboard/` reports a missing WakaTime panel, clear
+`.next/dev/cache` before believing it.** `getWakatimeStats` is an
+`unstable_cache` with `revalidate: 900`, so a *failed* fetch caches its `null`
+for fifteen minutes and the panel renders as nothing -- with no error logged on
+any request after the first, and the page returning in 200ms. This is easy to
+trigger by accident: the first request after `rm -rf .next` competes with a cold
+Turbopack compile, and the client's 10s `AbortSignal.timeout` fires even though
+both WakaTime endpoints answer in ~1.5s on their own. The harness then shows five
+diffs (both `h2`s and a 494px `main`) that have nothing to do with the change
+under test. `rm -rf .next/cache` is *not* enough -- dev writes to `.next/dev/cache`.
+
 ---
 
 ## Phase 1 — foundation, data, public pages
@@ -309,9 +320,11 @@ Each is recorded at its call site and in the comparison scripts.
   original let them shrink rather than wrap: at 768 that pushes the document to
   924px wide — 156px past the viewport — with each pill 74px tall because its
   own label has wrapped inside it; at 375 the third badge starts past the right
-  edge entirely. Wrapping the row costs one badge's height (`/about/` is 38px
-  taller at 375 and 768, recorded in `compare-layout.mjs`) and removes the
-  horizontal scroll. From ~1000px up the two are identical.
+  edge entirely. Wrapping the row removes the horizontal scroll. It used to cost
+  one badge's height, making `/about/` 38px taller at 375 and 768; the smaller
+  badges below pull the other way, so the combined delta is now +16 / -12 / +6 at
+  375 / 768 / 1280 -- one `compare-layout.mjs` entry per width, since it is no
+  longer constant, and no longer zero above ~1000px.
 - **Every "Show more" is a `rounded-full` pill.** Django rounded the same
   control three different ways: a pill on experience and applications,
   `rounded-lg` on education and certifications.
@@ -319,6 +332,40 @@ Each is recorded at its call site and in the comparison scripts.
   Ctrl+K, type, Enter goes somewhere. Django added the highlight only on an
   arrow key, which meant Enter did nothing until you pressed one. The highlight
   skips the "You are here" row for the same reason Enter does.
+- **Leaving the palette's list returns the highlight to that first result.**
+  Hovering a row moves the keyboard highlight -- which Django's palette never
+  did -- and nothing used to move it back, so a hovered row wore two marks (the
+  row's `hover:bg-zinc-800` and the `li`'s `.highlighted` wash) and taking the
+  pointer off the list dropped only the first. The wash that outlived it read as
+  a stuck hover. One `onMouseLeave` on the scroll container resets to index 0 --
+  not -1, because that is the state the palette opens in and it keeps Enter
+  pointing at a real row.
+- **The about intro's status badges are the mobile drawer's size, and one word
+  on a phone.** `px-2 py-0.5 text-xs` with a 1.5-unit dot rather than `px-3
+  py-1.5 text-sm` with a 2-unit one, so the same three flags are not drawn at
+  two different scales in two places; and below `sm` they read Open / Hiring /
+  Unwell instead of spelling out "Under the Weather" on a 375px screen. A pill is
+  a flat 22px at every width as a result, against live's 74 / 74 / 34 -- which is
+  the whole of `/about/`'s remaining geometry difference, recorded per width in
+  `compare-layout.mjs`. Measured in light mode at 6.92 / 8.34 / 6.85 : 1, so the
+  smaller type stays past AA.
+- **"View Credential" is a `rounded-full` pill.** It was `rounded-lg` while the
+  "Show more" button beside it in the same flex row was already a pill, on both
+  the award and certification cards. Same reasoning as the "Show more" entry
+  above -- Django rounded one control three ways.
+- **The certifications banner is the CV banner.** Both tabs open with the same
+  object -- icon, title, subtitle, action, footnote -- but the LinkedIn one was
+  written separately and had drifted: a `bg-zinc-800/30` fill nothing else on the
+  page has, `text-blue-200`/`text-blue-300/80` instead of the zinc scale, an
+  indigo icon, and a plain `flex items-center` row that never stacked, so at
+  phone widths the button squeezed the text beside it. Both are
+  `components/site/about-banner.tsx` now, which is what stops them drifting
+  again; the footnote states how many certifications the page itself lists.
+  Verified geometry-neutral for the CV banner -- 164 / 118 / 102px at 375 / 768 /
+  1280, identical to live.
+- **The dashboard's stat values are unweighted.** `font-medium` came off the six
+  WakaTime figures and the four GitHub numbers; the labels above them keep it.
+  Live renders all ten at weight 500.
 
 ## Known, imperceptible differences
 

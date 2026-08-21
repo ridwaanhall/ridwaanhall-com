@@ -395,7 +395,28 @@ function SearchModal({
             />
           </div>
 
-          <div className="max-h-80 overflow-y-auto px-1 py-2">
+          {/*
+           * Leaving the list puts the highlight back where the palette opened
+           * it, rather than leaving the last hovered row washed.
+           *
+           * Each row's `onMouseEnter` moves the keyboard highlight, and nothing
+           * used to move it back -- so a hovered row wore two marks (the inner
+           * div's `hover:bg-zinc-800` and the `li`'s `.highlighted` wash from
+           * sidebarSearch.css), and taking the pointer off the list dropped only
+           * the first. The wash that outlived it read as a stuck hover.
+           *
+           * One handler on the container, not per row, so it fires when the
+           * pointer leaves the list rather than on every row-to-row move.
+           *
+           * Reset to 0, never -1: index 0 is exactly the state the palette opens
+           * in, and that initial highlight exists so Ctrl+K, type, Enter goes
+           * somewhere. Clearing it would restore the Django behaviour where
+           * Enter did nothing until an arrow key was pressed.
+           */}
+          <div
+            className="max-h-80 overflow-y-auto px-1 py-2"
+            onMouseLeave={() => setHighlighted(0)}
+          >
             {SECTION_ORDER.map((section) => {
               const sectionMatches = matches.filter((entry) => entry.section === section);
               if (sectionMatches.length === 0) return null;

@@ -31,20 +31,34 @@ const TOLERANCE = 2;
 const EXPECTED = [
   { path: "/contact/", key: "main", dimension: "h", delta: 88 },
   /*
-   * `/about/` is 38px taller at 768: the intro's status badges wrap onto a
-   * second line here rather than being crushed onto one.
+   * `/about/` differs at every width, and the whole of it is the intro's status
+   * badge row. Measured live vs. port with all three flags set, the `main`,
+   * intro-card and badge-row deltas are the same number at each width -- 16 at
+   * 375, -12 at 768, 6 at 1280 -- so nothing else on the page has moved.
    *
-   * With all three flags set they do not fit beside the heading at any width
-   * below about 1000px, and the original let them shrink instead of wrap --
-   * at 768 that pushes the document to 924px wide, 156px past the viewport,
-   * with each badge 74px tall because its label has wrapped inside the pill.
-   * At 375 it is worse still: the third badge starts past the right edge. The
-   * port wraps the row instead, which costs one badge's height and removes the
-   * horizontal scroll. `widths` pins this to the band where the two layouts
-   * differ -- from about 1000px up there is room for one line and the two are
-   * identical again.
+   * Two requested changes compound here:
+   *
+   * - The row wraps rather than shrinking. The original let three badges be
+   *   crushed onto one line beside the heading: at 768 that pushes the document
+   *   to 924px wide, 156px past the viewport, with each pill 74px tall because
+   *   its own label has wrapped inside it; at 375 the third badge starts past
+   *   the right edge entirely.
+   * - The badges are the mobile drawer's size now (`px-2 py-0.5 text-xs`, a
+   *   1.5-unit dot) and say one word below `sm` -- Open / Hiring / Unwell --
+   *   instead of spelling out "Under the Weather" on a phone. A pill is a flat
+   *   22px at every width as a result, against live's 74 / 74 / 34.
+   *
+   * The two pull opposite ways, which is why the sign changes: at 375 all three
+   * compact badges now fit on one line where live needed a 74px crushed row, so
+   * the port is *shorter*; at 768 they take two 22px lines where live took one
+   * 74px one, so it is slightly taller; at 1280 both fit on one line and the
+   * port is simply 6px shorter because the pill is.
+   *
+   * One entry per measured width, since the delta is not constant.
    */
-  { path: "/about/", key: "main", dimension: "h", delta: -38, widths: [375, 768] },
+  { path: "/about/", key: "main", dimension: "h", delta: 16, widths: [375] },
+  { path: "/about/", key: "main", dimension: "h", delta: -12, widths: [768] },
+  { path: "/about/", key: "main", dimension: "h", delta: 6, widths: [1280] },
 ];
 
 function expected(dimension, live, next) {

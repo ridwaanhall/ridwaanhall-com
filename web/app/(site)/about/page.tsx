@@ -10,6 +10,7 @@ import {
 import { AboutTabs } from "@/components/site/about-tabs";
 import { ApplicationCard } from "@/components/site/application-card";
 import { CvDownload } from "@/components/site/cv-download";
+import { LinkedInCertifications } from "@/components/site/linkedin-certifications";
 import { SponsorMe } from "@/components/site/sponsor-me";
 import type { AboutData, Experience } from "@/lib/data/about";
 import {
@@ -89,7 +90,7 @@ export default async function AboutPage() {
       label: "Certifications",
       content: (
         <div className="mt-4 sm:mt-6">
-          <LinkedInCertifications username={about.username} />
+          <LinkedInCertifications username={about.username} count={certifications.length} />
           <div className="space-y-3 sm:space-y-4">
             {certifications.map((certification) => (
               <CertificationCard key={certification.id} certification={certification} />
@@ -152,24 +153,37 @@ function Section({ children }: { children: React.ReactNode }) {
 }
 
 function Intro({ about, sponsorUrl }: { about: AboutData; sponsorUrl: string }) {
+  /*
+   * Each badge carries two labels.
+   *
+   * `short` is what a phone gets -- one word, so three live flags stay on one
+   * line inside a 375px column instead of each pill wrapping its own label. The
+   * full wording ("Currently Under the Weather") survives from `sm` up, where
+   * there is room for it. The row previously showed the long label at every
+   * width and only dropped the word "Currently" below `sm`, which is what put
+   * "Under the Weather" on a phone.
+   */
   const badges = [
     about.is_open_to_work && {
       key: "open",
       className: "bg-green-900/30 text-green-400 border-green-800/50",
       dot: "bg-green-500",
       label: "Open to Work",
+      short: "Open",
     },
     about.is_hiring && {
       key: "hiring",
       className: "bg-blue-900/30 text-blue-400 border-blue-800/50",
       dot: "bg-blue-500",
       label: "Hiring",
+      short: "Hiring",
     },
     about.is_sick && {
       key: "sick",
       className: "bg-amber-900/30 text-amber-400 border-amber-800/50",
       dot: "bg-amber-500",
       label: "Under the Weather",
+      short: "Unwell",
       title: "Currently unwell — replies may be slow",
     },
   ].filter(Boolean) as {
@@ -177,6 +191,7 @@ function Intro({ about, sponsorUrl }: { about: AboutData; sponsorUrl: string }) 
     className: string;
     dot: string;
     label: string;
+    short: string;
     title?: string;
   }[];
 
@@ -196,16 +211,22 @@ function Intro({ about, sponsorUrl }: { about: AboutData; sponsorUrl: string }) 
           */}
           <div className="flex flex-wrap items-center justify-between gap-y-2 mb-2 sm:mb-3">
             <p className="text-indigo-400 text-lg sm:text-xl font-medium">Assalamu&apos;alaikum</p>
-            <div className="flex flex-wrap gap-2">
+            {/*
+              Sized to match the mobile drawer's badges exactly (`px-2 py-0.5
+              text-xs`, a 1.5-unit dot) rather than carrying a second, larger
+              scale for the same three flags -- see
+              `components/layout/status-badges.tsx`.
+            */}
+            <div className="flex flex-wrap gap-1.5">
               {badges.map((badge) => (
                 <span
                   key={badge.key}
-                  className={`pill-badge px-3 py-1.5 text-sm border ${badge.className}`}
+                  className={`pill-badge px-2 py-0.5 text-xs border ${badge.className}`}
                   title={badge.title}
                 >
-                  <span className={`w-2 h-2 rounded-full mr-2 animate-pulse ${badge.dot}`} />
-                  <span className="hidden sm:inline mr-1">Currently </span>
-                  {badge.label}
+                  <span className={`w-1.5 h-1.5 rounded-full mr-1.5 animate-pulse ${badge.dot}`} />
+                  <span className="sm:hidden">{badge.short}</span>
+                  <span className="hidden sm:inline">Currently {badge.label}</span>
                 </span>
               ))}
             </div>
@@ -228,48 +249,6 @@ function Intro({ about, sponsorUrl }: { about: AboutData; sponsorUrl: string }) 
         </div>
 
         <SponsorMe sponsorUrl={sponsorUrl} />
-      </div>
-    </div>
-  );
-}
-
-function LinkedInCertifications({ username }: { username: string }) {
-  return (
-    <div className="mb-6 p-4 rounded-lg border border-zinc-700/50 bg-zinc-800/30 hover:border-zinc-600 transition-all duration-200">
-      <div className="flex items-center gap-3">
-        <div className="flex-shrink-0">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6 text-indigo-400"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-          </svg>
-        </div>
-        <div className="flex-1">
-          <h3 className="text-sm font-medium text-blue-200">View All 115+ Certifications</h3>
-          <p className="text-xs text-blue-300/80 mt-1">
-            See my complete certification portfolio on LinkedIn
-          </p>
-        </div>
-        <a
-          href={`https://linkedin.com/in/${username}/details/certifications/`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md border border-zinc-600 hover:border-zinc-500 hover:bg-zinc-700/50 text-blue-200 transition-all duration-200"
-        >
-          <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-            />
-          </svg>
-          View on LinkedIn
-        </a>
       </div>
     </div>
   );

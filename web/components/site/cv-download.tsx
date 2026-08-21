@@ -1,12 +1,13 @@
-import Link from "next/link";
+import { AboutBanner, BannerAction } from "@/components/site/about-banner";
 
 /**
- * The CV download card on the about page.
+ * The CV download banner at the top of the about page's Intro tab.
  *
  * Django carried two copies of this -- `block md:hidden` for a stacked layout
  * and `hidden md:flex` for a side-by-side one -- differing only in flex
  * direction and the width of the button group. One responsive container says
- * the same thing.
+ * the same thing, and it now lives in `<AboutBanner>`, shared with the
+ * certifications banner.
  *
  * The three links go through this site's own `/cv`, `/cv-latest` and `/cv-copy`
  * routes rather than at the hosted files directly, so the destination can
@@ -20,71 +21,36 @@ const FORMATS = [
 
 export function CvDownload() {
   return (
-    <div className="mb-6 p-4 rounded-lg border border-zinc-700/50 hover:border-zinc-600 transition-all duration-200">
-      <div className="flex flex-col md:flex-row md:items-center gap-4">
-        <div className="flex-1 flex items-center gap-3">
-          <div className="flex-shrink-0">
-            <svg
-              className="w-6 h-6 text-zinc-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-          </div>
-          <div className="flex-1">
-            <h3 className="text-sm font-medium">Curriculum Vitae</h3>
-            <p className="text-xs text-zinc-400 mt-1">Access my CV in different formats</p>
-          </div>
-        </div>
-
-        <div className="flex gap-2 md:w-1/2">
-          {FORMATS.map(({ href, label, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className="group flex-1 inline-flex items-center justify-center px-2.5 py-1.5 text-xs font-medium rounded-md border border-zinc-600 hover:border-zinc-500 hover:bg-zinc-700/50 transition-all duration-200"
-            >
-              <Icon />
-              {label}
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-3 flex items-center gap-2">
+    <AboutBanner
+      icon={
         <svg
-          className="w-3 h-3 text-zinc-400 flex-shrink-0"
-          fill="currentColor"
-          viewBox="0 0 20 20"
+          className="w-6 h-6 text-zinc-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
           aria-hidden="true"
         >
           <path
-            fillRule="evenodd"
-            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-            clipRule="evenodd"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
           />
         </svg>
-        <p className="text-xs text-zinc-400">
-          View in PDF, Word format, or get the editable template
-        </p>
-      </div>
-    </div>
+      }
+      title="Curriculum Vitae"
+      subtitle="Access my CV in different formats"
+      actions={FORMATS.map(({ href, label, icon }) => (
+        <BannerAction key={href} href={href} label={label} icon={icon} />
+      ))}
+      note="View in PDF, Word format, or get the editable template"
+    />
   );
 }
 
-const ICON_CLASS = "w-3.5 h-3.5 mr-1 group-hover:scale-110 transition-transform duration-200";
-
-function DownloadIcon() {
+function DownloadIcon({ className }: { className: string }) {
   return (
-    <svg className={ICON_CLASS} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -95,9 +61,9 @@ function DownloadIcon() {
   );
 }
 
-function DocumentIcon() {
+function DocumentIcon({ className }: { className: string }) {
   return (
-    <svg className={ICON_CLASS} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -108,9 +74,9 @@ function DocumentIcon() {
   );
 }
 
-function CopyIcon() {
+function CopyIcon({ className }: { className: string }) {
   return (
-    <svg className={ICON_CLASS} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"

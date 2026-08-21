@@ -124,7 +124,7 @@ function CredentialLink({ href }: { href: string }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="toggle-pill group px-3 py-1.5 rounded-lg"
+      className="toggle-pill group px-3 py-1.5 rounded-full"
     >
       <span>View Credential</span>
       <ExternalArrow className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-1.5 transition-transform group-hover:translate-x-1" />

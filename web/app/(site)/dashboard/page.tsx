@@ -249,7 +249,7 @@ function StatCard({
         {hint && <HelpIcon title={hint} />}
       </h3>
       <div className="flex items-center justify-between">
-        <p className="text-indigo-400 sm:text-xl font-medium">{value}</p>
+        <p className="text-indigo-400 sm:text-xl">{value}</p>
       </div>
     </div>
   );
@@ -277,7 +277,7 @@ function GitHubStat({
         {labelHint && <HelpIcon title={labelHint} />}
       </h3>
       <div className="flex items-center justify-between">
-        <p className="text-xl sm:text-2xl md:text-2xl font-medium">
+        <p className="text-xl sm:text-2xl md:text-2xl">
           <CountUp value={value} className="text-green-600" />
           {suffix}
         </p>

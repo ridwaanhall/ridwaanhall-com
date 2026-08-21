@@ -1,0 +1,56 @@
+import { auth } from "@/auth";
+import { Comments } from "@/components/site/comments/section";
+import { getUserProfile } from "@/lib/auth/profile";
+import type { CommentTargetLabel } from "@/lib/data/comment-shapes";
+import { getCommentSection } from "@/lib/data/comments";
+
+/**
+ * The comment section, resolved for one target.
+ *
+ * A server component so the blog and project detail pages add comments in one
+ * line, and so the query shape and the permission check live in one place --
+ * `apps/comments/context.py` existed for the same reason.
+ *
+ * **Delete permission is decided here, not in the markup.** It needs the
+ * viewer's author/co-author flags, which cost a query, and asking per comment
+ * would repeat that for every row. It is also read from the database rather
+ * than the session token, so revoking co-author takes effect at once; the
+ * action re-checks the same way, since a flag in rendered HTML is a hint, not
+ * an authorisation.
+ *
+ * The caller must wrap this in `<Suspense>`: it reads the session cookie and
+ * uncached rows, and under `cacheComponents` an uncached read outside a
+ * boundary stops the route prerendering.
+ */
+export async function CommentSectionFor({
+  label,
+  targetId,
+  slug,
+}: {
+  label: CommentTargetLabel;
+  targetId: number;
+  /** The detail page's slug, so an action knows what to revalidate. */
+  slug: string;
+}) {
+  const session = await auth();
+  const viewerId = Number(session?.user?.id);
+  const profile = Number.isInteger(viewerId) ? await getUserProfile(viewerId) : null;
+
+  const viewer = profile
+    ? { userId: profile.id, isAuthor: profile.isAuthor, isCoAuthor: profile.isCoAuthor }
+    : null;
+
+  const section = await getCommentSection({ label, targetId, viewer });
+
+  return <Comments section={section} slug={slug} signedInAs={profile?.fullName ?? null} />;
+}
+
+/** Holds the section's height while it streams, so the page does not jump. */
+export function CommentSectionSkeleton() {
+  return (
+    <section className="mt-10 sm:mt-12 pt-8 border-t border-zinc-800">
+      <div className="h-7 w-32 rounded bg-zinc-900" />
+      <div className="mt-6 h-32 rounded-xl border border-zinc-800 bg-zinc-900/40" />
+    </section>
+  );
+}

@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { VerifiedIcon } from "@/components/icons/nav-icons";
 import { JsonLdScript } from "@/components/seo/json-ld";
+import {
+  CommentSectionFor,
+  CommentSectionSkeleton,
+} from "@/components/site/comments/mount";
 import { MediaGallery } from "@/components/site/media-gallery";
 import { RichText } from "@/components/site/rich-text";
 import { ShareRow } from "@/components/site/share-row";
@@ -163,6 +168,16 @@ export default async function BlogDetailPage({
                 ))}
               </div>
             </footer>
+
+            {/*
+              Comments read the session cookie and uncached rows, so they sit
+              behind a boundary -- under `cacheComponents` an uncached read
+              outside one stops the whole route prerendering, and the article
+              above it should not wait on them either.
+            */}
+            <Suspense fallback={<CommentSectionSkeleton />}>
+              <CommentSectionFor label="blog.blogpost" targetId={post.id} slug={post.slug} />
+            </Suspense>
           </div>
         </main>
       </article>

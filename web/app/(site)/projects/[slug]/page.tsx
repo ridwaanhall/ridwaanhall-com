@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { JsonLdScript } from "@/components/seo/json-ld";
+import {
+  CommentSectionFor,
+  CommentSectionSkeleton,
+} from "@/components/site/comments/mount";
 import { MediaGallery } from "@/components/site/media-gallery";
 import { RichText } from "@/components/site/rich-text";
 import { getAboutData } from "@/lib/data/about";
@@ -245,6 +250,15 @@ export default async function ProjectDetailPage({
               </div>
             </section>
           )}
+
+          {/* Behind a boundary for the reason given on the blog detail page. */}
+          <Suspense fallback={<CommentSectionSkeleton />}>
+            <CommentSectionFor
+              label="projects.project"
+              targetId={project.id}
+              slug={project.slug}
+            />
+          </Suspense>
         </div>
       </main>
     </>

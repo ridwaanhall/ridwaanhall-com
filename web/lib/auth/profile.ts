@@ -94,13 +94,19 @@ export function fromSocialAccounts(
  * name, avatar and badge; Django solved the same N+1 with
  * `prefetch_related("socialaccount_set", "userprofile")`.
  */
-export async function getUserProfiles(userIds: number[]): Promise<Map<number, UserProfile>> {
+export async function getUserProfiles(
+  userIds: number[],
+  // Injectable for the same reason the adapter's connection is: the check
+  // scripts drive these against the live schema inside a rolled-back
+  // transaction, and rows written there are invisible to the pool.
+  database: Pick<typeof db, "select"> = db,
+): Promise<Map<number, UserProfile>> {
   const ids = [...new Set(userIds)];
   const result = new Map<number, UserProfile>();
   if (ids.length === 0) return result;
 
   const [users, socials, profiles] = await Promise.all([
-    db
+    database
       .select({
         id: authUser.id,
         username: authUser.username,
@@ -111,7 +117,7 @@ export async function getUserProfiles(userIds: number[]): Promise<Map<number, Us
       })
       .from(authUser)
       .where(inArray(authUser.id, ids)),
-    db
+    database
       .select({
         userId: socialaccountSocialaccount.userId,
         provider: socialaccountSocialaccount.provider,
@@ -119,7 +125,7 @@ export async function getUserProfiles(userIds: number[]): Promise<Map<number, Us
       })
       .from(socialaccountSocialaccount)
       .where(inArray(socialaccountSocialaccount.userId, ids)),
-    db
+    database
       .select({
         userId: guestbookUserprofile.userId,
         isAuthor: guestbookUserprofile.isAuthor,

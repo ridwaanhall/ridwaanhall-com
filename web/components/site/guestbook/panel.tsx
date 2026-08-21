@@ -3,7 +3,7 @@
 import { useRef, useState, useTransition } from "react";
 
 import { useConfirm } from "@/components/providers/confirm-dialog";
-import { signInWith, signOutFromGuestbook } from "@/lib/actions/auth";
+import { signInWith, signOutHere } from "@/lib/actions/auth";
 import { Message, type MessageActions, type Viewer } from "@/components/site/guestbook/message";
 import { PinnedCard } from "@/components/site/guestbook/pinned-card";
 import { PinIcon, ReplyIcon } from "@/components/site/guestbook/role-badge";
@@ -245,7 +245,7 @@ export function GuestbookPanel({
                     message: "You'll need to sign in again to post or pin messages.",
                     label: "Sign out",
                   });
-                  if (accepted) await signOutFromGuestbook();
+                  if (accepted) await signOutHere("/guestbook/");
                 }}
                 className="text-zinc-400 hover:text-zinc-300 cursor-pointer underline transition-colors"
               >
@@ -291,7 +291,7 @@ function ProviderButton({
   return (
     <button
       type="button"
-      onClick={() => signInWith(provider)}
+      onClick={() => signInWith(provider, "/guestbook/")}
       className="inline-flex items-center px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors duration-200 text-sm gap-1 justify-center cursor-pointer"
     >
       {children}

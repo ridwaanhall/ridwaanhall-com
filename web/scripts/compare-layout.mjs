@@ -56,15 +56,84 @@ const EXPECTED = [
    *
    * One entry per measured width, since the delta is not constant.
    */
+  /*
+   * `/blog/<slug>/` is 34px taller, and the difference is in the *article*, not
+   * the comment section this was first run against.
+   *
+   * Measured element by element: the comment section is identical on both sides
+   * -- 349px for the section, 164 for the sign-in prompt, 68 for the empty
+   * message -- and the `Tags` footer above it starts 34px lower here (1854 vs
+   * 1888), while the byline at the top is at y=110 on both. So the whole delta
+   * accumulates inside the rich-text body, which is a departure already
+   * recorded below: the stored blocks carried hand-typed, inconsistent
+   * indentation, heading weights and paragraph spacing, several of which never
+   * resolved at all, and `styles/prose.css` renders them uniformly.
+   *
+   * Pinned to the one post the harness is usually run against; other posts will
+   * differ by their own amount for the same reason.
+   */
+  {
+    path: "/blog/commit-message-style-guide/",
+    key: "main",
+    dimension: "h",
+    delta: -34,
+    widths: [1280],
+  },
+  // Everything below the body is pushed down by the same 34px: `Tags` and the
+  // comment heading. Their own heights match, which is what says the shift is
+  // inherited rather than theirs.
+  {
+    path: "/blog/commit-message-style-guide/",
+    key: "h2[0]",
+    dimension: "y",
+    delta: -34,
+    widths: [1280],
+  },
+  {
+    path: "/blog/commit-message-style-guide/",
+    key: "h2[1]",
+    dimension: "y",
+    delta: -34,
+    widths: [1280],
+  },
+  /*
+   * `/projects/<slug>/` is the same story as the blog post above: the comment
+   * section measures 349px on both sides, `Description` is at y=819 on both,
+   * and the 72px appears between there and `Features` -- inside the rich-text
+   * description. Everything after it inherits the shift.
+   */
+  ...["h2[1]", "h2[2]", "h2[3]"].map((key) => ({
+    path: "/projects/pddikti-data-vault/",
+    key,
+    dimension: "y",
+    delta: -72,
+    widths: [1280],
+  })),
+  {
+    path: "/projects/pddikti-data-vault/",
+    key: "main",
+    dimension: "h",
+    delta: -72,
+    widths: [1280],
+  },
   { path: "/about/", key: "main", dimension: "h", delta: 16, widths: [375] },
   { path: "/about/", key: "main", dimension: "h", delta: -12, widths: [768] },
   { path: "/about/", key: "main", dimension: "h", delta: 6, widths: [1280] },
 ];
 
-function expected(dimension, live, next) {
+/**
+ * Is this difference one of the recorded ones?
+ *
+ * `key` is matched, which it previously was not: every entry carried one, but
+ * the call site hard-coded `key === "main"`, so the field was decorative and no
+ * exemption could ever be written for anything else. A body that changes height
+ * moves every heading below it, and those are separate measurements.
+ */
+function expected(key, dimension, live, next) {
   return EXPECTED.some(
     (e) =>
       e.path === PATH &&
+      e.key === key &&
       e.dimension === dimension &&
       (e.widths === undefined || e.widths.includes(WIDTH)) &&
       Math.abs(live - next - e.delta) <= TOLERANCE,
@@ -153,7 +222,7 @@ for (const key of keys) {
     continue;
   }
   const deltas = ["x", "y", "w", "h"].filter(
-    (d) => Math.abs(a[d] - b[d]) > TOLERANCE && !(key === "main" && expected(d, a[d], b[d])),
+    (d) => Math.abs(a[d] - b[d]) > TOLERANCE && !expected(key, d, a[d], b[d]),
   );
   if (deltas.length) {
     problems++;

@@ -13,6 +13,7 @@ node scripts/check-breakpoints.mjs     # one visible theme toggle at every width
 node scripts/check-notifications.mjs   # toast stack outside the transformed column
 npx tsx scripts/check-auth-adapter.mjs # Auth.js adapter vs the live schema, rolled back
 node scripts/compare-guestbook.mjs     # thread shape and captions vs the live site
+npx tsx scripts/check-comments.mjs     # comment rules vs the live schema, rolled back
 node scripts/compare-jsonld.mjs        # structured data vs the live site
 node scripts/compare-prose.mjs [slug] [width]   # rich-text typography vs live
 MSYS_NO_PATHCONV=1 node scripts/compare-layout.mjs [path]   # rendered geometry vs live
@@ -241,7 +242,32 @@ invisible to every layout and text comparison) and `scripts/compare-gallery.mjs`
       signals.py` emails the author, the message's author and everyone they
       replied to. The port writes rows directly, so nothing fires; this lands
       with the email templates.
-- [ ] Comments — generic relation, single-level flattening, soft delete
+- [x] Comments — generic relation, single-level flattening, soft delete. On both
+      detail pages, behind a `<Suspense>` boundary.
+      The table is empty on live, so there is no rendered thread to compare
+      against; `scripts/check-comments.mjs` drives the rules against the live
+      schema instead, inside a transaction it rolls back (0 → 0 rows after).
+      All 22 pass, covering the four that are security properties rather than
+      cosmetics: a reply-to-a-reply flattens onto the root; a `reply_to` naming
+      a comment on *another* post does not resolve; deleting is soft, so a
+      removed parent keeps its place, blanks its body, stops being counted and
+      stops being deletable; and the permission matrix (own / author / signed
+      out / someone else's).
+      Geometry verified against live on both detail pages: the section measures
+      **349px on both sides**, prompt 164, empty message 68.
+      Django's `next` + `url_has_allowed_host_and_scheme` are gone with the
+      redirect — the action revalidates a path it already knows, so there is no
+      redirect sink. The same validation moved to `lib/actions/auth.ts`, which
+      does still hand a browser-supplied path to `signIn`/`signOut`.
+      One deliberate change: a commenter's display name is now the provider
+      profile, the same name the guestbook shows. Django read
+      `get_full_name|default:username` here and the provider profile there, so
+      one person could appear under two names; unifying costs nothing with the
+      table empty.
+- [ ] Comments — **the form has not been submitted against live.** Delete is a
+      *soft* delete, so a test comment cannot be removed through the UI without
+      leaving a tombstone on a real post; clearing it needs a hard `DELETE`.
+      Worth doing with a deliberate go-ahead, as the guestbook's was.
 - [ ] Contact form — react-hook-form + zod + Turnstile + Resend
 - [ ] Email templates (5 pairs) via react-email
 - [x] Toast stack (sonner) + confirm dialog — both mounted in `app/layout.tsx`, as
@@ -498,6 +524,11 @@ Each is recorded at its call site and in the comparison scripts.
   every avatar on the guestbook.
 - **No shadows.** `grep -rn 'shadow' app components` should stay empty apart from `ring-*`.
 - **Tooltips are `title` attributes**, never `group-hover` chips — a chip is unreachable on touch.
+- **`compare-layout.mjs`'s `EXPECTED` entries only applied to `main`** until the
+  comment work needed one elsewhere: every entry carried a `key`, but the call
+  site hard-coded `key === "main"`, so the field was decorative and no exemption
+  could be written for a heading. It is matched now. A body whose height differs
+  moves every heading below it, and those are separate measurements.
 - **A client component must not import from a module that touches `db`.** The
   guestbook panel imported two constants from `lib/data/guestbook.ts` and pulled
   `pg` into the browser bundle, which fails outright on `Can't resolve 'dns'`.

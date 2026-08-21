@@ -52,6 +52,9 @@ type SearchEntry = {
 /** Must match the `duration-300` on the root and the panel. */
 const EXIT_MS = 300;
 
+/** No row marked -- the pointer left the list and is not on anything. */
+const NO_HIGHLIGHT = -1;
+
 const SearchModalContext = createContext<{ open: () => void; close: () => void } | null>(null);
 
 export function useSearchModal() {
@@ -339,12 +342,18 @@ function SearchModal({
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
       if (navigable.length === 0) return;
-      // Wraps at both ends, as the original did.
-      setHighlighted((current) =>
-        event.key === "ArrowDown"
+      // Wraps at both ends, as the original did. `NO_HIGHLIGHT` is handled
+      // explicitly rather than left to the modulo: `-1 - 1 + n` lands on the
+      // second-to-last row, and the first press of Up from nothing should
+      // reach the last.
+      setHighlighted((current) => {
+        if (current === NO_HIGHLIGHT) {
+          return event.key === "ArrowDown" ? 0 : navigable.length - 1;
+        }
+        return event.key === "ArrowDown"
           ? (current + 1) % navigable.length
-          : (current - 1 + navigable.length) % navigable.length,
-      );
+          : (current - 1 + navigable.length) % navigable.length;
+      });
     } else if (event.key === "Enter") {
       const entry = navigable[highlighted];
       if (entry) activate(entry);
@@ -396,26 +405,32 @@ function SearchModal({
           </div>
 
           {/*
-           * Leaving the list puts the highlight back where the palette opened
-           * it, rather than leaving the last hovered row washed.
+           * Taking the pointer off the list clears the highlight outright.
            *
            * Each row's `onMouseEnter` moves the keyboard highlight, and nothing
            * used to move it back -- so a hovered row wore two marks (the inner
            * div's `hover:bg-zinc-800` and the `li`'s `.highlighted` wash from
-           * sidebarSearch.css), and taking the pointer off the list dropped only
-           * the first. The wash that outlived it read as a stuck hover.
+           * sidebarSearch.css), and leaving dropped only the first. The wash
+           * that outlived it read as a stuck hover.
+           *
+           * An earlier version returned to index 0 instead, on the reasoning
+           * that it is the state the palette opens in and keeps Enter pointing
+           * somewhere. In use that is worse: moving the mouse away makes the
+           * mark *jump to Home*, which looks like the palette selecting a row
+           * on its own. Nothing highlighted is the honest answer -- the pointer
+           * is not on anything.
+           *
+           * The highlight on *open* is untouched, so Ctrl+K, type, Enter still
+           * works for anyone who never reaches for the mouse; typing resets it
+           * to 0 as well. Only a deliberate hover-then-leave clears it, and an
+           * arrow key brings it straight back.
            *
            * One handler on the container, not per row, so it fires when the
            * pointer leaves the list rather than on every row-to-row move.
-           *
-           * Reset to 0, never -1: index 0 is exactly the state the palette opens
-           * in, and that initial highlight exists so Ctrl+K, type, Enter goes
-           * somewhere. Clearing it would restore the Django behaviour where
-           * Enter did nothing until an arrow key was pressed.
            */}
           <div
             className="max-h-80 overflow-y-auto px-1 py-2"
-            onMouseLeave={() => setHighlighted(0)}
+            onMouseLeave={() => setHighlighted(NO_HIGHLIGHT)}
           >
             {SECTION_ORDER.map((section) => {
               const sectionMatches = matches.filter((entry) => entry.section === section);
@@ -445,7 +460,13 @@ function SearchModal({
                           key={`${entry.section}-${entry.label}`}
                           className={cn(
                             SECTION_CLASS[section],
-                            index === highlighted && "highlighted",
+                            // `index >= 0` is load-bearing: a row that is not
+                            // navigable -- the "You are here" one -- has no
+                            // place in `navigable` and falls back to -1, which
+                            // is the same value `NO_HIGHLIGHT` uses. Without
+                            // this, clearing the highlight lit up the one row
+                            // that leads nowhere.
+                            index >= 0 && index === highlighted && "highlighted",
                           )}
                           onMouseEnter={here ? undefined : () => setHighlighted(index)}
                           onClick={here ? undefined : () => activate(entry)}

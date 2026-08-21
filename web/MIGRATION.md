@@ -426,14 +426,25 @@ Each is recorded at its call site and in the comparison scripts.
   Ctrl+K, type, Enter goes somewhere. Django added the highlight only on an
   arrow key, which meant Enter did nothing until you pressed one. The highlight
   skips the "You are here" row for the same reason Enter does.
-- **Leaving the palette's list returns the highlight to that first result.**
-  Hovering a row moves the keyboard highlight -- which Django's palette never
-  did -- and nothing used to move it back, so a hovered row wore two marks (the
-  row's `hover:bg-zinc-800` and the `li`'s `.highlighted` wash) and taking the
-  pointer off the list dropped only the first. The wash that outlived it read as
-  a stuck hover. One `onMouseLeave` on the scroll container resets to index 0 --
-  not -1, because that is the state the palette opens in and it keeps Enter
-  pointing at a real row.
+- **Leaving the palette's list clears the highlight outright.** Hovering a row
+  moves the keyboard highlight -- which Django's palette never did -- and
+  nothing used to move it back, so a hovered row wore two marks (the row's
+  `hover:bg-zinc-800` and the `li`'s `.highlighted` wash) and taking the pointer
+  off dropped only the first. The wash that outlived it read as a stuck hover.
+  This first returned the highlight to index 0 instead, on the reasoning that it
+  is the state the palette opens in and keeps Enter pointing somewhere. In use
+  that is worse and was rejected: moving the mouse away makes the mark *jump to
+  Home*, which looks like the palette choosing a row by itself. Nothing marked
+  is the honest answer -- the pointer is not on anything.
+  The highlight on *open* is untouched, so Ctrl+K, type, Enter still works for
+  anyone who never reaches for the mouse, and typing resets it to 0; only a
+  deliberate hover-then-leave clears it. From cleared, Down goes to the first
+  row and Up to the last, both handled explicitly because `-1 - 1 + n` would
+  otherwise land on the second-to-last.
+  **`index >= 0` on the class is load-bearing**: the inert "You are here" row is
+  not in `navigable` and falls back to -1, the same value the cleared state
+  uses, so without it clearing the highlight lit up the one row that leads
+  nowhere.
 - **The about intro's status badges are the mobile drawer's size, and one word
   on a phone.** `px-2 py-0.5 text-xs` with a 1.5-unit dot rather than `px-3
   py-1.5 text-sm` with a 2-unit one, so the same three flags are not drawn at

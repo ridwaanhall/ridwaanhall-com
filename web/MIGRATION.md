@@ -263,10 +263,18 @@ invisible to every layout and text comparison) and `scripts/compare-gallery.mjs`
       `get_full_name|default:username` here and the provider profile there, so
       one person could appear under two names; unifying costs nothing with the
       table empty.
-- [ ] Comments — **the form has not been submitted against live.** Delete is a
-      *soft* delete, so a test comment cannot be removed through the UI without
-      leaving a tombstone on a real post; clearing it needs a hard `DELETE`.
-      Worth doing with a deliberate go-ahead, as the guestbook's was.
+- [x] Comments — exercised against live and cleaned up. Posted a root comment
+      and a reply on a real post, then soft-deleted the root through the shared
+      confirm dialog: the tombstone replaced the body, **the reply survived**,
+      and the heading dropped from 2 to 1. Row state confirmed directly
+      (`is_deleted = true`, the reply still pointing at it, both scoped to
+      `content_type_id = 21`, `object_id = 20`), then both rows hard-`DELETE`d
+      so no tombstone lingers -- table back to 0 and the post reads "No comments
+      yet".
+      One thing the UI cannot do, by design: a reply carries no Reply button, so
+      a reply-to-a-reply is unreachable except by a crafted request. That is
+      what the flattening rule defends against and
+      `scripts/check-comments.mjs` covers it.
 - [x] Contact form — zod + Turnstile + Resend. The two emails go out and **only
       the owner notification decides the outcome**, as `send_contact_email` did:
       a form that reports failure because the courtesy auto-reply bounced has
@@ -364,6 +372,18 @@ checked. Anything marked "before cutover" is deliberately deferred until then,
 not forgotten:
 
 - the production OAuth redirect URIs
+- **verifying a sending domain in Resend.** `DEFAULT_FROM_EMAIL` is
+  `notify@rone.dev`, and Resend rejects it with `403 The rone.dev domain is not
+  verified`. Django never hit this because it sent over Gmail SMTP, where the
+  from-address needs no third-party verification. Until a domain is verified the
+  contact form and every guestbook notification will fail to send in production
+  -- `sendEmail` logs and returns `false`, so the form reports "Something went
+  wrong" rather than crashing, but nothing arrives. The restricted API key
+  cannot list domains to check (`401 restricted_api_key`); verify at
+  resend.com/domains.
+  The redesigned templates were previewed by sending all five through Resend's
+  sandbox sender to the account's own address, which is the only recipient it
+  permits until then.
 - dropping `content`/`description` and the dead `@source inline(...)` entries
 - re-applying RLS as a SQL migration
 - swapping `vercel.json` and CI to Node

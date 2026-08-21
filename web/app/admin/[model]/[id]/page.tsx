@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import type { Route } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import { BackIcon, CheckIcon, DashIcon } from "@/components/admin/admin-icons";
+import { NothingHere } from "@/components/admin/nothing-here";
 import { RecordForm } from "@/components/admin/record-form";
 import { adminDate, adminDateTime } from "@/lib/admin/format";
-import { fetchAdminRow } from "@/lib/admin/list";
 import { toClientFieldsets } from "@/lib/admin/form";
+import { fetchAdminRow } from "@/lib/admin/list";
 import { formModelFor, listModelFor } from "@/lib/admin/models";
 import { loadFormValues } from "@/lib/admin/record";
 import { ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
@@ -21,39 +22,64 @@ import { requireStaff } from "@/lib/auth/staff";
  * the moment its list exists, and a model gains editing by gaining a form
  * descriptor -- nothing in this file changes for it.
  *
- * Every path through this page starts by reading the session, so there is no
- * shell worth prerendering. This route keeps one anyway: `generateStaticParams`
- * is what removes it, and `cacheComponents` rejects one that returns nothing to
- * prerender, which is exactly the case here since the ids are whatever rows
- * exist. The consequence is that a record that does not exist answers with the
- * not-found page under an HTTP **200**; see the note on `notFound()` in the
- * changelist beside this file for why that is accepted rather than chased.
+ * The page component is deliberately **not** `async`: it hands the `params`
+ * promise down and `Record` awaits it inside the boundary, so moving between a
+ * changelist and a row paints the frame at once and streams the record into it.
+ * The admin's chrome is already on screen for that navigation, and the layout
+ * above still blocks on `staffGate` -- a shell that showed the sidebar before
+ * the gate resolved would flash the whole admin at someone not entitled to it.
  */
-type Params = { params: Promise<{ model: string; id: string }> };
+type Params = PageProps<"/admin/[model]/[id]">["params"];
 
-export async function generateMetadata({ params }: Params): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Params;
+}): Promise<Metadata> {
   const { model } = await params;
   const entry = ADMIN_ENTRIES_BY_KEY.get(model);
   return { title: entry ? `${entry.label} · Admin` : "Admin" };
 }
 
-export default async function AdminDetailPage({ params }: Params) {
+export default function AdminDetailPage(props: PageProps<"/admin/[model]/[id]">) {
+  return (
+    <div className="max-w-3xl space-y-5">
+      <Suspense fallback={<RecordSkeleton />}>
+        <Record params={props.params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function Record({ params }: { params: Params }) {
   await requireStaff();
 
   const { model: key, id } = await params;
   const entry = ADMIN_ENTRIES_BY_KEY.get(key);
-  if (!entry) notFound();
+  /*
+   * Rendered, not thrown. `notFound()` inside this boundary resolves it to
+   * nothing once the shell is committed, leaving a blank page -- see the note
+   * on `NothingHere`.
+   */
+  if (!entry) return <NothingHere message="No such model." />;
 
   const recordId = Number(id);
   const form = formModelFor(key);
+  const missing = (
+    <NothingHere
+      message={`There is no ${entry.label.toLowerCase()} with id ${id}. It may have been deleted.`}
+      backLabel={entry.labelPlural}
+      backHref={`/admin/${entry.key}` as Route}
+    />
+  );
 
   if (form) {
     const values = await loadFormValues(form, recordId);
-    if (!values) notFound();
+    if (!values) return missing;
     const label = form.label(values);
 
     return (
-      <div className="max-w-3xl space-y-5">
+      <>
         <Crumb label={entry.labelPlural} href={`/admin/${entry.key}` as Route} />
         <Heading title={label} subtitle={`${entry.label} #${recordId}`} />
         <RecordForm
@@ -67,18 +93,18 @@ export default async function AdminDetailPage({ params }: Params) {
           deleteWarning={form.deleteWarning}
           listHref={`/admin/${entry.key}` as Route}
         />
-      </div>
+      </>
     );
   }
 
   const model = listModelFor(key);
-  if (!model) notFound();
+  if (!model) return <NothingHere message="That screen has not been built yet." />;
 
   const row = await fetchAdminRow(model, recordId);
-  if (!row) notFound();
+  if (!row) return missing;
 
   return (
-    <div className="max-w-3xl space-y-5">
+    <>
       <Crumb label={entry.labelPlural} href={`/admin/${entry.key}` as Route} />
       <Heading
         title={String(model.columns[0]?.value(row) ?? entry.label)}
@@ -127,6 +153,34 @@ export default async function AdminDetailPage({ params }: Params) {
           );
         })}
       </dl>
+    </>
+  );
+}
+
+/**
+ * The frame, with nothing in it.
+ *
+ * This is prerendered and served before anything is known about who is asking,
+ * so it carries no record and no account -- not even which model is being
+ * opened, since that arrives with the URL.
+ */
+function RecordSkeleton() {
+  return (
+    <div className="animate-pulse space-y-5" aria-hidden="true">
+      <div className="h-3 w-24 rounded bg-zinc-900" />
+      <div className="space-y-2">
+        <div className="h-6 w-64 rounded bg-zinc-900" />
+        <div className="h-3 w-28 rounded bg-zinc-900" />
+      </div>
+      <div className="space-y-3 rounded-lg border border-zinc-800 px-3 py-4">
+        {[0, 1, 2, 3].map((row) => (
+          <div key={row} className="grid gap-2 sm:grid-cols-3 sm:gap-4">
+            <div className="h-3 w-20 rounded bg-zinc-900" />
+            <div className="h-8 rounded bg-zinc-900 sm:col-span-2" />
+          </div>
+        ))}
+      </div>
+      <div className="h-8 w-24 rounded-full bg-zinc-900" />
     </div>
   );
 }

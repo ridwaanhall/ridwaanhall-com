@@ -27,7 +27,11 @@ type Params = { params: Promise<{ model: string }> };
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { model } = await params;
   const entry = ADMIN_ENTRIES_BY_KEY.get(model);
-  return { title: entry ? `Add ${entry.label.toLowerCase()} · Admin` : "Admin" };
+  // The same condition the page 404s on, so a refused route does not sit in the
+  // browser's tab and history offering to add something it will not add.
+  const form = entry ? formModelFor(entry.key) : null;
+  const offered = entry && form && form.canCreate !== false;
+  return { title: offered ? `Add ${entry.label.toLowerCase()} · Admin` : "Admin" };
 }
 
 /**

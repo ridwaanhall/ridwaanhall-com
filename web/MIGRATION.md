@@ -723,11 +723,25 @@ Each is recorded at its call site and in the comparison scripts.
   it for a month after the flag was cleared.
 - **A dynamic route under `cacheComponents` cannot 404.** The status is committed
   as soon as the route is known to be dynamic, and reading the session cookie —
-  which every admin page does first, deliberately — is what makes it so. So
-  `notFound()` renders the not-found page under an HTTP **200** on the production
-  build (`next dev` still answers 404). Putting the registry lookup ahead of the
-  gate would fix the status; it is not done, because the gate goes first. Assert
-  the body, not the status.
+  which every admin page does first, deliberately — is what makes it so. Putting
+  the registry lookup ahead of the gate would fix the status; it is not done,
+  because the gate goes first. `app/admin/not-found.tsx` does recover a real 404
+  for URLs the *router* rejects (an unbuilt screen, an unknown key), and it also
+  keeps a mistyped record inside the admin instead of on the site's public 404.
+  Assert the body, not the status.
+- **`notFound()` thrown inside a `<Suspense>` boundary resolves to nothing.**
+  Once the shell is committed and the fallback is on screen, throwing it leaves
+  an empty `main` — no message, no 404, nothing. A missing record on
+  `/admin/<model>/<id>` is therefore *rendered* (`NothingHere`) rather than
+  thrown. Reserve `notFound()` for reads that happen before a boundary.
+- **`export const instant = false` is per page file and does not survive a
+  rewrite.** It was dropped from the record route when that file was rewritten
+  to add the form, and the dev overlay raised the insight again. The record route
+  now takes the *stream* fix instead — a non-`async` page passing the `params`
+  promise into a suspended child — so navigating from a changelist to a row
+  paints the frame at once. The admin layout keeps `instant = false` on purpose:
+  a shell that showed the sidebar before `staffGate` resolved would flash the
+  whole admin at someone not entitled to it.
 - **Nothing that holds a Drizzle column may cross to a client component.** A
   `PgColumn` references its table, which references every column back, so
   serialising one is an infinite walk — and React answers it with

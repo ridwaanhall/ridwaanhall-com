@@ -223,9 +223,17 @@ try {
 
   // --- the models that refuse to be created ---------------------------------
   for (const key of ["user", "chat-message", "user-profile", "comment"]) {
-    const response = await page.goto(`${BASE}/admin/${key}/new`, { waitUntil: "load" });
-    const denied = response?.status() === 404 || (await page.content()).includes("Page Not Found");
-    check(`no add form where records are not created here (${key})`, denied);
+    await page.goto(`${BASE}/admin/${key}/new`, { waitUntil: "load" });
+    await page.waitForTimeout(600);
+    // Asserted on what renders, not on the status: the route is dynamic, so
+    // `notFound()` cannot set one. And on the *rendered* text rather than the
+    // response body, since the shell streams and the title still names the model.
+    const shown = await page.evaluate(() => document.body.innerText);
+    const form = await page.locator('button[type="submit"]:text-matches("Create")').count();
+    check(
+      `no add form where records are not created here (${key})`,
+      shown.includes("Nothing here") && form === 0,
+    );
   }
 
   // --- delete ---------------------------------------------------------------

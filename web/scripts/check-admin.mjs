@@ -213,16 +213,18 @@ check("staff: the list renders", all.status === 200 && allRows.length > 0, `${al
 }
 
 /**
- * Not-found is asserted on the body, not only the status.
+ * Not-found is asserted on what the reader is told, not on the status.
  *
- * `next dev` answers these 404; the production build answers 200 with the
- * not-found page in it. The status is committed as soon as a route is known to
- * be dynamic, and reading the session cookie -- which every admin page does
- * first, on purpose -- is what makes it so, long before `notFound()` runs.
- * Putting the registry lookup ahead of the gate would fix the status and is
- * deliberately not done. So the check is that the reader is told, in both.
+ * Two different things end up here. A URL the *router* rejects -- an unbuilt
+ * screen, a key that is not in the registry -- gets a real 404 from
+ * `app/admin/not-found.tsx`. A row that simply does not exist cannot: the status
+ * is committed as soon as a route is known to be dynamic, and every admin page
+ * reads the session first on purpose, so `notFound()` would come too late. That
+ * case is *rendered* rather than thrown -- inside the record route's `<Suspense>`
+ * boundary, throwing it resolves the boundary to nothing and leaves a blank
+ * page. Either way the reader gets the admin's own "Nothing here".
  */
-const notFound = ({ status, body }) => status === 404 || body.includes("Page Not Found");
+const notFound = ({ status, body }) => status === 404 || body.includes("Nothing here");
 
 {
   // Taken from the registry rather than hard-coded, so finishing a screen
@@ -247,7 +249,20 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Page Not
   const found = await get("/admin/blog-post/20", staff);
   const missing = await get("/admin/blog-post/999999", staff);
   check("a record renders", found.status === 200 && found.body.includes("Commit Message Style Guide"));
-  check("a record that is not there says not found", notFound(missing), `status ${missing.status}`);
+  check("a record that is not there says so", notFound(missing), `status ${missing.status}`);
+  check(
+    "and names the model it looked in",
+    missing.body.includes("There is no blog post with id 999999"),
+  );
+  // The frame the reader sees while the record is fetched. It is prerendered and
+  // served before the gate has run, so it must carry nothing about the record or
+  // the account -- only the shape of the page.
+  const shell = await get("/admin/blog-post/20");
+  check(
+    "the streamed shell carries a placeholder and no data",
+    shell.body.includes("animate-pulse") === false || leaks(shell.body).length === 0,
+    leaks(shell.body).join(", ") || "clean",
+  );
 }
 
 // --- every built screen ------------------------------------------------------

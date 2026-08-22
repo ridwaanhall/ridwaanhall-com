@@ -132,7 +132,7 @@ export function ContributionHeatmap({
           </div>
 
           <div
-            className={`text-sm text-zinc-400 h-6 transition-opacity duration-200 flex-shrink ${
+            className={`text-xs sm:text-sm text-zinc-400 h-6 transition-opacity duration-200 flex-shrink ${
               detail ? "opacity-100" : "opacity-0"
             }`}
             // Announced politely so a screen reader is not interrupted by every

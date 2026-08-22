@@ -28,6 +28,19 @@ const nextConfig: NextConfig = {
   // after every one of those classes had been deleted.
   turbopack: { root: path.resolve(import.meta.dirname) },
 
+  experimental: {
+    serverActions: {
+      /*
+       * The admin uploads images through a server action, and the default of
+       * 1MB rejects most of them. 4MB rather than something generous: Vercel
+       * caps a serverless request body at 4.5MB, so a larger limit here would
+       * only move the failure from a message this app writes to a gateway error
+       * it cannot explain. `lib/admin/form.ts` refuses the same size in words.
+       */
+      bodySizeLimit: "4mb",
+    },
+  },
+
   images: {
     remotePatterns: [
       // Uploaded media. Django's SupabaseStorage.url() returns exactly this

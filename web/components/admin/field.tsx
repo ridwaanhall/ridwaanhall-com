@@ -1,5 +1,7 @@
 import { adminDateTime } from "@/lib/admin/format";
-import type { ClientField, FormValues } from "@/lib/admin/form";
+import { clearFieldName, type ClientField, type FormValues } from "@/lib/admin/form";
+import { mediaUrl } from "@/lib/storage/media";
+import { IMAGE_TYPES } from "@/lib/storage/keys";
 import { cn } from "@/lib/utils/cn";
 
 /**
@@ -49,6 +51,54 @@ export function Field({
             POST could put back. Rendering the value as text rather than a
             disabled input says the same thing more plainly. */}
         <p className="px-3 py-1.5 text-sm text-zinc-400">{shown}</p>
+      </Row>
+    );
+  }
+
+  if (field.kind === "image") {
+    const key = typeof value === "string" ? value : "";
+    return (
+      <Row field={field} id={id} describedBy={describedBy} error={error}>
+        <div className="space-y-2">
+          {key ? (
+            <div className="flex items-start gap-3">
+              {/*
+                A plain `img`, not `next/image`. The optimizer would cache a
+                derivative of a file that is about to be replaced, and the point
+                of this control is to show what is stored right now.
+              */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={mediaUrl(key)}
+                alt=""
+                className="h-16 w-16 rounded-md border border-zinc-800 object-contain"
+              />
+              <div className="min-w-0 flex-1">
+                <code className="block truncate text-xs break-all text-zinc-500">{key}</code>
+                {!field.required && (
+                  <label className="mt-1.5 flex items-center gap-2 text-xs text-zinc-400">
+                    <input
+                      type="checkbox"
+                      name={clearFieldName(field.name)}
+                      className="h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-900 accent-indigo-500"
+                    />
+                    Remove this image
+                  </label>
+                )}
+              </div>
+            </div>
+          ) : (
+            <p className="text-xs text-zinc-500">No image.</p>
+          )}
+          <input
+            type="file"
+            id={id}
+            name={field.name}
+            accept={Object.keys(IMAGE_TYPES).join(",")}
+            aria-describedby={describedBy || undefined}
+            className="block w-full text-xs text-zinc-400 file:mr-3 file:rounded-full file:border file:border-zinc-700 file:bg-transparent file:px-3 file:py-1.5 file:text-xs file:text-zinc-300 hover:file:border-zinc-600 hover:file:bg-zinc-800"
+          />
+        </div>
       </Row>
     );
   }

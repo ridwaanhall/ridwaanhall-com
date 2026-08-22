@@ -18,7 +18,8 @@ npx tsx scripts/check-comments.mjs     # comment rules vs the live schema, rolle
 npx tsx scripts/check-emails.mjs       # all five email pairs render, escape, and fill
 npx tsx --conditions=react-server scripts/check-turnstile.mjs   # spam gate fails closed
 npx tsx scripts/check-admin.mjs [base]  # the admin gate leaks nothing; the changelist works
-npx tsx scripts/check-admin-forms.mjs [base]  # the change form, driven live and cleaned up after
+npx tsx --conditions=react-server scripts/check-admin-forms.mjs [base]  # the change form, driven live
+npx tsx --conditions=react-server scripts/check-storage.mjs  # uploads, deletes, reference counting
 node scripts/compare-jsonld.mjs        # structured data vs the live site
 node scripts/compare-prose.mjs [slug] [width]   # rich-text typography vs live
 MSYS_NO_PATHCONV=1 node scripts/compare-layout.mjs [path]   # rendered geometry vs live
@@ -374,11 +375,16 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
       rather than the submitted `FormData`, so a hand-crafted POST carrying
       `is_superuser` reaches no column. Create, edit, delete, per-field
       validation, unique clashes on the field, and `updateTag` invalidation.
-- [x] **Forms for the five models that need no image, JSON or inline**: Skill,
-      Message, User profile, Comment, User. `canCreate` / `canDelete` are set
-      per model with the reason at the descriptor — an account is made by a
-      sign-in, a message by a reader, a profile row by a signal.
-- [ ] Forms for the remaining ten, which need the pieces below
+- [x] **Forms for the six models that need no JSON editor or inline**: Skill,
+      Organization, Message, User profile, Comment, User. `canCreate` /
+      `canDelete` are set per model with the reason at the descriptor — an
+      account is made by a sign-in, a message by a reader, a profile row by a
+      signal.
+- [x] Image upload to Supabase Storage + reference-counted cleanup —
+      `lib/storage/objects.ts`, `keys.ts`, `cleanup.ts`, and the `image` field
+      kind. Ported with the 25s total upload budget, retry only on 408/429/5xx,
+      and "missing is success" on delete.
+- [ ] Forms for the remaining nine, which need the JSON editors and inlines
 - [ ] Inlines with dnd-kit ordering, singleton editors
 - [ ] The five JSON editors (string list, key/value, grouped, credits, content blocks)
 - [ ] Image upload to Supabase Storage + reference-counted cleanup
@@ -416,6 +422,22 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
   not a thread. Where a model's `ordering` names a column `list_display` did not
   include (`Education.id`, `LegalDocument.sort_order`), that column was added —
   otherwise the list is unsortable by the very thing it is sorted by.
+- **An uploaded file is named after its contents**, not after the name it
+  arrived with: `logo/acme-corp-a1b2c3d4.webp`, where the suffix is a digest of
+  the bytes. Django kept the name deterministic and documented the consequence —
+  re-uploading over an existing key is an in-place replace, and Supabase's read
+  path is CDN-fronted, so the old bytes could be served for a while afterwards.
+  Content addressing removes that case instead of documenting it: same bytes,
+  same key, so a stale copy is byte-identical; different bytes, different key,
+  and a freshly-created key is immediately consistent. It also makes an upload
+  idempotent, which matters for the retry loop.
+- **Uploads are capped at 4MB**, because Vercel caps a serverless request body
+  at 4.5MB. `serverActions.bodySizeLimit` is set to match, so the refusal is a
+  sentence this app writes rather than a gateway error it cannot explain.
+- **The extension decides the stored `Content-Type`, from an allowlist.** It is
+  what Supabase serves the object with, so accepting the browser's claim
+  unchecked would let an upload be served as `text/html` from the storage host.
+  SVG is on the list because 78 skill icons in the database are SVGs.
 - **Editing is refused where the record is not the admin's to make.** A
   guestbook message is written by a reader, an account by a sign-in, a
   `UserProfile` by a `post_save` signal — so none of them offers an add form,
@@ -734,6 +756,23 @@ Each is recorded at its call site and in the comparison scripts.
   an empty `main` — no message, no 404, nothing. A missing record on
   `/admin/<model>/<id>` is therefore *rendered* (`NothingHere`) rather than
   thrown. Reserve `notFound()` for reads that happen before a boundary.
+- **A file is never deleted because one row stopped naming it.** Several are
+  deliberately shared: `profile/ridwaanhall_20250913_2.webp` is named by
+  twenty-one rows (all twenty blog posts and the profile),
+  `logo/al_mukmin_ngruki.webp` by three organisations. `deleteUnreferenced`
+  checks all five key-holding columns first, in one statement, and only then
+  deletes. `FILE_COLUMNS` is a hand-written list because there is no reflection
+  over a Drizzle schema — `scripts/check-storage.mjs` scans every text column in
+  the public schema for key-shaped values and fails if one is not declared.
+- **Cleanup is never the reason a save fails.** Storage errors are collected and
+  returned, never thrown; an orphaned object is a far smaller problem than a 500
+  on the screen that triggered it. The budget spans the whole operation rather
+  than each call, because a cascade issues one delete per row — seven on the
+  largest live project — and a per-call limit would reset seven times and bound
+  nothing.
+- **An empty file input means "not edited", never "make it empty".** Treating it
+  as a clear would blank the image every time any other field on the record was
+  saved. Removing an image is a separate checkbox.
 - **`export const instant = false` is per page file and does not survive a
   rewrite.** It was dropped from the record route when that file was rewritten
   to add the form, and the dev overlay raised the insight again. The record route

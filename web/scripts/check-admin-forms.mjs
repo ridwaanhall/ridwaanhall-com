@@ -21,7 +21,10 @@
  *   latter lets a stale copy stand until its `cacheLife` window passes, so an
  *   edit would appear to do nothing.
  *
- *   npx tsx scripts/check-admin-forms.mjs [base]
+ * Needs `--conditions=react-server`: the image checks import the storage
+ * client, which is `server-only`.
+ *
+ *   npx tsx --conditions=react-server scripts/check-admin-forms.mjs [base]
  */
 import { config } from "dotenv";
 
@@ -31,7 +34,8 @@ config({ path: ".env", quiet: true });
 const { chromium } = await import("playwright");
 const { encode } = await import("next-auth/jwt");
 const { db, pool } = await import("../lib/db/client.ts");
-const { aboutSkill, authUser } = await import("../lib/db/schema.ts");
+const { aboutOrganization, aboutSkill, authUser } = await import("../lib/db/schema.ts");
+const { objectExists } = await import("../lib/storage/objects.ts");
 const { eq, ne, sql } = await import("drizzle-orm");
 
 const BASE = process.argv[2] ?? "http://localhost:3000";
@@ -61,6 +65,14 @@ const page = await context.newPage();
 
 /** Rows this run created, removed in the `finally` whatever happens. */
 const created = [];
+const createdOrgs = [];
+
+/** A 1x1 PNG and a 1x1 GIF -- two files with genuinely different bytes. */
+const PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+  "base64",
+);
+const GIF = Buffer.from("R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7", "base64");
 
 const fill = async (name, value) => page.fill(`[name="${name}"]`, value);
 /**
@@ -236,6 +248,103 @@ try {
     );
   }
 
+  // --- images ---------------------------------------------------------------
+  /*
+   * The upload path, driven through the form rather than called directly: what
+   * is being checked is that a replaced file is cleaned up and a removed one
+   * too, which is a property of the save action and not of the storage client.
+   */
+  await page.goto(`${BASE}/admin/organization/new`, { waitUntil: "load" });
+  await page.waitForTimeout(600);
+  await fill("name", `${MARK} Org`);
+  await page.setInputFiles('input[type="file"]', {
+    name: "first-logo.png",
+    mimeType: "image/png",
+    buffer: PNG,
+  });
+  await submit();
+
+  const [org] = await db
+    .select({ id: aboutOrganization.id, logo: aboutOrganization.logo })
+    .from(aboutOrganization)
+    .where(eq(aboutOrganization.name, `${MARK} Org`));
+  if (org) createdOrgs.push(org.id);
+
+  check("an upload is stored against the record", Boolean(org?.logo), org?.logo ?? "no row");
+  check("and the object is in the bucket", org?.logo ? await objectExists(org.logo) : false);
+
+  await page.goto(`${BASE}/admin/organization/${org.id}`, { waitUntil: "load" });
+  await page.waitForTimeout(600);
+  await page.setInputFiles('input[type="file"]', {
+    name: "second-logo.gif",
+    mimeType: "image/gif",
+    buffer: GIF,
+  });
+  await submit();
+
+  const [replaced] = await db
+    .select({ logo: aboutOrganization.logo })
+    .from(aboutOrganization)
+    .where(eq(aboutOrganization.id, org.id));
+  check("replacing it stores the new key", Boolean(replaced?.logo) && replaced.logo !== org.logo, replaced?.logo ?? "");
+  check("the new object is there", replaced?.logo ? await objectExists(replaced.logo) : false);
+  check(
+    "and the one it replaced, which nothing else names, is gone",
+    (await objectExists(org.logo)) === false,
+    org.logo,
+  );
+
+  await page.goto(`${BASE}/admin/organization/${org.id}`, { waitUntil: "load" });
+  await page.waitForTimeout(600);
+  await page.check('input[name="logo__clear"]');
+  await submit();
+
+  const [cleared] = await db
+    .select({ logo: aboutOrganization.logo })
+    .from(aboutOrganization)
+    .where(eq(aboutOrganization.id, org.id));
+  check("removing it empties the column", !cleared?.logo, JSON.stringify(cleared?.logo));
+  check("and takes the object with it", (await objectExists(replaced.logo)) === false);
+
+  // Saving an unrelated field must not blank the image. An empty file input is
+  // "not edited", never "make it empty".
+  await page.goto(`${BASE}/admin/organization/${org.id}`, { waitUntil: "load" });
+  await page.waitForTimeout(600);
+  await page.setInputFiles('input[type="file"]', {
+    name: "third-logo.png",
+    mimeType: "image/png",
+    buffer: PNG,
+  });
+  await submit();
+  await page.goto(`${BASE}/admin/organization/${org.id}`, { waitUntil: "load" });
+  await page.waitForTimeout(600);
+  await fill("website", "https://example.com");
+  await submit();
+
+  const [untouched] = await db
+    .select({ logo: aboutOrganization.logo, website: aboutOrganization.website })
+    .from(aboutOrganization)
+    .where(eq(aboutOrganization.id, org.id));
+  check(
+    "saving another field leaves the image alone",
+    Boolean(untouched?.logo) && untouched.website === "https://example.com",
+    `${untouched?.logo} / ${untouched?.website}`,
+  );
+
+  const survivor = untouched.logo;
+  await page.locator('button:has-text("Delete")').first().click();
+  await page.waitForTimeout(500);
+  await page.locator('[aria-labelledby="confirm-dialog-title"] button').last().click();
+  await page.waitForTimeout(1800);
+
+  const remaining = await db
+    .select({ id: aboutOrganization.id })
+    .from(aboutOrganization)
+    .where(eq(aboutOrganization.id, org.id));
+  if (remaining.length === 0) createdOrgs.length = 0;
+  check("deleting the record removes it", remaining.length === 0);
+  check("and its image with it", (await objectExists(survivor)) === false, survivor);
+
   // --- delete ---------------------------------------------------------------
   await page.goto(`${BASE}/admin/skill/${made.id}`, { waitUntil: "load" });
   await page.waitForTimeout(500);
@@ -268,6 +377,10 @@ try {
   for (const id of created) {
     await db.delete(aboutSkill).where(eq(aboutSkill.id, id));
     console.log(`  ..    cleaned up skill #${id}`);
+  }
+  for (const id of createdOrgs) {
+    await db.delete(aboutOrganization).where(eq(aboutOrganization.id, id));
+    console.log(`  ..    cleaned up organization #${id}`);
   }
   const [left] = await db
     .select({ n: sql`count(*)::int` })

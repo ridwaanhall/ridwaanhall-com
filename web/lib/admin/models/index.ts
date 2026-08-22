@@ -4,6 +4,7 @@ import {
   certificationList,
   educationList,
   experienceList,
+  organizationForm,
   organizationList,
   skillForm,
   skillList,
@@ -83,7 +84,14 @@ export function listModelFor(key: string) {
  * every model, and a form arrives per model as the fields it needs are built.
  * A key with a list but no form gets the read-only record view, which says so.
  */
-const FORMS: AdminFormModel[] = [skillForm, chatMessageForm, userProfileForm, commentForm, userForm];
+const FORMS: AdminFormModel[] = [
+  skillForm,
+  organizationForm,
+  chatMessageForm,
+  userProfileForm,
+  commentForm,
+  userForm,
+];
 
 export const ADMIN_FORM_MODELS: Record<string, AdminFormModel> = Object.fromEntries(
   FORMS.map((model) => [model.key, model]),

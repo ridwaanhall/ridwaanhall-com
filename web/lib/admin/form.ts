@@ -2,6 +2,7 @@ import type { SQL } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 
 import type { FilterChoice } from "@/lib/admin/list";
+import type { UploadPrefix } from "@/lib/storage/keys";
 
 /**
  * What an admin form is, as data.
@@ -30,7 +31,8 @@ export type FieldKind =
   | "checkbox"
   | "select"
   | "date"
-  | "datetime";
+  | "datetime"
+  | "image";
 
 export type FormField = {
   /** The key in the loaded row, and the input's `name`. */
@@ -44,6 +46,8 @@ export type FormField = {
   maxLength?: number;
   choices?: FilterChoice[];
   min?: number;
+  /** Which `upload_to` folder an `image` field writes into. */
+  prefix?: UploadPrefix;
   /**
    * Shown but not writable. Django's `readonly_fields`, and the same use: a
    * value the record is identified by rather than edited through.
@@ -96,6 +100,7 @@ export function toClientFieldsets(model: AdminFormModel): ClientFieldset[] {
       maxLength: field.maxLength,
       choices: field.choices,
       min: field.min,
+      prefix: field.prefix,
       readOnly: field.readOnly,
     })),
   }));
@@ -185,6 +190,9 @@ export function parseFormValues(model: AdminFormModel, data: FormData): ParseRes
 
   for (const field of formFields(model)) {
     if (field.readOnly) continue;
+    // Handled by `saveRecord`: an upload is bytes and a network call, and this
+    // stays synchronous so it can be reasoned about and tested on its own.
+    if (field.kind === "image") continue;
 
     if (field.kind === "checkbox") {
       // An unchecked box posts nothing at all, which is why presence is the
@@ -296,3 +304,15 @@ export function slugify(value: string): string {
     .trim()
     .replace(/[-\s]+/g, "-");
 }
+
+/**
+ * The largest upload accepted, and the reason for the number.
+ *
+ * Vercel caps a serverless request body at 4.5MB, so anything above this
+ * would fail as a gateway error with nothing useful to say. Refusing it here
+ * means the reader is told, in words, before a byte is sent anywhere.
+ */
+export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+
+/** The name of the checkbox that empties an image field. */
+export const clearFieldName = (field: string) => `${field}__clear`;

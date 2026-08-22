@@ -533,3 +533,58 @@ export const skillForm: AdminFormModel = {
     },
   ],
 };
+
+export const organizationForm: AdminFormModel = {
+  key: "organization",
+  from: aboutOrganization,
+  pk: aboutOrganization.id,
+  label: (values) => String(values.name ?? "Organization"),
+  // `on_delete=PROTECT` on all four relations, so Postgres refuses to remove one
+  // that is still in use and says so as a foreign-key violation. Offering the
+  // button is right: an organisation nothing references is genuinely deletable.
+  deleteWarning: "An organization still used by an experience, degree, award or certification cannot be removed.",
+  fieldsets: [
+    {
+      fields: [
+        {
+          name: "name",
+          column: aboutOrganization.name,
+          label: "Name",
+          kind: "text",
+          required: true,
+          maxLength: 255,
+        },
+        {
+          name: "slug",
+          column: aboutOrganization.slug,
+          label: "Slug",
+          kind: "slug",
+          maxLength: 255,
+          slugFrom: "name",
+          help: "Left blank, this is derived from the name.",
+        },
+        {
+          name: "website",
+          column: aboutOrganization.website,
+          label: "Website",
+          kind: "url",
+          maxLength: 200,
+        },
+      ],
+    },
+    {
+      title: "Logo",
+      help: "Shown beside every experience, degree, award and certification this organization issued.",
+      fields: [
+        {
+          name: "logo",
+          column: aboutOrganization.logo,
+          label: "Logo",
+          kind: "image",
+          prefix: "logo",
+          help: "One logo often covers several records. Replacing it here replaces it on all of them.",
+        },
+      ],
+    },
+  ],
+};

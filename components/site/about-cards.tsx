@@ -91,6 +91,27 @@ function ExternalArrow({ className }: { className: string }) {
 }
 
 /**
+ * A card's facts: when, what kind, where.
+ *
+ * One row shape for the whole about page. Experience, education and the
+ * application cards were each spelling out their own -- different type size,
+ * different gaps, different icon size -- for the same kind of line, so three
+ * cards a reader sees one after another disagreed about what a fact looks like.
+ * `ApplicationCard` imports these too; it is where the shape came from.
+ *
+ * The gaps are wider than the old `gap-4` because these carry no background:
+ * each item ends where its text ends, and 16px ran them together into one line
+ * of prose.
+ */
+export function MetaRow({ children }: { children: React.ReactNode }) {
+  return <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-zinc-400">{children}</div>;
+}
+
+export function MetaItem({ children }: { children: React.ReactNode }) {
+  return <span className="inline-flex items-center">{children}</span>;
+}
+
+/**
  * When something happened, on the education, award and certification cards.
  *
  * A date is not a status. This used to be indigo text on an indigo gradient,
@@ -105,7 +126,7 @@ function DatePill({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Institution({ name, website, extra }: { name: string; website: string; extra?: React.ReactNode }) {
+function Institution({ name, website }: { name: string; website: string }) {
   return (
     <p className="text-blue-200 mt-1 mb-2 sm:mb-3 italic text-xs sm:text-sm md:text-base">
       {website ? (
@@ -120,7 +141,6 @@ function Institution({ name, website, extra }: { name: string; website: string; 
       ) : (
         name
       )}
-      {extra}
     </p>
   );
 }
@@ -221,8 +241,8 @@ export function ExperienceCard({ company, roles }: { company: string; roles: Exp
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-4 text-sm text-zinc-400">
-                  <div className="flex items-center">
+                <MetaRow>
+                  <MetaItem>
                     <CalendarIcon />
                     {/* `period_start` is non-null in the model, but the manager
                         types it as nullable because `_month_year` returns null
@@ -235,22 +255,22 @@ export function ExperienceCard({ company, roles }: { company: string; roles: Exp
                     {role.period.end === "Present"
                       ? "Present"
                       : `${role.period.end.month} ${role.period.end.year}`}
-                  </div>
+                  </MetaItem>
                   {role.employment_type && (
-                    <div className="flex items-center">
+                    <MetaItem>
                       <BriefcaseIcon />
                       {role.employment_type}
-                    </div>
+                    </MetaItem>
                   )}
                   {(role.location_type || role.location) && (
-                    <div className="flex items-center">
+                    <MetaItem>
                       <PinIcon />
                       {role.location_type}
                       {role.location_type && role.location ? " · " : ""}
                       {role.location}
-                    </div>
+                    </MetaItem>
                   )}
-                </div>
+                </MetaRow>
 
                 {/* Below the meta row and full width, which is where the
                     original put it -- not inside the header's right-hand
@@ -301,19 +321,17 @@ export function EducationCard({ education }: { education: Education }) {
             <DatePill>{period}</DatePill>
           </div>
 
-          <Institution
-            name={education.institution}
-            website={education.website}
-            extra={
-              education.location.regency ? (
-                <span className="text-zinc-400 ml-2">
-                  <PinIcon className="w-3 h-3 sm:w-4 sm:h-4 inline text-zinc-500 mr-1" />
-                  {education.location.regency}, {education.location.province}{" "}
-                  {education.location.flag}
-                </span>
-              ) : undefined
-            }
-          />
+          <Institution name={education.institution} website={education.website} />
+
+          {education.location.regency && (
+            <MetaRow>
+              <MetaItem>
+                <PinIcon />
+                {education.location.regency}, {education.location.province}{" "}
+                {education.location.flag}
+              </MetaItem>
+            </MetaRow>
+          )}
 
           {education.achievements.length > 0 && (
             <Disclosure>
@@ -344,7 +362,7 @@ export function EducationCard({ education }: { education: Education }) {
 
 export function AwardCard({ award }: { award: Award }) {
   return (
-    <div className="rounded-xl overflow-hidden p-2 sm:p-3 md:p-4 border border-zinc-700/50 transition-all duration-300 hover:border-indigo-500/50 hover:border-zinc-700 backdrop-blur-sm">
+    <div className="card-outline p-2 sm:p-3 md:p-4 backdrop-blur-sm">
       <div className="flex items-start gap-3 md:gap-4">
         <div className="flex-shrink-0">
           <div className="flex items-center justify-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
@@ -439,7 +457,7 @@ export function CertificationCard({ certification }: { certification: Certificat
 function CalendarIcon() {
   return (
     <svg
-      className="w-4 h-4 mr-1.5 text-zinc-400"
+      className="w-3 h-3 mr-1 text-zinc-400"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -458,7 +476,7 @@ function CalendarIcon() {
 function BriefcaseIcon() {
   return (
     <svg
-      className="w-4 h-4 mr-1.5 text-zinc-400"
+      className="w-3 h-3 mr-1 text-zinc-400"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -474,7 +492,7 @@ function BriefcaseIcon() {
   );
 }
 
-function PinIcon({ className = "w-4 h-4 mr-1.5 text-zinc-400" }: { className?: string }) {
+function PinIcon({ className = "w-3 h-3 mr-1 text-zinc-400" }: { className?: string }) {
   return (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
       <path

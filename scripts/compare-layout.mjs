@@ -31,10 +31,15 @@ const TOLERANCE = 2;
  */
 const EXPECTED = [
   /*
-   * `/about/` is shorter than live at every width, and the whole of it is the
-   * intro's status badge row. Measured live vs. port with all three flags set:
-   * 46 at 375, 14 at 768, 6 at 1280. Nothing else on the page has moved -- the
-   * `main`, intro-card and badge-row deltas are the same number at each width.
+   * `/about/` is shorter than live at every width. Measured live vs. port with
+   * all three flags set: 50 at 375, 18 at 768, 6 at 1280.
+   *
+   * Two things account for it. Most of it is the intro's status badge row, as
+   * below. The last 4px at 375 and 768 is the tab strip: its buttons carried a
+   * 2px `border-b-2` that switched colour to mark the active tab, and the mark
+   * is now one absolutely-positioned bar that slides between them -- so each
+   * button is 2px shorter, and those two widths wrap the strip onto two rows.
+   * At 1280 it is one row, so the 2px falls inside the tolerance and 6 stands.
    *
    * Three requested changes compound here:
    *
@@ -134,18 +139,41 @@ const EXPECTED = [
   { path: "/", key: "main", dimension: "h", delta: 26, widths: [768] },
 
   /*
-   * `/openhire/`'s section heading is 13px wider than live's.
+   * `/openhire/` is no longer comparable to live element by element, and there
+   * is deliberately no entry for it.
    *
-   * `SectionCard` lays the heading out as `flex-1` beside its status pill, so
-   * the heading takes whatever the pill does not. The pill lost its dot and the
-   * dot's margin -- 13px measured -- and the heading grew by exactly that. The
-   * card, and everything else on the page, is unchanged.
+   * The page was restructured on request: the Curriculum Vitae block became the
+   * about page's banner, which is an `h3` rather than an `h2` section, and the
+   * three requirement cards came out of their grid to run full width. Every
+   * `h2` after the first therefore has a different index than live's, which
+   * this reports as twenty-odd heading-text mismatches -- true, and none of
+   * them a fault. Writing an exemption per shifted index would only encode the
+   * offset until the next edit moved it again.
+   *
+   * The path still runs; read the output rather than expecting silence. What it
+   * is good for now is comparing the port against itself across a change, which
+   * is what the whole `compare-*` set is for once the migration is done.
    */
-  { path: "/openhire/", key: "h2[1]", dimension: "w", delta: -13, widths: [1280] },
 
-  { path: "/about/", key: "main", dimension: "h", delta: 46, widths: [375] },
-  { path: "/about/", key: "main", dimension: "h", delta: 14, widths: [768] },
+  { path: "/about/", key: "main", dimension: "h", delta: 50, widths: [375] },
+  { path: "/about/", key: "main", dimension: "h", delta: 18, widths: [768] },
   { path: "/about/", key: "main", dimension: "h", delta: 6, widths: [1280] },
+
+  /*
+   * `/dashboard/`'s two section headings are 4px shorter than live's, and the
+   * page is 8px shorter for it.
+   *
+   * They were `text-xl sm:text-2xl` with no icon; they are `text-xl` with a
+   * 24px glyph now, which is the anatomy the contact page's headings already
+   * had. A 24px line box against live's 28px is the 4px, twice. `h2[1]` also
+   * measures 4px wider, because the icon is wider than the two type sizes
+   * differ, and sits 4px higher because the heading above it shrank.
+   */
+  { path: "/dashboard/", key: "h2[0]", dimension: "h", delta: 4, widths: [1280] },
+  { path: "/dashboard/", key: "h2[1]", dimension: "h", delta: 4, widths: [1280] },
+  { path: "/dashboard/", key: "h2[1]", dimension: "y", delta: 4, widths: [1280] },
+  { path: "/dashboard/", key: "h2[1]", dimension: "w", delta: -4, widths: [1280] },
+  { path: "/dashboard/", key: "main", dimension: "h", delta: 8, widths: [1280] },
 ];
 
 /**

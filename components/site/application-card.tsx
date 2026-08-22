@@ -3,16 +3,18 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from "@/components/site/disclosure";
+import { MetaItem, MetaRow } from "@/components/site/about-cards";
 import type { Application } from "@/lib/data/about";
 
 /**
  * One job application, with its journey timeline.
  *
  * **The outcome is the only thing here that earns a colour.** Where an
- * application got to is the answer someone is reading the card for, so it takes
- * the same solid treatment a project's lifecycle does -- see
- * `PROJECT_STATUS_COLORS` in `lib/data/project-status.ts`, which this
- * deliberately matches rather than inventing a second scale for the same idea.
+ * application got to is the answer someone is reading the card for. It carries
+ * that colour in its text and its border and nothing else: a filled chip in a
+ * card that is otherwise all outline read as a button, and pulled harder than
+ * the company name above it. This is the same shape the availability chips take
+ * on hover, so the site has one way of saying "coloured chip".
  * The facts beside it -- work type, where, how much, through whom -- are five
  * pieces of ordinary metadata, and giving each its own hue made a card of five
  * competing labels with no hierarchy at all.
@@ -23,11 +25,11 @@ import type { Application } from "@/lib/data/about";
  * unstyled. Django's template made the same choice, as a chain of `{% if %}`s.
  */
 const STATUS_STYLES: Record<string, string> = {
-  "In Progress": "bg-blue-400/90 text-blue-950",
-  Accepted: "bg-emerald-400/90 text-emerald-950",
-  Rejected: "bg-red-400/90 text-red-950",
-  Ghosted: "bg-yellow-400/90 text-yellow-950",
-  Applied: "bg-zinc-400/90 text-zinc-950",
+  "In Progress": "text-blue-400 border border-blue-700/60",
+  Accepted: "text-emerald-400 border border-emerald-700/60",
+  Rejected: "text-red-400 border border-red-700/60",
+  Ghosted: "text-yellow-400 border border-yellow-700/60",
+  Applied: "text-zinc-400 border border-zinc-700",
 };
 
 /**
@@ -141,18 +143,15 @@ export function ApplicationCard({ application }: { application: Application }) {
 
             <Disclosure>
               <div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                {/* Wider gaps than the pills needed. Without a background each
-                    fact ends where its text does, so 8px ran them together into
-                    one line of prose. */}
                 {facts.length > 0 ? (
-                  <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs">
+                  <MetaRow>
                     {facts.map((fact) => (
-                      <span key={fact.key} className="inline-flex items-center text-zinc-400">
+                      <MetaItem key={fact.key}>
                         <FactIcon kind={fact.key} />
                         {fact.label}
-                      </span>
+                      </MetaItem>
                     ))}
-                  </div>
+                  </MetaRow>
                 ) : (
                   // Keeps the journey button on the right when there are no facts.
                   <div />

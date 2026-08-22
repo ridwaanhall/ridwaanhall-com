@@ -30,6 +30,22 @@ function levelClass(count: number): string {
 
 type Cell = { date: string; count: number; future: boolean };
 
+/**
+ * How long a cell waits before it fades in.
+ *
+ * Scattered rather than swept, so the year arrives all over at once instead of
+ * wiping left to right — but computed from the cell's own position, not
+ * `Math.random()`. The grid is rendered on the server first, and a random
+ * number would differ between the two renders and hydrate as a mismatch on
+ * three hundred and seventy nodes.
+ *
+ * The two multipliers are coprime with the modulus, which is what stops the
+ * pattern falling into visible diagonal bands.
+ */
+function fadeDelay(weekIndex: number, dayIndex: number): string {
+  return `${((weekIndex * 31 + dayIndex * 17) % 37) * 18}ms`;
+}
+
 export function ContributionHeatmap({
   weeks,
   months,
@@ -81,7 +97,11 @@ export function ContributionHeatmap({
             column.map((cell, dayIndex) => (
               <div
                 key={`${weekIndex}-${dayIndex}`}
-                style={{ gridRow: dayIndex + 1, gridColumn: weekIndex + 1 }}
+                style={{
+                  gridRow: dayIndex + 1,
+                  gridColumn: weekIndex + 1,
+                  animationDelay: fadeDelay(weekIndex, dayIndex),
+                }}
                 className={cellClass(cell)}
                 onMouseEnter={() => setDetail(cell ? describe(cell) : null)}
               />
@@ -132,7 +152,7 @@ function cellClass(cell: Cell | null): string {
   // githubContributions.js chose between with a `window.innerWidth` read,
   // expressed as one CSS-only ladder that lands on the same values.
   const base =
-    "w-2 h-2 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-xs hover:border hover:border-green-400/30";
+    "contrib-cell w-2 h-2 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-xs hover:border hover:border-green-400/30";
   if (!cell) return `${base} opacity-30`;
   if (cell.future) return `${base} contrib-empty opacity-30`;
   return `${base} ${levelClass(cell.count)}`;

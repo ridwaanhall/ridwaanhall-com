@@ -5,7 +5,6 @@ import { JsonLdScript } from "@/components/seo/json-ld";
 import { AboutTabs } from "@/components/site/about-tabs";
 import {
   BulletLines,
-  CvSection,
   DetailRow,
   ICON,
   SectionCard,
@@ -13,6 +12,7 @@ import {
   TagList,
   YesNo,
 } from "@/components/site/openhire-cards";
+import { CvDownload } from "@/components/site/cv-download";
 import { PositionCard } from "@/components/site/position-card";
 import type { Skill } from "@/lib/data/about";
 import { getAboutData, getSkillsByCategory } from "@/lib/data/about";
@@ -118,7 +118,9 @@ function OpenToWorkPanel({
 }) {
   return (
     <Panel>
-      <CvSection />
+      {/* The same banner the about page's Intro tab opens with, rather than a
+          second CV block with its own layout and one format fewer. */}
+      <CvDownload />
 
       <SectionCard
         title="Status & Availability"
@@ -287,27 +289,26 @@ function HiringPanel({ data }: { data: HiringData }) {
       </SectionCard>
 
       {/*
-        Three cards side by side from `md` up. The two requirement cards drop
-        out entirely when empty, which is what leaves culture on its own -- the
-        grid handles that without any change here.
+        Full width, one after another, like every other section on the page.
+        These were three columns from `md` up, which gave a bulleted list a
+        third of the measure and set them to a different rhythm from Contact
+        Information and Application Process directly above and below.
       */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <SectionCard title="Company Culture" paths={[ICON.users]}>
-          <BulletLines items={data.company_culture} />
+      <SectionCard title="Company Culture" paths={[ICON.users]}>
+        <BulletLines items={data.company_culture} />
+      </SectionCard>
+
+      {data.requirements.general.length > 0 ? (
+        <SectionCard title="General Requirements" paths={[ICON.shield]}>
+          <BulletLines items={data.requirements.general} />
         </SectionCard>
+      ) : null}
 
-        {data.requirements.general.length > 0 ? (
-          <SectionCard title="General Requirements" paths={[ICON.shield]}>
-            <BulletLines items={data.requirements.general} />
-          </SectionCard>
-        ) : null}
-
-        {data.requirements.technical.length > 0 ? (
-          <SectionCard title="Technical Requirements" paths={[ICON.code]}>
-            <BulletLines items={data.requirements.technical} />
-          </SectionCard>
-        ) : null}
-      </div>
+      {data.requirements.technical.length > 0 ? (
+        <SectionCard title="Technical Requirements" paths={[ICON.code]}>
+          <BulletLines items={data.requirements.technical} />
+        </SectionCard>
+      ) : null}
 
       <SectionCard title="Contact Information" paths={[ICON.mail]}>
         <div className="space-y-2">

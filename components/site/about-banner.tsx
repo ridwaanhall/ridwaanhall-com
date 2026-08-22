@@ -48,7 +48,7 @@ export function AboutBanner({
   const share = actions.length > 1;
 
   return (
-    <div className="mb-6 p-4 rounded-lg border border-zinc-700/50 hover:border-zinc-600 transition-all duration-200">
+    <div className="mb-6 p-4 rounded-lg border border-zinc-600">
       <div className="flex flex-col md:flex-row md:items-center gap-4">
         <div className="flex-1 flex items-center gap-3">
           <div className="flex-shrink-0">{icon}</div>

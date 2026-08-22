@@ -450,6 +450,32 @@ html[data-theme="light"] #search-modal-content {
     background-color: var(--color-zinc-950);
 }
 
+/* Each cell fades in on its own beat -- see `fadeDelay` in
+   components/site/contribution-heatmap.tsx for where the stagger comes from
+   and why it is not random. `both` so a cell is invisible during its delay
+   rather than flashing in and out; without it the whole grid paints, then
+   restarts. */
+@keyframes contrib-in {
+    from {
+        opacity: 0;
+        transform: scale(0.6);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.contrib-cell {
+    animation: contrib-in 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .contrib-cell {
+        animation: none;
+    }
+}
+
 /* 96% keeps the ramp reading correctly. The next step up, `bg-green-600/20`,
    lands at ~94.5% lightness, so a darker empty cell would invert the first
    rung of a "less -> more" scale. Dark has the same ordering (empty 14.1%
@@ -687,9 +713,15 @@ html.theme-fading [data-theme-toggle] svg {
 
     /* Outlined card shell: about's experience/education/application cards,
        openhire's position cards. `backdrop-blur-sm` and padding vary per
-       card and stay inline. */
+       card and stay inline.
+
+       The border does not brighten on hover any more; it sits at what used to
+       be the hover value all the time. A card is not a control -- a page of
+       them made every pointer movement flicker an outline somewhere, and the
+       edge was too faint to read the card's shape when the pointer was
+       elsewhere. Hover is left to things that are actually clickable. */
     .card-outline {
-        @apply rounded-xl overflow-hidden border border-zinc-700/50 transition-all duration-300 hover:border-zinc-700;
+        @apply rounded-xl overflow-hidden border border-zinc-700 transition-all duration-300;
     }
 
     /* Filled surface card: the comment form shell and sign-in prompt.

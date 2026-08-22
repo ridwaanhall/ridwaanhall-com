@@ -673,6 +673,41 @@ Each is recorded at its call site and in the comparison scripts.
 
 ## Deliberate departures from the live site (requested)
 
+- **The tab underline is one bar that slides.** Each tab used to own a 2px
+  bottom border that switched colour, so the mark vanished here and reappeared
+  there. It is now a single absolutely-positioned bar measured against the
+  active button, and it follows the strip onto its second row when the row
+  wraps. Shared by the about page and OpenHire.
+- **The GitHub contribution grid fades in**, each of its 371 cells on its own
+  delay. The delay is computed from the cell's position rather than drawn at
+  random, because the grid renders on the server first and a random number
+  would hydrate as a mismatch on every one of them.
+- **A card's border no longer brightens on hover.** It sits at what used to be
+  the hover value all the time. A page of cards made every pointer movement
+  flicker an outline somewhere, and the resting edge was too faint to read the
+  card's shape when the pointer was elsewhere; hover is left to controls.
+- **One meta row for the whole about page.** Experience, education and the
+  application cards each had their own type size, gaps and icon size for the
+  same "when, what kind, where" line. `MetaRow` / `MetaItem` in
+  `components/site/about-cards.tsx` is the one shape, and the application card
+  -- where it came from -- imports it.
+- **The dashboard's section headings match the contact page's**: a 24px stroke
+  glyph at `mr-3` and `text-xl font-medium`, rather than a larger bare heading
+  in a different size from every other section heading on the site.
+- **OpenHire's requirement cards run full width** instead of three columns from
+  `md` up, which gave a bulleted list a third of the measure and set it to a
+  different rhythm from the sections above and below it. Its Curriculum Vitae
+  block is the about page's banner now, not a second CV layout with one format
+  fewer.
+- **The desktop rail scrolls.** It is pinned to the window's full height, and
+  on a short one the profile block, the search box and eight nav items did not
+  fit -- Guestbook and Contact were cut off with nothing to say they were
+  there. Everything above `SidebarFooter` scrolls; the footer stays put, so the
+  scroll appears exactly when the nav would otherwise run into it.
+- **An application's outcome carries its colour in text and border only.** A
+  filled chip in a card that is otherwise all outline read as a button, and
+  pulled harder than the company name above it.
+
 - **Colour is spent only where it carries information.** An application's
   outcome and a project's lifecycle keep it, in one shared treatment; everything
   that was decorated rather than distinguished gives it up. The three

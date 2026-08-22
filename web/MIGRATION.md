@@ -21,6 +21,7 @@ npx tsx scripts/check-admin.mjs [base]  # the admin gate leaks nothing; the chan
 npx tsx --conditions=react-server scripts/check-admin-forms.mjs [base]  # the change form, driven live
 npx tsx --conditions=react-server scripts/check-storage.mjs  # uploads, deletes, reference counting
 npx tsx --conditions=react-server scripts/check-admin-json.mjs  # jsonb fidelity, GET-then-POST-unchanged
+npx tsx --conditions=react-server scripts/check-admin-inlines.mjs  # child rows, ordering, cascading deletes
 node scripts/compare-jsonld.mjs        # structured data vs the live site
 node scripts/compare-prose.mjs [slug] [width]   # rich-text typography vs live
 MSYS_NO_PATHCONV=1 node scripts/compare-layout.mjs [path]   # rendered geometry vs live
@@ -391,8 +392,14 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
 - [x] Users screen (`is_staff` / `is_active`; the author flags live on User
       profiles, since they are a different table and one field with two homes is
       how the two drift)
-- [ ] Blog post and Project forms — both need the rich-text editor and inlines
-- [ ] Inlines with dnd-kit ordering, singleton editors
+- [x] **Inlines** — `lib/admin/inlines.ts` + `components/admin/inline-editor.tsx`.
+      Rows are matched by primary key, never by position; position carries the
+      order, and only for an inline that declares a column to put it in.
+- [x] **The three singletons** — Profile, Hiring profile, Open to work profile.
+      `/admin/<key>` is the record's form, which is where Django's
+      `SingletonModelAdmin` redirected the changelist to anyway.
+- [ ] Blog post and Project forms — both need the rich-text editor, and their
+      inlines carry images
 
 ### Decisions taken while building it
 
@@ -426,6 +433,18 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
   not a thread. Where a model's `ordering` names a column `list_display` did not
   include (`Education.id`, `LegalDocument.sort_order`), that column was added —
   otherwise the list is unsortable by the very thing it is sorted by.
+- **Reordering is up/down buttons, not drag.** Order is real in several places
+  and has to be editable, but buttons work with a keyboard, a screen reader and
+  a thumb without the announcement and focus-management work a drag surface
+  needs to be usable by all three. The plan named dnd-kit; no dependency was
+  added.
+- **An inline row's position in the list is its order.** Every field name derives
+  from the array index, so moving a row renumbers its inputs and the server
+  writes the new index into the order column. There is no separate order input
+  that could disagree with what is on screen — the failure Django's formset
+  `ORDER` field is prone to when a row is inserted between two others. An inline
+  with no order column (the application journey, ordered by timestamp) offers no
+  reorder buttons rather than ones that do nothing.
 - **Three of the "five JSON editors" were already dead.** `GroupedKeyValueField`
   and `CopyrightCreditsField` served `core.PrivacyPolicy`, deleted in migration
   `0003_delete_privacypolicy`, and had zero uses left in the Django tree;
@@ -777,6 +796,24 @@ Each is recorded at its call site and in the comparison scripts.
   an empty `main` — no message, no 404, nothing. A missing record on
   `/admin/<model>/<id>` is therefore *rendered* (`NothingHere`) rather than
   thrown. Reserve `notFound()` for reads that happen before a boundary.
+- **Django's `on_delete=CASCADE` is Python, not SQL — every foreign key in this
+  database is `NO ACTION`.** Django gathers the related rows and deletes them
+  itself; Postgres knows nothing about it (`confdeltype = 'a'` on all 37 FKs).
+  So deleting any parent with children raises a foreign-key violation unless the
+  application clears them first.
+
+  This shipped as a live bug: `deleteMessage` in `lib/actions/guestbook.ts`
+  carried a comment saying "`reply_to` cascades in Postgres exactly as Django
+  declared it", and deleting a guestbook message that had replies would have
+  failed. It now walks the branch with a recursive CTE, and the admin's
+  `deleteWithChildren` does the same from the `cascades` a form declares.
+
+  **It hid because the constraints are `DEFERRABLE INITIALLY DEFERRED`**: the
+  check happens at commit, so a transaction that rolls back never reaches it —
+  which is exactly what a check script cleaning up after itself does. To test
+  this at all, force it: `set constraints all immediate` before the rollback.
+  The same property is what lets one transaction delete a parent and its
+  children in any order.
 - **The JSON editors normalise exactly one thing: CRLF.** Nothing is trimmed —
   two stored `class` strings contain double spaces and block text is raw HTML —
   but a textarea's *submission* value is CRLF-normalised per the HTML spec and

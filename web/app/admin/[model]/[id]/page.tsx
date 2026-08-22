@@ -7,7 +7,8 @@ import { BackIcon, CheckIcon, DashIcon } from "@/components/admin/admin-icons";
 import { NothingHere } from "@/components/admin/nothing-here";
 import { RecordForm } from "@/components/admin/record-form";
 import { adminDate, adminDateTime } from "@/lib/admin/format";
-import { toClientFieldsets } from "@/lib/admin/form";
+import { toClientFieldsets, toClientInlines } from "@/lib/admin/form";
+import { loadInlineRows } from "@/lib/admin/inlines";
 import { fetchAdminRow } from "@/lib/admin/list";
 import { formModelFor, listModelFor } from "@/lib/admin/models";
 import { loadFormValues, loadReferenceOptions } from "@/lib/admin/record";
@@ -81,6 +82,14 @@ async function Record({ params }: { params: Params }) {
     if (!values) return missing;
     const label = form.label(values);
 
+    const inlineRows = Object.fromEntries(
+      await Promise.all(
+        (form.inlines ?? []).map(
+          async (inline) => [inline.name, await loadInlineRows(inline, recordId)] as const,
+        ),
+      ),
+    );
+
     return (
       <>
         <Crumb label={entry.labelPlural} href={`/admin/${entry.key}` as Route} />
@@ -89,6 +98,8 @@ async function Record({ params }: { params: Params }) {
           modelKey={key}
           id={recordId}
           fieldsets={toClientFieldsets(form, referenceOptions)}
+          inlines={toClientInlines(form, referenceOptions)}
+          inlineRows={inlineRows}
           values={values}
           label={label}
           typeLabel={entry.label}

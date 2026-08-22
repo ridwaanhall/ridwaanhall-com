@@ -37,6 +37,8 @@ export type FieldKind =
   | "string-list"
   /** `dict[str, str]`, edited as label/description pairs. Stored as `jsonb`. */
   | "key-value"
+  /** `list[str]` from a fixed vocabulary, edited as checkboxes. Stored as `jsonb`. */
+  | "choice-list"
   /** A foreign key, edited as a select over the referenced rows. */
   | "reference";
 
@@ -101,6 +103,50 @@ export type ReferenceSource = {
 };
 
 export type Fieldset = { title?: string; help?: string; fields: FormField[] };
+
+/**
+ * A set of child rows edited alongside their parent -- Django's inlines.
+ *
+ * Field names are prefixed and indexed (`positions:0:title`), the way a Django
+ * formset numbered its rows, and for the same reason: an inline can contain a
+ * file input, which rules out carrying the whole set as JSON in one control the
+ * way the `string-list` editor does.
+ *
+ * **The row's position in the submission is its order.** The editor renders its
+ * rows in array order and derives every name from the array index, so moving a
+ * row renumbers its fields; the server writes `orderColumn = index`. There is no
+ * separate order input to fall out of step with what is on screen.
+ */
+export type AdminInline = {
+  /** Prefix of every field name this posts, and the key of its state. */
+  name: string;
+  table: PgTable;
+  pk: PgColumn;
+  /** The foreign key back to the parent record. */
+  parent: PgColumn;
+  title: string;
+  help?: string;
+  /** What one row is called: "link", "position", "step". */
+  itemLabel: string;
+  fields: FormField[];
+  /** Written from the row's position on save. Omit for an unordered set. */
+  orderColumn?: PgColumn;
+  /** How rows are loaded. Defaults to `orderColumn`, then the primary key. */
+  orderBy?: PgColumn;
+};
+
+/** The name one inline field posts under. */
+export function inlineFieldName(inline: string, index: number, field: string): string {
+  return `${inline}:${index}:${field}`;
+}
+
+/** How many rows an inline submitted. Rows the editor removed simply are not there. */
+export function inlineCountName(inline: string): string {
+  return `${inline}:__count`;
+}
+
+/** The existing row's id, empty for one the editor just added. */
+export const INLINE_ID = "__id";
 
 /**
  * A field as the browser needs it.
@@ -187,7 +233,46 @@ export type AdminFormModel = {
    * Returns a message, or `null` to allow. Async so it can count rows.
    */
   validate?: (values: FormValues, context: ValidationContext) => Promise<string | null>;
+  /** Child rows edited on the same screen. */
+  inlines?: AdminInline[];
+  /**
+   * What has to be removed before this record can be.
+   *
+   * **Django's `on_delete=CASCADE` is Python, not SQL.** It gathers the related
+   * rows and deletes them itself; every foreign key it created in this database
+   * is `NO ACTION` (`confdeltype = 'a'`), so the database will not do it. Each
+   * inline is a cascade automatically; anything else -- a self-reference, a
+   * child with no editor -- is listed here.
+   */
+  cascades?: CascadeTarget[];
 };
+
+/**
+ * One child relation to clear on delete.
+ *
+ * `selfReference` means the foreign key points back at the same table, so the
+ * branch has to be walked: a legal section nested under a section nested under
+ * the one being deleted is still in the way.
+ */
+export type CascadeTarget = {
+  table: PgTable;
+  /** The column pointing at the parent. */
+  fk: PgColumn;
+  pk: PgColumn;
+  selfReference?: boolean;
+};
+
+/** Every child relation of a model: its inlines, plus anything declared. */
+export function cascadeTargets(model: AdminFormModel): CascadeTarget[] {
+  return [
+    ...(model.inlines ?? []).map((inline) => ({
+      table: inline.table,
+      fk: inline.parent,
+      pk: inline.pk,
+    })),
+    ...(model.cascades ?? []),
+  ];
+}
 
 /** Every field, in order, flattened out of the fieldsets. */
 export function formFields(model: AdminFormModel): FormField[] {
@@ -217,7 +302,7 @@ export type ParseResult =
  * is nullable.
  */
 function blankValue(field: FormField): FormValue {
-  if (field.kind === "string-list") return [];
+  if (field.kind === "string-list" || field.kind === "choice-list") return [];
   if (field.kind === "key-value") return {};
   if (!field.column.notNull) return null;
   if (field.kind === "number") return 0;
@@ -300,17 +385,49 @@ const SLUG_PATTERN = /^[-a-z0-9_]+$/;
  * These are names, slugs and URLs, where a trailing space is a typo.
  */
 export function parseFormValues(model: AdminFormModel, data: FormData): ParseResult {
+  return parseFields(formFields(model), data);
+}
+
+/**
+ * The same parsing, over an arbitrary field list.
+ *
+ * `prefix` is what makes an inline row work: its fields post under
+ * `positions:0:title` rather than `title`, and everything else about reading
+ * them is identical to the parent record.
+ */
+export function parseFields(
+  fields: FormField[],
+  data: FormData,
+  prefix = "",
+): ParseResult {
   const values: FormValues = {};
   const errors: Record<string, string> = {};
+  const nameOf = (field: FormField) => `${prefix}${field.name}`;
 
-  for (const field of formFields(model)) {
+  for (const field of fields) {
     if (field.readOnly) continue;
     // Handled by `saveRecord`: an upload is bytes and a network call, and this
     // stays synchronous so it can be reasoned about and tested on its own.
     if (field.kind === "image") continue;
 
+    if (field.kind === "choice-list") {
+      /*
+       * A checkbox set: the checked boxes arrive as repeats of one name, in the
+       * order the vocabulary declares them. Anything outside the vocabulary is
+       * dropped rather than stored -- these are `jsonb` columns, which cannot
+       * carry `choices`, which is exactly why Django applied the constraint at
+       * the form instead of at the model.
+       */
+      const allowed = new Set((field.choices ?? []).map((choice) => choice.value));
+      values[field.name] = data
+        .getAll(nameOf(field))
+        .map(String)
+        .filter((entry) => allowed.has(entry));
+      continue;
+    }
+
     if (field.kind === "string-list" || field.kind === "key-value") {
-      const parsed = parseJsonField(field, data.get(field.name));
+      const parsed = parseJsonField(field, data.get(nameOf(field)));
       if ("error" in parsed) errors[field.name] = parsed.error;
       else values[field.name] = parsed.value;
       continue;
@@ -319,11 +436,11 @@ export function parseFormValues(model: AdminFormModel, data: FormData): ParseRes
     if (field.kind === "checkbox") {
       // An unchecked box posts nothing at all, which is why presence is the
       // test and a missing key is `false` rather than an error.
-      values[field.name] = data.get(field.name) !== null;
+      values[field.name] = data.get(nameOf(field)) !== null;
       continue;
     }
 
-    const raw = data.get(field.name);
+    const raw = data.get(nameOf(field));
     const text = typeof raw === "string" ? raw.trim() : "";
 
     if (!text) {
@@ -409,7 +526,7 @@ export function parseFormValues(model: AdminFormModel, data: FormData): ParseRes
     }
   }
 
-  for (const field of formFields(model)) {
+  for (const field of fields) {
     if (field.slugFrom && !values[field.name]) {
       const source = values[field.slugFrom];
       values[field.name] = slugify(typeof source === "string" ? source : "");
@@ -447,3 +564,58 @@ export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
 /** The name of the checkbox that empties an image field. */
 export const clearFieldName = (field: string) => `${field}__clear`;
+
+/** The inline as the browser needs it -- same rule as `toClientFieldsets`. */
+export function toClientInlines(
+  model: AdminFormModel,
+  options: Record<string, FilterChoice[]> = {},
+): {
+  name: string;
+  title: string;
+  help?: string;
+  itemLabel: string;
+  fields: ClientField[];
+  ordered: boolean;
+}[] {
+  return (model.inlines ?? []).map((inline) => ({
+    name: inline.name,
+    title: inline.title,
+    help: inline.help,
+    itemLabel: inline.itemLabel,
+    ordered: Boolean(inline.orderColumn),
+    fields: inline.fields.map((field) => ({
+      name: field.name,
+      label: field.label,
+      kind: field.kind,
+      help: field.help,
+      required: field.required,
+      maxLength: field.maxLength,
+      choices: field.choices,
+      min: field.min,
+      prefix: field.prefix,
+      multiline: field.multiline,
+      allowsHtml: field.allowsHtml,
+      itemLabel: field.itemLabel,
+      keyLabel: field.keyLabel,
+      valueLabel: field.valueLabel,
+      readOnly: field.readOnly,
+      options: options[`${inline.name}:${field.name}`],
+    })),
+  }));
+}
+
+/** Every `reference` field on the model and its inlines, keyed for lookup. */
+export function referenceFields(
+  model: AdminFormModel,
+): { key: string; field: FormField }[] {
+  return [
+    ...formFields(model)
+      .filter((field) => field.reference)
+      .map((field) => ({ key: field.name, field })),
+    ...(model.inlines ?? []).flatMap((inline) =>
+      inline.fields
+        .filter((field) => field.reference)
+        .map((field) => ({ key: `${inline.name}:${field.name}`, field })),
+    ),
+  ];
+}

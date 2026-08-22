@@ -66,6 +66,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Profile",
     group: "About",
     singleton: true,
+    ready: true,
     blurb: "Name, bio, links, location and the status flags.",
   },
   {
@@ -146,6 +147,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Hiring profile",
     group: "Open to work",
     singleton: true,
+    ready: true,
     blurb: "What you are hiring for, and the open positions.",
   },
   {
@@ -154,6 +156,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Open to work profile",
     group: "Open to work",
     singleton: true,
+    ready: true,
     blurb: "What you are looking for, and the portfolio highlights.",
   },
   {

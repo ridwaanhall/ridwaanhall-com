@@ -23,12 +23,18 @@ export function Field({
   field,
   value,
   error,
+  namePrefix = "",
 }: {
   field: ClientField;
   value: FormValues[string];
   error?: string;
+  /** Set for a field inside an inline row: `positions:0:`. */
+  namePrefix?: string;
 }) {
-  const id = `field-${field.name}`;
+  const name = `${namePrefix}${field.name}`;
+  // The id has to be unique across the page, not only within one row, or a
+  // label in the third inline row would focus the input in the first.
+  const id = `field-${name.replace(/:/g, "-")}`;
   const describedBy = [error ? `${id}-error` : null, field.help ? `${id}-help` : null]
     .filter(Boolean)
     .join(" ");
@@ -62,13 +68,38 @@ export function Field({
     return (
       <Row field={field} id={id} describedBy={describedBy} error={error}>
         {field.kind === "string-list" ? (
-          <StringListEditor field={field} value={Array.isArray(value) ? value : []} />
+          <StringListEditor name={name} field={field} value={Array.isArray(value) ? value : []} />
         ) : (
           <KeyValueEditor
+            name={name}
             field={field}
             value={value && typeof value === "object" && !Array.isArray(value) ? value : {}}
           />
         )}
+      </Row>
+    );
+  }
+
+  if (field.kind === "choice-list") {
+    // Server-rendered: the checked boxes post as repeats of one name and nothing
+    // needs to be held in state for that to work.
+    const chosen = new Set(Array.isArray(value) ? value : []);
+    return (
+      <Row field={field} id={id} describedBy={describedBy} error={error}>
+        <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+          {(field.choices ?? []).map((choice) => (
+            <label key={choice.value} className="flex items-center gap-2 text-sm text-zinc-300">
+              <input
+                type="checkbox"
+                name={name}
+                value={choice.value}
+                defaultChecked={chosen.has(choice.value)}
+                className="h-4 w-4 rounded border-zinc-700 bg-zinc-900 accent-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+              />
+              {choice.label}
+            </label>
+          ))}
+        </div>
       </Row>
     );
   }
@@ -78,7 +109,7 @@ export function Field({
       <Row field={field} id={id} describedBy={describedBy} error={error}>
         <select
           id={id}
-          name={field.name}
+          name={name}
           defaultValue={value === null || value === undefined ? "" : String(value)}
           aria-describedby={describedBy || undefined}
           required={field.required}
@@ -119,7 +150,7 @@ export function Field({
                   <label className="mt-1.5 flex items-center gap-2 text-xs text-zinc-400">
                     <input
                       type="checkbox"
-                      name={clearFieldName(field.name)}
+                      name={clearFieldName(name)}
                       className="h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-900 accent-indigo-500"
                     />
                     Remove this image
@@ -133,7 +164,7 @@ export function Field({
           <input
             type="file"
             id={id}
-            name={field.name}
+            name={name}
             accept={Object.keys(IMAGE_TYPES).join(",")}
             aria-describedby={describedBy || undefined}
             className="block w-full text-xs text-zinc-400 file:mr-3 file:rounded-full file:border file:border-zinc-700 file:bg-transparent file:px-3 file:py-1.5 file:text-xs file:text-zinc-300 hover:file:border-zinc-600 hover:file:bg-zinc-800"
@@ -152,7 +183,7 @@ export function Field({
             <input
               type="checkbox"
               id={id}
-              name={field.name}
+              name={name}
               defaultChecked={Boolean(value)}
               aria-describedby={describedBy || undefined}
               className="h-4 w-4 rounded border-zinc-700 bg-zinc-900 accent-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
@@ -167,7 +198,7 @@ export function Field({
 
   const common = {
     id,
-    name: field.name,
+    name,
     defaultValue: value === null || value === undefined ? "" : String(value),
     "aria-describedby": describedBy || undefined,
     "aria-invalid": error ? (true as const) : undefined,

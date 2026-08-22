@@ -157,8 +157,15 @@ export const chatMessageForm: AdminFormModel = {
   // one the site owner posted from the admin, and inventing one would put words
   // on the page over somebody else's name.
   canCreate: false,
-  deleteWarning:
-    "Replies to this message go with it: reply_to cascades, so the whole branch is removed.",
+  deleteWarning: "Replies to this message go with it -- the whole branch is removed.",
+  cascades: [
+    {
+      table: guestbookChatmessage,
+      fk: guestbookChatmessage.replyToId,
+      pk: guestbookChatmessage.id,
+      selfReference: true,
+    },
+  ],
   fieldsets: [
     {
       title: "Moderation",

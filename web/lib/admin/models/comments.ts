@@ -120,6 +120,14 @@ export const commentForm: AdminFormModel = {
   canCreate: false,
   deleteWarning:
     "This removes the row outright, and its replies with it. To leave the thread intact, tick Deleted instead.",
+  cascades: [
+    {
+      table: commentsComment,
+      fk: commentsComment.replyToId,
+      pk: commentsComment.id,
+      selfReference: true,
+    },
+  ],
   fieldsets: [
     {
       fields: [

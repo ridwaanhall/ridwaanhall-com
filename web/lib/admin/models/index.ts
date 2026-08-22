@@ -11,6 +11,7 @@ import {
   experienceList,
   organizationForm,
   organizationList,
+  profileForm,
   skillForm,
   skillList,
 } from "@/lib/admin/models/about";
@@ -28,6 +29,7 @@ import {
   legalSectionForm,
   legalSectionList,
 } from "@/lib/admin/models/legal";
+import { hiringProfileForm, openToWorkProfileForm } from "@/lib/admin/models/openhire";
 import { projectList } from "@/lib/admin/models/projects";
 import { userForm, userList } from "@/lib/admin/models/users";
 
@@ -96,6 +98,7 @@ export function listModelFor(key: string) {
  */
 const FORMS: AdminFormModel[] = [
   // about
+  profileForm,
   experienceForm,
   educationForm,
   certificationForm,
@@ -103,6 +106,9 @@ const FORMS: AdminFormModel[] = [
   skillForm,
   applicationForm,
   organizationForm,
+  // openhire
+  hiringProfileForm,
+  openToWorkProfileForm,
   // legal
   legalDocumentForm,
   legalSectionForm,

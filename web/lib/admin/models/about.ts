@@ -10,9 +10,13 @@ import {
   aboutApplication,
   aboutAward,
   aboutCertification,
+  aboutDonatelink,
   aboutEducation,
   aboutExperience,
+  aboutJourneystep,
   aboutOrganization,
+  aboutProfile,
+  aboutProfileskillhighlight,
   aboutSkill,
 } from "@/lib/db/schema";
 
@@ -993,6 +997,231 @@ export const applicationForm: AdminFormModel = {
           label: "Lessons learned",
           kind: "textarea",
         },
+      ],
+    },
+  ],
+  inlines: [
+    {
+      /*
+       * Ordered by when each step happened rather than by a column, which is
+       * the model's own `ordering = ["timestamp"]`. There is no order column to
+       * write, so the reorder buttons are absent -- moving a step means changing
+       * its timestamp, which is what actually decides where it appears.
+       */
+      name: "journey",
+      table: aboutJourneystep,
+      pk: aboutJourneystep.id,
+      parent: aboutJourneystep.applicationId,
+      orderBy: aboutJourneystep.timestamp,
+      title: "Journey",
+      itemLabel: "step",
+      fields: [
+        {
+          name: "title",
+          column: aboutJourneystep.title,
+          label: "Step",
+          kind: "text",
+          required: true,
+          maxLength: 255,
+        },
+        { name: "timestamp", column: aboutJourneystep.timestamp, label: "When", kind: "datetime" },
+        { name: "details", column: aboutJourneystep.details, label: "Details", kind: "textarea" },
+        { name: "notes", column: aboutJourneystep.notes, label: "Notes", kind: "textarea" },
+      ],
+    },
+  ],
+};
+
+export const profileForm: AdminFormModel = {
+  key: "profile",
+  from: aboutProfile,
+  pk: aboutProfile.id,
+  label: (values) => String(values.name ?? "Profile"),
+  // `SingletonModel` forces `pk=1` and blocks delete. Without this row there is
+  // no site: every page in the public layout renders the profile block.
+  canCreate: false,
+  canDelete: false,
+  fieldsets: [
+    {
+      fields: [
+        { name: "name", column: aboutProfile.name, label: "Name", kind: "text", required: true, maxLength: 255 },
+        { name: "firstName", column: aboutProfile.firstName, label: "First name", kind: "text", maxLength: 100 },
+        { name: "lastName", column: aboutProfile.lastName, label: "Last name", kind: "text", maxLength: 100 },
+        { name: "username", column: aboutProfile.username, label: "Username", kind: "text", maxLength: 100 },
+        { name: "aka", column: aboutProfile.aka, label: "Also known as", kind: "text", maxLength: 100 },
+        { name: "role", column: aboutProfile.role, label: "Role", kind: "text", maxLength: 255 },
+        {
+          name: "image",
+          column: aboutProfile.image,
+          label: "Photo",
+          kind: "image",
+          prefix: "profile",
+          // The same file is named by all twenty blog posts as their author
+          // photo. Replacing it here leaves theirs pointing at the old key,
+          // which is still in the bucket because it is still referenced.
+          help: "Shared with every blog post's author photo. Replacing it here changes only the profile.",
+        },
+      ],
+    },
+    {
+      title: "Status",
+      help: "All three can be true at once, and the sidebar stacks the badges when they are.",
+      fields: [
+        { name: "isOpenToWork", column: aboutProfile.isOpenToWork, label: "Open to work", kind: "checkbox" },
+        { name: "isHiring", column: aboutProfile.isHiring, label: "Hiring", kind: "checkbox" },
+        { name: "isSick", column: aboutProfile.isSick, label: "Under the weather", kind: "checkbox" },
+      ],
+    },
+    {
+      title: "Bio",
+      fields: [
+        {
+          name: "shortDescription",
+          column: aboutProfile.shortDescription,
+          label: "Short description",
+          kind: "textarea",
+        },
+        { name: "shortBio", column: aboutProfile.shortBio, label: "Short bio", kind: "textarea" },
+        { name: "shortCta", column: aboutProfile.shortCta, label: "Call to action", kind: "textarea" },
+        {
+          name: "longDescription",
+          column: aboutProfile.longDescription,
+          label: "Long description",
+          kind: "textarea",
+        },
+        {
+          name: "stories",
+          column: aboutProfile.stories,
+          label: "Stories",
+          kind: "string-list",
+          multiline: true,
+          allowsHtml: true,
+          itemLabel: "story",
+        },
+      ],
+    },
+    {
+      title: "Links",
+      fields: [
+        {
+          name: "personalWebsite",
+          column: aboutProfile.personalWebsite,
+          label: "Personal website",
+          kind: "url",
+          maxLength: 200,
+        },
+        { name: "cvMain", column: aboutProfile.cvMain, label: "CV", kind: "url", maxLength: 200 },
+        { name: "cvLatest", column: aboutProfile.cvLatest, label: "CV, latest", kind: "url", maxLength: 200 },
+        { name: "cvCopy", column: aboutProfile.cvCopy, label: "CV, copy", kind: "url", maxLength: 200 },
+      ],
+    },
+    {
+      title: "Social",
+      fields: [
+        { name: "socialEmail", column: aboutProfile.socialEmail, label: "Email", kind: "email", maxLength: 254 },
+        { name: "socialGithub", column: aboutProfile.socialGithub, label: "GitHub", kind: "url", maxLength: 200 },
+        { name: "socialLinkedin", column: aboutProfile.socialLinkedin, label: "LinkedIn", kind: "url", maxLength: 200 },
+        {
+          name: "socialFollowLinkedin",
+          column: aboutProfile.socialFollowLinkedin,
+          label: "LinkedIn, follow",
+          kind: "url",
+          maxLength: 200,
+        },
+        {
+          name: "socialInstagram",
+          column: aboutProfile.socialInstagram,
+          label: "Instagram",
+          kind: "url",
+          maxLength: 200,
+        },
+        { name: "socialMedium", column: aboutProfile.socialMedium, label: "Medium", kind: "url", maxLength: 200 },
+        { name: "socialX", column: aboutProfile.socialX, label: "X", kind: "url", maxLength: 200 },
+        { name: "socialWebsite", column: aboutProfile.socialWebsite, label: "Website", kind: "url", maxLength: 200 },
+      ],
+    },
+    {
+      title: "Location",
+      fields: [
+        { name: "locationRegency", column: aboutProfile.locationRegency, label: "Regency", kind: "text", maxLength: 100 },
+        {
+          name: "locationResidency",
+          column: aboutProfile.locationResidency,
+          label: "Residency",
+          kind: "text",
+          maxLength: 100,
+        },
+        {
+          name: "locationProvince",
+          column: aboutProfile.locationProvince,
+          label: "Province",
+          kind: "text",
+          maxLength: 100,
+        },
+        {
+          name: "locationProv",
+          column: aboutProfile.locationProv,
+          label: "Province, short",
+          kind: "text",
+          maxLength: 100,
+        },
+        {
+          name: "locationCountry",
+          column: aboutProfile.locationCountry,
+          label: "Country",
+          kind: "text",
+          maxLength: 100,
+        },
+        { name: "locationFlag", column: aboutProfile.locationFlag, label: "Flag", kind: "text", maxLength: 16 },
+      ],
+    },
+  ],
+  inlines: [
+    {
+      /*
+       * Ordered on purpose, and the order is not cosmetic: this list becomes the
+       * JSON-LD `knowsAbout` array. It is a through model rather than a plain
+       * many-to-many precisely because a plain one cannot express a sequence --
+       * reading the bare M2M gives `Skill.Meta.ordering`, which is primary-key
+       * order and says nothing.
+       */
+      name: "highlights",
+      table: aboutProfileskillhighlight,
+      pk: aboutProfileskillhighlight.id,
+      parent: aboutProfileskillhighlight.profileId,
+      title: "Highlighted skills",
+      help: "The order here is the order of the JSON-LD knowsAbout array.",
+      itemLabel: "skill",
+      orderColumn: aboutProfileskillhighlight.order,
+      fields: [
+        {
+          name: "skillId",
+          column: aboutProfileskillhighlight.skillId,
+          label: "Skill",
+          kind: "reference",
+          required: true,
+          reference: { table: aboutSkill, value: aboutSkill.id, label: aboutSkill.name },
+        },
+      ],
+    },
+    {
+      name: "donateLinks",
+      table: aboutDonatelink,
+      pk: aboutDonatelink.id,
+      parent: aboutDonatelink.profileId,
+      title: "Donate links",
+      itemLabel: "link",
+      orderColumn: aboutDonatelink.order,
+      fields: [
+        {
+          name: "platform",
+          column: aboutDonatelink.platform,
+          label: "Platform",
+          kind: "text",
+          required: true,
+          maxLength: 100,
+        },
+        { name: "url", column: aboutDonatelink.url, label: "URL", kind: "url", required: true, maxLength: 200 },
       ],
     },
   ],

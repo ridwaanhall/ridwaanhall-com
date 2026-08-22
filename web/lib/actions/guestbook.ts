@@ -113,13 +113,38 @@ export async function deleteMessage(messageId: number): Promise<ActionResult> {
     return { ok: false, error: "Permission denied - Only authors can delete messages" };
   }
 
-  // `reply_to` cascades in Postgres exactly as Django declared it, so the whole
-  // branch goes with the node. Removing only the clicked message would leave
-  // its replies orphaned on screen until the next reload.
-  const deleted = await db
-    .delete(guestbookChatmessage)
-    .where(eq(guestbookChatmessage.id, messageId))
-    .returning({ id: guestbookChatmessage.id });
+  /*
+   * The whole branch goes with the node, and the branch has to be gathered
+   * here rather than left to the database.
+   *
+   * **Django's `on_delete=CASCADE` is Python, not SQL.** It collects the
+   * related rows and deletes them itself; every foreign key it creates in
+   * Postgres is `NO ACTION`, and `guestbook_chatmessage.reply_to_id` is no
+   * exception -- `confdeltype` is `a`. So deleting a message that has replies
+   * raised a foreign-key violation, and it went unnoticed because the
+   * constraints are `DEFERRABLE INITIALLY DEFERRED`: a transaction that rolls
+   * back never reaches the check, which is exactly what a test doing its own
+   * cleanup does.
+   *
+   * `reply_to` is unbounded even though the panel only renders three levels, so
+   * this walks the branch rather than assuming a depth. Deferred checking is
+   * what lets one statement remove a parent and its children together without
+   * caring about order.
+   */
+  const deleted = await db.execute<{ id: number }>(sql`
+    with recursive branch as (
+      select ${guestbookChatmessage.id} as id
+      from ${guestbookChatmessage}
+      where ${guestbookChatmessage.id} = ${messageId}
+      union all
+      select reply.id
+      from ${guestbookChatmessage} as reply
+      join branch on reply.reply_to_id = branch.id
+    )
+    delete from ${guestbookChatmessage}
+    where ${guestbookChatmessage.id} in (select id from branch)
+    returning ${guestbookChatmessage.id} as id
+  `).then((result) => result.rows);
 
   if (deleted.length === 0) return { ok: false, error: "Message not found" };
 

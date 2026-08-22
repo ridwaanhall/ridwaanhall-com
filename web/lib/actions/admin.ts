@@ -1,10 +1,11 @@
 "use server";
 
-import { eq, getTableColumns, getTableName } from "drizzle-orm";
+import { eq, getTableColumns, getTableName, inArray, sql } from "drizzle-orm";
 import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 import {
+  cascadeTargets,
   clearFieldName,
   formFields,
   MAX_UPLOAD_BYTES,
@@ -13,6 +14,7 @@ import {
   type FormField,
   type FormValues,
 } from "@/lib/admin/form";
+import { saveInlines } from "@/lib/admin/inlines";
 import { formModelFor } from "@/lib/admin/models";
 import { getStaffUser } from "@/lib/auth/staff";
 import { MODEL_TAGS } from "@/lib/data/tags";
@@ -299,6 +301,21 @@ export async function saveRecord(
     throw error;
   }
 
+  /*
+   * Child rows go after the parent, and for a create they have no choice: an
+   * inline row carries the parent's id, which does not exist until the insert
+   * returns. A failure here leaves the parent saved and its children not, which
+   * is why the fields are validated before anything is written -- what can
+   * still fail at this point is the database, not the input.
+   */
+  const parentId = id ?? created;
+  if (model.inlines?.length && parentId !== null) {
+    const inlined = await saveInlines(model.inlines, data, parentId);
+    if (!inlined.ok) {
+      return { ok: false, error: "Some fields need attention.", fieldErrors: inlined.errors };
+    }
+  }
+
   // Only now that the write has landed. A file the record no longer names is
   // still not removed if any other row names it -- one author photo is shared by
   // twenty-one rows, one logo by three.
@@ -316,6 +333,57 @@ export async function saveRecord(
   return { ok: true, notice: "Created." };
 }
 
+/** Postgres foreign-key violation, so "still in use" reads as a message. */
+const FOREIGN_KEY_VIOLATION = "23503";
+
+/**
+ * Clear a record's children, then the record.
+ *
+ * Every foreign key here is `DEFERRABLE INITIALLY DEFERRED`, so the whole thing
+ * runs in one transaction and the order within it does not matter -- the check
+ * happens at commit, by which point parent and children are both gone. That is
+ * also why this went unnoticed for a while: a transaction that rolls back never
+ * reaches the check, which is exactly what a test cleaning up after itself does.
+ *
+ * What is *not* cleared is a reference this record does not own: an organization
+ * used by an experience stays undeletable, which is Django's `PROTECT` and the
+ * behaviour that should be kept. It surfaces as a foreign-key violation, caught
+ * below and reported rather than raised.
+ */
+async function deleteWithChildren(model: AdminFormModel, id: number): Promise<void> {
+  const targets = cascadeTargets(model);
+
+  await db.transaction(async (tx) => {
+    for (const target of targets) {
+      if (target.selfReference) {
+        // `reply_to` and `parent_id` are unbounded, so the branch is walked
+        // rather than assumed to be one level deep.
+        await tx.execute(sql`
+          with recursive branch as (
+            select ${target.pk} as id from ${target.table} where ${target.fk} = ${id}
+            union all
+            select child.id
+            from ${target.table} as child
+            join branch on child.${sql.raw(`"${target.fk.name}"`)} = branch.id
+          )
+          delete from ${target.table} where ${target.pk} in (select id from branch)
+        `);
+        continue;
+      }
+
+      const children = await tx
+        .select({ id: target.pk })
+        .from(target.table)
+        .where(eq(target.fk, id));
+      if (children.length > 0) {
+        await tx.delete(target.table).where(inArray(target.pk, children.map((row) => Number(row.id))));
+      }
+    }
+
+    await tx.delete(model.from).where(eq(model.pk, id));
+  });
+}
+
 export async function deleteRecord(key: string, id: number): Promise<SaveResult> {
   const actor = await getStaffUser();
   if (!actor) return { ok: false, error: "You are not permitted to do that." };
@@ -329,7 +397,18 @@ export async function deleteRecord(key: string, id: number): Promise<SaveResult>
   const imageFields = formFields(model).filter((field) => field.kind === "image");
   const orphaned = Object.values(await currentImages(model, imageFields, id));
 
-  await db.delete(model.from).where(eq(model.pk, id));
+  try {
+    await deleteWithChildren(model, id);
+  } catch (error) {
+    if (driverError(error)?.code === FOREIGN_KEY_VIOLATION) {
+      return {
+        ok: false,
+        error: "Something still refers to this record, so it cannot be deleted yet.",
+      };
+    }
+    throw error;
+  }
+
   if (orphaned.length > 0) await deleteUnreferenced(orphaned);
   invalidate(model);
   // No redirect: the notice is the point, and a redirect thrown from here would

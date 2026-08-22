@@ -2,7 +2,13 @@ import "server-only";
 
 import { asc, eq } from "drizzle-orm";
 
-import { formFields, formSelect, type AdminFormModel, type FormValues } from "@/lib/admin/form";
+import {
+  formFields,
+  formSelect,
+  referenceFields,
+  type AdminFormModel,
+  type FormValues,
+} from "@/lib/admin/form";
 import type { FilterChoice } from "@/lib/admin/list";
 import { db } from "@/lib/db/client";
 
@@ -83,11 +89,11 @@ function toFormValues(model: AdminFormModel, row: Record<string, unknown>): Form
 export async function loadReferenceOptions(
   model: AdminFormModel,
 ): Promise<Record<string, FilterChoice[]>> {
-  const fields = formFields(model).filter((field) => field.reference);
+  const fields = referenceFields(model);
   if (fields.length === 0) return {};
 
   const loaded = await Promise.all(
-    fields.map(async (field) => {
+    fields.map(async ({ field }) => {
       // Present by construction: the list was filtered on it.
       const source = field.reference as NonNullable<typeof field.reference>;
       const rows = await db
@@ -98,5 +104,5 @@ export async function loadReferenceOptions(
     }),
   );
 
-  return Object.fromEntries(fields.map((field, index) => [field.name, loaded[index]]));
+  return Object.fromEntries(fields.map(({ key }, index) => [key, loaded[index]]));
 }

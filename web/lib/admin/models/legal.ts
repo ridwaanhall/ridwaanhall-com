@@ -171,6 +171,9 @@ export const legalDocumentForm: AdminFormModel = {
   pk: legalLegaldocument.id,
   label: (values) => String(values.title ?? "Document"),
   deleteWarning: "Every section of this document is deleted with it.",
+  cascades: [
+    { table: legalLegalsection, fk: legalLegalsection.documentId, pk: legalLegalsection.id },
+  ],
   fieldsets: [
     {
       fields: [
@@ -240,6 +243,14 @@ export const legalSectionForm: AdminFormModel = {
   pk: legalLegalsection.id,
   label: (values) => String(values.heading ?? "Section"),
   deleteWarning: "Any section nested under this one is deleted with it.",
+  cascades: [
+    {
+      table: legalLegalsection,
+      fk: legalLegalsection.parentId,
+      pk: legalLegalsection.id,
+      selfReference: true,
+    },
+  ],
   fieldsets: [
     {
       fields: [

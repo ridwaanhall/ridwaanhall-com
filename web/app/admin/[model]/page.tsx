@@ -11,6 +11,10 @@ import {
   type FilterChoice,
 } from "@/lib/admin/list";
 import { formModelFor, listModelFor } from "@/lib/admin/models";
+import { RecordForm } from "@/components/admin/record-form";
+import { toClientFieldsets, toClientInlines } from "@/lib/admin/form";
+import { loadInlineRows } from "@/lib/admin/inlines";
+import { loadFormValues, loadReferenceOptions } from "@/lib/admin/record";
 import { ADMIN_ENTRIES, ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
 import { requireStaff } from "@/lib/auth/staff";
 
@@ -40,6 +44,9 @@ export function generateStaticParams() {
   return ADMIN_ENTRIES.filter((entry) => entry.ready).map((entry) => ({ model: entry.key }));
 }
 
+/** `SingletonModel` forces `pk=1`, so there is nothing to look up. */
+const SINGLETON_ID = 1;
+
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { model } = await params;
   const entry = ADMIN_ENTRIES_BY_KEY.get(model);
@@ -57,6 +64,56 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
  * by reading the session.
  */
 export const instant = false;
+
+/**
+ * A one-row model has no list.
+ *
+ * Django's `SingletonModelAdmin` redirected the changelist straight to `pk=1`;
+ * this renders that record's form in place, which is the same destination
+ * without the hop. All three rows exist and are never created or deleted --
+ * `SingletonModel` forces `pk=1` and blocks delete -- so a missing one is a
+ * broken database rather than a case to handle.
+ */
+async function SingletonScreen({ entryKey }: { entryKey: string }) {
+  const entry = ADMIN_ENTRIES_BY_KEY.get(entryKey);
+  const form = formModelFor(entryKey);
+  if (!entry || !form) notFound();
+
+  const [values, referenceOptions] = await Promise.all([
+    loadFormValues(form, SINGLETON_ID),
+    loadReferenceOptions(form),
+  ]);
+  if (!values) notFound();
+
+  const inlineRows = Object.fromEntries(
+    await Promise.all(
+      (form.inlines ?? []).map(
+        async (inline) => [inline.name, await loadInlineRows(inline, SINGLETON_ID)] as const,
+      ),
+    ),
+  );
+
+  return (
+    <div className="max-w-3xl space-y-5">
+      <div>
+        <h1 className="text-xl font-medium text-zinc-100">{entry.labelPlural}</h1>
+        <p className="mt-1 text-sm text-zinc-400">{entry.blurb}</p>
+      </div>
+      <RecordForm
+        modelKey={entryKey}
+        id={SINGLETON_ID}
+        fieldsets={toClientFieldsets(form, referenceOptions)}
+        inlines={toClientInlines(form, referenceOptions)}
+        inlineRows={inlineRows}
+        values={values}
+        label={form.label(values)}
+        typeLabel={entry.label}
+        canDelete={false}
+        listHref="/admin"
+      />
+    </div>
+  );
+}
 
 export default async function AdminListPage({ params, searchParams }: Params) {
   // First, and before anything is read. The layout's gate decides what a
@@ -78,7 +135,10 @@ export default async function AdminListPage({ params, searchParams }: Params) {
    * this status either, since the admin is gated, `noindex` and disallowed in
    * `robots.txt`, so what a person sees is the whole of what it costs.
    */
-  if (!entry || !model) notFound();
+  if (!entry) notFound();
+  // A one-row model has no changelist to render; see `SingletonScreen`.
+  if (entry.singleton) return <SingletonScreen entryKey={key} />;
+  if (!model) notFound();
 
   const form = formModelFor(key);
   const listParams = readListParams(model, await searchParams);

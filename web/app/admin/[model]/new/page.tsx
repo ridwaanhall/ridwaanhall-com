@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 
 import { BackIcon } from "@/components/admin/admin-icons";
 import { RecordForm } from "@/components/admin/record-form";
-import { toClientFieldsets } from "@/lib/admin/form";
+import { toClientFieldsets, toClientInlines } from "@/lib/admin/form";
 import { formModelFor } from "@/lib/admin/models";
 import { blankFormValues, loadReferenceOptions } from "@/lib/admin/record";
 import { ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
@@ -70,6 +70,7 @@ export default async function AdminCreatePage({ params }: Params) {
         modelKey={key}
         id={null}
         fieldsets={toClientFieldsets(form, referenceOptions)}
+        inlines={toClientInlines(form, referenceOptions)}
         values={blankFormValues(form)}
         label={entry.label}
         typeLabel={entry.label}

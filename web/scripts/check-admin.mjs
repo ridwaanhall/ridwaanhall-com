@@ -33,7 +33,7 @@ config({ path: ".env", quiet: true });
 
 const { encode } = await import("next-auth/jwt");
 const { ADMIN_ENTRIES } = await import("../lib/admin/registry.ts");
-const { ADMIN_LIST_MODELS } = await import("../lib/admin/models/index.ts");
+const { ADMIN_FORM_MODELS, ADMIN_LIST_MODELS } = await import("../lib/admin/models/index.ts");
 
 const BASE = process.argv[2] ?? "http://localhost:3000";
 
@@ -128,14 +128,28 @@ const leaks = (body) => ROW_MARKERS.filter((marker) => body.includes(marker));
 // --- the registry ------------------------------------------------------------
 
 {
-  const ready = ADMIN_ENTRIES.filter((entry) => entry.ready).map((entry) => entry.key);
+  // A singleton has no changelist by definition -- `SingletonModel` forces
+  // `pk=1`, and Django's `SingletonModelAdmin` sent the changelist straight to
+  // that row. Its screen is the record form, so it is checked against that.
+  const ready = ADMIN_ENTRIES.filter((entry) => entry.ready && !entry.singleton).map(
+    (entry) => entry.key,
+  );
+  const singletons = ADMIN_ENTRIES.filter((entry) => entry.ready && entry.singleton).map(
+    (entry) => entry.key,
+  );
   const built = Object.keys(ADMIN_LIST_MODELS);
   const readyWithoutModel = ready.filter((key) => !built.includes(key));
   const modelWithoutEntry = built.filter((key) => !ready.includes(key));
+  const singletonWithoutForm = singletons.filter((key) => !(key in ADMIN_FORM_MODELS));
   check(
     "every screen marked ready has a descriptor",
     readyWithoutModel.length === 0,
     readyWithoutModel.join(", "),
+  );
+  check(
+    "every singleton has a form instead of a list",
+    singletonWithoutForm.length === 0,
+    singletonWithoutForm.join(", ") || `${singletons.length} singletons`,
   );
   check(
     "every descriptor has a screen marked ready",
@@ -284,6 +298,11 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
 
   for (const entry of ADMIN_ENTRIES.filter((candidate) => candidate.ready)) {
     const { status, body } = await get(`/admin/${entry.key}`, staff);
+    if (entry.singleton) {
+      // Its screen is a form, so what proves it rendered is a save button.
+      if (status !== 200 || !body.includes("Save")) broken.push(`${entry.key} (${status})`);
+      continue;
+    }
     if (status !== 200 || !body.includes("<table")) {
       broken.push(`${entry.key} (${status})`);
       continue;

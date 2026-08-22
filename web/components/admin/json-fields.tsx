@@ -39,9 +39,12 @@ const ADD_BUTTON =
   "inline-flex items-center gap-1 rounded-full border border-zinc-800 px-3 py-1 text-xs text-zinc-400 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-200";
 
 export function StringListEditor({
+  name,
   field,
   value,
 }: {
+  /** Already prefixed by `Field`, so these work inside an inline row too. */
+  name: string;
   field: ClientField;
   value: string[];
 }) {
@@ -70,7 +73,7 @@ export function StringListEditor({
 
   return (
     <div className="space-y-2">
-      <input type="hidden" name={field.name} value={JSON.stringify(items)} />
+      <input type="hidden" name={name} value={JSON.stringify(items)} />
 
       {items.map((item, index) => (
         <div key={index} className="flex items-start gap-1.5">
@@ -143,9 +146,11 @@ export function StringListEditor({
 }
 
 export function KeyValueEditor({
+  name,
   field,
   value,
 }: {
+  name: string;
   field: ClientField;
   value: Record<string, string>;
 }) {
@@ -163,7 +168,7 @@ export function KeyValueEditor({
 
   return (
     <div className="space-y-2">
-      <input type="hidden" name={field.name} value={JSON.stringify(asObject)} />
+      <input type="hidden" name={name} value={JSON.stringify(asObject)} />
 
       {pairs.map(([key, entry], index) => (
         <div key={index} className="flex items-start gap-1.5">

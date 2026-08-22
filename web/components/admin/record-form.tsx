@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useRef, useTransition } from "react";
 
 import { Field } from "@/components/admin/field";
+import { InlineEditor, type ClientInline, type InlineRow } from "@/components/admin/inline-editor";
 import { useConfirm } from "@/components/providers/confirm-dialog";
 import { deleteRecord, saveRecord, type SaveResult } from "@/lib/actions/admin";
 import type { ClientFieldset, FormValues } from "@/lib/admin/form";
@@ -28,6 +29,8 @@ export function RecordForm({
   modelKey,
   id,
   fieldsets,
+  inlines = [],
+  inlineRows = {},
   values,
   label,
   typeLabel,
@@ -39,6 +42,9 @@ export function RecordForm({
   /** `null` when creating. */
   id: number | null;
   fieldsets: ClientFieldset[];
+  inlines?: ClientInline[];
+  /** The child rows of each inline, keyed by the inline's name. */
+  inlineRows?: Record<string, InlineRow[]>;
   values: FormValues;
   /** The record, named -- shown quoted in the confirm dialog. */
   label: string;
@@ -122,6 +128,15 @@ export function RecordForm({
             ))}
           </div>
         </fieldset>
+      ))}
+
+      {inlines.map((inline) => (
+        <InlineEditor
+          key={inline.name}
+          inline={inline}
+          rows={inlineRows[inline.name] ?? []}
+          errors={fieldErrors}
+        />
       ))}
 
       {/* The form-level message, for a rule no single field owns -- the pin cap,

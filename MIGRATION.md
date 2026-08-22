@@ -673,6 +673,19 @@ Each is recorded at its call site and in the comparison scripts.
 
 ## Deliberate departures from the live site (requested)
 
+- **The comment form and its sign-in prompt have no card around them.** The
+  contact page's form sits directly on the page; these drew a bordered, filled
+  panel inside the comment section's own rule, with the reply chip and the
+  textarea each drawing another inside that. The field and the button are the
+  contact form's now, and the button keeps the row and the right-hand position
+  it had. Posting uses the guestbook's send glyph, so the two places where a
+  reader writes something look the same.
+- **The guestbook panel has no outer border and no header bar.** The bar read
+  "Guestbook Messages" directly beneath a heading that said "Guestbook", with
+  the count as a filled badge inside it. The count is a caption under the page's
+  own description now, and the border is gone -- it was a box drawn around what
+  is already the whole page.
+
 - **The position card is the site's disclosure now**, not its own. It was the
   last of four near-copies of the control: local `useState`, a panel hidden with
   `hidden`, no transition, and the only one still saying "Show Details" / "Hide

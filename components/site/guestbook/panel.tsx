@@ -154,16 +154,16 @@ export function GuestbookPanel({
   }
 
   return (
-    <div className="border border-zinc-700 rounded-lg flex flex-col">
-      <div className="bg-zinc-800 p-3 rounded-t-lg flex-shrink-0">
-        <h4 className="text-lg font-medium flex items-center">
-          <ChatIcon className="w-5 h-5 mr-2" />
-          Guestbook Messages
-          <span className="ml-auto bg-white/20 px-2 py-1 rounded-full text-sm">
-            {thread.messageCount} messages
-          </span>
-        </h4>
-      </div>
+    <div className="flex flex-col">
+      {/*
+        The count, as a caption under the page's own description rather than a
+        filled badge in a grey header bar. The bar said "Guestbook Messages"
+        directly beneath a heading that said "Guestbook", and the panel's outer
+        border drew a box around a thing that is already the whole page.
+      */}
+      <p className="mb-3 flex-shrink-0 text-sm text-zinc-400">
+        {thread.messageCount} message{thread.messageCount === 1 ? "" : "s"}
+      </p>
 
       {thread.pinned.length > 0 && (
         <div className="border-b border-zinc-700 p-3 space-y-2 flex-shrink-0 bg-zinc-800/40">

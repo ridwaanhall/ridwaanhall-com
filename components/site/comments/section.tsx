@@ -67,7 +67,7 @@ export function Comments({
 
   return (
     <section id="comments" className="mt-10 sm:mt-12 pt-8 border-t border-zinc-800">
-      <h2 className="text-lg sm:text-xl font-semibold mb-4 md:mb-6 flex items-center gap-2">
+      <h2 className="text-lg sm:text-xl font-medium mb-4 md:mb-6 flex items-center gap-2">
         <ChatIcon className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-500" />
         {section.count} comment{section.count === 1 ? "" : "s"}
       </h2>
@@ -80,54 +80,58 @@ export function Comments({
             <input type="hidden" name="slug" value={slug} />
             <input type="hidden" name="reply_to" value={replyTo?.id ?? ""} />
 
-            <div className="surface-card p-3 sm:p-4 focus-within:border-zinc-700">
-              {replyTo && (
+            {/* No card around this. The contact page's form sits directly on
+                the page, and a bordered, filled panel here drew a second box
+                inside the comment section's own rule -- with the reply chip and
+                the textarea each drawing a third and a fourth. */}
+            {replyTo && (
                 <div className="mb-3 flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm">
                   <span className="flex items-center gap-1.5 text-zinc-400 min-w-0">
                     <ReplyIcon className="w-3.5 h-3.5 flex-shrink-0" />
                     Replying to
                     <strong className="text-zinc-200 truncate">{replyTo.displayName}</strong>
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => setReplyTo(null)}
-                    className="ml-2 flex-shrink-0 rounded-md p-1 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-all duration-300"
-                    title="Cancel reply"
-                    aria-label="Cancel reply"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              )}
-
-              <textarea
-                ref={bodyRef}
-                name="body"
-                rows={3}
-                maxLength={MAX_COMMENT_LENGTH}
-                placeholder="Share your thoughts…"
-                required
-                aria-label="Comment"
-                className="w-full px-4 py-3 border border-zinc-700 rounded-lg placeholder-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 bg-transparent resize-y"
-              />
-
-              <div className="mt-3 flex items-center justify-between gap-3 flex-wrap">
-                <span className="text-xs text-zinc-600">
-                  Markdown isn&rsquo;t supported — plain text only.
-                </span>
                 <button
-                  type="submit"
-                  disabled={pending}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-100 hover:border-indigo-500/70 hover:bg-zinc-800 transition-all duration-300 disabled:opacity-50"
+                  type="button"
+                  onClick={() => setReplyTo(null)}
+                  className="ml-2 flex-shrink-0 rounded-md p-1 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-all duration-300"
+                  title="Cancel reply"
+                  aria-label="Cancel reply"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                  Post comment
                 </button>
               </div>
+            )}
+
+            {/* The contact form's field, exactly -- see `FIELD` in
+                components/site/contact-form.tsx. */}
+            <textarea
+              ref={bodyRef}
+              name="body"
+              rows={3}
+              maxLength={MAX_COMMENT_LENGTH}
+              placeholder="Share your thoughts…"
+              required
+              aria-label="Comment"
+              className="w-full rounded-md border border-zinc-700 hover:border-zinc-400 px-3 py-2 focus:outline-none focus:border-zinc-400 bg-transparent placeholder-zinc-400 text-zinc-300 hover:text-zinc-200 transition-all duration-300 resize-y"
+            />
+
+            {/* The hint and the button keep the row they were in; only their
+                treatment changes. */}
+            <div className="mt-3 flex items-center justify-between gap-3 flex-wrap">
+              <span className="text-xs text-zinc-600">
+                Markdown isn&rsquo;t supported — plain text only.
+              </span>
+              <button
+                type="submit"
+                disabled={pending}
+                className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-zinc-700 hover:border-zinc-400 bg-zinc-800 hover:bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-300 hover:text-zinc-200 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                <SendIcon />
+                Post comment
+              </button>
             </div>
           </form>
 
@@ -233,7 +237,7 @@ function SignOutButton() {
  */
 function SignInPrompt() {
   return (
-    <div className="surface-card px-4 py-6 text-center hover:border-zinc-700">
+    <div className="px-4 py-6 text-center">
       <ChatIcon className="mx-auto mb-3 h-6 w-6 text-zinc-600" />
       <p className="text-zinc-400 mb-4 text-sm sm:text-base">
         Sign in to join the conversation. Rest assured, your information is secure. See my{" "}
@@ -272,6 +276,25 @@ function ProviderButton({
       {children}
       {label}
     </button>
+  );
+}
+
+/** The guestbook's send glyph, so posting looks the same in both places. */
+function SendIcon() {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="none"
+      strokeWidth={2}
+      viewBox="0 0 24 24"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-4 h-4"
+      aria-hidden="true"
+    >
+      <line x1="22" y1="2" x2="11" y2="13" />
+      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+    </svg>
   );
 }
 

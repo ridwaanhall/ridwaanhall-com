@@ -18,6 +18,7 @@ npx tsx scripts/check-comments.mjs     # comment rules vs the live schema, rolle
 npx tsx scripts/check-emails.mjs       # all five email pairs render, escape, and fill
 npx tsx --conditions=react-server scripts/check-turnstile.mjs   # spam gate fails closed
 npx tsx scripts/check-admin.mjs [base]  # the admin gate leaks nothing; the changelist works
+npx tsx scripts/check-rls.mjs           # RLS on every public table, and the app not locked out
 npx tsx --conditions=react-server scripts/check-admin-forms.mjs [base]  # the change form, driven live
 npx tsx --conditions=react-server scripts/check-storage.mjs  # uploads, deletes, reference counting
 npx tsx --conditions=react-server scripts/check-admin-json.mjs  # jsonb fidelity, GET-then-POST-unchanged
@@ -547,12 +548,17 @@ not forgotten:
 ---
 
 ## Phase 4 — cutover
-- [ ] backup Django project to the new branch with name django
 - [ ] Promote `web/` to repo root, delete the Django tree from nextjs-migration
 - [ ] Replace `vercel.json`, swap CI to Node
-- [ ] **Re-apply RLS as a SQL migration** — `enable_row_level_security` disappears with
-      `apps/core/signals.py`, and without it every public table becomes readable
-      to anyone holding the Supabase anon key
+- [x] backup Django project to the new branch with name django — `django`
+      branch, cut at the end of phase 3 with the whole tree intact
+- [x] **RLS as a SQL migration** — `drizzle/0002_enable_row_level_security.sql`,
+      plus `scripts/check-rls.mjs`. The migration runs once where Django's
+      `post_migrate` receiver ran after every schema change, so the check is what
+      closes the gap: it fails if any public table ever appears without RLS.
+      Verified that the app's role (`postgres`) has `rolbypassrls`, so enabling
+      it costs the application nothing, and that the check catches a table with
+      RLS switched off
 - [ ] Drop `core_contentversion`; **keep `django_content_type`** (live FK from comments)
 - [ ] Rewrite `CLAUDE.md`, `README.md`, `CONTRIBUTING.md`
 - [ ] Env vars: add `AUTH_SECRET`/`AUTH_URL`/`RESEND_API_KEY`, drop `SECRET_KEY`/`DEBUG`/`CONTENT_CACHE_*`

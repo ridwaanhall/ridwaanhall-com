@@ -156,6 +156,14 @@ directly. Still confirm with `git status` that a new file is actually seen.
 - **Nothing holding a Drizzle column may cross to a client component.** A column
   references its table, which references every column back; serialising one is
   an infinite walk that React reports as a stack overflow naming nothing.
+- **A module with no `"use client"` is still client code if a client module
+  imports it**, and `process.env` in it is `undefined` for anything without a
+  `NEXT_PUBLIC_` prefix. `components/admin/field.tsx` built image URLs from
+  `STORAGE_SUPABASE_URL` that way: absolute on the server, hostless in the
+  browser. React reports the pair as a hydration mismatch and then leaves the
+  attribute alone, so the preview looked correct until the next client render
+  replaced it with a broken URL — and pressing Save is one. Resolve URLs on the
+  server and pass them down. `scripts/check-admin-console.mjs` catches it.
 - **Uploaded files are named after their contents**, and are reference-counted
   on delete. One author photo is named by twenty-one rows; deleting because one
   row stopped naming it would break the others.
@@ -183,6 +191,7 @@ npx tsx scripts/check-db-classes.mjs                   # no classes in stored co
 npx tsx --conditions=react-server scripts/check-turnstile.mjs
 npx tsx --conditions=react-server scripts/check-storage.mjs
 npx tsx scripts/check-admin.mjs
+npx tsx --conditions=react-server scripts/check-admin-console.mjs
 npx tsx --conditions=react-server scripts/check-admin-forms.mjs
 npx tsx --conditions=react-server scripts/check-admin-json.mjs
 npx tsx --conditions=react-server scripts/check-admin-inlines.mjs

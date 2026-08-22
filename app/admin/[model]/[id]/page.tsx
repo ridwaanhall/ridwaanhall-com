@@ -7,7 +7,7 @@ import { BackIcon, CheckIcon, DashIcon } from "@/components/admin/admin-icons";
 import { NothingHere } from "@/components/admin/nothing-here";
 import { RecordForm } from "@/components/admin/record-form";
 import { adminDate, adminDateTime } from "@/lib/admin/format";
-import { toClientFieldsets, toClientInlines } from "@/lib/admin/form";
+import { imageUrlMap, toClientFieldsets, toClientInlines } from "@/lib/admin/form";
 import { loadInlineRows } from "@/lib/admin/inlines";
 import { fetchAdminRow } from "@/lib/admin/list";
 import { formModelFor, listModelFor } from "@/lib/admin/models";
@@ -44,7 +44,7 @@ export async function generateMetadata({
 
 export default function AdminDetailPage(props: PageProps<"/admin/[model]/[id]">) {
   return (
-    <div className="max-w-3xl space-y-5">
+    <div className="space-y-5">
       <Suspense fallback={<RecordSkeleton />}>
         <Record params={props.params} />
       </Suspense>
@@ -101,6 +101,7 @@ async function Record({ params }: { params: Params }) {
           inlines={toClientInlines(form, referenceOptions)}
           inlineRows={inlineRows}
           values={values}
+          imageUrls={imageUrlMap(form, values, inlineRows)}
           label={label}
           typeLabel={entry.label}
           canDelete={form.canDelete !== false}

@@ -26,9 +26,19 @@ import type { AboutData } from "@/lib/data/about";
  */
 export function SiteShell({
   about,
+  adminLink,
   children,
 }: {
   about: AboutData;
+  /**
+   * The admin link, already wrapped in its own `<Suspense>` by the layout.
+   *
+   * Passed as a rendered element rather than a boolean because this component
+   * is `"use client"` and the answer comes from the database. Handing the
+   * element down keeps the staff check on the server, and keeps this file from
+   * needing to know what the answer is.
+   */
+  adminLink?: React.ReactNode;
   children: React.ReactNode;
 }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -59,11 +69,16 @@ export function SiteShell({
         </div>
       </header>
 
-      <MobileDrawer about={about} isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <MobileDrawer
+        about={about}
+        adminLink={adminLink}
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      />
 
       <div className="mx-auto max-w-6xl pt-20 lg:pt-0">
         <div className="flex flex-col lg:flex-row lg:gap-2 lg:py-4 xl:pb-8">
-          <SidebarRail about={about} />
+          <SidebarRail about={about} adminLink={adminLink} />
           {/*
             Keyed on the pathname so the entrance animation replays on every
             navigation, which is what the Django build got for free from a full

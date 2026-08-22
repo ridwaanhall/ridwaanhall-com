@@ -34,10 +34,12 @@ const EXIT_MS = 300;
 
 export function MobileDrawer({
   about,
+  adminLink,
   isOpen,
   onClose,
 }: {
   about: AboutData;
+  adminLink?: React.ReactNode;
   isOpen: boolean;
   onClose: () => void;
 }) {
@@ -237,7 +239,7 @@ export function MobileDrawer({
             is closed, matching the Django markup. */}
         <SearchTrigger tabIndex={isOpen ? 0 : -1} />
         <NavLinks tabIndex={isOpen ? 0 : -1} />
-        <SidebarFooter about={about} />
+        <SidebarFooter about={about} adminLink={adminLink} />
       </div>
     </div>
   );

@@ -15,8 +15,19 @@ import { useCurrentYear } from "@/lib/utils/use-current-year";
  * row and the drawer relies on the mobile navbar's, which stays reachable
  * whether the drawer is open or shut. A copy here would be a second visible
  * toggle at the same width.
+ *
+ * `adminLink` arrives as an element rather than a flag -- see `AdminLink`. It
+ * carries its own separator, so it can resolve to nothing without leaving a
+ * bullet hanging after "Terms", and it sits last because it is the only item
+ * most readers will never see.
  */
-export function SidebarFooter({ about }: { about: AboutData }) {
+export function SidebarFooter({
+  about,
+  adminLink,
+}: {
+  about: AboutData;
+  adminLink?: React.ReactNode;
+}) {
   const pathname = usePathname();
   const year = useCurrentYear();
   const showOpenHire = about.is_open_to_work || about.is_hiring;
@@ -44,6 +55,7 @@ export function SidebarFooter({ about }: { about: AboutData }) {
         {item("/privacy-policy", "Privacy")}
         <span className="text-zinc-600">•</span>
         {item("/terms", "Terms")}
+        {adminLink}
       </div>
       <div className="flex items-center gap-2 text-zinc-500">
         <span>

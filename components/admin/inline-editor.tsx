@@ -35,10 +35,13 @@ const ICON_BUTTON =
   "rounded-md border border-zinc-800 px-1.5 py-1 text-xs text-zinc-500 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-300 disabled:opacity-30 disabled:hover:bg-transparent";
 
 export function InlineEditor({
+  imageUrls,
   inline,
   rows: initial,
   errors,
 }: {
+  /** Stored images for this inline's rows, resolved server-side. See `Field`. */
+  imageUrls?: Record<string, string>;
   inline: ClientInline;
   rows: InlineRow[];
   errors: Record<string, string>;
@@ -123,6 +126,7 @@ export function InlineEditor({
             <div className="divide-y divide-zinc-900">
               {inline.fields.map((field) => (
                 <Field
+                  imageUrls={imageUrls}
                   key={field.name}
                   field={field}
                   namePrefix={`${inline.name}:${index}:`}

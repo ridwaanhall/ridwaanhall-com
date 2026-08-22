@@ -19,7 +19,13 @@ import type { AboutData } from "@/lib/data/about";
  * with every element sharing the `px-3` left edge the search box and nav items
  * already used.
  */
-export function SidebarRail({ about }: { about: AboutData }) {
+export function SidebarRail({
+  about,
+  adminLink,
+}: {
+  about: AboutData;
+  adminLink?: React.ReactNode;
+}) {
   return (
     <div className="hidden z-40 md:flex md:flex-col md:w-62 md:fixed md:inset-y-0 bg-black">
       <div className="w-full px-3 pt-8 pb-4">
@@ -51,7 +57,7 @@ export function SidebarRail({ about }: { about: AboutData }) {
 
       <SearchTrigger />
       <NavLinks />
-      <SidebarFooter about={about} />
+      <SidebarFooter about={about} adminLink={adminLink} />
     </div>
   );
 }

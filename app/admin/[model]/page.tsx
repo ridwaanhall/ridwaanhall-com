@@ -12,7 +12,7 @@ import {
 } from "@/lib/admin/list";
 import { formModelFor, listModelFor } from "@/lib/admin/models";
 import { RecordForm } from "@/components/admin/record-form";
-import { toClientFieldsets, toClientInlines } from "@/lib/admin/form";
+import { imageUrlMap, toClientFieldsets, toClientInlines } from "@/lib/admin/form";
 import { loadInlineRows } from "@/lib/admin/inlines";
 import { loadFormValues, loadReferenceOptions } from "@/lib/admin/record";
 import { ADMIN_ENTRIES, ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
@@ -94,7 +94,7 @@ async function SingletonScreen({ entryKey }: { entryKey: string }) {
   );
 
   return (
-    <div className="max-w-3xl space-y-5">
+    <div className="space-y-5">
       <div>
         <h1 className="text-xl font-medium text-zinc-100">{entry.labelPlural}</h1>
         <p className="mt-1 text-sm text-zinc-400">{entry.blurb}</p>
@@ -106,6 +106,7 @@ async function SingletonScreen({ entryKey }: { entryKey: string }) {
         inlines={toClientInlines(form, referenceOptions)}
         inlineRows={inlineRows}
         values={values}
+        imageUrls={imageUrlMap(form, values, inlineRows)}
         label={form.label(values)}
         typeLabel={entry.label}
         canDelete={false}

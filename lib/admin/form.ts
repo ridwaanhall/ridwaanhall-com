@@ -3,6 +3,7 @@ import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 
 import type { FilterChoice } from "@/lib/admin/list";
 import type { UploadPrefix } from "@/lib/storage/keys";
+import { mediaUrl } from "@/lib/storage/media";
 
 /**
  * What an admin form is, as data.
@@ -172,6 +173,59 @@ export function inlineCountName(inline: string): string {
 
 /** The existing row's id, empty for one the editor just added. */
 export const INLINE_ID = "__id";
+
+/**
+ * The URL of every stored image on a form, keyed by the input's name.
+ *
+ * **`mediaUrl` cannot be called from the form.** It reads
+ * `STORAGE_SUPABASE_URL`, which is not a `NEXT_PUBLIC_` variable, and
+ * `components/admin/field.tsx` is part of the client bundle -- it has no
+ * `"use client"` of its own, but `record-form.tsx` imports it, which is enough.
+ * So the server built `https://<project>.supabase.co/storage/v1/object/...` and
+ * the browser built `/storage/v1/object/...` from an empty string, and React
+ * reported the pair as a hydration mismatch on the `<img>`.
+ *
+ * It looked harmless because React does not patch attribute mismatches: the
+ * server's URL stayed in the DOM and the preview appeared. It only broke on the
+ * *next* client render of that subtree -- pressing Save re-renders the whole
+ * form to disable it -- and the preview turned into a broken image on the way
+ * to a page that had saved correctly.
+ *
+ * Resolving here keeps the storage configuration server-side, which is where
+ * the rest of it lives, and costs one flat object on the payload. The key is
+ * the input's `name`, so one map covers the form's own fields and every inline
+ * row without the caller having to know which is which.
+ */
+export function imageUrlMap(
+  model: AdminFormModel,
+  values: FormValues,
+  inlineRows: Record<string, FormValues[]> = {},
+): Record<string, string> {
+  const urls: Record<string, string> = {};
+
+  const add = (name: string, value: unknown) => {
+    if (typeof value === "string" && value) urls[name] = mediaUrl(value);
+  };
+
+  for (const fieldset of model.fieldsets) {
+    for (const field of fieldset.fields) {
+      if (field.kind === "image") add(field.name, values[field.name]);
+    }
+  }
+
+  for (const inline of model.inlines ?? []) {
+    const rows = inlineRows[inline.name] ?? [];
+    for (const [index, row] of rows.entries()) {
+      for (const field of inline.fields) {
+        if (field.kind === "image") {
+          add(inlineFieldName(inline.name, index, field.name), row[field.name]);
+        }
+      }
+    }
+  }
+
+  return urls;
+}
 
 /**
  * A field as the browser needs it.

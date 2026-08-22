@@ -665,6 +665,25 @@ Each is recorded at its call site and in the comparison scripts.
 
 ## Deliberate departures from the live site (requested)
 
+- **The guestbook opens at the newest message.** `buildThread` sorts ascending,
+  so the panel reads oldest first and the newest message is the last row in a
+  50-message window inside a 55vh box -- which meant it opened several screens
+  above the conversation. It now starts scrolled to the bottom, before paint,
+  and follows the thread down when a message is added. Django's page had the
+  same fault and nobody asked for it.
+- **The sidebar carries an Admin link for staff**, beside Privacy and Terms.
+  Django rendered one from `{% if user.is_staff %}`; the port dropped it because
+  the public site is prerendered and the flag is a per-request database read.
+  It is back as the one streamed hole in the chrome -- see
+  `components/layout/admin-link.tsx`.
+- **The admin's change form uses the whole page.** It was one 768px column,
+  which on a 1440px screen left a third of the window empty and put Save four
+  thousand pixels below the title on a blog post. A form with a rich-text field
+  now puts the body in a wide column and the fieldsets after it in a narrower
+  one that stays put; a form without one flows its fieldsets two-up; and the
+  Save/Delete bar is sticky. The shape is derived from the descriptor, so no
+  model declares it.
+
 - **Every disclosure says "Show more" / "Show less".** Django used three
   phrasings for one gesture — "Show More", "Show Achievements", "View
   Application Journey" — and one wording was asked for. The button is otherwise

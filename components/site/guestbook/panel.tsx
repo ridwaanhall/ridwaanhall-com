@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useTransition } from "react";
 
 import { useConfirm } from "@/components/providers/confirm-dialog";
 import { signInWith, signOutHere } from "@/lib/actions/auth";
@@ -42,8 +42,43 @@ export function GuestbookPanel({
   const [replyTo, setReplyTo] = useState<ThreadMessage | null>(null);
   const [text, setText] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   const signedIn = viewer.userId !== null;
+
+  /*
+   * Open at the newest message, not the oldest.
+   *
+   * `buildThread` sorts ascending, so the list reads oldest at the top and the
+   * most recent message is the last thing in it -- which is the right order for
+   * a conversation and the wrong place for a scrollbar to start. The panel is
+   * capped at 55vh over a 50-message window, so landing at the top opened on
+   * messages from years ago and the newest were several screens down.
+   *
+   * `useLayoutEffect` rather than `useEffect`: this runs before the browser
+   * paints, so the panel is simply already at the bottom. An effect after paint
+   * shows the top for a frame and then jumps, which reads as a glitch.
+   * `scrollTo` without `behavior` is instant for the same reason -- there is
+   * nothing to animate away from when the position was never seen.
+   */
+  useLayoutEffect(() => {
+    const list = listRef.current;
+    if (list) list.scrollTop = list.scrollHeight;
+  }, []);
+
+  /*
+   * And follow the thread down as it grows.
+   *
+   * Sending revalidates the page, so a new message arrives as a re-render with
+   * one more row rather than through this component's own state. Keyed on the
+   * count, this puts the panel back at the bottom when that happens -- and does
+   * nothing while someone is reading further up, because the count has not
+   * changed.
+   */
+  useEffect(() => {
+    const list = listRef.current;
+    if (list) list.scrollTo({ top: list.scrollHeight, behavior: "smooth" });
+  }, [thread.messageCount]);
 
   const mark = (id: number, on: boolean) =>
     setBusy((current) => {
@@ -160,6 +195,7 @@ export function GuestbookPanel({
 
       <div
         id="guestbook-messages"
+        ref={listRef}
         className="overflow-y-auto py-4 space-y-4 flex-1 scrollbar-hide"
         style={{ minHeight: "min(45vh, 600px)", maxHeight: "min(55vh, 800px)" }}
       >

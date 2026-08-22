@@ -2,6 +2,7 @@ import "server-only";
 
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db/client";
@@ -38,8 +39,17 @@ export type StaffUser = {
  * signed-in reader who is not staff, and a token whose `sub` no longer names a
  * row (a deleted account). The caller decides what to do about each; none of
  * them may see the admin.
+ *
+ * **Wrapped in `cache()`, so "read per request" does not mean "read per
+ * caller".** Every admin screen asks twice -- the layout through `staffGate`
+ * for the chrome, the page through `requireStaff` before it reads anything --
+ * and the site's sidebar asks a third time for the admin link. React's
+ * request-scoped memo collapses those into one query without weakening the
+ * rule: the memo lives for one render pass, so the next request reads the flag
+ * from the database again, which is the whole point of not carrying it in the
+ * token.
  */
-export async function getStaffUser(): Promise<StaffUser | null> {
+export const getStaffUser = cache(async function getStaffUser(): Promise<StaffUser | null> {
   const session = await auth();
   const id = Number(session?.user?.id);
   if (!Number.isInteger(id) || id <= 0) return null;
@@ -68,7 +78,7 @@ export async function getStaffUser(): Promise<StaffUser | null> {
     email: user.email,
     isSuperuser: user.isSuperuser,
   };
-}
+});
 
 /**
  * Whether the request may act on admin data at all.

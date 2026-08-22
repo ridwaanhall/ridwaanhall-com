@@ -13,6 +13,15 @@ import { requireStaff } from "@/lib/auth/staff";
  * `auth_group` rows and every staff account is a superuser -- so this lists
  * everything, and the only distinction drawn is whether the screen is built.
  */
+/**
+ * Never prerendered, for the same reason as the layout and the changelist
+ * beside it: the first thing this page does is read the session, so there is no
+ * shell to build ahead of the request. The layout carrying `instant = false`
+ * does not cover the pages under it -- each route decides for itself, and this
+ * one was the only admin route without the line.
+ */
+export const instant = false;
+
 export default async function AdminIndexPage() {
   // No data of its own, but it still describes the shape of the admin, and a
   // non-staff reader has no business receiving that either.

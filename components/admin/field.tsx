@@ -2,7 +2,6 @@ import { KeyValueEditor, StringListEditor } from "@/components/admin/json-fields
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { adminDateTime } from "@/lib/admin/format";
 import { clearFieldName, type ClientField, type FormValues } from "@/lib/admin/form";
-import { mediaUrl } from "@/lib/storage/media";
 import { IMAGE_TYPES } from "@/lib/storage/keys";
 import { cn } from "@/lib/utils/cn";
 
@@ -25,12 +24,21 @@ export function Field({
   value,
   error,
   namePrefix = "",
+  imageUrls,
 }: {
   field: ClientField;
   value: FormValues[string];
   error?: string;
   /** Set for a field inside an inline row: `positions:0:`. */
   namePrefix?: string;
+  /**
+   * Stored images, resolved to URLs on the server and keyed by input name.
+   *
+   * This file is in the client bundle, and the storage host is not a
+   * `NEXT_PUBLIC_` variable, so calling `mediaUrl` here produced one URL on the
+   * server and a different one in the browser -- see `imageUrlMap`.
+   */
+  imageUrls?: Record<string, string>;
 }) {
   const name = `${namePrefix}${field.name}`;
   // The id has to be unique across the page, not only within one row, or a
@@ -173,7 +181,7 @@ export function Field({
               */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={mediaUrl(key)}
+                src={imageUrls?.[name] ?? ""}
                 alt=""
                 className="h-16 w-16 rounded-md border border-zinc-800 object-contain"
               />

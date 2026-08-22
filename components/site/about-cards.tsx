@@ -6,6 +6,7 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from "@/components/site/disclosure";
+import { MetaItem, MetaRow } from "@/components/site/meta-row";
 import type { Award, Certification, Education, Experience } from "@/lib/data/about";
 
 /**
@@ -88,27 +89,6 @@ function ExternalArrow({ className }: { className: string }) {
       />
     </svg>
   );
-}
-
-/**
- * A card's facts: when, what kind, where.
- *
- * One row shape for the whole about page. Experience, education and the
- * application cards were each spelling out their own -- different type size,
- * different gaps, different icon size -- for the same kind of line, so three
- * cards a reader sees one after another disagreed about what a fact looks like.
- * `ApplicationCard` imports these too; it is where the shape came from.
- *
- * The gaps are wider than the old `gap-4` because these carry no background:
- * each item ends where its text ends, and 16px ran them together into one line
- * of prose.
- */
-export function MetaRow({ children }: { children: React.ReactNode }) {
-  return <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-zinc-400">{children}</div>;
-}
-
-export function MetaItem({ children }: { children: React.ReactNode }) {
-  return <span className="inline-flex items-center">{children}</span>;
 }
 
 /**

@@ -14,7 +14,7 @@ import type { ReactNode } from "react";
 export function SectionIcon({ paths }: { paths: readonly string[] }) {
   return (
     <svg
-      className="w-5 h-5 mr-3 text-indigo-400"
+      className="w-5 h-5 mr-3 text-zinc-400"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -122,7 +122,7 @@ export function TagList({ items, className = "" }: { items: string[]; className?
       {items.map((item) => (
         <span
           key={item}
-          className="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded text-xs border border-zinc-700/50"
+          className="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded-full text-xs border border-zinc-700/50"
         >
           {item}
         </span>

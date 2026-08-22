@@ -79,33 +79,11 @@ async function GitHubPanel({ about }: { about: AboutData }) {
 
 // ---------------------------------------------------------------------------
 
-/** The glyph beside a section heading, drawn to the contact page's spec. */
-function SectionIcon({ d }: { d: string }) {
-  return (
-    <svg
-      className="w-6 h-6 mr-3"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={d} />
-    </svg>
-  );
-}
-
 function Wakatime({ stats }: { stats: WakatimeStats }) {
   return (
     <div className="mb-6">
       <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
-        {/* The same anatomy the contact page's headings use -- a 24px stroke
-            icon at `mr-3`, `text-xl font-medium` -- so a section heading looks
-            the same wherever the reader meets one. */}
-        <h2 className="text-xl font-medium flex items-center">
-          <SectionIcon d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          WakaTime Statistics
-        </h2>
+        <h2 className="text-xl font-medium">WakaTime Statistics</h2>
         <p className="text-xs sm:text-sm">Live Trace</p>
       </div>
 
@@ -212,10 +190,7 @@ function GitHub({ stats, about }: { stats: GitHubStats; about: AboutData }) {
   return (
     <div className="mb-6">
       <div className="flex flex-row items-center justify-between mb-3 md:mb-4 gap-2">
-        <h2 className="text-xl font-medium flex items-center">
-          <SectionIcon d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-          GitHub Statistics
-        </h2>
+        <h2 className="text-xl font-medium">GitHub Statistics</h2>
         <p className="font-mono text-xs sm:text-sm text-zinc-400 hover:text-zinc-300 transition-all duration-300 truncate">
           <a href={about.social_media.github} className="font-medium" target="_blank" rel="noopener noreferrer">
             @{about.username}

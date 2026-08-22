@@ -673,6 +673,15 @@ Each is recorded at its call site and in the comparison scripts.
 
 ## Deliberate departures from the live site (requested)
 
+- **The position card is the site's disclosure now**, not its own. It was the
+  last of four near-copies of the control: local `useState`, a panel hidden with
+  `hidden`, no transition, and the only one still saying "Show Details" / "Hide
+  Details". It also loses its border -- these sit inside a `SectionCard` that
+  already draws one, so each posting was a box inside a box -- and its facts use
+  the shared meta row, so a job's location looks like an application's.
+- **`components/site/meta-row.tsx`** is where that row lives, with the five fact
+  glyphs. Three cards use it and it belonged to none of them.
+
 - **Education cards are built on the application card's anatomy**, with the
   logo kept: the institution named first and the degree in italics beside it,
   the dates as a chip at the right of that row, and the place sharing the line

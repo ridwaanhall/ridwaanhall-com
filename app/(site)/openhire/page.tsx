@@ -264,7 +264,10 @@ function HiringPanel({ data }: { data: HiringData }) {
       </SectionCard>
 
       <SectionCard title="Open Positions" paths={[ICON.briefcase]}>
-        <div className="space-y-3">
+        {/* Wider than the `space-y-3` these had while each was its own bordered
+            box. Without the box, 12px is not enough to say where one posting
+            ends and the next begins. */}
+        <div className="space-y-6">
           {data.positions.map((position) => (
             <PositionCard
               key={position.title}

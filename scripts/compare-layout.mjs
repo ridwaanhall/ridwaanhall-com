@@ -160,19 +160,23 @@ const EXPECTED = [
   { path: "/about/", key: "main", dimension: "h", delta: 6, widths: [1280] },
 
   /*
-   * `/dashboard/`'s two section headings are 4px shorter than live's, and the
-   * page is 8px shorter for it.
+   * `/dashboard/`'s two section headings are smaller than live's, and the page
+   * is 8px shorter for it.
    *
-   * They were `text-xl sm:text-2xl` with no icon; they are `text-xl` with a
-   * 24px glyph now, which is the anatomy the contact page's headings already
-   * had. A 24px line box against live's 28px is the 4px, twice. `h2[1]` also
-   * measures 4px wider, because the icon is wider than the two type sizes
-   * differ, and sits 4px higher because the heading above it shrank.
+   * They were `text-xl sm:text-2xl`, so 24px type in a 32px line box; they are
+   * `text-xl` -- 20px in a 28px box -- which is the size the contact page's
+   * headings already used. 4px of height each is the 8px on `main`, and `h2[1]`
+   * sits 4px higher because the heading above it shrank.
+   *
+   * The widths are the same change seen sideways: the port's smaller type sets
+   * "WakaTime Statistics" 37px narrower and "GitHub Statistics" 32px narrower
+   * than live's. Two entries, because the deltas are the strings' own.
    */
   { path: "/dashboard/", key: "h2[0]", dimension: "h", delta: 4, widths: [1280] },
+  { path: "/dashboard/", key: "h2[0]", dimension: "w", delta: 37, widths: [1280] },
   { path: "/dashboard/", key: "h2[1]", dimension: "h", delta: 4, widths: [1280] },
   { path: "/dashboard/", key: "h2[1]", dimension: "y", delta: 4, widths: [1280] },
-  { path: "/dashboard/", key: "h2[1]", dimension: "w", delta: -4, widths: [1280] },
+  { path: "/dashboard/", key: "h2[1]", dimension: "w", delta: 32, widths: [1280] },
   { path: "/dashboard/", key: "main", dimension: "h", delta: 8, widths: [1280] },
 ];
 

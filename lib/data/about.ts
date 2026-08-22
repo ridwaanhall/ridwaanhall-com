@@ -1,22 +1,34 @@
-import { asc, desc, eq, ne } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { db } from "@/lib/db/client";
 import {
-  aboutApplication,
-  aboutAward,
-  aboutCertification,
-  aboutDonatelink,
-  aboutEducation,
-  aboutExperience,
-  aboutJourneystep,
-  aboutOrganization,
-  aboutProfileskillhighlight,
-  aboutSkill,
-} from "@/lib/db/schema";
-import { mediaUrl } from "@/lib/storage/media";
+  application,
+  applicationSource,
+  applicationStatus,
+  applicationStep,
+  award,
+  category,
+  certification,
+  certificationAchievement,
+  education,
+  educationAchievement,
+  employmentType,
+  experience,
+  experienceTask,
+  location,
+  mediaAsset,
+  organization,
+  profile,
+  profileLink,
+  profileSkillHighlight,
+  skill,
+  workMode,
+} from "@/lib/db/app-schema";
+import { assetUrl } from "@/lib/storage/media";
 
 import { isWorkingHours, isoMonth, monthYear, type MonthYear } from "./format";
+import { locationLabel } from "./location";
 import { TAGS } from "./tags";
 
 /**
@@ -27,17 +39,47 @@ import { TAGS } from "./tags";
  * objects, the same `{month, year}` pairs alongside their `*_iso` forms. They
  * feed the page components *and* the JSON-LD generator, so a renamed key is a
  * silently missing structured-data property rather than a compile error.
+ *
+ * What changed underneath is where each of those keys comes from. A profile
+ * carried eight `social_*` columns, three `cv_*` columns and six `location_*`
+ * columns; an experience repeated its location as free text; a skill named its
+ * category with a string. Those are rows now -- `profile_link` scoped by kind,
+ * `location`, `category` -- so adding a ninth social platform is an insert
+ * rather than a migration, and "Boyolali" is one row that several records point
+ * at rather than a string spelled slightly differently in each.
+ *
+ * The grouping that turns those rows back into the flat shapes happens here,
+ * which is the price of the change and is paid once per cached read.
  */
 
-/** Category display order, from apps/about/manager.py. */
-export const SKILL_CATEGORY_ORDER = [
-  "Languages", "Backend Frameworks", "Frontend Frameworks", "Styling & UI",
-  "CMS & E-commerce", "Data Visualization", "Utilities & Auth", "Data Apps",
-  "Automation & Scraping", "ML Frameworks", "ML Algorithms", "LLMs & AI Services",
-  "Data Science", "Databases & ORM", "APIs & Services", "Cloud & DevOps",
-  "Package Management", "PaaS", "Serverless", "Web Server", "Testing",
-  "Version Control", "Editor & IDE", "Design", "Desktop",
-] as const;
+/**
+ * Ordered lists, keyed by the child row's `kind`.
+ *
+ * `profile_link` holds the social, CV and donate lists in one table, and the
+ * `*_achievement` tables hold one list each. Both arrive as rows in order and
+ * leave as arrays.
+ */
+function byKind<T extends { kind: string }>(rows: T[]): Record<string, T[]> {
+  const groups: Record<string, T[]> = {};
+  for (const row of rows) (groups[row.kind] ??= []).push(row);
+  return groups;
+}
+
+/** `platform` -> `url`, for the link lists the payload exposes as an object. */
+function urlsByPlatform(links: { platform: string; url: string }[]): Record<string, string> {
+  return Object.fromEntries(links.map((link) => [link.platform, link.url]));
+}
+
+/** Child rows grouped under their parent's key. */
+function groupBy<T>(rows: T[], key: (row: T) => string): Map<string, T[]> {
+  const groups = new Map<string, T[]>();
+  for (const row of rows) {
+    const bucket = groups.get(key(row));
+    if (bucket) bucket.push(row);
+    else groups.set(key(row), [row]);
+  }
+  return groups;
+}
 
 export type Skill = {
   name: string;
@@ -63,12 +105,14 @@ export type AboutData = {
   short_bio: string;
   short_cta: string;
   long_description: string;
-  stories: unknown[];
   /**
-   * The same paragraphs as HTML, which is what the page renders.
+   * The intro paragraphs, as the HTML the page renders.
    *
-   * `stories` above is the original JSONB array, kept alongside it the way
-   * blog_blogpost.content was -- see drizzle/0004.
+   * There was a `stories` array beside this: the same paragraphs as JSONB
+   * blocks, each with a hand-typed `class` key. That is the shape
+   * `lib/utils/sanitize.ts` exists to keep out of the database, and nothing
+   * read it -- the page has rendered `stories_html` since drizzle/0004 -- so it
+   * did not come across.
    */
   stories_html: string;
   location: {
@@ -124,70 +168,112 @@ export async function getAboutData(): Promise<AboutData | null> {
   cacheTag(TAGS.profile, TAGS.skill);
   cacheLife("days");
 
-  const profile = await db.query.aboutProfile.findFirst();
-  if (!profile) return null;
+  const [row] = await db
+    .select({
+      p: profile,
+      city: location.city,
+      region: location.region,
+      country: location.country,
+      flag: location.flag,
+      storageKey: mediaAsset.storageKey,
+      source: mediaAsset.source,
+    })
+    .from(profile)
+    .leftJoin(location, eq(location.id, profile.locationId))
+    .leftJoin(mediaAsset, eq(mediaAsset.id, profile.imageId))
+    .limit(1);
+  if (!row) return null;
 
-  const [donations, highlights] = await Promise.all([
+  const { p } = row;
+
+  const [links, highlights] = await Promise.all([
+    // All three link lists in one query: they share a table and differ only by
+    // `kind`, so asking three times would be three round trips for one read.
     db
-      .select({ platform: aboutDonatelink.platform, url: aboutDonatelink.url })
-      .from(aboutDonatelink)
-      .where(eq(aboutDonatelink.profileId, profile.id))
-      .orderBy(asc(aboutDonatelink.order)),
+      .select({ kind: profileLink.kind, platform: profileLink.platform, url: profileLink.url })
+      .from(profileLink)
+      .where(eq(profileLink.profileId, p.id))
+      .orderBy(asc(profileLink.position)),
     // Read through the ordered join rows, never the bare M2M: the sequence is
     // editorial and becomes the JSON-LD `knowsAbout` array. Ordering by the
-    // join's `order` column is the entire reason the through model exists.
+    // join's `position` column is the entire reason the through model exists.
     db
-      .select({ name: aboutSkill.name })
-      .from(aboutProfileskillhighlight)
-      .innerJoin(aboutSkill, eq(aboutProfileskillhighlight.skillId, aboutSkill.id))
-      .where(eq(aboutProfileskillhighlight.profileId, profile.id))
-      .orderBy(asc(aboutProfileskillhighlight.order)),
+      .select({ name: skill.name })
+      .from(profileSkillHighlight)
+      .innerJoin(skill, eq(profileSkillHighlight.skillId, skill.id))
+      .where(eq(profileSkillHighlight.profileId, p.id))
+      .orderBy(asc(profileSkillHighlight.position)),
   ]);
 
+  const grouped = byKind(links);
+  const social = urlsByPlatform(grouped.social ?? []);
+  const cv = urlsByPlatform(grouped.cv ?? []);
+
   return {
-    name: profile.name,
-    first_name: profile.firstName,
-    last_name: profile.lastName,
-    username: profile.username,
-    aka: profile.aka,
-    image_url: mediaUrl(profile.image),
-    personal_website: profile.personalWebsite,
-    cv: { main: profile.cvMain, latest: profile.cvLatest, copy: profile.cvCopy },
-    role: profile.role,
-    is_open_to_work: profile.isOpenToWork,
-    is_hiring: profile.isHiring,
-    is_sick: profile.isSick,
-    short_description: profile.shortDescription,
-    short_bio: profile.shortBio,
-    short_cta: profile.shortCta,
-    long_description: profile.longDescription,
-    stories: (profile.stories ?? []) as unknown[],
-    stories_html: profile.storiesHtml ?? "",
+    name: p.name,
+    first_name: p.firstName,
+    last_name: p.lastName,
+    username: p.username,
+    aka: p.aka,
+    image_url: assetUrl(row.storageKey ? { storageKey: row.storageKey, source: row.source ?? "storage" } : null),
+    personal_website: p.personalWebsite,
+    cv: { main: cv.main ?? "", latest: cv.latest ?? "", copy: cv.copy ?? "" },
+    role: p.role,
+    is_open_to_work: p.isOpenToWork,
+    is_hiring: p.isHiring,
+    is_sick: p.isSick,
+    short_description: p.shortDescription,
+    short_bio: p.shortBio,
+    short_cta: p.shortCta,
+    long_description: p.longDescription,
+    stories_html: p.storiesHtml,
     location: {
-      regency: profile.locationRegency,
-      residency: profile.locationResidency,
-      province: profile.locationProvince,
-      prov: profile.locationProv,
-      country: profile.locationCountry,
-      flag: profile.locationFlag,
+      /*
+       * `regency`/`province`/`prov` are the payload's names for what the
+       * `location` row calls `city` and `region`. `prov` held an abbreviation
+       * the data never actually abbreviated -- both columns read "Central Java"
+       * -- so both keys read the region and the duplicate column is gone.
+       */
+      regency: row.city ?? "",
+      residency: p.residency,
+      province: row.region ?? "",
+      prov: row.region ?? "",
+      country: row.country ?? "",
+      flag: row.flag ?? "",
     },
     social_media: {
-      email: profile.socialEmail,
-      github: profile.socialGithub,
-      linkedin: profile.socialLinkedin,
-      follow_linkedin: profile.socialFollowLinkedin,
-      instagram: profile.socialInstagram,
-      medium: profile.socialMedium,
-      x: profile.socialX,
-      website: profile.socialWebsite,
+      email: social.email ?? "",
+      github: social.github ?? "",
+      linkedin: social.linkedin ?? "",
+      follow_linkedin: social.follow_linkedin ?? "",
+      instagram: social.instagram ?? "",
+      medium: social.medium ?? "",
+      x: social.x ?? "",
+      website: social.website ?? "",
     },
-    donate: donations,
+    donate: (grouped.donate ?? []).map(({ platform, url }) => ({ platform, url })),
     skills: highlights.map((h) => h.name),
   };
 }
 
+/**
+ * An organisation's logo, joined once and resolved once.
+ *
+ * Four of these lists show the same organisations, and each used to carry the
+ * storage key in its own row. The key lives on `media_asset` now and the logo
+ * is a foreign key to it, so every one of them joins the same two tables.
+ */
+const ORG_LOGO = {
+  storageKey: mediaAsset.storageKey,
+  source: mediaAsset.source,
+};
+
+function logoUrl(row: { storageKey: string | null; source: string | null }): string {
+  return assetUrl(row.storageKey ? { storageKey: row.storageKey, source: row.source ?? "storage" } : null);
+}
+
 export type Experience = {
-  id: number;
+  id: string;
   title: string;
   company: string;
   logo: string;
@@ -210,32 +296,56 @@ export async function getExperiences(currentOnly = false): Promise<Experience[]>
   cacheTag(TAGS.experience, TAGS.organization);
   cacheLife("days");
 
-  const rows = await db
-    .select({ e: aboutExperience, org: aboutOrganization })
-    .from(aboutExperience)
-    .innerJoin(aboutOrganization, eq(aboutExperience.organizationId, aboutOrganization.id))
-    .orderBy(asc(aboutExperience.sortOrder));
+  const [rows, tasks] = await Promise.all([
+    db
+      .select({
+        e: experience,
+        org: organization,
+        employmentType: employmentType.label,
+        workMode: workMode.label,
+        city: location.city,
+        region: location.region,
+        country: location.country,
+        flag: location.flag,
+        ...ORG_LOGO,
+      })
+      .from(experience)
+      .innerJoin(organization, eq(experience.organizationId, organization.id))
+      .leftJoin(employmentType, eq(employmentType.id, experience.employmentTypeId))
+      .leftJoin(workMode, eq(workMode.id, experience.workModeId))
+      .leftJoin(location, eq(location.id, experience.locationId))
+      .leftJoin(mediaAsset, eq(mediaAsset.id, organization.logoId))
+      .orderBy(asc(experience.position)),
+    // Responsibilities were a `jsonb` array on the row; they are rows now, so
+    // they arrive separately and are grouped back under their experience.
+    db
+      .select({ experienceId: experienceTask.experienceId, body: experienceTask.body })
+      .from(experienceTask)
+      .orderBy(asc(experienceTask.position)),
+  ]);
+
+  const tasksFor = groupBy(tasks, (task) => task.experienceId);
 
   return rows
     .filter(({ e }) => !currentOnly || e.isCurrent)
-    .map(({ e, org }) => ({
-      id: e.id,
-      title: e.title,
-      company: org.name,
-      logo: mediaUrl(org.logo),
+    .map((row) => ({
+      id: row.e.id,
+      title: row.e.title,
+      company: row.org.name,
+      logo: logoUrl(row),
       period: {
-        start: monthYear(e.periodStart),
+        start: monthYear(row.e.periodStart),
         // A role with no end date is one you are still in.
-        end: monthYear(e.periodEnd) ?? ("Present" as const),
-        start_iso: isoMonth(e.periodStart),
-        end_iso: isoMonth(e.periodEnd),
+        end: monthYear(row.e.periodEnd) ?? ("Present" as const),
+        start_iso: isoMonth(row.e.periodStart),
+        end_iso: isoMonth(row.e.periodEnd),
       },
-      employment_type: e.employmentType,
-      location_type: e.locationType,
-      location: e.location,
-      is_current: e.isCurrent,
-      responsibilities: (e.responsibilities ?? []) as string[],
-      website: org.website,
+      employment_type: row.employmentType ?? "",
+      location_type: row.workMode ?? "",
+      location: locationLabel(row),
+      is_current: row.e.isCurrent,
+      responsibilities: (tasksFor.get(row.e.id) ?? []).map((task) => task.body),
+      website: row.org.website,
     }));
 }
 
@@ -264,39 +374,62 @@ export async function getEducation(lastOnly = false): Promise<Education[]> {
   cacheTag(TAGS.education, TAGS.organization);
   cacheLife("days");
 
-  const rows = await db
-    .select({ ed: aboutEducation, org: aboutOrganization })
-    .from(aboutEducation)
-    .innerJoin(aboutOrganization, eq(aboutEducation.organizationId, aboutOrganization.id))
-    .orderBy(asc(aboutEducation.id));
+  const [rows, achievements] = await Promise.all([
+    db
+      .select({
+        ed: education,
+        org: organization,
+        city: location.city,
+        region: location.region,
+        country: location.country,
+        flag: location.flag,
+        mapUrl: location.mapUrl,
+        ...ORG_LOGO,
+      })
+      .from(education)
+      .innerJoin(organization, eq(education.organizationId, organization.id))
+      .leftJoin(location, eq(location.id, education.locationId))
+      .leftJoin(mediaAsset, eq(mediaAsset.id, organization.logoId))
+      // `order by id` while keys were serial, which meant the order they were
+      // entered in. `position` is that order, written down -- see drizzle/0007.
+      .orderBy(asc(education.position)),
+    db
+      .select({ educationId: educationAchievement.educationId, body: educationAchievement.body })
+      .from(educationAchievement)
+      .orderBy(asc(educationAchievement.position)),
+  ]);
+
+  const achievementsFor = groupBy(achievements, (row) => row.educationId);
 
   return rows
     .filter(({ ed }) => !lastOnly || ed.isLast)
-    .map(({ ed, org }) => ({
-      degree: ed.degree,
-      institution: org.name,
-      logo: mediaUrl(org.logo),
-      is_last: ed.isLast,
+    .map((row) => ({
+      degree: row.ed.degree,
+      institution: row.org.name,
+      logo: logoUrl(row),
+      is_last: row.ed.isLast,
       location: {
-        regency: ed.locationRegency,
-        province: ed.locationProvince,
-        prov: ed.locationProv,
-        country: ed.locationCountry,
-        flag: ed.locationFlag,
-        map_url: ed.locationMapUrl,
+        regency: row.city ?? "",
+        province: row.region ?? "",
+        prov: row.region ?? "",
+        country: row.country ?? "",
+        flag: row.flag ?? "",
+        map_url: row.mapUrl ?? "",
       },
-      achievements: (ed.achievements ?? []) as string[],
-      alias: ed.alias,
+      achievements: (achievementsFor.get(row.ed.id) ?? []).map((a) => a.body),
+      alias: row.ed.alias,
       // Older rows only ever recorded a free-text year range, so `date` stays
       // null for them rather than claiming a precision the data never had.
-      date: ed.dateStart ? { start: monthYear(ed.dateStart), end: monthYear(ed.dateEnd) } : null,
-      years: ed.years,
-      website: org.website,
+      date: row.ed.dateStart
+        ? { start: monthYear(row.ed.dateStart), end: monthYear(row.ed.dateEnd) }
+        : null,
+      years: row.ed.years,
+      website: row.org.website,
     }));
 }
 
 export type Certification = {
-  id: number;
+  id: string;
   title: string;
   credential_url: string;
   issued: MonthYear | null;
@@ -313,23 +446,38 @@ export async function getCertifications(): Promise<Certification[]> {
   cacheTag(TAGS.certification, TAGS.organization);
   cacheLife("days");
 
-  const rows = await db
-    .select({ c: aboutCertification, org: aboutOrganization })
-    .from(aboutCertification)
-    .innerJoin(aboutOrganization, eq(aboutCertification.organizationId, aboutOrganization.id))
-    .orderBy(desc(aboutCertification.id));
+  const [rows, achievements] = await Promise.all([
+    db
+      .select({ c: certification, org: organization, ...ORG_LOGO })
+      .from(certification)
+      .innerJoin(organization, eq(certification.organizationId, organization.id))
+      .leftJoin(mediaAsset, eq(mediaAsset.id, organization.logoId))
+      // Newest first. This read `order by id desc`, which on this data is the
+      // same sequence -- the certifications were entered in date order -- but
+      // says "most recently added" where the page means "most recent".
+      .orderBy(desc(certification.issued)),
+    db
+      .select({
+        certificationId: certificationAchievement.certificationId,
+        body: certificationAchievement.body,
+      })
+      .from(certificationAchievement)
+      .orderBy(asc(certificationAchievement.position)),
+  ]);
 
-  return rows.map(({ c, org }) => ({
-    id: c.id,
-    title: c.title,
-    credential_url: c.credentialUrl,
-    issued: monthYear(c.issued),
-    issued_iso: isoMonth(c.issued),
-    institution: org.name,
-    website: org.website,
-    logo: mediaUrl(org.logo),
-    is_featured: c.isFeatured,
-    achievements: (c.achievements ?? []) as string[],
+  const achievementsFor = groupBy(achievements, (row) => row.certificationId);
+
+  return rows.map((row) => ({
+    id: row.c.id,
+    title: row.c.title,
+    credential_url: row.c.credentialUrl,
+    issued: monthYear(row.c.issued),
+    issued_iso: isoMonth(row.c.issued),
+    institution: row.org.name,
+    website: row.org.website,
+    logo: logoUrl(row),
+    is_featured: row.c.isFeatured,
+    achievements: (achievementsFor.get(row.c.id) ?? []).map((a) => a.body),
   }));
 }
 
@@ -339,55 +487,67 @@ export async function getSkills(): Promise<Skill[]> {
   cacheTag(TAGS.skill);
   cacheLife("days");
 
-  const rows = await db
-    .select()
-    .from(aboutSkill)
-    .where(ne(aboutSkill.iconSvg, ""))
-    .orderBy(asc(aboutSkill.id));
-
-  return rows.map(toSkill);
+  return (
+    await db
+      .select({ s: skill, category: category.label, ...SKILL_ICON })
+      .from(skill)
+      .leftJoin(category, eq(category.id, skill.categoryId))
+      .innerJoin(mediaAsset, eq(mediaAsset.id, skill.iconId))
+      .orderBy(asc(skill.position))
+  ).map(toSkill);
 }
 
-/** Every categorised skill, grouped and ordered by SKILL_CATEGORY_ORDER. */
+/**
+ * Every categorised skill, grouped and ordered by the categories themselves.
+ *
+ * The order was `SKILL_CATEGORY_ORDER`, a 25-entry array in this file that the
+ * grouping walked to build the result. It is `category.position` now: the same
+ * sequence, in the table it describes, editable from the admin and joinable.
+ * A category outside the curated run keeps its place at the end because
+ * drizzle/0007 gave it a position past the list rather than at the front.
+ */
 export async function getSkillsByCategory(): Promise<Record<string, Skill[]>> {
   "use cache";
   cacheTag(TAGS.skill);
   cacheLife("days");
 
-  const rows = await db.select().from(aboutSkill).orderBy(asc(aboutSkill.id));
+  const rows = await db
+    .select({ s: skill, category: category.label, ...SKILL_ICON })
+    .from(skill)
+    .innerJoin(category, eq(category.id, skill.categoryId))
+    .leftJoin(mediaAsset, eq(mediaAsset.id, skill.iconId))
+    .orderBy(asc(category.position), asc(skill.position));
 
-  const grouped = new Map<string, Skill[]>();
+  const grouped: Record<string, Skill[]> = {};
   for (const row of rows) {
     if (!row.category) continue;
-    const bucket = grouped.get(row.category);
-    if (bucket) bucket.push(toSkill(row));
-    else grouped.set(row.category, [toSkill(row)]);
+    (grouped[row.category] ??= []).push(toSkill(row));
   }
-
-  const ordered: Record<string, Skill[]> = {};
-  for (const category of SKILL_CATEGORY_ORDER) {
-    const skills = grouped.get(category);
-    if (skills) {
-      ordered[category] = skills;
-      grouped.delete(category);
-    }
-  }
-  // Anything outside the curated order keeps its natural position at the end.
-  for (const [category, skills] of grouped) ordered[category] = skills;
-  return ordered;
+  return grouped;
 }
 
-function toSkill(row: typeof aboutSkill.$inferSelect): Skill {
+/** A skill's icon, which is a `media_asset` rather than a stored path. */
+const SKILL_ICON = {
+  storageKey: mediaAsset.storageKey,
+  source: mediaAsset.source,
+};
+
+function toSkill(row: {
+  s: typeof skill.$inferSelect;
+  category: string | null;
+  storageKey: string | null;
+  source: string | null;
+}): Skill {
   return {
-    name: row.name,
-    description: row.description,
-    icon_svg: row.iconSvg,
-    category: row.category,
+    name: row.s.name,
+    description: row.s.description,
+    icon_svg: logoUrl(row),
+    category: row.category ?? "",
   };
 }
 
 export type Award = {
-  id: number;
+  id: string;
   title: string;
   credential_url: string;
   description: string;
@@ -398,27 +558,31 @@ export type Award = {
   logo: string;
 };
 
-export async function getAwards(sortById = true): Promise<Award[]> {
+export async function getAwards(newestFirst = true): Promise<Award[]> {
   "use cache";
   cacheTag(TAGS.award, TAGS.organization);
   cacheLife("days");
 
   const rows = await db
-    .select({ a: aboutAward, org: aboutOrganization })
-    .from(aboutAward)
-    .innerJoin(aboutOrganization, eq(aboutAward.organizationId, aboutOrganization.id))
-    .orderBy(sortById ? desc(aboutAward.id) : asc(aboutAward.id));
+    .select({ a: award, org: organization, ...ORG_LOGO })
+    .from(award)
+    .innerJoin(organization, eq(award.organizationId, organization.id))
+    .leftJoin(mediaAsset, eq(mediaAsset.id, organization.logoId))
+    // Was `id desc` / `id asc`, which on this data is exactly the issue date in
+    // each direction. The parameter was named `sortById` for that reason and is
+    // named for what it means now.
+    .orderBy(newestFirst ? desc(award.issued) : asc(award.issued));
 
-  return rows.map(({ a, org }) => ({
-    id: a.id,
-    title: a.title,
-    credential_url: a.credentialUrl,
-    description: a.description,
-    issued: monthYear(a.issued),
-    issued_iso: isoMonth(a.issued),
-    institution: org.name,
-    website: org.website,
-    logo: mediaUrl(org.logo),
+  return rows.map((row) => ({
+    id: row.a.id,
+    title: row.a.title,
+    credential_url: row.a.credentialUrl,
+    description: row.a.description,
+    issued: monthYear(row.a.issued),
+    issued_iso: isoMonth(row.a.issued),
+    institution: row.org.name,
+    website: row.org.website,
+    logo: logoUrl(row),
   }));
 }
 
@@ -430,7 +594,7 @@ export type JourneyStep = {
 };
 
 export type Application = {
-  id: number;
+  id: string;
   status: string;
   company_name: string;
   position: string;
@@ -449,7 +613,26 @@ export async function getApplications(): Promise<Application[]> {
   cacheLife("days");
 
   const [apps, steps] = await Promise.all([
-    db.select().from(aboutApplication).orderBy(desc(aboutApplication.id)),
+    db
+      .select({
+        a: application,
+        company: organization.name,
+        status: applicationStatus.label,
+        employmentType: employmentType.label,
+        workMode: workMode.label,
+        source: applicationSource.label,
+        city: location.city,
+        region: location.region,
+        country: location.country,
+        flag: location.flag,
+      })
+      .from(application)
+      .innerJoin(organization, eq(organization.id, application.organizationId))
+      .leftJoin(applicationStatus, eq(applicationStatus.id, application.statusId))
+      .leftJoin(employmentType, eq(employmentType.id, application.employmentTypeId))
+      .leftJoin(workMode, eq(workMode.id, application.workModeId))
+      .leftJoin(applicationSource, eq(applicationSource.id, application.sourceId))
+      .leftJoin(location, eq(location.id, application.locationId)),
     // Ordered in SQL, and the tiebreak is deliberate.
     //
     // Django ordered these by `timestamp` alone (JourneyStep.Meta.ordering)
@@ -457,25 +640,22 @@ export async function getApplications(): Promise<Application[]> {
     // sharing a timestamp came out in whatever order Postgres happened to
     // return them -- heap order, which is not stable across a VACUUM or an
     // UPDATE that moves a tuple. Nine of the 59 multi-step applications are
-    // affected; application 50 has four steps at 2025-10-03T16:16 and Django
-    // returns them as ids 44, 43, 42, 45.
+    // affected; application 50 has four steps at 2025-10-03T16:16.
     //
-    // Adding `id` as the tiebreak keeps insertion order for simultaneous
-    // events, which is both meaningful and reproducible. This is a
-    // *behavioural* difference from Django, and the only intentional one in
-    // the data layer.
+    // The tiebreak was `id`, which kept insertion order while keys were
+    // serial. `position` carries that order now -- a uuid does not.
     // `asc` is already NULLS LAST in Postgres, which is what Django's
     // `Meta.ordering = ["timestamp"]` produced, so no raw SQL is needed here.
     db
       .select()
-      .from(aboutJourneystep)
-      .orderBy(asc(aboutJourneystep.timestamp), asc(aboutJourneystep.id)),
+      .from(applicationStep)
+      .orderBy(asc(applicationStep.occurredAt), asc(applicationStep.position)),
   ]);
 
-  const byApplication = new Map<number, JourneyStep[]>();
+  const byApplication = new Map<string, JourneyStep[]>();
   for (const step of steps) {
     const entry: JourneyStep = {
-      timestamp: step.timestamp ? new Date(step.timestamp) : null,
+      timestamp: step.occurredAt ? new Date(step.occurredAt) : null,
       title: step.title,
       details: step.details,
       notes: step.notes,
@@ -485,33 +665,45 @@ export async function getApplications(): Promise<Application[]> {
     else byApplication.set(step.applicationId, [entry]);
   }
 
-  const result: Application[] = apps.map((app) => ({
-    id: app.id,
-    status: app.status,
-    company_name: app.companyName,
-    position: app.position,
-    employment_type: app.employmentType,
-    location_type: app.locationType,
-    location: app.location,
-    applied_via: app.appliedVia,
-    salary_range: app.salaryRange,
-    // Already ordered by the query above (timestamp asc nulls last, then id),
-    // and the grouping loop below preserves that order, so there is nothing
-    // left to sort here.
-    journey: byApplication.get(app.id) ?? [],
-    lessons_learned: app.lessonsLearned,
+  const result: Application[] = apps.map((row) => ({
+    id: row.a.id,
+    status: row.status ?? "",
+    company_name: row.company,
+    position: row.a.title,
+    employment_type: row.employmentType ?? "",
+    location_type: row.workMode ?? "",
+    location: locationLabel(row),
+    applied_via: row.source,
+    salary_range: row.a.salaryRange,
+    // Already ordered by the query above (timestamp asc nulls last, then
+    // position), and the grouping loop below preserves that order, so there is
+    // nothing left to sort here.
+    journey: byApplication.get(row.a.id) ?? [],
+    lessons_learned: row.a.lessonsLearned,
   }));
 
-  // Newest activity first. An application whose steps carry no timestamps at
-  // all falls back to its id read as a unix timestamp -- odd, but it is what
-  // the Python did, and it only ever orders rows that have no dates of their
-  // own to sort by.
+  /*
+   * Newest activity first.
+   *
+   * The fallback for an application whose steps carry no timestamps at all was
+   * `id * 1000` -- its serial key read as a unix timestamp. Odd, but it was
+   * what the Python did, and it only ever ordered rows with no dates of their
+   * own. A uuid cannot stand in for a number, so those rows now sort last
+   * among themselves by company, which is at least a reason.
+   */
   const latest = (app: Application) => {
     const times = app.journey
       .map((s) => s.timestamp?.getTime())
       .filter((t): t is number => t !== undefined);
-    return times.length ? Math.max(...times) : app.id * 1000;
+    return times.length ? Math.max(...times) : null;
   };
 
-  return result.sort((a, b) => latest(b) - latest(a));
+  return result.sort((a, b) => {
+    const left = latest(a);
+    const right = latest(b);
+    if (left !== null && right !== null) return right - left;
+    if (left !== null) return -1;
+    if (right !== null) return 1;
+    return a.company_name.localeCompare(b.company_name);
+  });
 }

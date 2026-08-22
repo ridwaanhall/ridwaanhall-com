@@ -6,7 +6,7 @@ import { cache } from "react";
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db/client";
-import { authUser } from "@/lib/db/schema";
+import { account } from "@/lib/db/app-schema";
 
 /**
  * Who may use the admin.
@@ -19,17 +19,18 @@ import { authUser } from "@/lib/db/schema";
  * identity (`token.sub` is `auth_user.id`); this carries permission.
  *
  * The test is `is_active AND is_staff`, which is exactly what Django's
- * `AdminSite.has_permission` checks. `is_superuser` is read for display only --
- * there is no per-model permission matrix here, because there was none to port:
- * the live database has zero `auth_group` rows and every staff account is a
- * superuser.
+ * `AdminSite.has_permission` checked. There is no `is_superuser` any more and
+ * no permission matrix: the model dropped both in `drizzle/0005`, because the
+ * database had zero `auth_group` rows, 152 permissions nothing consulted, and
+ * every staff account flagged superuser -- a distinction that distinguished
+ * nothing.
  */
 export type StaffUser = {
-  id: number;
+  /** A uuid. */
+  id: string;
   username: string;
   fullName: string;
   email: string;
-  isSuperuser: boolean;
 };
 
 /**
@@ -51,22 +52,23 @@ export type StaffUser = {
  */
 export const getStaffUser = cache(async function getStaffUser(): Promise<StaffUser | null> {
   const session = await auth();
-  const id = Number(session?.user?.id);
-  if (!Number.isInteger(id) || id <= 0) return null;
+  // A uuid now, not an integer. The old guard parsed the subject as a number
+  // and rejected anything that was not one -- which every account id is today.
+  const id = session?.user?.id;
+  if (!id) return null;
 
   const [user] = await db
     .select({
-      id: authUser.id,
-      username: authUser.username,
-      firstName: authUser.firstName,
-      lastName: authUser.lastName,
-      email: authUser.email,
-      isStaff: authUser.isStaff,
-      isActive: authUser.isActive,
-      isSuperuser: authUser.isSuperuser,
+      id: account.id,
+      username: account.username,
+      firstName: account.firstName,
+      lastName: account.lastName,
+      email: account.email,
+      isStaff: account.isStaff,
+      isActive: account.isActive,
     })
-    .from(authUser)
-    .where(eq(authUser.id, id))
+    .from(account)
+    .where(eq(account.id, id))
     .limit(1);
 
   if (!user || !user.isActive || !user.isStaff) return null;
@@ -76,7 +78,6 @@ export const getStaffUser = cache(async function getStaffUser(): Promise<StaffUs
     username: user.username,
     fullName: `${user.firstName} ${user.lastName}`.trim() || user.username,
     email: user.email,
-    isSuperuser: user.isSuperuser,
   };
 });
 
@@ -140,8 +141,8 @@ export type StaffGate =
 
 export async function staffGate(): Promise<StaffGate> {
   const session = await auth();
-  const id = Number(session?.user?.id);
-  if (!Number.isInteger(id) || id <= 0) return { status: "anonymous" };
+  const id = session?.user?.id;
+  if (!id) return { status: "anonymous" };
 
   const user = await getStaffUser();
   if (user) return { status: "ok", user };

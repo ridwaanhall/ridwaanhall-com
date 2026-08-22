@@ -37,17 +37,21 @@ config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
+const { staffAccountId } = await import("./fixture-ids.mjs");
 const { encode } = await import("next-auth/jwt");
 const { db, pool } = await import("../lib/db/client.ts");
 const {
-  aboutApplication,
-  aboutDonatelink,
-  aboutJourneystep,
-  aboutProfileskillhighlight,
-  projectsProject,
-  projectsProjectTechStack,
-} = await import("../lib/db/schema.ts");
-const { asc, eq } = await import("drizzle-orm");
+  application,
+  applicationStatus,
+  applicationStep,
+  organization,
+  profile,
+  profileLink,
+  profileSkillHighlight,
+  project,
+  projectSkill,
+} = await import("../lib/db/app-schema.ts");
+const { and, asc, eq } = await import("drizzle-orm");
 
 const BASE = process.argv[2] ?? "http://localhost:3000";
 const COOKIE = "authjs.session-token";
@@ -59,7 +63,7 @@ const check = (name, pass, detail = "") => {
 };
 
 const token = await encode({
-  token: { sub: "1" },
+  token: { sub: await staffAccountId() },
   secret: process.env.AUTH_SECRET,
   salt: COOKIE,
   maxAge: 60 * 15,
@@ -78,8 +82,24 @@ const submit = async () => {
   await page.waitForTimeout(1600);
 };
 
-const children = async (table, parent, parentId, order) =>
-  db.select().from(table).where(eq(parent, parentId)).orderBy(asc(order));
+/**
+ * A parent's child rows, in the order the inline shows them.
+ *
+ * `scope` is what one kind-discriminated table needs: `profile_link` holds the
+ * social, CV and donate lists together and tells them apart by a `kind` column,
+ * so reading "the donate links" means the parent *and* the kind. The three
+ * social_* column sets it replaced could not be confused for each other.
+ */
+const children = async (table, parent, parentId, order, scope = null) =>
+  db
+    .select()
+    .from(table)
+    .where(scope ? and(eq(parent, parentId), eq(scope.column, scope.value)) : eq(parent, parentId))
+    .orderBy(asc(order));
+
+/** The one profile row, whose key the inlines hang off. */
+const [{ id: PROFILE_ID }] = await db.select({ id: profile.id }).from(profile).limit(1);
+const DONATE = { column: profileLink.kind, value: "donate" };
 
 let snapshotHighlights = null;
 let snapshotLinks = null;
@@ -91,16 +111,17 @@ let techStackBefore = null;
 try {
   // --- the profile's inlines survive an untouched save ----------------------
   snapshotHighlights = await children(
-    aboutProfileskillhighlight,
-    aboutProfileskillhighlight.profileId,
-    1,
-    aboutProfileskillhighlight.order,
+    profileSkillHighlight,
+    profileSkillHighlight.profileId,
+    PROFILE_ID,
+    profileSkillHighlight.position,
   );
   snapshotLinks = await children(
-    aboutDonatelink,
-    aboutDonatelink.profileId,
-    1,
-    aboutDonatelink.order,
+    profileLink,
+    profileLink.profileId,
+    PROFILE_ID,
+    profileLink.position,
+    DONATE,
   );
 
   await page.goto(`${BASE}/admin/profile`, { waitUntil: "load" });
@@ -116,16 +137,17 @@ try {
   await submit();
 
   const afterHighlights = await children(
-    aboutProfileskillhighlight,
-    aboutProfileskillhighlight.profileId,
-    1,
-    aboutProfileskillhighlight.order,
+    profileSkillHighlight,
+    profileSkillHighlight.profileId,
+    PROFILE_ID,
+    profileSkillHighlight.position,
   );
   const afterLinks = await children(
-    aboutDonatelink,
-    aboutDonatelink.profileId,
-    1,
-    aboutDonatelink.order,
+    profileLink,
+    profileLink.profileId,
+    PROFILE_ID,
+    profileLink.position,
+    DONATE,
   );
 
   check(
@@ -146,76 +168,94 @@ try {
    * the profile because that is where an ordered inline lives, and put back by
    * the restore in the `finally`.
    */
+  /*
+   * Scoped to the Donate section. `profile_link` serves three lists -- social,
+   * CV and donate -- each an inline of its own with the same item label, so
+   * "Move link 1 down" matches in more than one place. The section is how a
+   * reader tells them apart too: each is a `fieldset` with its own name.
+   */
+  const donateGroup = page.getByRole("group", { name: "Donate" });
+
   if (snapshotLinks.length >= 2) {
     await page.goto(`${BASE}/admin/profile`, { waitUntil: "load" });
     await page.waitForTimeout(1200);
-    await page.locator('button[aria-label="Move link 1 down"]').click();
+    await donateGroup.getByLabel("Move link 1 down").click();
     await submit();
 
     const moved = await children(
-      aboutDonatelink,
-      aboutDonatelink.profileId,
-      1,
-      aboutDonatelink.order,
+      profileLink,
+      profileLink.profileId,
+      PROFILE_ID,
+      profileLink.position,
+      DONATE,
     );
     check(
       "moving an ordered row rewrites the order column",
-      Number(moved[0].id) === Number(snapshotLinks[1].id) &&
-        Number(moved[1].id) === Number(snapshotLinks[0].id),
-      moved.map((row) => `${row.platform}#${row.order}`).join(", "),
+      String(moved[0].id) === String(snapshotLinks[1].id) &&
+        String(moved[1].id) === String(snapshotLinks[0].id),
+      moved.map((row) => `${row.platform}#${row.position}`).join(", "),
     );
     check(
       "and the order column is a clean 0..n-1 rather than the old values",
-      moved.every((row, index) => Number(row.order) === index),
-      moved.map((row) => row.order).join(","),
+      moved.every((row, index) => Number(row.position) === index),
+      moved.map((row) => row.position).join(","),
     );
     check(
       "without recreating anything -- the same ids come back",
-      new Set(moved.map((row) => Number(row.id))).size === snapshotLinks.length &&
-        moved.every((row) => snapshotLinks.some((was) => Number(was.id) === Number(row.id))),
+      new Set(moved.map((row) => String(row.id))).size === snapshotLinks.length &&
+        moved.every((row) => snapshotLinks.some((was) => String(was.id) === String(row.id))),
     );
 
     // Put them back through the form as well, so the restore below has nothing
     // to do and the round trip is proven in both directions.
     await page.goto(`${BASE}/admin/profile`, { waitUntil: "load" });
     await page.waitForTimeout(1200);
-    await page.locator('button[aria-label="Move link 1 down"]').click();
+    await donateGroup.getByLabel("Move link 1 down").click();
     await submit();
   }
 
   // --- add, reorder and remove, on a record this script owns ----------------
+  /*
+   * The company, the status, the employment type and the work mode were free
+   * text on this row and are foreign keys now, so the fixture is assembled from
+   * rows that exist rather than from strings.
+   */
+  const [anyOrganization] = await db.select({ id: organization.id }).from(organization).limit(1);
+  const [applied] = await db
+    .select({ id: applicationStatus.id, label: applicationStatus.label })
+    .from(applicationStatus)
+    .orderBy(asc(applicationStatus.position))
+    .limit(1);
+
   const [created] = await db
-    .insert(aboutApplication)
+    .insert(application)
     .values({
-      status: "Applied",
-      companyName: "zz-inline-check",
-      position: "Checker",
-      employmentType: "Full-time",
-      locationType: "Remote",
-      location: "",
+      organizationId: anyOrganization.id,
+      statusId: applied.id,
+      title: "zz-inline-check",
       lessonsLearned: "",
     })
-    .returning({ id: aboutApplication.id });
+    .returning({ id: application.id });
   applicationId = created.id;
 
   // A record created with a child row in the same submit: the inline carries the
   // parent's id, which does not exist until the parent insert returns.
   await page.goto(`${BASE}/admin/application/new`, { waitUntil: "load" });
   await page.waitForTimeout(1000);
-  await page.locator('input[name="companyName"]').fill("zz-inline-check-created");
-  await page.locator('input[name="position"]').fill("Checker");
-  await page.locator('select[name="status"]').selectOption("Applied");
+  await page.locator('select[name="organizationId"]').selectOption(anyOrganization.id);
+  await page.locator('input[name="position"]').fill("zz-inline-check-created");
+  await page.locator('select[name="statusId"]').selectOption(applied.id);
   await page.locator('button:has-text("Add step")').click();
   await page.locator('input[name="journey:0:title"]').fill("Created with the parent");
   await submit();
 
   const [born] = await db
-    .select({ id: aboutApplication.id })
-    .from(aboutApplication)
-    .where(eq(aboutApplication.companyName, "zz-inline-check-created"));
+    .select({ id: application.id })
+    .from(application)
+    .where(eq(application.title, "zz-inline-check-created"));
   if (born) createdApplications.push(born.id);
   const bornSteps = born
-    ? await children(aboutJourneystep, aboutJourneystep.applicationId, born.id, aboutJourneystep.id)
+    ? await children(applicationStep, applicationStep.applicationId, born.id, applicationStep.position)
     : [];
   check(
     "a child row created alongside a brand new parent is attached to it",
@@ -236,10 +276,10 @@ try {
   await submit();
 
   const added = await children(
-    aboutJourneystep,
-    aboutJourneystep.applicationId,
+    applicationStep,
+    applicationStep.applicationId,
     applicationId,
-    aboutJourneystep.id,
+    applicationStep.position,
   );
   check(
     "three added rows are inserted",
@@ -259,24 +299,24 @@ try {
   );
 
   // --- remove the middle row, and check it is matched by id -----------------
-  const ids = added.map((row) => Number(row.id));
+  const ids = added.map((row) => String(row.id));
   await page.locator('button[aria-label="Remove step 2"]').click();
   await submit();
 
   const remaining = await children(
-    aboutJourneystep,
-    aboutJourneystep.applicationId,
+    applicationStep,
+    applicationStep.applicationId,
     applicationId,
-    aboutJourneystep.id,
+    applicationStep.position,
   );
   check(
     "removing the middle row deletes exactly that row",
-    remaining.length === 2 && remaining.map((row) => Number(row.id)).join(",") === `${ids[0]},${ids[2]}`,
+    remaining.length === 2 && remaining.map((row) => String(row.id)).join(",") === `${ids[0]},${ids[2]}`,
     remaining.map((row) => row.title).join(", "),
   );
   check(
     "and the rows either side keep their ids, so they were updated not recreated",
-    Number(remaining[0].id) === ids[0] && Number(remaining[1].id) === ids[2],
+    String(remaining[0].id) === ids[0] && String(remaining[1].id) === ids[2],
   );
 
   // --- editing a surviving row ---------------------------------------------
@@ -286,14 +326,14 @@ try {
   await submit();
 
   const [edited] = await children(
-    aboutJourneystep,
-    aboutJourneystep.applicationId,
+    applicationStep,
+    applicationStep.applicationId,
     applicationId,
-    aboutJourneystep.id,
+    applicationStep.position,
   );
   check(
     "editing a row updates it in place",
-    edited.title === "Applied online" && Number(edited.id) === ids[0],
+    edited.title === "Applied online" && String(edited.id) === ids[0],
     `#${edited.id} ${edited.title}`,
   );
 
@@ -307,10 +347,10 @@ try {
   await submit();
 
   const cleared = await children(
-    aboutJourneystep,
-    aboutJourneystep.applicationId,
+    applicationStep,
+    applicationStep.applicationId,
     applicationId,
-    aboutJourneystep.id,
+    applicationStep.position,
   );
   check("removing every row leaves none behind", cleared.length === 0);
 
@@ -322,10 +362,10 @@ try {
   await submit();
 
   const before = await children(
-    aboutJourneystep,
-    aboutJourneystep.applicationId,
+    applicationStep,
+    applicationStep.applicationId,
     applicationId,
-    aboutJourneystep.id,
+    applicationStep.position,
   );
   check("the parent has a child again", before.length === 1);
 
@@ -337,14 +377,14 @@ try {
   await page.waitForTimeout(2000);
 
   const parentGone = await db
-    .select({ id: aboutApplication.id })
-    .from(aboutApplication)
-    .where(eq(aboutApplication.id, applicationId));
+    .select({ id: application.id })
+    .from(application)
+    .where(eq(application.id, applicationId));
   const childGone = await children(
-    aboutJourneystep,
-    aboutJourneystep.applicationId,
+    applicationStep,
+    applicationStep.applicationId,
     applicationId,
-    aboutJourneystep.id,
+    applicationStep.position,
   );
   check(
     "deleting the parent takes its children with it",
@@ -359,20 +399,20 @@ try {
    * beyond membership -- which is exactly why saving it deletes and re-inserts
    * rather than diffing, and why `Profile.skills_highlight` could not.
    */
-  const [project] = await db
-    .select({ id: projectsProject.id })
-    .from(projectsProject)
-    .orderBy(asc(projectsProject.id))
+  const [anyProject] = await db
+    .select({ id: project.id })
+    .from(project)
+    .orderBy(asc(project.id))
     .limit(1);
-  techStackProject = project.id;
+  techStackProject = anyProject.id;
   techStackBefore = (
     await db
-      .select({ skillId: projectsProjectTechStack.skillId })
-      .from(projectsProjectTechStack)
-      .where(eq(projectsProjectTechStack.projectId, project.id))
-  ).map((row) => Number(row.skillId));
+      .select({ skillId: projectSkill.skillId })
+      .from(projectSkill)
+      .where(eq(projectSkill.projectId, anyProject.id))
+  ).map((row) => String(row.skillId));
 
-  await page.goto(`${BASE}/admin/project/${project.id}`, { waitUntil: "load" });
+  await page.goto(`${BASE}/admin/project/${anyProject.id}`, { waitUntil: "load" });
   await page.waitForTimeout(1600);
   const ticked = await page.locator('input[name="techStack"]:checked').count();
   check(
@@ -383,16 +423,16 @@ try {
 
   // Tick one more and save.
   const unticked = page.locator('input[name="techStack"]:not(:checked)').first();
-  const addedSkill = Number(await unticked.getAttribute("value"));
+  const addedSkill = await unticked.getAttribute("value");
   await unticked.check();
   await submit();
 
   const afterAdd = (
     await db
-      .select({ skillId: projectsProjectTechStack.skillId })
-      .from(projectsProjectTechStack)
-      .where(eq(projectsProjectTechStack.projectId, project.id))
-  ).map((row) => Number(row.skillId));
+      .select({ skillId: projectSkill.skillId })
+      .from(projectSkill)
+      .where(eq(projectSkill.projectId, anyProject.id))
+  ).map((row) => String(row.skillId));
   check(
     "ticking a skill writes one row to the join table",
     afterAdd.length === techStackBefore.length + 1 && afterAdd.includes(addedSkill),
@@ -403,54 +443,78 @@ try {
     techStackBefore.every((id) => afterAdd.includes(id)),
   );
 
-  // --- the guestbook's own delete, proved without writing anything ----------
+  // --- referential actions, proved without writing anything ----------------
   /*
-   * The same discovery, in the code that shipped in phase 2 with a comment
-   * claiming `reply_to` cascaded in Postgres. It does not. Rather than posting
-   * a real message to check, this runs the statement the action now issues
-   * against a message that genuinely has replies, forces the deferred
-   * constraints to be checked, and rolls the whole thing back.
+   * Django's `on_delete` was Python: it gathered the related rows and deleted
+   * them itself, and every foreign key it left in Postgres was `NO ACTION`
+   * `DEFERRABLE INITIALLY DEFERRED`. Deleting a guestbook message with replies
+   * was refused by the database, and the application had to walk the branch
+   * first -- with the refusal hiding from anything that rolled back, because a
+   * deferred check never runs.
+   *
+   * The `app` schema declares the actions instead: cascade where the child has
+   * no meaning without its parent, set null where it does, restrict where the
+   * reference is somebody else's. Nothing is deferrable, so a violation is
+   * raised by the statement that caused it rather than at commit.
+   *
+   * Both halves are checked here, in a transaction that is rolled back.
    */
   const client = await pool.connect();
   try {
     await client.query("begin");
+
     const { rows: parents } = await client.query(
-      "select reply_to_id id from guestbook_chatmessage where reply_to_id is not null limit 1",
+      "select reply_to_id id from app.guest_message where reply_to_id is not null limit 1",
     );
     if (parents.length > 0) {
-      const target = Number(parents[0].id);
-
-      await client.query("savepoint naive");
-      let naiveFailed = false;
-      try {
-        await client.query("delete from guestbook_chatmessage where id = $1", [target]);
-        await client.query("set constraints all immediate");
-      } catch {
-        naiveFailed = true;
-      }
-      await client.query("rollback to savepoint naive");
-      check(
-        "deleting a message with replies by id alone is refused by Postgres",
-        naiveFailed,
-        `message #${target}`,
+      const target = parents[0].id;
+      const { rows: kids } = await client.query(
+        "select count(*)::int n from app.guest_message where reply_to_id = $1",
+        [target],
       );
 
-      let branchWorked = true;
+      await client.query("savepoint cascade_check");
+      let cascaded = true;
       try {
-        await client.query(
-          `with recursive branch as (
-             select id from guestbook_chatmessage where id = $1
-             union all
-             select reply.id from guestbook_chatmessage reply join branch on reply.reply_to_id = branch.id
-           )
-           delete from guestbook_chatmessage where id in (select id from branch)`,
+        await client.query("delete from app.guest_message where id = $1", [target]);
+        const { rows: left } = await client.query(
+          "select count(*)::int n from app.guest_message where reply_to_id = $1",
           [target],
         );
-        await client.query("set constraints all immediate");
+        cascaded = left[0].n === 0;
       } catch {
-        branchWorked = false;
+        cascaded = false;
       }
-      check("gathering the branch first succeeds, which is what the action now does", branchWorked);
+      await client.query("rollback to savepoint cascade_check");
+      check(
+        "deleting a message takes its replies with it, in the database",
+        cascaded,
+        `${kids[0].n} repl${kids[0].n === 1 ? "y" : "ies"} of ${target}`,
+      );
+    }
+
+    /*
+     * The other half. An organization an experience still names is not the
+     * experience's to remove, which is Django's `PROTECT` and the behaviour the
+     * admin surfaces as "something still refers to this record".
+     */
+    const { rows: used } = await client.query(
+      "select organization_id id from app.experience limit 1",
+    );
+    if (used.length > 0) {
+      await client.query("savepoint restrict_check");
+      let refused = false;
+      try {
+        await client.query("delete from app.organization where id = $1", [used[0].id]);
+      } catch {
+        refused = true;
+      }
+      await client.query("rollback to savepoint restrict_check");
+      check(
+        "an organization an experience still names cannot be deleted",
+        refused,
+        `organization ${used[0].id}`,
+      );
     }
   } finally {
     await client.query("rollback").catch(() => {});
@@ -463,26 +527,26 @@ try {
     // plain parent delete raises a violation. This is the same thing the app's
     // own `deleteWithChildren` does, spelled out because a cleanup that leaned
     // on the app would stop being a cleanup the moment the app broke.
-    await db.delete(aboutJourneystep).where(eq(aboutJourneystep.applicationId, id));
-    await db.delete(aboutApplication).where(eq(aboutApplication.id, id));
+    await db.delete(applicationStep).where(eq(applicationStep.applicationId, id));
+    await db.delete(application).where(eq(application.id, id));
     console.log(`  ..    cleaned up application #${id}`);
   }
 
   if (techStackProject !== null && techStackBefore !== null) {
     await db
-      .delete(projectsProjectTechStack)
-      .where(eq(projectsProjectTechStack.projectId, techStackProject));
+      .delete(projectSkill)
+      .where(eq(projectSkill.projectId, techStackProject));
     for (const skillId of techStackBefore) {
       await db
-        .insert(projectsProjectTechStack)
+        .insert(projectSkill)
         .values({ projectId: techStackProject, skillId });
     }
     const now = (
       await db
-        .select({ skillId: projectsProjectTechStack.skillId })
-        .from(projectsProjectTechStack)
-        .where(eq(projectsProjectTechStack.projectId, techStackProject))
-    ).map((row) => Number(row.skillId));
+        .select({ skillId: projectSkill.skillId })
+        .from(projectSkill)
+        .where(eq(projectSkill.projectId, techStackProject))
+    ).map((row) => String(row.skillId));
     check(
       "the project's tech stack is back as it was found",
       now.length === techStackBefore.length && techStackBefore.every((id) => now.includes(id)),
@@ -492,16 +556,17 @@ try {
 
   if (snapshotHighlights && snapshotLinks) {
     const nowHighlights = await children(
-      aboutProfileskillhighlight,
-      aboutProfileskillhighlight.profileId,
-      1,
-      aboutProfileskillhighlight.order,
+      profileSkillHighlight,
+      profileSkillHighlight.profileId,
+      PROFILE_ID,
+      profileSkillHighlight.position,
     );
     const nowLinks = await children(
-      aboutDonatelink,
-      aboutDonatelink.profileId,
-      1,
-      aboutDonatelink.order,
+      profileLink,
+      profileLink.profileId,
+      PROFILE_ID,
+      profileLink.position,
+      DONATE,
     );
     check(
       "the profile's own child rows are exactly as they were found",

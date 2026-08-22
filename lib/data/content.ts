@@ -3,15 +3,21 @@ import { cacheLife, cacheTag } from "next/cache";
 
 import { db } from "@/lib/db/client";
 import {
-  aboutSkill,
-  blogBlogimage,
-  blogBlogpost,
-  projectsFeature,
-  projectsProject,
-  projectsProjectTechStack,
-  projectsProjectimage,
-} from "@/lib/db/schema";
-import { mediaUrl } from "@/lib/storage/media";
+  blogImage,
+  blogPost,
+  blogTag,
+  category,
+  mediaAsset,
+  project,
+  projectFeature,
+  projectImage,
+  projectSkill,
+  projectStatus,
+  projectTag,
+  skill,
+  tag,
+} from "@/lib/db/app-schema";
+import { assetUrl } from "@/lib/storage/media";
 import { plainText } from "@/lib/utils/plain-text";
 
 import type { Skill } from "./about";
@@ -57,7 +63,8 @@ function withImageCompat<T extends ImageCompat>(data: T): T {
 }
 
 export type BlogPost = ImageCompat & {
-  id: number;
+  /** A uuid. Sequential ids leaked how much of a thing existed; see drizzle/0005. */
+  id: string;
   title: string;
   slug: string;
   description: string;
@@ -78,7 +85,8 @@ export type BlogPost = ImageCompat & {
 export type ProjectFeature = { title: string; description: string };
 
 export type Project = ImageCompat & {
-  id: number;
+  /** A uuid, as everywhere else. */
+  id: string;
   title: string;
   slug: string;
   headline: string;
@@ -119,30 +127,71 @@ export async function getBlogs(): Promise<BlogPost[]> {
   cacheTag(TAGS.blog);
   cacheLife("days");
 
-  const [posts, images] = await Promise.all([
+  const [posts, images, tagRows] = await Promise.all([
     db
-      .select()
-      .from(blogBlogpost)
-      .orderBy(desc(blogBlogpost.createdAt), desc(blogBlogpost.id)),
-    db.select().from(blogBlogimage).orderBy(asc(blogBlogimage.order), asc(blogBlogimage.id)),
+      .select({
+        id: blogPost.id,
+        title: blogPost.title,
+        slug: blogPost.slug,
+        description: blogPost.description,
+        contentHtml: blogPost.contentHtml,
+        authorName: blogPost.authorName,
+        authorUsername: blogPost.authorUsername,
+        isFeatured: blogPost.isFeatured,
+        readTime: blogPost.readTime,
+        views: blogPost.views,
+        publishedAt: blogPost.publishedAt,
+        updatedAt: blogPost.updatedAt,
+        category: category.label,
+        authorImageKey: mediaAsset.storageKey,
+        authorImageSource: mediaAsset.source,
+      })
+      .from(blogPost)
+      .leftJoin(category, eq(category.id, blogPost.categoryId))
+      .leftJoin(mediaAsset, eq(mediaAsset.id, blogPost.authorImageId))
+      .orderBy(desc(blogPost.publishedAt), desc(blogPost.id)),
+    db
+      .select({
+        postId: blogImage.postId,
+        storageKey: mediaAsset.storageKey,
+        source: mediaAsset.source,
+        originalFilename: mediaAsset.originalFilename,
+      })
+      .from(blogImage)
+      .innerJoin(mediaAsset, eq(mediaAsset.id, blogImage.mediaId))
+      .orderBy(asc(blogImage.position)),
+    // Tags are rows now rather than a JSONB array on the post, so the label a
+    // reader sees is the one canonical form -- `Python` and `python` were two
+    // tags before, and a filter on one missed the other.
+    db
+      .select({ postId: blogTag.postId, label: tag.label })
+      .from(blogTag)
+      .innerJoin(tag, eq(tag.id, blogTag.tagId))
+      .orderBy(asc(blogTag.position)),
   ]);
 
-  const imagesByPost = groupImages(images, (row) => row.blogId);
+  const imagesByPost = groupAssets(images, (row) => row.postId);
+  const tagsByPost = collect(tagRows, (row) => row.postId, (row) => row.label);
+
   return posts.map((post) =>
     withImageCompat<BlogPost>({
       id: post.id,
       title: post.title,
       slug: post.slug,
       description: post.description,
-      author: post.author,
-      username: post.username,
-      author_image: mediaUrl(post.authorImage),
+      author: post.authorName,
+      username: post.authorUsername,
+      author_image: assetUrl(
+        post.authorImageKey
+          ? { storageKey: post.authorImageKey, source: post.authorImageSource ?? "storage" }
+          : null,
+      ),
       images: imagesByPost.get(post.id) ?? {},
-      created_at: new Date(post.createdAt),
+      created_at: new Date(post.publishedAt),
       updated_at: new Date(post.updatedAt),
-      content_html: post.contentHtml ?? "",
-      tags: (post.tags ?? []) as string[],
-      category: post.category,
+      content_html: post.contentHtml,
+      tags: tagsByPost.get(post.id) ?? [],
+      category: post.category ?? "",
       is_featured: post.isFeatured,
       read_time: post.readTime,
       views: post.views,
@@ -164,76 +213,133 @@ export async function getProjects(): Promise<Project[]> {
   cacheTag(TAGS.project, TAGS.skill);
   cacheLife("days");
 
-  const [projects, images, features, techStack] = await Promise.all([
-    db.select().from(projectsProject).orderBy(asc(projectsProject.id)),
+  const [projects, images, features, techStack, tagRows] = await Promise.all([
     db
-      .select()
-      .from(projectsProjectimage)
-      .orderBy(asc(projectsProjectimage.order), asc(projectsProjectimage.id)),
-    db.select().from(projectsFeature).orderBy(asc(projectsFeature.order), asc(projectsFeature.id)),
+      .select({
+        id: project.id,
+        title: project.title,
+        slug: project.slug,
+        headline: project.headline,
+        descriptionHtml: project.descriptionHtml,
+        githubUrl: project.githubUrl,
+        demoUrl: project.demoUrl,
+        isFeatured: project.isFeatured,
+        featuredPriority: project.featuredPriority,
+        createdAt: project.createdAt,
+        updatedAt: project.updatedAt,
+        category: category.label,
+        status: projectStatus.slug,
+      })
+      .from(project)
+      .leftJoin(category, eq(category.id, project.categoryId))
+      .leftJoin(projectStatus, eq(projectStatus.id, project.statusId))
+      .orderBy(asc(project.createdAt), asc(project.id)),
     db
-      .select({ projectId: projectsProjectTechStack.projectId, skill: aboutSkill })
-      .from(projectsProjectTechStack)
-      .innerJoin(aboutSkill, eq(projectsProjectTechStack.skillId, aboutSkill.id))
-      .orderBy(asc(aboutSkill.id)),
+      .select({
+        projectId: projectImage.projectId,
+        storageKey: mediaAsset.storageKey,
+        source: mediaAsset.source,
+        originalFilename: mediaAsset.originalFilename,
+      })
+      .from(projectImage)
+      .innerJoin(mediaAsset, eq(mediaAsset.id, projectImage.mediaId))
+      .orderBy(asc(projectImage.position)),
+    db
+      .select({
+        projectId: projectFeature.projectId,
+        title: projectFeature.title,
+        description: projectFeature.description,
+      })
+      .from(projectFeature)
+      .orderBy(asc(projectFeature.position)),
+    db
+      .select({
+        projectId: projectSkill.projectId,
+        name: skill.name,
+        description: skill.description,
+        category: category.label,
+        iconKey: mediaAsset.storageKey,
+        iconSource: mediaAsset.source,
+      })
+      .from(projectSkill)
+      .innerJoin(skill, eq(skill.id, projectSkill.skillId))
+      .leftJoin(category, eq(category.id, skill.categoryId))
+      .leftJoin(mediaAsset, eq(mediaAsset.id, skill.iconId))
+      .orderBy(asc(projectSkill.position)),
+    db
+      .select({ projectId: projectTag.projectId, label: tag.label })
+      .from(projectTag)
+      .innerJoin(tag, eq(tag.id, projectTag.tagId))
+      .orderBy(asc(projectTag.position)),
   ]);
 
-  const imagesByProject = groupImages(images, (row) => row.projectId);
+  const imagesByProject = groupAssets(images, (row) => row.projectId);
+  const tagsByProject = collect(tagRows, (row) => row.projectId, (row) => row.label);
+  const featuresByProject = collect(features, (row) => row.projectId, (row) => ({
+    title: row.title,
+    description: row.description,
+  }));
+  const skillsByProject = collect(techStack, (row) => row.projectId, (row) => ({
+    name: row.name,
+    description: row.description,
+    // The icon is a media asset now, so a bundled SVG and an uploaded file
+    // resolve through one function -- see `assetUrl`.
+    icon_svg: assetUrl(row.iconKey ? { storageKey: row.iconKey, source: row.iconSource ?? "static" } : null),
+    category: row.category ?? "",
+  }));
 
-  const featuresByProject = new Map<number, ProjectFeature[]>();
-  for (const feature of features) {
-    const entry = { title: feature.title, description: feature.description };
-    const bucket = featuresByProject.get(feature.projectId);
-    if (bucket) bucket.push(entry);
-    else featuresByProject.set(feature.projectId, [entry]);
-  }
-
-  const skillsByProject = new Map<number, Skill[]>();
-  for (const { projectId, skill } of techStack) {
-    const entry: Skill = {
-      name: skill.name,
-      description: skill.description,
-      icon_svg: skill.iconSvg,
-      category: skill.category,
-    };
-    const bucket = skillsByProject.get(projectId);
-    if (bucket) bucket.push(entry);
-    else skillsByProject.set(projectId, [entry]);
-  }
-
-  return projects.map((project) =>
+  return projects.map((row) =>
     withImageCompat<Project>({
-      id: project.id,
-      title: project.title,
-      slug: project.slug,
-      headline: project.headline,
-      description_html: project.descriptionHtml ?? "",
-      features: featuresByProject.get(project.id) ?? [],
-      images: imagesByProject.get(project.id) ?? {},
-      tech_stack: skillsByProject.get(project.id) ?? [],
-      github_url: project.githubUrl,
-      demo_url: project.demoUrl,
-      category: project.category,
-      tags: (project.tags ?? []) as string[],
-      is_featured: project.isFeatured,
-      featured_priority: project.featuredPriority,
-      status: project.status,
-      created_at: project.createdAt ? new Date(project.createdAt) : null,
-      updated_at: project.updatedAt ? new Date(project.updatedAt) : null,
+      id: row.id,
+      title: row.title,
+      slug: row.slug,
+      headline: row.headline,
+      description_html: row.descriptionHtml,
+      features: featuresByProject.get(row.id) ?? [],
+      images: imagesByProject.get(row.id) ?? {},
+      tech_stack: skillsByProject.get(row.id) ?? [],
+      github_url: row.githubUrl,
+      demo_url: row.demoUrl,
+      category: row.category ?? "",
+      tags: tagsByProject.get(row.id) ?? [],
+      is_featured: row.isFeatured,
+      featured_priority: row.featuredPriority,
+      status: row.status ?? "",
+      created_at: row.createdAt ? new Date(row.createdAt) : null,
+      updated_at: row.updatedAt ? new Date(row.updatedAt) : null,
     }),
   );
 }
 
-function groupImages<T extends { image: string; originalFilename: string }>(
-  rows: T[],
-  ownerId: (row: T) => number,
-): Map<number, Record<string, string>> {
-  const grouped = new Map<number, Record<string, string>>();
+/**
+ * Group child rows under their owner's id, in the order they arrived.
+ *
+ * Every read path here fans out with `Promise.all` and stitches the children
+ * back together in memory rather than issuing a query per parent -- the same
+ * shape the old `select_related`/`prefetch_related` pair produced, without the
+ * N+1 that a naive port would have had.
+ */
+function collect<T, V>(rows: T[], ownerId: (row: T) => string, value: (row: T) => V): Map<string, V[]> {
+  const grouped = new Map<string, V[]>();
   for (const row of rows) {
-    if (!row.image) continue;
+    const owner = ownerId(row);
+    const bucket = grouped.get(owner);
+    if (bucket) bucket.push(value(row));
+    else grouped.set(owner, [value(row)]);
+  }
+  return grouped;
+}
+
+function groupAssets<T extends { storageKey: string; source: string; originalFilename: string }>(
+  rows: T[],
+  ownerId: (row: T) => string,
+): Map<string, Record<string, string>> {
+  const grouped = new Map<string, Record<string, string>>();
+  for (const row of rows) {
+    if (!row.storageKey) continue;
     const owner = ownerId(row);
     const bucket = grouped.get(owner) ?? {};
-    bucket[row.originalFilename] = mediaUrl(row.image);
+    bucket[row.originalFilename] = assetUrl(row);
     grouped.set(owner, bucket);
   }
   return grouped;
@@ -385,9 +491,9 @@ export function findBySlug<T extends { slug: string }>(items: T[], slug: string)
  * constantly. The counter is allowed to lag by up to the cache lifetime, which
  * is exactly the trade-off `CONTENT_CACHE_TTL` covered before.
  */
-export async function incrementBlogViews(id: number): Promise<void> {
+export async function incrementBlogViews(id: string): Promise<void> {
   await db
-    .update(blogBlogpost)
-    .set({ views: sql`${blogBlogpost.views} + 1` })
-    .where(eq(blogBlogpost.id, id));
+    .update(blogPost)
+    .set({ views: sql`${blogPost.views} + 1` })
+    .where(eq(blogPost.id, id));
 }

@@ -29,7 +29,12 @@ import {
   legalSectionForm,
   legalSectionList,
 } from "@/lib/admin/models/legal";
-import { hiringProfileForm, openToWorkProfileForm } from "@/lib/admin/models/openhire";
+import {
+  hiringProfileForm,
+  jobOpeningForm,
+  jobOpeningList,
+  openToWorkProfileForm,
+} from "@/lib/admin/models/openhire";
 import { projectForm, projectList } from "@/lib/admin/models/projects";
 import { userForm, userList } from "@/lib/admin/models/users";
 
@@ -69,6 +74,8 @@ const MODELS: AdminListModel<never>[] = [
   blogPostList,
   // projects
   projectList,
+  // openhire
+  jobOpeningList,
   // legal
   legalDocumentList,
   legalSectionList,
@@ -112,6 +119,7 @@ const FORMS: AdminFormModel[] = [
   projectForm,
   // openhire
   hiringProfileForm,
+  jobOpeningForm,
   openToWorkProfileForm,
   // legal
   legalDocumentForm,

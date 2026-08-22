@@ -10,7 +10,7 @@ import {
 } from "@/lib/email/render";
 import { ownerEmails, sendEmail } from "@/lib/email/send";
 import { db } from "@/lib/db/client";
-import { guestbookChatmessage } from "@/lib/db/schema";
+import { guestMessage } from "@/lib/db/app-schema";
 
 /**
  * The emails a new guestbook message sends.
@@ -59,18 +59,18 @@ function guestbookUrl(): string {
   return `${base}/guestbook/`;
 }
 
-export async function notifyNewGuestbookMessage(messageId: number): Promise<void> {
+export async function notifyNewGuestbookMessage(messageId: string): Promise<void> {
   try {
     const [row] = await db
       .select({
-        id: guestbookChatmessage.id,
-        message: guestbookChatmessage.message,
-        timestamp: guestbookChatmessage.timestamp,
-        userId: guestbookChatmessage.userId,
-        replyToId: guestbookChatmessage.replyToId,
+        id: guestMessage.id,
+        message: guestMessage.body,
+        timestamp: guestMessage.postedAt,
+        userId: guestMessage.accountId,
+        replyToId: guestMessage.replyToId,
       })
-      .from(guestbookChatmessage)
-      .where(eq(guestbookChatmessage.id, messageId))
+      .from(guestMessage)
+      .where(eq(guestMessage.id, messageId))
       .limit(1);
 
     if (!row) return;
@@ -79,11 +79,11 @@ export async function notifyNewGuestbookMessage(messageId: number): Promise<void
       ? (
           await db
             .select({
-              message: guestbookChatmessage.message,
-              userId: guestbookChatmessage.userId,
+              message: guestMessage.body,
+              userId: guestMessage.accountId,
             })
-            .from(guestbookChatmessage)
-            .where(eq(guestbookChatmessage.id, row.replyToId))
+            .from(guestMessage)
+            .where(eq(guestMessage.id, row.replyToId))
             .limit(1)
         )[0]
       : undefined;

@@ -1,19 +1,35 @@
-import { PROJECT_STATUS_CHOICES } from "@/lib/admin/choices";
+import { lookupOr } from "@/lib/admin/sql";
 import {
-  aboutSkill,
-  projectsFeature,
-  projectsProject,
-  projectsProjectimage,
-  projectsProjectTechStack,
-} from "@/lib/db/schema";
-import { projectStatusDisplay } from "@/lib/data/project-status";
+  category,
+  project,
+  projectFeature,
+  projectImage,
+  projectSkill,
+  projectStatus,
+  projectTag,
+  skill,
+  tag,
+} from "@/lib/db/app-schema";
 
 import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
-/** `ProjectAdmin` in `apps/projects/admin.py`. */
+/**
+ * `ProjectAdmin` in `apps/projects/admin.py`.
+ *
+ * Status, category and tags used to be strings on the row: a status key the
+ * cards translated through a hard-coded map, a `category` varchar holding 55
+ * values for 64 projects (most of them comma-separated tag lists), and a JSONB
+ * array of tags where `Python` and `python` were different tags. All three are
+ * rows now, so the label a reader sees and the value the admin offers come from
+ * the same place.
+ */
+
+/** The status and category labels, read through their foreign key. */
+const statusLabel = lookupOr(projectStatus.label, projectStatus.id, project.statusId, "");
+const categoryLabel = lookupOr(category.label, category.id, project.categoryId, "");
 export type ProjectRow = {
-  id: number;
+  id: string;
   title: string;
   slug: string;
   status: string;
@@ -23,41 +39,40 @@ export type ProjectRow = {
 
 export const projectList: AdminListModel<ProjectRow> = {
   key: "project",
-  from: projectsProject,
-  pk: projectsProject.id,
+  from: project,
+  pk: project.id,
   select: {
-    id: projectsProject.id,
-    title: projectsProject.title,
-    slug: projectsProject.slug,
-    status: projectsProject.status,
-    isFeatured: projectsProject.isFeatured,
-    featuredPriority: projectsProject.featuredPriority,
+    id: project.id,
+    title: project.title,
+    slug: project.slug,
+    status: statusLabel,
+    isFeatured: project.isFeatured,
+    featuredPriority: project.featuredPriority,
   },
   columns: [
-    { key: "title", label: "Title", sort: projectsProject.title, value: (row) => row.title },
-    { key: "slug", label: "Slug", kind: "code", sort: projectsProject.slug, value: (row) => row.slug },
+    { key: "title", label: "Title", sort: project.title, value: (row) => row.title },
+    { key: "slug", label: "Slug", kind: "code", sort: project.slug, value: (row) => row.slug },
     {
       key: "status",
       label: "Status",
       kind: "muted",
-      sort: projectsProject.status,
-      // The column stores a key (`development_in_progress`); the cards show a
-      // label ("In Development"). The admin shows the label too, from the same
-      // map, so the two surfaces cannot disagree about what a status is called.
-      value: (row) => projectStatusDisplay(row.status),
+      sort: statusLabel,
+      // The label comes from `project_status`, which is the same row the cards
+      // read -- there is no map to keep in step any more.
+      value: (row) => row.status,
     },
     {
       key: "is_featured",
       label: "Featured",
       kind: "bool",
-      sort: projectsProject.isFeatured,
+      sort: project.isFeatured,
       value: (row) => row.isFeatured,
     },
     {
       key: "featured_priority",
       label: "Priority",
       kind: "number",
-      sort: projectsProject.featuredPriority,
+      sort: project.featuredPriority,
       value: (row) => row.featuredPriority,
     },
   ],
@@ -66,13 +81,13 @@ export const projectList: AdminListModel<ProjectRow> = {
       key: "status",
       label: "Status",
       kind: "choice",
-      column: projectsProject.status,
-      choices: PROJECT_STATUS_CHOICES,
+      column: project.statusId,
+      choices: { table: projectStatus, value: projectStatus.id, label: projectStatus.label },
     },
-    { key: "is_featured", label: "Featured", kind: "boolean", column: projectsProject.isFeatured },
+    { key: "is_featured", label: "Featured", kind: "boolean", column: project.isFeatured },
   ],
   search: {
-    fields: [projectsProject.title, projectsProject.headline, projectsProject.category],
+    fields: [project.title, project.headline, categoryLabel],
     placeholder: "Search title, headline or category",
   },
   // `ordering = ["id"]` on the model. 64 rows is past the point of scrolling for
@@ -83,19 +98,21 @@ export const projectList: AdminListModel<ProjectRow> = {
 
 export const projectForm: AdminFormModel = {
   key: "project",
-  from: projectsProject,
-  pk: projectsProject.id,
+  from: project,
+  pk: project.id,
   label: (values) => String(values.title ?? "Project"),
   deleteWarning: "The features, the gallery and the tech-stack links go with it.",
   cascades: [
-    { table: projectsProjectTechStack, fk: projectsProjectTechStack.projectId, pk: projectsProjectTechStack.id },
+    // The join table is keyed by its pair of foreign keys, so its own
+    // `projectId` is what a cascade deletes by.
+    { table: projectSkill, fk: projectSkill.projectId, pk: projectSkill.projectId },
   ],
   fieldsets: [
     {
       fields: [
         {
           name: "title",
-          column: projectsProject.title,
+          column: project.title,
           label: "Title",
           kind: "text",
           required: true,
@@ -103,7 +120,7 @@ export const projectForm: AdminFormModel = {
         },
         {
           name: "slug",
-          column: projectsProject.slug,
+          column: project.slug,
           label: "Slug",
           kind: "slug",
           maxLength: 255,
@@ -112,34 +129,38 @@ export const projectForm: AdminFormModel = {
         },
         {
           name: "headline",
-          column: projectsProject.headline,
+          column: project.headline,
           label: "Headline",
           kind: "text",
           maxLength: 500,
           help: "The one-line summary on the card, and the page's meta description.",
         },
         {
-          name: "category",
-          column: projectsProject.category,
+          name: "categoryId",
+          column: project.categoryId,
           label: "Category",
-          kind: "text",
-          maxLength: 255,
+          kind: "reference",
+          reference: { table: category, value: category.id, label: category.label },
         },
         {
-          name: "status",
-          column: projectsProject.status,
+          name: "statusId",
+          column: project.statusId,
           label: "Status",
-          kind: "select",
+          kind: "reference",
           required: true,
-          choices: PROJECT_STATUS_CHOICES,
-          maxLength: 32,
+          reference: { table: projectStatus, value: projectStatus.id, label: projectStatus.label },
         },
         {
           name: "tags",
-          column: projectsProject.tags,
+          column: project.id,
           label: "Tags",
-          kind: "string-list",
-          itemLabel: "tag",
+          kind: "many-to-many",
+          manyToMany: {
+            join: projectTag,
+            ownerFk: projectTag.projectId,
+            targetFk: projectTag.tagId,
+            options: { table: tag, value: tag.id, label: tag.label },
+          },
         },
       ],
     },
@@ -148,7 +169,7 @@ export const projectForm: AdminFormModel = {
       fields: [
         {
           name: "descriptionHtml",
-          column: projectsProject.descriptionHtml,
+          column: project.descriptionHtml,
           label: "Description",
           kind: "rich-text",
         },
@@ -163,14 +184,14 @@ export const projectForm: AdminFormModel = {
           // The field writes to a join table rather than to a column, so this
           // names the project's own key: `toColumns` skips it, and
           // `saveManyToMany` does the writing.
-          column: projectsProject.id,
+          column: project.id,
           label: "Skills",
           kind: "many-to-many",
           manyToMany: {
-            join: projectsProjectTechStack,
-            ownerFk: projectsProjectTechStack.projectId,
-            targetFk: projectsProjectTechStack.skillId,
-            options: { table: aboutSkill, value: aboutSkill.id, label: aboutSkill.name },
+            join: projectSkill,
+            ownerFk: projectSkill.projectId,
+            targetFk: projectSkill.skillId,
+            options: { table: skill, value: skill.id, label: skill.name },
           },
         },
       ],
@@ -180,12 +201,12 @@ export const projectForm: AdminFormModel = {
       fields: [
         {
           name: "githubUrl",
-          column: projectsProject.githubUrl,
+          column: project.githubUrl,
           label: "Repository",
           kind: "url",
           maxLength: 200,
         },
-        { name: "demoUrl", column: projectsProject.demoUrl, label: "Demo", kind: "url", maxLength: 200 },
+        { name: "demoUrl", column: project.demoUrl, label: "Demo", kind: "url", maxLength: 200 },
       ],
     },
     {
@@ -193,14 +214,14 @@ export const projectForm: AdminFormModel = {
       fields: [
         {
           name: "isFeatured",
-          column: projectsProject.isFeatured,
+          column: project.isFeatured,
           label: "Featured",
           kind: "checkbox",
           help: "Featured projects lead the home page, in priority order.",
         },
         {
           name: "featuredPriority",
-          column: projectsProject.featuredPriority,
+          column: project.featuredPriority,
           label: "Priority",
           kind: "number",
           min: 0,
@@ -211,16 +232,16 @@ export const projectForm: AdminFormModel = {
   inlines: [
     {
       name: "features",
-      table: projectsFeature,
-      pk: projectsFeature.id,
-      parent: projectsFeature.projectId,
+      table: projectFeature,
+      pk: projectFeature.id,
+      parent: projectFeature.projectId,
       title: "Features",
       itemLabel: "feature",
-      orderColumn: projectsFeature.order,
+      orderColumn: projectFeature.position,
       fields: [
         {
           name: "title",
-          column: projectsFeature.title,
+          column: projectFeature.title,
           label: "Title",
           kind: "text",
           required: true,
@@ -228,7 +249,7 @@ export const projectForm: AdminFormModel = {
         },
         {
           name: "description",
-          column: projectsFeature.description,
+          column: projectFeature.description,
           label: "Description",
           kind: "textarea",
         },
@@ -236,28 +257,21 @@ export const projectForm: AdminFormModel = {
     },
     {
       name: "images",
-      table: projectsProjectimage,
-      pk: projectsProjectimage.id,
-      parent: projectsProjectimage.projectId,
+      table: projectImage,
+      pk: projectImage.id,
+      parent: projectImage.projectId,
       title: "Gallery",
       help: "Shown in this order, and the first is the card image.",
       itemLabel: "image",
-      orderColumn: projectsProjectimage.order,
+      orderColumn: projectImage.position,
       fields: [
         {
-          name: "image",
-          column: projectsProjectimage.image,
+          name: "mediaId",
+          column: projectImage.mediaId,
           label: "File",
           kind: "image",
           prefix: "project",
           required: true,
-        },
-        {
-          name: "originalFilename",
-          column: projectsProjectimage.originalFilename,
-          label: "Caption",
-          kind: "text",
-          maxLength: 255,
         },
       ],
     },

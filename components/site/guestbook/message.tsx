@@ -26,7 +26,7 @@ import type { ThreadMessage } from "@/lib/data/guestbook-tree";
  * near-black panel, `zinc-800` is invisible.
  */
 export type Viewer = {
-  userId: number | null;
+  userId: string | null;
   isAuthor: boolean;
   canPin: boolean;
 };
@@ -36,7 +36,7 @@ export type MessageActions = {
   onPin: (message: ThreadMessage) => void;
   onDelete: (message: ThreadMessage) => void;
   /** Ids with an action in flight, so the control can show it. */
-  busy: Set<number>;
+  busy: Set<string>;
 };
 
 const DATE_FORMAT = new Intl.DateTimeFormat("en-GB", {

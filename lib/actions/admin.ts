@@ -20,8 +20,10 @@ import { getStaffUser } from "@/lib/auth/staff";
 import { MODEL_TAGS } from "@/lib/data/tags";
 import { db } from "@/lib/db/client";
 import { applyImageFields, imageFields } from "@/lib/admin/images";
+import { keyForMediaId, mediaIdForKey } from "@/lib/admin/media";
 import { deleteUnreferenced } from "@/lib/storage/cleanup";
 import { sanitizeRichText } from "@/lib/utils/sanitize";
+import { isUuid } from "@/lib/utils/uuid";
 
 /**
  * Saving and deleting from the admin.
@@ -146,15 +148,25 @@ function toColumns(model: AdminFormModel, values: FormValues): Record<string, un
 async function currentImages(
   model: AdminFormModel,
   fields: FormField[],
-  id: number | null,
+  id: string | null,
 ): Promise<Record<string, string>> {
   if (id === null || fields.length === 0) return {};
   const shape = Object.fromEntries(fields.map((field) => [field.name, field.column]));
   const [row] = await db.select(shape).from(model.from).where(eq(model.pk, id)).limit(1);
   if (!row) return {};
-  return Object.fromEntries(
-    Object.entries(row).map(([name, value]) => [name, typeof value === "string" ? value : ""]),
+
+  /*
+   * The column holds an asset id; the image control compares storage keys. The
+   * translation happens here so `applyImageFields` keeps working on the strings
+   * it was written for -- see `lib/admin/media.ts`.
+   */
+  const entries = await Promise.all(
+    Object.entries(row).map(async ([name, value]) => {
+      const stored = typeof value === "string" ? value : "";
+      return [name, stored ? await keyForMediaId(stored) : ""] as const;
+    }),
   );
+  return Object.fromEntries(entries);
 }
 
 /**
@@ -169,7 +181,7 @@ async function currentImages(
  */
 export async function saveRecord(
   key: string,
-  id: number | null,
+  id: string | null,
   _previous: SaveResult | null,
   data: FormData,
 ): Promise<SaveResult> {
@@ -180,6 +192,14 @@ export async function saveRecord(
   if (!model) return { ok: false, error: "Unknown record type." };
   if (id === null && model.canCreate === false) {
     return { ok: false, error: "Records of this kind are not created here." };
+  }
+  /*
+   * The id rides in the form, so it is input. A non-uuid reaching a query
+   * against a uuid column raises `22P02` and throws out of the action instead
+   * of returning a result the form can show.
+   */
+  if (id !== null && id !== "" && !isUuid(id)) {
+    return { ok: false, error: "That record no longer exists." };
   }
 
   const parsed = parseFormValues(model, data);
@@ -216,16 +236,35 @@ export async function saveRecord(
   const problem = await model.validate?.(values, { id, actorId: actor.id });
   if (problem) return { ok: false, error: problem };
 
+  /*
+   * An image field's value is a storage key coming out of the upload control
+   * and an asset id going into the column. Converting here, once, keeps both
+   * halves unaware of the other.
+   */
+  for (const field of imageFields(formFields(model))) {
+    /*
+     * Only a field that was actually edited. `applyImageFields` returns a value
+     * for an upload and for a clear, and nothing at all for an untouched one --
+     * an empty file input means "not edited", never "make it empty". Converting
+     * unconditionally put the name into `values` with `null` behind it, and
+     * `toColumns` writes whatever it finds there: saving any other field on the
+     * record blanked the image.
+     */
+    if (!(field.name in values)) continue;
+    const key = values[field.name];
+    values[field.name] = typeof key === "string" && key ? await mediaIdForKey(key) : null;
+  }
+
   const row = toColumns(model, values);
   // Columns the form does not carry that the database still demands. Only on
   // insert: an update must not reset the block columns Django still reads.
   if (id === null && model.insertDefaults) Object.assign(row, model.insertDefaults());
-  let created: number | null = null;
+  let created: string | null = null;
 
   try {
     if (id === null) {
       const [inserted] = await db.insert(model.from).values(row).returning({ id: model.pk });
-      created = inserted ? Number(inserted.id) : null;
+      created = inserted ? String(inserted.id) : null;
     } else {
       await db.update(model.from).set(row).where(eq(model.pk, id));
     }
@@ -255,7 +294,7 @@ export async function saveRecord(
     const source = field.manyToMany;
     const chosen = values[field.name];
     if (!source || !Array.isArray(chosen) || parentId === null) continue;
-    await saveManyToMany(source, parentId, chosen.map(Number));
+    await saveManyToMany(source, parentId, chosen.map(String));
   }
 
   const staleFromInlines: string[] = [];
@@ -296,8 +335,8 @@ export async function saveRecord(
  */
 async function saveManyToMany(
   source: NonNullable<FormField["manyToMany"]>,
-  ownerId: number,
-  targetIds: number[],
+  ownerId: string,
+  targetIds: string[],
 ): Promise<void> {
   await db.transaction(async (tx) => {
     await tx.delete(source.join).where(eq(source.ownerFk, ownerId));
@@ -331,7 +370,7 @@ const FOREIGN_KEY_VIOLATION = "23503";
  * behaviour that should be kept. It surfaces as a foreign-key violation, caught
  * below and reported rather than raised.
  */
-async function deleteWithChildren(model: AdminFormModel, id: number): Promise<void> {
+async function deleteWithChildren(model: AdminFormModel, id: string): Promise<void> {
   const targets = cascadeTargets(model);
 
   await db.transaction(async (tx) => {
@@ -357,7 +396,9 @@ async function deleteWithChildren(model: AdminFormModel, id: number): Promise<vo
         .from(target.table)
         .where(eq(target.fk, id));
       if (children.length > 0) {
-        await tx.delete(target.table).where(inArray(target.pk, children.map((row) => Number(row.id))));
+        // Ids stay strings. They were coerced with `Number` when keys were
+        // serial, and a uuid through that is `NaN`.
+        await tx.delete(target.table).where(inArray(target.pk, children.map((row) => String(row.id))));
       }
     }
 
@@ -365,7 +406,7 @@ async function deleteWithChildren(model: AdminFormModel, id: number): Promise<vo
   });
 }
 
-export async function deleteRecord(key: string, id: number): Promise<SaveResult> {
+export async function deleteRecord(key: string, id: string): Promise<SaveResult> {
   const actor = await getStaffUser();
   if (!actor) return { ok: false, error: "You are not permitted to do that." };
 
@@ -374,6 +415,7 @@ export async function deleteRecord(key: string, id: number): Promise<SaveResult>
   if (model.canDelete === false) {
     return { ok: false, error: "Records of this kind are not deleted here." };
   }
+  if (!isUuid(id)) return { ok: false, error: "That record no longer exists." };
 
   const orphaned = [
     ...Object.values(await currentImages(model, imageFields(formFields(model)), id)),

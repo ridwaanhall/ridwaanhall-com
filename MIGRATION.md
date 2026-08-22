@@ -535,6 +535,108 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
 
 ---
 
+## The `app` schema
+
+Django's tables were kept verbatim through phases 1-3, because the port and a
+restructure at the same time would have meant never knowing which of the two
+broke something. With the port done and checked, the schema was rebuilt.
+
+**Everything reads and writes `app` now.** `public` is untouched, still serving
+Django in production, and is dropped after the cutover.
+
+### What changed, and why
+
+- **Keys are uuids.** `gen_random_uuid()` on 45 tables. A serial key is a
+  guessable count of how many rows exist and it leaks in every admin URL; more
+  practically, the migration needed keys that could be minted before their
+  parent was inserted.
+- **Repeated free text became rows.** `location` (43), `organization` (72, of
+  which 53 were the free-text employer names on applications), `tag` (437 from
+  460 — the surplus were case variants of each other), `category` (50, scoped by
+  what they categorise), `media_asset` (219), and the small vocabularies
+  `employment_type`, `work_mode`, `application_status`, `application_source`,
+  `project_status`. "Boyolali, Central Java, Indonesia" was written out on every
+  row that meant it; it is one row that several point at.
+- **Twelve `jsonb` arrays became ordered child tables.** An experience's
+  responsibilities, an application's journey, the openhire lists, the profile's
+  donate links. Each is `(parent_id, body, position)` — joinable, countable,
+  and editable a row at a time. The `kind`-discriminated ones
+  (`profile_link`, `hiring_list_item`, `open_to_work_list_item`,
+  `job_opening_list_item`) hold several lists in one table and are told apart by
+  a column, which is what `AdminInline.scope` exists for.
+- **Eight `social_*` columns became `profile_link` rows.** Adding a ninth
+  platform was a migration; it is an insert.
+- **Storage keys became `media_asset` rows.** Five `varchar` columns each
+  repeated `profile/ridwaanhall_20250913_2.webp` in full — 21 rows named that
+  one file. There is one key column now and six foreign keys to it. The row also
+  records whether the file is in the bucket or bundled under `public/`, which is
+  what let the 74 skill icons stop being absolute
+  `https://ridwaanhall.com/static/...` URLs that pointed development and the
+  admin at the production site.
+- **A comment names its target directly.** `target_kind` + `target_id` with a
+  CHECK, replacing `content_type_id` — a foreign key into a table listing every
+  model in the project, which made "what is this a comment on" a join.
+- **Referential actions are declared.** 29 `CASCADE`, 21 `SET NULL`, 7
+  `RESTRICT`, none deferrable — see the trap in `CLAUDE.md`.
+- **Django's bookkeeping did not come across.** No `password` (nothing
+  authenticates against one; all 37 accounts are social-only and every row held
+  the same unusable `!` placeholder), no `is_superuser` beside `is_staff` — this
+  application has one privilege — and none of `django_migrations`,
+  `django_admin_log`, `django_content_type`, `auth_permission`,
+  `core_contentversion`.
+
+### What was checked
+
+Data fidelity, by 21 row-count comparisons and 14 content comparisons against
+`public`. Then every harness re-pointed and re-run: 47 admin screens quiet, 35
+gate checks, 32 form checks, 23 inline checks, 21 adapter checks, 20 comment
+checks, 16 storage checks, 11 rich-text checks, 9 JSON-editor checks. Then
+`compare-layout.mjs` on all seven public pages against the deployed Django site
+— all within 2px.
+
+### The one thing that reached a browser
+
+Every signed-in reader was still holding a thirty-day JWT whose `sub` was their
+old integer key, so `getStaffUser()` queried `app.account` for `id = 1` and
+Postgres answered `22P02`. It surfaced as a console error on the sidebar's admin
+link and would have surfaced as a 500 on the first server action such a reader
+submitted.
+
+`auth.ts` now refuses a session subject that is not a uuid: the reader is
+offered a sign-in rather than half-authenticated, and signing in mints a token
+carrying their real key. Done in the `session` callback rather than at each of
+the six places that read `session.user.id`, because that is the one place a
+token becomes a session — guarding the readers would have left the token itself
+in circulation, half-trusted.
+
+`scripts/check-site-console.mjs` was written for it and is new: the admin has
+had a console sweep since phase 3 and the public site had none, which is the gap
+this lived in. It drives all 14 public pages in four sign-in states — signed
+out, reader, staff, and holding a pre-migration token — and reverting the guard
+fails the fourth on every page.
+
+### Departures the restructure forced
+
+- **`AboutData.stories` is gone.** It was the same paragraphs as
+  `stories_html`, held as JSONB blocks with a hand-typed `class` key — the exact
+  shape `lib/utils/sanitize.ts` exists to keep out of the database. Nothing read
+  it; the page has rendered `stories_html` since `drizzle/0004`.
+- **`profile.location_prov` is gone.** It held an abbreviation the data never
+  abbreviated: both it and `location_province` read "Central Java". The payload
+  still exposes `prov`, reading the region.
+- **`SKILL_CATEGORY_ORDER` is gone**, a 25-entry array in `lib/data/about.ts`.
+  It is `category.position` now — the same sequence, in the table it describes,
+  reorderable from the admin. `drizzle/0007` set it.
+- **The `string-list` and `choice-list` field kinds have no users.** The twelve
+  columns they edited are child tables and lookup rows. The machinery is left in
+  place; `scripts/check-admin-json.mjs` now covers only `legal_section.items`,
+  which is a genuine mapping rather than a table.
+- **An application with no dated journey steps sorts by company name.** The
+  fallback was its serial key read as a unix timestamp — odd, but it was what
+  the Python did. A uuid cannot stand in for a number.
+
+---
+
 ## Still in development
 
 Nothing here is deployed. The site runs against the **live Supabase database**
@@ -558,6 +660,10 @@ not forgotten:
 - dropping `content`/`description` and `core_contentversion` — written as
   `drizzle/0003` and the application no longer names any of them, but **the SQL
   has not been run**. See the note under Phase 4
+- dropping the `public` schema outright — everything reads `app` now, and
+  `public` exists only because Django is still serving production from it. It
+  goes after the cutover, and `drizzle/0003` goes with it rather than being run
+  on its own
 
 ---
 

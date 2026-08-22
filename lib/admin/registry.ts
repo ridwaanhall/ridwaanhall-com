@@ -151,6 +151,14 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     blurb: "What you are hiring for, and the open positions.",
   },
   {
+    key: "job-opening",
+    label: "Open position",
+    labelPlural: "Open positions",
+    group: "Open to work",
+    ready: true,
+    blurb: "Roles being hired for, with their skills, duties and benefits.",
+  },
+  {
     key: "open-to-work-profile",
     label: "Open to work profile",
     labelPlural: "Open to work profile",

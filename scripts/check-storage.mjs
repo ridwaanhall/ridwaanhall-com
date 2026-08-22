@@ -27,7 +27,8 @@ config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { db, pool } = await import("../lib/db/client.ts");
-const { aboutOrganization } = await import("../lib/db/schema.ts");
+const { mediaAsset, organization } = await import("../lib/db/app-schema.ts");
+const { mediaIdForKey } = await import("../lib/admin/media.ts");
 const { eq, like, inArray } = await import("drizzle-orm");
 const { deleteObject, objectExists, putObject, storageConfigured } = await import(
   "../lib/storage/objects.ts"
@@ -91,20 +92,27 @@ try {
     await isReferenced("profile/ridwaanhall_20250913_2.webp"),
   );
 
+  /*
+   * Both rows point at the same asset, which is the whole property under test.
+   * They used to repeat the storage key in a `varchar` each; the key is written
+   * once on `media_asset` now and `mediaIdForKey` is the upsert that makes the
+   * second reference find the first row rather than create a duplicate.
+   */
+  const firstAsset = await mediaIdForKey(first.key);
   const [orgA] = await db
-    .insert(aboutOrganization)
-    .values({ name: `${MARK} A`, slug: `${MARK}-a`, website: "", logo: first.key })
-    .returning({ id: aboutOrganization.id });
+    .insert(organization)
+    .values({ name: `${MARK} A`, slug: `${MARK}-a`, website: "", logoId: firstAsset })
+    .returning({ id: organization.id });
   const [orgB] = await db
-    .insert(aboutOrganization)
-    .values({ name: `${MARK} B`, slug: `${MARK}-b`, website: "", logo: first.key })
-    .returning({ id: aboutOrganization.id });
+    .insert(organization)
+    .values({ name: `${MARK} B`, slug: `${MARK}-b`, website: "", logoId: firstAsset })
+    .returning({ id: organization.id });
   madeRows.push(orgA.id, orgB.id);
 
   check("a key one row names is referenced", await isReferenced(first.key), `#${orgA.id}, #${orgB.id}`);
 
   // Take one row away. The file must survive, because the other still names it.
-  await db.delete(aboutOrganization).where(eq(aboutOrganization.id, orgA.id));
+  await db.delete(organization).where(eq(organization.id, orgA.id));
   madeRows.splice(madeRows.indexOf(orgA.id), 1);
   const keptResult = await deleteUnreferenced([first.key]);
   check(
@@ -114,7 +122,7 @@ try {
   );
 
   // Take the other. Now nothing names it.
-  await db.delete(aboutOrganization).where(eq(aboutOrganization.id, orgB.id));
+  await db.delete(organization).where(eq(organization.id, orgB.id));
   madeRows.splice(madeRows.indexOf(orgB.id), 1);
   const goneResult = await deleteUnreferenced([first.key]);
   check(
@@ -136,35 +144,49 @@ try {
   check("deleting a key that is not there is not an error", threw === false);
 
   // --- the column list is complete -------------------------------------------
-  const declared = new Set(FILE_COLUMNS.map((column) => `${column.table[Symbol.for("drizzle:Name")]}.${column.name}`));
-  const { rows: candidates } = await pool.query(`
-    select table_name, column_name
-    from information_schema.columns
-    where table_schema = 'public'
-      and data_type in ('character varying', 'text')
+  /*
+   * Every column that can name a file, found from the catalogue rather than
+   * from a pattern.
+   *
+   * This scanned all `text` columns for values shaped like a storage key, which
+   * was the only way to find them while five tables each stored the key itself.
+   * There is one key column now -- `media_asset.storage_key` -- and everything
+   * that names a file does so with a foreign key to that table. So the question
+   * "did somebody add a column holding files without telling `FILE_COLUMNS`?"
+   * is answered exactly by the foreign keys, with no heuristic in the middle.
+   */
+  const declared = new Set(
+    FILE_COLUMNS.map((column) => `${column.table[Symbol.for("drizzle:Name")]}.${column.name}`),
+  );
+  const { rows: referring } = await pool.query(`
+    select t.relname as table_name, a.attname as column_name
+      from pg_constraint c
+      join pg_class t on t.oid = c.conrelid
+      join pg_class f on f.oid = c.confrelid
+      join pg_namespace n on n.oid = t.relnamespace
+      join unnest(c.conkey) k(attnum) on true
+      join pg_attribute a on a.attrelid = t.oid and a.attnum = k.attnum
+     where n.nspname = 'app' and c.contype = 'f' and f.relname = 'media_asset'
+     order by 1, 2
   `);
 
-  const found = new Set();
-  for (const { table_name: table, column_name: column } of candidates) {
-    const { rows } = await pool.query(
-      `select 1 from "${table}" where "${column}" ~ '^(profile|logo|blog|project)/.+\\.(webp|png|jpe?g|gif|avif|svg)$' limit 1`,
-    );
-    if (rows.length > 0) found.add(`${table}.${column}`);
-  }
+  const actual = new Set(referring.map((row) => `${row.table_name}.${row.column_name}`));
+  const missing = [...actual].filter((name) => !declared.has(name));
+  const extra = [...declared].filter((name) => !actual.has(name));
 
-  const missing = [...found].filter((name) => !declared.has(name));
   check(
-    "every column holding storage keys is declared in FILE_COLUMNS",
+    "every column that can name a file is declared in FILE_COLUMNS",
     missing.length === 0,
-    missing.length ? `undeclared: ${missing.join(", ")}` : `${found.size} columns, all declared`,
+    missing.length ? `undeclared: ${missing.join(", ")}` : `${actual.size} columns, all declared`,
   );
   check(
     "and FILE_COLUMNS names nothing that does not exist",
-    [...declared].every((name) => candidates.some((row) => `${row.table_name}.${row.column_name}` === name)),
+    extra.length === 0,
+    extra.join(", "),
   );
 } finally {
   for (const id of madeRows) {
-    await db.delete(aboutOrganization).where(eq(aboutOrganization.id, id));
+    await db.delete(organization).where(eq(organization.id, id));
     console.log(`  ..    cleaned up organization #${id}`);
   }
   for (const key of madeKeys) {
@@ -172,15 +194,37 @@ try {
     console.log(`  ..    cleaned up object ${key}`);
   }
 
+  /*
+   * The asset rows too. `mediaIdForKey` creates one per key it has not seen,
+   * so a run that uploads three files registers three -- and a row pointing at
+   * an object this then deleted is exactly the orphan the harness exists to
+   * complain about.
+   */
+  // Asset rows are cleaned up below, by the same marker that finds stray
+  // organizations -- `deleteUnreferenced` removes the row along with the
+  // object, so what is left here is only what this harness registered and
+  // never deleted through it.
+
   const leftover = await db
-    .select({ id: aboutOrganization.id })
-    .from(aboutOrganization)
-    .where(like(aboutOrganization.name, `${MARK}%`));
-  check("no rows are left behind", leftover.length === 0);
+    .select({ id: organization.id })
+    .from(organization)
+    .where(like(organization.name, `${MARK}%`));
+  const strayAssets = await db
+    .select({ id: mediaAsset.id })
+    .from(mediaAsset)
+    .where(like(mediaAsset.storageKey, `%${MARK}%`));
+  check(
+    "no rows are left behind",
+    leftover.length === 0 && strayAssets.length === 0,
+    `${leftover.length} organization(s), ${strayAssets.length} asset(s)`,
+  );
   if (leftover.length > 0) {
-    await db.delete(aboutOrganization).where(
-      inArray(aboutOrganization.id, leftover.map((row) => row.id)),
+    await db.delete(organization).where(
+      inArray(organization.id, leftover.map((row) => row.id)),
     );
+  }
+  if (strayAssets.length > 0) {
+    await db.delete(mediaAsset).where(inArray(mediaAsset.id, strayAssets.map((row) => row.id)));
   }
 
   await pool.end();

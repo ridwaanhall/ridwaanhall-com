@@ -1,32 +1,25 @@
 import { username, userEmail } from "@/lib/admin/models/guestbook";
-import { lookup } from "@/lib/admin/sql";
-import { commentsComment, djangoContentType } from "@/lib/db/schema";
+import { comment } from "@/lib/db/app-schema";
 
 import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
 /** `CommentAdmin` in `apps/comments/admin.py`. */
 
-const commentUser = username(commentsComment.userId);
+const commentUser = username(comment.accountId);
 
-/**
- * The model name behind the generic foreign key -- "blogpost" or "project".
- *
- * `comments_comment.content_type_id` is a live FK into `django_content_type`,
- * and that table survives the cutover for exactly this reason: it is what says
- * which kind of thing a comment is attached to.
+/*
+ * There is no lookup here any more. A comment used to name its target through
+ * `content_type_id`, a foreign key into a table of every model in the project,
+ * so showing "what is this a comment on" meant a correlated subquery. The
+ * column says it directly now.
  */
-const targetModel = lookup<string>(
-  djangoContentType.model,
-  djangoContentType.id,
-  commentsComment.contentTypeId,
-);
 
 export type CommentRow = {
-  id: number;
+  id: string;
   user: string;
-  targetModel: string;
-  objectId: number;
+  targetKind: string;
+  targetId: string;
   body: string;
   isDeleted: boolean;
   createdAt: string;
@@ -34,23 +27,23 @@ export type CommentRow = {
 
 export const commentList: AdminListModel<CommentRow> = {
   key: "comment",
-  from: commentsComment,
-  pk: commentsComment.id,
+  from: comment,
+  pk: comment.id,
   select: {
-    id: commentsComment.id,
+    id: comment.id,
     user: commentUser,
-    targetModel,
-    objectId: commentsComment.objectId,
-    body: commentsComment.body,
-    isDeleted: commentsComment.isDeleted,
-    createdAt: commentsComment.createdAt,
+    targetKind: comment.targetKind,
+    targetId: comment.targetId,
+    body: comment.body,
+    isDeleted: comment.isDeleted,
+    createdAt: comment.createdAt,
   },
   columns: [
     // Django's `short_body`: 70 characters, then an ellipsis if it was cut.
     {
       key: "body",
       label: "Comment",
-      sort: commentsComment.body,
+      sort: comment.body,
       value: (row) => (row.body.length > 70 ? `${row.body.slice(0, 70)}…` : row.body),
     },
     { key: "user", label: "User", kind: "muted", sort: commentUser, value: (row) => row.user },
@@ -60,20 +53,20 @@ export const commentList: AdminListModel<CommentRow> = {
       kind: "muted",
       // Django's `target_label`, and it did not sort either: the value is two
       // columns joined by a `#`, so there is nothing single to order by.
-      value: (row) => `${row.targetModel} #${row.objectId}`,
+      value: (row) => `${row.targetKind} #${row.targetId}`,
     },
     {
       key: "is_deleted",
       label: "Deleted",
       kind: "bool",
-      sort: commentsComment.isDeleted,
+      sort: comment.isDeleted,
       value: (row) => row.isDeleted,
     },
     {
       key: "created_at",
       label: "Posted",
       kind: "datetime",
-      sort: commentsComment.createdAt,
+      sort: comment.createdAt,
       value: (row) => row.createdAt,
     },
   ],
@@ -81,21 +74,25 @@ export const commentList: AdminListModel<CommentRow> = {
     // Deleting is soft, so removed comments stay in the table with a blanked
     // body -- the tombstone the thread renders in their place. This filter is
     // the only way to see them apart from the rest.
-    { key: "is_deleted", label: "Deleted", kind: "boolean", column: commentsComment.isDeleted },
+    { key: "is_deleted", label: "Deleted", kind: "boolean", column: comment.isDeleted },
     {
-      key: "content_type",
+      key: "target_kind",
       label: "On",
       kind: "choice",
-      column: commentsComment.contentTypeId,
-      choices: { table: djangoContentType, value: djangoContentType.id, label: djangoContentType.model },
+      column: comment.targetKind,
+      // Two values, fixed by the column's own CHECK constraint.
+      choices: [
+        { value: "blog_post", label: "Blog post" },
+        { value: "project", label: "Project" },
+      ],
     },
-    { key: "created_at", label: "Posted", kind: "date", column: commentsComment.createdAt },
+    { key: "created_at", label: "Posted", kind: "date", column: comment.createdAt },
   ],
   search: {
     fields: [
-      commentsComment.body,
+      comment.body,
       commentUser,
-      userEmail(commentsComment.userId),
+      userEmail(comment.accountId),
     ],
     placeholder: "Search comment, username or email",
   },
@@ -107,8 +104,8 @@ export const commentList: AdminListModel<CommentRow> = {
 
 export const commentForm: AdminFormModel = {
   key: "comment",
-  from: commentsComment,
-  pk: commentsComment.id,
+  from: comment,
+  pk: comment.id,
   label: (values) => {
     const body = String(values.body ?? "");
     return body.length > 70 ? `${body.slice(0, 70)}…` : body || "Comment";
@@ -122,19 +119,19 @@ export const commentForm: AdminFormModel = {
     "This removes the row outright, and its replies with it. To leave the thread intact, tick Deleted instead.",
   cascades: [
     {
-      table: commentsComment,
-      fk: commentsComment.replyToId,
-      pk: commentsComment.id,
+      table: comment,
+      fk: comment.replyToId,
+      pk: comment.id,
       selfReference: true,
     },
   ],
   fieldsets: [
     {
       fields: [
-        { name: "body", column: commentsComment.body, label: "Comment", kind: "textarea", required: true },
+        { name: "body", column: comment.body, label: "Comment", kind: "textarea", required: true },
         {
           name: "isDeleted",
-          column: commentsComment.isDeleted,
+          column: comment.isDeleted,
           label: "Deleted",
           kind: "checkbox",
           help: "A soft delete: the comment is replaced by a tombstone, its replies survive, and it stops being counted.",
@@ -146,7 +143,7 @@ export const commentForm: AdminFormModel = {
       fields: [
         {
           name: "user",
-          column: commentsComment.userId,
+          column: comment.accountId,
           display: commentUser,
           label: "Posted by",
           kind: "text",
@@ -154,7 +151,7 @@ export const commentForm: AdminFormModel = {
         },
         {
           name: "createdAt",
-          column: commentsComment.createdAt,
+          column: comment.createdAt,
           label: "Posted",
           kind: "datetime",
           readOnly: true,

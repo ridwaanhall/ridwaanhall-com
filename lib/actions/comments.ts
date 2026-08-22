@@ -10,9 +10,9 @@ import {
   isCommentable,
   MAX_COMMENT_LENGTH,
 } from "@/lib/data/comment-shapes";
-import { commentIdsOnTarget, contentTypeId, getComment } from "@/lib/data/comments";
+import { commentIdsOnTarget, getComment } from "@/lib/data/comments";
 import { db } from "@/lib/db/client";
-import { commentsComment } from "@/lib/db/schema";
+import { comment as commentTable } from "@/lib/db/app-schema";
 
 /**
  * Posting and deleting comments.
@@ -35,8 +35,8 @@ export type CommentResult = { ok: true; notice: string } | { ok: false; error: s
 
 async function viewer() {
   const session = await auth();
-  const id = Number(session?.user?.id);
-  if (!Number.isInteger(id)) return null;
+  const id = session?.user?.id;
+  if (!id) return null;
   const profile = await getUserProfile(id);
   return profile
     ? { userId: profile.id, isAuthor: profile.isAuthor, isCoAuthor: profile.isCoAuthor }
@@ -45,7 +45,7 @@ async function viewer() {
 
 /** Where the section lives, so the action can revalidate it. */
 function pathFor(label: string, slug: string): string {
-  return label === "blog.blogpost" ? `/blog/${slug}` : `/projects/${slug}`;
+  return label === "blog_post" ? `/blog/${slug}` : `/projects/${slug}`;
 }
 
 export async function postComment(formData: FormData): Promise<CommentResult> {
@@ -55,15 +55,15 @@ export async function postComment(formData: FormData): Promise<CommentResult> {
   if (!who) return { ok: false, error: "Sign in to post a comment." };
 
   const label = String(formData.get("content_type") ?? "");
-  const targetId = Number(formData.get("object_id"));
+  const targetId = String(formData.get("object_id") ?? "");
   const slug = String(formData.get("slug") ?? "");
 
   // Without the allowlist, `content_type` is attacker-chosen and comments could
   // be attached to any table in the database.
   if (!isCommentable(label)) return { ok: false, error: "Not commentable" };
-  if (!Number.isInteger(targetId) || targetId <= 0) {
-    return { ok: false, error: "Unknown object" };
-  }
+  // A uuid or nothing. The old guard parsed it as an integer, which is what
+  // a sequential id used to be.
+  if (!targetId) return { ok: false, error: "Unknown object" };
 
   const body = String(formData.get("body") ?? "").trim();
   // A body of only whitespace passes a `required` check but is not a comment.
@@ -72,7 +72,6 @@ export async function postComment(formData: FormData): Promise<CommentResult> {
     return { ok: false, error: `Comments are limited to ${MAX_COMMENT_LENGTH} characters.` };
   }
 
-  const typeId = await contentTypeId(label);
 
   /*
    * Resolve the parent, then apply the two rules Django put in `Comment.save()`
@@ -85,18 +84,18 @@ export async function postComment(formData: FormData): Promise<CommentResult> {
    *   The section renders one level of nesting and a deeper row would simply
    *   not appear.
    */
-  let replyToId: number | null = null;
-  const requested = Number(formData.get("reply_to"));
-  if (Number.isInteger(requested) && requested > 0) {
-    const [parent] = await commentIdsOnTarget(typeId, targetId, [requested]);
+  let replyToId: string | null = null;
+  const requested = String(formData.get("reply_to") ?? "");
+  if (requested) {
+    const [parent] = await commentIdsOnTarget(label, targetId, [requested]);
     if (!parent) return { ok: false, error: "That comment is no longer available." };
     replyToId = parent.replyToId ?? parent.id;
   }
 
-  await db.insert(commentsComment).values({
-    contentTypeId: typeId,
-    objectId: targetId,
-    userId: who.userId,
+  await db.insert(commentTable).values({
+    targetKind: label,
+    targetId,
+    accountId: who.userId,
     body,
     replyToId,
     isDeleted: false,
@@ -107,7 +106,7 @@ export async function postComment(formData: FormData): Promise<CommentResult> {
   return { ok: true, notice: replyToId ? "Reply posted." : "Comment posted." };
 }
 
-export async function deleteComment(id: number, slug: string): Promise<CommentResult> {
+export async function deleteComment(id: string, slug: string): Promise<CommentResult> {
   const who = await viewer();
   if (!who) return { ok: false, error: "Sign in to manage comments." };
 
@@ -120,15 +119,13 @@ export async function deleteComment(id: number, slug: string): Promise<CommentRe
   // Soft delete: a removed parent must not take its replies with it, and the
   // thread stays readable with a tombstone in place of the original text.
   await db
-    .update(commentsComment)
+    .update(commentTable)
     .set({ isDeleted: true })
-    .where(and(eq(commentsComment.id, id), eq(commentsComment.isDeleted, false)));
+    .where(and(eq(commentTable.id, id), eq(commentTable.isDeleted, false)));
 
-  if (slug) {
-    const label = comment.contentTypeId === (await contentTypeId("blog.blogpost"))
-      ? "blog.blogpost"
-      : "projects.project";
-    revalidatePath(pathFor(label, slug));
-  }
+  // The row says which kind it is, so there is nothing to resolve: this used
+  // to fetch a content-type id and compare against it to work out which path
+  // to revalidate.
+  if (slug) revalidatePath(pathFor(comment.targetKind, slug));
   return { ok: true, notice: "Comment deleted." };
 }

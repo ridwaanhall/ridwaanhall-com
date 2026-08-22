@@ -38,7 +38,7 @@ export function GuestbookPanel({
 }) {
   const confirm = useConfirm();
   const [pending, startTransition] = useTransition();
-  const [busy, setBusy] = useState<Set<number>>(new Set());
+  const [busy, setBusy] = useState<Set<string>>(new Set());
   const [replyTo, setReplyTo] = useState<ThreadMessage | null>(null);
   const [text, setText] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -80,7 +80,7 @@ export function GuestbookPanel({
     if (list) list.scrollTo({ top: list.scrollHeight, behavior: "smooth" });
   }, [thread.messageCount]);
 
-  const mark = (id: number, on: boolean) =>
+  const mark = (id: string, on: boolean) =>
     setBusy((current) => {
       const next = new Set(current);
       if (on) next.add(id);

@@ -27,7 +27,8 @@ export const MAX_MESSAGE_LENGTH = 500;
 export const MIN_MESSAGE_LENGTH = 2;
 
 export type MessageAuthor = {
-  userId: number;
+  /** A uuid; see drizzle/0005. */
+  userId: string;
   fullName: string;
   profileImage: string | null;
   isAuthor: boolean;
@@ -37,10 +38,10 @@ export type MessageAuthor = {
   email: string;
 };
 
-export type ReplyTarget = MessageAuthor & { id: number; message: string };
+export type ReplyTarget = MessageAuthor & { id: string; message: string };
 
 export type ThreadMessage = MessageAuthor & {
-  id: number;
+  id: string;
   message: string;
   timestamp: string;
   isPinned: boolean;
@@ -52,7 +53,7 @@ export type ThreadMessage = MessageAuthor & {
 };
 
 export type PinnedMessage = {
-  id: number;
+  id: string;
   message: string;
   fullName: string;
   profileImage: string | null;
@@ -118,11 +119,16 @@ export function buildThread(messages: ThreadMessage[], maxDepth = MAX_DEPTH): Th
   }
 
   const roots: ThreadMessage[] = [];
-  const placed = new Map<number, ThreadMessage>();
-  const renderParents = new Map<number, ThreadMessage | null>();
+  const placed = new Map<string, ThreadMessage>();
+  const renderParents = new Map<string, ThreadMessage | null>();
 
+  // The id is a uuid now, so the tiebreak is a string comparison rather than
+  // subtraction. It only has to be *stable*, not meaningful: two messages
+  // claiming the same instant need a deterministic order, not a chronological
+  // one, and insert order stopped being available when the ids stopped being
+  // sequential.
   const ordered = [...messages].sort(
-    (a, b) => a.timestamp.localeCompare(b.timestamp) || a.id - b.id,
+    (a, b) => a.timestamp.localeCompare(b.timestamp) || a.id.localeCompare(b.id),
   );
 
   for (const message of ordered) {

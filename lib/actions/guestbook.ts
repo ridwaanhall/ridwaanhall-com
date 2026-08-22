@@ -8,7 +8,7 @@ import { auth } from "@/auth";
 import { getUserProfile } from "@/lib/auth/profile";
 import { db } from "@/lib/db/client";
 import { notifyNewGuestbookMessage } from "@/lib/email/guestbook-notify";
-import { guestbookChatmessage } from "@/lib/db/schema";
+import { guestMessage } from "@/lib/db/app-schema";
 import { MAX_MESSAGE_LENGTH, MAX_PINNED, MIN_MESSAGE_LENGTH } from "@/lib/data/guestbook-tree";
 
 /**
@@ -43,8 +43,8 @@ const GUESTBOOK_PATH = "/guestbook";
 
 async function currentProfile() {
   const session = await auth();
-  const id = Number(session?.user?.id);
-  if (!Number.isInteger(id)) return null;
+  const id = session?.user?.id;
+  if (!id) return null;
   return getUserProfile(id);
 }
 
@@ -67,28 +67,28 @@ export async function sendMessage(formData: FormData): Promise<ActionResult> {
    * non-numeric id and a `DoesNotExist` were caught together. Rejecting the
    * whole post would lose what someone typed over a stale button.
    */
-  const replyToId = Number(formData.get("reply_to"));
-  let replyTo: number | null = null;
-  if (Number.isInteger(replyToId) && replyToId > 0) {
+  const replyToId = String(formData.get("reply_to") ?? "");
+  let replyTo: string | null = null;
+  if (replyToId) {
     const [parent] = await db
-      .select({ id: guestbookChatmessage.id })
-      .from(guestbookChatmessage)
-      .where(eq(guestbookChatmessage.id, replyToId))
+      .select({ id: guestMessage.id })
+      .from(guestMessage)
+      .where(eq(guestMessage.id, replyToId))
       .limit(1);
     replyTo = parent?.id ?? null;
   }
 
   const [created] = await db
-    .insert(guestbookChatmessage)
+    .insert(guestMessage)
     .values({
-      userId: profile.id,
-      message: text,
-      timestamp: new Date().toISOString(),
+      accountId: profile.id,
+      body: text,
+      postedAt: new Date().toISOString(),
       replyToId: replyTo,
       isPinned: false,
       pinnedAt: null,
     })
-    .returning({ id: guestbookChatmessage.id });
+    .returning({ id: guestMessage.id });
 
   /*
    * The emails Django's `post_save` receiver sent: the owner, the sender, and
@@ -106,7 +106,7 @@ export async function sendMessage(formData: FormData): Promise<ActionResult> {
   return { ok: true, notice: replyTo ? "Reply posted." : "Message posted." };
 }
 
-export async function deleteMessage(messageId: number): Promise<ActionResult> {
+export async function deleteMessage(messageId: string): Promise<ActionResult> {
   const profile = await currentProfile();
   if (!profile) return { ok: false, error: "Sign in to manage messages." };
   if (!profile.isAuthor) {
@@ -131,19 +131,19 @@ export async function deleteMessage(messageId: number): Promise<ActionResult> {
    * what lets one statement remove a parent and its children together without
    * caring about order.
    */
-  const deleted = await db.execute<{ id: number }>(sql`
+  const deleted = await db.execute<{ id: string }>(sql`
     with recursive branch as (
-      select ${guestbookChatmessage.id} as id
-      from ${guestbookChatmessage}
-      where ${guestbookChatmessage.id} = ${messageId}
+      select ${guestMessage.id} as id
+      from ${guestMessage}
+      where ${guestMessage.id} = ${messageId}
       union all
       select reply.id
-      from ${guestbookChatmessage} as reply
+      from ${guestMessage} as reply
       join branch on reply.reply_to_id = branch.id
     )
-    delete from ${guestbookChatmessage}
-    where ${guestbookChatmessage.id} in (select id from branch)
-    returning ${guestbookChatmessage.id} as id
+    delete from ${guestMessage}
+    where ${guestMessage.id} in (select id from branch)
+    returning ${guestMessage.id} as id
   `).then((result) => result.rows);
 
   if (deleted.length === 0) return { ok: false, error: "Message not found" };
@@ -152,7 +152,7 @@ export async function deleteMessage(messageId: number): Promise<ActionResult> {
   return { ok: true, notice: "Message deleted." };
 }
 
-export async function togglePin(messageId: number): Promise<ActionResult> {
+export async function togglePin(messageId: string): Promise<ActionResult> {
   const profile = await currentProfile();
   if (!profile) return { ok: false, error: "Sign in to manage messages." };
   if (!profile.canPin) {
@@ -163,18 +163,18 @@ export async function togglePin(messageId: number): Promise<ActionResult> {
   }
 
   const [message] = await db
-    .select({ id: guestbookChatmessage.id, isPinned: guestbookChatmessage.isPinned })
-    .from(guestbookChatmessage)
-    .where(eq(guestbookChatmessage.id, messageId))
+    .select({ id: guestMessage.id, isPinned: guestMessage.isPinned })
+    .from(guestMessage)
+    .where(eq(guestMessage.id, messageId))
     .limit(1);
 
   if (!message) return { ok: false, error: "Message not found" };
 
   if (message.isPinned) {
     await db
-      .update(guestbookChatmessage)
+      .update(guestMessage)
       .set({ isPinned: false, pinnedAt: null })
-      .where(eq(guestbookChatmessage.id, messageId));
+      .where(eq(guestMessage.id, messageId));
     revalidatePath(GUESTBOOK_PATH);
     return { ok: true, notice: "Message unpinned." };
   }
@@ -198,9 +198,9 @@ export async function togglePin(messageId: number): Promise<ActionResult> {
     // does not make re-pinning it look like it would exceed the cap.
     const [{ n }] = await tx
       .select({ n: sql<number>`count(*)::int` })
-      .from(guestbookChatmessage)
+      .from(guestMessage)
       .where(
-        and(eq(guestbookChatmessage.isPinned, true), ne(guestbookChatmessage.id, messageId)),
+        and(eq(guestMessage.isPinned, true), ne(guestMessage.id, messageId)),
       );
 
     if (n >= MAX_PINNED) {
@@ -211,9 +211,9 @@ export async function togglePin(messageId: number): Promise<ActionResult> {
     }
 
     await tx
-      .update(guestbookChatmessage)
+      .update(guestMessage)
       .set({ isPinned: true, pinnedAt: new Date().toISOString() })
-      .where(eq(guestbookChatmessage.id, messageId));
+      .where(eq(guestMessage.id, messageId));
 
     return { ok: true as const, notice: "Message pinned." };
   });

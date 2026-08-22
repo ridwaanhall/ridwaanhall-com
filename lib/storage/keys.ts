@@ -28,6 +28,9 @@ export const UPLOAD_PREFIXES = {
   logo: "logo/",
   blog: "blog/",
   project: "project/",
+  // Skill icons. The 74 that exist are bundled SVGs under `public/` and are
+  // never uploaded; this is where a replacement would go.
+  icon: "icon/",
 } as const;
 
 export type UploadPrefix = keyof typeof UPLOAD_PREFIXES;

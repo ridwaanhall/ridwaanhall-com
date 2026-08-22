@@ -1,7 +1,7 @@
 import type { PgColumn } from "drizzle-orm/pg-core";
 
 import { MAX_MESSAGE_LENGTH } from "@/lib/data/guestbook-tree";
-import { authUser, guestbookChatmessage, guestbookUserprofile } from "@/lib/db/schema";
+import { account, guestMessage, guestProfile } from "@/lib/db/app-schema";
 
 import { lookup } from "@/lib/admin/sql";
 
@@ -18,10 +18,10 @@ import type { AdminListModel } from "@/lib/admin/list";
  * someone has set it to this week and is not unique. The admin identifies rows
  * by the stable, unique thing.
  */
-export const username = (fk: PgColumn) => lookup<string>(authUser.username, authUser.id, fk);
+export const username = (fk: PgColumn) => lookup<string>(account.username, account.id, fk);
 
 /** The account's email, which Django searched as `user__email`. */
-export const userEmail = (fk: PgColumn) => lookup<string>(authUser.email, authUser.id, fk);
+export const userEmail = (fk: PgColumn) => lookup<string>(account.email, account.id, fk);
 
 /** Django's `message_preview` -- the first 50 characters, no ellipsis. */
 function preview(message: string, limit: number): string {
@@ -31,25 +31,25 @@ function preview(message: string, limit: number): string {
 // --- ChatMessage -------------------------------------------------------------
 
 export type ChatMessageRow = {
-  id: number;
+  id: string;
   user: string;
   message: string;
   timestamp: string;
   isPinned: boolean;
 };
 
-const messageUser = username(guestbookChatmessage.userId);
+const messageUser = username(guestMessage.accountId);
 
 export const chatMessageList: AdminListModel<ChatMessageRow> = {
   key: "chat-message",
-  from: guestbookChatmessage,
-  pk: guestbookChatmessage.id,
+  from: guestMessage,
+  pk: guestMessage.id,
   select: {
-    id: guestbookChatmessage.id,
+    id: guestMessage.id,
     user: messageUser,
-    message: guestbookChatmessage.message,
-    timestamp: guestbookChatmessage.timestamp,
-    isPinned: guestbookChatmessage.isPinned,
+    message: guestMessage.body,
+    timestamp: guestMessage.postedAt,
+    isPinned: guestMessage.isPinned,
   },
   columns: [
     // Django led with the user; the message leads here, because that is what
@@ -58,7 +58,7 @@ export const chatMessageList: AdminListModel<ChatMessageRow> = {
     {
       key: "message",
       label: "Message",
-      sort: guestbookChatmessage.message,
+      sort: guestMessage.body,
       value: (row) => preview(row.message, 50),
     },
     { key: "user", label: "User", kind: "muted", sort: messageUser, value: (row) => row.user },
@@ -66,20 +66,20 @@ export const chatMessageList: AdminListModel<ChatMessageRow> = {
       key: "timestamp",
       label: "Posted",
       kind: "datetime",
-      sort: guestbookChatmessage.timestamp,
+      sort: guestMessage.postedAt,
       value: (row) => row.timestamp,
     },
     {
       key: "is_pinned",
       label: "Pinned",
       kind: "bool",
-      sort: guestbookChatmessage.isPinned,
+      sort: guestMessage.isPinned,
       value: (row) => row.isPinned,
     },
   ],
-  filters: [{ key: "is_pinned", label: "Pinned", kind: "boolean", column: guestbookChatmessage.isPinned }],
+  filters: [{ key: "is_pinned", label: "Pinned", kind: "boolean", column: guestMessage.isPinned }],
   search: {
-    fields: [guestbookChatmessage.message, messageUser],
+    fields: [guestMessage.body, messageUser],
     placeholder: "Search message or username",
   },
   // `ordering = ['-timestamp']` on the model.
@@ -90,25 +90,25 @@ export const chatMessageList: AdminListModel<ChatMessageRow> = {
 // --- UserProfile -------------------------------------------------------------
 
 export type UserProfileRow = {
-  id: number;
+  id: string;
   user: string;
   isAuthor: boolean;
   isCoAuthor: boolean;
   coAuthorOrder: number;
 };
 
-const profileUser = username(guestbookUserprofile.userId);
+const profileUser = username(guestProfile.accountId);
 
 export const userProfileList: AdminListModel<UserProfileRow> = {
   key: "user-profile",
-  from: guestbookUserprofile,
-  pk: guestbookUserprofile.id,
+  from: guestProfile,
+  pk: guestProfile.id,
   select: {
-    id: guestbookUserprofile.id,
+    id: guestProfile.id,
     user: profileUser,
-    isAuthor: guestbookUserprofile.isAuthor,
-    isCoAuthor: guestbookUserprofile.isCoAuthor,
-    coAuthorOrder: guestbookUserprofile.coAuthorOrder,
+    isAuthor: guestProfile.isAuthor,
+    isCoAuthor: guestProfile.isCoAuthor,
+    coAuthorOrder: guestProfile.coAuthorOrder,
   },
   columns: [
     { key: "user", label: "User", sort: profileUser, value: (row) => row.user },
@@ -116,32 +116,32 @@ export const userProfileList: AdminListModel<UserProfileRow> = {
       key: "is_author",
       label: "Author",
       kind: "bool",
-      sort: guestbookUserprofile.isAuthor,
+      sort: guestProfile.isAuthor,
       value: (row) => row.isAuthor,
     },
     {
       key: "is_co_author",
       label: "Co-author",
       kind: "bool",
-      sort: guestbookUserprofile.isCoAuthor,
+      sort: guestProfile.isCoAuthor,
       value: (row) => row.isCoAuthor,
     },
     {
       key: "co_author_order",
       label: "Order",
       kind: "number",
-      sort: guestbookUserprofile.coAuthorOrder,
+      sort: guestProfile.coAuthorOrder,
       value: (row) => row.coAuthorOrder,
     },
   ],
   filters: [
-    { key: "is_author", label: "Author", kind: "boolean", column: guestbookUserprofile.isAuthor },
-    { key: "is_co_author", label: "Co-author", kind: "boolean", column: guestbookUserprofile.isCoAuthor },
+    { key: "is_author", label: "Author", kind: "boolean", column: guestProfile.isAuthor },
+    { key: "is_co_author", label: "Co-author", kind: "boolean", column: guestProfile.isCoAuthor },
   ],
   search: {
     // Django searched `user__username` and `user__email`; both are on the same
     // related row, so both are subqueries against it.
-    fields: [profileUser, userEmail(guestbookUserprofile.userId)],
+    fields: [profileUser, userEmail(guestProfile.accountId)],
     placeholder: "Search username or email",
   },
   defaultSort: { key: "user", dir: "asc" },
@@ -150,8 +150,8 @@ export const userProfileList: AdminListModel<UserProfileRow> = {
 
 export const chatMessageForm: AdminFormModel = {
   key: "chat-message",
-  from: guestbookChatmessage,
-  pk: guestbookChatmessage.id,
+  from: guestMessage,
+  pk: guestMessage.id,
   label: (values) => preview(String(values.message ?? ""), 50) || "Message",
   // A message is written by a reader in the guestbook. There is no such thing as
   // one the site owner posted from the admin, and inventing one would put words
@@ -160,9 +160,9 @@ export const chatMessageForm: AdminFormModel = {
   deleteWarning: "Replies to this message go with it -- the whole branch is removed.",
   cascades: [
     {
-      table: guestbookChatmessage,
-      fk: guestbookChatmessage.replyToId,
-      pk: guestbookChatmessage.id,
+      table: guestMessage,
+      fk: guestMessage.replyToId,
+      pk: guestMessage.id,
       selfReference: true,
     },
   ],
@@ -173,7 +173,7 @@ export const chatMessageForm: AdminFormModel = {
       fields: [
         {
           name: "message",
-          column: guestbookChatmessage.message,
+          column: guestMessage.body,
           label: "Message",
           kind: "textarea",
           required: true,
@@ -187,7 +187,7 @@ export const chatMessageForm: AdminFormModel = {
       fields: [
         {
           name: "user",
-          column: guestbookChatmessage.userId,
+          column: guestMessage.accountId,
           display: messageUser,
           label: "Posted by",
           kind: "text",
@@ -195,7 +195,7 @@ export const chatMessageForm: AdminFormModel = {
         },
         {
           name: "timestamp",
-          column: guestbookChatmessage.timestamp,
+          column: guestMessage.postedAt,
           label: "Posted",
           kind: "datetime",
           readOnly: true,
@@ -213,7 +213,7 @@ export const chatMessageForm: AdminFormModel = {
            * cap, so the toggle stays in the one place that implements it.
            */
           name: "isPinned",
-          column: guestbookChatmessage.isPinned,
+          column: guestMessage.isPinned,
           label: "Pinned",
           kind: "checkbox",
           readOnly: true,
@@ -226,8 +226,8 @@ export const chatMessageForm: AdminFormModel = {
 
 export const userProfileForm: AdminFormModel = {
   key: "user-profile",
-  from: guestbookUserprofile,
-  pk: guestbookUserprofile.id,
+  from: guestProfile,
+  pk: guestProfile.id,
   label: (values) => String(values.user ?? "Profile"),
   // Created by a `post_save` signal on the account and paired with it one to
   // one, so there is nothing to add and removing one would leave a signed-in
@@ -239,7 +239,7 @@ export const userProfileForm: AdminFormModel = {
       fields: [
         {
           name: "user",
-          column: guestbookUserprofile.userId,
+          column: guestProfile.accountId,
           display: profileUser,
           label: "Account",
           kind: "text",
@@ -247,21 +247,21 @@ export const userProfileForm: AdminFormModel = {
         },
         {
           name: "isAuthor",
-          column: guestbookUserprofile.isAuthor,
+          column: guestProfile.isAuthor,
           label: "Author",
           kind: "checkbox",
           help: "Carries the Author badge, and may pin and delete any message.",
         },
         {
           name: "isCoAuthor",
-          column: guestbookUserprofile.isCoAuthor,
+          column: guestProfile.isCoAuthor,
           label: "Co-author",
           kind: "checkbox",
           help: "The same permissions, with the Co-Author badge.",
         },
         {
           name: "coAuthorOrder",
-          column: guestbookUserprofile.coAuthorOrder,
+          column: guestProfile.coAuthorOrder,
           label: "Co-author order",
           kind: "number",
           min: 0,

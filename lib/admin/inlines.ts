@@ -1,6 +1,6 @@
 import "server-only";
 
-import { asc, eq, getTableColumns, inArray } from "drizzle-orm";
+import { and, asc, eq, getTableColumns, inArray } from "drizzle-orm";
 
 import {
   inlineCountName,
@@ -13,6 +13,7 @@ import {
 } from "@/lib/admin/form";
 import { applyImageFields, imageFields } from "@/lib/admin/images";
 import { db } from "@/lib/db/client";
+import { isUuid } from "@/lib/utils/uuid";
 
 /**
  * Loading, diffing and writing the child rows of a record.
@@ -28,22 +29,55 @@ import { db } from "@/lib/db/client";
  * inline that declares a column to put it in.
  */
 
-export type InlineRow = FormValues & { __id: number | null };
+export type InlineRow = FormValues & { __id: string | null };
+
+
+/**
+ * Which rows belong to this inline.
+ *
+ * The parent key, and a `kind` too where the child table holds more than one
+ * list -- see `scope` on `AdminInline`. Written once so reading, counting and
+ * deleting cannot disagree about it: an inline that loaded one scope and
+ * deleted another would quietly take the neighbouring list with it.
+ */
+/** An inline table's `position` column, where it has one. */
+function positionColumn(inline: AdminInline) {
+  return Object.entries(getTableColumns(inline.table)).find(([name]) => name === "position")?.[1];
+}
+
+function inlineWhere(inline: AdminInline, parentId: string) {
+  const parent = eq(inline.parent, parentId);
+  return inline.scope ? and(parent, eq(inline.scope.column, inline.scope.value)) : parent;
+}
 
 /** The child rows of one parent, in the order the inline declares. */
 export async function loadInlineRows(
   inline: AdminInline,
-  parentId: number,
+  parentId: string,
 ): Promise<InlineRow[]> {
   const shape = Object.fromEntries(inline.fields.map((field) => [field.name, field.column]));
   const rows = (await db
     .select({ ...shape, [INLINE_ID]: inline.pk })
     .from(inline.table)
-    .where(eq(inline.parent, parentId))
-    .orderBy(asc(inline.orderBy ?? inline.orderColumn ?? inline.pk))) as Record<string, unknown>[];
+    .where(inlineWhere(inline, parentId))
+    /*
+     * Two keys, and the second one matters. Ordering by a nullable column --
+     * the journey orders by `occurred_at` -- leaves every row that has no value
+     * tied, and Postgres is free to return ties in any order. That was invisible
+     * while keys were serial: rows came back in insertion order because that is
+     * the order they were on disk, and it happened to be right.
+     *
+     * A uuid key has no such accident. `position` is the declared fallback and
+     * carries the order rows were entered in, so a set of undated steps stays
+     * put instead of shuffling between two loads of the same form.
+     */
+    .orderBy(
+      asc(inline.orderBy ?? inline.orderColumn ?? inline.pk),
+      asc(inline.orderColumn ?? positionColumn(inline) ?? inline.pk),
+    )) as Record<string, unknown>[];
 
   return rows.map((row) => {
-    const values: InlineRow = { __id: Number(row[INLINE_ID]) };
+    const values: InlineRow = { __id: String(row[INLINE_ID]) };
     for (const field of inline.fields) {
       const raw = row[field.name];
       values[field.name] = toFormValue(field, raw);
@@ -89,14 +123,14 @@ export type InlineResult =
  */
 export async function inlineImageKeys(
   model: { inlines?: AdminInline[] },
-  parentId: number,
+  parentId: string,
 ): Promise<string[]> {
   const keys: string[] = [];
   for (const inline of model.inlines ?? []) {
     const pictures = imageFields(inline.fields);
     if (pictures.length === 0) continue;
     const shape = Object.fromEntries(pictures.map((field) => [field.name, field.column]));
-    const rows = await db.select(shape).from(inline.table).where(eq(inline.parent, parentId));
+    const rows = await db.select(shape).from(inline.table).where(inlineWhere(inline, parentId));
     for (const row of rows) {
       for (const value of Object.values(row)) if (typeof value === "string" && value) keys.push(value);
     }
@@ -115,17 +149,17 @@ export async function inlineImageKeys(
 export async function saveInlines(
   inlines: AdminInline[],
   data: FormData,
-  parentId: number,
+  parentId: string,
 ): Promise<InlineResult> {
   const errors: Record<string, string> = {};
   const stale: string[] = [];
-  const work: { inline: AdminInline; rows: { id: number | null; values: FormValues }[] }[] = [];
+  const work: { inline: AdminInline; rows: { id: string | null; values: FormValues }[] }[] = [];
 
   for (const inline of inlines) {
     const count = Number(data.get(inlineCountName(inline.name)) ?? 0);
     if (!Number.isInteger(count) || count < 0 || count > 200) continue;
 
-    const rows: { id: number | null; values: FormValues }[] = [];
+    const rows: { id: string | null; values: FormValues }[] = [];
     for (let index = 0; index < count; index++) {
       const prefix = `${inline.name}:${index}:`;
       // A row the editor removed leaves a gap in the numbering rather than
@@ -142,8 +176,8 @@ export async function saveInlines(
       }
 
       const rawId = String(data.get(inlineFieldName(inline.name, index, INLINE_ID)) ?? "");
-      const id = rawId ? Number(rawId) : null;
-      if (id !== null && (!Number.isInteger(id) || id <= 0)) continue;
+      const id = rawId ? String(rawId) : null;
+      if (id !== null && !isUuid(id)) continue;
 
       // Uploads for this row, handled exactly as the parent's are: the field
       // names are prefixed, and the rest is the same three cases.
@@ -172,10 +206,10 @@ export async function saveInlines(
     const existing = await db
       .select({ id: inline.pk })
       .from(inline.table)
-      .where(eq(inline.parent, parentId));
+      .where(inlineWhere(inline, parentId));
 
-    const kept = new Set(rows.map((row) => row.id).filter((id): id is number => id !== null));
-    const removed = existing.map((row) => Number(row.id)).filter((id) => !kept.has(id));
+    const kept = new Set(rows.map((row) => row.id).filter((id): id is string => id !== null));
+    const removed = existing.map((row) => String(row.id)).filter((id) => !kept.has(id));
     if (removed.length > 0) {
       // Their files become candidates too, gathered before the rows go.
       const pictures = imageFields(inline.fields);
@@ -200,9 +234,21 @@ export async function saveInlines(
       return entry[0];
     };
     const parentKey = columns.find(([, column]) => column === inline.parent)?.[0];
+    /*
+     * Where the order goes. An inline that declares `orderColumn` offers move
+     * buttons and stores what they produce.
+     *
+     * An inline that does not still stamps a `position` if its table has one,
+     * and that is not the same thing: nothing is offering to reorder these, but
+     * the rows do need to come back the way they went in. The journey sorts by
+     * `occurred_at`, which is nullable, and a set of undated steps is a set of
+     * ties -- ordered by whatever Postgres feels like, once serial keys stopped
+     * supplying an accidental insertion order. This is the tiebreak
+     * `loadInlineRows` reads.
+     */
     const orderKey = inline.orderColumn
       ? columns.find(([, column]) => column === inline.orderColumn)?.[0]
-      : undefined;
+      : columns.find(([name]) => name === "position")?.[0];
 
     for (const [index, row] of rows.entries()) {
       const payload: Record<string, unknown> = {};
@@ -216,6 +262,13 @@ export async function saveInlines(
 
       if (row.id === null) {
         if (parentKey) payload[parentKey] = parentId;
+        // A scoped inline stamps its own kind, so a new row lands in the list
+        // that is being edited rather than in whichever one sorts first.
+        if (inline.scope) {
+          const columns = Object.entries(getTableColumns(inline.table));
+          const key = columns.find(([, column]) => column === inline.scope?.column)?.[0];
+          if (key) payload[key] = inline.scope.value;
+        }
         await db.insert(inline.table).values(payload);
       } else {
         await db.update(inline.table).set(payload).where(eq(inline.pk, row.id));
@@ -230,7 +283,7 @@ export async function saveInlines(
 async function currentInlineImages(
   inline: AdminInline,
   fields: FormField[],
-  id: number,
+  id: string,
 ): Promise<Record<string, string>> {
   const shape = Object.fromEntries(fields.map((field) => [field.name, field.column]));
   const [row] = await db.select(shape).from(inline.table).where(eq(inline.pk, id)).limit(1);

@@ -254,7 +254,7 @@ export default async function ProjectDetailPage({
           {/* Behind a boundary for the reason given on the blog detail page. */}
           <Suspense fallback={<CommentSectionSkeleton />}>
             <CommentSectionFor
-              label="projects.project"
+              label="project"
               targetId={project.id}
               slug={project.slug}
             />

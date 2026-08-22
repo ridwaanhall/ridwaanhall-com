@@ -64,7 +64,7 @@ async function Record({ params }: { params: Params }) {
    */
   if (!entry) return <NothingHere message="No such model." />;
 
-  const recordId = Number(id);
+  const recordId = id;
   const form = formModelFor(key);
   const missing = (
     <NothingHere

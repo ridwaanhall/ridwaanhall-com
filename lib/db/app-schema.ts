@@ -155,6 +155,7 @@ export const education = app.table("education", {
   years: text().notNull().default(''),
   dateStart: date("date_start"),
   dateEnd: date("date_end"),
+  position: integer().notNull().default(0),
 });
 
 export const educationAchievement = app.table("education_achievement", {
@@ -425,6 +426,7 @@ export const skill = app.table("skill", {
   description: text().notNull().default(''),
   categoryId: uuid("category_id").references((): AnyPgColumn => category.id),
   iconId: uuid("icon_id").references((): AnyPgColumn => mediaAsset.id),
+  position: integer().notNull().default(0),
 });
 
 export const tag = app.table("tag", {

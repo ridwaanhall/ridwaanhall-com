@@ -87,7 +87,7 @@ export function RecordForm({
 }: {
   modelKey: string;
   /** `null` when creating. */
-  id: number | null;
+  id: string | null;
   fieldsets: ClientFieldset[];
   inlines?: ClientInline[];
   /** The child rows of each inline, keyed by the inline's name. */
@@ -146,7 +146,7 @@ export function RecordForm({
     if (!confirmed) return;
 
     startDelete(async () => {
-      const result = await deleteRecord(modelKey, id as number);
+      const result = await deleteRecord(modelKey, id as string);
       if (!result.ok) {
         notify(result.error, "error");
         return;

@@ -12,6 +12,9 @@ import {
 } from "@/lib/admin/form";
 import type { FilterChoice } from "@/lib/admin/list";
 import { db } from "@/lib/db/client";
+import { imageFields } from "@/lib/admin/images";
+import { keyForMediaId } from "@/lib/admin/media";
+import { isUuid } from "@/lib/utils/uuid";
 
 /**
  * Load one record in the shape its form expects, or `null` if there is none.
@@ -24,14 +27,39 @@ import { db } from "@/lib/db/client";
  */
 export async function loadFormValues(
   model: AdminFormModel,
-  id: number,
+  id: string,
 ): Promise<FormValues | null> {
-  if (!Number.isInteger(id) || id <= 0) return null;
+  /*
+   * An empty id means "the one row", which is how the singleton screens ask.
+   * Django's `SingletonModelAdmin` forced `pk=1` and every caller hard-coded
+   * that; with uuid keys there is no id to hard-code, so the screen asks for
+   * the row and the model says there is only ever one.
+   */
+  /*
+   * A key that is not a uuid is "no such record", not an error. Postgres does
+   * not agree -- comparing a uuid column to `1` raises `22P02 invalid input
+   * syntax`, which surfaces as a 500 rather than the not-found screen -- so
+   * the shape is checked here before the value reaches a query.
+   */
+  if (id && !isUuid(id)) return null;
 
-  const [row] = await db.select(formSelect(model)).from(model.from).where(eq(model.pk, id)).limit(1);
+  const [row] = id
+    ? await db.select(formSelect(model)).from(model.from).where(eq(model.pk, id)).limit(1)
+    : await db.select(formSelect(model)).from(model.from).limit(1);
   if (!row) return null;
 
+  // Whichever row that turned out to be is the one the inlines and the save
+  // path have to target.
+  const rowId = String((row as Record<string, unknown>)[model.pk.name] ?? id);
+
   const values = toFormValues(model, row as Record<string, unknown>);
+
+  // The column stores an asset id; the image control shows a storage key. See
+  // `lib/admin/media.ts` for why the seam is here rather than in either half.
+  for (const field of imageFields(formFields(model))) {
+    const stored = values[field.name];
+    values[field.name] = typeof stored === "string" ? await keyForMediaId(stored) : "";
+  }
 
   // A many-to-many has no column on this record, so it is read from the join
   // table rather than from the row.
@@ -41,11 +69,30 @@ export async function loadFormValues(
     const linked = await db
       .select({ id: source.targetFk })
       .from(source.join)
-      .where(eq(source.ownerFk, id));
+      .where(eq(source.ownerFk, rowId));
     values[field.name] = linked.map((entry) => String(entry.id));
   }
 
   return values;
+}
+
+/**
+ * The key of the row behind a singleton screen.
+ *
+ * Django's `SingletonModelAdmin` forced `pk=1`, so every caller could write the
+ * key as a literal and the screens did: the form, its inlines and the save
+ * action all carried a hard-coded id. There is nothing to hard-code against a
+ * uuid, and the empty string that replaced it is not a key either -- it reaches
+ * a child's foreign key as `profile_id = ''` and Postgres rejects it as
+ * malformed rather than matching nothing.
+ *
+ * So the row is asked for its own id, once, and everything downstream is given
+ * a real one. `limit(1)` with no `where` is the whole query because the model
+ * guarantees there is exactly one row.
+ */
+export async function singletonId(model: AdminFormModel): Promise<string | null> {
+  const [row] = await db.select({ id: model.pk }).from(model.from).limit(1);
+  return row ? String(row.id) : null;
 }
 
 /** The values a create form starts with: empty, and unchecked. */

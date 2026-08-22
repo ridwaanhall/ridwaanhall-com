@@ -3,6 +3,7 @@ import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 
 import { DjangoAdapter, touchLogin } from "@/lib/auth/adapter";
+import { isUuid } from "@/lib/utils/uuid";
 
 /**
  * Auth.js v5 over Django's existing accounts.
@@ -64,9 +65,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
 
   callbacks: {
-    /** `token.sub` is the Django `auth_user.id`, as a string. */
+    /**
+     * `token.sub` is the account's key, and the only place it is checked.
+     *
+     * It was `auth_user.id`, an integer as a string. Keys are uuids now, and
+     * sessions are **thirty-day JWTs** -- so every reader signed in before the
+     * schema moved is still presenting a token asserting `sub: "1"`, and will
+     * be for a month. That subject names no row, and worse, it is not even a
+     * well-formed key: a `uuid` column compared against it raises
+     * `22P02 invalid input syntax for type uuid`, which surfaced as a console
+     * error on the sidebar's admin link and would have surfaced as a 500 on the
+     * first server action such a reader submitted.
+     *
+     * A token whose subject is not a uuid is one this application can no longer
+     * identify anybody by, so it does not become a signed-in session. The
+     * reader is signed out and signs in again, which mints a token carrying
+     * their real key. Done here rather than at each of the six places that read
+     * `session.user.id`, because this is the one place a token becomes a
+     * session -- and because a guard on each of those would leave the token
+     * itself in circulation, half-trusted.
+     */
     session({ session, token }) {
-      if (token.sub) session.user.id = token.sub;
+      if (token.sub && isUuid(token.sub)) session.user.id = token.sub;
       return session;
     },
   },
@@ -89,7 +109,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (!account || !user.id) return;
       try {
         await touchLogin(
-          Number(user.id),
+          user.id,
           account.provider,
           account.providerAccountId,
           profile ?? null,

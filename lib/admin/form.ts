@@ -1,5 +1,6 @@
 import type { SQL } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
+import { isUuid } from "@/lib/utils/uuid";
 
 import type { FilterChoice } from "@/lib/admin/list";
 import type { UploadPrefix } from "@/lib/storage/keys";
@@ -159,6 +160,19 @@ export type AdminInline = {
   orderColumn?: PgColumn;
   /** How rows are loaded. Defaults to `orderColumn`, then the primary key. */
   orderBy?: PgColumn;
+  /**
+   * A second key this inline is scoped by, on top of the parent.
+   *
+   * Several child tables hold more than one list: `hiring_list_item` carries
+   * the application process, the culture notes and both requirement lists,
+   * discriminated by `kind`. They were four JSONB arrays on one row before, and
+   * one table with a discriminator is what replaced them -- so an inline needs
+   * to say which of the lists it edits, both when reading and when inserting.
+   *
+   * Without this an inline would load every kind at once and save them all as
+   * whichever kind it thought it was.
+   */
+  scope?: { column: PgColumn; value: string };
 };
 
 /** The name one inline field posts under. */
@@ -284,9 +298,10 @@ export type FormValues = Record<string, FormValue>;
 
 export type ValidationContext = {
   /** `null` when creating. */
-  id: number | null;
+  id: string | null;
   /** The staff user doing the editing, for rules about acting on yourself. */
-  actorId: number;
+  /** The signed-in staff account's uuid. */
+  actorId: string;
 };
 
 export type AdminFormModel = {
@@ -512,9 +527,8 @@ export function parseFields(
       // `saveManyToMany`, never as a column on this record.
       values[field.name] = data
         .getAll(nameOf(field))
-        .map((entry) => Number(entry))
-        .filter((entry) => Number.isInteger(entry) && entry > 0)
-        .map(String);
+        .map((entry) => (typeof entry === "string" ? entry.trim() : ""))
+        .filter(isUuid);
       continue;
     }
 
@@ -596,11 +610,19 @@ export function parseFields(
         break;
       }
       case "reference": {
-        const parsed = Number(text);
-        if (!Number.isInteger(parsed) || parsed <= 0) {
+        /*
+         * A key, and keys are uuids. This read the value with `Number` and
+         * required a positive integer, which was right while they were serial
+         * and rejects every real one now -- the form came back saying the
+         * category chosen from its own select was not a valid choice.
+         *
+         * Whether the key exists is not settled here. That is the foreign key's
+         * job, and `saveRecord` turns its violation into a message.
+         */
+        if (!isUuid(text)) {
           errors[field.name] = `${field.label} is not a valid choice.`;
         } else {
-          values[field.name] = parsed;
+          values[field.name] = text;
         }
         break;
       }

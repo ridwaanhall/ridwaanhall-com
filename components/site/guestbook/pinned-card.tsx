@@ -28,7 +28,7 @@ export function PinnedCard({
   pinned: PinnedMessage;
   canPin: boolean;
   busy: boolean;
-  onUnpin: (id: number) => void;
+  onUnpin: (id: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [clamped, setClamped] = useState(false);

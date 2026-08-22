@@ -1,7 +1,7 @@
 import { alias } from "drizzle-orm/pg-core";
 
 import { LEGAL_DOCUMENT_TYPE_CHOICES } from "@/lib/admin/choices";
-import { legalLegaldocument, legalLegalsection } from "@/lib/db/schema";
+import { legalDocument, legalSection } from "@/lib/db/app-schema";
 
 import { countWhere, lookup } from "@/lib/admin/sql";
 
@@ -16,48 +16,48 @@ const documentTypeLabel = (value: string) =>
   LEGAL_DOCUMENT_TYPE_CHOICES.find((choice) => choice.value === value)?.label ?? value;
 
 /** How many sections hang off this document -- Django's `section_count`. */
-const sectionCount = countWhere(legalLegalsection.documentId, legalLegaldocument.id);
+const sectionCount = countWhere(legalSection.documentId, legalDocument.id);
 
 export type LegalDocumentRow = {
-  id: number;
+  id: string;
   title: string;
   documentType: string;
   slug: string;
   isPublished: boolean;
-  sortOrder: number;
+  position: number;
   sections: number;
   lastUpdated: string;
 };
 
 export const legalDocumentList: AdminListModel<LegalDocumentRow> = {
   key: "legal-document",
-  from: legalLegaldocument,
-  pk: legalLegaldocument.id,
+  from: legalDocument,
+  pk: legalDocument.id,
   select: {
-    id: legalLegaldocument.id,
-    title: legalLegaldocument.title,
-    documentType: legalLegaldocument.documentType,
-    slug: legalLegaldocument.slug,
-    isPublished: legalLegaldocument.isPublished,
-    sortOrder: legalLegaldocument.sortOrder,
+    id: legalDocument.id,
+    title: legalDocument.title,
+    documentType: legalDocument.documentType,
+    slug: legalDocument.slug,
+    isPublished: legalDocument.isPublished,
+    position: legalDocument.position,
     sections: sectionCount,
-    lastUpdated: legalLegaldocument.lastUpdated,
+    lastUpdated: legalDocument.lastUpdated,
   },
   columns: [
-    { key: "title", label: "Title", sort: legalLegaldocument.title, value: (row) => row.title },
+    { key: "title", label: "Title", sort: legalDocument.title, value: (row) => row.title },
     {
       key: "document_type",
       label: "Type",
       kind: "muted",
-      sort: legalLegaldocument.documentType,
+      sort: legalDocument.documentType,
       value: (row) => documentTypeLabel(row.documentType),
     },
-    { key: "slug", label: "Slug", kind: "code", sort: legalLegaldocument.slug, value: (row) => row.slug },
+    { key: "slug", label: "Slug", kind: "code", sort: legalDocument.slug, value: (row) => row.slug },
     {
       key: "is_published",
       label: "Published",
       kind: "bool",
-      sort: legalLegaldocument.isPublished,
+      sort: legalDocument.isPublished,
       value: (row) => row.isPublished,
     },
     // `sort_order` drives the ordering but was not in `list_display`, which
@@ -66,15 +66,15 @@ export const legalDocumentList: AdminListModel<LegalDocumentRow> = {
       key: "sort_order",
       label: "Order",
       kind: "number",
-      sort: legalLegaldocument.sortOrder,
-      value: (row) => row.sortOrder,
+      sort: legalDocument.position,
+      value: (row) => row.position,
     },
     { key: "sections", label: "Sections", kind: "number", sort: sectionCount, value: (row) => row.sections },
     {
       key: "last_updated",
       label: "Updated",
       kind: "datetime",
-      sort: legalLegaldocument.lastUpdated,
+      sort: legalDocument.lastUpdated,
       value: (row) => row.lastUpdated,
     },
   ],
@@ -83,13 +83,13 @@ export const legalDocumentList: AdminListModel<LegalDocumentRow> = {
       key: "document_type",
       label: "Type",
       kind: "choice",
-      column: legalLegaldocument.documentType,
+      column: legalDocument.documentType,
       choices: LEGAL_DOCUMENT_TYPE_CHOICES,
     },
-    { key: "is_published", label: "Published", kind: "boolean", column: legalLegaldocument.isPublished },
+    { key: "is_published", label: "Published", kind: "boolean", column: legalDocument.isPublished },
   ],
   search: {
-    fields: [legalLegaldocument.title, legalLegaldocument.slug, legalLegaldocument.summary],
+    fields: [legalDocument.title, legalDocument.slug, legalDocument.summary],
     placeholder: "Search title, slug or summary",
   },
   // `ordering = ["sort_order", "title"]`; only the first is expressible as one
@@ -101,9 +101,9 @@ export const legalDocumentList: AdminListModel<LegalDocumentRow> = {
 // --- LegalSection ------------------------------------------------------------
 
 const documentTitle = lookup<string>(
-  legalLegaldocument.title,
-  legalLegaldocument.id,
-  legalLegalsection.documentId,
+  legalDocument.title,
+  legalDocument.id,
+  legalSection.documentId,
 );
 
 /**
@@ -113,15 +113,15 @@ const documentTitle = lookup<string>(
  * offers top-level sections of the same document as a parent -- so this never
  * needs to walk further than one hop.
  */
-const parentSection = alias(legalLegalsection, "parent_section");
+const parentSection = alias(legalSection, "parent_section");
 const parentHeading = lookup<string>(
   parentSection.heading,
   parentSection.id,
-  legalLegalsection.parentId,
+  legalSection.parentId,
 );
 
 export type LegalSectionRow = {
-  id: number;
+  id: string;
   heading: string;
   document: string;
   parent: string | null;
@@ -130,32 +130,32 @@ export type LegalSectionRow = {
 
 export const legalSectionList: AdminListModel<LegalSectionRow> = {
   key: "legal-section",
-  from: legalLegalsection,
-  pk: legalLegalsection.id,
+  from: legalSection,
+  pk: legalSection.id,
   select: {
-    id: legalLegalsection.id,
-    heading: legalLegalsection.heading,
+    id: legalSection.id,
+    heading: legalSection.heading,
     document: documentTitle,
     parent: parentHeading,
-    order: legalLegalsection.order,
+    order: legalSection.position,
   },
   columns: [
-    { key: "heading", label: "Heading", sort: legalLegalsection.heading, value: (row) => row.heading },
+    { key: "heading", label: "Heading", sort: legalSection.heading, value: (row) => row.heading },
     { key: "document", label: "Document", kind: "muted", sort: documentTitle, value: (row) => row.document },
     { key: "parent", label: "Parent", kind: "muted", sort: parentHeading, value: (row) => row.parent },
-    { key: "order", label: "Order", kind: "number", sort: legalLegalsection.order, value: (row) => row.order },
+    { key: "order", label: "Order", kind: "number", sort: legalSection.position, value: (row) => row.order },
   ],
   filters: [
     {
       key: "document",
       label: "Document",
       kind: "choice",
-      column: legalLegalsection.documentId,
-      choices: { table: legalLegaldocument, value: legalLegaldocument.id, label: legalLegaldocument.title },
+      column: legalSection.documentId,
+      choices: { table: legalDocument, value: legalDocument.id, label: legalDocument.title },
     },
   ],
   search: {
-    fields: [legalLegalsection.heading, legalLegalsection.body],
+    fields: [legalSection.heading, legalSection.body],
     placeholder: "Search heading or body",
   },
   // `ordering = ["order", "id"]`. Sections are edited through their document's
@@ -167,19 +167,19 @@ export const legalSectionList: AdminListModel<LegalSectionRow> = {
 
 export const legalDocumentForm: AdminFormModel = {
   key: "legal-document",
-  from: legalLegaldocument,
-  pk: legalLegaldocument.id,
+  from: legalDocument,
+  pk: legalDocument.id,
   label: (values) => String(values.title ?? "Document"),
   deleteWarning: "Every section of this document is deleted with it.",
   cascades: [
-    { table: legalLegalsection, fk: legalLegalsection.documentId, pk: legalLegalsection.id },
+    { table: legalSection, fk: legalSection.documentId, pk: legalSection.id },
   ],
   fieldsets: [
     {
       fields: [
         {
           name: "title",
-          column: legalLegaldocument.title,
+          column: legalDocument.title,
           label: "Title",
           kind: "text",
           required: true,
@@ -187,7 +187,7 @@ export const legalDocumentForm: AdminFormModel = {
         },
         {
           name: "slug",
-          column: legalLegaldocument.slug,
+          column: legalDocument.slug,
           label: "Slug",
           kind: "slug",
           maxLength: 200,
@@ -199,7 +199,7 @@ export const legalDocumentForm: AdminFormModel = {
         },
         {
           name: "documentType",
-          column: legalLegaldocument.documentType,
+          column: legalDocument.documentType,
           label: "Type",
           kind: "select",
           required: true,
@@ -208,14 +208,14 @@ export const legalDocumentForm: AdminFormModel = {
         },
         {
           name: "sortOrder",
-          column: legalLegaldocument.sortOrder,
+          column: legalDocument.position,
           label: "Order",
           kind: "number",
           min: 0,
         },
         {
           name: "isPublished",
-          column: legalLegaldocument.isPublished,
+          column: legalDocument.isPublished,
           label: "Published",
           kind: "checkbox",
           help: "An unpublished document 404s and stays out of the sitemap.",
@@ -227,7 +227,7 @@ export const legalDocumentForm: AdminFormModel = {
       fields: [
         {
           name: "summary",
-          column: legalLegaldocument.summary,
+          column: legalDocument.summary,
           label: "Summary",
           kind: "textarea",
           help: "Shown under the title, and used as the page's meta description.",
@@ -239,15 +239,15 @@ export const legalDocumentForm: AdminFormModel = {
 
 export const legalSectionForm: AdminFormModel = {
   key: "legal-section",
-  from: legalLegalsection,
-  pk: legalLegalsection.id,
+  from: legalSection,
+  pk: legalSection.id,
   label: (values) => String(values.heading ?? "Section"),
   deleteWarning: "Any section nested under this one is deleted with it.",
   cascades: [
     {
-      table: legalLegalsection,
-      fk: legalLegalsection.parentId,
-      pk: legalLegalsection.id,
+      table: legalSection,
+      fk: legalSection.parentId,
+      pk: legalSection.id,
       selfReference: true,
     },
   ],
@@ -256,7 +256,7 @@ export const legalSectionForm: AdminFormModel = {
       fields: [
         {
           name: "heading",
-          column: legalLegalsection.heading,
+          column: legalSection.heading,
           label: "Heading",
           kind: "text",
           required: true,
@@ -264,14 +264,14 @@ export const legalSectionForm: AdminFormModel = {
         },
         {
           name: "documentId",
-          column: legalLegalsection.documentId,
+          column: legalSection.documentId,
           label: "Document",
           kind: "reference",
           required: true,
           reference: {
-            table: legalLegaldocument,
-            value: legalLegaldocument.id,
-            label: legalLegaldocument.title,
+            table: legalDocument,
+            value: legalDocument.id,
+            label: legalDocument.title,
           },
         },
         {
@@ -288,19 +288,19 @@ export const legalSectionForm: AdminFormModel = {
            * the renderer walks a single hop and simply ignores anything deeper.
            */
           name: "parentId",
-          column: legalLegalsection.parentId,
+          column: legalSection.parentId,
           label: "Nested under",
           kind: "reference",
           reference: {
-            table: legalLegalsection,
-            value: legalLegalsection.id,
-            label: legalLegalsection.heading,
+            table: legalSection,
+            value: legalSection.id,
+            label: legalSection.heading,
           },
           help: "Leave blank for a top-level section. Nesting is one level deep.",
         },
         {
           name: "order",
-          column: legalLegalsection.order,
+          column: legalSection.position,
           label: "Order",
           kind: "number",
           min: 0,
@@ -312,13 +312,13 @@ export const legalSectionForm: AdminFormModel = {
       fields: [
         {
           name: "body",
-          column: legalLegalsection.body,
+          column: legalSection.body,
           label: "Body",
           kind: "textarea",
         },
         {
           name: "items",
-          column: legalLegalsection.items,
+          column: legalSection.items,
           label: "Definitions",
           kind: "key-value",
           keyLabel: "Term",

@@ -24,11 +24,9 @@ import { config } from "dotenv";
 config({ path: ".env.local", quiet: true });
 
 const { db, pool } = await import("../lib/db/client.ts");
-const { commentIdsOnTarget, contentTypeId, getCommentSection } = await import(
-  "../lib/data/comments.ts"
-);
+const { commentIdsOnTarget, getCommentSection } = await import("../lib/data/comments.ts");
 const { canDeleteComment } = await import("../lib/data/comment-shapes.ts");
-const { commentsComment } = await import("../lib/db/schema.ts");
+const { comment } = await import("../lib/db/app-schema.ts");
 const { sql } = await import("drizzle-orm");
 
 const checks = [];
@@ -38,7 +36,7 @@ const check = (name, pass, detail = "") => {
 };
 
 const count = async (database) =>
-  (await database.execute(sql`select count(*)::int c from comments_comment`)).rows[0].c;
+  (await database.execute(sql`select count(*)::int c from app.comment`)).rows[0].c;
 
 const before = await count(db);
 console.log(`live comment rows before: ${before}\n`);
@@ -47,35 +45,39 @@ const ROLLBACK = Symbol("rollback");
 
 try {
   await db.transaction(async (tx) => {
-    const blogType = await contentTypeId("blog.blogpost", tx);
-    const projectType = await contentTypeId("projects.project", tx);
-    check("content types resolve by natural key", blogType > 0 && projectType > 0,
-      `blog=${blogType} project=${projectType}`);
-    check("they are different tables", blogType !== projectType);
+    /*
+     * The target is named directly now. A comment used to reach its subject
+     * through `content_type_id`, a foreign key into a table of every model in
+     * the project, so "what is this a comment on" was a join and picking a
+     * target meant resolving `blog.blogpost` to a number first. `target_kind`
+     * holds the kind and a CHECK constraint holds the vocabulary.
+     */
+    const BLOG = "blog_post";
+    const PROJECT = "project";
 
-    // A real post and project, and two real users so the FKs hold.
-    const [{ id: postId }] = (await tx.execute(sql`select id from blog_blogpost order by id limit 1`)).rows;
-    const [{ id: projectId }] = (await tx.execute(sql`select id from projects_project order by id limit 1`)).rows;
+    // A real post and project, and two real accounts so the FKs hold.
+    const [{ id: postId }] = (await tx.execute(sql`select id from app.blog_post order by slug limit 1`)).rows;
+    const [{ id: projectId }] = (await tx.execute(sql`select id from app.project order by slug limit 1`)).rows;
     const [{ id: authorId }] = (await tx.execute(
-      sql`select u.id from auth_user u join guestbook_userprofile p on p.user_id = u.id where p.is_author order by u.id limit 1`,
+      sql`select a.id from app.account a join app.guest_profile p on p.account_id = a.id where p.is_author order by a.joined_at limit 1`,
     )).rows;
     const [{ id: strangerId }] = (await tx.execute(
-      sql`select u.id from auth_user u join guestbook_userprofile p on p.user_id = u.id where not p.is_author and not p.is_co_author order by u.id limit 1`,
+      sql`select a.id from app.account a join app.guest_profile p on p.account_id = a.id where not p.is_author and not p.is_co_author order by a.joined_at limit 1`,
     )).rows;
 
-    const add = async (body, { replyToId = null, userId = strangerId, typeId = blogType, objectId = postId } = {}) => {
+    const add = async (body, { replyToId = null, accountId = strangerId, kind = BLOG, targetId = postId } = {}) => {
       const [row] = await tx
-        .insert(commentsComment)
+        .insert(comment)
         .values({
-          contentTypeId: typeId,
-          objectId,
-          userId,
+          targetKind: kind,
+          targetId,
+          accountId,
           body,
           replyToId,
           isDeleted: false,
           createdAt: new Date().toISOString(),
         })
-        .returning({ id: commentsComment.id, replyToId: commentsComment.replyToId });
+        .returning({ id: comment.id, replyToId: comment.replyToId });
       return row;
     };
 
@@ -85,8 +87,8 @@ try {
 
     // The flattening rule, as `postComment` applies it: resolve the requested
     // parent on this target, then use *its* parent if it has one.
-    const flatten = async (requestedId, typeId = blogType, objectId = postId) => {
-      const [parent] = await commentIdsOnTarget(typeId, objectId, [requestedId], tx);
+    const flatten = async (requestedId, kind = BLOG, targetId = postId) => {
+      const [parent] = await commentIdsOnTarget(kind, targetId, [requestedId], tx);
       return parent ? (parent.replyToId ?? parent.id) : null;
     };
 
@@ -103,19 +105,19 @@ try {
     // --- the parent lookup is scoped to the target ---------------------------
     check(
       "a parent on another post is not resolvable",
-      (await flatten(root.id, projectType, projectId)) === null,
-      `blog #${root.id} requested from project #${projectId}`,
+      (await flatten(root.id, PROJECT, projectId)) === null,
+      `blog comment ${root.id} requested from project ${projectId}`,
     );
-    const onProject = await add("project comment", { typeId: projectType, objectId: projectId });
+    const onProject = await add("project comment", { kind: PROJECT, targetId: projectId });
     check(
       "and the same id on its own target still resolves",
-      (await flatten(onProject.id, projectType, projectId)) === onProject.id,
+      (await flatten(onProject.id, PROJECT, projectId)) === onProject.id,
     );
 
     // --- the section renders one level --------------------------------------
     const viewerStranger = { userId: strangerId, isAuthor: false, isCoAuthor: false };
     let section = await getCommentSection({
-      label: "blog.blogpost",
+      label: BLOG,
       targetId: postId,
       viewer: viewerStranger,
       database: tx,
@@ -133,7 +135,7 @@ try {
     check("you may delete your own", section.comments[0].canDelete === true);
 
     const asOther = await getCommentSection({
-      label: "blog.blogpost",
+      label: BLOG,
       targetId: postId,
       viewer: { userId: authorId, isAuthor: true, isCoAuthor: false },
       database: tx,
@@ -141,7 +143,7 @@ try {
     check("an author may delete anyone's", asOther.comments[0].canDelete === true);
 
     const signedOut = await getCommentSection({
-      label: "blog.blogpost",
+      label: BLOG,
       targetId: postId,
       viewer: null,
       database: tx,
@@ -150,7 +152,7 @@ try {
       signedOut.comments.every((c) => !c.canDelete && c.replies.every((r) => !r.canDelete)));
 
     const stranger2 = (await tx.execute(
-      sql`select u.id from auth_user u join guestbook_userprofile p on p.user_id = u.id where not p.is_author and not p.is_co_author and u.id <> ${strangerId} order by u.id limit 1`,
+      sql`select a.id from app.account a join app.guest_profile p on p.account_id = a.id where not p.is_author and not p.is_co_author and a.id <> ${strangerId} order by a.joined_at limit 1`,
     )).rows[0];
     check(
       "an ordinary reader may not delete someone else's",
@@ -159,9 +161,9 @@ try {
     );
 
     // --- soft delete ---------------------------------------------------------
-    await tx.update(commentsComment).set({ isDeleted: true }).where(sql`id = ${root.id}`);
+    await tx.update(comment).set({ isDeleted: true }).where(sql`id = ${root.id}`);
     section = await getCommentSection({
-      label: "blog.blogpost",
+      label: BLOG,
       targetId: postId,
       viewer: viewerStranger,
       database: tx,

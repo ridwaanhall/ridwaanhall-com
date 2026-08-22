@@ -29,7 +29,7 @@ export function Comments({
 }) {
   const confirm = useConfirm();
   const [pending, startTransition] = useTransition();
-  const [busy, setBusy] = useState<number | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
   const [replyTo, setReplyTo] = useState<CommentNode | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const bodyRef = useRef<HTMLTextAreaElement>(null);

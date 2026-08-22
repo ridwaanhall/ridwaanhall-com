@@ -8,7 +8,7 @@ import {
   type CommentTargetLabel,
 } from "@/lib/data/comment-shapes";
 import { db } from "@/lib/db/client";
-import { commentsComment, djangoContentType } from "@/lib/db/schema";
+import { comment } from "@/lib/db/app-schema";
 
 /**
  * Comments on blog posts and projects.
@@ -26,17 +26,6 @@ import { commentsComment, djangoContentType } from "@/lib/db/schema";
  */
 
 /**
- * `django_content_type.id` for a label, memoised for the life of the process.
- *
- * The ids are stable rows in a table the cutover keeps, because
- * `comments_comment.content_type_id` is a live foreign key to it. Django cached
- * these in-process too (`ContentType.objects.get_for_model`), and for the same
- * reason: it is a lookup that never changes but sits in front of every comment
- * query.
- */
-const contentTypeIds = new Map<string, number>();
-
-/**
  * Just the verbs this file uses, so a drizzle transaction satisfies it as
  * readily as the pooled connection does -- `scripts/check-comments.mjs` drives
  * these against the live schema inside a transaction it rolls back. The rules
@@ -44,25 +33,6 @@ const contentTypeIds = new Map<string, number>();
  * `reply_to` cascade, `is_deleted`), and only Postgres enforces those.
  */
 export type Database = Pick<typeof db, "select" | "insert" | "update" | "delete">;
-
-export async function contentTypeId(
-  label: CommentTargetLabel,
-  database: Database = db,
-): Promise<number> {
-  const cached = contentTypeIds.get(label);
-  if (cached !== undefined) return cached;
-
-  const [appLabel, model] = label.split(".");
-  const [row] = await database
-    .select({ id: djangoContentType.id })
-    .from(djangoContentType)
-    .where(and(eq(djangoContentType.appLabel, appLabel), eq(djangoContentType.model, model)))
-    .limit(1);
-
-  if (!row) throw new Error(`No django_content_type row for "${label}"`);
-  contentTypeIds.set(label, row.id);
-  return row.id;
-}
 
 /**
  * The whole section for one commented object.
@@ -81,24 +51,25 @@ export async function getCommentSection({
   database = db,
 }: {
   label: CommentTargetLabel;
-  targetId: number;
-  viewer: { userId: number; isAuthor: boolean; isCoAuthor: boolean } | null;
+  targetId: string;
+  viewer: { userId: string; isAuthor: boolean; isCoAuthor: boolean } | null;
   database?: Database;
 }): Promise<CommentSection> {
-  const typeId = await contentTypeId(label, database);
-
   const rows = await database
     .select({
-      id: commentsComment.id,
-      body: commentsComment.body,
-      isDeleted: commentsComment.isDeleted,
-      createdAt: commentsComment.createdAt,
-      replyToId: commentsComment.replyToId,
-      userId: commentsComment.userId,
+      id: comment.id,
+      body: comment.body,
+      isDeleted: comment.isDeleted,
+      createdAt: comment.createdAt,
+      replyToId: comment.replyToId,
+      userId: comment.accountId,
     })
-    .from(commentsComment)
-    .where(and(eq(commentsComment.contentTypeId, typeId), eq(commentsComment.objectId, targetId)))
-    .orderBy(asc(commentsComment.createdAt), asc(commentsComment.id));
+    .from(comment)
+    // Two columns, no join. This used to resolve a `content_type_id` through
+    // `django_content_type` first -- a table of every model in the project,
+    // memoised in-process because it sat in front of every comment query.
+    .where(and(eq(comment.targetKind, label), eq(comment.targetId, targetId)))
+    .orderBy(asc(comment.createdAt), asc(comment.id));
 
   const profiles = await getUserProfiles(rows.map((row) => row.userId), database);
 
@@ -130,7 +101,7 @@ export async function getCommentSection({
     };
   };
 
-  const byId = new Map<number, CommentNode>();
+  const byId = new Map<string, CommentNode>();
   const roots: CommentNode[] = [];
 
   // One level, so a single pass in created order suffices: a reply's parent is
@@ -158,39 +129,39 @@ export async function getCommentSection({
 }
 
 /** Fetch a comment for a permission check, scoped to nothing -- see the action. */
-export async function getComment(id: number) {
+export async function getComment(id: string) {
   const [row] = await db
     .select({
-      id: commentsComment.id,
-      userId: commentsComment.userId,
-      isDeleted: commentsComment.isDeleted,
-      body: commentsComment.body,
-      contentTypeId: commentsComment.contentTypeId,
-      objectId: commentsComment.objectId,
-      replyToId: commentsComment.replyToId,
+      id: comment.id,
+      userId: comment.accountId,
+      isDeleted: comment.isDeleted,
+      body: comment.body,
+      targetKind: comment.targetKind,
+      targetId: comment.targetId,
+      replyToId: comment.replyToId,
     })
-    .from(commentsComment)
-    .where(eq(commentsComment.id, id))
+    .from(comment)
+    .where(eq(comment.id, id))
     .limit(1);
   return row ?? null;
 }
 
 /** Ids that exist on this target, for scoping a reply's parent. */
 export async function commentIdsOnTarget(
-  typeId: number,
-  targetId: number,
-  ids: number[],
+  targetKind: CommentTargetLabel,
+  targetId: string,
+  ids: string[],
   database: Database = db,
 ) {
   if (ids.length === 0) return [];
   return database
-    .select({ id: commentsComment.id, replyToId: commentsComment.replyToId })
-    .from(commentsComment)
+    .select({ id: comment.id, replyToId: comment.replyToId })
+    .from(comment)
     .where(
       and(
-        eq(commentsComment.contentTypeId, typeId),
-        eq(commentsComment.objectId, targetId),
-        inArray(commentsComment.id, ids),
+        eq(comment.targetKind, targetKind),
+        eq(comment.targetId, targetId),
+        inArray(comment.id, ids),
       ),
     );
 }

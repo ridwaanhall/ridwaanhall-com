@@ -38,12 +38,13 @@ config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
+const { staffAccountId } = await import("./fixture-ids.mjs");
 const { encode } = await import("next-auth/jwt");
 const { ADMIN_ENTRIES } = await import("../lib/admin/registry.ts");
-const { formModelFor } = await import("../lib/admin/models/index.ts");
+const { formModelFor, listModelFor } = await import("../lib/admin/models/index.ts");
+const { db } = await import("../lib/db/client.ts");
 
 const BASE = process.argv[2] ?? "http://localhost:3000";
-const STAFF_ID = 1;
 const COOKIE = "authjs.session-token";
 
 const checks = [];
@@ -60,16 +61,33 @@ const check = (name, pass, detail = "") => {
  */
 const IGNORE = [/favicon/i, /turnstile/i, /Download the React DevTools/i];
 
+/**
+ * A real key for a model, for the edit screen to be opened on.
+ *
+ * This asked for `/1`, which was the first row back when keys were serial. Keys
+ * are uuids now, so `1` is not a key that could exist -- the screen answers
+ * "not found", correctly, and the sweep reads a page that never rendered a form
+ * as a pass. Ask the table what it actually holds instead.
+ */
+async function sampleId(key) {
+  const model = listModelFor(key);
+  if (!model) return null;
+  const [row] = await db.select({ id: model.pk }).from(model.from).limit(1);
+  return row ? String(row.id) : null;
+}
+
 const routes = ["/admin"];
 for (const entry of ADMIN_ENTRIES.filter((e) => e.ready)) {
   routes.push(`/admin/${entry.key}`);
   if (entry.singleton) continue;
-  routes.push(`/admin/${entry.key}/1`);
+  // A model with no rows has no edit screen to open, and that is not a fault.
+  const id = await sampleId(entry.key);
+  if (id) routes.push(`/admin/${entry.key}/${id}`);
   if (formModelFor(entry.key)?.canCreate !== false) routes.push(`/admin/${entry.key}/new`);
 }
 
 const token = await encode({
-  token: { sub: String(STAFF_ID) },
+  token: { sub: await staffAccountId() },
   secret: process.env.AUTH_SECRET,
   salt: COOKIE,
   maxAge: 60 * 30,

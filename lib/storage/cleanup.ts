@@ -1,17 +1,19 @@
 import "server-only";
 
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import type { PgColumn } from "drizzle-orm/pg-core";
 
 import { deleteObject } from "@/lib/storage/objects";
 import { db } from "@/lib/db/client";
 import {
-  aboutOrganization,
-  aboutProfile,
-  blogBlogimage,
-  blogBlogpost,
-  projectsProjectimage,
-} from "@/lib/db/schema";
+  blogImage,
+  blogPost,
+  mediaAsset,
+  organization,
+  profile,
+  projectImage,
+  skill,
+} from "@/lib/db/app-schema";
 
 /**
  * Remove a stored file once nothing points at it any more.
@@ -29,19 +31,26 @@ import {
  */
 
 /**
- * Every column in the database that holds a storage key.
+ * Every column that names a stored file.
  *
- * Django found these by walking `apps.get_models()` for `FileField`s. There is
- * no equivalent reflection over a Drizzle schema, so they are listed -- and a
- * column added without being listed here would leak its files silently, which
- * is why `scripts/check-storage.mjs` counts them against the schema.
+ * These held the storage key itself -- five `varchar` columns each repeating
+ * `profile/ridwaanhall_20250913_2.webp` in full. They are foreign keys into
+ * `media_asset` now, so the key is written once and a row points at it, and the
+ * count below is a count of pointers rather than of repeated strings.
+ *
+ * Django found the originals by walking `apps.get_models()` for `FileField`s.
+ * There is no equivalent reflection over a Drizzle schema, so they are listed
+ * -- and a column added without being listed here would leak its files
+ * silently, which is why `scripts/check-storage.mjs` counts them against the
+ * schema.
  */
 export const FILE_COLUMNS: PgColumn[] = [
-  aboutProfile.image,
-  aboutOrganization.logo,
-  blogBlogpost.authorImage,
-  blogBlogimage.image,
-  projectsProjectimage.image,
+  profile.imageId,
+  organization.logoId,
+  blogPost.authorImageId,
+  blogImage.mediaId,
+  projectImage.mediaId,
+  skill.iconId,
 ];
 
 /**
@@ -72,8 +81,24 @@ export async function isReferenced(key: string): Promise<boolean> {
   // a caller treating "no file" as "an orphan to clean up".
   if (!key) return true;
 
+  /*
+   * The key is resolved to its asset once, and the columns are then asked about
+   * that id. Comparing each column to the key directly is no longer possible --
+   * they hold ids -- and resolving per column would repeat the same lookup six
+   * times in a statement that runs once per file in a cascade.
+   *
+   * A key with no asset row is a file nothing could be pointing at, which is an
+   * orphan and the honest answer is `false`.
+   */
+  const [asset] = await db
+    .select({ id: mediaAsset.id })
+    .from(mediaAsset)
+    .where(eq(mediaAsset.storageKey, key))
+    .limit(1);
+  if (!asset) return false;
+
   const clauses = FILE_COLUMNS.map(
-    (column) => sql`exists (select 1 from ${column.table} where ${column} = ${key})`,
+    (column) => sql`exists (select 1 from ${column.table} where ${column} = ${asset.id})`,
   );
   const result = await db.execute<{ referenced: boolean }>(
     sql`select (${sql.join(clauses, sql` or `)}) as referenced`,
@@ -115,6 +140,17 @@ export async function deleteUnreferenced(
 
     try {
       await deleteObject(key);
+      /*
+       * And the row that named it. `media_asset` is the registry of stored
+       * files; a row whose object is gone is a listing for something that no
+       * longer exists -- it would show in the admin's gallery as a broken
+       * image, and `mediaIdForKey` would hand it back for a re-upload of the
+       * same bytes instead of registering the new object.
+       *
+       * After the object, not before: if the delete fails the file is still
+       * there and the row is still true.
+       */
+      await db.delete(mediaAsset).where(eq(mediaAsset.storageKey, key));
       result.deleted.push(key);
     } catch (error) {
       console.warn(`Could not delete unreferenced file "${key}":`, error);

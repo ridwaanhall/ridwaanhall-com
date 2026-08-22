@@ -181,7 +181,7 @@ export default async function BlogDetailPage({
               above it should not wait on them either.
             */}
             <Suspense fallback={<CommentSectionSkeleton />}>
-              <CommentSectionFor label="blog.blogpost" targetId={post.id} slug={post.slug} />
+              <CommentSectionFor label="blog_post" targetId={post.id} slug={post.slug} />
             </Suspense>
 
             <ViewCounter slug={post.slug} />

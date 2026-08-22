@@ -13,10 +13,18 @@
  *   block text is raw HTML, so normalising would corrupt real data. The one
  *   exception is CRLF, which the browser introduces and the stored data has none
  *   of.
- * - **List order is real and must survive**, because Postgres `jsonb` preserves
- *   array order. Object key order is *not* ours -- `jsonb` normalises it -- which
- *   is why the key/value editor offers no reordering.
+ * - **Object key order is not ours.** `jsonb` normalises it, which is why the
+ *   key/value editor offers no reordering -- and why this asserts the absence
+ *   of the controls rather than their effect.
  * - **A field the editor never touched comes back byte-identical.**
+ *
+ * This used to cover the string-list editor too, over
+ * `about_experience.responsibilities` and eleven other `jsonb` arrays. Those
+ * columns are child tables now -- an experience's tasks are rows, ordered by a
+ * `position` column, reachable by id -- so the list editors have no descriptor
+ * using them and `scripts/check-admin-inlines.mjs` is what covers that data.
+ * `legal_section.items` is the one structured `jsonb` column the admin still
+ * edits, and a definition list is genuinely a mapping rather than a table.
  *
  * Every live row it opens is snapshotted first and restored in the `finally`,
  * whatever happens, and the throwaway row it creates for the destructive cases
@@ -30,12 +38,11 @@ config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
+const { staffAccountId } = await import("./fixture-ids.mjs");
 const { encode } = await import("next-auth/jwt");
 const { db, pool } = await import("../lib/db/client.ts");
-const { aboutExperience, aboutOrganization, legalLegalsection } = await import(
-  "../lib/db/schema.ts"
-);
-const { eq } = await import("drizzle-orm");
+const { legalDocument, legalSection } = await import("../lib/db/app-schema.ts");
+const { eq, sql } = await import("drizzle-orm");
 
 const BASE = process.argv[2] ?? "http://localhost:3000";
 const COOKIE = "authjs.session-token";
@@ -47,7 +54,7 @@ const check = (name, pass, detail = "") => {
 };
 
 const token = await encode({
-  token: { sub: "1" },
+  token: { sub: await staffAccountId() },
   secret: process.env.AUTH_SECRET,
   salt: COOKIE,
   maxAge: 60 * 15,
@@ -77,16 +84,32 @@ async function snapshot(table, pk, id) {
 }
 
 try {
-  // --- GET then POST unchanged, on real rows --------------------------------
-  const targets = [
-    { label: "experience responsibilities", table: aboutExperience, pk: aboutExperience.id, id: 1, key: "responsibilities", path: "/admin/experience/1" },
-    // Section 17 rather than the first one: it carries eleven definitions and
-    // 1440 characters of them, so "changes nothing" is a claim about real
-    // content rather than about an empty object.
-    { label: "legal section definitions", table: legalLegalsection, pk: legalLegalsection.id, id: 17, key: "items", path: "/admin/legal-section/17" },
-  ];
+  // --- GET then POST unchanged, on a real row -------------------------------
+  /*
+   * The section with the most stored definitions, found rather than named. It
+   * was section 17, chosen because it carries eleven of them and 1440
+   * characters -- so "changes nothing" is a claim about real content and not
+   * about an empty object. The reason still holds; the number does not.
+   */
+  const [richest] = await db
+    .select({ id: legalSection.id, items: legalSection.items, heading: legalSection.heading })
+    .from(legalSection)
+    // By stored size rather than by entry count: `items` is an object, and
+    // `jsonb_array_length` refuses one outright.
+    .orderBy(sql`length(${legalSection.items}::text) desc`)
+    .limit(1);
 
-  for (const target of targets) {
+  const target = {
+    label: "legal section definitions",
+    table: legalSection,
+    pk: legalSection.id,
+    id: richest.id,
+    key: "items",
+    path: `/admin/legal-section/${richest.id}`,
+  };
+  const storedPairs = Object.keys(richest.items).length;
+
+  {
     const before = await snapshot(target.table, target.pk, target.id);
     const wasJson = JSON.stringify(before[target.key]);
 
@@ -98,7 +121,7 @@ try {
     check(
       `${target.label}: opening and saving changes nothing`,
       JSON.stringify(after[target.key]) === wasJson,
-      `${wasJson.length} chars`,
+      `${wasJson.length} chars, ${storedPairs} pairs`,
     );
 
     // The whole row, not only the JSON column: a field the form failed to carry
@@ -109,126 +132,129 @@ try {
     check(`${target.label}: no other column moved either`, differing.length === 0, differing.join(", "));
   }
 
-  // --- the destructive cases, on a row this script owns ---------------------
-  const [org] = await db.select({ id: aboutOrganization.id }).from(aboutOrganization).limit(1);
-
-  const AWKWARD = [
-    "  leading and trailing spaces  ",
-    "double  spaces  inside",
-    "<strong>raw HTML</strong> & an ampersand",
-    "line one\nline two",
-  ];
-
-  const [scratch] = await db
-    .insert(aboutExperience)
-    .values({
-      title: "zz-json-check",
-      employmentType: "Full-time",
-      locationType: "Remote",
-      location: "",
-      isCurrent: false,
-      responsibilities: AWKWARD,
-      sortOrder: 999,
-      periodStart: "2020-01-01",
-      periodEnd: null,
-      organizationId: org.id,
-    })
-    .returning({ id: aboutExperience.id });
-  scratchId = scratch.id;
-
-  await page.goto(`${BASE}/admin/experience/${scratchId}`, { waitUntil: "load" });
-  await page.waitForTimeout(900);
-
-  const shown = await page.evaluate(() =>
-    [...document.querySelectorAll('textarea[aria-label^="responsibility"]')].map((el) => el.value),
+  check(
+    "the key/value editor renders every stored pair",
+    (await page.locator('textarea[aria-label^="Meaning"]').count()) === storedPairs,
+    `${storedPairs} pairs`,
   );
   check(
-    "the editor shows every entry exactly as stored",
-    JSON.stringify(shown) === JSON.stringify(AWKWARD),
-    `${shown.length} entries`,
+    "the key/value editor offers no reordering, since jsonb normalises key order",
+    (await page.locator('button[aria-label*="Move"]').count()) === 0,
+  );
+
+  // --- the destructive cases, on a row this script owns ---------------------
+  const [document] = await db.select({ id: legalDocument.id }).from(legalDocument).limit(1);
+
+  /*
+   * Values chosen to break anything that normalises on the way through: the
+   * spaces and double spaces are what stored `class` strings actually contain,
+   * the HTML is what block text actually is, and the newline is the one thing
+   * the browser rewrites on its own.
+   */
+  const AWKWARD = {
+    "  padded term  ": "  leading and trailing spaces  ",
+    "double  spaced": "double  spaces  inside",
+    "markup": "<strong>raw HTML</strong> & an ampersand",
+    "multiline": "line one\nline two",
+  };
+
+  const [scratch] = await db
+    .insert(legalSection)
+    .values({
+      documentId: document.id,
+      heading: "zz-json-check",
+      body: "",
+      items: AWKWARD,
+      position: 999,
+    })
+    .returning({ id: legalSection.id });
+  scratchId = scratch.id;
+
+  await page.goto(`${BASE}/admin/legal-section/${scratchId}`, { waitUntil: "load" });
+  await page.waitForTimeout(900);
+
+  /*
+   * Compared as a mapping, never as a list of pairs. `jsonb` does not preserve
+   * object key order -- it is the reason the editor offers no reordering, and
+   * it means the order the fields come back in is not ours to assert.
+   */
+  const canonical = (mapping) =>
+    JSON.stringify(Object.fromEntries(Object.entries(mapping).sort(([a], [b]) => a.localeCompare(b))));
+
+  const shown = await page.evaluate(() => {
+    const terms = [...document.querySelectorAll('input[aria-label^="Term"]')].map((el) => el.value);
+    const meanings = [...document.querySelectorAll('textarea[aria-label^="Meaning"]')].map((el) => el.value);
+    return Object.fromEntries(terms.map((term, index) => [term, meanings[index]]));
+  });
+  check(
+    "the editor shows every pair exactly as stored",
+    canonical(shown) === canonical(AWKWARD),
+    `${Object.keys(shown).length} pairs`,
   );
 
   await submit();
   const [saved] = await db
-    .select({ responsibilities: aboutExperience.responsibilities })
-    .from(aboutExperience)
-    .where(eq(aboutExperience.id, scratchId));
+    .select({ items: legalSection.items })
+    .from(legalSection)
+    .where(eq(legalSection.id, scratchId));
   check(
     "and saves them back with nothing trimmed or collapsed",
-    JSON.stringify(saved.responsibilities) === JSON.stringify(AWKWARD),
-    JSON.stringify(saved.responsibilities).slice(0, 60),
+    canonical(saved.items) === canonical(AWKWARD),
+    canonical(saved.items).slice(0, 70),
   );
 
   // A textarea's *submission* value is CRLF-normalised per the HTML spec, and
   // none of the stored data contains a carriage return. Typing a newline is how
   // one gets in, so this types one.
-  await page.goto(`${BASE}/admin/experience/${scratchId}`, { waitUntil: "load" });
+  await page.goto(`${BASE}/admin/legal-section/${scratchId}`, { waitUntil: "load" });
   await page.waitForTimeout(900);
-  await page.locator('textarea[aria-label="responsibility 4"]').fill("typed one\ntyped two");
+  // Found by its term, not by its position: which row the multiline entry lands
+  // on is decided by `jsonb`, not by the order it was written in.
+  const multilineRow = await page.evaluate(() =>
+    [...document.querySelectorAll('input[aria-label^="Term"]')].findIndex(
+      (el) => el.value === "multiline",
+    ),
+  );
+  await page
+    .locator(`textarea[aria-label="Meaning ${multilineRow + 1}"]`)
+    .fill("typed one\ntyped two");
   await submit();
 
   const [crlf] = await db
-    .select({ responsibilities: aboutExperience.responsibilities })
-    .from(aboutExperience)
-    .where(eq(aboutExperience.id, scratchId));
-  const typed = crlf.responsibilities[3];
+    .select({ items: legalSection.items })
+    .from(legalSection)
+    .where(eq(legalSection.id, scratchId));
+  const typed = crlf.items["multiline"];
   check(
     "a newline typed into an entry is stored as LF, never CRLF",
     typed === "typed one\ntyped two",
     JSON.stringify(typed),
   );
 
-  // Order is meaningful and `jsonb` preserves it, so the reorder control has to
-  // actually move things.
-  await page.goto(`${BASE}/admin/experience/${scratchId}`, { waitUntil: "load" });
+  // Removing the last entry has to clear the mapping rather than leave the old
+  // one in place -- the failure `construct_instance` caused in Django, which
+  // the one-named-control shape was chosen to avoid.
+  await page.goto(`${BASE}/admin/legal-section/${scratchId}`, { waitUntil: "load" });
   await page.waitForTimeout(900);
-  await page.locator('button[aria-label="Move responsibility 1 down"]').click();
-  await submit();
-
-  const [reordered] = await db
-    .select({ responsibilities: aboutExperience.responsibilities })
-    .from(aboutExperience)
-    .where(eq(aboutExperience.id, scratchId));
-  check(
-    "moving an entry down reorders the stored list",
-    reordered.responsibilities[0] === AWKWARD[1] && reordered.responsibilities[1] === AWKWARD[0],
-    JSON.stringify(reordered.responsibilities.slice(0, 2)).slice(0, 70),
-  );
-
-  // Removing the last entry has to clear the list rather than leave the old one
-  // in place -- the failure `construct_instance` caused in Django, which the
-  // one-named-control shape was chosen to avoid.
-  await page.goto(`${BASE}/admin/experience/${scratchId}`, { waitUntil: "load" });
-  await page.waitForTimeout(900);
-  for (let index = 0; index < AWKWARD.length; index++) {
-    await page.locator('button[aria-label^="Remove responsibility"]').first().click();
+  const entries = await page.locator('button[aria-label^="Remove entry"]').count();
+  for (let index = 0; index < entries; index++) {
+    await page.locator('button[aria-label^="Remove entry"]').first().click();
   }
   await submit();
 
   const [emptied] = await db
-    .select({ responsibilities: aboutExperience.responsibilities })
-    .from(aboutExperience)
-    .where(eq(aboutExperience.id, scratchId));
+    .select({ items: legalSection.items })
+    .from(legalSection)
+    .where(eq(legalSection.id, scratchId));
   check(
-    "clearing the list stores an empty list, not the old one",
-    Array.isArray(emptied.responsibilities) && emptied.responsibilities.length === 0,
-    JSON.stringify(emptied.responsibilities),
-  );
-
-  // --- the key/value editor offers no reordering ----------------------------
-  await page.goto(`${BASE}/admin/legal-section/17`, { waitUntil: "load" });
-  await page.waitForTimeout(900);
-  const pairs = await page.locator('textarea[aria-label^="Meaning"]').count();
-  check("the key/value editor renders every stored pair", pairs === 11, `${pairs} pairs`);
-  const reorderControls = await page.locator('button[aria-label*="Move"]').count();
-  check(
-    "the key/value editor offers no reordering, since jsonb normalises key order",
-    reorderControls === 0,
+    "clearing the editor stores an empty mapping, not the old one",
+    emptied.items && Object.keys(emptied.items).length === 0,
+    JSON.stringify(emptied.items),
   );
 } finally {
   if (scratchId !== null) {
-    await db.delete(aboutExperience).where(eq(aboutExperience.id, scratchId));
-    console.log(`  ..    cleaned up experience #${scratchId}`);
+    await db.delete(legalSection).where(eq(legalSection.id, scratchId));
+    console.log(`  ..    cleaned up legal section #${scratchId}`);
   }
 
   for (const { table, pk, id, row } of snapshots) {

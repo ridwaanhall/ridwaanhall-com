@@ -29,7 +29,7 @@ export type ClientInline = {
   ordered: boolean;
 };
 
-export type InlineRow = FormValues & { __id: number | null };
+export type InlineRow = FormValues & { __id: string | null };
 
 const ICON_BUTTON =
   "rounded-md border border-zinc-800 px-1.5 py-1 text-xs text-zinc-500 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-300 disabled:opacity-30 disabled:hover:bg-transparent";

@@ -2,18 +2,18 @@
  * Exercise the Auth.js adapter against the real database, then roll it back.
  *
  * Every operation the adapter performs writes to the *live* Supabase database
- * — the same `auth_user` rows the running site authenticates against — so this
- * runs the whole sequence inside one transaction and throws at the end to undo
- * it. Nothing is left behind; the final check re-counts the three tables to
- * prove it.
+ * — the same `app.account` rows the running site authenticates against — so
+ * this runs the whole sequence inside one transaction and throws at the end to
+ * undo it. Nothing is left behind; the final check re-counts the three tables
+ * to prove it.
  *
- * Running it for real is the point. The things worth checking are Django's own
- * constraints, and only Postgres enforces them:
+ * Running it for real is the point. The things worth checking are constraints,
+ * and only Postgres enforces them:
  *
- *   - `auth_user.username` is UNIQUE, and `password`, `first_name`, `last_name`,
- *     `email`, `date_joined` are all NOT NULL with no defaults
- *   - `socialaccount_socialaccount` is UNIQUE on `(provider, uid)`
- *   - `guestbook_userprofile.user_id` is UNIQUE and a FK to `auth_user`
+ *   - `account.username` is UNIQUE, and `username`, `email`, `first_name`,
+ *     `last_name`, `joined_at` are all NOT NULL
+ *   - `account_identity` is UNIQUE on `(provider, provider_uid)`
+ *   - `guest_profile.account_id` is UNIQUE and a FK to `account`
  *
  * A stubbed database would only prove the stub agrees with itself.
  *
@@ -40,9 +40,9 @@ const STAMP = `zz-adapter-check-${Date.now()}`;
 const counts = async (database) => {
   const [row] = await database.execute(sql`
     select
-      (select count(*) from auth_user)::int as users,
-      (select count(*) from socialaccount_socialaccount)::int as socials,
-      (select count(*) from guestbook_userprofile)::int as profiles
+      (select count(*) from app.account)::int as users,
+      (select count(*) from app.account_identity)::int as socials,
+      (select count(*) from app.guest_profile)::int as profiles
   `).then((r) => r.rows ?? r);
   return row;
 };
@@ -58,24 +58,26 @@ try {
 
     // --- an existing account is found, not duplicated ----------------------
     const [existing] = await tx
-      .execute(sql`select provider, uid, user_id from socialaccount_socialaccount order by id limit 1`)
+      .execute(sql`select provider, provider_uid, account_id from app.account_identity order by connected_at limit 1`)
       .then((r) => r.rows ?? r);
 
     const found = await adapter.getUserByAccount({
       provider: existing.provider,
-      providerAccountId: existing.uid,
+      providerAccountId: existing.provider_uid,
     });
     check(
-      "getUserByAccount matches a live socialaccount",
-      found !== null && Number(found.id) === existing.user_id,
-      `${existing.provider}/${existing.uid} -> user ${found?.id}`,
+      "getUserByAccount matches a live identity",
+      found !== null && found.id === existing.account_id,
+      `${existing.provider}/${existing.provider_uid} -> account ${found?.id}`,
     );
 
     check(
       "getUser round-trips that id",
-      (await adapter.getUser(String(existing.user_id)))?.id === String(existing.user_id),
+      (await adapter.getUser(existing.account_id))?.id === existing.account_id,
     );
-    check("getUser rejects a non-numeric id", (await adapter.getUser("not-a-number")) === null);
+    // Not merely "no such row": a uuid column compared against this raises
+    // `22P02`, so the adapter has to answer before the query runs.
+    check("getUser rejects an id that is not a uuid", (await adapter.getUser("not-a-uuid")) === null);
     check("getUserByAccount misses on an unknown uid",
       (await adapter.getUserByAccount({ provider: "google", providerAccountId: STAMP })) === null);
 
@@ -89,25 +91,27 @@ try {
     });
 
     const [row] = await tx
-      .execute(sql`select * from auth_user where id = ${Number(created.id)}`)
+      .execute(sql`select * from app.account where id = ${created.id}`)
       .then((r) => r.rows ?? r);
 
     check("createUser used the provider handle verbatim", row.username === "AdaLovelace", row.username);
     check("createUser split the name", row.first_name === "Ada" && row.last_name === "Lovelace");
-    check(
-      "createUser wrote an unusable password",
-      row.password.startsWith("!") && row.password.length === 41,
-      `${row.password.length} chars`,
-    );
+    /*
+     * There is no password to check. `auth_user.password` was NOT NULL and the
+     * adapter filled it with Django's "unusable" `!` placeholder for accounts
+     * that could only ever sign in through a provider -- which is all 37 of
+     * them. Nothing authenticates against a password here, so the column is
+     * gone rather than filled with a value meaning "not applicable".
+     */
     check(
       "createUser left the account non-staff and active",
-      row.is_staff === false && row.is_superuser === false && row.is_active === true,
+      row.is_staff === false && row.is_active === true,
     );
-    check("createUser set date_joined and left last_login null",
-      row.date_joined !== null && row.last_login === null);
+    check("createUser set joined_at and left last_seen_at null",
+      row.joined_at !== null && row.last_seen_at === null);
 
     const [profileRow] = await tx
-      .execute(sql`select * from guestbook_userprofile where user_id = ${Number(created.id)}`)
+      .execute(sql`select * from app.guest_profile where account_id = ${created.id}`)
       .then((r) => r.rows ?? r);
     check(
       "createUser created the guestbook profile row",
@@ -123,7 +127,7 @@ try {
       handle: "AdaLovelace",
     });
     const [second] = await tx
-      .execute(sql`select username from auth_user where id = ${Number(taken.id)}`)
+      .execute(sql`select username from app.account where id = ${taken.id}`)
       .then((r) => r.rows ?? r);
     check("a taken handle gets a numeric suffix", second.username === "AdaLovelace2", second.username);
 
@@ -134,7 +138,7 @@ try {
       emailVerified: null,
     });
     const [third] = await tx
-      .execute(sql`select username from auth_user where id = ${Number(collide.id)}`)
+      .execute(sql`select username from app.account where id = ${collide.id}`)
       .then((r) => r.rows ?? r);
     check(
       "a name colliding with a live username is suffixed",
@@ -156,22 +160,21 @@ try {
       providerAccountId: googleProfile.sub,
       type: "oidc",
     });
-    await touchLogin(Number(created.id), "google", googleProfile.sub, googleProfile, tx);
+    await touchLogin(created.id, "google", googleProfile.sub, googleProfile, tx);
 
     const [social] = await tx
-      .execute(sql`select * from socialaccount_socialaccount where provider = 'google' and uid = ${googleProfile.sub}`)
+      .execute(sql`select * from app.account_identity where provider = 'google' and provider_uid = ${googleProfile.sub}`)
       .then((r) => r.rows ?? r);
-    check("linkAccount wrote the socialaccount row", !!social && social.user_id === Number(created.id));
+    check("linkAccount wrote the identity row", !!social && social.account_id === created.id);
     check(
-      "signIn refreshed extra_data with the raw provider profile",
-      social.extra_data?.picture === googleProfile.picture && social.extra_data?.name === googleProfile.name,
+      "signIn refreshed extra with the raw provider profile",
+      social.extra?.picture === googleProfile.picture && social.extra?.name === googleProfile.name,
     );
-    check("last_login was set on both rows", social.last_login !== null);
 
     const [afterLogin] = await tx
-      .execute(sql`select last_login from auth_user where id = ${Number(created.id)}`)
+      .execute(sql`select last_seen_at from app.account where id = ${created.id}`)
       .then((r) => r.rows ?? r);
-    check("auth_user.last_login was set", afterLogin.last_login !== null);
+    check("account.last_seen_at was set", afterLogin.last_seen_at !== null);
 
     // getUserByAccount now finds the account it just linked.
     const relinked = await adapter.getUserByAccount({
@@ -189,7 +192,7 @@ try {
       type: "oidc",
     });
     const [{ n }] = await tx
-      .execute(sql`select count(*)::int as n from socialaccount_socialaccount where provider='google' and uid = ${googleProfile.sub}`)
+      .execute(sql`select count(*)::int as n from app.account_identity where provider='google' and provider_uid = ${googleProfile.sub}`)
       .then((r) => r.rows ?? r);
     check("re-linking the same account does not duplicate it", n === 1, `${n} row(s)`);
 
@@ -200,10 +203,10 @@ try {
     // --- profile derivation reads Google first ------------------------------
     // getUserProfile queries the pooled connection, not `tx`, so it cannot see
     // uncommitted rows -- assert against a live user instead.
-    const liveProfile = await getUserProfile(existing.user_id);
+    const liveProfile = await getUserProfile(existing.account_id);
     check(
       "getUserProfile resolves a live user",
-      liveProfile !== null && liveProfile.id === existing.user_id,
+      liveProfile !== null && liveProfile.id === existing.account_id,
       liveProfile ? `${liveProfile.fullName} · author=${liveProfile.isAuthor} coAuthor=${liveProfile.isCoAuthor}` : "",
     );
     check(
@@ -230,7 +233,7 @@ console.log("");
 check("the transaction was rolled back — no rows left behind", clean, JSON.stringify(after));
 
 const [{ leaked }] = await db
-  .execute(sql`select count(*)::int as leaked from auth_user where username like 'zz-adapter-check-%' or email like 'zz-adapter-check-%'`)
+  .execute(sql`select count(*)::int as leaked from app.account where username like 'zz-adapter-check-%' or email like 'zz-adapter-check-%'`)
   .then((r) => r.rows ?? r);
 check("no marker rows survive", leaked === 0, `${leaked} found`);
 

@@ -63,33 +63,48 @@ check(
 );
 
 // --- 2. Stored HTML carries nothing but that -------------------------------
+/*
+ * The columns are discovered, not listed.
+ *
+ * Three were named here -- `blog_blogpost.content_html`,
+ * `projects_project.description_html`, `about_profile.stories_html` -- and a
+ * fourth added later would have been missed in silence, which is the whole
+ * failure mode this guards against. Asking the catalogue instead means a new
+ * `*_html` column or a new `jsonb` column is covered the moment it exists.
+ */
+const columnsOfType = async (predicate) =>
+  (
+    await db
+      .execute(sql`
+        select table_name, column_name, data_type
+          from information_schema.columns
+         where table_schema = 'app'
+         order by table_name, column_name
+      `)
+      .then((r) => r.rows)
+  ).filter(predicate);
+
+const htmlColumns = await columnsOfType(
+  (c) => c.data_type === "text" && c.column_name.endsWith("_html"),
+);
+const jsonColumns = await columnsOfType((c) => c.data_type === "jsonb");
+
 const classAttr = /class\s*=\s*"([^"]*)"/g;
 const stray = new Map();
-const scanHtml = (rows, column, label) => {
-  for (const row of rows)
-    for (const match of String(row[column] ?? "").matchAll(classAttr))
-      for (const cls of match[1].split(/\s+/).filter(Boolean))
-        if (!/^language-[\w-]+$/.test(cls)) stray.set(cls, `${label} #${row.id}`);
-};
 
-scanHtml(
-  await db.execute(sql`select id, content_html from blog_blogpost`).then((r) => r.rows),
-  "content_html",
-  "blog",
-);
-scanHtml(
-  await db.execute(sql`select id, description_html from projects_project`).then((r) => r.rows),
-  "description_html",
-  "project",
-);
-scanHtml(
-  await db.execute(sql`select id, stories_html from about_profile`).then((r) => r.rows),
-  "stories_html",
-  "profile",
-);
+for (const { table_name: table, column_name: column } of htmlColumns) {
+  const rows = await db
+    .execute(sql`select id, ${sql.raw(`"${column}"`)} as value from ${sql.raw(`app."${table}"`)}`)
+    .then((r) => r.rows);
+  for (const row of rows)
+    for (const match of String(row.value ?? "").matchAll(classAttr))
+      for (const cls of match[1].split(/\s+/).filter(Boolean))
+        if (!/^language-[\w-]+$/.test(cls)) stray.set(cls, `${table}.${column} ${row.id}`);
+}
+
 check(
   stray.size === 0,
-  "no stored HTML carries a class the stylesheet would have to be told about",
+  `no stored HTML carries a class the stylesheet would have to be told about (${htmlColumns.length} column(s))`,
   [...stray].map(([c, where]) => `${c} (${where})`).join(", "),
 );
 
@@ -104,14 +119,16 @@ const walk = (value, where) => {
       else walk(inner, where);
 };
 
-for (const row of await db.execute(sql`select id, items from legal_legalsection`).then((r) => r.rows))
-  walk(row.items, `legal_legalsection #${row.id}`);
-for (const row of await db.execute(sql`select id, stories from about_profile`).then((r) => r.rows))
-  walk(row.stories, `about_profile #${row.id}`);
+for (const { table_name: table, column_name: column } of jsonColumns) {
+  const rows = await db
+    .execute(sql`select id, ${sql.raw(`"${column}"`)} as value from ${sql.raw(`app."${table}"`)}`)
+    .then((r) => r.rows);
+  for (const row of rows) walk(row.value, `${table}.${column} ${row.id}`);
+}
 
 check(
   keyed.size === 0,
-  "no stored JSON carries a `class` key",
+  `no stored JSON carries a \`class\` key (${jsonColumns.length} column(s))`,
   [...keyed].map(([c, where]) => `${c} (${where})`).join(", "),
 );
 

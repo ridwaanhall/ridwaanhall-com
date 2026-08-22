@@ -11,7 +11,7 @@ import {
   type ThreadMessage,
 } from "@/lib/data/guestbook-tree";
 import { db } from "@/lib/db/client";
-import { guestbookChatmessage } from "@/lib/db/schema";
+import { guestMessage } from "@/lib/db/app-schema";
 
 /**
  * The guestbook's one query path.
@@ -37,27 +37,27 @@ import { guestbookChatmessage } from "@/lib/db/schema";
  */
 export async function getThread(): Promise<Thread> {
   const messageColumns = {
-    id: guestbookChatmessage.id,
-    message: guestbookChatmessage.message,
-    timestamp: guestbookChatmessage.timestamp,
-    isPinned: guestbookChatmessage.isPinned,
-    replyToId: guestbookChatmessage.replyToId,
-    userId: guestbookChatmessage.userId,
+    id: guestMessage.id,
+    message: guestMessage.body,
+    timestamp: guestMessage.postedAt,
+    isPinned: guestMessage.isPinned,
+    replyToId: guestMessage.replyToId,
+    userId: guestMessage.accountId,
   };
 
   const [rows, pinnedRows, [countRow]] = await Promise.all([
     db
       .select(messageColumns)
-      .from(guestbookChatmessage)
-      .orderBy(desc(guestbookChatmessage.timestamp))
+      .from(guestMessage)
+      .orderBy(desc(guestMessage.postedAt))
       .limit(MESSAGE_WINDOW),
     db
       .select(messageColumns)
-      .from(guestbookChatmessage)
-      .where(eq(guestbookChatmessage.isPinned, true))
-      .orderBy(desc(guestbookChatmessage.pinnedAt))
+      .from(guestMessage)
+      .where(eq(guestMessage.isPinned, true))
+      .orderBy(desc(guestMessage.pinnedAt))
       .limit(MAX_PINNED),
-    db.select({ n: sql<number>`count(*)::int` }).from(guestbookChatmessage),
+    db.select({ n: sql<number>`count(*)::int` }).from(guestMessage),
   ]);
 
   // The messages a reply answers may sit outside the window; they are needed
@@ -67,8 +67,8 @@ export async function getThread(): Promise<Thread> {
   const parents = parentIds.length
     ? await db
         .select(messageColumns)
-        .from(guestbookChatmessage)
-        .where(inArray(guestbookChatmessage.id, parentIds))
+        .from(guestMessage)
+        .where(inArray(guestMessage.id, parentIds))
     : [];
 
   const parentById = new Map(parents.map((row) => [row.id, row]));
@@ -79,7 +79,7 @@ export async function getThread(): Promise<Thread> {
     ...pinnedRows.map((row) => row.userId),
   ]);
 
-  const author = (userId: number): MessageAuthor => {
+  const author = (userId: string): MessageAuthor => {
     const profile: UserProfile | undefined = profiles.get(userId);
     return {
       userId,

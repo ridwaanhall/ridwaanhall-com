@@ -2,7 +2,7 @@ import { asc, eq } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { db } from "@/lib/db/client";
-import { legalLegaldocument, legalLegalsection } from "@/lib/db/schema";
+import { legalDocument, legalSection } from "@/lib/db/app-schema";
 
 import { TAGS } from "./tags";
 
@@ -64,16 +64,16 @@ export async function getLegalDocuments(): Promise<LegalDocument[]> {
   const [documents, sections] = await Promise.all([
     db
       .select()
-      .from(legalLegaldocument)
-      .where(eq(legalLegaldocument.isPublished, true))
-      .orderBy(asc(legalLegaldocument.sortOrder), asc(legalLegaldocument.title)),
+      .from(legalDocument)
+      .where(eq(legalDocument.isPublished, true))
+      .orderBy(asc(legalDocument.position), asc(legalDocument.title)),
     db
       .select()
-      .from(legalLegalsection)
-      .orderBy(asc(legalLegalsection.order), asc(legalLegalsection.id)),
+      .from(legalSection)
+      .orderBy(asc(legalSection.position), asc(legalSection.heading)),
   ]);
 
-  const byDocument = new Map<number, typeof sections>();
+  const byDocument = new Map<string, typeof sections>();
   for (const section of sections) {
     const bucket = byDocument.get(section.documentId);
     if (bucket) bucket.push(section);
@@ -84,7 +84,7 @@ export async function getLegalDocuments(): Promise<LegalDocument[]> {
     const own = byDocument.get(document.id) ?? [];
     const [lead, accent] = splitTitle(document.title);
 
-    const childrenOf = (parentId: number) =>
+    const childrenOf = (parentId: string) =>
       own
         .filter((section) => section.parentId === parentId)
         .map((child) => ({

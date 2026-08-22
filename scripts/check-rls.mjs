@@ -6,7 +6,14 @@
  * remembering. That receiver goes with the Django tree at cutover, and
  * `drizzle/0002_enable_row_level_security.sql` replaces it -- but a SQL file
  * runs once, where the receiver ran after every schema change. This is what
- * closes that gap: it fails if a public table ever appears without RLS.
+ * closes that gap: it fails if a table ever appears without RLS.
+ *
+ * Both schemas are covered. `app` holds the restructured tables and is where
+ * everything reads and writes; `public` still holds what Django built and is
+ * dropped once the deploy has settled. A schema Supabase does not currently
+ * expose is still checked -- whether it is exposed is a project setting
+ * somebody can change in a dashboard, and RLS is what makes that change safe
+ * rather than catastrophic.
  *
  * Why it matters is worth restating, because RLS with no policies looks like a
  * mistake. Supabase puts a PostgREST API over the `public` schema for anyone
@@ -49,27 +56,31 @@ try {
     `${role?.rolname} (bypassrls ${role?.rolbypassrls})`,
   );
 
-  const { rows: off } = await pool.query(`
-    select c.relname
-    from pg_class c
-    join pg_namespace n on n.oid = c.relnamespace
-    where n.nspname = 'public' and c.relkind = 'r' and not c.relrowsecurity
-    order by 1
-  `);
-  const { rows: counted } = await pool.query(`
-    select count(*)::int n
-    from pg_class c
-    join pg_namespace n on n.oid = c.relnamespace
-    where n.nspname = 'public' and c.relkind = 'r'
-  `);
+  for (const schema of ["app", "public"]) {
+    const { rows: off } = await pool.query(
+      `select c.relname
+       from pg_class c
+       join pg_namespace n on n.oid = c.relnamespace
+       where n.nspname = $1 and c.relkind = 'r' and not c.relrowsecurity
+       order by 1`,
+      [schema],
+    );
+    const { rows: counted } = await pool.query(
+      `select count(*)::int n
+       from pg_class c
+       join pg_namespace n on n.oid = c.relnamespace
+       where n.nspname = $1 and c.relkind = 'r'`,
+      [schema],
+    );
 
-  check(
-    "every table in the public schema has RLS enabled",
-    off.length === 0,
-    off.length === 0
-      ? `${counted[0].n} tables`
-      : `${off.length} without it: ${off.map((row) => row.relname).join(", ")}`,
-  );
+    check(
+      `every table in the ${schema} schema has RLS enabled`,
+      off.length === 0 && counted[0].n > 0,
+      off.length === 0
+        ? `${counted[0].n} tables`
+        : `${off.length} without it: ${off.map((row) => row.relname).join(", ")}`,
+    );
+  }
 
   /*
    * Zero is the intended number. A policy here would mean something outside
@@ -77,12 +88,13 @@ try {
    * the RLS is for -- so this reports rather than assumes.
    */
   const { rows: policies } = await pool.query(
-    "select schemaname, tablename, policyname from pg_policies where schemaname = 'public'",
+    "select schemaname, tablename, policyname from pg_policies where schemaname in ('app', 'public')",
   );
   check(
     "and no policy grants anything through it",
     policies.length === 0,
-    policies.map((row) => `${row.tablename}.${row.policyname}`).join(", ") || "no policies",
+    policies.map((row) => `${row.schemaname}.${row.tablename}.${row.policyname}`).join(", ") ||
+      "no policies",
   );
 } finally {
   await pool.end();

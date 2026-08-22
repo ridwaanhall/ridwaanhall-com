@@ -5,6 +5,7 @@ import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 
 import { pageRange } from "@/lib/api/pagination";
 import { db } from "@/lib/db/client";
+import { isUuid } from "@/lib/utils/uuid";
 
 /**
  * One generic changelist, driven by a per-model descriptor.
@@ -107,7 +108,8 @@ export type AdminListModel<Row> = {
   search?: { fields: (PgColumn | SQL)[]; placeholder: string };
   defaultSort: { key: string; dir: "asc" | "desc" };
   /** The row's primary key, for the change-form link. */
-  rowId: (row: Row) => number;
+  /** The row's uuid, used to build its edit URL. */
+  rowId: (row: Row) => string;
   perPage?: number;
 };
 
@@ -368,9 +370,9 @@ export function needsLookup(filter: ListFilter): filter is LookupFilter {
  */
 export async function fetchAdminRow<Row>(
   model: AdminListModel<Row>,
-  id: number,
+  id: string,
 ): Promise<Row | null> {
-  if (!Number.isInteger(id) || id <= 0) return null;
+  if (!isUuid(id)) return null;
   const [row] = await db.select(model.select).from(model.from).where(eq(model.pk, id)).limit(1);
   return (row as Row) ?? null;
 }

@@ -53,6 +53,32 @@ const statements = readFileSync(file, "utf8")
   )
   .filter(Boolean);
 
+/*
+ * A file that opens or closes its own transaction cannot be dry-run.
+ *
+ * Everything below runs inside one transaction that is rolled back unless
+ * `--apply` is given, and a `commit` in the file ends that transaction from
+ * the inside: whatever came before it is already durable, the final `rollback`
+ * has nothing left to undo, and the run still prints "rolled back -- nothing
+ * changed". `drizzle/0007` did exactly this, and its dry run committed.
+ *
+ * Refused rather than stripped. A file written around its own transaction may
+ * be relying on it, and quietly removing the boundary would make this a
+ * different migration from the one that was reviewed.
+ */
+const CONTROL = /^[ \t]*(begin|commit|rollback|start[ \t]+transaction|savepoint)\b/im;
+for (const statement of statements) {
+  const found = statement.match(CONTROL);
+  if (found) {
+    console.error(
+      `${file} contains its own transaction control (${found[1]}).\n` +
+        "This script wraps the whole file in one transaction, so a dry run of it\n" +
+        "would commit. Remove the transaction control and run it again.",
+    );
+    process.exit(1);
+  }
+}
+
 console.log(`${file}: ${statements.length} statement(s)${APPLY ? "" : "  (dry run -- pass --apply to keep it)"}\n`);
 
 const client = new pg.Client({ connectionString: url.toString(), ssl: { rejectUnauthorized: false } });

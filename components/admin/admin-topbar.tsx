@@ -28,14 +28,10 @@ export function AdminTopbar({ user }: { user: StaffUser }) {
       </Link>
 
       <div className="ml-auto flex items-center gap-3">
-        <span className="hidden text-sm text-zinc-400 sm:inline">
-          {user.fullName}
-          {user.isSuperuser && (
-            <span className="ml-2 rounded-full border border-indigo-800 px-1.5 py-0.5 text-[0.625rem] tracking-wide text-indigo-400 uppercase">
-              superuser
-            </span>
-          )}
-        </span>
+        {/* No "superuser" badge. The flag went with the Django auth tables in
+            drizzle/0005: every staff account carried it, so it marked nobody
+            out, and there was no permission matrix behind it to mean anything. */}
+        <span className="hidden text-sm text-zinc-400 sm:inline">{user.fullName}</span>
         <ThemeToggle iconSize="h-4 w-4" />
         <form
           action={async () => {

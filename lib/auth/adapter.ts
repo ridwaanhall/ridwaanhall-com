@@ -1,20 +1,25 @@
-import { randomBytes } from "node:crypto";
-
 import { and, eq } from "drizzle-orm";
 import type { Adapter, AdapterAccount, AdapterUser } from "next-auth/adapters";
 
 import { uniqueUsername, usernameCandidates } from "@/lib/auth/username";
 import { db } from "@/lib/db/client";
-import { authUser, guestbookUserprofile, socialaccountSocialaccount } from "@/lib/db/schema";
+import { account, accountIdentity, guestProfile } from "@/lib/db/app-schema";
+import { isUuid } from "@/lib/utils/uuid";
 
 /**
- * An Auth.js adapter over Django's own tables.
+ * An Auth.js adapter over the site's own account tables.
  *
- * No new tables. A sign-in reads and writes `auth_user`,
- * `socialaccount_socialaccount` and `guestbook_userprofile` exactly as allauth
- * did, so the 37 accounts already there keep working, Django keeps working
- * until the cutover, and `guestbook_chatmessage.user_id` -- a live foreign key
- * to `auth_user` -- never points at a row this wrote differently.
+ * A sign-in reads and writes `app.account`, `app.account_identity` and
+ * `app.guest_profile`. It was `auth_user`, `socialaccount_socialaccount` and
+ * `guestbook_userprofile` -- allauth's tables, kept verbatim so Django and this
+ * could authenticate the same 37 people against the same rows during the port.
+ * The name is left as it is: what it implements is still allauth's behaviour,
+ * and the reasons below are still allauth's reasons.
+ *
+ * What went with the rename is Django's own bookkeeping. There is no
+ * `password` column to fill with an unusable placeholder, no `is_superuser`
+ * beside `is_staff`, and no `content_type`/`permission` rows behind either --
+ * this application has one privilege, and it is `is_staff`.
  *
  * **Sessions are JWTs, so this implements no session methods.** Django keeps
  * its sessions in `django_session` as a signed, Django-serialised blob that
@@ -37,24 +42,17 @@ import { authUser, guestbookUserprofile, socialaccountSocialaccount } from "@/li
  *   `allowDangerousEmailAccountLinking` is not set on either provider.
  */
 
-/**
- * Django's "unusable password": `!` followed by 40 random characters.
- *
- * `auth_user.password` is `NOT NULL`, and every one of the 37 live rows is
- * exactly this shape (41 chars, leading `!`). Django reads the `!` prefix as
- * "this account cannot log in with a password", which is the correct state for
- * a social-only account -- writing an empty string instead would leave an
- * account that Django's own `check_password` treats as merely mismatched.
- */
-function unusablePassword(): string {
-  return `!${randomBytes(30).toString("base64url").slice(0, 40)}`;
-}
-
 function now(): string {
   return new Date().toISOString();
 }
 
-/** Django's `first_name`/`last_name` are `varchar(150) NOT NULL`. */
+/**
+ * A display name in two columns.
+ *
+ * The 150-character limit is Django's `varchar(150)`; the columns are plain
+ * `text` now, but the cap stays -- it is what the stored 37 rows were written
+ * under, and nothing wants an unbounded name from a provider.
+ */
 function splitName(name: string | null | undefined): { firstName: string; lastName: string } {
   const parts = (name ?? "").trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return { firstName: "", lastName: "" };
@@ -65,7 +63,7 @@ function splitName(name: string | null | undefined): { firstName: string; lastNa
 }
 
 function toAdapterUser(row: {
-  id: number;
+  id: string;
   username: string;
   email: string;
   firstName: string;
@@ -73,9 +71,10 @@ function toAdapterUser(row: {
 }): AdapterUser {
   const named = `${row.firstName} ${row.lastName}`.trim();
   return {
-    // Auth.js ids are strings; Django's are `integer`. Every crossing of that
-    // boundary goes through here or `Number(...)` below, nowhere else.
-    id: String(row.id),
+    // Auth.js ids are strings and so are these. They were `integer`, and every
+    // crossing of that boundary went through a `Number(...)` -- each of which
+    // now reads a uuid as `NaN`, so all of them are gone.
+    id: row.id,
     email: row.email,
     name: named || row.username,
     // Nothing consumes this: there is no email provider, so Auth.js never
@@ -87,11 +86,11 @@ function toAdapterUser(row: {
 }
 
 const USER_COLUMNS = {
-  id: authUser.id,
-  username: authUser.username,
-  email: authUser.email,
-  firstName: authUser.firstName,
-  lastName: authUser.lastName,
+  id: account.id,
+  username: account.username,
+  email: account.email,
+  firstName: account.firstName,
+  lastName: account.lastName,
 };
 
 /**
@@ -111,9 +110,9 @@ type Database = Pick<typeof db, "select" | "insert" | "update" | "delete">;
 export function DjangoAdapter(database: Database = db): Adapter {
   const usernameTaken = async (username: string): Promise<boolean> => {
     const rows = await database
-      .select({ id: authUser.id })
-      .from(authUser)
-      .where(eq(authUser.username, username))
+      .select({ id: account.id })
+      .from(account)
+      .where(eq(account.username, username))
       .limit(1);
     return rows.length > 0;
   };
@@ -138,18 +137,16 @@ export function DjangoAdapter(database: Database = db): Adapter {
       );
 
       const [created] = await database
-        .insert(authUser)
+        .insert(account)
         .values({
           username,
           email: user.email ?? "",
           firstName,
           lastName,
-          password: unusablePassword(),
-          isSuperuser: false,
           isStaff: false,
           isActive: true,
-          dateJoined: now(),
-          lastLogin: null,
+          joinedAt: now(),
+          lastSeenAt: null,
         })
         .returning(USER_COLUMNS);
 
@@ -161,8 +158,8 @@ export function DjangoAdapter(database: Database = db): Adapter {
        * screen that grants co-author edits this row, so it has to exist before
        * anyone can be promoted.
        */
-      await database.insert(guestbookUserprofile).values({
-        userId: created.id,
+      await database.insert(guestProfile).values({
+        accountId: created.id,
         isAuthor: false,
         isCoAuthor: false,
         coAuthorOrder: 0,
@@ -173,21 +170,24 @@ export function DjangoAdapter(database: Database = db): Adapter {
     },
 
     async getUser(id) {
-      const numeric = Number(id);
-      if (!Number.isInteger(numeric)) return null;
-      const [row] = await database.select(USER_COLUMNS).from(authUser).where(eq(authUser.id, numeric));
+      // A malformed key is "no such user", and has to be answered before it
+      // reaches a query: a uuid column compared against one raises `22P02`
+      // rather than matching nothing.
+      if (!isUuid(id)) return null;
+      const [row] = await database.select(USER_COLUMNS).from(account).where(eq(account.id, id));
       return row ? toAdapterUser(row) : null;
     },
 
     async getUserByEmail(email) {
-      // `auth_user.email` carries no unique constraint in Django, so this can
-      // legitimately match more than one row. Lowest id wins: that is the
-      // account the person has had longest.
+      // `email` carries no unique constraint, so this can legitimately match
+      // more than one row. The oldest wins: that is the account the person has
+      // had longest. It was "lowest id", which said the same thing only while
+      // ids were handed out in order.
       const [row] = await database
         .select(USER_COLUMNS)
-        .from(authUser)
-        .where(eq(authUser.email, email))
-        .orderBy(authUser.id)
+        .from(account)
+        .where(eq(account.email, email))
+        .orderBy(account.joinedAt)
         .limit(1);
       return row ? toAdapterUser(row) : null;
     },
@@ -195,15 +195,12 @@ export function DjangoAdapter(database: Database = db): Adapter {
     async getUserByAccount({ provider, providerAccountId }) {
       const [row] = await database
         .select(USER_COLUMNS)
-        .from(authUser)
-        .innerJoin(
-          socialaccountSocialaccount,
-          eq(socialaccountSocialaccount.userId, authUser.id),
-        )
+        .from(account)
+        .innerJoin(accountIdentity, eq(accountIdentity.accountId, account.id))
         .where(
           and(
-            eq(socialaccountSocialaccount.provider, provider),
-            eq(socialaccountSocialaccount.uid, providerAccountId),
+            eq(accountIdentity.provider, provider),
+            eq(accountIdentity.providerUid, providerAccountId),
           ),
         )
         .limit(1);
@@ -211,102 +208,114 @@ export function DjangoAdapter(database: Database = db): Adapter {
     },
 
     async updateUser(user) {
-      const numeric = Number(user.id);
-      const patch: Partial<typeof authUser.$inferInsert> = {};
+      const patch: Partial<typeof account.$inferInsert> = {};
       if (user.email !== undefined && user.email !== null) patch.email = user.email;
       if (user.name !== undefined) Object.assign(patch, splitName(user.name));
 
       if (Object.keys(patch).length === 0) {
-        const [row] = await database.select(USER_COLUMNS).from(authUser).where(eq(authUser.id, numeric));
+        const [row] = await database.select(USER_COLUMNS).from(account).where(eq(account.id, user.id));
         return toAdapterUser(row);
       }
 
       const [row] = await database
-        .update(authUser)
+        .update(account)
         .set(patch)
-        .where(eq(authUser.id, numeric))
+        .where(eq(account.id, user.id))
         .returning(USER_COLUMNS);
       return toAdapterUser(row);
     },
 
-    async linkAccount(account) {
-      const userId = Number(account.userId);
+    /*
+     * Named `link` rather than `account`, which is the identity's own table
+     * here -- shadowing it would leave every query in this method pointing at
+     * whatever Auth.js passed in.
+     */
+    async linkAccount(link) {
+      const accountId = link.userId;
       /*
-       * `extra_data` is the raw provider profile, which is what allauth stored
-       * and what `lib/auth/profile.ts` reads back for the display name and the
+       * `extra` is the raw provider profile, which is what allauth stored and
+       * what `lib/auth/profile.ts` reads back for the display name and the
        * avatar -- Google's `name`/`picture`, GitHub's `login`/`avatar_url`.
        * Auth.js hands the whole profile through on `account.extra_data`; see
        * the `account` callback in `auth.ts`.
        *
        * On conflict the row is refreshed rather than skipped: the profile is
-       * how someone's avatar and display name stay current, and `last_login`
-       * is what it is for.
+       * how someone's avatar and display name stay current.
        */
-      const extraData =
-        (account as AdapterAccount & { extra_data?: unknown }).extra_data ?? {};
+      const extra = (link as AdapterAccount & { extra_data?: unknown }).extra_data ?? {};
 
       await database
-        .insert(socialaccountSocialaccount)
+        .insert(accountIdentity)
         .values({
-          provider: account.provider,
-          uid: account.providerAccountId,
-          userId,
-          extraData,
-          dateJoined: now(),
-          lastLogin: now(),
+          provider: link.provider,
+          providerUid: link.providerAccountId,
+          accountId,
+          extra,
+          connectedAt: now(),
         })
         .onConflictDoUpdate({
-          target: [socialaccountSocialaccount.provider, socialaccountSocialaccount.uid],
-          set: { extraData, lastLogin: now(), userId },
+          target: [accountIdentity.provider, accountIdentity.providerUid],
+          set: { extra, accountId },
         });
 
-      await database.update(authUser).set({ lastLogin: now() }).where(eq(authUser.id, userId));
+      await database.update(account).set({ lastSeenAt: now() }).where(eq(account.id, accountId));
     },
 
     async unlinkAccount({ provider, providerAccountId }) {
       await database
-        .delete(socialaccountSocialaccount)
+        .delete(accountIdentity)
         .where(
           and(
-            eq(socialaccountSocialaccount.provider, provider),
-            eq(socialaccountSocialaccount.uid, providerAccountId),
+            eq(accountIdentity.provider, provider),
+            eq(accountIdentity.providerUid, providerAccountId),
           ),
         );
     },
 
     async deleteUser(id) {
-      // Every dependent row cascades in Postgres exactly as Django declared it
-      // -- messages, comments, the profile, the social accounts.
-      await database.delete(authUser).where(eq(authUser.id, Number(id)));
+      /*
+       * Every dependent row cascades -- messages, comments, the profile, the
+       * identities. In Postgres, and for real: Django declared `CASCADE` in
+       * Python and left `NO ACTION` in the database, so this statement used to
+       * depend on the application having cleared the children first.
+       */
+      if (!isUuid(id)) return;
+      await database.delete(account).where(eq(account.id, id));
     },
   };
 }
 
 /**
- * Refresh `last_login` on a sign-in that created nothing.
+ * Refresh `last_seen_at` on a sign-in that created nothing.
  *
  * `linkAccount` only runs the first time a provider is attached, so a
  * returning user would otherwise keep the timestamp of the day they joined --
  * which is what Django's `user_logged_in` receiver kept current.
  */
 export async function touchLogin(
-  userId: number,
+  accountId: string,
   provider: string,
   uid: string,
-  extraData: unknown,
+  extra: unknown,
   database: Database = db,
 ) {
+  if (!isUuid(accountId)) return;
   await Promise.all([
-    database.update(authUser).set({ lastLogin: now() }).where(eq(authUser.id, userId)),
-    database
-      .update(socialaccountSocialaccount)
-      .set({ lastLogin: now(), ...(extraData ? { extraData } : {}) })
-      .where(
-        and(
-          eq(socialaccountSocialaccount.provider, provider),
-          eq(socialaccountSocialaccount.uid, uid),
-        ),
-      ),
+    database.update(account).set({ lastSeenAt: now() }).where(eq(account.id, accountId)),
+    /*
+     * Only the profile. The identity had a `last_login` of its own, which was
+     * allauth's and said the same thing as the account's for every row it ever
+     * wrote -- one person, one provider each. `account.last_seen_at` is the one
+     * place that answer lives now.
+     */
+    extra
+      ? database
+          .update(accountIdentity)
+          .set({ extra })
+          .where(
+            and(eq(accountIdentity.provider, provider), eq(accountIdentity.providerUid, uid)),
+          )
+      : Promise.resolve(),
   ]);
 }
 

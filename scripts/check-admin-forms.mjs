@@ -32,15 +32,19 @@ config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
+const { staffAccountId, nonStaffAccountId } = await import("./fixture-ids.mjs");
 const { encode } = await import("next-auth/jwt");
 const { db, pool } = await import("../lib/db/client.ts");
-const { aboutOrganization, aboutSkill, authUser } = await import("../lib/db/schema.ts");
+const { category, organization, skill, account } = await import("../lib/db/app-schema.ts");
 const { objectExists } = await import("../lib/storage/objects.ts");
+const { keyForMediaId } = await import("../lib/admin/media.ts");
 const { eq, ne, sql } = await import("drizzle-orm");
 
 const BASE = process.argv[2] ?? "http://localhost:3000";
-const STAFF_ID = 1;
 const COOKIE = "authjs.session-token";
+
+const STAFF_ID = await staffAccountId();
+const READER_ID = await nonStaffAccountId();
 
 /** Distinctive enough that a leftover row is obviously this script's. */
 const MARK = `zz-admin-form-check-${Date.now()}`;
@@ -52,7 +56,7 @@ const check = (name, pass, detail = "") => {
 };
 
 const token = await encode({
-  token: { sub: String(STAFF_ID) },
+  token: { sub: STAFF_ID },
   secret: process.env.AUTH_SECRET,
   salt: COOKIE,
   maxAge: 60 * 15,
@@ -75,6 +79,8 @@ const PNG = Buffer.from(
 const GIF = Buffer.from("R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7", "base64");
 
 const fill = async (name, value) => page.fill(`[name="${name}"]`, value);
+/** A `reference` field renders as a select, so its value is chosen, not typed. */
+const choose = async (name, value) => page.selectOption(`[name="${name}"]`, value);
 /**
  * Scoped to the record form on purpose.
  *
@@ -91,6 +97,15 @@ const submit = async () => {
   await page.waitForTimeout(1400);
 };
 const toast = async () => (await page.locator("[data-sonner-toast]").first().textContent()) ?? "";
+/**
+ * The storage key an image column points at.
+ *
+ * The column held the key itself until the schema moved; it holds a
+ * `media_asset` id now, and the bucket has never heard of ids. Everything
+ * below still reasons in keys, so the hop happens here -- the same seam the
+ * form uses, for the same reason.
+ */
+const keyOf = async (id) => (id ? await keyForMediaId(id) : "");
 
 try {
   // --- create ---------------------------------------------------------------
@@ -98,8 +113,15 @@ try {
   await page.waitForTimeout(600);
 
   await fill("name", `${MARK} One`);
-  await fill("category", "Check Fixtures");
-  await fill("iconSvg", "/static/svg/icon/python.svg");
+  // Two real categories, because `category_id` is a foreign key and the field
+  // is a select -- a made-up string is not a value the form can even offer.
+  const [firstCategory, secondCategory] = await db
+    .select({ id: category.id, label: category.label })
+    .from(category)
+    .where(eq(category.kind, "skill"))
+    .orderBy(category.position)
+    .limit(2);
+  await choose("categoryId", firstCategory.id);
   await fill("description", "Written by scripts/check-admin-forms.mjs.");
   // `slug` deliberately left blank: it must fill itself from the name, which is
   // Django's `prepopulated_fields` moved to the server, where a form posted
@@ -107,9 +129,9 @@ try {
   await submit();
 
   const [made] = await db
-    .select({ id: aboutSkill.id, slug: aboutSkill.slug, name: aboutSkill.name, category: aboutSkill.category })
-    .from(aboutSkill)
-    .where(eq(aboutSkill.name, `${MARK} One`));
+    .select({ id: skill.id, slug: skill.slug, name: skill.name, categoryId: skill.categoryId })
+    .from(skill)
+    .where(eq(skill.name, `${MARK} One`));
 
   if (made) created.push(made.id);
   check("a record is created", Boolean(made), made ? `#${made.id}` : "no row");
@@ -133,14 +155,18 @@ try {
   // --- update ---------------------------------------------------------------
   await page.goto(`${BASE}/admin/skill/${made.id}`, { waitUntil: "load" });
   await page.waitForTimeout(500);
-  await fill("category", "Check Fixtures Renamed");
+  await choose("categoryId", secondCategory.id);
   await submit();
 
   const [updated] = await db
-    .select({ category: aboutSkill.category })
-    .from(aboutSkill)
-    .where(eq(aboutSkill.id, made.id));
-  check("an edit is saved", updated?.category === "Check Fixtures Renamed", updated?.category ?? "");
+    .select({ categoryId: skill.categoryId })
+    .from(skill)
+    .where(eq(skill.id, made.id));
+  check(
+    "an edit is saved",
+    updated?.categoryId === secondCategory.id,
+    `${firstCategory.label} -> ${secondCategory.label}`,
+  );
   check("and it is confirmed in words the server chose", (await toast()).includes("Saved"));
 
   // --- validation -----------------------------------------------------------
@@ -158,18 +184,18 @@ try {
   check("a bad slug is refused, at the field", slugError.toLowerCase().includes("lowercase"), slugError.trim());
 
   const [unchanged] = await db
-    .select({ slug: aboutSkill.slug })
-    .from(aboutSkill)
-    .where(eq(aboutSkill.id, made.id));
+    .select({ slug: skill.slug })
+    .from(skill)
+    .where(eq(skill.id, made.id));
   check("and nothing was written", unchanged?.slug === made.slug, unchanged?.slug ?? "");
 
   // --- a unique clash reads as a message, not a 500 --------------------------
   // Somebody else's slug: `limit(1)` alone can return the row under test, and
   // setting a slug to the value it already holds is not a clash.
   const [existing] = await db
-    .select({ slug: aboutSkill.slug })
-    .from(aboutSkill)
-    .where(ne(aboutSkill.id, made.id))
+    .select({ slug: skill.slug })
+    .from(skill)
+    .where(ne(skill.id, made.id))
     .limit(1);
   await page.goto(`${BASE}/admin/skill/${made.id}`, { waitUntil: "load" });
   await page.waitForTimeout(500);
@@ -179,38 +205,40 @@ try {
   check("a duplicate slug comes back on the field", clash.includes("already uses"), clash.trim());
 
   // --- only declared fields are written -------------------------------------
+  /*
+   * This used to smuggle `is_superuser`, which was the sharpest version of the
+   * test: iterating the submitted form rather than the descriptor would have
+   * handed out Django's all-permissions flag. That column is gone -- nothing
+   * read it but Django's own admin -- so the smuggled field is now `first_name`,
+   * which is real, is on this table, and is not declared by the user form.
+   */
   const [before] = await db
-    .select({ isSuperuser: authUser.isSuperuser, isStaff: authUser.isStaff })
-    .from(authUser)
-    .where(eq(authUser.id, 2));
+    .select({ firstName: account.firstName, isStaff: account.isStaff })
+    .from(account)
+    .where(eq(account.id, READER_ID));
 
-  await page.goto(`${BASE}/admin/user/2`, { waitUntil: "load" });
+  await page.goto(`${BASE}/admin/user/${READER_ID}`, { waitUntil: "load" });
   await page.waitForTimeout(500);
-  // Inject a field the descriptor does not declare. If the save path iterated
-  // the submitted form instead of the descriptor, this would grant superuser.
   await page.evaluate(() => {
     const form = document.querySelector("form");
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = "isSuperuser";
-    input.value = "on";
-    form?.appendChild(input);
-    const second = document.createElement("input");
-    second.type = "hidden";
-    second.name = "is_superuser";
-    second.value = "1";
-    form?.appendChild(second);
+    for (const name of ["firstName", "first_name"]) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = "zz-smuggled";
+      form?.appendChild(input);
+    }
   });
   await submit();
 
   const [after] = await db
-    .select({ isSuperuser: authUser.isSuperuser })
-    .from(authUser)
-    .where(eq(authUser.id, 2));
+    .select({ firstName: account.firstName })
+    .from(account)
+    .where(eq(account.id, READER_ID));
   check(
     "a field the descriptor does not declare writes nothing",
-    after?.isSuperuser === before.isSuperuser,
-    `is_superuser ${before.isSuperuser} -> ${after?.isSuperuser}`,
+    after?.firstName === before.firstName,
+    `first_name ${JSON.stringify(before.firstName)} -> ${JSON.stringify(after?.firstName)}`,
   );
 
   // --- you cannot lock yourself out -----------------------------------------
@@ -220,9 +248,9 @@ try {
   await submit();
 
   const [self] = await db
-    .select({ isStaff: authUser.isStaff })
-    .from(authUser)
-    .where(eq(authUser.id, STAFF_ID));
+    .select({ isStaff: account.isStaff })
+    .from(account)
+    .where(eq(account.id, STAFF_ID));
   check("you cannot remove your own staff access", self?.isStaff === true);
   check(
     "and you are told why",
@@ -265,13 +293,14 @@ try {
   await submit();
 
   const [org] = await db
-    .select({ id: aboutOrganization.id, logo: aboutOrganization.logo })
-    .from(aboutOrganization)
-    .where(eq(aboutOrganization.name, `${MARK} Org`));
+    .select({ id: organization.id, logoId: organization.logoId })
+    .from(organization)
+    .where(eq(organization.name, `${MARK} Org`));
   if (org) createdOrgs.push(org.id);
 
-  check("an upload is stored against the record", Boolean(org?.logo), org?.logo ?? "no row");
-  check("and the object is in the bucket", org?.logo ? await objectExists(org.logo) : false);
+  const firstKey = await keyOf(org?.logoId);
+  check("an upload is stored against the record", Boolean(org?.logoId), firstKey || "no row");
+  check("and the object is in the bucket", firstKey ? await objectExists(firstKey) : false);
 
   await page.goto(`${BASE}/admin/organization/${org.id}`, { waitUntil: "load" });
   await page.waitForTimeout(600);
@@ -283,28 +312,30 @@ try {
   await submit();
 
   const [replaced] = await db
-    .select({ logo: aboutOrganization.logo })
-    .from(aboutOrganization)
-    .where(eq(aboutOrganization.id, org.id));
-  check("replacing it stores the new key", Boolean(replaced?.logo) && replaced.logo !== org.logo, replaced?.logo ?? "");
-  check("the new object is there", replaced?.logo ? await objectExists(replaced.logo) : false);
+    .select({ logoId: organization.logoId })
+    .from(organization)
+    .where(eq(organization.id, org.id));
+  const secondKey = await keyOf(replaced?.logoId);
+  check("replacing it stores the new key", Boolean(secondKey) && secondKey !== firstKey, secondKey);
+  check("the new object is there", secondKey ? await objectExists(secondKey) : false);
   check(
     "and the one it replaced, which nothing else names, is gone",
-    (await objectExists(org.logo)) === false,
-    org.logo,
+    (await objectExists(firstKey)) === false,
+    firstKey,
   );
 
   await page.goto(`${BASE}/admin/organization/${org.id}`, { waitUntil: "load" });
   await page.waitForTimeout(600);
+  // The form field is `logo`; `logoId` is the column behind it.
   await page.check('input[name="logo__clear"]');
   await submit();
 
   const [cleared] = await db
-    .select({ logo: aboutOrganization.logo })
-    .from(aboutOrganization)
-    .where(eq(aboutOrganization.id, org.id));
-  check("removing it empties the column", !cleared?.logo, JSON.stringify(cleared?.logo));
-  check("and takes the object with it", (await objectExists(replaced.logo)) === false);
+    .select({ logoId: organization.logoId })
+    .from(organization)
+    .where(eq(organization.id, org.id));
+  check("removing it empties the column", !cleared?.logoId, JSON.stringify(cleared?.logoId));
+  check("and takes the object with it", (await objectExists(secondKey)) === false);
 
   // Saving an unrelated field must not blank the image. An empty file input is
   // "not edited", never "make it empty".
@@ -322,25 +353,25 @@ try {
   await submit();
 
   const [untouched] = await db
-    .select({ logo: aboutOrganization.logo, website: aboutOrganization.website })
-    .from(aboutOrganization)
-    .where(eq(aboutOrganization.id, org.id));
+    .select({ logoId: organization.logoId, website: organization.website })
+    .from(organization)
+    .where(eq(organization.id, org.id));
   check(
     "saving another field leaves the image alone",
-    Boolean(untouched?.logo) && untouched.website === "https://example.com",
-    `${untouched?.logo} / ${untouched?.website}`,
+    Boolean(untouched?.logoId) && untouched.website === "https://example.com",
+    `${await keyOf(untouched?.logoId)} / ${untouched?.website}`,
   );
 
-  const survivor = untouched.logo;
+  const survivor = await keyOf(untouched.logoId);
   await page.locator('button:has-text("Delete")').first().click();
   await page.waitForTimeout(500);
   await page.locator('[aria-labelledby="confirm-dialog-title"] button').last().click();
   await page.waitForTimeout(1800);
 
   const remaining = await db
-    .select({ id: aboutOrganization.id })
-    .from(aboutOrganization)
-    .where(eq(aboutOrganization.id, org.id));
+    .select({ id: organization.id })
+    .from(organization)
+    .where(eq(organization.id, org.id));
   if (remaining.length === 0) createdOrgs.length = 0;
   check("deleting the record removes it", remaining.length === 0);
   check("and its image with it", (await objectExists(survivor)) === false, survivor);
@@ -362,30 +393,39 @@ try {
   );
 
   await dialog.locator("button").last().click();
-  await page.waitForTimeout(1500);
+  /*
+   * Waited a flat 1500ms, which is the delete, the toast and a client
+   * navigation racing a dev-server compile of the list route. Wait for the
+   * navigation itself: it is the thing being checked, and a fixed sleep only
+   * ever measures how busy the machine is.
+   */
+  const landed = await page
+    .waitForURL((url) => url.pathname === "/admin/skill", { timeout: 15000 })
+    .then(() => true)
+    .catch(() => false);
 
   const [gone] = await db
     .select({ n: sql`count(*)::int` })
-    .from(aboutSkill)
-    .where(eq(aboutSkill.id, made.id));
+    .from(skill)
+    .where(eq(skill.id, made.id));
   const removed = Number(gone?.n ?? 1) === 0;
   if (removed) created.length = 0;
   check("and the record is removed", removed);
-  check("landing back on the list", page.url().endsWith("/admin/skill"), page.url().replace(BASE, ""));
+  check("landing back on the list", landed, page.url().replace(BASE, ""));
 } finally {
   // Whatever failed, nothing this script made is left behind.
   for (const id of created) {
-    await db.delete(aboutSkill).where(eq(aboutSkill.id, id));
+    await db.delete(skill).where(eq(skill.id, id));
     console.log(`  ..    cleaned up skill #${id}`);
   }
   for (const id of createdOrgs) {
-    await db.delete(aboutOrganization).where(eq(aboutOrganization.id, id));
+    await db.delete(organization).where(eq(organization.id, id));
     console.log(`  ..    cleaned up organization #${id}`);
   }
   const [left] = await db
     .select({ n: sql`count(*)::int` })
-    .from(aboutSkill)
-    .where(sql`${aboutSkill.name} like ${`${MARK}%`}`);
+    .from(skill)
+    .where(sql`${skill.name} like ${`${MARK}%`}`);
   check("the table is left as it was found", Number(left?.n ?? 1) === 0);
 
   await browser.close();

@@ -28,13 +28,13 @@ export async function CommentSectionFor({
   slug,
 }: {
   label: CommentTargetLabel;
-  targetId: number;
+  targetId: string;
   /** The detail page's slug, so an action knows what to revalidate. */
   slug: string;
 }) {
   const session = await auth();
-  const viewerId = Number(session?.user?.id);
-  const profile = Number.isInteger(viewerId) ? await getUserProfile(viewerId) : null;
+  const viewerId = session?.user?.id;
+  const profile = viewerId ? await getUserProfile(viewerId) : null;
 
   const viewer = profile
     ? { userId: profile.id, isAuthor: profile.isAuthor, isCoAuthor: profile.isCoAuthor }

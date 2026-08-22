@@ -1,4 +1,10 @@
-import { blogBlogimage, blogBlogpost } from "@/lib/db/schema";
+import {
+  blogImage,
+  blogPost,
+  blogTag,
+  category,
+  tag,
+} from "@/lib/db/app-schema";
 
 import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
@@ -13,7 +19,7 @@ import type { AdminListModel } from "@/lib/admin/list";
  * guessing its title.
  */
 export type BlogPostRow = {
-  id: number;
+  id: string;
   title: string;
   slug: string;
   isFeatured: boolean;
@@ -23,43 +29,43 @@ export type BlogPostRow = {
 
 export const blogPostList: AdminListModel<BlogPostRow> = {
   key: "blog-post",
-  from: blogBlogpost,
-  pk: blogBlogpost.id,
+  from: blogPost,
+  pk: blogPost.id,
   select: {
-    id: blogBlogpost.id,
-    title: blogBlogpost.title,
-    slug: blogBlogpost.slug,
-    isFeatured: blogBlogpost.isFeatured,
-    views: blogBlogpost.views,
-    createdAt: blogBlogpost.createdAt,
+    id: blogPost.id,
+    title: blogPost.title,
+    slug: blogPost.slug,
+    isFeatured: blogPost.isFeatured,
+    views: blogPost.views,
+    createdAt: blogPost.publishedAt,
   },
   columns: [
-    { key: "title", label: "Title", sort: blogBlogpost.title, value: (row) => row.title },
-    { key: "slug", label: "Slug", kind: "code", sort: blogBlogpost.slug, value: (row) => row.slug },
+    { key: "title", label: "Title", sort: blogPost.title, value: (row) => row.title },
+    { key: "slug", label: "Slug", kind: "code", sort: blogPost.slug, value: (row) => row.slug },
     {
       key: "is_featured",
       label: "Featured",
       kind: "bool",
-      sort: blogBlogpost.isFeatured,
+      sort: blogPost.isFeatured,
       value: (row) => row.isFeatured,
     },
     {
       key: "views",
       label: "Views",
       kind: "number",
-      sort: blogBlogpost.views,
+      sort: blogPost.views,
       value: (row) => row.views,
     },
     {
       key: "created_at",
       label: "Created",
       kind: "date",
-      sort: blogBlogpost.createdAt,
+      sort: blogPost.publishedAt,
       value: (row) => row.createdAt,
     },
   ],
   filters: [
-    { key: "is_featured", label: "Featured", kind: "boolean", column: blogBlogpost.isFeatured },
+    { key: "is_featured", label: "Featured", kind: "boolean", column: blogPost.isFeatured },
     // Django listed the categories present rather than a fixed vocabulary --
     // `category` is a plain CharField with no `choices` -- so a post that
     // introduces a new one adds its own filter option.
@@ -67,13 +73,13 @@ export const blogPostList: AdminListModel<BlogPostRow> = {
       key: "category",
       label: "Category",
       kind: "choice",
-      column: blogBlogpost.category,
-      choices: "distinct",
+      column: blogPost.categoryId,
+      choices: { table: category, value: category.id, label: category.label },
     },
-    { key: "created_at", label: "Created", kind: "date", column: blogBlogpost.createdAt },
+    { key: "created_at", label: "Created", kind: "date", column: blogPost.publishedAt },
   ],
   search: {
-    fields: [blogBlogpost.title, blogBlogpost.description, blogBlogpost.author],
+    fields: [blogPost.title, blogPost.description, blogPost.authorName],
     placeholder: "Search title, description or author",
   },
   defaultSort: { key: "created_at", dir: "desc" },
@@ -82,8 +88,8 @@ export const blogPostList: AdminListModel<BlogPostRow> = {
 
 export const blogPostForm: AdminFormModel = {
   key: "blog-post",
-  from: blogBlogpost,
-  pk: blogBlogpost.id,
+  from: blogPost,
+  pk: blogPost.id,
   label: (values) => String(values.title ?? "Post"),
   deleteWarning: "The images attached to this post are deleted with it.",
   /*
@@ -101,7 +107,7 @@ export const blogPostForm: AdminFormModel = {
       fields: [
         {
           name: "title",
-          column: blogBlogpost.title,
+          column: blogPost.title,
           label: "Title",
           kind: "text",
           required: true,
@@ -109,7 +115,7 @@ export const blogPostForm: AdminFormModel = {
         },
         {
           name: "slug",
-          column: blogBlogpost.slug,
+          column: blogPost.slug,
           label: "Slug",
           kind: "slug",
           maxLength: 255,
@@ -118,36 +124,41 @@ export const blogPostForm: AdminFormModel = {
         },
         {
           name: "description",
-          column: blogBlogpost.description,
+          column: blogPost.description,
           label: "Description",
           kind: "textarea",
           help: "The summary on the cards, and the page's meta description.",
         },
         {
-          name: "category",
-          column: blogBlogpost.category,
+          name: "categoryId",
+          column: blogPost.categoryId,
           label: "Category",
-          kind: "text",
-          maxLength: 100,
+          kind: "reference",
+          reference: { table: category, value: category.id, label: category.label },
         },
         {
           name: "tags",
-          column: blogBlogpost.tags,
+          column: blogPost.id,
           label: "Tags",
-          kind: "string-list",
-          itemLabel: "tag",
-          help: "Rendered slugified, so #Commit Style shows as #commit-style.",
+          kind: "many-to-many",
+          help: "Shared with projects, so a tag means the same thing on both.",
+          manyToMany: {
+            join: blogTag,
+            ownerFk: blogTag.postId,
+            targetFk: blogTag.tagId,
+            options: { table: tag, value: tag.id, label: tag.label },
+          },
         },
         {
           name: "isFeatured",
-          column: blogBlogpost.isFeatured,
+          column: blogPost.isFeatured,
           label: "Featured",
           kind: "checkbox",
           help: "Featured posts head the blog page in the slider.",
         },
         {
           name: "readTime",
-          column: blogBlogpost.readTime,
+          column: blogPost.readTime,
           label: "Read time",
           kind: "number",
           min: 0,
@@ -160,7 +171,7 @@ export const blogPostForm: AdminFormModel = {
       fields: [
         {
           name: "contentHtml",
-          column: blogBlogpost.contentHtml,
+          column: blogPost.contentHtml,
           label: "Body",
           kind: "rich-text",
           help: "Styled by the site's own prose stylesheet. Anything outside the allowed vocabulary is dropped on save.",
@@ -173,7 +184,7 @@ export const blogPostForm: AdminFormModel = {
       fields: [
         {
           name: "author",
-          column: blogBlogpost.author,
+          column: blogPost.authorName,
           label: "Name",
           kind: "text",
           required: true,
@@ -181,14 +192,14 @@ export const blogPostForm: AdminFormModel = {
         },
         {
           name: "username",
-          column: blogBlogpost.username,
+          column: blogPost.authorUsername,
           label: "Username",
           kind: "text",
           maxLength: 100,
         },
         {
           name: "authorImage",
-          column: blogBlogpost.authorImage,
+          column: blogPost.authorImageId,
           label: "Photo",
           kind: "image",
           prefix: "profile",
@@ -204,7 +215,7 @@ export const blogPostForm: AdminFormModel = {
       fields: [
         {
           name: "views",
-          column: blogBlogpost.views,
+          column: blogPost.views,
           label: "Views",
           kind: "number",
           readOnly: true,
@@ -212,13 +223,13 @@ export const blogPostForm: AdminFormModel = {
         },
         {
           name: "createdAt",
-          column: blogBlogpost.createdAt,
+          column: blogPost.publishedAt,
           label: "Published",
           kind: "datetime",
         },
         {
           name: "updatedAt",
-          column: blogBlogpost.updatedAt,
+          column: blogPost.updatedAt,
           label: "Updated",
           kind: "datetime",
         },
@@ -228,28 +239,21 @@ export const blogPostForm: AdminFormModel = {
   inlines: [
     {
       name: "images",
-      table: blogBlogimage,
-      pk: blogBlogimage.id,
-      parent: blogBlogimage.blogId,
+      table: blogImage,
+      pk: blogImage.id,
+      parent: blogImage.postId,
       title: "Images",
       help: "The gallery under the post, in this order.",
       itemLabel: "image",
-      orderColumn: blogBlogimage.order,
+      orderColumn: blogImage.position,
       fields: [
         {
-          name: "image",
-          column: blogBlogimage.image,
+          name: "mediaId",
+          column: blogImage.mediaId,
           label: "File",
           kind: "image",
           prefix: "blog",
           required: true,
-        },
-        {
-          name: "originalFilename",
-          column: blogBlogimage.originalFilename,
-          label: "Caption",
-          kind: "text",
-          maxLength: 255,
         },
       ],
     },

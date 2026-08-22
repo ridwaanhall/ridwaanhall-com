@@ -1,7 +1,7 @@
 import { eq, inArray } from "drizzle-orm";
 
 import { db } from "@/lib/db/client";
-import { authUser, guestbookUserprofile, socialaccountSocialaccount } from "@/lib/db/schema";
+import { account, accountIdentity, guestProfile } from "@/lib/db/app-schema";
 
 /**
  * Who a signed-in reader is, as the guestbook and comments need them.
@@ -23,7 +23,8 @@ import { authUser, guestbookUserprofile, socialaccountSocialaccount } from "@/li
  * token expired. The token carries identity; this carries permission.
  */
 export type UserProfile = {
-  id: number;
+  /** A uuid; see drizzle/0005. */
+  id: string;
   username: string;
   fullName: string;
   email: string;
@@ -95,48 +96,48 @@ export function fromSocialAccounts(
  * `prefetch_related("socialaccount_set", "userprofile")`.
  */
 export async function getUserProfiles(
-  userIds: number[],
+  userIds: string[],
   // Injectable for the same reason the adapter's connection is: the check
   // scripts drive these against the live schema inside a rolled-back
   // transaction, and rows written there are invisible to the pool.
   database: Pick<typeof db, "select"> = db,
-): Promise<Map<number, UserProfile>> {
+): Promise<Map<string, UserProfile>> {
   const ids = [...new Set(userIds)];
-  const result = new Map<number, UserProfile>();
+  const result = new Map<string, UserProfile>();
   if (ids.length === 0) return result;
 
   const [users, socials, profiles] = await Promise.all([
     database
       .select({
-        id: authUser.id,
-        username: authUser.username,
-        firstName: authUser.firstName,
-        lastName: authUser.lastName,
-        email: authUser.email,
-        isStaff: authUser.isStaff,
+        id: account.id,
+        username: account.username,
+        firstName: account.firstName,
+        lastName: account.lastName,
+        email: account.email,
+        isStaff: account.isStaff,
       })
-      .from(authUser)
-      .where(inArray(authUser.id, ids)),
+      .from(account)
+      .where(inArray(account.id, ids)),
     database
       .select({
-        userId: socialaccountSocialaccount.userId,
-        provider: socialaccountSocialaccount.provider,
-        extraData: socialaccountSocialaccount.extraData,
+        userId: accountIdentity.accountId,
+        provider: accountIdentity.provider,
+        extraData: accountIdentity.extra,
       })
-      .from(socialaccountSocialaccount)
-      .where(inArray(socialaccountSocialaccount.userId, ids)),
+      .from(accountIdentity)
+      .where(inArray(accountIdentity.accountId, ids)),
     database
       .select({
-        userId: guestbookUserprofile.userId,
-        isAuthor: guestbookUserprofile.isAuthor,
-        isCoAuthor: guestbookUserprofile.isCoAuthor,
-        coAuthorOrder: guestbookUserprofile.coAuthorOrder,
+        userId: guestProfile.accountId,
+        isAuthor: guestProfile.isAuthor,
+        isCoAuthor: guestProfile.isCoAuthor,
+        coAuthorOrder: guestProfile.coAuthorOrder,
       })
-      .from(guestbookUserprofile)
-      .where(inArray(guestbookUserprofile.userId, ids)),
+      .from(guestProfile)
+      .where(inArray(guestProfile.accountId, ids)),
   ]);
 
-  const socialsByUser = new Map<number, { provider: string; extraData: unknown }[]>();
+  const socialsByUser = new Map<string, { provider: string; extraData: unknown }[]>();
   for (const social of socials) {
     const list = socialsByUser.get(social.userId) ?? [];
     list.push({ provider: social.provider, extraData: social.extraData });
@@ -176,16 +177,16 @@ export async function getUserProfiles(
 }
 
 /** One user's profile, or `null` if there is no such row. */
-export async function getUserProfile(userId: number): Promise<UserProfile | null> {
+export async function getUserProfile(userId: string): Promise<UserProfile | null> {
   return (await getUserProfiles([userId])).get(userId) ?? null;
 }
 
 /** Whether a `guestbook_userprofile` row exists, used by the adapter. */
-export async function hasStoredProfile(userId: number): Promise<boolean> {
+export async function hasStoredProfile(userId: string): Promise<boolean> {
   const rows = await db
-    .select({ id: guestbookUserprofile.id })
-    .from(guestbookUserprofile)
-    .where(eq(guestbookUserprofile.userId, userId))
+    .select({ id: guestProfile.id })
+    .from(guestProfile)
+    .where(eq(guestProfile.accountId, userId))
     .limit(1);
   return rows.length > 0;
 }

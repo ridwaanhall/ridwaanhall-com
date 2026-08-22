@@ -24,16 +24,17 @@ config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
+const { staffAccountId, idWhere } = await import("./fixture-ids.mjs");
 const { encode } = await import("next-auth/jwt");
 const { db, pool } = await import("../lib/db/client.ts");
-const { blogBlogpost } = await import("../lib/db/schema.ts");
+const { blogPost } = await import("../lib/db/app-schema.ts");
 const { sanitizeRichText } = await import("../lib/utils/sanitize.ts");
 const { eq } = await import("drizzle-orm");
 
 const BASE = process.argv[2] ?? "http://localhost:3000";
 const COOKIE = "authjs.session-token";
 /** A post with a table, a code block and emoji -- the awkward shapes together. */
-const POST_ID = 20;
+const POST_ID = await idWhere("blog_post", "slug", "commit-message-style-guide");
 
 const checks = [];
 const check = (name, pass, detail = "") => {
@@ -42,7 +43,7 @@ const check = (name, pass, detail = "") => {
 };
 
 const token = await encode({
-  token: { sub: "1" },
+  token: { sub: await staffAccountId() },
   secret: process.env.AUTH_SECRET,
   salt: COOKIE,
   maxAge: 60 * 15,
@@ -74,7 +75,7 @@ try {
   check("what is allowed survives", cleaned.includes("<p>ok</p>"));
 
   // --- the editor loads what is stored --------------------------------------
-  [snapshot] = await db.select().from(blogBlogpost).where(eq(blogBlogpost.id, POST_ID));
+  [snapshot] = await db.select().from(blogPost).where(eq(blogPost.id, POST_ID));
   const stored = snapshot.contentHtml;
 
   await page.goto(`${BASE}/admin/blog-post/${POST_ID}`, { waitUntil: "load" });
@@ -89,9 +90,9 @@ try {
   // --- an untouched save -----------------------------------------------------
   await submit();
   const [untouched] = await db
-    .select({ html: blogBlogpost.contentHtml })
-    .from(blogBlogpost)
-    .where(eq(blogBlogpost.id, POST_ID));
+    .select({ html: blogPost.contentHtml })
+    .from(blogPost)
+    .where(eq(blogPost.id, POST_ID));
   check("opening and saving it changes nothing", untouched.html === stored);
 
   // --- an edit ---------------------------------------------------------------
@@ -105,9 +106,9 @@ try {
   await submit();
 
   const [edited] = await db
-    .select({ html: blogBlogpost.contentHtml })
-    .from(blogBlogpost)
-    .where(eq(blogBlogpost.id, POST_ID));
+    .select({ html: blogPost.contentHtml })
+    .from(blogPost)
+    .where(eq(blogPost.id, POST_ID));
   /*
    * ProseMirror also writes `colspan="1" rowspan="1"` on every cell, which is
    * where most of the growth comes from. Both are on the sanitiser's allow-list
@@ -150,8 +151,8 @@ try {
   );
 } finally {
   if (snapshot) {
-    await db.update(blogBlogpost).set(snapshot).where(eq(blogBlogpost.id, POST_ID));
-    const [now] = await db.select().from(blogBlogpost).where(eq(blogBlogpost.id, POST_ID));
+    await db.update(blogPost).set(snapshot).where(eq(blogPost.id, POST_ID));
+    const [now] = await db.select().from(blogPost).where(eq(blogPost.id, POST_ID));
     check(
       "the post is back exactly as it was found",
       JSON.stringify(now) === JSON.stringify(snapshot),

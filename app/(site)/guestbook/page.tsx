@@ -65,12 +65,13 @@ export default function GuestbookPage() {
 
 async function Panel() {
   const session = await auth();
-  const viewerId = Number(session?.user?.id);
-  const hasViewer = Number.isInteger(viewerId);
+  // The subject is a uuid now, so there is nothing to parse -- it is either
+  // there or it is not.
+  const viewerId = session?.user?.id;
 
   const [thread, profile] = await Promise.all([
     getThread(),
-    hasViewer ? getUserProfile(viewerId) : Promise.resolve(null),
+    viewerId ? getUserProfile(viewerId) : Promise.resolve(null),
   ]);
 
   return (

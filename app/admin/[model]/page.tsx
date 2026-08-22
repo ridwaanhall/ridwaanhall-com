@@ -14,7 +14,7 @@ import { formModelFor, listModelFor } from "@/lib/admin/models";
 import { RecordForm } from "@/components/admin/record-form";
 import { imageUrlMap, toClientFieldsets, toClientInlines } from "@/lib/admin/form";
 import { loadInlineRows } from "@/lib/admin/inlines";
-import { loadFormValues, loadReferenceOptions } from "@/lib/admin/record";
+import { loadFormValues, loadReferenceOptions, singletonId } from "@/lib/admin/record";
 import { ADMIN_ENTRIES, ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
 import { requireStaff } from "@/lib/auth/staff";
 
@@ -43,9 +43,6 @@ type Params = { params: Promise<{ model: string }>; searchParams: Promise<Record
 export function generateStaticParams() {
   return ADMIN_ENTRIES.filter((entry) => entry.ready).map((entry) => ({ model: entry.key }));
 }
-
-/** `SingletonModel` forces `pk=1`, so there is nothing to look up. */
-const SINGLETON_ID = 1;
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { model } = await params;
@@ -79,8 +76,13 @@ async function SingletonScreen({ entryKey }: { entryKey: string }) {
   const form = formModelFor(entryKey);
   if (!entry || !form) notFound();
 
+  // The one row's key, which the form, its inlines and the save action all
+  // need -- and which, unlike Django's `pk=1`, cannot be written as a literal.
+  const recordId = await singletonId(form);
+  if (!recordId) notFound();
+
   const [values, referenceOptions] = await Promise.all([
-    loadFormValues(form, SINGLETON_ID),
+    loadFormValues(form, recordId),
     loadReferenceOptions(form),
   ]);
   if (!values) notFound();
@@ -88,7 +90,7 @@ async function SingletonScreen({ entryKey }: { entryKey: string }) {
   const inlineRows = Object.fromEntries(
     await Promise.all(
       (form.inlines ?? []).map(
-        async (inline) => [inline.name, await loadInlineRows(inline, SINGLETON_ID)] as const,
+        async (inline) => [inline.name, await loadInlineRows(inline, recordId)] as const,
       ),
     ),
   );
@@ -101,7 +103,7 @@ async function SingletonScreen({ entryKey }: { entryKey: string }) {
       </div>
       <RecordForm
         modelKey={entryKey}
-        id={SINGLETON_ID}
+        id={recordId}
         fieldsets={toClientFieldsets(form, referenceOptions)}
         inlines={toClientInlines(form, referenceOptions)}
         inlineRows={inlineRows}

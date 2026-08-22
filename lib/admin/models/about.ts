@@ -1,26 +1,29 @@
 import type { PgColumn } from "drizzle-orm/pg-core";
 
 import {
-  APPLICATION_STATUS_CHOICES,
-  APPLIED_VIA_CHOICES,
-  EMPLOYMENT_TYPE_CHOICES,
-  LOCATION_TYPE_CHOICES,
-} from "@/lib/admin/choices";
-import {
-  aboutApplication,
-  aboutAward,
-  aboutCertification,
-  aboutDonatelink,
-  aboutEducation,
-  aboutExperience,
-  aboutJourneystep,
-  aboutOrganization,
-  aboutProfile,
-  aboutProfileskillhighlight,
-  aboutSkill,
-} from "@/lib/db/schema";
+  application,
+  applicationSource,
+  applicationStep,
+  award,
+  category,
+  certification,
+  certificationAchievement,
+  education,
+  educationAchievement,
+  employmentType,
+  experience,
+  experienceTask,
+  location,
+  organization,
+  profile,
+  profileLink,
+  profileSkillHighlight,
+  skill,
+  workMode,
+  applicationStatus as applicationStatusTable,
+} from "@/lib/db/app-schema";
 
-import { countWhere, lookup } from "@/lib/admin/sql";
+import { countWhere, lookup, lookupOr } from "@/lib/admin/sql";
 
 import type { AdminFormModel, FormField } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
@@ -43,37 +46,80 @@ import type { AdminListModel } from "@/lib/admin/list";
  * primary key.
  */
 const organizationName = (fk: PgColumn) =>
-  lookup<string>(aboutOrganization.name, aboutOrganization.id, fk);
+  lookup<string>(organization.name, organization.id, fk);
 
 // --- Experience --------------------------------------------------------------
 
+
+/*
+ * Labels read through their foreign key.
+ *
+ * Employment type, work mode, application status and the employer were free
+ * varchar repeated across `about_experience` and `about_application` -- with
+ * `''` standing in for "unknown" on 15 application rows, and 53 employers that
+ * existed only as a string. They are rows now, so the label a screen shows and
+ * the value it offers come from one place.
+ */
+const applicationEmployment = lookupOr(employmentType.label, employmentType.id, application.employmentTypeId, "");
+const applicationMode = lookupOr(workMode.label, workMode.id, application.workModeId, "");
+const applicationStatus = lookupOr(applicationStatusTable.label, applicationStatusTable.id, application.statusId, "");
+const applicationOrg = lookupOr(organization.name, organization.id, application.organizationId, "");
+const skillCategory = lookupOr(category.label, category.id, skill.categoryId, "");
+
+
+/** The reference fields the career screens share. */
+const employmentField = (column: PgColumn) => ({
+  name: "employmentTypeId",
+  column,
+  label: "Employment",
+  kind: "reference" as const,
+  reference: { table: employmentType, value: employmentType.id, label: employmentType.label },
+});
+
+const workModeField = (column: PgColumn) => ({
+  name: "workModeId",
+  column,
+  label: "Arrangement",
+  kind: "reference" as const,
+  reference: { table: workMode, value: workMode.id, label: workMode.label },
+});
+
+const locationField = (column: PgColumn) => ({
+  name: "locationId",
+  column,
+  label: "Location",
+  kind: "reference" as const,
+  reference: { table: location, value: location.id, label: location.city },
+  help: "Shared with education, applications and the openhire lists.",
+});
+
 export type ExperienceRow = {
-  id: number;
+  id: string;
   title: string;
   organization: string;
   periodStart: string;
   periodEnd: string | null;
-  sortOrder: number;
+  position: number;
   isCurrent: boolean;
 };
 
-const experienceOrganization = organizationName(aboutExperience.organizationId);
+const experienceOrganization = organizationName(experience.organizationId);
 
 export const experienceList: AdminListModel<ExperienceRow> = {
   key: "experience",
-  from: aboutExperience,
-  pk: aboutExperience.id,
+  from: experience,
+  pk: experience.id,
   select: {
-    id: aboutExperience.id,
-    title: aboutExperience.title,
+    id: experience.id,
+    title: experience.title,
     organization: experienceOrganization,
-    periodStart: aboutExperience.periodStart,
-    periodEnd: aboutExperience.periodEnd,
-    sortOrder: aboutExperience.sortOrder,
-    isCurrent: aboutExperience.isCurrent,
+    periodStart: experience.periodStart,
+    periodEnd: experience.periodEnd,
+    position: experience.position,
+    isCurrent: experience.isCurrent,
   },
   columns: [
-    { key: "title", label: "Title", sort: aboutExperience.title, value: (row) => row.title },
+    { key: "title", label: "Title", sort: experience.title, value: (row) => row.title },
     {
       key: "organization",
       label: "Organization",
@@ -85,7 +131,7 @@ export const experienceList: AdminListModel<ExperienceRow> = {
       key: "period_start",
       label: "From",
       kind: "date",
-      sort: aboutExperience.periodStart,
+      sort: experience.periodStart,
       value: (row) => row.periodStart,
     },
     // A null end date is the role still being held, which is what `is_current`
@@ -94,44 +140,44 @@ export const experienceList: AdminListModel<ExperienceRow> = {
       key: "period_end",
       label: "To",
       kind: "date",
-      sort: aboutExperience.periodEnd,
+      sort: experience.periodEnd,
       value: (row) => row.periodEnd,
     },
     {
       key: "sort_order",
       label: "Order",
       kind: "number",
-      sort: aboutExperience.sortOrder,
-      value: (row) => row.sortOrder,
+      sort: experience.position,
+      value: (row) => row.position,
     },
     {
       key: "is_current",
       label: "Current",
       kind: "bool",
-      sort: aboutExperience.isCurrent,
+      sort: experience.isCurrent,
       value: (row) => row.isCurrent,
     },
   ],
   filters: [
-    { key: "is_current", label: "Current", kind: "boolean", column: aboutExperience.isCurrent },
+    { key: "is_current", label: "Current", kind: "boolean", column: experience.isCurrent },
     {
       key: "employment_type",
       label: "Employment",
       kind: "choice",
-      column: aboutExperience.employmentType,
-      choices: EMPLOYMENT_TYPE_CHOICES,
+      column: experience.employmentTypeId,
+      choices: { table: employmentType, value: employmentType.id, label: employmentType.label },
     },
     {
       key: "location_type",
       label: "Arrangement",
       kind: "choice",
-      column: aboutExperience.locationType,
-      choices: LOCATION_TYPE_CHOICES,
+      column: experience.workModeId,
+      choices: { table: workMode, value: workMode.id, label: workMode.label },
     },
-    { key: "period_start", label: "Started", kind: "date", column: aboutExperience.periodStart },
+    { key: "period_start", label: "Started", kind: "date", column: experience.periodStart },
   ],
   search: {
-    fields: [aboutExperience.title, experienceOrganization],
+    fields: [experience.title, experienceOrganization],
     placeholder: "Search title or organization",
   },
   // `ordering = ["sort_order"]` on the model, which is the sequence the about
@@ -143,7 +189,7 @@ export const experienceList: AdminListModel<ExperienceRow> = {
 // --- Education ---------------------------------------------------------------
 
 export type EducationRow = {
-  id: number;
+  id: string;
   degree: string;
   organization: string;
   years: string | null;
@@ -151,22 +197,22 @@ export type EducationRow = {
   isLast: boolean;
 };
 
-const educationOrganization = organizationName(aboutEducation.organizationId);
+const educationOrganization = organizationName(education.organizationId);
 
 export const educationList: AdminListModel<EducationRow> = {
   key: "education",
-  from: aboutEducation,
-  pk: aboutEducation.id,
+  from: education,
+  pk: education.id,
   select: {
-    id: aboutEducation.id,
-    degree: aboutEducation.degree,
+    id: education.id,
+    degree: education.degree,
     organization: educationOrganization,
-    years: aboutEducation.years,
-    dateStart: aboutEducation.dateStart,
-    isLast: aboutEducation.isLast,
+    years: education.years,
+    dateStart: education.dateStart,
+    isLast: education.isLast,
   },
   columns: [
-    { key: "degree", label: "Degree", sort: aboutEducation.degree, value: (row) => row.degree },
+    { key: "degree", label: "Degree", sort: education.degree, value: (row) => row.degree },
     {
       key: "organization",
       label: "Organization",
@@ -175,30 +221,30 @@ export const educationList: AdminListModel<EducationRow> = {
       value: (row) => row.organization,
     },
     // Free text ("2021 - 2025"), not a date range -- stored as typed.
-    { key: "years", label: "Years", kind: "muted", sort: aboutEducation.years, value: (row) => row.years },
+    { key: "years", label: "Years", kind: "muted", sort: education.years, value: (row) => row.years },
     {
       key: "date_start",
       label: "Started",
       kind: "date",
-      sort: aboutEducation.dateStart,
+      sort: education.dateStart,
       value: (row) => row.dateStart,
     },
     {
       key: "is_last",
       label: "Latest",
       kind: "bool",
-      sort: aboutEducation.isLast,
+      sort: education.isLast,
       value: (row) => row.isLast,
     },
     // `ordering = ["id"]` on the model, and `id` is not in `list_display`, so
     // the ordering had nothing to hang off. Naming it in `defaultSort` alone
     // would leave the list unsortable by the very thing it is sorted by, so it
     // gets a column of its own.
-    { key: "id", label: "#", kind: "number", sort: aboutEducation.id, value: (row) => row.id },
+    { key: "id", label: "#", kind: "number", sort: education.id, value: (row) => row.id },
   ],
-  filters: [{ key: "is_last", label: "Latest", kind: "boolean", column: aboutEducation.isLast }],
+  filters: [{ key: "is_last", label: "Latest", kind: "boolean", column: education.isLast }],
   search: {
-    fields: [aboutEducation.degree, educationOrganization],
+    fields: [education.degree, educationOrganization],
     placeholder: "Search degree or organization",
   },
   defaultSort: { key: "id", dir: "asc" },
@@ -207,22 +253,22 @@ export const educationList: AdminListModel<EducationRow> = {
 
 // --- Award -------------------------------------------------------------------
 
-export type AwardRow = { id: number; title: string; organization: string; issued: string };
+export type AwardRow = { id: string; title: string; organization: string; issued: string };
 
-const awardOrganization = organizationName(aboutAward.organizationId);
+const awardOrganization = organizationName(award.organizationId);
 
 export const awardList: AdminListModel<AwardRow> = {
   key: "award",
-  from: aboutAward,
-  pk: aboutAward.id,
+  from: award,
+  pk: award.id,
   select: {
-    id: aboutAward.id,
-    title: aboutAward.title,
+    id: award.id,
+    title: award.title,
     organization: awardOrganization,
-    issued: aboutAward.issued,
+    issued: award.issued,
   },
   columns: [
-    { key: "title", label: "Title", sort: aboutAward.title, value: (row) => row.title },
+    { key: "title", label: "Title", sort: award.title, value: (row) => row.title },
     {
       key: "organization",
       label: "Organization",
@@ -233,10 +279,10 @@ export const awardList: AdminListModel<AwardRow> = {
     // The model's help_text says the day is ignored and only month and year are
     // shown on the site. The admin shows the stored value, day included, because
     // this is where it is corrected.
-    { key: "issued", label: "Issued", kind: "date", sort: aboutAward.issued, value: (row) => row.issued },
+    { key: "issued", label: "Issued", kind: "date", sort: award.issued, value: (row) => row.issued },
   ],
-  filters: [{ key: "issued", label: "Issued", kind: "date", column: aboutAward.issued }],
-  search: { fields: [aboutAward.title, awardOrganization], placeholder: "Search title or organization" },
+  filters: [{ key: "issued", label: "Issued", kind: "date", column: award.issued }],
+  search: { fields: [award.title, awardOrganization], placeholder: "Search title or organization" },
   // `ordering = ["-id"]` -- newest first.
   defaultSort: { key: "issued", dir: "desc" },
   rowId: (row) => row.id,
@@ -245,28 +291,28 @@ export const awardList: AdminListModel<AwardRow> = {
 // --- Certification -----------------------------------------------------------
 
 export type CertificationRow = {
-  id: number;
+  id: string;
   title: string;
   organization: string;
   isFeatured: boolean;
   issued: string;
 };
 
-const certificationOrganization = organizationName(aboutCertification.organizationId);
+const certificationOrganization = organizationName(certification.organizationId);
 
 export const certificationList: AdminListModel<CertificationRow> = {
   key: "certification",
-  from: aboutCertification,
-  pk: aboutCertification.id,
+  from: certification,
+  pk: certification.id,
   select: {
-    id: aboutCertification.id,
-    title: aboutCertification.title,
+    id: certification.id,
+    title: certification.title,
     organization: certificationOrganization,
-    isFeatured: aboutCertification.isFeatured,
-    issued: aboutCertification.issued,
+    isFeatured: certification.isFeatured,
+    issued: certification.issued,
   },
   columns: [
-    { key: "title", label: "Title", sort: aboutCertification.title, value: (row) => row.title },
+    { key: "title", label: "Title", sort: certification.title, value: (row) => row.title },
     {
       key: "organization",
       label: "Organization",
@@ -278,23 +324,23 @@ export const certificationList: AdminListModel<CertificationRow> = {
       key: "is_featured",
       label: "Featured",
       kind: "bool",
-      sort: aboutCertification.isFeatured,
+      sort: certification.isFeatured,
       value: (row) => row.isFeatured,
     },
     {
       key: "issued",
       label: "Issued",
       kind: "date",
-      sort: aboutCertification.issued,
+      sort: certification.issued,
       value: (row) => row.issued,
     },
   ],
   filters: [
-    { key: "is_featured", label: "Featured", kind: "boolean", column: aboutCertification.isFeatured },
-    { key: "issued", label: "Issued", kind: "date", column: aboutCertification.issued },
+    { key: "is_featured", label: "Featured", kind: "boolean", column: certification.isFeatured },
+    { key: "issued", label: "Issued", kind: "date", column: certification.issued },
   ],
   search: {
-    fields: [aboutCertification.title, certificationOrganization],
+    fields: [certification.title, certificationOrganization],
     placeholder: "Search title or organization",
   },
   defaultSort: { key: "issued", dir: "desc" },
@@ -303,33 +349,33 @@ export const certificationList: AdminListModel<CertificationRow> = {
 
 // --- Skill -------------------------------------------------------------------
 
-export type SkillRow = { id: number; name: string; slug: string; category: string };
+export type SkillRow = { id: string; name: string; slug: string; category: string };
 
 export const skillList: AdminListModel<SkillRow> = {
   key: "skill",
-  from: aboutSkill,
-  pk: aboutSkill.id,
+  from: skill,
+  pk: skill.id,
   select: {
-    id: aboutSkill.id,
-    name: aboutSkill.name,
-    slug: aboutSkill.slug,
-    category: aboutSkill.category,
+    id: skill.id,
+    name: skill.name,
+    slug: skill.slug,
+    category: skillCategory,
   },
   columns: [
-    { key: "name", label: "Name", sort: aboutSkill.name, value: (row) => row.name },
-    { key: "slug", label: "Slug", kind: "code", sort: aboutSkill.slug, value: (row) => row.slug },
-    { key: "category", label: "Category", kind: "muted", sort: aboutSkill.category, value: (row) => row.category },
+    { key: "name", label: "Name", sort: skill.name, value: (row) => row.name },
+    { key: "slug", label: "Slug", kind: "code", sort: skill.slug, value: (row) => row.slug },
+    { key: "category", label: "Category", kind: "muted", sort: skillCategory, value: (row) => row.category },
   ],
   filters: [
     {
       key: "category",
       label: "Category",
       kind: "choice",
-      column: aboutSkill.category,
-      choices: "distinct",
+      column: skill.categoryId,
+      choices: { table: category, value: category.id, label: category.label },
     },
   ],
-  search: { fields: [aboutSkill.name, aboutSkill.slug], placeholder: "Search name or slug" },
+  search: { fields: [skill.name, skill.slug], placeholder: "Search name or slug" },
   // `ordering = ["id"]`, but a 101-row catalogue is looked up by name.
   defaultSort: { key: "name", dir: "asc" },
   rowId: (row) => row.id,
@@ -338,7 +384,7 @@ export const skillList: AdminListModel<SkillRow> = {
 // --- Application -------------------------------------------------------------
 
 export type ApplicationRow = {
-  id: number;
+  id: string;
   companyName: string;
   position: string;
   status: string;
@@ -348,66 +394,66 @@ export type ApplicationRow = {
 
 export const applicationList: AdminListModel<ApplicationRow> = {
   key: "application",
-  from: aboutApplication,
-  pk: aboutApplication.id,
+  from: application,
+  pk: application.id,
   select: {
-    id: aboutApplication.id,
-    companyName: aboutApplication.companyName,
-    position: aboutApplication.position,
-    status: aboutApplication.status,
-    employmentType: aboutApplication.employmentType,
-    locationType: aboutApplication.locationType,
+    id: application.id,
+    companyName: applicationOrg,
+    position: application.title,
+    status: applicationStatus,
+    employmentType: applicationEmployment,
+    locationType: applicationMode,
   },
   columns: [
     {
       key: "company_name",
       label: "Company",
-      sort: aboutApplication.companyName,
+      sort: applicationOrg,
       value: (row) => row.companyName,
     },
-    { key: "position", label: "Position", sort: aboutApplication.position, value: (row) => row.position },
-    { key: "status", label: "Status", kind: "muted", sort: aboutApplication.status, value: (row) => row.status },
+    { key: "position", label: "Position", sort: application.title, value: (row) => row.position },
+    { key: "status", label: "Status", kind: "muted", sort: applicationStatus, value: (row) => row.status },
     {
       key: "employment_type",
       label: "Employment",
       kind: "muted",
-      sort: aboutApplication.employmentType,
+      sort: applicationEmployment,
       value: (row) => row.employmentType,
     },
     {
       key: "location_type",
       label: "Arrangement",
       kind: "muted",
-      sort: aboutApplication.locationType,
+      sort: applicationMode,
       value: (row) => row.locationType,
     },
-    { key: "id", label: "#", kind: "number", sort: aboutApplication.id, value: (row) => row.id },
+    { key: "id", label: "#", kind: "number", sort: application.id, value: (row) => row.id },
   ],
   filters: [
     {
       key: "status",
       label: "Status",
       kind: "choice",
-      column: aboutApplication.status,
-      choices: APPLICATION_STATUS_CHOICES,
+      column: application.statusId,
+      choices: { table: applicationStatusTable, value: applicationStatusTable.id, label: applicationStatusTable.label },
     },
     {
       key: "employment_type",
       label: "Employment",
       kind: "choice",
-      column: aboutApplication.employmentType,
-      choices: EMPLOYMENT_TYPE_CHOICES,
+      column: application.employmentTypeId,
+      choices: { table: employmentType, value: employmentType.id, label: employmentType.label },
     },
     {
       key: "location_type",
       label: "Arrangement",
       kind: "choice",
-      column: aboutApplication.locationType,
-      choices: LOCATION_TYPE_CHOICES,
+      column: application.workModeId,
+      choices: { table: workMode, value: workMode.id, label: workMode.label },
     },
   ],
   search: {
-    fields: [aboutApplication.companyName, aboutApplication.position],
+    fields: [applicationOrg, application.title],
     placeholder: "Search company or position",
   },
   // `ordering = ["-id"]` -- most recently applied first. There is no date column
@@ -419,7 +465,7 @@ export const applicationList: AdminListModel<ApplicationRow> = {
 // --- Organization ------------------------------------------------------------
 
 export type OrganizationRow = {
-  id: number;
+  id: string;
   name: string;
   website: string;
   experiences: number;
@@ -440,28 +486,28 @@ export type OrganizationRow = {
  * 6 certifications. Correlated subqueries have neither problem: each counts its
  * own table, and no join exists to multiply.
  */
-const usedBy = (fk: PgColumn) => countWhere(fk, aboutOrganization.id);
+const usedBy = (fk: PgColumn) => countWhere(fk, organization.id);
 
 export const organizationList: AdminListModel<OrganizationRow> = {
   key: "organization",
-  from: aboutOrganization,
-  pk: aboutOrganization.id,
+  from: organization,
+  pk: organization.id,
   select: {
-    id: aboutOrganization.id,
-    name: aboutOrganization.name,
-    website: aboutOrganization.website,
-    experiences: usedBy(aboutExperience.organizationId),
-    education: usedBy(aboutEducation.organizationId),
-    certifications: usedBy(aboutCertification.organizationId),
-    awards: usedBy(aboutAward.organizationId),
+    id: organization.id,
+    name: organization.name,
+    website: organization.website,
+    experiences: usedBy(experience.organizationId),
+    education: usedBy(education.organizationId),
+    certifications: usedBy(certification.organizationId),
+    awards: usedBy(award.organizationId),
   },
   columns: [
-    { key: "name", label: "Name", sort: aboutOrganization.name, value: (row) => row.name },
+    { key: "name", label: "Name", sort: organization.name, value: (row) => row.name },
     {
       key: "website",
       label: "Website",
       kind: "muted",
-      sort: aboutOrganization.website,
+      sort: organization.website,
       value: (row) => row.website,
     },
     {
@@ -483,7 +529,7 @@ export const organizationList: AdminListModel<OrganizationRow> = {
     },
   ],
   search: {
-    fields: [aboutOrganization.name, aboutOrganization.website],
+    fields: [organization.name, organization.website],
     placeholder: "Search name or website",
   },
   defaultSort: { key: "name", dir: "asc" },
@@ -492,16 +538,16 @@ export const organizationList: AdminListModel<OrganizationRow> = {
 
 export const skillForm: AdminFormModel = {
   key: "skill",
-  from: aboutSkill,
-  pk: aboutSkill.id,
+  from: skill,
+  pk: skill.id,
   label: (values) => String(values.name ?? "Skill"),
   fieldsets: [
     {
       fields: [
-        { name: "name", column: aboutSkill.name, label: "Name", kind: "text", required: true, maxLength: 100 },
+        { name: "name", column: skill.name, label: "Name", kind: "text", required: true, maxLength: 100 },
         {
           name: "slug",
-          column: aboutSkill.slug,
+          column: skill.slug,
           label: "Slug",
           kind: "slug",
           maxLength: 50,
@@ -509,12 +555,12 @@ export const skillForm: AdminFormModel = {
           help: "Left blank, this is derived from the name.",
         },
         {
-          name: "category",
-          column: aboutSkill.category,
+          name: "categoryId",
+          column: skill.categoryId,
           label: "Category",
-          kind: "text",
-          maxLength: 100,
-          help: "Groups the skill on the about page. Reuse an existing one to join that group.",
+          kind: "reference",
+          reference: { table: category, value: category.id, label: category.label },
+          help: "Groups the skill on the about page. Shared with projects and posts.",
         },
       ],
     },
@@ -522,18 +568,22 @@ export const skillForm: AdminFormModel = {
       title: "Presentation",
       fields: [
         {
-          name: "iconSvg",
-          column: aboutSkill.iconSvg,
+          name: "iconId",
+          column: skill.iconId,
           label: "Icon",
-          kind: "text",
-          maxLength: 500,
-          // Deliberately `text` and not `url`: 78 of these are site-relative
-          // paths under `/static/svg/icon/`, stored in the database and
-          // referenced by nothing in the codebase. Requiring a scheme here
-          // would make every one of them unsaveable.
-          help: "A full URL, or a site path such as /static/svg/icon/python.svg.",
+          kind: "image",
+          prefix: "icon",
+          /*
+           * Was a `text` column holding an absolute
+           * `https://ridwaanhall.com/static/svg/icon/*.svg` on 78 rows, which
+           * pointed development and this admin at the production site and would
+           * have broken all 78 the moment the domain moved. It is a media asset
+           * now: the 74 bundled SVGs are `source: "static"` and resolve to a
+           * path, an uploaded one is `source: "storage"` and resolves to its
+           * bucket URL, and `assetUrl` is the single thing that knows which.
+           */
         },
-        { name: "description", column: aboutSkill.description, label: "Description", kind: "textarea" },
+        { name: "description", column: skill.description, label: "Description", kind: "textarea" },
       ],
     },
   ],
@@ -541,8 +591,8 @@ export const skillForm: AdminFormModel = {
 
 export const organizationForm: AdminFormModel = {
   key: "organization",
-  from: aboutOrganization,
-  pk: aboutOrganization.id,
+  from: organization,
+  pk: organization.id,
   label: (values) => String(values.name ?? "Organization"),
   // `on_delete=PROTECT` on all four relations, so Postgres refuses to remove one
   // that is still in use and says so as a foreign-key violation. Offering the
@@ -553,7 +603,7 @@ export const organizationForm: AdminFormModel = {
       fields: [
         {
           name: "name",
-          column: aboutOrganization.name,
+          column: organization.name,
           label: "Name",
           kind: "text",
           required: true,
@@ -561,7 +611,7 @@ export const organizationForm: AdminFormModel = {
         },
         {
           name: "slug",
-          column: aboutOrganization.slug,
+          column: organization.slug,
           label: "Slug",
           kind: "slug",
           maxLength: 255,
@@ -570,7 +620,7 @@ export const organizationForm: AdminFormModel = {
         },
         {
           name: "website",
-          column: aboutOrganization.website,
+          column: organization.website,
           label: "Website",
           kind: "url",
           maxLength: 200,
@@ -583,7 +633,7 @@ export const organizationForm: AdminFormModel = {
       fields: [
         {
           name: "logo",
-          column: aboutOrganization.logo,
+          column: organization.logoId,
           label: "Logo",
           kind: "image",
           prefix: "logo",
@@ -609,53 +659,33 @@ const organizationField = (column: PgColumn): FormField => ({
   kind: "reference",
   required: true,
   reference: {
-    table: aboutOrganization,
-    value: aboutOrganization.id,
-    label: aboutOrganization.name,
+    table: organization,
+    value: organization.id,
+    label: organization.name,
   },
   help: "Its logo and website come from that record.",
 });
 
 export const experienceForm: AdminFormModel = {
   key: "experience",
-  from: aboutExperience,
-  pk: aboutExperience.id,
+  from: experience,
+  pk: experience.id,
   label: (values) => String(values.title ?? "Experience"),
   fieldsets: [
     {
       fields: [
         {
           name: "title",
-          column: aboutExperience.title,
+          column: experience.title,
           label: "Title",
           kind: "text",
           required: true,
           maxLength: 255,
         },
-        organizationField(aboutExperience.organizationId),
-        {
-          name: "employmentType",
-          column: aboutExperience.employmentType,
-          label: "Employment",
-          kind: "select",
-          choices: EMPLOYMENT_TYPE_CHOICES,
-          maxLength: 50,
-        },
-        {
-          name: "locationType",
-          column: aboutExperience.locationType,
-          label: "Arrangement",
-          kind: "select",
-          choices: LOCATION_TYPE_CHOICES,
-          maxLength: 50,
-        },
-        {
-          name: "location",
-          column: aboutExperience.location,
-          label: "Location",
-          kind: "text",
-          maxLength: 255,
-        },
+        organizationField(experience.organizationId),
+        employmentField(experience.employmentTypeId),
+        workModeField(experience.workModeId),
+        locationField(experience.locationId),
       ],
     },
     {
@@ -663,27 +693,27 @@ export const experienceForm: AdminFormModel = {
       fields: [
         {
           name: "periodStart",
-          column: aboutExperience.periodStart,
+          column: experience.periodStart,
           label: "From",
           kind: "date",
           required: true,
         },
         {
           name: "periodEnd",
-          column: aboutExperience.periodEnd,
+          column: experience.periodEnd,
           label: "To",
           kind: "date",
           help: "Leave blank while the role is current.",
         },
         {
           name: "isCurrent",
-          column: aboutExperience.isCurrent,
+          column: experience.isCurrent,
           label: "Current",
           kind: "checkbox",
         },
         {
           name: "sortOrder",
-          column: aboutExperience.sortOrder,
+          column: experience.position,
           label: "Order",
           kind: "number",
           min: 0,
@@ -691,17 +721,19 @@ export const experienceForm: AdminFormModel = {
         },
       ],
     },
+  ],
+  inlines: [
     {
+      name: "tasks",
+      table: experienceTask,
+      pk: experienceTask.id,
+      parent: experienceTask.experienceId,
       title: "Responsibilities",
+      help: "Shown in this order under the role.",
+      itemLabel: "responsibility",
+      orderColumn: experienceTask.position,
       fields: [
-        {
-          name: "responsibilities",
-          column: aboutExperience.responsibilities,
-          label: "Responsibilities",
-          kind: "string-list",
-          multiline: true,
-          itemLabel: "responsibility",
-        },
+        { name: "body", column: experienceTask.body, label: "Text", kind: "textarea" },
       ],
     },
   ],
@@ -709,31 +741,31 @@ export const experienceForm: AdminFormModel = {
 
 export const educationForm: AdminFormModel = {
   key: "education",
-  from: aboutEducation,
-  pk: aboutEducation.id,
+  from: education,
+  pk: education.id,
   label: (values) => String(values.degree ?? "Education"),
   fieldsets: [
     {
       fields: [
         {
           name: "degree",
-          column: aboutEducation.degree,
+          column: education.degree,
           label: "Degree",
           kind: "text",
           required: true,
           maxLength: 255,
         },
-        organizationField(aboutEducation.organizationId),
+        organizationField(education.organizationId),
         {
           name: "alias",
-          column: aboutEducation.alias,
+          column: education.alias,
           label: "Alias",
           kind: "text",
           maxLength: 100,
         },
         {
           name: "years",
-          column: aboutEducation.years,
+          column: education.years,
           label: "Years",
           kind: "text",
           maxLength: 50,
@@ -741,69 +773,32 @@ export const educationForm: AdminFormModel = {
           // page prints it exactly as typed.
           help: "Shown as typed, for example 2021 - 2025.",
         },
-        { name: "dateStart", column: aboutEducation.dateStart, label: "Started", kind: "date" },
-        { name: "dateEnd", column: aboutEducation.dateEnd, label: "Ended", kind: "date" },
-        { name: "isLast", column: aboutEducation.isLast, label: "Latest", kind: "checkbox" },
+        { name: "dateStart", column: education.dateStart, label: "Started", kind: "date" },
+        { name: "dateEnd", column: education.dateEnd, label: "Ended", kind: "date" },
+        { name: "isLast", column: education.isLast, label: "Latest", kind: "checkbox" },
       ],
     },
     {
       title: "Location",
-      fields: [
-        {
-          name: "locationRegency",
-          column: aboutEducation.locationRegency,
-          label: "Regency",
-          kind: "text",
-          maxLength: 100,
-        },
-        {
-          name: "locationProvince",
-          column: aboutEducation.locationProvince,
-          label: "Province",
-          kind: "text",
-          maxLength: 100,
-        },
-        {
-          name: "locationProv",
-          column: aboutEducation.locationProv,
-          label: "Province, short",
-          kind: "text",
-          maxLength: 100,
-        },
-        {
-          name: "locationCountry",
-          column: aboutEducation.locationCountry,
-          label: "Country",
-          kind: "text",
-          maxLength: 100,
-        },
-        {
-          name: "locationFlag",
-          column: aboutEducation.locationFlag,
-          label: "Flag",
-          kind: "text",
-          maxLength: 16,
-        },
-        {
-          name: "locationMapUrl",
-          column: aboutEducation.locationMapUrl,
-          label: "Map",
-          kind: "url",
-          maxLength: 200,
-        },
-      ],
+      fields: [locationField(education.locationId)],
     },
     {
       title: "Achievements",
       fields: [
-        {
-          name: "achievements",
-          column: aboutEducation.achievements,
-          label: "Achievements",
-          kind: "string-list",
-          multiline: true,
-          itemLabel: "achievement",
-        },
+      ],
+    },
+  ],
+  inlines: [
+    {
+      name: "achievements",
+      table: educationAchievement,
+      pk: educationAchievement.id,
+      parent: educationAchievement.educationId,
+      title: "Achievements",
+      itemLabel: "achievement",
+      orderColumn: educationAchievement.position,
+      fields: [
+        { name: "body", column: educationAchievement.body, label: "Text", kind: "textarea" },
       ],
     },
   ],
@@ -811,24 +806,24 @@ export const educationForm: AdminFormModel = {
 
 export const awardForm: AdminFormModel = {
   key: "award",
-  from: aboutAward,
-  pk: aboutAward.id,
+  from: award,
+  pk: award.id,
   label: (values) => String(values.title ?? "Award"),
   fieldsets: [
     {
       fields: [
         {
           name: "title",
-          column: aboutAward.title,
+          column: award.title,
           label: "Title",
           kind: "text",
           required: true,
           maxLength: 255,
         },
-        organizationField(aboutAward.organizationId),
+        organizationField(award.organizationId),
         {
           name: "issued",
-          column: aboutAward.issued,
+          column: award.issued,
           label: "Issued",
           kind: "date",
           required: true,
@@ -837,14 +832,14 @@ export const awardForm: AdminFormModel = {
         },
         {
           name: "credentialUrl",
-          column: aboutAward.credentialUrl,
+          column: award.credentialUrl,
           label: "Credential",
           kind: "url",
           maxLength: 200,
         },
         {
           name: "description",
-          column: aboutAward.description,
+          column: award.description,
           label: "Description",
           kind: "textarea",
         },
@@ -855,24 +850,24 @@ export const awardForm: AdminFormModel = {
 
 export const certificationForm: AdminFormModel = {
   key: "certification",
-  from: aboutCertification,
-  pk: aboutCertification.id,
+  from: certification,
+  pk: certification.id,
   label: (values) => String(values.title ?? "Certification"),
   fieldsets: [
     {
       fields: [
         {
           name: "title",
-          column: aboutCertification.title,
+          column: certification.title,
           label: "Title",
           kind: "text",
           required: true,
           maxLength: 255,
         },
-        organizationField(aboutCertification.organizationId),
+        organizationField(certification.organizationId),
         {
           name: "issued",
-          column: aboutCertification.issued,
+          column: certification.issued,
           label: "Issued",
           kind: "date",
           required: true,
@@ -880,14 +875,14 @@ export const certificationForm: AdminFormModel = {
         },
         {
           name: "credentialUrl",
-          column: aboutCertification.credentialUrl,
+          column: certification.credentialUrl,
           label: "Credential",
           kind: "url",
           maxLength: 200,
         },
         {
           name: "isFeatured",
-          column: aboutCertification.isFeatured,
+          column: certification.isFeatured,
           label: "Featured",
           kind: "checkbox",
           help: "Featured certifications lead the about page; the rest sit behind the LinkedIn link.",
@@ -897,14 +892,20 @@ export const certificationForm: AdminFormModel = {
     {
       title: "Achievements",
       fields: [
-        {
-          name: "achievements",
-          column: aboutCertification.achievements,
-          label: "Achievements",
-          kind: "string-list",
-          multiline: true,
-          itemLabel: "achievement",
-        },
+      ],
+    },
+  ],
+  inlines: [
+    {
+      name: "achievements",
+      table: certificationAchievement,
+      pk: certificationAchievement.id,
+      parent: certificationAchievement.certificationId,
+      title: "Achievements",
+      itemLabel: "achievement",
+      orderColumn: certificationAchievement.position,
+      fields: [
+        { name: "body", column: certificationAchievement.body, label: "Text", kind: "textarea" },
       ],
     },
   ],
@@ -912,76 +913,65 @@ export const certificationForm: AdminFormModel = {
 
 export const applicationForm: AdminFormModel = {
   key: "application",
-  from: aboutApplication,
-  pk: aboutApplication.id,
-  label: (values) => `${values.position ?? "Application"} at ${values.companyName ?? ""}`.trim(),
+  from: application,
+  pk: application.id,
+  label: (values) => String(values.position ?? "Application"),
   fieldsets: [
     {
       fields: [
         {
-          name: "companyName",
-          column: aboutApplication.companyName,
+          // The employer is an organization like any other, so a company that
+          // also issued a certification or employed you is one row rather than
+          // a string repeated in three tables.
+          name: "organizationId",
+          column: application.organizationId,
           label: "Company",
-          kind: "text",
+          kind: "reference",
           required: true,
-          maxLength: 255,
+          reference: { table: organization, value: organization.id, label: organization.name },
         },
         {
           name: "position",
-          column: aboutApplication.position,
+          column: application.title,
           label: "Position",
           kind: "text",
           required: true,
           maxLength: 255,
         },
         {
-          name: "status",
-          column: aboutApplication.status,
+          name: "statusId",
+          column: application.statusId,
           label: "Status",
-          kind: "select",
+          kind: "reference",
           required: true,
-          choices: APPLICATION_STATUS_CHOICES,
-          maxLength: 20,
+          reference: {
+            table: applicationStatusTable,
+            value: applicationStatusTable.id,
+            label: applicationStatusTable.label,
+          },
         },
         {
-          name: "appliedVia",
-          column: aboutApplication.appliedVia,
+          name: "sourceId",
+          column: application.sourceId,
           label: "Applied via",
-          kind: "select",
-          choices: APPLIED_VIA_CHOICES,
-          maxLength: 20,
+          kind: "reference",
+          reference: {
+            table: applicationSource,
+            value: applicationSource.id,
+            label: applicationSource.label,
+          },
         },
       ],
     },
     {
       title: "Arrangement",
       fields: [
-        {
-          name: "employmentType",
-          column: aboutApplication.employmentType,
-          label: "Employment",
-          kind: "select",
-          choices: EMPLOYMENT_TYPE_CHOICES,
-          maxLength: 20,
-        },
-        {
-          name: "locationType",
-          column: aboutApplication.locationType,
-          label: "Arrangement",
-          kind: "select",
-          choices: LOCATION_TYPE_CHOICES,
-          maxLength: 20,
-        },
-        {
-          name: "location",
-          column: aboutApplication.location,
-          label: "Location",
-          kind: "text",
-          maxLength: 255,
-        },
+        employmentField(application.employmentTypeId),
+        workModeField(application.workModeId),
+        locationField(application.locationId),
         {
           name: "salaryRange",
-          column: aboutApplication.salaryRange,
+          column: application.salaryRange,
           label: "Salary range",
           kind: "text",
           maxLength: 100,
@@ -993,7 +983,7 @@ export const applicationForm: AdminFormModel = {
       fields: [
         {
           name: "lessonsLearned",
-          column: aboutApplication.lessonsLearned,
+          column: application.lessonsLearned,
           label: "Lessons learned",
           kind: "textarea",
         },
@@ -1009,24 +999,24 @@ export const applicationForm: AdminFormModel = {
        * its timestamp, which is what actually decides where it appears.
        */
       name: "journey",
-      table: aboutJourneystep,
-      pk: aboutJourneystep.id,
-      parent: aboutJourneystep.applicationId,
-      orderBy: aboutJourneystep.timestamp,
+      table: applicationStep,
+      pk: applicationStep.id,
+      parent: applicationStep.applicationId,
+      orderBy: applicationStep.occurredAt,
       title: "Journey",
       itemLabel: "step",
       fields: [
         {
           name: "title",
-          column: aboutJourneystep.title,
+          column: applicationStep.title,
           label: "Step",
           kind: "text",
           required: true,
           maxLength: 255,
         },
-        { name: "timestamp", column: aboutJourneystep.timestamp, label: "When", kind: "datetime" },
-        { name: "details", column: aboutJourneystep.details, label: "Details", kind: "textarea" },
-        { name: "notes", column: aboutJourneystep.notes, label: "Notes", kind: "textarea" },
+        { name: "timestamp", column: applicationStep.occurredAt, label: "When", kind: "datetime" },
+        { name: "details", column: applicationStep.details, label: "Details", kind: "textarea" },
+        { name: "notes", column: applicationStep.notes, label: "Notes", kind: "textarea" },
       ],
     },
   ],
@@ -1034,8 +1024,8 @@ export const applicationForm: AdminFormModel = {
 
 export const profileForm: AdminFormModel = {
   key: "profile",
-  from: aboutProfile,
-  pk: aboutProfile.id,
+  from: profile,
+  pk: profile.id,
   label: (values) => String(values.name ?? "Profile"),
   // `SingletonModel` forces `pk=1` and blocks delete. Without this row there is
   // no site: every page in the public layout renders the profile block.
@@ -1044,15 +1034,15 @@ export const profileForm: AdminFormModel = {
   fieldsets: [
     {
       fields: [
-        { name: "name", column: aboutProfile.name, label: "Name", kind: "text", required: true, maxLength: 255 },
-        { name: "firstName", column: aboutProfile.firstName, label: "First name", kind: "text", maxLength: 100 },
-        { name: "lastName", column: aboutProfile.lastName, label: "Last name", kind: "text", maxLength: 100 },
-        { name: "username", column: aboutProfile.username, label: "Username", kind: "text", maxLength: 100 },
-        { name: "aka", column: aboutProfile.aka, label: "Also known as", kind: "text", maxLength: 100 },
-        { name: "role", column: aboutProfile.role, label: "Role", kind: "text", maxLength: 255 },
+        { name: "name", column: profile.name, label: "Name", kind: "text", required: true, maxLength: 255 },
+        { name: "firstName", column: profile.firstName, label: "First name", kind: "text", maxLength: 100 },
+        { name: "lastName", column: profile.lastName, label: "Last name", kind: "text", maxLength: 100 },
+        { name: "username", column: profile.username, label: "Username", kind: "text", maxLength: 100 },
+        { name: "aka", column: profile.aka, label: "Also known as", kind: "text", maxLength: 100 },
+        { name: "role", column: profile.role, label: "Role", kind: "text", maxLength: 255 },
         {
           name: "image",
-          column: aboutProfile.image,
+          column: profile.imageId,
           label: "Photo",
           kind: "image",
           prefix: "profile",
@@ -1067,9 +1057,9 @@ export const profileForm: AdminFormModel = {
       title: "Status",
       help: "All three can be true at once, and the sidebar stacks the badges when they are.",
       fields: [
-        { name: "isOpenToWork", column: aboutProfile.isOpenToWork, label: "Open to work", kind: "checkbox" },
-        { name: "isHiring", column: aboutProfile.isHiring, label: "Hiring", kind: "checkbox" },
-        { name: "isSick", column: aboutProfile.isSick, label: "Under the weather", kind: "checkbox" },
+        { name: "isOpenToWork", column: profile.isOpenToWork, label: "Open to work", kind: "checkbox" },
+        { name: "isHiring", column: profile.isHiring, label: "Hiring", kind: "checkbox" },
+        { name: "isSick", column: profile.isSick, label: "Under the weather", kind: "checkbox" },
       ],
     },
     {
@@ -1077,21 +1067,21 @@ export const profileForm: AdminFormModel = {
       fields: [
         {
           name: "shortDescription",
-          column: aboutProfile.shortDescription,
+          column: profile.shortDescription,
           label: "Short description",
           kind: "textarea",
         },
-        { name: "shortBio", column: aboutProfile.shortBio, label: "Short bio", kind: "textarea" },
-        { name: "shortCta", column: aboutProfile.shortCta, label: "Call to action", kind: "textarea" },
+        { name: "shortBio", column: profile.shortBio, label: "Short bio", kind: "textarea" },
+        { name: "shortCta", column: profile.shortCta, label: "Call to action", kind: "textarea" },
         {
           name: "longDescription",
-          column: aboutProfile.longDescription,
+          column: profile.longDescription,
           label: "Long description",
           kind: "textarea",
         },
         {
           name: "storiesHtml",
-          column: aboutProfile.storiesHtml,
+          column: profile.storiesHtml,
           label: "Stories",
           kind: "rich-text",
           help: "The letter on the about page, between the two greetings. Same editor and the same allowed vocabulary as a blog body.",
@@ -1103,74 +1093,25 @@ export const profileForm: AdminFormModel = {
       fields: [
         {
           name: "personalWebsite",
-          column: aboutProfile.personalWebsite,
+          column: profile.personalWebsite,
           label: "Personal website",
           kind: "url",
           maxLength: 200,
         },
-        { name: "cvMain", column: aboutProfile.cvMain, label: "CV", kind: "url", maxLength: 200 },
-        { name: "cvLatest", column: aboutProfile.cvLatest, label: "CV, latest", kind: "url", maxLength: 200 },
-        { name: "cvCopy", column: aboutProfile.cvCopy, label: "CV, copy", kind: "url", maxLength: 200 },
-      ],
-    },
-    {
-      title: "Social",
-      fields: [
-        { name: "socialEmail", column: aboutProfile.socialEmail, label: "Email", kind: "email", maxLength: 254 },
-        { name: "socialGithub", column: aboutProfile.socialGithub, label: "GitHub", kind: "url", maxLength: 200 },
-        { name: "socialLinkedin", column: aboutProfile.socialLinkedin, label: "LinkedIn", kind: "url", maxLength: 200 },
-        {
-          name: "socialFollowLinkedin",
-          column: aboutProfile.socialFollowLinkedin,
-          label: "LinkedIn, follow",
-          kind: "url",
-          maxLength: 200,
-        },
-        {
-          name: "socialInstagram",
-          column: aboutProfile.socialInstagram,
-          label: "Instagram",
-          kind: "url",
-          maxLength: 200,
-        },
-        { name: "socialMedium", column: aboutProfile.socialMedium, label: "Medium", kind: "url", maxLength: 200 },
-        { name: "socialX", column: aboutProfile.socialX, label: "X", kind: "url", maxLength: 200 },
-        { name: "socialWebsite", column: aboutProfile.socialWebsite, label: "Website", kind: "url", maxLength: 200 },
       ],
     },
     {
       title: "Location",
       fields: [
-        { name: "locationRegency", column: aboutProfile.locationRegency, label: "Regency", kind: "text", maxLength: 100 },
+        locationField(profile.locationId),
         {
-          name: "locationResidency",
-          column: aboutProfile.locationResidency,
+          name: "residency",
+          column: profile.residency,
           label: "Residency",
           kind: "text",
           maxLength: 100,
+          help: "What the home page prints; the location record carries the full regency and province.",
         },
-        {
-          name: "locationProvince",
-          column: aboutProfile.locationProvince,
-          label: "Province",
-          kind: "text",
-          maxLength: 100,
-        },
-        {
-          name: "locationProv",
-          column: aboutProfile.locationProv,
-          label: "Province, short",
-          kind: "text",
-          maxLength: 100,
-        },
-        {
-          name: "locationCountry",
-          column: aboutProfile.locationCountry,
-          label: "Country",
-          kind: "text",
-          maxLength: 100,
-        },
-        { name: "locationFlag", column: aboutProfile.locationFlag, label: "Flag", kind: "text", maxLength: 16 },
       ],
     },
   ],
@@ -1178,48 +1119,69 @@ export const profileForm: AdminFormModel = {
     {
       /*
        * Ordered on purpose, and the order is not cosmetic: this list becomes the
-       * JSON-LD `knowsAbout` array. It is a through model rather than a plain
-       * many-to-many precisely because a plain one cannot express a sequence --
-       * reading the bare M2M gives `Skill.Meta.ordering`, which is primary-key
-       * order and says nothing.
+       * JSON-LD `knowsAbout` array. It is a through table rather than a plain
+       * many-to-many precisely because a plain one cannot express a sequence.
        */
       name: "highlights",
-      table: aboutProfileskillhighlight,
-      pk: aboutProfileskillhighlight.id,
-      parent: aboutProfileskillhighlight.profileId,
+      table: profileSkillHighlight,
+      pk: profileSkillHighlight.id,
+      parent: profileSkillHighlight.profileId,
       title: "Highlighted skills",
       help: "The order here is the order of the JSON-LD knowsAbout array.",
       itemLabel: "skill",
-      orderColumn: aboutProfileskillhighlight.order,
+      orderColumn: profileSkillHighlight.position,
       fields: [
         {
           name: "skillId",
-          column: aboutProfileskillhighlight.skillId,
+          column: profileSkillHighlight.skillId,
           label: "Skill",
           kind: "reference",
           required: true,
-          reference: { table: aboutSkill, value: aboutSkill.id, label: aboutSkill.name },
+          reference: { table: skill, value: skill.id, label: skill.name },
         },
       ],
     },
     {
-      name: "donateLinks",
-      table: aboutDonatelink,
-      pk: aboutDonatelink.id,
-      parent: aboutDonatelink.profileId,
-      title: "Donate links",
+      name: "socialLinks",
+      table: profileLink,
+      pk: profileLink.id,
+      parent: profileLink.profileId,
+      scope: { column: profileLink.kind, value: "social" },
+      title: "Social",
+      help: "Eight social_* columns before, so adding a platform meant a migration.",
       itemLabel: "link",
-      orderColumn: aboutDonatelink.order,
+      orderColumn: profileLink.position,
       fields: [
-        {
-          name: "platform",
-          column: aboutDonatelink.platform,
-          label: "Platform",
-          kind: "text",
-          required: true,
-          maxLength: 100,
-        },
-        { name: "url", column: aboutDonatelink.url, label: "URL", kind: "url", required: true, maxLength: 200 },
+        { name: "platform", column: profileLink.platform, label: "Label", kind: "text", required: true },
+        { name: "url", column: profileLink.url, label: "URL", kind: "text", required: true },
+      ],
+    },
+    {
+      name: "cvLinks",
+      table: profileLink,
+      pk: profileLink.id,
+      parent: profileLink.profileId,
+      scope: { column: profileLink.kind, value: "cv" },
+      title: "CV",
+      itemLabel: "format",
+      orderColumn: profileLink.position,
+      fields: [
+        { name: "platform", column: profileLink.platform, label: "Label", kind: "text", required: true },
+        { name: "url", column: profileLink.url, label: "URL", kind: "text", required: true },
+      ],
+    },
+    {
+      name: "donateLinks",
+      table: profileLink,
+      pk: profileLink.id,
+      parent: profileLink.profileId,
+      scope: { column: profileLink.kind, value: "donate" },
+      title: "Donate",
+      itemLabel: "link",
+      orderColumn: profileLink.position,
+      fields: [
+        { name: "platform", column: profileLink.platform, label: "Label", kind: "text", required: true },
+        { name: "url", column: profileLink.url, label: "URL", kind: "text", required: true },
       ],
     },
   ],

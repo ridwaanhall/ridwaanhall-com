@@ -34,12 +34,13 @@ config({ path: ".env", quiet: true });
 const { encode } = await import("next-auth/jwt");
 const { ADMIN_ENTRIES } = await import("../lib/admin/registry.ts");
 const { ADMIN_FORM_MODELS, ADMIN_LIST_MODELS } = await import("../lib/admin/models/index.ts");
+const { staffAccountId, nonStaffAccountId, idWhere } = await import("./fixture-ids.mjs");
 
 const BASE = process.argv[2] ?? "http://localhost:3000";
 
 /** A staff superuser, and a signed-in reader who is not staff. */
-const STAFF_ID = 1;
-const NON_STAFF_ID = 4;
+const STAFF_ID = await staffAccountId();
+const NON_STAFF_ID = await nonStaffAccountId();
 
 const checks = [];
 const check = (name, pass, detail = "") => {
@@ -260,18 +261,33 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
 }
 
 {
-  const found = await get("/admin/blog-post/20", staff);
-  const missing = await get("/admin/blog-post/999999", staff);
+  const postId = await idWhere("blog_post", "slug", "commit-message-style-guide");
+  /*
+   * Two ways to ask for a record that is not there, and both have to answer the
+   * same. A well-formed key that matches nothing is the ordinary miss. A key
+   * that is not a uuid at all is the one worth a check of its own: it reaches
+   * Postgres as a malformed value for a uuid column, which raises `22P02` and
+   * would surface as a 500 rather than the not-found screen.
+   */
+  const ABSENT = "00000000-0000-4000-8000-000000000000";
+  const found = await get(`/admin/blog-post/${postId}`, staff);
+  const missing = await get(`/admin/blog-post/${ABSENT}`, staff);
+  const malformed = await get("/admin/blog-post/999999", staff);
   check("a record renders", found.status === 200 && found.body.includes("Commit Message Style Guide"));
   check("a record that is not there says so", notFound(missing), `status ${missing.status}`);
   check(
     "and names the model it looked in",
-    missing.body.includes("There is no blog post with id 999999"),
+    missing.body.includes(`There is no blog post with id ${ABSENT}`),
+  );
+  check(
+    "a key that is not a uuid says so too, rather than erroring",
+    notFound(malformed),
+    `status ${malformed.status}`,
   );
   // The frame the reader sees while the record is fetched. It is prerendered and
   // served before the gate has run, so it must carry nothing about the record or
   // the account -- only the shape of the page.
-  const shell = await get("/admin/blog-post/20");
+  const shell = await get(`/admin/blog-post/${postId}`);
   check(
     "the streamed shell carries a placeholder and no data",
     shell.body.includes("animate-pulse") === false || leaks(shell.body).length === 0,

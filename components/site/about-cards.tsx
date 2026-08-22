@@ -289,6 +289,16 @@ export function ExperienceCard({ company, roles }: { company: string; roles: Exp
   );
 }
 
+/**
+ * One qualification.
+ *
+ * Built on the application card's anatomy, which is what a reader meets one tab
+ * over: the organisation named first with the specific thing in italics beside
+ * it, a chip at the right-hand end of that row, and the facts and the "Show
+ * more" pill sharing the line below. The logo stays -- it is the one thing an
+ * application has no equivalent for, and it anchors the row the way the company
+ * header does on an experience card.
+ */
 export function EducationCard({ education }: { education: Education }) {
   const period = education.years
     ? education.years
@@ -298,62 +308,75 @@ export function EducationCard({ education }: { education: Education }) {
         }`
       : "";
 
+  const place = education.location.regency ? (
+    <MetaRow>
+      <MetaItem>
+        <PinIcon />
+        {education.location.regency}, {education.location.province} {education.location.flag}
+      </MetaItem>
+    </MetaRow>
+  ) : (
+    // Keeps the "Show more" pill at the right-hand end when there is no place
+    // to show -- the same stand-in the application card uses for its facts.
+    <div />
+  );
+
   return (
-    <div className="card-outline p-2 sm:p-3 md:p-4 backdrop-blur-sm">
-      <div className="flex items-start gap-3 md:gap-4">
-        <div className="flex-shrink-0">
-          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg flex items-center justify-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
-            <OrgLogo
-              logo={education.logo}
-              name={education.institution}
-              website={education.website}
-              rounded="rounded-full"
-              fallback={<ShieldIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-indigo-400" />}
-            />
-          </div>
-        </div>
-
-        <div className="flex-grow">
-          <div className="flex flex-wrap items-start justify-between w-full gap-2">
-            <h3 className="text-base sm:text-lg md:text-xl font-medium text-zinc-300 break-words flex-1">
-              {education.degree}
-            </h3>
-            <DatePill>{period}</DatePill>
+    <div className="card-outline">
+      <div className="p-3 sm:p-4">
+        <div className="flex items-start gap-3 sm:gap-4">
+          <div className="flex-shrink-0">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg flex items-center justify-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
+              <OrgLogo
+                logo={education.logo}
+                name={education.institution}
+                website={education.website}
+                rounded="rounded-full"
+                fallback={<ShieldIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-indigo-400" />}
+              />
+            </div>
           </div>
 
-          <Institution name={education.institution} website={education.website} />
+          <div className="flex-grow w-full min-w-0">
+            <div className="flex flex-row items-center justify-between gap-1 sm:gap-2 mb-1 sm:mb-2">
+              <h3 className="text-base sm:text-lg font-medium text-zinc-300 break-words">
+                {education.website ? (
+                  <a href={education.website} target="_blank" rel="noopener noreferrer">
+                    {education.institution}
+                  </a>
+                ) : (
+                  education.institution
+                )}{" "}
+                <span className="text-blue-200 italic font-medium text-xs sm:text-sm">
+                  &mdash; {education.degree}
+                </span>
+              </h3>
+              <DatePill>{period}</DatePill>
+            </div>
 
-          {education.location.regency && (
-            <MetaRow>
-              <MetaItem>
-                <PinIcon />
-                {education.location.regency}, {education.location.province}{" "}
-                {education.location.flag}
-              </MetaItem>
-            </MetaRow>
-          )}
-
-          {education.achievements.length > 0 && (
-            <Disclosure>
-              <div className="mt-1 sm:mt-2 flex flex-wrap gap-2">
-                <DisclosureButton />
-              </div>
-              {/* The original's `mt-1` sat on the panel element, where it kept
-                  its 4px while collapsed; here it moves inside so a closed card
-                  is exactly the height it was. `pt-1`, not `mt-1`: the list
-                  below carries `mt-2`, and two adjacent top margins collapse to
-                  the larger of the two -- which would swallow the 4px and leave
-                  the open card 4px shorter than the original. The original kept
-                  both because its panel was given `overflow: hidden` inline,
-                  making it a block formatting context; padding does the same
-                  job here without depending on that. */}
-              <DisclosurePanel>
-                <div className="pt-1">
-                  <BulletList items={education.achievements} />
+            {education.achievements.length > 0 ? (
+              <Disclosure>
+                <div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  {place}
+                  <div className="flex-shrink-0">
+                    <DisclosureButton className="toggle-pill cursor-pointer px-2 py-1 rounded-full" />
+                  </div>
                 </div>
-              </DisclosurePanel>
-            </Disclosure>
-          )}
+                {/* The original's `mt-1` sat on the panel element, where it kept
+                    its 4px while collapsed; here it moves inside so a closed card
+                    is exactly the height it was. `pt-1`, not `mt-1`: the list
+                    below carries `mt-2`, and two adjacent top margins collapse to
+                    the larger of the two -- which would swallow the 4px. */}
+                <DisclosurePanel>
+                  <div className="pt-1">
+                    <BulletList items={education.achievements} />
+                  </div>
+                </DisclosurePanel>
+              </Disclosure>
+            ) : (
+              <div className="mt-2">{place}</div>
+            )}
+          </div>
         </div>
       </div>
     </div>

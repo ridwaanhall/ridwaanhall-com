@@ -673,6 +673,22 @@ Each is recorded at its call site and in the comparison scripts.
 
 ## Deliberate departures from the live site (requested)
 
+- **Education cards are built on the application card's anatomy**, with the
+  logo kept: the institution named first and the degree in italics beside it,
+  the dates as a chip at the right of that row, and the place sharing the line
+  below with "Show more". It led with the degree before, which was a third
+  reading order for what is the same kind of card as the two tabs either side
+  of it. Awards and certifications still use the older shape.
+- **The error page is built out of the site's own parts.** It was its own
+  visual world -- a red-to-pink gradient behind the status code, a pulsing ring
+  around a warning triangle, `font-bold` and `font-semibold` in a site that uses
+  neither. It reads as a page of this site now: the heading and description any
+  other page has, the home hero's `action-btn` pair, the sidebar footer's
+  bulleted link row, and the status code as a quiet chip rather than the loudest
+  thing on screen. It still renders outside the site shell and still touches no
+  data, which matters because the failure this app has is a database it cannot
+  reach.
+
 - **The tab underline is one bar that slides.** Each tab used to own a 2px
   bottom border that switched colour, so the mark vanished here and reappeared
   there. It is now a single absolutely-positioned bar measured against the

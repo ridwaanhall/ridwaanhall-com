@@ -222,6 +222,14 @@ directly. Still confirm with `git status` that a new file is actually seen.
   (`position`, `issued`, `published_at`); `lib/admin/inlines.ts` stamps
   `position` on every child table that has one, even where no reorder control is
   offered, precisely so the tie-break exists.
+- **A `loading.tsx` skeleton must not render `<main>`.** `#page-content` is
+  keyed on the pathname, so its entrance animation plays once per navigation —
+  on whichever of the skeleton and the real page renders first. Where a skeleton
+  got there first, the real page would otherwise appear with no transition at
+  all, at the end of a 700ms entrance. `globals.css` hangs a short fade on
+  `#page-content main` instead, which works only because every site page renders
+  exactly one `<main>` and a skeleton renders a `<div>`. Build them from
+  `components/skeleton.tsx`, which is shaped to keep that true.
 - **A migration file must not carry its own `begin`/`commit`.**
   `scripts/apply-migration.mjs` wraps the whole file in one transaction and
   rolls it back unless `--apply` is passed; a `commit` inside ends that
@@ -244,6 +252,7 @@ npx tsx scripts/check-rls.mjs                          # RLS on every table
 node scripts/check-breakpoints.mjs                     # one visible theme toggle
 node scripts/check-notifications.mjs                   # toasts outside the transform
 node scripts/check-ui-state.mjs                        # palette + Turnstile theme
+npx tsx --conditions=react-server scripts/check-page-loading.mjs   # bar + skeletons
 npx tsx scripts/check-auth-adapter.mjs                 # Auth.js vs the live schema
 npx tsx scripts/check-comments.mjs                     # comment rules, rolled back
 npx tsx scripts/check-emails.mjs                       # all five templates

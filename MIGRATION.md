@@ -1015,6 +1015,28 @@ Each is recorded at its call site and in the comparison scripts.
   property that mattered -- a burst of errors must not push the newest
   off-screen.
 
+- **Every navigation reports itself, with a bar and a skeleton.** Django got
+  this from the browser: a link was a page load, and the browser's own
+  indicator said so. Client-side routing took that away and put nothing in its
+  place, so a click on a nav item left the previous page on screen with no sign
+  anything had happened -- worst in `/admin`, where every route declines to
+  prerender and so does a real round trip each time. There are two halves now.
+  A 2px teal bar, fixed at the top of the viewport, waits 120ms before showing
+  itself and then creeps asymptotically toward 90% -- the delay is what keeps a
+  prefetched route from flashing it, since most of this site commits in a frame
+  or two, and the asymptote is what keeps it from claiming to be finished
+  before it is. And a `loading.tsx` for all seventeen routes, each mirroring
+  its own page's heading, lead and card grammar at the real heights. Teal is
+  the one colour here that appears nowhere else on the site; it survives the
+  light-mode remap unchanged, because `globals.css` already carried all eleven
+  teal stops. `scripts/check-page-loading.mjs` measures both, in both themes.
+- **The five hand-rolled skeletons are one vocabulary.** They agreed on almost
+  nothing: two pulsed and two did not, three hid themselves from assistive
+  technology and two announced their raw shapes to it, and two unrelated files
+  each exported a `PanelSkeleton` with a different signature. They are built
+  from `components/skeleton.tsx` now, and all of them say "Loading" once rather
+  than either reading out a list of empty boxes or saying nothing at all.
+
 ## Known, imperceptible differences
 
 - **The palette is serialised differently by the two build pipelines.** Django's

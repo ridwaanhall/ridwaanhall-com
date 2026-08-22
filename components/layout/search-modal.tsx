@@ -31,6 +31,7 @@ import {
 import { isActive, NAV_ITEMS } from "@/lib/nav";
 import type { AboutData } from "@/lib/data/about";
 import { cn } from "@/lib/utils/cn";
+import { startPageLoading } from "@/lib/utils/page-loading";
 
 type Section = "Pages" | "Socials" | "Links";
 
@@ -349,6 +350,9 @@ function SearchModal({
       } else if (entry.external) {
         window.open(entry.href, "_blank", "noopener,noreferrer");
       } else {
+        // No anchor is clicked here, so the loading bar's own listener never
+        // sees this one.
+        startPageLoading();
         router.push(entry.href);
       }
     },

@@ -28,7 +28,7 @@ export default async function AdminIndexPage() {
   await requireStaff();
 
   return (
-    <div className="space-y-8">
+    <div className="admin-fade space-y-8">
       <div>
         <h1 className="text-xl font-medium text-zinc-100">Admin</h1>
         <p className="mt-1 text-sm text-zinc-400">

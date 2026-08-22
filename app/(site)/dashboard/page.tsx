@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { ContributionHeatmap } from "@/components/site/contribution-heatmap";
+import { DashboardPanelSkeleton } from "@/components/site/dashboard-skeleton";
 import { CountUp, PercentBar } from "@/components/site/dashboard-sections";
 import { getAboutData, type AboutData } from "@/lib/data/about";
 import { getGitHubStats, type GitHubStats } from "@/lib/data/github";
@@ -52,11 +53,11 @@ export default async function DashboardPage() {
             saw as a gateway timeout. Separate boundaries mean the page shell is
             already sent, so a slow API delays one panel rather than the request.
           */}
-          <Suspense fallback={<PanelSkeleton columns={2} />}>
+          <Suspense fallback={<DashboardPanelSkeleton columns={2} />}>
             <WakatimePanel />
           </Suspense>
 
-          <Suspense fallback={<PanelSkeleton columns={4} />}>
+          <Suspense fallback={<DashboardPanelSkeleton columns={4} />}>
             <GitHubPanel about={about} />
           </Suspense>
         </div>
@@ -328,26 +329,6 @@ function HelpIcon({ title }: { title: string }) {
         <path d="M2 24a22 22 0 1 1 44 0 22 22 0 0 1-44 0Zm22 18a18 18 0 1 0 0-36 18 18 0 0 0 0 36Z" />
       </svg>
     </span>
-  );
-}
-
-function PanelSkeleton({ columns }: { columns: 2 | 4 }) {
-  // Written out rather than interpolated: Tailwind generates a class only if it
-  // can see it in the source, so `lg:grid-cols-${columns}` would produce no rule.
-  const grid =
-    columns === 2
-      ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4"
-      : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4";
-
-  return (
-    <div className="mb-6" aria-hidden="true">
-      <div className="h-8 w-56 mb-4 rounded bg-zinc-900/60 animate-pulse" />
-      <div className={grid}>
-        {Array.from({ length: 4 }, (_, i) => (
-          <div key={i} className="h-20 rounded-xl bg-zinc-900/40 animate-pulse" />
-        ))}
-      </div>
-    </div>
   );
 }
 

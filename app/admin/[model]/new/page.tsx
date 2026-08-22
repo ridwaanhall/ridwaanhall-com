@@ -52,7 +52,7 @@ export default async function AdminCreatePage({ params }: Params) {
   const referenceOptions = await loadReferenceOptions(form);
 
   return (
-    <div className="space-y-5">
+    <div className="admin-fade space-y-5">
       <Link
         href={`/admin/${entry.key}` as Route}
         className="inline-flex items-center gap-1.5 text-xs text-zinc-500 transition-colors hover:text-indigo-400"

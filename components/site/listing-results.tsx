@@ -1,3 +1,4 @@
+import { SkeletonGrid } from "@/components/skeleton";
 import { BlogCard } from "@/components/site/blog-card";
 import { Pagination } from "@/components/site/pagination";
 import { ProjectCard } from "@/components/site/project-card";
@@ -126,21 +127,18 @@ function EmptyState({ noun }: { noun: string }) {
  * Shown while the results resolve.
  *
  * Sized to the real grid so the page does not jump when they arrive -- the
- * whole point of holding the space is that nothing below it moves.
+ * whole point of holding the space is that nothing below it moves. 350px is
+ * the height `BlogCard` and `ProjectCard` both set on themselves.
  */
-export function ListingSkeleton({ columns = 2 }: { columns?: number }) {
+export const LISTING_CARD_HEIGHT = 350;
+
+export function ListingSkeleton({ columns = 2 }: { columns?: 2 | 4 }) {
   return (
-    <div
-      className={`grid grid-cols-1 sm:grid-cols-2 ${columns === 2 ? "lg:grid-cols-2" : ""} gap-3 sm:gap-4`}
-      aria-hidden="true"
-    >
-      {Array.from({ length: 4 }, (_, i) => (
-        <div
-          key={i}
-          className="rounded-xl border border-zinc-800 bg-zinc-900/40 animate-pulse"
-          style={{ height: 350 }}
-        />
-      ))}
+    <div className="skeleton-pulse" role="status" aria-busy="true">
+      <span className="sr-only">Loading results…</span>
+      <div aria-hidden="true">
+        <SkeletonGrid count={4} columns={columns} height={LISTING_CARD_HEIGHT} />
+      </div>
     </div>
   );
 }

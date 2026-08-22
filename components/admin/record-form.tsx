@@ -10,6 +10,7 @@ import { useConfirm } from "@/components/providers/confirm-dialog";
 import { deleteRecord, saveRecord, type SaveResult } from "@/lib/actions/admin";
 import type { ClientFieldset, FormValues } from "@/lib/admin/form";
 import { notify } from "@/lib/notify";
+import { startPageLoading } from "@/lib/utils/page-loading";
 
 /**
  * The change form.
@@ -155,6 +156,9 @@ export function RecordForm({
       // is refreshed as well: the action revalidated it on the server, but the
       // client cache is what this navigation reads.
       notify(result.notice, "success");
+      // No anchor is clicked here, so the loading bar's own listener never sees
+      // this one -- and the admin never prerenders, so it is a real wait.
+      startPageLoading();
       router.push(listHref);
       router.refresh();
     });

@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { BackIcon, CheckIcon, DashIcon } from "@/components/admin/admin-icons";
 import { NothingHere } from "@/components/admin/nothing-here";
 import { RecordForm } from "@/components/admin/record-form";
+import { RecordSkeleton } from "@/components/admin/record-skeleton";
 import { adminDate, adminDateTime } from "@/lib/admin/format";
 import { imageUrlMap, toClientFieldsets, toClientInlines } from "@/lib/admin/form";
 import { loadInlineRows } from "@/lib/admin/inlines";
@@ -44,7 +45,7 @@ export async function generateMetadata({
 
 export default function AdminDetailPage(props: PageProps<"/admin/[model]/[id]">) {
   return (
-    <div className="space-y-5">
+    <div className="admin-fade space-y-5">
       <Suspense fallback={<RecordSkeleton />}>
         <Record params={props.params} />
       </Suspense>
@@ -169,34 +170,6 @@ async function Record({ params }: { params: Params }) {
         })}
       </dl>
     </>
-  );
-}
-
-/**
- * The frame, with nothing in it.
- *
- * This is prerendered and served before anything is known about who is asking,
- * so it carries no record and no account -- not even which model is being
- * opened, since that arrives with the URL.
- */
-function RecordSkeleton() {
-  return (
-    <div className="animate-pulse space-y-5" aria-hidden="true">
-      <div className="h-3 w-24 rounded bg-zinc-900" />
-      <div className="space-y-2">
-        <div className="h-6 w-64 rounded bg-zinc-900" />
-        <div className="h-3 w-28 rounded bg-zinc-900" />
-      </div>
-      <div className="space-y-3 rounded-lg border border-zinc-800 px-3 py-4">
-        {[0, 1, 2, 3].map((row) => (
-          <div key={row} className="grid gap-2 sm:grid-cols-3 sm:gap-4">
-            <div className="h-3 w-20 rounded bg-zinc-900" />
-            <div className="h-8 rounded bg-zinc-900 sm:col-span-2" />
-          </div>
-        ))}
-      </div>
-      <div className="h-8 w-24 rounded-full bg-zinc-900" />
-    </div>
   );
 }
 

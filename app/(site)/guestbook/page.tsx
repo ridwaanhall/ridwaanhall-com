@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { auth } from "@/auth";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { GuestbookPanel } from "@/components/site/guestbook/panel";
+import { GuestbookPanelSkeleton } from "@/components/site/guestbook/panel-skeleton";
 import { getUserProfile } from "@/lib/auth/profile";
 import { getAboutData } from "@/lib/data/about";
 import { getThread } from "@/lib/data/guestbook";
@@ -54,7 +55,7 @@ export default function GuestbookPage() {
             build error (`blocking-prerender-dynamic`), and rightly so -- this
             is the same shape the dashboard uses for its two API panels.
           */}
-          <Suspense fallback={<PanelSkeleton />}>
+          <Suspense fallback={<GuestbookPanelSkeleton />}>
             <Panel />
           </Suspense>
         </div>
@@ -84,14 +85,5 @@ async function Panel() {
       }}
       signedInAs={profile ? { name: profile.fullName, email: maskEmail(profile.email) } : null}
     />
-  );
-}
-
-/** Holds the panel's height so the page does not jump when the thread lands. */
-function PanelSkeleton() {
-  return (
-    <div className="border border-zinc-700 rounded-lg" style={{ minHeight: "min(45vh, 600px)" }}>
-      <div className="bg-zinc-800 p-3 rounded-t-lg h-12" />
-    </div>
   );
 }

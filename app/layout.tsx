@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 
+import { PageLoadingBar } from "@/components/layout/page-loading-bar";
 import { ClickSpark } from "@/components/providers/click-spark";
 import { ConfirmDialogProvider } from "@/components/providers/confirm-dialog";
 import { Notifications } from "@/components/providers/notifications";
@@ -73,6 +75,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             them, so the placement holds.
           */}
           <Notifications />
+          {/*
+            The navigation bar, body-level for the same containing-block reason
+            as everything above it.
+
+            Behind `<Suspense>` because it reads `useSearchParams()` to know
+            when a navigation has committed -- paging and searching change only
+            the query -- and under Cache Components that makes a component
+            un-prerenderable. The boundary keeps the rest of the document
+            static; the site layout wraps its admin link the same way.
+          */}
+          <Suspense fallback={null}>
+            <PageLoadingBar />
+          </Suspense>
           <ConfirmDialogProvider>{children}</ConfirmDialogProvider>
         </ThemeProvider>
       </body>

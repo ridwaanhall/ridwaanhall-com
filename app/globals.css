@@ -785,6 +785,19 @@ html.theme-fading [data-theme-toggle] svg {
     .action-btn {
         @apply inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full transition-all duration-300;
     }
+
+    /* Every loading skeleton breathes together.
+
+       A named class rather than the bare utility because the utility has no
+       reduced-motion counterpart, and every other animation on this site does.
+       The override lives with the rest of them at the end of this file.
+
+       Only loading placeholders get this. The pulsing dots elsewhere (the
+       active nav item, the hero, the sponsor badge) are decoration on content
+       that has already arrived, and are left alone. */
+    .skeleton-pulse {
+        @apply animate-pulse;
+    }
 }
 
 /* ---------------------------------------------------------------------------
@@ -890,6 +903,79 @@ html.theme-fading [data-theme-toggle] svg {
 
 @media (prefers-reduced-motion: reduce) {
     .percent-bar {
+        animation: none;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Navigation progress bar
+
+   Client-side routing took away the browser's own loading indicator and put
+   nothing in its place. The width comes from page-loading-bar.tsx rather than
+   from a keyframe -- unlike everything else here, the motion is not known in
+   advance, because how long a navigation takes is not.
+
+   Two durations, and the order matters: the bar fills over 400ms and only then
+   begins to fade over 500ms. Starting both together would fade it out while it
+   was still crossing the screen, so it would never be seen to finish.
+   --------------------------------------------------------------------------- */
+#page-loading-bar {
+    opacity: 0;
+    transition:
+        width 400ms ease-out,
+        opacity 500ms ease-out;
+}
+
+#page-loading-bar[data-state="loading"] {
+    opacity: 1;
+}
+
+#page-loading-bar[data-state="done"] {
+    opacity: 0;
+}
+
+/* The one animation here that is not decoration: it reports whether the site
+   is working, so it still appears. Only the easing goes -- the component drops
+   its creep to match, leaving a bar that holds still until the page arrives. */
+@media (prefers-reduced-motion: reduce) {
+    #page-loading-bar {
+        transition: none;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Content arriving over its skeleton
+
+   #page-content is keyed on the pathname, so `page-enter` above plays once per
+   navigation -- on whichever of the skeleton and the real page renders first.
+   Where a loading.tsx got there first, the swap to the real page would
+   otherwise be an instant pop at the end of a 700ms entrance.
+
+   Every page in the site group renders exactly one <main>, and it is the one
+   element a skeleton does not: they render a <div>, which is what makes this
+   selector mean "the real thing has arrived". On a navigation with no skeleton
+   the fade composites inside the entrance above and is imperceptible.
+   --------------------------------------------------------------------------- */
+@keyframes content-enter {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+#page-content main {
+    animation: content-enter 300ms ease-out both;
+}
+
+/* Motion here is decoration; the page must still appear without it. */
+@media (prefers-reduced-motion: reduce) {
+    #page-content main {
+        animation: none;
+    }
+
+    .skeleton-pulse {
         animation: none;
     }
 }

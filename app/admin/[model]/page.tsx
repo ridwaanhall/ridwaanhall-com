@@ -96,7 +96,7 @@ async function SingletonScreen({ entryKey }: { entryKey: string }) {
   );
 
   return (
-    <div className="space-y-5">
+    <div className="admin-fade space-y-5">
       <div>
         <h1 className="text-xl font-medium text-zinc-100">{entry.labelPlural}</h1>
         <p className="mt-1 text-sm text-zinc-400">{entry.blurb}</p>
@@ -168,7 +168,7 @@ export default async function AdminListPage({ params, searchParams }: Params) {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="admin-fade space-y-4">
       <div>
         <h1 className="text-xl font-medium text-zinc-100">{entry.labelPlural}</h1>
         <p className="mt-1 text-sm text-zinc-400">{entry.blurb}</p>

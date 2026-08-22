@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { SkeletonBar, SkeletonBlock } from "@/components/skeleton";
 import { Comments } from "@/components/site/comments/section";
 import { getUserProfile } from "@/lib/auth/profile";
 import type { CommentTargetLabel } from "@/lib/data/comment-shapes";
@@ -48,9 +49,16 @@ export async function CommentSectionFor({
 /** Holds the section's height while it streams, so the page does not jump. */
 export function CommentSectionSkeleton() {
   return (
-    <section className="mt-10 sm:mt-12 pt-8 border-t border-zinc-800">
-      <div className="h-7 w-32 rounded bg-zinc-900" />
-      <div className="mt-6 h-32 rounded-xl border border-zinc-800 bg-zinc-900/40" />
+    <section
+      className="skeleton-pulse mt-10 sm:mt-12 pt-8 border-t border-zinc-800"
+      role="status"
+      aria-busy="true"
+    >
+      <span className="sr-only">Loading comments…</span>
+      <div aria-hidden="true">
+        <SkeletonBar className="h-7 w-32" />
+        <SkeletonBlock className="mt-6 h-32" />
+      </div>
     </section>
   );
 }

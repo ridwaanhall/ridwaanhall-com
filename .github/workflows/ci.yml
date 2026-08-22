@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A queued run has nothing to say about a commit that has already been
+# superseded, so an in-flight run for the same ref is cancelled.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      # `ci`, not `install`: it installs exactly what the lockfile says and
+      # fails if `package.json` and the lockfile disagree, which is the point of
+      # running it here at all.
+      - run: npm ci
+
+      - name: Types
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      # The build needs the database URL: `generateStaticParams` reads the blog
+      # and project slugs at build time, and the sitemap fans out further. The
+      # rest of the keys are absent on purpose -- a build that needs a Resend key
+      # or an OAuth secret to succeed would be a build that fails on a fork's
+      # pull request, and none of them is read at build time.
+      - name: Build
+        run: npm run build
+        env:
+          STORAGE_POSTGRES_URL: ${{ secrets.STORAGE_POSTGRES_URL }}
+          STORAGE_SUPABASE_URL: ${{ secrets.STORAGE_SUPABASE_URL }}
+          NEXT_PUBLIC_BASE_URL: https://ridwaanhall.com
+          # Auth.js refuses to build without one. It is never used: no session is
+          # minted during a build, and the real secret lives in Vercel.
+          AUTH_SECRET: build-only-not-a-real-secret
+
+# The `scripts/check-*.mjs` harnesses are deliberately not run here. They drive a
+# real browser against the running app and write to the live database -- which is
+# right for a developer checking a change before pushing it, and wrong for
+# something that runs on every pull request from a fork.

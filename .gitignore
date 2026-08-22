@@ -1,167 +1,68 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+# Dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# C extensions
-*.so
+# Build output
+/.next/
+/out/
+/build
+/coverage
+*.tsbuildinfo
+next-env.d.ts
 
-# Distribution / packaging
+# Environment. `.env.example` is the documented list of keys and is committed;
+# nothing else here is. `old.txt` holds the credentials the Django build used,
+# moved aside at the cutover, and contains real secrets.
+.env*
+!.env.example
+old.txt
+
+# Deployment
+.vercel
+
+# Editors and OS
+.DS_Store
+*.pem
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Database dumps.
 #
-# Anchored to the repo root with a leading slash. Without it these patterns
-# match at *any* depth, and several of them are ordinary source directory
-# names outside Python: `web/lib/` -- the entire Next.js data layer -- was
-# silently untracked until this was fixed, with `git status` showing nothing
-# at all. Python build artefacts only ever appear at the root, so anchoring
-# costs nothing and stops the next collision.
-.Python
-/build/
-/develop-eggs/
-/dist/
-/downloads/
-/eggs/
-/.eggs/
-/lib/
-/lib64/
-/parts/
-/sdist/
-/var/
-/wheels/
-/share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-/MANIFEST
+# This used to be a blanket `*.json`, added so a `manage.py dumpdata` backup
+# could never be committed by accident. That rule outlived its reason and cost
+# more than it saved: every JSON file that genuinely belonged in the repo had to
+# be un-ignored by name, nothing warned when one was missed, and `package.json`
+# and `package-lock.json` sat untracked for the project's whole life because of
+# it -- which is how the Tailwind build drifted two minor versions without
+# anyone noticing. Django is gone and so is `dumpdata`; what is left is named
+# directly.
+*.dump.json
+*.dumpdata.json
+scripts/.django.*
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Local media uploads (dev-only FileSystemStorage; production images live on
-# Supabase Storage and are never committed)
-/media/
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# celery beat schedule file
-celerybeat-schedule
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.env.local
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyderworkspace
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# add by me
-*.zip
-*.tgz
-building_web_apps_with_django.webp
-data.html
-# Blanket-ignore JSON so a `manage.py dumpdata` backup can never be committed
-# by accident. It is deliberately broad, so anything that genuinely belongs in
-# the repo has to be un-ignored by name below.
-*.json
-# The Tailwind toolchain manifest. Without these two the CSS build is not
-# reproducible: a fresh clone has nothing for `npm install` to read, so it
-# installs whatever is latest that day rather than the versions this site was
-# built and verified against -- which is how the pinned build silently drifted
-# two minor versions behind upstream. The lockfile resolves only from the
-# public npm registry and carries no credentials.
-!package.json
-!package-lock.json
-# The Next.js app's TypeScript config, and shadcn/ui's component registry
-# config (added when the admin is built). Same trap as the two above: the bare
-# `*.json` swallows them silently, and a clone without tsconfig.json does not
-# type-check at all.
-!tsconfig.json
-!components.json
-# Drizzle's migration journal and schema snapshots. drizzle-kit diffs future
-# migrations against these, so a clone without them cannot generate a correct
-# migration -- it would emit CREATE TABLE for the entire existing database.
-!web/drizzle/meta/*.json
-node_modules/
-text.txt
-
-# Design specs written while planning a change. They are working notes:
-# the reasoning that matters ends up in the commit messages and CLAUDE.md,
-# and leaving them here put a directory in the repo with nothing in it for
-# anyone browsing the project.
+# Working notes, not the record.
+#
+# Design specs and plans written while working on a change: the reasoning that
+# matters ends up in the commit messages, CLAUDE.md and MIGRATION.md, and
+# leaving these here put a directory in the repo with nothing in it for anyone
+# browsing the project. `.claude/` also carries per-machine settings.
 docs/superpowers/
 plan/
+.claude/
+.vscode/
+text.txt
+
+# Python leftovers from the Django build, until the virtualenv is removed.
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/

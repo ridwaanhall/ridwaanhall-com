@@ -11,6 +11,7 @@ import {
   type FormField,
   type FormValues,
 } from "@/lib/admin/form";
+import { applyImageFields, imageFields } from "@/lib/admin/images";
 import { db } from "@/lib/db/client";
 
 /**
@@ -74,7 +75,34 @@ function toFormValue(field: FormField, raw: unknown): FormValues[string] {
   return String(raw);
 }
 
-export type InlineResult = { ok: true } | { ok: false; errors: Record<string, string> };
+export type InlineResult =
+  /** Keys the write orphaned, for the caller to hand to `deleteUnreferenced`. */
+  | { ok: true; stale: string[] }
+  | { ok: false; errors: Record<string, string> };
+
+/**
+ * Every image key a record's child rows currently hold.
+ *
+ * Needed when the parent is deleted: the children go with it, so their files
+ * become candidates for cleanup -- subject, as always, to nothing else naming
+ * them.
+ */
+export async function inlineImageKeys(
+  model: { inlines?: AdminInline[] },
+  parentId: number,
+): Promise<string[]> {
+  const keys: string[] = [];
+  for (const inline of model.inlines ?? []) {
+    const pictures = imageFields(inline.fields);
+    if (pictures.length === 0) continue;
+    const shape = Object.fromEntries(pictures.map((field) => [field.name, field.column]));
+    const rows = await db.select(shape).from(inline.table).where(eq(inline.parent, parentId));
+    for (const row of rows) {
+      for (const value of Object.values(row)) if (typeof value === "string" && value) keys.push(value);
+    }
+  }
+  return keys;
+}
 
 /**
  * Reconcile every inline of a record against what was submitted.
@@ -90,6 +118,7 @@ export async function saveInlines(
   parentId: number,
 ): Promise<InlineResult> {
   const errors: Record<string, string> = {};
+  const stale: string[] = [];
   const work: { inline: AdminInline; rows: { id: number | null; values: FormValues }[] }[] = [];
 
   for (const inline of inlines) {
@@ -115,7 +144,23 @@ export async function saveInlines(
       const rawId = String(data.get(inlineFieldName(inline.name, index, INLINE_ID)) ?? "");
       const id = rawId ? Number(rawId) : null;
       if (id !== null && (!Number.isInteger(id) || id <= 0)) continue;
-      rows.push({ id, values: parsed.values });
+
+      // Uploads for this row, handled exactly as the parent's are: the field
+      // names are prefixed, and the rest is the same three cases.
+      const pictures = imageFields(inline.fields);
+      let images: FormValues = {};
+      if (pictures.length > 0) {
+        const current = id === null ? {} : await currentInlineImages(inline, pictures, id);
+        const applied = await applyImageFields(pictures, data, current, prefix);
+        if (!applied.ok) {
+          Object.assign(errors, applied.errors);
+          continue;
+        }
+        images = applied.values;
+        stale.push(...applied.stale);
+      }
+
+      rows.push({ id, values: { ...parsed.values, ...images } });
     }
 
     work.push({ inline, rows });
@@ -132,6 +177,17 @@ export async function saveInlines(
     const kept = new Set(rows.map((row) => row.id).filter((id): id is number => id !== null));
     const removed = existing.map((row) => Number(row.id)).filter((id) => !kept.has(id));
     if (removed.length > 0) {
+      // Their files become candidates too, gathered before the rows go.
+      const pictures = imageFields(inline.fields);
+      if (pictures.length > 0) {
+        const shape = Object.fromEntries(pictures.map((field) => [field.name, field.column]));
+        const going = await db.select(shape).from(inline.table).where(inArray(inline.pk, removed));
+        for (const row of going) {
+          for (const value of Object.values(row)) {
+            if (typeof value === "string" && value) stale.push(value);
+          }
+        }
+      }
       await db.delete(inline.table).where(inArray(inline.pk, removed));
     }
 
@@ -167,5 +223,19 @@ export async function saveInlines(
     }
   }
 
-  return { ok: true };
+  return { ok: true, stale };
+}
+
+/** What one child row currently stores for each of its image fields. */
+async function currentInlineImages(
+  inline: AdminInline,
+  fields: FormField[],
+  id: number,
+): Promise<Record<string, string>> {
+  const shape = Object.fromEntries(fields.map((field) => [field.name, field.column]));
+  const [row] = await db.select(shape).from(inline.table).where(eq(inline.pk, id)).limit(1);
+  if (!row) return {};
+  return Object.fromEntries(
+    Object.entries(row).map(([name, value]) => [name, typeof value === "string" ? value : ""]),
+  );
 }

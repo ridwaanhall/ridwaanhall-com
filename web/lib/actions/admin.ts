@@ -6,22 +6,22 @@ import { redirect } from "next/navigation";
 
 import {
   cascadeTargets,
-  clearFieldName,
   formFields,
-  MAX_UPLOAD_BYTES,
+  manyToManyFields,
+  richTextFields,
   parseFormValues,
   type AdminFormModel,
   type FormField,
   type FormValues,
 } from "@/lib/admin/form";
-import { saveInlines } from "@/lib/admin/inlines";
+import { inlineImageKeys, saveInlines } from "@/lib/admin/inlines";
 import { formModelFor } from "@/lib/admin/models";
 import { getStaffUser } from "@/lib/auth/staff";
 import { MODEL_TAGS } from "@/lib/data/tags";
 import { db } from "@/lib/db/client";
+import { applyImageFields, imageFields } from "@/lib/admin/images";
 import { deleteUnreferenced } from "@/lib/storage/cleanup";
-import { objectKeyFor } from "@/lib/storage/keys";
-import { putObject } from "@/lib/storage/objects";
+import { sanitizeRichText } from "@/lib/utils/sanitize";
 
 /**
  * Saving and deleting from the admin.
@@ -125,6 +125,10 @@ function toColumns(model: AdminFormModel, values: FormValues): Record<string, un
 
   for (const field of formFields(model)) {
     if (field.readOnly) continue;
+    // Written to a join table by `saveManyToMany`, never as a column here --
+    // its `column` names this record's primary key, which is the last thing
+    // that should be overwritten with a list of skill ids.
+    if (field.kind === "many-to-many") continue;
     if (!(field.name in values)) continue;
     const entry = columns.find(([, column]) => column === field.column);
     if (!entry) {
@@ -136,86 +140,6 @@ function toColumns(model: AdminFormModel, values: FormValues): Record<string, un
   }
 
   return row;
-}
-
-type ImageOutcome =
-  | { ok: true; values: FormValues; stale: string[] }
-  | { ok: false; errors: Record<string, string> };
-
-/**
- * Upload whatever the form sent for its image fields.
- *
- * Three cases, and the third is the one that is easy to get wrong: a field with
- * no file and no clear box ticked has **not** been edited, so it is left out of
- * the values entirely and `toColumns` never writes it. Treating an empty file
- * input as "make it empty" would blank the image every time any other field on
- * the record was saved.
- *
- * The old key is not deleted here. It is returned as `stale`, and the caller
- * hands it to `deleteUnreferenced` only after the write has succeeded -- deleting
- * first would take the file away from a save that then failed, and deleting
- * without the reference check would take it away from the twenty other rows
- * that share it.
- */
-async function applyImages(
-  model: AdminFormModel,
-  fields: FormField[],
-  data: FormData,
-  current: Record<string, string>,
-): Promise<ImageOutcome> {
-  const values: FormValues = {};
-  const errors: Record<string, string> = {};
-  const stale: string[] = [];
-
-  for (const field of fields) {
-    const uploaded = data.get(field.name);
-    const file = uploaded instanceof File && uploaded.size > 0 ? uploaded : null;
-    const cleared = data.get(clearFieldName(field.name)) !== null;
-    const existing = current[field.name] ?? "";
-
-    if (file) {
-      if (file.size > MAX_UPLOAD_BYTES) {
-        errors[field.name] = `${field.label} is ${(file.size / 1024 / 1024).toFixed(1)}MB; the limit is ${MAX_UPLOAD_BYTES / 1024 / 1024}MB.`;
-        continue;
-      }
-
-      const bytes = new Uint8Array(await file.arrayBuffer());
-      const keyed = objectKeyFor(field.prefix ?? "profile", file.name, bytes);
-      if (!keyed.ok) {
-        errors[field.name] = keyed.error;
-        continue;
-      }
-
-      try {
-        await putObject(keyed.key, bytes, keyed.contentType);
-      } catch (error) {
-        errors[field.name] = error instanceof Error ? error.message : "The upload failed.";
-        continue;
-      }
-
-      values[field.name] = keyed.key;
-      // Equal keys mean the same bytes -- the name carries a digest of them --
-      // so there is nothing stale to clean up.
-      if (existing && existing !== keyed.key) stale.push(existing);
-      continue;
-    }
-
-    if (cleared) {
-      if (field.required) {
-        errors[field.name] = `${field.label} is required.`;
-        continue;
-      }
-      values[field.name] = field.column.notNull ? "" : null;
-      if (existing) stale.push(existing);
-      continue;
-    }
-
-    if (field.required && !existing) {
-      errors[field.name] = `${field.label} is required.`;
-    }
-  }
-
-  return Object.keys(errors).length > 0 ? { ok: false, errors } : { ok: true, values, stale };
 }
 
 /** What the record currently stores for each image field. */
@@ -263,17 +187,29 @@ export async function saveRecord(
     return { ok: false, error: "Some fields need attention.", fieldErrors: parsed.errors };
   }
 
-  const imageFields = formFields(model).filter(
-    (field) => field.kind === "image" && !field.readOnly,
-  );
-  const images = await applyImages(
-    model,
-    imageFields,
+  const pictures = imageFields(formFields(model));
+  const images = await applyImageFields(
+    pictures,
     data,
-    await currentImages(model, imageFields, id),
+    await currentImages(model, pictures, id),
   );
   if (!images.ok) {
     return { ok: false, error: "Some fields need attention.", fieldErrors: images.errors };
+  }
+
+  /*
+   * Sanitised here rather than in the parser, which is reachable from a client
+   * component and would drag `sanitize-html` into the browser bundle.
+   *
+   * This is the same allow-list the page renders through, so the editor cannot
+   * store something the reader would never see. It is not a guard against the
+   * one person who can reach this form -- it is a guard against the next
+   * writer: a paste from Word carrying a `<script>`, an import from another
+   * system, an editor that stops escaping something it used to.
+   */
+  for (const field of richTextFields(model)) {
+    const raw = parsed.values[field.name];
+    if (typeof raw === "string") parsed.values[field.name] = sanitizeRichText(raw);
   }
 
   const values = { ...parsed.values, ...images.values };
@@ -281,6 +217,9 @@ export async function saveRecord(
   if (problem) return { ok: false, error: problem };
 
   const row = toColumns(model, values);
+  // Columns the form does not carry that the database still demands. Only on
+  // insert: an update must not reset the block columns Django still reads.
+  if (id === null && model.insertDefaults) Object.assign(row, model.insertDefaults());
   let created: number | null = null;
 
   try {
@@ -309,17 +248,30 @@ export async function saveRecord(
    * still fail at this point is the database, not the input.
    */
   const parentId = id ?? created;
+
+  // A many-to-many lives in a join table, not in a column, so it is written
+  // after the record exists -- and on a create it cannot be written before.
+  for (const field of manyToManyFields(model)) {
+    const source = field.manyToMany;
+    const chosen = values[field.name];
+    if (!source || !Array.isArray(chosen) || parentId === null) continue;
+    await saveManyToMany(source, parentId, chosen.map(Number));
+  }
+
+  const staleFromInlines: string[] = [];
   if (model.inlines?.length && parentId !== null) {
     const inlined = await saveInlines(model.inlines, data, parentId);
     if (!inlined.ok) {
       return { ok: false, error: "Some fields need attention.", fieldErrors: inlined.errors };
     }
+    staleFromInlines.push(...inlined.stale);
   }
 
   // Only now that the write has landed. A file the record no longer names is
   // still not removed if any other row names it -- one author photo is shared by
   // twenty-one rows, one logo by three.
-  if (images.stale.length > 0) await deleteUnreferenced(images.stale);
+  const stale = [...images.stale, ...staleFromInlines];
+  if (stale.length > 0) await deleteUnreferenced(stale);
 
   invalidate(model);
   if (id !== null) {
@@ -331,6 +283,35 @@ export async function saveRecord(
   // turn a successful save into "Something went wrong".
   if (created !== null) redirect(`/admin/${model.key}/${created}`);
   return { ok: true, notice: "Created." };
+}
+
+/**
+ * Replace the rows of a join table for one record.
+ *
+ * Deleting and re-inserting rather than diffing: the table carries nothing but
+ * the two keys, so a row has no identity worth preserving and no order to keep
+ * -- which is exactly the difference between this and
+ * `Profile.skills_highlight`, whose sequence became the JSON-LD `knowsAbout`
+ * array and therefore needed a through model.
+ */
+async function saveManyToMany(
+  source: NonNullable<FormField["manyToMany"]>,
+  ownerId: number,
+  targetIds: number[],
+): Promise<void> {
+  await db.transaction(async (tx) => {
+    await tx.delete(source.join).where(eq(source.ownerFk, ownerId));
+    if (targetIds.length === 0) return;
+
+    const columns = Object.entries(getTableColumns(source.join));
+    const ownerKey = columns.find(([, column]) => column === source.ownerFk)?.[0];
+    const targetKey = columns.find(([, column]) => column === source.targetFk)?.[0];
+    if (!ownerKey || !targetKey) return;
+
+    await tx
+      .insert(source.join)
+      .values([...new Set(targetIds)].map((id) => ({ [ownerKey]: ownerId, [targetKey]: id })));
+  });
 }
 
 /** Postgres foreign-key violation, so "still in use" reads as a message. */
@@ -394,8 +375,10 @@ export async function deleteRecord(key: string, id: number): Promise<SaveResult>
     return { ok: false, error: "Records of this kind are not deleted here." };
   }
 
-  const imageFields = formFields(model).filter((field) => field.kind === "image");
-  const orphaned = Object.values(await currentImages(model, imageFields, id));
+  const orphaned = [
+    ...Object.values(await currentImages(model, imageFields(formFields(model)), id)),
+    ...(await inlineImageKeys(model, id)),
+  ];
 
   try {
     await deleteWithChildren(model, id);

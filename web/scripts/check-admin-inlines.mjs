@@ -39,8 +39,14 @@ config({ path: ".env", quiet: true });
 const { chromium } = await import("playwright");
 const { encode } = await import("next-auth/jwt");
 const { db, pool } = await import("../lib/db/client.ts");
-const { aboutApplication, aboutDonatelink, aboutJourneystep, aboutProfileskillhighlight } =
-  await import("../lib/db/schema.ts");
+const {
+  aboutApplication,
+  aboutDonatelink,
+  aboutJourneystep,
+  aboutProfileskillhighlight,
+  projectsProject,
+  projectsProjectTechStack,
+} = await import("../lib/db/schema.ts");
 const { asc, eq } = await import("drizzle-orm");
 
 const BASE = process.argv[2] ?? "http://localhost:3000";
@@ -79,6 +85,8 @@ let snapshotHighlights = null;
 let snapshotLinks = null;
 let applicationId = null;
 const createdApplications = [];
+let techStackProject = null;
+let techStackBefore = null;
 
 try {
   // --- the profile's inlines survive an untouched save ----------------------
@@ -345,6 +353,56 @@ try {
   );
   if (parentGone.length === 0) applicationId = null;
 
+  // --- the tech stack, which is a join table rather than a column -----------
+  /*
+   * A plain many-to-many: no order, no through model, nothing to preserve
+   * beyond membership -- which is exactly why saving it deletes and re-inserts
+   * rather than diffing, and why `Profile.skills_highlight` could not.
+   */
+  const [project] = await db
+    .select({ id: projectsProject.id })
+    .from(projectsProject)
+    .orderBy(asc(projectsProject.id))
+    .limit(1);
+  techStackProject = project.id;
+  techStackBefore = (
+    await db
+      .select({ skillId: projectsProjectTechStack.skillId })
+      .from(projectsProjectTechStack)
+      .where(eq(projectsProjectTechStack.projectId, project.id))
+  ).map((row) => Number(row.skillId));
+
+  await page.goto(`${BASE}/admin/project/${project.id}`, { waitUntil: "load" });
+  await page.waitForTimeout(1600);
+  const ticked = await page.locator('input[name="techStack"]:checked').count();
+  check(
+    "the tech stack loads from the join table, not from a column",
+    ticked === techStackBefore.length,
+    `${ticked} of ${await page.locator('input[name="techStack"]').count()} skills`,
+  );
+
+  // Tick one more and save.
+  const unticked = page.locator('input[name="techStack"]:not(:checked)').first();
+  const addedSkill = Number(await unticked.getAttribute("value"));
+  await unticked.check();
+  await submit();
+
+  const afterAdd = (
+    await db
+      .select({ skillId: projectsProjectTechStack.skillId })
+      .from(projectsProjectTechStack)
+      .where(eq(projectsProjectTechStack.projectId, project.id))
+  ).map((row) => Number(row.skillId));
+  check(
+    "ticking a skill writes one row to the join table",
+    afterAdd.length === techStackBefore.length + 1 && afterAdd.includes(addedSkill),
+    `${techStackBefore.length} -> ${afterAdd.length}`,
+  );
+  check(
+    "and leaves the ones that were already there",
+    techStackBefore.every((id) => afterAdd.includes(id)),
+  );
+
   // --- the guestbook's own delete, proved without writing anything ----------
   /*
    * The same discovery, in the code that shipped in phase 2 with a comment
@@ -408,6 +466,28 @@ try {
     await db.delete(aboutJourneystep).where(eq(aboutJourneystep.applicationId, id));
     await db.delete(aboutApplication).where(eq(aboutApplication.id, id));
     console.log(`  ..    cleaned up application #${id}`);
+  }
+
+  if (techStackProject !== null && techStackBefore !== null) {
+    await db
+      .delete(projectsProjectTechStack)
+      .where(eq(projectsProjectTechStack.projectId, techStackProject));
+    for (const skillId of techStackBefore) {
+      await db
+        .insert(projectsProjectTechStack)
+        .values({ projectId: techStackProject, skillId });
+    }
+    const now = (
+      await db
+        .select({ skillId: projectsProjectTechStack.skillId })
+        .from(projectsProjectTechStack)
+        .where(eq(projectsProjectTechStack.projectId, techStackProject))
+    ).map((row) => Number(row.skillId));
+    check(
+      "the project's tech stack is back as it was found",
+      now.length === techStackBefore.length && techStackBefore.every((id) => now.includes(id)),
+      `${now.length} skills`,
+    );
   }
 
   if (snapshotHighlights && snapshotLinks) {

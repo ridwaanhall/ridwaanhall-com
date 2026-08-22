@@ -239,6 +239,21 @@
     padding: 0.5rem 1rem;
 }
 
+/*
+ * A cell's own paragraph carries no bottom margin.
+ *
+ * The converted HTML has bare text in its cells, but ProseMirror's schema
+ * requires a block child, so the moment a post is edited in the admin every
+ * cell comes back as `<td><p>…</p></td>`. Both forms have to render the same,
+ * or editing one word would add a rem of space under all forty-four cells of a
+ * table. `:last-child` rather than `:only-child` so a cell that genuinely holds
+ * two paragraphs still separates them.
+ */
+.prose-content td > p:last-child,
+.prose-content th > p:last-child {
+    margin-bottom: 0;
+}
+
 /* Zebra striping, which the template produced with `{% cycle %}`. */
 .prose-content tbody tr {
     background-color: var(--color-zinc-950);

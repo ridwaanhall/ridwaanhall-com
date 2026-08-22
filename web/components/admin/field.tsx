@@ -1,4 +1,5 @@
 import { KeyValueEditor, StringListEditor } from "@/components/admin/json-fields";
+import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { adminDateTime } from "@/lib/admin/format";
 import { clearFieldName, type ClientField, type FormValues } from "@/lib/admin/form";
 import { mediaUrl } from "@/lib/storage/media";
@@ -76,6 +77,38 @@ export function Field({
             value={value && typeof value === "object" && !Array.isArray(value) ? value : {}}
           />
         )}
+      </Row>
+    );
+  }
+
+  if (field.kind === "rich-text") {
+    return (
+      <Row field={field} id={id} describedBy={describedBy} error={error}>
+        <RichTextEditor name={name} field={field} value={typeof value === "string" ? value : ""} />
+      </Row>
+    );
+  }
+
+  if (field.kind === "many-to-many") {
+    const chosen = new Set((Array.isArray(value) ? value : []).map(String));
+    return (
+      <Row field={field} id={id} describedBy={describedBy} error={error}>
+        <div className="custom-scroll max-h-56 overflow-y-auto rounded-md border border-zinc-800 bg-zinc-900 px-2.5 py-2">
+          <div className="grid gap-x-4 gap-y-1 sm:grid-cols-2">
+            {(field.options ?? []).map((option) => (
+              <label key={option.value} className="flex items-center gap-2 text-sm text-zinc-300">
+                <input
+                  type="checkbox"
+                  name={name}
+                  value={option.value}
+                  defaultChecked={chosen.has(option.value)}
+                  className="h-4 w-4 shrink-0 rounded border-zinc-700 bg-zinc-900 accent-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                />
+                {option.label}
+              </label>
+            ))}
+          </div>
+        </div>
       </Row>
     );
   }
@@ -178,7 +211,7 @@ export function Field({
     return (
       <div className="grid gap-1 py-1 sm:grid-cols-3 sm:gap-4">
         <span className="hidden sm:block" aria-hidden="true" />
-        <div className="sm:col-span-2">
+        <div className="min-w-0 sm:col-span-2">
           <label className="flex items-center gap-2 text-sm text-zinc-300">
             <input
               type="checkbox"
@@ -264,7 +297,15 @@ function Row({
           </span>
         )}
       </label>
-      <div className="sm:col-span-2">
+      {/*
+        `min-w-0` is load-bearing, not tidiness. A grid item's `min-width`
+        defaults to `auto`, which is its *min-content* width -- so a wide table
+        inside the rich-text editor pushed this column to 889px in a 360px
+        viewport and took the whole page with it. Every scroll container inside
+        is powerless until the item itself is allowed to be narrower than its
+        contents.
+      */}
+      <div className="min-w-0 sm:col-span-2">
         {children}
         <Notes id={id} field={field} error={error} />
       </div>

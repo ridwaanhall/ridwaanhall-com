@@ -22,6 +22,7 @@ npx tsx --conditions=react-server scripts/check-admin-forms.mjs [base]  # the ch
 npx tsx --conditions=react-server scripts/check-storage.mjs  # uploads, deletes, reference counting
 npx tsx --conditions=react-server scripts/check-admin-json.mjs  # jsonb fidelity, GET-then-POST-unchanged
 npx tsx --conditions=react-server scripts/check-admin-inlines.mjs  # child rows, ordering, cascading deletes
+npx tsx --conditions=react-server scripts/check-admin-richtext.mjs  # the editor, the sanitiser, the round trip
 node scripts/compare-jsonld.mjs        # structured data vs the live site
 node scripts/compare-prose.mjs [slug] [width]   # rich-text typography vs live
 MSYS_NO_PATHCONV=1 node scripts/compare-layout.mjs [path]   # rendered geometry vs live
@@ -352,9 +353,13 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
       keeps working and the conversion stays reversible)
 - [x] `styles/prose.css` — every value measured from the live rendering
 - [x] `components/site/rich-text.tsx` + `lib/utils/sanitize.ts`
-- [ ] **Tiptap editor in the admin** (phase 3): headings 2–4, bold, italic,
-      code, link, bullet/ordered list, code block, table, image. Must emit the
-      same vocabulary the sanitiser allows.
+- [x] **Tiptap editor in the admin** — `components/admin/rich-text-editor.tsx`.
+      Configured *down* to the sanitiser's vocabulary rather than up from the
+      default: headings start at 2 because `h1` belongs to the page, and the
+      extensions are the ones the stored content uses. Image is deliberately
+      left out — across all 84 rows of stored HTML there is not one `<img>`,
+      `<sub>`, `<sup>` or `<mark>`, and an image in the body would need its own
+      upload flow inside the editor rather than the gallery inline beside it.
 - [ ] At cutover: drop `content` and `description`, and remove the now-unused
       `@source inline(...)` entries for classes that only existed in blocks
 
@@ -398,8 +403,9 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
 - [x] **The three singletons** — Profile, Hiring profile, Open to work profile.
       `/admin/<key>` is the record's form, which is where Django's
       `SingletonModelAdmin` redirected the changelist to anyway.
-- [ ] Blog post and Project forms — both need the rich-text editor, and their
-      inlines carry images
+- [x] **Blog post and Project forms**, with the rich-text editor, their image
+      inlines and the project's tech-stack many-to-many. **Phase 3 is done:**
+      all 18 screens exist and all 18 are editable.
 
 ### Decisions taken while building it
 
@@ -433,6 +439,15 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
   not a thread. Where a model's `ordering` names a column `list_display` did not
   include (`Education.id`, `LegalDocument.sort_order`), that column was added —
   otherwise the list is unsortable by the very thing it is sorted by.
+- **The editor uses the site's own `.prose-content`**, not a separate editor
+  theme. What is typed looks like what the page renders, and it costs no CSS
+  since the stylesheet is already in the bundle. `styles/admin-editor.css` adds
+  only the editing chrome Tiptap does not ship.
+- **A many-to-many is deleted and re-inserted, not diffed.** The join table
+  carries nothing but two keys, so a row has no identity worth preserving and no
+  order to keep — which is exactly the difference between `Project.tech_stack`
+  and `Profile.skills_highlight`, whose sequence became the JSON-LD `knowsAbout`
+  array and therefore needed a through model.
 - **Reordering is up/down buttons, not drag.** Order is real in several places
   and has to be editable, but buttons work with a keyboard, a screen reader and
   a thumb without the announcement and focus-management work a drag surface
@@ -796,6 +811,23 @@ Each is recorded at its call site and in the comparison scripts.
   an empty `main` — no message, no 404, nothing. A missing record on
   `/admin/<model>/<id>` is therefore *rendered* (`NothingHere`) rather than
   thrown. Reserve `notFound()` for reads that happen before a boundary.
+- **Form submission normalises line breaks to CRLF in *every* field value, not
+  only in a `<textarea>`.** The JSON editors escape their newlines inside a JSON
+  string, so nothing real reaches the encoder and they were never affected. The
+  rich-text field carries HTML with actual newlines in it, and without
+  `normaliseNewlines` an untouched save rewrote a whole post with carriage
+  returns the stored data has none of — 2068 characters became 2072, silently.
+- **ProseMirror's schema requires a block child in every table cell**, so the
+  moment a post is edited `<td>x</td>` comes back as `<td><p>x</p></td>` (plus
+  `colspan="1" rowspan="1"`). That is not avoidable, so `styles/prose.css` is
+  what makes the two render identically: `td > p:last-child` carries no bottom
+  margin, or editing one word would add a rem of space under all forty-four
+  cells of a table. Measured: 73px either way.
+- **A grid item's `min-width` defaults to its min-content width.** The form rows
+  are `sm:grid-cols-3`, and a wide table inside the editor pushed the value
+  column to 889px in a 360px viewport — every scroll container inside is
+  powerless until the item itself carries `min-w-0`. This is the *real* fix for
+  the same symptom `contain: layout` treats on the changelist.
 - **Django's `on_delete=CASCADE` is Python, not SQL — every foreign key in this
   database is `NO ACTION`.** Django gathers the related rows and deletes them
   itself; Postgres knows nothing about it (`confdeltype = 'a'` on all 37 FKs).

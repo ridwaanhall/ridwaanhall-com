@@ -40,7 +40,11 @@ export type FieldKind =
   /** `list[str]` from a fixed vocabulary, edited as checkboxes. Stored as `jsonb`. */
   | "choice-list"
   /** A foreign key, edited as a select over the referenced rows. */
-  | "reference";
+  | "reference"
+  /** HTML, edited with the rich-text editor and sanitised on save. */
+  | "rich-text"
+  /** A many-to-many, edited as a checklist over the referenced rows. */
+  | "many-to-many";
 
 export type FormField = {
   /** The key in the loaded row, and the input's `name`. */
@@ -67,6 +71,8 @@ export type FormField = {
   valueLabel?: string;
   /** Where a `reference` field's options come from. */
   reference?: ReferenceSource;
+  /** The join table behind a `many-to-many` field. */
+  manyToMany?: ManyToManySource;
   /**
    * Shown but not writable. Django's `readonly_fields`, and the same use: a
    * value the record is identified by rather than edited through.
@@ -100,6 +106,25 @@ export type ReferenceSource = {
   label: PgColumn;
   /** Offered when the column is nullable. `Award.organization` is not. */
   emptyLabel?: string;
+};
+
+/**
+ * A many-to-many, through its join table.
+ *
+ * `Project.tech_stack` is the only one, and it is a *plain* M2M on purpose:
+ * unlike `Profile.skills_highlight`, its order genuinely does not matter, which
+ * is why that one needed a through model with an `order` column and this one
+ * did not.
+ */
+export type ManyToManySource = {
+  /** The join table Django created, e.g. `projects_project_tech_stack`. */
+  join: PgTable;
+  /** The column pointing at the record being edited. */
+  ownerFk: PgColumn;
+  /** The column pointing at the other side. */
+  targetFk: PgColumn;
+  /** Where the options come from. */
+  options: ReferenceSource;
 };
 
 export type Fieldset = { title?: string; help?: string; fields: FormField[] };
@@ -236,6 +261,14 @@ export type AdminFormModel = {
   /** Child rows edited on the same screen. */
   inlines?: AdminInline[];
   /**
+   * Columns the form does not carry that still need a value on insert.
+   *
+   * A function, not an object: one of these is the current time, and a literal
+   * would capture the moment the module was imported -- so every record created
+   * by a warm server would be stamped with when that server started.
+   */
+  insertDefaults?: InsertDefaults;
+  /**
    * What has to be removed before this record can be.
    *
    * **Django's `on_delete=CASCADE` is Python, not SQL.** It gathers the related
@@ -279,10 +312,18 @@ export function formFields(model: AdminFormModel): FormField[] {
   return model.fieldsets.flatMap((fieldset) => fieldset.fields);
 }
 
-/** The Drizzle select shape for loading a record into this form. */
+/**
+ * The Drizzle select shape for loading a record into this form.
+ *
+ * A `many-to-many` field is skipped: it has no column on this record, and its
+ * `column` only names the primary key so the descriptor has something to point
+ * at. `loadFormValues` reads it from the join table instead.
+ */
 export function formSelect(model: AdminFormModel): Record<string, PgColumn | SQL> {
   return Object.fromEntries(
-    formFields(model).map((field) => [field.name, field.display ?? field.column]),
+    formFields(model)
+      .filter((field) => field.kind !== "many-to-many")
+      .map((field) => [field.name, field.display ?? field.column]),
   );
 }
 
@@ -303,6 +344,7 @@ export type ParseResult =
  */
 function blankValue(field: FormField): FormValue {
   if (field.kind === "string-list" || field.kind === "choice-list") return [];
+  if (field.kind === "many-to-many") return [];
   if (field.kind === "key-value") return {};
   if (!field.column.notNull) return null;
   if (field.kind === "number") return 0;
@@ -410,6 +452,18 @@ export function parseFields(
     // stays synchronous so it can be reasoned about and tested on its own.
     if (field.kind === "image") continue;
 
+    if (field.kind === "many-to-many") {
+      // A checklist: the ticked boxes arrive as repeats of one name, and each is
+      // the primary key of a row on the other side. Written to the join table by
+      // `saveManyToMany`, never as a column on this record.
+      values[field.name] = data
+        .getAll(nameOf(field))
+        .map((entry) => Number(entry))
+        .filter((entry) => Number.isInteger(entry) && entry > 0)
+        .map(String);
+      continue;
+    }
+
     if (field.kind === "choice-list") {
       /*
        * A checkbox set: the checked boxes arrive as repeats of one name, in the
@@ -465,6 +519,26 @@ export function parseFields(
         } else {
           values[field.name] = parsed;
         }
+        break;
+      }
+      case "rich-text": {
+        /*
+         * `normaliseNewlines` is not optional here.
+         *
+         * Form submission converts every line break in *every* field value to
+         * CRLF -- not only in a `<textarea>`, which is the case the JSON
+         * editors' note describes. Those escape their newlines inside a JSON
+         * string, so nothing real reaches the encoder; this field carries HTML
+         * with actual newlines in it, and without this an untouched save
+         * rewrote a whole post with carriage returns the stored data has none
+         * of.
+         *
+         * The sanitiser runs in `lib/actions/admin.ts`, not here:
+         * `sanitize-html` is a server package and this module is reachable from
+         * a client component, so importing it would put the whole allow-list
+         * and its HTML parser into the browser bundle.
+         */
+        values[field.name] = normaliseNewlines(text);
         break;
       }
       case "reference": {
@@ -603,6 +677,27 @@ export function toClientInlines(
     })),
   }));
 }
+
+/** Fields whose value must be sanitised before it is stored. */
+export function richTextFields(model: AdminFormModel): FormField[] {
+  return formFields(model).filter((field) => field.kind === "rich-text");
+}
+
+/** The `many-to-many` fields, which are written to a join table, not a column. */
+export function manyToManyFields(model: AdminFormModel): FormField[] {
+  return formFields(model).filter((field) => field.kind === "many-to-many");
+}
+
+/**
+ * Values applied only when creating, for columns the form does not carry.
+ *
+ * Django set these with `default=list` and `auto_now_add`, which are Python and
+ * leave the column `NOT NULL` with no database default -- so an insert that
+ * omits them fails. `blog_blogpost.content` and `projects_project.description`
+ * are the old JSONB block columns, kept until cutover so the Django admin still
+ * works; a record created here gets an empty one rather than a broken row.
+ */
+export type InsertDefaults = () => Record<string, unknown>;
 
 /** Every `reference` field on the model and its inlines, keyed for lookup. */
 export function referenceFields(

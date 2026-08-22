@@ -1,5 +1,6 @@
-import { blogBlogpost } from "@/lib/db/schema";
+import { blogBlogimage, blogBlogpost } from "@/lib/db/schema";
 
+import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
 /**
@@ -77,4 +78,187 @@ export const blogPostList: AdminListModel<BlogPostRow> = {
   },
   defaultSort: { key: "created_at", dir: "desc" },
   rowId: (row) => row.id,
+};
+
+export const blogPostForm: AdminFormModel = {
+  key: "blog-post",
+  from: blogBlogpost,
+  pk: blogBlogpost.id,
+  label: (values) => String(values.title ?? "Post"),
+  deleteWarning: "The images attached to this post are deleted with it.",
+  /*
+   * `content` is the original JSONB block array and `views` counts readers, and
+   * neither is on this form: the body is edited as HTML in `content_html`, and a
+   * view count is not something to type. Both columns are `NOT NULL` with no
+   * database default -- Django's `default=list` and `default=0` are Python -- so
+   * a create that omitted them would fail.
+   *
+   * A post created here therefore has an empty `content`, which means the Django
+   * admin shows it with no body. That is accepted: `content` exists only until
+   * cutover drops it, and everything the site renders comes from `content_html`.
+   */
+  insertDefaults: () => ({
+    content: [],
+    views: 0,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }),
+  fieldsets: [
+    {
+      fields: [
+        {
+          name: "title",
+          column: blogBlogpost.title,
+          label: "Title",
+          kind: "text",
+          required: true,
+          maxLength: 255,
+        },
+        {
+          name: "slug",
+          column: blogBlogpost.slug,
+          label: "Slug",
+          kind: "slug",
+          maxLength: 255,
+          slugFrom: "title",
+          help: "Part of the published URL. Changing it moves the post, and existing links stop working.",
+        },
+        {
+          name: "description",
+          column: blogBlogpost.description,
+          label: "Description",
+          kind: "textarea",
+          help: "The summary on the cards, and the page's meta description.",
+        },
+        {
+          name: "category",
+          column: blogBlogpost.category,
+          label: "Category",
+          kind: "text",
+          maxLength: 100,
+        },
+        {
+          name: "tags",
+          column: blogBlogpost.tags,
+          label: "Tags",
+          kind: "string-list",
+          itemLabel: "tag",
+          help: "Rendered slugified, so #Commit Style shows as #commit-style.",
+        },
+        {
+          name: "isFeatured",
+          column: blogBlogpost.isFeatured,
+          label: "Featured",
+          kind: "checkbox",
+          help: "Featured posts head the blog page in the slider.",
+        },
+        {
+          name: "readTime",
+          column: blogBlogpost.readTime,
+          label: "Read time",
+          kind: "number",
+          min: 0,
+          help: "In minutes.",
+        },
+      ],
+    },
+    {
+      title: "Body",
+      fields: [
+        {
+          name: "contentHtml",
+          column: blogBlogpost.contentHtml,
+          label: "Body",
+          kind: "rich-text",
+          help: "Styled by the site's own prose stylesheet. Anything outside the allowed vocabulary is dropped on save.",
+        },
+      ],
+    },
+    {
+      title: "Author",
+      help: "Shown in the byline. The photo is shared with the profile and every other post.",
+      fields: [
+        {
+          name: "author",
+          column: blogBlogpost.author,
+          label: "Name",
+          kind: "text",
+          required: true,
+          maxLength: 100,
+        },
+        {
+          name: "username",
+          column: blogBlogpost.username,
+          label: "Username",
+          kind: "text",
+          maxLength: 100,
+        },
+        {
+          name: "authorImage",
+          column: blogBlogpost.authorImage,
+          label: "Photo",
+          kind: "image",
+          prefix: "profile",
+          // Twenty-one rows name the same file. Uploading a new one here gives
+          // this post its own; the shared one stays where it is, because
+          // something still references it.
+          help: "Replacing this gives only this post a new photo.",
+        },
+      ],
+    },
+    {
+      title: "Recorded",
+      fields: [
+        {
+          name: "views",
+          column: blogBlogpost.views,
+          label: "Views",
+          kind: "number",
+          readOnly: true,
+          help: "Counted in the browser, so a crawler and the prerender are not counted.",
+        },
+        {
+          name: "createdAt",
+          column: blogBlogpost.createdAt,
+          label: "Published",
+          kind: "datetime",
+        },
+        {
+          name: "updatedAt",
+          column: blogBlogpost.updatedAt,
+          label: "Updated",
+          kind: "datetime",
+        },
+      ],
+    },
+  ],
+  inlines: [
+    {
+      name: "images",
+      table: blogBlogimage,
+      pk: blogBlogimage.id,
+      parent: blogBlogimage.blogId,
+      title: "Images",
+      help: "The gallery under the post, in this order.",
+      itemLabel: "image",
+      orderColumn: blogBlogimage.order,
+      fields: [
+        {
+          name: "image",
+          column: blogBlogimage.image,
+          label: "File",
+          kind: "image",
+          prefix: "blog",
+          required: true,
+        },
+        {
+          name: "originalFilename",
+          column: blogBlogimage.originalFilename,
+          label: "Caption",
+          kind: "text",
+          maxLength: 255,
+        },
+      ],
+    },
+  ],
 };

@@ -15,7 +15,7 @@ import {
   skillForm,
   skillList,
 } from "@/lib/admin/models/about";
-import { blogPostList } from "@/lib/admin/models/blog";
+import { blogPostForm, blogPostList } from "@/lib/admin/models/blog";
 import { commentForm, commentList } from "@/lib/admin/models/comments";
 import {
   chatMessageForm,
@@ -30,7 +30,7 @@ import {
   legalSectionList,
 } from "@/lib/admin/models/legal";
 import { hiringProfileForm, openToWorkProfileForm } from "@/lib/admin/models/openhire";
-import { projectList } from "@/lib/admin/models/projects";
+import { projectForm, projectList } from "@/lib/admin/models/projects";
 import { userForm, userList } from "@/lib/admin/models/users";
 
 import type { AdminFormModel } from "@/lib/admin/form";
@@ -106,6 +106,10 @@ const FORMS: AdminFormModel[] = [
   skillForm,
   applicationForm,
   organizationForm,
+  // blog
+  blogPostForm,
+  // projects
+  projectForm,
   // openhire
   hiringProfileForm,
   openToWorkProfileForm,

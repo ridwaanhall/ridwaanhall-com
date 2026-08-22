@@ -5,6 +5,7 @@ import { asc, eq } from "drizzle-orm";
 import {
   formFields,
   formSelect,
+  manyToManyFields,
   referenceFields,
   type AdminFormModel,
   type FormValues,
@@ -30,7 +31,21 @@ export async function loadFormValues(
   const [row] = await db.select(formSelect(model)).from(model.from).where(eq(model.pk, id)).limit(1);
   if (!row) return null;
 
-  return toFormValues(model, row as Record<string, unknown>);
+  const values = toFormValues(model, row as Record<string, unknown>);
+
+  // A many-to-many has no column on this record, so it is read from the join
+  // table rather than from the row.
+  for (const field of manyToManyFields(model)) {
+    const source = field.manyToMany;
+    if (!source) continue;
+    const linked = await db
+      .select({ id: source.targetFk })
+      .from(source.join)
+      .where(eq(source.ownerFk, id));
+    values[field.name] = linked.map((entry) => String(entry.id));
+  }
+
+  return values;
 }
 
 /** The values a create form starts with: empty, and unchecked. */
@@ -89,7 +104,15 @@ function toFormValues(model: AdminFormModel, row: Record<string, unknown>): Form
 export async function loadReferenceOptions(
   model: AdminFormModel,
 ): Promise<Record<string, FilterChoice[]>> {
-  const fields = referenceFields(model);
+  const fields = [
+    ...referenceFields(model),
+    ...manyToManyFields(model).map((field) => ({
+      key: field.name,
+      // The options live on the many-to-many descriptor rather than on
+      // `reference`, so they are unwrapped to the same shape here.
+      field: { ...field, reference: field.manyToMany?.options },
+    })),
+  ];
   if (fields.length === 0) return {};
 
   const loaded = await Promise.all(

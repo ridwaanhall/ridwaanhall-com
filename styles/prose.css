@@ -57,6 +57,30 @@
     }
 }
 
+/* --- the about page's letter -------------------------------------------- */
+
+/*
+   The stories block uses this vocabulary, not this scale.
+
+   `.prose-content` sets an article's type: it steps up at 768 and 1024 because
+   a blog body is the page. The about intro's letter is one column among
+   several, was 16px/24px at every width before it became rich text, and should
+   stay there -- so this takes the element rules and hands the sizing back to
+   the page. The paragraph gap is the 0.5rem its wrapper used to carry.
+
+   Anything the editor can produce beyond a paragraph still lands on the rules
+   above, which is the point of reusing the class rather than writing a second
+   set.
+*/
+.prose-content.prose-stories {
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.prose-content.prose-stories p {
+    margin-bottom: 0.5rem;
+}
+
 /* --- blocks ------------------------------------------------------------- */
 
 .prose-content p {

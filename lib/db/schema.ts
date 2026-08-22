@@ -375,6 +375,15 @@ export const aboutProfile = pgTable("about_profile", {
 	shortCta: text("short_cta").notNull(),
 	longDescription: text("long_description").notNull(),
 	stories: jsonb().notNull(),
+	/**
+	 * The stories as HTML.
+	 *
+	 * Additive alongside `stories`, which is the JSONB array of paragraph
+	 * strings the Django admin edits one textarea at a time. Same move as
+	 * blog_blogpost.content_html, and additive for the same reason -- see the
+	 * note there and drizzle/0004.
+	 */
+	storiesHtml: text("stories_html").default("").notNull(),
 	locationRegency: varchar("location_regency", { length: 100 }).notNull(),
 	locationResidency: varchar("location_residency", { length: 100 }).notNull(),
 	locationProvince: varchar("location_province", { length: 100 }).notNull(),

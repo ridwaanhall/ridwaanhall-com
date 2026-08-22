@@ -64,6 +64,13 @@ export type AboutData = {
   short_cta: string;
   long_description: string;
   stories: unknown[];
+  /**
+   * The same paragraphs as HTML, which is what the page renders.
+   *
+   * `stories` above is the original JSONB array, kept alongside it the way
+   * blog_blogpost.content was -- see drizzle/0004.
+   */
+  stories_html: string;
   location: {
     regency: string;
     residency: string;
@@ -155,6 +162,7 @@ export async function getAboutData(): Promise<AboutData | null> {
     short_cta: profile.shortCta,
     long_description: profile.longDescription,
     stories: (profile.stories ?? []) as unknown[],
+    stories_html: profile.storiesHtml ?? "",
     location: {
       regency: profile.locationRegency,
       residency: profile.locationResidency,

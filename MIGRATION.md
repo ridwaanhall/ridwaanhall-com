@@ -362,6 +362,14 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
       left out — across all 84 rows of stored HTML there is not one `<img>`,
       `<sub>`, `<sup>` or `<mark>`, and an image in the body would need its own
       upload flow inside the editor rather than the gallery inline beside it.
+- [x] **`about_profile.stories_html`** — `drizzle/0004`, the same move for the
+      last piece of prose still edited as a list. `stories` was a JSONB array of
+      paragraph strings behind a textarea-per-paragraph widget with arrow
+      buttons; it is the Tiptap editor now, like a blog body. Additive, so
+      `stories` stays and Django keeps rendering from it. The reader sees no
+      difference: `.prose-stories` in `styles/prose.css` keeps the block on the
+      page's own 16px/24px rather than the article scale `.prose-content` sets,
+      and `compare-layout.mjs` matches the live site at 375, 768 and 1280
 - [x] Drop `content` and `description`, and the `@source inline(...)` entries
       for classes that only existed in blocks — `drizzle/0003`. All 29 listed
       classes turned out to come from those two columns alone: the JSONB that
@@ -676,6 +684,9 @@ Each is recorded at its call site and in the comparison scripts.
   the public site is prerendered and the flag is a per-request database read.
   It is back as the one streamed hole in the chrome -- see
   `components/layout/admin-link.tsx`.
+- **The profile's stories are edited as rich text**, not as ten textareas with
+  arrow buttons beside them. Asked for, and the same editor the blog body and
+  project descriptions use. The rendered page is unchanged.
 - **The admin's change form uses the whole page.** It was one 768px column,
   which on a 1440px screen left a third of the window empty and put Save four
   thousand pixels below the title on a blog post. A form with a rich-text field

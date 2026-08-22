@@ -17,7 +17,8 @@
  *     is what stops it -- `class` is allowed on one element and only matching
  *     `language-*` -- so the check feeds it a utility and proves it is stripped,
  *     rather than trusting the allow-list by reading it.
- *   - the JSONB columns that remain (legal sections, the profile stories) could
+ *   - the JSONB columns that remain (legal sections, and `about_profile.stories`
+ *     now that `drizzle/0004` has moved the live copy to `stories_html`) could
  *     start carrying a `class` key, which is what the old blocks did.
  *
  * Read-only: it writes nothing and needs no cleanup.
@@ -80,6 +81,11 @@ scanHtml(
   await db.execute(sql`select id, description_html from projects_project`).then((r) => r.rows),
   "description_html",
   "project",
+);
+scanHtml(
+  await db.execute(sql`select id, stories_html from about_profile`).then((r) => r.rows),
+  "stories_html",
+  "profile",
 );
 check(
   stray.size === 0,

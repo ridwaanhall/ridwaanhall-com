@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { JsonLdScript } from "@/components/seo/json-ld";
+import { RichText } from "@/components/site/rich-text";
 import {
   AwardCard,
   CertificationCard,
@@ -25,7 +26,6 @@ import { aboutSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { aboutSchemas } from "@/lib/seo/schemas-for-page";
 // Stories are author-written HTML fragments; same allow-list as the blog body.
-import { sanitizeRichText as sanitizeStory } from "@/lib/utils/sanitize";
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutData();
@@ -233,15 +233,16 @@ function Intro({ about, sponsorUrl }: { about: AboutData; sponsorUrl: string }) 
           </div>
 
           {/*
-            `stories` is a list of paragraphs that may carry inline markup --
-            Django rendered each with `|safe`. They come from the admin, so the
-            same sanitiser the blog body uses applies here.
+            The letter, as rich text.
+            
+            This was a JSONB array of paragraph strings rendered one `<p>` at a
+            time, each in a `mb-2` wrapper; `drizzle/0004` made it HTML so the
+            admin could edit it the way it edits a blog body. `prose-stories`
+            keeps this block on the page's own typography rather than the
+            article scale `.prose-content` sets -- see styles/prose.css. The
+            markup that reaches the browser is identical either way.
           */}
-          {about.stories.map((story, index) => (
-            <div key={index} className="mb-2">
-              <p dangerouslySetInnerHTML={{ __html: sanitizeStory(String(story)) }} />
-            </div>
-          ))}
+          <RichText html={about.stories_html} className="prose-stories" />
 
           <p className="text-indigo-400 text-lg sm:text-xl font-medium mt-3 sm:mt-3">
             Wassalamu&apos;alaikum

@@ -669,9 +669,12 @@ html.theme-fading [data-theme-toggle] svg {
 
     /* Status/count pill shape (sidebar, about intro, home hero, "Current"/
        level badges). Color, padding and text size are chosen per badge and
-       stay inline. */
+       stay inline.
+
+       Normal weight. These are captions beside headings, and every one of them
+       was competing with the heading for the same attention. */
     .pill-badge {
-        @apply inline-flex items-center rounded-full font-medium;
+        @apply inline-flex items-center rounded-full;
     }
 
     /* Interactive "Show more / Show Details / View Journey" toggle pill.

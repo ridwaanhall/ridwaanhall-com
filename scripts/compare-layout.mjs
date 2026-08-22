@@ -31,28 +31,29 @@ const TOLERANCE = 2;
  */
 const EXPECTED = [
   /*
-   * `/about/` differs at every width, and the whole of it is the intro's status
-   * badge row. Measured live vs. port with all three flags set, the `main`,
-   * intro-card and badge-row deltas are the same number at each width -- 16 at
-   * 375, -12 at 768, 6 at 1280 -- so nothing else on the page has moved.
+   * `/about/` is shorter than live at every width, and the whole of it is the
+   * intro's status badge row. Measured live vs. port with all three flags set:
+   * 46 at 375, 14 at 768, 6 at 1280. Nothing else on the page has moved -- the
+   * `main`, intro-card and badge-row deltas are the same number at each width.
    *
-   * Two requested changes compound here:
+   * Three requested changes compound here:
    *
    * - The row wraps rather than shrinking. The original let three badges be
    *   crushed onto one line beside the heading: at 768 that pushes the document
    *   to 924px wide, 156px past the viewport, with each pill 74px tall because
    *   its own label has wrapped inside it; at 375 the third badge starts past
    *   the right edge entirely.
-   * - The badges are the mobile drawer's size now (`px-2 py-0.5 text-xs`, a
-   *   1.5-unit dot) and say one word below `sm` -- Open / Hiring / Unwell --
-   *   instead of spelling out "Under the Weather" on a phone. A pill is a flat
-   *   22px at every width as a result, against live's 74 / 74 / 34.
+   * - The badges say one word below `sm` -- Open / Hiring / Unwell -- instead of
+   *   spelling out "Under the Weather" on a phone, and no longer prefix the
+   *   full label with "Currently" above it.
+   * - They carry no dot and no fill. That is what changed these numbers last:
+   *   the dot and its margin were 12px of width per badge, and losing them is
+   *   what lets all three sit on one line at 375 and at 768 where they took two
+   *   before. A pill is a flat 22px at every width against live's 74 / 74 / 34,
+   *   so the saving is one whole line plus the height difference.
    *
-   * The two pull opposite ways, which is why the sign changes: at 375 all three
-   * compact badges now fit on one line where live needed a 74px crushed row, so
-   * the port is *shorter*; at 768 they take two 22px lines where live took one
-   * 74px one, so it is slightly taller; at 1280 both fit on one line and the
-   * port is simply 6px shorter because the pill is.
+   * At 1280 both sides fit on one line either way, and the port is simply 6px
+   * shorter because the pill is -- which is why that number did not move.
    *
    * One entry per measured width, since the delta is not constant.
    */
@@ -116,8 +117,34 @@ const EXPECTED = [
     delta: -72,
     widths: [1280],
   },
-  { path: "/about/", key: "main", dimension: "h", delta: 16, widths: [375] },
-  { path: "/about/", key: "main", dimension: "h", delta: -12, widths: [768] },
+  /*
+   * `/` is 26px shorter at 768, and every one of the ten differences is that
+   * same 26px: `main` loses it, and the three action buttons, four cards and
+   * two headings below the hero all move up by it.
+   *
+   * One cause. The hero's availability badges lost their pulsing dot, and each
+   * dot was 12px of width including its margin -- enough, at 768, for the row
+   * to fit beside the role and location on one line where live wraps it onto
+   * two. 375 and 1280 are unaffected: at 375 both sides wrap, at 1280 neither
+   * does.
+   */
+  ...["action[0]", "action[1]", "action[2]", "card[0]", "card[1]", "card[2]", "card[3]", "h2[0]", "h2[1]"].map(
+    (key) => ({ path: "/", key, dimension: "y", delta: 26, widths: [768] }),
+  ),
+  { path: "/", key: "main", dimension: "h", delta: 26, widths: [768] },
+
+  /*
+   * `/openhire/`'s section heading is 13px wider than live's.
+   *
+   * `SectionCard` lays the heading out as `flex-1` beside its status pill, so
+   * the heading takes whatever the pill does not. The pill lost its dot and the
+   * dot's margin -- 13px measured -- and the heading grew by exactly that. The
+   * card, and everything else on the page, is unchanged.
+   */
+  { path: "/openhire/", key: "h2[1]", dimension: "w", delta: -13, widths: [1280] },
+
+  { path: "/about/", key: "main", dimension: "h", delta: 46, widths: [375] },
+  { path: "/about/", key: "main", dimension: "h", delta: 14, widths: [768] },
   { path: "/about/", key: "main", dimension: "h", delta: 6, widths: [1280] },
 ];
 

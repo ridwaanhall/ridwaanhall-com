@@ -673,6 +673,32 @@ Each is recorded at its call site and in the comparison scripts.
 
 ## Deliberate departures from the live site (requested)
 
+- **Colour is spent only where it carries information.** An application's
+  outcome and a project's lifecycle keep it, in one shared treatment; everything
+  that was decorated rather than distinguished gives it up. The three
+  availability flags are zinc with no fill and no pulsing dot, and take their
+  colour on hover; an application's work type, location, salary and referrer are
+  plain text with their icons instead of five differently-hued pills; the date on
+  an education, award or certification card is a neutral caption rather than an
+  indigo gradient; and the "Current" marker on a role reads like the "Show more"
+  pill beside it. The compiled stylesheet is 7.8KB smaller for it.
+- **The three availability flags have one vocabulary**, exported from
+  `components/layout/status-badges.tsx`. They render on four screens and each had
+  said something different: the hero "Under the Weather", the drawer "Unwell",
+  the rail "Open to Work" and the about intro "Currently Open to Work". The
+  intro no longer says "Currently"; the short forms survive below `sm`, where
+  spelling one out beside the heading is what used to scroll a 375px page
+  sideways.
+- **Page headings are one colour.** Twelve of them split their title across two
+  -- "Dash*board*", "About *Me*", "Hi, I'm *Ridwan*" -- which made an accent of
+  the half that carried no more meaning than the other. The legal pages still
+  store the split as `title_lead` / `title_accent`; the component renders them as
+  one string and the columns are untouched.
+- **The guestbook's reply, pin and delete controls are always on screen.** They
+  faded in on hovering a message, so the only way to find out a message could be
+  replied to was to put a pointer on it -- and on a touch screen there is no
+  hover, so the first tap revealed the control the second one used.
+
 - **The guestbook opens at the newest message.** `buildThread` sorts ascending,
   so the panel reads oldest first and the newest message is the last row in a
   50-message window inside a 55vh box -- which meant it opened several screens

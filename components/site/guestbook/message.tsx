@@ -126,11 +126,14 @@ export function Message({
             </p>
 
             {/*
-              Opacity on `focus-within` as well as hover: these are the only
-              controls on a message, and someone tabbing to them has to be able
-              to see where they are.
+              Always on screen.
+              
+              These used to fade in on hovering the message, which meant the only
+              way to discover that a message could be replied to was to put a
+              pointer on it -- and on a touch screen there is no hover at all, so
+              the first tap only revealed the control that the second one used.
             */}
-            <div className="flex flex-shrink-0 items-center gap-0.5 pt-1 opacity-0 transition-opacity group-hover/msg:opacity-100 focus-within:opacity-100">
+            <div className="flex flex-shrink-0 items-center gap-0.5 pt-1">
               <button
                 type="button"
                 onClick={() => actions.onReply(message)}

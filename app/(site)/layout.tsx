@@ -28,7 +28,15 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
     <SiteShell
       about={about}
       adminLink={
-        <Suspense fallback={null}>
+        /*
+         * The key is not decoration, and it is not there because anything
+         * reorders. This element is created here and rendered as one of several
+         * siblings inside `SidebarFooter` -- in two places, since the rail and
+         * the drawer both render one -- which is a children array as far as
+         * React's validation is concerned. Without a key it warns about a list
+         * child on every page of the site and names this line as the owner.
+         */
+        <Suspense key="admin-link" fallback={null}>
           <AdminLink />
         </Suspense>
       }

@@ -27,7 +27,7 @@ export default async function ContactPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
               <div>
                 <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                  Contact <span className="text-indigo-400">Me</span>
+                  Contact Me
                 </h1>
                 <p className="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">
                   Some conversations don&rsquo;t start with code, they begin with a message.

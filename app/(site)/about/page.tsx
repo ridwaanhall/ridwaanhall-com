@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { JsonLdScript } from "@/components/seo/json-ld";
+import { StatusChip, type AvailabilityKey } from "@/components/layout/status-badges";
 import { RichText } from "@/components/site/rich-text";
 import {
   AwardCard,
@@ -127,7 +128,7 @@ export default async function AboutPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
               <div>
                 <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                  About <span className="text-indigo-400">Me</span>
+                  About Me
                 </h1>
                 <p className="mt-2 text-base sm:text-lg text-zinc-300 leading-relaxed">
                   Built on belief and shaped through code. This is the path I&rsquo;ve taken, and
@@ -154,46 +155,14 @@ function Section({ children }: { children: React.ReactNode }) {
 
 function Intro({ about, sponsorUrl }: { about: AboutData; sponsorUrl: string }) {
   /*
-   * Each badge carries two labels.
-   *
-   * `short` is what a phone gets -- one word, so three live flags stay on one
-   * line inside a 375px column instead of each pill wrapping its own label. The
-   * full wording ("Currently Under the Weather") survives from `sm` up, where
-   * there is room for it. The row previously showed the long label at every
-   * width and only dropped the word "Currently" below `sm`, which is what put
-   * "Under the Weather" on a phone.
+   * Which flags are live. The wording and the hover colour come from
+   * `AVAILABILITY`, shared with the rail, the drawer and the home hero.
    */
-  const badges = [
-    about.is_open_to_work && {
-      key: "open",
-      className: "bg-green-900/30 text-green-400 border-green-800/50",
-      dot: "bg-green-500",
-      label: "Open to Work",
-      short: "Open",
-    },
-    about.is_hiring && {
-      key: "hiring",
-      className: "bg-blue-900/30 text-blue-400 border-blue-800/50",
-      dot: "bg-blue-500",
-      label: "Hiring",
-      short: "Hiring",
-    },
-    about.is_sick && {
-      key: "sick",
-      className: "bg-amber-900/30 text-amber-400 border-amber-800/50",
-      dot: "bg-amber-500",
-      label: "Under the Weather",
-      short: "Unwell",
-      title: "Currently unwell — replies may be slow",
-    },
-  ].filter(Boolean) as {
-    key: string;
-    className: string;
-    dot: string;
-    label: string;
-    short: string;
-    title?: string;
-  }[];
+  const flags = [
+    about.is_open_to_work && "open",
+    about.is_hiring && "hiring",
+    about.is_sick && "sick",
+  ].filter(Boolean) as AvailabilityKey[];
 
   return (
     <div className="mt-4 sm:mt-6">
@@ -212,21 +181,17 @@ function Intro({ about, sponsorUrl }: { about: AboutData; sponsorUrl: string }) 
           <div className="flex flex-wrap items-center justify-between gap-y-2 mb-2 sm:mb-3">
             <p className="text-indigo-400 text-lg sm:text-xl font-medium">Assalamu&apos;alaikum</p>
             {/*
-              Sized to match the mobile drawer's badges exactly (`px-2 py-0.5
-              text-xs`, a 1.5-unit dot) rather than carrying a second, larger
-              scale for the same three flags -- see
-              `components/layout/status-badges.tsx`.
+              Sized to match the mobile drawer's badges rather than carrying a
+              second, larger scale for the same three flags. Both labels are
+              rendered and one is hidden per width: the short one below `sm`,
+              where "Under the Weather" beside a heading is what used to push a
+              375px page sideways.
             */}
             <div className="flex flex-wrap gap-1.5">
-              {badges.map((badge) => (
-                <span
-                  key={badge.key}
-                  className={`pill-badge px-2 py-0.5 text-xs border ${badge.className}`}
-                  title={badge.title}
-                >
-                  <span className={`w-1.5 h-1.5 rounded-full mr-1.5 animate-pulse ${badge.dot}`} />
-                  <span className="sm:hidden">{badge.short}</span>
-                  <span className="hidden sm:inline">Currently {badge.label}</span>
+              {flags.map((flag) => (
+                <span key={flag}>
+                  <StatusChip flag={flag} short className="px-2 py-0.5 text-xs sm:hidden" />
+                  <StatusChip flag={flag} className="px-2 py-0.5 text-xs hidden sm:inline-flex" />
                 </span>
               ))}
             </div>

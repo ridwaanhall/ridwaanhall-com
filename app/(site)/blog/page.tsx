@@ -53,7 +53,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Listing
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-6">
                 <div>
                   <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                    Latest <span className="text-indigo-400">Blogs</span>
+                    Latest Blogs
                   </h1>
                   <p className="mt-1 sm:mt-2 text-sm sm:text-base md:text-lg leading-relaxed">
                     Not all traces are written in code. Some live here in thoughts, questions, and

@@ -8,37 +8,26 @@ import type { Application } from "@/lib/data/about";
 /**
  * One job application, with its journey timeline.
  *
- * Status colours are written out in full per status rather than composed from
- * the status name -- Tailwind only generates a class it can see in the source,
- * so `bg-${hue}-950/60` would produce no rule at all and the badge would be
+ * **The outcome is the only thing here that earns a colour.** Where an
+ * application got to is the answer someone is reading the card for, so it takes
+ * the same solid treatment a project's lifecycle does -- see
+ * `PROJECT_STATUS_COLORS` in `lib/data/project-status.ts`, which this
+ * deliberately matches rather than inventing a second scale for the same idea.
+ * The facts beside it -- work type, where, how much, through whom -- are five
+ * pieces of ordinary metadata, and giving each its own hue made a card of five
+ * competing labels with no hierarchy at all.
+ *
+ * Colours are written out in full per status rather than composed from the
+ * status name: Tailwind only generates a class it can see in the source, so an
+ * interpolated one would produce no rule at all and the badge would be
  * unstyled. Django's template made the same choice, as a chain of `{% if %}`s.
  */
-const STATUS_STYLES: Record<string, { badge: string; ping: string; dot: string }> = {
-  "In Progress": {
-    badge: "bg-blue-950/60 text-blue-300 ring-1 ring-blue-700/70",
-    ping: "bg-blue-600",
-    dot: "bg-blue-700",
-  },
-  Accepted: {
-    badge: "bg-green-950/60 text-green-300 ring-1 ring-green-700/70",
-    ping: "bg-green-600",
-    dot: "bg-green-700",
-  },
-  Rejected: {
-    badge: "bg-red-950/60 text-red-300 ring-1 ring-red-700/70",
-    ping: "bg-red-600",
-    dot: "bg-red-700",
-  },
-  Ghosted: {
-    badge: "bg-yellow-950/60 text-yellow-300 ring-1 ring-yellow-700/70",
-    ping: "bg-yellow-600",
-    dot: "bg-yellow-700",
-  },
-  Applied: {
-    badge: "bg-zinc-950/60 text-zinc-300 ring-1 ring-zinc-700/70",
-    ping: "bg-zinc-600",
-    dot: "bg-zinc-700",
-  },
+const STATUS_STYLES: Record<string, string> = {
+  "In Progress": "bg-blue-400/90 text-blue-950",
+  Accepted: "bg-emerald-400/90 text-emerald-950",
+  Rejected: "bg-red-400/90 text-red-950",
+  Ghosted: "bg-yellow-400/90 text-yellow-950",
+  Applied: "bg-zinc-400/90 text-zinc-950",
 };
 
 /**
@@ -48,13 +37,8 @@ const STATUS_STYLES: Record<string, { badge: string; ping: string; dot: string }
  */
 const FALLBACK_STATUS = STATUS_STYLES.Applied;
 
-const FACT_STYLES = {
-  employment: "bg-purple-950/40 text-purple-300 ring-1 ring-purple-700/50",
-  locationType: "bg-emerald-950/40 text-emerald-300 ring-1 ring-emerald-700/50",
-  location: "bg-amber-950/40 text-amber-300 ring-1 ring-amber-700/50",
-  salary: "bg-green-950/40 text-green-300 ring-1 ring-green-700/50",
-  via: "bg-cyan-950/40 text-cyan-300 ring-1 ring-cyan-700/50",
-} as const;
+/** The five facts, keyed for their icons. They carry no colour of their own. */
+type FactKind = "employment" | "locationType" | "location" | "salary" | "via";
 
 /**
  * The icon on each fact badge.
@@ -64,10 +48,7 @@ const FACT_STYLES = {
  * why this is a table of specs rather than five inline SVGs. The port had the
  * colours but dropped the icons entirely.
  */
-const FACT_ICONS: Record<
-  keyof typeof FACT_STYLES,
-  { viewBox: string; filled?: boolean; paths: string[] }
-> = {
+const FACT_ICONS: Record<FactKind, { viewBox: string; filled?: boolean; paths: string[] }> = {
   employment: {
     viewBox: "0 0 950 950",
     filled: true,
@@ -105,7 +86,7 @@ const FACT_ICONS: Record<
   },
 };
 
-function FactIcon({ kind }: { kind: keyof typeof FACT_STYLES }) {
+function FactIcon({ kind }: { kind: FactKind }) {
   const icon = FACT_ICONS[kind];
   return (
     <svg
@@ -135,7 +116,7 @@ export function ApplicationCard({ application }: { application: Application }) {
     application.location && { key: "location", label: application.location },
     application.salary_range && { key: "salary", label: application.salary_range },
     application.applied_via && { key: "via", label: application.applied_via },
-  ].filter(Boolean) as { key: keyof typeof FACT_STYLES; label: string }[];
+  ].filter(Boolean) as { key: FactKind; label: string }[];
 
   return (
     <div className="card-outline group mb-4">
@@ -152,27 +133,21 @@ export function ApplicationCard({ application }: { application: Application }) {
                 </h3>
               </div>
               <span
-                className={`inline-flex items-center rounded-full px-2 sm:px-2.5 py-1 text-xs font-medium whitespace-nowrap flex-shrink-0 ${status.badge}`}
+                className={`inline-flex items-center rounded-full px-2 sm:px-2.5 py-1 text-xs whitespace-nowrap flex-shrink-0 ${status}`}
               >
-                <span className="relative flex h-1.5 w-1.5 mr-1.5">
-                  <span
-                    className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${status.ping}`}
-                  />
-                  <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${status.dot}`} />
-                </span>
                 {application.status}
               </span>
             </div>
 
             <Disclosure>
               <div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                {/* Wider gaps than the pills needed. Without a background each
+                    fact ends where its text does, so 8px ran them together into
+                    one line of prose. */}
                 {facts.length > 0 ? (
-                  <div className="flex flex-wrap gap-2 text-xs">
+                  <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs">
                     {facts.map((fact) => (
-                      <span
-                        key={fact.key}
-                        className={`inline-flex items-center px-2 py-1 rounded-md ${FACT_STYLES[fact.key]}`}
-                      >
+                      <span key={fact.key} className="inline-flex items-center text-zinc-400">
                         <FactIcon kind={fact.key} />
                         {fact.label}
                       </span>

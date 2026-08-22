@@ -1,6 +1,6 @@
-import type { Route } from "next";
 import Link from "next/link";
 
+import { StatusChip } from "@/components/layout/status-badges";
 import type { AboutData } from "@/lib/data/about";
 
 /**
@@ -16,7 +16,7 @@ export function HomeIntro({ about, sponsorUrl }: { about: AboutData; sponsorUrl:
       <div className="mx-auto lg:mx-0">
         <div className="text-left">
           <h1 className="text-2xl lg:text-3xl font-medium mb-2">
-            Hi, I&apos;m <span className="text-indigo-400">{about.first_name}</span>
+            Hi, I&apos;m {about.first_name}
             {/* Explicit: JSX drops whitespace between elements when it spans a
                 newline, while the Django template collapsed it to one space.
                 Without this the hand sits flush against the last letter. */}{" "}
@@ -29,33 +29,16 @@ export function HomeIntro({ about, sponsorUrl }: { about: AboutData; sponsorUrl:
             <span>
               {about.location.residency}, {about.location.country} {about.location.flag}
             </span>
-            {about.is_open_to_work && (
-              <PingBadge
-                href="/openhire"
-                className="bg-green-900/30 text-green-400 border-green-800/50"
-                dot="green"
-              >
-                Open to Work
-              </PingBadge>
+            {/* The wording and the hover colour come from `AVAILABILITY`, so the
+                hero, the rail, the drawer and the about intro cannot drift apart
+                again -- they used to give four answers for three booleans. */}
+            {(about.is_open_to_work || about.is_hiring) && (
+              <Link href="/openhire" className="inline-flex gap-1 mx-1">
+                {about.is_open_to_work && <StatusChip flag="open" className={HERO_CHIP} />}
+                {about.is_hiring && <StatusChip flag="hiring" className={HERO_CHIP} />}
+              </Link>
             )}
-            {about.is_hiring && (
-              <PingBadge
-                href="/openhire"
-                className="bg-blue-900/30 text-blue-400 border-blue-800/50"
-                dot="blue"
-              >
-                Hiring
-              </PingBadge>
-            )}
-            {about.is_sick && (
-              <PingBadge
-                className="bg-amber-900/30 text-amber-400 border-amber-800/50"
-                dot="amber"
-                title="Currently unwell — replies may be slow"
-              >
-                Under the Weather
-              </PingBadge>
-            )}
+            {about.is_sick && <StatusChip flag="sick" className={`${HERO_CHIP} mx-1`} />}
           </div>
 
           <p className="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed mb-4">
@@ -102,58 +85,8 @@ export function HomeIntro({ about, sponsorUrl }: { about: AboutData; sponsorUrl:
   );
 }
 
-/**
- * Every class string here is written out in full.
- *
- * Tailwind finds classes by scanning source text, so an interpolated name like
- * `bg-${dot}-400` is invisible to it and the rule is simply never generated --
- * with no error at build time and no warning in the browser. The palette remap
- * that produces light mode has the same requirement: a colour it cannot see is
- * a colour it cannot remap.
- */
-const PING_VARIANTS = {
-  green: { pulse: "bg-green-400", dot: "bg-green-500" },
-  blue: { pulse: "bg-blue-400", dot: "bg-blue-500" },
-  amber: { pulse: "bg-amber-400", dot: "bg-amber-500" },
-} as const;
-
-function PingBadge({
-  href,
-  className,
-  dot,
-  title,
-  children,
-}: {
-  href?: string;
-  className: string;
-  dot: keyof typeof PING_VARIANTS;
-  title?: string;
-  children: React.ReactNode;
-}) {
-  const variant = PING_VARIANTS[dot];
-  const content = (
-    <>
-      <span className="relative inline-flex size-2 mr-1.5">
-        <span
-          className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-75 ${variant.pulse}`}
-        />
-        <span className={`relative inline-flex size-2 rounded-full ${variant.dot}`} />
-      </span>
-      {children}
-    </>
-  );
-  const classes = `pill-badge mx-1 px-2 py-1 text-xs border ${className}`;
-
-  return href ? (
-    <Link href={href as Route} className={classes}>
-      {content}
-    </Link>
-  ) : (
-    <span className={classes} title={title}>
-      {content}
-    </span>
-  );
-}
+/** The hero sits on one line of running text, so its chips match its scale. */
+const HERO_CHIP = "px-2 py-1 text-xs";
 
 function WavingHand() {
   return (

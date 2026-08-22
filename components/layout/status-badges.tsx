@@ -3,7 +3,80 @@ import Link from "next/link";
 import type { AboutData } from "@/lib/data/about";
 
 /**
- * Availability badges: open to work, hiring, unwell.
+ * The three availability flags, in one place.
+ *
+ * They appear on four screens -- the desktop rail, the mobile drawer, the home
+ * hero and the about intro -- and until now each of those spelled out its own
+ * labels and its own colours. They had already drifted apart: the hero said
+ * "Under the Weather", the drawer said "Unwell", the rail said "Open to Work"
+ * and the about intro said "Currently Open to Work", all for one boolean.
+ *
+ * `short` is what a narrow column gets. It is not a nicety: three badges beside
+ * a 148px heading is 258px of content, which at 375px used to start the third
+ * one past the right edge of the viewport.
+ *
+ * Classes are written out in full rather than composed from the hue. Tailwind
+ * only emits a class it can see in the source, so a template string would
+ * produce no rule at all -- the same reason recorded at the top of
+ * `components/site/application-card.tsx`.
+ */
+export const AVAILABILITY = {
+  open: {
+    label: "Open to Work",
+    short: "Open",
+    hover: "hover:border-green-700/60 hover:text-green-400",
+  },
+  hiring: {
+    label: "Hiring",
+    short: "Hiring",
+    hover: "hover:border-blue-700/60 hover:text-blue-400",
+  },
+  sick: {
+    label: "Under the Weather",
+    short: "Unwell",
+    hover: "hover:border-amber-700/60 hover:text-amber-400",
+    title: "Currently unwell — replies may be slow",
+  },
+} as const;
+
+export type AvailabilityKey = keyof typeof AVAILABILITY;
+
+/**
+ * A flag, at rest.
+ *
+ * **No fill, no dot, no colour until the pointer arrives.** These three read on
+ * almost every screen of the site, and as tinted pills with pulsing dots they
+ * asked for attention on all of them -- three separate animations competing with
+ * the content beside them. The colour still means what it meant; it now waits
+ * to be asked for. A project's lifecycle and an application's outcome keep their
+ * colour outright, because there the colour *is* the information.
+ */
+export const CHIP_REST =
+  "pill-badge border border-zinc-700 text-zinc-400 transition-colors";
+
+export function StatusChip({
+  flag,
+  short = false,
+  className = "",
+}: {
+  flag: AvailabilityKey;
+  /** Use the one-word label. Set where the column is too narrow to spell it out. */
+  short?: boolean;
+  className?: string;
+}) {
+  const badge = AVAILABILITY[flag];
+  return (
+    <span
+      className={`${CHIP_REST} ${badge.hover} ${className}`}
+      title={"title" in badge ? badge.title : undefined}
+    >
+      {short ? badge.short : badge.label}
+    </span>
+  );
+}
+
+/**
+ * Availability badges for the sidebar rail and the mobile drawer.
  *
  * **All three can be true at once**, and that is the case worth testing before
  * judging any change here. In the 248px rail three badges beside `@username`
@@ -11,14 +84,11 @@ import type { AboutData } from "@/lib/data/about";
  * additionally forced the name to wrap. Both placements therefore give the
  * badges their own row -- see the callers.
  *
- * The two variants differ for real layout reasons, so they are a prop rather
- * than one compromise:
- *
- * - `rail` (248px column) combines Open + Hiring into a single gradient pill
- *   when both are live, because two separate pills do not fit, and spells out
- *   "Open to Work" when it has the room.
- * - `drawer` keeps them as two compact pills and abbreviates to "Open"; the
- *   drawer header is horizontal and has width to spare but little height.
+ * The rail used to fuse Open and Hiring into a single gradient pill, because two
+ * tinted pills with dots did not fit its 248px. Without the fill and the dots
+ * they do, so that special case is gone and both variants now differ only in
+ * padding -- and in the rail spelling out "Open to Work" where the drawer, which
+ * has width to spare but little height, abbreviates.
  */
 export function StatusBadges({
   about,
@@ -31,8 +101,10 @@ export function StatusBadges({
   if (!open && !hiring && !sick) return null;
 
   const rail = variant === "rail";
-  const pad = rail ? "px-2 py-1" : "px-2 py-0.5";
-  const dotGap = rail ? "mr-1.5" : "mr-1";
+  const size = `${rail ? "px-2 py-1" : "px-2 py-0.5"} text-xs`;
+  // The rail has room for "Open to Work" only while it is the sole flag; with
+  // Hiring beside it the pair has to be two words wide, not four.
+  const abbreviate = !rail || (open && hiring);
 
   return (
     <div
@@ -43,51 +115,13 @@ export function StatusBadges({
       }
     >
       {(open || hiring) && (
-        <Link href="/openhire" className={rail ? "inline-block" : "flex gap-1"}>
-          {rail && open && hiring ? (
-            <span
-              className={`pill-badge ${pad} text-xs bg-gradient-to-r from-green-900/30 to-blue-900/30 text-green-400 border border-green-800/50 hover:from-green-900/40 hover:to-blue-900/40 transition-colors`}
-            >
-              <span className={`w-1.5 h-1.5 bg-green-500 rounded-full ${dotGap} animate-pulse`} />
-              <span className="text-green-400">Open</span>
-              <span className="mx-1" />
-              <span className={`w-1.5 h-1.5 bg-blue-500 rounded-full ${dotGap} animate-pulse`} />
-              <span className="text-blue-400">Hiring</span>
-            </span>
-          ) : (
-            <>
-              {open && (
-                <span
-                  className={`pill-badge ${pad} text-xs bg-green-900/30 text-green-400 border border-green-800/50 hover:bg-green-900/40 transition-colors`}
-                >
-                  <span
-                    className={`w-1.5 h-1.5 bg-green-500 rounded-full ${dotGap} animate-pulse`}
-                  />
-                  {rail ? "Open to Work" : "Open"}
-                </span>
-              )}
-              {hiring && (
-                <span
-                  className={`pill-badge ${pad} text-xs bg-blue-900/30 text-blue-400 border border-blue-800/50 hover:bg-blue-900/40 transition-colors`}
-                >
-                  <span className={`w-1.5 h-1.5 bg-blue-500 rounded-full ${dotGap} animate-pulse`} />
-                  Hiring
-                </span>
-              )}
-            </>
-          )}
+        <Link href="/openhire" className={rail ? "inline-flex gap-1" : "flex gap-1"}>
+          {open && <StatusChip flag="open" short={abbreviate} className={size} />}
+          {hiring && <StatusChip flag="hiring" short className={size} />}
         </Link>
       )}
 
-      {sick && (
-        <span
-          className={`pill-badge ${pad} text-xs bg-amber-900/30 text-amber-400 border border-amber-800/50`}
-          title="Currently unwell — replies may be slow"
-        >
-          <span className={`w-1.5 h-1.5 bg-amber-500 rounded-full ${dotGap} animate-pulse`} />
-          Unwell
-        </span>
-      )}
+      {sick && <StatusChip flag="sick" short className={size} />}
     </div>
   );
 }

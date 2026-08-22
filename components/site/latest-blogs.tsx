@@ -72,7 +72,7 @@ export function LatestBlogs({ blogs }: { blogs: BlogSummary[] }) {
     <>
       <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
         <h2 className="text-xl sm:text-2xl font-medium">
-          Latest <span className="text-indigo-400">Blogs</span>
+          Latest Blogs
         </h2>
         <Link
           href="/blog"

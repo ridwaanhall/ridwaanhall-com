@@ -52,7 +52,7 @@ export default async function ProjectsPage({
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
               <div>
                 <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                  My <span className="text-indigo-400">Projects</span>
+                  My Projects
                 </h1>
                 <p className="mt-2 text-base sm:text-lg leading-relaxed">
                   Where effort met execution, these projects are artifacts of discipline and

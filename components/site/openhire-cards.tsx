@@ -66,11 +66,17 @@ export function SectionCard({
   );
 }
 
-/** The pulsing status pill in a section heading. */
-export function StatusPill({ text, dotClass }: { text: string; dotClass: string }) {
+/**
+ * The status pill in a section heading.
+ *
+ * Neutral, like every other availability marker on the site -- the same reason
+ * given on `StatusChip` in `components/layout/status-badges.tsx`. It used to
+ * carry an indigo gradient and a pulsing dot whose colour was passed in by the
+ * caller and meant nothing beyond "this is the open-to-work one".
+ */
+export function StatusPill({ text }: { text: string }) {
   return (
-    <span className="inline-flex flex-shrink-0 items-center text-xs font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 py-1 rounded-full border border-zinc-700 whitespace-nowrap">
-      <span className={`w-1.5 h-1.5 ${dotClass} rounded-full mr-1.5 animate-pulse`} />
+    <span className="inline-flex flex-shrink-0 items-center text-xs text-zinc-400 px-2 py-1 rounded-full border border-zinc-700 whitespace-nowrap">
       {text}
     </span>
   );

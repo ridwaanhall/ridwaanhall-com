@@ -30,7 +30,10 @@ export function LegalDocumentPage({
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-4">
               <div>
                 <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                  {document.title_lead} <span className="text-indigo-400">{document.title_accent}</span>
+                  {/* The stored title is split into a lead and an accent, which
+                      is how it was coloured. It reads as one title now; the
+                      columns still describe the split and are left alone. */}
+                  {document.title_lead} {document.title_accent}
                 </h1>
                 {document.summary && (
                   <p className="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">

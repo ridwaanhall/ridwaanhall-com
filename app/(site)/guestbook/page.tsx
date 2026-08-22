@@ -39,7 +39,7 @@ export default function GuestbookPage() {
         <div className="max-w-7xl mx-auto">
           <div className="mb-4 md:mb-6">
             <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-              Guest<span className="text-indigo-400">book</span>
+              Guestbook
             </h1>
             <p className="mt-2 text-base sm:text-lg text-zinc-300 leading-relaxed">
               Leave a trace of your own. Say hello, ask something, or just let me know you were

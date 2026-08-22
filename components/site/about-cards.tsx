@@ -90,9 +90,16 @@ function ExternalArrow({ className }: { className: string }) {
   );
 }
 
+/**
+ * When something happened, on the education, award and certification cards.
+ *
+ * A date is not a status. This used to be indigo text on an indigo gradient,
+ * which put the same emphasis on "May 2024" as on the title beside it; it now
+ * matches the "Show more" pill's neutral border and reads as the caption it is.
+ */
 function DatePill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex flex-shrink-0 text-indigo-300 text-xs font-medium bg-gradient-to-r from-indigo-900/30 to-zinc-900/30 px-2 py-1 rounded-full border border-zinc-700 whitespace-nowrap">
+    <span className="inline-flex flex-shrink-0 text-zinc-400 text-xs px-2 py-1 rounded-full border border-zinc-700 whitespace-nowrap">
       {children}
     </span>
   );
@@ -198,9 +205,12 @@ export function ExperienceCard({ company, roles }: { company: string; roles: Exp
                 <div className="flex items-center justify-between gap-4 mb-2">
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="text-lg font-medium">{role.title}</h3>
+                    {/* The same neutral treatment as the "Show more" pill it
+                        sits beside. It marks which role is the current one,
+                        which the dates below already say -- it does not need a
+                        colour and a pulsing dot to say it a third time. */}
                     {role.is_current && (
-                      <span className="pill-badge px-2.5 py-0.5 text-xs bg-emerald-900/30 text-emerald-400 border border-emerald-700/50">
-                        <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5 animate-pulse" />
+                      <span className="pill-badge px-2.5 py-0.5 text-xs border border-zinc-700 text-zinc-400">
                         Current
                       </span>
                     )}

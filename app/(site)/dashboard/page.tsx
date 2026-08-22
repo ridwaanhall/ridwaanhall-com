@@ -30,7 +30,7 @@ export default async function DashboardPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
               <div>
                 <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                  Dash<span className="text-indigo-400">board</span>
+                  Dashboard
                 </h1>
                 <p className="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">
                   Every line of code leaves a trace. This shows mine, from focused hours to
@@ -84,7 +84,7 @@ function Wakatime({ stats }: { stats: WakatimeStats }) {
     <div className="mb-6">
       <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
         <h2 className="text-xl sm:text-2xl font-medium">
-          WakaTime <span className="text-indigo-400">Statistics</span>
+          WakaTime Statistics
         </h2>
         <p className="text-xs sm:text-sm">Live Trace</p>
       </div>
@@ -193,7 +193,7 @@ function GitHub({ stats, about }: { stats: GitHubStats; about: AboutData }) {
     <div className="mb-6">
       <div className="flex flex-row items-center justify-between mb-3 md:mb-4 gap-2">
         <h2 className="text-xl sm:text-2xl font-medium">
-          GitHub <span className="text-green-600">Statistics</span>
+          GitHub Statistics
         </h2>
         <p className="font-mono text-xs sm:text-sm text-zinc-400 hover:text-zinc-300 transition-all duration-300 truncate">
           <a href={about.social_media.github} className="font-medium" target="_blank" rel="noopener noreferrer">

@@ -75,7 +75,7 @@ export default async function OpenHirePage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
               <div>
                 <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                  Career <span className="text-indigo-400">Opportunities</span>
+                  Career Opportunities
                 </h1>
                 <p className="mt-2 text-base sm:text-lg text-zinc-300 leading-relaxed">
                   {intro(about.is_open_to_work, about.is_hiring)}
@@ -123,7 +123,7 @@ function OpenToWorkPanel({
       <SectionCard
         title="Status & Availability"
         paths={[ICON.user]}
-        badge={<StatusPill text={data.status} dotClass="bg-green-400" />}
+        badge={<StatusPill text={data.status} />}
       >
         <div className="space-y-2">
           <DetailRow label="Availability">{data.availability}</DetailRow>
@@ -229,7 +229,7 @@ function HiringPanel({ data }: { data: HiringData }) {
       <SectionCard
         title="Company Overview"
         paths={[ICON.building]}
-        badge={<StatusPill text={data.hiring_status} dotClass="bg-blue-400" />}
+        badge={<StatusPill text={data.hiring_status} />}
       >
         <div className="space-y-2">
           <h3 className="text-lg font-medium text-zinc-200">{data.company_name}</h3>

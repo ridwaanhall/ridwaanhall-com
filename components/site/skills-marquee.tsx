@@ -16,7 +16,7 @@ export function SkillsMarquee({ rows }: { rows: [Skill[], Skill[], Skill[]] }) {
     <>
       <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
         <h2 className="text-xl sm:text-2xl font-medium">
-          Tools <span className="text-indigo-400">I&apos;ve Used</span>
+          Tools I&apos;ve Used
         </h2>
       </div>
 

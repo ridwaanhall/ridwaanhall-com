@@ -131,11 +131,17 @@ export function AdminSidebar({ signedInAs }: { signedInAs: string }) {
                           href={href}
                           onClick={() => setOpen(false)}
                           aria-current={active ? "page" : undefined}
+                          /*
+                            `admin-nav-item` draws the current marker from
+                            `aria-current`, so the bar and the accessible state
+                            cannot drift apart -- there is no second class to
+                            remember. See styles/admin-motion.css.
+                          */
                           className={cn(
-                            "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
+                            "admin-nav-item flex items-center gap-2 rounded-md pl-3 pr-2 py-1.5 text-sm",
                             active
-                              ? "bg-zinc-800 text-zinc-100"
-                              : "text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200",
+                              ? "bg-zinc-800/70 text-zinc-100"
+                              : "text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200",
                           )}
                         >
                           {entry.labelPlural}

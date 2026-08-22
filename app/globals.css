@@ -30,6 +30,7 @@
 /* Rich-text body styling. New in the Next.js port -- it replaces the
    per-block Tailwind classes the content used to carry. */
 @import "../styles/prose.css";
+@import "../styles/admin-motion.css";
 @import "../styles/admin-editor.css";
 
 /* ---------------------------------------------------------------------------

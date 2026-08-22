@@ -199,9 +199,15 @@ export function Changelist<Row>({
                 <tr
                   key={id}
                   className={cn(
-                    "border-zinc-800/70 transition-colors hover:bg-zinc-900/60",
+                    "admin-row admin-hover-row border-zinc-800/70 hover:bg-zinc-900/60",
                     index > 0 && "border-t",
                   )}
+                  /*
+                    Staggered, and capped at twelve steps. Past about a fifth of
+                    a second the last row of a fifty-row page arrives long after
+                    the eye has moved on, which reads as lag rather than polish.
+                  */
+                  style={{ animationDelay: `${Math.min(index, 12) * 18}ms` }}
                 >
                   {model.columns.map((column, columnIndex) => (
                     <td

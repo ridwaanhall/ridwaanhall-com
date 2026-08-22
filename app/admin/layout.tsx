@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { AdminForbidden, AdminSignIn } from "@/components/admin/admin-gate";
+import { AdminMain } from "@/components/admin/admin-main";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AdminTopbar } from "@/components/admin/admin-topbar";
 import { staffGate } from "@/lib/auth/staff";
@@ -58,7 +59,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <AdminSidebar signedInAs={gate.user.username} />
       <div className="lg:pl-64">
         <AdminTopbar user={gate.user} />
-        <main className="px-4 py-6 lg:px-6">{children}</main>
+        <AdminMain>{children}</AdminMain>
       </div>
     </div>
   );

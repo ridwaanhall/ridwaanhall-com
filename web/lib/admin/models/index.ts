@@ -1,8 +1,13 @@
 import {
+  applicationForm,
   applicationList,
+  awardForm,
   awardList,
+  certificationForm,
   certificationList,
+  educationForm,
   educationList,
+  experienceForm,
   experienceList,
   organizationForm,
   organizationList,
@@ -17,7 +22,12 @@ import {
   userProfileForm,
   userProfileList,
 } from "@/lib/admin/models/guestbook";
-import { legalDocumentList, legalSectionList } from "@/lib/admin/models/legal";
+import {
+  legalDocumentForm,
+  legalDocumentList,
+  legalSectionForm,
+  legalSectionList,
+} from "@/lib/admin/models/legal";
 import { projectList } from "@/lib/admin/models/projects";
 import { userForm, userList } from "@/lib/admin/models/users";
 
@@ -85,11 +95,23 @@ export function listModelFor(key: string) {
  * A key with a list but no form gets the read-only record view, which says so.
  */
 const FORMS: AdminFormModel[] = [
+  // about
+  experienceForm,
+  educationForm,
+  certificationForm,
+  awardForm,
   skillForm,
+  applicationForm,
   organizationForm,
+  // legal
+  legalDocumentForm,
+  legalSectionForm,
+  // guestbook
   chatMessageForm,
   userProfileForm,
+  // comments
   commentForm,
+  // users
   userForm,
 ];
 

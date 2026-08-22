@@ -10,7 +10,7 @@ import { adminDate, adminDateTime } from "@/lib/admin/format";
 import { toClientFieldsets } from "@/lib/admin/form";
 import { fetchAdminRow } from "@/lib/admin/list";
 import { formModelFor, listModelFor } from "@/lib/admin/models";
-import { loadFormValues } from "@/lib/admin/record";
+import { loadFormValues, loadReferenceOptions } from "@/lib/admin/record";
 import { ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
 import { requireStaff } from "@/lib/auth/staff";
 
@@ -74,7 +74,10 @@ async function Record({ params }: { params: Params }) {
   );
 
   if (form) {
-    const values = await loadFormValues(form, recordId);
+    const [values, referenceOptions] = await Promise.all([
+      loadFormValues(form, recordId),
+      loadReferenceOptions(form),
+    ]);
     if (!values) return missing;
     const label = form.label(values);
 
@@ -85,7 +88,7 @@ async function Record({ params }: { params: Params }) {
         <RecordForm
           modelKey={key}
           id={recordId}
-          fieldsets={toClientFieldsets(form)}
+          fieldsets={toClientFieldsets(form, referenceOptions)}
           values={values}
           label={label}
           typeLabel={entry.label}

@@ -32,7 +32,13 @@ export type FieldKind =
   | "select"
   | "date"
   | "datetime"
-  | "image";
+  | "image"
+  /** `list[str]`, edited as repeatable rows. Stored as `jsonb`. */
+  | "string-list"
+  /** `dict[str, str]`, edited as label/description pairs. Stored as `jsonb`. */
+  | "key-value"
+  /** A foreign key, edited as a select over the referenced rows. */
+  | "reference";
 
 export type FormField = {
   /** The key in the loaded row, and the input's `name`. */
@@ -48,6 +54,17 @@ export type FormField = {
   min?: number;
   /** Which `upload_to` folder an `image` field writes into. */
   prefix?: UploadPrefix;
+  /** Multi-line inputs, for a `string-list` whose entries are prose. */
+  multiline?: boolean;
+  /** Says so in the UI: the entries are rendered as raw HTML, unescaped. */
+  allowsHtml?: boolean;
+  /** What one entry is called -- "story", "responsibility", "step". */
+  itemLabel?: string;
+  /** Column headings for a `key-value` editor. */
+  keyLabel?: string;
+  valueLabel?: string;
+  /** Where a `reference` field's options come from. */
+  reference?: ReferenceSource;
   /**
    * Shown but not writable. Django's `readonly_fields`, and the same use: a
    * value the record is identified by rather than edited through.
@@ -68,6 +85,21 @@ export type FormField = {
   slugFrom?: string;
 };
 
+/**
+ * The rows a `reference` field offers, and how to label them.
+ *
+ * Resolved by the page rather than declared inline, the same way the
+ * changelist's foreign-key filters are: the options are rows, and a descriptor
+ * is data.
+ */
+export type ReferenceSource = {
+  table: PgTable;
+  value: PgColumn;
+  label: PgColumn;
+  /** Offered when the column is nullable. `Award.organization` is not. */
+  emptyLabel?: string;
+};
+
 export type Fieldset = { title?: string; help?: string; fields: FormField[] };
 
 /**
@@ -81,10 +113,20 @@ export type Fieldset = { title?: string; help?: string; fields: FormField[] };
  * of it: what is left after dropping `column`, `display` and `slugFrom` is
  * exactly what an input is built from.
  */
-export type ClientField = Omit<FormField, "column" | "display" | "slugFrom">;
+export type ClientField = Omit<
+  FormField,
+  "column" | "display" | "slugFrom" | "reference"
+> & {
+  /** Resolved options for a `reference` field, loaded by the page. */
+  options?: FilterChoice[];
+};
 export type ClientFieldset = { title?: string; help?: string; fields: ClientField[] };
 
-export function toClientFieldsets(model: AdminFormModel): ClientFieldset[] {
+export function toClientFieldsets(
+  model: AdminFormModel,
+  /** Options for the `reference` fields, keyed by field name. */
+  options: Record<string, FilterChoice[]> = {},
+): ClientFieldset[] {
   return model.fieldsets.map((fieldset) => ({
     title: fieldset.title,
     help: fieldset.help,
@@ -101,12 +143,19 @@ export function toClientFieldsets(model: AdminFormModel): ClientFieldset[] {
       choices: field.choices,
       min: field.min,
       prefix: field.prefix,
+      multiline: field.multiline,
+      allowsHtml: field.allowsHtml,
+      itemLabel: field.itemLabel,
+      keyLabel: field.keyLabel,
+      valueLabel: field.valueLabel,
       readOnly: field.readOnly,
+      options: options[field.name],
     })),
   }));
 }
 
-export type FormValues = Record<string, string | number | boolean | null>;
+export type FormValue = string | number | boolean | null | string[] | Record<string, string>;
+export type FormValues = Record<string, FormValue>;
 
 export type ValidationContext = {
   /** `null` when creating. */
@@ -167,10 +216,76 @@ export type ParseResult =
  * `description`, `icon_svg` and `category` are all `blank=True` and none of them
  * is nullable.
  */
-function blankValue(field: FormField): string | number | boolean | null {
+function blankValue(field: FormField): FormValue {
+  if (field.kind === "string-list") return [];
+  if (field.kind === "key-value") return {};
   if (!field.column.notNull) return null;
   if (field.kind === "number") return 0;
   return "";
+}
+
+/**
+ * Undo any CRLF the browser introduced.
+ *
+ * The stored data contains no carriage return at all, and a textarea's
+ * *submission* value is CRLF-normalised per the HTML spec. Django sidestepped
+ * that by reading `.value` from JavaScript rather than the posted field; here
+ * the value really is posted, so it is normalised on arrival.
+ *
+ * **This is the only normalising these editors do.** Nothing is trimmed: two
+ * stored `class` strings contain double spaces, and block text is raw HTML.
+ */
+function normaliseNewlines(value: string): string {
+  return value.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+}
+
+/**
+ * Read a `string-list` or `key-value` field.
+ *
+ * Both arrive as JSON in one control rather than as one input per entry. Django
+ * had four form-level reasons for that shape, none of which apply here -- they
+ * were about `construct_instance`, formset prefixes and textarea CRLF. The
+ * reason it is kept is simpler: the value is a list or a mapping, and one
+ * control that carries it is one thing to validate rather than N to reassemble.
+ */
+function parseJsonField(
+  field: FormField,
+  raw: FormDataEntryValue | null,
+): { value: FormValue } | { error: string } {
+  const text = typeof raw === "string" ? raw.trim() : "";
+  if (!text) return { value: blankValue(field) };
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    return { error: `${field.label} could not be read.` };
+  }
+
+  if (field.kind === "string-list") {
+    if (!Array.isArray(parsed)) return { error: `${field.label} must be a list.` };
+    const out: string[] = [];
+    for (const [index, entry] of parsed.entries()) {
+      if (typeof entry !== "string") {
+        return { error: `Entry ${index + 1} of ${field.label} must be text.` };
+      }
+      out.push(normaliseNewlines(entry));
+    }
+    // Empty rows are dropped rather than stored: the editor's "add" button
+    // leaves one behind, and a list of blank strings renders as blank bullets.
+    return { value: out.filter((entry) => entry !== "") };
+  }
+
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+    return { error: `${field.label} must be a set of label/description pairs.` };
+  }
+  const out: Record<string, string> = {};
+  for (const [key, entry] of Object.entries(parsed)) {
+    if (typeof entry !== "string") return { error: `"${key}" in ${field.label} must be text.` };
+    if (key === "") continue;
+    out[key] = normaliseNewlines(entry);
+  }
+  return { value: out };
 }
 
 const URL_PATTERN = /^https?:\/\/\S+$/i;
@@ -193,6 +308,13 @@ export function parseFormValues(model: AdminFormModel, data: FormData): ParseRes
     // Handled by `saveRecord`: an upload is bytes and a network call, and this
     // stays synchronous so it can be reasoned about and tested on its own.
     if (field.kind === "image") continue;
+
+    if (field.kind === "string-list" || field.kind === "key-value") {
+      const parsed = parseJsonField(field, data.get(field.name));
+      if ("error" in parsed) errors[field.name] = parsed.error;
+      else values[field.name] = parsed.value;
+      continue;
+    }
 
     if (field.kind === "checkbox") {
       // An unchecked box posts nothing at all, which is why presence is the
@@ -223,6 +345,15 @@ export function parseFormValues(model: AdminFormModel, data: FormData): ParseRes
           errors[field.name] = `${field.label} must be a whole number.`;
         } else if (field.min !== undefined && parsed < field.min) {
           errors[field.name] = `${field.label} cannot be below ${field.min}.`;
+        } else {
+          values[field.name] = parsed;
+        }
+        break;
+      }
+      case "reference": {
+        const parsed = Number(text);
+        if (!Number.isInteger(parsed) || parsed <= 0) {
+          errors[field.name] = `${field.label} is not a valid choice.`;
         } else {
           values[field.name] = parsed;
         }

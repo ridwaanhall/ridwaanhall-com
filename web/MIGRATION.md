@@ -20,6 +20,7 @@ npx tsx --conditions=react-server scripts/check-turnstile.mjs   # spam gate fail
 npx tsx scripts/check-admin.mjs [base]  # the admin gate leaks nothing; the changelist works
 npx tsx --conditions=react-server scripts/check-admin-forms.mjs [base]  # the change form, driven live
 npx tsx --conditions=react-server scripts/check-storage.mjs  # uploads, deletes, reference counting
+npx tsx --conditions=react-server scripts/check-admin-json.mjs  # jsonb fidelity, GET-then-POST-unchanged
 node scripts/compare-jsonld.mjs        # structured data vs the live site
 node scripts/compare-prose.mjs [slug] [width]   # rich-text typography vs live
 MSYS_NO_PATHCONV=1 node scripts/compare-layout.mjs [path]   # rendered geometry vs live
@@ -375,20 +376,23 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
       rather than the submitted `FormData`, so a hand-crafted POST carrying
       `is_superuser` reaches no column. Create, edit, delete, per-field
       validation, unique clashes on the field, and `updateTag` invalidation.
-- [x] **Forms for the six models that need no JSON editor or inline**: Skill,
-      Organization, Message, User profile, Comment, User. `canCreate` /
-      `canDelete` are set per model with the reason at the descriptor — an
-      account is made by a sign-in, a message by a reader, a profile row by a
-      signal.
+- [x] **Forms for all thirteen models with a changelist and no inline**:
+      Experience, Education, Certification, Award, Skill, Application,
+      Organization, Legal document, Legal section, Message, User profile,
+      Comment, User. `canCreate` / `canDelete` are set per model with the reason
+      at the descriptor — an account is made by a sign-in, a message by a reader,
+      a profile row by a signal.
 - [x] Image upload to Supabase Storage + reference-counted cleanup —
       `lib/storage/objects.ts`, `keys.ts`, `cleanup.ts`, and the `image` field
       kind. Ported with the 25s total upload budget, retry only on 408/429/5xx,
       and "missing is success" on delete.
-- [ ] Forms for the remaining nine, which need the JSON editors and inlines
+- [x] **The JSON editors that still have something to edit**: `string-list` and
+      `key-value`. Not five — see below.
+- [x] Users screen (`is_staff` / `is_active`; the author flags live on User
+      profiles, since they are a different table and one field with two homes is
+      how the two drift)
+- [ ] Blog post and Project forms — both need the rich-text editor and inlines
 - [ ] Inlines with dnd-kit ordering, singleton editors
-- [ ] The five JSON editors (string list, key/value, grouped, credits, content blocks)
-- [ ] Image upload to Supabase Storage + reference-counted cleanup
-- [ ] Users screen (`is_staff` / `is_author` / `is_co_author`)
 
 ### Decisions taken while building it
 
@@ -422,6 +426,23 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
   not a thread. Where a model's `ordering` names a column `list_display` did not
   include (`Education.id`, `LegalDocument.sort_order`), that column was added —
   otherwise the list is unsortable by the very thing it is sorted by.
+- **Three of the "five JSON editors" were already dead.** `GroupedKeyValueField`
+  and `CopyrightCreditsField` served `core.PrivacyPolicy`, deleted in migration
+  `0003_delete_privacypolicy`, and had zero uses left in the Django tree;
+  `ContentBlockField` edits `BlogPost.content`, which this port replaces with
+  `content_html` and a rich-text editor. Only `string-list` and `key-value` were
+  ported. `ChoiceListField` is real but its only users are the two openhire
+  singletons, so it arrives with them rather than sitting unused and untested.
+- **A `reference` field is a plain select, not an autocomplete.** Django used
+  `autocomplete_fields` for the organisation picker; nineteen rows do not need a
+  search endpoint. The moment that list outgrows a screenful is the moment to
+  build one.
+- **Legal sections offer every section as a parent**, where Django's inline
+  filtered to top-level sections of the same document. The inline knew which
+  document was open; this screen edits a section on its own and the document is
+  an unsubmitted field on the same form, so there is nothing to filter against.
+  Nesting stays one level by convention, and the one case that cannot work — a
+  section nested under itself — is refused in `validate`.
 - **An uploaded file is named after its contents**, not after the name it
   arrived with: `logo/acme-corp-a1b2c3d4.webp`, where the suffix is a digest of
   the bytes. Django kept the name deterministic and documented the consequence —
@@ -756,6 +777,16 @@ Each is recorded at its call site and in the comparison scripts.
   an empty `main` — no message, no 404, nothing. A missing record on
   `/admin/<model>/<id>` is therefore *rendered* (`NothingHere`) rather than
   thrown. Reserve `notFound()` for reads that happen before a boundary.
+- **The JSON editors normalise exactly one thing: CRLF.** Nothing is trimmed —
+  two stored `class` strings contain double spaces and block text is raw HTML —
+  but a textarea's *submission* value is CRLF-normalised per the HTML spec and
+  the stored data contains no carriage return at all. Django dodged that by
+  reading `.value` from JavaScript; here the value really is posted, so it is
+  normalised on arrival.
+- **List order is real; object key order is not.** Postgres `jsonb` preserves
+  array order and normalises object key order, so the string-list editor offers
+  reordering and the key/value editor deliberately does not — a reorder control
+  there would appear to work locally and be a silent no-op live.
 - **A file is never deleted because one row stopped naming it.** Several are
   deliberately shared: `profile/ridwaanhall_20250913_2.webp` is named by
   twenty-one rows (all twenty blog posts and the profile),

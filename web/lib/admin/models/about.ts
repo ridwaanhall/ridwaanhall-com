@@ -2,6 +2,7 @@ import type { PgColumn } from "drizzle-orm/pg-core";
 
 import {
   APPLICATION_STATUS_CHOICES,
+  APPLIED_VIA_CHOICES,
   EMPLOYMENT_TYPE_CHOICES,
   LOCATION_TYPE_CHOICES,
 } from "@/lib/admin/choices";
@@ -17,7 +18,7 @@ import {
 
 import { countWhere, lookup } from "@/lib/admin/sql";
 
-import type { AdminFormModel } from "@/lib/admin/form";
+import type { AdminFormModel, FormField } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
 /**
@@ -583,6 +584,414 @@ export const organizationForm: AdminFormModel = {
           kind: "image",
           prefix: "logo",
           help: "One logo often covers several records. Replacing it here replaces it on all of them.",
+        },
+      ],
+    },
+  ],
+};
+
+/**
+ * The organisation picker, shared by the four models that record something an
+ * organisation issued.
+ *
+ * Django used `autocomplete_fields`, which is a searchable widget over an
+ * endpoint. A plain select is enough for nineteen rows and needs no endpoint;
+ * the moment that list outgrows a screenful is the moment to build the search.
+ */
+const organizationField = (column: PgColumn): FormField => ({
+  name: "organizationId",
+  column,
+  label: "Organization",
+  kind: "reference",
+  required: true,
+  reference: {
+    table: aboutOrganization,
+    value: aboutOrganization.id,
+    label: aboutOrganization.name,
+  },
+  help: "Its logo and website come from that record.",
+});
+
+export const experienceForm: AdminFormModel = {
+  key: "experience",
+  from: aboutExperience,
+  pk: aboutExperience.id,
+  label: (values) => String(values.title ?? "Experience"),
+  fieldsets: [
+    {
+      fields: [
+        {
+          name: "title",
+          column: aboutExperience.title,
+          label: "Title",
+          kind: "text",
+          required: true,
+          maxLength: 255,
+        },
+        organizationField(aboutExperience.organizationId),
+        {
+          name: "employmentType",
+          column: aboutExperience.employmentType,
+          label: "Employment",
+          kind: "select",
+          choices: EMPLOYMENT_TYPE_CHOICES,
+          maxLength: 50,
+        },
+        {
+          name: "locationType",
+          column: aboutExperience.locationType,
+          label: "Arrangement",
+          kind: "select",
+          choices: LOCATION_TYPE_CHOICES,
+          maxLength: 50,
+        },
+        {
+          name: "location",
+          column: aboutExperience.location,
+          label: "Location",
+          kind: "text",
+          maxLength: 255,
+        },
+      ],
+    },
+    {
+      title: "Period",
+      fields: [
+        {
+          name: "periodStart",
+          column: aboutExperience.periodStart,
+          label: "From",
+          kind: "date",
+          required: true,
+        },
+        {
+          name: "periodEnd",
+          column: aboutExperience.periodEnd,
+          label: "To",
+          kind: "date",
+          help: "Leave blank while the role is current.",
+        },
+        {
+          name: "isCurrent",
+          column: aboutExperience.isCurrent,
+          label: "Current",
+          kind: "checkbox",
+        },
+        {
+          name: "sortOrder",
+          column: aboutExperience.sortOrder,
+          label: "Order",
+          kind: "number",
+          min: 0,
+          help: "The sequence the about page renders in, which is editorial rather than chronological.",
+        },
+      ],
+    },
+    {
+      title: "Responsibilities",
+      fields: [
+        {
+          name: "responsibilities",
+          column: aboutExperience.responsibilities,
+          label: "Responsibilities",
+          kind: "string-list",
+          multiline: true,
+          itemLabel: "responsibility",
+        },
+      ],
+    },
+  ],
+};
+
+export const educationForm: AdminFormModel = {
+  key: "education",
+  from: aboutEducation,
+  pk: aboutEducation.id,
+  label: (values) => String(values.degree ?? "Education"),
+  fieldsets: [
+    {
+      fields: [
+        {
+          name: "degree",
+          column: aboutEducation.degree,
+          label: "Degree",
+          kind: "text",
+          required: true,
+          maxLength: 255,
+        },
+        organizationField(aboutEducation.organizationId),
+        {
+          name: "alias",
+          column: aboutEducation.alias,
+          label: "Alias",
+          kind: "text",
+          maxLength: 100,
+        },
+        {
+          name: "years",
+          column: aboutEducation.years,
+          label: "Years",
+          kind: "text",
+          maxLength: 50,
+          // Free text, not a range: one stored value reads "2021 - 2025" and the
+          // page prints it exactly as typed.
+          help: "Shown as typed, for example 2021 - 2025.",
+        },
+        { name: "dateStart", column: aboutEducation.dateStart, label: "Started", kind: "date" },
+        { name: "dateEnd", column: aboutEducation.dateEnd, label: "Ended", kind: "date" },
+        { name: "isLast", column: aboutEducation.isLast, label: "Latest", kind: "checkbox" },
+      ],
+    },
+    {
+      title: "Location",
+      fields: [
+        {
+          name: "locationRegency",
+          column: aboutEducation.locationRegency,
+          label: "Regency",
+          kind: "text",
+          maxLength: 100,
+        },
+        {
+          name: "locationProvince",
+          column: aboutEducation.locationProvince,
+          label: "Province",
+          kind: "text",
+          maxLength: 100,
+        },
+        {
+          name: "locationProv",
+          column: aboutEducation.locationProv,
+          label: "Province, short",
+          kind: "text",
+          maxLength: 100,
+        },
+        {
+          name: "locationCountry",
+          column: aboutEducation.locationCountry,
+          label: "Country",
+          kind: "text",
+          maxLength: 100,
+        },
+        {
+          name: "locationFlag",
+          column: aboutEducation.locationFlag,
+          label: "Flag",
+          kind: "text",
+          maxLength: 16,
+        },
+        {
+          name: "locationMapUrl",
+          column: aboutEducation.locationMapUrl,
+          label: "Map",
+          kind: "url",
+          maxLength: 200,
+        },
+      ],
+    },
+    {
+      title: "Achievements",
+      fields: [
+        {
+          name: "achievements",
+          column: aboutEducation.achievements,
+          label: "Achievements",
+          kind: "string-list",
+          multiline: true,
+          itemLabel: "achievement",
+        },
+      ],
+    },
+  ],
+};
+
+export const awardForm: AdminFormModel = {
+  key: "award",
+  from: aboutAward,
+  pk: aboutAward.id,
+  label: (values) => String(values.title ?? "Award"),
+  fieldsets: [
+    {
+      fields: [
+        {
+          name: "title",
+          column: aboutAward.title,
+          label: "Title",
+          kind: "text",
+          required: true,
+          maxLength: 255,
+        },
+        organizationField(aboutAward.organizationId),
+        {
+          name: "issued",
+          column: aboutAward.issued,
+          label: "Issued",
+          kind: "date",
+          required: true,
+          // The model's own help_text. The day is stored but never rendered.
+          help: "Only the month and year are shown on the site.",
+        },
+        {
+          name: "credentialUrl",
+          column: aboutAward.credentialUrl,
+          label: "Credential",
+          kind: "url",
+          maxLength: 200,
+        },
+        {
+          name: "description",
+          column: aboutAward.description,
+          label: "Description",
+          kind: "textarea",
+        },
+      ],
+    },
+  ],
+};
+
+export const certificationForm: AdminFormModel = {
+  key: "certification",
+  from: aboutCertification,
+  pk: aboutCertification.id,
+  label: (values) => String(values.title ?? "Certification"),
+  fieldsets: [
+    {
+      fields: [
+        {
+          name: "title",
+          column: aboutCertification.title,
+          label: "Title",
+          kind: "text",
+          required: true,
+          maxLength: 255,
+        },
+        organizationField(aboutCertification.organizationId),
+        {
+          name: "issued",
+          column: aboutCertification.issued,
+          label: "Issued",
+          kind: "date",
+          required: true,
+          help: "Only the month and year are shown on the site.",
+        },
+        {
+          name: "credentialUrl",
+          column: aboutCertification.credentialUrl,
+          label: "Credential",
+          kind: "url",
+          maxLength: 200,
+        },
+        {
+          name: "isFeatured",
+          column: aboutCertification.isFeatured,
+          label: "Featured",
+          kind: "checkbox",
+          help: "Featured certifications lead the about page; the rest sit behind the LinkedIn link.",
+        },
+      ],
+    },
+    {
+      title: "Achievements",
+      fields: [
+        {
+          name: "achievements",
+          column: aboutCertification.achievements,
+          label: "Achievements",
+          kind: "string-list",
+          multiline: true,
+          itemLabel: "achievement",
+        },
+      ],
+    },
+  ],
+};
+
+export const applicationForm: AdminFormModel = {
+  key: "application",
+  from: aboutApplication,
+  pk: aboutApplication.id,
+  label: (values) => `${values.position ?? "Application"} at ${values.companyName ?? ""}`.trim(),
+  fieldsets: [
+    {
+      fields: [
+        {
+          name: "companyName",
+          column: aboutApplication.companyName,
+          label: "Company",
+          kind: "text",
+          required: true,
+          maxLength: 255,
+        },
+        {
+          name: "position",
+          column: aboutApplication.position,
+          label: "Position",
+          kind: "text",
+          required: true,
+          maxLength: 255,
+        },
+        {
+          name: "status",
+          column: aboutApplication.status,
+          label: "Status",
+          kind: "select",
+          required: true,
+          choices: APPLICATION_STATUS_CHOICES,
+          maxLength: 20,
+        },
+        {
+          name: "appliedVia",
+          column: aboutApplication.appliedVia,
+          label: "Applied via",
+          kind: "select",
+          choices: APPLIED_VIA_CHOICES,
+          maxLength: 20,
+        },
+      ],
+    },
+    {
+      title: "Arrangement",
+      fields: [
+        {
+          name: "employmentType",
+          column: aboutApplication.employmentType,
+          label: "Employment",
+          kind: "select",
+          choices: EMPLOYMENT_TYPE_CHOICES,
+          maxLength: 20,
+        },
+        {
+          name: "locationType",
+          column: aboutApplication.locationType,
+          label: "Arrangement",
+          kind: "select",
+          choices: LOCATION_TYPE_CHOICES,
+          maxLength: 20,
+        },
+        {
+          name: "location",
+          column: aboutApplication.location,
+          label: "Location",
+          kind: "text",
+          maxLength: 255,
+        },
+        {
+          name: "salaryRange",
+          column: aboutApplication.salaryRange,
+          label: "Salary range",
+          kind: "text",
+          maxLength: 100,
+        },
+      ],
+    },
+    {
+      title: "Afterwards",
+      fields: [
+        {
+          name: "lessonsLearned",
+          column: aboutApplication.lessonsLearned,
+          label: "Lessons learned",
+          kind: "textarea",
         },
       ],
     },

@@ -1,8 +1,9 @@
 import "server-only";
 
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 
 import { formFields, formSelect, type AdminFormModel, type FormValues } from "@/lib/admin/form";
+import type { FilterChoice } from "@/lib/admin/list";
 import { db } from "@/lib/db/client";
 
 /**
@@ -46,6 +47,15 @@ function toFormValues(model: AdminFormModel, row: Record<string, unknown>): Form
     }
     if (field.kind === "checkbox") {
       values[field.name] = Boolean(raw);
+    } else if (Array.isArray(raw)) {
+      // A `jsonb` list, which the driver already hands back as an array. Only
+      // strings survive: every one of these columns is a list of text, and a
+      // stray number would be written straight back on the next save.
+      values[field.name] = raw.filter((entry): entry is string => typeof entry === "string");
+    } else if (field.kind === "key-value" && typeof raw === "object") {
+      values[field.name] = Object.fromEntries(
+        Object.entries(raw as Record<string, unknown>).map(([key, entry]) => [key, String(entry)]),
+      );
     } else if (typeof raw === "number" || typeof raw === "string") {
       values[field.name] = raw;
     } else if (raw instanceof Date) {
@@ -59,4 +69,34 @@ function toFormValues(model: AdminFormModel, row: Record<string, unknown>): Form
   }
 
   return values;
+}
+
+/**
+ * The rows each `reference` field offers.
+ *
+ * One query per field, run when the form is rendered -- the same shape the
+ * changelist uses for its foreign-key filters. These are small by construction
+ * (19 organizations, 2 legal documents); a model that referenced something large
+ * would want a search box rather than a longer select, and that is the point at
+ * which to build one.
+ */
+export async function loadReferenceOptions(
+  model: AdminFormModel,
+): Promise<Record<string, FilterChoice[]>> {
+  const fields = formFields(model).filter((field) => field.reference);
+  if (fields.length === 0) return {};
+
+  const loaded = await Promise.all(
+    fields.map(async (field) => {
+      // Present by construction: the list was filtered on it.
+      const source = field.reference as NonNullable<typeof field.reference>;
+      const rows = await db
+        .select({ value: source.value, label: source.label })
+        .from(source.table)
+        .orderBy(asc(source.label));
+      return rows.map((row) => ({ value: String(row.value), label: String(row.label ?? row.value) }));
+    }),
+  );
+
+  return Object.fromEntries(fields.map((field, index) => [field.name, loaded[index]]));
 }

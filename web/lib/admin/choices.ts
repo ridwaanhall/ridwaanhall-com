@@ -45,6 +45,18 @@ export const APPLICATION_STATUS_CHOICES = pairs([
   "Ghosted",
 ]);
 
+/** `Application.APPLIED_VIA_CHOICES` -- where the application was submitted. */
+export const APPLIED_VIA_CHOICES = pairs([
+  "LinkedIn",
+  "GitHub",
+  "MagangHub",
+  "Talenta IT",
+  "Dealls",
+  "Katrecs",
+  "Humanis.id",
+  "Other",
+]);
+
 /** `LegalDocument.DOCUMENT_TYPES`. */
 export const LEGAL_DOCUMENT_TYPE_CHOICES: FilterChoice[] = [
   { value: "privacy", label: "Privacy Policy" },

@@ -1,3 +1,4 @@
+import { KeyValueEditor, StringListEditor } from "@/components/admin/json-fields";
 import { adminDateTime } from "@/lib/admin/format";
 import { clearFieldName, type ClientField, type FormValues } from "@/lib/admin/form";
 import { mediaUrl } from "@/lib/storage/media";
@@ -34,7 +35,9 @@ export function Field({
 
   if (field.readOnly) {
     const shown =
-      field.kind === "datetime"
+      Array.isArray(value)
+        ? value.join(", ") || "—"
+        : field.kind === "datetime"
         ? adminDateTime(typeof value === "string" ? value : null)
         : field.kind === "checkbox"
           ? value
@@ -51,6 +54,43 @@ export function Field({
             POST could put back. Rendering the value as text rather than a
             disabled input says the same thing more plainly. */}
         <p className="px-3 py-1.5 text-sm text-zinc-400">{shown}</p>
+      </Row>
+    );
+  }
+
+  if (field.kind === "string-list" || field.kind === "key-value") {
+    return (
+      <Row field={field} id={id} describedBy={describedBy} error={error}>
+        {field.kind === "string-list" ? (
+          <StringListEditor field={field} value={Array.isArray(value) ? value : []} />
+        ) : (
+          <KeyValueEditor
+            field={field}
+            value={value && typeof value === "object" && !Array.isArray(value) ? value : {}}
+          />
+        )}
+      </Row>
+    );
+  }
+
+  if (field.kind === "reference") {
+    return (
+      <Row field={field} id={id} describedBy={describedBy} error={error}>
+        <select
+          id={id}
+          name={field.name}
+          defaultValue={value === null || value === undefined ? "" : String(value)}
+          aria-describedby={describedBy || undefined}
+          required={field.required}
+          className={cn(CONTROL, error && INVALID)}
+        >
+          <option value="">—</option>
+          {(field.options ?? []).map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
       </Row>
     );
   }

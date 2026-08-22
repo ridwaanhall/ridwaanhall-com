@@ -7,7 +7,7 @@ import { BackIcon } from "@/components/admin/admin-icons";
 import { RecordForm } from "@/components/admin/record-form";
 import { toClientFieldsets } from "@/lib/admin/form";
 import { formModelFor } from "@/lib/admin/models";
-import { blankFormValues } from "@/lib/admin/record";
+import { blankFormValues, loadReferenceOptions } from "@/lib/admin/record";
 import { ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
 import { requireStaff } from "@/lib/auth/staff";
 
@@ -49,6 +49,8 @@ export default async function AdminCreatePage({ params }: Params) {
   const form = formModelFor(key);
   if (!entry || !form || form.canCreate === false) notFound();
 
+  const referenceOptions = await loadReferenceOptions(form);
+
   return (
     <div className="max-w-3xl space-y-5">
       <Link
@@ -67,7 +69,7 @@ export default async function AdminCreatePage({ params }: Params) {
       <RecordForm
         modelKey={key}
         id={null}
-        fieldsets={toClientFieldsets(form)}
+        fieldsets={toClientFieldsets(form, referenceOptions)}
         values={blankFormValues(form)}
         label={entry.label}
         typeLabel={entry.label}

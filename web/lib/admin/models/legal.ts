@@ -5,6 +5,7 @@ import { legalLegaldocument, legalLegalsection } from "@/lib/db/schema";
 
 import { countWhere, lookup } from "@/lib/admin/sql";
 
+import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
 /** The two `legal` changelists, from `apps/legal/admin.py`. */
@@ -162,4 +163,168 @@ export const legalSectionList: AdminListModel<LegalSectionRow> = {
   // exactly why Django registered the model separately as well.
   defaultSort: { key: "order", dir: "asc" },
   rowId: (row) => row.id,
+};
+
+export const legalDocumentForm: AdminFormModel = {
+  key: "legal-document",
+  from: legalLegaldocument,
+  pk: legalLegaldocument.id,
+  label: (values) => String(values.title ?? "Document"),
+  deleteWarning: "Every section of this document is deleted with it.",
+  fieldsets: [
+    {
+      fields: [
+        {
+          name: "title",
+          column: legalLegaldocument.title,
+          label: "Title",
+          kind: "text",
+          required: true,
+          maxLength: 200,
+        },
+        {
+          name: "slug",
+          column: legalLegaldocument.slug,
+          label: "Slug",
+          kind: "slug",
+          maxLength: 200,
+          slugFrom: "title",
+          // The privacy policy is served from `/privacy-policy` and the terms
+          // from `/terms`, both of which are already indexed. Changing a slug
+          // changes the canonical URL these documents live at.
+          help: "Part of the published URL. Changing it moves the document.",
+        },
+        {
+          name: "documentType",
+          column: legalLegaldocument.documentType,
+          label: "Type",
+          kind: "select",
+          required: true,
+          choices: LEGAL_DOCUMENT_TYPE_CHOICES,
+          maxLength: 20,
+        },
+        {
+          name: "sortOrder",
+          column: legalLegaldocument.sortOrder,
+          label: "Order",
+          kind: "number",
+          min: 0,
+        },
+        {
+          name: "isPublished",
+          column: legalLegaldocument.isPublished,
+          label: "Published",
+          kind: "checkbox",
+          help: "An unpublished document 404s and stays out of the sitemap.",
+        },
+      ],
+    },
+    {
+      title: "Intro",
+      fields: [
+        {
+          name: "summary",
+          column: legalLegaldocument.summary,
+          label: "Summary",
+          kind: "textarea",
+          help: "Shown under the title, and used as the page's meta description.",
+        },
+      ],
+    },
+  ],
+};
+
+export const legalSectionForm: AdminFormModel = {
+  key: "legal-section",
+  from: legalLegalsection,
+  pk: legalLegalsection.id,
+  label: (values) => String(values.heading ?? "Section"),
+  deleteWarning: "Any section nested under this one is deleted with it.",
+  fieldsets: [
+    {
+      fields: [
+        {
+          name: "heading",
+          column: legalLegalsection.heading,
+          label: "Heading",
+          kind: "text",
+          required: true,
+          maxLength: 200,
+        },
+        {
+          name: "documentId",
+          column: legalLegalsection.documentId,
+          label: "Document",
+          kind: "reference",
+          required: true,
+          reference: {
+            table: legalLegaldocument,
+            value: legalLegaldocument.id,
+            label: legalLegaldocument.title,
+          },
+        },
+        {
+          /*
+           * Every section is offered as a parent, not only the top-level ones of
+           * the same document -- which is looser than Django's inline, where the
+           * queryset was filtered to both.
+           *
+           * The filtering there was possible because the inline knew which
+           * document was being edited. This screen edits a section on its own,
+           * and the document is a field on the same form that has not been
+           * submitted yet, so there is nothing to filter against at render time.
+           * Nesting is one level deep by convention rather than by constraint;
+           * the renderer walks a single hop and simply ignores anything deeper.
+           */
+          name: "parentId",
+          column: legalLegalsection.parentId,
+          label: "Nested under",
+          kind: "reference",
+          reference: {
+            table: legalLegalsection,
+            value: legalLegalsection.id,
+            label: legalLegalsection.heading,
+          },
+          help: "Leave blank for a top-level section. Nesting is one level deep.",
+        },
+        {
+          name: "order",
+          column: legalLegalsection.order,
+          label: "Order",
+          kind: "number",
+          min: 0,
+        },
+      ],
+    },
+    {
+      title: "Body",
+      fields: [
+        {
+          name: "body",
+          column: legalLegalsection.body,
+          label: "Body",
+          kind: "textarea",
+        },
+        {
+          name: "items",
+          column: legalLegalsection.items,
+          label: "Definitions",
+          kind: "key-value",
+          keyLabel: "Term",
+          valueLabel: "Meaning",
+          help: "Rendered as a definition list under the body.",
+        },
+      ],
+    },
+  ],
+  /**
+   * A section cannot be its own parent.
+   *
+   * The renderer walks from a section to its parent, so a self-reference is a
+   * loop it would follow. Django avoided the question by only offering
+   * top-level sections of the same document; this offers all of them, so the
+   * one case that cannot work is refused here instead.
+   */
+  validate: async (values, { id }) =>
+    id !== null && values.parentId === id ? "A section cannot be nested under itself." : null,
 };

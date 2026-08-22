@@ -166,7 +166,11 @@ export function GuestbookPanel({
       </p>
 
       {thread.pinned.length > 0 && (
-        <div className="border-b border-zinc-700 p-3 space-y-2 flex-shrink-0 bg-zinc-800/40">
+        /* No fill and no rule under it: the pinned cards carry their own
+           background, so the strip around them was a second surface holding
+           surfaces. `px-3` keeps them on the same left edge as the messages
+           below; the caption above already supplies the gap. */
+        <div className="px-3 pb-3 space-y-2 flex-shrink-0">
           <div className="flex items-center gap-1.5 text-xs font-medium text-amber-400 mb-1">
             <PinIcon className="w-3.5 h-3.5" filled />
             <span>

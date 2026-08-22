@@ -680,11 +680,12 @@ Each is recorded at its call site and in the comparison scripts.
   contact form's now, and the button keeps the row and the right-hand position
   it had. Posting uses the guestbook's send glyph, so the two places where a
   reader writes something look the same.
-- **The guestbook panel has no outer border and no header bar.** The bar read
-  "Guestbook Messages" directly beneath a heading that said "Guestbook", with
-  the count as a filled badge inside it. The count is a caption under the page's
-  own description now, and the border is gone -- it was a box drawn around what
-  is already the whole page.
+- **The guestbook panel has no chrome left.** The header bar read "Guestbook
+  Messages" directly beneath a heading that said "Guestbook", with the count as
+  a filled badge inside it; the outer border drew a box around what is already
+  the whole page; and the pinned block had a fill and a rule under it, making a
+  second surface to hold cards that carry their own. What is left is a caption,
+  the pinned cards and the messages.
 
 - **The position card is the site's disclosure now**, not its own. It was the
   last of four near-copies of the control: local `useState`, a panel hidden with

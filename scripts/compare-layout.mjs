@@ -156,12 +156,14 @@ const EXPECTED = [
    */
 
   /*
-   * `/guestbook/` is 30px shorter than live, and its `h1` measures 24px wider.
+   * `/guestbook/` is 43px shorter than live, and its `h1` measures 24px wider.
    *
-   * The height is the messages panel losing its header. It was a filled bar
-   * reading "Guestbook Messages" directly under a heading that already said
-   * "Guestbook", with the count as a badge inside it; the count is a caption
-   * now and the bar is gone, which is about 50px off and 20px back on.
+   * The height is the panel shedding its chrome. The header bar went first --
+   * a filled strip reading "Guestbook Messages" directly under a heading that
+   * already said "Guestbook", with the count as a badge inside it -- and the
+   * pinned block followed, losing the fill and the rule that made it a second
+   * surface holding surfaces. What is left is a caption, the pinned cards and
+   * the messages.
    *
    * The width is not from that change and predates it: live wraps its heading
    * in one more `div` than the port does, 816px inside the same 840px column,
@@ -169,7 +171,7 @@ const EXPECTED = [
    * on both sides. Nothing else on the page differs, so it has been left as it
    * is rather than adding a wrapper whose only job is to match.
    */
-  { path: "/guestbook/", key: "main", dimension: "h", delta: 30, widths: [1280] },
+  { path: "/guestbook/", key: "main", dimension: "h", delta: 43, widths: [1280] },
   { path: "/guestbook/", key: "h1", dimension: "w", delta: -24, widths: [1280] },
 
   { path: "/about/", key: "main", dimension: "h", delta: 50, widths: [375] },

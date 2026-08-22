@@ -62,7 +62,11 @@ export default async function BlogDetailPage({
   ]);
   if (!post || !about) notFound();
 
-  const url = `${SITE_URL}/blog/${post.slug}/`;
+  // No trailing slash. The port serves `/blog/<slug>` and 308s the slashed
+  // form to it, so the copy button was handing out a URL that redirects and did
+  // not match what the reader had in the address bar. `canonical_url` in
+  // lib/seo/data.ts has always been the unslashed form; this now agrees with it.
+  const url = `${SITE_URL}/blog/${post.slug}`;
   // Only call it edited when the timestamps genuinely differ; they are equal on
   // a post that has never been revised.
   const edited = post.updated_at.getTime() > post.created_at.getTime();

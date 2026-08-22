@@ -363,42 +363,67 @@ export function EducationCard({ education }: { education: Education }) {
   );
 }
 
+/**
+ * One award.
+ *
+ * The application card's anatomy, as education uses it: the organisation named
+ * first with the specific thing in italics beside it, the date as a chip at the
+ * right of that row, and the control at the right-hand end of the row below.
+ * It read the other way round before -- award first, institution underneath in
+ * its own line -- which was a different shape again from the two tabs either
+ * side of it.
+ */
 export function AwardCard({ award }: { award: Award }) {
   return (
-    <div className="card-outline p-2 sm:p-3 md:p-4 backdrop-blur-sm">
-      <div className="flex items-start gap-3 md:gap-4">
-        <div className="flex-shrink-0">
-          <div className="flex items-center justify-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
-            <OrgLogo
-              logo={award.logo}
-              name={award.institution}
-              website={award.website}
-              fallback={<ShieldIcon className="w-12 h-12 sm:w-14 sm:h-14 text-indigo-400" />}
-            />
-          </div>
-        </div>
-
-        <div className="flex-grow">
-          <div className="flex flex-wrap items-start justify-between w-full gap-2">
-            <h3 className="text-base sm:text-lg md:text-xl font-medium text-zinc-300 break-words flex-1">
-              {award.title}
-            </h3>
-            <DatePill>
-              {award.issued?.month} {award.issued?.year}
-            </DatePill>
-          </div>
-
-          <Institution name={award.institution} website={award.website} />
-
-          {award.description && (
-            <p className="text-xs sm:text-sm md:text-base mb-2 sm:mb-3">{award.description}</p>
-          )}
-
-          {award.credential_url && (
-            <div className="mt-1 sm:mt-2 flex flex-wrap gap-2">
-              <CredentialLink href={award.credential_url} />
+    <div className="card-outline">
+      <div className="p-3 sm:p-4">
+        <div className="flex items-start gap-3 sm:gap-4">
+          <div className="flex-shrink-0">
+            <div className="flex items-center justify-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
+              <OrgLogo
+                logo={award.logo}
+                name={award.institution}
+                website={award.website}
+                fallback={<ShieldIcon className="w-12 h-12 sm:w-14 sm:h-14 text-indigo-400" />}
+              />
             </div>
-          )}
+          </div>
+
+          <div className="flex-grow w-full min-w-0">
+            <div className="flex flex-row items-center justify-between gap-1 sm:gap-2 mb-1 sm:mb-2">
+              <h3 className="text-base sm:text-lg font-medium text-zinc-300 break-words">
+                {award.website ? (
+                  <a href={award.website} target="_blank" rel="noopener noreferrer">
+                    {award.institution}
+                  </a>
+                ) : (
+                  award.institution
+                )}{" "}
+                <span className="text-blue-200 italic font-medium text-xs sm:text-sm">
+                  &mdash; {award.title}
+                </span>
+              </h3>
+              <DatePill>
+                {award.issued?.month} {award.issued?.year}
+              </DatePill>
+            </div>
+
+            {award.description && (
+              <p className="text-xs sm:text-sm md:text-base text-zinc-400">{award.description}</p>
+            )}
+
+            {/* The control sits where the application card's "Show more" does:
+                the right-hand end of the row under the title. The empty left
+                slot is what holds it there. */}
+            {award.credential_url && (
+              <div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div />
+                <div className="flex-shrink-0">
+                  <CredentialLink href={award.credential_url} />
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -56,7 +56,7 @@ export function projectDetailSchemas(about: AboutData, project: Project): JsonLd
     breadcrumbSchema([
       HOME,
       { name: "Projects", url: `${SITE_URL}/projects/` },
-      { name: project.title, url: `${SITE_URL}/projects/${project.slug}/` },
+      { name: project.title, url: `${SITE_URL}/projects/${project.slug}` },
     ]),
   ];
 }
@@ -75,7 +75,7 @@ export function blogDetailSchemas(about: AboutData, blog: BlogPost): JsonLd[] {
     breadcrumbSchema([
       HOME,
       { name: "Blog", url: `${SITE_URL}/blog/` },
-      { name: blog.title, url: `${SITE_URL}/blog/${blog.slug}/` },
+      { name: blog.title, url: `${SITE_URL}/blog/${blog.slug}` },
     ]),
   ];
 }

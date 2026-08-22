@@ -696,12 +696,13 @@ Each is recorded at its call site and in the comparison scripts.
 - **`components/site/meta-row.tsx`** is where that row lives, with the five fact
   glyphs. Three cards use it and it belonged to none of them.
 
-- **Education cards are built on the application card's anatomy**, with the
-  logo kept: the institution named first and the degree in italics beside it,
-  the dates as a chip at the right of that row, and the place sharing the line
-  below with "Show more". It led with the degree before, which was a third
-  reading order for what is the same kind of card as the two tabs either side
-  of it. Awards and certifications still use the older shape.
+- **Education and award cards are built on the application card's anatomy**,
+  with the logo kept: the organisation named first and the specific thing in
+  italics beside it, the date as a chip at the right of that row, and the
+  control -- "Show more" on education, "View Credential" on an award -- at the
+  right-hand end of the row below. Each led with the specific thing before, so
+  three tabs a reader moves between had three reading orders. Certifications
+  still use the older shape.
 - **The error page is built out of the site's own parts.** It was its own
   visual world -- a red-to-pink gradient behind the status code, a pulsing ring
   around a warning triangle, `font-bold` and `font-semibold` in a site that uses

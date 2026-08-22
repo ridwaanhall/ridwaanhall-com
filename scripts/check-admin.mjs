@@ -79,6 +79,9 @@ function rows(html) {
   );
 }
 
+/** A post every part of this drives: the changelist, the record, the shell. */
+const postId = await idWhere("blog_post", "slug", "commit-message-style-guide");
+
 const staff = await session(STAFF_ID);
 const nonStaff = await session(NON_STAFF_ID);
 
@@ -261,7 +264,6 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
 }
 
 {
-  const postId = await idWhere("blog_post", "slug", "commit-message-style-guide");
   /*
    * Two ways to ask for a record that is not there, and both have to answer the
    * same. A well-formed key that matches nothing is the ordinary miss. A key
@@ -379,7 +381,7 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
   const page = await context.newPage();
 
   const widths = [360, 390, 768, 1024, 1440];
-  const paths = ["/admin", "/admin/blog-post", "/admin/blog-post/20"];
+  const paths = ["/admin", "/admin/blog-post", `/admin/blog-post/${postId}`];
   const overflowing = [];
 
   for (const width of widths) {
@@ -413,6 +415,80 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
   await page.waitForTimeout(400);
   const shown = (await nav.boundingBox())?.x ?? 0;
   check("the drawer is off-screen until opened", hidden < 0 && shown >= 0, `${hidden} -> ${shown}`);
+
+  // --- signing out asks first ------------------------------------------------
+  /*
+   * The same confirmation the guestbook and the comment forms use. The button
+   * sits at the end of a row of otherwise-safe controls -- the theme toggle is
+   * its neighbour -- and an accidental click costs a round trip through an
+   * OAuth provider to undo.
+   */
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(`${BASE}/admin/blog-post`, { waitUntil: "load" });
+  await page.waitForTimeout(500);
+  await page.locator('button:has-text("Sign out")').first().click();
+  await page.waitForTimeout(400);
+
+  const dialog = page.locator('[aria-labelledby="confirm-dialog-title"]');
+  const wording = ((await dialog.textContent()) ?? "").replace(/\s+/g, " ");
+  check("signing out asks first", (await dialog.count()) === 1, wording.slice(0, 70));
+  check(
+    "and says what it costs",
+    /sign in again/i.test(wording),
+    wording.slice(0, 90),
+  );
+
+  // Cancel is the first button, as it is in every other use of the dialog.
+  await dialog.locator("button").first().click();
+  await page.waitForTimeout(900);
+  check(
+    "cancelling leaves the session alone",
+    (await page.locator('button:has-text("Sign out")').count()) === 1 &&
+      page.url().includes("/admin/blog-post"),
+    page.url().replace(BASE, ""),
+  );
+
+  await page.locator('button:has-text("Sign out")').first().click();
+  await page.waitForTimeout(400);
+  await page.locator('[aria-labelledby="confirm-dialog-title"] button').last().click();
+  // The action clears the cookie and then redirects, and the redirect is a
+  // client navigation rather than a document load -- waiting for the URL is
+  // what makes this reliable, where a fixed sleep was not.
+  const landed = await page
+    .waitForURL((url) => url.pathname === "/", { timeout: 15000 })
+    .then(() => true)
+    .catch(() => false);
+  const remaining = (await context.cookies()).find(
+    (cookie) => cookie.name === cookieName && cookie.value,
+  );
+  check("confirming signs out and leaves the admin", landed, page.url().replace(BASE, ""));
+  check("and the session cookie is gone", !remaining);
+
+  /*
+   * And without JavaScript, where there is no dialog to show.
+   *
+   * The button is a real `submit` inside a form posting a server action, so an
+   * uninterceptable click posts it directly. Confirmation is the part that
+   * needs JavaScript; signing out is not. A version of this built as a client
+   * button calling the action would have left a dead control here.
+   */
+  const noScript = await browser.newContext({ javaScriptEnabled: false });
+  await noScript.addCookies([
+    { name: cookieName, value: staff.slice(cookieName.length + 1), domain: "localhost", path: "/" },
+  ]);
+  const plain = await noScript.newPage();
+  await plain.goto(`${BASE}/admin/blog-post`, { waitUntil: "load" });
+  await plain.locator('button:has-text("Sign out")').first().click();
+  await plain.waitForTimeout(2500);
+  const plainCookie = (await noScript.cookies()).find(
+    (cookie) => cookie.name === cookieName && cookie.value,
+  );
+  check(
+    "and it still signs out with JavaScript unavailable",
+    !plainCookie,
+    plain.url().replace(BASE, ""),
+  );
+  await noScript.close();
 
   await browser.close();
 }

@@ -1,6 +1,7 @@
 import type { AboutData } from "@/lib/data/about";
 import type { BlogPost, BlogSummary, Project, ProjectSummary } from "@/lib/data/content";
 import type { LegalDocument } from "@/lib/data/legal";
+import { plainText } from "@/lib/utils/plain-text";
 
 import {
   AUTHOR,
@@ -154,11 +155,10 @@ export function projectDetailSeo(project: Project, about: AboutData): SeoData {
     ...techKeywords,
     "project", "github", "demo", "code",
   ];
-  const description = project.description
-    .slice(0, 2)
-    .map(String)
-    .join(" ")
-    .slice(0, DEFAULT_DESCRIPTION_LENGTH);
+  // Django built this from the first two content blocks. Those are gone; the
+  // opening of the body reads the same way and is what a search result should
+  // show.
+  const description = plainText(project.description_html).slice(0, DEFAULT_DESCRIPTION_LENGTH);
 
   return {
     title: `${project.title} - ${about.name}'s Project`,

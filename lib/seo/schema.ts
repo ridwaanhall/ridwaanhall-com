@@ -2,6 +2,7 @@ import type { AboutData, Certification, Education, Experience } from "@/lib/data
 import { getAwards, getCertifications, getEducation, getExperiences } from "@/lib/data/about";
 import type { BlogPost, BlogSummary, Project, ProjectSummary } from "@/lib/data/content";
 import type { LegalDocument } from "@/lib/data/legal";
+import { plainText } from "@/lib/utils/plain-text";
 
 import { AUTHOR, SITE_NAME, SITE_URL } from "./config";
 
@@ -245,26 +246,11 @@ export function blogPostingSchema(blog: BlogPost, about: AboutData): JsonLd {
  * Django read `blog_data['word_count']`, a key the blog dict has never carried,
  * so it always emitted `wordCount: 0` -- a stated value that is simply wrong,
  * which is worse for a crawler than omitting the property. Counted from the
- * content blocks instead.
+ * body instead.
  */
 function wordCount(blog: BlogPost): number {
-  const text: string[] = [];
-  const walk = (node: unknown): void => {
-    if (typeof node === "string") text.push(node);
-    else if (Array.isArray(node)) node.forEach(walk);
-    else if (node && typeof node === "object") {
-      for (const [key, value] of Object.entries(node)) {
-        // `class` holds CSS utilities, not prose.
-        if (key !== "class") walk(value);
-      }
-    }
-  };
-  walk(blog.content);
-  return text
-    .join(" ")
-    .replace(/<[^>]+>/g, " ")
-    .split(/\s+/)
-    .filter(Boolean).length;
+  const text = plainText(blog.content_html);
+  return text ? text.split(" ").length : 0;
 }
 
 export function softwareSourceCodeSchema(project: Project, about: AboutData): JsonLd {
@@ -272,7 +258,7 @@ export function softwareSourceCodeSchema(project: Project, about: AboutData): Js
     "@context": "https://schema.org",
     "@type": "SoftwareSourceCode",
     name: project.title,
-    description: project.description.map(String).join(" "),
+    description: plainText(project.description_html),
     url: project.demo_url ?? "",
     codeRepository: project.github_url ?? "",
     programmingLanguage: project.tech_stack.map((tech) => tech.name),

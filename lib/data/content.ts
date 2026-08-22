@@ -12,6 +12,7 @@ import {
   projectsProjectimage,
 } from "@/lib/db/schema";
 import { mediaUrl } from "@/lib/storage/media";
+import { plainText } from "@/lib/utils/plain-text";
 
 import type { Skill } from "./about";
 import { projectStatusRank } from "./project-status";
@@ -65,14 +66,7 @@ export type BlogPost = ImageCompat & {
   author_image: string;
   created_at: Date;
   updated_at: Date;
-  content: unknown[];
-  /**
-   * The body as rich-text HTML.
-   *
-   * `content` above is the original block array, kept until cutover so Django's
-   * admin keeps working and the conversion stays reversible. Pages render
-   * `content_html`; nothing reads `content` any more.
-   */
+  /** The body as rich-text HTML. */
   content_html: string;
   tags: string[];
   category: string;
@@ -88,8 +82,7 @@ export type Project = ImageCompat & {
   title: string;
   slug: string;
   headline: string;
-  description: unknown[];
-  /** The description as rich-text HTML. See BlogPost.content_html. */
+  /** The description as rich-text HTML. */
   description_html: string;
   features: ProjectFeature[];
   tech_stack: Skill[];
@@ -147,7 +140,6 @@ export async function getBlogs(): Promise<BlogPost[]> {
       images: imagesByPost.get(post.id) ?? {},
       created_at: new Date(post.createdAt),
       updated_at: new Date(post.updatedAt),
-      content: (post.content ?? []) as unknown[],
       content_html: post.contentHtml ?? "",
       tags: (post.tags ?? []) as string[],
       category: post.category,
@@ -215,7 +207,6 @@ export async function getProjects(): Promise<Project[]> {
       title: project.title,
       slug: project.slug,
       headline: project.headline,
-      description: (project.description ?? []) as unknown[],
       description_html: project.descriptionHtml ?? "",
       features: featuresByProject.get(project.id) ?? [],
       images: imagesByProject.get(project.id) ?? {},
@@ -278,10 +269,10 @@ export function featuredBlogs(blogs: BlogPost[]): BlogPost[] {
  *
  * Django filtered the whole cached list in Python on every request. That is
  * kept here rather than pushed into SQL for one reason: the fields searched
- * include `tags` and `description`, which are JSONB arrays of free text, and
- * the lists are small (20 posts, 64 projects) and already in memory from the
- * cache. Pushing it to SQL would add a round trip per keystroke to search
- * data we are already holding. Pagination is applied after this.
+ * include `tags`, a JSONB array of free text, and the body, which is HTML; the
+ * lists are small (20 posts, 64 projects) and already in memory from the cache.
+ * Pushing it to SQL would add a round trip per keystroke to search data we are
+ * already holding. Pagination is applied after this.
  */
 export function searchBlogs(blogs: BlogPost[], query: string): BlogPost[] {
   const q = query.trim().toLowerCase();
@@ -302,7 +293,7 @@ export function searchProjects(projects: Project[], query: string): Project[] {
     (project) =>
       project.title.toLowerCase().includes(q) ||
       project.headline.toLowerCase().includes(q) ||
-      project.description.some((part) => String(part).toLowerCase().includes(q)) ||
+      plainText(project.description_html).toLowerCase().includes(q) ||
       project.category.toLowerCase().includes(q) ||
       project.tags.some((tag) => String(tag).toLowerCase().includes(q)),
   );
@@ -312,10 +303,10 @@ export function searchProjects(projects: Project[], query: string): Project[] {
  * Card-sized projections for the list endpoints.
  *
  * The list pages render cards, and a card reads six or seven fields -- never
- * `content`, `features`, or the full `description` block array, which are by
- * far the largest part of a row. Django had no equivalent because it rendered
- * the cards server-side and simply never touched those keys; over an API they
- * would be shipped to the browser for nothing.
+ * the body, `features`, or the tech stack, which are by far the largest part of
+ * a row. Django had no equivalent because it rendered the cards server-side and
+ * simply never touched those keys; over an API they would be shipped to the
+ * browser for nothing.
  *
  * Measured on the live data: dropping them takes the blog list response from
  * 75KB to 12KB and the projects list from 46KB to 16KB. The detail endpoints

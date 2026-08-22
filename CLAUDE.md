@@ -122,6 +122,14 @@ so kept it alive on its own.
 proves they still work. If you write a comment about a utility, describe it
 rather than spelling it out.
 
+The other half of this was **content that named classes**. Post bodies were
+JSONB blocks with a hand-typed `class` key — invisible to any scan, so 29
+utilities had to be listed in `@source inline(...)` and re-extracted from live
+data after every edit. Those columns are gone and the list with them; what keeps
+it gone is `lib/utils/sanitize.ts`, which allows `class` on one element and only
+matching `language-*`. **Never store CSS classes in the database.**
+`scripts/check-db-classes.mjs` is the guard.
+
 ### `.gitignore` no longer blanket-ignores JSON
 
 It used to, so a `dumpdata` backup could not be committed by accident, and the
@@ -171,6 +179,7 @@ node scripts/check-ui-state.mjs                        # palette + Turnstile the
 npx tsx scripts/check-auth-adapter.mjs                 # Auth.js vs the live schema
 npx tsx scripts/check-comments.mjs                     # comment rules, rolled back
 npx tsx scripts/check-emails.mjs                       # all five templates
+npx tsx scripts/check-db-classes.mjs                   # no classes in stored content
 npx tsx --conditions=react-server scripts/check-turnstile.mjs
 npx tsx --conditions=react-server scripts/check-storage.mjs
 npx tsx scripts/check-admin.mjs

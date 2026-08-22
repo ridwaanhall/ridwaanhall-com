@@ -348,10 +348,11 @@ invisible to every layout and text comparison) and `scripts/compare-gallery.mjs`
 The blog body and project descriptions were authored as JSONB blocks carrying
 hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
 
-- [x] `scripts/blocks-to-html.mjs` — conversion, dry-run by default
+- [x] `scripts/blocks-to-html.mjs` — conversion, dry-run by default. Removed
+      once the columns it read were dropped; `git show` is the way back to it
 - [x] `blog_blogpost.content_html`, `projects_project.description_html`
-      (additive; `content`/`description` stay until cutover, so Django's admin
-      keeps working and the conversion stays reversible)
+      (additive at first, so Django's admin kept working and the conversion
+      stayed reversible; `content`/`description` dropped in `drizzle/0003`)
 - [x] `styles/prose.css` — every value measured from the live rendering
 - [x] `components/site/rich-text.tsx` + `lib/utils/sanitize.ts`
 - [x] **Tiptap editor in the admin** — `components/admin/rich-text-editor.tsx`.
@@ -361,8 +362,14 @@ hand-typed Tailwind classes. They are HTML now, styled by `styles/prose.css`.
       left out — across all 84 rows of stored HTML there is not one `<img>`,
       `<sub>`, `<sup>` or `<mark>`, and an image in the body would need its own
       upload flow inside the editor rather than the gallery inline beside it.
-- [ ] At cutover: drop `content` and `description`, and remove the now-unused
-      `@source inline(...)` entries for classes that only existed in blocks
+- [x] Drop `content` and `description`, and the `@source inline(...)` entries
+      for classes that only existed in blocks — `drizzle/0003`. All 29 listed
+      classes turned out to come from those two columns alone: the JSONB that
+      remains (legal sections, profile stories) carries no `class` key at all,
+      and across 20 posts and 64 projects the converted HTML carries exactly one
+      class, `language-python`. `scripts/check-db-classes.mjs` replaces
+      `db-classes.mjs` and keeps it that way, proving the sanitiser strips a
+      utility rather than trusting its allow-list by reading it
 
 ## Phase 3 — admin
 - [x] Shell, auth gate on `is_staff` — `app/admin/`, `lib/auth/staff.ts`,
@@ -538,9 +545,11 @@ not forgotten:
   `https://ridwaanhall.com/api/auth/callback/{google,github}` alongside the
   localhost ones. The old allauth URLs are still registered and can be removed
   once nothing links to them.
-- dropping `content`/`description` and the dead `@source inline(...)` entries
-- re-applying RLS as a SQL migration
-- swapping `vercel.json` and CI to Node
+- ~~re-applying RLS as a SQL migration~~ — **done**, `drizzle/0002`
+- ~~swapping `vercel.json` and CI to Node~~ — **done**
+- dropping `content`/`description` and `core_contentversion` — written as
+  `drizzle/0003` and the application no longer names any of them, but **the SQL
+  has not been run**. See the note under Phase 4
 
 ---
 
@@ -556,11 +565,28 @@ not forgotten:
       Verified that the app's role (`postgres`) has `rolbypassrls`, so enabling
       it costs the application nothing, and that the check catches a table with
       RLS switched off
-- [ ] Drop `core_contentversion`; **keep `django_content_type`** (live FK from comments)
-- [ ] Drop `blog_blogpost.content` and `projects_project.description`, and the
-      now-dead `@source inline(...)` entries for classes that only existed in
-      blocks. Left until last on purpose: they are the only way back to the
-      pre-conversion rendering
+- [x] Drop `core_contentversion`, `blog_blogpost.content` and
+      `projects_project.description` — `drizzle/0003_drop_django_leftovers.sql`.
+      **Keep `django_content_type`**: three live foreign keys point at it,
+      `comments_comment.content_type_id` among them.
+
+      **The SQL runs after the Next.js deploy, not before.** This is the one
+      ordering constraint in the whole cutover, and it is easy to miss because
+      every other step is safe in either order. Production still serves Django
+      from `main` against this same database, and Django reads all three:
+      `apps/core/cache.py` reads `core_contentversion` on every cache-key
+      computation, and `BlogPost.content` / `Project.description` are ordinary
+      model fields its ORM names in every select. Running the migration while
+      Django is live takes the site down with a `column does not exist` on
+      essentially every page.
+
+      Verified before writing it: `core_contentversion` holds four rows and no
+      foreign key touches it, and every one of the 20 posts and 64 projects has
+      non-empty `content_html` / `description_html`, so nothing loses a body.
+      The snapshot taken first is `pre-drop-blocks.dump.json` — ignored by git
+      because it is content, and the only remaining way back to the
+      pre-conversion rendering, so keep it somewhere that outlives the working
+      copy
 - [x] Rewrite `CLAUDE.md`, `README.md`, `CONTRIBUTING.md`
 - [x] Env vars: the Django-only keys moved to `old.txt` (gitignored, real
       credentials), so `.env` and `.env.local` now hold only what the running

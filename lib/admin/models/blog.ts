@@ -87,18 +87,11 @@ export const blogPostForm: AdminFormModel = {
   label: (values) => String(values.title ?? "Post"),
   deleteWarning: "The images attached to this post are deleted with it.",
   /*
-   * `content` is the original JSONB block array and `views` counts readers, and
-   * neither is on this form: the body is edited as HTML in `content_html`, and a
-   * view count is not something to type. Both columns are `NOT NULL` with no
-   * database default -- Django's `default=list` and `default=0` are Python -- so
-   * a create that omitted them would fail.
-   *
-   * A post created here therefore has an empty `content`, which means the Django
-   * admin shows it with no body. That is accepted: `content` exists only until
-   * cutover drops it, and everything the site renders comes from `content_html`.
+   * `views` counts readers and is not something to type, but the column is
+   * `NOT NULL` with no database default -- Django's `default=0` was Python, and
+   * went with it -- so a create that omitted it would fail.
    */
   insertDefaults: () => ({
-    content: [],
     views: 0,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),

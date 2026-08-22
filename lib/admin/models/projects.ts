@@ -87,9 +87,6 @@ export const projectForm: AdminFormModel = {
   pk: projectsProject.id,
   label: (values) => String(values.title ?? "Project"),
   deleteWarning: "The features, the gallery and the tech-stack links go with it.",
-  // `description` is the original JSONB paragraph list, kept until cutover so the
-  // Django admin keeps working. The body is edited as HTML in `description_html`.
-  insertDefaults: () => ({ description: [] }),
   cascades: [
     { table: projectsProjectTechStack, fk: projectsProjectTechStack.projectId, pk: projectsProjectTechStack.id },
   ],

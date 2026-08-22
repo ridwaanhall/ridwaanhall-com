@@ -64,10 +64,9 @@ export const projectsProject = pgTable("projects_project", {
 	title: varchar({ length: 255 }).notNull(),
 	slug: varchar({ length: 255 }).notNull(),
 	headline: varchar({ length: 500 }).notNull(),
-	description: jsonb().notNull(),
 	/**
-	 * The rich-text description, as HTML. Additive for the same reason as
-	 * blog_blogpost.content_html -- see the note there.
+	 * The rich-text description, as HTML. Replaced a JSONB block array for the
+	 * same reason as blog_blogpost.content_html -- see the note there.
 	 */
 	descriptionHtml: text("description_html").default("").notNull(),
 	githubUrl: varchar("github_url", { length: 200 }),
@@ -478,16 +477,6 @@ export const aboutDonatelink = pgTable("about_donatelink", {
 	check("about_donatelink_order_check", sql`"order" >= 0`),
 ]);
 
-export const coreContentversion = pgTable("core_contentversion", {
-	namespace: varchar({ length: 32 }).primaryKey().notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	version: bigint({ mode: "number" }).notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).notNull(),
-}, (table) => [
-	index("core_contentversion_namespace_bb92bc58_like").using("btree", table.namespace.asc().nullsLast().op("varchar_pattern_ops")),
-	check("core_contentversion_version_check", sql`version >= 0`),
-]);
-
 export const authGroup = pgTable("auth_group", {
 	id: integer().primaryKey().generatedByDefaultAsIdentity({ name: "auth_group_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647, cache: 1 }),
 	name: varchar({ length: 150 }).notNull(),
@@ -808,14 +797,13 @@ export const blogBlogpost = pgTable("blog_blogpost", {
 	author: varchar({ length: 100 }).notNull(),
 	username: varchar({ length: 100 }).notNull(),
 	authorImage: varchar("author_image", { length: 100 }),
-	content: jsonb().notNull(),
 	/**
 	 * The rich-text body, as HTML.
 	 *
-	 * Added alongside `content` rather than replacing it. `content` is the
-	 * original JSONB block array, still read by Django's admin, so both stacks
-	 * keep working until the cutover drops it -- and the conversion stays
-	 * reversible, with the old rendering available to compare against.
+	 * This was a JSONB array of blocks, each carrying hand-typed Tailwind
+	 * classes; `content` held it alongside this column through the migration so
+	 * both stacks kept working and the conversion stayed reversible. Dropped in
+	 * drizzle/0003 once the HTML had been what the site served for long enough.
 	 */
 	contentHtml: text("content_html").default("").notNull(),
 	tags: jsonb().notNull(),

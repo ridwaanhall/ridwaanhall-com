@@ -19,9 +19,18 @@
  *     nothing says why. This is the one that happened.
  *  2. **No client credentials.** Both endpoints answer 200 and the provider
  *     list looks perfectly healthy -- the failure waits until somebody presses
- *     the button, and then reports itself as the same `Configuration`. So this
- *     goes all the way to the provider's authorization URL and reads the
+ *     the button, and then Google answers `401 invalid_client`. So this goes
+ *     all the way to the provider's authorization URL and reads the
  *     `client_id` out of it.
+ *
+ *     **And it checks the value, not merely its presence.** An unset
+ *     `AUTH_GOOGLE_ID` is not absent from that URL: `undefined` is stringified
+ *     into it, so the query literally reads `client_id=undefined`. The first
+ *     version of this check asked `Boolean(clientId)`, which is true of the
+ *     five-character string `"undefined"` -- so it passed, on a deployment
+ *     where sign-in was completely broken, and reported that both providers
+ *     were reachable. A check that is fooled by the exact failure it exists to
+ *     find is worse than not having it.
  *  3. **A redirect URI nobody registered.** The commonest cutover failure and
  *     the only one that cannot be checked from here, because the answer lives
  *     in Google's and GitHub's consoles. What this can do is print the exact
@@ -41,6 +50,15 @@ const check = (ok, label, detail = "") => {
   console.log(`  ${ok ? "ok  " : "FAIL"}  ${label}${ok || !detail ? "" : `  ${detail}`}`);
 };
 const note = (text) => console.log(`  ..    ${text}`);
+
+/**
+ * Values that mean "unset" while looking set.
+ *
+ * `process.env.X` is `undefined` when absent, and template interpolation turns
+ * that into the five-character string `undefined` rather than into nothing at
+ * all. Every truthiness check downstream then passes.
+ */
+const PLACEHOLDER = new Set(["undefined", "null", "NaN", ""]);
 
 /** Where each provider must send the browser, and what proves it got there. */
 const EXPECTED = {
@@ -150,12 +168,19 @@ try {
       );
       if (url?.host !== expected.host) continue;
 
-      const clientId = url.searchParams.get("client_id");
+      const clientId = url.searchParams.get("client_id") ?? "";
       check(
-        Boolean(clientId),
-        `${expected.label} was given a client id`,
-        "the authorization URL carries none, so its credentials are unset",
+        Boolean(clientId) && !PLACEHOLDER.has(clientId),
+        `${expected.label} was given a real client id`,
+        PLACEHOLDER.has(clientId)
+          ? `the URL carries the literal string "${clientId}" -- AUTH_${id.toUpperCase()}_ID ` +
+            "is unset, and its value is stringified into the query as it stands. " +
+            "The provider then looks for a client by that name and refuses"
+          : "the authorization URL carries none, so its credentials are unset",
       );
+      // Public by construction -- it is sent to every browser that signs in --
+      // and printing it is what makes it comparable with the provider console.
+      if (clientId && !PLACEHOLDER.has(clientId)) note(`${expected.label} client id: ${clientId}`);
 
       /*
        * The redirect URI is built from the host that served this request, so it

@@ -22,10 +22,16 @@ const sql = Object.assign(
   { end: () => pool.end() },
 );
 
+/*
+ * `n_live_tup` is the planner's estimate, not a count -- it is what the
+ * statistics collector last saw, so it can lag a burst of writes. That is the
+ * right trade for an inventory: `count(*)` over 45 tables is 45 sequential
+ * scans, and nothing here needs a number that exact.
+ */
 const rows = await sql`
   select relname as table_name, n_live_tup as row_count
   from pg_stat_user_tables
-  where schemaname = 'public' and n_live_tup > 0
+  where schemaname = 'app' and n_live_tup > 0
   order by relname`;
 console.log(`connected + queried in ${Date.now() - t0}ms\n`);
 for (const r of rows) console.log(String(r.row_count).padStart(6), r.table_name);
@@ -34,7 +40,7 @@ const [rls] = await sql`
   select
     count(*) filter (where rowsecurity)     as rls_on,
     count(*) filter (where not rowsecurity) as rls_off
-  from pg_tables where schemaname = 'public'`;
+  from pg_tables where schemaname = 'app'`;
 console.log("\nRLS:", rls);
 
 await sql.end();

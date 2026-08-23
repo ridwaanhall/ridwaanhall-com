@@ -9,8 +9,8 @@ import { pgSchema, boolean, date, integer, jsonb, text, timestamp, uuid, primary
  * transcription that fails silently: a mistyped SQL name is a column the app
  * writes to and never reads back, with no error anywhere.
  *
- * `lib/db/schema.ts` beside this file is the `public` schema Django built. It
- * stays until the deploy, and nothing new should be written against it.
+ * Re-run it after any change to `drizzle/0000_init.sql`, then
+ * `npx tsx scripts/check-app-schema.mjs` to prove the two still agree.
  */
 export const app = pgSchema("app");
 

@@ -1,9 +1,6 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
-import * as relations from "./relations";
-import * as schema from "./schema";
-
 /**
  * Postgres connection to Supabase, through the transaction-mode pooler.
  *
@@ -34,9 +31,9 @@ import * as schema from "./schema";
  *
  * - **No prepared statements.** Transaction pooling hands a client a different
  *   server connection per transaction, so a statement prepared on one is not
- *   there on the next. This is the same constraint Django met with
- *   `DISABLE_SERVER_SIDE_CURSORS`. `node-postgres` only prepares when a query
- *   is given a `name`, and Drizzle does not, so there is nothing to disable.
+ *   there on the next. `node-postgres` only prepares when a query is given a
+ *   `name`, and Drizzle does not, so there is nothing to disable here -- but it
+ *   is why server-side cursors are unusable through this connection too.
  * - **TLS is configured here, not in the URL.** `pg` now reads
  *   `sslmode=require` as `verify-full`, which Supabase's pooler certificate
  *   does not satisfy -- it fails with "self-signed certificate in certificate
@@ -79,6 +76,13 @@ if (process.env.NODE_ENV !== "production") {
   globalForDb.__pool = pool;
 }
 
-export const db = drizzle(pool, { schema: { ...schema, ...relations } });
+/*
+ * No `schema` argument. That option exists to power `db.query.<table>`, the
+ * relational query builder, and nothing here uses it -- every read is written
+ * as an explicit `select`, which is what makes the joins and the ordering
+ * visible at the call site. Handing Drizzle a schema it never consults costs a
+ * module graph in every server bundle and buys nothing.
+ */
+export const db = drizzle(pool);
 
-export { pool, schema };
+export { pool };

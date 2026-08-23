@@ -1,33 +1,31 @@
 /**
  * Row Level Security is on, and the application is not locked out by it.
  *
- * Django force-enabled RLS on every public table from a `post_migrate`
- * receiver, so a table added by a later migration was covered without anyone
- * remembering. That receiver goes with the Django tree at cutover, and
- * `drizzle/0002_enable_row_level_security.sql` replaces it -- but a SQL file
- * runs once, where the receiver ran after every schema change. This is what
- * closes that gap: it fails if a table ever appears without RLS.
- *
- * Both schemas are covered. `app` holds the restructured tables and is where
- * everything reads and writes; `public` still holds what Django built and is
- * dropped once the deploy has settled. A schema Supabase does not currently
- * expose is still checked -- whether it is exposed is a project setting
- * somebody can change in a dashboard, and RLS is what makes that change safe
- * rather than catastrophic.
+ * `drizzle/0000_init.sql` enables it on every table it creates, but a SQL file
+ * runs once where the risk is continuous: a table added by hand afterwards is
+ * covered by nobody. This is what closes that gap -- it fails if a table ever
+ * appears without RLS.
  *
  * Why it matters is worth restating, because RLS with no policies looks like a
- * mistake. Supabase puts a PostgREST API over the `public` schema for anyone
- * holding the project's anon key, independently of this application; without
- * RLS, `auth_user` and `socialaccount_socialtoken` are readable straight
- * through it. Zero policies is the intended state -- nothing outside this
- * application should read these tables at all -- and the app is unaffected
+ * mistake. Supabase puts a PostgREST API over the schemas it is configured to
+ * expose, for anyone holding the project's anon key and independently of this
+ * application; without RLS, `account` and `account_identity` are readable
+ * straight through it. Zero policies is the intended state -- nothing outside
+ * this application should read these tables at all -- and the app is unaffected
  * because its role has `rolbypassrls`.
  *
- * **This is also the check that catches a generated migration.**
- * `drizzle-kit generate` does not model RLS, reads every table as "should be
- * disabled", and emits `DISABLE ROW LEVEL SECURITY` for all of them. Running
- * that output unedited would open the whole schema, and nothing else in the
- * repo would notice.
+ * **Every schema this project owns is checked, not a list written down here.**
+ * Whether a schema is exposed through PostgREST is a project setting somebody
+ * can change in a dashboard, so the answer to "which schemas matter" is "all of
+ * ours". Enumerating them also means a schema arriving or leaving needs no edit
+ * to this file. Supabase's own schemas are excluded: they are managed by
+ * Supabase and are not ours to hold to this rule.
+ *
+ * **This is also the check that catches a generated migration.** `drizzle-kit
+ * generate` does not model RLS, reads every table as "should be disabled", and
+ * emits `DISABLE ROW LEVEL SECURITY` for all of them. Running that output
+ * unedited would open the whole schema, and nothing else in the repo would
+ * notice.
  *
  *   npx tsx scripts/check-rls.mjs
  */
@@ -56,7 +54,26 @@ try {
     `${role?.rolname} (bypassrls ${role?.rolbypassrls})`,
   );
 
-  for (const schema of ["app", "public"]) {
+  /*
+   * Everything except Postgres's own catalogues and the schemas Supabase
+   * manages. `information_schema` and `pg_*` are the server's; `auth`,
+   * `storage`, `realtime`, `vault`, `extensions`, `graphql*`, `pgbouncer`,
+   * `cron`, `net` and `supabase*` belong to the platform and carry their own
+   * policies.
+   */
+  const { rows: owned } = await pool.query(
+    `select nspname from pg_namespace
+      where nspname not like 'pg\_%'
+        and nspname not in ('information_schema', 'auth', 'storage', 'realtime', 'vault',
+                            'extensions', 'graphql', 'graphql_public', 'pgbouncer', 'cron', 'net')
+        and nspname not like 'supabase%'
+        and exists (select 1 from pg_class c where c.relnamespace = pg_namespace.oid and c.relkind = 'r')
+      order by nspname`,
+  );
+  check("found the schemas this project owns", owned.length > 0,
+    owned.map((row) => row.nspname).join(", "));
+
+  for (const { nspname: schema } of owned) {
     const { rows: off } = await pool.query(
       `select c.relname
        from pg_class c
@@ -88,7 +105,8 @@ try {
    * the RLS is for -- so this reports rather than assumes.
    */
   const { rows: policies } = await pool.query(
-    "select schemaname, tablename, policyname from pg_policies where schemaname in ('app', 'public')",
+    "select schemaname, tablename, policyname from pg_policies where schemaname = any($1)",
+    [owned.map((row) => row.nspname)],
   );
   check(
     "and no policy grants anything through it",

@@ -55,9 +55,21 @@ npm run lint           # eslint
 npx tsc --noEmit       # types
 ```
 
-There is no test runner. Verification is a set of harnesses under `scripts/`,
-each driving the real application against the real database and cleaning up
-after itself — see **Verification** below.
+```bash
+npm test               # unit tests, offline
+npm run test:watch
+```
+
+`npm test` is `node --import tsx --test` over `lib/**/*.test.ts` — the built-in
+runner, no test framework. It covers the pure logic and needs neither a database
+nor a browser, which is what lets CI run it: `tests/setup.ts` points the database
+URL at nowhere before any module loads, so a test that tried to query fails at
+connect rather than reaching anything real. That failure is the signal the test
+belongs in a harness instead.
+
+Everything that *does* need the real thing is a harness under `scripts/`, each
+driving the live application and cleaning up after itself — see
+**Verification** below.
 
 ## Everything reads the live database
 
@@ -269,7 +281,9 @@ up after itself. Run the relevant ones before calling a change done; run all of
 them before a release.
 
 ```bash
+npm test                                               # the unit suite, offline
 npm run build && node scripts/check-css-sources.mjs   # no stray utilities
+node scripts/check-headers.mjs                         # every security header, every origin
 node scripts/check-fresh-start.mjs                     # nothing explains itself by the old stack
 npx tsx scripts/check-baseline-schema.mjs              # 0000_init.sql builds exactly `app`
 npx tsx scripts/check-app-schema.mjs                   # the generated mapping matches `app`

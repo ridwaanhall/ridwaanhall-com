@@ -16,13 +16,13 @@ import { MAX_MESSAGE_LENGTH, MAX_PINNED, MIN_MESSAGE_LENGTH } from "@/lib/data/g
  *
  * These replace the three AJAX views. The shape of the exchange changes and the
  * reason is worth recording: `SendMessageView` returned the whole messages
- * panel as rendered HTML in a JSON field, and the client swapped it into
- * `#guestbook-messages` wholesale. It did that because appending one node
+ * panel as rendered HTML inside a JSON field for the client to swap in
+ * wholesale. The reason for that shape is real -- appending one node
  * client-side means deciding where it goes, which depends on the depth cap and
- * on whether its parent fell inside the fetched window -- a second copy of
- * `tree.py` free to disagree with the first.
+ * on whether its parent fell inside the fetched window, and that is a second
+ * implementation of the threading free to disagree with the first.
  *
- * `revalidatePath` says the same thing without the HTML-in-JSON: the server
+ * `revalidatePath` gets the same property without the HTML-in-JSON: the server
  * re-runs `getThread()` and React reconciles the result. There is still exactly
  * one implementation of the threading and one definition of the markup, which
  * was the whole point.

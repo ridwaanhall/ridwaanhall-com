@@ -34,11 +34,11 @@ import { TAGS } from "./tags";
 /**
  * About data.
  *
- * A port of apps/about/manager.py. The returned shapes are preserved exactly --
- * the same flattened keys, the same nested `location` / `social_media` / `cv`
- * objects, the same `{month, year}` pairs alongside their `*_iso` forms. They
- * feed the page components *and* the JSON-LD generator, so a renamed key is a
- * silently missing structured-data property rather than a compile error.
+ * The returned shape is deliberately stable: flattened keys, nested `location`
+ * / `social_media` / `cv` objects, and `{month, year}` pairs alongside their
+ * `*_iso` forms. It feeds the page components *and* the JSON-LD generator, so a
+ * renamed key is a silently missing structured-data property rather than a
+ * compile error.
  *
  * What changed underneath is where each of those keys comes from. A profile
  * carried eight `social_*` columns, three `cv_*` columns and six `location_*`
@@ -164,7 +164,7 @@ export async function getAboutData(): Promise<AboutData | null> {
   "use cache";
   // Depends on `skill` as well as `profile`: the payload embeds highlighted
   // skill *names*, so renaming a Skill changes it even though no Profile row
-  // was touched. Carried over from ENTRY_DEPENDENCIES in apps/core/cache.py.
+  // was touched. The dependency map lives in `lib/data/tags.ts`.
   cacheTag(TAGS.profile, TAGS.skill);
   cacheLife("days");
 

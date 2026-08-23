@@ -3,10 +3,10 @@ import { unstable_cache } from "next/cache";
 /**
  * GitHub contribution data for the dashboard.
  *
- * A port of apps/dashboard/github_api.py. The calendar is fetched through the
- * GraphQL API with the username as a *variable* rather than interpolated into
- * the query string -- the Python original made the same point in a comment, and
- * it is worth keeping: the username comes from the database.
+ * The calendar is fetched through the GraphQL API with the username as a
+ * *variable*, never interpolated into the query string. The username comes from
+ * the database, and a value from the database in a query string is an injection
+ * waiting for the day somebody can edit it.
  */
 
 export type ContributionDay = { date: string; count: number };

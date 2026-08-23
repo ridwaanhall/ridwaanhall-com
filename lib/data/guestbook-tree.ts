@@ -8,9 +8,8 @@
  * `Module not found: Can't resolve 'dns'`. Types alone would have been erased;
  * it is the two exported constants that dragged the rest in.
  *
- * It also mirrors the original's own split: `apps/guestbook/tree.py` was a pure
- * module that issued no queries, precisely so threading could be reasoned about
- * and tested on plain dicts.
+ * Keeping it query-free is also what makes it testable: `guestbook-tree.test.ts`
+ * exercises the threading on plain objects, with no database anywhere near it.
  */
 
 /** Root plus two nested levels; see `buildThread`. */
@@ -89,7 +88,7 @@ export function maskEmail(email: string): string {
 /**
  * Arrange flat messages into a tree, returning the roots oldest first.
  *
- * A direct port of `apps/guestbook/tree.py`. Three constraints shape it, and
+ * Three constraints shape this, and
  * each is the reason a line here looks the way it does:
  *
  * - **The window cuts threads.** Only the latest 50 messages are fetched, so a

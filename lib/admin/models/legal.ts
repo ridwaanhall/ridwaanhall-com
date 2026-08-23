@@ -8,7 +8,7 @@ import { countWhere, lookup } from "@/lib/admin/sql";
 import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
-/** The two `legal` changelists, from `apps/legal/admin.py`. */
+/** The two `legal` changelists: documents, and the sections inside them. */
 
 // --- LegalDocument -----------------------------------------------------------
 

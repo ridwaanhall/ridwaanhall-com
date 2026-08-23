@@ -8,10 +8,8 @@ import type { ClientField } from "@/lib/admin/form";
 /**
  * The structured editors for the `jsonb` columns.
  *
- * A port of `apps/core/admin_widgets.py`, minus the three editors that no
- * longer have anything to edit: `GroupedKeyValueField` and
- * `CopyrightCreditsField` served `core.PrivacyPolicy`, which was deleted in
- * migration `0003_delete_privacypolicy`, and `ContentBlockField` edited
+ * Two editors, not five. The three that are gone had nothing left to edit: two
+ * served a privacy-policy model that no longer exists, and the third edited
  * a post's body, which is `content_html` and a rich-text editor instead.
  *
  * **The value travels in one control, not one input per entry.** The value is a

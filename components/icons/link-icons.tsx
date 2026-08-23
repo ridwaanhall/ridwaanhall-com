@@ -3,7 +3,8 @@ import type { SVGProps } from "react";
 /**
  * Icons for the search modal's social and link entries.
  *
- * Copied path-for-path from templates/sidebar.html.
+ * Inline components rather than an icon-library import, so the set ships as
+ * markup with no runtime behind it.
  */
 
 type IconProps = SVGProps<SVGSVGElement>;

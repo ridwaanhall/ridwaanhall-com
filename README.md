@@ -167,14 +167,27 @@ The site comes up empty, because nothing is seeded. To fill it: set up OAuth
 
 ## Checks
 
-There is no test runner. Verification is a set of harnesses under `scripts/`,
-each driving the real application against the real database and cleaning up
-after itself in a `finally` that then proves the cleanup.
+Two layers, and the split is deliberate.
+
+**Unit tests** cover the pure logic and run anywhere — no database, no browser,
+no network. Node's built-in runner over `tsx`; there is no test framework
+installed.
+
+```bash
+npm test
+npm run test:watch
+```
+
+**Harnesses** cover everything that only means something against the real thing:
+the admin gate, the schema, row-level security, uploads and their reference
+counting, the emails, the loading states. Each drives the live application and
+cleans up after itself in a `finally` that then proves the cleanup.
 
 ```bash
 npx tsc --noEmit                                  # types
 npm run lint                                      # eslint
 npm run build && node scripts/check-css-sources.mjs
+node scripts/check-headers.mjs                    # the security headers
 npx tsx scripts/check-baseline-schema.mjs         # the schema file builds the schema
 npx tsx scripts/check-app-schema.mjs              # the mapping matches it
 npx tsx scripts/check-rls.mjs                     # row-level security is on
@@ -183,10 +196,12 @@ npx tsx scripts/check-admin.mjs                   # the admin gate and changelis
 
 `CLAUDE.md` lists all of them and says which need `--conditions=react-server`.
 
-CI runs types, lint and the build. The harnesses deliberately do not run there:
-they drive a browser against a running app and write to the live database, which
-is right for a developer checking a change and wrong for a pull request from a
-fork.
+CI runs types, lint, the unit tests and the build. The harnesses deliberately do
+not run there: they drive a browser against a running app and write to the live
+database, which is right for a developer checking a change and wrong for a pull
+request from a fork.
+
+Deploying? `docs/cutover.md` has the order to do it in.
 
 ## Environment Configuration
 

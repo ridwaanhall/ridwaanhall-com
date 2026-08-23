@@ -1,9 +1,9 @@
 /**
- * Shared formatting helpers, ported from apps/about/manager.py.
+ * Shared formatting helpers.
  *
- * The rendered output has always spoken in month/year pairs while only the
- * storage was ever wrong, so these shapes are kept exactly: templates and the
- * JSON-LD both depend on them.
+ * Dates on this site are month-precision editorial dates, so the rendered shape
+ * is a `{month, year}` pair and its ISO counterpart. The page components and the
+ * JSON-LD both read them, which is why they are defined once.
  */
 
 const MONTHS = [
@@ -16,7 +16,7 @@ export type MonthYear = { month: string; year: number };
 /**
  * A stored date as the `{ month: "Jan", year: 2024 }` pair templates expect.
  *
- * The column is a Postgres `date`, which postgres.js hands back as a plain
+ * The column is a Postgres `date`, which the driver hands back as a plain
  * "YYYY-MM-DD" string. It is parsed by splitting rather than with `new Date()`
  * on purpose: `new Date("2024-01-01")` is parsed as UTC midnight and then read
  * back in local time, which in any timezone west of UTC silently reports
@@ -49,10 +49,9 @@ function dateParts(value: string | Date | null | undefined): { year: number; mon
 /**
  * Is the site owner within working hours? Weekdays 15:00–19:59, Asia/Jakarta.
  *
- * Ported from `AboutManager.is_working_hours`. This is the one value that must
- * never be cached -- it is derived from the current clock, so a cached copy
- * would freeze the availability indicator. Callers apply it *on top of* the
- * cached about payload.
+ * This is the one value that must never be cached -- it is derived from the
+ * current clock, so a cached copy would freeze the availability indicator.
+ * Callers apply it *on top of* the cached about payload.
  */
 export function isWorkingHours(now: Date = new Date()): boolean {
   const parts = new Intl.DateTimeFormat("en-US", {

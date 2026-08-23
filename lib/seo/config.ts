@@ -1,9 +1,9 @@
 /**
  * SEO constants.
  *
- * A port of apps/seo/config.py. These strings are indexed -- titles, canonical
- * URLs and descriptions all appear in search results today -- so they are
- * carried over verbatim rather than rewritten.
+ * These strings are indexed: the titles, canonical URLs and descriptions built
+ * from them appear in search results, so changing one is a content decision with
+ * a lag of weeks, not a refactor.
  */
 
 export const SITE_URL = (process.env.NEXT_PUBLIC_BASE_URL ?? "https://ridwaanhall.com").replace(

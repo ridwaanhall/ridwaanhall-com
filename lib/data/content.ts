@@ -27,13 +27,13 @@ import { TAGS } from "./tags";
 /**
  * Blog posts and projects.
  *
- * A port of apps/core/content_manager.py. The dict shapes it produced are kept
- * exactly, including the derived image fields, because they are consumed by the
- * page components, the JSON-LD generator and the sitemap alike.
+ * The shape here, including the derived image fields, is consumed by the page
+ * components, the JSON-LD generator and the sitemap alike -- so it is one
+ * definition rather than three that can disagree.
  */
 
 /**
- * The derived single/multi-image fields, from `_add_image_compat_fields`.
+ * The derived single/multi-image fields.
  *
  * `images` is an object keyed by original filename, so the first entry is the
  * card thumbnail and the whole set is the gallery. Insertion order carries the
@@ -415,8 +415,7 @@ export function searchProjects(projects: Project[], query: string): Project[] {
  * 75KB to 12KB and the projects list from 46KB to 16KB. The detail endpoints
  * still return everything.
  *
- * The field lists mirror blog/components/card.html, blog/sections/
- * featured_slider.html and projects/components/card.html. Adding a field to a
+ * The field lists are exactly what the card components read. Adding a field to a
  * card means adding it here too.
  */
 export type BlogSummary = Pick<

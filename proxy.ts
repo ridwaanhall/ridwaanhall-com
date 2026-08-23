@@ -4,8 +4,8 @@ import type { NextRequest } from "next/server";
 /**
  * Marks pages that must never appear in search results.
  *
- * A port of apps/seo/middleware.py. robots.txt and `noindex` solve different
- * problems, and reaching for the wrong one leaves a URL stuck: disallowing a
+ * robots.txt and `noindex` solve different problems, and reaching for the wrong
+ * one leaves a URL stuck: disallowing a
  * path stops the crawl, but a disallowed URL can still be *indexed* from
  * inbound links -- the crawler is not allowed to fetch it, so it never sees a
  * `noindex` and has no instruction to drop it. That is exactly how the sign-in

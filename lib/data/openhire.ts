@@ -18,9 +18,9 @@ import { locationLabel } from "./location";
 import { TAGS } from "./tags";
 
 /**
- * A port of apps/openhire/manager.py, preserving its dict shapes exactly.
+ * The open-to-work and hiring payloads.
  *
- * The shapes are unchanged; where they come from is not. Twelve `jsonb` arrays
+ * Twelve `jsonb` arrays
  * held these lists -- `application_process`, `company_culture`,
  * `requirements_general`, `skills_required`, `languages` and the rest -- each a
  * column on the profile or the position. They are rows now, in three tables

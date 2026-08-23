@@ -8,9 +8,9 @@ import { getCommentSection } from "@/lib/data/comments";
 /**
  * The comment section, resolved for one target.
  *
- * A server component so the blog and project detail pages add comments in one
- * line, and so the query shape and the permission check live in one place --
- * `apps/comments/context.py` existed for the same reason.
+ * A server component, so the blog and project detail pages add comments in one
+ * line and the query shape and the permission check live in one place rather
+ * than once per page that mounts it.
  *
  * **Delete permission is decided here, not in the markup.** It needs the
  * viewer's author/co-author flags, which cost a query, and asking per comment

@@ -3,8 +3,8 @@ import { unstable_cache } from "next/cache";
 /**
  * WakaTime coding activity for the dashboard.
  *
- * A port of apps/dashboard/wakatime_api.py. Two calls -- a seven-day summary
- * and the all-time total -- which is why the caller budgets *total* time across
+ * Two calls -- a seven-day summary and the all-time total -- which is why the
+ * caller budgets *total* time across
  * both APIs rather than relying on the per-call timeout: three 10s timeouts in
  * sequence is 30s, past the platform's function limit, and the visitor sees a
  * gateway timeout rather than the page they asked for.

@@ -9,8 +9,8 @@ import { AUTHOR, SITE_NAME, SITE_URL } from "./config";
 /**
  * JSON-LD structured data.
  *
- * A port of apps/seo/schema.py. The rules that module learned the hard way are
- * kept, and each is noted where it applies:
+ * Four rules govern everything below, each learned from a property that was
+ * silently being dropped, and each noted again where it applies:
  *
  * - **Every date must be ISO 8601.** schema.org Date and DateTime properties
  *   are validated, and Google drops a property whose value it cannot parse --

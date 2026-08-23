@@ -16,11 +16,11 @@ import { notify } from "@/lib/notify";
  *
  * One client component around a server-rendered thread. Every mutation is a
  * server action that revalidates `/guestbook`, so the tree is rebuilt by
- * `getThread()` and `buildThread()` -- the same path the page load takes. The
- * original re-rendered the whole panel into JSON for the same reason: where a
- * reply lands depends on the depth cap and on whether its parent fell inside
- * the fetched window, and deciding that client-side would be a second copy of
- * `tree.py` free to disagree with the first.
+ * `getThread()` and `buildThread()` -- the same path the page load takes.
+ * Appending one node client-side would mean deciding where it goes, which
+ * depends on the depth cap and on whether its parent fell inside the fetched
+ * window: a second implementation of the threading, free to disagree with the
+ * first.
  *
  * Confirmation goes through the site-wide dialog, and every notice is worded by
  * the action rather than here -- the guestbook and the comments are one feature

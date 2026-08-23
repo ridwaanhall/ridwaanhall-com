@@ -7,16 +7,15 @@ import { SITE_URL } from "./config";
 /**
  * Sitemap entries.
  *
- * A port of apps/seo/sitemaps.py, with two things it got wrong put right.
+ * Two things here are worth stating, because both were wrong for a long time
+ * without anything noticing.
  *
- * **`lastmod` was frozen at 2024-01-01 for almost every page.**
- * `UpdatedAtData` derived it by globbing `apps/blog/data/*.py` and
- * `apps/projects/data/*.py` and reading each module's `updated_at`. Those
- * directories were deleted when the content moved into the database, so the
- * glob has matched nothing ever since and every page fell through to the
- * hard-coded fallback. The live sitemap shows it: home, about, contact,
- * privacy, terms, blog and projects all report 2024-01-01. Here the dates come
- * from the rows themselves.
+ * **`lastmod` must come from the rows.** It used to be derived from files on
+ * disk that had been deleted when the content moved into the database, so the
+ * lookup matched nothing and every page fell through to a hard-coded fallback
+ * of 2024-01-01 -- home, about, contact, privacy, terms, blog and projects, all
+ * claiming the same date for two years. A sitemap that lies about freshness is
+ * worse than one that omits the field.
  *
  * **Paginated URLs were generated at six per page while the site paginates at
  * ten.** That advertised `/blog/?page=3` and `?page=4` when only two pages

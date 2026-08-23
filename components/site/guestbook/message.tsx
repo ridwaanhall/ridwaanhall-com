@@ -19,10 +19,10 @@ import type { ThreadMessage } from "@/lib/data/guestbook-tree";
  * now: posting revalidates and the server re-renders this same component.
  *
  * The rails are drawn by the wrapper around each reply, not by the reply
- * itself, so this stays agnostic about where in a thread it sits. Geometry
- * matches `comments/_section.html` -- `left-[1.125rem]` is the centre of a
- * 2.25rem avatar -- with a tighter indent, because a comment thread nests once
- * and this nests twice. **`bg-zinc-700`, not `zinc-800`:** at 1px against a
+ * itself, so this stays agnostic about where in a thread it sits.
+ * `left-[1.125rem]` is the centre of a 2.25rem avatar. The indent is tighter
+ * than the comment thread's, because a comment thread nests once and this nests
+ * twice. **`bg-zinc-700`, not `zinc-800`:** at 1px against a
  * near-black panel, `zinc-800` is invisible.
  */
 export type Viewer = {

@@ -6,7 +6,7 @@ import { legalDocument, legalSection } from "@/lib/db/app-schema";
 
 import { TAGS } from "./tags";
 
-/** A port of apps/legal/manager.py, preserving its dict shapes exactly. */
+/** Legal documents and their sections, shaped for the page and the JSON-LD. */
 
 export type LegalSection = {
   heading: string;

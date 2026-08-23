@@ -15,9 +15,8 @@ import {
 /**
  * Per-page SEO data.
  *
- * A port of apps/seo/data.py. Every title, description and keyword list is
- * copied verbatim -- these strings are what currently appears in search
- * results, so rewording them is a content decision, not a migration one.
+ * Every title, description and keyword list here is what appears in search
+ * results, so rewording one is a content decision rather than a code change.
  */
 
 export type SeoData = {

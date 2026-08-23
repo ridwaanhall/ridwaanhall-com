@@ -33,14 +33,39 @@ const check = (ok, label, detail = "") => {
 };
 
 /** Built from pieces so this file does not match itself. */
+const word = (...parts) => parts.join("");
+
+/**
+ * Names of the thing that used to be here.
+ *
+ * The first version of this check looked only for those, and it was not enough:
+ * it passed while 28 comments still cited a source file by path -- a Python
+ * module, a template. Those say exactly the same thing as naming the framework
+ * and are just as unopenable, so the needles below match the *shape* of a
+ * reference as well as the name of the stack.
+ */
 const needles = [
-  ["dj", "ango"],
-  ["all", "auth"],
-  ["manage", ".py"],
-  ["dump", "data"],
-  ["MIGRATION", ".md"],
-  ["content", "_type_id"],
-].map((parts) => parts.join(""));
+  word("dj", "ango"),
+  word("all", "auth"),
+  word("manage", ".p", "y"),
+  word("dump", "data"),
+  word("MIGRATION", ".md"),
+  word("content", "_type_id"),
+];
+
+/**
+ * Path-shaped references, which a substring search cannot separate from
+ * ordinary use.
+ *
+ * A Python extension has no business in this repository at all. A template path
+ * needs the slash to be a path -- `body.html` is a property on the object the
+ * email renderer returns, and matching that would make this check unpassable
+ * for a reason that has nothing to do with what it is for.
+ */
+const patterns = [
+  new RegExp(word("\\", ".p", "y\\b")),
+  new RegExp(word("[\\w-]+\\/[\\w-]+\\", ".htm", "l\\b")),
+];
 
 /*
  * Three places name a framework as *content* rather than as provenance, and
@@ -56,6 +81,7 @@ const CONTENT_MENTIONS = {
   "lib/seo/config.ts": 1, // `technical` keywords -- a skill, listed beside Python
   "lib/seo/schema.ts": 1, // the same list again, in the JSON-LD `keywords`
   "components/site/search-form.tsx": 1, // a `?q=` example URL that searches for it
+  "CODE_OF_CONDUCT.md": 1, // the Contributor Covenant's own URL, which ends in .html
 };
 
 const tracked = execFileSync("git", ["ls-files"], { encoding: "utf8" })
@@ -73,14 +99,15 @@ const hits = [];
 for (const file of tracked.filter((f) => TEXT.test(f) && existsSync(f))) {
   const body = readFileSync(file, "utf8");
   const lower = body.toLowerCase();
-  for (const needle of needles) {
-    if (!lower.includes(needle.toLowerCase())) continue;
-    const lines = body.split("\n");
-    for (const [i, line] of lines.entries()) {
-      if (line.toLowerCase().includes(needle.toLowerCase())) {
-        hits.push(`${file}:${i + 1}`);
-      }
-    }
+  const relevant =
+    needles.some((needle) => lower.includes(needle.toLowerCase())) ||
+    patterns.some((pattern) => pattern.test(body));
+  if (!relevant) continue;
+
+  for (const [i, line] of body.split("\n").entries()) {
+    const named = needles.some((needle) => line.toLowerCase().includes(needle.toLowerCase()));
+    const shaped = patterns.some((pattern) => pattern.test(line));
+    if (named || shaped) hits.push(`${file}:${i + 1}`);
   }
 }
 

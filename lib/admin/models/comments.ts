@@ -4,7 +4,7 @@ import { comment } from "@/lib/db/app-schema";
 import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
-/** `CommentAdmin` in `apps/comments/admin.py`. */
+/** The comments changelist and form. */
 
 const commentUser = username(comment.accountId);
 

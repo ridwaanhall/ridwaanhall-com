@@ -1,9 +1,8 @@
 /**
  * Project lifecycle statuses.
  *
- * A direct port of apps/projects/types/project.py -- the one part of that
- * module that survived the earlier data-layer migration, because it is pure
- * lifecycle logic with no database dependency.
+ * Pure lifecycle logic with no database dependency: a vocabulary, a sort rank,
+ * and the label and colour each status renders as.
  */
 
 export const PROJECT_STATUS = {
@@ -60,7 +59,7 @@ export function projectStatusLabel(status: string): string {
 /**
  * Display labels and badge colours.
  *
- * Ported from apps/projects/templatetags/project_tags.py. Every class string is
+ * Every class string is
  * written out in full rather than composed, because Tailwind finds classes by
  * scanning source text -- an interpolated `bg-${hue}-400/90` is invisible to it
  * and the rule is simply never generated, with no error anywhere.

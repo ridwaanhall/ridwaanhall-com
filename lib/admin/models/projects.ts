@@ -15,7 +15,7 @@ import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
 /**
- * `ProjectAdmin` in `apps/projects/admin.py`.
+ * The `projects` changelist and form.
  *
  * Status, category and tags used to be strings on the row: a status key the
  * cards translated through a hard-coded map, a `category` varchar holding 55

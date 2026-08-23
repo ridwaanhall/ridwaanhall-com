@@ -8,11 +8,11 @@ import { Toaster } from "sonner";
  * **Mounted at body level, outside `#page-content`.** That element animates a
  * `translateY`, and a transformed ancestor becomes the containing block for its
  * `position: fixed` descendants -- a stack inside it would be positioned
- * against the content column rather than the viewport. `apps/core/tests/
- * test_notifications.py` asserted exactly this structurally, and nothing else
- * in either tree catches it.
+ * against the content column rather than the viewport.
+ * `scripts/check-notifications.mjs` asserts exactly this structurally, because
+ * nothing else would catch it.
  *
- * Geometry matches the original stack: 4px in from the top, centred and full
+ * Geometry: 4px in from the top, centred and full
  * width on a phone, right-aligned and 384px (`sm:w-96`) from `sm` up, at most
  * four at once, oldest dropped first so a burst of errors cannot push the
  * newest off-screen.

@@ -8,9 +8,8 @@ import type { SeoData } from "./data";
 /**
  * Turn a `SeoData` into Next's `Metadata`.
  *
- * A port of `SEOManager.get_meta_tags` plus seo/meta_tags.html. Every tag the
- * template emitted has an equivalent here; the handful that Next has no field
- * for go through `other`.
+ * Everything the `<head>` needs, in one place. The handful of tags Next has no
+ * typed field for go through `other`.
  *
  * One thing worth stating: the canonical, `og:url` and `twitter:url` never come
  * from the requested URL. Echoing the request makes a paginated or

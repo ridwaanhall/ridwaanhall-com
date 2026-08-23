@@ -5,11 +5,10 @@ import type { FilterChoice } from "@/lib/admin/list";
 /**
  * The fixed vocabularies the admin filters on.
  *
- * A port of `apps/core/choices.py` and the `*_CHOICES` lists on the models. The
- * Python file exists because four places describe the same two things --
- * `Application` and `Experience` each store one value, `OpenToWorkProfile`
- * stores a list of each and `Position` stores one -- and they were only ever
- * kept aligned by hand, so "Fulltime" could drift in beside "Full-time" with
+ * One definition each, because four places describe the same two things --
+ * an application and an experience each store one value, the open-to-work
+ * profile stores a list of each, and a job opening stores one. Kept aligned by
+ * hand, "Fulltime" drifts in beside "Full-time" with
  * nothing to notice. The same reasoning applies here, which is why these are one
  * module rather than inline arrays in each descriptor.
  *

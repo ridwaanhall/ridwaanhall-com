@@ -15,8 +15,7 @@ import { guestMessage } from "@/lib/db/app-schema";
 /**
  * The emails a new guestbook message sends.
  *
- * A port of the `post_save` receiver in `apps/guestbook/signals.py`, with its
- * three dispatch rules kept exactly:
+ * Three dispatch rules, and the exceptions are the point of them:
  *
  *   1. notify the owner — unless the sender *is* the owner
  *   2. confirm to the sender — unless the sender is the owner, or has no address

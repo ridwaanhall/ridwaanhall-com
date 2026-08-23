@@ -3,8 +3,7 @@ import "server-only";
 /**
  * Cloudflare Turnstile verification.
  *
- * A port of `apps/core/validators.py`. The rule that matters is the one the
- * original also followed: **verification failing for any reason is a
+ * The rule that matters: **verification failing for any reason is a
  * rejection**, never a pass. A network error, a timeout, a malformed response
  * — all of them return `false`, because the alternative is a spam filter that
  * opens itself whenever Cloudflare is slow.

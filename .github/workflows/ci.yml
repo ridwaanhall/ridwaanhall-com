@@ -34,6 +34,13 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # The one step here that actually executes the application's own code.
+      # It needs no secrets and no network: `tests/setup.ts` points the database
+      # URL at nowhere, so a test that tried to query would fail at connect
+      # rather than reach anything real.
+      - name: Tests
+        run: npm test
+
       # The build needs the database URL: `generateStaticParams` reads the blog
       # and project slugs at build time, and the sitemap fans out further. The
       # rest of the keys are absent on purpose -- a build that needs a Resend key
@@ -53,3 +60,7 @@ jobs:
 # real browser against the running app and write to the live database -- which is
 # right for a developer checking a change before pushing it, and wrong for
 # something that runs on every pull request from a fork.
+#
+# `npm test` is the half that can run anywhere: it covers the pure logic --
+# the sanitiser, the uuid guard, username collisions, storage keys, pagination,
+# the admin descriptors -- with no database and no browser behind it.

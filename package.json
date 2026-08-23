@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --import tsx --import ./tests/setup.ts --test \"lib/**/*.test.ts\"",
+    "test:watch": "node --import tsx --import ./tests/setup.ts --test --watch \"lib/**/*.test.ts\""
   },
   "dependencies": {
     "@tiptap/extension-table": "3.30.2",

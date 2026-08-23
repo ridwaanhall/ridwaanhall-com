@@ -59,6 +59,10 @@
                 authoring them, and one of them names a utility the site does
                 not use in order to assert it is absent -- which was enough, on
                 its own, to make that assertion fail.
+     *.test.ts  the unit tests, for the same reason: a test asserting on what
+                `projectStatusColor` returns has to name the classes it returns,
+                and a test for a class the site *stopped* using would keep it
+                alive by checking that it is gone.
 
    Verify after any change here with `scripts/check-css-sources.mjs`, which
    builds and fails if a utility the site does not use has been emitted.
@@ -68,6 +72,7 @@
 @source not "../*.md";
 @source not "../.claude";
 @source not "../scripts";
+@source not "**/*.test.ts";
 
 /* ---------------------------------------------------------------------------
    No classes come from the database

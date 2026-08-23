@@ -5,7 +5,6 @@ import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { useState, useSyncExternalStore } from "react";
 
-import type { ClientField } from "@/lib/admin/form";
 import { cn } from "@/lib/utils/cn";
 
 /**
@@ -36,11 +35,9 @@ const subscribeNever = () => () => {};
 
 export function RichTextEditor({
   name,
-  field,
   value,
 }: {
   name: string;
-  field: ClientField;
   value: string;
 }) {
   const [html, setHtml] = useState(value);
@@ -111,7 +108,11 @@ export function RichTextEditor({
           Loading the editor…
         </div>
       )}
-      {field.help && <p className="mt-1 text-xs text-zinc-500">{field.help}</p>}
+      {/* No help line, and no `field` prop to draw one from. `Field` wraps
+          every editor in a row that already renders the help -- and its copy is
+          the one carrying the id `aria-describedby` points at, so the copy that
+          used to be here was both a repeat on screen and the wrong one of the
+          two to keep. */}
     </div>
   );
 }

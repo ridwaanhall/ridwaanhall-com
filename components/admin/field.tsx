@@ -1,3 +1,7 @@
+import { useState } from "react";
+
+import { AdminDatePicker, toInputValue } from "@/components/admin/controls/date-picker";
+import { AdminSelect } from "@/components/admin/controls/select";
 import { KeyValueEditor, StringListEditor } from "@/components/admin/json-fields";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { adminDateTime } from "@/lib/admin/format";
@@ -61,9 +65,22 @@ export function Field({
     .join(" ");
 
   if (field.readOnly) {
+    /*
+     * A field that is not writable still has to be *readable*, and for a choice
+     * that means its label rather than the value behind it: a comment's stored
+     * `blog_post` reads as "Blog post", and the key in `target_id` reads as the
+     * post it names instead of as 36 characters of uuid.
+     *
+     * The lookup misses harmlessly for a field carrying a `display`, which
+     * loads a name in the column's place -- there is no key to match, and the
+     * name is already what should be shown.
+     */
+    const labelled = (raw: string) =>
+      (field.choices ?? field.options ?? []).find((choice) => choice.value === raw)?.label ?? raw;
+
     const shown =
       Array.isArray(value)
-        ? value.join(", ") || "—"
+        ? value.map((entry) => labelled(String(entry))).join(", ") || "—"
         : field.kind === "datetime"
         ? adminDateTime(typeof value === "string" ? value : null)
         : field.kind === "checkbox"
@@ -72,7 +89,7 @@ export function Field({
             : "No"
           : value === null || value === ""
             ? "—"
-            : String(value);
+            : labelled(String(value));
 
     return (
       <Row field={field} id={id} describedBy={describedBy} error={error}>
@@ -104,7 +121,7 @@ export function Field({
   if (field.kind === "rich-text") {
     return (
       <Row field={field} id={id} describedBy={describedBy} error={error}>
-        <RichTextEditor name={name} field={field} value={typeof value === "string" ? value : ""} />
+        <RichTextEditor name={name} value={typeof value === "string" ? value : ""} />
       </Row>
     );
   }
@@ -122,7 +139,7 @@ export function Field({
                   name={name}
                   value={option.value}
                   defaultChecked={chosen.has(option.value)}
-                  className="h-4 w-4 shrink-0 rounded border-zinc-700 bg-zinc-900 accent-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                  className="admin-check"
                 />
                 {option.label}
               </label>
@@ -147,7 +164,7 @@ export function Field({
                 name={name}
                 value={choice.value}
                 defaultChecked={chosen.has(choice.value)}
-                className="h-4 w-4 rounded border-zinc-700 bg-zinc-900 accent-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                className="admin-check"
               />
               {choice.label}
             </label>
@@ -160,21 +177,44 @@ export function Field({
   if (field.kind === "reference") {
     return (
       <Row field={field} id={id} describedBy={describedBy} error={error}>
-        <select
-          id={id}
-          name={name}
-          defaultValue={value === null || value === undefined ? "" : String(value)}
-          aria-describedby={describedBy || undefined}
-          required={field.required}
-          className={cn(CONTROL, error && INVALID)}
-        >
-          <option value="">—</option>
-          {(field.options ?? []).map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+        <ValueHolder value={value}>
+          {(current, set) => (
+            <AdminSelect
+              id={id}
+              name={name}
+              value={current}
+              onValueChange={set}
+              options={field.options ?? []}
+              required={field.required}
+              describedBy={describedBy}
+              invalid={Boolean(error)}
+              className={cn(CONTROL, "admin-select", error && INVALID)}
+            />
+          )}
+        </ValueHolder>
+      </Row>
+    );
+  }
+
+  if (field.kind === "date" || field.kind === "datetime") {
+    const withTime = field.kind === "datetime";
+    return (
+      <Row field={field} id={id} describedBy={describedBy} error={error}>
+        <ValueHolder value={value} format={(raw) => toInputValue(raw, withTime)}>
+          {(current, set) => (
+            <AdminDatePicker
+              id={id}
+              name={name}
+              value={current}
+              onValueChange={set}
+              withTime={withTime}
+              required={field.required}
+              describedBy={describedBy}
+              invalid={Boolean(error)}
+              className={cn(CONTROL, error && INVALID)}
+            />
+          )}
+        </ValueHolder>
       </Row>
     );
   }
@@ -204,7 +244,7 @@ export function Field({
                     <input
                       type="checkbox"
                       name={clearFieldName(name)}
-                      className="h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-900 accent-indigo-500"
+                      className="admin-check admin-check-sm"
                     />
                     Remove this image
                   </label>
@@ -220,7 +260,7 @@ export function Field({
             name={name}
             accept={Object.keys(IMAGE_TYPES).join(",")}
             aria-describedby={describedBy || undefined}
-            className="block w-full text-xs text-zinc-400 file:mr-3 file:rounded-full file:border file:border-zinc-700 file:bg-transparent file:px-3 file:py-1.5 file:text-xs file:text-zinc-300 hover:file:border-zinc-600 hover:file:bg-zinc-800"
+            className="admin-file block w-full text-xs text-zinc-400"
           />
         </div>
       </Row>
@@ -239,7 +279,7 @@ export function Field({
               name={name}
               defaultChecked={Boolean(value)}
               aria-describedby={describedBy || undefined}
-              className="h-4 w-4 rounded border-zinc-700 bg-zinc-900 accent-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+              className="admin-check"
             />
             {field.label}
           </label>
@@ -261,31 +301,37 @@ export function Field({
   return (
     <Row field={field} id={id} describedBy={describedBy} error={error}>
       {field.kind === "textarea" ? (
-        <textarea {...common} rows={5} maxLength={field.maxLength} />
+        <textarea
+          {...common}
+          className={cn(common.className, "admin-textarea")}
+          rows={5}
+          maxLength={field.maxLength}
+        />
       ) : field.kind === "select" ? (
-        <select {...common}>
-          <option value="">—</option>
-          {(field.choices ?? []).map((choice) => (
-            <option key={choice.value} value={choice.value}>
-              {choice.label}
-            </option>
-          ))}
-        </select>
+        <ValueHolder value={value}>
+          {(current, set) => (
+            <AdminSelect
+              id={id}
+              name={name}
+              value={current}
+              onValueChange={set}
+              options={field.choices ?? []}
+              required={field.required}
+              describedBy={describedBy}
+              invalid={Boolean(error)}
+              className={cn(common.className, "admin-select")}
+            />
+          )}
+        </ValueHolder>
       ) : (
         <input
           {...common}
-          type={
-            field.kind === "number"
-              ? "number"
-              : field.kind === "date"
-                ? "date"
-                : field.kind === "email"
-                  ? "email"
-                  : "text"
-          }
+          // `date` and `datetime` are handled above, by the picker.
+          type={field.kind === "number" ? "number" : field.kind === "email" ? "email" : "text"}
           // `url` fields take `type="text"`: a browser's URL validation rejects
           // the site-relative paths some of these hold, and the server checks
           // the ones that really are URLs anyway.
+          className={cn(common.className, field.kind === "number" && "admin-number")}
           maxLength={field.maxLength}
           min={field.min}
           required={field.required}
@@ -293,6 +339,34 @@ export function Field({
       )}
     </Row>
   );
+}
+
+/**
+ * Holds one control's value in state, so the drawn control and the native one
+ * behind it are always the same value.
+ *
+ * A render prop rather than lifting the state into `Field`, because `Field` is
+ * a plain function called once per field and cannot own hooks conditionally --
+ * the checkbox branch returns long before the select branch is reached, so a
+ * `useState` at the top would be a hook whose position depends on `kind`.
+ *
+ * `format` converts what the record stores into what the input accepts, and
+ * runs once: a date column arrives as `YYYY-MM-DD` and a timestamp as a UTC
+ * ISO string, neither of which a `datetime-local` input can take as it stands.
+ */
+function ValueHolder({
+  value,
+  format = String,
+  children,
+}: {
+  value: FormValues[string];
+  format?: (raw: string) => string;
+  children: (value: string, set: (next: string) => void) => React.ReactNode;
+}) {
+  const [current, setCurrent] = useState(() =>
+    value === null || value === undefined ? "" : format(String(value)),
+  );
+  return <>{children(current, setCurrent)}</>;
 }
 
 function Row({

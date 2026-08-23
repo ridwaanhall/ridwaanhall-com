@@ -108,6 +108,28 @@ const createdApplications = [];
 let techStackProject = null;
 let techStackBefore = null;
 
+/**
+ * Pick from a dropdown, whichever of its two forms is live.
+ *
+ * The admin's selects are progressively enhanced -- a real `<select>` on the
+ * server, a drawn listbox once hydrated -- and `selectOption` requires the
+ * native one to be visible, which it is not after the swap. See the longer note
+ * on the same helper in `check-admin-forms.mjs`.
+ */
+async function chooseInline(name, value) {
+  const select = page.locator(`select[name="${name}"]`);
+  if (await select.isVisible()) {
+    await select.selectOption(value);
+    return;
+  }
+  const label = ((await select.locator(`option[value="${value}"]`).textContent()) ?? "").trim();
+  await page.locator(`select[name="${name}"] + [role="combobox"]`).click();
+  const filter = page.locator('input[aria-label="Filter the options"]');
+  if (await filter.count()) await filter.fill(label);
+  await page.getByRole("option", { name: label, exact: true }).first().click();
+  await page.waitForTimeout(150);
+}
+
 try {
   // --- the profile's inlines survive an untouched save ----------------------
   snapshotHighlights = await children(
@@ -242,9 +264,9 @@ try {
   // parent's id, which does not exist until the parent insert returns.
   await page.goto(`${BASE}/admin/application/new`, { waitUntil: "load" });
   await page.waitForTimeout(1000);
-  await page.locator('select[name="organizationId"]').selectOption(anyOrganization.id);
+  await chooseInline("organizationId", anyOrganization.id);
   await page.locator('input[name="position"]').fill("zz-inline-check-created");
-  await page.locator('select[name="statusId"]').selectOption(applied.id);
+  await chooseInline("statusId", applied.id);
   await page.locator('button:has-text("Add step")').click();
   await page.locator('input[name="journey:0:title"]').fill("Created with the parent");
   await submit();

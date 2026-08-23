@@ -71,7 +71,7 @@ export function Changelist<Row>({
               defaultValue={params.q}
               placeholder={model.search.placeholder}
               aria-label={model.search.placeholder}
-              className="w-56 rounded-md border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-200 placeholder-zinc-500 transition-colors hover:border-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 sm:w-72"
+              className="admin-search w-56 rounded-md border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-200 placeholder-zinc-500 transition-colors hover:border-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 sm:w-72"
             />
             <button
               type="submit"

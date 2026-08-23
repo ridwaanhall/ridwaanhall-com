@@ -32,6 +32,7 @@
 @import "../styles/prose.css";
 @import "../styles/admin-motion.css";
 @import "../styles/admin-editor.css";
+@import "../styles/admin-controls.css";
 
 /* ---------------------------------------------------------------------------
    Keep source detection off prose and off our own stylesheets

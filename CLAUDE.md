@@ -106,6 +106,38 @@ fields, ordering) and a form descriptor (fieldsets, field kinds, inlines).
 `scripts/check-admin.mjs` fails if the registry and the descriptors disagree —
 an entry without a form descriptor is a screen that cannot be opened.
 
+### Every model has full CRUD, except one
+
+`user` is the single exception, and it is written up at the descriptor: an
+account **is** a provider identity, so one made here is a row nobody can sign in
+to, and deleting one cascades through every comment and guestbook message that
+person wrote. `profile`, `hiring-profile` and `open-to-work-profile` are
+one-row by definition — `/admin/<key>` *is* that record's form, there is no
+list and no create route — which is a different thing from being refused.
+Everything else creates, reads, updates and deletes.
+`scripts/check-admin-forms.mjs` asserts both directions; "no add form" on its
+own is satisfied by an admin that cannot create anything at all.
+
+Three of those models are *about* somebody — a guestbook message, a comment, a
+reader's profile all name an account in a `NOT NULL` column with no default. So
+a field can be `readOnly: "afterCreate"`: writable while the record is being
+made, fixed from then on, because reassigning one moves what a person said onto
+somebody else's name. **Read it through `formFieldsFor(model, id)`, never as
+`field.readOnly` directly** — `"afterCreate"` is a truthy string, so a raw test
+reads it as *always* read-only and silently drops the field from the insert,
+which surfaces as a not-null violation on the one save it was added to make
+work.
+
+`comment.target_id` is the only polymorphic column here: it points at a blog
+post or a project depending on `target_kind`, so no foreign key can cover it and
+nothing in the database would object to a pair naming neither. A `reference`
+field may therefore name several sources, each with a `groupLabel`, and the
+descriptor checks the pair with `validate`. That check needs a row counted,
+which is why `ValidationContext` carries `exists()` rather than the descriptor
+importing the database — `lib/admin/models/` is imported by the check harnesses,
+and a descriptor that opened a connection would do so every time one of them
+read a form's shape.
+
 ## Traps
 
 These are the things that have actually gone wrong here. Most are invisible to
@@ -168,6 +200,45 @@ naming them, so a new one is covered from the moment it exists.
 `drizzle-kit generate` does not model RLS, reads every table as "should be
 disabled", and emits `DISABLE ROW LEVEL SECURITY` for all of them. It is not
 used here, and **any generated SQL gets read line by line before it runs.**
+
+### The admin draws its own form controls, and the CSS is class-scoped
+
+A `<select>`'s closed box was always themeable; the list that drops out of it
+never was, and neither was a checkbox's tick, a number field's spinners, or the
+calendar behind `<input type="date">`. Those are operating-system chrome.
+`color-scheme` renders them in *a* dark, but it is the browser's, not this
+site's.
+
+So `styles/admin-controls.css` draws them, and `components/admin/controls/`
+replaces the two that need a panel. **Every selector in that stylesheet is
+anchored to a class** — `.admin-check`, `.admin-select`, `.admin-popover` —
+because the file is imported from `app/globals.css` and is therefore global: a
+rule written as `input[type="checkbox"] { … }` restyles the contact form, the
+comment box and the guestbook composer, silently. The two admin sheets beside
+it already work that way. `scripts/check-admin-controls.mjs` parses the
+selectors and fails on a bare element name.
+
+**Every drawn control is an enhancement over a real one.** The server renders
+the `<select>` or the `<input type="date">`; it carries the `name`, it is what
+posts, and it is hidden only once the component has hydrated and can take over.
+Three things depend on that: the form saves before the bundle arrives,
+`check-admin.mjs` greps the *server body* for `<select name="category">`, and a
+browser's own restore and autofill need a real control. `hidden` is what hides
+it — a hidden form control still submits, only a `disabled` one does not.
+
+Two smaller things that cost an afternoon each:
+
+- **Attribute order is part of the contract.** React emits attributes in the
+  order they are written, and `check-admin.mjs` greps for the literal
+  `<select name="category"`. An `id` written before `name` turns that check red
+  and is invisible to `tsc`, to `eslint` and to a browser.
+- **"Works without JavaScript" means *before hydration*, not with scripting
+  off.** React streams a Suspense boundary's content into a `display: none`
+  container and reveals it with a small inline script, so a browser with
+  scripting disabled does not get an unhydrated admin form — it gets an
+  invisible one, on every route that streams. The honest test, and the one
+  `check-admin-controls.mjs` runs, is scripting **on** with
+  `**/_next/static/chunks/**` blocked.
 
 ### Tailwind scans prose, and prose names classes
 
@@ -325,6 +396,7 @@ npx tsx --conditions=react-server scripts/check-admin-json.mjs
 npx tsx --conditions=react-server scripts/check-admin-inlines.mjs
 npx tsx --conditions=react-server scripts/check-admin-richtext.mjs
 npx tsx --conditions=react-server scripts/check-admin-labels.mjs
+npx tsx --conditions=react-server scripts/check-admin-controls.mjs
 ```
 
 A harness that imports a `server-only` module needs `--conditions=react-server`.

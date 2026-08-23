@@ -100,7 +100,13 @@ export async function applyImageFields(
   return Object.keys(errors).length > 0 ? { ok: false, errors } : { ok: true, values, stale };
 }
 
-/** The `image` fields of a field list, which are handled apart from the rest. */
+/**
+ * The `image` fields of a field list, which are handled apart from the rest.
+ *
+ * Pass a list that has already been through `formFieldsFor`: `readOnly` may be
+ * the string `"afterCreate"`, which is truthy, so testing it raw would read an
+ * unresolved field as read-only whichever form it was on.
+ */
 export function imageFields(fields: FormField[]): FormField[] {
-  return fields.filter((field) => field.kind === "image" && !field.readOnly);
+  return fields.filter((field) => field.kind === "image" && field.readOnly !== true);
 }

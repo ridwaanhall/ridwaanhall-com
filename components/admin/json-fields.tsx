@@ -80,7 +80,7 @@ export function StringListEditor({
               rows={2}
               onChange={(event) => update(index, event.target.value)}
               aria-label={`${noun} ${index + 1}`}
-              className={CONTROL}
+              className={`${CONTROL} admin-textarea`}
             />
           ) : (
             <input
@@ -180,7 +180,7 @@ export function KeyValueEditor({
             onChange={(event) => update(index, key, event.target.value)}
             placeholder={field.valueLabel ?? "Description"}
             aria-label={`${field.valueLabel ?? "Description"} ${index + 1}`}
-            className={CONTROL}
+            className={`${CONTROL} admin-textarea`}
           />
           <button
             type="button"

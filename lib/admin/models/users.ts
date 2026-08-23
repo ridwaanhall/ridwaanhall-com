@@ -97,11 +97,22 @@ export const userForm: AdminFormModel = {
   from: account,
   pk: account.id,
   label: (values) => String(values.username ?? "Account"),
-  // Accounts are created by a sign-in and by nothing else: the adapter writes
-  // one the first time a provider hands back an identity. Deleting one would
-  // cascade through their messages and comments, which is a data loss no
-  // checkbox should be able to cause -- and there is no re-registration flow to
-  // undo it, since the account *is* the provider identity.
+  /*
+   * The single model in this admin without create and delete, and deliberately
+   * so rather than by omission -- every other one has both.
+   *
+   * An account is created by a sign-in and by nothing else: the adapter writes
+   * one the first time a provider hands back an identity, so the account *is*
+   * that identity and there is no re-registration flow to recreate it. Deleting
+   * one cascades through every comment and guestbook message that person wrote,
+   * which is an unrecoverable loss no checkbox should be able to cause. Adding
+   * one by hand would produce a row no provider will ever hand back an identity
+   * for: an account nobody can sign in to.
+   *
+   * What the admin does own here is on the form below -- the staff flag and the
+   * active flag, which are this application's decisions rather than the
+   * provider's.
+   */
   canCreate: false,
   canDelete: false,
   fieldsets: [

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { onPageLoadingStart } from "@/lib/utils/page-loading";
 
@@ -25,14 +25,28 @@ import { onPageLoadingStart } from "@/lib/utils/page-loading";
  * exception to how the rest of this site animates. A keyframe can only describe
  * a motion known in advance; how long a navigation takes is not, and the whole
  * point of the bar is to keep saying "still working" until it commits.
+ *
+ * **Every navigation is reported, the instant ones included.** See
+ * `MIN_VISIBLE_MS` below for why that is not the same as showing a flicker.
  */
 
 /**
- * Most routes here are prerendered and prefetched, so a navigation frequently
- * commits within a frame or two. Showing a bar for that reads as a flicker, not
- * as feedback -- so nothing appears at all unless the wait outlasts this.
+ * Every navigation is reported, and there is deliberately no threshold here.
+ *
+ * There was one: 120ms, on the reasoning that a bar flashing on an instant
+ * route reads as a glitch rather than as feedback. What that missed is the
+ * client Router Cache. It keeps a prerendered route's payload, so the first
+ * visit to a listing does a round trip and is reported, while the second
+ * commits in single-digit milliseconds and is not -- and a bar that appears on
+ * some navigations and not others is, from the reader's side, indistinguishable
+ * from one that is broken.
+ *
+ * The flicker was real, but it comes from *stopping* abruptly rather than from
+ * starting. So the bar starts at once and stays for at least this long before
+ * it begins to wind down. Even a navigation that commits in a single frame then
+ * reads as one deliberate movement instead of a blink.
  */
-const REVEAL_DELAY_MS = 120;
+const MIN_VISIBLE_MS = 280;
 
 const TRICKLE_EVERY_MS = 200;
 
@@ -66,27 +80,51 @@ export function PageLoadingBar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [state, setState] = useState<State>("idle");
-  const [width, setWidth] = useState(0);
+  /*
+   * The bar is written to the DOM directly rather than held in state, and that
+   * is the one thing in this component worth understanding before changing it.
+   *
+   * React deprioritises a normal update while a transition is in flight -- and
+   * a client-side navigation *is* that transition, so the update announcing it
+   * queues behind the very work it is meant to be reporting. Measured in
+   * development, that put the bar on screen 200-380ms after the click, which is
+   * indistinguishable from the fixed delay this component used to have and
+   * would have quietly reinstated it.
+   *
+   * Writing to the node inside the click handler paints in the same frame, on
+   * every navigation, whatever the scheduler is doing. Nothing else reads these
+   * values, so there is no second copy to keep in step -- and the trickle stops
+   * re-rendering a subtree five times a second for a number only CSS consumes.
+   */
+  const bar = useRef<HTMLDivElement>(null);
+  const width = useRef(0);
+
+  const paint = useCallback((state: State, next: number) => {
+    width.current = next;
+    const el = bar.current;
+    if (!el) return;
+    el.dataset.state = state;
+    el.style.width = `${next}%`;
+  }, []);
 
   const timers = useRef<{
-    reveal?: ReturnType<typeof setTimeout>;
     trickle?: ReturnType<typeof setInterval>;
     giveUp?: ReturnType<typeof setTimeout>;
+    hold?: ReturnType<typeof setTimeout>;
     fade?: ReturnType<typeof setTimeout>;
     reset?: ReturnType<typeof setTimeout>;
   }>({});
 
   /** A navigation is under way. */
   const pending = useRef(false);
-  /** It outlasted the reveal delay, so there is something on screen to finish. */
-  const revealed = useRef(false);
+  /** When it began, so the bar can be held for `MIN_VISIBLE_MS`. */
+  const startedAt = useRef(0);
 
   const clearTimers = useCallback(() => {
     const t = timers.current;
-    if (t.reveal) clearTimeout(t.reveal);
     if (t.trickle) clearInterval(t.trickle);
     if (t.giveUp) clearTimeout(t.giveUp);
+    if (t.hold) clearTimeout(t.hold);
     if (t.fade) clearTimeout(t.fade);
     if (t.reset) clearTimeout(t.reset);
     timers.current = {};
@@ -97,52 +135,70 @@ export function PageLoadingBar() {
     pending.current = false;
     clearTimers();
 
-    // Never revealed: the navigation beat the delay, so there is nothing to
-    // wind down and nothing was ever painted.
-    if (!revealed.current) {
-      setState("idle");
-      setWidth(0);
-      return;
-    }
-    revealed.current = false;
+    const wind = () => {
+      // Fill first, fade second. Doing both at once would start the fade while
+      // the bar was still crossing the screen, so it would never be seen to
+      // complete.
+      paint("loading", 100);
+      timers.current.fade = setTimeout(() => paint("done", 100), FILL_MS);
+      timers.current.reset = setTimeout(() => paint("idle", 0), FILL_MS + FADE_MS);
+    };
 
-    // Fill first, fade second. Doing both in one commit would start the fade
-    // while the bar was still crossing the screen, so it would never be seen
-    // to complete.
-    setWidth(100);
-    timers.current.fade = setTimeout(() => setState("done"), FILL_MS);
-    timers.current.reset = setTimeout(() => {
-      setState("idle");
-      setWidth(0);
-    }, FILL_MS + FADE_MS);
-  }, [clearTimers]);
+    // A navigation served from the router cache can commit before the bar has
+    // finished its first frame. Winding down from there is the blink the old
+    // reveal delay was trying to prevent; waiting out the remainder turns it
+    // back into something that can be read.
+    const shown = performance.now() - startedAt.current;
+    if (shown >= MIN_VISIBLE_MS) wind();
+    else timers.current.hold = setTimeout(wind, MIN_VISIBLE_MS - shown);
+  }, [clearTimers, paint]);
 
   const start = useCallback(() => {
     // Two clicks before the first commits are one navigation as far as the bar
     // is concerned; restarting would send it backwards.
     if (pending.current) return;
     pending.current = true;
-    revealed.current = false;
+    startedAt.current = performance.now();
     clearTimers();
 
-    timers.current.reveal = setTimeout(() => {
-      revealed.current = true;
-      setState("loading");
-      setWidth(START_WIDTH);
+    /*
+      Back to nothing, in the same commit that begins the new navigation.
 
-      // The bar still appears under reduced motion -- it reports state, it is
-      // not decoration -- but it holds still instead of creeping.
-      if (prefersReducedMotion()) return;
+      Without this, a click arriving while the previous bar is still fading
+      starts from whatever width it had reached -- 100%, most of the time -- and
+      the CSS width transition animates it *backwards* down to 20%, which reads
+      as the page un-loading. The `idle` state carries no width transition (see
+      globals.css), so this reset is instant and never seen.
+    */
+    paint("idle", 0);
+
+    /*
+      Force the reset to be laid out before growing from it.
+
+      Both writes happen in this one handler, so without this the browser only
+      ever sees the final pair and computes the transition from whatever was on
+      screen -- 100%, if the previous bar was still fading -- and animates
+      backwards to 20%. Reading a layout property in between makes the browser
+      resolve the idle state first, so the growth below starts from zero.
+
+      This is also why the bar is not revealed a frame later: a
+      `requestAnimationFrame` callback runs after React has begun rendering the
+      navigation, and in development that measured 200ms and more -- a delay as
+      real as the fixed one this component was built to remove.
+    */
+    void bar.current?.offsetWidth;
+    paint("loading", START_WIDTH);
+
+    // The bar still appears under reduced motion -- it reports state, it is not
+    // decoration -- but it holds still instead of creeping.
+    if (!prefersReducedMotion()) {
       timers.current.trickle = setInterval(() => {
-        setWidth((w) => w + (TRICKLE_CEILING - w) * TRICKLE_FRACTION);
+        paint("loading", width.current + (TRICKLE_CEILING - width.current) * TRICKLE_FRACTION);
       }, TRICKLE_EVERY_MS);
-    }, REVEAL_DELAY_MS);
+    }
 
-    timers.current.giveUp = setTimeout(() => {
-      revealed.current = true;
-      finish();
-    }, MAX_WAIT_MS);
-  }, [clearTimers, finish]);
+    timers.current.giveUp = setTimeout(finish, MAX_WAIT_MS);
+  }, [clearTimers, finish, paint]);
 
   /* `router.push()` produces no click for the listener below to see. */
   useEffect(() => {
@@ -152,10 +208,22 @@ export function PageLoadingBar() {
 
   useEffect(() => {
     /*
-      Bubble phase, not capture. By the time a click reaches the document,
-      `<Link>` has already decided whether to handle it, and a plain anchor that
-      will cause a full page load is still on its way -- both are navigations
-      worth reporting, and both are visible from here.
+      Capture phase, and the reason is the whole point of this component.
+
+      In the bubble phase the click has already passed through `<Link>`, whose
+      handler calls `router.push()` synchronously -- route matching, cache
+      lookup, and the start of a render. Measured in development that is 200ms
+      and more before our listener is reached, so the bar reported the
+      navigation a fifth of a second after the click that caused it. Capture
+      runs before any of it.
+
+      What capture gives up is knowing whether something further down will
+      handle the click itself. Nothing on this site does: every
+      `preventDefault` here is on a button or a key event, never an anchor. If
+      one ever appears, the bar creeps until `MAX_WAIT_MS` rather than
+      misreporting anything, and `check-page-loading.mjs` measures the first
+      paint precisely so a return to the bubble phase shows up as a failure
+      rather than as a slightly worse feeling.
     */
     function onClick(event: MouseEvent) {
       if (event.button !== 0) return;
@@ -199,12 +267,12 @@ export function PageLoadingBar() {
       start();
     }
 
-    document.addEventListener("click", onClick);
-    document.addEventListener("submit", onSubmit);
+    document.addEventListener("click", onClick, true);
+    document.addEventListener("submit", onSubmit, true);
     window.addEventListener("popstate", start);
     return () => {
-      document.removeEventListener("click", onClick);
-      document.removeEventListener("submit", onSubmit);
+      document.removeEventListener("click", onClick, true);
+      document.removeEventListener("submit", onSubmit, true);
       window.removeEventListener("popstate", start);
     };
   }, [start]);
@@ -226,12 +294,19 @@ export function PageLoadingBar() {
 
   useEffect(() => clearTimers, [clearTimers]);
 
+  /*
+    Rendered once, at rest. Every subsequent change to `data-state` and `width`
+    is written to this node by `paint` -- React never re-renders it, so the two
+    cannot disagree and there is nothing for hydration to reconcile beyond the
+    idle state the server already sent.
+  */
   return (
     <div
+      ref={bar}
       id="page-loading-bar"
       aria-hidden="true"
-      data-state={state}
-      style={{ width: `${width}%` }}
+      data-state="idle"
+      style={{ width: "0%" }}
       className="fixed top-0 left-0 h-0.5 z-[70] bg-gradient-to-r from-teal-400 via-teal-300 to-teal-500"
     />
   );

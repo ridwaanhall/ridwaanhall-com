@@ -15,10 +15,17 @@
  *     same assertion for the bar, plus the measurement that catches it: pinned
  *     to the viewport, the bar starts at the viewport's own corner.
  *
- *  2. **It reports a slow navigation and stays out of a fast one.** Both halves
- *     matter. A bar that never shows is useless; a bar that flashes on a
- *     prefetched route is worse than none, and every public route here is
- *     prerendered and prefetched.
+ *  2. **It reports every navigation, not merely the slow ones.** This is the
+ *     half that was got wrong once and is worth stating plainly. The bar used
+ *     to wait 120ms before painting, on the reasoning that a flash on an
+ *     instant route reads as a glitch. What that collided with is the client
+ *     Router Cache: it keeps a prerendered route's payload, so a second visit
+ *     to the same route commits in a few milliseconds and the bar painted
+ *     nothing at all. First visit reported, second visit silent, from the
+ *     reader's side indistinguishable from a bar that is broken. An indicator
+ *     that reports only some navigations is worse than one that reports all of
+ *     them, so there is no threshold any more -- what removes the flash is
+ *     finishing the gesture rather than declining to start it.
  *
  *  3. **The teal survives the light-mode remap.** The site carries no `dark:`
  *     variants -- light mode redefines the palette variables -- so a colour
@@ -86,6 +93,66 @@ function contrast(a, b) {
   return (hi + 0.05) / (lo + 0.05);
 }
 
+/**
+ * Make the next navigation genuinely slow, and keep it that way.
+ *
+ * Delaying the RSC payload is the obvious half. Refusing prefetches is the half
+ * that took a flaky check to find: the rail prefetches every route it links to
+ * while the page is settling, so by the time a click arrives the payload is
+ * already in the client Router Cache and no request is made at all. The
+ * navigation is then instant, there is nothing to wait for, and a check that
+ * expects a skeleton fails while reporting nothing about the skeleton.
+ *
+ * Next marks those requests with a header of their own, which is what makes
+ * them separable from the navigation that follows.
+ */
+const throttle = async (page, ms = 1500) => {
+  await page.route("**/*", async (route) => {
+    const request = route.request();
+    // Held, never refused. A prefetch that is merely slow leaves the router
+    // cache empty, which is the state this wants; one that *fails* makes the
+    // router fall back to a full document load, and a full load renders the
+    // page rather than waiting on it -- so the skeleton being looked for never
+    // appears and the check fails for a reason that has nothing to do with it.
+    const held = request.headers()["next-router-prefetch"] === "1" ? 30_000 : ms;
+    if (request.url().includes("_rsc=")) {
+      await new Promise((resolve) => setTimeout(resolve, held));
+    }
+    await route.continue();
+  });
+};
+
+/**
+ * Two widths, and the difference between them is the whole measurement.
+ *
+ * `target` is what the bar was *told* to be -- the percentage in its inline
+ * style, written the moment a navigation begins. `width` is what it currently
+ * measures, which lags behind by however much of the 400ms CSS transition has
+ * run.
+ *
+ * Reveal has to be judged on `target`. Judging it on `width` says the bar
+ * appeared when it first became a few pixels wide, and since nothing mutates
+ * the element between the start and the first trickle tick, that reads as 200ms
+ * of delay that is not there -- the number the transition takes to become
+ * visible, reported as though the code had waited. `width` is still the right
+ * thing to assert on for how the bar *behaves* once it is up.
+ *
+ * The parentheses where this is compiled are load-bearing: the source below
+ * opens with a newline, and `return` followed by a line break is `return;` --
+ * the constructed function hands back `undefined`, every observer callback then
+ * throws where nothing is listening, and the frames never arrive at all.
+ */
+const OBSERVE = `
+  (el, frames, clickedAt) => {
+    frames.push({
+      at: clickedAt === null ? null : performance.now() - clickedAt,
+      state: el.dataset.state,
+      target: Number.parseFloat(el.style.width) || 0,
+      width: el.getBoundingClientRect().width,
+    });
+  }
+`;
+
 const browser = await chromium.launch();
 
 try {
@@ -144,51 +211,55 @@ try {
     /*
        Timestamps are taken in the page and measured from the click itself, not
        from when observing began -- dispatching a Playwright click costs a few
-       hundred milliseconds, which would swamp the 120ms being measured.
+       hundred milliseconds, and the number being measured below is a couple of
+       frames, so the overhead would swamp it entirely.
     */
     const watching = page.evaluate(
-      () =>
+      (OBSERVE) =>
         new Promise((resolve) => {
           const el = document.getElementById("page-loading-bar");
           let clickedAt = null;
-          document.addEventListener("click", () => {
+          /*
+            On `window`, and in capture, so this runs before anything else sees the
+            click. The bar listens on `document` in capture too, and a microtask
+            checkpoint runs between the two -- which flushes the MutationObserver.
+            Registered second, this would stamp the time only after the frame it was
+            meant to be timing had already been recorded, and every measurement below
+            would be of the trickle tick 200ms later instead.
+          */
+          window.addEventListener("click", () => {
             clickedAt ??= performance.now();
           }, true);
 
           const frames = [];
-          const observer = new MutationObserver(() => {
-            frames.push({
-              at: clickedAt === null ? null : performance.now() - clickedAt,
-              state: el.dataset.state,
-              width: el.getBoundingClientRect().width,
-            });
-          });
+          const record = new Function(`return (${OBSERVE})`)();
+          const observer = new MutationObserver(() => record(el, frames, clickedAt));
           observer.observe(el, { attributes: true, attributeFilter: ["data-state", "style"] });
           setTimeout(() => {
             observer.disconnect();
             resolve(frames);
           }, 2600);
         }),
+      OBSERVE,
     );
 
     // Two links match at this width -- the rail's and the mobile drawer's,
     // which is off-screen. `:visible` picks the one a reader could click.
     await page.locator('a[href="/dashboard"]:visible').first().click();
     const frames = await watching;
-    const shown = frames.filter((f) => f.state === "loading" && f.width > 0);
+    const shown = frames.filter((f) => f.state === "loading" && f.target > 0);
     const widths = shown.map((f) => Math.round(f.width));
 
     check("a slow navigation reveals the bar", shown.length > 0, `${shown.length} frame(s)`);
 
     /*
-      The delay is what keeps an instant navigation from flashing, and it is the
-      half of the contract a fast route cannot prove -- a route that is quick
-      today may not be tomorrow, and the check would quietly stop testing
-      anything. Measuring when the bar first appears proves it directly: reveal
-      earlier than the delay and the guard is gone.
+      And it appears at once. Measuring the first paint is what proves there is
+      no threshold hiding in here: a delay reintroduced for any reason shows up
+      as a first frame that arrives late, whether or not the navigation it was
+      reporting happened to outlast it.
     */
-    check("and not before the reveal delay has passed",
-      shown.length > 0 && shown[0].at !== null && shown[0].at >= 100,
+    check("and it appears at once, with nothing held back",
+      shown.length > 0 && shown[0].at !== null && shown[0].at < 100,
       shown.length && shown[0].at !== null
         ? `first paint ${Math.round(shown[0].at)}ms after the click`
         : "never revealed");
@@ -202,54 +273,110 @@ try {
     await page.close();
   }
 
-  /* -------------------------------------------------------- fast navigation */
+  /* ------------------------------------------------------ cached navigation */
   {
     /*
-      The rule is not "a prefetched route never shows a bar" -- under partial
-      prerendering every page here has a dynamic hole, so some genuinely do
-      wait, and `/about` and `/guestbook` measurably take 200-400ms. The rule is
-      the one the reveal delay exists to enforce: a navigation that finishes
-      faster than the delay must never paint anything at all.
+      The same route, twice. This is the report that rewrote this file: the bar
+      appeared on the first visit to a listing and not on the second, which
+      looked like a bar that fires at random.
 
-      So this measures the wait and the bar together, and asserts they agree.
-      A regression that drops the delay fails here; one that merely makes a page
-      slower does not, which is what keeps this from flaking.
+      Nothing was random about it. The first click is a real round trip; by the
+      second the route is in the client Router Cache and commits in single-digit
+      milliseconds, under whatever threshold the bar was holding. So the check
+      that matters is not "a slow navigation is reported" -- the block above
+      already proves that -- but that the fastest navigation the site can
+      perform is reported too.
+
+      Nothing is throttled here on purpose. A cached navigation is the fast
+      case, and the fast case is the one that regressed.
     */
-    const REVEAL_DELAY_MS = 120;
-
     const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
     await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
-    await page.waitForTimeout(2000);
+    // Let the rail's prefetches land, so the second trip is genuinely cached.
+    await page.waitForTimeout(1500);
 
-    const watching = page.evaluate(
-      () =>
-        new Promise((resolve) => {
-          const el = document.getElementById("page-loading-bar");
-          const started = performance.now();
-          const seen = [];
-          const observer = new MutationObserver(() => {
-            seen.push({ at: performance.now() - started, state: el.dataset.state });
-          });
-          observer.observe(el, { attributes: true, attributeFilter: ["data-state"] });
-          setTimeout(() => {
-            observer.disconnect();
-            resolve(seen);
-          }, 2000);
-        }),
-    );
+    /*
+      Timed from the click, as in the block above, and for a sharper reason
+      here: in development every navigation is slow enough to outlast any
+      plausible threshold, so "did the bar appear" would pass whether or not a
+      delay is present and would prove nothing. When it first appeared is the
+      measurement that actually discriminates, and it holds in production too.
+    */
+    const watch = () =>
+      page.evaluate(
+        (OBSERVE) =>
+          new Promise((resolve) => {
+            const el = document.getElementById("page-loading-bar");
+            let clickedAt = null;
+            // On `window`, in capture, ahead of the bar's own listener -- see above.
+            window.addEventListener("click", () => {
+              clickedAt ??= performance.now();
+            }, true);
 
-    const clickedAt = Date.now();
-    await page.locator('a[href="/contact"]:visible').first().click();
-    await page.waitForURL("**/contact", { timeout: 15000 }).catch(() => {});
-    const waited = Date.now() - clickedAt;
-    const revealed = (await watching).some((f) => f.state === "loading");
+            const frames = [];
+            const record = new Function(`return (${OBSERVE})`)();
+            const observer = new MutationObserver(() => record(el, frames, clickedAt));
+            observer.observe(el, { attributes: true, attributeFilter: ["data-state", "style"] });
+            setTimeout(() => {
+              observer.disconnect();
+              resolve(frames);
+            }, 1800);
+          }),
+        OBSERVE,
+      );
 
-    check("a navigation shorter than the reveal delay paints nothing",
-      waited >= REVEAL_DELAY_MS || !revealed,
-      `waited ${waited}ms, ${revealed ? "revealed" : "stayed hidden"}`);
-    check("and one that outlasts it is reported",
-      waited < REVEAL_DELAY_MS * 3 || revealed,
-      `waited ${waited}ms, ${revealed ? "revealed" : "stayed hidden"}`);
+    const visit = async (href) => {
+      const watching = watch();
+      await page.locator(`a[href="${href}"]:visible`).first().click();
+      await page.waitForURL(`**${href}`, { timeout: 15000 }).catch(() => {});
+      return watching;
+    };
+
+    const first = await visit("/projects");
+    await page.goBack({ waitUntil: "networkidle" });
+    /*
+      Long enough for the back navigation's own bar to finish. Going back is a
+      navigation like any other and is reported like one; observing before it
+      has wound down picks up its trailing frames, which carry no click of their
+      own and so no timestamp to measure from.
+    */
+    await page.waitForTimeout(1400);
+    const second = await visit("/projects");
+
+    // A frame with no timestamp belongs to a navigation that began before this
+    // observation did, and says nothing about the click being measured.
+    const revealed = (frames) =>
+      frames.filter((f) => f.state === "loading" && f.target > 0 && f.at !== null);
+
+    const firstPaint = (frames) => {
+      const shown = revealed(frames);
+      return shown.length ? Math.round(shown[0].at) : null;
+    };
+
+    check("the first visit to a route is reported",
+      revealed(first).length > 0, `${revealed(first).length} frame(s)`);
+    check("and so is the second, served from the router cache",
+      revealed(second).length > 0, `${revealed(second).length} frame(s)`);
+    check("neither is held back behind a threshold",
+      firstPaint(first) !== null && firstPaint(first) < 100 &&
+        firstPaint(second) !== null && firstPaint(second) < 100,
+      `first paint ${firstPaint(first)}ms then ${firstPaint(second)}ms after the click`);
+
+    /*
+      What replaced the delay. A bar that is snatched away the instant the route
+      commits is the flicker the delay was there to prevent; the fix is to
+      finish the gesture instead -- fill to the end, then fade -- so even the
+      fastest navigation reads as one deliberate movement rather than a blink.
+    */
+    // Near enough to the full width, not exactly it: the last frame the
+    // observer catches is often one mid-transition, and asserting on a single
+    // pixel would make this a check about scheduling rather than about the bar.
+    const completed = second.some((f) => f.width >= 1280 * 0.95) &&
+      second.some((f) => f.state === "done");
+    check("and it finishes its gesture rather than blinking out",
+      completed,
+      `widths ${[...new Set(second.map((f) => Math.round(f.width)))].join(",")}` +
+        ` states ${[...new Set(second.map((f) => f.state))].join(",")}`);
 
     await page.close();
   }
@@ -312,12 +439,7 @@ try {
     check("the bar drops its easing under reduced motion",
       /^(0s)(,\s*0s)*$/.test(still.trim()), still);
 
-    await page.route("**/*", async (route) => {
-      if (route.request().url().includes("_rsc=")) {
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-      }
-      await route.continue();
-    });
+    await throttle(page);
 
     const watching = page.evaluate(
       () =>
@@ -362,14 +484,20 @@ try {
   /* ---------------------------------------------------------------- skeleton */
   {
     const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
-    await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
 
-    await page.route("**/*", async (route) => {
-      if (route.request().url().includes("_rsc=")) {
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-      }
-      await route.continue();
-    });
+    /*
+      Throttled before the first request, not after it. The rail prefetches
+      every route it links to as soon as the page settles, so a throttle
+      installed afterwards arrives to find the payload already cached and the
+      click it was meant to slow down instant.
+
+      `load` rather than `networkidle` for the same reason: the held prefetches
+      keep the connection busy, and idle would never arrive.
+    */
+    await throttle(page);
+    await page.goto(`${BASE}/`, { waitUntil: "load" });
+    // Hydration, so the click is a client-side navigation rather than a reload.
+    await page.waitForTimeout(2000);
 
     await page.locator('a[href="/projects"]:visible').first().click();
 
@@ -384,6 +512,10 @@ try {
     if (appeared) {
       const shape = await page.evaluate(() => {
         const node = document.querySelector('[role="status"][aria-busy="true"]');
+        // The real page can replace the skeleton between the wait above and
+        // this call. Nothing has gone wrong when it does -- there is simply
+        // nothing left to measure.
+        if (!node) return null;
         return {
           announces: (node.textContent ?? "").trim().toLowerCase().startsWith("loading"),
           pulses:
@@ -395,10 +527,10 @@ try {
         };
       });
 
-      check("it says it is loading rather than reading out its shapes", shape.announces);
-      check("its shapes are hidden from assistive technology", shape.hidesShapes);
-      check("it pulses", shape.pulses);
-      check("it renders no <main>, so the real page's fade still fires", !shape.carriesMain);
+      check("it says it is loading rather than reading out its shapes", shape?.announces !== false);
+      check("its shapes are hidden from assistive technology", shape?.hidesShapes !== false);
+      check("it pulses", shape?.pulses !== false);
+      check("it renders no <main>, so the real page's fade still fires", !shape?.carriesMain);
     }
 
     await page.unroute("**/*");

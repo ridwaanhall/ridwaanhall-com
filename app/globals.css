@@ -931,11 +931,26 @@ html.theme-fading [data-theme-toggle] svg {
     opacity: 0;
 }
 
+/* Idle carries no width transition, and that is what makes rewinding possible.
+
+   A click arriving while the previous bar is still fading has to put the width
+   back to zero before it can grow again. With the transition above still in
+   force that reset is a 400ms animation from 100% down to 20% -- a bar visibly
+   travelling the wrong way, which reads as the page un-loading. Going through
+   idle snaps it instead, and the fade keeps its easing so nothing is seen to
+   jump. */
+#page-loading-bar[data-state="idle"] {
+    transition: opacity 500ms ease-out;
+}
+
 /* The one animation here that is not decoration: it reports whether the site
    is working, so it still appears. Only the easing goes -- the component drops
    its creep to match, leaving a bar that holds still until the page arrives. */
 @media (prefers-reduced-motion: reduce) {
-    #page-loading-bar {
+    #page-loading-bar,
+    /* The idle rule above is an id *and* an attribute, so it outweighs a bare
+       id selector here and would keep its fade if it were not named. */
+    #page-loading-bar[data-state="idle"] {
         transition: none;
     }
 }

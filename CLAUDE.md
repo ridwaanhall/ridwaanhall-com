@@ -284,6 +284,7 @@ them before a release.
 npm test                                               # the unit suite, offline
 npm run build && node scripts/check-css-sources.mjs   # no stray utilities
 node scripts/check-headers.mjs                         # every security header, every origin
+node scripts/check-auth-config.mjs                     # sign-in is configured, wherever it points
 node scripts/check-fresh-start.mjs                     # nothing explains itself by the old stack
 npx tsx scripts/check-baseline-schema.mjs              # 0000_init.sql builds exactly `app`
 npx tsx scripts/check-app-schema.mjs                   # the generated mapping matches `app`

@@ -18,7 +18,8 @@ exactly why an unset one is easy to miss:
 
 | Unset | What is broken, and how it looks |
 |---|---|
-| `AUTH_GOOGLE_*` / `AUTH_GITHUB_*` | The sign-in button does nothing |
+| `AUTH_SECRET` | **Sign-in is dead**, and almost silently -- see below |
+| `AUTH_GOOGLE_*` / `AUTH_GITHUB_*` | The sign-in button bounces straight back with `?error=Configuration` |
 | `RESEND_API_KEY` | The contact form says it sent; no mail arrives |
 | `DEFAULT_FROM_EMAIL` on an unverified domain | Every send 403s, naming the domain |
 | `CF_TURNSTILE_SECRET_KEY` | **Spam verification passes by design.** The form works and the gate is open |
@@ -33,6 +34,23 @@ breaks on the old site the moment you save, before you have switched anything.
 **`AUTH_SECRET`.** Use a fresh one for production. Sessions are thirty-day JWTs
 signed with it; sharing it with any other environment means a token minted
 anywhere is valid everywhere.
+
+An unset one is the single most expensive variable on this page, because
+everything else keeps working. The build succeeds. Every page renders. The
+database is fine. `auth()` returns `null`, which is exactly what it returns for
+a signed-out visitor anyway -- so nothing looks wrong until somebody presses
+sign in and lands back on the page with `?error=Configuration` and no further
+explanation. This happened. `scripts/check-auth-config.mjs` exists to make it a
+five-second question:
+
+```bash
+node scripts/check-auth-config.mjs https://<your-domain>
+```
+
+It separates the three failures the error page cannot: no secret (`/api/auth/csrf`
+answers 500), no client credentials (the provider list looks perfectly healthy
+and the authorization URL carries no `client_id`), and a redirect URI nobody
+registered -- for which it prints the exact string to paste into each console.
 
 **Green before you start.** Everything in [Verification](#verification) below.
 
@@ -63,8 +81,12 @@ Both must come back empty.
 Automated checks cannot cover the things that depend on production
 configuration. Each of these has failed for somebody at a cutover:
 
-- **Sign in with Google, then sign out. Then GitHub.** This is what proves the
-  redirect URIs and `AUTH_SECRET`.
+- **Run `node scripts/check-auth-config.mjs https://<your-domain>` first.** It
+  answers in seconds what clicking through answers in minutes, and it names the
+  variable rather than leaving `?error=Configuration` to be interpreted.
+- **Then sign in with Google, and sign out. Then GitHub.** The check proves the
+  configuration; only a real round trip proves the consent screen, the account
+  linking and the session cookie.
 - **Post a guestbook message**, and check the notification email arrives. That
   is Resend, the from-domain and the recipient list in one.
 - **Send the contact form.** Turnstile is in front of it, and its site key is

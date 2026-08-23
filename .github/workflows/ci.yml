@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A queued run has nothing to say about a commit that has already been
+# superseded, so an in-flight run for the same ref is cancelled.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Read the code, and nothing else.
+#
+# An unset `permissions` block does not mean "no permissions" -- it means the
+# repository's default, which on many repositories is a write-scoped token
+# handed to every step, including the third-party actions and the whole
+# dependency tree `npm ci` installs. Nothing in this workflow writes anything:
+# it checks types, lints, runs tests and builds.
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      # `ci`, not `install`: it installs exactly what the lockfile says and
+      # fails if `package.json` and the lockfile disagree, which is the point of
+      # running it here at all.
+      - run: npm ci
+
+      # `tsc` on its own cannot type-check this app, and the way it fails is
+      # confusing: six files use `PageProps` and `RouteContext`, which are
+      # globals Next generates from the route tree rather than names anything
+      # imports. A working copy always has them, because a dev server or a build
+      # has already written them into `.next` -- a fresh checkout does not, so
+      # the first time this workflow ever ran it failed on names it had never
+      # been given. `typegen` writes them without the rest of a build, and needs
+      # no database and no secrets to do it.
+      - name: Route types
+        run: npx next typegen
+
+      - name: Types
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      # The one step here that actually executes the application's own code.
+      # It needs no secrets and no network: `tests/setup.ts` points the database
+      # URL at nowhere, so a test that tried to query would fail at connect
+      # rather than reach anything real.
+      - name: Tests
+        run: npm test
+
+      # The build needs the database URL: `generateStaticParams` reads the blog
+      # and project slugs at build time, and the sitemap fans out further. The
+      # rest of the keys are absent on purpose -- a build that needs a Resend key
+      # or an OAuth secret to succeed would be a build that fails on a fork's
+      # pull request, and none of them is read at build time.
+      - name: Build
+        run: npm run build
+        env:
+          STORAGE_POSTGRES_URL: ${{ secrets.STORAGE_POSTGRES_URL }}
+          STORAGE_SUPABASE_URL: ${{ secrets.STORAGE_SUPABASE_URL }}
+          NEXT_PUBLIC_BASE_URL: https://ridwaanhall.com
+          # Auth.js refuses to build without one. It is never used: no session is
+          # minted during a build, and the real secret lives in Vercel.
+          AUTH_SECRET: build-only-not-a-real-secret
+
+# The `scripts/check-*.mjs` harnesses are deliberately not run here. They drive a
+# real browser against the running app and write to the live database -- which is
+# right for a developer checking a change before pushing it, and wrong for
+# something that runs on every pull request from a fork.
+#
+# `npm test` is the half that can run anywhere: it covers the pure logic --
+# the sanitiser, the uuid guard, username collisions, storage keys, pagination,
+# the admin descriptors -- with no database and no browser behind it.

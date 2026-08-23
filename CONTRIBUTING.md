@@ -1,6 +1,6 @@
 # Contributing to ridwaanhall.com
 
-Thank you for your interest in contributing to this Django portfolio project! This document provides guidelines and information for contributors to ensure a smooth and effective collaboration process.
+Thank you for your interest in contributing to this portfolio project! This document provides guidelines and information for contributors to ensure a smooth and effective collaboration process.
 
 ## Table of Contents
 
@@ -27,10 +27,11 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 
 Before you begin, ensure you have the following installed:
 
-- **Python 3.14+**: [Download Python](https://python.org/downloads/)
+- **Node.js 22+**: [Download Node](https://nodejs.org/)
 - **Git**: [Download Git](https://git-scm.com/downloads)
-- **Code Editor**: VS Code, PyCharm, or your preferred editor
-- **Package Manager**: `uv`
+- **Code Editor**: VS Code, or your preferred editor
+- **A Supabase project**: there is no local database, so you need one of your
+  own before you can run anything that writes
 
 ### Fork and Clone
 
@@ -50,86 +51,82 @@ Before you begin, ensure you have the following installed:
 
 ## Development Setup
 
-### 1. Create Virtual Environment
-
-```powershell
-# Create virtual environment
-uv venv --python 3.14
-```
-
-### 2. Install Dependencies
-
-```powershell
-# Install Python dependencies
-uv sync
-
-# Verify installation
-uv run python manage.py check
-```
-
-### 3. Environment Configuration
-
-Create a `.env` file in the project root:
+### 1. Install Dependencies
 
 ```bash
-# Development Settings
-DEBUG=True
-SECRET_KEY="your-development-secret-key"
-BASE_URL="http://localhost:8000"
-
-# API Keys (optional for development)
-ACCESS_TOKEN="your-github-token"
-WAKATIME_API_KEY="your-wakatime-key"
+npm install
 ```
 
-Local development uses SQLite automatically — no Supabase setup needed to get running. See `.env.example` and the README's [Environment Configuration](README.md#environment-configuration) section for the Supabase (`STORAGE_*`) vars production uses.
+### 2. Environment Configuration
 
-### 4. Run Development Server
+Copy the template and fill it in:
 
-```powershell
-python manage.py runserver
+```bash
+cp .env.example .env.local
 ```
 
-Visit `http://localhost:8000` to view the application.
+**`STORAGE_POSTGRES_URL` is the one thing without which nothing runs** — the app
+throws at import if it is missing. Everything else degrades rather than
+crashing: no Resend key means no email, no Turnstile key means no spam check, no
+GitHub token means no contribution graph.
+
+There is no local database and no fixtures. Whatever you point that URL at is
+what `/admin` writes to, so point it at your own Supabase project before you
+touch anything. `drizzle/0000_init.sql` is the whole schema — run it once
+against a fresh project:
+
+```bash
+node scripts/apply-migration.mjs drizzle/0000_init.sql --apply
+```
+
+See the README's [Environment Configuration](README.md#environment-configuration)
+for the full table.
+
+### 3. Run the Development Server
+
+```bash
+npm run dev
+```
+
+Visit `http://localhost:3000`.
 
 ## Project Structure
 
-Understanding the project architecture:
-
 ```txt
-ridwaanhall_com/
-├── apps/                          # Django applications
-│   ├── about/                     # Personal information & bio
-│   ├── blog/                      # Blog system with SEO
-│   ├── core/                      # Homepage & base views
-│   ├── dashboard/                 # GitHub/WakaTime analytics
-│   ├── guestbook/                 # OAuth chat/guestbook (models + admin)
-│   ├── openhire/                  # "Open to work" / "hiring" status
-│   ├── seo/                       # SEO, sitemaps, robots.txt
-│   └── projects/                  # Portfolio management
-├── FlexForge/                     # Django project configuration
-├── static/                        # Development static files
-├── staticfiles/                   # Production static files (auto-generated)
-├── templates/                     # HTML templates
-│   ├── base.html                  # Base template with navigation
-│   ├── sidebar.html               # Navigation sidebar
-│   └── partials/                  # Reusable template components
-└── public/                        # Public assets (images, etc.)
+ridwaanhall-com/
+├── app/                    # Routes
+│   ├── (site)/             # The public pages
+│   ├── admin/              # The admin — two dynamic routes, 18 screens
+│   └── api/                # The few JSON endpoints
+├── components/
+│   ├── site/               # Page components
+│   ├── admin/              # Generic changelist, form, field, inline
+│   ├── layout/             # Sidebar, drawer, search palette, theme toggle
+│   └── providers/          # Toasts, confirm dialog, tooltips, theme
+├── lib/
+│   ├── data/               # Read paths, each behind `use cache`
+│   ├── actions/            # Server actions
+│   ├── admin/              # The descriptors that drive every admin screen
+│   ├── auth/               # Auth.js adapter over the account tables
+│   ├── db/                 # The generated Drizzle mapping and the connection pool
+│   ├── email/              # Templates and the Resend client
+│   ├── seo/                # Metadata, JSON-LD, sitemaps
+│   └── storage/            # Supabase Storage and reference-counted cleanup
+├── drizzle/                # 0000_init.sql — the whole schema, in one file
+├── scripts/                # Verification harnesses
+├── styles/                 # Stylesheets app/globals.css imports
+└── public/                 # Favicons, fonts, static images
 ```
 
-### Key Applications
+### Two things worth knowing before you change anything
 
-| App | Purpose | Key Features |
-|-----|---------|--------------|
-| `core` | Homepage & base functionality | Landing page, navigation, base views |
-| `about` | Personal information | Bio, skills, experience, education |
-| `projects` | Portfolio showcase | Project listings, detailed views, tech stack |
-| `blog` | Content management | Articles, featured posts, SEO optimization |
-| `dashboard` | Analytics integration | GitHub stats, WakaTime metrics, charts |
-| `guestbook` | OAuth chat/guestbook | Threaded replies, pinning, admin-managed |
-| `seo` | SEO & indexing | Sitemaps, robots.txt, meta tags |
+**The admin is declarative.** `lib/admin/registry.ts` names every screen and
+`lib/admin/models/` declares what each shows and edits; two generic components
+render all of them. Adding a screen is adding a descriptor, not writing a page.
 
-All content-bearing apps (`about`, `blog`, `projects`, `openhire`, `core`) store their content as Django ORM models (`models.py` + `admin.py`), managed through `/admin` — not as data files.
+**Content is rows, not files.** Bio, experience, education, certifications,
+awards, skills, projects, posts and legal documents are all database rows, edited
+through `/admin`. Nothing about the site's content lives in this repository.
 
 ## Contributing Guidelines
 
@@ -157,80 +154,63 @@ We welcome various types of contributions:
 
 ## Coding Standards
 
-### Python/Django Standards
-
-Follow these coding conventions:
+### TypeScript Standards
 
 #### Code Style
 
-- **PEP 8**: Follow Python Enhancement Proposal 8
-- **Line Length**: Maximum 88 characters (Black formatter standard)
-- **Imports**: Group imports (standard library, third-party, local)
-- **Naming**: Use descriptive names for variables and functions
+- **Formatting**: no formatter is configured. Match the surrounding file
+- **Linting**: `npm run lint` must pass, and `npx tsc --noEmit` must be clean
+- **Types**: prefer inference; write a type where it documents something. `any`
+  is not used anywhere in the codebase and should not start now
+- **Naming**: descriptive over short. A reader seeing this code for the first
+  time should still follow it
 
-#### Django Best Practices
+#### Comments explain why, not what
 
-- **Views**: Use class-based views when appropriate
-- **Models**: Include docstrings and proper field definitions
-- **URLs**: Use meaningful URL patterns with names
-- **Templates**: Follow Django template conventions
-- **Settings**: Use environment variables for configuration
+This codebase is unusually heavily commented, and deliberately so — much of it
+records a decision that looks arbitrary until you know what went wrong without
+it. If the reason for a line is not evident from the line, write it down. If it
+is, do not.
 
-#### Example Code Structure
+`CLAUDE.md` collects the ones that have bitten more than once: a layout is not
+an auth gate, row-level security must stay on, Tailwind scans prose and prose
+names classes. Read it before changing anything in those areas.
 
-```python
-# apps/projects/views.py
-from django.views.generic import TemplateView
-from django.shortcuts import render
-from django.http import JsonResponse
+#### Server and client
 
-from apps.data.projects_data import ProjectsData
-from .base import BaseProjectsView
-
-
-class ProjectsView(BaseProjectsView):
-    """
-    Display all projects with pagination and SEO metadata.
-    
-    This view handles the main projects listing page, including
-    filtering, pagination, and comprehensive SEO optimization.
-    """
-    template_name = 'projects/projects.html'
-    projects_per_page = 6
-
-    def get_context_data(self, **kwargs):
-        """Add projects data to template context."""
-        context = super().get_context_data(**kwargs)
-        
-        # Get and paginate projects
-        all_projects = ProjectsData.projects
-        # ... pagination logic
-        
-        return context
-```
+- Default to server components. Reach for `"use client"` when something needs
+  state, an event handler or a browser API — not by habit
+- Read paths go in `lib/data/` behind `use cache` with a tag; writes go in
+  `lib/actions/` as server actions
+- **A server action is a POST endpoint, not a function call.** It does not
+  inherit any gate from the page that rendered the form, so it re-checks
+  permission itself
 
 ### Frontend Standards
 
-#### HTML/Templates
+#### Markup
 
-- **Semantic HTML**: Use appropriate HTML5 semantic elements
-- **Accessibility**: Include ARIA labels and alt text
-- **Performance**: Optimize images and use lazy loading
-- **SEO**: Include proper meta tags and structured data
+- **Semantic HTML**: use the element that means the thing
+- **Accessibility**: label every control; anything interactive must work from a
+  keyboard, and anything hover-only must also work on touch
+- **Images**: `next/image`, with dimensions and sensible `sizes`
 
-#### CSS/TailwindCSS
+#### CSS / Tailwind
 
-- **Utility Classes**: Use TailwindCSS utility classes
-- **Responsive Design**: Mobile-first approach
-- **Consistency**: Follow established design patterns
-- **Performance**: Minimize custom CSS
+- The site is written entirely in **dark-mode classes with no `dark:` variants**.
+  Light mode is produced by redefining the palette variables under
+  `html[data-theme="light"]` in `app/globals.css`
+- **Stay inside the existing colour vocabulary.** A new colour family, or an
+  arbitrary value like `bg-[#18181b]`, renders its dark value on a white page
+  with no error anywhere
+- **No cast-depth utilities.** They render nothing on a dark canvas while still
+  costing paint; depth is carried by the border and surface ramps
+- New stylesheets go in `styles/` and are `@import`ed from `app/globals.css`,
+  never linked separately
 
-#### JavaScript
+#### Motion
 
-- **Vanilla JS**: Prefer vanilla JavaScript over frameworks
-- **ES6+**: Use modern JavaScript features
-- **Performance**: Minimize DOM manipulation
-- **Accessibility**: Ensure keyboard navigation support
+- Respect `prefers-reduced-motion` in anything that moves
 
 ## Commit Message Guidelines
 
@@ -296,9 +276,10 @@ Fixes #123
 
 3. **Test your changes**:
 
-   ```powershell
-   python manage.py check
-   python manage.py test
+   ```bash
+   npx tsc --noEmit
+   npm run lint
+   npm run build
    ```
 
 ### Pull Request Template
@@ -317,9 +298,43 @@ Brief description of changes made.
 - [ ] Other (please describe)
 
 ## Testing
-- [ ] Local testing completed
-- [ ] All existing tests pass
-- [ ] New tests added (if applicable)
+
+**There is no test runner, and that is a deliberate choice rather than a gap.**
+Everything worth checking here involves a real browser, a real database or both:
+whether a gate leaks data in a payload nobody looks at, whether saving a record
+untouched changes its bytes, whether a table pushes the page sideways at 360px.
+A unit test sees none of that.
+
+So verification is a set of harnesses under `scripts/`, each covering one
+mechanism, each driving the running application against the live database.
+
+```bash
+npm run dev                     # in one terminal
+
+npx tsc --noEmit
+npm run lint
+npm run build && node scripts/check-css-sources.mjs
+npx tsx scripts/check-rls.mjs
+npx tsx scripts/check-admin.mjs
+```
+
+`CLAUDE.md` lists all of them and says which need `--conditions=react-server`.
+
+### Writing one
+
+Three rules, learned the hard way:
+
+1. **Snapshot and restore.** Anything that writes must put back what it touched,
+   in a `finally`, and then assert the restore worked. The database is live.
+2. **Mark what you create.** Rows a harness creates carry a `zz-` prefix, so a
+   leftover is obviously a harness's and not real content.
+3. **Prove the check can fail.** Break the thing deliberately, watch the check
+   go red, then fix it. A check that has never failed is not known to work —
+   two in this repo were passing against bugs until that was done.
+
+CI runs types, lint and the build only. The harnesses drive a browser and write
+to the live database, which is right for a developer checking a change before
+pushing it and wrong for a pull request from a fork.
 
 ## Screenshots (if applicable)
 Include screenshots for UI changes.
@@ -364,7 +379,7 @@ If applicable, add screenshots.
 - OS: [e.g. Windows 11]
 - Browser: [e.g. Chrome 91]
 - Python Version: [e.g. 3.12]
-- Django Version: [e.g. 5.2.7]
+- Node Version: [e.g. 22.11.0]
 ```
 
 ### Feature Requests
@@ -385,85 +400,23 @@ Any other context or screenshots.
 
 ## Documentation
 
-### Code Documentation
+### Code documentation
 
-- **Docstrings**: Include docstrings for all classes and functions
-- **Comments**: Add comments for complex logic
-- **Type Hints**: Use Python type hints where appropriate
-- **README Updates**: Update README.md for significant changes
+- **Comments explain why.** The what is in the code. Write a comment when the
+  reason for a line would not survive being read fresh in six months — and
+  especially when the line looks arbitrary or redundant without it
+- **Record the failure, not just the rule.** "`min-w-0` is load-bearing: a grid
+  item's min-width defaults to min-content, and a wide table pushed the column
+  to 889px in a 360px viewport" is useful. "Set min-width to zero" is not
+- **Types over prose.** If a type can say it, let it
+- **Update `CLAUDE.md`** when you find a trap that cost you an hour. That file is
+  a list of things that have actually gone wrong here, and it earns its length
 
-### Example Documentation
+### When you change something documented
 
-```python
-def calculate_reading_time(content: list[str]) -> int:
-    """
-    Calculate estimated reading time for blog content.
-    
-    Args:
-        content: List of paragraphs/content blocks
-        
-    Returns:
-        Estimated reading time in minutes
-        
-    Example:
-        >>> content = ["Paragraph 1", "Paragraph 2"]
-        >>> calculate_reading_time(content)
-        3
-    """
-    total_words = sum(len(paragraph.split()) for paragraph in content)
-    words_per_minute = 200
-    return max(1, round(total_words / words_per_minute))
-```
-
-## Testing
-
-### Running Tests
-
-```powershell
-# Run all tests
-python manage.py test
-
-# Run specific app tests
-python manage.py test apps.blog
-
-# Run with coverage
-pip install coverage
-coverage run --source='.' manage.py test
-coverage report
-```
-
-### Writing Tests
-
-Create test files following Django conventions:
-
-```python
-# apps/blog/tests.py
-from django.test import TestCase, Client
-from django.urls import reverse
-from apps.data.blog_data import BlogData
-
-
-class BlogViewTests(TestCase):
-    """Test cases for blog views."""
-    
-    def setUp(self):
-        """Set up test client and data."""
-        self.client = Client()
-        
-    def test_blog_list_view(self):
-        """Test blog list page loads correctly."""
-        response = self.client.get(reverse('blog'))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Blog')
-        
-    def test_blog_detail_view(self):
-        """Test blog detail page loads correctly."""
-        # Test with first blog post
-        if BlogData.blogs:
-            blog_slug = BlogData.blogs[0]['title'].lower().replace(' ', '-')
-            response = self.client.get(reverse('blog_detail', args=[blog_slug]))
-            self.assertEqual(response.status_code, 200)
-```
+`README.md`, `CONTRIBUTING.md` and `CLAUDE.md` all describe how this works. If a
+change makes one of them wrong, fix it in the same commit — a stale instruction
+costs more than a missing one.
 
 ## Security
 
@@ -472,7 +425,7 @@ class BlogViewTests(TestCase):
 - **Never commit sensitive data** (API keys, passwords)
 - **Use environment variables** for configuration
 - **Validate user input** properly
-- **Follow Django security best practices**
+- **Never trust the client.** A server action is a POST endpoint: it re-checks permission itself rather than assuming the page that rendered the form did
 - **Report security issues** privately to [hi@ridwaanhall.com](mailto:hi@ridwaanhall.com)
 
 ### Security Checklist
@@ -493,7 +446,7 @@ class BlogViewTests(TestCase):
 
 ### Resources
 
-- [Django Documentation](https://docs.djangoproject.com/)
+- [Next.js Documentation](https://nextjs.org/docs)
 - [TailwindCSS Documentation](https://tailwindcss.com/docs)
 - [Python Style Guide (PEP 8)](https://pep8.org/)
 - [GitHub Flow](https://guides.github.com/introduction/flow/)

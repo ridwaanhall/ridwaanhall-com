@@ -1,275 +1,327 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code (claude.ai/code) working in this repository.
 
 ## Stack
 
-Django 6.0 (Python 3.14+), managed with **uv** (not pip/poetry — always `uv sync` / `uv run ...`), Tailwind CSS v4 via CLI, deployed to Vercel (WSGI). Project package is `FlexForge/`; apps live under `apps/`. Database and media storage are both Supabase (Postgres + Storage) in production; SQLite is used automatically in development/tests.
+Next.js 16 (App Router, Turbopack, `cacheComponents`), React 19, TypeScript,
+Tailwind CSS v4. Data comes from Supabase Postgres through Drizzle ORM over
+`node-postgres`; uploaded media lives in Supabase Storage. Auth is Auth.js v5
+with Google and GitHub. Deployed to Vercel.
 
-**`pyproject.toml` + `uv.lock` are the only dependency manifest — there is deliberately no `requirements.txt`.** One existed as a generated `uv export` artefact and was removed: nothing read it (CI runs `uv sync --frozen`, `vercel.json` names no install step), so it was a second list to keep in step for no benefit. Don't regenerate one. The thing to know if a deploy ever fails at the install step is that Vercel's `@vercel/python` reads `pyproject.toml`/`uv.lock` only on recent builder versions, older ones wanting `requirements.txt`.
+## The schema
+
+Everything reads and writes the **`app`** schema: 45 tables, uuid keys, real
+foreign keys with real referential actions, row-level security on every one.
+
+`drizzle/0000_init.sql` is the whole of it, in one file, and it runs against an
+empty database. There is no ladder of migrations to replay — change that file,
+apply it, and re-run the two checks below.
+
+```bash
+node scripts/apply-migration.mjs drizzle/0000_init.sql --apply
+node scripts/gen-app-schema.mjs                # regenerate the Drizzle mapping
+npx tsx scripts/check-baseline-schema.mjs      # the file still builds this schema
+npx tsx scripts/check-app-schema.mjs           # the mapping still matches it
+```
+
+`lib/db/app-schema.ts` is **generated**, never edited by hand: 45 tables of
+column names is exactly the transcription that fails silently, because a
+mistyped SQL name is a column the app writes to and never reads back.
+`drizzle-kit pull` cannot produce it — with `schemaFilter: ["app"]` it fetches
+zero tables — which is why the generator reads `information_schema` instead.
+
+`check-baseline-schema.mjs` is the one that keeps the setup instructions honest:
+it applies `0000_init.sql` into a scratch schema inside a transaction, compares
+columns, keys, foreign-key actions, checks, indexes and RLS against the live
+schema, and rolls back.
+
+### One schema left to retire
+
+There is still a `public` schema in the database, left by the site's previous
+build, and it is **not** this application's — nothing in this codebase reads it.
+It goes when the domain is switched over: `drizzle/9999_drop_public.sql` has the
+pre-flight and the order to do it in. `scripts/check-schema-parity.mjs` and
+`scripts/catch-up-from-public.mjs` exist only for that moment and are deleted
+with it.
 
 ## Commands
 
-- Install deps: `uv sync`
-- Dev server: `uv run python manage.py runserver`
-- Tests: `uv run python manage.py test` (e.g. `uv run python manage.py test apps.blog` for one app) — this is what CI runs and is the canonical command. The README also mentions `uv run pytest`; pytest-django is configured and works, but CI does not use it.
-- Django check: `uv run python manage.py check`
-- Tailwind build: `npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-deixuges.css --minify` (add `--watch` for dev). There is no `collectstatic` step anywhere in this project's pipeline (not in CI, not in the Vercel build) — the built `staticfiles/` output (images, fonts, icons, compiled CSS, JS) is committed directly and served as-is. This is why `STORAGES["staticfiles"]` uses WhiteNoise's plain `CompressedStaticFilesStorage`, **not** `CompressedManifestStaticFilesStorage`: none of these pre-built assets live under any `STATICFILES_DIRS` source `collectstatic` could discover (they're placed directly under `STATIC_ROOT`), so a manifest can never be generated for them — `ManifestStaticFilesStorage`'s strict lookup would 500 on every `{% static %}` tag referencing one (this was a real, live bug on the `main` branch — every page extending `templates/base_seo.html` 500'd via its favicon links). If you add a genuinely new static asset with a `{% static %}` reference, just drop the file under `staticfiles/` directly with its final name (matching the hand-picked cache-busted filename convention below) — don't reach for `collectstatic`.
-
-## Architecture: Django ORM (Supabase-backed)
-
-Content (bio, experience, projects, blog posts, education, awards, applications, hiring/open-to-work status, legal documents) lives as real Django models — `apps/about/models.py`, `apps/blog/models.py`, `apps/projects/models.py`, `apps/openhire/models.py`, `apps/legal/models.py` (`LegalDocument` + `LegalSection`) — backed by Postgres (Supabase in prod, SQLite in dev/tests). This replaced an earlier "Individual File System" (dataclasses in per-app `data/` files, no DB) — that whole layer (`apps/*/data/`, `apps/core/dynamic_loader.py`) was migrated and removed; don't recreate it.
-
-- **Access pattern preserved on purpose**: `apps/core/data_service.py`'s `DataService`, `apps/about/manager.py`'s `AboutManager`, `apps/core/content_manager.py`'s `ContentManager`, and `apps/openhire/manager.py`'s `OpenHireManager` are the only things views/templates/`apps/seo/schema.py` talk to. They query the ORM internally but hand back the exact same plain `dict`/`list[dict]` shapes the old dataclass files produced (including derived fields like `image_url`/`img_name`/`image_count` on blog/project dicts, built by `apps/core/content_manager.py`'s `_add_image_compat_fields`). Extend these managers rather than querying models directly from views, and preserve the dict shape when you do.
-- **Singletons** (`Profile`, `HiringProfile`, `OpenToWorkProfile`) extend `apps/core/models.py`'s `SingletonModel` (forces `pk=1`, blocks delete) and use `.load()` (get-or-create) rather than a plain query. `core.PrivacyPolicy` used to be one; it was replaced by `apps/legal`'s `LegalDocument`/`LegalSection` (slug-addressed, many documents, ordered sections) and dropped in `core` migration `0003_delete_privacypolicy` — `apps/core/models.py` now holds only `SingletonModel` and `ContentVersion`. The `privacy`/`terms` URL names still resolve, via `apps/legal/views.py`.
-- **Slugs are computed, not stored data**: `BlogPost.slug`/`Project.slug` are `slugify(title)`, resolved via `apps/core/base_views.py`'s `DetailView.get_item_by_slug(queryset, slug, to_dict_fn)` — an indexed DB lookup (`get_object_or_404`), not a linear scan.
-- **Ordered M2M**: `Profile.skills_highlight` goes through `ProfileSkillHighlight` (profile, skill, `order`) because the sequence is editorial — it becomes the JSON-LD `knowsAbout` array. Read it via `profile.skill_highlights` (prefetch `skill_highlights__skill`), never the bare M2M, which returns `Skill.Meta.ordering` (pk) order. A through model rules out `filter_horizontal` (`admin.E013`), so the admin uses a `TabularInline` with `autocomplete_fields`. `Project.tech_stack` stays a plain M2M with `filter_horizontal` — its order genuinely doesn't matter. Note Django cannot `AlterField` a M2M's `through=`; changing one needs `RemoveField` + `AddField` with the data copied out first.
-- **Images**: `ImageField`s use `FileSystemStorage` (local `media/`, gitignored) when `DEBUG`/tests, and a custom Supabase Storage backend (`apps/core/storage.py`'s `SupabaseStorage`) in production — chosen by `STORAGES["default"]` in `FlexForge/settings.py`, mirroring the `DATABASES` sqlite/Postgres split. This is deliberate: local dev works fully offline and never pollutes the shared production bucket with test uploads. `SupabaseStorage` talks directly to Supabase's Storage REST API with `requests` (deliberately not django-storages/boto3, to stay well under Vercel's `maxLambdaSize: 15mb`). It overrides `generate_filename`/`get_available_name` to sidestep two real bugs: Django's base `Storage` methods route file paths through `os.path.join`/`os.path.normpath`, which inject backslashes on Windows dev machines and corrupt the object key; and the default exists-check-and-rename collision avoidance is pointless here since uploads are upsert-safe (`x-upsert: true`) — both are overridden to keep names deterministic and forward-slash-only regardless of host OS. Skill icons stay plain URL strings (not `ImageField`) since they're static SVGs and Pillow can't validate SVG anyway.
-- **Admin** (`apps/*/admin.py`) is fully registered — `path('admin/', admin.site.urls)` lives in `FlexForge/urls.py` (it wasn't wired in at all before this existed; don't assume admin is reachable just because models are registered — check both).
-- **Stored files are reference-counted, never blindly deleted**: `apps/core/file_cleanup.py` + the `pre_save`/`post_save`/`post_delete` receivers in `apps/core/signals.py` remove a file from Supabase Storage (or local `media/`) when a row is deleted or its image replaced — but only once *no* row on *any* model still names it. That check is essential, not defensive: several files are deliberately shared (the author photo is on all 20 `BlogPost` rows plus `Profile`, one logo covers six `Experience` rows), so per-row deletion would break live images. Cleanup failures are logged, never raised — an orphaned object beats a 500 on the page that triggered it. Note `QuerySet.update()`/`bulk_create` bypass signals, so bulk edits won't clean up.
-- **`SupabaseStorage.delete()` must treat "missing" as success**: Supabase reports a missing object as HTTP **400** with a body of `{"statusCode": "404", "code": "NoSuchKey"}`, *not* a plain 404, so status alone can't identify it — and Django's `Storage.delete()` contract says deleting a missing file is not an error.
-- **Row Level Security**: Supabase exposes a PostgREST API over the `public` schema to anyone holding the project's anon/service keys, entirely independent of Django. `apps/core/signals.py`'s `enable_row_level_security` runs on every `post_migrate` (Postgres only, idempotent) and force-enables RLS on every public table — this has zero effect on Django's own queries since its Postgres role has `BYPASSRLS`, but closes the PostgREST exposure. Don't disable this; if a table shows RLS off in the Supabase dashboard, `manage.py migrate` hasn't run since it was disabled — re-run `migrate` to restore it.
-
-## Admin: JSON fields get structured editors, never a raw JSON textarea
-
-Semi-structured content (`stories`, `responsibilities`, `achievements`, `tags`, `Project.description`, the 14 openhire lists, the legal-document sections, `BlogPost.content`) stays stored as `models.JSONField`, but the admin never shows raw JSON. `apps/core/admin_widgets.py` provides five Field/Widget pairs — `StringListField`, `KeyValueField`, `GroupedKeyValueField`, `CopyrightCreditsField`, `ContentBlockField` — and `apps/core/admin_forms.py`'s `string_list_form()` builds a `ModelForm` for the common all-string-lists case in one line. When adding a JSON field, wire it to one of these rather than leaving the default textarea.
-
-- **Declare fields on a `ModelForm`, not via `formfield_overrides`** — the latter maps a whole field *class* to one widget, which can't express `BlogPost` (`content` vs `tags`) or the legal documents (several shapes across one model).
-- **For an inline, pass `exclude=(<parent fk>,)`** to `string_list_form()`. `fields = "__all__"` otherwise pulls the parent FK in as a required select and *no save can succeed* (this bit `PositionInline`).
-- **One named control, name-less UI.** Each widget renders a single `<textarea name="…">` holding the JSON; `staticfiles/js/adminJsonWidgets.js` hides it and builds the editor from name-less elements, mutating the parsed model in place. Don't "improve" this into one named input per item: a `<textarea>`'s submission value is CRLF-normalised (which would corrupt the one `pre` block containing real newlines), `construct_instance` would silently keep the old value when you clear a list, and `inlines.js`'s `__prefix__` renumbering would have N names and duplicate ids to rewrite. It also degrades to the old raw-JSON textarea when JS is unavailable.
-- **`has_changed` must treat `initial=None` as the shape's zero value**, or every blank "add another" inline row counts as changed, gets fully validated, and blocks the page from saving. Formsets gate both `save_existing()` and new-row creation on `has_changed`.
-- **No key-reorder controls on dict editors.** Production is Postgres `jsonb`, which normalises object key order — such a control would appear to work on SQLite locally and be a silent no-op live. List order *is* preserved by jsonb, so list reordering is real and supported.
-- **Never trim or normalise values.** Two stored `class` strings contain double spaces, and block `text` is raw HTML rendered `|safe`. Widget JS uses `document.createElement` + `el.value = …`, never `innerHTML`.
-- Widget templates live in `apps/core/templates/core/widgets/` — the default `FORM_RENDERER` searches app `templates/` dirs (`django/forms/renderers.py`), so no settings change is needed. Assets go straight into `staticfiles/js|css/` per the convention above, and `class Media` deliberately does **not** list jQuery (admin loads `jquery.js` in DEBUG vs `jquery.min.js` otherwise; declaring it double-loads and breaks `noConflict`).
-- When changing any of this, re-run the fidelity checks: `apps/core/tests.py`'s `AdminJSONWidgetRoundTripTest`, and a GET-then-POST-unchanged pass over the admin change forms — that combination is what catches CRLF corruption, silent field drops, and `has_changed` regressions, none of which unit tests alone reveal.
-
-## Content caching
-
-Page latency is dominated by **round trips to Supabase**, not by query complexity — measured against the live database, opening a connection costs ~190ms and each subsequent query ~27ms, so a page issuing sixteen queries spent almost all its time waiting on the network. `apps/core/cache.py` caches what the managers return, which took the nine main pages from **84 queries / 2.6s to 3 queries / 245ms**.
-
-The design has to work on Vercel, where each lambda has its own memory and an admin edit handled by one instance must not leave the others serving stale content. Two concerns are kept separate:
-
-- **Payloads live in local process memory** (`CACHES["default"]` is `LocMemCache` in every environment). A hit costs no network and no Supabase quota.
-- **Correctness is anchored by a shared version stamp** per namespace, in `apps.core.models.ContentVersion` (one tiny Postgres table). A payload's cache key embeds the versions of the namespaces it was built from, so bumping one instantly orphans every key derived from it — on all instances at once, with no cross-instance messaging. Reading the stamps is a single indexed query, itself memoised locally for `CONTENT_CACHE_VERSION_TTL` (default 5s), so a warm page issues **zero** queries.
-
-`CONTENT_CACHE_VERSION_TTL` is the only staleness window in the design: it bounds how long an instance that *didn't* handle an edit keeps serving the old content. The instance that did handle it drops its memo in `invalidate()`, so the admin shows changes immediately.
-
-- **Invalidation is per namespace, never global.** `MODEL_NAMESPACES` maps each model to a namespace and `ENTRY_DEPENDENCIES` declares what each cached entry is built from; the `post_save`/`post_delete`/`m2m_changed` receivers in `apps/core/signals.py` bump only the affected ones. Saving a blog post must not throw away the projects, about and privacy caches — each costs a fresh set of round trips to rebuild. Listing a dependency that isn't real only causes an occasional needless rebuild; *omitting* a real one serves stale content, so err towards listing it (`projects` depends on `skill` because project dicts embed whole `tech_stack` records, and `about_data` does too because it embeds highlighted skill *names*).
-- **`m2m_changed` is not optional.** `Project.tech_stack` is a plain M2M, so attaching a skill fires `post_save` on neither side.
-- **Values derived from the clock must not be cached.** `AboutManager.get_about_data()` recomputes `is_active` (`is_working_hours()`, Asia/Jakarta) on every read rather than serving the cached copy, or the availability indicator would freeze. The homepage's shuffled skill rows are built in the view from cached data, so they still vary per request.
-- **`CONTENT_CACHE_TTL` (default 900s) is a safety net, not the invalidation mechanism.** `QuerySet.update()` and `bulk_create()` bypass signals and so never bump a version — the blog detail view's `F("views") + 1` increment is exactly such a write.
-- **The cache is off under `manage.py test`** (`CONTENT_CACHE_ENABLED = False` when `TESTING`), so the suite observes writes immediately and its `assertNumQueries` counts stay meaningful; disabling short-circuits `get_or_build` before it reads any stamp, so no query is added either. `apps/core/tests/test_content_cache.py` turns it back on and is the only place the caching is actually exercised — if you change any of this, that module is what catches it.
-- **Detail pages resolve slugs against the cached list** via `DetailView.find_by_slug()`, not a fresh `get_object_or_404`: the full post/project list is already in memory, so re-querying a row we're holding buys nothing but a round trip. `get_item_by_slug()` (the indexed-lookup version) is still there for callers that genuinely need a queryset.
-- A missing/unreadable `ContentVersion` table degrades to *uncached*, never to a 500 — `_load_versions()` returns `None` and `get_or_build` just calls the builder. A failed version bump is logged and swallowed so it can't break the save that triggered it.
-
-`CONN_MAX_AGE` is set to 600 (was 0) with `CONN_HEALTH_CHECKS=True`, so a warm instance stops paying the ~190ms connection handshake on every request. This is the intended usage of the transaction-mode pooler — a client connection to pgbouncer is cheap, since a real server connection is only claimed for the duration of a transaction.
-
-**Gotcha: Supabase Storage reads are CDN-fronted and only eventually consistent.** Replacing an object at the *same* key can serve the previous bytes for a while (observed as `CF-Cache-Status: HIT` returning superseded content, on both the public and the authenticated endpoint). A freshly-created key is immediately consistent, so this only bites when re-uploading an image under a filename that already existed — `SupabaseStorage.get_available_name()` is deliberately deterministic, so that *is* an in-place replace. Upload under a new filename when you need the change visible immediately. `_open()` uses the authenticated object endpoint rather than the public URL, which at least keeps server-side reads off the public-bucket path, but it does not defeat the CDN.
-
-## View pattern
-
-Views inherit from `apps/core/base_views.py`'s `BaseView`/`PaginatedView`/`DetailView` and implement `_get(self, request, *args, **kwargs)`, not `get()` — `BaseView.get()` already wraps `_get` in `handle_exceptions` for consistent error pages across the app. Only override `get()` directly for views with fundamentally different behavior (e.g. the CV redirect views in `apps/core/views.py`). `BaseView.get_about_data()` caches its result on the view instance (`self._about_data_cache`) since several views/SEO mixins call it more than once per request — that used to be free (static in-memory data) and is now a real ORM query, so don't remove the cache without checking query counts.
-
-`apps/projects/types/project.py` still has `ProjectStatus`/`PROJECT_STATUS_SORT_RANK`/`normalize_project_status` (pure lifecycle-status logic, no DB dependency) — everything else that used to live under `apps/*/types/` (the old IFS dataclasses) is gone.
-
-## The mobile drawer has no close button
-
-`templates/sidebar.html`'s `#mobile-menu` is dismissed three ways — dragged down, backdrop tap, or Escape — and `staticfiles/js/sidebar.js` owns all three. The X button and the drawer-footer theme toggle were both removed: the navbar already carries a toggle that stays reachable whether the drawer is open or shut.
-
-- **`touch-none` on the drag zones is load-bearing, not styling.** `#mobile-menu` is `overflow-y-auto`, so without it the browser claims a vertical drag as a scroll of the drawer and the `pointermove` handler never runs. Both `[data-drawer-handle]` elements (the grab handle strip and the header) carry it.
-- **The drag must track the finger**, which is why `transition` is forced to `none` for its duration and restored on release. Release hands the drawer back to CSS by clearing the inline transform in the *same synchronous block* as the class change, so the class's own 300ms transition carries it on from wherever the finger left it rather than snapping to 0 first.
-- **Dismissal is distance *or* velocity**: past 25% of the drawer's own height, or a flick faster than 0.5px/ms that moved at least 12px. Distance alone makes a quick flick feel broken; velocity alone fires on taps.
-- **`pointerdown` ignores anything inside `a, button, input`** — the status badges in the header are a link, and a drag starting there would swallow the tap.
-- **Escape is now the only keyboard dismissal.** Don't remove it while the X button is gone.
-
-## Guestbook chat messages
-
-**Messages are rendered server-side, in exactly one place.** `apps/guestbook/templates/guestbook/partials/_message.html` is the only definition of a message's markup, `_pinned_card.html` the only definition of a pinned card, and `_role_badge.html` the only definition of the Author/Co-Author badge. This is a deliberate reversal: `guestbook.html`'s inline script used to carry a ~150-line template-string copy of the message markup for AJAX-posted messages, plus JS reimplementations of the role badge, the pinned card, the avatar and the `linkify_message` filter — every one a second definition that had to be edited in step with its Django original. `SendMessageView` and `PinMessageView` now return rendered HTML (`html` in their JSON) from those same partials, and the script builds no markup at all. Don't reintroduce a JS builder; add to the partial and let the view render it.
-
-- **`SendMessageView` re-renders the whole panel** (`partials/_thread.html`), not just the new node, and the client swaps it into `#guestbook-messages` wholesale. Appending one node client-side would mean deciding where it goes, which depends on the depth cap and on whether its parent fell inside the fetched window — a second copy of `apps/guestbook/tree.py` free to disagree with the first. `ThreadedMessagesMixin` is what both views share so the query, the profile enrichment and the `build_thread()` call happen once.
-- **The thread is a tree, capped at three levels.** `apps/guestbook/tree.py`'s `build_thread()` arranges the enriched dicts and issues no queries. `reply_to` is an unbounded self-FK and the panel is one column down to 375px wide, so past `MAX_DEPTH` a reply attaches to its grandparent — beside its parent rather than further right. Verified at 375px: no horizontal overflow, and a long unbroken URL still wraps inside the bubble at max depth.
-- **`show_reply_to` is what stops the tree losing information.** A reply gets a caption naming who it answered only when the nesting cannot show that itself: its parent fell outside the latest-50 window, or it was flattened off its parent at the cap. That caption is what the entire flat list used to be.
-- **Parents are resolved only against already-placed messages**, walking oldest first, so no `reply_to` value can build a cycle — the recursive template would otherwise recurse until it died. This is not hypothetical: `sync_guestbook` merges rows in from a second database and reassigns primary keys, and its timestamps are only second-accurate.
-- **The rails are drawn by the wrapper around each reply**, not by the reply itself, so `_message.html` stays agnostic about where it sits. Each reply draws its own vertical segment (`before:h-[1.125rem]` on the last, `before:bottom-[-0.75rem]` otherwise) plus an elbow, which is what makes the line continuous and stops it dangling past the last reply. Geometry and tokens match `comments/_section.html` — `left-[1.125rem]` is the centre of a 2.25rem avatar — with a tighter indent because a comment thread nests once and this nests twice. **Both trees use `bg-zinc-700`, not `zinc-800`:** at 1px against a near-black panel, `zinc-800` is invisible.
-- **`.gb-replies` is always rendered, `hidden` when empty**, so deleting the last reply must put the `hidden` back or the empty container holds open the space its rail drew. Same for `#guestbook-empty`.
-- **Deleting removes the whole branch.** `ChatMessage.reply_to` cascades, so the server has already taken the replies; removing only the clicked node would leave orphans on screen until reload, and the message count must drop by the number of nodes removed, not by one.
-- Pinning is a toggle, not separate pin/unpin endpoints: `PinMessageView` flips `ChatMessage.is_pinned` and enforces `ChatMessage.MAX_PINNED_MESSAGES` (3) only on the pin path. `UserProfileMixin.get_user_profile_data()`'s `can_pin` field (`is_author or is_co_author`) is the single source of truth for pin permission — reuse it rather than re-deriving from `is_author`/`is_co_author` separately. Pin state shows in three places (the pin button, the inline "Pinned" badge, the pinned-card section) and `updatePinButtons()` has to keep all three in step. Pinned message text uses `line-clamp-2` with a JS-driven "Read more" toggle (`checkPinnedReadMore()`, shown only when the text is actually clamped) rather than `truncate`.
-- **Setting `is_author` in a test needs the cached relation and `save()`, never `.filter().update()`** — `force_login()` saves the `User`, whose `post_save` re-saves `instance.userprofile`, writing the old value straight back over the update. It costs a confusing permission-denied failure every time someone forgets.
-
-`apps/guestbook/tests/test_tree.py` covers the threading rules on plain dicts; `test_thread_rendering.py` covers the single rendering path, the escaping on both sides, and the depth cap as rendered.
-
-### Merging guestbook history from another database
-
-`manage.py sync_guestbook --source-dsn "postgres://…" [--dry-run]` merges users and messages in from a second Postgres database. Written for the Neon→Supabase cutover (the live site kept writing to Neon after the initial copy, so a few rows only ever existed there), but it is a general, re-runnable **merge**, not a restore — rows already present are left alone and rows created on the target since the cutover are never touched. Four constraints are load-bearing and easy to undo by accident:
-
-- **Match on a natural key `(username, message.strip(), timestamp truncated to the second)`, never the pk.** Both databases independently issued the same ids to different rows, so a source pk is meaningless on the target — the command reassigns pks on insert and resolves `reply_to` by natural key too. The second-level truncation is not sloppiness: the original copy went through a JSON `dumpdata` round-trip that dropped sub-second precision, so the two sides genuinely disagree below the second (`…431379` vs `…431000`).
-- **`post_save` notifications are disconnected for the duration** (restored in a `finally`). Copied messages are historical; letting the receiver run emails their authors, the site owner, and everyone they replied to about conversations from days ago. This is the same hazard as the `raw` guard above, but `loaddata`'s `raw=True` doesn't apply here since these are ordinary saves.
-- **Copy the `SocialAccount` alongside the user**, or their next OAuth sign-in creates a *second* account instead of matching the one just copied.
-- **Sequences are reset afterwards** (Postgres only) — anything loaded earlier with explicit ids leaves the sequence behind the max pk, and the next live message insert then collides.
-
-`apps/guestbook/tests/test_sync_guestbook.py` covers all of these with a stubbed source connection (offline, no credentials needed).
-
-## Gotcha: email templates don't use Django's template engine
-
-Files under `apps/core/templates/core/email/` are rendered by `EmailTemplateLoader._render_template()` (`apps/core/email_templates.py`) via plain `str.replace()` on literal `{{ key }}` tokens — **not** `django.template`. `{% %}` tags do nothing there (silently left as literal text), and any `{{ key }}` not present in the calling method's context dict is left unreplaced in the sent email rather than raising an error. When adding a placeholder to a template, add the matching key to that method's `context` dict in `email_templates.py` in the same change, and verify by rendering (no automated test covers these). All five template pairs (contact/guestbook notification, autoreply, reply-notification — html+txt each) share one dark palette (`#09090b` canvas, `#18181b` card, `#6366f1` indigo accent) matching the site's own `bg-black`/zinc/indigo theme — keep new templates visually consistent with that rather than introducing another palette.
-
-## Gotcha: `{% block head_seo %}` only renders when `seo` is missing from context
-
-`templates/base_seo.html` falls back to `{% block head_seo %}` only in the `{% else %}` branch of `{% if seo %}`. Every view built on `apps/seo/mixins.py`'s `SEOMixin` unconditionally sets `context['seo']`, so `head_seo` never renders for those pages — don't add page-specific meta/JSON-LD there; extend `apps/seo/schema.py`'s `SEOSchemaGenerator` and wire it into `apps/seo/manager.py` instead, matching how existing pages do it.
-
-## Theming: light mode is a palette remap, not `dark:` variants
-
-The site is written entirely in **dark-mode Tailwind classes** — `bg-black`, `text-zinc-400`, `bg-zinc-800`. There is not a single `dark:` variant anywhere, and adding one would be working against the grain. Light mode is produced by redefining the *palette itself* under `html[data-theme="light"]` in `static/css/input.css`, because Tailwind v4 compiles every theme color utility to a variable reference (`.bg-zinc-800 { background-color: var(--color-zinc-800) }`). Redefining those variables re-skins all ~1,500 color-class occurrences across 82 templates without touching one of them.
-
-The corollary that matters: **dark mode is the untouched `:root` branch**. Nothing in the light block can regress it, so palette work only ever needs checking in light.
-
-- **Stay inside the vocabulary or light mode silently breaks.** The remap covers `zinc` plus 14 accent families (`indigo blue green emerald teal cyan lime yellow amber orange red pink purple violet`) and `black`/`white`. A new color family, or an arbitrary value like `bg-[#18181b]`, will render its dark value on a white page with no error. Regenerate the block rather than hand-adding families.
-- **Foreground shades mirror around 500; surfaces do not.** `50↔950, 100↔900, 200↔800, 300↔700, 400↔600` preserves contrast against the canvas, which is right for text. It is wrong for surfaces: in dark, `zinc-700`–`950` spread across the wide dark end of the ramp above a black canvas; in light they have only a few points of room below white. They are hand-set (`86 / 93 / 95.5 / 97.5%`), keeping the order canvas > 950 > 900 > 800 > 700.
-- **Don't over-tighten the surface ramp — that failure is subtler than the slab it replaces.** The first attempt used `96.7 / 98.5 / 100%` to keep cards subtle, and kept only **7–35%** of dark's surface separation: `bg-zinc-800/30` fell from 8.2 lightness points to 1.0, and since `bg-zinc-800` is *also* the sidebar's active-page and hover state, the nav highlight all but vanished. Fills must survive being alpha-blended to 30%, and the alpha variants in use go down to `/30`.
-- **Accents use a *different* table from zinc** (`50→950, 100→950, 200→900, 300→900, 400→800, 500→600, 600→500, 700→300, 800→200, 900→100, 950→50`). A plain mirror preserves distance from the end of the ramp, not perceived contrast, and the high-lightness hues are the casualty: `text-green-400` on `bg-green-900/30` measured **2.92:1** under a plain mirror versus 7.43:1 in dark. The table is derived from how shades are actually used, pooled across families — `400` is simultaneously the dominant foreground (101 `text-` uses), a solid fill (23 `bg-`) and a border (11), so no mapping is role-perfect. `300` and `400` carry the foreground load and must stay distinct; the unavoidable collision is parked at `200`/`300`.
-- **`500→600` is not a downgrade.** Tailwind's `500` sits at ~72% lightness and `600` at ~63%, so this makes the solid indicator dots *darker* against a white canvas — the direction they need.
-- **Re-measure if you touch any of it.** None of these failures — flat surfaces, sub-AA badges, an inverted heatmap ramp — is visible to `manage.py test`, `ruff`, or any check in this repo. What catches them is measuring oklch lightness separation for surfaces and WCAG ratios for text, in *both* themes, and comparing.
-- **The site has no shadows, and must not grow any.** All 166 `shadow-*` / `hover:shadow-*` / `text-shadow` occurrences across 51 templates and two JS files were removed, along with the `box-shadow` rules in `imageLightbox.css` and `sidebarSearch.css` (`.shadow-3xl`). The reason is that a cast shadow is black on black in dark mode — the theme the site is designed around — so it rendered nothing while still costing paint. Depth is carried by the border and surface ramps, which both themes render. Adding one back is invisible to every check in this repo; `grep -rn 'shadow' --include=*.html templates apps` should stay empty. **Rings are not shadows** and stay: `ring-1 ring-black/5` on the two floating panels is a zero-blur 1px hairline, and `focus:ring-*` is a focus indicator. `ring-black/5` resolves through `--color-black`, which light mode swaps to white, so it keeps its per-selector `--tw-ring-color` override at the bottom of `input.css`. The admin (`adminTheme-*.css`) is out of scope and keeps its own shadows.
-- **Overlays on photography are not surfaces.** `.media-scrim` (project card hover) and the `imageLightbox.css` stage tokens are themed by hand because their contrast is against arbitrary image content, not against anything the palette controls. Don't fold them back into the ramp.
-- **Five stylesheets are written outside Tailwind's utility system** and carry their own `html[data-theme="light"]` blocks: `globalScrollbar.css` (which also exports the shared `--scrollbar-*` tokens the others reuse), `sidebarSearch.css`, `imageLightbox.css`, `clickSpark.css`, `tooltip.css`. They live in `static/css/` and are `@import`ed by `input.css` — see "All CSS ships as one bundle" below. Writing them as plain CSS is the point (scrollbar pseudo-elements and the lightbox chrome can't be expressed as utilities); being *bundled* is separate from being *hand-written*.
-- **`clickSpark.css`'s `--spark-rgb` is deliberately a plain `r, g, b` triple, not oklch** like the rest of the palette. `clickSpark.js` reads it straight out of `getComputedStyle` and hands it to the canvas `strokeStyle`, and `oklch()` as a canvas color only works on newer browsers.
-- **The pre-paint bootstrap must stay inline and blocking.** `templates/base_seo.html` sets `data-theme` from `localStorage` in a `<script>` ahead of the stylesheet links. This is a server-rendered MPA, so a deferred script would flash dark on *every* navigation for a light-mode reader. `templates/error.html` is a standalone shell with a hand-synced copy.
-- **Toggle icon visibility is CSS, not JS**, keyed off `html[data-theme]` — `themeToggle.js` is deferred, so a JS-driven swap would flash the wrong icon. The moon is the CSS default so a no-JS reader (no `data-theme` attribute, dark `:root` palette) still sees exactly one icon.
-- **The profile avatar renders three times too** — mobile navbar, mobile drawer, desktop rail — from `templates/components/profile_avatar.html`, with `size`, `extra_class` and `lazy` as include arguments since the placements genuinely differ in scale. It **no longer carries a status dot**: the amber pulsing `is_sick` badge and the green `is_active` one are both gone, by request, because the pulse pulled the eye off the name beside it. Both states are still stated in words by the status badges under the username, so nothing is lost. The component is now a bare `<img>` — the old `relative` wrapper existed only to position the dot.
-- **The toggle renders twice, and exactly one is on screen at any width** — the mobile navbar (paired with the hamburger, below `md`) and the rail's `@username` row (from `md` up) — both from one `templates/components/theme_toggle.html`. Instances share a `data-theme-toggle` attribute rather than an id, and `themeToggle.js` keeps every one in sync, so adding a placement needs no JS change. Include arguments are `icon_size` and `bare` (drops the padding and hover plate, leaving just the icon — used in the `@username` row, where a hover chip would read as a second control). There used to be a third copy in the rail footer carrying `lg:hidden`, because the `@username` row was `hidden lg:flex` and the md–lg band would otherwise have had no toggle at all; that row is now visible at every rail width, so the footer copy was a second visible toggle and went. **Whatever you change here, the invariant is one visible toggle per width** — nothing in CI catches a breakpoint band with none or two. Verified at 375/767/768/900/1023/1024/1440.
-- **The rail renders one header at every width it is visible.** It is `w-62` (248px) from `md` up, so there was never a reason for `md` to differ from `lg` — but it used to: `md` laid the avatar beside the name and dropped `@username` and the status badges entirely (both were `hidden lg:flex`), so a tablet reader got a different profile block than a desktop one and could not see the hiring status the mobile drawer showed them. It is now stacked throughout — avatar, name, `@username` + toggle, badges — with every element sharing the `px-3` left edge that the search box and nav items already used, and a 16px gap separating profile / search / nav. The mobile navbar stays horizontal on purpose: it is a 56px bar, not a 248px column.
-- **Status badges get their own row, never the name's or username's.** `is_open_to_work`, `is_hiring` and `is_sick` can all be true at once, and in the 248px rail three badges beside `@username` wrapped onto two lines and collided with it; in the mobile drawer they additionally forced "Ridwan Halim" to wrap. Both now stack the badges under the username. Since all three being live is the uncommon case, this is easy to regress without noticing — set all three on `Profile` before judging any change to that header.
-- **Switching themes animates as one movement, and the cascade is what that prevents.** Flipping `data-theme` changes the computed colour of nearly every element at once, and each then animates over whatever duration it declares — `<body>` is `duration-200`, `#page-content` is `duration-700`, 148 elements are `duration-300` — so left alone the page changes in a visible cascade, sidebar first and content column half a second later. The cause is the durations *disagreeing*, not animating as such, so the fix is to make everything move in lockstep rather than to suppress motion. `themeToggle.js` picks one of three paths in `setTheme()`, all of which every entry point (click, cross-tab `storage`) goes through:
-  - **View Transitions API** (`document.startViewTransition`, the normal path): the browser animates between two snapshots of the whole document, so per-element durations are out of the picture by construction. Every switch — a click or a cross-tab sync — sets `.theme-crossfade`, which only *retimes* the UA's own crossfade so its `plus-lighter` blending — what stops the two snapshots dipping through grey at the halfway point — stays intact. `.theme-switching` rides along so the live DOM under the snapshots is not animating too, or its cascade surfaces the instant the real page is revealed. An earlier version wiped the new theme in from the clicked button as a growing `clip-path` circle instead; it was dropped because a resized viewport shows a different toggle instance (mobile navbar vs. desktop rail), so the wipe did not reliably start from the button actually pressed, and the 450ms circle read as heavier than the plain crossfade.
-  - **`.theme-fading`** (no View Transitions API): overrides `transition-property` as well as duration, forcing every element onto one shared 320ms colour transition. Overriding the property is the load-bearing half — duration alone would leave `#page-content`'s `transition-all` animating layout too.
-  - **`prefers-reduced-motion`**: `.theme-switching` alone, i.e. the old instant swap — commit, read `offsetHeight` to force the palette to commit with transitions off, remove.
-  One detail that looks optional and is not: each switch takes a monotonic ticket so a rapid second toggle (which skips the first View Transition) cannot have the older one's cleanup strip the classes the newer one is using. `.theme-switching` suppresses `transition`, not `animation`, so `animate-pulse` keeps running.
-- **Default is dark, and `prefers-color-scheme` is deliberately never consulted** — dark is the brand default, not a fallback for when the OS is silent.
-
-## Feedback and confirmation: one toast stack, one dialog
-
-Both are site-wide, both live at **body level in `base_seo.html`, outside `#page-content`** — that element carries a transform, and a transformed ancestor becomes the containing block for its `position: fixed` descendants, so a toast stack or dialog rendered inside it would be positioned against the content column instead of the viewport. `apps/core/tests/test_notifications.py` asserts this structurally; nothing else in the repo catches it.
-
-**Notifications.** `window.notify(text, variant)` from `staticfiles/js/notify.js`, variants `success` / `error` / `info`. This replaced five separate implementations of the same green/red/blue strip — Django-message blocks in the guestbook, comments and contact pages, plus `showLoginMessage()` and `showMessage()` in two inline scripts — three of which shipped their own dismissal handler. It also replaced the guestbook's six `alert()` calls, which rendered outside the page entirely.
-
-- **The markup is not in the JS.** `templates/components/notifications.html` renders one empty `<template>` per variant from `components/_toast.html`, and `notify()` clones whichever it needs. The palette therefore lives in the template alone and the JS cannot drift from it; adding a variant is a one-file change. Don't add a class table to `notify.js`.
-- **Django messages are rendered server-side** into the same stack, from the same partial, so flash feedback still works with JS unavailable. `notify.js` only adds dismissal, auto-dismiss and client-raised toasts on top.
-- **Colour is on the border and text over an opaque `bg-zinc-900`**, not a translucent tint: a toast floats over arbitrary page content, so a `/20` fill would composite against whatever happens to be behind it. The variant is also stated in words in an `sr-only` span, since colour alone cannot carry it.
-- `z-[60]`, above the dialog's `z-50`, so a toast raised while the dialog is open is readable. Hover and `focusin` hold a toast open — six seconds is not long enough to read a long error, and the close button is inside the element about to disappear.
-- Pass an **element** rather than a string when the message needs markup (the guestbook's "sign in to reply" carries a link); strings go in as `textContent` because they routinely contain user names and server error text.
-
-**Every confirmation is worded server-side, and the two surfaces have to match.** The comment views say theirs through `django.contrib.messages`, which lands in the toast stack after the redirect; the guestbook's AJAX views return the same kind of string in a `notice` field that the script passes straight to `notify()`. Two different mechanisms, deliberately — comments are POST-then-redirect and work without JS — but a reader sees one feature, so "Comment posted." / "Reply posted." / "Comment deleted." are mirrored by "Message posted." / "Reply posted." / "Message deleted." / "Message pinned." / "Message unpinned.". Don't put this wording in the script; a view that sends no `notice` simply shows nothing.
-
-Both comment forms send `next` with a `#comments` fragment, so posting or deleting returns the reader to the thread instead of the top of a long article. The toast is fixed-position and visible either way — the fragment is about not losing your place.
-
-**Confirmation.** `staticfiles/js/confirmDialog.js` + `templates/components/confirm_dialog.html`, driven by `data-confirm-*` attributes. Two modes:
-
-- `data-confirm-action="/url/"` posts the dialog's form — comment deletion, both sign-outs.
-- `data-confirm-event="ns:name"` dispatches that `CustomEvent` on `document` with `detail.trigger`, for actions carried out over fetch. Guestbook message deletion uses this: it updates the thread in place, so navigating away to a form POST would throw away the state it just maintained.
-
-**Triggers are matched by delegation from `document`**, not bound once at `DOMContentLoaded`. The guestbook replaces its whole panel after an AJAX post, so every delete button on the page is a new element — a one-shot `querySelectorAll` would leave all of them dead, and nothing in CI would notice. Cancel is focused on open, never the confirm button, so a stray Enter cannot carry out a destructive action.
-
-## Front-end interaction: tooltips and the click spark
-
-- **Write tooltips as a `title` attribute — never as a `group-hover` chip.** The old pattern was an absolutely-positioned `<span>` revealed by `group-hover:opacity-100`, which is hover-only and therefore invisible on touch. There were 12 of them across 7 templates (project tech stack, dashboard streak/language/category/OS figures, the back and action buttons, the blog share row) and all are now plain `title` attributes handled by `tooltip.js`. Re-adding one silently reintroduces a mobile-only bug that nothing in CI will catch. Grep for `w-max bg-zinc-300 text-zinc-900` to check none have crept back.
-- **Not every `group-hover` span is a tooltip.** The blog cards swap a date for "Read more" on hover — that is an affordance, not a label, and it correctly stays CSS-only.
-- **Tooltips must work on touch.** A native `title` only renders on hover, so on a phone every one was unreachable. `staticfiles/js/tooltip.js` upgrades them: it shows on hover, on `focusin`, and on tap. Everything is **delegated from `document`** — never bound per element — so JS-injected markup (guestbook messages, lightbox controls, slider buttons) is covered with no observer and no re-scan. Use `mouseover`/`mouseout`, not `mouseenter`/`mouseleave`, since only the former bubble.
-- **The tap path must never `preventDefault`.** A tooltip on a link or button has to reveal *and* follow through on the same tap. Touch is detected by recording `pointerType` on `pointerdown` (a `click` event does not carry it), which also gets hybrid laptops right per-interaction.
-- **`title` is migrated to `data-tooltip` lazily, and `aria-label` is backfilled.** Removing `title` is what stops the browser drawing its own tooltip on top, but `title` doubles as the accessible name when nothing else labels the element — so where there is no `aria-label` and no text, the text is copied across first. Migration on first interaction means the original `title` is still doing that job until the moment it is replaced.
-- `copyToClipboard.js` raises a `tooltip:hide` event rather than reaching into tooltip internals — its success chip occupies the same spot as the "Copy link" label, which on touch is on a 2s timer.
-- **The click spark listens on `mousedown`, deliberately not `pointerdown`.** On touch, `mousedown` is a *compatibility* event the browser only dispatches once it knows the gesture was a tap — if it becomes a scroll or pinch, no mouse events are sent. That gives touch support that does not fire on every scroll, for free. `pointerdown` fires at the start of every gesture and would spark on each scroll.
-- Both the spark and the tooltip animation respect `prefers-reduced-motion`. Before this existed, `grep` for it across the repo returned nothing — check it when adding new motion.
-- The admin (`adminTheme-*.css`) and the transactional email templates are **out of scope by design** and stay dark.
-
-## Gotcha: a per-operation timeout is not a limit on the request
-
-This has now caused a 504 twice, in two different places, and the shape is the same each time: **something has a sensible-looking timeout, but the number of times it runs is unbounded, so the request has no bound at all.** Vercel kills the function and Cloudflare returns a gateway timeout, which looks nothing like the actual fault.
-
-Three places now carry an explicit *total* budget. When adding anything that talks to Supabase Storage or a third-party API inside a request, budget it the same way:
-
-- **`apps/core/storage.py`'s `_save`** — the original 504, hit when saving `/admin/about/profile/1/change/` with a new image. A 30s per-attempt timeout with 3 attempts and 1.5s/3.0s backoff came to **94.5s**, and the replaced file's `delete()` added up to 15s on top — past Cloudflare's 100s origin timeout. `_TOTAL_BUDGET` (25s) now caps the whole upload, each attempt's timeout is clamped to the remaining budget, and a backoff that would overrun the deadline is skipped. Note `requests`' `timeout=` is the gap allowed *between socket reads*, not a deadline for the call, so it never bounded a slow-but-progressing upload at all.
-- **Only transient failures are retried** (`_is_retryable`: 408, 429, 5xx). Retrying a 400/401/413 cannot succeed and just spends the budget the retryable cases need.
-- **`apps/core/file_cleanup.py`'s cleanup budget** — deleting one project cascades to a `post_delete` per image (seven on the largest live row), each its own storage round trip. The budget is **per request**, set from a `request_started` receiver in `apps/core/signals.py`, precisely because the calls arrive one per cascaded row — a per-call limit would reset seven times and bound nothing. Management commands never fire `request_started`, so they stay unbounded, which is correct: no gateway is waiting on them.
-- **`apps/dashboard/views.py`'s `EXTERNAL_API_BUDGET`** — GitHub and WakaTime are fetched in sequence on a cache miss and WakaTime makes two calls of its own, so three 10s timeouts summed to 30s. Overrunning hides a panel, which is the degradation that view already implements for an API that errors.
-
-Overrunning any of these is deliberately not an error: an orphaned storage object or a hidden panel beats losing the request that triggered it. `apps/core/tests/test_storage.py`, `apps/core/tests/test_file_cleanup.py` and `apps/dashboard/tests.py` pin the wall-clock behaviour with a stubbed clock — real `time.sleep` would make the suite unusable, and mocking sleep alone (as the older retry tests did) hides exactly the bug that matters.
-
-## Gotcha: `.gitignore` blanket-ignores `*.json`
-
-`.gitignore` carries a bare `*.json`, deliberately, so a `manage.py dumpdata` backup can never be committed by accident. The cost is that **anything JSON that genuinely belongs in the repo has to be un-ignored by name**, and nothing warns you when that is missed — the file simply never appears in `git status`.
-
-This already bit the Node toolchain: `package.json` and `package-lock.json` were silently untracked for the project's whole life, so a fresh clone had nothing for `npm install` to read and got whatever Tailwind was latest that day instead of the pinned version. That is how the build drifted from 4.1.17 to two minor versions behind upstream without anyone noticing. Both are now un-ignored explicitly (`!package.json`, `!package-lock.json`), as is `vercel.json`, which had been force-added at some point.
-
-If you add any new JSON config (a tool config, a manifest), add a matching `!` line in the same change, and confirm with `git status` that git actually sees it.
-
-## The Node toolchain is dev-only
-
-`package.json` pins exactly two direct dependencies, `tailwindcss` and `@tailwindcss/cli` (currently **4.3.3**), and they exist solely to compile `static/css/input.css` on a developer machine. **Nothing in CI or deploy runs Node**: `.github/workflows/django.yml` never installs it, and `vercel.json` declares only `@vercel/python`. That is by design — `staticfiles/` is committed pre-built and served as-is (see the Commands section), so production never needs the toolchain.
-
-- Keeping `tailwindcss` as a direct dependency is deliberate even though `@tailwindcss/cli` already pins it exactly: `input.css` opens with `@import "tailwindcss"`, so the project references that package by name and should declare it rather than rely on npm hoisting a transitive dep.
-- **`package-lock.json` looks far bigger than two dependencies, and that is normal.** Of its ~67 entries, over half are `optional` per-platform native binaries — Tailwind's Rust `oxide` engine, `lightningcss`, and `@parcel/watcher`, each published as a prebuilt binary for every OS/arch. npm records all of them so one lockfile works on any machine, then installs only the handful matching the current platform (24 packages on Windows x64). They are not bloat and cannot be pruned.
-- **Don't `overrides` the `@parcel/watcher` version.** `@tailwindcss/cli` pins it to an exact version rather than a range, so npm refusing to bump it is correct, not a resolution failure. A newer watcher drops the `micromatch` chain, but forcing it overrides a deliberate upstream pin for five tiny pure-JS glob helpers.
-- Watch mode (`--watch`) cannot be verified from a headless/backgrounded shell — it produces no output there in any version, including the one that shipped before it. Verify CSS changes with a one-off build instead; that is what the `rebuild-css` skill and the documented build command use.
-
-## All CSS ships as one bundle
-
-`static/css/input.css` `@import`s the seven hand-written stylesheets (`clickSpark`, `skillSlider`, `hideScroll`, `sidebarSearch`, `globalScrollbar`, `tooltip`, `imageLightbox`), so the CLI bundles and minifies them into the single compiled output. A page loads **two** stylesheets — the compiled bundle and the Django-rendered font CSS — where it used to load eight.
-
-The reason is correctness as much as request count. Those files previously sat in `staticfiles/css/` under **fixed** filenames, `<link>`ed individually. Only the compiled bundle gets a fresh random name per build, so an edit to any of the others kept being served stale from browser and CDN caches indefinitely — there was no way to bust them. Bundling puts every line of CSS behind the one cache-busted URL.
-
-- **Don't add a `<link>` for new CSS.** Put the file in `static/css/`, `@import` it from `input.css`, and it inherits bundling, minification and cache-busting. A stray `<link>` silently reintroduces both problems.
-- **Import order is the old `<link>` order, and they stay unlayered** — after `@import "tailwindcss"` but outside any `@layer`. That is exactly what a later `<link>` gave them before: an unlayered rule beats every layered one, so these still win over Tailwind utilities. Wrapping them in a layer would flip that.
-- **`@source not "../../static/css"` is required** now that they live in the source tree, for the same reason the compiled output is excluded — they *define* selectors rather than use utilities, and property names like `border-radius` parse as class-name candidates.
-- **The two admin stylesheets are deliberately not bundled.** The admin is out of scope for the site's theming, and its CSS has no business inflating every public page. They keep their own `<link>` in the admin templates.
-- Verified by snapshotting computed styles for every affected feature (scrollbar tokens, lightbox chrome, tooltip, spark, `.custom-scroll`, `.scrollbar-hide`) before and after: byte-identical, with the sheet count dropping 9 → 2.
-
-## Gotcha: Django's `{# #}` comment is single-line only
-
-`{# ... #}` spanning multiple lines does **not** comment out the later lines — Django closes the comment at the first `#}` it finds on that line, and everything after leaks into the rendered HTML as visible text. This shipped a paragraph of prose to the top of every page for exactly one build. Use `{% comment %}…{% endcomment %}` for anything multi-line, and keep `{# #}` to a single line.
-
-## Gotcha: hardcoded compiled CSS filename
-
-The compiled Tailwind output filename (currently `global-deixuges.css`) is a hand-picked string, not an auto-generated hash. It's hardcoded in three places that must stay in sync:
-
-1. The Tailwind CLI `-o` path (above)
-2. `templates/base_seo.html`
-3. `templates/error.html`
-
-Renaming it requires updating all three plus regenerating/removing the old file under `staticfiles/css/`.
-
-## Gotcha: Tailwind source detection reads far more than the templates
-
-`static/css/input.css` carries four `@source not` exclusions, and they are load-bearing. Tailwind v4 auto-detects sources by walking **every non-gitignored file** and treating any word that parses as a class name as one in use. Auto-detection itself is kept deliberately — class strings here are not confined to templates (`apps/comments/forms.py` builds widget attrs, the templatetags assemble class lists, and blog content blocks carry a `class` key whose value only ever exists in the *database*, so Tailwind can never see it) — and enumerating sources by hand instead was tried and silently dropped `placeholder-zinc-500` and `pl-6`. What is excluded is everything that only ever *mentions* a class:
-
-- `staticfiles/css` — **the compiled stylesheet Tailwind itself just wrote.** Without this a generated class re-detects itself on the next build and can never be removed again.
-- `staticfiles/admin` — Django's vendored admin CSS/JS (`box-shadow`, a jQuery comment about shadow DOM).
-- `docs` and `*.md` — the design notes and this file, which discuss utilities by name.
-
-Between them those three kept emitting `shadow`, `shadow-xl` and `shadow-black/60` *after* every one of those classes had been deleted from all 51 templates. The same trap catches any future utility removal, and prose is enough to trigger it — one Python comment reading "would shadow it" was on its own enough to emit `.shadow`. When you delete a utility site-wide, grep the compiled output to confirm it actually went.
-
-## Gotcha: `STORAGES` setting fully replaces, not merges
-
-`FlexForge/settings.py`'s `STORAGES` dict must declare both `"default"` (the Supabase backend) and `"staticfiles"` (WhiteNoise's `CompressedStaticFilesStorage` — plain compression, deliberately not the `Manifest` variant, see the Commands section above) — Django doesn't merge this setting with any implicit default, so omitting `"staticfiles"` silently reverts static file handling with no error at settings-load time.
-
-## Gotcha: `DISABLE_SERVER_SIDE_CURSORS` lives inside `DATABASES["default"]`
-
-Not a top-level Django setting — it's a key in the database config dict. Required for correctness under Supabase's pooled (pgbouncer transaction-mode) connection, where named/server-side cursors don't work reliably.
-
-## Gotcha: model `post_save` signals must guard `kwargs.get('raw')`
-
-`apps/guestbook/models.py`'s `create_user_profile`/`save_user_profile` and `apps/guestbook/signals.py`'s `send_guestbook_email_notification` all check `if kwargs.get('raw'): return` early. Without this, `manage.py loaddata` (fixture/backup restore) replays every row through normal signal-triggered side effects — auto-creating a `UserProfile` that collides with the fixture's own explicit row, or sending real emails for years-old historical messages. Apply the same guard to any new `post_save` receiver with a side effect (DB write, email, external API call).
-
-## Code style
-
-Ruff is configured for linting (`uv run ruff check`) — line-length (E501) is intentionally excluded since the codebase predates the 88-char convention and isn't reformatted to it yet; don't "fix" long lines just because ruff would otherwise flag them. No formatter (black/ruff format) is set up, so don't assume one exists.
-
-## Git conventions
-
-- Commits: emoji-prefixed conventional commits, `<emoji><type>(<scope>): <Description>` (no space after the emoji), e.g. `✨feat(about): ...`, `🐛fix(blog): ...`, `📝docs(report): ...`. Scope is usually the app/module name. `CONTRIBUTING.md` only documents the plain (non-emoji) form — the emoji prefix is real repo convention, not written down elsewhere.
+```bash
+npm install
+npm run dev            # http://localhost:3000
+npm run build
+npm run lint           # eslint
+npx tsc --noEmit       # types
+```
+
+```bash
+npm test               # unit tests, offline
+npm run test:watch
+```
+
+`npm test` is `node --import tsx --test` over `lib/**/*.test.ts` — the built-in
+runner, no test framework. It covers the pure logic and needs neither a database
+nor a browser, which is what lets CI run it: `tests/setup.ts` points the database
+URL at nowhere before any module loads, so a test that tried to query fails at
+connect rather than reaching anything real. That failure is the signal the test
+belongs in a harness instead.
+
+Everything that *does* need the real thing is a harness under `scripts/`, each
+driving the live application and cleaning up after itself — see
+**Verification** below.
+
+## Everything reads the live database
+
+There is no local database and no fixtures. `STORAGE_POSTGRES_URL` points at the
+production Supabase project in development as well, so a page rendered locally
+is showing live content and a write from the admin is a live write.
+
+That is a deliberate trade, and it is why every harness that writes snapshots
+what it touched and restores it in a `finally` that then proves the restore.
+Follow that pattern for anything new. Rows a harness creates carry a `zz-`
+prefix so a leftover is obviously a harness's and not real content.
+
+## Architecture
+
+- `app/` — routes. `app/(site)/` is the public site, `app/admin/` the admin,
+  `app/api/` the handful of JSON endpoints.
+- `lib/data/` — read paths for the public site, each behind `"use cache"` with a
+  `cacheTag` from `lib/data/tags.ts`.
+- `lib/actions/` — server actions: contact, comments, guestbook, admin.
+- `lib/admin/` — the admin's descriptors. A model's changelist and form are
+  data; the components that render them are generic.
+- `lib/db/` — `app-schema.ts` is the live mapping, generated by introspection
+  from `app`; `client.ts` is the pool. `drizzle/` holds the schema.
+- `components/` — `site/` for the public pages, `admin/` for the admin,
+  `layout/` and `providers/` shared.
+
+### The admin is declarative
+
+`lib/admin/registry.ts` names every screen. `lib/admin/models/` holds one module
+per area, each declaring a changelist descriptor (columns, filters, search
+fields, ordering) and a form descriptor (fieldsets, field kinds, inlines).
+`components/admin/changelist.tsx` and `record-form.tsx` render any of them.
+**Add a screen by adding a descriptor, not by writing a page.**
+`scripts/check-admin.mjs` fails if the registry and the descriptors disagree —
+an entry without a form descriptor is a screen that cannot be opened.
+
+## Traps
+
+These are the things that have actually gone wrong here. Most are invisible to
+`tsc`, `eslint` and the build.
+
+### A layout is not an auth gate
+
+Returning a "not permitted" screen instead of `{children}` does not stop the
+page underneath running — React renders a layout and its children concurrently,
+so the layout only decides what is *displayed*. The admin's first version
+answered a non-staff request with 72KB in which the visible HTML said "Not
+permitted" while the Flight payload below it carried every blog post, its slug
+and its edit URL. Every admin page calls `requireStaff()` as its first `await`;
+route handlers and server actions, which do not nest under a layout at all, call
+`isStaffRequest()`. `scripts/check-admin.mjs` reads whole response bodies,
+payload included, and fails if row data appears in one.
+
+`is_staff` is read from the database on every request and never carried in the
+session token. Sessions are thirty-day JWTs; a token minted while someone was
+staff would keep asserting it for a month after the flag was cleared.
+
+### A cascade declared in application code is not a cascade
+
+`app` declares its referential actions in SQL: 29 `CASCADE` where a child has no
+meaning without its parent, 21 `SET NULL` where it does, 7 `RESTRICT` where the
+reference is somebody else's (an organization an experience still names). None
+are deferrable, so a violation is raised by the statement that caused it rather
+than at commit.
+
+That distinction is the trap. A schema whose cascades live in the application
+rather than on the constraint leaves every foreign key `NO ACTION`, and a delete
+then depends on the application having remembered to clear the children. Worse,
+`DEFERRABLE INITIALLY DEFERRED` hides it: the check happens at commit, so a
+transaction that rolls back never reaches it — which is exactly what a harness
+cleaning up after itself does. `scripts/apply-migration.mjs` issues
+`set constraints all immediate` before its rollback for that reason, and
+`scripts/check-baseline-schema.mjs` does the same.
+
+`lib/actions/admin.ts` still clears children itself, and that is deliberate: it
+is what turns a `RESTRICT` violation into a message on the screen instead of an
+integrity error to translate after the fact. `scripts/check-admin-inlines.mjs`
+proves both halves in a rolled-back transaction.
+
+### Row Level Security must stay on
+
+Supabase serves a PostgREST API over the schemas it is configured to expose, to
+anyone holding the project's anon key and independently of this application.
+Without RLS, `account` and `account_identity` are readable straight through it.
+
+Every table has RLS enabled with **zero policies**, which is the intended state
+rather than an oversight: the application's role has `rolbypassrls`, so its own
+queries are unaffected, and everything else is refused by default rather than by
+a rule somebody has to get right. Whether a schema is exposed through PostgREST
+is a project setting somebody can change in a dashboard; RLS is what makes that
+change survivable rather than catastrophic.
+
+`scripts/check-rls.mjs` enumerates the schemas this project owns rather than
+naming them, so a new one is covered from the moment it exists.
+
+`drizzle-kit generate` does not model RLS, reads every table as "should be
+disabled", and emits `DISABLE ROW LEVEL SECURITY` for all of them. It is not
+used here, and **any generated SQL gets read line by line before it runs.**
+
+### Tailwind scans prose, and prose names classes
+
+Tailwind v4 walks every non-gitignored file and treats any word that parses as a
+class name as one in use. A design note, a README, or a code comment that merely
+*names* a utility is enough to emit it. The site uses no cast-depth utilities at
+all; promoting the app from `web/` to the repo root brought the markdown back
+inside the scan and the very first build re-emitted every one of them. Worse,
+the check written to assert their absence named one in order to look for it, and
+so kept it alive on its own.
+
+`app/globals.css` carries the `@source not` lines. `scripts/check-css-sources.mjs`
+proves they still work. If you write a comment about a utility, describe it
+rather than spelling it out.
+
+The other half of this was **content that named classes**. Post bodies were
+JSONB blocks with a hand-typed `class` key — invisible to any scan, so 29
+utilities had to be listed in `@source inline(...)` and re-extracted from live
+data after every edit. Those columns are gone and the list with them; what keeps
+it gone is `lib/utils/sanitize.ts`, which allows `class` on one element and only
+matching `language-*`. **Never store CSS classes in the database.**
+`scripts/check-db-classes.mjs` is the guard.
+
+### `.gitignore` no longer blanket-ignores JSON
+
+It used to, so a database dump could not be committed by accident, and the cost
+was that `package.json` and `package-lock.json` sat untracked for the project's
+whole life — which is how the Tailwind build drifted two minor versions without
+anyone noticing. The rule is gone; dumps are named directly (`*.dump.json`,
+`*.dump.sql`). Still confirm with `git status` that a new file is actually
+seen.
+
+### Other things worth knowing
+
+- **`node-postgres`, never `postgres.js`.** postgres.js pipelines concurrent
+  queries onto one socket, which stalls permanently under Supabase's
+  transaction-mode pooler — and not at a clean threshold. See the measurements
+  in `lib/db/client.ts`.
+- **TLS is configured in code, not in the connection URL.** `pg` reads
+  `sslmode=require` as `verify-full`, which Supabase's pooler certificate does
+  not satisfy.
+- **A dynamic route under `cacheComponents` cannot set a 404 status.** The
+  status is committed as soon as the route is known to be dynamic, and reading
+  the session cookie is what makes it so. Assert the body, not the status.
+- **Form submission normalises line breaks to CRLF in every field value**, not
+  only in a `<textarea>`. Anything carrying real newlines needs normalising on
+  arrival.
+- **Nothing holding a Drizzle column may cross to a client component.** A column
+  references its table, which references every column back; serialising one is
+  an infinite walk that React reports as a stack overflow naming nothing.
+- **A module with no `"use client"` is still client code if a client module
+  imports it**, and `process.env` in it is `undefined` for anything without a
+  `NEXT_PUBLIC_` prefix. `components/admin/field.tsx` built image URLs from
+  `STORAGE_SUPABASE_URL` that way: absolute on the server, hostless in the
+  browser. React reports the pair as a hydration mismatch and then leaves the
+  attribute alone, so the preview looked correct until the next client render
+  replaced it with a broken URL — and pressing Save is one. Resolve URLs on the
+  server and pass them down. `scripts/check-admin-console.mjs` catches it.
+- **Uploaded files are named after their contents**, and are reference-counted
+  on delete. One author photo is named by twenty-one rows; deleting because one
+  row stopped naming it would break the others. The key lives on `media_asset`
+  and everything else points at it with a foreign key, so the count is over
+  those six columns — `lib/storage/cleanup.ts` lists them and
+  `scripts/check-storage.mjs` proves the list against the catalogue.
+- **A key that is not a uuid is not "no such row".** Postgres raises
+  `22P02 invalid input syntax for type uuid` and the route answers 500 where the
+  honest answer is not-found. Guard with `isUuid()` from `lib/utils/uuid.ts`
+  before any value from a URL or a form reaches a query. This replaced
+  `Number.isInteger(id) && id > 0`, which did the same job by accident.
+- **A session cookie outlives the schema.** Sessions are thirty-day JWTs and
+  `token.sub` is the account key, so every reader signed in before the move to
+  `app` presented `sub: "1"` for a month afterwards — a subject that names no
+  row and is not even a well-formed key. `auth.ts`'s `session` callback refuses
+  a subject that is not a uuid, which is the single place a token becomes a
+  session; all six readers of `session.user.id` are downstream of it and need no
+  guard of their own. `scripts/check-site-console.mjs` drives every page with
+  such a token.
+- **A serial key carries insertion order; a uuid carries nothing.** Several read
+  paths were spending that — `order by id` meaning "the sequence somebody
+  entered them in", and a nullable sort column silently tie-breaking on heap
+  order. Anything whose order matters now sorts on a column that says so
+  (`position`, `issued`, `published_at`); `lib/admin/inlines.ts` stamps
+  `position` on every child table that has one, even where no reorder control is
+  offered, precisely so the tie-break exists.
+- **A `loading.tsx` skeleton must not render `<main>`.** `#page-content` is
+  keyed on the pathname, so its entrance animation plays once per navigation —
+  on whichever of the skeleton and the real page renders first. Where a skeleton
+  got there first, the real page would otherwise appear with no transition at
+  all, at the end of a 700ms entrance. `globals.css` hangs a short fade on
+  `#page-content main` instead, which works only because every site page renders
+  exactly one `<main>` and a skeleton renders a `<div>`. Build them from
+  `components/skeleton.tsx`, which is shaped to keep that true.
+- **A migration file must not carry its own `begin`/`commit`.**
+  `scripts/apply-migration.mjs` wraps the whole file in one transaction and
+  rolls it back unless `--apply` is passed; a `commit` inside ends that
+  transaction from the inside, so the dry run commits and still reports "nothing
+  changed". A migration here did exactly this once, and its dry run committed.
+  The script now refuses such a file — but a PL/pgSQL `DO $$ … BEGIN … END $$`
+  block is a *block*, not a transaction, so dollar-quoted bodies are blanked
+  before that check runs. Scanning the raw text refuses every migration that
+  enables RLS in a loop, which is to say the schema itself.
+- **No shadows, and light mode is a palette remap.** The site is written
+  entirely in dark-mode Tailwind classes with no `dark:` variants; light mode
+  redefines the palette variables under `html[data-theme="light"]`. Stay inside
+  the existing colour vocabulary or light mode breaks silently.
+
+## Verification
+
+Each harness covers one mechanism, runs against the live application, and cleans
+up after itself. Run the relevant ones before calling a change done; run all of
+them before a release.
+
+```bash
+npm test                                               # the unit suite, offline
+npm run build && node scripts/check-css-sources.mjs   # no stray utilities
+node scripts/check-headers.mjs                         # every security header, every origin
+node scripts/check-fresh-start.mjs                     # nothing explains itself by the old stack
+npx tsx scripts/check-baseline-schema.mjs              # 0000_init.sql builds exactly `app`
+npx tsx scripts/check-app-schema.mjs                   # the generated mapping matches `app`
+node scripts/gen-app-schema.mjs                        # regenerate it after any DDL
+npx tsx scripts/check-rls.mjs                          # RLS on every table
+node scripts/check-breakpoints.mjs                     # one visible theme toggle
+node scripts/check-notifications.mjs                   # toasts outside the transform
+node scripts/check-ui-state.mjs                        # palette + Turnstile theme
+npx tsx --conditions=react-server scripts/check-page-loading.mjs   # bar + skeletons
+npx tsx --conditions=react-server scripts/check-skeleton-shape.mjs # each skeleton vs its page
+npx tsx scripts/check-auth-adapter.mjs                 # Auth.js vs the live schema
+npx tsx scripts/check-comments.mjs                     # comment rules, rolled back
+npx tsx scripts/check-emails.mjs                       # all five templates
+npx tsx scripts/check-db-classes.mjs                   # no classes in stored content
+npx tsx --conditions=react-server scripts/check-site-console.mjs
+npx tsx --conditions=react-server scripts/check-turnstile.mjs
+npx tsx --conditions=react-server scripts/check-storage.mjs
+npx tsx scripts/check-admin.mjs
+npx tsx --conditions=react-server scripts/check-admin-console.mjs
+npx tsx --conditions=react-server scripts/check-admin-forms.mjs
+npx tsx --conditions=react-server scripts/check-admin-json.mjs
+npx tsx --conditions=react-server scripts/check-admin-inlines.mjs
+npx tsx --conditions=react-server scripts/check-admin-richtext.mjs
+```
+
+A harness that imports a `server-only` module needs `--conditions=react-server`.
+The browser-driven ones need `npm run dev` running.
+
+`scripts/check-schema-parity.mjs` and `scripts/catch-up-from-public.mjs` are not
+part of this list. They exist for the one-off retirement of the `public` schema
+and are deleted with it — see `drizzle/9999_drop_public.sql`.
+
+## Conventions
+
+- Commits: emoji-prefixed conventional commits, `<emoji><type>(<scope>): <Description>`
+  with no space after the emoji — `✨feat(admin): …`, `🐛fix(blog): …`.
+  `CONTRIBUTING.md` documents the plain form; the emoji prefix is the real
+  convention.
 - Branches: `feature/your-feature-name`.
-
-## Environment
-
-Env vars are loaded via `python-decouple` from a local `.env` (see `.env.example` for keys), plus `.env.local` — a second, gitignored file (Vercel's Supabase integration output via `vercel env pull`) that `FlexForge/config.py`'s `_load_env_local()` merges into `os.environ` at import time (`decouple.config()` doesn't read multiple files natively). SQLite (`db.sqlite3`) is used automatically when `DEBUG=True` or during tests; Supabase Postgres is used otherwise, via `STORAGE_POSTGRES_URL` (pooled/pgbouncer — runtime traffic) or `STORAGE_POSTGRES_URL_NON_POOLING` (direct — `migrate`/`loaddata`/other DDL, since those are unreliable behind transaction-mode pooling). Set `GUESTBOOK_PAGE=False` to skip Google/GitHub OAuth setup entirely.
-
-`SECRET_KEY`, `ACCESS_TOKEN`, `EMAIL_HOST_USER`, and `EMAIL_HOST_PASSWORD` (`FlexForge/config.py`) have no defaults — the app won't start locally without a `.env` providing all four, even outside the guestbook/Turnstile flows.
+- Comments explain *why*, and are worth writing when the reason is not evident
+  from the code. Most of this file started as one.

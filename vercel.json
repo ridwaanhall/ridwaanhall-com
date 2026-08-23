@@ -1,22 +1,5 @@
 {
-	"builds": [
-        {
-            "src": "FlexForge/wsgi.py",
-            "use": "@vercel/python",
-            "config": {
-                "maxLambdaSize": "15mb",
-				"runtime": "python3.14"
-            }
-        }
-    ],
-	"routes": [
-		{
-			"src": "static/(.*)",
-			"dest": "staticfiles/$1"
-		},
-		{
-			"src": "/(.*)",
-			"dest": "FlexForge/wsgi.py"
-		}
-	]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "regions": ["sin1"]
 }

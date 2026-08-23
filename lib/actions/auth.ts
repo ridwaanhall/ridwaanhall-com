@@ -1,0 +1,35 @@
+"use server";
+
+import { signIn, signOut } from "@/auth";
+
+/**
+ * Sign-in and sign-out as server actions.
+ *
+ * Auth.js v5's recommended shape, and it avoids pulling `next-auth/react` --
+ * and therefore a `<SessionProvider>` -- into a site that reads its session on
+ * the server everywhere else. `signIn` redirects straight to the provider: the
+ * guestbook already shows both buttons, so a provider-picker page in between
+ * would ask a question that has just been answered.
+ *
+ * **`redirectTo` is sanitised, not trusted.** It comes from the browser and
+ * Auth.js hands it to a redirect, so an unchecked value is an open redirect --
+ * `//evil.com`, `/\evil.com` and `https:/evil.com` all read as same-site to a
+ * naive check and as another origin to a browser. Only a plain same-site path
+ * is accepted; anything else falls back to the guestbook.
+ */
+const FALLBACK = "/guestbook";
+
+function samePath(target: string | undefined): string {
+  if (!target || !target.startsWith("/")) return FALLBACK;
+  // A second leading `/` or `\` makes it protocol-relative, i.e. another host.
+  if (/^\/[/\\]/.test(target)) return FALLBACK;
+  return target;
+}
+
+export async function signInWith(provider: "google" | "github", redirectTo?: string) {
+  await signIn(provider, { redirectTo: samePath(redirectTo) });
+}
+
+export async function signOutHere(redirectTo?: string) {
+  await signOut({ redirectTo: samePath(redirectTo) });
+}

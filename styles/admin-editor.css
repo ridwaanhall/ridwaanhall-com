@@ -1,0 +1,53 @@
+/*
+ * The few rules ProseMirror needs that Tiptap does not ship.
+ *
+ * Typography comes from `styles/prose.css` -- the editor uses the site's own
+ * `.prose-content`, so what is typed looks like what the page renders. What is
+ * left is the editing chrome, which has no counterpart on the public side.
+ */
+
+/*
+ * Tiptap wraps every table in a `div.tableWrapper` and provides no styles for
+ * it, so a table wider than the form pushed the whole page sideways at 360px.
+ * `prose.css` solves the same problem on the article page by making the table
+ * itself the scroller; inside the editor that would fight ProseMirror's own
+ * table handling, so the wrapper scrolls instead.
+ */
+.admin-editor .tableWrapper {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+/* Inside the wrapper the table is a table again, not the scrolling block
+   `prose.css` turns it into. */
+.admin-editor .tableWrapper table {
+    display: table;
+    width: max-content;
+    min-width: 100%;
+    overflow: visible;
+}
+
+/* An empty document should still look like somewhere to type. */
+.admin-editor p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    color: var(--color-zinc-600);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
+
+/* The cell being edited, so it is clear where the caret is in a table. */
+.admin-editor .selectedCell::after {
+    background: var(--color-indigo-500);
+    opacity: 0.12;
+    content: "";
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: 2;
+}
+
+.admin-editor td,
+.admin-editor th {
+    position: relative;
+}

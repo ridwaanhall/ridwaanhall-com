@@ -1,78 +1,94 @@
-# FlexForge - Advanced Developer Portfolio Platform
+# ridwaanhall.com
 
-[![Django](https://img.shields.io/badge/Django-6.x-092E20?style=flat&logo=django&logoColor=white)](https://djangoproject.com/)
-[![Python](https://img.shields.io/badge/Python-3.14+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org/)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.3-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat&logo=typescript&logoColor=white)](https://typescriptlang.org/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Supabase](https://img.shields.io/badge/Supabase-Postgres-3FCF8E?style=flat&logo=supabase&logoColor=white)](https://supabase.com/)
 
-![FlexForge Portfolio](https://ridwaanhall.com/static/img/project/ridwaanhall_com_2025070701.webp)
+![ridwaanhall.com](https://ridwaanhall.com/static/img/project/ridwaanhall_com_2025070701.webp)
 
-> **A Django portfolio platform built for [ridwaanhall.com](https://ridwaanhall.com) — database-backed content management with a full admin panel, real-time GitHub/WakaTime dashboards, a configurable OAuth guestbook, and enterprise-grade security. Fork it and make it your own; see [Making It Your Own](#making-it-your-own) below.**
+> **The portfolio behind [ridwaanhall.com](https://ridwaanhall.com) — database-backed content with its own admin, live GitHub and WakaTime dashboards, an OAuth guestbook with threaded replies, and light and dark themes. Fork it and make it your own; see [Making It Your Own](#making-it-your-own) below.**
 
 ## Key Features
 
-- **Database-backed content**: Blog posts, projects, bio, experience, skills, awards, legal documents, and more all live as Django ORM models — manage everything from a full-featured `/admin` panel, no code deploy needed to update content
-- **Supabase-powered**: Postgres database and Storage (for blog/project images, logos, profile photo) both hosted on Supabase, with local development falling back to SQLite automatically
+- **Database-backed content**: Blog posts, projects, bio, experience, skills, awards, legal documents and more live as real tables — manage all of it from the `/admin` panel, with no deploy needed to change content
+- **Supabase-powered**: Postgres and Storage (blog and project images, logos, the profile photo) both on Supabase, reached through Drizzle ORM and a small storage client rather than an SDK
 - **Light and dark themes**: Dark by default, with a toggle in the sidebar and mobile navbar. Light mode is produced by remapping the Tailwind palette rather than by adding `dark:` variants, so both themes stay in sync automatically — see [Theming](#theming)
-- **Content caching**: Cached manager output keyed by a shared version stamp, taking the nine main pages from 84 queries / 2.6s to 3 queries / 245ms. Designed for serverless, where an edit handled by one instance must not leave the others stale
+- **Content caching**: Every read path is behind `use cache` with a tag per content area, so an edit invalidates only what it touched. Tag revalidation is cross-instance by construction, which matters on serverless where an edit handled by one instance must not leave the others stale
 - **Real-time dashboard**: Live GitHub contribution graph and WakaTime coding-activity stats, cached for 15 minutes
 - **Interactive guestbook**: Google/GitHub OAuth login, threaded replies, author/co-author roles, message pinning (up to 3 at a time), automatic link detection, email notifications — or disable it entirely with one env var
 - **Blog and projects**: Paginated, searchable listings with multi-image support, tags, categories, threaded comments, and a project lifecycle status system
 - **SEO built in**: Per-page meta tags, Open Graph, Twitter Cards, JSON-LD schema, and auto-generated sitemaps/robots.txt
-- **Security-first**: Content-Security-Policy, HSTS, permissions-policy, row-level security on every Supabase table, and optional Cloudflare Turnstile on the contact form
-- **Image optimization**: Optional wsrv.nl proxy/CDN integration for automatic resizing and format conversion
-- **Built for touch as well as pointer**: Mobile-first Tailwind CSS v4 and vanilla JavaScript (no frontend framework). Tooltips work on tap as well as hover, and the click effect respects `prefers-reduced-motion`
+- **Security-first**: row-level security on every Supabase table, a staff-gated admin whose permission is read from the database on every request, and Cloudflare Turnstile on the contact form
+- **Image optimization**: `next/image` over the Supabase Storage origin, with the size ladder trimmed to what the layouts actually request
+- **Built for touch as well as pointer**: mobile-first Tailwind CSS v4, with as little client JavaScript as the feature allows. Tooltips work on tap as well as hover, and every animation respects `prefers-reduced-motion`
 
 ## Tech Stack
 
-- **Backend**: Django 6.0, Python 3.14+, managed with [uv](https://docs.astral.sh/uv/)
-- **Frontend**: Tailwind CSS v4 (CLI-based build, no bundler), vanilla JavaScript
-- **Content**: Django ORM models managed via `/admin` (see [Content Architecture](#content-architecture-database-backed))
-- **Auth**: django-allauth (Google + GitHub OAuth) for the guestbook
-- **APIs**: GitHub GraphQL API, WakaTime API
-- **Security**: django-csp, django-permissions-policy, Cloudflare Turnstile
-- **Database**: SQLite in development, Supabase Postgres in production
-- **Media Storage**: local filesystem in development/tests (fully offline), Supabase Storage in production (custom Django storage backend, `apps/core/storage.py`)
-- **Deployment**: Vercel (WSGI) with WhiteNoise for static files
+- **Framework**: Next.js 16 (App Router, Turbopack, Cache Components), React 19, TypeScript
+- **Styling**: Tailwind CSS v4
+- **Database**: Supabase Postgres via Drizzle ORM over `node-postgres`
+- **Media**: Supabase Storage, through a small REST client (`lib/storage/`)
+- **Auth**: Auth.js v5 with Google and GitHub, over the existing account tables
+- **Email**: Resend
+- **APIs**: GitHub GraphQL, WakaTime
+- **Spam**: Cloudflare Turnstile
+- **Deployment**: Vercel
+
 
 ## Project Structure
 
 ```text
-FlexForge/          Django project settings, URLs, WSGI/ASGI, root views
-apps/
-  core/              Homepage, contact form, email, base views, content cache,
-                     Supabase storage backend, admin JSON widgets
-  about/             Bio, experience, education, certifications, awards, skills (models + admin)
-  projects/          Project showcase (models + admin, multi-image + tech-stack M2M)
-  blog/              Blog (models + admin, multi-image support)
-  comments/          Threaded comments, attachable to any model via ContentType
-  dashboard/         GitHub + WakaTime stats
-  guestbook/         OAuth chat/guestbook (optional, toggled via GUESTBOOK_PAGE)
-  legal/             Privacy policy, terms, and any other legal document (models + admin)
-  openhire/          "Open to work" / "hiring" status page
-  seo/               Meta tags, JSON-LD schema, sitemaps, robots.txt
-static/css/          Tailwind source: input.css (light/dark palette) plus the
-                     hand-written stylesheets it @imports and bundles
-staticfiles/         Compiled CSS + all served static assets (images, fonts, icons, JS)
-templates/           Global templates (base, sidebar, error page, per-app sections)
+app/
+  (site)/            The public pages: home, about, blog, projects, dashboard,
+                     contact, guestbook, openhire, legal
+  admin/             The admin. Two dynamic routes render all 18 screens
+  api/               The few JSON endpoints the client actually calls
+components/
+  site/              Page components
+  admin/             The generic changelist, form, field and inline renderers
+  layout/            Sidebar, drawer, search palette, theme toggle
+  providers/         Toasts, confirm dialog, tooltips, theme, click spark
+lib/
+  data/              Read paths, each behind `use cache` with a tag
+  actions/           Server actions: contact, comments, guestbook, admin
+  admin/             The descriptors that drive every admin screen
+  auth/              The Auth.js adapter over the existing account tables
+  db/                The generated Drizzle mapping and the connection pool
+  email/             Templates and the Resend client
+  seo/               Metadata, JSON-LD, sitemaps
+  storage/           Supabase Storage: upload, delete, reference-counted cleanup
+drizzle/             0000_init.sql — the whole schema, in one file
+scripts/             Verification harnesses — see CLAUDE.md
+styles/              The hand-written stylesheets app/globals.css imports
+public/              Favicons, fonts, static images
 ```
 
 ## Content Architecture: Database-backed
 
-Content lives as Django ORM models, edited through `/admin` — no code deploy needed to add a blog post, project, experience entry, award, or legal document. Each content-bearing app (`about`, `blog`, `projects`, `openhire`, `legal`) has its own `models.py` and a fully registered `admin.py` (list views, search, filters, and inline editors for nested items like project features or multi-image galleries).
+Every piece of content is a row, not a file: bio, experience, education,
+certifications, awards, skills, applications, projects, blog posts, legal
+documents, and the hiring / open-to-work status. Changing any of it is an edit
+in `/admin`, never a deploy.
 
-Semi-structured fields stay as `JSONField` but are never shown as a raw JSON textarea — `apps/core/admin_widgets.py` provides structured editors for them (string lists, key/value pairs, rich content blocks).
+The schema is `drizzle/0000_init.sql` — 45 tables in their own `app` schema,
+keyed by uuid, with real foreign keys and real referential actions. Run it once
+against an empty database and you have the whole thing. `lib/db/app-schema.ts`
+is the Drizzle mapping, generated from the live schema by
+`scripts/gen-app-schema.mjs` rather than typed by hand.
 
-Images uploaded through admin (`ImageField`s on `BlogImage`, `ProjectImage`, `Profile.image`, logos, etc.) are stored locally under `media/` (gitignored) in development — fully offline, and never touches the shared production bucket — and go straight to Supabase Storage via the custom backend in `apps/core/storage.py` in production. Stored files are reference-counted, so replacing or deleting a row only removes the underlying file once no other row still points at it.
+Read paths live in `lib/data/`, each behind `use cache` with a tag from
+`lib/data/tags.ts`, so a save invalidates only the area it touched.
 
-Reads are cached in process memory and invalidated per namespace through a shared version stamp, so an edit made on one serverless instance cannot leave the others serving stale content. `CONTENT_CACHE_TTL` and `CONTENT_CACHE_VERSION_TTL` tune it; the cache is disabled automatically under `manage.py test`.
-
-To manage content: create a superuser (`uv run python manage.py createsuperuser`) and log into `/admin`.
+The admin itself is declarative. `lib/admin/registry.ts` names every screen and
+`lib/admin/models/` declares what each one shows and edits; two generic
+components render all of them. Adding a screen is adding a descriptor.
 
 ## Theming
 
 The site ships dark by default, with a light theme behind a toggle beside `@username` in the sidebar and, on small screens, next to the menu button. The choice is stored in `localStorage`; the OS `prefers-color-scheme` is deliberately not consulted, because dark is the default rather than a fallback.
 
-Light mode is **not** built from `dark:` variants. Templates are written in ordinary dark-mode Tailwind classes, and light mode redefines the palette itself under `html[data-theme="light"]` in `static/css/input.css`. Tailwind v4 compiles every theme color utility to a variable reference (`.bg-zinc-800` becomes `background-color: var(--color-zinc-800)`), so remapping the ramps re-skins the whole site without touching a single template.
+Light mode is **not** built from `dark:` variants. Templates are written in ordinary dark-mode Tailwind classes, and light mode redefines the palette itself under `html[data-theme="light"]` in `app/globals.css`. Tailwind v4 compiles every theme color utility to a variable reference (`.bg-zinc-800` becomes `background-color: var(--color-zinc-800)`), so remapping the ramps re-skins the whole site without touching a single template.
 
 Two consequences worth knowing before you edit anything:
 
@@ -85,7 +101,7 @@ Switching themes suppresses CSS transitions for the frame in which the swap happ
 
 Two related front-end details:
 
-- **Tooltips work on touch.** A native `title` only appears on hover, so on a phone every one of them was unreachable. `staticfiles/js/tooltip.js` upgrades them to show on hover, on keyboard focus, and on tap. Tapping never blocks the trigger, so a tooltip on a link or a button still follows through on the same tap.
+- **Tooltips work on touch.** A native `title` only appears on hover, so on a phone every one of them was unreachable. `components/providers/tooltips.tsx` upgrades them to show on hover, on keyboard focus, and on tap. Tapping never blocks the trigger, so a tooltip on a link or a button still follows through on the same tap.
 - **The click effect respects motion preferences.** Clicking or tapping throws a short spark burst, drawn on a single canvas overlay. It is skipped entirely under `prefers-reduced-motion: reduce`.
 
 ## PageSpeed Insights
@@ -103,167 +119,157 @@ Scores for the reference deployment at [ridwaanhall.com](https://ridwaanhall.com
 
 ## Quick Start
 
+**1. Get the code and its dependencies.**
+
 ```bash
-# Clone repository
 git clone https://github.com/ridwaanhall/ridwaanhall-com.git
 cd ridwaanhall-com
-
-# Install uv (if you don't already have it)
-pip install uv
-
-# Create local virtual environment (.venv) with Python 3.14
-uv venv --python 3.14
-
-# Sync dependencies from pyproject.toml/uv.lock
-uv sync
-
-# Install the Tailwind CLI (versions come from package.json/package-lock.json)
-npm ci
-
-# Copy the environment template and fill in your own values (see below)
-cp .env.example .env
-
-# Build Tailwind CSS (for development with watch mode)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-deixuges.css --watch
-
-# In a separate terminal, run migrations and the dev server
-uv run python manage.py migrate
-uv run python manage.py runserver
-
-# Create an admin account so you can add content at /admin
-uv run python manage.py createsuperuser
+npm install
 ```
 
-Local development uses SQLite automatically (no Supabase setup required to get running) — but it starts **empty**. Content is managed entirely through `/admin`; there's no seed data or fixture step. Production points at Supabase Postgres via `STORAGE_POSTGRES_URL` (see [Environment Configuration](#environment-configuration)).
+**2. Create a Supabase project**, then copy two connection strings and two keys
+out of it — the pooled and direct Postgres URLs, the project URL, and the
+service-role key. Create a public storage bucket named `media` while you are
+there.
 
-## Tests & Linting
+**3. Fill in the environment.** `cp .env.example .env.local` and set at least
+`STORAGE_POSTGRES_URL` and `STORAGE_POSTGRES_URL_NON_POOLING`. The app throws at
+import without the first; everything else degrades rather than crashing, so you
+can add the rest as you need it. See [Environment Configuration](#environment-configuration).
+
+**4. Create the schema.** One file, run once, over the *direct* connection —
+DDL is not reliable through the pooler:
 
 ```bash
-# Run the test suite (this is what CI runs)
-uv run python manage.py test
-
-# pytest-django is also configured, if you prefer it
-uv run pytest
-
-# Lint with ruff
-uv run ruff check
+node scripts/apply-migration.mjs drizzle/0000_init.sql           # dry run first
+node scripts/apply-migration.mjs drizzle/0000_init.sql --apply
 ```
 
-### Tailwind CSS Development
+That creates 45 tables and enables row-level security on every one of them.
+`npx tsx scripts/check-baseline-schema.mjs` proves the file and the database
+agree, and `node scripts/db-probe.mjs` shows you what is there.
 
-For styling changes, ensure Tailwind CSS is running in watch mode:
+**5. Run it.**
 
 ```bash
-# Development (with watch and minification)
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-deixuges.css --watch --minify
-
-# Production build
-npx @tailwindcss/cli -i ./static/css/input.css -o ./staticfiles/css/global-deixuges.css --minify
+npm run dev            # http://localhost:3000
 ```
 
-Make sure your `static/css/input.css` contains:
+The site comes up empty, because nothing is seeded. To fill it: set up OAuth
+(below), sign in once so your account row exists, then set `is_staff` on it —
+`update app.account set is_staff = true where email = 'you@example.com';` — and
+`/admin` opens.
 
-```css
-@import "tailwindcss";
+> **There is no local database.** `STORAGE_POSTGRES_URL` points at Supabase in
+> development as well as in production, so a page rendered locally shows live
+> content and a write from `/admin` is a live write. Point it at your own
+> project before you change anything.
+
+## Checks
+
+Two layers, and the split is deliberate.
+
+**Unit tests** cover the pure logic and run anywhere — no database, no browser,
+no network. Node's built-in runner over `tsx`; there is no test framework
+installed.
+
+```bash
+npm test
+npm run test:watch
 ```
 
-> **Note:** the compiled filename (`global-deixuges.css`) is hand-picked, not auto-hashed. If you rename it, update the `-o` path above **and** the `{% static %}` reference in both `templates/base_seo.html` and `templates/error.html`.
+**Harnesses** cover everything that only means something against the real thing:
+the admin gate, the schema, row-level security, uploads and their reference
+counting, the emails, the loading states. Each drives the live application and
+cleans up after itself in a `finally` that then proves the cleanup.
+
+```bash
+npx tsc --noEmit                                  # types
+npm run lint                                      # eslint
+npm run build && node scripts/check-css-sources.mjs
+node scripts/check-headers.mjs                    # the security headers
+npx tsx scripts/check-baseline-schema.mjs         # the schema file builds the schema
+npx tsx scripts/check-app-schema.mjs              # the mapping matches it
+npx tsx scripts/check-rls.mjs                     # row-level security is on
+npx tsx scripts/check-admin.mjs                   # the admin gate and changelists
+```
+
+`CLAUDE.md` lists all of them and says which need `--conditions=react-server`.
+
+CI runs types, lint, the unit tests and the build. The harnesses deliberately do
+not run there: they drive a browser against a running app and write to the live
+database, which is right for a developer checking a change and wrong for a pull
+request from a fork.
+
+Deploying? `docs/cutover.md` has the order to do it in.
 
 ## Environment Configuration
 
-Create a `.env` file (start from `.env.example`):
+Copy `.env.example` to `.env.local` and fill it in. Nothing has a default: the
+app will not start without the database URL, and the rest fail quietly rather
+than loudly — no key means no email, no spam check, no dashboard panel.
 
-```env
-# Core Settings
-BASE_URL="https://your-domain.com"
-SECRET_KEY="your-django-secret-key"
-DEBUG=True
-ALLOWED_HOSTS="localhost,127.0.0.1"
+| Variable | Required | What it does |
+|---|---|---|
+| `STORAGE_POSTGRES_URL` | **Yes** | Supabase Postgres, pooled. The app throws at import without it |
+| `STORAGE_POSTGRES_URL_NON_POOLING` | For DDL | Direct connection. Migrations and introspection do not work through the pooler |
+| `STORAGE_SUPABASE_URL` | For media | Project URL; also the `next/image` allow-list at build time |
+| `STORAGE_SUPABASE_SERVICE_ROLE_KEY` | For media | Server-side only. Never expose it |
+| `SUPABASE_STORAGE_BUCKET` | For media | Defaults to `media` |
+| `AUTH_SECRET` | For sign-in | Auth.js session signing key |
+| `AUTH_URL`, `AUTH_TRUST_HOST` | For sign-in | Where callbacks come back to |
+| `AUTH_GOOGLE_ID` / `_SECRET` | For sign-in | Google OAuth |
+| `AUTH_GITHUB_ID` / `_SECRET` | For sign-in | GitHub OAuth |
+| `RESEND_API_KEY` | For email | Resend API key |
+| `DEFAULT_FROM_EMAIL` | For email | **Must be on a domain verified at resend.com/domains**, or every send fails with a 403 naming the domain |
+| `CONTACT_EMAIL_RECIPIENT` | For email | Where the contact form lands |
+| `GITHUB_ACCESS_TOKEN` | For dashboard | Personal access token for the contribution graph |
+| `WAKATIME_API_KEY` | For dashboard | Coding stats. Absent, the panel is hidden |
+| `NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY` | For the contact form | Turnstile site key |
+| `CF_TURNSTILE_SECRET_KEY` | For the contact form | Turnstile secret. Absent, verification passes by design |
+| `NEXT_PUBLIC_BASE_URL` | Recommended | Canonical URLs, Open Graph, sitemaps |
+| `NEXT_PUBLIC_GUESTBOOK_ENABLED` | No | `false` hides the guestbook entirely |
 
-# Feature Toggles
-GUESTBOOK_PAGE=True
-WSRV_IMAGE_OPTIMIZATION=True
-USE_CF_TURNSTILE=True
+The `STORAGE_`-prefixed names look redundant and are kept verbatim on purpose:
+they are what Vercel's Supabase integration provisions, so `vercel env pull`
+keeps working without a manual re-sync when keys change.
 
-# API Keys
-ACCESS_TOKEN="your-github-personal-access-token"
-WAKATIME_API_KEY="your-wakatime-api-key"
-
-# Email (required — used for contact form and guestbook notifications)
-EMAIL_HOST_USER="your-email@gmail.com"
-EMAIL_HOST_PASSWORD="your-app-password"
-DEFAULT_FROM_EMAIL="noreply@your-domain.com"
-CONTACT_EMAIL_RECIPIENT="your-email@domain.com"
-
-# Google OAuth (required only when GUESTBOOK_PAGE=True)
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
-
-# GitHub OAuth (required only when GUESTBOOK_PAGE=True)
-GH_CLIENT_ID="your-github-client-id"
-GH_CLIENT_SECRET="your-github-client-secret"
-
-# Cloudflare Turnstile (required only when USE_CF_TURNSTILE=True)
-CF_TURNSTILE_SITE_KEY="your-turnstile-site-key"
-CF_TURNSTILE_SECRET_KEY="your-turnstile-secret-key"
-
-# Supabase Postgres + Storage (production only - SQLite is used automatically in development/tests)
-STORAGE_POSTGRES_URL="postgres://user:password@host:6543/postgres?sslmode=require&pgbouncer=true"
-STORAGE_POSTGRES_URL_NON_POOLING="postgres://user:password@host:5432/postgres?sslmode=require"
-STORAGE_SUPABASE_URL="https://your-project-ref.supabase.co"
-STORAGE_SUPABASE_SERVICE_ROLE_KEY="your-supabase-service-role-key"
-SUPABASE_STORAGE_BUCKET="media"
-```
-
-| Variable | Required | Description |
-|----------|----------|--------------|
-| `BASE_URL` | Recommended | Your domain URL; defaults to `http://127.0.0.1:8000` in debug, `https://ridwaanhall.com` otherwise |
-| `SECRET_KEY` | **Yes** | Django secret key — no default, app won't start without it |
-| `ACCESS_TOKEN` | **Yes** | GitHub personal access token for the dashboard — no default, app won't start without it |
-| `EMAIL_HOST_USER` | **Yes** | SMTP username — no default, app won't start without it |
-| `EMAIL_HOST_PASSWORD` | **Yes** | SMTP password/app-password — no default, app won't start without it |
-| `DEBUG` | No | Enable debug mode (default: `False`) |
-| `ALLOWED_HOSTS` | Debug only | Comma-separated allowed hosts; **in production this is hardcoded** in `FlexForge/config.py` to `.vercel.app`/`.ridwaanhall.com` — change that list for your own domain |
-| `WAKATIME_API_KEY` | No | WakaTime API key for coding stats (default: empty, dashboard section is hidden) |
-| `GUESTBOOK_PAGE` | No | Enable/disable the guestbook app entirely (default: `True`) |
-| `WSRV_IMAGE_OPTIMIZATION` | No | Enable the wsrv.nl image proxy (default: `True` in production, `False` in debug) |
-| `USE_CF_TURNSTILE` | No | Require Cloudflare Turnstile on the contact form (default: `True`) |
-| `CF_TURNSTILE_SITE_KEY` / `CF_TURNSTILE_SECRET_KEY` | If Turnstile enabled | Cloudflare Turnstile keys |
-| `DEFAULT_FROM_EMAIL` | No | "From" address for outgoing mail (default: `EMAIL_HOST_USER`) |
-| `CONTACT_EMAIL_RECIPIENT` | No | Comma-separated recipient(s) for contact/guestbook notifications (default: `hi@ridwaanhall.com`) |
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | If guestbook enabled | Google OAuth credentials |
-| `GH_CLIENT_ID` / `GH_CLIENT_SECRET` | If guestbook enabled | GitHub OAuth credentials |
-| `STORAGE_POSTGRES_URL` | Production only | Pooled (pgbouncer) Supabase Postgres connection, used for runtime app traffic |
-| `STORAGE_POSTGRES_URL_NON_POOLING` | Production only | Direct Supabase Postgres connection, used for `migrate`/`loaddata`/other DDL |
-| `STORAGE_SUPABASE_URL` / `STORAGE_SUPABASE_SERVICE_ROLE_KEY` | Production only | Supabase project URL + service-role key, used by the custom Storage backend (`apps/core/storage.py`) for uploaded images. The service-role key is server-side only — never expose it to clients |
-| `SUPABASE_STORAGE_BUCKET` | No | Supabase Storage bucket name for uploaded images (default: `media`) |
-
-Getting the API keys:
-
-- **ACCESS_TOKEN**: GitHub → Settings → Developer settings → Personal access tokens (repo + user scopes)
-- **WAKATIME_API_KEY**: [WakaTime](https://wakatime.com/) → Settings → API Key
-- **GOOGLE_CLIENT_ID/SECRET** & **GH_CLIENT_ID/SECRET**: only needed if `GUESTBOOK_PAGE=True` — create OAuth apps in [Google Cloud Console](https://console.cloud.google.com/) and [GitHub OAuth Apps](https://github.com/settings/developers)
-- **CF_TURNSTILE_SITE_KEY/SECRET_KEY**: only needed if `USE_CF_TURNSTILE=True` — create a widget in the [Cloudflare Turnstile dashboard](https://dash.cloudflare.com/?to=/:account/turnstile)
-- **STORAGE_POSTGRES_URL / STORAGE_SUPABASE_\***: create a project at [Supabase](https://supabase.com/) — these values come from Project Settings → Database (connection strings) and Project Settings → API (URL + service-role key). If you connect the project to Vercel's Supabase integration, `vercel env pull` writes these automatically to `.env.local` (gitignored), which is merged in automatically alongside `.env` — see `FlexForge/config.py`'s `_load_env_local()`.
+**OAuth redirect URIs.** Auth.js uses `/api/auth/callback/<provider>`, so both
+providers need `https://your-domain.com/api/auth/callback/google` and
+`.../github` (plus the `localhost:3000` equivalents for development).
 
 ## Making It Your Own
 
-This started as a personal site, but the architecture doesn't assume you're Ridwan Halim. To adopt it as your own portfolio:
+This started as a personal site, but the architecture does not assume you are
+Ridwan Halim. To adopt it as your own portfolio:
 
-1. **Your content** — create a superuser (`uv run python manage.py createsuperuser`) and add your own bio, experience, education, certifications, awards, skills, blog posts, projects, legal documents, and open-to-work/hiring status through `/admin`. Nothing is seeded by default; the sample content that used to ship as data files was removed along with the old file-based content system.
-2. **Your branding** — edit `apps/seo/config.py`: `SITE_NAME`, `AUTHOR`, `DEFAULT_TWITTER_SITE`, and `COMMON_KEYWORDS['personal']` are all hardcoded to the author's name/handle and need updating.
-3. **Your domain** — two places hardcode `ridwaanhall.com`/`.vercel.app`:
-   - `FlexForge/config.py`'s `ALLOWED_HOSTS` fallback (production-only; update to your own domain)
-   - `FlexForge/settings.py`'s `CONTENT_SECURITY_POLICY` directives (`connect-src`, `font-src`, `script-src`, `style-src` all allowlist `ridwaanhall.com`)
-4. **Your assets** — replace files under `staticfiles/favicon/` and `templates/site.webmanifest` (site branding); logos/icons referenced from `/admin` still come from `staticfiles/img/`, but blog/project/profile photos are uploaded directly through `/admin` to Supabase Storage, not committed as files.
-5. **Your emails** — `apps/core/templates/core/email/` has the contact/guestbook notification templates (html + txt pairs); they're plain text-substitution files (not Django templates — see `apps/core/email_templates.py`), styled to match the site's own dark theme.
-6. **Your colors** — the whole palette is the `html[data-theme="light"]` block at the top of `static/css/input.css`, plus Tailwind's own defaults for dark. Changing a ramp re-skins every page at once. If you shift the accents, re-check contrast: the tables there were tuned by measurement, not by eye (see [Theming](#theming)).
-7. **Your env vars** — see the [table above](#environment-configuration); at minimum you need `SECRET_KEY`, `ACCESS_TOKEN`, `EMAIL_HOST_USER`, and `EMAIL_HOST_PASSWORD` to start the app.
-8. **Optional features** — turn off what you don't need: `GUESTBOOK_PAGE=False` skips the whole OAuth/chat system (no OAuth app setup needed), `USE_CF_TURNSTILE=False` skips Turnstile.
+1. **Your database** — point `STORAGE_POSTGRES_URL` at your own Supabase project
+   before anything else. There is no local database, so until you do, `/admin`
+   writes to somebody else's site. Run `drizzle/0000_init.sql` against it; that
+   creates every table and enables row-level security on all of them.
+2. **Your content** — nothing is seeded. Sign in once so your account row
+   exists, set `is_staff` on it in `app.account`, then add your bio, experience,
+   education, certifications, awards, skills, posts, projects, legal documents
+   and open-to-work status through `/admin`.
+3. **Your branding** — `lib/seo/config.ts` hardcodes the site name, author and
+   handles.
+4. **Your domain** — set `NEXT_PUBLIC_BASE_URL`, and register the OAuth redirect
+   URIs (`/api/auth/callback/google` and `/api/auth/callback/github`) for it.
+5. **Your assets** — replace `public/favicon/` and the manifest in
+   `app/manifest.ts`. Photos and logos are uploaded through `/admin` to Supabase
+   Storage, not committed.
+6. **Your emails** — `lib/email/` holds the five templates and one shared shell.
+   They are plain string substitution, styled to match the site.
+7. **Your colours** — the palette is the `html[data-theme="light"]` block in
+   `app/globals.css`, plus Tailwind's own defaults for dark. Changing a ramp
+   re-skins every page at once. If you move the accents, re-measure contrast:
+   those tables were tuned by measurement, not by eye (see [Theming](#theming)).
+8. **Optional features** — `NEXT_PUBLIC_GUESTBOOK_ENABLED=false` hides the
+   guestbook entirely; leaving the Turnstile keys empty skips spam verification.
 
 ## Deployment
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?demo-description=Advanced%20developer%20portfolio%20platform%20with%20database-backed%20content%20management%2C%20real-time%20API%20integrations%2C%20and%20enterprise-grade%20security.&demo-image=https%3A%2F%2Fridwaanhall.com%2Fstatic%2Fimg%2Fproject%2Fridwaanhall_com_2025070701.webp&demo-title=FlexForge%20Portfolio&demo-url=https%3A%2F%2Fridwaanhall.com&from=templates&project-name=FlexForge%20Portfolio&repository-name=flexforge-portfolio&repository-url=https%3A%2F%2Fgithub.com%2Fridwaanhall%2Fridwaanhall-com)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?demo-description=Database-backed%20developer%20portfolio%20with%20its%20own%20admin%2C%20live%20dashboards%20and%20an%20OAuth%20guestbook.&demo-image=https%3A%2F%2Fridwaanhall.com%2Fstatic%2Fimg%2Fproject%2Fridwaanhall_com_2025070701.webp&demo-title=ridwaanhall.com&demo-url=https%3A%2F%2Fridwaanhall.com&from=templates&project-name=ridwaanhall-com&repository-name=ridwaanhall-com&repository-url=https%3A%2F%2Fgithub.com%2Fridwaanhall%2Fridwaanhall-com)
 
 ### Manual Setup
 
@@ -271,7 +277,8 @@ This started as a personal site, but the architecture doesn't assume you're Ridw
 2. Install Vercel CLI: `npm i -g vercel`
 3. Deploy: `vercel --prod`
 4. Configure environment variables in the Vercel dashboard
-5. Update `ALLOWED_HOSTS` (in `FlexForge/config.py`) and the CSP directives (in `FlexForge/settings.py`) to match your own domain — see [Making It Your Own](#making-it-your-own)
+5. Set `NEXT_PUBLIC_BASE_URL` to your own domain, and register the OAuth
+   redirect URIs for it — see [Making It Your Own](#making-it-your-own)
 
 ## Contributing
 
@@ -289,4 +296,4 @@ Apache License 2.0 - See [LICENSE](LICENSE) for details.
 
 ---
 
-**FlexForge** - A Django portfolio platform, built to be forked.
+**ridwaanhall.com** — a portfolio, built to be forked.

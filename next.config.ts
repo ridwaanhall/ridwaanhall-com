@@ -13,10 +13,10 @@ const supabaseHost = process.env.STORAGE_SUPABASE_URL
   : undefined;
 
 const nextConfig: NextConfig = {
-  // Opts into `use cache` / `cacheTag` / `cacheLife`. The content cache this
-  // replaces (apps/core/cache.py) had to invent a shared version stamp in
-  // Postgres to stay correct across Vercel instances; tag revalidation is
-  // cross-instance by construction, so that table goes away at cutover.
+  // Opts into `use cache` / `cacheTag` / `cacheLife`. Tag revalidation is
+  // cross-instance by construction, which is what makes it usable on
+  // serverless: an edit handled by one instance cannot leave another serving a
+  // stale copy, so there is no shared version stamp to keep in the database.
   cacheComponents: true,
 
   // Pin the workspace root. Without this Next infers it from the nearest
@@ -81,6 +81,130 @@ const nextConfig: NextConfig = {
   trailingSlash: false,
 
   typedRoutes: true,
+
+  /*
+   * Security headers, because nothing else sets them.
+   *
+   * Neither Next nor the platform adds any of these -- a deployment without
+   * this block serves the site with no CSP, no HSTS, no frame protection and no
+   * referrer policy, and nothing in a build, a type check or a lint says so.
+   * `scripts/check-headers.mjs` is what does.
+   *
+   * `source: "/:path*"` rather than only the document routes: a header set on
+   * pages alone leaves every API response and every asset without one.
+   */
+  async headers() {
+    /*
+     * The content security policy.
+     *
+     * Every origin here is one the application actually loads from, and the
+     * list is deliberately shorter than a copied policy would be. Widening a
+     * CSP is free and silent; narrowing one breaks a page in production.
+     *
+     * **`'unsafe-inline'` on script-src is deliberate.** next-themes injects a
+     * blocking pre-paint script -- it has to be blocking, or the page paints in
+     * the wrong theme and flashes -- and the JSON-LD blocks are inline
+     * `<script type="application/ld+json">` elements, which CSP governs like
+     * any other. A nonce cannot be threaded through a prerendered tree under
+     * `cacheComponents`, where the HTML is generated before any request exists
+     * to carry one. Hashes would have to be recomputed on every build of a
+     * script this repository does not own.
+     *
+     * `static.cloudflareinsights.com` is listed because Cloudflare injects that
+     * script at its proxy, so it appears whether or not the app asks for it.
+     */
+    const csp = [
+      "default-src 'self'",
+      "base-uri 'self'",
+      "object-src 'none'",
+      "frame-ancestors 'none'",
+      "form-action 'self'",
+      /*
+       * No `upgrade-insecure-requests`. A browser ignores it in a report-only
+       * policy and says so in the console on every page load -- which
+       * `scripts/check-site-console.mjs` correctly refuses to accept. It costs
+       * nothing to leave out for now: `Strict-Transport-Security` below already
+       * forces HTTPS for this origin and its subdomains, and every origin named
+       * in this policy is an https one. Add it back when the policy is promoted
+       * to enforcing.
+       */
+      "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com",
+      // Next inlines critical CSS as a <style> element on first paint.
+      "style-src 'self' 'unsafe-inline'",
+      // The Onest faces are served from public/font, not from a font CDN.
+      "font-src 'self'",
+      [
+        "img-src 'self' data:",
+        // Uploaded media.
+        supabaseHost ? `https://${supabaseHost}` : "",
+        // Avatars, which the guestbook and comments render from the provider.
+        "https://lh3.googleusercontent.com",
+        "https://avatars.githubusercontent.com",
+        "https://www.gravatar.com",
+      ]
+        .filter(Boolean)
+        .join(" "),
+      "connect-src 'self' https://challenges.cloudflare.com",
+      // The Turnstile widget renders in an iframe.
+      "frame-src https://challenges.cloudflare.com",
+    ].join("; ");
+
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          /*
+           * **Report-only, on purpose.** An enforcing policy that is wrong
+           * takes the site's own scripts down, and the way to find out whether
+           * this one is right is to watch what it reports on real traffic
+           * rather than to guess. Promoting it is renaming this header, and it
+           * belongs in its own change once the reports are quiet.
+           */
+          { key: "Content-Security-Policy-Report-Only", value: csp },
+
+          /*
+           * Two years, with preload. HSTS is hard to walk back -- a browser
+           * that has seen this will refuse plain HTTP for the whole max-age,
+           * whatever the site later says -- so it is worth being sure every
+           * subdomain is served over TLS before this ships.
+           */
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+
+          // Stops a browser guessing a type the server did not declare, which
+          // is how an uploaded file becomes an executed script.
+          { key: "X-Content-Type-Options", value: "nosniff" },
+
+          // `frame-ancestors 'none'` above says the same thing to a modern
+          // browser; this is what an older one reads.
+          { key: "X-Frame-Options", value: "DENY" },
+
+          // Send the full URL within the site, the origin only when leaving it,
+          // and nothing at all when leaving it for plain HTTP.
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+
+          // Keeps a window this site opens out of the same browsing context
+          // group, so it cannot reach back through `window.opener`.
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+
+          /*
+           * Deny every powerful feature. This site asks for none of them, and
+           * an unset policy is a permitted one -- a third-party frame inherits
+           * whatever the top document was allowed.
+           */
+          {
+            key: "Permissions-Policy",
+            value: [
+              "accelerometer=()", "autoplay=()", "camera=()", "display-capture=()",
+              "encrypted-media=()", "fullscreen=()", "geolocation=()", "gyroscope=()",
+              "magnetometer=()", "microphone=()", "midi=()", "payment=()",
+              "picture-in-picture=()", "publickey-credentials-get=()", "screen-wake-lock=()",
+              "sync-xhr=()", "usb=()", "web-share=()",
+            ].join(", "),
+          },
+        ],
+      },
+    ];
+  },
 
   // Inlined as a string literal at build time. The copyright line wants the
   // current year, but *any* clock read inside a prerendered tree is rejected

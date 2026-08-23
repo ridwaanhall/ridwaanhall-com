@@ -81,7 +81,12 @@ Both must come back empty.
 Automated checks cannot cover the things that depend on production
 configuration. Each of these has failed for somebody at a cutover:
 
-- **Run `node scripts/check-auth-config.mjs https://<your-domain>` first.** It
+- **Run `node scripts/check-live-config.mjs https://<your-domain>` first.** It
+  names every feature that is switched off because a variable never arrived --
+  and this application degrades rather than crashes, so a hollow deployment
+  returns 200 on every page and looks entirely healthy. Three were off at once
+  on the first deployment of this site.
+- **Then `node scripts/check-auth-config.mjs https://<your-domain>`.** It
   answers in seconds what clicking through answers in minutes, and it names the
   variable rather than leaving `?error=Configuration` to be interpreted.
 - **Then sign in with Google, and sign out. Then GitHub.** The check proves the

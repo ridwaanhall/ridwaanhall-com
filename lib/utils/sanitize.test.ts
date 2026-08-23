@@ -64,8 +64,8 @@ describe("sanitizeRichText", () => {
   });
 
   it("keeps the schemes a real link uses", () => {
-    assert.ok(sanitizeRichText('<a href="https://example.com">x</a>').includes("https://example.com"));
-    assert.ok(sanitizeRichText('<a href="mailto:hi@example.com">x</a>').includes("mailto:"));
+    assert.match(sanitizeRichText('<a href="https://example.com">x</a>'), /href="https:\/\/example\.com"/);
+    assert.match(sanitizeRichText('<a href="mailto:hi@example.com">x</a>'), /href="mailto:hi@example\.com"/);
   });
 
   it("sends an external link to a new tab, with the rel that has to accompany it", () => {
@@ -73,6 +73,32 @@ describe("sanitizeRichText", () => {
     assert.ok(out.includes('target="_blank"'), out);
     assert.ok(out.includes("noopener"), out);
     assert.ok(out.includes("noreferrer"), out);
+  });
+
+  /*
+   * Whether a link is "ours" is a question about its host, and the only way to
+   * answer it is to parse the URL. Deciding it by looking for the site's name
+   * anywhere in the string says yes to every one of these, because the name is
+   * in all of them -- in the domain of somebody else's site, or in a query
+   * parameter, or in the path. CodeQL flags the pattern as
+   * `js/incomplete-url-substring-sanitization`, and it is right to.
+   */
+  it("treats a host that merely contains the site's name as somebody else's", () => {
+    for (const href of [
+      "https://ridwaanhall.com.evil.test/",
+      "https://evil.test/?ref=ridwaanhall.com",
+      "https://evil.test/ridwaanhall.com",
+      "https://notridwaanhall.com/",
+    ]) {
+      const out = sanitizeRichText(`<a href="${href}">out</a>`);
+      assert.ok(out.includes('target="_blank"'), `${href} should be external: ${out}`);
+      assert.ok(out.includes("noopener"), `${href} should carry noopener: ${out}`);
+    }
+  });
+
+  it("counts a subdomain of the site as the site", () => {
+    const out = sanitizeRichText('<a href="https://www.ridwaanhall.com/blog">in</a>');
+    assert.ok(!out.includes("_blank"), out);
   });
 
   it("leaves an internal link in the same tab", () => {

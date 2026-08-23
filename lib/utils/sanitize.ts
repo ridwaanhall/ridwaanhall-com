@@ -46,17 +46,54 @@ const OPTIONS: sanitizeHtml.IOptions = {
     // should always accompany `target="_blank"` -- without `noopener` the new
     // page gets a handle on `window.opener`.
     a: (tagName, attribs) => {
-      const href = attribs.href ?? "";
-      const external = /^https?:\/\//i.test(href) && !href.includes("ridwaanhall.com");
       return {
         tagName,
-        attribs: external
+        attribs: isExternal(attribs.href ?? "")
           ? { ...attribs, target: "_blank", rel: "noopener noreferrer" }
           : attribs,
       };
     },
   },
 };
+
+/**
+ * The site's own host, and every subdomain of it.
+ *
+ * Written out rather than read from `NEXT_PUBLIC_BASE_URL` on purpose. An unset
+ * or mistyped variable would not fail here, it would quietly reclassify every
+ * link on the site -- and this decides an attribute on stored content that a
+ * visitor supplied. A constant is wrong in one obvious way or not at all.
+ */
+const SITE_HOST = "ridwaanhall.com";
+
+/**
+ * Is this link somebody else's?
+ *
+ * **Parsed, never searched.** This was
+ * `href.includes("ridwaanhall.com")`, which asks whether the site's name
+ * appears anywhere in the string -- and it appears in
+ * `https://ridwaanhall.com.evil.test/` (a different registrable domain), in
+ * `https://evil.test/?ref=ridwaanhall.com` (a query parameter), and in
+ * `https://notridwaanhall.com/` (a longer name). All three were treated as our
+ * own and lost their `target="_blank"` and the `rel` that goes with it.
+ *
+ * Anything that is not an absolute http(s) URL is ours: a relative href stays
+ * in the tab it was clicked in, and `mailto:` opens no tab at all.
+ */
+function isExternal(href: string): boolean {
+  let url: URL;
+  try {
+    url = new URL(href);
+  } catch {
+    return false;
+  }
+  if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+
+  const host = url.hostname.toLowerCase();
+  // The dot matters. Without it `notridwaanhall.com` ends with the site's name
+  // and this is the substring bug again, one level further in.
+  return host !== SITE_HOST && !host.endsWith(`.${SITE_HOST}`);
+}
 
 export function sanitizeRichText(html: string): string {
   return sanitizeHtml(html ?? "", OPTIONS);

@@ -11,6 +11,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Read the code, and nothing else.
+#
+# An unset `permissions` block does not mean "no permissions" -- it means the
+# repository's default, which on many repositories is a write-scoped token
+# handed to every step, including the third-party actions and the whole
+# dependency tree `npm ci` installs. Nothing in this workflow writes anything:
+# it checks types, lints, runs tests and builds.
+permissions:
+  contents: read
+
 jobs:
   check:
     runs-on: ubuntu-latest

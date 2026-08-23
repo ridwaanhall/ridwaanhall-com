@@ -1,19 +1,18 @@
 /**
  * Run one migration file against the database, in a transaction.
  *
- * `drizzle-kit migrate` has never run here and should not start: every
- * migration in `drizzle/` after the introspection baseline is hand-written,
- * because generate emits statements that must never execute against this
- * database (see `drizzle/README.md`). Applying them by hand is the intended
- * workflow -- this just makes it one command rather than a psql session, and
- * puts the whole file in one transaction so a failure half way leaves nothing
- * behind.
+ * The SQL in `drizzle/` is hand-written, because a generator emits statements
+ * that must never execute against this database -- `DISABLE ROW LEVEL SECURITY`
+ * chief among them (see `drizzle/README.md`). Applying it by hand is the
+ * intended workflow; this just makes it one command rather than a psql session,
+ * and puts the whole file in one transaction so a failure half way leaves
+ * nothing behind.
  *
- * Dry run by default, like `blocks-to-html.mjs` was: it prints the statements
- * and rolls back, so you see exactly what would run.
+ * Dry run by default: it prints the statements and rolls back, so you see
+ * exactly what would run.
  *
- *   node scripts/apply-migration.mjs drizzle/0003_drop_django_leftovers.sql
- *   node scripts/apply-migration.mjs drizzle/0003_drop_django_leftovers.sql --apply
+ *   node scripts/apply-migration.mjs drizzle/0000_init.sql
+ *   node scripts/apply-migration.mjs drizzle/0000_init.sql --apply
  */
 import { readFileSync } from "node:fs";
 
@@ -31,7 +30,7 @@ if (!file) {
 
 // DDL goes over the direct connection. Neither DDL nor introspection is
 // reliable behind pgbouncer's transaction-mode pooling -- the same reason
-// drizzle.config.ts and Django's `migrate` both reach for this URL.
+// any schema tool has to reach for this URL rather than the pooled one.
 const raw = process.env.STORAGE_POSTGRES_URL_NON_POOLING;
 if (!raw) {
   console.error("STORAGE_POSTGRES_URL_NON_POOLING is not set (see .env.example)");
@@ -60,15 +59,39 @@ const statements = readFileSync(file, "utf8")
  * `--apply` is given, and a `commit` in the file ends that transaction from
  * the inside: whatever came before it is already durable, the final `rollback`
  * has nothing left to undo, and the run still prints "rolled back -- nothing
- * changed". `drizzle/0007` did exactly this, and its dry run committed.
+ * changed". A migration here did exactly this once, and its dry run committed.
  *
  * Refused rather than stripped. A file written around its own transaction may
  * be relying on it, and quietly removing the boundary would make this a
  * different migration from the one that was reviewed.
+ *
+ * **A PL/pgSQL body is not transaction control.** `DO $$ ... BEGIN ... END $$`
+ * opens a *block*, not a transaction, and its `BEGIN` sits at the start of a
+ * line like any other. Scanning the raw text refused every migration that
+ * enables row-level security in a loop -- which is to say the baseline schema
+ * and the drop that retires the old one, neither of which contains a single
+ * transaction statement. Dollar-quoted bodies are blanked before the scan so
+ * only the SQL between them is read.
  */
+function withoutDollarQuoted(sql) {
+  const delimiter = /\$([A-Za-z_]\w*)?\$/g;
+  let out = "";
+  let last = 0;
+  let match;
+  while ((match = delimiter.exec(sql))) {
+    const tag = match[0];
+    const close = sql.indexOf(tag, match.index + tag.length);
+    if (close === -1) break; // unterminated; leave the rest as written
+    out += sql.slice(last, match.index) + tag + tag;
+    last = close + tag.length;
+    delimiter.lastIndex = last;
+  }
+  return out + sql.slice(last);
+}
+
 const CONTROL = /^[ \t]*(begin|commit|rollback|start[ \t]+transaction|savepoint)\b/im;
 for (const statement of statements) {
-  const found = statement.match(CONTROL);
+  const found = withoutDollarQuoted(statement).match(CONTROL);
   if (found) {
     console.error(
       `${file} contains its own transaction control (${found[1]}).\n` +

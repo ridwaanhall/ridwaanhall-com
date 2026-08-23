@@ -1,58 +1,62 @@
--- The application's own schema.
+-- The application's schema, whole, from nothing.
 --
--- HAND-WRITTEN, like every migration here after the introspection baseline.
+-- This is the only file a new installation runs. It creates `app` and every
+-- table, index, constraint and row-level-security setting in it, and it depends
+-- on nothing that is already there:
 --
--- **Why a new schema rather than a rewrite of `public`.** `public` is the
--- schema Django's migrations built, and production still serves Django from
--- `main` against this same database. Restructuring it in place would take the
--- live site down the moment the first statement committed. `app` is built
--- beside it, the data is copied across, and `public` is dropped once the
--- Next.js app is deployed and serving from here. Nothing about this migration
--- is visible to Django.
+--   node scripts/apply-migration.mjs drizzle/0000_init.sql          # dry run
+--   node scripts/apply-migration.mjs drizzle/0000_init.sql --apply
 --
--- What changed, and why:
+-- Over `STORAGE_POSTGRES_URL_NON_POOLING`, not the pooled URL. DDL is not
+-- reliable through pgbouncer's transaction-mode pooling.
 --
---   * **UUID keys.** Sequential ids leak how much of a thing exists and how
---     fast it grows -- the 62nd job application is `/admin/application/62` --
---     and they make a row's identity a function of insert order, so two
---     environments can never hold the same id for the same row. Every table
---     here is keyed by `gen_random_uuid()`.
+-- `scripts/check-baseline-schema.mjs` applies this into a scratch schema and
+-- compares the result against the live one, so the claim above is checked
+-- rather than asserted. Run it after any change here, then
+-- `node scripts/gen-app-schema.mjs` to bring the Drizzle mapping back in step.
+--
+-- ---------------------------------------------------------------------------
+-- The shape, and why it is this shape
+-- ---------------------------------------------------------------------------
+--
+--   * **UUID keys, everywhere.** Sequential ids leak how much of a thing exists
+--     and how fast it grows -- the 62nd job application would be
+--     `/admin/application/62` -- and they make a row's identity a function of
+--     insert order, so two environments can never hold the same id for the same
+--     row. Every table here is keyed by `gen_random_uuid()`.
 --
 --   * **Lookup tables for closed vocabularies.** Employment type, work mode,
---     application source and the two status sets were free varchar repeated
---     across four tables, with `''` doing duty for "unknown" in 15 rows. They
---     are rows now, referenced by id, editable in one place.
+--     application source and the two status sets are rows, not free text
+--     repeated across four tables. Referenced by id, editable in one place, and
+--     impossible to misspell into a new category by accident.
 --
---   * **One `tag` table.** Blog posts and projects each carried a JSONB array
---     of free text: 460 distinct strings, folding to 429 once case is ignored.
---     `Python` and `python` were different tags; so were Django, API,
---     Indonesia, MLBB and 26 more. The slug is the identity, the label is what
---     shows.
+--   * **One `tag` table.** Blog posts and projects share it rather than each
+--     carrying a list of free text, where `Python` and `python` are two
+--     different tags. The slug is the identity; the label is what shows.
 --
---   * **One `location` table.** Location was modelled four ways -- six columns
---     on the profile, six different ones on education, one free-text field on
---     experience and another on application. One shape, referenced by id.
+--   * **One `location` table.** Location is one shape referenced by id, rather
+--     than six columns on the profile, six different ones on education, and a
+--     free-text field on each of experience and application.
 --
---   * **One `media_asset` table.** Every image was a bare storage key in a
---     varchar, and the same key appeared in twenty-one rows. An asset is a row
---     now, so a file is named once and referenced by id, and the admin has
---     something to render a real URL from.
+--   * **One `media_asset` table.** An image is a row, so a file is named once
+--     and referenced by id however many records point at it -- one photo can
+--     easily be named by twenty. It also gives the admin something to render a
+--     real URL from, and makes deletion reference-countable
+--     (`lib/storage/cleanup.ts`).
 --
---   * **JSONB arrays of strings became rows.** Responsibilities, achievements,
---     required skills, benefits, the openhire lists -- all ordered lists of
---     text that could not be queried, counted or reordered without rewriting a
---     whole document. They are child tables with a `position`.
+--   * **Ordered lists are child tables, not arrays.** Responsibilities,
+--     achievements, required skills, benefits, the openhire lists: each is a
+--     table with a `position`, so a list can be queried, counted and reordered
+--     without rewriting a whole document.
 --
---   * **Django's auth is gone.** 37 accounts, 36 of them with an unusable
---     password and every one of them signed in through Google or GitHub, so
---     `password`, `is_superuser`, groups and permissions carried nothing.
---     `account` keeps identity and the two flags the app actually reads;
---     `account_identity` replaces allauth's social tables. Comments lose
---     `content_type_id` -- a generic-foreign-key mechanism that only ever
---     pointed at two models -- for a plain `target_kind` and `target_id`.
+--   * **Accounts carry identity and nothing more.** Everyone signs in through
+--     Google or GitHub, so there is no password column to leak: `account` holds
+--     identity and the two flags the app reads, and `account_identity` holds
+--     the provider link. A comment names its target with a plain `target_kind`
+--     and `target_id` rather than a generic-foreign-key mechanism.
 --
 -- `position` rather than `order`, which is reserved. Every ordering column is
--- an integer with a stable default so a list has an order before anyone sets
+-- an integer with a stable default, so a list has an order before anyone sets
 -- one.
 
 CREATE SCHEMA IF NOT EXISTS "app";--> statement-breakpoint
@@ -70,7 +74,17 @@ CREATE TABLE "app"."media_asset" (
     "original_filename" text NOT NULL DEFAULT '',
     "alt" text NOT NULL DEFAULT '',
     "created_at" timestamptz NOT NULL DEFAULT now(),
-    CONSTRAINT "media_asset_storage_key_key" UNIQUE ("storage_key")
+    -- Where the file actually lives, because two kinds of image feed this site
+    -- and they are not the same thing. `storage` is an object in the Supabase
+    -- bucket, uploaded through the admin and named after its contents. `static`
+    -- is a file bundled under `public/` and served by the app itself -- the 78
+    -- skill icons are these: vector, tiny, cached with the deployment. One
+    -- table with a discriminator rather than two columns on `skill` means one
+    -- resolver turns either into a URL and the admin renders both the same way.
+    -- `storage_key` is the bucket key for one and the public path for the other.
+    "source" text NOT NULL DEFAULT 'storage',
+    CONSTRAINT "media_asset_storage_key_key" UNIQUE ("storage_key"),
+    CONSTRAINT "media_asset_source_check" CHECK ("source" IN ('storage', 'static'))
 );--> statement-breakpoint
 
 CREATE TABLE "app"."tag" (
@@ -245,6 +259,8 @@ CREATE TABLE "app"."skill" (
     -- rows, which pointed development and the admin at the production site and
     -- would have 404'd for every reader the moment the domain moved.
     "icon_id" uuid REFERENCES "app"."media_asset"("id") ON DELETE SET NULL,
+    -- Editorial order, for the same reason `education` carries one.
+    "position" integer NOT NULL DEFAULT 0,
     CONSTRAINT "skill_slug_key" UNIQUE ("slug")
 );--> statement-breakpoint
 
@@ -286,7 +302,10 @@ CREATE TABLE "app"."education" (
     -- A free-text span like "2018 - 2021" for the rows that predate exact dates.
     "years" text NOT NULL DEFAULT '',
     "date_start" date,
-    "date_end" date
+    "date_end" date,
+    -- Editorial order. Nothing here sorts by key: a uuid sorts by its bytes,
+    -- which is to say not at all, so the sequence has to be a column.
+    "position" integer NOT NULL DEFAULT 0
 );--> statement-breakpoint
 
 CREATE TABLE "app"."education_achievement" (
@@ -578,9 +597,9 @@ CREATE TABLE "app"."guest_message" (
 CREATE TABLE "app"."comment" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "account_id" uuid NOT NULL REFERENCES "app"."account"("id") ON DELETE CASCADE,
-    -- Django's generic foreign key -- a `content_type_id` into a table of every
-    -- model in the project -- resolved to exactly two targets and cost a join
-    -- on every read. The target is named directly.
+    -- The target is named directly rather than through a generic reference into
+    -- a table of every model in the project: there are exactly two things a
+    -- comment can be attached to, and a join on every read bought nothing.
     "target_kind" text NOT NULL,
     "target_id" uuid NOT NULL,
     "body" text NOT NULL,
@@ -608,11 +627,16 @@ CREATE INDEX "application_status_idx" ON "app"."application" ("status_id");--> s
 -- Row Level Security, on every table, with no policies
 -- ---------------------------------------------------------------------------
 --
--- The same rule `public` lives under and for the same reason: Supabase serves
--- a PostgREST API over the schemas it is configured to expose, independently of
--- this application, and `app`.`account` and `app`.`account_identity` are
--- exactly the tables that must never be readable that way. The role this app
--- connects as has `rolbypassrls`, so its own queries are unaffected.
+-- Supabase serves a PostgREST API over the schemas it is configured to expose,
+-- to anyone holding the project's anon key and independently of this
+-- application. `account` and `account_identity` are exactly the tables that
+-- must never be readable that way. Enabled with no policies at all, which is
+-- the intended state: the role this application connects as has
+-- `rolbypassrls`, so its own queries are unaffected, and everything else is
+-- refused by default rather than by a rule somebody has to get right.
+--
+-- Whether `app` is reachable through PostgREST is a project setting somebody
+-- can change in a dashboard. This is what makes that change survivable.
 -- `scripts/check-rls.mjs` fails if any table here ever appears without it.
 
 DO $$

@@ -110,6 +110,15 @@ export function ChevronIcon(props: IconProps) {
   );
 }
 
+export function CalendarIcon(props: IconProps) {
+  return (
+    <Stroked {...props}>
+      <rect x="3" y="4.5" width="18" height="16" rx="2" />
+      <path d="M3 9.5h18M8 2.5v4M16 2.5v4" />
+    </Stroked>
+  );
+}
+
 export function PlusIcon(props: IconProps) {
   return (
     <Stroked {...props}>

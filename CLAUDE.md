@@ -201,6 +201,45 @@ naming them, so a new one is covered from the moment it exists.
 disabled", and emits `DISABLE ROW LEVEL SECURITY` for all of them. It is not
 used here, and **any generated SQL gets read line by line before it runs.**
 
+### The admin draws its own form controls, and the CSS is class-scoped
+
+A `<select>`'s closed box was always themeable; the list that drops out of it
+never was, and neither was a checkbox's tick, a number field's spinners, or the
+calendar behind `<input type="date">`. Those are operating-system chrome.
+`color-scheme` renders them in *a* dark, but it is the browser's, not this
+site's.
+
+So `styles/admin-controls.css` draws them, and `components/admin/controls/`
+replaces the two that need a panel. **Every selector in that stylesheet is
+anchored to a class** — `.admin-check`, `.admin-select`, `.admin-popover` —
+because the file is imported from `app/globals.css` and is therefore global: a
+rule written as `input[type="checkbox"] { … }` restyles the contact form, the
+comment box and the guestbook composer, silently. The two admin sheets beside
+it already work that way. `scripts/check-admin-controls.mjs` parses the
+selectors and fails on a bare element name.
+
+**Every drawn control is an enhancement over a real one.** The server renders
+the `<select>` or the `<input type="date">`; it carries the `name`, it is what
+posts, and it is hidden only once the component has hydrated and can take over.
+Three things depend on that: the form saves before the bundle arrives,
+`check-admin.mjs` greps the *server body* for `<select name="category">`, and a
+browser's own restore and autofill need a real control. `hidden` is what hides
+it — a hidden form control still submits, only a `disabled` one does not.
+
+Two smaller things that cost an afternoon each:
+
+- **Attribute order is part of the contract.** React emits attributes in the
+  order they are written, and `check-admin.mjs` greps for the literal
+  `<select name="category"`. An `id` written before `name` turns that check red
+  and is invisible to `tsc`, to `eslint` and to a browser.
+- **"Works without JavaScript" means *before hydration*, not with scripting
+  off.** React streams a Suspense boundary's content into a `display: none`
+  container and reveals it with a small inline script, so a browser with
+  scripting disabled does not get an unhydrated admin form — it gets an
+  invisible one, on every route that streams. The honest test, and the one
+  `check-admin-controls.mjs` runs, is scripting **on** with
+  `**/_next/static/chunks/**` blocked.
+
 ### Tailwind scans prose, and prose names classes
 
 Tailwind v4 walks every non-gitignored file and treats any word that parses as a
@@ -357,6 +396,7 @@ npx tsx --conditions=react-server scripts/check-admin-json.mjs
 npx tsx --conditions=react-server scripts/check-admin-inlines.mjs
 npx tsx --conditions=react-server scripts/check-admin-richtext.mjs
 npx tsx --conditions=react-server scripts/check-admin-labels.mjs
+npx tsx --conditions=react-server scripts/check-admin-controls.mjs
 ```
 
 A harness that imports a `server-only` module needs `--conditions=react-server`.

@@ -1,0 +1,297 @@
+/* ===========================================================================
+   The admin's form controls, drawn rather than borrowed
+   ===========================================================================
+
+   The admin's containers already follow the palette: borders, fills and text
+   all resolve through the zinc/indigo ramps that the light-mode block in
+   app/globals.css remaps. Its *controls* did not, because the parts that
+   matter are drawn by the operating system and no stylesheet can reach them --
+   a checkbox's tick, a number field's spinners, a search field's clear button,
+   the button inside a file input. `color-scheme` renders them in *a* dark, but
+   it is the browser's dark, not this site's.
+
+   So they are drawn here instead.
+
+   EVERY SELECTOR IN THIS FILE IS CLASS-SCOPED, AND THAT IS LOAD-BEARING.
+   ---------------------------------------------------------------------
+   This file is imported from app/globals.css, which makes it global. A rule
+   written as `input[type="checkbox"] { appearance: none }` would restyle the
+   whole site the moment it lands. Five public forms carry inputs today --
+   contact, comments, the guestbook composer, the search form and the search
+   palette -- and a consent checkbox added to any of them later would silently
+   inherit the admin's appearance with nothing to say why.
+
+   The two admin sheets beside this one already work that way: admin-motion.css
+   is all `.admin-rise` / `.admin-row`, admin-editor.css is all
+   `.admin-editor …`. Follow it. `scripts/check-admin-controls.mjs` fails on a
+   bare element selector here.
+
+   Colours come from the ramp variables rather than from literals, for the same
+   reason the rest of the admin does: `--color-zinc-800` is remapped in light
+   mode and `#27272a` is not. Scrollbar and motion tokens are reused from
+   globalScrollbar.css and admin-motion.css rather than restated.
+   =========================================================================== */
+
+/*
+ * The two glyphs, as data URIs.
+ *
+ * `:root` is a pseudo-class rather than an element selector, so this does not
+ * breach the rule above: it declares two custom properties, both prefixed, and
+ * a custom property that nothing reads paints nothing. The site is unaffected.
+ */
+:root {
+    --admin-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.5l3.5 3.5L13 4.5'/%3E%3C/svg%3E");
+    --admin-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2371717a' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+}
+
+/* ---------------------------------------------------------------------------
+   Checkbox
+
+   `appearance: none` takes the OS box away and leaves an empty element to
+   paint: a 16px square with the admin's own border and radius, filling indigo
+   when it is checked. The tick itself is on the `:checked` rule below, and the
+   note there is worth reading before changing how it is drawn.
+   --------------------------------------------------------------------------- */
+.admin-check {
+    appearance: none;
+    -webkit-appearance: none;
+    flex-shrink: 0;
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid var(--color-zinc-700);
+    border-radius: 0.25rem;
+    background-color: var(--color-zinc-900);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 0.7rem;
+    cursor: pointer;
+    transition:
+        background-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.admin-check:hover {
+    border-color: var(--color-zinc-600);
+}
+
+/*
+ * The tick is a background image on the input itself, not a `::before`.
+ *
+ * An `<input>` is a replaced element, and pseudo-elements on replaced elements
+ * are not rendered -- `appearance: none` makes most engines render them anyway,
+ * which is why the technique is everywhere, but it is not something to rely on:
+ * where it does not, the box fills indigo and the checkmark is simply missing,
+ * so a ticked box and an unticked one differ only by fill.
+ *
+ * A background image has no such ambiguity. The stroke is pinned white rather
+ * than taken from a ramp because its contrast target is the indigo fill beneath
+ * it, which does not change with the theme -- the same reasoning `.media-scrim`
+ * carries in app/globals.css.
+ */
+.admin-check:checked {
+    background-color: var(--color-indigo-500);
+    border-color: var(--color-indigo-500);
+    background-image: var(--admin-tick);
+}
+
+.admin-check:focus-visible {
+    outline: 2px solid var(--color-indigo-400);
+    outline-offset: 2px;
+}
+
+.admin-check:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* The smaller one, beside the "Remove this image" line under a preview. */
+.admin-check-sm {
+    width: 0.875rem;
+    height: 0.875rem;
+    background-size: 0.6rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Number
+
+   The spinners go. They are two 12px targets stacked inside the field, drawn
+   by the platform in the platform's colours, and nobody has ever hit the one
+   they meant on the first try. Typing and the arrow keys both still work, and
+   `.admin-stepper` beside the field is the pointer affordance instead --
+   rendered only where JavaScript is running, so removing these costs a no-JS
+   reader nothing they had.
+   --------------------------------------------------------------------------- */
+.admin-number::-webkit-outer-spin-button,
+.admin-number::-webkit-inner-spin-button {
+    appearance: none;
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.admin-number {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+/* ---------------------------------------------------------------------------
+   Search
+
+   WebKit's clear button is a fixed dark glyph that vanishes against the field
+   in dark mode. Hidden, and `.admin-search-clear` in the markup replaces it.
+   --------------------------------------------------------------------------- */
+.admin-search::-webkit-search-cancel-button,
+.admin-search::-webkit-search-decoration {
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+/* ---------------------------------------------------------------------------
+   File
+
+   Only the button inside the control is reachable; the filename beside it is
+   the OS's and stays. So the button is made to match the admin's other small
+   controls and the rest is left alone rather than faked.
+   --------------------------------------------------------------------------- */
+.admin-file::file-selector-button {
+    margin-right: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid var(--color-zinc-700);
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--color-zinc-300);
+    font: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition:
+        background-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.admin-file::file-selector-button:hover {
+    border-color: var(--color-zinc-600);
+    background: var(--color-zinc-800);
+}
+
+/* ---------------------------------------------------------------------------
+   Textarea
+
+   Vertical only. A textarea that can be dragged wider than its grid column
+   pushes the whole form sideways, which is the same failure `min-w-0` on the
+   field row exists to prevent -- and no width a reader drags to is remembered
+   anyway.
+   --------------------------------------------------------------------------- */
+.admin-textarea {
+    resize: vertical;
+}
+
+/* ---------------------------------------------------------------------------
+   Select, before JavaScript arrives
+
+   The native select keeps its own arrow, which is OS chrome; this replaces it
+   with one drawn from the palette so the closed control matches the enhanced
+   one that takes over on hydration. The open list is still the OS's until then
+   -- that part genuinely cannot be styled, which is why the listbox exists.
+   --------------------------------------------------------------------------- */
+.admin-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: var(--admin-chevron);
+    background-repeat: no-repeat;
+    background-position: right 0.625rem center;
+    background-size: 0.75rem;
+    padding-right: 2rem;
+}
+
+/* zinc-500 reads as mid-grey on both canvases, so the chevron needs no swap of
+   its own -- but the option list behind it does, and that is the browser's.
+   `color-scheme` is what makes it dark; it is set on :root in globals.css. */
+
+/* ---------------------------------------------------------------------------
+   The enhanced controls' shared surfaces
+
+   The listbox and the calendar are both a panel floating over the page, so
+   they share one shell rather than each inventing a border and a radius.
+   Portalled to body level, so nothing here may rely on an admin ancestor.
+   --------------------------------------------------------------------------- */
+.admin-popover {
+    border: 1px solid var(--color-zinc-800);
+    border-radius: 0.5rem;
+    background: var(--color-zinc-950);
+    animation: admin-pop 140ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes admin-pop {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* One row of a listbox, and one day of a calendar: the same three states, so
+   the same three rules. `aria-selected` rather than a class, so the styling
+   and what a screen reader is told cannot drift apart. */
+.admin-option {
+    color: var(--color-zinc-300);
+    cursor: pointer;
+    transition: background-color 120ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.admin-option:hover,
+.admin-option[data-highlighted="true"] {
+    background: var(--color-zinc-800);
+    color: var(--color-zinc-100);
+}
+
+.admin-option[aria-selected="true"] {
+    color: var(--color-indigo-400);
+}
+
+.admin-option[aria-disabled="true"] {
+    color: var(--color-zinc-600);
+    cursor: default;
+}
+
+.admin-option[aria-disabled="true"]:hover {
+    background: transparent;
+    color: var(--color-zinc-600);
+}
+
+/* The day a calendar opens on, when it is not the selected one. A ring rather
+   than a fill, so "today" and "chosen" are never the same signal. */
+.admin-day-today {
+    box-shadow: inset 0 0 0 1px var(--color-zinc-700);
+}
+
+/*
+ * The chosen day. Its own rule rather than the `[aria-selected]` one above,
+ * because a day cell is a toggle button and carries `aria-pressed` -- a bare
+ * button may not claim `aria-selected`, which belongs to a listbox or a grid.
+ *
+ * White on indigo, both pinned: the label's contrast target is the fill under
+ * it, which does not follow the theme.
+ */
+.admin-option[aria-pressed="true"] {
+    background: var(--color-indigo-500);
+    color: #fff;
+}
+
+.admin-option[aria-pressed="true"]:hover {
+    background: var(--color-indigo-500);
+    color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-popover {
+        animation: none;
+    }
+
+    .admin-check,
+    .admin-file::file-selector-button,
+    .admin-option {
+        transition: none;
+    }
+}

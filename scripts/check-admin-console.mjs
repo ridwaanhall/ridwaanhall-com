@@ -77,7 +77,7 @@ async function sampleId(key) {
 }
 
 const routes = ["/admin"];
-for (const entry of ADMIN_ENTRIES.filter((e) => e.ready)) {
+for (const entry of ADMIN_ENTRIES) {
   routes.push(`/admin/${entry.key}`);
   if (entry.singleton) continue;
   // A model with no rows has no edit screen to open, and that is not a fault.

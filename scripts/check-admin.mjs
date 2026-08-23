@@ -17,7 +17,7 @@
  * **The changelist means what it says.** Sorting, filtering, searching and
  * paging are all answered in SQL from one descriptor, so a mistake in the
  * generic is a mistake in every screen built on it. These pin the behaviour
- * Django's changelist had: a two-word search narrows rather than widens, a
+ * a changelist has to get right: a two-word search narrows rather than widens, a
  * boolean filter partitions the table, an unknown sort key falls back instead
  * of reaching the database, and a page past the end clamps.
  *
@@ -132,23 +132,18 @@ const leaks = (body) => ROW_MARKERS.filter((marker) => body.includes(marker));
 // --- the registry ------------------------------------------------------------
 
 {
-  // A singleton has no changelist by definition -- `SingletonModel` forces
-  // `pk=1`, and Django's `SingletonModelAdmin` sent the changelist straight to
-  // that row. Its screen is the record form, so it is checked against that.
-  const ready = ADMIN_ENTRIES.filter((entry) => entry.ready && !entry.singleton).map(
-    (entry) => entry.key,
-  );
-  const singletons = ADMIN_ENTRIES.filter((entry) => entry.ready && entry.singleton).map(
-    (entry) => entry.key,
-  );
+  // A singleton has no changelist by definition: its screen is the record form,
+  // so it is checked against that instead.
+  const listed = ADMIN_ENTRIES.filter((entry) => !entry.singleton).map((entry) => entry.key);
+  const singletons = ADMIN_ENTRIES.filter((entry) => entry.singleton).map((entry) => entry.key);
   const built = Object.keys(ADMIN_LIST_MODELS);
-  const readyWithoutModel = ready.filter((key) => !built.includes(key));
-  const modelWithoutEntry = built.filter((key) => !ready.includes(key));
+  const entryWithoutModel = listed.filter((key) => !built.includes(key));
+  const modelWithoutEntry = built.filter((key) => !listed.includes(key));
   const singletonWithoutForm = singletons.filter((key) => !(key in ADMIN_FORM_MODELS));
   check(
-    "every screen marked ready has a descriptor",
-    readyWithoutModel.length === 0,
-    readyWithoutModel.join(", "),
+    "every registered screen has a descriptor",
+    entryWithoutModel.length === 0,
+    entryWithoutModel.join(", "),
   );
   check(
     "every singleton has a form instead of a list",
@@ -156,9 +151,19 @@ const leaks = (body) => ROW_MARKERS.filter((marker) => body.includes(marker));
     singletonWithoutForm.join(", ") || `${singletons.length} singletons`,
   );
   check(
-    "every descriptor has a screen marked ready",
+    "every descriptor has a registered screen",
     modelWithoutEntry.length === 0,
     modelWithoutEntry.join(", "),
+  );
+  // The record route has no read-only fallback: it renders a form or nothing.
+  // An entry without a form descriptor would be a screen that cannot be opened.
+  const entryWithoutForm = ADMIN_ENTRIES.map((entry) => entry.key).filter(
+    (key) => !(key in ADMIN_FORM_MODELS),
+  );
+  check(
+    "every registered screen has a form descriptor",
+    entryWithoutForm.length === 0,
+    entryWithoutForm.join(", ") || `${ADMIN_ENTRIES.length} screens`,
   );
   check(
     "registry keys are unique",
@@ -245,20 +250,7 @@ check("staff: the list renders", all.status === 200 && allRows.length > 0, `${al
 const notFound = ({ status, body }) => status === 404 || body.includes("Nothing here");
 
 {
-  // Taken from the registry rather than hard-coded, so finishing a screen
-  // cannot quietly turn this into a check that the screen 404s.
-  const pending = ADMIN_ENTRIES.find((entry) => !entry.ready);
-  const unbuilt = pending ? await get(`/admin/${pending.key}`, staff) : null;
   const unknown = await get("/admin/nonsense", staff);
-
-  if (unbuilt) {
-    check(
-      `a registered but unbuilt screen says not found (${pending.key})`,
-      notFound(unbuilt),
-      `status ${unbuilt.status}`,
-    );
-    check("and it renders no changelist", !unbuilt.body.includes("<table"));
-  }
   check("an unknown key says not found", notFound(unknown), `status ${unknown.status}`);
   check("and it renders no changelist either", !unknown.body.includes("<table"));
 }
@@ -314,7 +306,7 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
   const broken = [];
   const thin = [];
 
-  for (const entry of ADMIN_ENTRIES.filter((candidate) => candidate.ready)) {
+  for (const entry of ADMIN_ENTRIES) {
     const { status, body } = await get(`/admin/${entry.key}`, staff);
     if (entry.singleton) {
       // Its screen is a form, so what proves it rendered is a save button.

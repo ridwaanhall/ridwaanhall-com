@@ -21,11 +21,10 @@ import { requireStaff } from "@/lib/auth/staff";
 /**
  * One route for every changelist.
  *
- * Django generated its changelist URLs from the registry too; the difference is
- * only that this is a single dynamic segment rather than `<app>/<model>`. A key
- * that is in the registry but has no descriptor yet 404s rather than 500s --
- * the sidebar does not link to those, but a typed URL or a stale bookmark can
- * still arrive at one.
+ * One dynamic segment, and the registry is what fills it -- so a screen is
+ * added by adding a descriptor, never by writing a page. A key that is in the
+ * registry but has no descriptor 404s rather than 500s: the sidebar does not
+ * link to those, but a typed URL or a stale bookmark can still arrive at one.
  */
 type Params = { params: Promise<{ model: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 
@@ -41,7 +40,7 @@ type Params = { params: Promise<{ model: string }>; searchParams: Promise<Record
  * intent directly and is rejected outright under `cacheComponents`.
  */
 export function generateStaticParams() {
-  return ADMIN_ENTRIES.filter((entry) => entry.ready).map((entry) => ({ model: entry.key }));
+  return ADMIN_ENTRIES.map((entry) => ({ model: entry.key }));
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
@@ -65,11 +64,9 @@ export const instant = false;
 /**
  * A one-row model has no list.
  *
- * Django's `SingletonModelAdmin` redirected the changelist straight to `pk=1`;
- * this renders that record's form in place, which is the same destination
- * without the hop. All three rows exist and are never created or deleted --
- * `SingletonModel` forces `pk=1` and blocks delete -- so a missing one is a
- * broken database rather than a case to handle.
+ * A list of one row is a hop nobody wants, so this renders that record's form
+ * in place. All three such rows exist and are never created or deleted, so a
+ * missing one is a broken database rather than a case to handle.
  */
 async function SingletonScreen({ entryKey }: { entryKey: string }) {
   const entry = ADMIN_ENTRIES_BY_KEY.get(entryKey);
@@ -77,7 +74,8 @@ async function SingletonScreen({ entryKey }: { entryKey: string }) {
   if (!entry || !form) notFound();
 
   // The one row's key, which the form, its inlines and the save action all
-  // need -- and which, unlike Django's `pk=1`, cannot be written as a literal.
+  // need. It is a uuid, so it cannot be written down as a literal -- it has to
+  // be looked up.
   const recordId = await singletonId(form);
   if (!recordId) notFound();
 

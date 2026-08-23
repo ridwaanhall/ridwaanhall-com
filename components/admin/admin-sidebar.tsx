@@ -34,10 +34,8 @@ const GROUP_ICON: Record<AdminGroup, typeof PersonIcon> = {
 /**
  * The admin's model index, as a rail on desktop and a drawer below `lg`.
  *
- * Grouped by Django app, in registry order, so someone who knows the Django
- * admin finds the same models in the same places. Screens that are not built
- * yet render as dimmed rows rather than links -- see the note on `ready` in
- * `lib/admin/registry.ts`.
+ * Grouped by area, in registry order, so the sidebar and the index page put
+ * the same models in the same places.
  *
  * The public site's drawer is dismissed by drag, backdrop and Escape and has no
  * close button. This one keeps a close button on purpose: the admin is a tool
@@ -109,22 +107,6 @@ export function AdminSidebar({ signedInAs }: { signedInAs: string }) {
                     const href = `/admin/${entry.key}` as Route;
                     const active = pathname === href || pathname.startsWith(`${href}/`);
 
-                    if (!entry.ready) {
-                      return (
-                        <li key={entry.key}>
-                          <span
-                            className="flex cursor-not-allowed items-center gap-2 rounded-md px-2 py-1.5 text-sm text-zinc-600"
-                            title="Not built yet"
-                          >
-                            {entry.labelPlural}
-                            <span className="ml-auto text-[0.625rem] tracking-wide text-zinc-700 uppercase">
-                              soon
-                            </span>
-                          </span>
-                        </li>
-                      );
-                    }
-
                     return (
                       <li key={entry.key}>
                         <Link
@@ -161,8 +143,7 @@ export function AdminSidebar({ signedInAs }: { signedInAs: string }) {
         </div>
 
         <div className="border-t border-zinc-800 px-4 py-3 text-xs text-zinc-500">
-          {ADMIN_ENTRIES.filter((entry) => entry.ready).length} of {ADMIN_ENTRIES.length} screens
-          built
+          {ADMIN_ENTRIES.length} screens
         </div>
       </nav>
     </>

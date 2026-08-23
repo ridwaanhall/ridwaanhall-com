@@ -3,21 +3,19 @@ import type { Route } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 
-import { BackIcon, CheckIcon, DashIcon } from "@/components/admin/admin-icons";
+import { BackIcon } from "@/components/admin/admin-icons";
 import { NothingHere } from "@/components/admin/nothing-here";
 import { RecordForm } from "@/components/admin/record-form";
 import { RecordSkeleton } from "@/components/admin/record-skeleton";
-import { adminDate, adminDateTime } from "@/lib/admin/format";
 import { imageUrlMap, toClientFieldsets, toClientInlines } from "@/lib/admin/form";
 import { loadInlineRows } from "@/lib/admin/inlines";
-import { fetchAdminRow } from "@/lib/admin/list";
-import { formModelFor, listModelFor } from "@/lib/admin/models";
+import { formModelFor } from "@/lib/admin/models";
 import { loadFormValues, loadReferenceOptions } from "@/lib/admin/record";
 import { ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
 import { requireStaff } from "@/lib/auth/staff";
 
 /**
- * One record: the change form where it is built, a read-only view where it is not.
+ * One record: the change form for it.
  *
  * The read-only half was never a placeholder to throw away. It renders exactly
  * what the changelist descriptor declares, so every model has a record page from
@@ -113,64 +111,10 @@ async function Record({ params }: { params: Params }) {
     );
   }
 
-  const model = listModelFor(key);
-  if (!model) return <NothingHere message="That screen has not been built yet." />;
-
-  const row = await fetchAdminRow(model, recordId);
-  if (!row) return missing;
-
-  return (
-    <>
-      <Crumb label={entry.labelPlural} href={`/admin/${entry.key}` as Route} />
-      <Heading
-        title={String(model.columns[0]?.value(row) ?? entry.label)}
-        subtitle={`${entry.label} #${model.rowId(row)}`}
-      />
-
-      <p className="rounded-lg border border-indigo-900/60 bg-indigo-500/5 px-3 py-2 text-xs text-indigo-300">
-        Read-only for now. This record needs fields the form layer does not carry yet — an image, a
-        JSON editor or ordered inlines — so edits still go through the Django admin.
-      </p>
-
-      <dl className="divide-y divide-zinc-800 rounded-lg border border-zinc-800">
-        {model.columns.map((column) => {
-          const value = column.value(row);
-          return (
-            <div key={column.key} className="grid gap-1 px-3 py-2.5 sm:grid-cols-3 sm:gap-3">
-              <dt className="text-xs font-medium tracking-wide text-zinc-500 uppercase">
-                {column.label}
-              </dt>
-              <dd className="text-sm text-zinc-300 sm:col-span-2">
-                {column.kind === "bool" ? (
-                  value ? (
-                    <span className="inline-flex items-center gap-1 text-green-400">
-                      <CheckIcon height={14} width={14} /> Yes
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 text-zinc-500">
-                      <DashIcon height={14} width={14} /> No
-                    </span>
-                  )
-                ) : value === null || value === "" ? (
-                  <span className="text-zinc-600">—</span>
-                ) : column.kind === "date" ? (
-                  <span className="tabular-nums">{adminDate(String(value))}</span>
-                ) : column.kind === "datetime" ? (
-                  <span className="tabular-nums">{adminDateTime(String(value))}</span>
-                ) : column.kind === "code" ? (
-                  <code className="rounded bg-zinc-900 px-1.5 py-0.5 text-xs text-zinc-400">
-                    {String(value)}
-                  </code>
-                ) : (
-                  String(value)
-                )}
-              </dd>
-            </div>
-          );
-        })}
-      </dl>
-    </>
-  );
+  // Unreachable: every registered screen has a form descriptor, which
+  // `scripts/check-admin.mjs` asserts. Kept as a message rather than a throw so
+  // a registry entry added without one is a screen that says so, not a 500.
+  return <NothingHere message="That screen has not been built yet." />;
 }
 
 function Crumb({ label, href }: { label: string; href: Route }) {

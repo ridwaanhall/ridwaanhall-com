@@ -1,23 +1,19 @@
 /**
  * Every screen the admin offers, in the order the sidebar lists them.
  *
- * This is the declarative half of what `apps/<app>/admin.py` did with
- * `@admin.register`: it names the models, groups them by app and says which
- * are one-row singletons. The *behavioural* half -- which columns a list shows,
- * what it filters and searches on -- lives per model under `lib/admin/models/`,
- * because those need the Drizzle columns and cannot be plain data.
+ * The declarative half: it names the screens, groups them for the sidebar, and
+ * says which are one-row singletons. The *behavioural* half -- which columns a
+ * list shows, what it filters and searches on -- lives per model under
+ * `lib/admin/models/`, because those need the Drizzle columns and cannot be
+ * plain data.
  *
- * **`ready` is a build marker, not a permission.** Screens are being ported one
- * at a time and a sidebar that only listed the finished ones would hide how
- * much is left; an entry with `ready: false` renders as a dimmed, unclickable
- * row instead of a link to a 404.
+ * Adding a screen is adding an entry here and a descriptor there. There is no
+ * page to write; `scripts/check-admin.mjs` fails if the two ever disagree.
  *
- * URLs are `/admin/<key>`, one flat segment rather than Django's
- * `/admin/<app>/<model>/`. Every model name in this project is unique across
- * its eight apps, so the app segment carried no information, and one segment
- * leaves `/admin/<key>/new` and `/admin/<key>/<id>` unambiguous. Nothing links
- * to the Django admin URLs -- it is behind a login and `noindex` -- so there is
- * no redirect to keep.
+ * URLs are `/admin/<key>` -- one flat segment, not `<area>/<model>`. Every
+ * model name in this project is unique, so an area segment would carry no
+ * information, and one segment leaves `/admin/<key>/new` and
+ * `/admin/<key>/<id>` unambiguous.
  */
 export type AdminGroup =
   | "About"
@@ -48,13 +44,10 @@ export type AdminEntry = {
   group: AdminGroup;
   /**
    * A model that only ever holds one row: `Profile`, `HiringProfile`,
-   * `OpenToWorkProfile`. There is no list and no delete -- Django's
-   * `SingletonModelAdmin` sent the changelist straight to `pk=1`, and the
-   * equivalent here is that `/admin/<key>` *is* the edit form.
+   * `OpenToWorkProfile`. There is no list and no delete -- `/admin/<key>` *is*
+   * that record's edit form.
    */
   singleton?: boolean;
-  /** Whether the screen exists yet. See the note above. */
-  ready?: boolean;
   /** One line under the name on the index page. */
   blurb: string;
 };
@@ -66,7 +59,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Profile",
     group: "About",
     singleton: true,
-    ready: true,
     blurb: "Name, bio, links, location and the status flags.",
   },
   {
@@ -74,7 +66,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Experience",
     labelPlural: "Experience",
     group: "About",
-    ready: true,
     blurb: "Roles, ordered by the sort column the about page follows.",
   },
   {
@@ -82,7 +73,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Education",
     labelPlural: "Education",
     group: "About",
-    ready: true,
     blurb: "Degrees and the achievements listed under each.",
   },
   {
@@ -90,7 +80,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Certification",
     labelPlural: "Certifications",
     group: "About",
-    ready: true,
     blurb: "Credentials, and which of them are featured.",
   },
   {
@@ -98,7 +87,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Award",
     labelPlural: "Awards",
     group: "About",
-    ready: true,
     blurb: "Honours and the organisation that issued them.",
   },
   {
@@ -106,7 +94,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Skill",
     labelPlural: "Skills",
     group: "About",
-    ready: true,
     blurb: "The catalogue behind the marquee and the tech stacks.",
   },
   {
@@ -114,7 +101,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Application",
     labelPlural: "Applications",
     group: "About",
-    ready: true,
     blurb: "Job applications and their journey steps.",
   },
   {
@@ -122,7 +108,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Organization",
     labelPlural: "Organizations",
     group: "About",
-    ready: true,
     blurb: "The shared company, school and issuer record.",
   },
   {
@@ -130,7 +115,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Blog post",
     labelPlural: "Blog posts",
     group: "Blog",
-    ready: true,
     blurb: "Articles, their tags, and the images each one uses.",
   },
   {
@@ -138,7 +122,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Project",
     labelPlural: "Projects",
     group: "Projects",
-    ready: true,
     blurb: "Work, its features, its gallery and its tech stack.",
   },
   {
@@ -147,7 +130,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Hiring profile",
     group: "Open to work",
     singleton: true,
-    ready: true,
     blurb: "What you are hiring for, and the open positions.",
   },
   {
@@ -155,7 +137,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Open position",
     labelPlural: "Open positions",
     group: "Open to work",
-    ready: true,
     blurb: "Roles being hired for, with their skills, duties and benefits.",
   },
   {
@@ -164,7 +145,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Open to work profile",
     group: "Open to work",
     singleton: true,
-    ready: true,
     blurb: "What you are looking for, and the portfolio highlights.",
   },
   {
@@ -172,7 +152,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Legal document",
     labelPlural: "Legal documents",
     group: "Legal",
-    ready: true,
     blurb: "The privacy policy and terms, with their sections.",
   },
   {
@@ -180,7 +159,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Legal section",
     labelPlural: "Legal sections",
     group: "Legal",
-    ready: true,
     blurb: "Sections on their own, for searching across documents.",
   },
   {
@@ -188,7 +166,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Message",
     labelPlural: "Messages",
     group: "Guestbook",
-    ready: true,
     blurb: "The guestbook thread, and which messages are pinned.",
   },
   {
@@ -196,7 +173,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "User profile",
     labelPlural: "User profiles",
     group: "Guestbook",
-    ready: true,
     blurb: "Author and co-author flags, and the co-author order.",
   },
   {
@@ -204,7 +180,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Comment",
     labelPlural: "Comments",
     group: "Comments",
-    ready: true,
     blurb: "Comments on posts and projects, including deleted ones.",
   },
   {
@@ -212,7 +187,6 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "User",
     labelPlural: "Users",
     group: "Users",
-    ready: true,
     blurb: "Accounts, and who may reach this admin at all.",
   },
 ];

@@ -4,12 +4,12 @@ import { useEffect, useLayoutEffect, useRef, useState, useTransition } from "rea
 
 import { useConfirm } from "@/components/providers/confirm-dialog";
 import { Composer, ComposerHint } from "@/components/site/guestbook/composer";
-import { Message, type MessageActions, type Viewer } from "@/components/site/guestbook/message";
 import {
   PANEL_FOOTER,
   PANEL_FRAME,
   PANEL_HEADER,
-} from "@/components/site/guestbook/panel-skeleton";
+} from "@/components/site/guestbook/frame";
+import { Message, type MessageActions, type Viewer } from "@/components/site/guestbook/message";
 import { PinnedCard } from "@/components/site/guestbook/pinned-card";
 import { PinIcon } from "@/components/site/guestbook/role-badge";
 import { SignInCard } from "@/components/site/guestbook/sign-in-card";
@@ -113,7 +113,12 @@ export function GuestbookPanel({
   const report = (result: { ok: true; notice: string } | { ok: false; error: string }) =>
     result.ok ? notify(result.notice, "success") : notify(result.error, "error");
 
-  const unpin = (id: string) => {
+  /*
+   * One handler for both directions. The action is `togglePin`, and the pinned
+   * strip and the message row are the same operation seen from two places --
+   * naming it for either one makes the other read as a bug.
+   */
+  const togglePinned = (id: string) => {
     mark(id, true);
     startTransition(async () => {
       report(await togglePin(id));
@@ -140,7 +145,7 @@ export function GuestbookPanel({
       inputRef.current?.focus();
     },
     onPin(message) {
-      unpin(message.id);
+      togglePinned(message.id);
     },
     async onDelete(message) {
       const accepted = await confirm({
@@ -211,9 +216,16 @@ export function GuestbookPanel({
         )}
       </div>
 
-      {thread.pinned.length > 0 && pinnedOpen && (
+      {/*
+        Rendered whether or not it is open, and hidden with `hidden` rather than
+        by returning nothing. The button above points at it with `aria-controls`,
+        and a control that names an element which is not in the document tells a
+        screen reader about a region it can then never find.
+      */}
+      {thread.pinned.length > 0 && (
         <div
           id="guestbook-pinned"
+          hidden={!pinnedOpen}
           className="flex-shrink-0 space-y-1.5 border-b border-zinc-800 bg-zinc-900/40 px-3 py-2.5"
         >
           {thread.pinned.map((pinned) => (
@@ -222,7 +234,7 @@ export function GuestbookPanel({
               pinned={pinned}
               canPin={viewer.canPin}
               busy={busy.has(pinned.id)}
-              onUnpin={unpin}
+              onUnpin={togglePinned}
             />
           ))}
         </div>

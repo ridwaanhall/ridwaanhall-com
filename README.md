@@ -8,9 +8,6 @@
 ![ridwaanhall.com](https://ridwaanhall.com/static/img/project/ridwaanhall_com_2025070701.webp)
 
 > **The portfolio behind [ridwaanhall.com](https://ridwaanhall.com) — database-backed content with its own admin, live GitHub and WakaTime dashboards, an OAuth guestbook with threaded replies, and light and dark themes. Fork it and make it your own; see [Making It Your Own](#making-it-your-own) below.**
->
-> Built with Django until August 2026 and ported to Next.js. `MIGRATION.md` is
-> the record of that port and explains why much of this is shaped the way it is.
 
 ## Key Features
 
@@ -57,11 +54,11 @@ lib/
   actions/           Server actions: contact, comments, guestbook, admin
   admin/             The descriptors that drive every admin screen
   auth/              The Auth.js adapter over the existing account tables
-  db/                Drizzle schema and the connection pool
+  db/                The generated Drizzle mapping and the connection pool
   email/             Templates and the Resend client
   seo/               Metadata, JSON-LD, sitemaps
   storage/           Supabase Storage: upload, delete, reference-counted cleanup
-drizzle/             Migrations, and the introspection baseline
+drizzle/             0000_init.sql — the whole schema, in one file
 scripts/             Verification harnesses — see CLAUDE.md
 styles/              The hand-written stylesheets app/globals.css imports
 public/              Favicons, fonts, static images
@@ -74,10 +71,14 @@ certifications, awards, skills, applications, projects, blog posts, legal
 documents, and the hiring / open-to-work status. Changing any of it is an edit
 in `/admin`, never a deploy.
 
-The tables were created by the previous Django build and are unchanged;
-`lib/db/schema.ts` was produced by introspecting them. Read paths live in
-`lib/data/`, each behind `use cache` with a tag from `lib/data/tags.ts`, so a
-save invalidates only the area it touched.
+The schema is `drizzle/0000_init.sql` — 45 tables in their own `app` schema,
+keyed by uuid, with real foreign keys and real referential actions. Run it once
+against an empty database and you have the whole thing. `lib/db/app-schema.ts`
+is the Drizzle mapping, generated from the live schema by
+`scripts/gen-app-schema.mjs` rather than typed by hand.
+
+Read paths live in `lib/data/`, each behind `use cache` with a tag from
+`lib/data/tags.ts`, so a save invalidates only the area it touched.
 
 The admin itself is declarative. `lib/admin/registry.ts` names every screen and
 `lib/admin/models/` declares what each one shows and edits; two generic
@@ -87,7 +88,7 @@ components render all of them. Adding a screen is adding a descriptor.
 
 The site ships dark by default, with a light theme behind a toggle beside `@username` in the sidebar and, on small screens, next to the menu button. The choice is stored in `localStorage`; the OS `prefers-color-scheme` is deliberately not consulted, because dark is the default rather than a fallback.
 
-Light mode is **not** built from `dark:` variants. Templates are written in ordinary dark-mode Tailwind classes, and light mode redefines the palette itself under `html[data-theme="light"]` in `static/css/input.css`. Tailwind v4 compiles every theme color utility to a variable reference (`.bg-zinc-800` becomes `background-color: var(--color-zinc-800)`), so remapping the ramps re-skins the whole site without touching a single template.
+Light mode is **not** built from `dark:` variants. Templates are written in ordinary dark-mode Tailwind classes, and light mode redefines the palette itself under `html[data-theme="light"]` in `app/globals.css`. Tailwind v4 compiles every theme color utility to a variable reference (`.bg-zinc-800` becomes `background-color: var(--color-zinc-800)`), so remapping the ramps re-skins the whole site without touching a single template.
 
 Two consequences worth knowing before you edit anything:
 
@@ -118,23 +119,51 @@ Scores for the reference deployment at [ridwaanhall.com](https://ridwaanhall.com
 
 ## Quick Start
 
+**1. Get the code and its dependencies.**
+
 ```bash
 git clone https://github.com/ridwaanhall/ridwaanhall-com.git
 cd ridwaanhall-com
-
 npm install
+```
 
-# Copy the environment template and fill it in (see below). At minimum the app
-# needs STORAGE_POSTGRES_URL; everything else degrades rather than crashing.
-cp .env.example .env.local
+**2. Create a Supabase project**, then copy two connection strings and two keys
+out of it — the pooled and direct Postgres URLs, the project URL, and the
+service-role key. Create a public storage bucket named `media` while you are
+there.
 
+**3. Fill in the environment.** `cp .env.example .env.local` and set at least
+`STORAGE_POSTGRES_URL` and `STORAGE_POSTGRES_URL_NON_POOLING`. The app throws at
+import without the first; everything else degrades rather than crashing, so you
+can add the rest as you need it. See [Environment Configuration](#environment-configuration).
+
+**4. Create the schema.** One file, run once, over the *direct* connection —
+DDL is not reliable through the pooler:
+
+```bash
+node scripts/apply-migration.mjs drizzle/0000_init.sql           # dry run first
+node scripts/apply-migration.mjs drizzle/0000_init.sql --apply
+```
+
+That creates 45 tables and enables row-level security on every one of them.
+`npx tsx scripts/check-baseline-schema.mjs` proves the file and the database
+agree, and `node scripts/db-probe.mjs` shows you what is there.
+
+**5. Run it.**
+
+```bash
 npm run dev            # http://localhost:3000
 ```
 
-There is no local database. `STORAGE_POSTGRES_URL` points at Supabase in
-development too, so a page rendered locally shows live content — and a write
-from `/admin` is a live write. Fork it and point it at your own project before
-changing anything.
+The site comes up empty, because nothing is seeded. To fill it: set up OAuth
+(below), sign in once so your account row exists, then set `is_staff` on it —
+`update app.account set is_staff = true where email = 'you@example.com';` — and
+`/admin` opens.
+
+> **There is no local database.** `STORAGE_POSTGRES_URL` points at Supabase in
+> development as well as in production, so a page rendered locally shows live
+> content and a write from `/admin` is a live write. Point it at your own
+> project before you change anything.
 
 ## Checks
 
@@ -143,11 +172,13 @@ each driving the real application against the real database and cleaning up
 after itself in a `finally` that then proves the cleanup.
 
 ```bash
-npx tsc --noEmit                                # types
-npm run lint                                    # eslint
+npx tsc --noEmit                                  # types
+npm run lint                                      # eslint
 npm run build && node scripts/check-css-sources.mjs
-npx tsx scripts/check-rls.mjs                   # row-level security
-npx tsx scripts/check-admin.mjs                 # the admin gate and changelists
+npx tsx scripts/check-baseline-schema.mjs         # the schema file builds the schema
+npx tsx scripts/check-app-schema.mjs              # the mapping matches it
+npx tsx scripts/check-rls.mjs                     # row-level security is on
+npx tsx scripts/check-admin.mjs                   # the admin gate and changelists
 ```
 
 `CLAUDE.md` lists all of them and says which need `--conditions=react-server`.
@@ -199,12 +230,12 @@ Ridwan Halim. To adopt it as your own portfolio:
 
 1. **Your database** — point `STORAGE_POSTGRES_URL` at your own Supabase project
    before anything else. There is no local database, so until you do, `/admin`
-   writes to somebody else's site. `drizzle/0000_*.sql` is the schema, and
-   `drizzle/0002_enable_row_level_security.sql` closes the PostgREST surface.
-2. **Your content** — nothing is seeded. Give your account `is_staff` in
-   `auth_user`, sign in, and add your bio, experience, education,
-   certifications, awards, skills, posts, projects, legal documents and
-   open-to-work status through `/admin`.
+   writes to somebody else's site. Run `drizzle/0000_init.sql` against it; that
+   creates every table and enables row-level security on all of them.
+2. **Your content** — nothing is seeded. Sign in once so your account row
+   exists, set `is_staff` on it in `app.account`, then add your bio, experience,
+   education, certifications, awards, skills, posts, projects, legal documents
+   and open-to-work status through `/admin`.
 3. **Your branding** — `lib/seo/config.ts` hardcodes the site name, author and
    handles.
 4. **Your domain** — set `NEXT_PUBLIC_BASE_URL`, and register the OAuth redirect

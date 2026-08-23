@@ -72,9 +72,12 @@ GitHub token means no contribution graph.
 
 There is no local database and no fixtures. Whatever you point that URL at is
 what `/admin` writes to, so point it at your own Supabase project before you
-touch anything. `drizzle/0000_*.sql` is the schema and
-`drizzle/0002_enable_row_level_security.sql` closes the PostgREST surface — run
-both against a fresh project.
+touch anything. `drizzle/0000_init.sql` is the whole schema — run it once
+against a fresh project:
+
+```bash
+node scripts/apply-migration.mjs drizzle/0000_init.sql --apply
+```
 
 See the README's [Environment Configuration](README.md#environment-configuration)
 for the full table.
@@ -104,12 +107,12 @@ ridwaanhall-com/
 │   ├── data/               # Read paths, each behind `use cache`
 │   ├── actions/            # Server actions
 │   ├── admin/              # The descriptors that drive every admin screen
-│   ├── auth/               # Auth.js adapter over the existing accounts
-│   ├── db/                 # Drizzle schema and the connection pool
+│   ├── auth/               # Auth.js adapter over the account tables
+│   ├── db/                 # The generated Drizzle mapping and the connection pool
 │   ├── email/              # Templates and the Resend client
 │   ├── seo/                # Metadata, JSON-LD, sitemaps
 │   └── storage/            # Supabase Storage and reference-counted cleanup
-├── drizzle/                # Migrations and the introspection baseline
+├── drizzle/                # 0000_init.sql — the whole schema, in one file
 ├── scripts/                # Verification harnesses
 ├── styles/                 # Stylesheets app/globals.css imports
 └── public/                 # Favicons, fonts, static images
@@ -159,8 +162,8 @@ We welcome various types of contributions:
 - **Linting**: `npm run lint` must pass, and `npx tsc --noEmit` must be clean
 - **Types**: prefer inference; write a type where it documents something. `any`
   is not used anywhere in the codebase and should not start now
-- **Naming**: descriptive over short. A reader who has not seen the Django build
-  should still follow it
+- **Naming**: descriptive over short. A reader seeing this code for the first
+  time should still follow it
 
 #### Comments explain why, not what
 
@@ -169,9 +172,9 @@ records a decision that looks arbitrary until you know what went wrong without
 it. If the reason for a line is not evident from the line, write it down. If it
 is, do not.
 
-`CLAUDE.md` collects the ones that have bitten more than once: layouts are not
-auth gates, Django's cascades were Python rather than SQL, Tailwind scans prose
-and prose names classes. Read it before changing anything in those areas.
+`CLAUDE.md` collects the ones that have bitten more than once: a layout is not
+an auth gate, row-level security must stay on, Tailwind scans prose and prose
+names classes. Read it before changing anything in those areas.
 
 #### Server and client
 
@@ -411,10 +414,9 @@ Any other context or screenshots.
 
 ### When you change something documented
 
-`README.md`, `CONTRIBUTING.md` and `CLAUDE.md` all describe how this works, and
-`MIGRATION.md` records why it is shaped this way. If a change makes one of them
-wrong, fix it in the same commit — a stale instruction costs more than a missing
-one.
+`README.md`, `CONTRIBUTING.md` and `CLAUDE.md` all describe how this works. If a
+change makes one of them wrong, fix it in the same commit — a stale instruction
+costs more than a missing one.
 
 ## Security
 

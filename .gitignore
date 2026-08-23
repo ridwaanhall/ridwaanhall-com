@@ -46,7 +46,7 @@ yarn-error.log*
 # directly.
 *.dump.json
 *.dumpdata.json
-scripts/.django.*
+*.dump.sql
 
 # Working notes, not the record.
 #

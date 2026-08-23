@@ -154,9 +154,20 @@ export function PageLoadingBar() {
   }, [clearTimers, paint]);
 
   const start = useCallback(() => {
-    // Two clicks before the first commits are one navigation as far as the bar
-    // is concerned; restarting would send it backwards.
-    if (pending.current) return;
+    /*
+      Two clicks on the same link before it commits are one navigation, and
+      restarting for the second would put the bar back to 20% for no reason.
+      Two clicks further apart are two navigations, and the second one is the
+      one worth reporting.
+
+      `MIN_VISIBLE_MS` separates them, and it also unsticks the case that has no
+      good answer otherwise: a navigation that begins and never commits leaves
+      `pending` set until `MAX_WAIT_MS`, and every click in the fifteen seconds
+      after it would go unreported. Restarting used to be the thing that could
+      not be allowed -- it animated the bar backwards -- but the reset through
+      `idle` below made that safe, so the guard can be narrow now.
+    */
+    if (pending.current && performance.now() - startedAt.current < MIN_VISIBLE_MS) return;
     pending.current = true;
     startedAt.current = performance.now();
     clearTimers();

@@ -1,23 +1,31 @@
-import { SkeletonBar, SkeletonGrid, SkeletonPage } from "@/components/skeleton";
-import { LISTING_CARD_HEIGHT } from "@/components/site/listing-results";
+import { SkeletonBar, SkeletonPage } from "@/components/skeleton";
+import { ListingBody } from "@/components/site/listing-skeleton";
 
-/** The projects index, while it loads. No slider, otherwise the blog index. */
+/**
+ * The projects index, while it loads.
+ *
+ * **`gutter="article"`, which is the one the page uses.** It held the roomier
+ * one, and the two are indistinguishable from `sm` upwards -- `md:px-6 lg:px-8`
+ * is common to both -- so on a desktop the mistake was invisible while on a
+ * phone the entire column stepped sideways and up as the page landed. This is
+ * the one route of ten where they disagreed, and
+ * `scripts/check-skeleton-shape.mjs` measures at 375 precisely because that is
+ * the only width at which it shows.
+ *
+ * The body is `ListingBody`, the same piece the results boundary falls back to,
+ * so the two moments of this page cannot draw different things.
+ */
 export default function Loading() {
   return (
-    <SkeletonPage>
-      <div className="space-y-8">
-        <div className="mt-4 sm:mt-6 mb-4 sm:mb-6">
-          <SkeletonBar className="h-8 w-52 mb-3" />
-          <SkeletonBar className="h-4 w-full max-w-2xl mb-2" />
-          <SkeletonBar className="h-4 w-3/5 max-w-lg" />
-        </div>
-
-        <div className="mb-4 flex justify-end">
-          <SkeletonBar className="h-10 w-full sm:max-w-sm md:max-w-md" />
-        </div>
-
-        <SkeletonGrid count={4} columns={2} height={LISTING_CARD_HEIGHT} />
+    <SkeletonPage gutter="article">
+      {/* Heading and lead, at the page's own `mb-6 md:mb-8`. */}
+      <div className="mb-6 md:mb-8">
+        <SkeletonBar className="h-8 w-52 mb-3" />
+        <SkeletonBar className="h-5 w-full max-w-2xl mb-2" />
+        <SkeletonBar className="h-5 w-3/5 max-w-lg" />
       </div>
+
+      <ListingBody />
     </SkeletonPage>
   );
 }

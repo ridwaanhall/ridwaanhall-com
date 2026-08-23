@@ -54,11 +54,11 @@ export default async function DashboardPage() {
             shell is already sent, so a slow API delays one panel rather than
             the whole request.
           */}
-          <Suspense fallback={<DashboardPanelSkeleton columns={2} />}>
+          <Suspense fallback={<DashboardPanelSkeleton panel="wakatime" />}>
             <WakatimePanel />
           </Suspense>
 
-          <Suspense fallback={<DashboardPanelSkeleton columns={4} />}>
+          <Suspense fallback={<DashboardPanelSkeleton panel="github" />}>
             <GitHubPanel about={about} />
           </Suspense>
         </div>

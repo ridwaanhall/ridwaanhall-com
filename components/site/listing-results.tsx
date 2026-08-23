@@ -1,6 +1,6 @@
-import { SkeletonGrid } from "@/components/skeleton";
 import { BlogCard } from "@/components/site/blog-card";
 import { Pagination } from "@/components/site/pagination";
+import { LISTING_CARD_HEIGHT, ListingSkeleton } from "@/components/site/listing-skeleton";
 import { ProjectCard } from "@/components/site/project-card";
 import { SearchForm } from "@/components/site/search-form";
 import { paginate } from "@/lib/api/pagination";
@@ -123,22 +123,9 @@ function EmptyState({ noun }: { noun: string }) {
   );
 }
 
-/**
- * Shown while the results resolve.
- *
- * Sized to the real grid so the page does not jump when they arrive -- the
- * whole point of holding the space is that nothing below it moves. 350px is
- * the height `BlogCard` and `ProjectCard` both set on themselves.
+/*
+ * The skeleton lives in `listing-skeleton.tsx` and is re-exported here, because
+ * a `loading.tsx` that imported it from this module would pull `lib/data`, and
+ * with it the database client, into a fallback made of rectangles.
  */
-export const LISTING_CARD_HEIGHT = 350;
-
-export function ListingSkeleton({ columns = 2 }: { columns?: 2 | 4 }) {
-  return (
-    <div className="skeleton-pulse" role="status" aria-busy="true">
-      <span className="sr-only">Loading results…</span>
-      <div aria-hidden="true">
-        <SkeletonGrid count={4} columns={columns} height={LISTING_CARD_HEIGHT} />
-      </div>
-    </div>
-  );
-}
+export { LISTING_CARD_HEIGHT, ListingSkeleton };

@@ -16,8 +16,8 @@ export default function Loading() {
         <SkeletonBar className="h-4 w-3/5 max-w-lg" />
       </div>
 
-      <DashboardPanelSkeleton columns={2} />
-      <DashboardPanelSkeleton columns={4} />
+      <DashboardPanelSkeleton panel="wakatime" />
+      <DashboardPanelSkeleton panel="github" />
     </SkeletonPage>
   );
 }

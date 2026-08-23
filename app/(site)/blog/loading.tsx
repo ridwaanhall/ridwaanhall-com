@@ -1,12 +1,13 @@
-import { SkeletonBar, SkeletonBlock, SkeletonGrid, SkeletonPage } from "@/components/skeleton";
-import { LISTING_CARD_HEIGHT } from "@/components/site/listing-results";
+import { SkeletonBar, SkeletonBlock, SkeletonPage } from "@/components/skeleton";
+import { ListingBody } from "@/components/site/listing-skeleton";
 
 /**
  * The blog index, while it loads.
  *
- * The featured slider's photo is `h-60 sm:h-72 md:h-80`, and the grid below it
- * is the same one `ListingSkeleton` already stands in for once the shell has
- * arrived -- this covers the moment before it.
+ * The featured slider's photo is `h-60 sm:h-72 md:h-80`, and below it is
+ * `ListingBody` -- the same piece the results boundary falls back to once the
+ * shell has arrived, so the search row and the grid are drawn identically at
+ * both moments.
  */
 export default function Loading() {
   return (
@@ -20,12 +21,7 @@ export default function Loading() {
           <SkeletonBar className="h-4 w-3/5 max-w-lg" />
         </div>
 
-        {/* The search box sits above the grid, right-aligned. */}
-        <div className="mb-4 flex justify-end">
-          <SkeletonBar className="h-10 w-full sm:max-w-sm md:max-w-md" />
-        </div>
-
-        <SkeletonGrid count={4} columns={2} height={LISTING_CARD_HEIGHT} />
+        <ListingBody />
       </div>
     </SkeletonPage>
   );

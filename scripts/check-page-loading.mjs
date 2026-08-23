@@ -483,6 +483,19 @@ try {
 
   /* ---------------------------------------------------------------- skeleton */
   {
+    /*
+      `/about` rather than a listing, and the reason is worth recording because
+      it is not obvious. Whether `loading.tsx` renders at all is a property of
+      the page, not of the skeleton: the fallback appears only where the segment
+      still has work to do once its payload has landed. `/projects` frequently
+      resolves in the same tick it arrives, so it shows no skeleton however
+      slowly the payload is delivered -- which made this check fail perhaps one
+      run in three while reporting, quite wrongly, that the skeleton was
+      missing. `/about` has a long cached read behind it and suspends every
+      time. `check-skeleton-shape.mjs` covers the rest of them, and treats a
+      route that arrives without a skeleton as an observation rather than a
+      fault.
+    */
     const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 
     /*
@@ -499,42 +512,58 @@ try {
     // Hydration, so the click is a client-side navigation rather than a reload.
     await page.waitForTimeout(2000);
 
-    await page.locator('a[href="/projects"]:visible').first().click();
+    /*
+      Inspected from inside the page, and started before the click.
 
-    const appeared = await page
-      .locator('[role="status"][aria-busy="true"]')
-      .first()
-      .waitFor({ state: "attached", timeout: 5000 })
-      .then(() => true)
-      .catch(() => false);
-    check("a slow navigation renders a skeleton", appeared);
+      A skeleton is on screen for about a tenth of a second -- the payload is
+      held, but the router keeps the previous page up until it starts arriving,
+      and only then shows the fallback while the rest streams. Waiting for the
+      selector from here and then reaching back in to read it is two round trips
+      across the driver, and the second one regularly arrived to find the real
+      page already in place. That is the whole of this check's history of
+      flaking: not a skeleton that failed to render, but one that had come and
+      gone between two questions about it.
+    */
+    const watching = page.evaluate(
+      () =>
+        new Promise((resolve) => {
+          let shape = null;
+          const look = () => {
+            if (shape) return;
+            const node = document.querySelector('[role="status"][aria-busy="true"]');
+            if (!node) return;
+            shape = {
+              announces: (node.textContent ?? "").trim().toLowerCase().startsWith("loading"),
+              pulses:
+                node.classList.contains("skeleton-pulse") ||
+                Boolean(node.closest(".skeleton-pulse")) ||
+                Boolean(node.querySelector(".skeleton-pulse")),
+              hidesShapes: Boolean(node.querySelector('[aria-hidden="true"]')),
+              carriesMain: node.tagName === "MAIN" || Boolean(node.querySelector("main")),
+            };
+          };
+          const poll = setInterval(look, 25);
+          setTimeout(() => {
+            clearInterval(poll);
+            resolve(shape);
+          }, 6000);
+        }),
+    );
 
-    if (appeared) {
-      const shape = await page.evaluate(() => {
-        const node = document.querySelector('[role="status"][aria-busy="true"]');
-        // The real page can replace the skeleton between the wait above and
-        // this call. Nothing has gone wrong when it does -- there is simply
-        // nothing left to measure.
-        if (!node) return null;
-        return {
-          announces: (node.textContent ?? "").trim().toLowerCase().startsWith("loading"),
-          pulses:
-            node.classList.contains("skeleton-pulse") ||
-            Boolean(node.closest(".skeleton-pulse")) ||
-            Boolean(node.querySelector(".skeleton-pulse")),
-          hidesShapes: Boolean(node.querySelector('[aria-hidden="true"]')),
-          carriesMain: node.tagName === "MAIN" || Boolean(node.querySelector("main")),
-        };
-      });
+    await page.locator('a[href="/about"]:visible').first().click();
+    const shape = await watching;
 
-      check("it says it is loading rather than reading out its shapes", shape?.announces !== false);
-      check("its shapes are hidden from assistive technology", shape?.hidesShapes !== false);
-      check("it pulses", shape?.pulses !== false);
-      check("it renders no <main>, so the real page's fade still fires", !shape?.carriesMain);
+    check("a slow navigation renders a skeleton", shape !== null);
+
+    if (shape) {
+      check("it says it is loading rather than reading out its shapes", shape.announces);
+      check("its shapes are hidden from assistive technology", shape.hidesShapes);
+      check("it pulses", shape.pulses);
+      check("it renders no <main>, so the real page's fade still fires", !shape.carriesMain);
     }
 
     await page.unroute("**/*");
-    await page.waitForURL("**/projects", { timeout: 15000 }).catch(() => {});
+    await page.waitForURL("**/about", { timeout: 15000 }).catch(() => {});
     await page.waitForSelector("main", { timeout: 15000 }).catch(() => {});
     const mains = await page.locator("main").count();
     check("and the real page arrives with its <main>", mains === 1, `${mains} main element(s)`);

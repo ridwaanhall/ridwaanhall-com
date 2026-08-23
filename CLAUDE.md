@@ -273,6 +273,21 @@ seen.
   entirely in dark-mode Tailwind classes with no `dark:` variants; light mode
   redefines the palette variables under `html[data-theme="light"]`. Stay inside
   the existing colour vocabulary or light mode breaks silently.
+- **A label activates its control from anywhere inside its box, and a grid item
+  is stretched to its cell.** The admin's field rows put the label in one column
+  and the control in the next, so every label's box was as wide as the column
+  and as tall as whatever stood beside it, with the word itself in a corner.
+  Beside "Photo" that was 102x138 around 39x18 of text: 95% of a cell that
+  looked like margin, wired to a file input, so clicking the blank space opened
+  the operating system's file picker. Beside a rich-text field it was 230x1257.
+  The checkbox labels had the same shape sideways — "Featured" ran 477px around
+  83px of word, and a click well clear of it flipped a published flag. The fix
+  is `w-fit`/`justify-self-start` and `self-start` on the label, which changes
+  nothing visible: a label has no background, so only its hit area moves.
+  `scripts/check-admin-labels.mjs` measures every label on every form screen
+  against its own content, and clicks beside one for real. It measures sideways
+  overhang only on labels that fit on one line — wrapped text ends its last line
+  short and no CSS width means "the longest line", so that tail is not a fault.
 
 ## Verification
 
@@ -309,6 +324,7 @@ npx tsx --conditions=react-server scripts/check-admin-forms.mjs
 npx tsx --conditions=react-server scripts/check-admin-json.mjs
 npx tsx --conditions=react-server scripts/check-admin-inlines.mjs
 npx tsx --conditions=react-server scripts/check-admin-richtext.mjs
+npx tsx --conditions=react-server scripts/check-admin-labels.mjs
 ```
 
 A harness that imports a `server-only` module needs `--conditions=react-server`.

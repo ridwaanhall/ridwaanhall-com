@@ -19,6 +19,18 @@ const CONTROL =
 
 const INVALID = "border-red-800 hover:border-red-700";
 
+/**
+ * A label that wraps its own control, sized to the two of them and no further.
+ *
+ * `w-fit` and `self-start` are the whole point of this being one string. A
+ * label activates its control from anywhere inside its box, and these labels
+ * are laid out as grid or flex items, which are stretched to their cell by
+ * default -- so the box was the width of the column and the height of the
+ * tallest thing beside it, and every one of those empty pixels toggled a
+ * checkbox. "Featured" was 477px wide around 83px of text.
+ */
+const BOXED_LABEL = "flex w-fit items-center gap-2 self-start";
+
 export function Field({
   field,
   value,
@@ -104,7 +116,7 @@ export function Field({
         <div className="custom-scroll max-h-56 overflow-y-auto rounded-md border border-zinc-800 bg-zinc-900 px-2.5 py-2">
           <div className="grid gap-x-4 gap-y-1 sm:grid-cols-2">
             {(field.options ?? []).map((option) => (
-              <label key={option.value} className="flex items-center gap-2 text-sm text-zinc-300">
+              <label key={option.value} className={cn(BOXED_LABEL, "text-sm text-zinc-300")}>
                 <input
                   type="checkbox"
                   name={name}
@@ -129,7 +141,7 @@ export function Field({
       <Row field={field} id={id} describedBy={describedBy} error={error}>
         <div className="flex flex-wrap gap-x-4 gap-y-1.5">
           {(field.choices ?? []).map((choice) => (
-            <label key={choice.value} className="flex items-center gap-2 text-sm text-zinc-300">
+            <label key={choice.value} className={cn(BOXED_LABEL, "text-sm text-zinc-300")}>
               <input
                 type="checkbox"
                 name={name}
@@ -188,7 +200,7 @@ export function Field({
               <div className="min-w-0 flex-1">
                 <code className="block truncate text-xs break-all text-zinc-500">{key}</code>
                 {!field.required && (
-                  <label className="mt-1.5 flex items-center gap-2 text-xs text-zinc-400">
+                  <label className={cn(BOXED_LABEL, "mt-1.5 text-xs text-zinc-400")}>
                     <input
                       type="checkbox"
                       name={clearFieldName(name)}
@@ -220,7 +232,7 @@ export function Field({
       <div className="grid gap-1 py-1 sm:grid-cols-3 sm:gap-4">
         <span className="hidden sm:block" aria-hidden="true" />
         <div className="min-w-0 sm:col-span-2">
-          <label className="flex items-center gap-2 text-sm text-zinc-300">
+          <label className={cn(BOXED_LABEL, "text-sm text-zinc-300")}>
             <input
               type="checkbox"
               id={id}
@@ -297,7 +309,16 @@ function Row({
 }) {
   return (
     <div className="grid gap-1 py-1 sm:grid-cols-3 sm:gap-4">
-      <label htmlFor={id} className="pt-1.5 text-sm text-zinc-400">
+      {/*
+        `justify-self-start self-start` keeps the label's box around its word.
+        A grid item is stretched to its cell unless told otherwise, and this one
+        shares a row with the control it names -- so the box ran the full width
+        of the label column and the full height of whatever stood beside it,
+        and a label activates its control from anywhere inside its box. Beside a
+        rich-text field that was a 230x1257 rectangle of apparently blank page;
+        beside an image field, 95% of the cell opened a file picker.
+      */}
+      <label htmlFor={id} className="justify-self-start self-start pt-1.5 text-sm text-zinc-400">
         {field.label}
         {field.required && (
           <span className="ml-1 text-red-400" title="Required">

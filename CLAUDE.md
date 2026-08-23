@@ -106,6 +106,38 @@ fields, ordering) and a form descriptor (fieldsets, field kinds, inlines).
 `scripts/check-admin.mjs` fails if the registry and the descriptors disagree —
 an entry without a form descriptor is a screen that cannot be opened.
 
+### Every model has full CRUD, except one
+
+`user` is the single exception, and it is written up at the descriptor: an
+account **is** a provider identity, so one made here is a row nobody can sign in
+to, and deleting one cascades through every comment and guestbook message that
+person wrote. `profile`, `hiring-profile` and `open-to-work-profile` are
+one-row by definition — `/admin/<key>` *is* that record's form, there is no
+list and no create route — which is a different thing from being refused.
+Everything else creates, reads, updates and deletes.
+`scripts/check-admin-forms.mjs` asserts both directions; "no add form" on its
+own is satisfied by an admin that cannot create anything at all.
+
+Three of those models are *about* somebody — a guestbook message, a comment, a
+reader's profile all name an account in a `NOT NULL` column with no default. So
+a field can be `readOnly: "afterCreate"`: writable while the record is being
+made, fixed from then on, because reassigning one moves what a person said onto
+somebody else's name. **Read it through `formFieldsFor(model, id)`, never as
+`field.readOnly` directly** — `"afterCreate"` is a truthy string, so a raw test
+reads it as *always* read-only and silently drops the field from the insert,
+which surfaces as a not-null violation on the one save it was added to make
+work.
+
+`comment.target_id` is the only polymorphic column here: it points at a blog
+post or a project depending on `target_kind`, so no foreign key can cover it and
+nothing in the database would object to a pair naming neither. A `reference`
+field may therefore name several sources, each with a `groupLabel`, and the
+descriptor checks the pair with `validate`. That check needs a row counted,
+which is why `ValidationContext` carries `exists()` rather than the descriptor
+importing the database — `lib/admin/models/` is imported by the check harnesses,
+and a descriptor that opened a connection would do so every time one of them
+read a form's shape.
+
 ## Traps
 
 These are the things that have actually gone wrong here. Most are invisible to

@@ -35,7 +35,9 @@ const { chromium } = await import("playwright");
 const { staffAccountId, nonStaffAccountId } = await import("./fixture-ids.mjs");
 const { encode } = await import("next-auth/jwt");
 const { db, pool } = await import("../lib/db/client.ts");
-const { category, organization, skill, account } = await import("../lib/db/app-schema.ts");
+const { category, guestMessage, organization, skill, account } = await import(
+  "../lib/db/app-schema.ts"
+);
 const { objectExists } = await import("../lib/storage/objects.ts");
 const { keyForMediaId } = await import("../lib/admin/media.ts");
 const { eq, ne, sql } = await import("drizzle-orm");
@@ -70,6 +72,7 @@ const page = await context.newPage();
 /** Rows this run created, removed in the `finally` whatever happens. */
 const created = [];
 const createdOrgs = [];
+const createdMessages = [];
 
 /** A 1x1 PNG and a 1x1 GIF -- two files with genuinely different bytes. */
 const PNG = Buffer.from(
@@ -79,8 +82,39 @@ const PNG = Buffer.from(
 const GIF = Buffer.from("R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7", "base64");
 
 const fill = async (name, value) => page.fill(`[name="${name}"]`, value);
-/** A `reference` field renders as a select, so its value is chosen, not typed. */
-const choose = async (name, value) => page.selectOption(`[name="${name}"]`, value);
+/**
+ * Pick a value from a `reference` or `select` field.
+ *
+ * The admin's dropdowns are progressively enhanced: the server renders a real
+ * `<select name=…>`, and once the page hydrates that select is `hidden` and a
+ * drawn listbox takes over. Both states are driven here, and which one is live
+ * is asked rather than assumed -- `selectOption` needs a *visible* select, so
+ * against the enhanced control it waits thirty seconds and then times out.
+ *
+ * The caller passes a value, because that is what the database gave it. The
+ * drawn list only knows labels, so the label is read back off the hidden
+ * select's own option: the two lists come from the same descriptor, so a value
+ * that has no label there would not be selectable by a person either.
+ */
+const choose = async (name, value) => {
+  const select = page.locator(`select[name="${name}"]`);
+  if (await select.isVisible()) {
+    await select.selectOption(value);
+    return;
+  }
+
+  const label = ((await select.locator(`option[value="${value}"]`).textContent()) ?? "").trim();
+  await page.locator(`select[name="${name}"] + [role="combobox"]`).click();
+
+  // Past fifteen options the panel carries a filter box. Typing into it is not
+  // only faster than scrolling -- it is what keeps this working when the list
+  // is eighty-four rows long and the one wanted is off-screen.
+  const filter = page.locator('input[aria-label="Filter the options"]');
+  if (await filter.count()) await filter.fill(label);
+
+  await page.getByRole("option", { name: label, exact: true }).first().click();
+  await page.waitForTimeout(150);
+};
 /**
  * Scoped to the record form on purpose.
  *
@@ -261,8 +295,20 @@ try {
   const readOnlyInputs = await page.locator('[name="username"], [name="email"]').count();
   check("a read-only field is not an input at all", readOnlyInputs === 0);
 
-  // --- the models that refuse to be created ---------------------------------
-  for (const key of ["user", "chat-message", "user-profile", "comment"]) {
+  // --- which models may be created ------------------------------------------
+  /*
+   * Both directions, because "no add form" on its own is satisfied by an admin
+   * that cannot create anything at all.
+   *
+   * `user` is the one model that refuses on purpose: an account is a provider
+   * identity, so one made here is a row nobody can sign in to. The three
+   * singletons refuse for a different reason -- they are one row by definition
+   * and `/admin/<key>` is that row's form, so there is no create route to
+   * reach. Everything else creates, including the three that carry somebody
+   * else's words and therefore have an author that is chosen once and then
+   * fixed.
+   */
+  for (const key of ["user", "profile", "hiring-profile", "open-to-work-profile"]) {
     await page.goto(`${BASE}/admin/${key}/new`, { waitUntil: "load" });
     await page.waitForTimeout(600);
     // Asserted on what renders, not on the status: the route is dynamic, so
@@ -273,6 +319,59 @@ try {
     check(
       `no add form where records are not created here (${key})`,
       shown.includes("Nothing here") && form === 0,
+    );
+  }
+
+  for (const key of ["chat-message", "user-profile", "comment"]) {
+    await page.goto(`${BASE}/admin/${key}/new`, { waitUntil: "load" });
+    await page.waitForTimeout(600);
+    const form = await page.locator('button[type="submit"]:text-matches("Create")').count();
+    // The author is the point of the check as much as the button is: these are
+    // the models whose `NOT NULL` account column has no default, so a create
+    // form that did not offer it could not produce a row at all.
+    const author = await page.locator('select[name="user"]').count();
+    check(`records of this kind are created here (${key})`, form === 1 && author === 1);
+  }
+
+  /*
+   * And one of them for real, end to end.
+   *
+   * That the form renders is not the same claim as that it saves: a guestbook
+   * message's `account_id` is `NOT NULL` with no default, and the field it
+   * comes from is `readOnly: "afterCreate"` -- a state that did not exist
+   * before. If that resolved the wrong way round the field would be dropped
+   * from the insert and the save would fail on the constraint, which is
+   * exactly the failure worth catching here rather than in production.
+   *
+   * A real message, briefly, on the real guestbook. It is marked and removed in
+   * the `finally` like everything else this script writes.
+   */
+  await page.goto(`${BASE}/admin/chat-message/new`, { waitUntil: "load" });
+  await page.waitForTimeout(600);
+  await choose("user", READER_ID);
+  await fill("message", `${MARK} message`);
+  await submit();
+
+  const [message] = await db
+    .select({ id: guestMessage.id, accountId: guestMessage.accountId })
+    .from(guestMessage)
+    .where(eq(guestMessage.body, `${MARK} message`));
+  if (message) createdMessages.push(message.id);
+
+  check("a guestbook message is created", Boolean(message), message ? `#${message.id}` : "no row");
+  check(
+    "under the account that was chosen for it",
+    message?.accountId === READER_ID,
+    message?.accountId ?? "",
+  );
+
+  // The other half of `afterCreate`: writable once, and never again.
+  if (message) {
+    await page.goto(`${BASE}/admin/chat-message/${message.id}`, { waitUntil: "load" });
+    await page.waitForTimeout(600);
+    check(
+      "and its author cannot be reassigned afterwards",
+      (await page.locator('select[name="user"]').count()) === 0,
     );
   }
 
@@ -421,6 +520,10 @@ try {
   for (const id of createdOrgs) {
     await db.delete(organization).where(eq(organization.id, id));
     console.log(`  ..    cleaned up organization #${id}`);
+  }
+  for (const id of createdMessages) {
+    await db.delete(guestMessage).where(eq(guestMessage.id, id));
+    console.log(`  ..    cleaned up guestbook message #${id}`);
   }
   const [left] = await db
     .select({ n: sql`count(*)::int` })

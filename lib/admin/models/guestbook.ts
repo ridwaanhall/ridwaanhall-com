@@ -152,10 +152,6 @@ export const chatMessageForm: AdminFormModel = {
   from: guestMessage,
   pk: guestMessage.id,
   label: (values) => preview(String(values.message ?? ""), 50) || "Message",
-  // A message is written by a reader in the guestbook. There is no such thing as
-  // one the site owner posted from the admin, and inventing one would put words
-  // on the page over somebody else's name.
-  canCreate: false,
   deleteWarning: "Replies to this message go with it -- the whole branch is removed.",
   cascades: [
     {
@@ -182,15 +178,27 @@ export const chatMessageForm: AdminFormModel = {
     },
     {
       title: "Recorded",
-      help: "Set when the message was posted, and not editable here.",
       fields: [
         {
+          /*
+           * Chosen when the message is written and fixed from then on.
+           *
+           * Not editable afterwards, because reassigning it would move what
+           * somebody said onto another person's name -- which is the same
+           * reason the Moderation note above says to redact rather than
+           * rewrite. On the create form it is a real choice, and it has to be:
+           * `account_id` is `NOT NULL` with no default, so a message with no
+           * author is not a row.
+           */
           name: "user",
           column: guestMessage.accountId,
           display: messageUser,
           label: "Posted by",
-          kind: "text",
-          readOnly: true,
+          kind: "reference",
+          required: true,
+          readOnly: "afterCreate",
+          reference: { table: account, value: account.id, label: account.username },
+          help: "Whose name this appears under in the guestbook. It cannot be changed later.",
         },
         {
           name: "timestamp",
@@ -228,21 +236,43 @@ export const userProfileForm: AdminFormModel = {
   from: guestProfile,
   pk: guestProfile.id,
   label: (values) => String(values.user ?? "Profile"),
-  // Created by a `post_save` signal on the account and paired with it one to
-  // one, so there is nothing to add and removing one would leave a signed-in
-  // reader with no profile at all.
-  canCreate: false,
-  canDelete: false,
+  /*
+   * One profile per account, enforced by `guest_profile_account_key`.
+   *
+   * A profile is normally written for an account the first time it is seen, so
+   * adding one by hand is a repair rather than routine -- for an account that
+   * somehow has none, or one whose profile was removed. The uniqueness is
+   * checked below rather than left to the constraint: Postgres names the
+   * constraint and not the column when it raises, and
+   * `guest_profile_account_key` does not contain the string `account_id`, so
+   * the substring match in `uniqueField` would not find the field to hang the
+   * message on and the clash would surface as an untranslated error.
+   */
+  validate: async (values, { id, exists }) => {
+    if (id !== null) return null;
+    const accountId = typeof values.user === "string" ? values.user : "";
+    if (!accountId) return null;
+    return (await exists(guestProfile, guestProfile.accountId, accountId))
+      ? "That account already has a profile. Open the existing one instead."
+      : null;
+  },
+  deleteWarning:
+    "The author and co-author flags go with it. The account and its messages are untouched.",
   fieldsets: [
     {
       fields: [
         {
+          // Which account this profile belongs to, and only at the moment it is
+          // made: moving one to another account would hand that person the
+          // author badge and the right to delete anybody's message.
           name: "user",
           column: guestProfile.accountId,
           display: profileUser,
           label: "Account",
-          kind: "text",
-          readOnly: true,
+          kind: "reference",
+          required: true,
+          readOnly: "afterCreate",
+          reference: { table: account, value: account.id, label: account.username },
         },
         {
           name: "isAuthor",

@@ -96,7 +96,7 @@ async function Record({ params }: { params: Params }) {
         <RecordForm
           modelKey={key}
           id={recordId}
-          fieldsets={toClientFieldsets(form, referenceOptions)}
+          fieldsets={toClientFieldsets(form, referenceOptions, recordId)}
           inlines={toClientInlines(form, referenceOptions)}
           inlineRows={inlineRows}
           values={values}

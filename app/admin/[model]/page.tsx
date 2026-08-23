@@ -102,7 +102,7 @@ async function SingletonScreen({ entryKey }: { entryKey: string }) {
       <RecordForm
         modelKey={entryKey}
         id={recordId}
-        fieldsets={toClientFieldsets(form, referenceOptions)}
+        fieldsets={toClientFieldsets(form, referenceOptions, recordId)}
         inlines={toClientInlines(form, referenceOptions)}
         inlineRows={inlineRows}
         values={values}

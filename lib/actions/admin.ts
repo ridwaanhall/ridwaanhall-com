@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import {
   cascadeTargets,
   formFields,
+  formFieldsFor,
   manyToManyFields,
   richTextFields,
   parseFormValues,
@@ -120,11 +121,16 @@ function invalidate(model: AdminFormModel) {
  * on the single-word columns, which is exactly why it was worth resolving
  * properly rather than trusting the descriptor's `name` to agree.
  */
-function toColumns(model: AdminFormModel, values: FormValues): Record<string, unknown> {
+function toColumns(
+  model: AdminFormModel,
+  values: FormValues,
+  /** `null` when creating -- see `formFieldsFor`. */
+  id: string | null,
+): Record<string, unknown> {
   const columns = Object.entries(getTableColumns(model.from));
   const row: Record<string, unknown> = {};
 
-  for (const field of formFields(model)) {
+  for (const field of formFieldsFor(model, id)) {
     if (field.readOnly) continue;
     // Written to a join table by `saveManyToMany`, never as a column here --
     // its `column` names this record's primary key, which is the last thing
@@ -201,12 +207,12 @@ export async function saveRecord(
     return { ok: false, error: "That record no longer exists." };
   }
 
-  const parsed = parseFormValues(model, data);
+  const parsed = parseFormValues(model, data, id);
   if (!parsed.ok) {
     return { ok: false, error: "Some fields need attention.", fieldErrors: parsed.errors };
   }
 
-  const pictures = imageFields(formFields(model));
+  const pictures = imageFields(formFieldsFor(model, id));
   const images = await applyImageFields(
     pictures,
     data,
@@ -232,7 +238,19 @@ export async function saveRecord(
   }
 
   const values = { ...parsed.values, ...images.values };
-  const problem = await model.validate?.(values, { id, actorId: actor.id });
+  const problem = await model.validate?.(values, {
+    id,
+    actorId: actor.id,
+    exists: async (table, column, value) => {
+      if (!isUuid(value)) return false;
+      const [row] = await db
+        .select({ present: sql`1` })
+        .from(table)
+        .where(eq(column, value))
+        .limit(1);
+      return row !== undefined;
+    },
+  });
   if (problem) return { ok: false, error: problem };
 
   /*
@@ -240,7 +258,7 @@ export async function saveRecord(
    * and an asset id going into the column. Converting here, once, keeps both
    * halves unaware of the other.
    */
-  for (const field of imageFields(formFields(model))) {
+  for (const field of imageFields(formFieldsFor(model, id))) {
     /*
      * Only a field that was actually edited. `applyImageFields` returns a value
      * for an upload and for a clear, and nothing at all for an untouched one --
@@ -254,7 +272,7 @@ export async function saveRecord(
     values[field.name] = typeof key === "string" && key ? await mediaIdForKey(key) : null;
   }
 
-  const row = toColumns(model, values);
+  const row = toColumns(model, values, id);
   // Columns the form does not carry that the database still demands. Only on
   // insert: an update must not reset a creation timestamp or a view counter.
   if (id === null && model.insertDefaults) Object.assign(row, model.insertDefaults());
@@ -417,7 +435,7 @@ export async function deleteRecord(key: string, id: string): Promise<SaveResult>
   if (!isUuid(id)) return { ok: false, error: "That record no longer exists." };
 
   const orphaned = [
-    ...Object.values(await currentImages(model, imageFields(formFields(model)), id)),
+    ...Object.values(await currentImages(model, imageFields(formFieldsFor(model, id)), id)),
     ...(await inlineImageKeys(model, id)),
   ];
 

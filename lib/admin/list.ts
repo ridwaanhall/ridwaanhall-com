@@ -51,7 +51,13 @@ export type ListColumn<Row> = {
   value: (row: Row) => string | number | boolean | null;
 };
 
-export type FilterChoice = { value: string; label: string };
+/**
+ * `group` is set only where a control's options come from more than one place
+ * -- a comment's target is a blog post or a project -- and it becomes an
+ * `<optgroup>` heading. Two vocabularies flattened into one list of 84 rows is
+ * a list nobody can scan; with the headings it is two short ones.
+ */
+export type FilterChoice = { value: string; label: string; group?: string };
 
 /**
  * A filter whose options are rows of another table, labelled by a column of it.

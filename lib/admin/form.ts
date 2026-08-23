@@ -72,15 +72,30 @@ export type FormField = {
   /** Column headings for a `key-value` editor. */
   keyLabel?: string;
   valueLabel?: string;
-  /** Where a `reference` field's options come from. */
-  reference?: ReferenceSource;
+  /**
+   * Where a `reference` field's options come from. A list for a column whose
+   * target is polymorphic -- `comment.target_id` is a blog post or a project --
+   * in which case each source needs a `groupLabel` to head its rows.
+   */
+  reference?: ReferenceSource | ReferenceSource[];
   /** The join table behind a `many-to-many` field. */
   manyToMany?: ManyToManySource;
   /**
    * Shown but not writable: a value the record is identified by rather than
    * edited through.
+   *
+   * `"afterCreate"` is the third state, and it exists because several records
+   * are *about* somebody: a guestbook message, a comment, a reader's profile
+   * all name an account. Which account has to be chosen when the row is made
+   * and must never be changed afterwards -- reassigning one moves what a
+   * person said onto somebody else's name. A plain boolean cannot say that,
+   * so it said "never writable", and those models could not be created at all.
+   *
+   * Resolved by `formFieldsFor`, which every reader goes through. Only
+   * meaningful on a form's own fields: an inline row is created and removed
+   * with its parent and has no equivalent question.
    */
-  readOnly?: boolean;
+  readOnly?: boolean | "afterCreate";
   /**
    * What to load for display instead of `column`, for a read-only field whose
    * value lives on another table -- a message's author is `user_id` on the row
@@ -109,6 +124,11 @@ export type ReferenceSource = {
   label: PgColumn;
   /** Offered when the column is nullable. `Award.organization` is not. */
   emptyLabel?: string;
+  /**
+   * The heading this source's rows sit under. Required only where a field has
+   * several sources, since one source needs no heading to tell it apart.
+   */
+  groupLabel?: string;
 };
 
 /**
@@ -255,8 +275,13 @@ export function imageUrlMap(
  */
 export type ClientField = Omit<
   FormField,
-  "column" | "display" | "slugFrom" | "reference"
+  "column" | "display" | "slugFrom" | "reference" | "readOnly"
 > & {
+  /**
+   * Already resolved against the record: the browser is told whether *this*
+   * form may write the field, not the rule that decides it.
+   */
+  readOnly?: boolean;
   /** Resolved options for a `reference` field, loaded by the page. */
   options?: FilterChoice[];
 };
@@ -266,6 +291,8 @@ export function toClientFieldsets(
   model: AdminFormModel,
   /** Options for the `reference` fields, keyed by field name. */
   options: Record<string, FilterChoice[]> = {},
+  /** `null` when creating. Settles every `afterCreate` field. */
+  id: string | null = null,
 ): ClientFieldset[] {
   return model.fieldsets.map((fieldset) => ({
     title: fieldset.title,
@@ -273,7 +300,7 @@ export function toClientFieldsets(
     // Built up rather than destructured down, so a field gaining a
     // non-serialisable property later is a compile error here and not a
     // stack overflow at render time.
-    fields: fieldset.fields.map((field) => ({
+    fields: fieldset.fields.map((raw) => resolveReadOnly(raw, id)).map((field) => ({
       name: field.name,
       label: field.label,
       kind: field.kind,
@@ -288,7 +315,8 @@ export function toClientFieldsets(
       itemLabel: field.itemLabel,
       keyLabel: field.keyLabel,
       valueLabel: field.valueLabel,
-      readOnly: field.readOnly,
+      // Already a boolean: `resolveReadOnly` ran above.
+      readOnly: field.readOnly === true,
       options: options[field.name],
     })),
   }));
@@ -300,9 +328,22 @@ export type FormValues = Record<string, FormValue>;
 export type ValidationContext = {
   /** `null` when creating. */
   id: string | null;
-  /** The staff user doing the editing, for rules about acting on yourself. */
-  /** The signed-in staff account's uuid. */
+  /** The signed-in staff account's uuid, for rules about acting on yourself. */
   actorId: string;
+  /**
+   * Whether any row of `table` has `column = value`.
+   *
+   * Handed in rather than queried by the descriptor, and that is a constraint
+   * worth keeping: `lib/admin/models/` is imported by the check harnesses, so a
+   * descriptor that reached for `lib/db/client.ts` would open a connection
+   * every time one of them read a form's shape. The rules that need a row
+   * counted get this instead, and the descriptors stay data.
+   *
+   * Every use is a lookup by a key, and a key here is a uuid -- a value that is
+   * not one is answered `false` rather than being sent to Postgres, which
+   * raises `22P02` on a malformed uuid instead of returning no rows.
+   */
+  exists: (table: PgTable, column: PgColumn, value: string) => Promise<boolean>;
 };
 
 export type AdminFormModel = {
@@ -382,6 +423,26 @@ export function cascadeTargets(model: AdminFormModel): CascadeTarget[] {
 /** Every field, in order, flattened out of the fieldsets. */
 export function formFields(model: AdminFormModel): FormField[] {
   return model.fieldsets.flatMap((fieldset) => fieldset.fields);
+}
+
+/**
+ * The same fields, with `readOnly` settled against the record being edited.
+ *
+ * Every reader of `readOnly` goes through this rather than testing the property
+ * itself, and that is the point: `"afterCreate"` is a truthy string, so a
+ * reader that kept checking `if (field.readOnly)` would treat it as *always*
+ * read-only and silently drop the field from the insert -- a not-null violation
+ * on the one save it was added to make work.
+ *
+ * `id === null` is the create form.
+ */
+export function formFieldsFor(model: AdminFormModel, id: string | null): FormField[] {
+  return formFields(model).map((field) => resolveReadOnly(field, id));
+}
+
+/** One field, with `readOnly` settled. */
+export function resolveReadOnly(field: FormField, id: string | null): FormField {
+  return field.readOnly === "afterCreate" ? { ...field, readOnly: id !== null } : field;
 }
 
 /**
@@ -492,8 +553,13 @@ const SLUG_PATTERN = /^[-a-z0-9_]+$/;
  * can be significant. These are names, slugs and URLs, where a trailing space is
  * a typo and nothing else.
  */
-export function parseFormValues(model: AdminFormModel, data: FormData): ParseResult {
-  return parseFields(formFields(model), data);
+export function parseFormValues(
+  model: AdminFormModel,
+  data: FormData,
+  /** `null` when creating -- what an `afterCreate` field is resolved against. */
+  id: string | null,
+): ParseResult {
+  return parseFields(formFieldsFor(model, id), data);
 }
 
 /**
@@ -749,7 +815,11 @@ export function toClientInlines(
       itemLabel: field.itemLabel,
       keyLabel: field.keyLabel,
       valueLabel: field.valueLabel,
-      readOnly: field.readOnly,
+      // `afterCreate` is meaningless on an inline field -- a child row has no
+      // identity apart from the save that writes it -- so anything but `true`
+      // is writable, and a descriptor that tried it gets the honest answer
+      // rather than a string leaking into the browser.
+      readOnly: field.readOnly === true,
       options: options[`${inline.name}:${field.name}`],
     })),
   }));

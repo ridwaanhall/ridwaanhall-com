@@ -161,12 +161,32 @@ export async function loadReferenceOptions(
   const loaded = await Promise.all(
     fields.map(async ({ field }) => {
       // Present by construction: the list was filtered on it.
-      const source = field.reference as NonNullable<typeof field.reference>;
-      const rows = await db
-        .select({ value: source.value, label: source.label })
-        .from(source.table)
-        .orderBy(asc(source.label));
-      return rows.map((row) => ({ value: String(row.value), label: String(row.label ?? row.value) }));
+      const declared = field.reference as NonNullable<typeof field.reference>;
+      /*
+       * A field may name several tables -- `comment.target_id` is a blog post
+       * or a project. Each source is loaded on its own and the results are
+       * concatenated in declaration order, so the groups appear in the order
+       * the descriptor lists them rather than in whatever order the queries
+       * happened to finish.
+       */
+      const sources = Array.isArray(declared) ? declared : [declared];
+      const perSource = await Promise.all(
+        sources.map(async (source) => {
+          const rows = await db
+            .select({ value: source.value, label: source.label })
+            .from(source.table)
+            .orderBy(asc(source.label));
+          return rows.map((row) => ({
+            value: String(row.value),
+            label: String(row.label ?? row.value),
+            // Only where there is more than one: a lone source needs no
+            // heading, and an `<optgroup>` around the whole list is a box
+            // drawn round everything.
+            ...(sources.length > 1 ? { group: source.groupLabel ?? "" } : {}),
+          }));
+        }),
+      );
+      return perSource.flat();
     }),
   );
 

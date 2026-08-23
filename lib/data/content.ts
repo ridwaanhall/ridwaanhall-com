@@ -63,7 +63,7 @@ function withImageCompat<T extends ImageCompat>(data: T): T {
 }
 
 export type BlogPost = ImageCompat & {
-  /** A uuid. Sequential ids leaked how much of a thing existed; see drizzle/0005. */
+  /** A uuid. A sequential id leaks how much of a thing exists. */
   id: string;
   title: string;
   slug: string;

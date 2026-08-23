@@ -200,9 +200,8 @@ function Intro({ about, sponsorUrl }: { about: AboutData; sponsorUrl: string }) 
           {/*
             The letter, as rich text.
             
-            This was a JSONB array of paragraph strings rendered one `<p>` at a
-            time, each in a `mb-2` wrapper; `drizzle/0004` made it HTML so the
-            admin could edit it the way it edits a blog body. `prose-stories`
+            It is one HTML body rather than an array of paragraph strings,
+            so the admin edits it the way it edits a blog post. `prose-stories`
             keeps this block on the page's own typography rather than the
             article scale `.prose-content` sets -- see styles/prose.css. The
             markup that reaches the browser is identical either way.

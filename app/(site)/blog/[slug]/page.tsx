@@ -154,9 +154,10 @@ export default async function BlogDetailPage({
             </header>
 
             {/*
-              The body was an array of blocks, each carrying its own Tailwind
-              class. It is HTML now, styled entirely by styles/prose.css -- see
-              the note there and scripts/blocks-to-html.mjs for the conversion.
+              One HTML body, styled entirely by element from styles/prose.css.
+              No class name reaches this from the database: see the allow-list
+              in lib/utils/sanitize.ts, and scripts/check-db-classes.mjs, which
+              proves it against live content.
             */}
             <RichText html={post.content_html} className="max-w-none mb-8 md:mb-10" />
 

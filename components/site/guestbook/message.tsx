@@ -48,7 +48,7 @@ const DATE_FORMAT = new Intl.DateTimeFormat("en-GB", {
   hour12: false,
 });
 
-/** `{{ message.timestamp|date:"d/m/Y, H:i" }}`. */
+/** `31/12/2025, 23:59` -- day first, 24 hour, no seconds. */
 function formatTimestamp(iso: string): string {
   return DATE_FORMAT.format(new Date(iso));
 }

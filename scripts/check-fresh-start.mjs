@@ -15,6 +15,15 @@
  * entry" is the same decision, stated so it can still be checked. This fails
  * until every comment has made that trip.
  *
+ * The second half is the same idea pointed inwards. A comment that cites a file
+ * in this repository is only useful while the file is there, and the way that
+ * stops being true is not deletion but consolidation: the migration ladder was
+ * folded into one `0000_init.sql`, and eleven comments across nine files were
+ * left pointing at `drizzle/0003`, `0004`, `0005` and `0007` -- four files that
+ * no longer exist. Each of those comments was otherwise correct, which is why
+ * nobody noticed; a reader following one finds nothing and has no way to tell
+ * whether the explanation was wrong or the file merely moved.
+ *
  *   node scripts/check-fresh-start.mjs
  *
  * **The needles are assembled at runtime, never spelled out.** A check written
@@ -110,6 +119,46 @@ for (const file of tracked.filter((f) => TEXT.test(f) && existsSync(f))) {
     if (named || shaped) hits.push(`${file}:${i + 1}`);
   }
 }
+
+/*
+ * Every repository path a comment points at, and whether it is still there.
+ *
+ * Deliberately narrow. A path is only recognised here if it names one of the
+ * directories this project actually has and ends in an extension it actually
+ * uses -- anything looser starts matching URLs, package names and prose, and a
+ * guard that cries wolf is one somebody switches off. Import specifiers are not
+ * matched because they are written `@/lib/...`, and those the compiler checks
+ * anyway; what this covers is the references only a person ever follows.
+ *
+ * The extensions are longest-first, which is not cosmetic: alternation matches
+ * leftmost, so `ts|tsx` truncates every `.tsx` path to a `.ts` one that does not
+ * exist and reports the whole component tree as dangling.
+ */
+const CITED = /\b((?:app|components|lib|scripts|drizzle|styles|docs|tests)\/[\w./[\]()-]*\.(?:tsx|ts|mjs|sql|css|md))(?![\w])/g;
+
+/*
+ * The lockfile is excluded, and only the lockfile. It lists the files inside
+ * every installed package, thousands of which are `lib/*.mjs` by coincidence of
+ * naming -- none of them a path into this repository, and none of them written
+ * by anyone here.
+ */
+const dangling = [];
+const CITABLE = tracked.filter(
+  (f) => TEXT.test(f) && existsSync(f) && f !== "package-lock.json",
+);
+
+for (const file of CITABLE) {
+  for (const [i, line] of readFileSync(file, "utf8").split("\n").entries()) {
+    for (const [, cited] of line.matchAll(CITED)) {
+      // A trailing dot belongs to the sentence, not to the filename.
+      const path = cited.replace(/\.$/, "");
+      if (!existsSync(path)) dangling.push(`${file}:${i + 1} -> ${path}`);
+    }
+  }
+}
+
+check(dangling.length === 0, "every file a comment points at is one this repository has",
+  dangling.slice(0, 12).join("; "));
 
 const byFile = new Map();
 for (const hit of hits) {

@@ -1,5 +1,6 @@
 import type { SQL } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
+import { normaliseNewlines } from "@/lib/utils/newlines";
 import { isUuid } from "@/lib/utils/uuid";
 
 import type { FilterChoice } from "@/lib/admin/list";
@@ -433,10 +434,6 @@ function blankValue(field: FormField): FormValue {
  * **This is the only normalising these editors do.** Nothing is trimmed: two
  * stored `class` strings contain double spaces, and block text is raw HTML.
  */
-function normaliseNewlines(value: string): string {
-  return value.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
-}
-
 /**
  * Read a `string-list` or `key-value` field.
  *
@@ -595,7 +592,8 @@ export function parseFields(
        * CRLF, and the stored data has no carriage return in it anywhere. So an
        * untouched save of a multi-paragraph value rewrites the whole column
        * with characters that were never there -- which is invisible in the
-       * admin, invisible in a diff, and shows up as `` in the rendered page.
+       * admin, invisible in a diff, and shows up as `
+` in the rendered page.
        *
        * The JSON editors escape their newlines inside a JSON string, so nothing
        * real reaches the encoder and they are handled elsewhere. These two

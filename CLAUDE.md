@@ -293,6 +293,7 @@ node scripts/check-breakpoints.mjs                     # one visible theme toggl
 node scripts/check-notifications.mjs                   # toasts outside the transform
 node scripts/check-ui-state.mjs                        # palette + Turnstile theme
 npx tsx --conditions=react-server scripts/check-page-loading.mjs   # bar + skeletons
+npx tsx --conditions=react-server scripts/check-skeleton-shape.mjs # each skeleton vs its page
 npx tsx scripts/check-auth-adapter.mjs                 # Auth.js vs the live schema
 npx tsx scripts/check-comments.mjs                     # comment rules, rolled back
 npx tsx scripts/check-emails.mjs                       # all five templates

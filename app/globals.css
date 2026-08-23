@@ -83,8 +83,8 @@
    scanning could not find them and Tailwind would not emit them. Twenty-nine
    had to be listed by hand, re-extracted from the live data after every edit.
 
-   Those columns were dropped in drizzle/0003; the bodies are HTML now, styled
-   by element from styles/prose.css. What keeps the list from coming back is
+   Those columns are gone; the bodies are HTML now, styled by element from
+   styles/prose.css. What keeps the list from coming back is
    lib/utils/sanitize.ts, whose allow-list permits `class` on one element and
    only matching `language-*`: appearance comes from the stylesheet, and stored
    content cannot name a utility even if someone pastes one in.

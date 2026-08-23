@@ -9,17 +9,16 @@
  * them by hand in `@source inline(...)`, re-extracted from live data whenever
  * anyone edited a post.
  *
- * Those columns went in `drizzle/0003` and the list went with them. This is the
- * check that it stays gone, and it has two halves because there are two ways
- * back:
+ * Those columns are gone and the list went with them. This is the check that it
+ * stays gone, and it has two halves because there are two ways back:
  *
  *   - stored HTML could start carrying classes again. `lib/utils/sanitize.ts`
  *     is what stops it -- `class` is allowed on one element and only matching
  *     `language-*` -- so the check feeds it a utility and proves it is stripped,
  *     rather than trusting the allow-list by reading it.
- *   - the JSONB columns that remain (legal sections, and `about_profile.stories`
- *     now that `drizzle/0004` has moved the live copy to `stories_html`) could
- *     start carrying a `class` key, which is what the old blocks did.
+ *   - the JSONB columns that remain (legal sections, and `about_profile.stories`,
+ *     whose live copy is `stories_html`) could start carrying a `class` key,
+ *     which is what the old blocks did.
  *
  * Read-only: it writes nothing and needs no cleanup.
  *

@@ -1,13 +1,11 @@
 /**
  * Every row the previous build wrote has a counterpart in `app`.
  *
- * `app` was populated from `public` by `scripts/migrate-to-app.mjs`, and both
- * schemas have taken writes since: the previous build is still serving the
- * domain, and this admin has been writing to `app`. So neither is a superset of
- * the
- * other, and the question this answers is the narrow one that matters before
- * `public` can be dropped -- *is there anything in `public` that `app` has not
- * got?*
+ * `app` was populated from `public` once, and both schemas have taken writes
+ * since: the previous build is still serving the domain, and this admin has
+ * been writing to `app`. So neither is a superset of the other, and the
+ * question this answers is the narrow one that matters before `public` can be
+ * dropped -- *is there anything in `public` that `app` has not got?*
  *
  * Read-only. Nothing here writes to either schema.
  *

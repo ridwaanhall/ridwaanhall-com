@@ -111,8 +111,7 @@ export type AboutData = {
    * There was a `stories` array beside this: the same paragraphs as JSONB
    * blocks, each with a hand-typed `class` key. That is the shape
    * `lib/utils/sanitize.ts` exists to keep out of the database, and nothing
-   * read it -- the page has rendered `stories_html` since drizzle/0004 -- so it
-   * did not come across.
+   * read it -- the page renders `stories_html` -- so it did not come across.
    */
   stories_html: string;
   location: {
@@ -390,8 +389,8 @@ export async function getEducation(lastOnly = false): Promise<Education[]> {
       .innerJoin(organization, eq(education.organizationId, organization.id))
       .leftJoin(location, eq(location.id, education.locationId))
       .leftJoin(mediaAsset, eq(mediaAsset.id, organization.logoId))
-      // `order by id` while keys were serial, which meant the order they were
-      // entered in. `position` is that order, written down -- see drizzle/0007.
+      // A uuid carries no insertion order, so the sequence somebody entered
+      // these in has to be written down. `position` is where it is written.
       .orderBy(asc(education.position)),
     db
       .select({ educationId: educationAchievement.educationId, body: educationAchievement.body })
@@ -503,8 +502,8 @@ export async function getSkills(): Promise<Skill[]> {
  * The order was `SKILL_CATEGORY_ORDER`, a 25-entry array in this file that the
  * grouping walked to build the result. It is `category.position` now: the same
  * sequence, in the table it describes, editable from the admin and joinable.
- * A category outside the curated run keeps its place at the end because
- * drizzle/0007 gave it a position past the list rather than at the front.
+ * A category outside the curated run keeps its place at the end, because it is
+ * given a position past the list rather than at the front.
  */
 export async function getSkillsByCategory(): Promise<Record<string, Skill[]>> {
   "use cache";

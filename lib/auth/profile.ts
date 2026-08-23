@@ -22,7 +22,7 @@ import { account, accountIdentity, guestProfile } from "@/lib/db/app-schema";
  * token expired. The token carries identity; this carries permission.
  */
 export type UserProfile = {
-  /** A uuid; see drizzle/0005. */
+  /** A uuid: every key in `app` is one. */
   id: string;
   username: string;
   fullName: string;

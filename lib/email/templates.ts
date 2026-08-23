@@ -1,10 +1,8 @@
 /**
  * The **plain-text** halves of the five transactional emails.
  *
- * Copied verbatim from `apps/core/templates/core/email/*.txt` by
- * `scripts/inline-email-templates.mjs`. There is no design in them to redo,
- * and they are what a client that will not render HTML shows, so they keep
- * the wording the site has always sent.
+ * Kept as prose rather than redesigned: there is nothing visual in them to
+ * redo, and they are what a client that will not render HTML shows.
  *
  * Their HTML counterparts are **not** here. Those were the old dark templates
  * and have been redesigned in the site's light theme, composed from

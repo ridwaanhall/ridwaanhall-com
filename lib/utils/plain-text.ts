@@ -3,8 +3,8 @@
  *
  * Bodies are stored as HTML. Three things need the prose without the markup --
  * the site search, the meta description of a project, and the `wordCount` in a
- * post's JSON-LD -- and each of them was reading a JSONB array of blocks until
- * `drizzle/0003` dropped it. Doing it in one place keeps them from drifting.
+ * post's JSON-LD -- and doing it in one place keeps the three from drifting
+ * apart on what counts as the text of a body.
  *
  * Entities are decoded, because these strings end up somewhere that would show
  * them: a `<meta>` description reading "Rust &amp; Go" is a visible mistake in

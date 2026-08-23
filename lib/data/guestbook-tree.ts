@@ -18,15 +18,15 @@ export const MAX_DEPTH = 3;
 /** What the panel can usefully scroll through, matching `MESSAGE_WINDOW`. */
 export const MESSAGE_WINDOW = 50;
 
-/** `ChatMessage.MAX_PINNED_MESSAGES`. */
+/** How many messages may be pinned above the thread at once. */
 export const MAX_PINNED = 3;
 
-/** `models.TextField(max_length=500)`, and the form's `maxlength`. */
+/** The column's own limit, and the composer's `maxLength`. */
 export const MAX_MESSAGE_LENGTH = 500;
 export const MIN_MESSAGE_LENGTH = 2;
 
 export type MessageAuthor = {
-  /** A uuid; see drizzle/0005. */
+  /** A uuid: every key in `app` is one. */
   userId: string;
   fullName: string;
   profileImage: string | null;
@@ -70,9 +70,8 @@ export type Thread = {
  * Mask an address for display: `1234567@gmail.com` -> `12****7@gmail.com`.
  *
  * The number of asterisks matches the number of hidden characters, and the
- * short cases are spelled out rather than derived, exactly as
- * `UserProfileMixin.mask_email` did -- a general formula gets 2 and 3 character
- * locals wrong.
+ * short cases are spelled out rather than derived: a general formula gets two-
+ * and three-character locals wrong, masking so little that nothing is hidden.
  */
 export function maskEmail(email: string): string {
   if (!email || !email.includes("@")) return email;

@@ -10,6 +10,7 @@ import { db } from "@/lib/db/client";
 import { notifyNewGuestbookMessage } from "@/lib/email/guestbook-notify";
 import { guestMessage } from "@/lib/db/app-schema";
 import { MAX_MESSAGE_LENGTH, MAX_PINNED, MIN_MESSAGE_LENGTH } from "@/lib/data/guestbook-tree";
+import { normaliseNewlines } from "@/lib/utils/newlines";
 
 /**
  * The guestbook's mutations.
@@ -52,7 +53,14 @@ export async function sendMessage(formData: FormData): Promise<ActionResult> {
   const profile = await currentProfile();
   if (!profile) return { ok: false, error: "Sign in to post a message." };
 
-  const text = String(formData.get("message") ?? "").trim();
+  /*
+   * Normalised, because the composer is a `<textarea>` and a message is stored
+   * exactly as typed. A browser submitting a form rewrites every line break in
+   * every field value to CRLF, so without this a two-line message is stored
+   * with carriage returns that were never typed -- and the length checked below
+   * counts one character per line that nobody wrote.
+   */
+  const text = normaliseNewlines(String(formData.get("message") ?? "")).trim();
   if (!text) return { ok: false, error: "Message cannot be empty" };
   if (text.length < MIN_MESSAGE_LENGTH) {
     return { ok: false, error: `Message must be at least ${MIN_MESSAGE_LENGTH} characters long` };

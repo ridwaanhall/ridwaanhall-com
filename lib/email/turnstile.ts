@@ -23,9 +23,10 @@ export function turnstileEnabled(): boolean {
 export async function verifyTurnstile(token: string | null, remoteIp?: string): Promise<boolean> {
   const secret = process.env.CF_TURNSTILE_SECRET_KEY;
 
-  // With no secret configured there is nothing to verify against. Django
-  // guarded the whole block on the same condition rather than failing closed,
-  // so a local run without Cloudflare credentials still has a working form.
+  // With no secret configured there is nothing to verify against, so the form
+  // works in a checkout that has no Cloudflare credentials. Note this is the
+  // one path that does not fail closed -- an unset secret in production means
+  // no spam check at all.
   if (!secret) return true;
 
   if (!token) {

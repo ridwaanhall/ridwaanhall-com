@@ -18,18 +18,17 @@ import { guestMessage } from "@/lib/db/app-schema";
  *
  * The page and every action that changes the thread go through `getThread()`,
  * so there is exactly one place that decides what a message is and how the tree
- * is shaped. Django achieved the same with `ThreadedMessagesMixin`, shared
- * between the page view and the AJAX post.
+ * is shaped -- rather than the page and each action each deciding for
+ * themselves and drifting apart.
  */
 
 /**
  * The latest window of messages, threaded, plus the pinned cards and the total.
  *
  * Four queries, none of them per-message: the messages, their reply targets,
- * the pinned set and the count. Django needed `select_related` +
- * `prefetch_related` across four relations to get the same thing; here the
- * profile lookup is batched by `getUserProfiles`, which is where the N+1 would
- * otherwise be -- the same person usually appears many times in one thread.
+ * the pinned set and the count. The profile lookup is batched by
+ * `getUserProfiles`, which is where the N+1 would otherwise be -- the same
+ * person usually appears many times in one thread.
  *
  * Deliberately **not** cached. Everything else on the site goes through `use
  * cache`, but a guestbook that shows a message a minute after it was posted is

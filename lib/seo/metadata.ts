@@ -12,12 +12,11 @@ import type { SeoData } from "./data";
  * template emitted has an equivalent here; the handful that Next has no field
  * for go through `other`.
  *
- * One difference worth stating: Django set the canonical, `og:url` and
- * `twitter:url` from `request.build_absolute_uri()`, which means the *actual*
- * requested URL, query string included. That made a paginated or
+ * One thing worth stating: the canonical, `og:url` and `twitter:url` never come
+ * from the requested URL. Echoing the request makes a paginated or
  * query-filtered listing declare itself canonical, which is precisely what a
- * canonical tag exists to prevent. Here the canonical comes from `SeoData`,
- * where the list pages already compute a page-aware value.
+ * canonical tag exists to prevent. They come from `SeoData`, where the list
+ * pages already compute a page-aware value.
  */
 export function buildMetadata(seo: SeoData, about: AboutData): Metadata {
   const ogType = seo.og_type || DEFAULT_OG_TYPE;

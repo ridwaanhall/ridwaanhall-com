@@ -124,7 +124,7 @@ try {
   await choose("categoryId", firstCategory.id);
   await fill("description", "Written by scripts/check-admin-forms.mjs.");
   // `slug` deliberately left blank: it must fill itself from the name, which is
-  // Django's `prepopulated_fields` moved to the server, where a form posted
+  // Slug prefill happens on the server, so a form posted
   // without JavaScript still gets one.
   await submit();
 
@@ -208,8 +208,8 @@ try {
   /*
    * This used to smuggle `is_superuser`, which was the sharpest version of the
    * test: iterating the submitted form rather than the descriptor would have
-   * handed out Django's all-permissions flag. That column is gone -- nothing
-   * read it but Django's own admin -- so the smuggled field is now `first_name`,
+   * handed out an all-permissions flag. No such column exists any more, so the
+   * smuggled field is `first_name`,
    * which is real, is on this table, and is not declared by the user form.
    */
   const [before] = await db

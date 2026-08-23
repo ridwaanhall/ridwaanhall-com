@@ -30,9 +30,8 @@ export function isCommentable(label: string): label is CommentTargetLabel {
 }
 
 export type CommentAuthor = {
-  /** A uuid; see drizzle/0005. */
   userId: string;
-  /** Django's `get_full_name|default:username` -- see the note in `comments.ts`. */
+  /** The provider's display name, falling back to the username -- see `comments.ts`. */
   displayName: string;
   username: string;
   profileImage: string | null;

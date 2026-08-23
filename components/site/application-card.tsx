@@ -22,7 +22,7 @@ import type { Application } from "@/lib/data/about";
  * Colours are written out in full per status rather than composed from the
  * status name: Tailwind only generates a class it can see in the source, so an
  * interpolated one would produce no rule at all and the badge would be
- * unstyled. Django's template made the same choice, as a chain of `{% if %}`s.
+ * unstyled.
  */
 const STATUS_STYLES: Record<string, string> = {
   "In Progress": "text-blue-400",
@@ -33,8 +33,7 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 /**
- * Withdrawn has no styling in the Django template either -- the `{% if %}`
- * chain covers five of the six statuses -- so it falls through to the neutral
+ * Withdrawn has no colour of its own: it falls through to the neutral
  * treatment rather than rendering an unstyled badge.
  */
 const FALLBACK_STATUS = STATUS_STYLES.Applied;
@@ -166,7 +165,7 @@ export function ApplicationCard({ application }: { application: Application }) {
   );
 }
 
-/** Django's `{{ step.timestamp|date:"M j, Y" }}` -- "Jan 23, 2026". */
+/** "Jan 23, 2026". */
 function stepDate(value: Date | string): string {
   const date = value instanceof Date ? value : new Date(value);
   return new Intl.DateTimeFormat("en-US", {
@@ -177,7 +176,7 @@ function stepDate(value: Date | string): string {
   }).format(date);
 }
 
-/** Django's `{{ step.timestamp|time:"g:i A" }}` -- "8:55 PM". */
+/** "8:55 PM". */
 function stepTime(value: Date | string): string {
   const date = value instanceof Date ? value : new Date(value);
   return new Intl.DateTimeFormat("en-US", {

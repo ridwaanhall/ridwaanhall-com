@@ -13,9 +13,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? "https://ridwaanhall.com"),
-  // Favicons are hand-placed under public/favicon/ (copied from the Django
-  // staticfiles tree), not generated, so they are declared rather than
-  // discovered by file convention.
+  // Favicons are hand-placed under public/favicon/ rather than generated, so
+  // they are declared here rather than discovered by file convention.
   icons: {
     icon: [
       { url: "/favicon/favicon.ico", type: "image/x-icon" },

@@ -2,8 +2,8 @@
  * HTML escaping for email bodies.
  *
  * Split out so `layout.ts` and `render.ts` share one definition and neither
- * imports the other. Matches Python's `html.escape` with its default
- * `quote=True`, which is what the Django originals used.
+ * imports the other. Quotes are escaped too, not just angle brackets: these
+ * values land in HTML attributes as well as in text.
  */
 export function escapeHtml(value: string): string {
   return value

@@ -10,36 +10,31 @@ import { isUuid } from "@/lib/utils/uuid";
  * An Auth.js adapter over the site's own account tables.
  *
  * A sign-in reads and writes `app.account`, `app.account_identity` and
- * `app.guest_profile`. It was `auth_user`, `socialaccount_socialaccount` and
- * `guestbook_userprofile` -- allauth's tables, kept verbatim so Django and this
- * could authenticate the same 37 people against the same rows during the port.
- * The name is left as it is: what it implements is still allauth's behaviour,
- * and the reasons below are still allauth's reasons.
+ * `app.guest_profile` -- three tables this application owns, rather than the
+ * shape Auth.js's stock adapters expect. Writing the adapter is what lets the
+ * schema stay the one the rest of the site reads.
  *
- * What went with the rename is Django's own bookkeeping. There is no
- * `password` column to fill with an unusable placeholder, no `is_superuser`
- * beside `is_staff`, and no `content_type`/`permission` rows behind either --
- * this application has one privilege, and it is `is_staff`.
+ * There is one privilege here and it is `is_staff`. No password column, no
+ * superuser flag beside it, no permission rows behind either: everyone signs in
+ * through Google or GitHub, so there is no credential for this application to
+ * store or to leak.
  *
- * **Sessions are JWTs, so this implements no session methods.** Django keeps
- * its sessions in `django_session` as a signed, Django-serialised blob that
- * Auth.js cannot read or write, and there is nothing to be gained by inventing
- * a third session table for a stack that is being retired. Auth.js still calls
- * this for every user and account operation.
+ * **Sessions are JWTs, so this implements no session methods.** Nothing is
+ * persisted per session; the token carries identity and the database is asked
+ * about privileges on every request. Auth.js still calls this adapter for every
+ * user and account operation.
  *
- * Two things allauth does that this deliberately does not:
+ * Two things it deliberately does not do:
  *
- * - **No `account_emailaddress` row.** The live table holds 2 rows against 37
- *   users, so it is not part of this site's flow -- `ACCOUNT_EMAIL_VERIFICATION`
- *   is `"none"` and nothing reads it. Writing rows there would be a new
- *   behaviour rather than a port, and its two partial unique indexes
- *   (`unique_verified_email`, `unique_primary_email`) would turn an unrelated
- *   conflict into a failed sign-in.
- * - **No account linking by email.** `ACCOUNT_UNIQUE_EMAIL` defaults on and
- *   `SOCIALACCOUNT_EMAIL_AUTHENTICATION` is unset, so allauth refuses to attach
- *   a second provider to an existing address by itself. Auth.js's default is
- *   the same refusal (`OAuthAccountNotLinked`), which is why
- *   `allowDangerousEmailAccountLinking` is not set on either provider.
+ * - **No separate email-address table.** Addresses are not verified separately
+ *   from the provider that vouched for them -- the provider has already done
+ *   it -- so an account's email lives on the account and nowhere else.
+ * - **No account linking by email.** Signing in with GitHub using the address
+ *   an existing Google account holds does not silently take over that account:
+ *   Auth.js refuses with `OAuthAccountNotLinked`, which is why
+ *   `allowDangerousEmailAccountLinking` is not set on either provider. An
+ *   address is a claim by whichever provider asserted it, and treating two
+ *   providers' claims as one identity is how account takeover works.
  */
 
 function now(): string {
@@ -49,9 +44,9 @@ function now(): string {
 /**
  * A display name in two columns.
  *
- * The 150-character limit is Django's `varchar(150)`; the columns are plain
- * `text` now, but the cap stays -- it is what the stored 37 rows were written
- * under, and nothing wants an unbounded name from a provider.
+ * The columns are plain `text`, but a 150-character cap stays on each half.
+ * A display name arrives from a provider and nothing about it is bounded at
+ * the source, so the bound is applied here rather than discovered later.
  */
 function splitName(name: string | null | undefined): { firstName: string; lastName: string } {
   const parts = (name ?? "").trim().split(/\s+/).filter(Boolean);
@@ -78,8 +73,8 @@ function toAdapterUser(row: {
     email: row.email,
     name: named || row.username,
     // Nothing consumes this: there is no email provider, so Auth.js never
-    // checks it. Django's verification state lives in `account_emailaddress`,
-    // which this does not touch.
+    // checks it. An address is verified by whichever provider vouched for it,
+    // and that happened before the sign-in reached us.
     emailVerified: null,
     image: null,
   };
@@ -101,13 +96,13 @@ const USER_COLUMNS = {
  * writes to the *live* Supabase database, and `scripts/check-auth-adapter.mjs`
  * exercises them for real inside a transaction it then rolls back. Testing
  * against a stub would only prove the stub agrees with itself -- the things
- * worth checking are Django's own constraints (`username` unique, `password`
- * and the name columns `NOT NULL`, the `(provider, uid)` unique pair), and only
+ * worth checking are the database's own constraints -- `username` unique, the
+ * name columns `NOT NULL`, the `(provider, uid)` pair unique -- and only
  * Postgres can enforce those.
  */
 type Database = Pick<typeof db, "select" | "insert" | "update" | "delete">;
 
-export function DjangoAdapter(database: Database = db): Adapter {
+export function accountAdapter(database: Database = db): Adapter {
   const usernameTaken = async (username: string): Promise<boolean> => {
     const rows = await database
       .select({ id: account.id })
@@ -125,9 +120,9 @@ export function DjangoAdapter(database: Database = db): Adapter {
        * The provider's own handle, when it has one.
        *
        * Auth.js normalises every provider's profile down to id/name/email/
-       * image, so GitHub's `login` -- which allauth used verbatim, and which is
-       * why `Harindrawahyu` is stored with its capital -- is not in `user` at
-       * all. `auth.ts` puts it back on the profile as `handle`.
+       * image, so GitHub's `login` -- the handle someone chose, capitals and
+       * all -- is not in `user` at all. `auth.ts` puts it back on the profile
+       * as `handle`, because it is the best username candidate available.
        */
       const handle = (user as AdapterUser & { handle?: string }).handle;
 
@@ -151,7 +146,7 @@ export function DjangoAdapter(database: Database = db): Adapter {
         .returning(USER_COLUMNS);
 
       /*
-       * The profile row Django's `post_save` receiver would have created.
+       * The guestbook profile, created with the account rather than lazily.
        *
        * Without it the guestbook falls back to `is_staff` for `is_author`,
        * which is the right degradation but the wrong state -- and the admin
@@ -233,9 +228,9 @@ export function DjangoAdapter(database: Database = db): Adapter {
     async linkAccount(link) {
       const accountId = link.userId;
       /*
-       * `extra` is the raw provider profile, which is what allauth stored and
-       * what `lib/auth/profile.ts` reads back for the display name and the
-       * avatar -- Google's `name`/`picture`, GitHub's `login`/`avatar_url`.
+       * `extra` is the raw provider profile, which `lib/auth/profile.ts`
+       * reads back for the display name and the avatar -- Google's
+       * `name`/`picture`, GitHub's `login`/`avatar_url`.
        * Auth.js hands the whole profile through on `account.extra_data`; see
        * the `account` callback in `auth.ts`.
        *
@@ -275,9 +270,9 @@ export function DjangoAdapter(database: Database = db): Adapter {
     async deleteUser(id) {
       /*
        * Every dependent row cascades -- messages, comments, the profile, the
-       * identities. In Postgres, and for real: Django declared `CASCADE` in
-       * Python and left `NO ACTION` in the database, so this statement used to
-       * depend on the application having cleared the children first.
+       * identities -- and it cascades in Postgres, declared on the foreign keys
+       * in `drizzle/0000_init.sql`. This statement does not depend on the
+       * application having remembered to clear the children first.
        */
       if (!isUuid(id)) return;
       await database.delete(account).where(eq(account.id, id));
@@ -288,9 +283,9 @@ export function DjangoAdapter(database: Database = db): Adapter {
 /**
  * Refresh `last_seen_at` on a sign-in that created nothing.
  *
- * `linkAccount` only runs the first time a provider is attached, so a
- * returning user would otherwise keep the timestamp of the day they joined --
- * which is what Django's `user_logged_in` receiver kept current.
+ * `linkAccount` only runs the first time a provider is attached, so without
+ * this a returning reader would keep the timestamp of the day they joined for
+ * ever.
  */
 export async function touchLogin(
   accountId: string,
@@ -303,10 +298,10 @@ export async function touchLogin(
   await Promise.all([
     database.update(account).set({ lastSeenAt: now() }).where(eq(account.id, accountId)),
     /*
-     * Only the profile. The identity had a `last_login` of its own, which was
-     * allauth's and said the same thing as the account's for every row it ever
-     * wrote -- one person, one provider each. `account.last_seen_at` is the one
-     * place that answer lives now.
+     * Only the profile. `account.last_seen_at` is the single place that answer
+     * lives: a second timestamp on the identity would say the same thing for
+     * everyone who signs in with one provider, and disagree with itself for
+     * anyone who uses two.
      */
     extra
       ? database

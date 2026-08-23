@@ -6,8 +6,7 @@ import { useEffect, useRef } from "react";
 /**
  * The Cloudflare Turnstile widget, themed with the rest of the site.
  *
- * Django rendered `<div class="cf-turnstile" data-sitekey="…">` and let the
- * script pick a theme, which resolves to Turnstile's `auto` -- and `auto`
+ * The theme is passed explicitly rather than left to Turnstile's `auto`, which
  * follows `prefers-color-scheme`, i.e. the **operating system**. That is the
  * one signal this site deliberately never consults: dark is the brand default,
  * not a fallback for when the OS is silent, and the reader's own toggle is what

@@ -3,9 +3,9 @@ import type { MetadataRoute } from "next";
 /**
  * The web app manifest.
  *
- * A port of templates/site.webmanifest, which Django rendered through a view so
- * its `{% static %}` tags would resolve. Served at `/manifest.webmanifest`,
- * which the root layout points at.
+ * Generated rather than a static file, so the icon paths and the theme colours
+ * stay in one place. Served at `/manifest.webmanifest`, which the root layout
+ * points at.
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {

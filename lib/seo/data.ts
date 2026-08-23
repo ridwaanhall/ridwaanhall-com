@@ -155,9 +155,8 @@ export function projectDetailSeo(project: Project, about: AboutData): SeoData {
     ...techKeywords,
     "project", "github", "demo", "code",
   ];
-  // Django built this from the first two content blocks. Those are gone; the
-  // opening of the body reads the same way and is what a search result should
-  // show.
+  // The opening of the body, which is what a search result should show -- not
+  // a separately maintained summary that can drift from what the page says.
   const description = plainText(project.description_html).slice(0, DEFAULT_DESCRIPTION_LENGTH);
 
   return {
@@ -167,8 +166,8 @@ export function projectDetailSeo(project: Project, about: AboutData): SeoData {
     og_image: resolveImage(about, project),
     og_type: CONTENT_TYPES.project_detail.og_type,
     twitter_card: CONTENT_TYPES.project_detail.twitter_card,
-    // Built from the stored slug rather than re-slugifying the title, which is
-    // what Django did -- the column is the authority and cannot drift from it.
+    // Built from the stored slug rather than re-slugifying the title: the
+    // column is the authority, and a re-slugify can drift from it.
     canonical_url: `${SITE_URL}/projects/${project.slug}`,
     content_type: "project_detail",
     ...baseSeo(),

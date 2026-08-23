@@ -13,10 +13,8 @@ import { ImageLightbox, type LightboxImage } from "@/components/site/image-light
  * buttons, dot indicators and an auto-advance, and the header's filename
  * follows whichever slide is showing.
  *
- * Django had two near-identical copies of all of this: `blogImageSlider.js` and
- * `projectImageSlider.js`, 120 lines each, differing in three class prefixes
- * and the auto-advance interval. They are one component here, with the
- * differences as a `variant`.
+ * One component with a `variant`, not two near-identical sliders of 120 lines
+ * each differing in three class prefixes and the auto-advance interval.
  *
  * The dot class strings look redundantly specific and are copied deliberately:
  * they reproduce what the original's `classList.add`/`remove` calls left on the

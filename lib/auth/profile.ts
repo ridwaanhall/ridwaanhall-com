@@ -6,10 +6,9 @@ import { account, accountIdentity, guestProfile } from "@/lib/db/app-schema";
 /**
  * Who a signed-in reader is, as the guestbook and comments need them.
  *
- * A port of `UserProfileMixin.get_user_profile_data` in `apps/guestbook/
- * views.py`. The display name and avatar do not live on `auth_user` at all --
- * allauth keeps them in `socialaccount.extra_data`, whose shape is the raw
- * provider profile:
+ * The display name and avatar do not live on the account row at all. They are
+ * read from the stored provider profile on `account_identity.extra`, which is
+ * the raw payload the provider returned:
  *
  *   google  { sub, name, picture, email, email_verified, given_name, ... }
  *   github  { id, login, name, avatar_url, email, ... }
@@ -66,8 +65,8 @@ export function fromSocialAccounts(
   if (google) {
     const name = str(google.name);
     return {
-      // The original fell back to the *username* here, not to the Django
-      // first/last name, when Google sent no `name`.
+      // Falls back to the username, not to the stored first/last name: those
+      // are written once at sign-up and go stale, the username does not.
       fullName: name || fallback.username,
       profileImage: str(google.picture) || GRAVATAR_FALLBACK,
       email: str(google.email) || fallback.email,
@@ -92,8 +91,7 @@ export function fromSocialAccounts(
  * user.
  *
  * The guestbook renders fifty messages at a time and each needs its author's
- * name, avatar and badge; Django solved the same N+1 with
- * `prefetch_related("socialaccount_set", "userprofile")`.
+ * name, avatar and badge. One query for all of them, not one per message.
  */
 export async function getUserProfiles(
   userIds: string[],
@@ -147,9 +145,8 @@ export async function getUserProfiles(
 
   for (const user of users) {
     const stored = profileByUser.get(user.id);
-    // No `guestbook_userprofile` row falls back to `is_staff`, as the original
-    // did -- every live user has one, but the row is created by a Django
-    // signal and this must not crash if one is ever missing.
+    // No `guest_profile` row falls back to `is_staff`. Every account gets one
+    // at sign-up, but a read path must not crash on a row that is missing.
     const isAuthor = stored ? stored.isAuthor : user.isStaff;
     const isCoAuthor = stored ? stored.isCoAuthor : false;
 

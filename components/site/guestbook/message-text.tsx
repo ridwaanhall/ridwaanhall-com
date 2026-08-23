@@ -9,9 +9,10 @@ import { Fragment } from "react";
  * URL detector, and making it one here would render existing messages
  * differently from the way they have always appeared.
  *
- * There is no `dangerouslySetInnerHTML`: Django needed `escape()` before
- * `linebreaksbr()` because it was assembling HTML, and React escapes by
- * construction. `rel="nofollow"` stays -- these are visitor-supplied links.
+ * There is no `dangerouslySetInnerHTML` here, so there is no escaping to
+ * remember: React escapes by construction, and this builds elements rather than
+ * a string of HTML. `rel="nofollow"` stays -- these are visitor-supplied
+ * links.
  */
 export function MessageText({ text }: { text: string }) {
   const trimmed = text.trim();

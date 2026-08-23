@@ -33,9 +33,9 @@ const SITE_CREATED_ISO = "2025-03-16T00:00:00+07:00";
 /**
  * Stand-in for `dateModified` where nothing real is tracked.
  *
- * Django used the current clock here, which is wrong twice over: it claims the
- * page changed on every request -- a page that always reports "just modified"
- * tells a crawler nothing -- and reading the clock inside a prerendered tree is
+ * Not the current clock, which would be wrong twice over: it claims the page
+ * changed on every request -- a page that always reports "just modified" tells
+ * a crawler nothing -- and reading the clock inside a prerendered tree is
  * rejected outright under Cache Components. The build time is stable, honest
  * about when the page was actually generated, and known before prerendering
  * starts. Pages that *do* track a real modification date (legal documents, blog
@@ -243,10 +243,9 @@ export function blogPostingSchema(blog: BlogPost, about: AboutData): JsonLd {
 /**
  * Words in a post's body.
  *
- * Django read `blog_data['word_count']`, a key the blog dict has never carried,
- * so it always emitted `wordCount: 0` -- a stated value that is simply wrong,
- * which is worse for a crawler than omitting the property. Counted from the
- * body instead.
+ * Counted from the body, never read from a stored field. A `wordCount: 0` is a
+ * stated value that is simply wrong, and for a crawler that is worse than
+ * omitting the property.
  */
 function wordCount(blog: BlogPost): number {
   const text = plainText(blog.content_html);
@@ -450,9 +449,8 @@ export async function profilePageSchema(about: AboutData): Promise<JsonLd> {
 /**
  * The privacy policy page.
  *
- * `dateModified` comes from the document row, not the clock. Django used the
- * clock here while using the row's own timestamp for every *other* legal
- * document -- an inconsistency, and the clock version told a crawler the policy
+ * `dateModified` comes from the document row, not the clock -- the same as
+ * every other legal document. A clock reading would tell a crawler the policy
  * changed on every request.
  */
 export function privacyPolicySchema(about: AboutData, document?: LegalDocument | null): JsonLd {

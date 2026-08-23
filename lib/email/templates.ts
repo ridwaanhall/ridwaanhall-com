@@ -12,8 +12,7 @@
  * edited in step.
  *
  * Placeholders are `{{ key }}`, filled by `lib/email/render.ts`, which throws
- * on an unmatched one. Django's `str.replace` left it sitting in the sent
- * email, which CLAUDE.md records as a gotcha with no test covering it.
+ * on an unmatched one rather than sending the placeholder to the reader.
  */
 
 /** `contact_autoreply.txt` */

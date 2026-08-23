@@ -10,9 +10,8 @@ import { getAboutData } from "@/lib/data/about";
  * are stable public URLs that point at documents hosted elsewhere, so the
  * destination can change in the admin without the shared link breaking.
  *
- * An unset link falls back to the homepage rather than 404ing, matching the
- * Django behaviour -- a stale CV link in someone's inbox should land somewhere
- * useful.
+ * An unset link falls back to the homepage rather than 404ing: a stale CV link
+ * in someone's inbox should land somewhere useful.
  */
 export async function cvRedirect(key: "main" | "latest" | "copy"): Promise<never> {
   const about = await getAboutData();

@@ -43,7 +43,7 @@ function daysAgo(isoDate: string, days: number): string {
   return date.toISOString().slice(0, 10);
 }
 
-/** Django's `_format_time`: "2 hours 5 minutes", "45 minutes", "30 secs", "0 mins". */
+/** "2 hours 5 minutes", "45 minutes", "30 secs", "0 mins". */
 function formatTime(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "0 mins";
 
@@ -59,7 +59,7 @@ function formatTime(seconds: number): string {
   return "0 mins";
 }
 
-/** Django's `_convert_to_gmt7(...).strftime('%B %d, %Y')` -- "August 20, 2026". */
+/** "August 20, 2026", in Jakarta time -- the clock the coding hours were kept on. */
 function longDateJakarta(iso: string | undefined | null): string {
   if (!iso) return "N/A";
   const date = new Date(iso);
@@ -189,7 +189,7 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
   };
 }
 
-/** Cached for fifteen minutes, matching Django's `CACHE_TIMEOUT`. */
+/** Cached for fifteen minutes: coding stats are a trend, not a live reading. */
 export const getWakatimeStats = unstable_cache(fetchWakatimeStats, ["wakatime-activity"], {
   revalidate: 900,
   tags: ["wakatime"],

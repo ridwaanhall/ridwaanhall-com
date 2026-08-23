@@ -3,12 +3,11 @@ import { createHash } from "node:crypto";
 /**
  * What an uploaded file is called in the bucket.
  *
- * Django derived the key from the uploaded filename and kept it *deterministic*
- * -- `get_available_name` was overridden to skip the exists-check-and-rename
- * loop, because the importer that wrote these files already deduplicated by its
- * own cache and wanted stable names. That left one sharp edge, recorded in
- * `CLAUDE.md`: re-uploading under a name that already exists is an in-place
- * replace, and Supabase's read path is CDN-fronted, so the old bytes can be
+ * The key is derived from the file's *contents*, so the same bytes uploaded
+ * twice are one object and re-uploading is idempotent. Deriving it from the
+ * uploaded filename instead leaves a sharp edge: re-uploading under a name that
+ * already exists is an in-place replace, and Supabase's read path is
+ * CDN-fronted, so the old bytes can be
  * served for a while afterwards. The advice was to pick a new filename by hand
  * when the change had to be visible.
  *
@@ -22,7 +21,7 @@ import { createHash } from "node:crypto";
  * attempt of an upload that may or may not have landed writes to the same place.
  */
 
-/** The `upload_to` of each `ImageField`, kept exactly as Django had it. */
+/** The bucket prefix each kind of upload is filed under. */
 export const UPLOAD_PREFIXES = {
   profile: "profile/",
   logo: "logo/",
@@ -62,7 +61,7 @@ export const IMAGE_TYPES: Record<string, string> = {
   ".svg": "image/svg+xml",
 };
 
-/** Django's `slugify`, applied to the filename rather than to a title. */
+/** Slugify, applied to a filename rather than to a title. */
 function slugify(value: string): string {
   return value
     .toLowerCase()

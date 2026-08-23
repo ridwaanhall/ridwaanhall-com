@@ -1,4 +1,4 @@
-/** Page size, from Django's `ITEMS_PER_PAGE` (FlexForge/config.py). */
+/** Page size for every public listing. One constant, so they all agree. */
 export const ITEMS_PER_PAGE = 10;
 
 export type Paginated<T> = {
@@ -12,9 +12,8 @@ export type Paginated<T> = {
 };
 
 /**
- * The elided page range Django's `PaginatedView.paginate_items` produced:
- * always page 1 and the last page, a window of two either side of the current
- * page, and "..." across the gaps.
+ * An elided page range: always page 1 and the last page, a window of two either
+ * side of the current page, and "..." across the gaps.
  *
  * Split out from `paginate` so the admin's changelist can share the rule. It
  * pages in SQL rather than over a fetched array -- several of its tables
@@ -37,8 +36,8 @@ export function pageRange(current: number, pages: number): (number | "...")[] {
 export function paginate<T>(items: T[], page: number, perPage = ITEMS_PER_PAGE): Paginated<T> {
   const count = items.length;
   const pages = Math.max(1, Math.ceil(count / perPage));
-  // Out-of-range behaves as Django's Paginator does: a non-integer falls back
-  // to page 1, and a page past the end clamps to the last one.
+  // Out-of-range never 404s: a non-integer falls back to page 1, and a page
+  // past the end clamps to the last one, so a stale bookmark still lands.
   const current = Number.isFinite(page) ? Math.min(Math.max(Math.trunc(page), 1), pages) : 1;
   const start = (current - 1) * perPage;
 
@@ -53,7 +52,7 @@ export function paginate<T>(items: T[], page: number, perPage = ITEMS_PER_PAGE):
   };
 }
 
-/** Read `?page=` the way Django's `request.GET.get("page", 1)` did. */
+/** Read `?page=`, defaulting to 1 for anything that is not a page number. */
 export function pageParam(params: URLSearchParams): number {
   const raw = Number(params.get("page"));
   return Number.isFinite(raw) && raw >= 1 ? Math.trunc(raw) : 1;

@@ -17,16 +17,15 @@ import { comment as commentTable } from "@/lib/db/app-schema";
 /**
  * Posting and deleting comments.
  *
- * Django's pair were POST-then-redirect, which is why a comment's markup lives
- * in one template while the guestbook's had to exist twice. Server actions keep
- * that property and the progressive enhancement with it: the form carries a
- * real `action`, so it still posts with JavaScript unavailable.
+ * Server actions rather than POST-then-redirect, and the progressive
+ * enhancement comes with them: the form carries a real `action`, so it still
+ * posts with JavaScript unavailable.
  *
- * `next` and its same-site validation are gone with the redirect. Django needed
- * `url_has_allowed_host_and_scheme` because the destination arrived in the POST
- * body and fed a redirect sink; here the action revalidates the path it already
- * knows and the reader never leaves the page, so there is no sink and no
- * attacker-controlled URL. The `#comments` fragment those forms carried existed
+ * There is no `next` parameter and no same-site validation to get right,
+ * because there is no redirect: the action revalidates the path it already
+ * knows and the reader never leaves the page. A destination arriving in the
+ * POST body would be an attacker-controlled URL feeding a redirect sink; this
+ * shape has neither. The `#comments` fragment such forms carry existed
  * to avoid being dropped at the masthead of a 2000-word post after a reload --
  * also moot when nothing reloads.
  */
@@ -74,8 +73,8 @@ export async function postComment(formData: FormData): Promise<CommentResult> {
 
 
   /*
-   * Resolve the parent, then apply the two rules Django put in `Comment.save()`
-   * rather than in its view -- so they hold however a row is created.
+   * Resolve the parent, then apply two rules that have to hold however a row is
+   * created -- not only on the path this action takes.
    *
    * - **Scope the lookup to this target.** A reply must not be graftable onto
    *   a thread belonging to a different post, which a bare `pk` lookup would

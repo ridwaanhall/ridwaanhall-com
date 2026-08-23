@@ -8,8 +8,8 @@ export const GET = handle(async (request: NextRequest) => {
   const params = request.nextUrl.searchParams;
   const all = await getBlogs();
 
-  // `?all=1` returns the unpaginated list. It exists for the sitemap, for the
-  // Django parity harness, and for any consumer that wants the whole feed.
+  // `?all=1` returns the unpaginated list, for the sitemap and for any consumer
+  // that wants the whole feed rather than a page of it.
   if (params.get("all") === "1") return ok(all);
 
   const matched = searchBlogs(all, params.get("q") ?? "");

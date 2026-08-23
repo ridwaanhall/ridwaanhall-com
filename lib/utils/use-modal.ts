@@ -5,9 +5,8 @@ import { useEffect, useState } from "react";
 /**
  * Mount and reveal timing for a modal that animates in and out.
  *
- * Django shared this between the search palette and the confirm dialog as
- * `modalDialog.js`; this is the same contract in two pieces of state, so the
- * two dialogs cannot drift into different timing.
+ * Shared by the search palette and the confirm dialog, so the two cannot drift
+ * into different timing.
  *
  * `mounted` keeps the modal in the tree for the length of its exit; `shown` is
  * what the transition classes read. Both entry points are adjustments *during

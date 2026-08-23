@@ -7,8 +7,8 @@ import { useSyncExternalStore } from "react";
  *
  * Reading the clock during a prerender is rejected under Cache Components --
  * for good reason, since the value would be frozen into the static shell. But
- * the copyright line genuinely wants the real year, and Django got it for free
- * from `{% now "Y" %}` on a per-request render.
+ * the copyright line genuinely wants the real year, and a site that is still
+ * being served in January should not still say the year before.
  *
  * `useSyncExternalStore` is the sanctioned way to have both: the server
  * snapshot returns the year the bundle was built, so the prerendered HTML is

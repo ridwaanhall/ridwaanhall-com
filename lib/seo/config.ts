@@ -22,11 +22,9 @@ export const DEFAULT_TWITTER_SITE = "@ridwaanhall";
 /**
  * The site-wide fallback social image.
  *
- * Django pointed this at `/staticfiles/img/ridwaanhall.webp`, which **404s** --
- * `STATIC_URL` is `static/`, so the published path is `/static/img/...`. The
- * bug is latent rather than visible: this value is only reached when the
- * profile has no image of its own, and it does have one. Corrected here, and
- * the file is kept at the working path in public/static/img/.
+ * Only reached when the profile has no image of its own, which makes a broken
+ * path here latent rather than visible -- it will not be noticed until the one
+ * day it matters. The file is kept at the working path in public/static/img/.
  */
 export const DEFAULT_IMAGE = `${SITE_URL}/static/img/ridwaanhall.webp`;
 

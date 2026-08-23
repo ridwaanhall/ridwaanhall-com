@@ -18,10 +18,9 @@ import { isUuid } from "@/lib/utils/uuid";
 /**
  * Loading, diffing and writing the child rows of a record.
  *
- * Django's inlines were formsets: the whole set posts on the parent's form, and
- * saving reconciles it against what is stored. That shape is kept because the
- * alternative -- editing children on their own screens -- turns adding three
- * donate links into three round trips through a list.
+ * The whole set posts on the parent's form and saving reconciles it against
+ * what is stored. The alternative -- editing children on their own screens --
+ * turns adding three donate links into three round trips through a list.
  *
  * **Rows are matched by primary key, never by position.** A row the editor
  * added has no id and is inserted; a row whose id is missing from the submission

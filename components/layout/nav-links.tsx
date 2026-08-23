@@ -16,8 +16,7 @@ import { cn } from "@/lib/utils/cn";
  *
  * A client component only because it needs `usePathname` to mark the current
  * page. The active item is not a link -- it renders as a `role="button"` with
- * no href, matching Django, so a reader cannot navigate to the page they are
- * already on.
+ * no href, so a reader cannot navigate to the page they are already on.
  */
 export function NavLinks({ tabIndex }: { tabIndex?: number }) {
   const pathname = usePathname();

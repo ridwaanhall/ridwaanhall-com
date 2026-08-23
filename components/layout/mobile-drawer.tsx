@@ -235,8 +235,8 @@ export function MobileDrawer({
           </div>
         </div>
 
-        {/* tabIndex -1 keeps the drawer's controls out of the tab order while it
-            is closed, matching the Django markup. */}
+        {/* tabIndex -1 keeps the drawer's controls out of the tab order while
+            it is closed: they are on screen in the DOM but not reachable. */}
         <SearchTrigger tabIndex={isOpen ? 0 : -1} />
         <NavLinks tabIndex={isOpen ? 0 : -1} />
         <SidebarFooter about={about} adminLink={adminLink} />

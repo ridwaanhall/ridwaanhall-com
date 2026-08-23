@@ -13,8 +13,8 @@ import { LegalDocumentPage } from "@/components/site/legal-document";
  * Terms keeps its own `/terms/` path rather than living under `/legal/`.
  *
  * That URL is in the sitemap, the footer of every page and the search modal,
- * and all of those predate the legal-document model. Django expressed this as
- * a second URLconf entry pointing the same view at a fixed slug.
+ * and all of those predate the legal-document model. Moving it would break
+ * every one of them to gain nothing but tidiness.
  */
 const SLUG = "terms-and-conditions";
 

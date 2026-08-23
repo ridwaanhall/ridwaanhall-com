@@ -10,21 +10,20 @@ import { isUuid } from "@/lib/utils/uuid";
 /**
  * One generic changelist, driven by a per-model descriptor.
  *
- * Django built this from `list_display`, `list_filter`, `search_fields` and
- * `ordering` on each `ModelAdmin`; the descriptors under `lib/admin/models/`
- * carry the same four things, and everything below turns them into one SQL
- * query. Sorting, filtering, searching and paging all happen in Postgres --
- * not over a fetched array -- because several of these tables outgrow a page
- * (101 skills, 64 projects, 62 applications), and a list that silently sorts
- * only the rows it already has is worse than one that does not sort at all.
+ * A descriptor under `lib/admin/models/` says which columns to show, which
+ * filters to offer, which fields to search and how to order; everything below
+ * turns that into one SQL query. Sorting, filtering, searching and paging all
+ * happen in Postgres rather than over a fetched array, because several of these
+ * tables outgrow a page (101 skills, 64 projects, 62 applications), and a list
+ * that silently sorts only the rows it already has is worse than one that does
+ * not sort at all.
  *
- * **Foreign keys are displayed with a scalar subquery, not a join.** Django
- * needed `list_select_related` to stop the changelist issuing a query per row;
- * a correlated subquery is likewise one query, and it keeps a single table in
- * `FROM`, so filtering, ordering, counting and paging compose without join
- * plumbing that the row query and the count query would both have to repeat.
- * The targets are small by construction -- 19 organizations, 37 user profiles,
- * 2 legal documents -- and every one is looked up by primary key.
+ * **Foreign keys are displayed with a scalar subquery, not a join.** Both are
+ * one query, but the subquery keeps a single table in `FROM` -- so filtering,
+ * ordering, counting and paging compose without join plumbing that the row
+ * query and the count query would each have to repeat identically. The targets
+ * are small by construction (19 organizations, 2 legal documents) and every one
+ * is looked up by primary key.
  */
 
 /** How a cell is rendered. Descriptors stay data; the table decides looks. */
@@ -43,9 +42,9 @@ export type ListColumn<Row> = {
   label: string;
   kind?: ColumnKind;
   /**
-   * What to ORDER BY. Omitted means the column is computed in TypeScript --
-   * Django's `used_by`, `short_body` and `target_label` were the same, and its
-   * changelist likewise refused to sort on them.
+   * What to ORDER BY. Omitted means the column is computed in TypeScript, and
+   * the header offers no sort: sorting on it would order the page by a value
+   * the database cannot see.
    */
   sort?: SQL | PgColumn;
   /** The cell's value. Primitives only, so a descriptor needs no JSX. */
@@ -57,21 +56,18 @@ export type FilterChoice = { value: string; label: string };
 /**
  * A filter whose options are rows of another table, labelled by a column of it.
  *
- * This is Django's `list_filter` on a foreign key -- `LegalSection.document`,
- * `Comment.content_type`. It differs from Django's default in one way, on
- * purpose: Django's `RelatedFieldListFilter` lists *every* row of the target,
- * so the comments filter offered all 30-odd `django_content_type` rows when
- * comments only ever attach to two. Only values actually present are offered
- * here, which is what `RelatedOnlyFieldListFilter` would have given.
+ * Only values actually present are offered, not every row of the target table.
+ * A filter listing options that match nothing is a list of dead ends -- and the
+ * gap can be wide: the legal sections point at 2 documents out of however many
+ * exist, and offering the rest invites a click that returns an empty page.
  */
 export type RelatedChoices = { table: PgTable; value: PgColumn; label: PgColumn };
 
 /**
  * A `list_filter` entry.
  *
- * `choice` filters may declare `"distinct"` instead of a fixed vocabulary,
- * which is what Django did for a plain char column: the options are the values
- * actually present, in alphabetical order.
+ * `choice` filters may declare `"distinct"` instead of a fixed vocabulary: the
+ * options are then the values actually present, in alphabetical order.
  */
 export type ListFilter =
   /**
@@ -101,9 +97,9 @@ export type AdminListModel<Row> = {
   columns: ListColumn<Row>[];
   filters?: ListFilter[];
   /**
-   * `search_fields`. Terms are split on whitespace and ANDed, each term ORed
-   * across the fields -- Django's rule, and the one that makes a two-word
-   * query narrow the results instead of widening them.
+   * Terms are split on whitespace and ANDed, each term ORed across the fields.
+   * That is what makes a two-word query narrow the results instead of widening
+   * them, which is what someone typing a second word means by it.
    */
   search?: { fields: (PgColumn | SQL)[]; placeholder: string };
   defaultSort: { key: string; dir: "asc" | "desc" };
@@ -129,11 +125,9 @@ export type ListParams = {
 /**
  * Read the querystring.
  *
- * The parameter names are readable (`?q=`, `?page=`, `?sort=`, `?dir=`) rather
- * than Django's positional `?o=1.-2` and `?is_featured__exact=1`. Nothing links
- * to the old URLs -- the admin is behind a sign-in and `noindex` -- so there
- * was no scheme to preserve, and a sort key that names its column survives a
- * column being inserted before it.
+ * The parameter names are readable (`?q=`, `?page=`, `?sort=`, `?dir=`) and
+ * name their column rather than its position, so inserting a column into a
+ * descriptor does not silently change what a bookmarked URL sorts by.
  *
  * Every value is validated against the descriptor: a `?sort=` naming an unknown
  * or unsortable column falls back to the default rather than reaching SQL.
@@ -176,12 +170,13 @@ export function readListParams<Row>(
 // --- date filtering ----------------------------------------------------------
 
 /**
- * The four windows Django's `DateFieldListFilter` offered, beside "any date".
+ * Four windows, beside "any date".
  *
- * Boundaries are calendar days in Asia/Jakarta, which is what `TIME_ZONE` made
- * them: "today" has to mean the site owner's today, not UTC's. WIB is a fixed
- * +07:00 -- Indonesia has had no daylight saving since 1964 -- so the offset is
- * written literally rather than looked up per date.
+ * Boundaries are calendar days in Asia/Jakarta: "today" has to mean the site
+ * owner's today, not UTC's, or the filter goes wrong for seven hours out of
+ * every twenty-four. WIB is a fixed +07:00 -- Indonesia has had no daylight
+ * saving since 1964 -- so the offset is written literally rather than looked up
+ * per date.
  */
 export const DATE_FILTER_CHOICES: FilterChoice[] = [
   { value: "today", label: "Today" },
@@ -296,8 +291,8 @@ export async function fetchAdminList<Row>(
 
   const total = counted?.total ?? 0;
   const pages = Math.max(1, Math.ceil(total / perPage));
-  // Clamped rather than 404'd, as Django's Paginator did: deleting the last row
-  // of the last page must not leave a bookmarked `?page=` dead.
+  // Clamped rather than 404'd: deleting the last row of the last page must not
+  // leave a bookmarked `?page=` dead.
   const page = Math.min(Math.max(params.page, 1), pages);
 
   const rows = await db
@@ -314,10 +309,9 @@ export async function fetchAdminList<Row>(
 /**
  * The options for a filter that reads its vocabulary from the data.
  *
- * One extra query per such filter, run only when the list is rendered. Django
- * did the same -- `list_filter` on a plain char column lists the values present,
- * not a fixed set -- and it is why `category` on the blog stays correct when a
- * post introduces a new one.
+ * One extra query per such filter, run only when the list is rendered. It is
+ * what keeps `category` on the blog correct when a post introduces a new one,
+ * with nothing to remember to update.
  */
 export async function distinctChoices(
   from: PgTable,

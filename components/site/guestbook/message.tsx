@@ -213,7 +213,7 @@ export function Message({
   );
 }
 
-/** `{{ …|truncatechars:40 }}` — Django counts the ellipsis within the limit. */
+/** Truncate to `limit` characters, with the ellipsis counted inside it. */
 function truncate(text: string, limit: number): string {
   return text.length <= limit ? text : `${text.slice(0, limit - 1)}…`;
 }

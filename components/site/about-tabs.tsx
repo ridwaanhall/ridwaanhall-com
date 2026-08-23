@@ -12,10 +12,10 @@ export type AboutTab = {
  * The about page's tab strip.
  *
  * **Every panel stays mounted**, hidden with `hidden` rather than unmounted.
- * That is how the Django version worked and it matters: the experience,
- * education, awards, certifications and applications sections are the substance
- * of the page, and a crawler, a reader using in-page search, or anyone who
- * prints it should find all of them. Only the visible one is laid out.
+ * That matters: the experience, education, awards, certifications and
+ * applications sections are the substance of the page, and a crawler, a reader
+ * using in-page search, or anyone who prints it should find all of them. Only
+ * the visible one is laid out.
  *
  * The panel slides in from the side it came from -- forward from the right,
  * backward from the left -- which is what `switchTab.js` did with a pair of

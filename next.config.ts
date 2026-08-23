@@ -19,13 +19,12 @@ const nextConfig: NextConfig = {
   // cross-instance by construction, so that table goes away at cutover.
   cacheComponents: true,
 
-  // Pin the workspace root to web/. Without this Next infers it from the
-  // nearest lockfile and picks the repo root, because the Django tree keeps
-  // its own package-lock.json for the Tailwind CLI. That would put the entire
-  // Django codebase inside Tailwind's automatic source detection -- and this
-  // repo has already been bitten by exactly that: prose in templates and in
-  // CLAUDE.md kept emitting the depth utilities this site removed, long
-  // after every one of those classes had been deleted.
+  // Pin the workspace root. Without this Next infers it from the nearest
+  // lockfile, and a stray lockfile anywhere above this directory moves the root
+  // out from under Tailwind's automatic source detection -- which then scans a
+  // far wider tree than intended. This repo has been bitten by exactly that:
+  // prose that merely named a utility kept emitting it, long after the class
+  // itself had been deleted from every component.
   turbopack: { root: path.resolve(import.meta.dirname) },
 
   experimental: {
@@ -43,8 +42,8 @@ const nextConfig: NextConfig = {
 
   images: {
     remotePatterns: [
-      // Uploaded media. Django's SupabaseStorage.url() returns exactly this
-      // shape: {SUPABASE_URL}/storage/v1/object/public/{bucket}/{key}
+      // Uploaded media, which Supabase serves at
+      // {SUPABASE_URL}/storage/v1/object/public/{bucket}/{key}
       ...(supabaseHost
         ? ([
             {
@@ -70,10 +69,8 @@ const nextConfig: NextConfig = {
   /*
    * No trailing slash: `/about/` redirects to `/about`.
    *
-   * This reverses the port's original choice, which kept Django's
-   * `APPEND_SLASH = True` shape so the indexed URLs stayed put. Flipping it is
-   * a deliberate call to standardise on the slash-free form, taken while the
-   * site is still in development and nothing is deployed.
+   * A deliberate call to standardise on the slash-free form, taken while the
+   * site was still in development -- the indexed URLs carried the slash.
    *
    * What it costs is one 308 per indexed URL, once: Google follows them and
    * transfers ranking, and every canonical, sitemap entry and JSON-LD `@id` in
@@ -93,8 +90,9 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_BUILD_YEAR: String(new Date().getFullYear()),
     // Used as `dateModified` on the pages that track no real modification date
-    // of their own. Django read the clock there, which claimed the page changed
-    // on every request -- and is rejected outright inside a prerendered tree.
+    // of their own. Frozen at build time, not read from the clock per request:
+    // a clock read claims the page changed on every request, and is rejected
+    // outright inside a prerendered tree.
     NEXT_PUBLIC_BUILD_TIME: new Date().toISOString(),
   },
 };

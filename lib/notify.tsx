@@ -28,10 +28,9 @@ export function notify(content: React.ReactNode, variant: ToastVariant = "info")
         {content}
       </Toast>
     ),
-    // Django's AUTO_DISMISS_MS. Hovering or focusing the stack holds it open,
-    // which sonner does for the whole region -- six seconds is not long enough
-    // to read a long error, and the close button is inside the very element
-    // that is about to disappear.
+    // Hovering or focusing the stack holds it open, which sonner does for the
+    // whole region -- six seconds is not long enough to read a long error, and
+    // the close button is inside the very element that is about to disappear.
     { duration: AUTO_DISMISS_MS },
   );
 }

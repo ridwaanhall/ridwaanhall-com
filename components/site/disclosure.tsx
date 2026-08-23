@@ -5,11 +5,9 @@ import { createContext, useContext, useId, useState } from "react";
 /**
  * The "Show more" toggle used across the about page.
  *
- * Django had four near-identical implementations -- `toggleCareer.js` carried
- * `toggleResponsibilities`, `toggleAchievements`, `toggleAchievementsCerts` and
- * `toggleJourney`, each hand-wiring a pair of label spans, an arrow and a
- * hidden panel through ids built from loop counters. One component replaces all
- * four, the ids come from `useId`, and every instance now says the same thing:
+ * One component rather than four near-identical ones, each hand-wiring a pair
+ * of label spans, an arrow and a hidden panel through ids built from loop
+ * counters. The ids come from `useId`, and every instance says the same thing:
  * "Show more" / "Show less", rather than three different phrasings for one
  * gesture.
  *
@@ -67,11 +65,11 @@ export function Disclosure({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * `rounded-full` everywhere. Django rounded it three different ways -- a pill
- * on the experience and application cards, `rounded-lg` on education and
- * certifications -- for what is the same control in all four places. On the
- * certification card it now sits beside a `rounded-lg` "View Credential" link;
- * that is the deliberate trade, since the two are not the same kind of thing.
+ * `rounded-full` everywhere, rather than a pill on the experience and
+ * application cards and `rounded-lg` on education and certifications, for what
+ * is the same control in all four places. On the certification card it sits
+ * beside a `rounded-lg` "View Credential" link; that is the deliberate trade,
+ * since the two are not the same kind of thing.
  */
 export function DisclosureButton({
   className = "toggle-pill cursor-pointer px-3 py-1.5 rounded-full",
@@ -120,10 +118,10 @@ export function DisclosureButton({
  * collapse start slowly on a short card and snap on a long one.
  *
  * Collapsed the panel is exactly zero-height, so a card is the same height
- * before the first click as it was in Django with `hidden`. Any spacing above
- * the content therefore belongs *inside* it: a margin on this element would
- * still occupy its pixels while closed. `className` is for the one card whose
- * original kept a `mt-1` gap even when collapsed.
+ * before the first click as if it were `hidden`. Any spacing above the content
+ * therefore belongs *inside* it: a margin on this element would still occupy
+ * its pixels while closed. `className` is for the one card that keeps a `mt-1`
+ * gap even when collapsed.
  */
 export function DisclosurePanel({
   className = "",

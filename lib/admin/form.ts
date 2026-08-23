@@ -76,8 +76,8 @@ export type FormField = {
   /** The join table behind a `many-to-many` field. */
   manyToMany?: ManyToManySource;
   /**
-   * Shown but not writable. Django's `readonly_fields`, and the same use: a
-   * value the record is identified by rather than edited through.
+   * Shown but not writable: a value the record is identified by rather than
+   * edited through.
    */
   readOnly?: boolean;
   /**
@@ -88,9 +88,9 @@ export type FormField = {
    */
   display?: SQL;
   /**
-   * Derive from another field when left blank -- Django's
-   * `prepopulated_fields`, moved to the server. Django did it in the browser
-   * with JavaScript, which meant a form posted without it stored an empty slug.
+   * Derive from another field when left blank -- a slug from a title, say.
+   * Done on the server, deliberately: a browser-side version of this stores an
+   * empty slug the moment the form is posted with JavaScript unavailable.
    */
   slugFrom?: string;
 };
@@ -119,7 +119,7 @@ export type ReferenceSource = {
  * did not.
  */
 export type ManyToManySource = {
-  /** The join table Django created, e.g. `projects_project_tech_stack`. */
+  /** The join table carrying the pairs, e.g. `project_skill`. */
   join: PgTable;
   /** The column pointing at the record being edited. */
   ownerFk: PgColumn;
@@ -132,12 +132,12 @@ export type ManyToManySource = {
 export type Fieldset = { title?: string; help?: string; fields: FormField[] };
 
 /**
- * A set of child rows edited alongside their parent -- Django's inlines.
+ * A set of child rows edited alongside their parent.
  *
- * Field names are prefixed and indexed (`positions:0:title`), the way a Django
- * formset numbered its rows, and for the same reason: an inline can contain a
- * file input, which rules out carrying the whole set as JSON in one control the
- * way the `string-list` editor does.
+ * Field names are prefixed and indexed (`positions:0:title`) rather than the
+ * whole set travelling as JSON in one control, the way the `string-list` editor
+ * does it. An inline can contain a file input, and a file cannot be serialised
+ * into a JSON value on the way to the server.
  *
  * **The row's position in the submission is its order.** The editor renders its
  * rows in array order and derives every name from the array index, so moving a
@@ -340,11 +340,13 @@ export type AdminFormModel = {
   /**
    * What has to be removed before this record can be.
    *
-   * **Django's `on_delete=CASCADE` is Python, not SQL.** It gathers the related
-   * rows and deletes them itself; every foreign key it created in this database
-   * is `NO ACTION` (`confdeltype = 'a'`), so the database will not do it. Each
-   * inline is a cascade automatically; anything else -- a self-reference, a
-   * child with no editor -- is listed here.
+   * The foreign keys declare their own actions, so the database would resolve
+   * most of this by itself. This list exists so the *application* resolves it
+   * first, and the difference is what the person deleting sees: a `RESTRICT`
+   * that reaches Postgres is an integrity error to translate after the fact,
+   * while a child cleared here is a delete that simply works. Each inline is a
+   * cascade automatically; anything else -- a self-reference, a child with no
+   * editor -- is listed here.
    */
   cascades?: CascadeTarget[];
 };
@@ -403,13 +405,12 @@ export type ParseResult =
 /**
  * What an optional field left blank stores.
  *
- * Read from the column rather than assumed, because Django's two ways of saying
- * "optional" produce different columns: `blank=True` alone leaves a `NOT NULL`
- * column that holds the empty string, while `blank=True, null=True` allows a
- * real null. Writing `null` into the first raises a not-null violation -- which
- * is what every optional field on the skill form did on the first attempt, since
- * `description`, `icon_svg` and `category` are all `blank=True` and none of them
- * is nullable.
+ * Read from the column rather than assumed, because "optional" is two different
+ * columns here. Some are `NOT NULL DEFAULT ''` and hold the empty string; some
+ * are genuinely nullable. Writing `null` into the first raises a not-null
+ * violation, which is what every optional field on the skill form did on the
+ * first attempt -- `description` and `category` are not nullable and never
+ * were.
  */
 function blankValue(field: FormField): FormValue {
   if (field.kind === "string-list" || field.kind === "choice-list") return [];
@@ -424,9 +425,10 @@ function blankValue(field: FormField): FormValue {
  * Undo any CRLF the browser introduced.
  *
  * The stored data contains no carriage return at all, and a textarea's
- * *submission* value is CRLF-normalised per the HTML spec. Django sidestepped
- * that by reading `.value` from JavaScript rather than the posted field; here
- * the value really is posted, so it is normalised on arrival.
+ * *submission* value is CRLF-normalised per the HTML spec -- so a value that
+ * makes the round trip through a real form post comes back changed. Reading
+ * `.value` from JavaScript sidesteps it; posting the field does not. These
+ * forms post, so it is normalised on arrival.
  *
  * **This is the only normalising these editors do.** Nothing is trimmed: two
  * stored `class` strings contain double spaces, and block text is raw HTML.
@@ -438,11 +440,9 @@ function normaliseNewlines(value: string): string {
 /**
  * Read a `string-list` or `key-value` field.
  *
- * Both arrive as JSON in one control rather than as one input per entry. Django
- * had four form-level reasons for that shape, none of which apply here -- they
- * were about `construct_instance`, formset prefixes and textarea CRLF. The
- * reason it is kept is simpler: the value is a list or a mapping, and one
- * control that carries it is one thing to validate rather than N to reassemble.
+ * Both arrive as JSON in one control rather than as one input per entry: the
+ * value is a list or a mapping, and one control that carries it whole is one
+ * thing to validate rather than N to reassemble in the right order.
  */
 function parseJsonField(
   field: FormField,
@@ -490,10 +490,10 @@ const SLUG_PATTERN = /^[-a-z0-9_]+$/;
 /**
  * Read the submitted form against the descriptor.
  *
- * Plain text is trimmed, which is what Django's `CharField(strip=True)` did and
- * is not the rule the JSON widgets follow -- those must never normalise, because
- * two stored `class` strings contain double spaces and block text is raw HTML.
- * These are names, slugs and URLs, where a trailing space is a typo.
+ * Plain text is trimmed. That is deliberately not the rule the JSON editors
+ * follow -- those must never normalise, because whitespace inside a stored value
+ * can be significant. These are names, slugs and URLs, where a trailing space is
+ * a typo and nothing else.
  */
 export function parseFormValues(model: AdminFormModel, data: FormData): ParseResult {
   return parseFields(formFields(model), data);
@@ -536,9 +536,9 @@ export function parseFields(
       /*
        * A checkbox set: the checked boxes arrive as repeats of one name, in the
        * order the vocabulary declares them. Anything outside the vocabulary is
-       * dropped rather than stored -- these are `jsonb` columns, which cannot
-       * carry `choices`, which is exactly why Django applied the constraint at
-       * the form instead of at the model.
+       * dropped rather than stored. A `jsonb` column cannot express a
+       * vocabulary the way a lookup table can, so the constraint has to be
+       * applied here, on the way in.
        */
       const allowed = new Set((field.choices ?? []).map((choice) => choice.value));
       values[field.name] = data
@@ -570,9 +570,8 @@ export function parseFields(
         errors[field.name] = `${field.label} is required.`;
         continue;
       }
-      // A slug left blank is filled from its source below, once every field has
-      // been read -- Django's model `save()` did the same, as the backstop
-      // behind the browser-side `prepopulated_fields`.
+      // A slug left blank is filled from its source below, once every field
+      // has been read -- the source may not have been parsed yet.
       values[field.name] = blankValue(field);
       continue;
     }
@@ -687,12 +686,12 @@ export function parseFields(
 }
 
 /**
- * Django's `slugify`, for the fields that fill themselves in.
+ * Slugify, for the fields that fill themselves in.
  *
  * `lib/utils/format.ts` already carries this rule for blog tags; it is repeated
  * rather than imported because that module is part of the public rendering path
- * and this is a write path, and the two must be free to diverge if Django's
- * `SlugField` and the tag filter ever disagree.
+ * and this is a write path. What a stored slug must look like and what a tag
+ * filter matches on are two questions, and they have to stay free to diverge.
  */
 export function slugify(value: string): string {
   return value
@@ -767,11 +766,10 @@ export function manyToManyFields(model: AdminFormModel): FormField[] {
 /**
  * Values applied only when creating, for columns the form does not carry.
  *
- * Django set these with `default=list` and `auto_now_add`, which are Python and
- * leave the column `NOT NULL` with no database default -- so an insert that
- * omits them fails. `blog_blogpost.content` and `projects_project.description`
- * are the old JSONB block columns, kept until cutover so the Django admin still
- * works; a record created here gets an empty one rather than a broken row.
+ * A handful of columns are `NOT NULL` with no database default, because their
+ * value is not a constant -- a creation timestamp, or a counter that starts at
+ * zero and is then owned by the site rather than by whoever is typing. They are
+ * not on the form, so an insert that did not supply them would simply fail.
  */
 export type InsertDefaults = () => Record<string, unknown>;
 

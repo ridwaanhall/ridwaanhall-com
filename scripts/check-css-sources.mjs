@@ -4,7 +4,7 @@
  * Tailwind finds classes by scanning every non-ignored file and treating any
  * word that parses as a class name as one in use. Prose counts: a design note,
  * a README, or a code comment that merely *names* a utility is enough to emit
- * it, and under Django a single comment using one of these words in an ordinary
+ * it, and a single comment using one of these words in an ordinary
  * English sense kept the bare utility alive after every real occurrence had been
  * deleted.
  *

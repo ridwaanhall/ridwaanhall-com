@@ -3,10 +3,10 @@ import "server-only";
 /**
  * Supabase Storage, over its own object REST API.
  *
- * A port of `apps/core/storage.py`'s `SupabaseStorage`, which talks to Supabase
- * directly rather than through the S3-compatible layer -- there it avoided
- * pulling django-storages and boto3 into a Lambda with a 15mb cap; here `fetch`
- * is already there and an SDK would buy nothing.
+ * Talks to Supabase's storage API directly rather than through its
+ * S3-compatible layer or an SDK: `fetch` is already there, the three calls this
+ * needs are three requests, and a client library would be weight in every
+ * server bundle for nothing.
  *
  * **The budget is on the whole upload, not on each attempt.** This is the
  * mistake that produced a live 504: a 30s per-attempt timeout with three

@@ -13,9 +13,7 @@ import { notify } from "@/lib/notify";
  * The comment section for any commentable object.
  *
  * The form keeps a real `action`, so it still posts with JavaScript
- * unavailable -- the property Django's POST-then-redirect had and the
- * guestbook's AJAX gave up. Only the reply indicator needs the client, exactly
- * as `commentSection.js` did.
+ * unavailable. Only the reply indicator needs the client.
  */
 export function Comments({
   section,

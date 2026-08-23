@@ -7,20 +7,16 @@ import type { AdminListModel } from "@/lib/admin/list";
 /**
  * The accounts screen.
  *
- * This has no counterpart in `apps/*<!-- -->/admin.py`: Django never registered
- * `auth_user` itself, it just inherited `django.contrib.auth`'s `UserAdmin`. So
- * this is built to what the accounts are actually *for* here rather than to a
- * `list_display` -- who may reach this admin, and who is credited as an author
- * on the guestbook.
+ * Built to what the accounts are actually *for* here: who may reach this admin,
+ * and who is credited as an author on the guestbook. Those are the only two
+ * questions this screen answers.
  *
- * **There is no password management, and there should not be.** Every account is
- * created by allauth or Auth.js from a Google or GitHub sign-in;
- * `auth_user.password` holds an unusable hash and nothing reads it. Django's
- * `UserAdmin` offered a password form because it assumed local accounts.
+ * **There is no password management, and there should not be.** Every account
+ * comes from a Google or GitHub sign-in, so there is no credential here to
+ * change, reset, or leak.
  *
- * Groups and per-model permissions are likewise not built, and no longer
- * exist: `drizzle/0005` dropped them along with the password hash and the
- * superuser flag. There were zero groups, 152 permissions nothing consulted,
+ * Groups and per-model permissions are likewise not built and do not exist in
+ * the schema. There were zero groups and 152 permissions nothing consulted,
  * and every staff account flagged superuser -- a matrix with nothing to say.
  */
 
@@ -143,9 +139,9 @@ export const userForm: AdminFormModel = {
    * `staffGate` requires `is_active AND is_staff`, both read fresh per request,
    * so clearing either on your own account takes effect on the very next page
    * load -- with no password to sign back in with, since every account is
-   * OAuth. Django's `UserAdmin` allowed exactly this and it is a known way to
-   * lose an admin; there are three other staff accounts here, but relying on
-   * that is not a guard.
+   * OAuth -- so clearing your own flag locks you out with nothing to sign back
+   * in with. There are three other staff accounts here, but relying on that is
+   * not a guard.
    *
    * The author and co-author flags are edited on User profiles, not here: they
    * live on a different table, and giving one field two homes is how the two

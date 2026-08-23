@@ -2,13 +2,11 @@
 
 /**
  * One notification toast -- the single definition of this markup for the whole
- * site, as `templates/components/_toast.html` was.
+ * site.
  *
- * Django replaced five separate copies of the same green/red/blue strip with
- * that partial: the message blocks on the guestbook, comments and contact
- * pages, plus `showLoginMessage()` and `showMessage()`, two hand-rolled JS
- * builders. The palette lives here, in one table, for the same reason it lived
- * in the partial: adding a variant must be a one-file change.
+ * The alternative is the same green/red/blue strip copied into the guestbook,
+ * comments and contact pages, plus a hand-rolled JS builder or two. The palette
+ * lives here in one table so that adding a variant is a one-file change.
  *
  * Colour is carried by the border and the text over an **opaque** `bg-zinc-900`
  * rather than by a translucent tint -- a toast floats over arbitrary page

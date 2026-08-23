@@ -9,8 +9,8 @@ import { getAboutData } from "@/lib/data/about";
  * The public site's chrome.
  *
  * `about` is fetched once here and handed to the shell, rather than each page
- * fetching it. Django's BaseView cached it on the view instance for the same
- * reason -- several places need it per request and it used to be free.
+ * fetching it: several places need it per request, and the layout is the one
+ * place that renders for all of them.
  *
  * The admin link is the one thing here that depends on who is asking, so it
  * arrives as an already-suspended element rather than as a flag: this layout

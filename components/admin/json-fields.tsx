@@ -12,16 +12,12 @@ import type { ClientField } from "@/lib/admin/form";
  * longer have anything to edit: `GroupedKeyValueField` and
  * `CopyrightCreditsField` served `core.PrivacyPolicy`, which was deleted in
  * migration `0003_delete_privacypolicy`, and `ContentBlockField` edited
- * `BlogPost.content`, which the port replaces with `content_html` and a
- * rich-text editor.
+ * a post's body, which is `content_html` and a rich-text editor instead.
  *
- * **The value travels in one control, not one input per entry.** Django had
- * four form-level reasons for that -- `construct_instance` skipping a cleared
- * list, formset `__prefix__` rewriting, textarea CRLF normalisation, and
- * round-trip fidelity -- and `MIGRATION.md` records that none of them survives
- * the move to a JSON body. The shape is kept for a plainer reason: the value is
- * a list or a mapping, and one control carrying it is one thing to validate
- * rather than N to reassemble in the right order.
+ * **The value travels in one control, not one input per entry.** The value is a
+ * list or a mapping, and one control carrying it whole is one thing to validate
+ * rather than N to reassemble in the right order -- and a cleared list still
+ * arrives as an empty list rather than as nothing at all.
  *
  * It also means these degrade honestly. A client component still renders on the
  * server, so with JavaScript unavailable the rows are visible and the hidden

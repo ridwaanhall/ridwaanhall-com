@@ -5,8 +5,7 @@ import { SITE_URL } from "@/lib/seo/config";
 /**
  * robots.txt.
  *
- * Every disallowed path here was earning a real Search Console error under
- * Django, and the reasoning carries over unchanged:
+ * Every disallowed path here was earning a real Search Console error:
  *
  * - The POST-only endpoints answer a GET with 405 or a redirect, which Google
  *   logged as "Not found".
@@ -14,10 +13,10 @@ import { SITE_URL } from "@/lib/seo/config";
  *   redirect".
  * - `/static/` is served directly and adds nothing to the index.
  *
- * The allauth sign-in pages under `/guestbook/accounts/` are deliberately
- * **not** listed. Blocking them stops the crawl, which also stops Google
- * seeing a `noindex`, so they linger in the index as "Blocked by robots.txt".
- * They get an `X-Robots-Tag: noindex` header instead -- see proxy.ts.
+ * The sign-in paths are deliberately **not** listed. Blocking them stops the
+ * crawl, which also stops Google seeing a `noindex`, so they linger in the
+ * index as "Blocked by robots.txt". They get an `X-Robots-Tag: noindex` header
+ * instead -- see proxy.ts.
  */
 export default function robots(): MetadataRoute.Robots {
   return {

@@ -30,9 +30,8 @@ export function AdminTopbar({ user }: { user: StaffUser }) {
       </Link>
 
       <div className="ml-auto flex items-center gap-3">
-        {/* No "superuser" badge. The flag went with the Django auth tables in
-            drizzle/0005: every staff account carried it, so it marked nobody
-            out, and there was no permission matrix behind it to mean anything. */}
+        {/* No "superuser" badge: there is one privilege, so a badge every staff
+            account carries would mark nobody out. */}
         <span className="hidden text-sm text-zinc-400 sm:inline">{user.fullName}</span>
         <ThemeToggle iconSize="h-4 w-4" />
         <form

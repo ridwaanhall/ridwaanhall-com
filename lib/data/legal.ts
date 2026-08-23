@@ -30,10 +30,9 @@ export type LegalDocument = {
 /**
  * Split "Privacy Policy" into ("Privacy", "Policy").
  *
- * Page headings accent the final word in indigo. Django did this in the manager
- * because its template language cannot partition a string; here it could live
- * in the component, but it stays put so both sides render identically and the
- * API exposes the same fields.
+ * Page headings accent the final word in indigo. It could live in the component
+ * that renders the heading, but it stays in the data layer so the API exposes
+ * the same two fields the page uses -- one answer, not two that can disagree.
  */
 function splitTitle(title: string): [string, string] {
   const index = title.lastIndexOf(" ");
@@ -47,8 +46,7 @@ function splitTitle(title: string): [string, string] {
  * The privacy policy keeps its original `/privacy-policy/` URL rather than
  * moving under `/legal/`: it is referenced by the sitemap, the SEO config, the
  * footer of every page and the search modal, and all of those predate the
- * legal-document model. Terms is pinned for the same reason -- `/terms/` is a
- * named route in the Django URLconf.
+ * legal-document model. Terms is pinned for the same reason.
  */
 function documentUrl(slug: string): string {
   if (slug === "privacy-policy") return "/privacy-policy";

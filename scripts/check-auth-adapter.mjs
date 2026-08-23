@@ -24,7 +24,7 @@ import { config } from "dotenv";
 config({ path: ".env.local", quiet: true });
 
 const { db, pool } = await import("../lib/db/client.ts");
-const { DjangoAdapter, touchLogin } = await import("../lib/auth/adapter.ts");
+const { accountAdapter, touchLogin } = await import("../lib/auth/adapter.ts");
 const { getUserProfile } = await import("../lib/auth/profile.ts");
 const { sql } = await import("drizzle-orm");
 
@@ -54,7 +54,7 @@ const ROLLBACK = Symbol("rollback");
 
 try {
   await db.transaction(async (tx) => {
-    const adapter = DjangoAdapter(tx);
+    const adapter = accountAdapter(tx);
 
     // --- an existing account is found, not duplicated ----------------------
     const [existing] = await tx
@@ -81,7 +81,7 @@ try {
     check("getUserByAccount misses on an unknown uid",
       (await adapter.getUserByAccount({ provider: "google", providerAccountId: STAMP })) === null);
 
-    // --- creating a user writes what Django expects -------------------------
+    // --- creating a user writes what the schema demands ----------------------
     const created = await adapter.createUser({
       id: "ignored",
       name: "Ada Lovelace",
@@ -98,7 +98,7 @@ try {
     check("createUser split the name", row.first_name === "Ada" && row.last_name === "Lovelace");
     /*
      * There is no password to check. `auth_user.password` was NOT NULL and the
-     * adapter filled it with Django's "unusable" `!` placeholder for accounts
+     * adapter filled it with an "unusable" `!` placeholder for accounts
      * that could only ever sign in through a provider -- which is all 37 of
      * them. Nothing authenticates against a password here, so the column is
      * gone rather than filled with a value meaning "not applicable".

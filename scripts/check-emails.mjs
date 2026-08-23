@@ -1,7 +1,7 @@
 /**
  * Render all five email pairs and check what the originals could not.
  *
- * CLAUDE.md records the Django loader as a gotcha with "no automated test
+ * CLAUDE.md recorded these as a gotcha with "no automated test
  * covers these": it filled `{{ key }}` tokens with `str.replace`, so a
  * placeholder the calling method forgot was left sitting in the *sent* email,
  * and a `{% %}` tag silently did nothing. This is that test.

@@ -5,10 +5,10 @@ import type { Rendered } from "@/lib/email/render";
 /**
  * Sending, over Resend's HTTP API.
  *
- * Django went through SMTP with `EmailMultiAlternatives`. Resend is the plan's
- * choice and is a better fit for a serverless request: no connection to hold
- * open, no credentials that time out mid-invocation, and a hard failure comes
- * back as a status code rather than a socket error thirty seconds later.
+ * An HTTP API rather than SMTP, which is the better fit for a serverless
+ * request: no connection to hold open, no credentials that time out
+ * mid-invocation, and a hard failure comes back as a status code rather than a
+ * socket error thirty seconds later.
  *
  * The SDK is not installed for this. One `POST /emails` with a JSON body is the
  * whole API surface used, and the package would be larger than the function it
@@ -37,9 +37,9 @@ export type Envelope = {
 /**
  * The site owner's address(es).
  *
- * `CONTACT_EMAIL_RECIPIENT` is a comma-separated list, as it was in Django, and
- * falls back to the from-address so a misconfiguration still delivers
- * somewhere rather than silently dropping the message.
+ * `CONTACT_EMAIL_RECIPIENT` is a comma-separated list, and falls back to the
+ * from-address so a misconfiguration still delivers somewhere rather than
+ * silently dropping the message.
  */
 export function ownerEmails(): string[] {
   const raw = process.env.CONTACT_EMAIL_RECIPIENT ?? "";

@@ -29,21 +29,20 @@ import type { AdminFormModel, FormField } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
 /**
- * The seven `about` changelists, from `apps/about/admin.py`.
+ * The seven `about` changelists.
  *
- * Grouped in one module the way Django grouped them in one `admin.py`: four of
- * them display the same foreign key, and the subquery that fetches it belongs
- * beside all four rather than being retyped in four files.
+ * One module rather than seven: four of them display the same foreign key, and
+ * the subquery that fetches it belongs beside all four rather than being
+ * retyped in four files.
  */
 
 /**
  * The organisation's name, without a join.
  *
- * Django reached for `list_select_related` here, to stop the changelist issuing
- * a query per row. A correlated subquery is likewise one query and leaves a
- * single table in `FROM`, so ordering, filtering, counting and paging all
- * compose without join plumbing. There are 19 organisations and the lookup is by
- * primary key.
+ * A correlated subquery, not a join: it is one query either way, but this
+ * leaves a single table in `FROM`, so ordering, filtering, counting and paging
+ * all compose without join plumbing the count query would have to repeat. There
+ * are 19 organisations and the lookup is by primary key.
  */
 const organizationName = (fk: PgColumn) =>
   lookup<string>(organization.name, organization.id, fk);
@@ -477,12 +476,12 @@ export type OrganizationRow = {
 /**
  * How many rows point at this organisation, per relation.
  *
- * Django computed this in the changelist query too, and for a reason worth
- * keeping: calling `.count()` per relation inside `list_display` issued four
- * queries for every row -- 76 sequential round trips to Supabase for 19
- * organisations, which timed the admin page out with a 504 in production. It
- * also had to pass `distinct=True`, because four joins on the same row multiply
- * each other and an organisation with 6 experiences and 1 certification reported
+ * Computed in the changelist query rather than per row, and the reason is
+ * measured: counting each relation separately per row issues four queries for
+ * every row -- 76 sequential round trips to Supabase for 19 organisations,
+ * which timed the admin page out with a 504 in production. Counting them with
+ * four joins instead is worse than it looks, because the joins multiply each
+ * other: an organisation with 6 experiences and 1 certification reports
  * 6 certifications. Correlated subqueries have neither problem: each counts its
  * own table, and no join exists to multiply.
  */
@@ -514,8 +513,8 @@ export const organizationList: AdminListModel<OrganizationRow> = {
       key: "used_by",
       label: "Used by",
       kind: "muted",
-      // Composed from four counts, so there is nothing single to ORDER BY --
-      // Django's changelist refused to sort on it for the same reason.
+      // Composed from four counts, so there is nothing single to ORDER BY.
+      // The header offers no sort rather than sorting on one of the four.
       value: (row) =>
         [
           [row.experiences, "experience"],
@@ -648,9 +647,9 @@ export const organizationForm: AdminFormModel = {
  * The organisation picker, shared by the four models that record something an
  * organisation issued.
  *
- * Django used `autocomplete_fields`, which is a searchable widget over an
- * endpoint. A plain select is enough for nineteen rows and needs no endpoint;
- * the moment that list outgrows a screenful is the moment to build the search.
+ * A plain select. It is enough for nineteen rows and needs no endpoint behind
+ * it; the moment that list outgrows a screenful is the moment to build a
+ * searchable one.
  */
 const organizationField = (column: PgColumn): FormField => ({
   name: "organizationId",

@@ -38,11 +38,10 @@ import {
  * `media_asset` now, so the key is written once and a row points at it, and the
  * count below is a count of pointers rather than of repeated strings.
  *
- * Django found the originals by walking `apps.get_models()` for `FileField`s.
- * There is no equivalent reflection over a Drizzle schema, so they are listed
- * -- and a column added without being listed here would leak its files
- * silently, which is why `scripts/check-storage.mjs` counts them against the
- * schema.
+ * The columns are listed rather than discovered, because there is no reliable
+ * reflection over the schema for "columns that can name a file". A column added
+ * without being listed here would leak its files silently, which is why
+ * `scripts/check-storage.mjs` counts this list against the live catalogue.
  */
 export const FILE_COLUMNS: PgColumn[] = [
   profile.imageId,
@@ -72,9 +71,8 @@ export const CLEANUP_BUDGET_MS = 10_000;
 /**
  * Is any row, on any model, still storing this key?
  *
- * One statement rather than one per column. Django could afford five queries
- * because it ran beside its database; every round trip here crosses the network
- * to Supabase, and this runs once per file in a cascade.
+ * One statement rather than one per column. Every round trip crosses the
+ * network to Supabase, and this runs once per file in a cascade.
  */
 export async function isReferenced(key: string): Promise<boolean> {
   // An empty key is nothing to delete. Reporting it as referenced is what stops

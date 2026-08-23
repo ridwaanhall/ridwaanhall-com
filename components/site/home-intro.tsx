@@ -18,8 +18,8 @@ export function HomeIntro({ about, sponsorUrl }: { about: AboutData; sponsorUrl:
           <h1 className="text-2xl lg:text-3xl font-medium mb-2">
             Hi, I&apos;m {about.first_name}
             {/* Explicit: JSX drops whitespace between elements when it spans a
-                newline, while the Django template collapsed it to one space.
-                Without this the hand sits flush against the last letter. */}{" "}
+                newline, so without this the hand sits flush against the last
+                letter. */}{" "}
             <WavingHand />
           </h1>
 

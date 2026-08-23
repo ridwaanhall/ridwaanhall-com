@@ -5,11 +5,10 @@ import { useEffect, useRef } from "react";
 /**
  * Count one view of a blog post.
  *
- * Django incremented in the detail view itself -- `BlogPost.objects.filter(...)
- * .update(views=F("views") + 1)` on every request. That cannot survive the port
- * as-is: this page is prerendered from `generateStaticParams`, so the server
- * renders it once at build time and serves the same HTML to everyone. Counting
- * there would record exactly one view per deploy.
+ * Not counted while rendering the page: it is prerendered from
+ * `generateStaticParams`, so the server renders it once at build time and
+ * serves the same HTML to everyone. An increment there records exactly one view
+ * per deploy.
  *
  * So the count moves to the browser, which changes what the number means, and
  * arguably for the better: it now counts readers whose browser ran the page

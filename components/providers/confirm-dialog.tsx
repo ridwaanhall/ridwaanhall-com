@@ -13,12 +13,11 @@ import { useBodyScrollLock, useEscape, useModalTransition } from "@/lib/utils/us
  * so a dialog rendered inside it could only ever cover the content column and
  * would leave the sidebar unblurred.
  *
- * **The two `data-confirm-*` modes collapse into one promise here.** Django
- * needed both because it is a server-rendered MPA: `data-confirm-action`
- * posted the dialog's own form, and `data-confirm-event` dispatched a
- * `CustomEvent` for actions carried out over fetch, which could not navigate
- * away without discarding the page state they had just updated. Neither
- * problem exists in this port -- every caller is already a client component
+ * **Confirmation is one promise, not two modes.** A server-rendered page needs
+ * two: one that posts the dialog's own form, and one that dispatches an event
+ * for work done over fetch, which cannot navigate away without discarding the
+ * state it just updated. Neither problem exists here -- every caller is already
+ * a client component
  * doing its own work -- so a caller awaits a boolean instead:
  *
  *     const confirm = useConfirm();

@@ -21,25 +21,24 @@ import { comment } from "@/lib/db/app-schema";
  * cache`, and this one must not: the cached blog and project payloads are what
  * the busiest pages are built from, so tying comments to them would make every
  * comment posted force a full rebuild from Supabase. It is a single indexed
- * lookup on `(content_type_id, object_id, created_at)` instead -- the index
- * Django declared for exactly this.
+ * lookup on `(target_kind, target_id, created_at)` instead, which is the index
+ * `drizzle/0000_init.sql` declares for exactly this.
  */
 
 /**
  * Just the verbs this file uses, so a drizzle transaction satisfies it as
  * readily as the pooled connection does -- `scripts/check-comments.mjs` drives
  * these against the live schema inside a transaction it rolls back. The rules
- * worth checking are Django's own (the generic-relation scoping, the
- * `reply_to` cascade, `is_deleted`), and only Postgres enforces those.
+ * worth checking -- the target scoping, the `reply_to` cascade, `is_deleted` --
+ * are enforced by Postgres and by nothing else.
  */
 export type Database = Pick<typeof db, "select" | "insert" | "update" | "delete">;
 
 /**
  * The whole section for one commented object.
  *
- * Two queries: the comments, then their authors' profiles in one batch. Django
- * needed `select_related` + `prefetch_related` over four relations to avoid the
- * same N+1.
+ * Two queries: the comments, then their authors' profiles in one batch. Not
+ * one query per author, which is what a naive render of a thread produces.
  *
  * **The count comes from what was fetched**, not a second `COUNT(*)`: the rows
  * are already in memory, so a round trip would buy nothing.
@@ -65,9 +64,8 @@ export async function getCommentSection({
       userId: comment.accountId,
     })
     .from(comment)
-    // Two columns, no join. This used to resolve a `content_type_id` through
-    // `django_content_type` first -- a table of every model in the project,
-    // memoised in-process because it sat in front of every comment query.
+    // Two plain columns, no join: a comment names what it is attached to
+    // directly, so finding a thread never needs a second table.
     .where(and(eq(comment.targetKind, label), eq(comment.targetId, targetId)))
     .orderBy(asc(comment.createdAt), asc(comment.id));
 
@@ -80,12 +78,10 @@ export async function getCommentSection({
       /*
        * The same name the guestbook shows, which is a deliberate change.
        *
-       * Django rendered `get_full_name|default:username` here -- Django's own
-       * `first_name`/`last_name` -- while the guestbook reads the live provider
-       * profile, so one person could appear under two names on one site. The
-       * two were free to drift because `first_name` is only written at signup.
-       * Unifying costs nothing: the table holds zero comments, so there is no
-       * existing row to rename.
+       * The stored `first_name`/`last_name` are written once, at sign-up, and
+       * never again -- so a comment rendered from them and a guestbook message
+       * rendered from the live provider profile show the same person under two
+       * different names on the same page. Both read the provider profile.
        */
       displayName: profile?.fullName ?? profile?.username ?? "Unknown",
       username: profile?.username ?? "unknown",

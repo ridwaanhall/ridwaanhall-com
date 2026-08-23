@@ -20,11 +20,9 @@ import { SITE_URL } from "./config";
  *
  * **Paginated URLs were generated at six per page while the site paginates at
  * ten.** That advertised `/blog/?page=3` and `?page=4` when only two pages
- * exist, and eleven project pages when there are seven. Django's paginator
- * clamps an out-of-range page to the last one rather than 404ing, so each
- * phantom URL returned 200 with duplicate content -- and, since the canonical
- * tag echoed the request, declared itself canonical. Both halves of that are
- * fixed; this half is using the real page size.
+ * exist, and eleven project pages when there are seven. An out-of-range page
+ * clamps to the last one rather than 404ing, so each phantom URL returned 200
+ * with duplicate content. Fixed by using the real page size.
  */
 
 export type SitemapEntry = {
@@ -137,7 +135,8 @@ export async function allEntries(): Promise<SitemapEntry[]> {
  * `sitemap-blog.xml` and `sitemap-projects.xml`. Those URLs are already
  * submitted to Search Console, so they have to keep working.
  *
- * `lastmod` is a plain date, matching what Django emitted.
+ * `lastmod` is a plain date -- a timestamp would imply a precision the source
+ * data does not have.
  */
 export function renderSitemap(entries: SitemapEntry[]): string {
   const urls = entries

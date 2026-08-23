@@ -1,33 +1,29 @@
 /**
- * Django-compatible username generation.
+ * Picking a username for a new account.
  *
- * `auth_user.username` is `NOT NULL UNIQUE varchar(150)` and Django has no
- * concept of a user without one, so every account created here needs one that
- * looks like the 37 already in the table. Those were written by allauth's
- * `generate_unique_username`, and reading them back shows the two rules it
- * applied:
+ * `account.username` is `NOT NULL UNIQUE`, and nobody is ever asked to choose
+ * one -- sign-in is a single click through a provider, and interrupting that
+ * with a form would be the only friction in the flow. So one is derived, and
+ * the derivation has to be stable enough that the result looks deliberate:
  *
  *   ridwan · hafidhah · laga · dian · ist · xeyla   <- Google
  *   ridwaanhall · Harindrawahyu                     <- GitHub
  *
- * The stored `first_name`s for that first group are `Ridwan`, `Xeyla`, `Dian`
- * — capitalised — so a name-derived username is **slugified**, lowercase
- * included. `Harindrawahyu` keeps its capital because it is not derived at all:
- * it is GitHub's `login`, which allauth's provider puts straight onto the user
- * and which generation then leaves alone. So the provider's own handle is taken
- * verbatim and everything else is slugified.
+ * A name-derived username is **slugified**, lowercase included, because a
+ * display name is prose and a username is an identifier. A provider handle is
+ * taken verbatim, capitals and all: someone already chose it, and it is theirs.
  *
- * The other rule that matters is what happens on a collision. allauth picks the
- * **first non-empty** candidate as the base and then suffixes *that* -- it does
- * not fall through to the next candidate. Falling through looks harmless and is
- * not: someone whose GitHub login is already taken would silently be named
+ * The other rule that matters is what happens on a collision. The **first
+ * non-empty** candidate becomes the base and gets suffixed; it does not fall
+ * through to the next candidate. Falling through looks harmless and is not:
+ * someone whose GitHub login is already taken would silently be named
  * after their first name instead, which is a different handle from the one they
  * signed in with.
  */
 
 const MAX_LENGTH = 150;
 
-/** Django's `UnicodeUsernameValidator` allows letters, digits and `@.+-_`. */
+/** Letters, digits and `@.+-_`; everything else is dropped or becomes a dash. */
 function filterChars(value: string): string {
   return value
     .trim()
@@ -66,7 +62,7 @@ export function usernameCandidates({
 
 /**
  * The first **non-empty** candidate, suffixed until it is free -- `dian`,
- * `dian2`, `dian3` -- as allauth does it.
+ * `dian2`, `dian3`.
  *
  * Later candidates are fallbacks for an *empty* earlier one, not for a taken
  * one, which is why only `candidates[0]` is ever the base.

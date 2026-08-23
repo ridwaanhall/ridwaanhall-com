@@ -21,10 +21,9 @@ import { startPageLoading } from "@/lib/utils/page-loading";
  * the field-level errors staying put without a reload.
  *
  * **The wording is the server's.** `saveRecord` returns "Saved." / "Created." /
- * "Deleted." and this hands them straight to `notify()`. Django's admin says
- * the same kind of thing through `django.contrib.messages`; putting the strings
- * in the client would be the second definition that the guestbook and comments
- * deliberately avoid.
+ * "Deleted." and this hands them straight to `notify()`. Putting the strings in
+ * the client would be a second definition of what just happened, which is the
+ * duplication the guestbook and comments deliberately avoid.
  *
  * **The layout is derived from the descriptor, not declared in it.** Every form
  * used to be one 768px column, which on a 1440px screen left a third of the

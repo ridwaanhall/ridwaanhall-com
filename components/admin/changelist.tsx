@@ -19,10 +19,10 @@ import { cn } from "@/lib/utils/cn";
 /**
  * The changelist, rendered from a descriptor.
  *
- * One component for every model, the way Django had one `change_list.html`.
- * Everything it needs -- which columns, which of them sort, what the filters
- * offer, what the search covers -- comes from `lib/admin/models/`, so a new
- * screen is a descriptor and a route, never a copy of this file.
+ * One component for every model. Everything it needs -- which columns, which of
+ * them sort, what the filters offer, what the search covers -- comes from
+ * `lib/admin/models/`, so a new screen is a descriptor, never a copy of this
+ * file.
  *
  * It is a server component and stays one. Sorting, filtering, searching and
  * paging are all expressed in the URL and answered by SQL, which means the back

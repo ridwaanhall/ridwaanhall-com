@@ -13,16 +13,14 @@ import { notify } from "@/lib/notify";
  * keystroke, and `required` plus `type="email"` gives the browser's own
  * validation for free -- which also works before hydration.
  *
- * The outcome is a toast rather than a line under the button, which is what
- * replaced `showMessage()` here and the two Django-message blocks elsewhere:
- * one notification surface for the whole site. The wording comes back from the
- * action, so this and the comment views phrase the same event identically.
+ * The outcome is a toast rather than a line under the button: one notification
+ * surface for the whole site. The wording comes back from the action, so this
+ * and the comment views phrase the same event identically.
  *
- * Turnstile renders only when both keys are configured. Django gated the whole
- * verification on `USE_CF_TURNSTILE` for the same reason -- a local run without
- * Cloudflare credentials still has a working form -- and the server mirrors
- * this check, so a widget that fails to load cannot be the thing that lets
- * spam through.
+ * Turnstile renders only when both keys are configured, so a checkout without
+ * Cloudflare credentials still has a working form. The server mirrors this
+ * check, so a widget that fails to load cannot be the thing that lets spam
+ * through.
  */
 export function ContactForm() {
   const [status, setStatus] = useState<null | string>(null);

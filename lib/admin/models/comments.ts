@@ -9,10 +9,8 @@ import type { AdminListModel } from "@/lib/admin/list";
 const commentUser = username(comment.accountId);
 
 /*
- * There is no lookup here any more. A comment used to name its target through
- * `content_type_id`, a foreign key into a table of every model in the project,
- * so showing "what is this a comment on" meant a correlated subquery. The
- * column says it directly now.
+ * No lookup here: a comment names what it is attached to in two plain columns,
+ * so "what is this a comment on" needs no second table.
  */
 
 export type CommentRow = {
@@ -39,7 +37,7 @@ export const commentList: AdminListModel<CommentRow> = {
     createdAt: comment.createdAt,
   },
   columns: [
-    // Django's `short_body`: 70 characters, then an ellipsis if it was cut.
+    // 70 characters, then an ellipsis if it was cut.
     {
       key: "body",
       label: "Comment",
@@ -51,8 +49,8 @@ export const commentList: AdminListModel<CommentRow> = {
       key: "target",
       label: "On",
       kind: "muted",
-      // Django's `target_label`, and it did not sort either: the value is two
-      // columns joined by a `#`, so there is nothing single to order by.
+      // No sort: the value is two columns joined by a `#`, so there is nothing
+      // single to order by.
       value: (row) => `${row.targetKind} #${row.targetId}`,
     },
     {
@@ -111,9 +109,9 @@ export const commentForm: AdminFormModel = {
     return body.length > 70 ? `${body.slice(0, 70)}…` : body || "Comment";
   },
   // Written by a reader on a post or a project; there is no comment the admin
-  // authored. Deleting here is the *hard* delete Django's admin also offered --
-  // distinct from the soft delete below, which is what the site's own button
-  // does and what leaves a tombstone in the thread.
+  // authored. Deleting here is a *hard* delete, distinct from the soft delete
+  // below -- that is what the site's own button does, and what leaves a
+  // tombstone in the thread.
   canCreate: false,
   deleteWarning:
     "This removes the row outright, and its replies with it. To leave the thread intact, tick Deleted instead.",

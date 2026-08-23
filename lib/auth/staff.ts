@@ -18,12 +18,9 @@ import { account } from "@/lib/db/app-schema";
  * asserting it for a month after the flag was cleared. The token carries
  * identity (`token.sub` is `auth_user.id`); this carries permission.
  *
- * The test is `is_active AND is_staff`, which is exactly what Django's
- * `AdminSite.has_permission` checked. There is no `is_superuser` any more and
- * no permission matrix: the model dropped both in `drizzle/0005`, because the
- * database had zero `auth_group` rows, 152 permissions nothing consulted, and
- * every staff account flagged superuser -- a distinction that distinguished
- * nothing.
+ * The test is `is_active AND is_staff`. There is no superuser flag and no
+ * permission matrix, because there was nothing for them to express: one
+ * privilege, held or not held.
  */
 export type StaffUser = {
   /** A uuid. */
@@ -125,10 +122,7 @@ export async function requireStaff(): Promise<StaffUser> {
  *
  * Not being signed in and being signed in without the flag need different
  * screens: the first is fixed by signing in, and offering that to someone who
- * is *already* signed in is a loop. Django's admin ran them together on one
- * login page and answered the second with "You are authenticated as X, but are
- * not authorized to access this page"; these are the same two answers, on two
- * screens.
+ * is *already* signed in is a loop. Two answers, on two screens.
  *
  * `forbidden` states plainly that the admin exists. Nothing is given away by
  * that -- `robots.txt` already names `/admin/`, and the path was never the

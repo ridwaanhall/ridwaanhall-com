@@ -10,7 +10,7 @@
  * since the current page is skipped. Hovering, arrowing and typing each mark a
  * row; opening does not.
  *
- * **The Turnstile widget must follow the site's theme.** Django let the script
+ * **The Turnstile widget must follow the site's theme.** Left to itself the script
  * choose, which is Turnstile's `auto` -- and `auto` follows the *operating
  * system*, the one signal this site never consults. The theme is passed
  * explicitly now, and because a widget reads it only at creation, a change

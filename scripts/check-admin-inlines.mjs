@@ -17,7 +17,7 @@
  *   moving a row renumbers its inputs and the server writes the new index into
  *   the order column. There is no separate order input to fall out of step.
  *
- * It also covers what building this uncovered: **Django's `on_delete=CASCADE` is
+ * It also covers what building this uncovered: **a declared cascade is
  * Python, not SQL.** It gathers the related rows and deletes them itself, and
  * every foreign key it created in this database is `NO ACTION`
  * (`confdeltype = 'a'`). So deleting a parent leaves the database to refuse it.
@@ -445,7 +445,7 @@ try {
 
   // --- referential actions, proved without writing anything ----------------
   /*
-   * Django's `on_delete` was Python: it gathered the related rows and deleted
+   * A cascade declared in application code gathers the related rows and deletes
    * them itself, and every foreign key it left in Postgres was `NO ACTION`
    * `DEFERRABLE INITIALLY DEFERRED`. Deleting a guestbook message with replies
    * was refused by the database, and the application had to walk the branch
@@ -495,7 +495,7 @@ try {
 
     /*
      * The other half. An organization an experience still names is not the
-     * experience's to remove, which is Django's `PROTECT` and the behaviour the
+     * experience's to remove, which is what `RESTRICT` is for and the behaviour the
      * admin surfaces as "something still refers to this record".
      */
     const { rows: used } = await client.query(
@@ -522,7 +522,7 @@ try {
   }
 } finally {
   for (const id of [applicationId, ...createdApplications].filter((value) => value !== null)) {
-    // The journey steps go first, by hand. Django's `on_delete=CASCADE` is
+    // The journey steps go first, by hand. A cascade declared in application code is
     // Python: every foreign key it created in Postgres is `NO ACTION`, so a
     // plain parent delete raises a violation. This is the same thing the app's
     // own `deleteWithChildren` does, spelled out because a cleanup that leaned

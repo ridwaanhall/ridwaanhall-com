@@ -66,9 +66,8 @@ export const blogPostList: AdminListModel<BlogPostRow> = {
   ],
   filters: [
     { key: "is_featured", label: "Featured", kind: "boolean", column: blogPost.isFeatured },
-    // Django listed the categories present rather than a fixed vocabulary --
-    // `category` is a plain CharField with no `choices` -- so a post that
-    // introduces a new one adds its own filter option.
+    // The categories actually present, not a fixed vocabulary, so a post that
+    // introduces a new one adds its own filter option with nothing to update.
     {
       key: "category",
       label: "Category",
@@ -94,8 +93,8 @@ export const blogPostForm: AdminFormModel = {
   deleteWarning: "The images attached to this post are deleted with it.",
   /*
    * `views` counts readers and is not something to type, but the column is
-   * `NOT NULL` with no database default -- Django's `default=0` was Python, and
-   * went with it -- so a create that omitted it would fail.
+   * `NOT NULL` with no database default, so a create that omitted it would
+   * fail.
    */
   insertDefaults: () => ({
     views: 0,

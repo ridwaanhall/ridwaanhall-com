@@ -67,10 +67,9 @@ export function useSearchModal() {
 /**
  * The ⌘K search palette.
  *
- * Django rendered nineteen hand-written `<li>` blocks -- about 380 lines --
- * with the filtering, section headers and keyboard navigation driven from
- * sidebarSearch.js by class name. Here the entries are data and the list is
- * derived, but the class names (`search-item`, `social-item`, `external-item`,
+ * The entries are data and the list is derived from them, rather than nineteen
+ * hand-written `<li>` blocks with the filtering and keyboard navigation driven
+ * by class name. The class names (`search-item`, `social-item`, `external-item`,
  * `highlighted`, and the `#search-modal` id) are kept exactly, because
  * styles/sidebarSearch.css targets them for the highlight wash and the modal's
  * custom scrollbar.
@@ -218,8 +217,7 @@ function SearchModal({
    * Only the Pages section can be, and only its internal destinations -- the
    * socials and the CV links go somewhere else entirely. `isActive` is the same
    * predicate the sidebar's nav uses, so `/blog/<slug>/` marks Blog here for
-   * the same reason it highlights Blog there; Django expressed that as
-   * `url_name not in 'blog blog_detail'` in both places.
+   * the same reason it highlights Blog there -- one definition, two places.
    */
   const isHere = useCallback(
     (entry: SearchEntry) =>
@@ -271,9 +269,8 @@ function SearchModal({
    *
    * **Typing does mark the first match**, and that is not the same thing: once
    * there is a query, the top result is a search result rather than a phantom
-   * cursor, and it is what makes Ctrl+K, type, Enter reach a page. Django
-   * required an arrow key first, which is the behaviour that was deliberately
-   * fixed.
+   * cursor, and it is what makes Ctrl+K, type, Enter reach a page without an
+   * arrow key in between.
    */
   const [wasOpen, setWasOpen] = useState(isOpen);
   if (wasOpen !== isOpen) {

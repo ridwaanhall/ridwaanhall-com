@@ -5,10 +5,9 @@ import { getStaffUser } from "@/lib/auth/staff";
 /**
  * The way in to the admin, for the one reader entitled to it.
  *
- * Django rendered this from `{% if user.is_staff %}` in the sidebar template,
- * which cost nothing because the whole page was built per request. Here the
- * public site is prerendered, so this is deliberately the *only* part of the
- * chrome that is not: `app/(site)/layout.tsx` renders it inside `<Suspense>`,
+ * The public site is prerendered, so this is deliberately the *only* part of
+ * the chrome that is not: `app/(site)/layout.tsx` renders it inside
+ * `<Suspense>`,
  * the static shell ships with the link absent, and it streams in afterwards for
  * whoever turns out to be staff. Reading the flag in the layout itself would
  * make every page on the site dynamic to decide one link.

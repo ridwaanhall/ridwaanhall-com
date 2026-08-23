@@ -6,19 +6,15 @@ import * as text from "@/lib/email/templates";
  * The five transactional emails.
  *
  * Each is a few lines of composition over `layout.ts` rather than a 170-line
- * HTML file. The Django originals were five separate templates that had to be
- * edited in step; a change to the header or the card now happens once, and no
- * two of them can drift into different designs.
+ * HTML file, so a change to the header or the card happens once and no two of
+ * them can drift into different designs.
  *
- * **The plain-text halves are still the originals**, verbatim, in
- * `templates.ts`. There is no design in them to redo, and they are what a
- * client that will not render HTML shows — so they keep the wording the site
- * has always sent.
+ * **The plain-text halves live in `templates.ts`.** There is no design in them
+ * to compose, and they are what a client that will not render HTML shows.
  *
- * `fill` is what the port added over `str.replace`: Django left an unmatched
- * `{{ key }}` sitting in the *sent* email, which CLAUDE.md records as a gotcha
- * with "no automated test covers these". This throws instead, and
- * `scripts/check-emails.mjs` is that test.
+ * `fill` throws on an unmatched `{{ key }}` rather than leaving it in place. A
+ * plain string replace sends the placeholder to the reader, and an email is not
+ * a page you can quietly fix afterwards. `scripts/check-emails.mjs` covers it.
  */
 
 const PLACEHOLDER = /\{\{\s*([\w.]+)\s*\}\}/g;

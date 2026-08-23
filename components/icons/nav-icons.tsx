@@ -3,10 +3,10 @@ import type { SVGProps } from "react";
 /**
  * Navigation and chrome icons.
  *
- * Copied path-for-path out of templates/sidebar.html, where each was inlined
- * twice -- once in the mobile drawer and once in the desktop rail. They are
- * plain components rather than an icon-library import so the rendered markup
- * stays byte-identical to the Django output.
+ * One component each, used by both the mobile drawer and the desktop rail --
+ * not the same paths inlined twice. Plain components rather than an
+ * icon-library import, so the whole set ships as markup with no runtime behind
+ * it.
  */
 
 type IconProps = SVGProps<SVGSVGElement>;

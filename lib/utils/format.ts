@@ -1,12 +1,12 @@
 /**
  * Display formatting shared by the page components.
  *
- * These reproduce the Django template filters the templates used, so a rendered
- * date reads exactly as it does today.
+ * One place each, so a date reads the same wherever it appears. A component
+ * that formats inline is a component that drifts.
  */
 
 /**
- * Django's `{{ value|date:"F j, Y" }}` -- "January 23, 2026".
+ * "January 23, 2026".
  *
  * Formatted in UTC rather than the viewer's timezone. The dates are editorial
  * (a post's publication day), and rendering them locally would put a post
@@ -24,19 +24,19 @@ export function longDate(value: Date | string): string {
   }).format(date);
 }
 
-/** ISO 8601, for a `<time datetime=…>` attribute. Django's `|date:'c'`. */
+/** ISO 8601, for a `<time datetime=…>` attribute. */
 export function isoDateTime(value: Date | string): string {
   const date = value instanceof Date ? value : new Date(value);
   return date.toISOString();
 }
 
 /**
- * Django's `{{ value|slugify }}`.
+ * A URL-safe slug.
  *
  * Used on blog tags, which render as `#commit-style` rather than
- * `#Commit Style`. Matches Django: lowercase, strip anything that is not a
- * word character, whitespace or hyphen, then collapse runs of whitespace and
- * hyphens into a single hyphen.
+ * `#Commit Style`: lowercase, strip anything that is not a word character,
+ * whitespace or hyphen, then collapse runs of whitespace and hyphens into a
+ * single hyphen.
  */
 export function slugify(value: string): string {
   return value
@@ -48,8 +48,7 @@ export function slugify(value: string): string {
 }
 
 /**
- * Django's `{{ value|date:"g:i A T, D F j, Y" }}` -- "8:55 PM WIB, Fri January
- * 23, 2026".
+ * "8:55 PM WIB, Fri January 23, 2026".
  *
  * Rendered in Asia/Jakarta rather than the viewer's timezone. The site has one
  * author in one place, the abbreviation is printed alongside, and a

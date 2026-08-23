@@ -31,9 +31,8 @@ export async function loadFormValues(
 ): Promise<FormValues | null> {
   /*
    * An empty id means "the one row", which is how the singleton screens ask.
-   * Django's `SingletonModelAdmin` forced `pk=1` and every caller hard-coded
-   * that; with uuid keys there is no id to hard-code, so the screen asks for
-   * the row and the model says there is only ever one.
+   * There is no id to hard-code against a uuid, so the screen asks for the row
+   * and the model is what says there is only ever one.
    */
   /*
    * A key that is not a uuid is "no such record", not an error. Postgres does
@@ -79,12 +78,9 @@ export async function loadFormValues(
 /**
  * The key of the row behind a singleton screen.
  *
- * Django's `SingletonModelAdmin` forced `pk=1`, so every caller could write the
- * key as a literal and the screens did: the form, its inlines and the save
- * action all carried a hard-coded id. There is nothing to hard-code against a
- * uuid, and the empty string that replaced it is not a key either -- it reaches
- * a child's foreign key as `profile_id = ''` and Postgres rejects it as
- * malformed rather than matching nothing.
+ * A uuid gives nothing to hard-code, and the empty string is not a key either
+ * -- it reaches a child's foreign key as `profile_id = ''`, which Postgres
+ * rejects as malformed rather than matching nothing. So the row is looked up.
  *
  * So the row is asked for its own id, once, and everything downstream is given
  * a real one. `limit(1)` with no `where` is the whole query because the model

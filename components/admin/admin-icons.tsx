@@ -4,9 +4,9 @@ import type { SVGProps } from "react";
  * One glyph per sidebar group, plus the handful the changelist needs.
  *
  * Drawn in the same feather-stroked style as `components/icons/nav-icons.tsx`
- * rather than pulled from an icon package: the public site inlines its icons so
- * its markup stays byte-identical to Django's, and a second, differently-drawn
- * set in the admin would read as another product.
+ * rather than pulled from an icon package: the public site inlines its own,
+ * and a second, differently-drawn set in the admin would read as another
+ * product bolted on.
  */
 
 type IconProps = SVGProps<SVGSVGElement>;

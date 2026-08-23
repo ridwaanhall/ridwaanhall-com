@@ -2,34 +2,30 @@ import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 
-import { DjangoAdapter, touchLogin } from "@/lib/auth/adapter";
+import { accountAdapter, touchLogin } from "@/lib/auth/adapter";
 import { isUuid } from "@/lib/utils/uuid";
 
 /**
- * Auth.js v5 over Django's existing accounts.
+ * Auth.js v5 over the site's own account tables.
  *
- * The two providers and their scopes are the ones `SOCIALACCOUNT_PROVIDERS` in
- * `FlexForge/settings.py` declares -- Google `profile email` with
- * `access_type=online`, GitHub `user:email` -- so the consent screen a returning
- * reader sees asks for exactly what it always did, and no re-consent is
- * triggered by the migration.
+ * Two providers, each asking for the least it can: Google `profile email` with
+ * `access_type=online` (no refresh token, because nothing here acts on anyone's
+ * behalf while they are away), GitHub `user:email`. A consent screen that asks
+ * for more than the site uses is a consent screen people are right to decline.
  *
- * **`allowDangerousEmailAccountLinking` is deliberately not set.** allauth runs
- * with `ACCOUNT_UNIQUE_EMAIL` on and `SOCIALACCOUNT_EMAIL_AUTHENTICATION` unset,
- * so it refuses to attach a second provider to an address that already belongs
- * to an account; Auth.js's default refusal (`OAuthAccountNotLinked`) is the same
- * rule. Turning it on would silently merge two identities on an unverified
- * claim.
+ * **`allowDangerousEmailAccountLinking` is deliberately not set.** Auth.js
+ * refuses by default to attach a provider to an address that already belongs to
+ * an account (`OAuthAccountNotLinked`), and that refusal is correct: turning it
+ * on merges two identities on the strength of an email claim, which is exactly
+ * the move an attacker makes.
  *
- * **Sessions are JWTs.** `django_session` holds a Django-serialised, Django-
- * signed blob that Auth.js can neither read nor write, and inventing a third
- * session table for a stack being retired at cutover buys nothing. The token
+ * **Sessions are JWTs.** Nothing is stored per session; the token
  * carries identity only -- `is_author` and `is_co_author` are read from the
  * database at the point of use (`lib/auth/profile.ts`), because a thirty-day
  * token must not be the authority on who may delete other people's messages.
  */
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: DjangoAdapter(),
+  adapter: accountAdapter(),
   session: { strategy: "jwt" },
   trustHost: true,
 
@@ -46,11 +42,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientSecret: process.env.AUTH_GITHUB_SECRET,
       authorization: { params: { scope: "user:email" } },
       /*
-       * `login` is GitHub's own handle and is what allauth wrote into
-       * `auth_user.username` verbatim -- it is why `Harindrawahyu` is stored
-       * with its capital rather than slugified. Auth.js's default profile
-       * mapping throws it away, so it is carried through here as `handle` for
-       * the adapter's `createUser` to use.
+       * `login` is the handle someone actually chose on GitHub, capitals and
+       * all, and it is the best username candidate available. Auth.js's default
+       * profile mapping throws it away, so it is carried through here as
+       * `handle` for the adapter's `createUser` to use.
        */
       profile(profile) {
         return {
@@ -98,9 +93,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
      * This is where the provider profile actually lands, rather than in the
      * adapter's `linkAccount`: that runs only the first time a provider is
      * attached, and Auth.js does not hand it the profile. Doing it here covers
-     * the returning reader too, which is what allauth's `user_logged_in`
-     * receiver did -- and it is how someone's avatar and display name stay up
-     * to date, since `lib/auth/profile.ts` reads both out of `extra_data`.
+     * the returning reader too -- and it is how someone's avatar and display
+     * name stay up to date, since `lib/auth/profile.ts` reads both out of
+     * `extra_data`.
      *
      * A failure is logged and swallowed. An out-of-date avatar is not worth
      * failing a sign-in over.
@@ -121,10 +116,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 
   pages: {
-    // Django sent readers straight to the provider (`SOCIALACCOUNT_LOGIN_ON_GET`)
-    // and back to the guestbook afterwards, so there was never an Auth.js-style
-    // provider-picker page. Both of these point at the guestbook so a failed or
-    // cancelled sign-in lands where it started rather than on a generic page.
+    // No provider-picker page: the guestbook already shows both buttons, so an
+    // interstitial would ask a question that has just been answered. Both of
+    // these point back at the guestbook, so a failed or cancelled sign-in lands
+    // where it started rather than on a generic page.
     signIn: "/guestbook",
     error: "/guestbook",
   },

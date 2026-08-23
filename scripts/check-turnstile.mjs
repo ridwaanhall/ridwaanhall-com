@@ -3,7 +3,7 @@
  *
  * This is the contact form's only spam defence, and the failure that matters is
  * silent: a verifier that returns `true` when something goes wrong looks
- * identical to a working one until the inbox fills up. Django's validator was
+ * identical to a working one until the inbox fills up. The validator was
  * written to reject on every error path and this asserts the port kept that —
  * a missing token, an empty one, and a forged one that Cloudflare's real API
  * rejects.
@@ -29,7 +29,7 @@ const check = (name, pass) => {
 };
 
 if (!turnstileEnabled()) {
-  // Without a secret the verifier passes by design, matching Django's
+  // Without a secret the verifier passes by design, which is the
   // `USE_CF_TURNSTILE` gate, so there is nothing here to assert.
   console.log("Turnstile is not configured — skipping (the verifier passes by design).");
   process.exit(0);

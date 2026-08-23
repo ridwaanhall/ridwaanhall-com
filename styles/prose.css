@@ -7,11 +7,11 @@
  * either meant editing every row. This reproduces those rules from one place,
  * so content is now only content.
  *
- * **Every value here was measured from the live Django rendering**, at 375,
- * 768 and 1280px, rather than derived from the class strings. Those two are not
- * the same thing, and the gap is the reason this change is worth making:
- * Tailwind generates a class only if it can *see* it in a scanned file, and
- * these classes existed nowhere but in the database. So several silently did
+ * **Every value here was measured from the rendered page**, at 375, 768 and
+ * 1280px, rather than derived from the class strings the content carried. Those
+ * two are not the same thing, and the gap is the reason this exists: Tailwind
+ * generates a class only if it can *see* it in a scanned file, and a class
+ * stored in the database is visible to nothing. So several silently did
  * nothing --
  *
  *   `lg:text-2xl`   on every h2      -> headings never reached 24px

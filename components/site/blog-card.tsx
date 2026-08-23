@@ -8,11 +8,9 @@ import { cn } from "@/lib/utils/cn";
 /**
  * A blog card.
  *
- * Django carried two near-identical copies of this markup -- one inlined in the
- * home page's slider section, one in `blog/components/card.html` -- differing
- * only in padding and the heading's size and weight. They are one component
- * with a `variant` here; the two renderings stay pixel-identical to their
- * originals.
+ * One component with a `variant`, not two near-identical copies of the markup:
+ * the home page's slider and the blog listing differ only in padding and the
+ * heading's size and weight.
  *
  * The date/"Read more" swap on hover is CSS-only and stays that way: it is an
  * affordance, not a label, so unlike a tooltip it has nothing to expose on

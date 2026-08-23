@@ -30,8 +30,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /**
  * The intro line, which states whichever combination of the two flags is set.
- * Django spelled this out as a four-branch `{% if %}`; the fourth branch was
- * unreachable, since the view 404s when neither flag is on.
+ * Three branches, not four: the page 404s when neither flag is on, so "neither"
+ * never reaches here.
  */
 function intro(openToWork: boolean, hiring: boolean): string {
   if (openToWork && hiring) {
@@ -189,8 +189,7 @@ function LocationGroup({ title, items }: { title: string; items: string[] }) {
 /**
  * The skills catalogue as a category/tools table.
  *
- * One row per category, tools joined with commas -- Django built the join in
- * the template with `{% if not forloop.last %}, {% endif %}`.
+ * One row per category, tools joined with commas.
  */
 function ToolsTable({ tools }: { tools: Record<string, Skill[]> }) {
   return (

@@ -3,11 +3,9 @@ import type { ReactNode } from "react";
 /**
  * The building blocks of the OpenHire page.
  *
- * Django spelled these out across 16 section templates that shared four
- * shapes between them -- a bordered card with an indigo icon, a label/value
- * row, a pill tag and a bulleted line -- each copied verbatim into every file
- * that needed it. The shapes are defined once here; the sections that use them
- * live in the page.
+ * Sixteen sections share four shapes between them -- a bordered card with an
+ * indigo icon, a label/value row, a pill tag and a bulleted line. The shapes
+ * are defined once here; the sections that use them live in the page.
  */
 
 /** The icon every section heading carries. Some are two-path outlines. */

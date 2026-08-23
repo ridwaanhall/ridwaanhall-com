@@ -3,11 +3,10 @@ import { escapeHtml } from "@/lib/email/escape";
 /**
  * The shell every transactional email is built from.
  *
- * **One layout, not five templates.** The Django originals were five
- * hand-maintained HTML files, 62KB of near-identical table markup that had to be
- * edited in step or drift apart -- the same duplication this port has been
- * removing everywhere else. Composing from typed pieces means a change to the
- * header, the card or the footer happens once.
+ * **One layout, not five templates.** Five hand-maintained HTML files is 62KB
+ * of near-identical table markup that has to be edited in step or drift apart.
+ * Composing from typed pieces means a change to the header, the card or the
+ * footer happens once.
  *
  * **The palette is the site's light theme**, not the old dark one. Values come
  * straight from the `html[data-theme="light"]` block in `static/css/input.css`,

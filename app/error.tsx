@@ -7,9 +7,8 @@ import { ErrorPage } from "@/components/site/error-page";
 /**
  * The uncaught-exception boundary.
  *
- * Django had no equivalent -- `BaseView.handle_exceptions` caught data errors
- * per view and rendered the same error template with a 500. This covers the
- * same ground for every route at once.
+ * One boundary for every route, rather than each page catching its own data
+ * errors and rendering the same thing.
  *
  * The `reset` prop is deliberately not surfaced as a button. It re-renders the
  * segment, which helps only for a transient failure; for the failure this app

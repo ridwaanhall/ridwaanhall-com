@@ -12,12 +12,12 @@ import type { ComponentProps } from "react";
  * in the markup uses a `dark:` variant, and adding one would work against the
  * grain.
  *
- * `enableSystem={false}` is deliberate and matches the Django behaviour:
- * `prefers-color-scheme` is never consulted, because dark is the brand default
- * rather than a fallback for when the OS is silent.
+ * `enableSystem={false}` is deliberate: `prefers-color-scheme` is never
+ * consulted, because dark is the brand default rather than a fallback for when
+ * the OS is silent.
  *
- * next-themes injects its own blocking pre-paint script, which replaces the
- * hand-written one in base_seo.html. It must stay blocking -- this is a
+ * next-themes injects its own blocking pre-paint script. It must stay blocking
+ * -- this is a
  * multi-page app, so a deferred script would flash the dark palette on every
  * single navigation for a light-mode reader.
  */

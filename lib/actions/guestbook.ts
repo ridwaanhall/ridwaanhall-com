@@ -91,8 +91,8 @@ export async function sendMessage(formData: FormData): Promise<ActionResult> {
     .returning({ id: guestMessage.id });
 
   /*
-   * The emails Django's `post_save` receiver sent: the owner, the sender, and
-   * whoever is being replied to.
+   * Three notifications: the owner, the sender, and whoever is being replied
+   * to.
    *
    * `after` rather than `await`, so the reader is not kept waiting on three
    * SMTP round trips for a message that is already saved -- and `void` on top,
@@ -117,12 +117,12 @@ export async function deleteMessage(messageId: string): Promise<ActionResult> {
    * The whole branch goes with the node, and the branch has to be gathered
    * here rather than left to the database.
    *
-   * **Django's `on_delete=CASCADE` is Python, not SQL.** It collects the
-   * related rows and deletes them itself; every foreign key it creates in
-   * Postgres is `NO ACTION`, and `guestbook_chatmessage.reply_to_id` is no
-   * exception -- `confdeltype` is `a`. So deleting a message that has replies
-   * raised a foreign-key violation, and it went unnoticed because the
-   * constraints are `DEFERRABLE INITIALLY DEFERRED`: a transaction that rolls
+   * `guest_message.reply_to_id` cascades in the database, so this is belt and
+   * braces rather than the only thing standing between a delete and a foreign
+   * key violation. It is here because the *notification* side needs the branch
+   * gathered anyway, and because a constraint that were ever declared
+   * `DEFERRABLE INITIALLY DEFERRED` would be checked only at commit: a
+   * transaction that rolls
    * back never reaches the check, which is exactly what a test doing its own
    * cleanup does.
    *

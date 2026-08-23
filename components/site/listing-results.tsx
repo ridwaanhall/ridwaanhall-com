@@ -21,12 +21,12 @@ import { searchBlogs, searchProjects } from "@/lib/data/content";
  */
 export type ListingSearchParams = Promise<{ q?: string; page?: string }>;
 
-/** `?q=` and `?page=`, parsed the way Django's view read them. */
+/** `?q=` and `?page=`, parsed leniently -- these come from a URL bar. */
 export async function readListingParams(searchParams: ListingSearchParams) {
   const raw = await searchParams;
   return {
     query: (raw.q ?? "").trim(),
-    // A non-numeric page falls back to 1, as Django's PageNotAnInteger branch did.
+    // A non-numeric page falls back to 1 rather than 404ing.
     page: Math.max(1, Number.parseInt(raw.page ?? "1", 10) || 1),
   };
 }

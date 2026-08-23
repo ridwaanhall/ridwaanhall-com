@@ -3,7 +3,7 @@
  *
  * The table is empty on live, so there is nothing to compare a rendered page
  * against the way `compare-guestbook.mjs` does. What can still be checked for
- * real are the rules Django put in `Comment.save()` and enforced with the
+ * real are the rules applied on write and enforced with the
  * database — and those are worth checking precisely because they are security
  * properties, not cosmetics:
  *
@@ -47,7 +47,7 @@ try {
   await db.transaction(async (tx) => {
     /*
      * The target is named directly now. A comment used to reach its subject
-     * through `content_type_id`, a foreign key into a table of every model in
+     * through a generic reference, a foreign key into a table of every model in
      * the project, so "what is this a comment on" was a join and picking a
      * target meant resolving `blog.blogpost` to a number first. `target_kind`
      * holds the kind and a CHECK constraint holds the vocabulary.

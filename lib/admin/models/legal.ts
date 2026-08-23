@@ -15,7 +15,7 @@ import type { AdminListModel } from "@/lib/admin/list";
 const documentTypeLabel = (value: string) =>
   LEGAL_DOCUMENT_TYPE_CHOICES.find((choice) => choice.value === value)?.label ?? value;
 
-/** How many sections hang off this document -- Django's `section_count`. */
+/** How many sections hang off this document. */
 const sectionCount = countWhere(legalSection.documentId, legalDocument.id);
 
 export type LegalDocumentRow = {
@@ -158,9 +158,8 @@ export const legalSectionList: AdminListModel<LegalSectionRow> = {
     fields: [legalSection.heading, legalSection.body],
     placeholder: "Search heading or body",
   },
-  // `ordering = ["order", "id"]`. Sections are edited through their document's
-  // inline; this list exists so they can be searched across documents, which is
-  // exactly why Django registered the model separately as well.
+  // Sections are edited through their document's inline; this list exists only
+  // so they can be searched across documents, which the inline cannot do.
   defaultSort: { key: "order", dir: "asc" },
   rowId: (row) => row.id,
 };
@@ -276,13 +275,12 @@ export const legalSectionForm: AdminFormModel = {
         },
         {
           /*
-           * Every section is offered as a parent, not only the top-level ones of
-           * the same document -- which is looser than Django's inline, where the
-           * queryset was filtered to both.
+           * Every section is offered as a parent, not only the top-level ones
+           * of the same document.
            *
-           * The filtering there was possible because the inline knew which
-           * document was being edited. This screen edits a section on its own,
-           * and the document is a field on the same form that has not been
+           * Filtering the list would need to know which document is being
+           * edited. This screen edits a section on its own, and the document is
+           * a field on the same form that has not been
            * submitted yet, so there is nothing to filter against at render time.
            * Nesting is one level deep by convention rather than by constraint;
            * the renderer walks a single hop and simply ignores anything deeper.
@@ -332,9 +330,8 @@ export const legalSectionForm: AdminFormModel = {
    * A section cannot be its own parent.
    *
    * The renderer walks from a section to its parent, so a self-reference is a
-   * loop it would follow. Django avoided the question by only offering
-   * top-level sections of the same document; this offers all of them, so the
-   * one case that cannot work is refused here instead.
+   * loop it would follow. Every section is offered as a parent (see above), so
+   * the one case that cannot work is refused here instead.
    */
   validate: async (values, { id }) =>
     id !== null && values.parentId === id ? "A section cannot be nested under itself." : null,

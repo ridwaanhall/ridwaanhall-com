@@ -635,17 +635,15 @@ export async function getApplications(): Promise<Application[]> {
       .leftJoin(location, eq(location.id, application.locationId)),
     // Ordered in SQL, and the tiebreak is deliberate.
     //
-    // Django ordered these by `timestamp` alone (JourneyStep.Meta.ordering)
-    // and then re-sorted in Python with a stable sort, which meant steps
-    // sharing a timestamp came out in whatever order Postgres happened to
-    // return them -- heap order, which is not stable across a VACUUM or an
-    // UPDATE that moves a tuple. Nine of the 59 multi-step applications are
-    // affected; application 50 has four steps at 2025-10-03T16:16.
+    // Ordering by `occurred_at` alone leaves steps that share a timestamp in
+    // whatever order Postgres happens to return them -- heap order, which is
+    // not stable across a VACUUM or an UPDATE that moves a tuple. Nine of the
+    // 59 multi-step applications are affected; application 50 has four steps
+    // at 2025-10-03T16:16.
     //
-    // The tiebreak was `id`, which kept insertion order while keys were
-    // serial. `position` carries that order now -- a uuid does not.
-    // `asc` is already NULLS LAST in Postgres, which is what Django's
-    // `Meta.ordering = ["timestamp"]` produced, so no raw SQL is needed here.
+    // `position` is what carries the intended order. A uuid carries none, so
+    // there is nothing else to fall back on. `asc` is already NULLS LAST in
+    // Postgres, so no raw SQL is needed here.
     db
       .select()
       .from(applicationStep)

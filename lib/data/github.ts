@@ -140,8 +140,8 @@ function thisWeekTotal(weeks: ContributionWeek[]): number {
  * the future**. GitHub's calendar returns the whole of the current week,
  * including days that have not happened yet, and those carry a count of 0 --
  * so walking back from the literal last element reports a streak of 0 for
- * anyone whose week does not end today. Django's version has that bug; it is
- * why a live streak can read 0 on a Monday.
+ * anyone whose week does not end today -- which is how a live streak comes to
+ * read 0 on a Monday.
  */
 function streaks(days: ContributionDay[]): {
   longest_streak: number;
@@ -175,7 +175,7 @@ function streaks(days: ContributionDay[]): {
 }
 
 /**
- * Cached for fifteen minutes, matching Django's `CACHE_TIMEOUT`.
+ * Cached for fifteen minutes.
  *
  * `unstable_cache` rather than `"use cache"`: this reads an external API rather
  * than the database, and its freshness is a time window rather than something a

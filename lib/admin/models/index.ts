@@ -44,10 +44,9 @@ import type { AdminListModel } from "@/lib/admin/list";
 /**
  * The changelist descriptors, keyed the way the registry and the URLs are.
  *
- * One module per Django app, mirroring `apps/<app>/admin.py` one to one, since
- * that is what is being ported and descriptors from the same app share their
- * helpers -- four of the `about` lists resolve the same foreign key, and both
- * guestbook lists resolve a username.
+ * One module per area of the site, because descriptors from the same area
+ * share their helpers -- four of the `about` lists resolve the same foreign
+ * key, and both guestbook lists resolve a username.
  *
  * A model appears here once its list is built. The registry's `ready` flag and
  * this map have to agree, which `scripts/check-admin.mjs` asserts -- a `ready`

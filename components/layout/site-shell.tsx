@@ -81,8 +81,8 @@ export function SiteShell({
           <SidebarRail about={about} adminLink={adminLink} />
           {/*
             Keyed on the pathname so the entrance animation replays on every
-            navigation, which is what the Django build got for free from a full
-            page load.
+            navigation -- client-side routing keeps the element, so without the
+            key it would animate once and never again.
 
             The 500ms delay that used to precede each navigation is gone. It
             existed so the outgoing page could finish fading before the browser

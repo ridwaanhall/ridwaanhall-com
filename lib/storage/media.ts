@@ -1,10 +1,10 @@
 /**
  * URL for an uploaded file, from the value stored in an `ImageField` column.
  *
- * Django stores a bucket-relative key ("blog/foo.webp") and derives the URL in
- * `SupabaseStorage.url()`. Reproduced here exactly: these URLs are already
- * indexed, already embedded in JSON-LD, and already cached by the CDN, so a
- * difference of one character is a broken image, not a cosmetic change.
+ * The column stores a bucket-relative key ("blog/foo.webp") and the URL is
+ * derived from it here. These URLs are indexed, embedded in JSON-LD and cached
+ * by the CDN, so a difference of one character is a broken image rather than a
+ * cosmetic change.
  *
  * Returns "" for an empty column, matching `AboutManager._image_url`, so
  * callers keep their existing falsy checks.
@@ -13,12 +13,13 @@ const SUPABASE_URL = (process.env.STORAGE_SUPABASE_URL ?? "").replace(/\/+$/, ""
 const BUCKET = process.env.SUPABASE_STORAGE_BUCKET ?? "media";
 
 /**
- * Python's `urllib.parse.quote(s, safe="/")`, which is what Django calls.
+ * Percent-encode everything except `/`.
  *
- * Deliberately not `encodeURI`, which leaves `;,?:@&=+$!*'()#` unescaped —
- * Python escapes all of those. Every key currently in the database is already
- * URL-safe, so this only matters for whatever gets uploaded next; getting it
- * right now is cheaper than debugging one broken image later.
+ * Deliberately not `encodeURI`, which leaves `;,?:@&=+$!*'()#` unescaped — all
+ * of which are legal in a storage key and none of which survive a URL intact.
+ * Every key currently in the database is already URL-safe, so this only matters
+ * for whatever gets uploaded next; getting it right now is cheaper than
+ * debugging one broken image later.
  */
 function quote(value: string): string {
   return value.replace(/[^A-Za-z0-9_.\-~/]/g, (char) =>

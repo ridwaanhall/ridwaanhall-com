@@ -15,11 +15,10 @@ import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
 /**
- * The two `openhire` singletons, from `apps/openhire/admin.py`.
+ * The two `openhire` singletons.
  *
- * Neither has a changelist: `SingletonModel` forces `pk=1` and blocks delete,
- * and Django's `SingletonModelAdmin` sent the changelist straight to that row.
- * `/admin/hiring-profile` is that record's form.
+ * Neither has a changelist, because a list of one row is a hop nobody wants:
+ * `/admin/hiring-profile` *is* that record's form.
  */
 
 export const hiringProfileForm: AdminFormModel = {

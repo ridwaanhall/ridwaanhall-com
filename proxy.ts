@@ -20,9 +20,9 @@ import type { NextRequest } from "next/server";
  */
 const NOINDEX_PREFIXES = [
   // Sign-in / sign-up / OAuth callbacks. Crawlable so the directive is seen,
-  // but never useful in results. The Auth.js routes land under /api/auth/ in
-  // phase 2; the /guestbook/accounts/ prefix is kept because inbound links to
-  // the Django URLs will outlive the cutover.
+  // but never useful in results. The `/guestbook/accounts/` prefixes are older
+  // paths that still receive inbound links; the header costs nothing and keeps
+  // them out of the index.
   "/api/auth/",
   "/guestbook/accounts/",
   "/guestbook/logout/",

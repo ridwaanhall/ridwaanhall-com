@@ -7,17 +7,15 @@ import { signIn, signOut } from "@/auth";
  *
  * Auth.js v5's recommended shape, and it avoids pulling `next-auth/react` --
  * and therefore a `<SessionProvider>` -- into a site that reads its session on
- * the server everywhere else. `signIn` redirects straight to the provider,
- * which is what Django's `SOCIALACCOUNT_LOGIN_ON_GET` did: no provider-picker
- * page in between.
+ * the server everywhere else. `signIn` redirects straight to the provider: the
+ * guestbook already shows both buttons, so a provider-picker page in between
+ * would ask a question that has just been answered.
  *
- * **`redirectTo` is sanitised, not trusted.** It comes from the browser, and
- * Auth.js hands it to a redirect. Django validated the same value with
- * `url_has_allowed_host_and_scheme` because a redirect sink fed from a request
- * is an open redirect otherwise -- `//evil.com`, `/\evil.com` and
- * `https:/evil.com` all read as same-site to a naive check and as another
- * origin to a browser. Only a plain same-site path is accepted here; anything
- * else falls back to the guestbook.
+ * **`redirectTo` is sanitised, not trusted.** It comes from the browser and
+ * Auth.js hands it to a redirect, so an unchecked value is an open redirect --
+ * `//evil.com`, `/\evil.com` and `https:/evil.com` all read as same-site to a
+ * naive check and as another origin to a browser. Only a plain same-site path
+ * is accepted; anything else falls back to the guestbook.
  */
 const FALLBACK = "/guestbook";
 

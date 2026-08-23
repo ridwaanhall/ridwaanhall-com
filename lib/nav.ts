@@ -18,9 +18,8 @@ export type NavItem = {
   /**
    * Whether a nested path counts as this item being active. `/blog/<slug>/`
    * highlights Blog, and `/projects/<slug>/` highlights Projects -- which is
-   * what Django expressed as `url_name in 'blog blog_detail'`. That was a
-   * substring test on a string rather than a real membership check; a path
-   * prefix says the same thing and cannot match by accident.
+   * a path-prefix test rather than a set of route names to keep in step with
+   * the routes themselves.
    */
   matchNested?: boolean;
   /** Hidden entirely when the guestbook feature flag is off. */
@@ -30,9 +29,8 @@ export type NavItem = {
 /**
  * The primary navigation, in order.
  *
- * One definition, rendered by both the desktop rail and the mobile drawer. In
- * Django these were two hand-maintained copies of the same seven links, each
- * with its icon inlined twice.
+ * One definition, rendered by both the desktop rail and the mobile drawer --
+ * not two hand-maintained copies of the same seven links.
  */
 export const NAV_ITEMS: NavItem[] = [
   { label: "Home", href: "/", icon: HomeIcon },

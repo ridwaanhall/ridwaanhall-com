@@ -108,8 +108,7 @@ export type Project = ImageCompat & {
 /**
  * Every blog post, newest first.
  *
- * Order follows `BlogPost.Meta.ordering = ["-created_at"]`, **with `id` added
- * as a tiebreak**, which Django did not have.
+ * Newest first by `created_at`, **with `id` as a tiebreak**.
  *
  * That is not tidiness. Four posts share the exact timestamp
  * 2025-03-23T17:00:00Z, and ordering by `created_at` alone leaves their
@@ -373,12 +372,11 @@ export function featuredBlogs(blogs: BlogPost[]): BlogPost[] {
 /**
  * Search, ported from the list views.
  *
- * Django filtered the whole cached list in Python on every request. That is
- * kept here rather than pushed into SQL for one reason: the fields searched
- * include `tags`, a JSONB array of free text, and the body, which is HTML; the
- * lists are small (20 posts, 64 projects) and already in memory from the cache.
- * Pushing it to SQL would add a round trip per keystroke to search data we are
- * already holding. Pagination is applied after this.
+ * Filtered in memory rather than pushed into SQL, which is the unusual choice
+ * and the deliberate one: the lists are small (20 posts, 64 projects) and are
+ * already in memory from the cache, so a `WHERE` would add a round trip per
+ * keystroke to search data we are already holding. Pagination is applied after
+ * this.
  */
 export function searchBlogs(blogs: BlogPost[], query: string): BlogPost[] {
   const q = query.trim().toLowerCase();
@@ -410,9 +408,8 @@ export function searchProjects(projects: Project[], query: string): Project[] {
  *
  * The list pages render cards, and a card reads six or seven fields -- never
  * the body, `features`, or the tech stack, which are by far the largest part of
- * a row. Django had no equivalent because it rendered the cards server-side and
- * simply never touched those keys; over an API they would be shipped to the
- * browser for nothing.
+ * a row -- which a server-rendered card simply never touches, but an API
+ * response ships to the browser for nothing.
  *
  * Measured on the live data: dropping them takes the blog list response from
  * 75KB to 12KB and the projects list from 46KB to 16KB. The detail endpoints
@@ -485,11 +482,11 @@ export function findBySlug<T extends { slug: string }>(items: T[], slug: string)
 /**
  * Increment a post's view counter.
  *
- * A raw `views = views + 1` so concurrent reads cannot lose an increment, the
- * same as Django's `F("views") + 1`. It deliberately does *not* revalidate the
- * `blog` tag: doing so on every page view would discard the cached payload
- * constantly. The counter is allowed to lag by up to the cache lifetime, which
- * is exactly the trade-off `CONTENT_CACHE_TTL` covered before.
+ * A raw `views = views + 1` in SQL, so two concurrent readers cannot each read
+ * the old value and write the same new one. It deliberately does *not*
+ * revalidate the `blog` tag: doing so on every page view would discard the
+ * cached payload constantly. The counter is allowed to lag by up to the cache
+ * lifetime, which is the right way round for a view tally.
  */
 export async function incrementBlogViews(id: string): Promise<void> {
   await db

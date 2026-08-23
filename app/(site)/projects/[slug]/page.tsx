@@ -127,9 +127,9 @@ export default async function ProjectDetailPage({
                 </div>
 
                 {/*
-                  `w-full`, not the blog's `mb-6 md:mb-8`: Django wraps the two
-                  galleries differently, and the extra 32px pushed everything
-                  below the gallery down by exactly that much.
+                  `w-full`, not the blog's `mb-6 md:mb-8`: this gallery sits in
+                  a wrapper that already carries the spacing, and the extra 32px
+                  pushed everything below it down by exactly that much.
                 */}
                 <MediaGallery
                   images={project.image_list ?? []}

@@ -6,11 +6,11 @@
    These seven express things utilities cannot -- scrollbar pseudo-elements,
    the lightbox chrome, the tooltip and the click spark. Being hand-written is
    separate from being bundled: importing them here means they inherit the same
-   hashing, minification and cache-busting as every other rule, which under
-   Django they did not (they were served raw under fixed filenames, so an edit
-   to any of them stayed stale in browser and CDN caches indefinitely).
+   hashing, minification and cache-busting as every other rule. Served raw
+   under fixed filenames instead, an edit to any of them stays stale in browser
+   and CDN caches indefinitely.
 
-   Order matters and matches the original <link> order. They stay *unlayered*
+   Order matters. They stay *unlayered*
    -- after `@import "tailwindcss"` but outside any `@layer` -- because an
    unlayered rule beats every layered one, which is what a later <link> gave
    them before. Wrapping them in a layer would flip that and let Tailwind
@@ -39,21 +39,15 @@
    Tailwind v4 auto-detects sources by walking every non-gitignored file under
    the project root and treating any word that parses as a class name as one in
    use. Auto-detection is kept rather than replaced by a hand-written source
-   list: class strings are not confined to components (the admin builds them,
-   helpers assemble them, and JSONB content blocks carry a `class` key), and
-   enumerating sources by hand silently dropped `placeholder-zinc-500` and
-   `pl-6` when it was tried under Django.
+   list: class strings are not confined to components -- the admin builds them
+   and helpers assemble them -- and enumerating sources by hand silently dropped
+   `placeholder-zinc-500` and `pl-6` when it was tried.
 
-   Four things are excluded, and three of them only became necessary at the
-   cutover. While the app lived in `web/`, the design notes and this repo's
-   markdown were outside the project root and therefore outside the scan by
-   construction; promoting the app to the root brought them back in, and the
-   very first build after the move re-emitted the depth utilities this site
-   deliberately does not use. Prose that merely *names* a utility is enough --
-   under Django, a single code comment using the word in an ordinary English
-   sense kept the bare utility alive on its own, which is why the notes below
-   describe those class names rather than spelling any of them out. This file
-   is scanned too.
+   Four things are excluded. Markdown at the repository root is scanned like
+   everything else, and prose that merely *names* a utility is enough to emit
+   it: a single code comment using the word in an ordinary English sense keeps
+   the bare utility alive on its own. That is why the notes below describe those
+   class names rather than spelling any of them out. This file is scanned too.
 
      ../styles  the stylesheets imported above. They *define* selectors rather
                 than use utilities, and property names like `border-radius`
@@ -98,9 +92,8 @@
 /* ---------------------------------------------------------------------------
    Onest
 
-   Copied verbatim from the Django-rendered templates/css/onest.css, with its
-   `{% static %}` tags resolved to /font/... in public/. Written as plain
-   @font-face rather than `next/font/local` on purpose: these are four
+   Written as plain @font-face rather than `next/font/local` on purpose: these
+   are four
    subsetted files distinguished only by `unicode-range`, which next/font's
    `src` array cannot express. Collapsing them to the latin file alone would
    silently drop Cyrillic -- and guestbook messages are written by real
@@ -803,10 +796,9 @@ html.theme-fading [data-theme-toggle] svg {
 /* ---------------------------------------------------------------------------
    Content column entrance
 
-   Django started #page-content at `opacity-0 translate-y-8` and had
-   progressBar.js strip those classes 100ms after DOMContentLoaded. A CSS
-   animation says the same thing without needing JS to reveal the page -- which
-   also means the content is never stuck invisible if a script fails to run.
+   A CSS animation rather than a script that strips starting classes after
+   DOMContentLoaded: the content is then never stuck invisible because a script
+   failed to run.
 
    The element is keyed on the pathname in site-shell.tsx, so React remounts it
    per navigation and the animation replays.

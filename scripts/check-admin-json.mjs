@@ -6,7 +6,7 @@
  * what catches CRLF corruption, silently dropped fields and change-detection
  * regressions -- none of which a unit test on the parser alone would see.
  *
- * The rules being defended are Django's, and each has a reason recorded at the
+ * Each rule being defended has a reason recorded at the
  * original:
  *
  * - **Nothing is trimmed.** Two stored `class` strings contain double spaces and
@@ -232,7 +232,7 @@ try {
   );
 
   // Removing the last entry has to clear the mapping rather than leave the old
-  // one in place -- the failure `construct_instance` caused in Django, which
+  // one in place -- the failure a "skip empty values" rule causes, which
   // the one-named-control shape was chosen to avoid.
   await page.goto(`${BASE}/admin/legal-section/${scratchId}`, { waitUntil: "load" });
   await page.waitForTimeout(900);

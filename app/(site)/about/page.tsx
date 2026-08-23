@@ -223,11 +223,12 @@ function Intro({ about, sponsorUrl }: { about: AboutData; sponsorUrl: string }) 
 /**
  * Group roles by company, preserving the order they arrive in.
  *
- * Django did this with `{% regroup experiences by company %}`, which groups
- * *consecutive* runs rather than collecting every occurrence -- so the manager's
- * `sort_order` is what keeps a company's roles adjacent. A Map preserves
- * insertion order and behaves the same for already-sorted input, while also
- * doing the right thing if two runs of the same company are ever separated.
+ * Somebody with three roles at one employer should read as one entry with three
+ * roles, not as the same company printed three times.
+ *
+ * A Map rather than grouping consecutive runs: it preserves insertion order, so
+ * already-sorted input comes out in the order the sort chose, and it still does
+ * the right thing if two runs of the same company are ever separated.
  */
 function groupByCompany(experiences: Experience[]): [string, Experience[]][] {
   const groups = new Map<string, Experience[]>();

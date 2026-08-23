@@ -13,8 +13,8 @@ import { inlineCountName, INLINE_ID, type ClientField, type FormValues } from "@
  * derived from the array index, so moving a row renumbers its inputs and the
  * server writes the new position straight into the order column. There is no
  * separate order input that could disagree with what is on screen -- which is
- * the failure Django's `ORDER` field in a formset is prone to when a row is
- * added between two others.
+ * exactly what goes wrong when a row is inserted between two others and the
+ * numbers are carried in fields of their own.
  *
  * Removing a row drops it from the array and its inputs go with it. The server
  * treats an id it stored but did not receive as deleted, so nothing has to

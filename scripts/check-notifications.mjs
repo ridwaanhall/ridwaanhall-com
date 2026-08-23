@@ -6,7 +6,7 @@
  * inside it would be positioned against the content column instead of the
  * viewport, and the confirm dialog's backdrop blur would stop at the sidebar.
  *
- * Django asserted this structurally in `apps/core/tests/test_notifications.py`
+ * Asserted structurally rather than by eye
  * because nothing else in that tree caught it; the same is true here, and the
  * mistake is a one-line move that looks harmless in review.
  *

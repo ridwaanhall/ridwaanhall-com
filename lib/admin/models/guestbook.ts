@@ -9,21 +9,20 @@ import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
 /**
- * The two `guestbook` changelists, from `apps/guestbook/admin.py`.
+ * The two `guestbook` changelists.
  *
- * Both display a user, and `auth_user.username` is what Django's `__str__`
- * resolved to -- not the display name. That distinction is deliberate here as
- * well: the guestbook itself shows the provider's display name out of
- * `socialaccount.extra_data` (see `lib/auth/profile.ts`), which is whatever
- * someone has set it to this week and is not unique. The admin identifies rows
- * by the stable, unique thing.
+ * Both identify a person by `account.username`, not by their display name. The
+ * guestbook itself shows the provider's display name out of the stored profile
+ * (see `lib/auth/profile.ts`), which is whatever someone has set it to this
+ * week and is not unique. An admin list has to be able to tell two people
+ * apart, so it uses the stable, unique thing.
  */
 export const username = (fk: PgColumn) => lookup<string>(account.username, account.id, fk);
 
-/** The account's email, which Django searched as `user__email`. */
+/** The account's email, for the search box. */
 export const userEmail = (fk: PgColumn) => lookup<string>(account.email, account.id, fk);
 
-/** Django's `message_preview` -- the first 50 characters, no ellipsis. */
+/** The first N characters, with no ellipsis -- the column is already clipped. */
 function preview(message: string, limit: number): string {
   return message.slice(0, limit);
 }
@@ -52,9 +51,9 @@ export const chatMessageList: AdminListModel<ChatMessageRow> = {
     isPinned: guestMessage.isPinned,
   },
   columns: [
-    // Django led with the user; the message leads here, because that is what
-    // the first column links from and a column of repeated usernames is a poor
-    // thing to click. Both are still shown.
+    // The message leads, not the author: the first column is what links to the
+    // record, and a column of repeated usernames is a poor thing to click.
+    // Both are still shown.
     {
       key: "message",
       label: "Message",
@@ -139,8 +138,8 @@ export const userProfileList: AdminListModel<UserProfileRow> = {
     { key: "is_co_author", label: "Co-author", kind: "boolean", column: guestProfile.isCoAuthor },
   ],
   search: {
-    // Django searched `user__username` and `user__email`; both are on the same
-    // related row, so both are subqueries against it.
+    // Username and email both live on the account, so both are subqueries
+    // against the same related row.
     fields: [profileUser, userEmail(guestProfile.accountId)],
     placeholder: "Search username or email",
   },

@@ -2,11 +2,10 @@
  * Deterministic shuffle.
  *
  * The homepage renders the skill marquee as three rows drawn from the same
- * catalogue, shuffled so the rows do not read as one repeated list. Django did
- * that with `random.sample` in the view, giving a different arrangement on
- * every request.
+ * catalogue, shuffled so the rows do not read as one repeated list.
  *
- * That per-request variance cannot survive here, and losing it costs nothing.
+ * A different arrangement on every request is not available here, and losing it
+ * costs nothing.
  * `Math.random()` inside a prerendered tree is rejected outright under Cache
  * Components -- it is exactly the kind of non-deterministic value that makes a
  * static shell meaningless -- so keeping it would force the homepage to render

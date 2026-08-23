@@ -78,10 +78,10 @@ function isUniqueViolation(error: unknown): boolean {
 /**
  * Which field a unique violation was about.
  *
- * Postgres names the constraint, not the column, and the names here are
- * Django's (`about_skill_slug_key`). Looking for a field's column name inside it
- * is a heuristic, and deliberately a soft one: a miss falls back to a form-level
- * message rather than blaming the wrong input.
+ * Postgres names the constraint, not the column (`skill_slug_key`). Looking for
+ * a field's column name inside that is a heuristic, and deliberately a soft one:
+ * a miss falls back to a form-level message rather than blaming the wrong
+ * input.
  */
 function uniqueField(model: AdminFormModel, error: unknown): string | null {
   const constraint = String(driverError(error)?.constraint ?? "");
@@ -98,9 +98,8 @@ function uniqueField(model: AdminFormModel, error: unknown): string | null {
  * meant for a server action -- Next's own words are "read-your-own-writes",
  * which is exactly the case here. `revalidateTag` takes a `cacheLife` profile
  * and lets a stale copy be served until it expires, so a save would appear to
- * do nothing until the window passed. This is the same distinction the Django
- * build drew with `CONTENT_CACHE_VERSION_TTL`: the instance that handled the
- * edit dropped its memo at once so the admin showed the change immediately.
+ * do nothing until the window passed -- which is precisely the wrong answer
+ * for the person who just pressed Save.
  *
  * Per model, never global. Saving a skill must not throw away the projects,
  * blog and legal caches, each of which costs a fresh set of round trips to
@@ -257,7 +256,7 @@ export async function saveRecord(
 
   const row = toColumns(model, values);
   // Columns the form does not carry that the database still demands. Only on
-  // insert: an update must not reset the block columns Django still reads.
+  // insert: an update must not reset a creation timestamp or a view counter.
   if (id === null && model.insertDefaults) Object.assign(row, model.insertDefaults());
   let created: string | null = null;
 
@@ -366,9 +365,9 @@ const FOREIGN_KEY_VIOLATION = "23503";
  * reaches the check, which is exactly what a test cleaning up after itself does.
  *
  * What is *not* cleared is a reference this record does not own: an organization
- * used by an experience stays undeletable, which is Django's `PROTECT` and the
- * behaviour that should be kept. It surfaces as a foreign-key violation, caught
- * below and reported rather than raised.
+ * an experience still names stays undeletable, which is what the `RESTRICT` on
+ * that foreign key is for. It surfaces as a foreign-key violation, caught below
+ * and reported rather than raised.
  */
 async function deleteWithChildren(model: AdminFormModel, id: string): Promise<void> {
   const targets = cascadeTargets(model);

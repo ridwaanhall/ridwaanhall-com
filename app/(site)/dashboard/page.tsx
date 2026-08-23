@@ -47,11 +47,12 @@ export default async function DashboardPage() {
             is down simply does not render, which is the degradation this page
             has always implemented.
 
-            This replaces Django's `EXTERNAL_API_BUDGET`. That existed because
-            the two clients ran in sequence inside one request: three 10s
-            timeouts summed to 30s, past the function limit, which the visitor
-            saw as a gateway timeout. Separate boundaries mean the page shell is
-            already sent, so a slow API delays one panel rather than the request.
+            The alternative is a total time budget shared across the clients,
+            which is what running them in sequence inside one request forces:
+            three 10s timeouts sum to 30s, past the function limit, and the
+            visitor sees a gateway timeout. Separate boundaries mean the page
+            shell is already sent, so a slow API delays one panel rather than
+            the whole request.
           */}
           <Suspense fallback={<DashboardPanelSkeleton columns={2} />}>
             <WakatimePanel />
@@ -332,7 +333,7 @@ function HelpIcon({ title }: { title: string }) {
   );
 }
 
-/** "Aug 20, 2026", matching Django's `%b %d, %Y`. */
+/** "Aug 20, 2026". */
 function shortDate(iso: string): string {
   return new Intl.DateTimeFormat("en-US", {
     timeZone: "UTC",

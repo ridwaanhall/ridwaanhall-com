@@ -12,10 +12,10 @@ import type { Award, Certification, Education, Experience } from "@/lib/data/abo
 /**
  * The cards on the about page.
  *
- * Education, awards and certifications shared a near-identical Django template
- * -- logo, title, a date pill on the right, the institution in italics, then
- * either an expandable achievement list or a credential link. That shape is
- * `CredentialCard` here; each caller supplies what differs.
+ * Education, awards and certifications are the same card -- logo, title, a date
+ * pill on the right, the institution in italics, then either an expandable
+ * achievement list or a credential link. That shape is `CredentialCard`; each
+ * caller supplies only what differs.
  */
 
 /** A logo, linked to the organisation's site when there is one. */

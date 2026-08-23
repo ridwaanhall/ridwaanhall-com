@@ -116,7 +116,7 @@ const FADE_MS = 320;
  * *disagreeing*, not animation as such, so the fix makes everything move in
  * lockstep rather than suppressing motion.
  *
- * Three paths, matching the Django implementation exactly:
+ * Three paths:
  *
  * - **View Transitions** (the normal path): the browser animates between two
  *   snapshots of the whole document, so per-element durations are out of the
@@ -140,7 +140,7 @@ const FADE_MS = 320;
  * has already taken its "new" snapshot. Setting it inside the callback makes
  * the snapshot correct; the later effect writes the same value and is a no-op.
  *
- * One deviation from Django: a theme change arriving from *another tab* is
+ * One case is not covered: a theme change arriving from *another tab* is
  * applied by next-themes' own storage listener, so it swaps without the
  * crossfade. It still syncs correctly, and there is no hook to intercept it.
  */

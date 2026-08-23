@@ -3,10 +3,9 @@ import { AboutBanner } from "@/components/site/about-banner";
 /**
  * The CV download banner at the top of the about page's Intro tab.
  *
- * Django carried two copies of this -- `block md:hidden` for a stacked layout
- * and `hidden md:flex` for a side-by-side one -- differing only in flex
- * direction and the width of the button group. One responsive container says
- * the same thing, and it now lives in `<AboutBanner>`, shared with the
+ * One responsive container rather than two copies -- `block md:hidden` stacked
+ * and `hidden md:flex` side by side -- differing only in flex direction and the
+ * width of the button group. It lives in `<AboutBanner>`, shared with the
  * certifications banner.
  *
  * The three links go through this site's own `/cv`, `/cv-latest` and `/cv-copy`

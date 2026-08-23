@@ -28,6 +28,17 @@ jobs:
       # running it here at all.
       - run: npm ci
 
+      # `tsc` on its own cannot type-check this app, and the way it fails is
+      # confusing: six files use `PageProps` and `RouteContext`, which are
+      # globals Next generates from the route tree rather than names anything
+      # imports. A working copy always has them, because a dev server or a build
+      # has already written them into `.next` -- a fresh checkout does not, so
+      # the first time this workflow ever ran it failed on names it had never
+      # been given. `typegen` writes them without the rest of a build, and needs
+      # no database and no secrets to do it.
+      - name: Route types
+        run: npx next typegen
+
       - name: Types
         run: npx tsc --noEmit
 

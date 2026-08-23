@@ -1,14 +1,13 @@
 /**
  * Cache tag namespaces.
  *
- * A direct port of `MODEL_NAMESPACES` / `ENTRY_DEPENDENCIES` in
- * apps/core/cache.py. That design existed because payloads lived in each
- * lambda's own memory, so correctness needed a version stamp in Postgres that
- * every instance could read. Next's tag revalidation is cross-instance by
- * construction, so the stamp table goes away -- but the *dependency map* is
- * still exactly right and is kept verbatim.
+ * A dependency map: which tags an edit to a given model has to invalidate.
  *
- * The rule that made it work still applies: listing a dependency that is not
+ * Tag revalidation is cross-instance by construction, so there is no version
+ * stamp to keep in the database -- an edit handled by one instance cannot leave
+ * another serving a stale copy.
+ *
+ * The rule that makes the map work: listing a dependency that is not
  * real only costs an occasional needless rebuild, whereas *omitting* a real one
  * serves stale content. Err towards listing it.
  */
@@ -31,33 +30,103 @@ export const TAGS = {
 export type Tag = (typeof TAGS)[keyof typeof TAGS];
 
 /**
- * Which model, when written, invalidates which namespaces. Used by the admin's
- * mutation handlers so a save bumps only what it actually affects -- saving a
- * blog post must not throw away the projects, about and legal caches, each of
- * which costs a fresh set of round trips to rebuild.
+ * Which table, when written, invalidates which namespaces.
+ *
+ * `lib/actions/admin.ts` looks this up as `MODEL_TAGS[getTableName(model.from)]`
+ * with a `?? []` behind it, so **the keys have to be the real table names**. Key
+ * it by anything else and every lookup misses in silence: `updateTag` is never
+ * called, the admin still looks right because it revalidates its own path
+ * separately, and the public site serves a cached copy until its lifetime runs
+ * out. `tags.test.ts` asserts the keys against the descriptors for exactly that
+ * reason.
+ *
+ * Child tables are listed as well as parents. They are written through their
+ * parent's inlines rather than a screen of their own, but the page that renders
+ * them is cached under the parent's tag.
+ *
+ * Lookup tables reach further than they look. An organization shows on four
+ * different sections, so renaming one has to expire all four.
  */
 export const MODEL_TAGS: Record<string, readonly Tag[]> = {
-  about_profile: [TAGS.profile],
-  about_donatelink: [TAGS.profile],
-  about_profileskillhighlight: [TAGS.profile],
-  about_experience: [TAGS.experience],
-  about_education: [TAGS.education],
-  about_certification: [TAGS.certification],
-  about_award: [TAGS.award],
-  about_skill: [TAGS.skill],
-  about_organization: [TAGS.organization],
-  about_application: [TAGS.application],
-  about_journeystep: [TAGS.application],
-  blog_blogpost: [TAGS.blog],
-  blog_blogimage: [TAGS.blog],
-  projects_project: [TAGS.project],
-  projects_feature: [TAGS.project],
-  projects_projectimage: [TAGS.project],
-  projects_project_tech_stack: [TAGS.project],
-  openhire_hiringprofile: [TAGS.hiring],
-  openhire_position: [TAGS.hiring],
-  openhire_opentoworkprofile: [TAGS.opentowork],
-  openhire_portfoliohighlight: [TAGS.opentowork],
-  legal_legaldocument: [TAGS.legal],
-  legal_legalsection: [TAGS.legal],
+  // Profile, and the rows that hang off it.
+  profile: [TAGS.profile],
+  profile_link: [TAGS.profile],
+  profile_skill_highlight: [TAGS.profile],
+
+  // About.
+  experience: [TAGS.experience],
+  experience_task: [TAGS.experience],
+  education: [TAGS.education],
+  education_achievement: [TAGS.education],
+  certification: [TAGS.certification],
+  certification_achievement: [TAGS.certification],
+  award: [TAGS.award],
+  skill: [TAGS.skill],
+  application: [TAGS.application],
+  application_step: [TAGS.application],
+
+  // Blog and projects.
+  blog_post: [TAGS.blog],
+  blog_image: [TAGS.blog],
+  blog_tag: [TAGS.blog],
+  project: [TAGS.project],
+  project_feature: [TAGS.project],
+  project_image: [TAGS.project],
+  project_skill: [TAGS.project],
+  project_tag: [TAGS.project],
+
+  // Hiring and open-to-work.
+  hiring_profile: [TAGS.hiring],
+  hiring_list_item: [TAGS.hiring],
+  job_opening: [TAGS.hiring],
+  job_opening_list_item: [TAGS.hiring],
+  open_to_work_profile: [TAGS.opentowork],
+  open_to_work_list_item: [TAGS.opentowork],
+  portfolio_highlight: [TAGS.opentowork],
+
+  // Legal.
+  legal_document: [TAGS.legal],
+  legal_section: [TAGS.legal],
+
+  /*
+   * Shared lookups, which is where the "err towards listing it" rule earns its
+   * keep. An organization is named by experience, education, certifications and
+   * awards; a tag by blog posts and projects; a location by the profile and by
+   * anything that records one.
+   */
+  organization: [
+    TAGS.organization,
+    TAGS.experience,
+    TAGS.education,
+    TAGS.certification,
+    TAGS.award,
+  ],
+  tag: [TAGS.blog, TAGS.project],
+  category: [TAGS.skill, TAGS.blog, TAGS.project],
+  location: [TAGS.profile, TAGS.experience, TAGS.education, TAGS.application, TAGS.hiring, TAGS.opentowork],
+  project_status: [TAGS.project],
+  employment_type: [TAGS.experience, TAGS.hiring, TAGS.opentowork],
+  work_mode: [TAGS.experience, TAGS.hiring, TAGS.opentowork],
+  application_status: [TAGS.application],
+  application_source: [TAGS.application],
+
+  /*
+   * An image is referenced from every area that can show one, so replacing the
+   * file behind an asset has to expire all of them.
+   */
+  media_asset: [
+    TAGS.profile,
+    TAGS.skill,
+    TAGS.organization,
+    TAGS.blog,
+    TAGS.project,
+    TAGS.certification,
+    TAGS.award,
+  ],
 };
+
+/*
+ * The guestbook, comments and accounts are deliberately absent. None of those
+ * read paths is cached -- a message has to appear the moment it is posted -- so
+ * there is no tag to expire and listing one would suggest otherwise.
+ */

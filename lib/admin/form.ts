@@ -588,23 +588,27 @@ export function parseFields(
         }
         break;
       }
-      case "rich-text": {
-        /*
-         * `normaliseNewlines` is not optional here.
-         *
-         * Form submission converts every line break in *every* field value to
-         * CRLF -- not only in a `<textarea>`, which is the case the JSON
-         * editors' note describes. Those escape their newlines inside a JSON
-         * string, so nothing real reaches the encoder; this field carries HTML
-         * with actual newlines in it, and without this an untouched save
-         * rewrote a whole post with carriage returns the stored data has none
-         * of.
-         *
-         * The sanitiser runs in `lib/actions/admin.ts`, not here:
-         * `sanitize-html` is a server package and this module is reachable from
-         * a client component, so importing it would put the whole allow-list
-         * and its HTML parser into the browser bundle.
-         */
+      /*
+       * `normaliseNewlines` is not optional for either of these.
+       *
+       * Form submission converts every line break in *every* field value to
+       * CRLF, and the stored data has no carriage return in it anywhere. So an
+       * untouched save of a multi-paragraph value rewrites the whole column
+       * with characters that were never there -- which is invisible in the
+       * admin, invisible in a diff, and shows up as `` in the rendered page.
+       *
+       * The JSON editors escape their newlines inside a JSON string, so nothing
+       * real reaches the encoder and they are handled elsewhere. These two
+       * carry actual newlines: `rich-text` is HTML, and a `textarea` is
+       * whatever prose somebody typed -- a bio, a comment, a guestbook message.
+       *
+       * The sanitiser runs in `lib/actions/admin.ts`, not here: `sanitize-html`
+       * is a server package and this module is reachable from a client
+       * component, so importing it would put the whole allow-list and its HTML
+       * parser into the browser bundle.
+       */
+      case "rich-text":
+      case "textarea": {
         values[field.name] = normaliseNewlines(text);
         break;
       }

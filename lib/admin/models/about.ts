@@ -670,6 +670,7 @@ export const experienceForm: AdminFormModel = {
   from: experience,
   pk: experience.id,
   label: (values) => String(values.title ?? "Experience"),
+  deleteWarning: "The responsibilities listed under this role are deleted with it.",
   fieldsets: [
     {
       fields: [
@@ -743,6 +744,7 @@ export const educationForm: AdminFormModel = {
   from: education,
   pk: education.id,
   label: (values) => String(values.degree ?? "Education"),
+  deleteWarning: "The achievements listed under this degree are deleted with it.",
   fieldsets: [
     {
       fields: [
@@ -852,6 +854,7 @@ export const certificationForm: AdminFormModel = {
   from: certification,
   pk: certification.id,
   label: (values) => String(values.title ?? "Certification"),
+  deleteWarning: "The achievements listed under this certification are deleted with it.",
   fieldsets: [
     {
       fields: [
@@ -915,6 +918,7 @@ export const applicationForm: AdminFormModel = {
   from: application,
   pk: application.id,
   label: (values) => String(values.position ?? "Application"),
+  deleteWarning: "Every step recorded against this application is deleted with it.",
   fieldsets: [
     {
       fields: [

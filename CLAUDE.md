@@ -417,6 +417,7 @@ npx tsx scripts/check-comments.mjs                     # comment rules, rolled b
 npx tsx scripts/check-emails.mjs                       # all five templates
 npx tsx scripts/check-db-classes.mjs                   # no classes in stored content
 npx tsx --conditions=react-server scripts/check-site-console.mjs
+npx tsx scripts/check-account-panel.mjs                 # sign in / sign out, both states
 npx tsx --conditions=react-server scripts/check-turnstile.mjs
 npx tsx --conditions=react-server scripts/check-storage.mjs
 npx tsx scripts/check-admin.mjs

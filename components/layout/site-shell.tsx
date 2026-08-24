@@ -26,10 +26,18 @@ import type { AboutData } from "@/lib/data/about";
  */
 export function SiteShell({
   about,
+  account,
   adminLink,
   children,
 }: {
   about: AboutData;
+  /**
+   * The account panel -- sign in, or who is signed in -- already wrapped in its
+   * own `<Suspense>` by the layout. An element for the same reason `adminLink`
+   * is one: the answer comes from the database and this component is
+   * `"use client"`.
+   */
+  account?: React.ReactNode;
   /**
    * The admin link, already wrapped in its own `<Suspense>` by the layout.
    *
@@ -71,6 +79,7 @@ export function SiteShell({
 
       <MobileDrawer
         about={about}
+        account={account}
         adminLink={adminLink}
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
@@ -78,7 +87,7 @@ export function SiteShell({
 
       <div className="mx-auto max-w-6xl pt-20 lg:pt-0">
         <div className="flex flex-col lg:flex-row lg:gap-2 lg:py-4 xl:pb-8">
-          <SidebarRail about={about} adminLink={adminLink} />
+          <SidebarRail about={about} account={account} adminLink={adminLink} />
           {/*
             Keyed on the pathname so the entrance animation replays on every
             navigation -- client-side routing keeps the element, so without the

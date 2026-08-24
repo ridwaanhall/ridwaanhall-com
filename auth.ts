@@ -116,11 +116,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 
   pages: {
-    // No provider-picker page: the guestbook already shows both buttons, so an
-    // interstitial would ask a question that has just been answered. Both of
-    // these point back at the guestbook, so a failed or cancelled sign-in lands
-    // where it started rather than on a generic page.
-    signIn: "/guestbook",
-    error: "/guestbook",
+    /*
+     * Both point at the site's own sign-in page.
+     *
+     * They pointed at the guestbook, because that was the only surface with
+     * both provider buttons on it -- there was no sign-in page to name. The
+     * cost was invisible and total: the guestbook reads no search params at
+     * all, so every `?error=` Auth.js delivered there was silently dropped and
+     * a refused sign-in was indistinguishable from one that never happened.
+     * `/sign-in` renders them.
+     *
+     * The admin does not use either. Its gate is rendered by
+     * `app/admin/layout.tsx` in place of the admin itself, and signs people
+     * back in to `/admin` rather than to the home page.
+     */
+    signIn: "/sign-in",
+    error: "/sign-in",
   },
 });

@@ -102,8 +102,18 @@ export function PercentBar({
           />
         </div>
         <div className="w-10 text-right text-sm font-medium">
-          {/* `parseInt`, as the original did -- 25.64 renders as "25%". */}
-          <CountUp value={Math.trunc(entry.percent)} />%
+          {/*
+            A whole percent -- 25.64 renders as "25%" -- except below one, where
+            truncating prints "0%" next to a bar that is visibly not zero and
+            reads as a broken number rather than a small one. The model
+            accounting for 0.54% of a week's AI spend is the row that found it;
+            every other breakdown on this page is well clear of 1%, so nothing
+            already on screen changes.
+          */}
+          <CountUp
+            value={entry.percent < 1 ? Math.round(entry.percent * 10) / 10 : Math.trunc(entry.percent)}
+          />
+          %
         </div>
       </div>
     </li>

@@ -44,17 +44,22 @@ export function DashboardPanelSkeleton({ panel }: { panel: "wakatime" | "github"
             </div>
 
             {/*
-              The AI block: its own heading, four cards four across, and the
-              Cost by Model panel. Roughly a third of the WakaTime panel's
-              height, so leaving it out here is the drift this file exists to
-              prevent.
+              The AI block: its own heading, four cards four across, and its own
+              pair of panels. Roughly half the WakaTime panel's height, so
+              leaving it out here is the drift this file exists to prevent --
+              and the panels have to be a pair rather than one wide block,
+              because below `md` they stack and the section grows by a whole
+              panel.
             */}
             <div className="mt-6 flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
               <SkeletonBar className="h-7 w-56 bg-zinc-900/60" />
               <SkeletonBar className="h-4 w-24 bg-zinc-900/60" />
             </div>
             <SkeletonGrid count={4} columns={4} height={76} />
-            <SkeletonBlock className="mt-4 h-40 rounded-lg sm:rounded-xl" />
+            <div className="mt-4 flex flex-col gap-6 sm:gap-4 md:flex-row">
+              <SkeletonBlock className="flex-1 h-40 rounded-lg sm:rounded-xl" />
+              <SkeletonBlock className="flex-1 h-40 rounded-lg sm:rounded-xl" />
+            </div>
           </>
         ) : (
           <>

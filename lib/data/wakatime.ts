@@ -11,14 +11,26 @@ import { cacheLife, cacheTag } from "next/cache";
  * timeout rather than three.
  */
 
-export type WakatimeEntry = { name: string; percent: number; time: string };
+export type WakatimeEntry = {
+  name: string;
+  percent: number;
+  /** The row's tooltip. */
+  time: string;
+  /**
+   * Printed at the end of the row in place of the percent -- a cost, a line
+   * count. The bar still encodes `percent`, so the proportion survives even
+   * where the number beside it is measured in something else.
+   */
+  value?: string;
+};
 
 /**
  * The last seven days of AI-assisted coding.
  *
- * Tokens and prompts come from `summaries`, cost and the model split from
- * `ai/heuristics`. Two endpoints for one panel is not untidiness -- see
- * `fetchAiHeuristics` for why the daily costs cannot simply be added up.
+ * Tokens and per-project lines come from `summaries`; cost, models and the two
+ * review figures from `ai/heuristics`. Two endpoints for one panel is not
+ * untidiness -- see `fetchAiHeuristics` for why the daily costs cannot simply
+ * be added up.
  */
 export type WakatimeAi = {
   /** "2.0B" -- input and cached input together, as WakaTime's own summary counts them. */
@@ -26,15 +38,24 @@ export type WakatimeAi = {
   tokens_in_exact: string;
   tokens_out: string;
   tokens_out_exact: string;
-  /** Empty when the heuristics call did not answer, which hides the card rather than showing a zero. */
-  cost: string;
-  cost_exact: string;
-  prompts: number;
-  sessions: number;
   ai_lines: number;
   human_lines: number;
   ai_line_percent: number;
-  /** Top three by spend. Empty for the same reason `cost` is. */
+  /** AI lines by project, biggest first. From `summaries`, so always present. */
+  projects: WakatimeEntry[];
+  /*
+   * Everything below comes from the heuristics call, which is allowed to fail
+   * on its own. `has_heuristics` is what the panel gates on -- one flag rather
+   * than four emptiness tests that could disagree.
+   */
+  has_heuristics: boolean;
+  review_percent: string;
+  review_sessions: number;
+  review_detail: string;
+  follow_up_percent: string;
+  follow_up_sessions: number;
+  follow_up_detail: string;
+  /** Top three by spend, each carrying its dollar amount as `value`. */
   models: WakatimeEntry[];
 };
 
@@ -133,8 +154,6 @@ type AiTotals = {
   ai_input_tokens?: number;
   ai_cached_input_tokens?: number;
   ai_output_tokens?: number;
-  ai_prompt_events_total?: number;
-  ai_sessions?: number;
   ai_additions?: number;
   ai_deletions?: number;
   human_additions?: number;
@@ -147,6 +166,8 @@ type Summary = {
     grand_total?: { total_seconds?: number } & AiTotals;
     categories?: { name?: string; total_seconds?: number }[];
     languages?: { name?: string; total_seconds?: number }[];
+    /** Carries the same AI counters as `grand_total`, split by project. */
+    projects?: ({ name?: string } & AiTotals)[];
   }[];
   cumulative_total?: { seconds?: number };
   daily_average?: { seconds_including_other_language?: number };
@@ -160,11 +181,23 @@ type Heuristics = {
   data?: {
     ai_model_total_cost?: number;
     ai_model_breakdown?: { name?: string; cost?: number }[];
+    /** Files a human went back and read, as a share of the ones AI touched. */
+    files_with_review?: number;
+    files_with_review_percent?: number;
+    review_events?: number;
+    /** Files a human went back and *changed*, within `follow_up_window_seconds`. */
+    files_with_follow_up?: number;
+    files_with_follow_up_percent?: number;
+    follow_up_events?: number;
+    follow_up_lines?: number;
+    follow_up_window_seconds?: number;
+    ai_touched_files?: number;
   };
 };
 
 /**
- * The seven-day AI spend, and how it splits across models.
+ * The seven-day AI spend, how it splits across models, and how much of what AI
+ * wrote a human went back to.
  *
  * **Why this is not read from `summaries` like everything else.** Each day's
  * `grand_total` carries an `ai_model_total_cost` of its own, and adding the
@@ -174,9 +207,10 @@ type Heuristics = {
  * figures are not disjoint. Only the heuristics aggregate matches the range it
  * claims to cover, so cost comes from here and tokens come from there.
  *
- * Its own function, and its own failure, because a missing cost should cost the
- * panel one card rather than the whole section: the token counts come from a
- * different call and are unaffected by whatever happens here.
+ * Its own function, and its own failure. Four of the panel's figures and one of
+ * its two bar charts come from here, so losing it is not nothing -- but the
+ * tokens, the per-project lines and both other breakdowns come from
+ * `summaries`, and there is no reason for them to disappear alongside.
  *
  * The tokens are deliberately *not* taken from this response. It carries an
  * `average_ai_usage` block that looks like the right numbers and is not -- it is
@@ -259,13 +293,12 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
 
   const categoryTotals = new Map<string, number>();
   const languageTotals = new Map<string, number>();
+  const projectAiLines = new Map<string, number>();
 
   const ai = {
     input: 0,
     cached: 0,
     output: 0,
-    prompts: 0,
-    sessions: 0,
     aiLines: 0,
     humanLines: 0,
   };
@@ -280,12 +313,16 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
       languageTotals.set(name, (languageTotals.get(name) ?? 0) + (language.total_seconds ?? 0));
     }
 
+    for (const project of day.projects ?? []) {
+      const name = project.name ?? "Unknown";
+      const lines = (project.ai_additions ?? 0) + (project.ai_deletions ?? 0);
+      if (lines > 0) projectAiLines.set(name, (projectAiLines.get(name) ?? 0) + lines);
+    }
+
     const total = day.grand_total ?? {};
     ai.input += total.ai_input_tokens ?? 0;
     ai.cached += total.ai_cached_input_tokens ?? 0;
     ai.output += total.ai_output_tokens ?? 0;
-    ai.prompts += total.ai_prompt_events_total ?? 0;
-    ai.sessions += total.ai_sessions ?? 0;
     ai.aiLines += (total.ai_additions ?? 0) + (total.ai_deletions ?? 0);
     ai.humanLines += (total.human_additions ?? 0) + (total.human_deletions ?? 0);
   }
@@ -328,15 +365,43 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
           .filter((model) => (model.cost ?? 0) > 0)
           .sort((a, b) => (b.cost ?? 0) - (a.cost ?? 0))
           .slice(0, 3)
-          .map((model) => ({
-            name: model.name ?? "Unknown",
-            percent: Math.round(((model.cost ?? 0) / spend) * 10000) / 100,
-            // Read as the bar's tooltip, so it says the money rather than a time.
-            time: usd(model.cost ?? 0, 2),
-          }))
+          .map((model) => {
+            const share = Math.round(((model.cost ?? 0) / spend) * 10000) / 100;
+            return {
+              name: model.name ?? "Unknown",
+              percent: share,
+              // The share moves into the tooltip because the row now prints the
+              // money -- there is no total on screen any more to read it against.
+              time: `${share < 1 ? share : Math.trunc(share)}% of estimated spend`,
+              value: usd(model.cost ?? 0, 2),
+            };
+          })
       : [];
 
   const totalLines = ai.aiLines + ai.humanLines;
+
+  /** AI lines by project, as a share of every AI line written this week. */
+  const projects = [...projectAiLines.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([name, lines]) => ({
+      name,
+      percent: ai.aiLines > 0 ? Math.round((lines / ai.aiLines) * 10000) / 100 : 0,
+      time: `${count(lines)} of ${count(ai.aiLines)} AI lines this week`,
+      value: count(lines),
+    }));
+
+  /*
+   * One flag for the whole heuristics block. The four figures below arrive
+   * together or not at all, and gating each on its own emptiness would let a
+   * zero read as an outage -- a week with no follow-ups is a real 0%, not a
+   * missing one.
+   */
+  const hasHeuristics = heuristics !== null;
+  const reviewed = heuristics?.files_with_review ?? 0;
+  const touched = heuristics?.ai_touched_files ?? 0;
+  const followUpFiles = heuristics?.files_with_follow_up ?? 0;
+  const followUpHours = Math.round((heuristics?.follow_up_window_seconds ?? 0) / 3600);
 
   return {
     start_date: longDateJakarta(summary.start),
@@ -361,13 +426,17 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
       tokens_in_exact: `${count(ai.input)} input + ${count(ai.cached)} cached input`,
       tokens_out: compactNumber(ai.output),
       tokens_out_exact: `${count(ai.output)} output tokens`,
-      cost: spend > 0 ? usd(spend, 0) : "",
-      cost_exact: spend > 0 ? `Calculated from recorded AI token usage (${usd(spend, 2)})` : "",
-      prompts: ai.prompts,
-      sessions: ai.sessions,
       ai_lines: ai.aiLines,
       human_lines: ai.humanLines,
       ai_line_percent: totalLines > 0 ? Math.round((ai.aiLines / totalLines) * 1000) / 10 : 0,
+      projects,
+      has_heuristics: hasHeuristics,
+      review_percent: `${Math.round((heuristics?.files_with_review_percent ?? 0) * 10) / 10}%`,
+      review_sessions: heuristics?.review_events ?? 0,
+      review_detail: `${count(reviewed)} of ${count(touched)} AI-touched files were read back, across ${count(heuristics?.review_events ?? 0)} review sessions`,
+      follow_up_percent: `${Math.round((heuristics?.files_with_follow_up_percent ?? 0) * 10) / 10}%`,
+      follow_up_sessions: heuristics?.follow_up_events ?? 0,
+      follow_up_detail: `${count(followUpFiles)} files were edited again within ${followUpHours} hours, changing ${count(heuristics?.follow_up_lines ?? 0)} lines`,
       models,
     },
   };

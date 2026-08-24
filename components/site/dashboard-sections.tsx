@@ -74,7 +74,17 @@ export function CountUp({ value, className }: { value: number | string; classNam
   );
 }
 
-/** One labelled percentage bar in the language / category breakdowns. */
+/**
+ * One labelled bar in a breakdown panel.
+ *
+ * **The row is a subgrid, not a flex line.** Its three cells belong to the
+ * track list `GradientPanel` defines on the `<ul>`, so every row in a panel
+ * shares one label column and one value column: the label column is as wide as
+ * the longest name in that panel, and the numbers line up down the right. As
+ * independent flex rows they could only guess at a shared width, which is what
+ * a fixed 80px label box was -- too narrow for "Claude-Code", so that one row
+ * wrapped and stood taller than its neighbours.
+ */
 export function PercentBar({
   entry,
   gradient,
@@ -88,33 +98,46 @@ export function PercentBar({
   // width is in the markup so the bar is correct before hydration, and
   // prefers-reduced-motion is handled in the stylesheet.
   return (
-    <li>
-      <div className="flex items-center justify-between gap-3">
-        <div className="w-20 text-sm">
-          <span className="cursor-help" title={entry.time}>
-            {entry.name}
-          </span>
-        </div>
-        <div className="relative flex h-3 flex-1 justify-center rounded-full bg-zinc-800/50">
-          <span
-            className={`${gradient} percent-bar absolute left-0 top-0 h-3 rounded-full`}
-            style={{ "--bar-width": `${entry.percent}%` } as React.CSSProperties}
-          />
-        </div>
-        <div className="w-10 text-right text-sm font-medium">
-          {/*
-            A whole percent -- 25.64 renders as "25%" -- except below one, where
-            truncating prints "0%" next to a bar that is visibly not zero and
-            reads as a broken number rather than a small one. The model
-            accounting for 0.54% of a week's AI spend is the row that found it;
-            every other breakdown on this page is well clear of 1%, so nothing
-            already on screen changes.
-          */}
-          <CountUp
-            value={entry.percent < 1 ? Math.round(entry.percent * 10) / 10 : Math.trunc(entry.percent)}
-          />
-          %
-        </div>
+    <li className="col-span-3 grid grid-cols-subgrid items-center">
+      {/*
+        `wrap-anywhere`, not `break-words`. The half-panel cap on the label
+        column is a `fit-content()`, and no track can be sized below its
+        content's min-content width -- which for a name carrying no spaces or
+        hyphens is the whole word. A project called
+        "myprojectwithnobreaks" then measured 255px against a 188px cap and
+        squeezed the bar down to 24px. `overflow-wrap: anywhere` is the one
+        that counts toward intrinsic sizing, so the cap holds and the name
+        wraps; `break-word` alone breaks the line and still blows out the
+        track.
+      */}
+      <span className="cursor-help text-sm wrap-anywhere" title={entry.time}>
+        {entry.name}
+      </span>
+      <div className="relative h-3 rounded-full bg-zinc-800/50">
+        <span
+          className={`${gradient} percent-bar absolute left-0 top-0 h-3 rounded-full`}
+          style={{ "--bar-width": `${entry.percent}%` } as React.CSSProperties}
+        />
+      </div>
+      <div className="text-right text-sm font-medium whitespace-nowrap">
+        {entry.value ?? (
+          <>
+            {/*
+              A whole percent -- 25.64 renders as "25%" -- except below one,
+              where truncating prints "0%" next to a bar that is visibly not
+              zero and reads as a broken number rather than a small one. The
+              model accounting for 0.54% of a week's AI spend is the row that
+              found it; every other breakdown here is well clear of 1%, so
+              nothing else on screen changes.
+            */}
+            <CountUp
+              value={
+                entry.percent < 1 ? Math.round(entry.percent * 10) / 10 : Math.trunc(entry.percent)
+              }
+            />
+            %
+          </>
+        )}
       </div>
     </li>
   );

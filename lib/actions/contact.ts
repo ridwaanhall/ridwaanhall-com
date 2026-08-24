@@ -57,7 +57,7 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
 
   const delivered = await sendEmail({
     to: owners,
-    subject: `New Contact Form Message from ${name}`,
+    subject: `New message from ${name}`,
     body: contactNotification({ name, senderEmail: email, message }),
     // A reply goes straight to whoever wrote in, not back to the site.
     replyTo: [email],
@@ -75,7 +75,7 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   // to act on. `sendEmail` logs and swallows its own errors.
   void sendEmail({
     to: [email],
-    subject: "Thanks for contacting Ridwan Halim",
+    subject: "Your message is on its way",
     body: contactAutoreply({ name, senderEmail: email, message }),
     // Replying to the confirmation reaches the owner, not the no-reply sender.
     replyTo: owners,

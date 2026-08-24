@@ -81,6 +81,9 @@ DETAILS
 VIEW GUESTBOOK
   {{ guestbook_url }}
 
+Replying to this email reaches Ridwan directly.
+If someone answers you on the guestbook, you will hear about it.
+
 ════════════════════════════════════════════════════
 ridwaanhall.com · Automated notice
 `;
@@ -100,6 +103,8 @@ ENTRY
 ──────────────────────────────────────────────────────
 {{ message_text }}
 ──────────────────────────────────────────────────────
+
+Reply to this email to respond directly to {{ sender_email }}.
 
 OPEN GUESTBOOK
   {{ guestbook_url }}
@@ -128,6 +133,9 @@ REPLY FROM {{ reply_name }} · {{ timestamp }}
 
 VIEW FULL CONVERSATION
   {{ guestbook_url }}
+
+To answer {{ reply_name }}, reply on the guestbook.
+Replying to this email reaches Ridwan instead.
 
 ════════════════════════════════════════════════════
 ridwaanhall.com · Reply notification

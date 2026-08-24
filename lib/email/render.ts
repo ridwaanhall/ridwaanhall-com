@@ -1,5 +1,15 @@
 import { escapeHtml, messageHtml } from "@/lib/email/escape";
-import { button, fields, heading, lede, note, quote, shell, strong } from "@/lib/email/layout";
+import {
+  button,
+  fields,
+  heading,
+  lede,
+  note,
+  quote,
+  shell,
+  strong,
+  type BadgeTone,
+} from "@/lib/email/layout";
 import * as text from "@/lib/email/templates";
 
 /**
@@ -15,6 +25,20 @@ import * as text from "@/lib/email/templates";
  * `fill` throws on an unmatched `{{ key }}` rather than leaving it in place. A
  * plain string replace sends the placeholder to the reader, and an email is not
  * a page you can quietly fix afterwards. `scripts/check-emails.mjs` covers it.
+ *
+ * **What each one promises about Reply-To is part of its copy**, and the
+ * dispatch has to keep it true. `lib/email/guestbook-plan.ts` and
+ * `lib/actions/contact.ts` are where the header is actually set:
+ *
+ *   contactNotification         reply reaches the sender
+ *   contactAutoreply            reply reaches the owner
+ *   guestbookNotification       reply reaches the poster
+ *   guestbookAutoreply          reply reaches the owner
+ *   guestbookReplyNotification  reply reaches the owner, never the replier
+ *
+ * That last one is why the reply notification renders no address for the
+ * person who answered: the two readers are strangers to each other, and an
+ * address in the body would hand over what the header deliberately withholds.
  */
 
 const PLACEHOLDER = /\{\{\s*([\w.]+)\s*\}\}/g;
@@ -42,10 +66,17 @@ const displayName = (name: string) => name || "there";
 const nameDisplay = (name: string, email: string) => name || email;
 
 export type ContactEmail = { name: string; senderEmail: string; message: string };
-export type GuestbookEmail = ContactEmail & { timestamp: string; guestbookUrl: string };
+export type GuestbookEmail = ContactEmail & {
+  timestamp: string;
+  guestbookUrl: string;
+  /** Shows a role pill beside the name. Omitted for an ordinary visitor. */
+  role?: BadgeTone;
+};
 export type ReplyEmail = {
   originalName: string;
   replyName: string;
+  /** The *replier's* role, if they hold one. Their address is never rendered. */
+  replyRole?: BadgeTone;
   replyMessage: string;
   originalMessage: string;
   timestamp: string;
@@ -56,20 +87,21 @@ export type ReplyEmail = {
 export type Rendered = { html: string; text: string };
 
 export function contactNotification({ name, senderEmail, message }: ContactEmail): Rendered {
+  const from = nameDisplay(name, senderEmail);
   return {
     html: shell({
       title: "New contact form message",
-      preheader: `${nameDisplay(name, senderEmail)} sent you a message`,
+      preheader: `${from} sent you a message`,
       eyebrow: "New message",
       content: [
         heading("Someone got in touch"),
-        lede(`A new message came in through the contact form on your site.`),
+        lede("A new message came in through the contact form on your site."),
         fields([
-          { label: "From", value: nameDisplay(name, senderEmail) },
+          { label: "From", value: from },
           { label: "Email", value: senderEmail, href: `mailto:${senderEmail}` },
         ]),
         quote({ label: "Message", messageHtml: messageHtml(message) }),
-        note("Replying to this email goes straight back to them."),
+        note(`Replying to this email answers ${escapeHtml(from)} directly.`),
       ].join("\n"),
     }),
     text: fill(text.contactNotificationText, {
@@ -83,18 +115,20 @@ export function contactNotification({ name, senderEmail, message }: ContactEmail
 export function contactAutoreply({ name, senderEmail, message }: ContactEmail): Rendered {
   return {
     html: shell({
-      title: "Thanks for getting in touch",
+      title: "Your message is on its way",
       preheader: "Your message reached me — I'll reply soon.",
-      eyebrow: "Confirmation",
+      eyebrow: "Message sent",
       content: [
-        heading(`Thanks, ${displayName(name)}`),
+        heading("Your message is on its way"),
         lede(
-          `Your message reached me and I read every one. I usually reply within a day or two.`,
+          `Thanks, ${strong(displayName(name))} — it reached me and I will come back to you soon. Here is a copy for your records.`,
         ),
-        quote({ label: "What you sent", messageHtml: messageHtml(message) }),
-        note(
-          `This is an automatic confirmation, sent to ${strong(senderEmail)}. Replying to it reaches me directly.`,
-        ),
+        fields([
+          { label: "Name", value: nameDisplay(name, senderEmail) },
+          { label: "Email", value: senderEmail },
+        ]),
+        quote({ label: "Your message", messageHtml: messageHtml(message) }),
+        note("Replying to this email reaches me directly — no need to fill the form in again."),
       ].join("\n"),
     }),
     text: fill(text.contactAutoreplyText, {
@@ -113,22 +147,32 @@ export function guestbookNotification({
   message,
   timestamp,
   guestbookUrl,
+  role,
 }: GuestbookEmail): Rendered {
+  const from = nameDisplay(name, senderEmail);
   return {
     html: shell({
       title: "New guestbook message",
-      preheader: `${name} left a message in your guestbook`,
+      preheader: `${from} left a message in your guestbook`,
       eyebrow: "Guestbook",
       content: [
-        heading("A new guestbook message"),
-        lede(`${strong(name)} left a message in your guestbook.`),
+        heading(`${from} signed the guestbook`),
+        lede("A new message was posted on your guestbook."),
         fields([
-          { label: "From", value: name },
-          { label: "Email", value: senderEmail, href: `mailto:${senderEmail}` },
+          { label: "From", value: from, badge: role },
+          // An account can carry no address -- GitHub returns one only when the
+          // user has made it public. The row is dropped rather than filled with
+          // a stand-in, because a stand-in is an address somebody would try.
+          ...(senderEmail
+            ? [{ label: "Email", value: senderEmail, href: `mailto:${senderEmail}` }]
+            : []),
           { label: "Posted", value: timestamp },
         ]),
         quote({ label: "Message", messageHtml: messageHtml(message) }),
         button({ href: guestbookUrl, label: "Open the guestbook" }),
+        // Only promised when it is true: with no address there is no Reply-To,
+        // and a reply would go to the send-only sender instead.
+        senderEmail ? note(`Replying to this email answers ${escapeHtml(from)} directly.`) : "",
       ].join("\n"),
     }),
     text: fill(text.guestbookNotificationText, {
@@ -150,17 +194,23 @@ export function guestbookAutoreply({
 }: GuestbookEmail): Rendered {
   return {
     html: shell({
-      title: "Your message has been sent",
+      title: "Your message is on the guestbook",
       preheader: "Your guestbook message is live.",
-      eyebrow: "Confirmation",
+      eyebrow: "Message posted",
       content: [
-        heading(`Thanks, ${displayName(name)}`),
-        lede("Your message is up on the guestbook. Thanks for leaving a trace."),
-        fields([{ label: "Posted", value: timestamp }]),
-        quote({ label: "What you wrote", messageHtml: messageHtml(message) }),
+        heading("Your message is on the guestbook"),
+        lede(
+          `Thanks for signing it, ${strong(displayName(name))}. Here is exactly what went up.`,
+        ),
+        fields([
+          { label: "Name", value: nameDisplay(name, senderEmail) },
+          { label: "Email", value: senderEmail },
+          { label: "Posted", value: timestamp },
+        ]),
+        quote({ label: "Your message", messageHtml: messageHtml(message) }),
         button({ href: guestbookUrl, label: "See it on the guestbook" }),
         note(
-          `Sent to ${strong(nameDisplay(name, senderEmail))}. Replying to this email reaches me directly.`,
+          "Replying to this email reaches me directly. If someone answers you on the guestbook, I will let you know.",
         ),
       ].join("\n"),
     }),
@@ -178,6 +228,7 @@ export function guestbookAutoreply({
 export function guestbookReplyNotification({
   originalName,
   replyName,
+  replyRole,
   replyMessage,
   originalMessage,
   timestamp,
@@ -189,12 +240,26 @@ export function guestbookReplyNotification({
       preheader: `${replyName} replied to your guestbook message`,
       eyebrow: "New reply",
       content: [
-        heading(`${displayName(originalName)}, you have a reply`),
-        lede(`${strong(replyName)} replied to your message in the guestbook.`),
-        fields([{ label: "Replied", value: timestamp }]),
+        heading(`${replyName} replied to you`),
+        lede(
+          `Hi ${strong(displayName(originalName))} — someone answered the message you left on the guestbook.`,
+        ),
+        // No address for the replier, deliberately: see the note at the top of
+        // this file. The two readers are strangers and Reply-To is the owner.
+        fields([
+          { label: "Replied by", value: replyName, badge: replyRole },
+          { label: "Replied", value: timestamp },
+        ]),
         quote({ label: "Their reply", messageHtml: messageHtml(replyMessage) }),
-        quote({ label: "Your message", messageHtml: messageHtml(originalMessage) }),
-        button({ href: guestbookUrl, label: "Read the thread" }),
+        quote({
+          label: "In reply to yours",
+          messageHtml: messageHtml(originalMessage),
+          tone: "quiet",
+        }),
+        button({ href: guestbookUrl, label: "Read it on the guestbook" }),
+        note(
+          `To answer ${escapeHtml(replyName)}, reply on the guestbook — hitting reply here reaches me instead.`,
+        ),
       ].join("\n"),
     }),
     text: fill(text.guestbookReplyNotificationText, {

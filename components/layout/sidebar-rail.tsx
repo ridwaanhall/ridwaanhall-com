@@ -47,10 +47,17 @@ export function SidebarRail({
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto custom-scroll">
         <div className="w-full px-3 pt-8 pb-4">
           <div className="flex w-full flex-col items-start gap-0.5">
+            {/*
+              `priority` for the same reason the mobile navbar's copy carries
+              it: from `md` up this rail is the header, and its photo is the
+              largest thing painted above the fold -- Next reported it as the
+              Largest Contentful Paint and asked for exactly this.
+            */}
             <ProfileAvatar
               src={about.image_url}
               name={about.name}
               size={60}
+              priority
               className="duration-700 ease-in-out scale-100 hover:scale-105"
             />
 

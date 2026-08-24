@@ -7,7 +7,7 @@ import { DashboardPanelSkeleton } from "@/components/site/dashboard-skeleton";
 import { CountUp, PercentBar } from "@/components/site/dashboard-sections";
 import { getAboutData, type AboutData } from "@/lib/data/about";
 import { getGitHubStats, type GitHubStats } from "@/lib/data/github";
-import { getWakatimeStats, type WakatimeStats } from "@/lib/data/wakatime";
+import { getWakatimeStats, type WakatimeAi, type WakatimeStats } from "@/lib/data/wakatime";
 import { dashboardSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { dashboardSchemas } from "@/lib/seo/schemas-for-page";
@@ -157,25 +157,105 @@ function Wakatime({ stats }: { stats: WakatimeStats }) {
           )}
         </GradientPanel>
 
-        <GradientPanel title="Category & OS" gradient="from-purple-500 to-pink-600">
-          {stats.top_1_category || stats.top_2_os.length > 0 ? (
-            <>
-              {stats.top_1_category && (
-                <PercentBar
-                  entry={stats.top_1_category}
-                  gradient="bg-gradient-to-r from-purple-500 to-pink-600"
-                />
-              )}
-              {stats.top_2_os.map((os) => (
-                <PercentBar
-                  key={os.name}
-                  entry={os}
-                  gradient="bg-gradient-to-r from-purple-500 to-pink-600"
-                />
-              ))}
-            </>
+        <GradientPanel title="Top Categories" gradient="from-purple-500 to-pink-600">
+          {stats.top_3_categories.length > 0 ? (
+            stats.top_3_categories.map((category) => (
+              <PercentBar
+                key={category.name}
+                entry={category}
+                gradient="bg-gradient-to-r from-purple-500 to-pink-600"
+              />
+            ))
           ) : (
-            <EmptyRow>No category or OS data available</EmptyRow>
+            <EmptyRow>No category data available</EmptyRow>
+          )}
+        </GradientPanel>
+      </div>
+
+      <AiAnalytics ai={stats.ai} />
+    </div>
+  );
+}
+
+/**
+ * The AI half of the WakaTime panel.
+ *
+ * Inside the same block rather than a section of its own: it is the same seven
+ * days, cut a different way, and a reader who scrolls past the categories has
+ * not left WakaTime's numbers behind.
+ *
+ * Four of the six figures here come from the AI heuristics call, which
+ * `lib/data/wakatime.ts` lets fail on its own. `has_heuristics` is what they
+ * are gated on rather than their own values: a week with no follow-ups is a
+ * real 0%, and testing for emptiness would read it as an outage.
+ */
+function AiAnalytics({ ai }: { ai: WakatimeAi }) {
+  return (
+    <div className="mt-6">
+      <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
+        <h2 className="text-xl font-medium">AI Coding Analytics</h2>
+        <p className="text-xs sm:text-sm">Last 7 Days</p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <StatCard
+          label="Tokens In"
+          hint={`${ai.tokens_in_exact}. ${ai.ai_line_percent}% of lines changed were written by AI.`}
+          value={ai.tokens_in}
+        />
+        <StatCard label="Tokens Out" hint={ai.tokens_out_exact} value={ai.tokens_out} />
+        {ai.has_heuristics && (
+          <>
+            <StatCard
+              label="Human Review"
+              hint={ai.review_detail}
+              value={
+                <>
+                  {ai.review_percent}{" "}
+                  <span className="text-xs text-zinc-400">({ai.review_sessions} sessions)</span>
+                </>
+              }
+            />
+            <StatCard
+              label="Human Follow-up"
+              hint={ai.follow_up_detail}
+              value={
+                <>
+                  {ai.follow_up_percent}{" "}
+                  <span className="text-xs text-zinc-400">({ai.follow_up_sessions} sessions)</span>
+                </>
+              }
+            />
+          </>
+        )}
+      </div>
+
+      <div className="mt-4 flex flex-col gap-6 sm:gap-4 md:flex-row">
+        <GradientPanel title="Cost by Model" gradient="from-indigo-400 to-purple-600">
+          {ai.models.length > 0 ? (
+            ai.models.map((model) => (
+              <PercentBar
+                key={model.name}
+                entry={model}
+                gradient="bg-gradient-to-r from-indigo-400 to-purple-600"
+              />
+            ))
+          ) : (
+            <EmptyRow>No model cost data available</EmptyRow>
+          )}
+        </GradientPanel>
+
+        <GradientPanel title="AI Lines by Project" gradient="from-purple-500 to-pink-600">
+          {ai.projects.length > 0 ? (
+            ai.projects.map((project) => (
+              <PercentBar
+                key={project.name}
+                entry={project}
+                gradient="bg-gradient-to-r from-purple-500 to-pink-600"
+              />
+            ))
+          ) : (
+            <EmptyRow>No project data available</EmptyRow>
           )}
         </GradientPanel>
       </div>
@@ -299,14 +379,32 @@ function GradientPanel({
     >
       <div className="h-full w-full rounded-lg sm:rounded-xl bg-black p-3 sm:p-4">
         <h3 className="absolute -top-3 left-3 bg-black px-2">{title}</h3>
-        <ul className="flex flex-col gap-3 px-1 py-1">{children}</ul>
+        {/*
+          The rows share these tracks through `grid-cols-subgrid`, which is what
+          lets a panel size its label column to its own longest name instead of
+          to a number picked in advance.
+
+          `fit-content(50%)` is the rule in one function: the column takes the
+          width of the widest label, unless that would pass half the panel, at
+          which point it stops there and that label wraps over two lines. It is
+          written as a style rather than an arbitrary class because a class
+          carrying parentheses and a percent sign is exactly what the
+          `@source not` lines in globals.css exist to keep out of the scan.
+        */}
+        <ul
+          className="grid gap-3 px-1 py-1"
+          style={{ gridTemplateColumns: "fit-content(50%) 1fr auto" }}
+        >
+          {children}
+        </ul>
       </div>
     </div>
   );
 }
 
+/** `col-span-3` because it shares the `<ul>` with the rows and their three tracks. */
 function EmptyRow({ children }: { children: React.ReactNode }) {
-  return <li className="text-center text-zinc-400 text-sm py-4">{children}</li>;
+  return <li className="col-span-3 text-center text-zinc-400 text-sm py-4">{children}</li>;
 }
 
 /**

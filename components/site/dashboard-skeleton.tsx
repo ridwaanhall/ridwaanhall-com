@@ -9,12 +9,13 @@ import { SkeletonBar, SkeletonBlock, SkeletonGrid } from "@/components/skeleton"
  *
  * **Named after the panel rather than parameterised by shape.** It used to take
  * a column count and draw four cards either way, which was wrong for both:
- * WakaTime renders six cards and two gradient panels under them, GitHub renders
- * four and a contribution heatmap. Held at four bare cards, the panel came in
- * at less than half the height it was standing in for, and the page jumped by
- * the difference -- twice, since the two panels stream independently. These are
- * the skeletons a reader actually watches, because they are waiting on a third
- * party rather than on a payload.
+ * WakaTime renders six cards, two gradient panels, and an AI block of four more
+ * cards over a third panel; GitHub renders four and a contribution heatmap.
+ * Held at four bare cards, the panel came in at less than half the height it
+ * was standing in for, and the page jumped by the difference -- twice, since
+ * the two panels stream independently. These are the skeletons a reader
+ * actually watches, because they are waiting on a third party rather than on a
+ * payload.
  *
  * The column counts are written out rather than interpolated: Tailwind
  * generates a class only if it can see it in the source, so
@@ -36,7 +37,25 @@ export function DashboardPanelSkeleton({ panel }: { panel: "wakatime" | "github"
             {/* Six stat cards, two across. */}
             <SkeletonGrid count={6} columns={2} height={76} />
 
-            {/* Top Languages and Category & OS, side by side from `md`. */}
+            {/* Top Languages and Top Categories, side by side from `md`. */}
+            <div className="mt-4 flex flex-col gap-6 sm:gap-4 md:flex-row">
+              <SkeletonBlock className="flex-1 h-40 rounded-lg sm:rounded-xl" />
+              <SkeletonBlock className="flex-1 h-40 rounded-lg sm:rounded-xl" />
+            </div>
+
+            {/*
+              The AI block: its own heading, four cards four across, and its own
+              pair of panels. Roughly half the WakaTime panel's height, so
+              leaving it out here is the drift this file exists to prevent --
+              and the panels have to be a pair rather than one wide block,
+              because below `md` they stack and the section grows by a whole
+              panel.
+            */}
+            <div className="mt-6 flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
+              <SkeletonBar className="h-7 w-56 bg-zinc-900/60" />
+              <SkeletonBar className="h-4 w-24 bg-zinc-900/60" />
+            </div>
+            <SkeletonGrid count={4} columns={4} height={76} />
             <div className="mt-4 flex flex-col gap-6 sm:gap-4 md:flex-row">
               <SkeletonBlock className="flex-1 h-40 rounded-lg sm:rounded-xl" />
               <SkeletonBlock className="flex-1 h-40 rounded-lg sm:rounded-xl" />

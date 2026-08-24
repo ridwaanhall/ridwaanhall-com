@@ -15,7 +15,7 @@
 - **Supabase-powered**: Postgres and Storage (blog and project images, logos, the profile photo) both on Supabase, reached through Drizzle ORM and a small storage client rather than an SDK
 - **Light and dark themes**: Dark by default, with a toggle in the sidebar and mobile navbar. Light mode is produced by remapping the Tailwind palette rather than by adding `dark:` variants, so both themes stay in sync automatically — see [Theming](#theming)
 - **Content caching**: Every read path is behind `use cache` with a tag per content area, so an edit invalidates only what it touched. Tag revalidation is cross-instance by construction, which matters on serverless where an edit handled by one instance must not leave the others stale
-- **Real-time dashboard**: Live GitHub contribution graph and WakaTime coding-activity stats, cached for 15 minutes
+- **Real-time dashboard**: Live GitHub contribution graph, WakaTime coding-activity stats, and a seven-day AI breakdown — tokens, estimated spend and cost by model — cut on Jakarta time and refreshed every 15 minutes
 - **Interactive guestbook**: Google/GitHub OAuth login, threaded replies, author/co-author roles, message pinning (up to 3 at a time), automatic link detection, email notifications — or disable it entirely with one env var
 - **Blog and projects**: Paginated, searchable listings with multi-image support, tags, categories, threaded comments, and a project lifecycle status system
 - **SEO built in**: Per-page meta tags, Open Graph, Twitter Cards, JSON-LD schema, and auto-generated sitemaps/robots.txt

@@ -12,6 +12,7 @@ import {
   type FormValues,
 } from "@/lib/admin/form";
 import { applyImageFields, imageFields } from "@/lib/admin/images";
+import { keyForMediaId, keysForMediaIds, mediaIdForKey } from "@/lib/admin/media";
 import { db } from "@/lib/db/client";
 import { isUuid } from "@/lib/utils/uuid";
 
@@ -75,7 +76,7 @@ export async function loadInlineRows(
       asc(inline.orderColumn ?? positionColumn(inline) ?? inline.pk),
     )) as Record<string, unknown>[];
 
-  return rows.map((row) => {
+  const mapped = rows.map((row) => {
     const values: InlineRow = { __id: String(row[INLINE_ID]) };
     for (const field of inline.fields) {
       const raw = row[field.name];
@@ -83,6 +84,35 @@ export async function loadInlineRows(
     }
     return values;
   });
+
+  /*
+   * The column holds an asset id; the image control works in storage keys. The
+   * record's own fields are translated in `lib/admin/record.ts` and this is the
+   * same seam for its children -- see `lib/admin/media.ts` for why it lives at
+   * the edge rather than in either half.
+   *
+   * Leaving it out is not a cosmetic bug. The uuid reached the preview as if it
+   * were a key, so the admin asked the bucket for `.../media/<uuid>` and got
+   * `NoSuchKey` -- every blog gallery and every project gallery showed a broken
+   * image while the public site, which reads through `assetUrl`, was fine.
+   */
+  const pictures = imageFields(inline.fields);
+  if (pictures.length > 0) {
+    const ids = mapped.flatMap((row) =>
+      pictures
+        .map((field) => row[field.name])
+        .filter((value): value is string => typeof value === "string" && value !== ""),
+    );
+    const keys = await keysForMediaIds(ids);
+    for (const row of mapped) {
+      for (const field of pictures) {
+        const stored = row[field.name];
+        row[field.name] = typeof stored === "string" && stored ? (keys.get(stored) ?? "") : "";
+      }
+    }
+  }
+
+  return mapped;
 }
 
 /** One blank row, for the editor's "add" button. */
@@ -130,9 +160,11 @@ export async function inlineImageKeys(
     if (pictures.length === 0) continue;
     const shape = Object.fromEntries(pictures.map((field) => [field.name, field.column]));
     const rows = await db.select(shape).from(inline.table).where(inlineWhere(inline, parentId));
-    for (const row of rows) {
-      for (const value of Object.values(row)) if (typeof value === "string" && value) keys.push(value);
-    }
+    // The column names an asset row, and cleanup works in storage keys.
+    const ids = rows.flatMap((row) =>
+      Object.values(row).filter((value): value is string => typeof value === "string" && value !== ""),
+    );
+    for (const key of (await keysForMediaIds(ids)).values()) keys.push(key);
   }
   return keys;
 }
@@ -215,11 +247,11 @@ export async function saveInlines(
       if (pictures.length > 0) {
         const shape = Object.fromEntries(pictures.map((field) => [field.name, field.column]));
         const going = await db.select(shape).from(inline.table).where(inArray(inline.pk, removed));
-        for (const row of going) {
-          for (const value of Object.values(row)) {
-            if (typeof value === "string" && value) stale.push(value);
-          }
-        }
+        // Asset ids on the way out; `deleteUnreferenced` counts storage keys.
+        const ids = going.flatMap((row) =>
+          Object.values(row).filter((value): value is string => typeof value === "string" && value !== ""),
+        );
+        stale.push(...(await keysForMediaIds(ids)).values());
       }
       await db.delete(inline.table).where(inArray(inline.pk, removed));
     }
@@ -254,6 +286,20 @@ export async function saveInlines(
       for (const field of inline.fields) {
         if (field.readOnly) continue;
         if (!(field.name in row.values)) continue;
+        /*
+         * `applyImageFields` hands back the storage key it just uploaded to;
+         * the column wants the asset id. Writing the key straight through put
+         * "project/foo-1a2b3c4d.webp" into a uuid column, which Postgres
+         * refuses with `22P02 invalid input syntax for type uuid` -- so adding
+         * a gallery image failed outright. Untouched rows never reached it,
+         * because `parseFields` skips image fields and an unedited one is
+         * absent from `row.values` entirely, which is why only uploads broke.
+         */
+        if (field.kind === "image") {
+          const key = row.values[field.name];
+          payload[keyFor(field)] = typeof key === "string" && key ? await mediaIdForKey(key) : null;
+          continue;
+        }
         payload[keyFor(field)] = row.values[field.name];
       }
       // Position is the order, so a moved row needs no input of its own.
@@ -287,7 +333,17 @@ async function currentInlineImages(
   const shape = Object.fromEntries(fields.map((field) => [field.name, field.column]));
   const [row] = await db.select(shape).from(inline.table).where(eq(inline.pk, id)).limit(1);
   if (!row) return {};
-  return Object.fromEntries(
-    Object.entries(row).map(([name, value]) => [name, typeof value === "string" ? value : ""]),
+  /*
+   * Keys, not ids: `applyImageFields` compares this against the key it derives
+   * from the uploaded bytes to decide whether the old file went stale. Against
+   * a uuid that comparison was never equal, so re-uploading the same image
+   * offered the file it had just written as a cleanup candidate.
+   */
+  const entries = await Promise.all(
+    Object.entries(row).map(async ([name, value]) => {
+      const stored = typeof value === "string" ? value : "";
+      return [name, stored ? await keyForMediaId(stored) : ""] as const;
+    }),
   );
+  return Object.fromEntries(entries);
 }

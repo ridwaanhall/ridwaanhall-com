@@ -315,6 +315,26 @@ seen.
   and everything else points at it with a foreign key, so the count is over
   those six columns — `lib/storage/cleanup.ts` lists them and
   `scripts/check-storage.mjs` proves the list against the catalogue.
+- **A form works in storage keys; the schema works in asset ids.** A column like
+  `project_image.media_id` names a `media_asset` row, because one file is named
+  by many records and repeating the string in each is what reference counting
+  exists to avoid. `lib/admin/media.ts` is the one place that converts, and
+  **nothing in the type system says a caller went through it** — both sides are
+  `string`, so handing a uuid to something expecting a key type checks, builds,
+  lints and renders. It renders wrongly: the admin asked the bucket for
+  `.../media/<uuid>` and Supabase answered `NoSuchKey`, so every blog and project
+  gallery previewed broken. Only the record's own fields were converted; its
+  inline rows were not, in all four directions — the preview, the staleness
+  comparison, the cleanup list, and the write, where a key going into a uuid
+  column raises `22P02`. **Cross that seam through `lib/admin/media.ts`, never by
+  passing the column value along.**
+- **A storage key does not say where the file is served from.**
+  `media_asset.source` does: `storage` is an object in the bucket, `static` is a
+  path under `public/` — the 74 bundled skill icons. `assetUrl` is the single
+  thing that knows which, and `mediaUrl` alone sends a static key to the bucket,
+  which is how all 78 icon previews became `NoSuchKey`.
+  `scripts/check-admin-media.mjs` proves both halves: every image a form renders
+  is a key, and every URL it builds resolves.
 - **An email's dark mode is an overlay, and an inline style outranks a class.**
   `lib/email/layout.ts` writes the light palette inline on every element and
   repaints it from one `<style>` block under `prefers-color-scheme: dark`. Every
@@ -434,6 +454,7 @@ npx tsx --conditions=react-server scripts/check-site-console.mjs
 npx tsx scripts/check-account-panel.mjs                 # sign in / sign out, both states
 npx tsx --conditions=react-server scripts/check-turnstile.mjs
 npx tsx --conditions=react-server scripts/check-storage.mjs
+npx tsx --conditions=react-server scripts/check-admin-media.mjs   # the id/key seam
 npx tsx scripts/check-admin.mjs
 npx tsx --conditions=react-server scripts/check-admin-console.mjs
 npx tsx --conditions=react-server scripts/check-admin-forms.mjs

@@ -27,12 +27,19 @@ export const LABEL_COLUMNS = 2;
 /**
  * The closest two labels may sit without touching.
  *
- * Real months land 3 to 5 columns apart -- a month is four or five weeks, and
- * the Sunday/Monday shift below can take one back -- so 3 is the natural floor
- * and anything under it is a partial month crowding its neighbour. Three
- * columns is 36.8px at the narrow end against a 24px name.
+ * One label's width, which is the whole of the requirement: a name needs the
+ * room it occupies and not a column more. Two columns is 24.5px at the
+ * calendar's narrowest against the 24px of the widest name, and 31.7px at
+ * desktop width.
+ *
+ * It was 3 for a while, on the reasoning that real months land 3 to 5 columns
+ * apart so 3 was the natural floor. That confused a comfortable gap with a
+ * necessary one. Sweeping every end-date in a year says only the first pair is
+ * ever crowded, and of those, five in six were already 2 columns apart -- so
+ * the extra column moved 84 labels that had nothing wrong with them, and put
+ * the second month a fortnight further right than it had to be.
  */
-export const MIN_LABEL_GAP = 3;
+export const MIN_LABEL_GAP = LABEL_COLUMNS;
 
 type Week = { days: { date: string }[] };
 type Month = { firstDay: string; name: string };
@@ -62,14 +69,20 @@ export type MonthLabel = { key: string; name: string; column: number };
  * relative to its own month and never look at the one before it, so a calendar
  * opening mid-month puts two names on top of each other: a window starting 24
  * August gives August 8 days over 2 columns -- enough to clear rule 4 -- and
- * September's base column is the very next one. The two names overlapped by
- * 7-11px. Sweeping every end-date in a year finds 98 such pairs.
+ * September's base column is the very next one, 12px away from a 23px name.
  *
- * So a second pass walks left to right and pushes any label that came out too
- * close to its predecessor. That is a real trade: a pushed label no longer
- * stands above its month's first column. It is the lesser fault -- two names
- * printed over each other are unreadable, where a name a fortnight to the right
- * still reads and still points into its own month.
+ * So a second pass walks left to right and pushes any label that came out
+ * closer than `MIN_LABEL_GAP` to its predecessor. It moves each by as little as
+ * that allows, because the push is itself a small lie: a moved label no longer
+ * stands above the column its month begins in. Two names printed over each
+ * other are unreadable, so the trade is worth making -- but only just far
+ * enough to make, which is why the gap is one label wide and not a column more.
+ *
+ * Sweeping every end-date in a year says the crowding is only ever between the
+ * first two labels, and only when the window opens on a partial month whose
+ * next month starts in the very next column. Fourteen of a year's 366 openings
+ * do that; nothing further along the calendar is ever affected, because a whole
+ * month is four or five columns wide.
  */
 export function monthLabels(weeks: Week[], months: Month[]): MonthLabel[] {
   // For each `YYYY-MM`: the columns it appears in, and the weekday of the

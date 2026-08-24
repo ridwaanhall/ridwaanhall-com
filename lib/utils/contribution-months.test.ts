@@ -62,10 +62,46 @@ function everyEndDate(): string[] {
 }
 
 describe("monthLabels", () => {
+  it("moves a crowded label by one column, not two", () => {
+    // A window opening 24 August puts "Aug" at column 0 and "Sep" at column 1,
+    // where the two names print over each other. September belongs in the third
+    // column -- one label's width clear of August -- and no further: every
+    // column it travels is a column it no longer stands above.
+    const { weeks, months } = calendar("2026-08-24");
+    const labels = monthLabels(weeks, months);
+
+    assert.equal(labels[0].column, 0);
+    assert.equal(labels[1].column, 2);
+  });
+
+  it("leaves a comfortable gap exactly as the calendar drew it", () => {
+    // The other half of the same rule: a label that already clears the one
+    // before it is not touched. A window opening on 1 January puts February
+    // five columns along, and it stays there.
+    const { weeks, months } = calendar("2026-01-01");
+    const labels = monthLabels(weeks, months);
+
+    assert.equal(labels[0].column, 0);
+    assert.equal(labels[1].column, 5);
+  });
+
+  it("pushes no further than one label's width, at any opening", () => {
+    // Whatever the gap ends up being, it is either the calendar's own or the
+    // minimum -- never the minimum plus a margin. Across a year the closest any
+    // two labels come is exactly `MIN_LABEL_GAP`, which is only true while the
+    // push stops the moment it has room.
+    const gaps = new Set<number>();
+    for (const endDate of everyEndDate()) {
+      const { weeks, months } = calendar(endDate);
+      const labels = monthLabels(weeks, months);
+      for (let i = 1; i < labels.length; i++) gaps.add(labels[i].column - labels[i - 1].column);
+    }
+
+    assert.equal(Math.min(...gaps), MIN_LABEL_GAP);
+    assert.ok(!gaps.has(0) && !gaps.has(1), `saw an overlapping gap: ${[...gaps].join(", ")}`);
+  });
+
   it("never lets two labels sit close enough to overlap", () => {
-    // The bug this replaced: a window opening 24 August put "Aug" at column 0
-    // and "Sep" at column 1, and the two names printed over each other. Across
-    // a year of end-dates that happened 98 times.
     for (const endDate of everyEndDate()) {
       const { weeks, months } = calendar(endDate);
       const labels = monthLabels(weeks, months);

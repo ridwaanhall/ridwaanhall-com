@@ -282,7 +282,19 @@ seen.
   not satisfy.
 - **A dynamic route under `cacheComponents` cannot set a 404 status.** The
   status is committed as soon as the route is known to be dynamic, and reading
-  the session cookie is what makes it so. Assert the body, not the status.
+  the session cookie is what makes it so. Assert the body, not the status. The
+  same applies to a redirect: `/sign-in` bounces a signed-in reader to `/` and
+  that bounce is a 200 whose body carries the navigation, so it lands *after*
+  `load`. A check that reads the URL straight after `goto` sees `/sign-in`.
+- **`signOut` redirects to `AUTH_URL`, not to the origin the request came in
+  on.** `createActionURL` prefers that variable unconditionally, so
+  `signOut({ redirectTo })` sends the browser to whatever host it names, as an
+  absolute URL. Signing out of the admin looked like it did nothing for exactly
+  that reason -- and no harness saw it, because a fresh Playwright context has
+  no prefetched router cache and no host to disagree about. `signOutHere` calls
+  `signOut({ redirect: false })`, which still writes the delete-cookies, and
+  does its own relative `redirect()`. **Never hand `redirectTo` to Auth.js
+  here.**
 - **Form submission normalises line breaks to CRLF in every field value**, not
   only in a `<textarea>`. Anything carrying real newlines needs normalising on
   arrival.

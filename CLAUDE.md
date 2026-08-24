@@ -353,6 +353,20 @@ seen.
   (`position`, `issued`, `published_at`); `lib/admin/inlines.ts` stamps
   `position` on every child table that has one, even where no reorder control is
   offered, precisely so the tie-break exists.
+- **A change to an interface is not finished until its skeleton matches.**
+  Every screen here has a stand-in -- a route's `loading.tsx`, or the
+  `<Suspense>` fallback around a streaming panel -- and each is a hand-built
+  copy of a shape that lives somewhere else. Nothing recomputes them: move a
+  control, change a height, add a row, and the skeleton keeps promising the old
+  layout until somebody edits it, so the page settles by jumping. **Adjust the
+  skeleton in the same change as the interface**, then run
+  `scripts/check-skeleton-shape.mjs`, which measures each one against the page
+  it stands in for. A new route needs its own file: without one the group
+  fallback answers, and `app/(site)/loading.tsx` is the *home page* -- a hero, a
+  card rail and a skills marquee, whatever the route actually looks like.
+  Note the harness cannot observe every skeleton (`/contact`, `/guestbook` and
+  `/sign-in` arrive with their pages however hard it holds the navigation), so
+  those are reported as notes and their shape is on you to keep honest.
 - **A `loading.tsx` skeleton must not render `<main>`.** `#page-content` is
   keyed on the pathname, so its entrance animation plays once per navigation —
   on whichever of the skeleton and the real page renders first. Where a skeleton

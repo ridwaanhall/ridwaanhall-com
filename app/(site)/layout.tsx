@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { AccountPanel, AccountPanelSkeleton } from "@/components/layout/account-panel";
-import { AdminLink } from "@/components/layout/admin-link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { getAboutData } from "@/lib/data/about";
 
@@ -13,10 +12,16 @@ import { getAboutData } from "@/lib/data/about";
  * fetching it: several places need it per request, and the layout is the one
  * place that renders for all of them.
  *
- * The admin link and the account panel are the two things here that depend on
- * who is asking, so each arrives as an already-suspended element rather than as
- * a flag: this layout stays fully cacheable and both stream into the shell.
- * Awaiting either check here instead would make every page on the site dynamic.
+ * The account panel is the one thing here that depends on who is asking, so it
+ * arrives as an already-suspended element rather than as a flag: this layout
+ * stays fully cacheable and the panel streams into the shell. Awaiting the
+ * session here instead would make every page on the site dynamic.
+ *
+ * The key is not decoration, and it is not there because anything reorders.
+ * This element is created here and rendered as one of several siblings inside
+ * the rail and the drawer, which is a children array as far as React's
+ * validation is concerned. Without a key it warns about a list child on every
+ * page of the site and names this line as the owner.
  */
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const about = await getAboutData();
@@ -31,19 +36,6 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       account={
         <Suspense key="account-panel" fallback={<AccountPanelSkeleton />}>
           <AccountPanel />
-        </Suspense>
-      }
-      adminLink={
-        /*
-         * The key is not decoration, and it is not there because anything
-         * reorders. This element is created here and rendered as one of several
-         * siblings inside `SidebarFooter` -- in two places, since the rail and
-         * the drawer both render one -- which is a children array as far as
-         * React's validation is concerned. Without a key it warns about a list
-         * child on every page of the site and names this line as the owner.
-         */
-        <Suspense key="admin-link" fallback={null}>
-          <AdminLink />
         </Suspense>
       }
     >

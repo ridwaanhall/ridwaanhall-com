@@ -16,18 +16,12 @@ import { useCurrentYear } from "@/lib/utils/use-current-year";
  * whether the drawer is open or shut. A copy here would be a second visible
  * toggle at the same width.
  *
- * `adminLink` arrives as an element rather than a flag -- see `AdminLink`. It
- * carries its own separator, so it can resolve to nothing without leaving a
- * bullet hanging after "Terms", and it sits last because it is the only item
- * most readers will never see.
+ * Legal links only. The way into the admin used to sit here as a bullet after
+ * "Terms", which put the one screen a staff reader might actually want among
+ * the small print and drew it like more of it; it is an account action and
+ * lives with the others, in `AccountPanel`.
  */
-export function SidebarFooter({
-  about,
-  adminLink,
-}: {
-  about: AboutData;
-  adminLink?: React.ReactNode;
-}) {
+export function SidebarFooter({ about }: { about: AboutData }) {
   const pathname = usePathname();
   const year = useCurrentYear();
   const showOpenHire = about.is_open_to_work || about.is_hiring;
@@ -44,7 +38,7 @@ export function SidebarFooter({
     );
 
   return (
-    <div className="px-6 py-4 mt-auto text-xs text-zinc-400 border-t border-zinc-800/50">
+    <div className="px-6 py-4 mt-auto text-xs text-zinc-400 border-t border-zinc-700/80">
       <div className="flex items-center gap-1 mb-2">
         {showOpenHire && (
           <>
@@ -55,7 +49,6 @@ export function SidebarFooter({
         {item("/privacy-policy", "Privacy")}
         <span className="text-zinc-600">•</span>
         {item("/terms", "Terms")}
-        {adminLink}
       </div>
       <div className="flex items-center gap-2 text-zinc-500">
         <span>

@@ -38,11 +38,9 @@ import type { AboutData } from "@/lib/data/about";
 export function SidebarRail({
   about,
   account,
-  adminLink,
 }: {
   about: AboutData;
   account?: React.ReactNode;
-  adminLink?: React.ReactNode;
 }) {
   return (
     <div className="hidden z-40 md:flex md:flex-col md:w-62 md:fixed md:inset-y-0 bg-black">
@@ -89,7 +87,7 @@ export function SidebarRail({
           session is the other thing that must not scroll away when a short
           window pushes the nav into overflow. */}
       {account}
-      <SidebarFooter about={about} adminLink={adminLink} />
+      <SidebarFooter about={about} />
     </div>
   );
 }

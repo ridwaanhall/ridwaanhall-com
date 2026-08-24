@@ -133,6 +133,9 @@ const ROUTES = [
   { label: "/dashboard", from: "/", link: 'a[href="/dashboard"]' },
   { label: "/contact", from: "/", link: 'a[href="/contact"]' },
   { label: "/guestbook", from: "/", link: 'a[href="/guestbook"]' },
+  // Reached from the sidebar's account panel, which offers it to a signed-out
+  // reader at every width -- in the rail above `md`, in the drawer below it.
+  { label: "/sign-in", from: "/", link: 'a[href="/sign-in"]' },
   // The two detail routes, reached from a card on their own listing.
   { label: "/blog/[slug]", from: "/blog", link: 'a[href^="/blog/"]' },
   { label: "/projects/[slug]", from: "/projects", link: 'a[href^="/projects/"]' },

@@ -27,26 +27,17 @@ import type { AboutData } from "@/lib/data/about";
 export function SiteShell({
   about,
   account,
-  adminLink,
   children,
 }: {
   about: AboutData;
   /**
    * The account panel -- sign in, or who is signed in -- already wrapped in its
-   * own `<Suspense>` by the layout. An element for the same reason `adminLink`
-   * is one: the answer comes from the database and this component is
-   * `"use client"`.
+   * own `<Suspense>` by the layout. An element rather than a flag because the
+   * answer comes from the database and this component is `"use client"`:
+   * handing the element down keeps the session read on the server, and keeps
+   * this file from needing to know what the answer is.
    */
   account?: React.ReactNode;
-  /**
-   * The admin link, already wrapped in its own `<Suspense>` by the layout.
-   *
-   * Passed as a rendered element rather than a boolean because this component
-   * is `"use client"` and the answer comes from the database. Handing the
-   * element down keeps the staff check on the server, and keeps this file from
-   * needing to know what the answer is.
-   */
-  adminLink?: React.ReactNode;
   children: React.ReactNode;
 }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -80,14 +71,13 @@ export function SiteShell({
       <MobileDrawer
         about={about}
         account={account}
-        adminLink={adminLink}
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
       />
 
       <div className="mx-auto max-w-6xl pt-20 lg:pt-0">
         <div className="flex flex-col lg:flex-row lg:gap-2 lg:py-4 xl:pb-8">
-          <SidebarRail about={about} account={account} adminLink={adminLink} />
+          <SidebarRail about={about} account={account} />
           {/*
             Keyed on the pathname so the entrance animation replays on every
             navigation -- client-side routing keeps the element, so without the

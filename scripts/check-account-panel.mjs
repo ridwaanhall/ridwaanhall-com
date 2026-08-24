@@ -30,7 +30,7 @@ config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { encode } = await import("next-auth/jwt");
-const { nonStaffAccountId } = await import("./fixture-ids.mjs");
+const { nonStaffAccountId, staffAccountId } = await import("./fixture-ids.mjs");
 
 const BASE = process.argv[2] ?? "http://localhost:3000";
 
@@ -50,12 +50,11 @@ const cookieName = "authjs.session-token";
  * rendered nothing at all still look right, because the "Admin" bullet would
  * appear beside it.
  */
-const token = await encode({
-  token: { sub: await nonStaffAccountId() },
-  secret: process.env.AUTH_SECRET,
-  salt: cookieName,
-  maxAge: 60 * 10,
-});
+const mint = (sub) =>
+  encode({ token: { sub }, secret: process.env.AUTH_SECRET, salt: cookieName, maxAge: 60 * 10 });
+
+const token = await mint(await nonStaffAccountId());
+const staffToken = await mint(await staffAccountId());
 
 console.log("\nAccount panel\n");
 
@@ -129,6 +128,7 @@ const SIGN_IN = 'a[href="/sign-in"]';
 // not exist in the DOM, and these are measured inside the page.
 const SIGN_OUT_PILL = 'div.border-t form button[type="submit"]';
 const SIGN_OUT = 'button:has-text("Sign out")';
+const ADMIN = 'a[href="/admin"]';
 
 /** Measured signed out, compared against signed in -- hence the outer scope. */
 let signedOutPill;
@@ -234,6 +234,10 @@ const SHOWN = (selector) => `${selector}:visible`;
     `${signedInPill.width}px wide, ${signedInPill.slack}px of it not text`,
   );
 
+  // A reader is not staff, and the admin is not advertised to them anywhere --
+  // not in the panel, and no longer as a bullet in the footer either.
+  check("and a reader is offered no admin, anywhere", (await visible(page, ADMIN)).total === 0);
+
   /*
    * And signing out from here actually ends the session.
    *
@@ -262,6 +266,139 @@ const SHOWN = (selector) => `${selector}:visible`;
 
   const remaining = (await context.cookies()).find((c) => c.name === cookieName && c.value);
   check("signing out from the sidebar clears the session", !remaining);
+  await context.close();
+}
+
+// --- signed in as staff ----------------------------------------------------
+/*
+ * The way into the admin was a bullet after "Terms" in the footer, among the
+ * legal links and drawn like one of them. It is an account action, so it sits
+ * beside the way out -- same pill, same row, differing only in the hue each
+ * reveals on hover.
+ *
+ * `is_staff` is read from the database on every request and never carried in
+ * the token, so this is a real staff account rather than a claim in a cookie.
+ */
+{
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  await context.addCookies([{ name: cookieName, value: staffToken, domain: "localhost", path: "/" }]);
+  const page = await context.newPage();
+  await page.goto(`${BASE}/`, { waitUntil: "load" });
+  await waitVisible(page, ADMIN);
+
+  const admin = await visible(page, ADMIN);
+  check(
+    "staff: one visible way into the admin, and the drawer's copy hidden",
+    admin.shown === 1 && admin.total === 2,
+    `${admin.shown} of ${admin.total} visible`,
+  );
+
+  // The bare selector, not `SHOWN`: `pillShape` runs inside the page, where
+  // `:visible` is not a selector, and it picks the shown copy itself.
+  const adminPill = await pillShape(page, ADMIN);
+  check(
+    "and it is the same pill as the way out, not a footer link",
+    adminPill.shape === signedOutPill.shape && adminPill.round && adminPill.slack < 30,
+    adminPill.shape,
+  );
+
+  /*
+   * Side by side, and in that order.
+   *
+   * Same row is what "beside" means and it is measurable: two controls that
+   * wrapped would sit a row apart while every other assertion here still
+   * passed. The tolerance is a couple of pixels for sub-pixel layout, not for
+   * a second line.
+   */
+  const laidOut = await page.evaluate(() => {
+    const shown = (sel) =>
+      [...document.querySelectorAll(sel)].find((node) => node.offsetParent !== null);
+    const out = shown('div.border-t form button[type="submit"]')?.getBoundingClientRect();
+    const adm = shown('a[href="/admin"]')?.getBoundingClientRect();
+    if (!out || !adm) return null;
+    return { drop: Math.abs(out.top - adm.top), gap: Math.round(adm.left - out.right) };
+  });
+  check(
+    "and the two sit on one row, sign out first",
+    laidOut !== null && laidOut.drop < 2 && laidOut.gap > 0 && laidOut.gap < 24,
+    laidOut ? `${laidOut.drop.toFixed(1)}px apart vertically, ${laidOut.gap}px between` : "not found",
+  );
+
+  /*
+   * The two rules at the bottom of the rail are one weight.
+   *
+   * Compared against each other rather than against a literal: Tailwind v4
+   * emits its palette in a wide-gamut colour space, so Chrome hands back
+   * `lab(...)`/`oklab(...)` and the exact string is a representation detail
+   * that would make this red for no reason. What is worth pinning is the
+   * relationship -- the panel's rule and the footer's agree, so the bottom of
+   * the rail reads as two banded sections. Either one changing alone is the
+   * drift this catches.
+   */
+  const rules = await page.evaluate(() => {
+    const ruled = (within) =>
+      [...document.querySelectorAll("div.border-t")].find(
+        (node) => node.offsetParent !== null && node.querySelector(within),
+      );
+    const panel = ruled('a[href="/admin"]');
+    const footer = ruled('a[href="/privacy-policy"]');
+    return {
+      panel: panel && getComputedStyle(panel).borderTopColor,
+      footer: footer && getComputedStyle(footer).borderTopColor,
+    };
+  });
+  check(
+    "and its rule is the same weight as the footer's, so the band reads as one",
+    Boolean(rules.panel) && rules.panel === rules.footer,
+    `${rules.panel} vs footer ${rules.footer}`,
+  );
+
+  /*
+   * The hue arrives on hover, and it is the hue that was meant.
+   *
+   * Read against a probe painted from the palette variable rather than against
+   * a literal, for the reason the rule above is: Tailwind v4 emits a wide-gamut
+   * space and the string form is a representation detail. Comparing two values
+   * the browser produced sidesteps it entirely -- and it would still catch the
+   * failure worth catching, which is a hover class Tailwind never emitted,
+   * leaving the pill grey.
+   *
+   * Both are asserted because they are the whole point of drawing the two
+   * alike: same shape, and the only thing telling them apart is what signing
+   * out costs.
+   */
+  const palette = await page.evaluate(() => {
+    const probe = document.createElement("span");
+    probe.style.display = "none";
+    document.body.appendChild(probe);
+    const read = (variable) => {
+      probe.style.color = `var(${variable})`;
+      return getComputedStyle(probe).color;
+    };
+    const values = { red: read("--color-red-400"), indigo: read("--color-indigo-400") };
+    probe.remove();
+    return values;
+  });
+
+  /*
+   * Two selectors, because the two halves run in different places: the hover is
+   * Playwright's and may use `:has-text()`, the read is the page's and may not.
+   */
+  const hovered = async (hoverSelector, readSelector) => {
+    await page.locator(SHOWN(hoverSelector)).first().hover();
+    await page.waitForTimeout(400);
+    return page.evaluate((sel) => {
+      const el = [...document.querySelectorAll(sel)].find((node) => node.offsetParent !== null);
+      return el ? getComputedStyle(el).color : null;
+    }, readSelector);
+  };
+
+  const outHue = await hovered(SIGN_OUT, SIGN_OUT_PILL);
+  check("signing out goes red on hover, because it is the one that costs", outHue === palette.red, `${outHue}`);
+
+  const adminHue = await hovered(ADMIN, ADMIN);
+  check("and the admin takes its own accent", adminHue === palette.indigo, `${adminHue}`);
+
   await context.close();
 }
 

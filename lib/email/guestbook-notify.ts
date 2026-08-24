@@ -2,7 +2,8 @@ import "server-only";
 
 import { eq } from "drizzle-orm";
 
-import { getUserProfiles } from "@/lib/auth/profile";
+import { getUserProfiles, type UserProfile } from "@/lib/auth/profile";
+import { planGuestbookEmails } from "@/lib/email/guestbook-plan";
 import {
   guestbookAutoreply,
   guestbookNotification,
@@ -11,27 +12,21 @@ import {
 import { ownerEmails, sendEmail } from "@/lib/email/send";
 import { db } from "@/lib/db/client";
 import { guestMessage } from "@/lib/db/app-schema";
+import type { BadgeTone } from "@/lib/email/layout";
 
 /**
  * The emails a new guestbook message sends.
  *
- * Three dispatch rules, and the exceptions are the point of them:
+ * **Which emails, and what each replies to, is decided in
+ * `lib/email/guestbook-plan.ts`** -- a pure function with the whole matrix
+ * under test. This file loads the rows, renders the bodies and posts them, and
+ * holds no rules of its own. The two were interleaved before, which left three
+ * emails and five exceptions reachable only by posting a real message.
  *
- *   1. notify the owner — unless the sender *is* the owner
- *   2. confirm to the sender — unless the sender is the owner, or has no address
- *   3. if it is a reply, tell the person being answered — unless that is the
- *      same person, who does not need telling they replied to themselves
- *
- * **Nothing here can fail the post.** The original wrapped the whole receiver
- * in a bare `except` and logged, precisely so a mail server having a bad day
- * could not stop someone leaving a message. Same contract: this is called with
- * `void` after the row is committed, and every send already swallows its own
- * errors.
- *
- * The `raw` guard that receiver needed has no equivalent and needs none — it
- * existed because `loaddata` replays historical rows through `post_save`, and
- * `sync_guestbook` disconnected the receiver for the same reason. Nothing in
- * this stack writes messages except the action that calls this.
+ * **Nothing here can fail the post.** The whole body is wrapped in a `catch`
+ * that only logs, precisely so a mail server having a bad day cannot stop
+ * somebody leaving a message. It is called with `void` after the row is
+ * committed, and every send already swallows its own errors.
  */
 
 /** `'%B %d, %Y at %H:%M:%S'` plus the zone abbreviation, in Asia/Jakarta. */
@@ -56,6 +51,13 @@ function formatTimestamp(iso: string): string {
 function guestbookUrl(): string {
   const base = (process.env.NEXT_PUBLIC_BASE_URL ?? "https://ridwaanhall.com").replace(/\/$/, "");
   return `${base}/guestbook/`;
+}
+
+/** The pill the emails show beside a name, or nothing for an ordinary visitor. */
+function roleOf(profile: UserProfile): BadgeTone | undefined {
+  if (profile.isAuthor) return "author";
+  if (profile.isCoAuthor) return "coAuthor";
+  return undefined;
 }
 
 export async function notifyNewGuestbookMessage(messageId: string): Promise<void> {
@@ -93,59 +95,74 @@ export async function notifyNewGuestbookMessage(messageId: string): Promise<void
     const sender = profiles.get(row.userId);
     if (!sender) return;
 
+    const original = parent ? profiles.get(parent.userId) : undefined;
+
     const timestamp = formatTimestamp(row.timestamp);
     const url = guestbookUrl();
-    const owners = ownerEmails();
-    const senderEmail = sender.email || "";
-    // The owner posting in their own guestbook should not be emailed about it.
-    const isOwner = senderEmail !== "" && owners.includes(senderEmail);
+    const role = roleOf(sender);
+
+    // The flags come from `guest_profile`, read from the database on every
+    // request. They are never in the session token, so revoking co-author takes
+    // effect on the next post rather than whenever a thirty-day JWT expires.
+    const plan = planGuestbookEmails({
+      sender: {
+        email: sender.email,
+        isAuthor: sender.isAuthor,
+        isCoAuthor: sender.isCoAuthor,
+      },
+      parentAuthor: original ? { email: original.email } : undefined,
+      owners: ownerEmails(),
+    });
 
     const payload = {
       name: sender.fullName,
-      // The original substituted a no-reply address when the account had none,
-      // so the template never renders an empty "from".
-      senderEmail: senderEmail || "noreply@ridwaanhall.com",
+      senderEmail: sender.email,
       message: row.message,
       timestamp,
       guestbookUrl: url,
+      role,
     };
 
-    if (!isOwner) {
-      void sendEmail({
-        to: owners,
-        subject: `New Guestbook Message from ${sender.fullName}`,
-        body: guestbookNotification(payload),
-        // No reply-to: this is a notification, not a message to answer.
-      });
+    for (const dispatch of plan) {
+      switch (dispatch.kind) {
+        case "owner":
+          void sendEmail({
+            to: dispatch.to,
+            subject: `${sender.fullName} signed your guestbook`,
+            body: guestbookNotification(payload),
+            replyTo: dispatch.replyTo,
+          });
+          break;
 
-      if (senderEmail) {
-        void sendEmail({
-          to: [senderEmail],
-          subject: "Your message has been sent.",
-          body: guestbookAutoreply(payload),
-          replyTo: owners,
-        });
-      }
-    }
+        case "confirm":
+          void sendEmail({
+            to: dispatch.to,
+            subject: "Your message is on the guestbook",
+            body: guestbookAutoreply(payload),
+            replyTo: dispatch.replyTo,
+          });
+          break;
 
-    if (parent) {
-      const original = profiles.get(parent.userId);
-      const originalEmail = original?.email ?? "";
-      // Replying to yourself needs no email.
-      if (original && originalEmail && originalEmail !== senderEmail) {
-        void sendEmail({
-          to: [originalEmail],
-          subject: "You have received a reply.",
-          body: guestbookReplyNotification({
-            originalName: original.fullName,
-            replyName: sender.fullName,
-            replyMessage: row.message,
-            originalMessage: parent.message,
-            timestamp,
-            guestbookUrl: url,
-          }),
-          replyTo: owners,
-        });
+        case "reply":
+          // The planner only emits this when there is a parent with an address,
+          // but it does not carry the message text — so both are re-checked
+          // here rather than asserted.
+          if (!parent || !original) break;
+          void sendEmail({
+            to: dispatch.to,
+            subject: `${sender.fullName} replied to you`,
+            body: guestbookReplyNotification({
+              originalName: original.fullName,
+              replyName: sender.fullName,
+              replyRole: role,
+              replyMessage: row.message,
+              originalMessage: parent.message,
+              timestamp,
+              guestbookUrl: url,
+            }),
+            replyTo: dispatch.replyTo,
+          });
+          break;
       }
     }
   } catch (error) {

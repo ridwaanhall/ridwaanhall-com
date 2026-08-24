@@ -303,6 +303,24 @@ seen.
   and everything else points at it with a foreign key, so the count is over
   those six columns — `lib/storage/cleanup.ts` lists them and
   `scripts/check-storage.mjs` proves the list against the catalogue.
+- **An email's dark mode is an overlay, and an inline style outranks a class.**
+  `lib/email/layout.ts` writes the light palette inline on every element and
+  repaints it from one `<style>` block under `prefers-color-scheme: dark`. Every
+  override needs `!important` or the whole dark theme is dead markup, and the
+  block must stay **colour only**: a client that strips it — Gmail clipping a
+  long message, Outlook, a text-only proxy — has to still receive a complete
+  light email, so anything structural in there is what that reader loses.
+  `scripts/check-emails.mjs` asserts both directions, and separately that the
+  reply notification renders **no address at all**: its `Reply-To` is the owner
+  precisely so two visitors never learn each other's addresses.
+- **Guestbook mail routes on roles, not on addresses.** `is_author` and
+  `is_co_author` from `guest_profile` decide who is emailed —
+  `lib/email/guestbook-plan.ts` is the whole rule as a pure function, with the
+  matrix under test offline. The version before it asked whether the poster's
+  address appeared in `CONTACT_EMAIL_RECIPIENT`, which is the owner's *inbox*
+  and has no reason to match the address they sign in with, so the exclusion
+  never fired. The two roles are not interchangeable: an author's own post
+  notifies nobody, a co-author's still notifies the owner.
 - **A key that is not a uuid is not "no such row".** Postgres raises
   `22P02 invalid input syntax for type uuid` and the route answers 500 where the
   honest answer is not-found. Guard with `isUuid()` from `lib/utils/uuid.ts`

@@ -104,9 +104,10 @@ export function LatestBlogs({ blogs }: { blogs: BlogSummary[] }) {
           ref={sliderRef}
           className="flex gap-3 sm:gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
         >
-          {blogs.map((blog) => (
+          {blogs.map((blog, position) => (
             <div key={blog.slug} className="flex-none w-80">
-              <BlogCard blog={blog} variant="slider" />
+              {/* The leftmost card is the home page's Largest Contentful Paint. */}
+              <BlogCard blog={blog} variant="slider" priority={position === 0} />
             </div>
           ))}
         </div>

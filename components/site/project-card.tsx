@@ -8,7 +8,14 @@ import { localIconUrl } from "@/lib/utils/icon-url";
 /** How many tech icons fit before they are summarised as "+N". */
 const VISIBLE_TECH = 5;
 
-export function ProjectCard({ project }: { project: Project | ProjectSummary }) {
+export function ProjectCard({
+  project,
+  priority = false,
+}: {
+  project: Project | ProjectSummary;
+  /** The first card of a grid, which is the one that can be the LCP. */
+  priority?: boolean;
+}) {
   const tech = project.tech_stack.filter((t) => t.icon_svg);
   const overflow = project.tech_stack.length - VISIBLE_TECH;
 
@@ -22,6 +29,7 @@ export function ProjectCard({ project }: { project: Project | ProjectSummary }) 
               alt={project.title}
               width={300}
               height={300}
+              priority={priority}
               className="w-full h-full object-cover object-center transition-all duration-500 group-hover:scale-105 group-hover:blur-sm"
             />
           )}

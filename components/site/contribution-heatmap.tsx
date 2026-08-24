@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import type { ContributionWeek } from "@/lib/data/github";
+import { COLUMNS, monthLabels } from "@/lib/utils/contribution-months";
 
 /**
  * The GitHub contribution calendar.
@@ -179,23 +180,10 @@ function describe(cell: Cell): string {
 /**
  * Month names above the grid.
  *
- * Ported from `renderMonthLabels` in githubContributions.js, whose rule is not
- * the obvious one:
- *
- *  1. A month's base column is the first column containing any of its days.
- *  2. **Unless its first visible day falls on a Sunday or Monday, the label
- *     shifts one column right.** A month that begins on, say, a Wednesday has
- *     only a sliver of its first column, so the name reads better above the
- *     first column it actually fills. October 2025 begins on a Wednesday in the
- *     week of 28 September, and its label belongs at column 7, not 6.
- *  3. The first and last labels never shift -- there is no column before the
- *     first, and shifting the last would push it off the end.
- *  4. A month is labelled only if it occupies at least two columns.
- *
- * Summing GitHub's own `months[].totalWeeks` is a tempting shortcut and a wrong
- * one: `totalWeeks` counts every week *containing* a day of the month, so a
- * week spanning a boundary is counted by both neighbours and the running total
- * drifts one column further right with each shared week.
+ * The placement rule lives in `lib/utils/contribution-months.ts` -- it is date
+ * arithmetic with no DOM in it, and it is covered there against every end-date
+ * a year offers, which is the only way to catch the overlap it exists to
+ * prevent. This is the part that turns a column into a position.
  */
 function MonthLabels({
   weeks,
@@ -204,66 +192,17 @@ function MonthLabels({
   weeks: ContributionWeek[];
   months: { firstDay: string; name: string; totalWeeks: number }[];
 }) {
-  // For each `YYYY-MM`: the columns it appears in, and the weekday and
-  // day-of-month of the earliest day seen.
-  const seen = new Map<
-    string,
-    { columns: Set<number>; weekday: number; dayOfMonth: number }
-  >();
-
-  weeks.forEach((week, index) => {
-    for (const day of week.days) {
-      const key = day.date.slice(0, 7);
-      const existing = seen.get(key);
-      if (existing) {
-        existing.columns.add(index);
-      } else {
-        const date = new Date(`${day.date}T00:00:00Z`);
-        seen.set(key, {
-          columns: new Set([index]),
-          weekday: date.getUTCDay(),
-          dayOfMonth: date.getUTCDate(),
-        });
-      }
-    }
-  });
-
-  const labelled = months
-    .map((month) => ({ month, info: seen.get(month.firstDay.slice(0, 7)) }))
-    .filter((entry) => entry.info !== undefined && entry.info.columns.size >= 2)
-    .map((entry) => ({
-      name: month_name(entry.month.name),
-      key: entry.month.firstDay,
-      column: Math.min(...entry.info!.columns),
-      weekday: entry.info!.weekday,
-      dayOfMonth: entry.info!.dayOfMonth,
-    }));
-
   return (
     <>
-      {labelled.map((month, index) => {
-        const isEdge = index === 0 || index === labelled.length - 1;
-        // Sunday (0) or Monday (1) means the month already fills its first
-        // column well enough to be labelled there.
-        const startsEarlyInWeek = month.weekday === 0 || month.weekday === 1;
-        const column =
-          !isEdge && !startsEarlyInWeek ? Math.min(month.column + 1, 52) : month.column;
-
-        return (
-          <div
-            key={month.key}
-            className="absolute text-xs text-zinc-400 font-medium"
-            style={{ left: `${(column / 53) * 100}%` }}
-          >
-            {month.name}
-          </div>
-        );
-      })}
+      {monthLabels(weeks, months).map((month) => (
+        <div
+          key={month.key}
+          className="absolute text-xs text-zinc-400 font-medium"
+          style={{ left: `${(month.column / COLUMNS) * 100}%` }}
+        >
+          {month.name}
+        </div>
+      ))}
     </>
   );
-}
-
-/** GitHub returns the abbreviated name already; kept as a seam if that changes. */
-function month_name(name: string): string {
-  return name;
 }

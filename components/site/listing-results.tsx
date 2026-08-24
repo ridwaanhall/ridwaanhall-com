@@ -52,7 +52,16 @@ export async function BlogResults({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
         {paged.items.length > 0 ? (
-          paged.items.map((post) => <BlogCard key={post.slug} blog={post} />)
+          /*
+            The first row, not the first card. This grid is two across from
+            `sm`, so two cards share the top row at the same size, and either
+            can be the Largest Contentful Paint -- on /projects Chrome picked
+            the second. Marking one and not its neighbour silences the warning
+            only half the time.
+          */
+          paged.items.map((post, position) => (
+            <BlogCard key={post.slug} blog={post} priority={position < 2} />
+          ))
         ) : (
           <EmptyState noun="blogs" />
         )}
@@ -89,7 +98,10 @@ export async function ProjectResults({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 mb-6">
         {paged.items.length > 0 ? (
-          paged.items.map((project) => <ProjectCard key={project.slug} project={project} />)
+          // Both cards of the top row -- see the note on the blog grid above.
+          paged.items.map((project, position) => (
+            <ProjectCard key={project.slug} project={project} priority={position < 2} />
+          ))
         ) : (
           <EmptyState noun="projects" />
         )}

@@ -7,8 +7,9 @@ import { BackIcon } from "@/components/admin/admin-icons";
 import { NothingHere } from "@/components/admin/nothing-here";
 import { RecordForm } from "@/components/admin/record-form";
 import { RecordSkeleton } from "@/components/admin/record-skeleton";
-import { imageUrlMap, toClientFieldsets, toClientInlines } from "@/lib/admin/form";
+import { toClientFieldsets, toClientInlines } from "@/lib/admin/form";
 import { loadInlineRows } from "@/lib/admin/inlines";
+import { imageUrlMap } from "@/lib/admin/media";
 import { formModelFor } from "@/lib/admin/models";
 import { loadFormValues, loadReferenceOptions } from "@/lib/admin/record";
 import { ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
@@ -100,7 +101,7 @@ async function Record({ params }: { params: Params }) {
           inlines={toClientInlines(form, referenceOptions)}
           inlineRows={inlineRows}
           values={values}
-          imageUrls={imageUrlMap(form, values, inlineRows)}
+          imageUrls={await imageUrlMap(form, values, inlineRows)}
           label={label}
           typeLabel={entry.label}
           canDelete={form.canDelete !== false}

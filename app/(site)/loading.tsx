@@ -4,8 +4,10 @@ import { SkeletonBar, SkeletonBlock, SkeletonPage } from "@/components/skeleton"
  * The home page, while it loads.
  *
  * Also the fallback for any route in this group that has no `loading.tsx` of
- * its own -- there are none today, but a page added later gets something rather
- * than nothing.
+ * its own, which is a safety net and not a plan: what it hands such a route is
+ * a *hero, a card rail and a skills marquee*, so a page shaped like anything
+ * else settles by collapsing into place. Every route in the group has a file of
+ * its own for that reason, and a new one arrives with one.
  *
  * Mirrors the hero, the latest-blogs rail and the skills marquee with their
  * dividers, so the page settles into the same rhythm it will keep.

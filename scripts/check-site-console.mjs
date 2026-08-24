@@ -84,6 +84,7 @@ const ROUTES = [
   "/openhire",
   "/contact",
   "/guestbook",
+  "/sign-in",
   "/privacy-policy",
   "/terms",
   `/legal/${legal.slug}`,
@@ -158,11 +159,28 @@ for (const state of STATES) {
      * dynamic by design, which the overlay reports as an insight and which is
      * the intended shape rather than a fault.
      */
-    const badge = await page.evaluate(() => {
-      const root = document.querySelector("nextjs-portal")?.shadowRoot;
-      const element = root?.querySelector("[data-next-badge]");
-      if (!element) return null;
-      return { error: element.getAttribute("data-error") === "true" };
+    const readBadge = () =>
+      page.evaluate(() => {
+        const root = document.querySelector("nextjs-portal")?.shadowRoot;
+        const element = root?.querySelector("[data-next-badge]");
+        if (!element) return null;
+        return { error: element.getAttribute("data-error") === "true" };
+      });
+
+    /*
+     * Read once, and again if the page moved under us.
+     *
+     * `/sign-in` sends a reader who already has a session to the home page, and
+     * that bounce is a client navigation rather than a 307 -- under
+     * `cacheComponents` the status is committed before the session is known, so
+     * it cannot be anything else. It can land after the settle above, and
+     * evaluating into a context that is being torn down throws rather than
+     * returning anything. The retry measures whichever page the reader actually
+     * ended up on, which is the one whose console matters.
+     */
+    const badge = await readBadge().catch(async () => {
+      await page.waitForTimeout(1000);
+      return readBadge().catch(() => null);
     });
 
     const status = response?.status() ?? 0;

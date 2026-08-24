@@ -34,11 +34,13 @@ const EXIT_MS = 300;
 
 export function MobileDrawer({
   about,
+  account,
   adminLink,
   isOpen,
   onClose,
 }: {
   about: AboutData;
+  account?: React.ReactNode;
   adminLink?: React.ReactNode;
   isOpen: boolean;
   onClose: () => void;
@@ -239,6 +241,7 @@ export function MobileDrawer({
             it is closed: they are on screen in the DOM but not reachable. */}
         <SearchTrigger tabIndex={isOpen ? 0 : -1} />
         <NavLinks tabIndex={isOpen ? 0 : -1} />
+        {account}
         <SidebarFooter about={about} adminLink={adminLink} />
       </div>
     </div>

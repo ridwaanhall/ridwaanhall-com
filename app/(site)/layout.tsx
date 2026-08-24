@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { AccountPanel, AccountPanelSkeleton } from "@/components/layout/account-panel";
 import { AdminLink } from "@/components/layout/admin-link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { getAboutData } from "@/lib/data/about";
@@ -12,10 +13,10 @@ import { getAboutData } from "@/lib/data/about";
  * fetching it: several places need it per request, and the layout is the one
  * place that renders for all of them.
  *
- * The admin link is the one thing here that depends on who is asking, so it
- * arrives as an already-suspended element rather than as a flag: this layout
- * stays fully cacheable and the link streams into the shell. Awaiting the staff
- * check here instead would make every page on the site dynamic.
+ * The admin link and the account panel are the two things here that depend on
+ * who is asking, so each arrives as an already-suspended element rather than as
+ * a flag: this layout stays fully cacheable and both stream into the shell.
+ * Awaiting either check here instead would make every page on the site dynamic.
  */
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const about = await getAboutData();
@@ -27,6 +28,11 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   return (
     <SiteShell
       about={about}
+      account={
+        <Suspense key="account-panel" fallback={<AccountPanelSkeleton />}>
+          <AccountPanel />
+        </Suspense>
+      }
       adminLink={
         /*
          * The key is not decoration, and it is not there because anything

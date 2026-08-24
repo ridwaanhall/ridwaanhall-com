@@ -22,8 +22,11 @@ const NOINDEX_PREFIXES = [
   // Sign-in / sign-up / OAuth callbacks. Crawlable so the directive is seen,
   // but never useful in results. The `/guestbook/accounts/` prefixes are older
   // paths that still receive inbound links; the header costs nothing and keeps
-  // them out of the index.
+  // them out of the index. `/sign-in` carries no trailing slash on purpose:
+  // these are `startsWith` tests, and one written `"/sign-in/"` would miss the
+  // page itself -- which is the only thing at that path.
   "/api/auth/",
+  "/sign-in",
   "/guestbook/accounts/",
   "/guestbook/logout/",
   // The admin is disallowed in robots.txt as well; this covers anything that
@@ -42,5 +45,11 @@ export function proxy(request: NextRequest) {
 export const config = {
   // Only the prefixes above can ever match, so everything else skips the proxy
   // entirely rather than paying for a pass-through on every request.
-  matcher: ["/api/auth/:path*", "/guestbook/accounts/:path*", "/guestbook/logout/:path*", "/admin/:path*"],
+  matcher: [
+    "/api/auth/:path*",
+    "/sign-in",
+    "/guestbook/accounts/:path*",
+    "/guestbook/logout/:path*",
+    "/admin/:path*",
+  ],
 };

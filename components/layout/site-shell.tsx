@@ -47,7 +47,7 @@ export function SiteShell({
     <SearchModalProvider about={about}>
       <header className="md:hidden bg-black border-b border-zinc-800 fixed top-0 left-0 w-full z-40">
         <div className="flex items-center gap-3 p-4">
-          <ProfileAvatar src={about.image_url} name={about.name} size={40} priority />
+          <ProfileAvatar src={about.image_url} name={about.name} size={40} eager />
           <div className="flex items-center gap-2">
             <div className="text-lg font-medium text-zinc-200">{about.name}</div>
             <VerifiedIcon className="text-blue-400 w-5 h-5" />

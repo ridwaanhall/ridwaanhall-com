@@ -13,22 +13,38 @@ import Image from "next/image";
  * still stated in words by the status badges under the username, so nothing is
  * lost. Don't add it back without asking.
  *
- * `priority` replaces the old `lazy` flag, inverted: the navbar avatar is above
- * the fold and should preload, the others should not.
+ * `eager` marks the copy that is above the fold, which is one of them at a
+ * time: the mobile navbar's below `md`, the desktop rail's above it.
+ *
+ * It sets `loading="eager"`, which replaces the `priority` prop Next 16
+ * deprecated and is what Next names when it reports an image as the Largest
+ * Contentful Paint.
+ *
+ * Not Next's `preload`, which is the stronger form: that calls
+ * `ReactDOM.preload` itself and so is guaranteed a `<link>` in the head. This
+ * page has two avatars in the markup at once -- the navbar's below `md` and
+ * the rail's above it, at different widths and so different optimizer URLs --
+ * and the head cannot know which one the viewport will show. The heroes get
+ * the guarantee; these take React's ordinary handling.
+ *
+ * Which is still a preload, and worth being exact about: React hoists a
+ * `<link rel="preload">` for every non-lazy `<img>` it renders on the server,
+ * up to ten of them. So this changes which API asks for it, not what the
+ * browser ends up fetching.
  */
 export function ProfileAvatar({
   src,
   name,
   size = 40,
   className,
-  priority = false,
+  eager = false,
 }: {
   src: string;
   name: string;
   /** Rendered pixel size; also the intrinsic size requested from the optimizer. */
   size?: number;
   className?: string;
-  priority?: boolean;
+  eager?: boolean;
 }) {
   if (!src) {
     // A missing photo must not render a broken image in the rail header.
@@ -47,7 +63,7 @@ export function ProfileAvatar({
       alt={`${name} Profile Photo`}
       width={size}
       height={size}
-      priority={priority}
+      loading={eager ? "eager" : "lazy"}
       className={`shrink-0 rounded-full object-cover ${className ?? ""}`}
       style={{ width: size, height: size }}
     />

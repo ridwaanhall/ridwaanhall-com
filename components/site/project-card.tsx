@@ -10,11 +10,16 @@ const VISIBLE_TECH = 5;
 
 export function ProjectCard({
   project,
-  priority = false,
+  eager = false,
 }: {
   project: Project | ProjectSummary;
-  /** The first card of a grid, which is the one that can be the LCP. */
-  priority?: boolean;
+  /**
+   * The leading cards of a grid, which are the ones that can be the LCP.
+   * `loading="eager"` rather than Next's `preload` for the reason written out
+   * on `BlogCard`: more than one card carries it, so which one is the largest
+   * paint is a viewport question, and React preloads a non-lazy image anyway.
+   */
+  eager?: boolean;
 }) {
   const tech = project.tech_stack.filter((t) => t.icon_svg);
   const overflow = project.tech_stack.length - VISIBLE_TECH;
@@ -29,7 +34,7 @@ export function ProjectCard({
               alt={project.title}
               width={300}
               height={300}
-              priority={priority}
+              loading={eager ? "eager" : "lazy"}
               className="w-full h-full object-cover object-center transition-all duration-500 group-hover:scale-105 group-hover:blur-sm"
             />
           )}

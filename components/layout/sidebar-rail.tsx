@@ -2,7 +2,7 @@ import { VerifiedIcon } from "@/components/icons/nav-icons";
 import { NavLinks } from "@/components/layout/nav-links";
 import { ProfileAvatar } from "@/components/layout/profile-avatar";
 import { SearchTrigger } from "@/components/layout/search-trigger";
-import { SidebarFooter } from "@/components/layout/sidebar-footer";
+import { SIDEBAR_BASE, SidebarFooter } from "@/components/layout/sidebar-footer";
 import { StatusBadges } from "@/components/layout/status-badges";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import type { AboutData } from "@/lib/data/about";
@@ -19,15 +19,15 @@ import type { AboutData } from "@/lib/data/about";
  * with every element sharing the `px-3` left edge the search box and nav items
  * already used.
  *
- * **Everything above the footer scrolls.** The rail is pinned to the full
+ * **Everything above the base scrolls.** The rail is pinned to the full
  * height of the window, and on a short one -- a laptop with the browser
  * chrome and a dock, or any window dragged shorter -- the profile block, the
  * search box and eight nav items do not fit. There was no overflow handling,
  * so Guestbook and Contact were simply cut off with nothing to say they were
- * there. The scroll region ends above `SidebarFooter`, which stays put: the
- * legal links and the way into the admin are the last thing that should
- * disappear, and pinning them is what makes the scroll appear exactly when the
- * nav would otherwise run into them.
+ * there. The scroll region ends above `SidebarFooter`, which stays put: who is
+ * signed in, the way in or out of a session and the legal links are the last
+ * things that should disappear, and pinning them is what makes the scroll
+ * appear exactly when the nav would otherwise run into them.
  *
  * `min-h-0` on the scroll region is load-bearing. A flex child's `min-height`
  * defaults to `auto`, which is its content height, so without it the region
@@ -83,11 +83,13 @@ export function SidebarRail({
         <NavLinks />
       </div>
 
-      {/* Outside the scroll region, above the footer: the way in or out of a
-          session is the other thing that must not scroll away when a short
-          window pushes the nav into overflow. */}
-      {account}
-      <SidebarFooter about={about} />
+      {/* Outside the scroll region: who is signed in, the way in or out of a
+          session and the legal links are the last things that should scroll
+          away when a short window pushes the nav into overflow. */}
+      <div className={SIDEBAR_BASE}>
+        {account}
+        <SidebarFooter about={about} />
+      </div>
     </div>
   );
 }

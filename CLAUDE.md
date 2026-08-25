@@ -9,6 +9,25 @@ Tailwind CSS v4. Data comes from Supabase Postgres through Drizzle ORM over
 `node-postgres`; uploaded media lives in Supabase Storage. Auth is Auth.js v5
 with Google and GitHub. Deployed to Vercel.
 
+### The Next.js docs are in `node_modules`
+
+`node_modules/next/dist/docs/` is this exact version's documentation, shipped
+inside the package. **Read the relevant page there before writing anything
+framework-shaped**, rather than recalling how Next.js works —
+`01-app/03-api-reference/` for file conventions, directives and config, and the
+`version-16` page under `01-app/02-guides/upgrading/` for what moved.
+
+Recall is the worse source here because 16 changed the answers, not just the
+API surface: `middleware` was renamed `proxy`, the request APIs became
+async-only, `cacheLife` and `cacheTag` lost their `unstable_` prefix,
+`unstable_cache` was replaced by `"use cache"`, `revalidateTag` grew a required
+second argument, and the error boundary's `reset` gave way to `retry`. Every
+one of those is something a confident wrong answer looks exactly like a right
+one.
+
+`AGENTS.md` carries the same instruction, but `next dev` rewrites that file, so
+it is not somewhere to add anything. This is.
+
 ## The schema
 
 Everything reads and writes the **`app`** schema: 45 tables, uuid keys, real

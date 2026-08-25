@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { NavLinks } from "@/components/layout/nav-links";
 import { ProfileAvatar } from "@/components/layout/profile-avatar";
 import { SearchTrigger } from "@/components/layout/search-trigger";
-import { SidebarFooter } from "@/components/layout/sidebar-footer";
+import { SIDEBAR_BASE, SidebarFooter } from "@/components/layout/sidebar-footer";
 import { StatusBadges } from "@/components/layout/status-badges";
 import type { AboutData } from "@/lib/data/about";
 import { cn } from "@/lib/utils/cn";
@@ -239,8 +239,10 @@ export function MobileDrawer({
             it is closed: they are on screen in the DOM but not reachable. */}
         <SearchTrigger tabIndex={isOpen ? 0 : -1} />
         <NavLinks tabIndex={isOpen ? 0 : -1} />
-        {account}
-        <SidebarFooter about={about} />
+        <div className={SIDEBAR_BASE}>
+          {account}
+          <SidebarFooter about={about} />
+        </div>
       </div>
     </div>
   );

@@ -203,3 +203,17 @@ export function HamburgerIcon(props: IconProps) {
     </svg>
   );
 }
+
+/**
+ * The chevron on the account row, pointing at where its menu will open.
+ *
+ * Smaller than the rest of the set and flipped upward, because the menu it
+ * belongs to is pinned to the bottom of the sidebar and opens over the nav.
+ */
+export function AccountChevronIcon(props: IconProps) {
+  return (
+    <Stroked height={16} width={16} {...props}>
+      <polyline points="18 15 12 9 6 15" />
+    </Stroked>
+  );
+}

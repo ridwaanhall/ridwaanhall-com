@@ -612,13 +612,15 @@ export const skillForm: AdminFormModel = {
           kind: "image",
           prefix: "icon",
           /*
-           * Was a `text` column holding an absolute
-           * `https://ridwaanhall.com/static/svg/icon/*.svg` on 78 rows, which
-           * pointed development and this admin at the production site and would
-           * have broken all 78 the moment the domain moved. It is a media asset
-           * now: the 74 bundled SVGs are `source: "static"` and resolve to a
-           * path, an uploaded one is `source: "storage"` and resolves to its
-           * bucket URL, and `assetUrl` is the single thing that knows which.
+           * Was a `text` column holding an absolute URL into the production
+           * site on 78 rows, which pointed development and this admin at that
+           * site and would have broken all 78 the moment the domain moved.
+           *
+           * It is a media asset now, and all 74 icons are objects in the bucket
+           * like every other upload -- so replacing one through this control is
+           * an ordinary upload rather than a special case. `assetUrl` still
+           * reads `source`, because the column permits a file served from
+           * `public/` and nothing guarantees the next asset is not one.
            */
         },
         { name: "description", column: skill.description, label: "Description", kind: "textarea" },

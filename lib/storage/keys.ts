@@ -27,8 +27,8 @@ export const UPLOAD_PREFIXES = {
   logo: "logo/",
   blog: "blog/",
   project: "project/",
-  // Skill icons. The 74 that exist are bundled SVGs under `public/` and are
-  // never uploaded; this is where a replacement would go.
+  // Skill icons. All 74 live here as objects; `public/static/svg/icon/` keeps
+  // the SVGs the migration uploaded, as the source to re-seed from.
   icon: "icon/",
 } as const;
 

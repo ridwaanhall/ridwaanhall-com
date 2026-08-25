@@ -3,6 +3,11 @@ import "server-only";
 import { and, asc, desc, eq, gte, ilike, inArray, or, sql, type SQL } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 
+import {
+  isComposedLabel,
+  optionLabel,
+  type ReferenceLabel,
+} from "@/lib/admin/form";
 import { pageRange } from "@/lib/api/pagination";
 import { db } from "@/lib/db/client";
 import { isUuid } from "@/lib/utils/uuid";
@@ -67,7 +72,7 @@ export type FilterChoice = { value: string; label: string; group?: string };
  * gap can be wide: the legal sections point at 2 documents out of however many
  * exist, and offering the rest invites a click that returns an empty page.
  */
-export type RelatedChoices = { table: PgTable; value: PgColumn; label: PgColumn };
+export type RelatedChoices = { table: PgTable; value: PgColumn; label: ReferenceLabel };
 
 /**
  * A `list_filter` entry.
@@ -331,19 +336,57 @@ export async function distinctChoices(
     .map((value) => ({ value, label: value }));
 }
 
+/**
+ * Rows of one table, as options, labelled however the descriptor says.
+ *
+ * The one place that turns a `ReferenceLabel` into text, shared by the
+ * changelist's foreign-key filters and by a form's `reference` fields -- they
+ * ask the same question and used to answer it with two copies of the same
+ * expression, which is how one of them could be wrong for as long as it was.
+ *
+ * **Ordered on the label that is actually drawn**, in JavaScript rather than in
+ * SQL. A composed label has no column to sort by, and sorting a composed one by
+ * its first part is what put every city-less location at the top of the list.
+ * These lists are small by construction -- 19 organizations, 2 legal documents
+ * -- and a model referencing something large wants a search box rather than a
+ * longer select, which is the point at which to build one.
+ */
+export async function labelledRows(
+  table: PgTable,
+  value: PgColumn,
+  label: ReferenceLabel,
+  where?: SQL,
+): Promise<FilterChoice[]> {
+  const rows = isComposedLabel(label)
+    ? // The key is spread first so a part cannot overwrite it. No table here
+      // names a column `value`, and one that did would collide loudly rather
+      // than quietly taking the key's place.
+      await db.selectDistinct({ value, ...label.parts }).from(table).where(where)
+    : await db.selectDistinct({ value, label }).from(table).where(where);
+
+  return rows
+    .map((row) => {
+      const { value: key, ...rest } = row as Record<string, unknown> & { value: unknown };
+      const text = isComposedLabel(label)
+        ? label.format(rest as Parameters<typeof label.format>[0])
+        : (rest as { label: unknown }).label;
+      return { value: String(key), label: optionLabel(text, key) };
+    })
+    .sort((a, b) => a.label.localeCompare(b.label));
+}
+
 /** The options for a foreign-key filter -- see `RelatedChoices`. */
 export async function relatedChoices(
   from: PgTable,
   column: PgColumn,
   related: RelatedChoices,
 ): Promise<FilterChoice[]> {
-  const rows = await db
-    .selectDistinct({ value: related.value, label: related.label })
-    .from(related.table)
-    .where(inArray(related.value, db.select({ value: column }).from(from)))
-    .orderBy(asc(related.label));
-
-  return rows.map((row) => ({ value: String(row.value), label: String(row.label ?? row.value) }));
+  return labelledRows(
+    related.table,
+    related.value,
+    related.label,
+    inArray(related.value, db.select({ value: column }).from(from)),
+  );
 }
 
 /**

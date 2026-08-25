@@ -1,6 +1,6 @@
 import "server-only";
 
-import { asc, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 import {
   formFields,
@@ -10,7 +10,7 @@ import {
   type AdminFormModel,
   type FormValues,
 } from "@/lib/admin/form";
-import type { FilterChoice } from "@/lib/admin/list";
+import { labelledRows, type FilterChoice } from "@/lib/admin/list";
 import { db } from "@/lib/db/client";
 import { imageFields } from "@/lib/admin/images";
 import { keyForMediaId } from "@/lib/admin/media";
@@ -172,13 +172,12 @@ export async function loadReferenceOptions(
       const sources = Array.isArray(declared) ? declared : [declared];
       const perSource = await Promise.all(
         sources.map(async (source) => {
-          const rows = await db
-            .select({ value: source.value, label: source.label })
-            .from(source.table)
-            .orderBy(asc(source.label));
+          // Loaded and labelled by the same function the changelist's
+          // foreign-key filters use, so a label composed from several columns
+          // works in both and neither can be blank in one and not the other.
+          const rows = await labelledRows(source.table, source.value, source.label);
           return rows.map((row) => ({
-            value: String(row.value),
-            label: String(row.label ?? row.value),
+            ...row,
             // Only where there is more than one: a lone source needs no
             // heading, and an `<optgroup>` around the whole list is a box
             // drawn round everything.

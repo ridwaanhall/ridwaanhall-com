@@ -161,6 +161,51 @@ try {
     check("the drawn control is a combobox", shape.triggerRole === "combobox");
   }
 
+  {
+    /*
+     * No option anywhere on the form may be nameless.
+     *
+     * The location picker drew one. A place's city, region and country are
+     * each `NOT NULL DEFAULT ''` -- deliberately, because a country with no
+     * city is a real place -- and labelling the options by the city column
+     * alone gave every country-only row the empty string for a name. The
+     * loader's fallback was written `label ?? value`, which catches null and
+     * lets a blank straight through, so the list held a clickable strip with
+     * nothing on it and no way to tell which row it was.
+     *
+     * Asserted across every select on the screen rather than the one that
+     * broke: the rule is shared now, so a regression in it would show up on
+     * whichever dropdown happened to hold the blank row.
+     */
+    const nameless = await page.evaluate(() =>
+      [...document.querySelectorAll("select")].flatMap((select) =>
+        [...select.options]
+          // The empty *key* is the "none" choice, which is meant to be there
+          // and carries its own wording.
+          .filter((option) => option.value && !option.textContent?.trim())
+          .map((option) => `${select.name}=${option.value}`),
+      ),
+    );
+    check(
+      "every option on the form is named, not a blank row",
+      nameless.length === 0,
+      nameless.slice(0, 3).join(", ") || `${await page.locator("select").count()} selects`,
+    );
+
+    // And the one that was wrong reads as all three of its parts, the way the
+    // public pages render it, rather than as whichever single column it used.
+    const places = await page.evaluate(() =>
+      [...(document.querySelector('select[name="locationId"]')?.options ?? [])]
+        .filter((option) => option.value)
+        .map((option) => option.textContent?.trim() ?? ""),
+    );
+    check(
+      "the location picker names a country-only place by its country",
+      places.length > 0 && places.some((place) => /\p{L}/u.test(place)),
+      `${places.length} places, e.g. ${JSON.stringify(places[0] ?? "")}`,
+    );
+  }
+
   /* -----------------------------------------------------------------------
      3. The listbox
      ----------------------------------------------------------------------- */

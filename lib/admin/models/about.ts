@@ -13,7 +13,9 @@ import {
   employmentType,
   experience,
   experienceTask,
+  jobOpening,
   location,
+  openToWorkListItem,
   organization,
   profile,
   profileLink,
@@ -25,7 +27,8 @@ import {
 
 import { countWhere, lookup, lookupOr } from "@/lib/admin/sql";
 
-import type { AdminFormModel, FormField } from "@/lib/admin/form";
+import { composedLabel, type AdminFormModel, type FormField } from "@/lib/admin/form";
+import { locationLabel } from "@/lib/data/location";
 import type { AdminListModel } from "@/lib/admin/list";
 
 /**
@@ -83,12 +86,38 @@ const workModeField = (column: PgColumn) => ({
   reference: { table: workMode, value: workMode.id, label: workMode.label },
 });
 
-const locationField = (column: PgColumn) => ({
+/**
+ * The place picker, shared by every form that names one.
+ *
+ * **Labelled by all three name parts, not by the city.** A location's city,
+ * region and country are each `NOT NULL DEFAULT ''` -- the schema says so
+ * deliberately, because a country with no city is a real place -- so labelling
+ * options by the city column alone drew a blank, clickable strip for every
+ * country-only row. `locationLabel` is the rule the public pages already
+ * render these with, and it is reused rather than restated so the admin and
+ * the site cannot disagree about what a place is called.
+ *
+ * Exported because the openhire form names a place too and used to repeat this
+ * declaration, which is how one of them could be fixed and the other not.
+ */
+export const locationField = (column: PgColumn) => ({
   name: "locationId",
   column,
   label: "Location",
   kind: "reference" as const,
-  reference: { table: location, value: location.id, label: location.city },
+  reference: {
+    table: location,
+    value: location.id,
+    label: composedLabel(
+      {
+        city: location.city,
+        region: location.region,
+        country: location.country,
+        flag: location.flag,
+      },
+      locationLabel,
+    ),
+  },
   help: "Shared with education, applications and the openhire lists.",
 });
 
@@ -485,6 +514,16 @@ export type OrganizationRow = {
  * 6 certifications. Correlated subqueries have neither problem: each counts its
  * own table, and no join exists to multiply.
  */
+/**
+ * `3 experiences`, and `1 experience`.
+ *
+ * The counts columns read as a sentence, and "4 application" is not one. Every
+ * noun these two columns use takes a plain `s`, so nothing more elaborate earns
+ * its place.
+ */
+const counted = (count: unknown, noun: string) =>
+  `${count} ${Number(count) === 1 ? noun : `${noun}s`}`;
+
 const usedBy = (fk: PgColumn) => countWhere(fk, organization.id);
 
 export const organizationList: AdminListModel<OrganizationRow> = {
@@ -523,7 +562,7 @@ export const organizationList: AdminListModel<OrganizationRow> = {
           [row.awards, "award"],
         ]
           .filter(([count]) => Number(count) > 0)
-          .map(([count, label]) => `${count} ${label}`)
+          .map(([count, label]) => counted(count, String(label)))
           .join(", ") || "unused",
     },
   ],
@@ -1185,6 +1224,157 @@ export const profileForm: AdminFormModel = {
       fields: [
         { name: "platform", column: profileLink.platform, label: "Label", kind: "text", required: true },
         { name: "url", column: profileLink.url, label: "URL", kind: "text", required: true },
+      ],
+    },
+  ],
+};
+
+export type LocationRow = {
+  id: string;
+  city: string;
+  region: string;
+  country: string;
+  flag: string;
+  applications: number;
+  education: number;
+  experiences: number;
+  openings: number;
+  listItems: number;
+  profiles: number;
+};
+
+/**
+ * How many rows point at this place, per relation.
+ *
+ * Correlated subqueries rather than joins, for the reason recorded on the
+ * organization list: six joins multiply each other, so a place with 6
+ * experiences and 1 degree would report 6 degrees. Counting each table on its
+ * own has neither that problem nor the round trip per row that timed the
+ * organization page out in production.
+ */
+const placesUsedBy = (fk: PgColumn) => countWhere(fk, location.id);
+
+/**
+ * Places, as records rather than as a vocabulary picked from.
+ *
+ * There was no screen for these at all: six tables name a location and every
+ * one of them could only ever point at a row that already existed, so a place
+ * entered slightly wrong stayed wrong and a new one needed a hand-written
+ * insert. The changelist that lists them is the one that lets the city missing
+ * from a country-only row be filled in.
+ */
+export const locationList: AdminListModel<LocationRow> = {
+  key: "location",
+  from: location,
+  pk: location.id,
+  select: {
+    id: location.id,
+    city: location.city,
+    region: location.region,
+    country: location.country,
+    flag: location.flag,
+    applications: placesUsedBy(application.locationId),
+    education: placesUsedBy(education.locationId),
+    experiences: placesUsedBy(experience.locationId),
+    openings: placesUsedBy(jobOpening.locationId),
+    listItems: placesUsedBy(openToWorkListItem.locationId),
+    profiles: placesUsedBy(profile.locationId),
+  },
+  columns: [
+    {
+      key: "place",
+      label: "Place",
+      sort: location.country,
+      // The same three parts the dropdowns join, joined the same way, so a row
+      // reads here as it reads everywhere it is offered.
+      value: (row) => locationLabel(row) || "—",
+    },
+    { key: "city", label: "City", kind: "muted", sort: location.city, value: (row) => row.city || "—" },
+    {
+      key: "region",
+      label: "Region",
+      kind: "muted",
+      sort: location.region,
+      value: (row) => row.region || "—",
+    },
+    {
+      key: "used_by",
+      label: "Used by",
+      kind: "muted",
+      // Composed from six counts, so there is nothing single to ORDER BY. The
+      // header offers no sort rather than sorting on one of the six.
+      value: (row) =>
+        [
+          [row.experiences, "experience"],
+          [row.education, "degree"],
+          [row.applications, "application"],
+          [row.openings, "opening"],
+          [row.listItems, "list entry"],
+          [row.profiles, "profile"],
+        ]
+          .filter(([count]) => Number(count) > 0)
+          .map(([count, label]) => counted(count, String(label)))
+          .join(", ") || "unused",
+    },
+  ],
+  search: {
+    fields: [location.city, location.region, location.country],
+    placeholder: "Search city, region or country",
+  },
+  defaultSort: { key: "place", dir: "asc" },
+  rowId: (row) => row.id,
+};
+
+export const locationForm: AdminFormModel = {
+  key: "location",
+  from: location,
+  pk: location.id,
+  label: (values) =>
+    locationLabel({
+      city: String(values.city ?? ""),
+      region: String(values.region ?? ""),
+      country: String(values.country ?? ""),
+      flag: String(values.flag ?? ""),
+    }) || "Location",
+  // Every one of the six references is `on delete set null`, so removing a
+  // place empties the field on the records that named it rather than being
+  // refused. That is a different warning from the organization's, which is
+  // restricted and cannot be deleted while anything points at it.
+  deleteWarning:
+    "Any experience, degree, application, opening, list entry or profile using this place is left with no location.",
+  fieldsets: [
+    {
+      help: "City, region and country together identify a place -- two rows cannot share all three. Leave the parts that do not apply empty: a country on its own is a real place.",
+      fields: [
+        { name: "city", column: location.city, label: "City", kind: "text", maxLength: 120 },
+        { name: "region", column: location.region, label: "Region", kind: "text", maxLength: 120 },
+        {
+          name: "country",
+          column: location.country,
+          label: "Country",
+          kind: "text",
+          maxLength: 120,
+        },
+        {
+          name: "flag",
+          column: location.flag,
+          label: "Flag",
+          kind: "text",
+          maxLength: 16,
+          help: "The emoji shown after the country, where there is one.",
+        },
+      ],
+    },
+    {
+      title: "Map",
+      fields: [
+        {
+          name: "mapUrl",
+          column: location.mapUrl,
+          label: "Map URL",
+          kind: "url",
+          maxLength: 500,
+        },
       ],
     },
   ],

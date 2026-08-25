@@ -104,6 +104,14 @@ const choose = async (name, value) => {
   }
 
   const label = ((await select.locator(`option[value="${value}"]`).textContent()) ?? "").trim();
+  /*
+   * A nameless option is not selectable by a person, and must not be silently
+   * selectable here either. `getByRole("option", { name: "" })` matches every
+   * row in the list, so `.first()` would pick whichever happened to be on top
+   * and the rest of the check would pass having chosen something else --
+   * which is how a blank location option survived every run of this harness.
+   */
+  if (!label) throw new Error(`${name}: the option for ${value} has no label to click`);
   await page.locator(`select[name="${name}"] + [role="combobox"]`).click();
 
   // Past fifteen options the panel carries a filter box. Typing into it is not

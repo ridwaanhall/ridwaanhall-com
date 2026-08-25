@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 
 import { AdminSelect } from "@/components/admin/controls/select";
 
@@ -46,9 +47,25 @@ export function FilterSelect({
    *
    * `requestSubmit` and not `submit`, so the form's own validation and its
    * submit event still run.
+   *
+   * **The flush is the whole of this working, and is not a tidy-up to remove.**
+   * The select this posts through is controlled, so its DOM value changes only
+   * when React re-renders -- and React defers a state write made in an event
+   * handler until after that handler returns. Submitting on the next line
+   * serialises the form while the select still holds the *old* value, so every
+   * filter navigated to `?q=&category=` with every parameter blank: the value
+   * was written a moment after the browser had already read it. Flushing first
+   * puts the value in the DOM while this is still one user gesture. Writing
+   * `select.value` by hand would also work and would leave React's copy of the
+   * truth disagreeing with the element; deferring the submit to an effect
+   * splits one gesture across two turns of the event loop.
+   *
+   * None of this applies without JavaScript, which is the path that kept
+   * working throughout: the browser commits the picked option before it fires
+   * `change`, and the toolbar's own submit button posts the form.
    */
   const apply = (next: string) => {
-    setCurrent(next);
+    flushSync(() => setCurrent(next));
     wrapRef.current?.closest("form")?.requestSubmit();
   };
 

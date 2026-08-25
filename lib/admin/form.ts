@@ -111,6 +111,67 @@ export type FormField = {
 };
 
 /**
+ * The text an option shows, falling back to its key when nothing labels it.
+ *
+ * One rule, because four places used to build a label independently and three
+ * of them wrote `label ?? value` -- which catches null and lets `""` straight
+ * through. That is not a hypothetical: `location`'s three name parts are each
+ * `NOT NULL DEFAULT ''` because a country with no city is a real place, so a
+ * country-only row labelled by its city column labelled itself with nothing,
+ * and the dropdown drew a blank, clickable strip.
+ *
+ * Falling back to the key rather than dropping the row: a row that exists and
+ * cannot be named is still a row somebody may need to point at, and a bare
+ * identifier reads as obviously wrong, which is how it gets fixed. Dropping it
+ * would hide both the row and the fault.
+ */
+export function optionLabel(label: unknown, value: unknown): string {
+  const text = label == null ? "" : String(label).trim();
+  return text || String(value);
+}
+
+/** The columns a composed label is built from. */
+export type LabelParts = Record<string, PgColumn>;
+
+/**
+ * A label no single column holds.
+ *
+ * `location` is the case that needed it -- city, region and country are three
+ * columns and the label is all of them -- and the join rule already exists as a
+ * pure, tested function on the read side, so this carries the columns to select
+ * and lets that function do the joining. Composed here rather than in SQL for
+ * that reason: a `concat_ws` doing the same work is the same rule written twice,
+ * in two languages, free to drift.
+ */
+export type ComposedLabel<P extends LabelParts = LabelParts> = {
+  parts: P;
+  format: (row: { [K in keyof P]: string | null }) => string;
+};
+
+/** How a row is labelled: one column, or several and a way to join them. */
+export type ReferenceLabel = PgColumn | ComposedLabel;
+
+/**
+ * Declare a composed label.
+ *
+ * A function rather than an object literal so the part names are inferred at
+ * the call site: `format` is then typed against the exact columns named beside
+ * it, and handing it a formatter expecting different ones is a type error
+ * rather than a blank dropdown.
+ */
+export function composedLabel<P extends LabelParts>(
+  parts: P,
+  format: (row: { [K in keyof P]: string | null }) => string,
+): ComposedLabel {
+  return { parts, format } as ComposedLabel;
+}
+
+/** Whether a label has to be composed rather than read from one column. */
+export function isComposedLabel(label: ReferenceLabel): label is ComposedLabel {
+  return "parts" in label && "format" in label;
+}
+
+/**
  * The rows a `reference` field offers, and how to label them.
  *
  * Resolved by the page rather than declared inline, the same way the
@@ -120,7 +181,7 @@ export type FormField = {
 export type ReferenceSource = {
   table: PgTable;
   value: PgColumn;
-  label: PgColumn;
+  label: ReferenceLabel;
   /** Offered when the column is nullable. `Award.organization` is not. */
   emptyLabel?: string;
   /**

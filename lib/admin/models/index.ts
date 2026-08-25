@@ -9,6 +9,8 @@ import {
   educationList,
   experienceForm,
   experienceList,
+  locationForm,
+  locationList,
   organizationForm,
   organizationList,
   profileForm,
@@ -69,6 +71,7 @@ const MODELS: AdminListModel<never>[] = [
   skillList,
   applicationList,
   organizationList,
+  locationList,
   // blog
   blogPostList,
   // projects
@@ -112,6 +115,7 @@ const FORMS: AdminFormModel[] = [
   skillForm,
   applicationForm,
   organizationForm,
+  locationForm,
   // blog
   blogPostForm,
   // projects

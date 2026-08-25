@@ -52,8 +52,8 @@ export function ErrorPage({
             <HomeIcon />
             Homepage
           </Link>
-          {/* `window.history.back()` rather than the error boundary's `reset`.
-              Reset re-renders the segment, which helps only for a transient
+          {/* `window.history.back()` rather than the error boundary's `retry`.
+              Retrying re-renders the segment, which helps only for a transient
               failure -- offered here it would look like a retry that does
               nothing. */}
           <button

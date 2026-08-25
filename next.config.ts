@@ -131,7 +131,8 @@ const nextConfig: NextConfig = {
       "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com",
       // Next inlines critical CSS as a <style> element on first paint.
       "style-src 'self' 'unsafe-inline'",
-      // The Onest faces are served from public/font, not from a font CDN.
+      // `next/font` self-hosts the Onest faces under /_next/static/media, so
+      // this origin serves them and no font CDN is ever contacted.
       "font-src 'self'",
       [
         "img-src 'self' data:",

@@ -25,9 +25,9 @@ import { getAboutData } from "@/lib/data/about";
  */
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const about = await getAboutData();
-  // Every page in this group renders the profile block; without a Profile row
-  // there is no site to show, which is the same conclusion BaseView reached
-  // when get_about_data() raised.
+  // Every page in this group renders the profile block, so without a Profile
+  // row there is no site to show. `notFound()` rather than an empty shell:
+  // half a layout around a page that cannot be right is worse than saying so.
   if (!about) notFound();
 
   return (

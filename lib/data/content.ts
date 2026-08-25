@@ -473,7 +473,12 @@ export function toProjectSummary(project: Project): ProjectSummary {
   };
 }
 
-/** Resolve a slug against an already-built list, as `DetailView.find_by_slug` did. */
+/**
+ * Resolve a slug against an already-built list.
+ *
+ * A linear scan rather than a query: every caller already holds the whole
+ * cached collection, so re-reading one row would only cost a round trip.
+ */
 export function findBySlug<T extends { slug: string }>(items: T[], slug: string): T | undefined {
   return items.find((item) => item.slug === slug);
 }

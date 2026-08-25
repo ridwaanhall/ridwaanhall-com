@@ -5,7 +5,7 @@ import { AdminSelect } from "@/components/admin/controls/select";
 import { KeyValueEditor, StringListEditor } from "@/components/admin/json-fields";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { adminDateTime } from "@/lib/admin/format";
-import { clearFieldName, type ClientField, type FormValues } from "@/lib/admin/form";
+import { clearFieldName, optionLabel, type ClientField, type FormValues } from "@/lib/admin/form";
 import { IMAGE_TYPES } from "@/lib/storage/keys";
 import { cn } from "@/lib/utils/cn";
 
@@ -76,7 +76,10 @@ export function Field({
      * name is already what should be shown.
      */
     const labelled = (raw: string) =>
-      (field.choices ?? field.options ?? []).find((choice) => choice.value === raw)?.label ?? raw;
+      optionLabel(
+        (field.choices ?? field.options ?? []).find((choice) => choice.value === raw)?.label,
+        raw,
+      );
 
     const shown =
       Array.isArray(value)

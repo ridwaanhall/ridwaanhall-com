@@ -408,6 +408,80 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
   const shown = (await nav.boundingBox())?.x ?? 0;
   check("the drawer is off-screen until opened", hidden < 0 && shown >= 0, `${hidden} -> ${shown}`);
 
+  // --- a filter actually applies ---------------------------------------------
+  /*
+   * Picked with the pointer, not typed into the address bar.
+   *
+   * Every other filter assertion here is a direct GET, which exercises the
+   * server half and cannot see the half that was broken: the toolbar's select
+   * is controlled, so a submit fired on the line after the state write
+   * serialised the form while the element still held the old value, and every
+   * filter navigated to `?q=&category=` with every parameter blank. The server
+   * drops a blank filter, so the list came back unfiltered and the failure
+   * looked like nothing happening.
+   *
+   * Reading the URL is the assertion that would have caught it; the row count
+   * is what says the value reached the query rather than merely the address.
+   */
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(`${BASE}/admin/blog-post`, { waitUntil: "load" });
+  await page.waitForTimeout(600);
+
+  const before = await page.locator("tbody tr").count();
+  const categoryValue = await page.evaluate(() => {
+    const select = document.querySelector('select[name="category"]');
+    return [...(select?.options ?? [])].find((option) => option.value)?.value ?? "";
+  });
+
+  await page.locator('select[name="category"] + [role="combobox"]').click();
+  await page.waitForTimeout(200);
+  await page.locator(`[role="option"]`).nth(1).click();
+  await page.waitForURL((url) => url.searchParams.has("category"), { timeout: 15000 }).catch(() => {});
+  await page.waitForTimeout(600);
+
+  const applied = new URL(page.url()).searchParams.get("category") ?? "";
+  check(
+    "picking a filter puts its value in the URL, not a blank",
+    applied !== "" && applied === categoryValue,
+    `category=${applied || "(blank)"}`,
+  );
+
+  const after = await page.locator("tbody tr").count();
+  check(
+    "and the list is actually filtered by it",
+    after > 0 && after < before,
+    `${before} rows -> ${after}`,
+  );
+
+  /*
+   * And before the bundle arrives, where the native select is the control.
+   *
+   * Scripting stays ON and the chunks are blocked -- `javaScriptEnabled: false`
+   * tests something else entirely here, because React streams a Suspense
+   * boundary into a hidden container and reveals it with a small inline
+   * script, so with scripting off the toolbar is not merely unhydrated but
+   * invisible. This is the path that never broke: the browser writes the
+   * picked option before it fires `change`, which is exactly why it could not
+   * stand in for the assertion above.
+   */
+  const bareFilter = await browser.newContext();
+  await bareFilter.route("**/_next/static/chunks/**", (route) => route.abort());
+  await bareFilter.addCookies([
+    { name: cookieName, value: staff.slice(cookieName.length + 1), domain: "localhost", path: "/" },
+  ]);
+  const unhydrated = await bareFilter.newPage();
+  await unhydrated.goto(`${BASE}/admin/blog-post`, { waitUntil: "domcontentloaded" });
+  await unhydrated.waitForTimeout(2500);
+  await unhydrated.selectOption('select[name="category"]', categoryValue);
+  await unhydrated.locator('button:has-text("Search")').first().click();
+  await unhydrated.waitForTimeout(1500);
+  check(
+    "and the native select still filters before the bundle arrives",
+    (new URL(unhydrated.url()).searchParams.get("category") ?? "") === categoryValue,
+    unhydrated.url().replace(BASE, ""),
+  );
+  await bareFilter.close();
+
   // --- signing out asks first ------------------------------------------------
   /*
    * The same confirmation the guestbook and the comment forms use. The button

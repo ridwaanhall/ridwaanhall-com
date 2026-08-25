@@ -5,12 +5,12 @@ import {
   hiringProfile,
   jobOpening,
   jobOpeningListItem,
-  location,
   openToWorkListItem,
   openToWorkProfile,
   portfolioHighlight,
 } from "@/lib/db/app-schema";
 
+import { locationField } from "@/lib/admin/models/about";
 import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
@@ -451,13 +451,7 @@ export const jobOpeningForm: AdminFormModel = {
           kind: "reference",
           reference: { table: employmentType, value: employmentType.id, label: employmentType.label },
         },
-        {
-          name: "locationId",
-          column: jobOpening.locationId,
-          label: "Location",
-          kind: "reference",
-          reference: { table: location, value: location.id, label: location.city },
-        },
+        locationField(jobOpening.locationId),
         {
           name: "salaryRange",
           column: jobOpening.salaryRange,

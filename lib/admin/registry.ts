@@ -111,6 +111,13 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     blurb: "The shared company, school and issuer record.",
   },
   {
+    key: "location",
+    label: "Location",
+    labelPlural: "Locations",
+    group: "About",
+    blurb: "The shared place record, named by every form that has a location.",
+  },
+  {
     key: "blog-post",
     label: "Blog post",
     labelPlural: "Blog posts",

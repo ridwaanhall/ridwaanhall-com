@@ -10,7 +10,7 @@ import { ErrorPage } from "@/components/site/error-page";
  * One boundary for every route, rather than each page catching its own data
  * errors and rendering the same thing.
  *
- * The `reset` prop is deliberately not surfaced as a button. It re-renders the
+ * The `retry` prop is deliberately not surfaced as a button. It re-renders the
  * segment, which helps only for a transient failure; for the failure this app
  * actually has -- a database that is unreachable -- it would look like a retry
  * that does nothing. "Go Back" and "Go to Homepage" are honest about what they

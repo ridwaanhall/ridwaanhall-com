@@ -74,7 +74,7 @@ const EXPECTED_ORIGINS = {
   "script-src": ["'self'", "'unsafe-inline'", "https://challenges.cloudflare.com"],
   "frame-src": ["https://challenges.cloudflare.com"], // the Turnstile widget
   "connect-src": ["'self'", "https://challenges.cloudflare.com"],
-  "font-src": ["'self'"], // the Onest faces are served from public/font
+  "font-src": ["'self'"], // next/font self-hosts Onest under /_next/static/media
 };
 
 /** The directives that have to be there whatever else is. */

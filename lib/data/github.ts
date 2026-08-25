@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 
 /**
  * GitHub contribution data for the dashboard.
@@ -175,13 +175,33 @@ function streaks(days: ContributionDay[]): {
 }
 
 /**
- * Cached for fifteen minutes.
+ * Cached for fifteen minutes, and stale for no more than thirty.
  *
- * `unstable_cache` rather than `"use cache"`: this reads an external API rather
- * than the database, and its freshness is a time window rather than something a
- * content edit should invalidate.
+ * Freshness here is a time window rather than something a content edit should
+ * invalidate: this reads GitHub, not the database, so no admin save has any
+ * bearing on it. The `github` tag exists so the window can be cut short by
+ * hand, not because anything routine expires it.
+ *
+ * `expire` must exceed `revalidate`, so 1800 is the tightest bound a
+ * fifteen-minute refresh allows -- and without it `revalidate` alone is
+ * unbounded stale-while-revalidate, which on a prerendered route means the
+ * build's copy can outlive its usefulness by however long nobody visits.
+ * `lib/data/wakatime.ts` has the long form of that failure; this panel sits on
+ * the same page and would have shown it the same way.
+ *
+ * Both `new Date()` reads that shape the result -- the current week and the
+ * streak walk -- happen inside `fetchGitHubStats`, which is to say inside this
+ * boundary. That is what Cache Components asks for: a clock read while
+ * prerendering is rejected outright, and one read here is simply shared by
+ * every reader until the next revalidation.
  */
-export const getGitHubStats = unstable_cache(fetchGitHubStats, ["github-contributions"], {
-  revalidate: 900,
-  tags: ["github"],
-});
+export async function getGitHubStats(
+  username: string,
+  token: string,
+): Promise<GitHubStats | null> {
+  "use cache";
+  cacheTag("github");
+  cacheLife({ stale: 900, revalidate: 900, expire: 1800 });
+
+  return fetchGitHubStats(username, token);
+}

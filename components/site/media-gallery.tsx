@@ -109,7 +109,11 @@ export function MediaGallery({
                     alt={lightboxImages[position].alt}
                     width={1200}
                     height={675}
-                    priority={position === 0}
+                    // The article's hero, and the largest paint on the page
+                    // at every width, so this is where the explicit preload is
+                    // spent rather than on a viewport-dependent guess.
+                    // `preload` replaces the deprecated `priority`.
+                    preload={position === 0}
                     className="w-full h-full object-cover object-center"
                   />
                 </div>
@@ -161,7 +165,9 @@ export function MediaGallery({
               alt={alt}
               width={1200}
               height={675}
-              priority
+              // Same as the slider branch above: one image, unambiguously
+              // the hero, so it earns the explicit preload.
+              preload
               className="w-full h-full object-cover object-center"
             />
           </div>

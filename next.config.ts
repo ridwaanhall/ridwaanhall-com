@@ -63,7 +63,10 @@ const nextConfig: NextConfig = {
     // avatars. Trimming the default ladder keeps the optimizer from generating
     // sizes nothing ever requests.
     deviceSizes: [375, 640, 768, 1024, 1280, 1536],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // 16 is absent because Next 16 dropped it from the default ladder, and
+    // nothing here would pick it anyway: the smallest rendered image is the
+    // 40px sidebar avatar.
+    imageSizes: [32, 48, 64, 96, 128, 256, 384],
   },
 
   /*
@@ -131,7 +134,8 @@ const nextConfig: NextConfig = {
       "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com",
       // Next inlines critical CSS as a <style> element on first paint.
       "style-src 'self' 'unsafe-inline'",
-      // The Onest faces are served from public/font, not from a font CDN.
+      // `next/font` self-hosts the Onest faces under /_next/static/media, so
+      // this origin serves them and no font CDN is ever contacted.
       "font-src 'self'",
       [
         "img-src 'self' data:",

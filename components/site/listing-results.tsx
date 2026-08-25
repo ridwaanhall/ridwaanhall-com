@@ -60,7 +60,7 @@ export async function BlogResults({
             only half the time.
           */
           paged.items.map((post, position) => (
-            <BlogCard key={post.slug} blog={post} priority={position < 2} />
+            <BlogCard key={post.slug} blog={post} eager={position < 2} />
           ))
         ) : (
           <EmptyState noun="blogs" />
@@ -100,7 +100,7 @@ export async function ProjectResults({
         {paged.items.length > 0 ? (
           // Both cards of the top row -- see the note on the blog grid above.
           paged.items.map((project, position) => (
-            <ProjectCard key={project.slug} project={project} priority={position < 2} />
+            <ProjectCard key={project.slug} project={project} eager={position < 2} />
           ))
         ) : (
           <EmptyState noun="projects" />

@@ -19,16 +19,23 @@ import { cn } from "@/lib/utils/cn";
 export function BlogCard({
   blog,
   variant = "grid",
-  priority = false,
+  eager = false,
 }: {
   blog: BlogPost | BlogSummary;
   variant?: "grid" | "slider";
   /**
-   * Set on the first card of a list, which is the one above the fold and so the
-   * candidate for Largest Contentful Paint. Left off, Next loads it lazily and
-   * says so in the console on every render of the home page.
+   * Set on the leading cards of a list, which are the ones above the fold and
+   * so the candidates for Largest Contentful Paint. Left off, Next loads them
+   * lazily and says so in the console on every render of the home page.
+   *
+   * `loading="eager"` and not Next's `preload`: a list sets this on more than
+   * one card, and which of them is the largest paint depends on the viewport
+   * -- the case the image docs name as the one not to preload for. React
+   * still hoists a preload link for a non-lazy image, so the fetch is not
+   * deferred; what `preload` would add is a guarantee, and that is spent on
+   * the page heroes instead.
    */
-  priority?: boolean;
+  eager?: boolean;
 }) {
   const slider = variant === "slider";
   const tags = blog.tags.map(String);
@@ -46,7 +53,7 @@ export function BlogCard({
               alt={slider ? `Featured image for blog: ${blog.title}` : blog.title}
               width={300}
               height={300}
-              priority={priority}
+              loading={eager ? "eager" : "lazy"}
               className="w-full h-full object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-500"
             />
           )}

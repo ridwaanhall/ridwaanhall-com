@@ -25,17 +25,20 @@ export function notFound(error = "Not found") {
 
 /**
  * Wrap a handler so an unexpected throw becomes a 500 rather than an unhandled
- * rejection. Mirrors `BaseView.handle_exceptions`: a data-layer failure should
- * degrade to an error response, never take the process with it.
+ * rejection: a failure in the data layer should degrade to an error response,
+ * never take the process with it.
  *
  * `unstable_rethrow` first, and it is not optional. Next signals control flow
- * by *throwing* -- `notFound()`, `redirect()`, and the interrupts the
- * prerenderer uses to discover that a route reads `searchParams` or uncached
- * data. A blanket catch swallows those signals and answers with a 500 instead,
- * so the prerenderer never learns the route bailed and sits waiting until its
- * 50s cache-fill timeout. That is not theoretical: it added ~110s to this
- * project's build and buried fourteen bogus errors in the output before this
- * line existed.
+ * by *throwing*, and its API reference names what: `notFound()`, `redirect()`
+ * and `permanentRedirect()`, plus the request-time APIs a prerender interrupts
+ * on -- `cookies()`, `headers()` and `searchParams`. A blanket catch swallows
+ * those signals and answers with a 500 instead, so the prerenderer never
+ * learns the route bailed and sits waiting until its 50s cache-fill timeout.
+ * That is not theoretical: it added ~110s to this project's build and buried
+ * fourteen bogus errors in the output before this line existed.
+ *
+ * Still carries the `unstable_` prefix in 16 and has no stable replacement, so
+ * the import is spelled the way the reference spells it.
  */
 export function handle<Args extends unknown[]>(
   fn: (...args: Args) => Promise<Response>,

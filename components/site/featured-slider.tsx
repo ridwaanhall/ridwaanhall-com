@@ -65,7 +65,14 @@ export function FeaturedSlider({ posts }: { posts: BlogSummary[] }) {
                   alt={post.title}
                   width={1200}
                   height={480}
-                  priority={position === 0}
+                  // The one image on this page that asks for a preload
+                  // outright, rather than taking the one React hoists for any
+                  // non-lazy image: the slider is the first thing under the
+                  // heading and slide 0 is the largest paint at every width,
+                  // so it is not the viewport-dependent guess the cards below
+                  // it would be. `preload` replaces the `priority` prop Next
+                  // 16 deprecated.
+                  preload={position === 0}
                   className={IMAGE_CLASS}
                 />
               )}

@@ -107,7 +107,7 @@ export function LatestBlogs({ blogs }: { blogs: BlogSummary[] }) {
           {blogs.map((blog, position) => (
             <div key={blog.slug} className="flex-none w-80">
               {/* The leftmost card is the home page's Largest Contentful Paint. */}
-              <BlogCard blog={blog} variant="slider" priority={position === 0} />
+              <BlogCard blog={blog} variant="slider" eager={position === 0} />
             </div>
           ))}
         </div>

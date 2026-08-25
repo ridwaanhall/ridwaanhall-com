@@ -60,6 +60,22 @@ const needles = [
   word("dump", "data"),
   word("MIGRATION", ".md"),
   word("content", "_type_id"),
+  /*
+   * The three generic view classes those comments used to cite by name.
+   *
+   * Added after `handle()`, `findBySlug` and the site layout were each found
+   * explaining themselves by one of them. A `ClassName.method_name` citation
+   * is neither the framework's name nor path-shaped, so nothing above it here
+   * matched, and the check passed while three comments still pointed at a
+   * class nobody can open.
+   *
+   * Three exact names rather than a rule about the shape: a pattern loose
+   * enough to catch them also catches a property access on any type whose
+   * fields are snake_case, which is every row this schema returns.
+   */
+  word("Base", "View"),
+  word("List", "View"),
+  word("Detail", "View"),
 ];
 
 /**

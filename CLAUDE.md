@@ -349,11 +349,20 @@ seen.
   passing the column value along.**
 - **A storage key does not say where the file is served from.**
   `media_asset.source` does: `storage` is an object in the bucket, `static` is a
-  path under `public/` — the 74 bundled skill icons. `assetUrl` is the single
-  thing that knows which, and `mediaUrl` alone sends a static key to the bucket,
-  which is how all 78 icon previews became `NoSuchKey`.
+  path under `public/`. `assetUrl` is the single thing that knows which, and
+  `mediaUrl` alone sends a static key to the bucket, which is how all 78 icon
+  previews once became `NoSuchKey`.
+  Every asset is `storage` today — the 74 skill icons were the last `static`
+  ones and `scripts/migrate-icons-to-storage.mjs` moved them — but the column
+  still permits either, and the branch is what keeps the next `static` asset
+  from repeating that bug. **Never assume the source; read it.**
   `scripts/check-admin-media.mjs` proves both halves: every image a form renders
   is a key, and every URL it builds resolves.
+  The icons stay in `public/static/svg/icon/` as the source to re-seed from.
+  That matters because `skill.iconId` is one of the columns
+  `lib/storage/cleanup.ts` counts references over: unlinking the last skill that
+  names an icon now deletes the object and its row for good, where before the
+  delete aimed at a path that had never been in the bucket.
 - **An email's dark mode is an overlay, and an inline style outranks a class.**
   `lib/email/layout.ts` writes the light palette inline on every element and
   repaints it from one `<style>` block under `prefers-color-scheme: dark`. Every
@@ -490,6 +499,13 @@ The browser-driven ones need `npm run dev` running.
 `scripts/check-schema-parity.mjs` and `scripts/catch-up-from-public.mjs` are not
 part of this list. They exist for the one-off retirement of the `public` schema
 and are deleted with it — see `drizzle/9999_drop_public.sql`.
+
+`scripts/migrate-icons-to-storage.mjs` is not a check either. It uploads the
+skill icons from `public/static/svg/icon/` and repoints their rows, and it is
+kept rather than deleted because it is idempotent — the key is a digest of the
+file's contents, so re-running rewrites identical bytes and skips rows already
+moved. That makes it the way to restore an icon somebody unlinked. It is a dry
+run unless given `--apply`.
 
 ## Conventions
 

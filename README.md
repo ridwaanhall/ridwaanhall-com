@@ -5,7 +5,7 @@
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Supabase](https://img.shields.io/badge/Supabase-Postgres-3FCF8E?style=flat&logo=supabase&logoColor=white)](https://supabase.com/)
 
-![ridwaanhall.com](https://ridwaanhall.com/static/img/project/ridwaanhall_com_2025070701.webp)
+![ridwaanhall.com](public/image.png)
 
 > **The portfolio behind [ridwaanhall.com](https://ridwaanhall.com) — database-backed content with its own admin, live GitHub and WakaTime dashboards, an OAuth guestbook with threaded replies, and light and dark themes. Fork it and make it your own; see [Making It Your Own](#making-it-your-own) below.**
 

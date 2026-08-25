@@ -281,9 +281,11 @@ export async function getProjects(): Promise<Project[]> {
   const skillsByProject = collect(techStack, (row) => row.projectId, (row) => ({
     name: row.name,
     description: row.description,
-    // The icon is a media asset now, so a bundled SVG and an uploaded file
-    // resolve through one function -- see `assetUrl`.
-    icon_svg: assetUrl(row.iconKey ? { storageKey: row.iconKey, source: row.iconSource ?? "static" } : null),
+    // The icon is a media asset, so every one resolves through `assetUrl`.
+    // The fallback matches the column default and `logoUrl` in `lib/data/about.ts`:
+    // a row with no source is an object in the bucket. It used to read "static"
+    // back when every icon was a bundled file, which is now exactly backwards.
+    icon_svg: assetUrl(row.iconKey ? { storageKey: row.iconKey, source: row.iconSource ?? "storage" } : null),
     category: row.category ?? "",
   }));
 

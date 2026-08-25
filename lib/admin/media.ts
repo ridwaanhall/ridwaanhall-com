@@ -95,12 +95,14 @@ export async function keyForMediaId(id: string | null | undefined): Promise<stri
  * without the caller having to know which is which.
  *
  * **The source is looked up rather than assumed.** A key alone does not say
- * where the file is: the 74 bundled skill icons are `source: "static"` and
- * resolve to a path under `public/`, everything else is an object in the bucket.
- * Sending every key to the bucket URL asked Supabase for
- * `.../media//static/svg/icon/uv.svg` and got `NoSuchKey` back, so all 78 icons
- * previewed broken. `assetUrl` is the single thing that knows which is which --
- * one query here feeds it, rather than each caller guessing.
+ * where the file is served from -- `media_asset.source` does, and the column
+ * still permits either answer. Every asset is an object in the bucket today,
+ * the skill icons included since they were migrated there, but the lookup stays
+ * because assuming was the bug: sending every key to the bucket URL asked
+ * Supabase for a path that had never been an object and got `NoSuchKey` back,
+ * so all 78 icon previews broke at once. `assetUrl` is the single thing that
+ * knows which is which -- one query here feeds it, rather than each caller
+ * guessing.
  */
 export async function imageUrlMap(
   model: AdminFormModel,

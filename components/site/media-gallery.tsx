@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ImageLightbox, type LightboxImage } from "@/components/site/image-lightbox";
+import { SliderDots } from "@/components/site/slider-dots";
 
 /**
  * The Mac-window image frame used by blog posts and projects.
@@ -16,11 +17,11 @@ import { ImageLightbox, type LightboxImage } from "@/components/site/image-light
  * One component with a `variant`, not two near-identical sliders of 120 lines
  * each differing in three class prefixes and the auto-advance interval.
  *
- * The dot class strings look redundantly specific and are copied deliberately:
- * they reproduce what the original's `classList.add`/`remove` calls left on the
- * element, including the fact that a project's active dot keeps `sm:w-2` and so
- * is *not* elongated above 640px, while a blog's is. Simplifying them would
- * silently change the indicator.
+ * The dot row is `SliderDots`, shared with the featured-post slider. Each of
+ * the three used to carry its own copy of the class strings, and a project's
+ * active dot had picked up an `sm:w-2` after its `w-4` -- so above 640px it was
+ * the same circle as its neighbours, and which image you were on was said only
+ * by half a step of opacity.
  */
 
 type Variant = "blog" | "project";
@@ -140,18 +141,14 @@ export function MediaGallery({
             </button>
           </div>
 
-          <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex space-x-1 sm:space-x-2">
-            {images.map((src, position) => (
-              <button
-                key={src}
-                type="button"
-                className={dotClass(variant, position === index)}
-                title={variant === "blog" ? `Image ${position + 1}` : `Go to image ${position + 1}`}
-                aria-current={position === index}
-                onClick={() => go(position)}
-              />
-            ))}
-          </div>
+          <SliderDots
+            count={count}
+            active={index}
+            onSelect={go}
+            title={(position) =>
+              variant === "blog" ? `Image ${position}` : `Go to image ${position}`
+            }
+          />
 
           {variant === "project" && (
             <MagnifyButton label="Magnify Images" onClick={() => setLightboxAt(index)} />
@@ -207,21 +204,6 @@ export function MediaGallery({
 /** The prev/next button's variant-specific hooks, kept for the CSS selectors. */
 function navClass(variant: Variant, direction: "prev" | "next"): string {
   return variant === "blog" ? `blog-slider-nav blog-${direction}` : `project-${direction}`;
-}
-
-/**
- * The active/inactive dot, reproducing the classes the original's `classList`
- * calls left behind rather than a tidied equivalent.
- */
-function dotClass(variant: Variant, active: boolean): string {
-  if (variant === "blog") {
-    return active
-      ? "blog-slider-dot cursor-pointer bg-zinc-300 w-4 h-1.5 sm:h-2 rounded-full hover:bg-zinc-300 transition-all duration-300"
-      : "blog-slider-dot cursor-pointer bg-zinc-300/50 w-1.5 h-1.5 sm:h-2 rounded-full hover:bg-zinc-300 transition-all duration-300";
-  }
-  return active
-    ? "project-slider-dot cursor-pointer h-1.5 sm:w-2 sm:h-2 rounded-full transition-all duration-300 focus:outline-none hover:bg-zinc-300 bg-zinc-300 w-4"
-    : "project-slider-dot cursor-pointer w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all duration-300 focus:outline-none hover:bg-zinc-300 bg-zinc-300/50";
 }
 
 /**

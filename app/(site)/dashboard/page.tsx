@@ -110,15 +110,7 @@ function Wakatime({ stats }: { stats: WakatimeStats }) {
         <StatCard label="End Trace" value={stats.end_date} />
         <StatCard label="Daily Focus" value={stats.daily_average} />
         <StatCard label={<>Week&rsquo;s Coding</>} value={stats.this_week_coding} />
-        <StatCard
-          label="Peak Day"
-          value={
-            <>
-              {stats.best_day_coding}{" "}
-              <span className="text-xs text-zinc-400">({stats.best_day_date})</span>
-            </>
-          }
-        />
+        <StatCard label="Peak Day" hint={stats.best_day_date} value={stats.best_day_coding} />
         <StatCard
           label="Today's Coding"
           hint={`${stats.all_time_coding} Since ${stats.all_time_start}`}
@@ -219,6 +211,12 @@ function Wakatime({ stats }: { stats: WakatimeStats }) {
  * days, cut a different way, and a reader who scrolls past the categories has
  * not left WakaTime's numbers behind.
  *
+ * Its own accent all the same. Sharing indigo with the panel above it made one
+ * long indigo run where the heading was the only thing saying the subject had
+ * changed, and a heading is what a reader scrolling scans past. Amber is warm
+ * against the three cool sections -- indigo above, teal below, green under
+ * that -- so the eye counts four scales down the page rather than two.
+ *
  * Four of the six figures here come from the AI heuristics call, which
  * `lib/data/wakatime.ts` lets fail on its own. `has_heuristics` is what they
  * are gated on rather than their own values: a week with no follow-ups is a
@@ -233,14 +231,14 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard
+        <AiStat
           label="Tokens In"
           hint={`${ai.tokens_in_exact}. ${ai.ai_line_percent}% of lines changed were written by AI.`}
           value={ai.tokens_in}
         />
-        <StatCard label="Tokens Out" hint={ai.tokens_out_exact} value={ai.tokens_out} />
-        <StatCard label="Prompts" hint={`Averaging ${ai.prompt_avg} each`} value={ai.prompts} />
-        <StatCard label="Avg Prompt" value={ai.prompt_avg} />
+        <AiStat label="Tokens Out" hint={ai.tokens_out_exact} value={ai.tokens_out} />
+        <AiStat label="Prompts" hint={`Averaging ${ai.prompt_avg} each`} value={ai.prompts} />
+        <AiStat label="Avg Prompt" value={ai.prompt_avg} />
         {ai.has_heuristics && (
           <>
             {/*
@@ -249,13 +247,13 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
               carrying one each. A week that cost nothing is a real $0; an
               outage is not, and only the flag can tell them apart.
             */}
-            <StatCard
+            <AiStat
               label="Est. Spend"
               hint="What the week's AI models cost, as WakaTime estimates it"
               value={ai.spend}
             />
-            <StatCard label="AI Sessions" value={ai.sessions} />
-            <StatCard
+            <AiStat label="AI Sessions" value={ai.sessions} />
+            <AiStat
               label="Human Review"
               hint={ai.review_detail}
               value={
@@ -265,7 +263,7 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
                 </>
               }
             />
-            <StatCard
+            <AiStat
               label="Human Follow-up"
               hint={ai.follow_up_detail}
               value={
@@ -290,18 +288,18 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
         rightLabel="Human"
         rightValue={`${ai.human_lines.toLocaleString("en-US")} lines`}
         percent={ai.ai_line_percent}
-        gradient="bg-gradient-to-r from-indigo-400 to-purple-600"
-        border="border-indigo-500/50"
+        gradient="bg-gradient-to-r from-yellow-400 to-amber-600"
+        border="border-amber-500/50"
       />
 
       <div className="mt-4 flex flex-col gap-6 sm:gap-4 md:flex-row">
-        <GradientPanel title="Cost by Model" gradient="from-indigo-400 to-purple-600">
+        <GradientPanel title="Cost by Model" gradient="from-yellow-400 to-amber-600">
           {ai.models.length > 0 ? (
             ai.models.map((model) => (
               <PercentBar
                 key={model.name}
                 entry={model}
-                gradient="bg-gradient-to-r from-indigo-400 to-purple-600"
+                gradient="bg-gradient-to-r from-yellow-400 to-amber-600"
               />
             ))
           ) : (
@@ -309,13 +307,13 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
           )}
         </GradientPanel>
 
-        <GradientPanel title="AI Lines by Project" gradient="from-purple-500 to-pink-600">
+        <GradientPanel title="AI Lines by Project" gradient="from-amber-500 to-orange-600">
           {ai.projects.length > 0 ? (
             ai.projects.map((project) => (
               <PercentBar
                 key={project.name}
                 entry={project}
-                gradient="bg-gradient-to-r from-purple-500 to-pink-600"
+                gradient="bg-gradient-to-r from-amber-500 to-orange-600"
               />
             ))
           ) : (
@@ -333,8 +331,8 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
  * Its own section rather than more cards in the WakaTime one: every figure
  * above it is seven days old at most, and putting a year-long total in that
  * grid would leave the reader to notice the difference from the wording alone.
- * Its own accent for the same reason -- teal against the indigo above and the
- * green below, so the eye reads three scales rather than one long panel.
+ * Its own accent for the same reason -- teal between the amber above and the
+ * green below, so the eye reads four scales rather than one long panel.
  *
  * The heatmap is the same grid GitHub renders underneath, in the other tone.
  * That is the point of it: hours and commits over the same year, drawn the
@@ -351,15 +349,7 @@ function CodingYear({ year }: { year: WakatimeYear }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <YearStat label="Total Coded" hint={year.range} value={year.total} />
         <YearStat label="Daily Focus" value={year.daily_average} />
-        <YearStat
-          label="Peak Day"
-          value={
-            <>
-              {year.best_day}{" "}
-              <span className="text-xs text-zinc-400">({year.best_day_date})</span>
-            </>
-          }
-        />
+        <YearStat label="Peak Day" hint={year.best_day_date} value={year.best_day} />
         <YearStat
           /* WakaTime counts the days you did not code and calls them holidays. */
           label="Days Coded"
@@ -516,6 +506,40 @@ function StatCard({
       </h3>
       <div className="flex items-center justify-between">
         <p className="text-indigo-400 sm:text-xl">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * A card in the AI section.
+ *
+ * `StatCard` in amber, and a separate component for the same reason `YearStat`
+ * is one: Tailwind emits a class only where it can see it written out, so a
+ * border colour interpolated from a `tone` prop produces no rule at all and
+ * the card comes out unbordered.
+ */
+function AiStat({
+  label,
+  value,
+  hint,
+}: {
+  label: React.ReactNode;
+  value: React.ReactNode;
+  hint?: string;
+}) {
+  return (
+    <div
+      className={`bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-amber-500/50 transition-all duration-300 ${
+        hint ? "relative z-10 overflow-visible" : "overflow-hidden"
+      }`}
+    >
+      <h3 className="font-medium text-xs sm:text-sm">
+        {label}
+        {hint && <HelpIcon title={hint} />}
+      </h3>
+      <div className="flex items-center justify-between">
+        <p className="text-amber-400 sm:text-xl">{value}</p>
       </div>
     </div>
   );

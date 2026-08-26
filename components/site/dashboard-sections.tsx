@@ -75,6 +75,60 @@ export function CountUp({ value, className }: { value: number | string; classNam
 }
 
 /**
+ * One bar carrying two shares of the same whole.
+ *
+ * The AI/human line split was already computed and spent entirely on a
+ * tooltip -- it is the headline of the section it sits in, so it gets a bar.
+ * A single bar with the remainder showing through, rather than two segments:
+ * the track *is* the second share, and drawing it twice invites the two to
+ * disagree by a rounding step at the join.
+ *
+ * It reuses `.percent-bar`, so the grow-from-zero and its reduced-motion
+ * counterpart come from the stylesheet exactly as they do for a breakdown row.
+ */
+export function SplitBar({
+  leftLabel,
+  leftValue,
+  rightLabel,
+  rightValue,
+  percent,
+  gradient,
+  border,
+}: {
+  leftLabel: string;
+  leftValue: string;
+  rightLabel: string;
+  rightValue: string;
+  /** The left share, 0-100. The right one is what is left of the track. */
+  percent: number;
+  /** Written out in full -- Tailwind cannot see an interpolated gradient. */
+  gradient: string;
+  border: string;
+}) {
+  return (
+    <div className={`mt-3 sm:mt-4 rounded-lg sm:rounded-xl border p-3 sm:p-4 ${border}`}>
+      <div className="mb-2 flex items-center justify-between gap-2 text-xs sm:text-sm">
+        <span className="font-medium">
+          {leftLabel} <span className="text-zinc-400">{leftValue}</span>
+        </span>
+        <span className="font-medium">
+          <span className="text-zinc-400">{rightValue}</span> {rightLabel}
+        </span>
+      </div>
+      <div className="relative h-3 rounded-full bg-zinc-800/50">
+        <span
+          className={`${gradient} percent-bar absolute left-0 top-0 h-3 rounded-full`}
+          style={{ "--bar-width": `${percent}%` } as React.CSSProperties}
+        />
+      </div>
+      <p className="mt-2 text-right text-xs text-zinc-400">
+        <CountUp value={percent} />% written by AI
+      </p>
+    </div>
+  );
+}
+
+/**
  * One labelled bar in a breakdown panel.
  *
  * **The row is a subgrid, not a flex line.** Its three cells belong to the

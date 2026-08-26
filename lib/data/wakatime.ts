@@ -1,5 +1,18 @@
 import { cacheLife, cacheTag } from "next/cache";
 
+import {
+  BASE,
+  TIMEZONE,
+  compactNumber,
+  count,
+  daysAgo,
+  formatTime,
+  jakartaToday,
+  longDateJakarta,
+  share,
+  usd,
+} from "./wakatime-format";
+
 /**
  * WakaTime coding activity for the dashboard.
  *
@@ -41,6 +54,9 @@ export type WakatimeAi = {
   ai_lines: number;
   human_lines: number;
   ai_line_percent: number;
+  /** Prompts sent this week, and their average length in characters. */
+  prompts: string;
+  prompt_avg: string;
   /** AI lines by project, biggest first. From `summaries`, so always present. */
   projects: WakatimeEntry[];
   /*
@@ -49,6 +65,9 @@ export type WakatimeAi = {
    * than four emptiness tests that could disagree.
    */
   has_heuristics: boolean;
+  /** What the week cost, in full. Only shares of it were ever shown. */
+  spend: string;
+  sessions: number;
   review_percent: string;
   review_sessions: number;
   review_detail: string;
@@ -73,81 +92,9 @@ export type WakatimeStats = {
   best_day_date: string;
   top_3_categories: WakatimeEntry[];
   top_3_languages: WakatimeEntry[];
+  top_3_editors: WakatimeEntry[];
   ai: WakatimeAi;
 };
-
-const BASE = "https://wakatime.com/api/v1";
-const TIMEZONE = "Asia/Jakarta";
-
-/** Today in Asia/Jakarta as `YYYY-MM-DD`, which is what the API's range expects. */
-function jakartaToday(): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: TIMEZONE }).format(new Date());
-}
-
-function daysAgo(isoDate: string, days: number): string {
-  const date = new Date(`${isoDate}T00:00:00Z`);
-  date.setUTCDate(date.getUTCDate() - days);
-  return date.toISOString().slice(0, 10);
-}
-
-/** "2 hours 5 minutes", "45 minutes", "30 secs", "0 mins". */
-function formatTime(seconds: number): string {
-  if (!Number.isFinite(seconds) || seconds < 0) return "0 mins";
-
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const hourStr = hours > 0 ? `${hours} ${hours === 1 ? "hour" : "hours"}` : "";
-  const minuteStr = minutes > 0 ? `${minutes} ${minutes === 1 ? "minute" : "minutes"}` : "";
-
-  if (hours > 0 && minutes > 0) return `${hourStr} ${minuteStr}`;
-  if (hours > 0) return hourStr;
-  if (minutes > 0) return minuteStr;
-  if (seconds > 0) return `${Math.floor(seconds)} secs`;
-  return "0 mins";
-}
-
-/**
- * "2.0B", "3.7M", "176".
- *
- * Token counts run to ten digits, which is unreadable in a stat card and wraps
- * on a phone. The exact figure goes in the card's tooltip instead.
- */
-function compactNumber(value: number): string {
-  if (!Number.isFinite(value) || value <= 0) return "0";
-  if (value >= 1e9) return `${(value / 1e9).toFixed(1)}B`;
-  if (value >= 1e6) return `${(value / 1e6).toFixed(1)}M`;
-  if (value >= 1e3) return `${(value / 1e3).toFixed(1)}K`;
-  return String(Math.round(value));
-}
-
-/*
- * Both of these pin `en-US` rather than taking the runtime's locale. A server
- * whose locale is `id-ID` -- which is this project's own machine -- groups
- * thousands with dots, so 12,096,512 renders as 12.096.512 and reads as a
- * decimal to everybody else. The site's copy is English; its numbers should be.
- */
-const count = (value: number) => Math.round(value).toLocaleString("en-US");
-
-const usd = (value: number, decimals: number) =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }).format(value);
-
-/** "August 20, 2026", in Jakarta time -- the clock the coding hours were kept on. */
-function longDateJakarta(iso: string | undefined | null): string {
-  if (!iso) return "N/A";
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return "N/A";
-  return new Intl.DateTimeFormat("en-US", {
-    timeZone: TIMEZONE,
-    month: "long",
-    day: "2-digit",
-    year: "numeric",
-  }).format(date);
-}
 
 /** The AI fields on a day's `grand_total`. */
 type AiTotals = {
@@ -158,6 +105,13 @@ type AiTotals = {
   ai_deletions?: number;
   human_additions?: number;
   human_deletions?: number;
+  /*
+   * Prompt counters, summed across the window. These are discrete events,
+   * each stamped with the moment it happened, so unlike the daily cost --
+   * see `fetchAiHeuristics` -- adding seven days of them up is sound.
+   */
+  ai_prompt_events_total?: number;
+  ai_prompt_length_sum?: number;
 };
 
 type Summary = {
@@ -166,6 +120,7 @@ type Summary = {
     grand_total?: { total_seconds?: number } & AiTotals;
     categories?: { name?: string; total_seconds?: number }[];
     languages?: { name?: string; total_seconds?: number }[];
+    editors?: { name?: string; total_seconds?: number }[];
     /** Carries the same AI counters as `grand_total`, split by project. */
     projects?: ({ name?: string } & AiTotals)[];
   }[];
@@ -187,6 +142,8 @@ type Heuristics = {
     review_events?: number;
     /** Files a human went back and *changed*, within `follow_up_window_seconds`. */
     files_with_follow_up?: number;
+    /** Every edit session AI took part in -- the denominator above. */
+    ai_edit_sessions?: number;
     files_with_follow_up_percent?: number;
     follow_up_events?: number;
     follow_up_lines?: number;
@@ -293,6 +250,7 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
 
   const categoryTotals = new Map<string, number>();
   const languageTotals = new Map<string, number>();
+  const editorTotals = new Map<string, number>();
   const projectAiLines = new Map<string, number>();
 
   const ai = {
@@ -301,6 +259,8 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
     output: 0,
     aiLines: 0,
     humanLines: 0,
+    prompts: 0,
+    promptChars: 0,
   };
 
   for (const day of daily) {
@@ -311,6 +271,10 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
     for (const language of day.languages ?? []) {
       const name = language.name ?? "Unknown";
       languageTotals.set(name, (languageTotals.get(name) ?? 0) + (language.total_seconds ?? 0));
+    }
+    for (const editor of day.editors ?? []) {
+      const name = editor.name ?? "Unknown";
+      editorTotals.set(name, (editorTotals.get(name) ?? 0) + (editor.total_seconds ?? 0));
     }
 
     for (const project of day.projects ?? []) {
@@ -325,6 +289,8 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
     ai.output += total.ai_output_tokens ?? 0;
     ai.aiLines += (total.ai_additions ?? 0) + (total.ai_deletions ?? 0);
     ai.humanLines += (total.human_additions ?? 0) + (total.human_deletions ?? 0);
+    ai.prompts += total.ai_prompt_events_total ?? 0;
+    ai.promptChars += total.ai_prompt_length_sum ?? 0;
   }
 
   const percentOf = (value: number) => (grandTotal > 0 ? (value / grandTotal) * 100 : 0);
@@ -366,13 +332,14 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
           .sort((a, b) => (b.cost ?? 0) - (a.cost ?? 0))
           .slice(0, 3)
           .map((model) => {
-            const share = Math.round(((model.cost ?? 0) / spend) * 10000) / 100;
+            const percent = share(model.cost ?? 0, spend);
             return {
               name: model.name ?? "Unknown",
-              percent: share,
-              // The share moves into the tooltip because the row now prints the
-              // money -- there is no total on screen any more to read it against.
-              time: `${share < 1 ? share : Math.trunc(share)}% of estimated spend`,
+              percent,
+              // The share moves into the tooltip because the row prints the
+              // money instead. The panel's own Est. Spend card is what the
+              // dollars are read against.
+              time: `${percent < 1 ? percent : Math.trunc(percent)}% of estimated spend`,
               value: usd(model.cost ?? 0, 2),
             };
           })
@@ -386,7 +353,7 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
     .slice(0, 3)
     .map(([name, lines]) => ({
       name,
-      percent: ai.aiLines > 0 ? Math.round((lines / ai.aiLines) * 10000) / 100 : 0,
+      percent: share(lines, ai.aiLines),
       time: `${count(lines)} of ${count(ai.aiLines)} AI lines this week`,
       value: count(lines),
     }));
@@ -419,6 +386,7 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
     ),
     top_3_categories: topThree(categoryTotals),
     top_3_languages: topThree(languageTotals),
+    top_3_editors: topThree(editorTotals),
     ai: {
       // Input and cached input as one number, which is how WakaTime's own
       // summary counts them -- a cached token was still an input token.
@@ -429,8 +397,14 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
       ai_lines: ai.aiLines,
       human_lines: ai.humanLines,
       ai_line_percent: totalLines > 0 ? Math.round((ai.aiLines / totalLines) * 1000) / 10 : 0,
+      prompts: count(ai.prompts),
+      prompt_avg: ai.prompts > 0 ? count(ai.promptChars / ai.prompts) + " chars" : "0 chars",
       projects,
       has_heuristics: hasHeuristics,
+      // Whole dollars: the cents on a four-figure estimate are noise, and the
+      // per-model rows beneath it already carry them.
+      spend: usd(spend, 0),
+      sessions: heuristics?.ai_edit_sessions ?? 0,
       review_percent: `${Math.round((heuristics?.files_with_review_percent ?? 0) * 10) / 10}%`,
       review_sessions: heuristics?.review_events ?? 0,
       review_detail: `${count(reviewed)} of ${count(touched)} AI-touched files were read back, across ${count(heuristics?.review_events ?? 0)} review sessions`,

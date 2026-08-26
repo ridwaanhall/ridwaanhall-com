@@ -4,7 +4,7 @@ import { DashboardPanelSkeleton } from "@/components/site/dashboard-skeleton";
 /**
  * The dashboard, while it loads.
  *
- * The same two panel skeletons the page's own `<Suspense>` boundaries use, so
+ * The same three panel skeletons the page's own `<Suspense>` boundaries use, so
  * the wait before the shell arrives looks like the wait after it.
  */
 export default function Loading() {
@@ -17,6 +17,7 @@ export default function Loading() {
       </div>
 
       <DashboardPanelSkeleton panel="wakatime" />
+      <DashboardPanelSkeleton panel="year" />
       <DashboardPanelSkeleton panel="github" />
     </SkeletonPage>
   );

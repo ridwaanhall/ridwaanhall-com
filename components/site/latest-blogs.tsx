@@ -21,6 +21,8 @@ import type { BlogSummary } from "@/lib/data/content";
  */
 const SLIDE_INTERVAL_MS = 6000;
 const CARD_WIDTH_PX = 285;
+/** How much of each edge fades, at most. `.rail-fade` opens at this too. */
+const FADE_PX = 48;
 
 export function LatestBlogs({ blogs }: { blogs: BlogSummary[] }) {
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -66,6 +68,50 @@ export function LatestBlogs({ blogs }: { blogs: BlogSummary[] }) {
     };
   }, []);
 
+  /*
+   * The rail fades at an edge only over content there is something behind.
+   *
+   * Each side is set to how much is hidden past it, capped -- so the leftmost
+   * card is crisp until the rail moves, and the fade then grows with the first
+   * stretch of the scroll rather than appearing whole. The marquee below can
+   * fade both sides unconditionally because it loops; this one ends.
+   *
+   * Written as custom properties on the node rather than through state: a
+   * scroll handler that set state would re-render five cards on every frame of
+   * a smooth scroll, and there is nothing here React needs to know about.
+   *
+   * Separate from the auto-advance effect above, which returns early under
+   * reduced motion. A rail somebody scrolls by hand still has edges.
+   */
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    const update = () => {
+      const past = slider.scrollWidth - slider.clientWidth - slider.scrollLeft;
+      const start = Math.min(slider.scrollLeft, FADE_PX);
+      const end = Math.min(Math.max(past, 0), FADE_PX);
+      slider.style.setProperty("--rail-fade-start", start + "px");
+      slider.style.setProperty("--rail-fade-end", end + "px");
+    };
+
+    update();
+    slider.addEventListener("scroll", update, { passive: true });
+
+    /*
+     * Whether there is anything to fade is a question about the rail's width,
+     * and that changes with the content column -- which can narrow without the
+     * window resizing at all.
+     */
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
+    observer?.observe(slider);
+
+    return () => {
+      slider.removeEventListener("scroll", update);
+      observer?.disconnect();
+    };
+  }, []);
+
   if (blogs.length === 0) return null;
 
   return (
@@ -102,7 +148,7 @@ export function LatestBlogs({ blogs }: { blogs: BlogSummary[] }) {
       <div className="relative mb-6 sm:mb-6 md:mb-8 lg:mb-8">
         <div
           ref={sliderRef}
-          className="flex gap-3 sm:gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
+          className="flex gap-3 sm:gap-4 overflow-x-auto scrollbar-hide scroll-smooth rail-fade"
         >
           {blogs.map((blog, position) => (
             <div key={blog.slug} className="flex-none w-80">

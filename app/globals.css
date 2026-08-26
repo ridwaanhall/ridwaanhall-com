@@ -749,6 +749,29 @@ html.theme-fading [data-theme-toggle] svg {
     .action-btn {
         @apply inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full transition-all duration-300;
     }
+    /* The Latest Blogs rail, dissolving at the edge it is scrolled past.
+
+       A mask rather than a strip laid over the cards: an opaque overlay would
+       have to know what colour the page behind it is, in both themes, and be
+       corrected whenever either changes. Alpha does not care.
+
+       How wide each side runs is written from the component, as how much is
+       actually hidden that way, capped at the value below. So an edge with
+       nothing past it has no fade, and one being scrolled away from grows its
+       own over that first stretch rather than snapping on. The right side
+       starts open because a rail long enough to want this has more to its
+       right before anything has scrolled at all. */
+    .rail-fade {
+        --rail-fade-start: 0px;
+        --rail-fade-end: 3rem;
+        mask-image: linear-gradient(
+            to right,
+            transparent 0,
+            black var(--rail-fade-start),
+            black calc(100% - var(--rail-fade-end)),
+            transparent 100%
+        );
+    }
 
     /* Every loading skeleton breathes together.
 

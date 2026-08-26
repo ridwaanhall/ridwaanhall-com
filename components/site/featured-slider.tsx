@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { SliderDots } from "@/components/site/slider-dots";
 import type { BlogSummary } from "@/lib/data/content";
 import { isoDateTime, longDateTime } from "@/lib/utils/format";
 
@@ -16,8 +17,8 @@ import { isoDateTime, longDateTime } from "@/lib/utils/format";
  * indicators are how a reader knows there is more than one post up there at
  * all, so their absence was a real loss rather than a simplification.
  *
- * The dot class strings reproduce what the original's `classList.add`/`remove`
- * calls left on the element rather than a tidied equivalent.
+ * The dot row is `SliderDots`, shared with the image gallery on a post and a
+ * project so the three cannot disagree about what a slider indicator is.
  */
 
 /** Matches featuredSlider.js. */
@@ -149,18 +150,12 @@ export function FeaturedSlider({ posts }: { posts: BlogSummary[] }) {
               </button>
             </div>
 
-            <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex space-x-1 sm:space-x-2">
-              {posts.map((post, position) => (
-                <button
-                  key={post.slug}
-                  type="button"
-                  onClick={() => go(position)}
-                  aria-current={position === index}
-                  className={position === index ? DOT_ACTIVE : DOT_IDLE}
-                  title={`Slide ${position + 1}`}
-                />
-              ))}
-            </div>
+            <SliderDots
+              count={count}
+              active={index}
+              onSelect={go}
+              title={(position) => `Slide ${position}`}
+            />
           </>
         )}
       </div>
@@ -177,11 +172,6 @@ export function FeaturedSlider({ posts }: { posts: BlogSummary[] }) {
  */
 const IMAGE_CLASS =
   "w-full h-60 sm:h-72 md:h-80 object-cover object-center transition-all duration-500 group-has-[a:hover]:scale-105 group-has-[a:hover]:blur-sm";
-
-const DOT_ACTIVE =
-  "slider-dot cursor-pointer bg-zinc-300 w-4 h-1.5 sm:h-2 rounded-full hover:bg-zinc-300 transition-all duration-300";
-const DOT_IDLE =
-  "slider-dot cursor-pointer bg-zinc-300/50 w-1.5 h-1.5 sm:h-2 rounded-full hover:bg-zinc-300 transition-all duration-300";
 
 function ChevronIcon({ d }: { d: string }) {
   return (

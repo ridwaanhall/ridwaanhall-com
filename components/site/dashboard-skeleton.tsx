@@ -41,7 +41,7 @@ export function DashboardPanelSkeleton({ panel }: { panel: "wakatime" | "github"
               a single block would understate the section by two panel heights
               on exactly the screens where the jump is worst.
             */}
-            <SkeletonGrid count={8} columns={4} height={76} />
+            <SkeletonGrid count={8} columns={4} mobileColumns={2} height={76} />
             <SkeletonBlock className="mt-3 sm:mt-4 h-[92px] rounded-lg sm:rounded-xl" />
             <SkeletonBlock className="mt-4 h-[168px] border-0 bg-zinc-900/40" />
             <div className="mt-4 grid gap-6 sm:gap-4 lg:grid-cols-3">
@@ -80,7 +80,7 @@ export function DashboardPanelSkeleton({ panel }: { panel: "wakatime" | "github"
               <SkeletonBar className="h-7 w-56 bg-zinc-900/60" />
               <SkeletonBar className="h-4 w-24 bg-zinc-900/60" />
             </div>
-            <SkeletonGrid count={8} columns={4} height={76} />
+            <SkeletonGrid count={8} columns={4} mobileColumns={2} height={76} />
             <SkeletonBlock className="mt-3 sm:mt-4 h-[92px] rounded-lg sm:rounded-xl" />
             <div className="mt-4 flex flex-col gap-6 sm:gap-4 md:flex-row">
               <SkeletonBlock className="flex-1 h-40 rounded-lg sm:rounded-xl" />
@@ -89,7 +89,7 @@ export function DashboardPanelSkeleton({ panel }: { panel: "wakatime" | "github"
           </>
         ) : (
           <>
-            <SkeletonGrid count={4} columns={4} height={76} />
+            <SkeletonGrid count={4} columns={4} mobileColumns={2} height={76} />
 
             {/*
               The contribution heatmap: seven rows of cells over a month strip,

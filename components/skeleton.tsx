@@ -65,27 +65,48 @@ export function SkeletonText({ lines = 3, className }: { lines?: number; classNa
 }
 
 /**
- * The listing grid.
+ * Every grid ladder a skeleton stands in for, keyed `<mobile>-<large>`.
  *
- * Both column counts are written out. Tailwind emits a class only if it can see
- * it in the source, so `lg:grid-cols-${columns}` would produce no rule at all.
+ * A map of whole strings rather than a class assembled from the two counts:
+ * Tailwind emits a class only where it can see it written out, so an
+ * interpolated `lg:grid-cols-${columns}` produces no rule at all and the
+ * skeleton collapses to one column at every width.
+ *
+ * The redundant steps are left in. `grid-cols-2` already holds at every width,
+ * so `sm:grid-cols-2` after it is a no-op -- but each string is read against
+ * the grid on the page it covers, and the two line up only when both are
+ * written the same way.
+ */
+const SKELETON_GRIDS = {
+  "1-2": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4",
+  "2-2": "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4",
+  "1-4": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4",
+  "2-4": "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4",
+} as const;
+
+/**
+ * The listing grid.
  */
 export function SkeletonGrid({
   count = 4,
   columns = 2,
+  mobileColumns = 1,
   height,
   className,
 }: {
   count?: number;
   columns?: 2 | 4;
+  /**
+   * Cards across below `sm`. Two only where the real grid pairs them there --
+   * it halves the row count, and a skeleton holding eight rows for a section
+   * that renders four overshoots it by half the panel on the narrowest screen.
+   */
+  mobileColumns?: 1 | 2;
   /** Pixel height of each cell -- the real card's, so the page does not jump. */
   height: number;
   className?: string;
 }) {
-  const grid =
-    columns === 2
-      ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4"
-      : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4";
+  const grid = SKELETON_GRIDS[`${mobileColumns}-${columns}`];
 
   return (
     <div className={cn(grid, className)}>

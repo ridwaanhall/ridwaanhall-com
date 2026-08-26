@@ -230,7 +230,7 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
         <p className="text-xs sm:text-sm">Last 7 Days</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <AiStat
           label="Tokens In"
           hint={`${ai.tokens_in_exact}. ${ai.ai_line_percent}% of lines changed were written by AI.`}
@@ -346,7 +346,7 @@ function CodingYear({ year }: { year: WakatimeYear }) {
         <p className="text-xs sm:text-sm">Last Year</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <YearStat label="Total Coded" hint={year.range} value={year.total} />
         <YearStat label="Daily Focus" value={year.daily_average} />
         <YearStat label="Peak Day" hint={year.best_day_date} value={year.best_day} />
@@ -452,7 +452,7 @@ function GitHub({ stats }: { stats: GitHubStats }) {
         <p className="text-xs sm:text-sm">Last Year</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <GitHubStat label="Total" value={stats.total_contributions} />
         <GitHubStat label="This Week" value={stats.this_week} />
         <GitHubStat

@@ -1,5 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 
+import type { CalendarDay, CalendarWeek } from "@/lib/utils/coding-calendar";
+
 /**
  * GitHub contribution data for the dashboard.
  *
@@ -9,8 +11,13 @@ import { cacheLife, cacheTag } from "next/cache";
  * waiting for the day somebody can edit it.
  */
 
-export type ContributionDay = { date: string; count: number };
-export type ContributionWeek = { firstDay: string; days: ContributionDay[] };
+/*
+ * The same shape a year of WakaTime is cut into, because one heatmap draws
+ * both. `value` is a contribution count here and a number of seconds there;
+ * what the grid needs from either is a date and a magnitude.
+ */
+export type ContributionDay = CalendarDay;
+export type ContributionWeek = CalendarWeek;
 
 export type GitHubStats = {
   weeks: ContributionWeek[];
@@ -96,7 +103,7 @@ async function fetchGitHubStats(username: string, token: string): Promise<GitHub
 
   const weeks: ContributionWeek[] = calendar.weeks.map((week) => ({
     firstDay: week.firstDay,
-    days: week.contributionDays.map((day) => ({ date: day.date, count: day.contributionCount })),
+    days: week.contributionDays.map((day) => ({ date: day.date, value: day.contributionCount })),
   }));
 
   const days = weeks.flatMap((week) => week.days);
@@ -105,7 +112,7 @@ async function fetchGitHubStats(username: string, token: string): Promise<GitHub
   days.sort((a, b) => a.date.localeCompare(b.date));
 
   const total = calendar.totalContributions;
-  const bestDay = days.reduce((best, day) => Math.max(best, day.count), 0);
+  const bestDay = days.reduce((best, day) => Math.max(best, day.value), 0);
   const average = days.length > 0 ? (total / days.length).toFixed(1) : "0";
 
   return {
@@ -130,7 +137,7 @@ async function fetchGitHubStats(username: string, token: string): Promise<GitHub
 function thisWeekTotal(weeks: ContributionWeek[]): number {
   const today = new Date().toISOString().slice(0, 10);
   const current = [...weeks].reverse().find((week) => week.firstDay <= today);
-  return current ? current.days.reduce((sum, day) => sum + day.count, 0) : 0;
+  return current ? current.days.reduce((sum, day) => sum + day.value, 0) : 0;
 }
 
 /**
@@ -152,7 +159,7 @@ function streaks(days: ContributionDay[]): {
   let longest = 0;
   let run = 0;
   for (const day of days) {
-    run = day.count > 0 ? run + 1 : 0;
+    run = day.value > 0 ? run + 1 : 0;
     longest = Math.max(longest, run);
   }
 
@@ -161,7 +168,7 @@ function streaks(days: ContributionDay[]): {
 
   const streak: ContributionDay[] = [];
   for (let i = elapsed.length - 1; i >= 0; i--) {
-    if (elapsed[i].count === 0) break;
+    if (elapsed[i].value === 0) break;
     streak.push(elapsed[i]);
   }
 

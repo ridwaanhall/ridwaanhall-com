@@ -2,34 +2,72 @@
 
 import { useState } from "react";
 
-import type { ContributionWeek } from "@/lib/data/github";
 import { COLUMNS, monthLabels } from "@/lib/utils/contribution-months";
+import type { CalendarMonth, CalendarWeek } from "@/lib/utils/coding-calendar";
 
 /**
- * The GitHub contribution calendar.
+ * A year of days as a grid, drawn twice on the dashboard: GitHub's
+ * contributions, and WakaTime's coding hours.
  *
- * `githubContributions.js` built this grid in the browser with
- * `document.createElement` -- 295 lines, one `mouseenter`/`mouseleave` listener
- * per cell across ~370 cells, and a re-render on resize. Here the grid is
- * markup, the hover detail is one piece of state on the container, and the cell
- * size is a media query rather than a `window.innerWidth` read.
+ * `githubContributions.js` built this in the browser with `document.createElement`
+ * -- 295 lines, one `mouseenter`/`mouseleave` listener per cell across ~370
+ * cells, and a re-render on resize. Here the grid is markup, the hover detail is
+ * one piece of state on the container, and the cell size is a media query rather
+ * than a `window.innerWidth` read.
  *
- * The detail line keeps its reserved height whether or not anything is
- * hovered, so the legend below it does not move.
+ * **`tone` and `unit` are strings, not functions.** The obvious shape for this
+ * would be a `describe(cell)` callback and a palette object passed in by each
+ * caller -- but both callers are server components, and a function prop cannot
+ * cross that boundary. Naming the two variants keeps the props serialisable,
+ * and it keeps every colour class written out in full where Tailwind's scan can
+ * see it: an interpolated `bg-${tone}-600/50` produces no rule at all.
+ *
+ * The detail line keeps its reserved height whether or not anything is hovered,
+ * so the legend below it does not move.
  */
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-/** The five buckets the legend advertises. */
-function levelClass(count: number): string {
-  if (count === 0) return "contrib-empty";
-  if (count <= 5) return "bg-green-600/20";
-  if (count <= 11) return "bg-green-600/50";
-  if (count <= 20) return "bg-green-600/90";
-  return "bg-green-500";
-}
+type Tone = "green" | "teal";
+type Unit = "contributions" | "hours";
 
-type Cell = { date: string; count: number; future: boolean };
+/**
+ * The four filled steps of each ramp, low to high, plus the hairline the empty
+ * cells and the hover state borrow.
+ *
+ * Written out per tone rather than composed, for the reason in the note above.
+ */
+const TONES: Record<
+  Tone,
+  { levels: [string, string, string, string]; ring: string; hover: string }
+> = {
+  green: {
+    levels: ["bg-green-600/20", "bg-green-600/50", "bg-green-600/90", "bg-green-500"],
+    ring: "border-green-400/30",
+    hover: "hover:border hover:border-green-400/30",
+  },
+  teal: {
+    levels: ["bg-teal-600/20", "bg-teal-600/50", "bg-teal-500/90", "bg-cyan-400"],
+    ring: "border-cyan-400/30",
+    hover: "hover:border hover:border-cyan-400/30",
+  },
+};
+
+/**
+ * Where each band begins.
+ *
+ * Contributions keep the thresholds the calendar has always advertised. Hours
+ * are in seconds, and the cuts are one, three and six hours -- a scale a reader
+ * can hold in their head, and one that lands either side of a daily average of
+ * about two and three quarter hours. Deriving them from the data instead would
+ * make every band mean something different each time the year moved.
+ */
+const THRESHOLDS: Record<Unit, [number, number, number]> = {
+  contributions: [5, 11, 20],
+  hours: [3600, 3 * 3600, 6 * 3600],
+};
+
+type Cell = { date: string; value: number; future: boolean };
 
 /**
  * How long a cell waits before it fades in.
@@ -47,24 +85,32 @@ function fadeDelay(weekIndex: number, dayIndex: number): string {
   return `${((weekIndex * 31 + dayIndex * 17) % 37) * 18}ms`;
 }
 
-export function ContributionHeatmap({
+export function ActivityHeatmap({
   weeks,
   months,
+  tone = "green",
+  unit = "contributions",
+  label,
 }: {
-  weeks: ContributionWeek[];
-  months: { firstDay: string; name: string; totalWeeks: number }[];
+  weeks: CalendarWeek[];
+  months: CalendarMonth[];
+  tone?: Tone;
+  unit?: Unit;
+  /** The grid's accessible name, since the cells themselves carry no text. */
+  label?: string;
 }) {
   const [detail, setDetail] = useState<string | null>(null);
 
   const today = new Date().toISOString().slice(0, 10);
+  const palette = TONES[tone];
 
-  // GitHub returns a partial first and last week; the grid is 7 rows deep, so
-  // each week is placed by its real weekday rather than by array position.
+  // Both sources return a partial first and last week; the grid is 7 rows deep,
+  // so each week is placed by its real weekday rather than by array position.
   const columns: (Cell | null)[][] = weeks.map((week) => {
     const column: (Cell | null)[] = Array.from({ length: 7 }, () => null);
     for (const day of week.days) {
       const weekday = new Date(`${day.date}T00:00:00Z`).getUTCDay();
-      column[weekday] = { date: day.date, count: day.count, future: day.date > today };
+      column[weekday] = { date: day.date, value: day.value, future: day.date > today };
     }
     return column;
   });
@@ -92,7 +138,7 @@ export function ContributionHeatmap({
           className="grid grid-cols-[repeat(53,minmax(0,1fr))] grid-rows-[repeat(7,minmax(0,1fr))] gap-px sm:gap-[1.5px]"
           onMouseLeave={() => setDetail(null)}
           role="img"
-          aria-label="GitHub contribution calendar for the past year"
+          aria-label={label ?? "Activity calendar for the past year"}
         >
           {columns.map((column, weekIndex) =>
             column.map((cell, dayIndex) => (
@@ -103,8 +149,8 @@ export function ContributionHeatmap({
                   gridColumn: weekIndex + 1,
                   animationDelay: fadeDelay(weekIndex, dayIndex),
                 }}
-                className={cellClass(cell)}
-                onMouseEnter={() => setDetail(cell ? describe(cell) : null)}
+                className={cellClass(cell, palette, unit)}
+                onMouseEnter={() => setDetail(cell ? describe(cell, unit) : null)}
               />
             )),
           )}
@@ -116,14 +162,14 @@ export function ContributionHeatmap({
               <span className="font-medium text-zinc-400">Less</span>
               <div className="flex space-x-0.5 sm:space-x-1">
                 {[
-                  "contrib-empty border border-green-400/30",
-                  "bg-green-600/20 border border-green-400/30",
-                  "bg-green-600/50",
-                  "bg-green-600/90",
-                  "bg-green-500",
-                ].map((className) => (
+                  `contrib-empty border ${palette.ring}`,
+                  `${palette.levels[0]} border ${palette.ring}`,
+                  palette.levels[1],
+                  palette.levels[2],
+                  palette.levels[3],
+                ].map((className, step) => (
                   <div
-                    key={className}
+                    key={step}
                     className={`w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-xs ${className}`}
                   />
                 ))}
@@ -148,18 +194,31 @@ export function ContributionHeatmap({
   );
 }
 
-function cellClass(cell: Cell | null): string {
+function cellClass(cell: Cell | null, palette: (typeof TONES)[Tone], unit: Unit): string {
   // 8px below `sm`, 12px at `sm`, 14px from `md` -- the two size sets
   // githubContributions.js chose between with a `window.innerWidth` read,
   // expressed as one CSS-only ladder that lands on the same values.
-  const base =
-    "contrib-cell w-2 h-2 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-xs hover:border hover:border-green-400/30";
+  const base = `contrib-cell w-2 h-2 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-xs ${palette.hover}`;
   if (!cell) return `${base} opacity-30`;
   if (cell.future) return `${base} contrib-empty opacity-30`;
-  return `${base} ${levelClass(cell.count)}`;
+
+  const [low, mid, high] = THRESHOLDS[unit];
+  if (cell.value === 0) return `${base} contrib-empty`;
+  if (cell.value <= low) return `${base} ${palette.levels[0]}`;
+  if (cell.value <= mid) return `${base} ${palette.levels[1]}`;
+  if (cell.value <= high) return `${base} ${palette.levels[2]}`;
+  return `${base} ${palette.levels[3]}`;
 }
 
-function describe(cell: Cell): string {
+/** "3 hrs 20 mins", "45 mins", "0 mins" -- the hover line's own scale. */
+function readableHours(seconds: number): string {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.round((seconds % 3600) / 60);
+  if (hours > 0) return minutes > 0 ? `${hours} hrs ${minutes} mins` : `${hours} hrs`;
+  return `${minutes} mins`;
+}
+
+function describe(cell: Cell, unit: Unit): string {
   const date = new Date(`${cell.date}T00:00:00Z`);
   const dayName = DAY_NAMES[date.getUTCDay()];
   const formatted = new Intl.DateTimeFormat("en-US", {
@@ -170,10 +229,16 @@ function describe(cell: Cell): string {
   }).format(date);
 
   if (cell.future) return `Future date: ${dayName}, ${formatted}`;
-  const text =
-    cell.count === 0
-      ? "No contributions"
-      : `${cell.count} contribution${cell.count === 1 ? "" : "s"}`;
+
+  let text: string;
+  if (unit === "hours") {
+    text = cell.value === 0 ? "No coding" : readableHours(cell.value);
+  } else {
+    text =
+      cell.value === 0
+        ? "No contributions"
+        : `${cell.value} contribution${cell.value === 1 ? "" : "s"}`;
+  }
   return `${text} on ${dayName}, ${formatted}`;
 }
 
@@ -189,8 +254,8 @@ function MonthLabels({
   weeks,
   months,
 }: {
-  weeks: ContributionWeek[];
-  months: { firstDay: string; name: string; totalWeeks: number }[];
+  weeks: CalendarWeek[];
+  months: CalendarMonth[];
 }) {
   return (
     <>

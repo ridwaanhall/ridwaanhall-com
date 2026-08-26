@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { JsonLdScript } from "@/components/seo/json-ld";
-import { ContributionHeatmap } from "@/components/site/contribution-heatmap";
+import { ActivityHeatmap } from "@/components/site/activity-heatmap";
 import { DashboardPanelSkeleton } from "@/components/site/dashboard-skeleton";
-import { CountUp, PercentBar } from "@/components/site/dashboard-sections";
+import { CountUp, PercentBar, SplitBar } from "@/components/site/dashboard-sections";
 import { getAboutData, type AboutData } from "@/lib/data/about";
 import { getGitHubStats, type GitHubStats } from "@/lib/data/github";
 import { getWakatimeStats, type WakatimeAi, type WakatimeStats } from "@/lib/data/wakatime";
+import { getWakatimeYear, type WakatimeYear } from "@/lib/data/wakatime-year";
 import { dashboardSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { dashboardSchemas } from "@/lib/seo/schemas-for-page";
@@ -42,8 +43,8 @@ export default async function DashboardPage() {
           </div>
 
           {/*
-            Both panels stream independently. They call third-party APIs, so
-            neither should hold up the page or the other -- and a panel whose API
+            Each panel streams independently. They call third-party APIs, so
+            none should hold up the page or the others -- and a panel whose API
             is down simply does not render, which is the degradation this page
             has always implemented.
 
@@ -56,6 +57,15 @@ export default async function DashboardPage() {
           */}
           <Suspense fallback={<DashboardPanelSkeleton panel="wakatime" />}>
             <WakatimePanel />
+          </Suspense>
+
+          {/*
+            A third boundary rather than a section of the first. It is two more
+            third-party calls, and the whole reason the panels are split is that
+            a time budget shared across them is a budget that runs out.
+          */}
+          <Suspense fallback={<DashboardPanelSkeleton panel="year" />}>
+            <CodingYearPanel />
           </Suspense>
 
           <Suspense fallback={<DashboardPanelSkeleton panel="github" />}>
@@ -73,10 +83,16 @@ async function WakatimePanel() {
   return <Wakatime stats={stats} />;
 }
 
+async function CodingYearPanel() {
+  const year = await getWakatimeYear(process.env.WAKATIME_API_KEY ?? "");
+  if (!year) return null;
+  return <CodingYear year={year} />;
+}
+
 async function GitHubPanel({ about }: { about: AboutData }) {
   const stats = await getGitHubStats(about.username, process.env.GITHUB_ACCESS_TOKEN ?? "");
   if (!stats) return null;
-  return <GitHub stats={stats} about={about} />;
+  return <GitHub stats={stats} />;
 }
 
 // ---------------------------------------------------------------------------
@@ -142,7 +158,12 @@ function Wakatime({ stats }: { stats: WakatimeStats }) {
         />
       </div>
 
-      <div className="mt-4 flex flex-col gap-6 sm:gap-4 md:flex-row">
+      {/*
+        Three across from `lg`, stacked below it. Not `md:flex-row` like the
+        pairs elsewhere on this page: three panels sharing a 768px row leaves
+        each about 240px, which is narrower than "Writing Docs" beside a bar.
+      */}
+      <div className="mt-4 grid gap-6 sm:gap-4 lg:grid-cols-3">
         <GradientPanel title="Top Languages" gradient="from-indigo-400 to-purple-600">
           {stats.top_3_languages.length > 0 ? (
             stats.top_3_languages.map((language) => (
@@ -168,6 +189,20 @@ function Wakatime({ stats }: { stats: WakatimeStats }) {
             ))
           ) : (
             <EmptyRow>No category data available</EmptyRow>
+          )}
+        </GradientPanel>
+
+        <GradientPanel title="Top Editors" gradient="from-pink-500 to-rose-600">
+          {stats.top_3_editors.length > 0 ? (
+            stats.top_3_editors.map((editor) => (
+              <PercentBar
+                key={editor.name}
+                entry={editor}
+                gradient="bg-gradient-to-r from-pink-500 to-rose-600"
+              />
+            ))
+          ) : (
+            <EmptyRow>No editor data available</EmptyRow>
           )}
         </GradientPanel>
       </div>
@@ -204,8 +239,22 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
           value={ai.tokens_in}
         />
         <StatCard label="Tokens Out" hint={ai.tokens_out_exact} value={ai.tokens_out} />
+        <StatCard label="Prompts" hint={`Averaging ${ai.prompt_avg} each`} value={ai.prompts} />
+        <StatCard label="Avg Prompt" value={ai.prompt_avg} />
         {ai.has_heuristics && (
           <>
+            {/*
+              Spend and sessions come from the heuristics aggregate, so they
+              share the gate with the two review figures below rather than
+              carrying one each. A week that cost nothing is a real $0; an
+              outage is not, and only the flag can tell them apart.
+            */}
+            <StatCard
+              label="Est. Spend"
+              hint="What the week's AI models cost, as WakaTime estimates it"
+              value={ai.spend}
+            />
+            <StatCard label="AI Sessions" value={ai.sessions} />
             <StatCard
               label="Human Review"
               hint={ai.review_detail}
@@ -229,6 +278,21 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
           </>
         )}
       </div>
+
+      {/*
+        The split the section is actually about. It was computed and then spent
+        entirely on the Tokens In tooltip, which is the one place a reader who
+        wanted it would not look.
+      */}
+      <SplitBar
+        leftLabel="AI"
+        leftValue={`${ai.ai_lines.toLocaleString("en-US")} lines`}
+        rightLabel="Human"
+        rightValue={`${ai.human_lines.toLocaleString("en-US")} lines`}
+        percent={ai.ai_line_percent}
+        gradient="bg-gradient-to-r from-indigo-400 to-purple-600"
+        border="border-indigo-500/50"
+      />
 
       <div className="mt-4 flex flex-col gap-6 sm:gap-4 md:flex-row">
         <GradientPanel title="Cost by Model" gradient="from-indigo-400 to-purple-600">
@@ -263,7 +327,123 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
   );
 }
 
-function GitHub({ stats, about }: { stats: GitHubStats; about: AboutData }) {
+/**
+ * The year beneath the week.
+ *
+ * Its own section rather than more cards in the WakaTime one: every figure
+ * above it is seven days old at most, and putting a year-long total in that
+ * grid would leave the reader to notice the difference from the wording alone.
+ * Its own accent for the same reason -- teal against the indigo above and the
+ * green below, so the eye reads three scales rather than one long panel.
+ *
+ * The heatmap is the same grid GitHub renders underneath, in the other tone.
+ * That is the point of it: hours and commits over the same year, drawn the
+ * same way, one above the other.
+ */
+function CodingYear({ year }: { year: WakatimeYear }) {
+  return (
+    <div className="mb-6">
+      <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
+        <h2 className="text-xl font-medium">Coding Year</h2>
+        <p className="text-xs sm:text-sm">Last Year</p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <YearStat label="Total Coded" hint={year.range} value={year.total} />
+        <YearStat label="Daily Focus" value={year.daily_average} />
+        <YearStat
+          label="Peak Day"
+          value={
+            <>
+              {year.best_day}{" "}
+              <span className="text-xs text-zinc-400">({year.best_day_date})</span>
+            </>
+          }
+        />
+        <YearStat
+          /* WakaTime counts the days you did not code and calls them holidays. */
+          label="Days Coded"
+          hint={`${year.days_total - year.days_coded} days with no coding on them`}
+          value={
+            <>
+              {year.days_coded}{" "}
+              <span className="text-xs text-zinc-400">of {year.days_total}</span>
+            </>
+          }
+        />
+
+        <YearStat label="AI Spend" hint="Estimated across the year" value={year.ai_spend} />
+        <YearStat label="AI Sessions" value={year.ai_sessions} />
+        <YearStat label="Prompts" hint={`Averaging ${year.ai_prompt_avg} each`} value={year.ai_prompts} />
+        <YearStat label="Tokens" hint={year.tokens_exact} value={year.tokens} />
+      </div>
+
+      <SplitBar
+        leftLabel="AI"
+        leftValue={`${year.ai_lines} lines`}
+        rightLabel="Human"
+        rightValue={`${year.human_lines} lines`}
+        percent={year.ai_line_percent}
+        gradient="bg-gradient-to-r from-teal-400 to-cyan-600"
+        border="border-cyan-500/50"
+      />
+
+      <ActivityHeatmap
+        weeks={year.weeks}
+        months={year.months}
+        tone="teal"
+        unit="hours"
+        label="Coding hours for the past year"
+      />
+
+      <div className="mt-4 grid gap-6 sm:gap-4 lg:grid-cols-3">
+        <GradientPanel title="Top Languages" gradient="from-teal-400 to-cyan-600">
+          {year.languages.length > 0 ? (
+            year.languages.map((language) => (
+              <PercentBar
+                key={language.name}
+                entry={language}
+                gradient="bg-gradient-to-r from-teal-400 to-cyan-600"
+              />
+            ))
+          ) : (
+            <EmptyRow>No language data available</EmptyRow>
+          )}
+        </GradientPanel>
+
+        <GradientPanel title="Top Projects" gradient="from-cyan-500 to-sky-600">
+          {year.projects.length > 0 ? (
+            year.projects.map((project) => (
+              <PercentBar
+                key={project.name}
+                entry={project}
+                gradient="bg-gradient-to-r from-cyan-500 to-sky-600"
+              />
+            ))
+          ) : (
+            <EmptyRow>No project data available</EmptyRow>
+          )}
+        </GradientPanel>
+
+        <GradientPanel title="Systems" gradient="from-sky-400 to-teal-600">
+          {year.systems.length > 0 ? (
+            year.systems.map((system) => (
+              <PercentBar
+                key={system.name}
+                entry={system}
+                gradient="bg-gradient-to-r from-sky-400 to-teal-600"
+              />
+            ))
+          ) : (
+            <EmptyRow>No system data available</EmptyRow>
+          )}
+        </GradientPanel>
+      </div>
+    </div>
+  );
+}
+
+function GitHub({ stats }: { stats: GitHubStats }) {
   const streakRange =
     stats.current_streak_start && stats.current_streak_end
       ? `${shortDate(stats.current_streak_start)} - ${shortDate(stats.current_streak_end)}`
@@ -273,11 +453,13 @@ function GitHub({ stats, about }: { stats: GitHubStats; about: AboutData }) {
     <div className="mb-6">
       <div className="flex flex-row items-center justify-between mb-3 md:mb-4 gap-2">
         <h2 className="text-xl font-medium">GitHub Statistics</h2>
-        <p className="font-mono text-xs sm:text-sm text-zinc-400 hover:text-zinc-300 transition-all duration-300 truncate">
-          <a href={about.social_media.github} className="font-medium" target="_blank" rel="noopener noreferrer">
-            @{about.username}
-          </a>
-        </p>
+        {/*
+          The window, not the account. Every other section here says what
+          period it covers, and the calendar below is the twelve months
+          GitHub's `contributionCalendar` returns when asked for no range.
+          The handle it used to carry said nothing the sidebar does not.
+        */}
+        <p className="text-xs sm:text-sm">Last Year</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -300,7 +482,13 @@ function GitHub({ stats, about }: { stats: GitHubStats; about: AboutData }) {
         />
       </div>
 
-      <ContributionHeatmap weeks={stats.weeks} months={stats.months} />
+      <ActivityHeatmap
+        weeks={stats.weeks}
+        months={stats.months}
+        tone="green"
+        unit="contributions"
+        label="GitHub contribution calendar for the past year"
+      />
     </div>
   );
 }
@@ -328,6 +516,40 @@ function StatCard({
       </h3>
       <div className="flex items-center justify-between">
         <p className="text-indigo-400 sm:text-xl">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * A card in the year section.
+ *
+ * `StatCard` in another colour, and a separate component rather than a
+ * `tone` prop on it: Tailwind generates a class only where it can see one
+ * written out, so a border interpolated from a prop would produce no rule at
+ * all and the card would come out unbordered.
+ */
+function YearStat({
+  label,
+  value,
+  hint,
+}: {
+  label: React.ReactNode;
+  value: React.ReactNode;
+  hint?: string;
+}) {
+  return (
+    <div
+      className={`bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-cyan-500/50 transition-all duration-300 ${
+        hint ? "relative z-10 overflow-visible" : "overflow-hidden"
+      }`}
+    >
+      <h3 className="font-medium text-xs sm:text-sm">
+        {label}
+        {hint && <HelpIcon title={hint} />}
+      </h3>
+      <div className="flex items-center justify-between">
+        <p className="text-cyan-400 sm:text-xl">{value}</p>
       </div>
     </div>
   );

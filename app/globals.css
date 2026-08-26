@@ -730,9 +730,9 @@ html.theme-fading [data-theme-toggle] svg {
         @apply cursor-pointer border border-zinc-800 bg-zinc-900/70 hover:bg-zinc-800/70 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105;
     }
 
-    /* Pagination cell (blog + projects pagination.html). Rounding and the
-       current/disabled/hover treatment stay inline since they differ by
-       cell state. */
+    /* Pagination cell: the blog and project listings, and the applications
+       list on /about. Rounding and the current/disabled/hover treatment stay
+       inline since they differ by cell state. */
     .page-cell {
         @apply flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center;
     }

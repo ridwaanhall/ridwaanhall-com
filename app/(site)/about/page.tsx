@@ -11,6 +11,7 @@ import {
 } from "@/components/site/about-cards";
 import { AboutTabs } from "@/components/site/about-tabs";
 import { ApplicationCard } from "@/components/site/application-card";
+import { ApplicationsPanel } from "@/components/site/applications-panel";
 import { CvDownload } from "@/components/site/cv-download";
 import { LinkedInCertifications } from "@/components/site/linkedin-certifications";
 import { SponsorMe } from "@/components/site/sponsor-me";
@@ -105,15 +106,15 @@ export default async function AboutPage() {
       label: "Applications",
       content: (
         <div className="mt-4">
-          <div className="space-y-4">
-            {applications.length > 0 ? (
-              applications.map((application) => (
+          {applications.length > 0 ? (
+            <ApplicationsPanel
+              cards={applications.map((application) => (
                 <ApplicationCard key={application.id} application={application} />
-              ))
-            ) : (
-              <p className="text-zinc-400">No applications found.</p>
-            )}
-          </div>
+              ))}
+            />
+          ) : (
+            <p className="text-zinc-400">No applications found.</p>
+          )}
         </div>
       ),
     },

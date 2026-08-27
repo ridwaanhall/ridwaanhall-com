@@ -50,7 +50,11 @@ export function SocialLinks({ about }: { about: AboutData }) {
       href: social.instagram,
       label: "Instagram",
       icon: <InstagramIcon />,
-      className: "bg-gradient-to-bl from-purple-500 via-pink-500 to-yellow-500",
+      // The one button whose brand is a gradient, so its hover is three stops
+      // deepened together rather than a single `hover:bg-*`. It needs one at
+      // all because colour is now the only thing that answers a pointer here.
+      className:
+        "bg-gradient-to-bl from-purple-500 via-pink-500 to-yellow-500 hover:from-purple-600 hover:via-pink-600 hover:to-yellow-600",
     },
   ].filter(Boolean) as { href: string; label: string; icon: React.ReactNode; className: string }[];
 
@@ -87,7 +91,11 @@ export function SocialLinks({ about }: { about: AboutData }) {
             {...(link.href.startsWith("mailto:")
               ? {}
               : { target: "_blank", rel: "noopener noreferrer" })}
-            className={`flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-[15px] transition-all duration-300 hover:scale-105 border border-zinc-700 ${link.className}`}
+            // Colour is the whole hover. `transition-colors`, not
+            // `transition-all`, so the property list matches what actually
+            // moves -- and the button no longer grows under the pointer, which
+            // nudged the four beside it in a five-across row.
+            className={`flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-[15px] transition-colors duration-300 border border-zinc-700 ${link.className}`}
           >
             {link.icon}
             {link.label}

@@ -426,19 +426,49 @@ html[data-theme="light"] #search-modal-content {
         transform: scale(0.6);
     }
     to {
-        opacity: 1;
+        opacity: var(--cell-opacity, 1);
         transform: none;
     }
 }
 
+/* The target opacity is a property rather than the literal 1 it used to be,
+   and that is a bug fix rather than tidying. A future or out-of-range day is
+   drawn at 30% so it reads as "no data" instead of as a real zero -- but an
+   animation outranks the class that dims it, and `both` holds its last frame
+   forever, so every one of those cells sat at full strength for good. The
+   dimming had been dead since the entrance was written. Reading the same
+   property from both places is what keeps the two from disagreeing again. */
 .contrib-cell {
-    animation: contrib-in 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    opacity: var(--cell-opacity, 1);
+}
+
+.contrib-cell {
+    animation: contrib-in var(--motion-cell) var(--motion-ease) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
     .contrib-cell {
         animation: none;
     }
+}
+
+/* ---------------------------------------------------------------------------
+   Entrances waiting their turn
+
+   `use-reveal.ts` puts this on anything whose entrance would otherwise play
+   below the fold -- a breakdown row, the split bar, a whole calendar -- and
+   takes it off when the element scrolls in. Both calendars sit past the fold
+   on every viewport, so all 371 cells used to run their 1.2s stagger at mount,
+   finish unseen, and leave a grid that was simply already there.
+
+   `paused` rather than a class that starts the animation, because the element
+   holds its first frame while paused and resumes from there -- so nothing has
+   to be reset, and an element already on screen is never touched at all and
+   cannot flick. Descendants, so one class covers a calendar's whole grid.
+   --------------------------------------------------------------------------- */
+.reveal-hold,
+.reveal-hold * {
+    animation-play-state: paused !important;
 }
 
 /* 96% keeps the ramp reading correctly. The next step up, `bg-green-600/20`,
@@ -548,7 +578,29 @@ html[data-theme="light"] [data-theme-icon="dark"] {
    `prefers-reduced-motion` never reaches either path; themeToggle.js commits
    the swap under `.theme-switching` alone, which is the old instant behaviour.
    --------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------
+   One motion vocabulary
+
+   Six entrance animations had grown six pairs of numbers, and the two that
+   share a row disagreed on both: a bar decelerating over 1000ms beside a
+   number ticking up linearly over 1500ms, so the bar settled while its own
+   figure was still climbing and the row read as two things rather than one.
+
+   One easing for every entrance. `cubic-bezier(0.16, 1, 0.3, 1)` is the
+   calendar's, kept because it is the right shape for something arriving --
+   most of the distance covered early, a long settle -- and because `ease-out`
+   next to it looked slack by comparison.
+
+   Three durations, by how much is arriving: a cell, a bar or a figure, a whole
+   column. `--motion-reveal` is read by the bars and by CountUp in
+   dashboard-sections.tsx, which is what keeps a row moving as one piece.
+   --------------------------------------------------------------------------- */
 :root {
+    --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --motion-cell: 520ms;
+    --motion-reveal: 900ms;
+    --motion-page: 700ms;
+
     --theme-transition-duration: 320ms;
     --theme-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -809,7 +861,7 @@ html.theme-fading [data-theme-toggle] svg {
 }
 
 #page-content {
-    animation: page-enter 700ms ease-out both;
+    animation: page-enter var(--motion-page) var(--motion-ease) both;
 }
 
 /* Motion here is decoration; the page must still appear without it. */
@@ -850,11 +902,11 @@ html.theme-fading [data-theme-toggle] svg {
 }
 
 .tab-enter-forward {
-    animation: tab-enter-forward 300ms ease-out both;
+    animation: tab-enter-forward 300ms var(--motion-ease) both;
 }
 
 .tab-enter-back {
-    animation: tab-enter-back 300ms ease-out both;
+    animation: tab-enter-back 300ms var(--motion-ease) both;
 }
 
 /* The panel must still appear; only the movement is optional. */
@@ -875,16 +927,36 @@ html.theme-fading [data-theme-toggle] svg {
    --------------------------------------------------------------------------- */
 @keyframes bar-grow {
     from {
-        width: 0;
+        transform: scaleX(0);
     }
     to {
-        width: var(--bar-width, 0%);
+        transform: none;
     }
 }
 
+/* `transform`, not `width`. Width is a layout property, so every frame of the
+   old rule re-laid the bar out -- 37 of them at once on a dashboard whose
+   panels all stream in together. A transform is composited: same picture, no
+   layout, no paint.
+
+   The pill caps are why this is worth a note. Scaling a `rounded-full` bar
+   squeezes its horizontal radius by the same factor, so mid-flight the ends
+   are slightly flatter than round. On a 3px-tall bar the radius is 1.5px and
+   the distortion is sub-pixel -- and it is gone at rest, where the bar sits at
+   `scaleX(1)` and the caps are exactly the circles they were.
+
+   The width is set unconditionally and the animation only runs under
+   `.is-revealing`, which the row adds when it scrolls into view. That ordering
+   is deliberate: the finished bar is what the markup says, so a reader whose
+   JavaScript never arrives gets the right bar rather than one pinned at zero,
+   which is what `both` on a `from { width: 0 }` used to promise. */
 .percent-bar {
     width: var(--bar-width, 0%);
-    animation: bar-grow 1000ms ease-out both;
+    transform-origin: left center;
+}
+
+.percent-bar {
+    animation: bar-grow var(--motion-reveal) var(--motion-ease) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -967,7 +1039,7 @@ html.theme-fading [data-theme-toggle] svg {
 }
 
 #page-content main {
-    animation: content-enter 300ms ease-out both;
+    animation: content-enter 300ms var(--motion-ease) both;
 }
 
 /* Motion here is decoration; the page must still appear without it. */

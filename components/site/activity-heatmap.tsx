@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { useReveal } from "@/components/site/use-reveal";
 import { COLUMNS, monthLabels } from "@/lib/utils/contribution-months";
 import type { CalendarMonth, CalendarWeek } from "@/lib/utils/coding-calendar";
 
@@ -101,6 +102,19 @@ export function ActivityHeatmap({
 }) {
   const [detail, setDetail] = useState<string | null>(null);
 
+  /*
+    The grid holds the trigger, not the cells. Its entrance is a stagger across
+    371 of them, and it only reads as one arrival if they share a clock -- an
+    observer each would start them in whatever order the scroll happened to
+    reveal them in.
+
+    That it waits at all is the fix. Both calendars sit well below the fold on
+    every viewport, so the whole 1.2s entrance used to run at mount, finish
+    unseen, and leave a grid that was simply already there by the time anyone
+    scrolled to it.
+  */
+  const gridRef = useReveal<HTMLDivElement>(undefined, 0.05);
+
   const today = new Date().toISOString().slice(0, 10);
   const palette = TONES[tone];
 
@@ -135,6 +149,7 @@ export function ActivityHeatmap({
           available width instead.
         */}
         <div
+          ref={gridRef}
           className="grid grid-cols-[repeat(53,minmax(0,1fr))] grid-rows-[repeat(7,minmax(0,1fr))] gap-px sm:gap-[1.5px]"
           onMouseLeave={() => setDetail(null)}
           role="img"
@@ -144,11 +159,17 @@ export function ActivityHeatmap({
             column.map((cell, dayIndex) => (
               <div
                 key={`${weekIndex}-${dayIndex}`}
-                style={{
-                  gridRow: dayIndex + 1,
-                  gridColumn: weekIndex + 1,
-                  animationDelay: fadeDelay(weekIndex, dayIndex),
-                }}
+                style={
+                  {
+                    gridRow: dayIndex + 1,
+                    gridColumn: weekIndex + 1,
+                    animationDelay: fadeDelay(weekIndex, dayIndex),
+                    // A property rather than a utility class, because the
+                    // entrance has to land on this value too -- see the note
+                    // beside `contrib-in` in globals.css.
+                    ...(dimmed(cell, today) ? { "--cell-opacity": 0.3 } : null),
+                  } as React.CSSProperties
+                }
                 className={cellClass(cell, palette, unit)}
                 onMouseEnter={() => setDetail(cell ? describe(cell, unit) : null)}
               />
@@ -194,13 +215,24 @@ export function ActivityHeatmap({
   );
 }
 
+/**
+ * A day drawn at 30%: outside the range the grid covers, or still to come.
+ *
+ * Read here rather than as an `opacity-30` class because an animation outranks
+ * a class and holds its last frame, which is how the dimming came to be dead
+ * on every one of these cells.
+ */
+function dimmed(cell: Cell | null, today: string): boolean {
+  return !cell || cell.date > today;
+}
+
 function cellClass(cell: Cell | null, palette: (typeof TONES)[Tone], unit: Unit): string {
   // 8px below `sm`, 12px at `sm`, 14px from `md` -- the two size sets
   // githubContributions.js chose between with a `window.innerWidth` read,
   // expressed as one CSS-only ladder that lands on the same values.
   const base = `contrib-cell w-2 h-2 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-xs ${palette.hover}`;
-  if (!cell) return `${base} opacity-30`;
-  if (cell.future) return `${base} contrib-empty opacity-30`;
+  if (!cell) return base;
+  if (cell.future) return `${base} contrib-empty`;
 
   const [low, mid, high] = THRESHOLDS[unit];
   if (cell.value === 0) return `${base} contrib-empty`;

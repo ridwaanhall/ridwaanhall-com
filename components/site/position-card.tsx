@@ -44,7 +44,7 @@ export function PositionCard({
           </span>
         </div>
         <div className="flex-shrink-0">
-          <DisclosureButton className="toggle-pill cursor-pointer px-3 py-1.5 rounded-full" />
+          <DisclosureButton />
         </div>
       </div>
 
@@ -83,7 +83,7 @@ export function PositionCard({
             href={`mailto:${applicationEmail}?subject=${encodeURIComponent(
               `Application for ${position.title}`,
             )}`}
-            className="toggle-pill group px-3 py-1.5 rounded-full"
+            className="toggle-pill group px-2 py-1 rounded-full"
           >
             <svg
               className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-1.5"

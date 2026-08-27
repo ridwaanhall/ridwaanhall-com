@@ -12,27 +12,42 @@ import type { Award, Certification, Education, Experience } from "@/lib/data/abo
 /**
  * The cards on the about page.
  *
- * Education, awards and certifications are the same card -- logo, title, a date
- * pill on the right, the institution in italics, then either an expandable
- * achievement list or a credential link. That shape is `CredentialCard`; each
- * caller supplies only what differs.
+ * Education, awards and certifications are one shape, written out three times
+ * rather than shared through a component: a logo, the institution named and
+ * linked in the heading with the specific thing in italics beside it, a date
+ * pill at the right of that row, then the controls at the right-hand end of the
+ * row below. What differs between them is only which of description, credential
+ * link and expandable achievement list they carry, and each has enough of its
+ * own conditional structure that a single `CredentialCard` taking six optional
+ * props read worse than the three do apart.
+ *
+ * The application card one tab over is the same anatomy again, which is the
+ * point: a reader moving across the tabs meets one card, not five.
  */
 
-/** A logo, linked to the organisation's site when there is one. */
+/**
+ * A logo, and nothing else.
+ *
+ * **It is not a link.** Every card that shows one already names the
+ * organisation in its heading and links *that*, so wrapping the mark in a
+ * second anchor to the same URL gave a keyboard and a screen reader two stops
+ * for one destination, and gave a pointer a target that grew when it arrived
+ * with no indication of where it led. The name is the link; the logo is a
+ * picture beside it, and it does not answer a hover.
+ */
 function OrgLogo({
   logo,
   name,
-  website,
   rounded = "rounded-lg",
   fallback,
 }: {
   logo: string;
   name: string;
-  website: string;
   rounded?: string;
   fallback: React.ReactNode;
 }) {
-  const inner = logo ? (
+  if (!logo) return fallback;
+  return (
     <Image
       src={logo}
       alt={`${name} logo`}
@@ -40,21 +55,6 @@ function OrgLogo({
       height={150}
       className={`w-12 h-12 sm:w-14 sm:h-14 ${rounded} object-cover`}
     />
-  ) : (
-    fallback
-  );
-
-  if (!website) return inner;
-  return (
-    <a
-      href={website}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`Visit ${name}`}
-      className="hover:scale-110 transition-transform duration-300"
-    >
-      {inner}
-    </a>
   );
 }
 
@@ -106,32 +106,21 @@ function DatePill({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Institution({ name, website }: { name: string; website: string }) {
-  return (
-    <p className="text-blue-200 mt-1 mb-2 sm:mb-3 italic text-xs sm:text-sm md:text-base">
-      {website ? (
-        <a
-          className="text-indigo-300 hover:text-indigo-200 transition-colors duration-200 underline-offset-2 hover:underline"
-          href={website}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {name}
-        </a>
-      ) : (
-        name
-      )}
-    </p>
-  );
-}
-
+/**
+ * The same pill as "Show more", at the same size.
+ *
+ * On a certification the two stand side by side in one cluster, so a taller
+ * credential link is not a distinction between two kinds of control -- it is
+ * two pills that failed to line up. Awards, which show this one alone, follow
+ * it for the same reason education and applications follow each other.
+ */
 function CredentialLink({ href }: { href: string }) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="toggle-pill group px-3 py-1.5 rounded-full"
+      className="toggle-pill group px-2 py-1 rounded-full"
     >
       <span>View Credential</span>
       <ExternalArrow className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-1.5 transition-transform group-hover:translate-x-1" />
@@ -154,7 +143,6 @@ export function ExperienceCard({ company, roles }: { company: string; roles: Exp
                 <OrgLogo
                   logo={first.logo}
                   name={company}
-                  website={first.website}
                   fallback={
                     <svg
                       className="w-8 h-8 text-zinc-400"
@@ -306,11 +294,10 @@ export function EducationCard({ education }: { education: Education }) {
       <div className="p-3 sm:p-4">
         <div className="flex items-start gap-3 sm:gap-4">
           <div className="flex-shrink-0">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg flex items-center justify-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg flex items-center justify-center backdrop-blur-sm">
               <OrgLogo
                 logo={education.logo}
                 name={education.institution}
-                website={education.website}
                 rounded="rounded-full"
                 fallback={<ShieldIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-indigo-400" />}
               />
@@ -339,7 +326,7 @@ export function EducationCard({ education }: { education: Education }) {
                 <div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   {place}
                   <div className="flex-shrink-0">
-                    <DisclosureButton className="toggle-pill cursor-pointer px-2 py-1 rounded-full" />
+                    <DisclosureButton />
                   </div>
                 </div>
                 {/* The original's `mt-1` sat on the panel element, where it kept
@@ -379,11 +366,10 @@ export function AwardCard({ award }: { award: Award }) {
       <div className="p-3 sm:p-4">
         <div className="flex items-start gap-3 sm:gap-4">
           <div className="flex-shrink-0">
-            <div className="flex items-center justify-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
+            <div className="flex items-center justify-center backdrop-blur-sm">
               <OrgLogo
                 logo={award.logo}
                 name={award.institution}
-                website={award.website}
                 fallback={<ShieldIcon className="w-12 h-12 sm:w-14 sm:h-14 text-indigo-400" />}
               />
             </div>
@@ -408,8 +394,19 @@ export function AwardCard({ award }: { award: Award }) {
               </DatePill>
             </div>
 
+            {/*
+              `text-xs text-zinc-400`, which is `MetaRow`'s type -- the line
+              education fills with its location. An award has no facts to put
+              there, so its description stands in that slot and is read at that
+              weight: one line of context under the title, not a second body
+              copy competing with it. It carries no icon, because it is prose
+              rather than a fact, and it climbed three sizes to `md:text-base`
+              before, which made the awards tab the one place on the page where
+              the text under a heading was larger than the heading's own
+              subtitle.
+            */}
             {award.description && (
-              <p className="text-xs sm:text-sm md:text-base text-zinc-400">{award.description}</p>
+              <p className="text-xs text-zinc-400">{award.description}</p>
             )}
 
             {/* The control sits where the application card's "Show more" does:
@@ -430,50 +427,85 @@ export function AwardCard({ award }: { award: Award }) {
   );
 }
 
+/**
+ * One certification.
+ *
+ * The award card's anatomy, which is the same one education and applications
+ * use: the institution named first with the specific thing in italics beside
+ * it, the date as a chip at the right of that row, and the controls at the
+ * right-hand end of the row below. It read the other way round before -- title
+ * first, institution underneath on a line of its own, controls flush left --
+ * which made the certifications tab the one card in five that had to be
+ * re-read from a different starting point.
+ *
+ * A certification carries no description, so nothing separates the title row
+ * from the control row and the layout is education's exactly: an empty left
+ * slot holding the pills at the right. Where education has one control, this
+ * has up to two, and they share that slot.
+ */
 export function CertificationCard({ certification }: { certification: Certification }) {
+  const hasAchievements = certification.achievements.length > 0;
+  const controls = hasAchievements || Boolean(certification.credential_url);
+
   return (
-    <div className="card-outline p-2 sm:p-3 md:p-4 backdrop-blur-sm">
-      <div className="flex items-start gap-3 md:gap-4">
-        <div className="flex-shrink-0">
-          <div className="flex items-center justify-center backdrop-blur-sm transform transition-all duration-300 hover:scale-105">
-            <OrgLogo
-              logo={certification.logo}
-              name={certification.institution}
-              website={certification.website}
-              fallback={<ShieldIcon className="w-12 h-12 sm:w-14 sm:h-14 text-indigo-400" />}
-            />
-          </div>
-        </div>
-
-        <div className="flex-grow">
-          <div className="flex flex-wrap items-start justify-between w-full gap-2">
-            <h3 className="text-base sm:text-lg md:text-xl font-medium text-zinc-300 break-words flex-1">
-              {certification.title}
-            </h3>
-            <DatePill>
-              {certification.issued?.month} {certification.issued?.year}
-            </DatePill>
-          </div>
-
-          <Institution name={certification.institution} website={certification.website} />
-
-          <Disclosure>
-            <div className="mt-1 sm:mt-2 flex flex-wrap gap-2">
-              {certification.achievements.length > 0 && <DisclosureButton />}
-              {certification.credential_url && (
-                <CredentialLink href={certification.credential_url} />
-              )}
+    <div className="card-outline">
+      <div className="p-3 sm:p-4">
+        <div className="flex items-start gap-3 sm:gap-4">
+          <div className="flex-shrink-0">
+            <div className="flex items-center justify-center backdrop-blur-sm">
+              <OrgLogo
+                logo={certification.logo}
+                name={certification.institution}
+                fallback={<ShieldIcon className="w-12 h-12 sm:w-14 sm:h-14 text-indigo-400" />}
+              />
             </div>
-            {/* `pt-1` rather than `mt-1`, for the reason given on the
-                education card above. */}
-            {certification.achievements.length > 0 && (
-              <DisclosurePanel>
-                <div className="pt-1">
-                  <BulletList items={certification.achievements} />
+          </div>
+
+          <div className="flex-grow w-full min-w-0">
+            <div className="flex flex-row items-center justify-between gap-1 sm:gap-2 mb-1 sm:mb-2">
+              <h3 className="text-base sm:text-lg font-medium text-zinc-300 break-words">
+                {certification.website ? (
+                  <a href={certification.website} target="_blank" rel="noopener noreferrer">
+                    {certification.institution}
+                  </a>
+                ) : (
+                  certification.institution
+                )}{" "}
+                <span className="text-blue-200 italic font-medium text-xs sm:text-sm">
+                  &mdash; {certification.title}
+                </span>
+              </h3>
+              <DatePill>
+                {certification.issued?.month} {certification.issued?.year}
+              </DatePill>
+            </div>
+
+            <Disclosure>
+              {controls && (
+                <div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  {/* The empty left slot is what holds the pills at the right,
+                      the same stand-in education and applications use when
+                      they have no facts to show. */}
+                  <div />
+                  <div className="flex flex-shrink-0 flex-wrap gap-2">
+                    {hasAchievements && <DisclosureButton />}
+                    {certification.credential_url && (
+                      <CredentialLink href={certification.credential_url} />
+                    )}
+                  </div>
                 </div>
-              </DisclosurePanel>
-            )}
-          </Disclosure>
+              )}
+              {/* `pt-1` rather than `mt-1`, for the reason given on the
+                  education card above. */}
+              {hasAchievements && (
+                <DisclosurePanel>
+                  <div className="pt-1">
+                    <BulletList items={certification.achievements} />
+                  </div>
+                </DisclosurePanel>
+              )}
+            </Disclosure>
+          </div>
         </div>
       </div>
     </div>

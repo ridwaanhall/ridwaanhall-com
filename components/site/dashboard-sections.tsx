@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useReveal } from "@/components/site/use-reveal";
 import type { WakatimeEntry } from "@/lib/data/wakatime";
 
 /**
@@ -14,10 +15,67 @@ import type { WakatimeEntry } from "@/lib/data/wakatime";
  * counted up regardless.
  */
 
-const DURATION_MS = 1500;
+/**
+ * Read from the stylesheet rather than written here, so a figure and the bar
+ * beside it cannot drift apart -- they are the same two numbers, in one place.
+ * The fallbacks are only for a render before the sheet has applied.
+ */
+function motion(name: string, fallback: number): number {
+  if (typeof window === "undefined") return fallback;
+  const raw = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const ms = raw.endsWith("ms") ? Number.parseFloat(raw) : Number.parseFloat(raw) * 1000;
+  return Number.isFinite(ms) && ms > 0 ? ms : fallback;
+}
 
-/** A number that counts up once, when it first scrolls into view. */
-export function CountUp({ value, className }: { value: number | string; className?: string }) {
+/**
+ * The shared easing, as a function.
+ *
+ * `cubic-bezier(0.16, 1, 0.3, 1)` is the curve every entrance on the site
+ * uses, and a number climbing has to be on it too or it finishes out of step
+ * with the bar it labels. Solved by bisection on x rather than in closed form:
+ * a cubic Bezier is parametric, so there is no y-of-x to evaluate directly,
+ * and twenty halvings put the error below a millisecond of the duration --
+ * far under a frame.
+ */
+function easeReveal(t: number): number {
+  const cx = 3 * 0.16;
+  const bx = 3 * (0.3 - 0.16) - cx;
+  const ax = 1 - cx - bx;
+  const cy = 3 * 1;
+  const by = 3 * (1 - 1) - cy;
+  const ay = 1 - cy - by;
+
+  let lo = 0;
+  let hi = 1;
+  let u = t;
+  for (let i = 0; i < 20; i++) {
+    const x = ((ax * u + bx) * u + cx) * u;
+    if (x < t) lo = u;
+    else hi = u;
+    u = (lo + hi) / 2;
+  }
+  return ((ay * u + by) * u + cy) * u;
+}
+
+/**
+ * A number that counts up once, when its row first scrolls into view.
+ *
+ * `run` is how a bar and its figure start together. Left to itself this
+ * component watched its own visibility, which was a second trigger for a row
+ * whose bar had already started at mount -- so pass `run` wherever something
+ * else owns the row's timing, and let it observe alone only where it stands on
+ * its own (the GitHub totals).
+ */
+export function CountUp({
+  value,
+  className,
+  run,
+}: {
+  value: number | string;
+  className?: string;
+  /** Omit to let the number watch its own visibility. */
+  run?: boolean;
+}) {
   // `parseFloat` then natural stringification, matching countUp.js: it renders
   // `Math.floor(progress * target)` while running and the parsed number at the
   // end -- so an average of 12.0 shows as "12" and 11.9 as "11.9". Formatting
@@ -26,49 +84,37 @@ export function CountUp({ value, className }: { value: number | string; classNam
   const target = typeof value === "number" ? value : Number.parseFloat(value) || 0;
 
   const [display, setDisplay] = useState<number | null>(null);
-  const ref = useRef<HTMLSpanElement>(null);
+  const frame = useRef(0);
 
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
+  const count = useCallback(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    let frame = 0;
-    let started = false;
+    const duration = motion("--motion-reveal", 900);
+    const start = performance.now();
 
-    const run = () => {
-      const start = performance.now();
-      const step = (now: number) => {
-        const progress = Math.min(1, (now - start) / DURATION_MS);
-        // Whole numbers while counting, exactly as countUp.js did.
-        setDisplay(progress < 1 ? Math.floor(progress * target) : null);
-        if (progress < 1) frame = requestAnimationFrame(step);
-      };
-      frame = requestAnimationFrame(step);
+    const step = (now: number) => {
+      const progress = Math.min(1, (now - start) / duration);
+      // Whole numbers while counting, exactly as the figure settles on.
+      setDisplay(progress < 1 ? Math.floor(easeReveal(progress) * target) : null);
+      if (progress < 1) frame.current = requestAnimationFrame(step);
     };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting && !started) {
-          started = true;
-          run();
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2 },
-    );
-    observer.observe(node);
-
-    return () => {
-      observer.disconnect();
-      cancelAnimationFrame(frame);
-    };
+    frame.current = requestAnimationFrame(step);
   }, [target]);
+
+  // Only watches for itself when nothing else owns the row's timing. Where a
+  // bar does, `run` is what it passes, and the two start on the same tick.
+  const selfRef = useReveal<HTMLSpanElement>(count, 0.15, run === undefined);
+
+  useEffect(() => () => cancelAnimationFrame(frame.current), []);
+
+  useEffect(() => {
+    if (run) count();
+  }, [run, count]);
 
   // `null` means "not animating" -- the final value, which is also what is
   // rendered on the server and before hydration.
   return (
-    <span ref={ref} className={className}>
+    <span ref={selfRef} className={className}>
       {display ?? target}
     </span>
   );
@@ -105,8 +151,14 @@ export function SplitBar({
   gradient: string;
   border: string;
 }) {
+  const [counting, setCounting] = useState(false);
+  const ref = useReveal<HTMLDivElement>(() => setCounting(true));
+
   return (
-    <div className={`mt-3 sm:mt-4 rounded-lg sm:rounded-xl border p-3 sm:p-4 ${border}`}>
+    <div
+      ref={ref}
+      className={`mt-3 sm:mt-4 rounded-lg sm:rounded-xl border p-3 sm:p-4 ${border}`}
+    >
       <div className="mb-2 flex items-center justify-between gap-2 text-xs sm:text-sm">
         <span className="font-medium">
           {leftLabel} <span className="text-zinc-400">{leftValue}</span>
@@ -122,7 +174,7 @@ export function SplitBar({
         />
       </div>
       <p className="mt-2 text-right text-xs text-zinc-400">
-        <CountUp value={percent} />% written by AI
+        <CountUp value={percent} run={counting} />% written by AI
       </p>
     </div>
   );
@@ -147,12 +199,15 @@ export function PercentBar({
   /** Written out in full -- Tailwind cannot see an interpolated gradient. */
   gradient: string;
 }) {
-  // The grow-from-zero is a CSS animation keyed off a custom property rather
-  // than state driven from an effect. It needs no JavaScript at all, the final
-  // width is in the markup so the bar is correct before hydration, and
-  // prefers-reduced-motion is handled in the stylesheet.
+  // The grow is a CSS animation that starts at mount; `useReveal` only holds
+  // it back while the row is off screen, and releases the bar and its number
+  // on the same tick so they move as one. See use-reveal.ts for why it holds
+  // rather than starts.
+  const [counting, setCounting] = useState(false);
+  const ref = useReveal<HTMLLIElement>(() => setCounting(true));
+
   return (
-    <li className="col-span-3 grid grid-cols-subgrid items-center">
+    <li ref={ref} className="col-span-3 grid grid-cols-subgrid items-center">
       {/*
         `wrap-anywhere`, not `break-words`. The half-panel cap on the label
         column is a `fit-content()`, and no track can be sized below its
@@ -185,6 +240,7 @@ export function PercentBar({
               nothing else on screen changes.
             */}
             <CountUp
+              run={counting}
               value={
                 entry.percent < 1 ? Math.round(entry.percent * 10) / 10 : Math.trunc(entry.percent)
               }

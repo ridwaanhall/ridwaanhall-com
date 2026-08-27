@@ -119,18 +119,28 @@ export function mergeDurationBlocks(entries: DurationEntry[], startEpoch: number
     blocks.push({ start: begin, width: 0, language, project, seconds: duration });
   }
 
-  return blocks.map((block) => {
-    const start = Math.min(1, Math.max(0, block.start) / DAY_SECONDS);
-    return {
-      language: block.language,
-      project: block.project,
-      start: round(start),
-      // Clamped to the end of the day as well as up to the floor: a sitting
-      // still running at midnight is reported with a duration that runs past it.
-      width: round(Math.min(1 - start, Math.max(MIN_WIDTH, block.seconds / DAY_SECONDS))),
-      seconds: Math.round(block.seconds),
-    };
-  });
+  return (
+    blocks
+      /*
+       * A slice of no length is not a period of time. WakaTime emits them --
+       * an editor event with nothing between it and the next one -- and drawn
+       * literally each became a mark as wide as the floor below, carrying a
+       * tooltip that read "0 mins". There is nothing there to point at.
+       */
+      .filter((block) => Math.round(block.seconds) > 0)
+      .map((block) => {
+        const start = Math.min(1, Math.max(0, block.start) / DAY_SECONDS);
+        return {
+          language: block.language,
+          project: block.project,
+          start: round(start),
+          // Clamped to the end of the day as well as up to the floor: a sitting
+          // still running at midnight is reported with a duration running past it.
+          width: round(Math.min(1 - start, Math.max(MIN_WIDTH, block.seconds / DAY_SECONDS))),
+          seconds: Math.round(block.seconds),
+        };
+      })
+  );
 }
 
 /**

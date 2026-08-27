@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import { useReveal } from "@/components/site/use-reveal";
 import type { RhythmDay } from "@/lib/data/wakatime-rhythm";
 
@@ -18,6 +16,11 @@ import type { RhythmDay } from "@/lib/data/wakatime-rhythm";
  * **The axis starts at zero.** Beginning it at the shortest day would turn that
  * same twelve percent spread into a chart where Sunday towers over Wednesday,
  * which is a picture of a fact that is not true.
+ *
+ * A column says what it is through a `title`, and only through one. The live
+ * region that used to sit under the legend printed the identical string on
+ * `mouseenter` -- see the note in `day-timeline.tsx` for why the tooltip is the
+ * half worth keeping.
  */
 
 /**
@@ -51,14 +54,12 @@ export function ColumnChart({
   halfLabel: string;
   label: string;
 }) {
-  const [detail, setDetail] = useState<string | null>(null);
-
   // One trigger on the plot rather than one per column, so all seven rise
   // together instead of in whatever order the scroll revealed them.
   const plotRef = useReveal<HTMLDivElement>(undefined, 0.15);
 
   return (
-    <div onMouseLeave={() => setDetail(null)}>
+    <div>
       <div className="flex gap-2">
         {/*
           The scale, in its own gutter. Its labels are pulled onto the rules
@@ -92,7 +93,6 @@ export function ColumnChart({
                 className="column-grow flex cursor-help flex-col-reverse overflow-hidden rounded-t-sm"
                 style={{ height: `${day.height}%` }}
                 title={day.detail}
-                onMouseEnter={() => setDetail(day.detail)}
               >
                 {/*
                   Reversed, so the first segment is the one at the baseline.
@@ -122,26 +122,14 @@ export function ColumnChart({
         </div>
       </div>
 
-      <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <ul className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm">
-          {categories.map((category) => (
-            <li key={category.name} className="flex items-center gap-1.5">
-              <span className={`h-2.5 w-2.5 rounded-xs ${fill(category.slot)}`} />
-              <span className="text-zinc-400">{category.name}</span>
-            </li>
-          ))}
-        </ul>
-
-        {/* Reserved height, so the legend beside it holds still on hover. */}
-        <div
-          className={`h-6 flex-shrink text-xs text-zinc-400 transition-opacity duration-200 sm:text-right sm:text-sm ${
-            detail ? "opacity-100" : "opacity-0"
-          }`}
-          aria-live="polite"
-        >
-          {detail ?? "Hover a day to see its split"}
-        </div>
-      </div>
+      <ul className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm">
+        {categories.map((category) => (
+          <li key={category.name} className="flex items-center gap-1.5">
+            <span className={`h-2.5 w-2.5 rounded-xs ${fill(category.slot)}`} />
+            <span className="text-zinc-400">{category.name}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

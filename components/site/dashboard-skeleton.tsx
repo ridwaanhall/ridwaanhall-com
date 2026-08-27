@@ -40,13 +40,12 @@ export function DashboardPanelSkeleton({
           <>
             {/*
               Four cards four across, then the ribbon panel: a track, its hour
-              axis, and a legend beside the hover line. Taller below `sm`,
-              where the legend and the hover line stop sharing a row -- the
-              measured heights are 168 and 140, and a single figure would be
-              wrong by 28px on one side of that breakpoint or the other.
+              axis, and the language legend. One height at every width: the
+              ribbon is the same depth throughout and the legend wraps within
+              its own row rather than adding one.
             */}
             <SkeletonGrid count={4} columns={4} mobileColumns={2} height={76} />
-            <SkeletonBlock className="mt-4 h-[168px] rounded-lg sm:h-[140px] sm:rounded-xl" />
+            <SkeletonBlock className="mt-4 h-[136px] rounded-lg sm:rounded-xl" />
           </>
         ) : panel === "rhythm" ? (
           <>
@@ -63,8 +62,8 @@ export function DashboardPanelSkeleton({
               than shoving the calendar below it down past a reader's finger.
             */}
             <SkeletonGrid count={4} columns={4} mobileColumns={2} height={76} />
-            <SkeletonBlock className="mt-4 h-[292px] rounded-lg sm:h-[288px] sm:rounded-xl" />
-            <SkeletonBlock className="mt-6 h-[184px] rounded-lg sm:h-[224px] sm:rounded-xl" />
+            <SkeletonBlock className="mt-4 h-[260px] rounded-lg sm:h-[284px] sm:rounded-xl" />
+            <SkeletonBlock className="mt-6 h-[156px] rounded-lg sm:h-[196px] sm:rounded-xl" />
             <SkeletonBlock className="mt-3 h-[128px] rounded-lg sm:mt-4 sm:h-[124px] sm:rounded-xl" />
           </>
         ) : panel === "year" ? (

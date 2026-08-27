@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import { useReveal } from "@/components/site/use-reveal";
 import type { DayBlock } from "@/lib/data/wakatime-day";
 
@@ -23,6 +21,16 @@ import type { DayBlock } from "@/lib/data/wakatime-day";
  * server against the day boundary WakaTime itself reports, because a clock read
  * in the browser is a second clock, and one that can disagree with the render
  * it is hydrating.
+ *
+ * **What a block says about itself is a `title` and nothing else.** There was a
+ * second copy of it under the ribbon -- a live region that filled in on
+ * `mouseenter` -- and it printed the same string the tooltip already had. One of
+ * the two had to go, and the line is the weaker: `providers/tooltips.tsx`
+ * upgrades every `title` here into a chip shown on hover, on keyboard focus and
+ * on tap, while a `mouseenter` handler is unreachable on a phone and unreachable
+ * from the keyboard. It also put the answer in the corner of the panel rather
+ * than beside the block being pointed at, and reserved a row of the layout to
+ * do it.
  */
 
 /**
@@ -69,6 +77,21 @@ function fill(slot: number): string {
   return RAMP[slot] ?? LEFTOVER;
 }
 
+/**
+ * Narrow blocks are painted over wide ones.
+ *
+ * Several sittings can begin in the same second -- a glance at a config file in
+ * the middle of an afternoon on one project -- and the wide one is drawn last,
+ * so in document order it covered the slivers completely. They were invisible,
+ * and with them went the only thing that says what they were: a tooltip cannot
+ * be reached on an element nothing can point at. Ordering by width undoes that
+ * without moving anything, and it is what makes the minimum width in
+ * `mergeDurationBlocks` do the job it exists for.
+ */
+function layer(width: number): number {
+  return Math.max(1, 100 - Math.round(width * 100));
+}
+
 export function DayTimeline({
   blocks,
   languages,
@@ -81,8 +104,6 @@ export function DayTimeline({
   /** The track's accessible name, since the blocks themselves carry no text. */
   label: string;
 }) {
-  const [detail, setDetail] = useState<string | null>(null);
-
   /*
     The track holds the trigger, not the blocks. Their entrance is a sweep
     across the day and it only reads as one sweep if they share a clock -- an
@@ -91,7 +112,7 @@ export function DayTimeline({
   const trackRef = useReveal<HTMLDivElement>(undefined, 0.15);
 
   return (
-    <div onMouseLeave={() => setDetail(null)}>
+    <div>
       <div
         ref={trackRef}
         className="relative h-10 sm:h-12 overflow-hidden rounded-md bg-zinc-800/50"
@@ -126,12 +147,10 @@ export function DayTimeline({
             style={{
               left: `${block.start * 100}%`,
               width: `${block.width * 100}%`,
+              zIndex: layer(block.width),
               animationDelay: growDelay(index),
             }}
-            // A `title` as well as the hover line: hover alone is unreachable
-            // on touch, which is most of the readers this page has.
             title={block.detail}
-            onMouseEnter={() => setDetail(block.detail)}
           />
         ))}
 
@@ -162,31 +181,14 @@ export function DayTimeline({
         ))}
       </div>
 
-      <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <ul className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm">
-          {languages.map((language) => (
-            <li key={language.name} className="flex items-center gap-1.5" title={language.time}>
-              <span className={`h-2.5 w-2.5 rounded-xs ${fill(language.slot)}`} />
-              <span className="text-zinc-400">{language.name}</span>
-            </li>
-          ))}
-        </ul>
-
-        {/*
-          The line keeps its height whether or not anything is hovered, so the
-          legend beside it does not move as the pointer crosses the ribbon.
-        */}
-        <div
-          className={`h-6 flex-shrink text-xs text-zinc-400 transition-opacity duration-200 sm:text-right sm:text-sm ${
-            detail ? "opacity-100" : "opacity-0"
-          }`}
-          // Politely, so a screen reader is not interrupted by every block the
-          // pointer passes over.
-          aria-live="polite"
-        >
-          {detail ?? "Hover a block to see what it was"}
-        </div>
-      </div>
+      <ul className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm">
+        {languages.map((language) => (
+          <li key={language.name} className="flex items-center gap-1.5" title={language.time}>
+            <span className={`h-2.5 w-2.5 rounded-xs ${fill(language.slot)}`} />
+            <span className="text-zinc-400">{language.name}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

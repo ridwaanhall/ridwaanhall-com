@@ -92,6 +92,26 @@ describe("mergeDurationBlocks", () => {
   it("has nothing to draw for a day with nothing on it", () => {
     assert.deepEqual(mergeDurationBlocks([], START), []);
   });
+
+  /*
+   * WakaTime emits these -- an editor event with nothing between it and the
+   * next. Drawn literally, each became a mark as wide as the floor carrying a
+   * tooltip that read "0 mins", sitting on top of real work.
+   */
+  it("draws nothing for a slice with no length", () => {
+    assert.deepEqual(mergeDurationBlocks([slice(3600, 0)], START), []);
+  });
+
+  it("keeps the real blocks either side of an empty one", () => {
+    const blocks = mergeDurationBlocks(
+      [slice(3600, 600, "Python"), slice(20000, 0, "Go"), slice(30000, 600, "Rust")],
+      START,
+    );
+    assert.deepEqual(
+      blocks.map((block) => block.language),
+      ["Python", "Rust"],
+    );
+  });
 });
 
 describe("summariseSessions", () => {

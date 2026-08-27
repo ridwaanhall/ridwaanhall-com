@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import { useReveal } from "@/components/site/use-reveal";
 import type { TrendWeek } from "@/lib/data/wakatime-rhythm";
 
@@ -16,6 +14,11 @@ import type { TrendWeek } from "@/lib/data/wakatime-rhythm";
  * three thousand AI ones are the same dot on a daily chart, so the line spends
  * most of the year snapping between 0 and 100 and the shape is noise. Each
  * point is computed from its own week's line totals -- see `weeklyAiTrend`.
+ *
+ * A week says what it is through a `title` on its hover column, and only
+ * through one. The live region beneath the plot printed the identical string --
+ * see the note in `day-timeline.tsx` for why the tooltip is the half worth
+ * keeping.
  */
 
 /** The drawing box. Points are mapped into it; the SVG then stretches to fit. */
@@ -30,8 +33,6 @@ function project(point: TrendWeek): [number, number] {
 }
 
 export function TrendChart({ points, label }: { points: TrendWeek[]; label: string }) {
-  const [detail, setDetail] = useState<string | null>(null);
-
   // One trigger on the figure: the line draws itself in a single stroke, and an
   // observer per hover column would have nothing to release.
   const chartRef = useReveal<HTMLDivElement>(undefined, 0.15);
@@ -43,7 +44,7 @@ export function TrendChart({ points, label }: { points: TrendWeek[]; label: stri
   const area = `${line} L${WIDTH} ${HEIGHT} L0 ${HEIGHT} Z`;
 
   return (
-    <div ref={chartRef} onMouseLeave={() => setDetail(null)}>
+    <div ref={chartRef}>
       <div className="flex gap-2">
         {/*
           The scale, in a gutter of its own and the same width as the weekday
@@ -130,21 +131,10 @@ export function TrendChart({ points, label }: { points: TrendWeek[]; label: stri
                 key={point.x}
                 className="h-full flex-1 cursor-help"
                 title={point.detail}
-                onMouseEnter={() => setDetail(point.detail)}
               />
             ))}
           </div>
         </div>
-      </div>
-
-      {/* Reserved height, so nothing below shifts as the pointer crosses. */}
-      <div
-        className={`mt-1 ml-16 h-6 sm:ml-18 text-xs text-zinc-400 transition-opacity duration-200 sm:text-sm ${
-          detail ? "opacity-100" : "opacity-0"
-        }`}
-        aria-live="polite"
-      >
-        {detail ?? "Hover a week to see its share"}
       </div>
     </div>
   );

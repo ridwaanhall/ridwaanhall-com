@@ -416,7 +416,7 @@ html[data-theme="light"] #search-modal-content {
 }
 
 /* Each cell fades in on its own beat -- see `fadeDelay` in
-   components/site/contribution-heatmap.tsx for where the stagger comes from
+   components/site/activity-heatmap.tsx for where the stagger comes from
    and why it is not random. `both` so a cell is invisible during its delay
    rather than flashing in and out; without it the whole grid paints, then
    restarts. */
@@ -961,6 +961,120 @@ html.theme-fading [data-theme-toggle] svg {
 
 @media (prefers-reduced-motion: reduce) {
     .percent-bar {
+        animation: none;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   The three charts
+
+   Same contract as the bar above, and for the same reason: the finished shape
+   is what the markup says, and the animation is layered over it. A reader
+   whose script never arrives gets a drawn chart rather than one pinned at
+   zero, and the reduced-motion case is one rule per figure instead of a
+   branch in three components.
+
+   Each also has to survive being paused. `useReveal` rewinds and holds any
+   animation still below the fold, so none of these may carry state the
+   element depends on to be legible at rest.
+   --------------------------------------------------------------------------- */
+
+/* A block on the day ribbon. Composited, like the bar: a busy day draws fifty
+   of these and animating their width would re-lay the track out fifty times a
+   frame. They are staggered in the order the sittings happened, so the day
+   fills in from morning to night. */
+@keyframes timeline-in {
+    from {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+    to {
+        transform: none;
+        opacity: 1;
+    }
+}
+
+.timeline-block {
+    transform-origin: left center;
+    animation: timeline-in var(--motion-cell) var(--motion-ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .timeline-block {
+        animation: none;
+    }
+}
+
+/* A weekday column. Anchored at the baseline, because the whole claim of the
+   chart is that the seven are measured from the same floor -- growing one from
+   its centre would have it arrive from below the axis it is drawn against.
+
+   The stacked bands inside it are not scaled separately. They ride the
+   parent's transform, so the split cannot drift apart from the column mid
+   flight. */
+@keyframes column-grow {
+    from {
+        transform: scaleY(0);
+    }
+    to {
+        transform: none;
+    }
+}
+
+.column-grow {
+    transform-origin: bottom center;
+    animation: column-grow var(--motion-reveal) var(--motion-ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .column-grow {
+        animation: none;
+    }
+}
+
+/* The trend line, drawn on end to end.
+
+   `pathLength` is set to 1 on the element, which is what lets the dash be
+   written as a plain number here instead of one measured off the geometry --
+   the year's path is a different length at every viewport width, and a dash
+   array in user units would leave a gap that changed with the window.
+
+   The resting offset is 0, declared outside the keyframe, so a line that never
+   animates is a whole line rather than an invisible one. */
+@keyframes trend-draw {
+    from {
+        stroke-dashoffset: 1;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.trend-line {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    animation: trend-draw var(--motion-page) var(--motion-ease) both;
+}
+
+/* The fill waits for the line rather than arriving with it: a shaded area with
+   no edge on it reads as a smudge until the stroke lands on top. */
+@keyframes trend-fill {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.trend-area {
+    animation: trend-fill var(--motion-reveal) var(--motion-ease) both;
+    animation-delay: 220ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .trend-line,
+    .trend-area {
         animation: none;
     }
 }

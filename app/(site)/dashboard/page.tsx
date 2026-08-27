@@ -3,11 +3,17 @@ import { Suspense } from "react";
 
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { ActivityHeatmap } from "@/components/site/activity-heatmap";
+import { BulletScale } from "@/components/site/bullet-scale";
+import { ColumnChart } from "@/components/site/column-chart";
 import { DashboardPanelSkeleton } from "@/components/site/dashboard-skeleton";
 import { CountUp, PercentBar, SplitBar } from "@/components/site/dashboard-sections";
+import { DayTimeline } from "@/components/site/day-timeline";
+import { TrendChart } from "@/components/site/trend-chart";
 import { getAboutData, type AboutData } from "@/lib/data/about";
 import { getGitHubStats, type GitHubStats } from "@/lib/data/github";
 import { getWakatimeStats, type WakatimeAi, type WakatimeStats } from "@/lib/data/wakatime";
+import { getWakatimeDay, type WakatimeDay } from "@/lib/data/wakatime-day";
+import { getWakatimeRhythm, type WakatimeRhythm } from "@/lib/data/wakatime-rhythm";
 import { getWakatimeYear, type WakatimeYear } from "@/lib/data/wakatime-year";
 import { dashboardSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
@@ -55,6 +61,15 @@ export default async function DashboardPage() {
             shell is already sent, so a slow API delays one panel rather than
             the whole request.
           */}
+          {/*
+            Today opens the page, above the week that contains it. It is the
+            one panel here whose figures can change between two visitors, and
+            the only one that says when rather than how much.
+          */}
+          <Suspense fallback={<DashboardPanelSkeleton panel="today" />}>
+            <TodayRhythmPanel />
+          </Suspense>
+
           <Suspense fallback={<DashboardPanelSkeleton panel="wakatime" />}>
             <WakatimePanel />
           </Suspense>
@@ -68,6 +83,15 @@ export default async function DashboardPage() {
             <CodingYearPanel />
           </Suspense>
 
+          {/*
+            Three more calls, so a fifth boundary rather than a section of the
+            year's. The panels are split precisely because a time budget shared
+            across five clients is a budget that runs out.
+          */}
+          <Suspense fallback={<DashboardPanelSkeleton panel="rhythm" />}>
+            <CodingRhythmPanel />
+          </Suspense>
+
           <Suspense fallback={<DashboardPanelSkeleton panel="github" />}>
             <GitHubPanel about={about} />
           </Suspense>
@@ -75,6 +99,18 @@ export default async function DashboardPage() {
       </main>
     </>
   );
+}
+
+async function TodayRhythmPanel() {
+  const day = await getWakatimeDay(process.env.WAKATIME_API_KEY ?? "");
+  if (!day) return null;
+  return <TodayRhythm day={day} />;
+}
+
+async function CodingRhythmPanel() {
+  const rhythm = await getWakatimeRhythm(process.env.WAKATIME_API_KEY ?? "");
+  if (!rhythm) return null;
+  return <CodingRhythm rhythm={rhythm} />;
 }
 
 async function WakatimePanel() {
@@ -96,6 +132,135 @@ async function GitHubPanel({ about }: { about: AboutData }) {
 }
 
 // ---------------------------------------------------------------------------
+
+/**
+ * Today, laid out along the clock.
+ *
+ * Above the seven-day panel rather than below it, because it is the narrower
+ * window and the page reads outwards from now -- today, the week, the year, the
+ * shape of the week, the calendar. Its own accent for the same reason every
+ * other section has one: a heading is what a reader scrolling scans past, and
+ * the colour is what tells them the subject changed.
+ *
+ * The ribbon is the point of the section. The four cards above it are the
+ * figures a reader would otherwise have to measure off it by eye.
+ */
+function TodayRhythm({ day }: { day: WakatimeDay }) {
+  return (
+    <div className="mb-6">
+      <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
+        <h2 className="text-xl font-medium">Today&rsquo;s Rhythm</h2>
+        <p className="text-xs sm:text-sm">{day.date}</p>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <DayStat
+          label="Sessions"
+          hint={`A quarter of an hour away starts a new one. ${day.total} logged in total.`}
+          value={day.sessions}
+        />
+        <DayStat label="Longest Session" value={day.longest_session} />
+        <DayStat
+          label="Active Window"
+          hint={`Longest break away: ${day.longest_break}`}
+          value={day.active_window}
+        />
+        <DayStat label="Peak Hour" hint={day.peak_hour_detail} value={day.peak_hour} />
+      </div>
+
+      <div className="mt-4">
+        <ChartPanel title="Along the Clock" gradient="from-pink-500 to-purple-600">
+          <DayTimeline
+            blocks={day.blocks}
+            languages={day.languages}
+            hasActivity={day.has_activity}
+            label={`Coding sessions across ${day.date}, midnight to midnight`}
+          />
+        </ChartPanel>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The shape of a week, and where a year of it has got to.
+ *
+ * After the year rather than beside it: every figure here is derived from the
+ * same twelve months, and a reader who has just read the year's totals is the
+ * one for whom "which day of the week were they on" is a question.
+ *
+ * Two of its three figures are allowed to be missing. The weekday chart is the
+ * section; the trend and the comparison each come from a call of their own and
+ * carry a flag rather than an emptiness test, because a year with no AI lines
+ * in it is a real zero and testing for one would read it as an outage.
+ */
+function CodingRhythm({ rhythm }: { rhythm: WakatimeRhythm }) {
+  return (
+    <div className="mb-6">
+      <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
+        <h2 className="text-xl font-medium">Coding Rhythm</h2>
+        <p className="text-xs sm:text-sm">Last Year</p>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <RhythmStat label="Busiest Day" hint={rhythm.busiest_detail} value={rhythm.busiest} />
+        <RhythmStat label="Most AI-Heavy" hint={rhythm.most_ai_detail} value={rhythm.most_ai} />
+        {rhythm.has_trend && (
+          <RhythmStat label="AI Share Now" hint={rhythm.trend_detail} value={rhythm.trend_now} />
+        )}
+        {rhythm.has_comparison && (
+          <RhythmStat
+            label="vs Community"
+            hint={`The median WakaTime user codes ${rhythm.community_median_label} a day`}
+            value={
+              <>
+                {rhythm.multiple}
+                <span className="text-xs text-zinc-400">x median</span>
+              </>
+            }
+          />
+        )}
+      </div>
+
+      <div className="mt-4">
+        <ChartPanel title="Weekday Rhythm" gradient="from-violet-400 to-purple-600">
+          <ColumnChart
+            days={rhythm.weekdays}
+            categories={rhythm.categories}
+            peakLabel={rhythm.peak_label}
+            halfLabel={rhythm.half_label}
+            label="Average hours coded on each day of the week over the past year, split by category"
+          />
+        </ChartPanel>
+      </div>
+
+      {rhythm.has_trend && (
+        <div className="mt-6">
+          <ChartPanel title="AI Share of Lines" gradient="from-purple-500 to-violet-600">
+            <TrendChart
+              points={rhythm.trend}
+              label="Share of changed lines written by AI, by week, over the past year"
+            />
+          </ChartPanel>
+        </div>
+      )}
+
+      {rhythm.has_comparison && (
+        <BulletScale
+          youPercent={rhythm.you}
+          youLabel={rhythm.you_label}
+          medianPercent={rhythm.community_median}
+          medianLabel={rhythm.community_median_label}
+          averagePercent={rhythm.community_average}
+          averageLabel={rhythm.community_average_label}
+          axisLabel={rhythm.axis_label}
+          multiple={rhythm.multiple}
+          maxLabel={rhythm.community_max_label}
+        />
+      )}
+    </div>
+  );
+}
 
 function Wakatime({ stats }: { stats: WakatimeStats }) {
   return (
@@ -579,6 +744,67 @@ function YearStat({
   );
 }
 
+/**
+ * A card in today's section.
+ *
+ * `StatCard` in another colour, and a separate component rather than a `tone`
+ * prop for the reason written at `YearStat`: Tailwind generates a class only
+ * where it can see one written out, so a border interpolated from a prop
+ * produces no rule and the card comes out unbordered.
+ */
+function DayStat({
+  label,
+  value,
+  hint,
+}: {
+  label: React.ReactNode;
+  value: React.ReactNode;
+  hint?: string;
+}) {
+  return (
+    <div
+      className={`bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-pink-500/50 transition-all duration-300 ${
+        hint ? "relative z-10 overflow-visible" : "overflow-hidden"
+      }`}
+    >
+      <h3 className="font-medium text-xs sm:text-sm">
+        {label}
+        {hint && <HelpIcon title={hint} />}
+      </h3>
+      <div className="flex items-center justify-between">
+        <p className="text-pink-400 sm:text-xl">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+/** A card in the rhythm section. Written out for the reason `DayStat` is. */
+function RhythmStat({
+  label,
+  value,
+  hint,
+}: {
+  label: React.ReactNode;
+  value: React.ReactNode;
+  hint?: string;
+}) {
+  return (
+    <div
+      className={`bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-violet-500/50 transition-all duration-300 ${
+        hint ? "relative z-10 overflow-visible" : "overflow-hidden"
+      }`}
+    >
+      <h3 className="font-medium text-xs sm:text-sm">
+        {label}
+        {hint && <HelpIcon title={hint} />}
+      </h3>
+      <div className="flex items-center justify-between">
+        <p className="text-violet-400 sm:text-xl">{value}</p>
+      </div>
+    </div>
+  );
+}
+
 function GitHubStat({
   label,
   value,
@@ -610,6 +836,36 @@ function GitHubStat({
   );
 }
 
+/**
+ * The hairline frame with its title notched into the top edge.
+ *
+ * Split out from `GradientPanel` when the charts arrived: they want the frame
+ * and not the three-track list inside it. One component still owns the frame,
+ * so the two kinds of panel cannot drift apart on a radius or a padding step.
+ */
+function ChartPanel({
+  title,
+  gradient,
+  children,
+}: {
+  title: string;
+  /** Written out in full -- Tailwind cannot see an interpolated gradient. */
+  gradient: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={`bg-gradient-to-r ${gradient} relative flex flex-1 flex-col gap-2 rounded-lg sm:rounded-xl p-[2px]`}
+    >
+      <div className="h-full w-full rounded-lg sm:rounded-xl bg-black p-3 sm:p-4">
+        <h3 className="absolute -top-3 left-3 bg-black px-2">{title}</h3>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/** A breakdown panel: the frame above, holding rows that share three tracks. */
 function GradientPanel({
   title,
   gradient,
@@ -620,31 +876,26 @@ function GradientPanel({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className={`bg-gradient-to-r ${gradient} relative flex flex-1 flex-col gap-2 rounded-lg sm:rounded-xl p-[2px]`}
-    >
-      <div className="h-full w-full rounded-lg sm:rounded-xl bg-black p-3 sm:p-4">
-        <h3 className="absolute -top-3 left-3 bg-black px-2">{title}</h3>
-        {/*
-          The rows share these tracks through `grid-cols-subgrid`, which is what
-          lets a panel size its label column to its own longest name instead of
-          to a number picked in advance.
+    <ChartPanel title={title} gradient={gradient}>
+      {/*
+        The rows share these tracks through `grid-cols-subgrid`, which is what
+        lets a panel size its label column to its own longest name instead of
+        to a number picked in advance.
 
-          `fit-content(50%)` is the rule in one function: the column takes the
-          width of the widest label, unless that would pass half the panel, at
-          which point it stops there and that label wraps over two lines. It is
-          written as a style rather than an arbitrary class because a class
-          carrying parentheses and a percent sign is exactly what the
-          `@source not` lines in globals.css exist to keep out of the scan.
-        */}
-        <ul
-          className="grid gap-2 px-1 py-1"
-          style={{ gridTemplateColumns: "fit-content(50%) 1fr auto" }}
-        >
-          {children}
-        </ul>
-      </div>
-    </div>
+        `fit-content(50%)` is the rule in one function: the column takes the
+        width of the widest label, unless that would pass half the panel, at
+        which point it stops there and that label wraps over two lines. It is
+        written as a style rather than an arbitrary class because a class
+        carrying parentheses and a percent sign is exactly what the
+        `@source not` lines in globals.css exist to keep out of the scan.
+      */}
+      <ul
+        className="grid gap-2 px-1 py-1"
+        style={{ gridTemplateColumns: "fit-content(50%) 1fr auto" }}
+      >
+        {children}
+      </ul>
+    </ChartPanel>
   );
 }
 

@@ -44,6 +44,25 @@ export function formatTime(seconds: number): string {
 }
 
 /**
+ * "2h 42m", "46m", "0m".
+ *
+ * `formatTime` writes a duration the way a sentence would, which is right for a
+ * card and wrong for a chart axis: "2 hours 42 minutes" wraps to three lines in
+ * a 56px gutter and lands on top of the panel title above it. This is the same
+ * duration with the words taken out.
+ */
+export function shortTime(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds <= 0) return "0m";
+
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  if (hours > 0 && minutes > 0) return `${hours}h ${minutes}m`;
+  if (hours > 0) return `${hours}h`;
+  if (minutes > 0) return `${minutes}m`;
+  return "0m";
+}
+
+/**
  * "2.0B", "3.7M", "176".
  *
  * Token counts run to ten digits, which is unreadable in a stat card and wraps

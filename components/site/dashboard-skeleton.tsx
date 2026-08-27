@@ -21,7 +21,11 @@ import { SkeletonBar, SkeletonBlock, SkeletonGrid } from "@/components/skeleton"
  * generates a class only if it can see it in the source, so
  * `lg:grid-cols-${columns}` would produce no rule at all.
  */
-export function DashboardPanelSkeleton({ panel }: { panel: "wakatime" | "github" | "year" }) {
+export function DashboardPanelSkeleton({
+  panel,
+}: {
+  panel: "today" | "wakatime" | "year" | "rhythm" | "github";
+}) {
   return (
     <div className="skeleton-pulse mb-6" role="status" aria-busy="true">
       <span className="sr-only">Loading statistics…</span>
@@ -32,7 +36,38 @@ export function DashboardPanelSkeleton({ panel }: { panel: "wakatime" | "github"
           <SkeletonBar className="h-4 w-24 bg-zinc-900/60" />
         </div>
 
-        {panel === "year" ? (
+        {panel === "today" ? (
+          <>
+            {/*
+              Four cards four across, then the ribbon panel: a track, its hour
+              axis, and a legend beside the hover line. Taller below `sm`,
+              where the legend and the hover line stop sharing a row -- the
+              measured heights are 168 and 140, and a single figure would be
+              wrong by 28px on one side of that breakpoint or the other.
+            */}
+            <SkeletonGrid count={4} columns={4} mobileColumns={2} height={76} />
+            <SkeletonBlock className="mt-4 h-[168px] rounded-lg sm:h-[140px] sm:rounded-xl" />
+          </>
+        ) : panel === "rhythm" ? (
+          <>
+            {/*
+              Four cards, the weekday chart, the trend chart, and the comparison
+              strip. Three separate blocks because the two charts are separate
+              panels with a gap between them, and one tall block would hold the
+              wrong shape at every width rather than only at the narrow ones.
+
+              Two of the four cards and the whole trend panel are drawn on a
+              request whose insight calls failed and do not arrive. That is the
+              rarer state, and holding the taller of the two is the direction
+              that fails safely: the page settles upward into the gap rather
+              than shoving the calendar below it down past a reader's finger.
+            */}
+            <SkeletonGrid count={4} columns={4} mobileColumns={2} height={76} />
+            <SkeletonBlock className="mt-4 h-[292px] rounded-lg sm:h-[288px] sm:rounded-xl" />
+            <SkeletonBlock className="mt-6 h-[184px] rounded-lg sm:h-[224px] sm:rounded-xl" />
+            <SkeletonBlock className="mt-3 h-[128px] rounded-lg sm:mt-4 sm:h-[124px] sm:rounded-xl" />
+          </>
+        ) : panel === "year" ? (
           <>
             {/*
               Eight cards four across, then the AI/human split bar, then the

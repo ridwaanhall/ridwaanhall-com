@@ -167,9 +167,9 @@ export function SplitBar({
           <span className="text-zinc-400">{rightValue}</span> {rightLabel}
         </span>
       </div>
-      <div className="relative h-3 rounded-full bg-zinc-800/50">
+      <div className="relative h-2 rounded-full bg-zinc-800/50">
         <span
-          className={`${gradient} percent-bar absolute left-0 top-0 h-3 rounded-full`}
+          className={`${gradient} percent-bar absolute left-0 top-0 h-2 rounded-full`}
           style={{ "--bar-width": `${percent}%` } as React.CSSProperties}
         />
       </div>
@@ -222,9 +222,9 @@ export function PercentBar({
       <span className="cursor-help text-sm wrap-anywhere" title={entry.time}>
         {entry.name}
       </span>
-      <div className="relative h-3 rounded-full bg-zinc-800/50">
+      <div className="relative h-2 rounded-full bg-zinc-800/50">
         <span
-          className={`${gradient} percent-bar absolute left-0 top-0 h-3 rounded-full`}
+          className={`${gradient} percent-bar absolute left-0 top-0 h-2 rounded-full`}
           style={{ "--bar-width": `${entry.percent}%` } as React.CSSProperties}
         />
       </div>

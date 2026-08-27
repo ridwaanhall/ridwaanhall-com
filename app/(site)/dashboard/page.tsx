@@ -638,7 +638,7 @@ function GradientPanel({
           `@source not` lines in globals.css exist to keep out of the scan.
         */}
         <ul
-          className="grid gap-3 px-1 py-1"
+          className="grid gap-2 px-1 py-1"
           style={{ gridTemplateColumns: "fit-content(50%) 1fr auto" }}
         >
           {children}

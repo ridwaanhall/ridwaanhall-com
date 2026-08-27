@@ -87,7 +87,7 @@ export function ApplicationCard({ application }: { application: Application }) {
                 )}
 
                 <div className="flex-shrink-0">
-                  <DisclosureButton className="toggle-pill cursor-pointer px-2 py-1 rounded-full" />
+                  <DisclosureButton />
                 </div>
               </div>
 

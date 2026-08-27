@@ -67,12 +67,22 @@ export function Disclosure({ children }: { children: React.ReactNode }) {
 /**
  * `rounded-full` everywhere, rather than a pill on the experience and
  * application cards and `rounded-lg` on education and certifications, for what
- * is the same control in all four places. On the certification card it sits
- * beside a `rounded-lg` "View Credential" link; that is the deliberate trade,
- * since the two are not the same kind of thing.
+ * is the same control in all four places.
+ *
+ * The default padding is the application card's, which is the tightest of the
+ * four and the one the about page's tabs are read against. It used to be a step
+ * roomier, with education and applications each overriding it back down -- so
+ * the shared default was the shape only two of the callers wanted, and "Show
+ * more" was visibly a different size depending on which tab you were on.
+ *
+ * **Nothing overrides it now.** `CredentialLink` on the about cards and the
+ * "Apply for …" link on an openhire position are the same `toggle-pill` at the
+ * same size, so every pill the site draws is one height, and a reader crossing
+ * from a certification to a job posting meets one control rather than two that
+ * nearly match.
  */
 export function DisclosureButton({
-  className = "toggle-pill cursor-pointer px-3 py-1.5 rounded-full",
+  className = "toggle-pill cursor-pointer px-2 py-1 rounded-full",
 }: {
   className?: string;
 }) {

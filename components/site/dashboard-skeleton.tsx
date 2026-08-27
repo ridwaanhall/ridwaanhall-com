@@ -42,12 +42,12 @@ export function DashboardPanelSkeleton({ panel }: { panel: "wakatime" | "github"
               on exactly the screens where the jump is worst.
             */}
             <SkeletonGrid count={8} columns={4} mobileColumns={2} height={76} />
-            <SkeletonBlock className="mt-3 sm:mt-4 h-[92px] rounded-lg sm:rounded-xl" />
+            <SkeletonBlock className="mt-3 sm:mt-4 h-[88px] rounded-lg sm:rounded-xl" />
             <SkeletonBlock className="mt-4 h-[168px] border-0 bg-zinc-900/40" />
             <div className="mt-4 grid gap-6 sm:gap-4 lg:grid-cols-3">
-              <SkeletonBlock className="h-40 rounded-lg sm:rounded-xl" />
-              <SkeletonBlock className="h-40 rounded-lg sm:rounded-xl" />
-              <SkeletonBlock className="h-40 rounded-lg sm:rounded-xl" />
+              <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
+              <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
+              <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
             </div>
           </>
         ) : panel === "wakatime" ? (
@@ -57,9 +57,9 @@ export function DashboardPanelSkeleton({ panel }: { panel: "wakatime" | "github"
 
             {/* Languages, Categories and Editors: three across from `lg`. */}
             <div className="mt-4 grid gap-6 sm:gap-4 lg:grid-cols-3">
-              <SkeletonBlock className="h-40 rounded-lg sm:rounded-xl" />
-              <SkeletonBlock className="h-40 rounded-lg sm:rounded-xl" />
-              <SkeletonBlock className="h-40 rounded-lg sm:rounded-xl" />
+              <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
+              <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
+              <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
             </div>
 
             {/*
@@ -81,10 +81,10 @@ export function DashboardPanelSkeleton({ panel }: { panel: "wakatime" | "github"
               <SkeletonBar className="h-4 w-24 bg-zinc-900/60" />
             </div>
             <SkeletonGrid count={8} columns={4} mobileColumns={2} height={76} />
-            <SkeletonBlock className="mt-3 sm:mt-4 h-[92px] rounded-lg sm:rounded-xl" />
+            <SkeletonBlock className="mt-3 sm:mt-4 h-[88px] rounded-lg sm:rounded-xl" />
             <div className="mt-4 flex flex-col gap-6 sm:gap-4 md:flex-row">
-              <SkeletonBlock className="flex-1 h-40 rounded-lg sm:rounded-xl" />
-              <SkeletonBlock className="flex-1 h-40 rounded-lg sm:rounded-xl" />
+              <SkeletonBlock className="flex-1 h-[152px] rounded-lg sm:rounded-xl" />
+              <SkeletonBlock className="flex-1 h-[152px] rounded-lg sm:rounded-xl" />
             </div>
           </>
         ) : (

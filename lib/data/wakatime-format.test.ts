@@ -8,6 +8,7 @@ import {
   formatTime,
   longDateJakarta,
   share,
+  shortTime,
   usd,
 } from "./wakatime-format";
 
@@ -33,6 +34,30 @@ describe("formatTime", () => {
     assert.equal(formatTime(-5), "0 mins");
     assert.equal(formatTime(Number.NaN), "0 mins");
     assert.equal(formatTime(Number.POSITIVE_INFINITY), "0 mins");
+  });
+});
+
+describe("shortTime", () => {
+  /*
+   * The reason it exists: the axis gutter beside the weekday chart is 56px, and
+   * `formatTime` writes the same duration as "2 hours 42 minutes", which wraps
+   * to three lines and lands on top of the panel title above it.
+   */
+  it("writes a duration narrow enough for a chart axis", () => {
+    assert.equal(shortTime(9741), "2h 42m");
+    assert.equal(shortTime(3600), "1h");
+    assert.equal(shortTime(2820), "47m");
+  });
+
+  it("refuses a value that is not a duration", () => {
+    assert.equal(shortTime(0), "0m");
+    assert.equal(shortTime(-5), "0m");
+    assert.equal(shortTime(Number.NaN), "0m");
+  });
+
+  /* An axis tick under a minute is a real zero, not a blank label. */
+  it("calls a handful of seconds nothing rather than printing an empty label", () => {
+    assert.equal(shortTime(30), "0m");
   });
 });
 

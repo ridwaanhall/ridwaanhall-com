@@ -3,8 +3,6 @@ import { cacheLife, cacheTag } from "next/cache";
 import { buildCalendar, type CalendarMonth, type CalendarWeek } from "@/lib/utils/coding-calendar";
 
 import {
-  BASE,
-  TIMEZONE,
   compactNumber,
   count,
   formatTime,
@@ -12,6 +10,7 @@ import {
   share,
   usd,
 } from "./wakatime-format";
+import { fetchJson, insightsUrl } from "./wakatime-fetch";
 import type { WakatimeEntry } from "./wakatime";
 
 /**
@@ -101,33 +100,6 @@ type YearStats = {
 };
 
 type YearDays = { data?: { days?: { date?: string; total?: number }[] } };
-
-async function fetchJson<T>(url: string, label: string): Promise<T | null> {
-  try {
-    const response = await fetch(url, { signal: AbortSignal.timeout(10_000) });
-    /*
-     * 202 rather than 200 whenever WakaTime is still recomputing an aggregate,
-     * with usable numbers in the body regardless -- the same behaviour the
-     * heuristics call documents. `ok` covers both; narrowing to 200 would read
-     * a recomputation as an outage.
-     */
-    if (!response.ok) {
-      console.error(`WakaTime ${label}: HTTP ${response.status}`);
-      return null;
-    }
-    return (await response.json()) as T;
-  } catch (error) {
-    console.error(`WakaTime ${label} error:`, error);
-    return null;
-  }
-}
-
-function insightsUrl(path: string, apiKey: string): string {
-  return (
-    `${BASE}/users/current/insights/${path}/last_year?paywalled=true` +
-    `&timezone=${encodeURIComponent(TIMEZONE)}&api_key=${encodeURIComponent(apiKey)}`
-  );
-}
 
 /**
  * Top three by time, sharing one denominator so the bars are comparable.

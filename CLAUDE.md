@@ -7,7 +7,8 @@ Guidance for Claude Code (claude.ai/code) working in this repository.
 Next.js 16 (App Router, Turbopack, `cacheComponents`), React 19, TypeScript,
 Tailwind CSS v4. Data comes from Supabase Postgres through Drizzle ORM over
 `node-postgres`; uploaded media lives in Supabase Storage. Auth is Auth.js v5
-with Google and GitHub. Deployed to Vercel.
+with Google and GitHub. Deployed to Vercel, and to Cloudflare Workers
+through OpenNext at `v3.ridwaanhall.com` -- see **Deployment** below.
 
 ### The Next.js docs are in `node_modules`
 
@@ -100,6 +101,101 @@ That is a deliberate trade, and it is why every harness that writes snapshots
 what it touched and restores it in a `finally` that then proves the restore.
 Follow that pattern for anything new. Rows a harness creates carry a `zz-`
 prefix so a leftover is obviously a harness's and not real content.
+
+## Deployment
+
+Two targets, from the same tree. Vercel is unchanged and remains the primary:
+`vercel.json` still pins `sin1` and nothing about that build has moved.
+`v3.ridwaanhall.com` is the same application on **Cloudflare Workers**, built by
+[OpenNext](https://opennext.js.org/cloudflare) -- `wrangler.jsonc` declares the
+bindings, `open-next.config.ts` chooses the cache implementations, and each
+choice is written up beside itself in those two files rather than repeated here.
+
+```bash
+npm run cf-build      # next build, then bundle the Worker into .open-next/
+npm run cf-preview    # the same, run locally on workerd
+npm run cf-deploy     # the same, then populate the caches and upload
+npm run cf-typegen    # regenerate cloudflare-env.d.ts after editing wrangler.jsonc
+```
+
+Deploys are driven by **Workers Builds** on a push, so the routine path is a
+push and the `cf-deploy` script is the escape hatch. What each target needs from
+the environment differs, and `.env.example` is where that split is written down.
+
+### The database is reachable from a Worker only through Hyperdrive
+
+Not a preference, a constraint. A Worker validates TLS against the public CA
+bundle and offers no way to opt out, and Supabase's pooler presents exactly the
+certificate that already fails `verify-full` from Node -- the one
+`lib/db/client.ts` strips `sslmode` for. So a socket opened from the isolate
+straight to Supabase never finishes its handshake, whatever driver holds it.
+Hyperdrive terminates that leg on Cloudflare's network and hands the isolate a
+loopback connection.
+
+Three consequences worth knowing before touching `lib/db/client.ts`:
+
+- **The pool is built on first query, not at import.** A Worker's bindings do
+  not exist until a request does, and `getCloudflareContext` is async, so there
+  is no synchronous way to read `HYPERDRIVE` at module scope. The exported
+  `pool` is a `Proxy`, and it proxies a real `Pool` rather than a plain object
+  because Drizzle decides whether to pin a connection for a transaction by
+  testing `client instanceof Pool` *and* the prototype's constructor name. A
+  bare target fails both, `db.transaction()` silently spreads its statements
+  across pooled connections, and nothing in `tsc`, `eslint` or the build says a
+  word.
+- **The Hyperdrive config points at Supabase's session pooler (5432), not the
+  transaction one (6543).** Hyperdrive is itself a transaction-mode pooler;
+  stacking two costs a connection per connection and breaks prepared statements.
+- **Its query cache is off.** Hyperdrive caches reads for 60s by default, and
+  this app already has a cache with an invalidation story. A second one
+  underneath `updateTag` means an admin edit revalidates the tag, the page
+  re-renders, and the query still answers with the row from before.
+
+`STORAGE_POSTGRES_URL` stays unset on the Worker for the same reason: it names a
+route that cannot work from there, and leaving it absent is what keeps that
+unambiguous. The build is the exception -- it prerenders the whole site from
+Node, where there is no binding, so the build environment does need it.
+
+### Workers Paid is not optional here
+
+Two of the Free plan's limits are below what this application needs, and both
+are hard failures rather than slow ones:
+
+- **Worker size.** The bundle is ~3.9MB gzipped against a 3MB ceiling on Free
+  (10MB on Paid). The upload is rejected outright. Measure before assuming
+  anything changed it:
+  `OPEN_NEXT_DEPLOY=true npx wrangler deploy --dry-run --outdir <tmp>`.
+- **CPU time.** 10ms on Free. Server-rendering a React tree does not fit in it.
+
+### `next build` is not a Windows build here
+
+`npm run cf-build` fails on Windows without Developer Mode, at
+`EPERM: operation not permitted, symlink`: Next leaves six directory symlinks
+under `.next` (`pg` and `postcss`), and the adapter recreates them with
+`fs.symlinkSync` and no type argument, which on Windows means a "dir" symlink
+and needs a privilege an ordinary shell does not have. Enabling Developer Mode
+clears it -- but OpenNext also warns in the same run that Windows is not a
+supported build host and that failures may surface at runtime instead. Workers
+Builds runs on Linux, which is the real answer; keep local `cf-build` for
+inspecting a bundle, not for producing the one that ships.
+
+### `next/image` is Cloudflare Images
+
+The built-in optimizer is a native `sharp` binary and does not run on workerd.
+The `IMAGES` binding in `wrangler.jsonc` puts Cloudflare Images behind the same
+`/_next/image` endpoint, so `remotePatterns`, `deviceSizes` and `imageSizes` in
+`next.config.ts` keep meaning what they say and no markup changes. It is billed
+per transformation beyond the free monthly allowance, which is the reason to
+keep that ladder trimmed rather than let it grow back.
+
+### `proxy.ts` is Node middleware, and the adapter says so
+
+Next 16 runs Proxy on the Node runtime and refuses a `runtime` export outright,
+so there is no edge variant to switch to. Every `cf-build` therefore prints
+`Node.js middleware support is experimental in cloudflare`. It is expected, not
+a regression. The whole of `proxy.ts` is one static header on five path
+prefixes, so if that warning ever becomes a real problem the work is to move it
+into the `headers()` block in `next.config.ts` and delete the file.
 
 ## Architecture
 

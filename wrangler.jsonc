@@ -1,0 +1,139 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ridwaanhall-com-v3",
+  "main": ".open-next/worker.js",
+
+  // Must not run ahead of the installed `workerd`, which is what `wrangler dev`
+  // and `opennextjs-cloudflare preview` run locally: a date the local runtime
+  // does not know is refused before anything is served. Raise it and the
+  // `workerd` version together.
+  "compatibility_date": "2026-08-26",
+
+  // `nodejs_compat` is what makes this app run at all -- `pg`, `sanitize-html`
+  // and Auth.js all reach for node builtins. `global_fetch_strictly_public` is
+  // required by OpenNext: without it a `fetch()` to this Worker's own hostname
+  // short-circuits back into the same isolate instead of going out through the
+  // edge, and the cache revalidation path depends on that being a real request.
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+
+  // Everything Next emitted under `.next/static` and `public/`, served straight
+  // from Cloudflare's asset store rather than through the Worker.
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+
+  "observability": {
+    "enabled": true
+  },
+
+  /*
+   * The database, and the only route to it from a Worker.
+   *
+   * Supabase's pooler presents a certificate that does not chain to a public
+   * root, and a Worker cannot be told to skip that check -- so a direct socket
+   * from here never completes its TLS handshake. Hyperdrive terminates that leg
+   * on Cloudflare's network and hands the isolate a loopback connection.
+   * `lib/db/client.ts` carries the long version.
+   *
+   * The config points at Supabase's *session*-mode pooler (port 5432), not the
+   * transaction-mode one the Node path uses, because Hyperdrive is itself a
+   * transaction-mode pooler and stacking two of them costs a connection per
+   * connection while breaking prepared statements.
+   *
+   * Its query cache is switched off at the config, deliberately. Hyperdrive
+   * caches read queries for 60s by default, and this app already has a cache
+   * with an invalidation story -- `"use cache"` plus `updateTag`. A second,
+   * unaddressable cache underneath it means an admin edit revalidates the tag,
+   * the page re-renders, and the query still answers with the row from before.
+   */
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "7159912268994080bb73e22e74dabac2"
+    }
+  ],
+
+  /*
+   * `next/image` on Workers.
+   *
+   * The built-in optimizer is a native sharp binary and does not run here. This
+   * binding puts Cloudflare Images behind the same `/_next/image` endpoint, so
+   * `remotePatterns`, `deviceSizes` and `imageSizes` in `next.config.ts` keep
+   * meaning what they say and nothing in the markup changes.
+   */
+  "images": {
+    "binding": "IMAGES"
+  },
+
+  /*
+   * The incremental cache: every `"use cache"` entry and every prerendered
+   * route's payload. R2 rather than KV because KV is eventually consistent,
+   * and an edit that revalidates a tag would otherwise keep serving the old
+   * body from some colos for up to a minute.
+   */
+  "r2_buckets": [
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "ridwaanhall-com-v3-opennext-cache"
+    }
+  ],
+
+  /*
+   * The tag cache -- which tags were revalidated and when. `updateTag` in
+   * `lib/actions/admin.ts` and every `revalidatePath` write here, and each
+   * cached read checks it. D1 rather than the sharded Durable Object: this is
+   * one author's site, so the write rate is a handful of admin saves a day, and
+   * a single database is far simpler to reason about than a shard map.
+   */
+  "d1_databases": [
+    {
+      "binding": "NEXT_TAG_CACHE_D1",
+      "database_name": "ridwaanhall-com-v3-tag-cache",
+      "database_id": "cef5ed39-e4de-431c-8aa9-ee54b1983e09"
+    }
+  ],
+
+  /*
+   * The revalidation queue. Time-based revalidation hands work to this Durable
+   * Object, which deduplicates it and calls back into the Worker to rebuild the
+   * route -- which is what `WORKER_SELF_REFERENCE` below is for.
+   */
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "NEXT_CACHE_DO_QUEUE",
+        "class_name": "DOQueueHandler"
+      }
+    ]
+  },
+
+  // SQLite-backed, which is what makes the queue usable without a paid plan.
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["DOQueueHandler"]
+    }
+  ],
+
+  // The Worker calling itself, by name. The queue above needs a way back in to
+  // re-render a stale route; the service name must stay equal to `name`.
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "ridwaanhall-com-v3"
+    }
+  ],
+
+  /*
+   * The domain. A custom domain -- not a route -- so Cloudflare provisions the
+   * DNS record and the certificate itself, and every request for the hostname
+   * reaches the Worker rather than only the paths a pattern happens to name.
+   */
+  "routes": [
+    {
+      "pattern": "v3.ridwaanhall.com",
+      "custom_domain": true
+    }
+  ]
+}

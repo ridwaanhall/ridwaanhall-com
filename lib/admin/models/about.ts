@@ -268,7 +268,13 @@ export const educationList: AdminListModel<EducationRow> = {
     // the ordering had nothing to hang off. Naming it in `defaultSort` alone
     // would leave the list unsortable by the very thing it is sorted by, so it
     // gets a column of its own.
-    { key: "id", label: "#", kind: "number", sort: education.id, value: (row) => row.id },
+    //
+    // `code`, not `number`: this key is a uuid. As a number it was right
+    // aligned, tabular and -- the part that showed -- `whitespace-nowrap`, so
+    // 36 unbreakable characters set the table's minimum width all by
+    // themselves and the changelist scrolled sideways inside its own box on a
+    // 1024px screen. The kind is a leftover from the serial keys.
+    { key: "id", label: "#", kind: "code", sort: education.id, value: (row) => row.id },
   ],
   filters: [{ key: "is_last", label: "Latest", kind: "boolean", column: education.isLast }],
   search: {
@@ -455,7 +461,8 @@ export const applicationList: AdminListModel<ApplicationRow> = {
       sort: applicationMode,
       value: (row) => row.locationType,
     },
-    { key: "id", label: "#", kind: "number", sort: application.id, value: (row) => row.id },
+    // A uuid, so `code` rather than `number` -- see the note on education's.
+    { key: "id", label: "#", kind: "code", sort: application.id, value: (row) => row.id },
   ],
   filters: [
     {

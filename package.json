@@ -40,6 +40,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.1",
     "playwright": "^1.62.1",
+    "postcss": "^8.5.26",
     "tailwindcss": "^4",
     "tsx": "^4.23.12",
     "typescript": "^5"

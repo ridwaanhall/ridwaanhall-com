@@ -26,6 +26,21 @@ old.txt
 # Deployment
 .vercel
 
+# Cloudflare build artefacts, on a branch that cannot produce them.
+#
+# Nothing here deploys to Cloudflare -- that work lives on
+# `cloudflare-workers-deployment` -- but build directories outlive a branch
+# switch, and `.open-next/` is ~69MB of bundled Worker and assets. Without these
+# rules, checking main out after building that branch presents the whole tree as
+# untracked, which is how a build directory gets committed by accident.
+#
+# `.dev.vars` is listed separately because the `.env*` rule above does not reach
+# it, and it holds real secrets.
+.open-next/
+.wrangler/
+.dev.vars
+.dev.vars.*
+
 # Editors and OS
 .DS_Store
 *.pem

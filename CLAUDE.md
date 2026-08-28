@@ -409,12 +409,30 @@ seen.
   layout until somebody edits it, so the page settles by jumping. **Adjust the
   skeleton in the same change as the interface**, then run
   `scripts/check-skeleton-shape.mjs`, which measures each one against the page
-  it stands in for. A new route needs its own file: without one the group
-  fallback answers, and `app/(site)/loading.tsx` is the *home page* -- a hero, a
-  card rail and a skills marquee, whatever the route actually looks like.
+  it stands in for. A new route needs its own file: without one there is no
+  skeleton at that level at all, and the previous page stays up until the
+  payload lands.
   Note the harness cannot observe every skeleton (`/contact`, `/guestbook` and
   `/sign-in` arrive with their pages however hard it holds the navigation), so
   those are reported as notes and their shape is on you to keep honest.
+- **A `loading.tsx` beside nested routes is those routes' skeleton too.** Next
+  stores a segment's loading module on that segment and applies it to the
+  segment's *child slots* -- `layout-router.js` calls it `parentLoadingData` --
+  so it is the fallback for everything the layout beside it renders, not for its
+  own `page.tsx` alone. And it wins: on a client navigation the target's own
+  `loading.tsx` is still inside the payload being waited for, so the nearest
+  already-known boundary is the parent's. The wrong skeleton therefore appears
+  on exactly the slow navigations a skeleton exists for, and is invisible on the
+  fast ones. Five files here did this -- `app/(site)/`, `blog/`, `projects/` and
+  both admin levels -- so a click on Dashboard drew the home page's hero, card
+  rail and skills marquee, and every admin screen opened as the admin index.
+  **An index page and its skeleton go in a route group of their own**
+  (`(home)`, `(index)`): the URL is unchanged, but a group is a router segment,
+  so the skeleton moves below the slot its siblings arrive in and the parent
+  slot is left with no loading data at all. A navigation still in flight then
+  keeps the previous page up -- which is what the progress bar reports --
+  instead of flashing somebody else's furniture.
+  `scripts/check-skeleton-scope.mjs` is the guard, and it is offline.
 - **A `loading.tsx` skeleton must not render `<main>`.** `#page-content` is
   keyed on the pathname, so its entrance animation plays once per navigation —
   on whichever of the skeleton and the real page renders first. Where a skeleton
@@ -472,6 +490,7 @@ npx tsx scripts/check-rls.mjs                          # RLS on every table
 node scripts/check-breakpoints.mjs                     # one visible theme toggle
 node scripts/check-notifications.mjs                   # toasts outside the transform
 node scripts/check-ui-state.mjs                        # palette + Turnstile theme
+node scripts/check-skeleton-scope.mjs                  # one skeleton, one page
 npx tsx --conditions=react-server scripts/check-page-loading.mjs   # bar + skeletons
 npx tsx --conditions=react-server scripts/check-skeleton-shape.mjs # each skeleton vs its page
 npx tsx scripts/check-auth-adapter.mjs                 # Auth.js vs the live schema

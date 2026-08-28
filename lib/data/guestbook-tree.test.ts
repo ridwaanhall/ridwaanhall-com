@@ -91,12 +91,12 @@ describe("buildThread", () => {
   });
 
   /*
-   * Only the latest 50 messages are fetched, so a reply can be inside the
-   * window while the message it answers is not. Chasing ancestors would be
-   * unbounded and would drag arbitrarily old messages into a "latest" list, so
-   * the reply becomes a root and keeps a caption naming who it answered.
+   * `getThread` reads the whole guestbook, so nothing produces an orphan today.
+   * The branch is kept -- and tested -- because the alternative to handling one
+   * is a renderer that drops a message for having named a parent it could not
+   * find: the reply becomes a root and keeps a caption naming who it answered.
    */
-  it("promotes a reply whose parent fell outside the window, and captions it", () => {
+  it("promotes a reply naming a message that is not in the set, and captions it", () => {
     const orphan = message("b", at(2), "not-fetched");
     const roots = buildThread([orphan]);
     assert.deepEqual(ids(roots), ["b"]);

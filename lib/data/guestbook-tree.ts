@@ -6,7 +6,7 @@
  * the limits and the types. Importing them from the query module pulled `db`,
  * and therefore `pg`, into the browser bundle, which fails outright on
  * `Module not found: Can't resolve 'dns'`. Types alone would have been erased;
- * it is the two exported constants that dragged the rest in.
+ * it is the exported constants that dragged the rest in.
  *
  * Keeping it query-free is also what makes it testable: `guestbook-tree.test.ts`
  * exercises the threading on plain objects, with no database anywhere near it.
@@ -14,9 +14,6 @@
 
 /** Root plus two nested levels; see `buildThread`. */
 export const MAX_DEPTH = 3;
-
-/** What the panel can usefully scroll through, matching `MESSAGE_WINDOW`. */
-export const MESSAGE_WINDOW = 50;
 
 /** How many messages may be pinned above the thread at once. */
 export const MAX_PINNED = 3;
@@ -90,12 +87,12 @@ export function maskEmail(email: string): string {
  * Three constraints shape this, and
  * each is the reason a line here looks the way it does:
  *
- * - **The window cuts threads.** Only the latest 50 messages are fetched, so a
- *   reply can be inside the window while the message it answers is not. Rather
- *   than chase ancestors with more queries -- unbounded, and it would drag
- *   arbitrarily old messages into a "latest 50" list -- an unmatched reply
- *   becomes a root and keeps a caption naming who it answered. That caption is
- *   exactly what the whole list used to show before it was a tree.
+ * - **A reply may still name a message that is not here.** `getThread` reads
+ *   the whole guestbook and `reply_to_id` cascades on delete, so nothing
+ *   produces an orphan today. The branch stays because the alternative to
+ *   handling one is a renderer that drops a message for having named a parent
+ *   it could not find: an unmatched reply becomes a root and keeps a caption
+ *   naming who it answered, which is what a flat list would have said anyway.
  *
  * - **Indentation has to stop.** `reply_to` is an unbounded self-FK and the
  *   panel is one column down to 375px wide. Past `MAX_DEPTH` a reply attaches

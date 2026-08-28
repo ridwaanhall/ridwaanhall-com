@@ -1,6 +1,7 @@
 "use client";
 
 import type { Route } from "next";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useRef, useTransition } from "react";
 
@@ -168,13 +169,21 @@ export function RecordForm({
 
   const renderFieldset = (fieldset: ClientFieldset, index: number) => (
     <fieldset key={fieldset.title ?? index} disabled={busy} className="min-w-0">
+      {/*
+        A real `<legend>`, first child of its `<fieldset>`, which is what names
+        the group for a screen reader. It stays above the card rather than
+        becoming a header strip inside it: a legend moved into a wrapper is no
+        longer a legend, and the alternatives -- a visually hidden one beside a
+        heading, or `aria-labelledby` -- both put the section's name in two
+        places for a border that gains nothing.
+      */}
       {fieldset.title && (
-        <legend className="mb-1 text-xs font-medium tracking-wide text-zinc-500 uppercase">
+        <legend className="mb-1.5 text-xs font-medium tracking-wide text-zinc-400 uppercase">
           {fieldset.title}
         </legend>
       )}
       {fieldset.help && <p className="mb-2 text-xs text-zinc-500">{fieldset.help}</p>}
-      <div className="divide-y divide-zinc-900 rounded-lg border border-zinc-800 px-3 py-2">
+      <div className="divide-y divide-zinc-900 rounded-lg border border-zinc-800 bg-zinc-950/40 px-3.5 py-2">
         {fieldset.fields.map((field) => (
           <Field
             key={field.name}
@@ -240,21 +249,28 @@ export function RecordForm({
         a repaint of the whole strip on every frame, and the palette has a solid
         background that reads just as well.
       */}
-      <div className="sticky bottom-0 -mx-4 flex items-center gap-2 border-t border-zinc-800 bg-black px-4 py-3 lg:-mx-6 lg:px-6">
+      <div className="sticky bottom-0 -mx-4 flex items-center gap-3 border-t border-zinc-800 bg-black px-4 py-3 lg:-mx-6 lg:px-6">
         <button
           type="submit"
           disabled={busy}
-          className="rounded-full border border-indigo-800 bg-indigo-500/10 px-4 py-1.5 text-sm text-indigo-300 transition-colors hover:bg-indigo-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:opacity-60"
+          className="cursor-pointer rounded-full border border-indigo-800 bg-indigo-500/10 px-5 py-1.5 text-sm font-medium text-indigo-300 transition-colors hover:bg-indigo-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:cursor-default disabled:opacity-60"
         >
           {saving ? "Saving…" : id === null ? "Create" : "Save"}
         </button>
+
+        <Link
+          href={listHref}
+          className="rounded-full px-2 py-1.5 text-sm text-zinc-500 transition-colors hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        >
+          Cancel
+        </Link>
 
         {canDelete && id !== null && (
           <button
             type="button"
             onClick={onDelete}
             disabled={busy}
-            className="ml-auto rounded-full border border-zinc-800 px-4 py-1.5 text-sm text-red-400 transition-colors hover:border-red-900 hover:bg-red-500/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:opacity-60"
+            className="ml-auto cursor-pointer rounded-full border border-zinc-800 px-4 py-1.5 text-sm text-red-400 transition-colors hover:border-red-900 hover:bg-red-500/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:cursor-default disabled:opacity-60"
           >
             {deleting ? "Deleting…" : "Delete"}
           </button>

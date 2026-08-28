@@ -11,6 +11,11 @@ import { SkeletonBar } from "@/components/skeleton";
  *
  * Its own module because three places want it: the detail page's own
  * `<Suspense>`, and the `loading.tsx` of both the detail and the create route.
+ *
+ * The legend bar above the card is not decoration. A fieldset's name sits
+ * *outside* its card, so leaving it out made the card land 18px higher than the
+ * skeleton had promised -- the same class of drift as a listing skeleton that
+ * omits the search row above its grid.
  */
 export function RecordSkeleton() {
   return (
@@ -24,16 +29,22 @@ export function RecordSkeleton() {
           <SkeletonBar className="h-3 w-28" />
         </div>
 
-        <div className="space-y-3 rounded-lg border border-zinc-800 px-3 py-4">
-          {[0, 1, 2, 3].map((row) => (
-            <div key={row} className="grid gap-2 sm:grid-cols-3 sm:gap-4">
-              <SkeletonBar className="h-3 w-20" />
-              <SkeletonBar className="h-8 sm:col-span-2" />
-            </div>
-          ))}
+        <div>
+          <SkeletonBar className="mb-1.5 h-3 w-20" />
+          <div className="space-y-3 rounded-lg border border-zinc-800 px-3.5 py-4">
+            {[0, 1, 2, 3].map((row) => (
+              <div key={row} className="grid gap-2 sm:grid-cols-3 sm:gap-4">
+                <SkeletonBar className="h-3 w-20" />
+                <SkeletonBar className="h-8 sm:col-span-2" />
+              </div>
+            ))}
+          </div>
         </div>
 
-        <SkeletonBar className="h-8 w-24 rounded-full" />
+        <div className="flex items-center gap-3">
+          <SkeletonBar className="h-8 w-24 rounded-full" />
+          <SkeletonBar className="h-8 w-16 rounded-full" />
+        </div>
       </div>
     </div>
   );

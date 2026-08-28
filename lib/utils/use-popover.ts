@@ -3,7 +3,8 @@
 import { useEffect, useLayoutEffect, useState, useSyncExternalStore } from "react";
 
 /**
- * An anchored panel: a dropdown's list, a date field's calendar.
+ * An anchored panel: a dropdown's list, a date field's calendar, the collapsed
+ * admin rail's group menu.
  *
  * **A popover is not a modal, and the difference is the point.** The dialog and
  * the search palette in `lib/utils/use-modal.ts` cover the page: they lock the
@@ -28,8 +29,19 @@ export type PopoverPlacement = {
   /** The anchor's width, so a dropdown can match the control it belongs to. */
   width: number;
   /** Which side it landed on, for the entrance direction. */
-  side: "top" | "bottom";
+  side: "top" | "bottom" | "left" | "right";
 };
+
+/**
+ * Which way the panel comes out of its anchor.
+ *
+ * `"vertical"` is a dropdown: under the control, flipping above it when there
+ * is no room. `"horizontal"` is a flyout: beside the control, flipping to the
+ * other side. The collapsed admin rail's group menu is the second kind -- one
+ * that opened *below* a 40px icon in a 4.5rem strip would cover the icons under
+ * it, and would be clipped by the window on the last group in the list.
+ */
+export type PopoverAxis = "vertical" | "horizontal";
 
 /** Space kept between the panel and the edge of the viewport. */
 const MARGIN = 8;
@@ -52,6 +64,7 @@ export function usePopoverPosition(
   open: boolean,
   anchor: React.RefObject<HTMLElement | null>,
   panel: React.RefObject<HTMLElement | null>,
+  axis: PopoverAxis = "vertical",
 ): PopoverPlacement | null {
   const [placement, setPlacement] = useState<PopoverPlacement | null>(null);
 
@@ -80,6 +93,31 @@ export function usePopoverPosition(
       const rect = anchorEl.getBoundingClientRect();
       const panelHeight = panelEl.offsetHeight;
       const panelWidth = panelEl.offsetWidth || rect.width;
+
+      if (axis === "horizontal") {
+        const toRight = window.innerWidth - rect.right - GAP - MARGIN;
+        const toLeft = rect.left - GAP - MARGIN;
+        // The same rule as the vertical branch, turned ninety degrees: the far
+        // side only wins when the near one cannot hold the panel *and* has less
+        // room. The rail sits against the left edge, so this is nearly always
+        // right -- the branch is what keeps a narrow window from putting the
+        // menu off-screen rather than a case anyone meets daily.
+        const side: "left" | "right" = panelWidth > toRight && toLeft > toRight ? "left" : "right";
+
+        setPlacement({
+          // Aligned with the top of its icon, then clamped into the window, so
+          // the last group in a short rail opens upward instead of off the
+          // bottom of the screen.
+          top: Math.min(
+            Math.max(MARGIN, rect.top),
+            Math.max(MARGIN, window.innerHeight - panelHeight - MARGIN),
+          ),
+          left: side === "right" ? rect.right + GAP : rect.left - GAP - panelWidth,
+          width: rect.width,
+          side,
+        });
+        return;
+      }
 
       const below = window.innerHeight - rect.bottom - GAP - MARGIN;
       const above = rect.top - GAP - MARGIN;
@@ -113,7 +151,7 @@ export function usePopoverPosition(
       window.removeEventListener("scroll", measure, true);
       window.removeEventListener("resize", measure);
     };
-  }, [open, anchor, panel]);
+  }, [open, anchor, panel, axis]);
 
   /*
    * The last measurement is kept rather than cleared on close, and the caller

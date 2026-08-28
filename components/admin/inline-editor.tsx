@@ -66,7 +66,7 @@ export function InlineEditor({
 
   return (
     <fieldset className="min-w-0">
-      <legend className="mb-1 text-xs font-medium tracking-wide text-zinc-500 uppercase">
+      <legend className="mb-1.5 text-xs font-medium tracking-wide text-zinc-400 uppercase">
         {inline.title}
       </legend>
       {inline.help && <p className="mb-2 text-xs text-zinc-500">{inline.help}</p>}
@@ -75,7 +75,7 @@ export function InlineEditor({
 
       <div className="space-y-2">
         {rows.map(({ key, row }, index) => (
-          <div key={key} className="rounded-lg border border-zinc-800 px-3 py-2">
+          <div key={key} className="rounded-lg border border-zinc-800 bg-zinc-950/40 px-3.5 py-2">
             <div className="flex items-center gap-2 border-b border-zinc-900 pb-1.5">
               <span className="text-xs text-zinc-600 tabular-nums">
                 {inline.itemLabel} {index + 1}
@@ -140,7 +140,9 @@ export function InlineEditor({
       </div>
 
       {rows.length === 0 && (
-        <p className="text-xs text-zinc-500">No {inline.itemLabel} rows yet.</p>
+        <p className="rounded-lg border border-dashed border-zinc-800 px-3.5 py-4 text-center text-xs text-zinc-500">
+          No {inline.itemLabel} rows yet.
+        </p>
       )}
 
       <button
@@ -149,7 +151,7 @@ export function InlineEditor({
           setRows([...rows, { key: `new-${nextKey}`, row: blankRow(inline) }]);
           setNextKey(nextKey + 1);
         }}
-        className="mt-2 inline-flex items-center gap-1 rounded-full border border-zinc-800 px-3 py-1 text-xs text-zinc-400 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-200"
+        className="mt-2.5 inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-zinc-800 px-3 py-1.5 text-xs text-zinc-400 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
       >
         <PlusIcon height={12} width={12} />
         Add {inline.itemLabel}

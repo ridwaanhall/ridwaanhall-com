@@ -93,7 +93,7 @@ async function Record({ params }: { params: Params }) {
     return (
       <>
         <Crumb label={entry.labelPlural} href={`/admin/${entry.key}` as Route} />
-        <Heading title={label} subtitle={`${entry.label} #${recordId}`} />
+        <Heading title={label} type={entry.label} id={recordId} />
         <RecordForm
           modelKey={key}
           id={recordId}
@@ -122,7 +122,7 @@ function Crumb({ label, href }: { label: string; href: Route }) {
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-1.5 text-xs text-zinc-500 transition-colors hover:text-indigo-400"
+      className="inline-flex items-center gap-1.5 rounded text-xs text-zinc-500 transition-colors hover:text-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
     >
       <BackIcon height={14} width={14} />
       {label}
@@ -130,11 +130,24 @@ function Crumb({ label, href }: { label: string; href: Route }) {
   );
 }
 
-function Heading({ title, subtitle }: { title: string; subtitle: string }) {
+/**
+ * The record, named.
+ *
+ * The key is set in code and allowed to wrap. It is a uuid -- 36 characters
+ * that mean nothing to read but are the thing you copy when a harness or a
+ * query needs this exact row, so it is worth being able to select cleanly and
+ * not worth the width of a line of prose.
+ */
+function Heading({ title, type, id }: { title: string; type: string; id: string }) {
   return (
     <div>
       <h1 className="text-xl font-medium text-zinc-100">{title}</h1>
-      <p className="mt-1 text-sm text-zinc-500">{subtitle}</p>
+      <p className="mt-1.5 flex flex-wrap items-center gap-2 text-sm text-zinc-500">
+        {type}
+        <code className="rounded bg-zinc-900 px-1.5 py-0.5 text-xs break-all text-zinc-500">
+          {id}
+        </code>
+      </p>
     </div>
   );
 }

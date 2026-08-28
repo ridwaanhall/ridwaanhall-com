@@ -231,6 +231,41 @@
     }
 }
 
+/* A panel that came out of the *side* of its anchor -- the collapsed rail's
+   group menu -- travels the way it arrived. `data-side` is what the placement
+   hook reports, so the entrance cannot disagree with where the panel actually
+   landed: flipped to the left of its icon in a narrow window, it slides the
+   other way without a second class being set anywhere. */
+.admin-popover[data-side="right"] {
+    animation-name: admin-pop-right;
+}
+
+.admin-popover[data-side="left"] {
+    animation-name: admin-pop-left;
+}
+
+@keyframes admin-pop-right {
+    from {
+        opacity: 0;
+        transform: translateX(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes admin-pop-left {
+    from {
+        opacity: 0;
+        transform: translateX(4px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
 /* One row of a listbox, and one day of a calendar: the same three states, so
    the same three rules. `aria-selected` rather than a class, so the styling
    and what a screen reader is told cannot drift apart. */

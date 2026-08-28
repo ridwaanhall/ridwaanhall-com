@@ -125,6 +125,17 @@ fields, ordering) and a form descriptor (fieldsets, field kinds, inlines).
 `scripts/check-admin.mjs` fails if the registry and the descriptors disagree —
 an entry without a form descriptor is a screen that cannot be opened.
 
+The chrome around them is `components/admin/admin-shell.tsx`: a client wrapper
+holding one piece of state — whether the rail is collapsed — with the topbar and
+the page passed through as `ReactNode`, so both stay server components. The rail
+groups the registry into an accordion that opens **one group at a time**, and
+collapses to a strip of icons whose entries arrive in a flyout beside them. Two
+things about it are easy to undo by accident: the open group is adjusted *during
+render* from the pathname rather than in an effect — an effect paints the group
+shut for a frame on every navigation into a new area — and a collapsed panel
+carries `inert`, because a `0fr` grid row is invisible and still focusable.
+`scripts/check-admin-nav.mjs` holds both, and the cookie round trip with them.
+
 ### Every model has full CRUD, except one
 
 `user` is the single exception, and it is written up at the descriptor: an
@@ -236,6 +247,48 @@ rule written as `input[type="checkbox"] { … }` restyles the contact form, the
 comment box and the guestbook composer, silently. The two admin sheets beside
 it already work that way. `scripts/check-admin-controls.mjs` parses the
 selectors and fails on a bare element name.
+
+### An unlayered stylesheet outranks every Tailwind utility
+
+Tailwind v4 emits its utilities into `@layer utilities`. The four sheets under
+`styles/` are imported from `app/globals.css` **outside every layer**, and
+unlayered rules beat layered ones outright -- specificity is never consulted, so
+this is not something a longer selector or an `!important` in the markup can
+argue with. A plain class in one of those files therefore wins against any
+utility touching the same property, at any breakpoint.
+
+That is fine until the two want the same property. Both halves of the admin
+rail hit it in one afternoon:
+
+- `.admin-rail-shift` declares `transition`, which is a *shorthand*, so it
+  replaced the `transition-transform` the drawer relied on and the drawer began
+  snapping open instead of sliding. The fix is to name every property the
+  element needs in the one place that wins -- `transform` is in that list for a
+  rail that never transforms on desktop.
+- `.admin-accordion` declares `display: grid` for the 0fr/1fr collapse, which
+  beat the `lg:hidden` meant to take the panel out of the collapsed rail. The
+  open group's entries stayed on screen, clipped to a 4.5rem strip, reading as
+  a stray sliver of indigo rather than as a panel that failed to close.
+
+So: **if a class in `styles/` sets a property, no utility may set that property
+on the same element.** Express the variation in the same file, anchored to a
+data attribute (`.admin-accordion[data-mini="true"]`) and wrapped in whatever
+media query it needs. `tsc`, `eslint` and the build all see two perfectly valid
+declarations.
+
+### A constant exported from a `"use client"` module is not that constant
+
+Next replaces a client module with a set of client *references* when a server
+component imports it. Import a string from one and the server gets a reference
+object, not the string. `app/admin/layout.tsx` read the rail's cookie by a name
+imported from `admin-shell.tsx`, found nothing, and rendered the wide rail for
+everybody -- while the cookie was being written and sent perfectly correctly.
+
+Nothing errors and nothing is logged: the export is typed `string` on both sides
+of the boundary, so `tsc` and the build are satisfied, and the symptom is a
+preference that silently never applies -- indistinguishable from a cookie that
+failed to save. Shared constants go in a plain module both sides import;
+`lib/admin/rail.ts` is the one this cost.
 
 **Every drawn control is an enhancement over a real one.** The server renders
 the `<select>` or the `<input type="date">`; it carries the `name`, it is what
@@ -503,6 +556,7 @@ npx tsx --conditions=react-server scripts/check-turnstile.mjs
 npx tsx --conditions=react-server scripts/check-storage.mjs
 npx tsx --conditions=react-server scripts/check-admin-media.mjs   # the id/key seam
 npx tsx scripts/check-admin.mjs
+npx tsx scripts/check-admin-nav.mjs                     # one group open, and a rail that remembers
 npx tsx --conditions=react-server scripts/check-admin-console.mjs
 npx tsx --conditions=react-server scripts/check-admin-forms.mjs
 npx tsx --conditions=react-server scripts/check-admin-json.mjs

@@ -1,11 +1,11 @@
 /* ===========================================================================
    The admin's motion vocabulary
 
-   One place, four movements, so every screen moves the same way instead of
-   each component inventing its own duration and easing. The admin had none at
-   all: navigating swapped one dense table for another with nothing to say the
-   page had changed, and a row appeared under the pointer with no transition to
-   follow.
+   One place, one set of movements, so every screen moves the same way instead
+   of each component inventing its own duration and easing. The admin had none
+   at all: navigating swapped one dense table for another with nothing to say
+   the page had changed, and a row appeared under the pointer with no
+   transition to follow.
 
    The easing is the same `cubic-bezier(0.16, 1, 0.3, 1)` the contribution
    heatmap uses -- a fast start that settles rather than bouncing. Durations
@@ -87,6 +87,108 @@
 }
 
 /* ---------------------------------------------------------------------------
+   Group sections in the rail
+
+   One group is open at a time, and the panel has to travel between nothing and
+   however tall its entries happen to be. `grid-template-rows: 0fr -> 1fr` is
+   the one way to animate to a content height without measuring it: no
+   `max-height` guess that either clips a long group or coasts through empty
+   space on a short one, and no JavaScript reading `scrollHeight` on every
+   toggle.
+
+   The inner element is what carries `overflow: hidden`, and its `min-height: 0`
+   is load-bearing rather than tidiness -- a grid item's automatic minimum size
+   is its content, so without it the row refuses to shrink below the entries and
+   the panel never closes at all.
+
+   A closed panel is `inert` in the markup, which the collapse cannot do on its
+   own: a `0fr` row is invisible and still focusable, so Tab would walk through
+   three links nobody can see. `inert` does not participate in layout, so the
+   transition is unaffected.
+   --------------------------------------------------------------------------- */
+.admin-accordion {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.admin-accordion[data-open="true"] {
+    grid-template-rows: 1fr;
+}
+
+.admin-accordion-inner {
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* The collapsed rail has no room for a panel, and the flyout is what replaces
+   it. Hidden from here rather than with a `lg:hidden` in the markup, for the
+   reason `.admin-rail-shift` records: `display: grid` above is unlayered and
+   Tailwind's utilities are in a layer, so the utility loses and the open
+   group's entries stay on screen -- clipped to a 4.5rem strip, which looks like
+   a stray sliver of indigo beside the icons rather than like a panel that
+   failed to close. */
+@media (min-width: 64rem) {
+    .admin-accordion[data-mini="true"] {
+        display: none;
+    }
+}
+
+/* The chevron turns from `aria-expanded` on the button that owns it, the same
+   bargain `.admin-nav-item` makes with `aria-current`: one source, so the mark
+   and the accessible state cannot disagree. */
+.admin-chevron {
+    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.admin-group-toggle[aria-expanded="true"] .admin-chevron {
+    transform: rotate(90deg);
+}
+
+/* ---------------------------------------------------------------------------
+   The rail's width, and the column beside it
+
+   Both sides carry this, so collapsing the rail is one movement rather than a
+   rail that slides while the content jumps to meet it. The properties are
+   named rather than `all`: these elements also change colour on hover, and a
+   blanket transition would drag those through the same 260ms.
+
+   `transform` is in the list for the rail's other job. Below `lg` the same
+   element is a drawer that slides in from off-screen, and the class it used to
+   carry for that would lose to this one -- Tailwind's utilities sit in a layer
+   and this file is imported outside every layer, so an unlayered `transition`
+   shorthand wins outright and would have left the drawer snapping.
+   --------------------------------------------------------------------------- */
+.admin-rail-shift {
+    transition:
+        width 260ms cubic-bezier(0.16, 1, 0.3, 1),
+        padding-left 260ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* A label the collapsed rail has no room for. It fades rather than being
+   unmounted: the text is what gives its icon an accessible name, and the rail
+   clips it as the width animates, so removing it would both silence the button
+   and reflow the row on the way out. */
+.admin-rail-label {
+    transition:
+        opacity 160ms ease-out,
+        transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Scoped to the wide breakpoint, because `data-hidden` is the cookie speaking
+   and the cookie has no opinion about width. Below `lg` this same markup is a
+   16rem drawer where every label has to be legible; without the media query a
+   collapsed rail would leave that drawer as eight anonymous icons. */
+@media (min-width: 64rem) {
+    .admin-rail-label[data-hidden="true"] {
+        opacity: 0;
+        transform: translateX(-4px);
+        pointer-events: none;
+    }
+}
+
+/* ---------------------------------------------------------------------------
    Panels and cards
 
    `translateZ(0)` is not a performance incantation here: it promotes the
@@ -107,6 +209,14 @@
     transition: background-color 160ms ease-out;
 }
 
+/* A card that lifts on hover -- border and background only, because this site
+   has no shadows anywhere and one here would read as another product. */
+.admin-card {
+    transition:
+        background-color 200ms ease-out,
+        border-color 200ms ease-out;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .admin-rise,
     .admin-fade,
@@ -117,7 +227,12 @@
 
     .admin-nav-item,
     .admin-nav-item::before,
-    .admin-hover-row {
+    .admin-hover-row,
+    .admin-card,
+    .admin-accordion,
+    .admin-chevron,
+    .admin-rail-shift,
+    .admin-rail-label {
         transition: none;
     }
 }

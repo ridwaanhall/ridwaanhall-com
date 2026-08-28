@@ -50,7 +50,29 @@
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",
-      "id": "7159912268994080bb73e22e74dabac2"
+      "id": "7159912268994080bb73e22e74dabac2",
+
+      /*
+       * Never used in production, and not optional either.
+       *
+       * `opennextjs-cloudflare deploy` reads the Worker's environment before it
+       * uploads, and it does that by standing up miniflare through wrangler's
+       * `getPlatformProxy()`. Hyperdrive cannot be emulated locally, so
+       * miniflare refuses to start unless this is set -- and the deploy fails
+       * with a message about local development, in CI, which is a confusing
+       * place to read it.
+       *
+       * Nothing connects to it. `getEnvFromPlatformProxy` keeps only the
+       * *string* values off the proxied env and discards every binding, so this
+       * exists purely to let miniflare boot.
+       *
+       * It points at a local Postgres that is not expected to be there, in the
+       * same spirit as `tests/setup.ts`: if something ever does try to use it,
+       * the failure is a refused connection to localhost rather than a silent
+       * one against something real. Point it at an actual local database to run
+       * `npm run cf-preview` against one.
+       */
+      "localConnectionString": "postgresql://postgres:postgres@localhost:5432/postgres"
     }
   ],
 

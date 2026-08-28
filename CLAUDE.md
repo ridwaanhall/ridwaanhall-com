@@ -156,6 +156,15 @@ route that cannot work from there, and leaving it absent is what keeps that
 unambiguous. The build is the exception -- it prerenders the whole site from
 Node, where there is no binding, so the build environment does need it.
 
+The binding also carries a `localConnectionString`, and it is not there for
+local development. `opennextjs-cloudflare deploy` reads the Worker's environment
+before uploading, and does that by standing up miniflare through wrangler's
+`getPlatformProxy()`. Hyperdrive cannot be emulated, so miniflare refuses to
+start without one -- and the deploy then fails **in CI** with a message about
+setting up Postgres locally, which is a confusing thing to read in a build log.
+Nothing connects to it: `getEnvFromPlatformProxy` keeps only the string values
+off the proxied env and discards every binding.
+
 ### Workers Paid is not optional here
 
 Two of the Free plan's limits are below what this application needs, and both

@@ -2,7 +2,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
 /**
- * Postgres connection to Supabase.
+ * Postgres connection to Supabase, through the transaction-mode pooler.
  *
  * **The driver choice is not incidental.** This started on `postgres.js`, which
  * pipelines concurrent queries onto a single socket. Under pgbouncer's
@@ -42,44 +42,11 @@ import { Pool } from "pg";
  *
  * Opening a connection to Supabase costs ~190ms (TCP + TLS + auth), so the pool
  * is memoised on `globalThis` -- both to survive Next's dev-server hot reloads
- * and to be reused by a warm instance across requests.
+ * and to be reused by a warm serverless instance across requests.
  */
-
-/**
- * Where the connection comes from depends on the runtime, and there are exactly
- * two.
- *
- * On Node -- `next dev`, `next build`, and every harness under `scripts/` -- it
- * is `STORAGE_POSTGRES_URL`, the Supabase transaction pooler, reached directly.
- * Nothing about that has changed.
- *
- * On Cloudflare Workers it is the `HYPERDRIVE` binding, and that is not a
- * preference. Workers validate TLS against the public CA bundle with no way to
- * opt out, and the certificate Supabase's pooler presents is the one the note
- * above already records as failing `verify-full` -- so a socket opened from the
- * Worker straight to Supabase cannot complete a handshake at all, whatever the
- * driver does. Hyperdrive terminates that TLS on Cloudflare's own network,
- * where the trust decision is configurable, and hands the Worker a plaintext
- * connection over a loopback socket. It is the only route to this database from
- * a Worker.
- *
- * `navigator.userAgent` is the runtime's own name for itself, which is what
- * makes it safe to read at module scope: no import has to succeed for the
- * branch to be chosen, so the Node path never loads the Cloudflare adapter.
- */
-const onWorkers =
-  typeof navigator !== "undefined" && navigator.userAgent === "Cloudflare-Workers";
-
 const rawConnectionString = process.env.STORAGE_POSTGRES_URL;
 
-/*
- * Still an import-time failure off Workers, and deliberately so: a missing
- * database URL is a misconfigured checkout, and the message naming
- * `.env.example` is worth more at import than at the first query several frames
- * deep. On Workers there is nothing to check here -- the binding does not exist
- * until a request does.
- */
-if (!onWorkers && !rawConnectionString) {
+if (!rawConnectionString) {
   throw new Error(
     "STORAGE_POSTGRES_URL is not set. Copy .env.example to .env.local and fill it in.",
   );
@@ -91,98 +58,23 @@ function connectionString(url: string): string {
   return parsed.toString();
 }
 
-/*
- * The adapter declares `CloudflareEnv` with the bindings it owns and no others,
- * so `HYPERDRIVE` has to be added here. `cloudflare-env.d.ts` is generated with
- * `--include-env=false` on purpose: the interface wrangler would generate is
- * built from whatever sits in the local `.env.local`, which makes the file
- * differ per machine, and it retypes every `process.env` key as a plain
- * `string` -- quietly deleting the `undefined` that half the guards in this
- * codebase are checking for.
- */
-declare global {
-  interface CloudflareEnv {
-    HYPERDRIVE?: Hyperdrive;
-  }
-}
+const globalForDb = globalThis as unknown as { __pool?: Pool };
 
-type PoolOrigin = {
-  connectionString: string;
-  ssl: false | { rejectUnauthorized: boolean };
-};
-
-async function poolOrigin(): Promise<PoolOrigin> {
-  if (onWorkers) {
-    const { getCloudflareContext } = await import("@opennextjs/cloudflare");
-    const { env } = await getCloudflareContext({ async: true });
-    if (!env.HYPERDRIVE) {
-      throw new Error(
-        "The HYPERDRIVE binding is missing. Every query from a Worker goes through it -- see wrangler.jsonc.",
-      );
-    }
-    // No TLS on this hop: it terminates inside the isolate. The encrypted leg
-    // is Hyperdrive's own, from Cloudflare's network to Supabase.
-    return { connectionString: env.HYPERDRIVE.connectionString, ssl: false };
-  }
-  return {
-    connectionString: connectionString(rawConnectionString!),
+const pool =
+  globalForDb.__pool ??
+  new Pool({
+    connectionString: connectionString(rawConnectionString),
+    // Small enough that concurrent lambdas cannot exhaust the pooler, large
+    // enough that one request's fan-out does not serialise end to end.
+    max: 5,
+    idleTimeoutMillis: 20_000,
+    connectionTimeoutMillis: 15_000,
     ssl: { rejectUnauthorized: false },
-  };
+  });
+
+if (process.env.NODE_ENV !== "production") {
+  globalForDb.__pool = pool;
 }
-
-const globalForDb = globalThis as unknown as { __pool?: Promise<Pool> };
-
-function openPool(): Promise<Pool> {
-  return (globalForDb.__pool ??= poolOrigin().then(
-    (origin) =>
-      new Pool({
-        ...origin,
-        // Small enough that concurrent instances cannot exhaust the pooler,
-        // large enough that one request's fan-out does not serialise end to end.
-        max: 5,
-        idleTimeoutMillis: 20_000,
-        connectionTimeoutMillis: 15_000,
-      }),
-  ));
-}
-
-/*
- * The pool is built on first use rather than at import, and this proxy is what
- * keeps that invisible to the twenty modules that import `db`.
- *
- * It has to be deferred because a Worker's bindings do not exist until a
- * request does: `getCloudflareContext` is async, and there is no synchronous
- * way to reach `HYPERDRIVE` from module scope.
- *
- * It has to be a `Pool` rather than a plain object because Drizzle decides
- * whether to pin one connection for a transaction by testing
- * `client instanceof Pool` *and* the prototype's constructor name. A bare
- * target fails both, and every `db.transaction()` in `lib/actions/admin.ts`
- * would then run its statements on separate pooled connections while still
- * type checking, building and -- most of the time -- appearing to work.
- * Proxying an unconnected `Pool` keeps both tests true, and costs an object:
- * `new Pool()` opens nothing, since `pg` connects on first query.
- *
- * `end` deliberately does not open a pool only to close it. The harnesses call
- * it from a `finally`, which is reached whether or not anything queried.
- */
-const pool = new Proxy(new Pool(), {
-  get(target, property, receiver) {
-    if (property === "end") {
-      return async () => {
-        const opened = globalForDb.__pool;
-        if (opened) await (await opened).end();
-      };
-    }
-    if (property === "query" || property === "connect") {
-      return (...args: unknown[]) =>
-        openPool().then((opened) =>
-          (opened[property] as (...rest: unknown[]) => unknown)(...args),
-        );
-    }
-    return Reflect.get(target, property, receiver);
-  },
-});
 
 /*
  * No `schema` argument. That option exists to power `db.query.<table>`, the

@@ -27,37 +27,6 @@ const nextConfig: NextConfig = {
   // itself had been deleted from every component.
   turbopack: { root: path.resolve(import.meta.dirname) },
 
-  /*
-   * `pg` reaches for `pg-cloudflare` on Workers, and the file tracer cannot see
-   * that it will.
-   *
-   * `pg-cloudflare` resolves conditionally: `workerd` gets `dist/index.js`, the
-   * real socket implementation, and everything else gets `dist/empty.js`, a stub
-   * exporting nothing. Next traces under the Node condition, so it copies the
-   * stub -- while OpenNext bundles the server with the workerd condition and
-   * asks for `dist/index.js`, which was never copied. The build stops at
-   * `Could not resolve "pg-cloudflare"`, in esbuild, long after `next build`
-   * reported success.
-   *
-   * It cannot be fixed by marking the package external either: on workerd `pg`
-   * genuinely calls `new CloudflareSocket()`, which is how a connection to
-   * Hyperdrive is opened at all. The file has to be in the bundle.
-   *
-   * One route glob is enough. `copyTracedFiles` unions every route's trace into
-   * a single directory, so the file only needs to be pulled in once.
-   *
-   * This is invisible on Windows, which is worth knowing before trusting a
-   * local build: `copyTracedFiles` symlinks rather than copies there, so esbuild
-   * follows the link back into the real `node_modules` and finds the file that
-   * was never copied.
-   */
-  outputFileTracingIncludes: {
-    "/*": [
-      "./node_modules/pg-cloudflare/dist/**/*",
-      "./node_modules/pg-cloudflare/esm/**/*",
-    ],
-  },
-
   experimental: {
     serverActions: {
       /*

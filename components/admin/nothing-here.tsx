@@ -31,15 +31,22 @@ export function NothingHere({
     <div className="max-w-3xl space-y-4">
       <Link
         href={backHref}
-        className="inline-flex items-center gap-1.5 text-xs text-zinc-500 transition-colors hover:text-indigo-400"
+        className="inline-flex items-center gap-1.5 rounded text-xs text-zinc-500 transition-colors hover:text-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
       >
         <BackIcon height={14} width={14} />
         {backLabel}
       </Link>
 
-      <div className="rounded-lg border border-zinc-800 p-6">
+      <div className="rounded-lg border border-dashed border-zinc-800 bg-zinc-950/40 px-6 py-10 text-center">
         <h1 className="text-lg font-medium text-zinc-200">Nothing here</h1>
-        <p className="mt-2 text-sm text-zinc-400">{message}</p>
+        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-zinc-400">{message}</p>
+        <Link
+          href={backHref}
+          className="mt-5 inline-flex items-center gap-1.5 rounded-full border border-zinc-800 px-4 py-1.5 text-xs text-zinc-300 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        >
+          <BackIcon height={13} width={13} />
+          Back to {backLabel}
+        </Link>
       </div>
     </div>
   );

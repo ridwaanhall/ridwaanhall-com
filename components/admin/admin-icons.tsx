@@ -177,3 +177,50 @@ export function SortIcon({ dir, ...props }: IconProps & { dir?: "asc" | "desc" |
     </Stroked>
   );
 }
+
+export function SearchIcon(props: IconProps) {
+  return (
+    <Stroked {...props}>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.6-3.6" />
+    </Stroked>
+  );
+}
+
+export function ForwardIcon(props: IconProps) {
+  return (
+    <Stroked {...props}>
+      <path d="M5 12h14M12 5l7 7-7 7" />
+    </Stroked>
+  );
+}
+
+/**
+ * The rail's collapse control.
+ *
+ * A panel with its left column marked, which is what the rail becomes: the
+ * glyph is the shape of the thing rather than a generic arrow, so it reads the
+ * same whichever direction the rail is about to travel. Which direction that is
+ * comes from the button's `aria-expanded` and its label, not from a second
+ * glyph.
+ */
+export function RailIcon(props: IconProps) {
+  return (
+    <Stroked {...props}>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M9 4v16" />
+    </Stroked>
+  );
+}
+
+/** The admin's own mark, in the rail's header. */
+export function SquaresIcon(props: IconProps) {
+  return (
+    <Stroked {...props}>
+      <rect x="3" y="3" width="7.5" height="7.5" rx="1.5" />
+      <rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5" />
+      <rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5" />
+      <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5" />
+    </Stroked>
+  );
+}

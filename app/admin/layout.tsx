@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 
 import { AdminForbidden, AdminSignIn } from "@/components/admin/admin-gate";
 import { AdminMain } from "@/components/admin/admin-main";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { AdminShell } from "@/components/admin/admin-shell";
 import { AdminTopbar } from "@/components/admin/admin-topbar";
+import { RAIL_COOKIE, RAIL_MINI } from "@/lib/admin/rail";
 import { staffGate } from "@/lib/auth/staff";
 
 /**
@@ -54,13 +56,24 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (gate.status === "anonymous") return <AdminSignIn />;
   if (gate.status === "forbidden") return <AdminForbidden username={gate.username} />;
 
+  /*
+   * Whether the rail is collapsed, read before anything is painted.
+   *
+   * Free, in the only sense that matters: `cookies()` opts a route into dynamic
+   * rendering, and `instant = false` above has already done that -- this layout
+   * blocks on `staffGate()` reading the session before it can decide anything
+   * at all. So the width arrives with the first byte instead of being restored
+   * from `localStorage` a frame after the wrong one has been painted.
+   */
+  const mini = (await cookies()).get(RAIL_COOKIE)?.value === RAIL_MINI;
+
   return (
-    <div className="min-h-screen bg-black">
-      <AdminSidebar signedInAs={gate.user.username} />
-      <div className="lg:pl-64">
-        <AdminTopbar user={gate.user} />
-        <AdminMain>{children}</AdminMain>
-      </div>
-    </div>
+    <AdminShell
+      signedInAs={gate.user.username}
+      initialMini={mini}
+      topbar={<AdminTopbar user={gate.user} />}
+    >
+      <AdminMain>{children}</AdminMain>
+    </AdminShell>
   );
 }

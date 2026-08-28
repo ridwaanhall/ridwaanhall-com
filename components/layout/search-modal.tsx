@@ -499,12 +499,12 @@ function SearchModal({
                             )}
                           >
                             <div className="flex items-center gap-5">
-                              <div
-                                className={cn(
-                                  "transition-all duration-300 group-hover:-rotate-12",
-                                  here && "-rotate-12",
-                                )}
-                              >
+                              {/* The row you are on cannot be hovered, so it
+                                  marks itself the way the sidebar's current
+                                  item does -- pulsing, beside a label that
+                                  pulses with it -- rather than by holding the
+                                  shake's tilt as a pose. */}
+                              <div className={here ? "animate-pulse" : "icon-shake"}>
                                 <Icon />
                               </div>
                               <span>{entry.label}</span>

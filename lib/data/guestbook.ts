@@ -1,10 +1,9 @@
-import { desc, eq, inArray, sql } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 import { getUserProfiles, type UserProfile } from "@/lib/auth/profile";
 import {
   buildThread,
   MAX_PINNED,
-  MESSAGE_WINDOW,
   maskEmail,
   type MessageAuthor,
   type Thread,
@@ -23,16 +22,31 @@ import { guestMessage } from "@/lib/db/app-schema";
  */
 
 /**
- * The latest window of messages, threaded, plus the pinned cards and the total.
+ * Every message, threaded, plus the pinned cards and the total.
  *
- * Four queries, none of them per-message: the messages, their reply targets,
- * the pinned set and the count. The profile lookup is batched by
+ * **The whole guestbook, not a window.** This used to take the latest 50 and
+ * the conversation simply stopped there, with nothing on screen to say so --
+ * while the header, which counts the table, went on reporting a total the list
+ * below it did not contain. Scrolling up reached the oldest message the query
+ * happened to return rather than the first one anybody wrote. The panel is a
+ * scroll region that opens at the newest message, so the ones above it cost a
+ * reader nothing but scrollback.
+ *
+ * What bounds this is the row rather than the count. `body` is capped at 500
+ * characters and a message carries one author, so the whole thread is tens of
+ * kilobytes -- and a guestbook grows by a page or two a month. Every row is
+ * serialised to the client whether or not anyone scrolls to it, though, so if
+ * this ever reaches the low thousands it is here that paging has to start.
+ *
+ * Two queries, neither of them per-message: the messages and the pinned set. A
+ * reply's target is found among the messages themselves rather than fetched,
+ * and the total is how many came back. The profile lookup is batched by
  * `getUserProfiles`, which is where the N+1 would otherwise be -- the same
  * person usually appears many times in one thread.
  *
  * Deliberately **not** cached. Everything else on the site goes through `use
  * cache`, but a guestbook that shows a message a minute after it was posted is
- * broken, and the window is a single indexed query on 50 rows.
+ * broken, and this is one indexed table read end to end.
  */
 export async function getThread(): Promise<Thread> {
   const messageColumns = {
@@ -44,37 +58,23 @@ export async function getThread(): Promise<Thread> {
     userId: guestMessage.accountId,
   };
 
-  const [rows, pinnedRows, [countRow]] = await Promise.all([
-    db
-      .select(messageColumns)
-      .from(guestMessage)
-      .orderBy(desc(guestMessage.postedAt))
-      .limit(MESSAGE_WINDOW),
+  const [rows, pinnedRows] = await Promise.all([
+    db.select(messageColumns).from(guestMessage).orderBy(desc(guestMessage.postedAt)),
     db
       .select(messageColumns)
       .from(guestMessage)
       .where(eq(guestMessage.isPinned, true))
       .orderBy(desc(guestMessage.pinnedAt))
       .limit(MAX_PINNED),
-    db.select({ n: sql<number>`count(*)::int` }).from(guestMessage),
   ]);
 
-  // The messages a reply answers may sit outside the window; they are needed
-  // for the caption, so they are fetched by id rather than left null (which
-  // would silently drop the "replied to X" line the flat list used to be).
-  const parentIds = [...new Set(rows.map((row) => row.replyToId).filter((id) => id !== null))];
-  const parents = parentIds.length
-    ? await db
-        .select(messageColumns)
-        .from(guestMessage)
-        .where(inArray(guestMessage.id, parentIds))
-    : [];
-
-  const parentById = new Map(parents.map((row) => [row.id, row]));
+  // A reply answers another message, and every message is in `rows`, so both
+  // the nesting and the "replied to X" caption are answered from what has
+  // already been fetched rather than by a second query for the targets.
+  const parentById = new Map(rows.map((row) => [row.id, row]));
 
   const profiles = await getUserProfiles([
     ...rows.map((row) => row.userId),
-    ...parents.map((row) => row.userId),
     ...pinnedRows.map((row) => row.userId),
   ]);
 
@@ -121,6 +121,6 @@ export async function getThread(): Promise<Thread> {
         isCoAuthor: profile?.isCoAuthor ?? false,
       };
     }),
-    messageCount: countRow?.n ?? 0,
+    messageCount: rows.length,
   };
 }

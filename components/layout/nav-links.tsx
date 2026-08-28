@@ -31,8 +31,11 @@ export function NavLinks({ tabIndex }: { tabIndex?: number }) {
           <>
             <Icon
               className={cn(
-                "w-5 h-5 transition-transform duration-300 ease-in-out group-hover:-rotate-12",
-                active ? "animate-pulse" : "text-zinc-400",
+                "w-5 h-5",
+                // The branch is what keeps one animation on the icon at a time:
+                // the current item is not a link, has no hover state and pulses
+                // instead, so it never wants the shake as well.
+                active ? "animate-pulse" : "text-zinc-400 icon-shake",
               )}
             />
             <span className="ml-2.5">{item.label}</span>

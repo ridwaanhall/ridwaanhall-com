@@ -1,0 +1,161 @@
+/* ===========================================================================
+   Reusable component classes
+   ===========================================================================
+
+   Each of these bundles a Tailwind utility combination that was hand-repeated,
+   near-identically, across several templates. Built with @apply, so they
+   still compile through the same --color-* variables the theme remap above
+   depends on -- nothing here needs its own light-mode override.
+
+   What genuinely varies per instance (badge color, cell rounding, padding) is
+   left as a plain utility class alongside the custom one rather than baked
+   in, so each shared class only ever captures the part that was always
+   identical.
+
+   Wrapped in `@layer components` deliberately: Tailwind v4 puts its own
+   utilities in `@layer utilities`, and CSS cascade layers give ANY layered
+   rule priority over an unlayered one regardless of specificity or source
+   order. Left unlayered, these classes would permanently beat every
+   Tailwind utility placed alongside them -- e.g. `.card-outline`'s
+   `hover:border-zinc-700` would always win over a per-instance
+   `hover:border-indigo-500/50`, silently, with no error anywhere. Inside
+   `@layer components`, the normal `components` < `utilities` layer order
+   restores the expected "utility wins" behavior.
+   =========================================================================== */
+
+@layer components {
+    /* Circular icon button: blog share row, blog/projects "back" link.
+       `group` / `cursor-pointer` / the copy button's focus ring stay inline
+       since not every instance wants them. */
+    .icon-btn {
+        @apply flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 transition-all duration-300;
+    }
+
+    /* Status/count pill shape (sidebar, about intro, home hero, "Current"/
+       level badges). Color, padding and text size are chosen per badge and
+       stay inline.
+
+       Normal weight. These are captions beside headings, and every one of them
+       was competing with the heading for the same attention. */
+    .pill-badge {
+        @apply inline-flex items-center rounded-full;
+    }
+
+    /* Interactive "Show more / Show Details / View Journey" toggle pill.
+       Corner rounding (rounded-full vs rounded-lg) and padding differ per
+       card and stay inline; so does `cursor-pointer`, since the openhire
+       "Apply" instance is an <a>, not a <button>. */
+    .toggle-pill {
+        @apply inline-flex items-center text-xs font-medium transition-all duration-200 border border-zinc-700 hover:border-zinc-600;
+    }
+
+    /* Outlined card shell: about's experience/education/application cards,
+       openhire's position cards. `backdrop-blur-sm` and padding vary per
+       card and stay inline.
+
+       The border does not brighten on hover any more; it sits at what used to
+       be the hover value all the time. A card is not a control -- a page of
+       them made every pointer movement flicker an outline somewhere, and the
+       edge was too faint to read the card's shape when the pointer was
+       elsewhere. Hover is left to things that are actually clickable. */
+    .card-outline {
+        @apply rounded-xl overflow-hidden border border-zinc-700 transition-all duration-300;
+    }
+
+    /* Filled surface card: the comment form shell and sign-in prompt.
+       Padding and the hover/focus-within border pseudo differ per
+       instance. */
+    .surface-card {
+        @apply rounded-xl border border-zinc-800 bg-zinc-900/40 transition-all duration-300;
+    }
+
+    /* Blog/projects search box -- byte-identical in both search_form.html
+       files. */
+    .search-input {
+        @apply w-full pl-3 pr-3 py-2 rounded-md text-zinc-300 hover:text-zinc-200 border border-zinc-700 hover:border-zinc-400 focus:outline-none focus:border-zinc-400 transition-all duration-300;
+    }
+
+    .search-submit-btn {
+        @apply inline-flex items-center justify-center px-3 py-2 rounded-md border transition-all duration-300 text-sm font-semibold h-full whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+
+    /* Mac-style image gallery window frame (blog + projects
+       image_gallery.html). */
+    .gallery-frame {
+        @apply w-full rounded-lg overflow-hidden transform transition-all duration-500 border border-zinc-800;
+    }
+
+    /* Gallery window header: the traffic-light dots + filename bar. Used to
+       be absolutely overlaid on the photo itself, which put its filename
+       text through the exact same "arbitrary photo, unpredictable contrast"
+       problem the scrims above exist to solve; sitting it in its own solid
+       row above the image sidesteps that category of bug entirely rather
+       than working around it, matching how the lightbox's own header is a
+       sibling of its image, never layered on top of it. Ordinary surface
+       colors, so it needs no light-mode override -- it's a card header, not
+       a photo overlay. */
+    .gallery-header {
+        @apply flex items-center h-8 sm:h-10 px-3 sm:px-4 bg-zinc-900 border-b border-zinc-800;
+    }
+
+    /* Gallery prev/next button. rounded-l-lg / rounded-r-lg stays inline. */
+    .gallery-nav-btn {
+        @apply cursor-pointer border border-zinc-800 bg-zinc-900/70 hover:bg-zinc-800/70 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105;
+    }
+
+    /* Pagination cell: the blog and project listings, and the applications
+       list on /about. Rounding and the current/disabled/hover treatment stay
+       inline since they differ by cell state. */
+    .page-cell {
+        @apply flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center;
+    }
+
+    /* Avatar with a hairline ring: guestbook message + comment author
+       photo. Size stays inline -- comment replies shrink to w-7 h-7. */
+    .avatar-ring {
+        @apply rounded-full border border-zinc-800 flex-shrink-0 object-cover;
+    }
+
+    /* Home hero action button (About/Contact/Hireable/Support). `group`
+       stays inline (it has no CSS of its own to @apply) and so does the
+       background color, since each button uses a different accent. */
+    .action-btn {
+        @apply inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 text-sm rounded-full transition-all duration-300;
+    }
+    /* The Latest Blogs rail, dissolving at the edge it is scrolled past.
+
+       A mask rather than a strip laid over the cards: an opaque overlay would
+       have to know what colour the page behind it is, in both themes, and be
+       corrected whenever either changes. Alpha does not care.
+
+       How wide each side runs is written from the component, as how much is
+       actually hidden that way, capped at the value below. So an edge with
+       nothing past it has no fade, and one being scrolled away from grows its
+       own over that first stretch rather than snapping on. The right side
+       starts open because a rail long enough to want this has more to its
+       right before anything has scrolled at all. */
+    .rail-fade {
+        --rail-fade-start: 0px;
+        --rail-fade-end: 3rem;
+        mask-image: linear-gradient(
+            to right,
+            transparent 0,
+            black var(--rail-fade-start),
+            black calc(100% - var(--rail-fade-end)),
+            transparent 100%
+        );
+    }
+
+    /* Every loading skeleton breathes together.
+
+       A named class rather than the bare utility because the utility has no
+       reduced-motion counterpart, and every other animation on this site does.
+       The override lives with the rest of them at the end of this file.
+
+       Only loading placeholders get this. The pulsing dots elsewhere (the
+       active nav item, the hero, the sponsor badge) are decoration on content
+       that has already arrived, and are left alone. */
+    .skeleton-pulse {
+        @apply animate-pulse;
+    }
+}

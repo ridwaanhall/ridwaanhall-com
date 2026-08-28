@@ -53,7 +53,7 @@ function observerFor(threshold: number): IntersectionObserver {
   return observer;
 }
 
-/** Paused descendants; see `.reveal-hold` in globals.css. */
+/** Paused descendants; see `.reveal-hold` in styles/theme-motion.css. */
 const HOLD = "reveal-hold";
 
 export function useReveal<T extends HTMLElement>(

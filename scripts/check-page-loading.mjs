@@ -34,9 +34,9 @@
  *     against the canvas, in both themes.
  *
  *  4. **A skeleton renders no `<main>`.** The content-entrance fade in
- *     globals.css keys on that element precisely because a skeleton does not
- *     have one. A skeleton that grew a `<main>` would fade itself in and leave
- *     the real page to appear with no transition at all.
+ *     `styles/animations.css` keys on that element precisely because a
+ *     skeleton does not have one. A skeleton that grew a `<main>` would fade
+ *     itself in and leave the real page to appear with no transition at all.
  *
  * Read-only: it opens pages and writes nothing.
  *

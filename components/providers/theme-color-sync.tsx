@@ -8,7 +8,7 @@ import { useEffect } from "react";
  *
  * This is the one part of theming that cannot be expressed as a palette remap:
  * the browser chrome colour is an attribute value, not a CSS variable, so
- * nothing in globals.css can reach it.
+ * nothing in a stylesheet can reach it.
  *
  * Runs after paint, which is fine -- it tints browser UI, never page content,
  * so there is nothing to flash.

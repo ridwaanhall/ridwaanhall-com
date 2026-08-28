@@ -16,9 +16,10 @@ import { cn } from "@/lib/utils/cn";
  * Which icon shows is decided by CSS from `html[data-theme]`, never by React.
  * That is load-bearing: the theme is applied before hydration, so a
  * state-driven icon would render the wrong one on the server and flash on
- * every page load. Both icons are always in the DOM and `globals.css` hides
- * one. The moon is the CSS default, so a reader with JS disabled (no
- * `data-theme` attribute at all, dark `:root` palette) still sees exactly one.
+ * every page load. Both icons are always in the DOM and
+ * `styles/theme-motion.css` hides one. The moon is the CSS default, so a
+ * reader with JS disabled (no `data-theme` attribute at all, dark `:root`
+ * palette) still sees exactly one.
  *
  * The accessible name is deliberately static. The page is server-rendered and
  * cached while the theme lives in localStorage, so the server cannot know which
@@ -98,12 +99,12 @@ export function ThemeToggle({
  * (18 degrees one way, 90 the other), so pointing at the same button said two
  * different things depending on the theme.
  *
- * `icon-shake` is the site's hover answer, defined in globals.css and shared
- * with the nav and the search modal: one swing about the icon's centre, back
- * to square. The press stays a transition rather than joining the keyframes,
- * so it still reads once the shake has finished -- and the scale on hover is
- * gone, because a control that both swings and grows is two answers to one
- * pointer.
+ * `icon-shake` is the site's hover answer, defined in styles/animations.css
+ * and shared with the nav and the search modal: one swing about the icon's
+ * centre, back to square. The press stays a transition rather than joining
+ * the keyframes, so it still reads once the shake has finished -- and the
+ * scale on hover is gone, because a control that both swings and grows is
+ * two answers to one pointer.
  */
 const ICON_MOTION = "icon-shake transition-transform duration-500 ease-out group-active:scale-90";
 

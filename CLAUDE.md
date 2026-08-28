@@ -250,12 +250,22 @@ selectors and fails on a bare element name.
 
 ### An unlayered stylesheet outranks every Tailwind utility
 
-Tailwind v4 emits its utilities into `@layer utilities`. The four sheets under
-`styles/` are imported from `app/globals.css` **outside every layer**, and
+Tailwind v4 emits its utilities into `@layer utilities`. The fifteen sheets
+under `styles/` are imported from `app/globals.css` **outside every layer**, and
 unlayered rules beat layered ones outright -- specificity is never consulted, so
 this is not something a longer selector or an `!important` in the markup can
 argue with. A plain class in one of those files therefore wins against any
 utility touching the same property, at any breakpoint.
+
+It also means **their import order is the only thing deciding conflicts between
+them**, which is what made splitting `globals.css` safe: `theme-light.css`,
+`theme-motion.css`, `components.css` and `animations.css` were carved out of it
+exhaustively and imported in the sequence their contents held, so the compiled
+stylesheet came back byte-identical. A partial extraction would not have that
+property -- CSS requires `@import` to precede all other rules, so anything left
+behind lands *after* the extracted sheets rather than interleaved where it sat.
+Add new rules at the end of the list, and prove any reordering with a build
+diff rather than by eye.
 
 That is fine until the two want the same property. Both halves of the admin
 rail hit it in one afternoon:

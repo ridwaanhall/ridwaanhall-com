@@ -60,7 +60,8 @@ const TRICKLE_CEILING = 90;
 
 const START_WIDTH = 20;
 
-/** Matches the width transition in globals.css, so the fill finishes first. */
+/** Matches the width transition in styles/animations.css, so the fill
+ *  finishes first. */
 const FILL_MS = 400;
 const FADE_MS = 500;
 
@@ -179,7 +180,7 @@ export function PageLoadingBar() {
       starts from whatever width it had reached -- 100%, most of the time -- and
       the CSS width transition animates it *backwards* down to 20%, which reads
       as the page un-loading. The `idle` state carries no width transition (see
-      globals.css), so this reset is instant and never seen.
+      styles/animations.css), so this reset is instant and never seen.
     */
     paint("idle", 0);
 

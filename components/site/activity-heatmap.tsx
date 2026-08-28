@@ -166,7 +166,7 @@ export function ActivityHeatmap({
                     animationDelay: fadeDelay(weekIndex, dayIndex),
                     // A property rather than a utility class, because the
                     // entrance has to land on this value too -- see the note
-                    // beside `contrib-in` in globals.css.
+                    // beside `contrib-in` in styles/theme-motion.css.
                     ...(dimmed(cell, today) ? { "--cell-opacity": 0.3 } : null),
                   } as React.CSSProperties
                 }

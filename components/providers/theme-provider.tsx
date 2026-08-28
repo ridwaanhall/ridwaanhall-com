@@ -8,9 +8,9 @@ import type { ComponentProps } from "react";
  *
  * `attribute="data-theme"` is what makes this a drop-in for the site's
  * existing palette remap: every colour utility compiles to a CSS variable, and
- * `html[data-theme="light"]` in globals.css redefines those variables. Nothing
- * in the markup uses a `dark:` variant, and adding one would work against the
- * grain.
+ * `html[data-theme="light"]` in styles/theme-light.css redefines those
+ * variables. Nothing in the markup uses a `dark:` variant, and adding one
+ * would work against the grain.
  *
  * `enableSystem={false}` is deliberate: `prefers-color-scheme` is never
  * consulted, because dark is the brand default rather than a fallback for when

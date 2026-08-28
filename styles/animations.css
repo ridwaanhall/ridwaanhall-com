@@ -1,0 +1,396 @@
+/* ===========================================================================
+   Per-feature entrances
+
+   Each of these spends the vocabulary `theme-motion.css` defines -- the same
+   durations, the same easing -- on one screen's movement: the nav icon on
+   hover, the content column, the about-page tabs, the dashboard's bars and
+   three charts, the navigation progress bar, and content arriving over its
+   skeleton.
+
+   Every one carries a `prefers-reduced-motion` branch. Adding another without
+   one is the omission to watch for.
+   =========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   The nav icon on hover
+
+   Every navigable row in the sidebar and in the search modal answers a pointer
+   the same way: the icon shakes once as it arrives, and settles.
+
+   It used to *hold* a tilt -- `-rotate-12` for as long as the pointer stayed.
+   A held tilt is a state, which is the wrong tense for "this is clickable":
+   the row is not in a tilted mode, it is being pointed at. So the tilt still
+   happens; it just swings back and ends on its own.
+
+   It swings rather than slides because a rotation pivots about the icon's own
+   centre and a translation does not. Nothing in the row moves, and the glyph
+   keeps its optical alignment with the label beside it -- where a sideways
+   shake of a 20px icon in a 10px gap reads as the row twitching rather than as
+   the icon answering.
+
+   The amplitude decays, so it reads as something knocked and settling rather
+   than a metronome. The easing is `ease-in-out` rather than `--motion-ease`:
+   that curve spends most of its distance early, which is right for something
+   arriving and wrong at both ends of every swing here.
+
+   A named class rather than a hover variant written at each call site, for the
+   same reason `.skeleton-pulse` is one -- the reduced-motion override at the
+   end of this file needs something to name. The parent is Tailwind's `group`
+   marker, already on the row because the label and the background react too.
+   --------------------------------------------------------------------------- */
+@keyframes icon-shake {
+    0%,
+    100% {
+        transform: none;
+    }
+    20% {
+        transform: rotate(-11deg);
+    }
+    40% {
+        transform: rotate(8deg);
+    }
+    60% {
+        transform: rotate(-5deg);
+    }
+    80% {
+        transform: rotate(3deg);
+    }
+}
+
+.group:hover .icon-shake {
+    animation: icon-shake 420ms ease-in-out;
+}
+
+/* ---------------------------------------------------------------------------
+   Content column entrance
+
+   A CSS animation rather than a script that strips starting classes after
+   DOMContentLoaded: the content is then never stuck invisible because a script
+   failed to run.
+
+   The element is keyed on the pathname in site-shell.tsx, so React remounts it
+   per navigation and the animation replays.
+   --------------------------------------------------------------------------- */
+@keyframes page-enter {
+    from {
+        opacity: 0;
+        transform: translateY(2rem);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+#page-content {
+    animation: page-enter var(--motion-page) var(--motion-ease) both;
+}
+
+/* Motion here is decoration; the page must still appear without it. */
+@media (prefers-reduced-motion: reduce) {
+    #page-content {
+        animation: none;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   About-page tab transition
+
+   The panel slides in from the side it came from -- forward from the right,
+   backward from the left. switchTab.js did this with a pair of nested
+   setTimeouts driving inline styles; a keyframe says the same thing with no
+   timing to fall out of step and nothing to clean up afterwards.
+   --------------------------------------------------------------------------- */
+@keyframes tab-enter-forward {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes tab-enter-back {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.tab-enter-forward {
+    animation: tab-enter-forward 300ms var(--motion-ease) both;
+}
+
+.tab-enter-back {
+    animation: tab-enter-back 300ms var(--motion-ease) both;
+}
+
+/* The panel must still appear; only the movement is optional. */
+@media (prefers-reduced-motion: reduce) {
+    .tab-enter-forward,
+    .tab-enter-back {
+        animation: none;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Dashboard percentage bars
+
+   Grows from zero to the width carried in `--bar-width`. A CSS animation
+   rather than state driven from an effect: no JavaScript is involved, the final
+   width is already in the markup so the bar is right before hydration, and the
+   reduced-motion case is one rule instead of a branch.
+   --------------------------------------------------------------------------- */
+@keyframes bar-grow {
+    from {
+        transform: scaleX(0);
+    }
+    to {
+        transform: none;
+    }
+}
+
+/* `transform`, not `width`. Width is a layout property, so every frame of the
+   old rule re-laid the bar out -- 37 of them at once on a dashboard whose
+   panels all stream in together. A transform is composited: same picture, no
+   layout, no paint.
+
+   The pill caps are why this is worth a note. Scaling a `rounded-full` bar
+   squeezes its horizontal radius by the same factor, so mid-flight the ends
+   are slightly flatter than round. On a 3px-tall bar the radius is 1.5px and
+   the distortion is sub-pixel -- and it is gone at rest, where the bar sits at
+   `scaleX(1)` and the caps are exactly the circles they were.
+
+   The width is set unconditionally and the animation only runs under
+   `.is-revealing`, which the row adds when it scrolls into view. That ordering
+   is deliberate: the finished bar is what the markup says, so a reader whose
+   JavaScript never arrives gets the right bar rather than one pinned at zero,
+   which is what `both` on a `from { width: 0 }` used to promise. */
+.percent-bar {
+    width: var(--bar-width, 0%);
+    transform-origin: left center;
+}
+
+.percent-bar {
+    animation: bar-grow var(--motion-reveal) var(--motion-ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .percent-bar {
+        animation: none;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   The three charts
+
+   Same contract as the bar above, and for the same reason: the finished shape
+   is what the markup says, and the animation is layered over it. A reader
+   whose script never arrives gets a drawn chart rather than one pinned at
+   zero, and the reduced-motion case is one rule per figure instead of a
+   branch in three components.
+
+   Each also has to survive being paused. `useReveal` rewinds and holds any
+   animation still below the fold, so none of these may carry state the
+   element depends on to be legible at rest.
+   --------------------------------------------------------------------------- */
+
+/* A block on the day ribbon. Composited, like the bar: a busy day draws fifty
+   of these and animating their width would re-lay the track out fifty times a
+   frame. They are staggered in the order the sittings happened, so the day
+   fills in from morning to night. */
+@keyframes timeline-in {
+    from {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+    to {
+        transform: none;
+        opacity: 1;
+    }
+}
+
+.timeline-block {
+    transform-origin: left center;
+    animation: timeline-in var(--motion-cell) var(--motion-ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .timeline-block {
+        animation: none;
+    }
+}
+
+/* A weekday column. Anchored at the baseline, because the whole claim of the
+   chart is that the seven are measured from the same floor -- growing one from
+   its centre would have it arrive from below the axis it is drawn against.
+
+   The stacked bands inside it are not scaled separately. They ride the
+   parent's transform, so the split cannot drift apart from the column mid
+   flight. */
+@keyframes column-grow {
+    from {
+        transform: scaleY(0);
+    }
+    to {
+        transform: none;
+    }
+}
+
+.column-grow {
+    transform-origin: bottom center;
+    animation: column-grow var(--motion-reveal) var(--motion-ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .column-grow {
+        animation: none;
+    }
+}
+
+/* The trend line, drawn on end to end.
+
+   `pathLength` is set to 1 on the element, which is what lets the dash be
+   written as a plain number here instead of one measured off the geometry --
+   the year's path is a different length at every viewport width, and a dash
+   array in user units would leave a gap that changed with the window.
+
+   The resting offset is 0, declared outside the keyframe, so a line that never
+   animates is a whole line rather than an invisible one. */
+@keyframes trend-draw {
+    from {
+        stroke-dashoffset: 1;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.trend-line {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    animation: trend-draw var(--motion-page) var(--motion-ease) both;
+}
+
+/* The fill waits for the line rather than arriving with it: a shaded area with
+   no edge on it reads as a smudge until the stroke lands on top. */
+@keyframes trend-fill {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.trend-area {
+    animation: trend-fill var(--motion-reveal) var(--motion-ease) both;
+    animation-delay: 220ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .trend-line,
+    .trend-area {
+        animation: none;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Navigation progress bar
+
+   Client-side routing took away the browser's own loading indicator and put
+   nothing in its place. The width comes from page-loading-bar.tsx rather than
+   from a keyframe -- unlike everything else here, the motion is not known in
+   advance, because how long a navigation takes is not.
+
+   Two durations, and the order matters: the bar fills over 400ms and only then
+   begins to fade over 500ms. Starting both together would fade it out while it
+   was still crossing the screen, so it would never be seen to finish.
+   --------------------------------------------------------------------------- */
+#page-loading-bar {
+    opacity: 0;
+    transition:
+        width 400ms ease-out,
+        opacity 500ms ease-out;
+}
+
+#page-loading-bar[data-state="loading"] {
+    opacity: 1;
+}
+
+#page-loading-bar[data-state="done"] {
+    opacity: 0;
+}
+
+/* Idle carries no width transition, and that is what makes rewinding possible.
+
+   A click arriving while the previous bar is still fading has to put the width
+   back to zero before it can grow again. With the transition above still in
+   force that reset is a 400ms animation from 100% down to 20% -- a bar visibly
+   travelling the wrong way, which reads as the page un-loading. Going through
+   idle snaps it instead, and the fade keeps its easing so nothing is seen to
+   jump. */
+#page-loading-bar[data-state="idle"] {
+    transition: opacity 500ms ease-out;
+}
+
+/* The one animation here that is not decoration: it reports whether the site
+   is working, so it still appears. Only the easing goes -- the component drops
+   its creep to match, leaving a bar that holds still until the page arrives. */
+@media (prefers-reduced-motion: reduce) {
+    #page-loading-bar,
+    /* The idle rule above is an id *and* an attribute, so it outweighs a bare
+       id selector here and would keep its fade if it were not named. */
+    #page-loading-bar[data-state="idle"] {
+        transition: none;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Content arriving over its skeleton
+
+   #page-content is keyed on the pathname, so `page-enter` above plays once per
+   navigation -- on whichever of the skeleton and the real page renders first.
+   Where a loading.tsx got there first, the swap to the real page would
+   otherwise be an instant pop at the end of a 700ms entrance.
+
+   Every page in the site group renders exactly one <main>, and it is the one
+   element a skeleton does not: they render a <div>, which is what makes this
+   selector mean "the real thing has arrived". On a navigation with no skeleton
+   the fade composites inside the entrance above and is imperceptible.
+   --------------------------------------------------------------------------- */
+@keyframes content-enter {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+#page-content main {
+    animation: content-enter 300ms var(--motion-ease) both;
+}
+
+/* Motion here is decoration; the page must still appear without it. */
+@media (prefers-reduced-motion: reduce) {
+    #page-content main {
+        animation: none;
+    }
+
+    .skeleton-pulse {
+        animation: none;
+    }
+
+    /* The same selector as the rule it cancels: a bare `.icon-shake` here is
+       one class against three and would lose. */
+    .group:hover .icon-shake {
+        animation: none;
+    }
+}

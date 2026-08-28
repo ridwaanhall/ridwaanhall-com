@@ -1,0 +1,299 @@
+/* ===========================================================================
+   Theme-dependent surfaces, and the motion vocabulary they share
+
+   What the palette remap in `theme-light.css` cannot express: colours chosen
+   per theme rather than mapped (the heatmap's empty cell), overlays that are
+   not surfaces (`.media-scrim`), the toggle's own icons, and the movement that
+   plays when `data-theme` flips.
+
+   The shared entrance vocabulary lives here rather than beside each feature
+   because it is one set of durations and easings -- six entrances had grown
+   six pairs of numbers before it existed. `animations.css` consumes it.
+   =========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   GitHub contribution heatmap: the empty cell
+
+   Zero-contribution cells were `bg-zinc-950`, which works in dark (14.1% on a
+   black canvas reads as a recessed square) but cannot survive the remap: the
+   heatmap's container is transparent, so the cells sit directly on the page
+   canvas, and zinc-950 resolves to the same pure white in light mode. The
+   whole "less -> more" ramp would start with an invisible step.
+
+   zinc-950 is not free to retune -- its other use is the ring around the
+   avatar status dot, which is *supposed* to match the canvas exactly. So the
+   cell gets its own token instead. Dark keeps the original value by
+   referencing the same variable.
+   --------------------------------------------------------------------------- */
+.contrib-empty {
+    background-color: var(--color-zinc-950);
+}
+
+/* Each cell fades in on its own beat -- see `fadeDelay` in
+   components/site/activity-heatmap.tsx for where the stagger comes from
+   and why it is not random. `both` so a cell is invisible during its delay
+   rather than flashing in and out; without it the whole grid paints, then
+   restarts. */
+@keyframes contrib-in {
+    from {
+        opacity: 0;
+        transform: scale(0.6);
+    }
+    to {
+        opacity: var(--cell-opacity, 1);
+        transform: none;
+    }
+}
+
+/* The target opacity is a property rather than the literal 1 it used to be,
+   and that is a bug fix rather than tidying. A future or out-of-range day is
+   drawn at 30% so it reads as "no data" instead of as a real zero -- but an
+   animation outranks the class that dims it, and `both` holds its last frame
+   forever, so every one of those cells sat at full strength for good. The
+   dimming had been dead since the entrance was written. Reading the same
+   property from both places is what keeps the two from disagreeing again. */
+.contrib-cell {
+    opacity: var(--cell-opacity, 1);
+}
+
+.contrib-cell {
+    animation: contrib-in var(--motion-cell) var(--motion-ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .contrib-cell {
+        animation: none;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Entrances waiting their turn
+
+   `use-reveal.ts` puts this on anything whose entrance would otherwise play
+   below the fold -- a breakdown row, the split bar, a whole calendar -- and
+   takes it off when the element scrolls in. Both calendars sit past the fold
+   on every viewport, so all 371 cells used to run their 1.2s stagger at mount,
+   finish unseen, and leave a grid that was simply already there.
+
+   `paused` rather than a class that starts the animation, because the element
+   holds its first frame while paused and resumes from there -- so nothing has
+   to be reset, and an element already on screen is never touched at all and
+   cannot flick. Descendants, so one class covers a calendar's whole grid.
+   --------------------------------------------------------------------------- */
+.reveal-hold,
+.reveal-hold * {
+    animation-play-state: paused !important;
+}
+
+/* 96% keeps the ramp reading correctly. The next step up, `bg-green-600/20`,
+   lands at ~94.5% lightness, so a darker empty cell would invert the first
+   rung of a "less -> more" scale. Dark has the same ordering (empty 14.1%
+   sits just above 12.5% for the 1-5 band), so this matches it rather than
+   inventing a new relationship. */
+html[data-theme="light"] .contrib-empty {
+    background-color: oklch(96% 0.001 286.375);
+}
+
+/* ---------------------------------------------------------------------------
+   Overlays on photography are not surfaces
+
+   .media-scrim is the project card's hover CTA ("View project"): no veil
+   behind it -- the point of the hover is to see the blurred, zoomed photo,
+   not have it dimmed under a tint. Its contrast target is the *photo*, which
+   doesn't change with the theme, so it's hand-coded in literal rgb() rather
+   than a Tailwind token: pin the label white and give it a dark drop-shadow
+   halo, the same trick map/photo overlays use to stay readable over
+   unpredictable backgrounds without a background of their own. `filter:
+   drop-shadow` (not `text-shadow`) is what reaches the label's icon as well
+   as its text -- the icon is an SVG with no glyphs to cast from.
+
+   .photo-scrim is the opposite case: a bottom-anchored fade behind real UI
+   text (blog featured slider, blog card, homepage Latest Blogs slider) whose
+   contrast target is deliberately the *page*, so it uses var(--color-black)
+   and is meant to change with the theme -- dark toward a dark canvas, light
+   toward a light one -- which is also why the text sitting on it (title,
+   date, description, author) is plain text-zinc-*, not a pinned color: it
+   already mirrors correctly against whichever canvas tone the scrim is
+   fading toward. color-mix() keeps every stop translucent rather than
+   opaque, so the fade only ever covers roughly the bottom two-thirds of the
+   photo and never reads as a flat panel -- an earlier version pinned this to
+   one literal opaque-at-the-bottom value in both themes, which read as
+   heavier than intended and stopped following the page at all.
+   --------------------------------------------------------------------------- */
+.media-scrim {
+    color: rgb(255 255 255);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.9)) drop-shadow(0 2px 10px rgb(0 0 0 / 0.7));
+}
+
+.photo-scrim {
+    background-image: linear-gradient(
+        to top,
+        color-mix(in srgb, var(--color-black) 78%, transparent) 0%,
+        color-mix(in srgb, var(--color-black) 40%, transparent) 38%,
+        transparent 68%
+    );
+}
+
+/* ---------------------------------------------------------------------------
+   Theme toggle icons
+
+   Driven by CSS rather than JS so the correct icon is painted immediately: the
+   theme is set by a blocking script in <head>, while themeToggle.js is
+   deferred, so a JS-driven swap would flash the wrong icon on every load.
+
+   The moon is the default rather than the sun, so that a reader with JS
+   disabled -- who therefore has no `data-theme` attribute and gets the dark
+   `:root` palette -- still sees exactly one icon, and the right one.
+   --------------------------------------------------------------------------- */
+[data-theme-icon="light"] {
+    display: none;
+}
+
+html[data-theme="light"] [data-theme-icon="light"] {
+    display: block;
+}
+
+html[data-theme="light"] [data-theme-icon="dark"] {
+    display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Switching the theme: one movement, never a cascade
+
+   Flipping `data-theme` changes the computed colour of nearly every element on
+   the page at once. Left alone, each one animates that change over whatever
+   duration it happens to declare -- `<body>` is `transition-colors
+   duration-200`, `#page-content` is `transition-all duration-700`, and 148
+   elements sit on `duration-300` -- so the sidebar arrives first and the
+   content column trails half a second behind. That is a cascade, not a switch.
+
+   The old fix was to suppress transitions entirely for the one frame in which
+   the swap happens. It removed the cascade but left the change instantaneous,
+   which reads as a jarring flash rather than as a deliberate transition.
+
+   The cascade is caused by the *durations disagreeing*, not by animating at
+   all, so both blocks below make every element change in lockstep instead.
+   themeToggle.js picks between them:
+
+     .theme-crossfade   a View Transition -- the browser crossfades between
+       two snapshots of the page. One composited animation for the whole
+       document, so per-element durations cannot disagree by construction.
+       `.theme-switching` rides along to stop the live DOM underneath
+       animating a second time. Every switch takes this path the same way,
+       whether it came from a click or from another tab -- an earlier version
+       wiped the new theme in from the clicked button as a growing
+       `clip-path` circle, but at a resized viewport a different toggle
+       instance is the visible one, so the wipe did not reliably start from
+       the button actually pressed, and it read as heavier than a crossfade.
+
+     .theme-fading      no View Transitions API: force every element onto one
+       shared colour transition.
+
+   `prefers-reduced-motion` never reaches either path; themeToggle.js commits
+   the swap under `.theme-switching` alone, which is the old instant behaviour.
+   --------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------
+   One motion vocabulary
+
+   Six entrance animations had grown six pairs of numbers, and the two that
+   share a row disagreed on both: a bar decelerating over 1000ms beside a
+   number ticking up linearly over 1500ms, so the bar settled while its own
+   figure was still climbing and the row read as two things rather than one.
+
+   One easing for every entrance. `cubic-bezier(0.16, 1, 0.3, 1)` is the
+   calendar's, kept because it is the right shape for something arriving --
+   most of the distance covered early, a long settle -- and because `ease-out`
+   next to it looked slack by comparison.
+
+   Three durations, by how much is arriving: a cell, a bar or a figure, a whole
+   column. `--motion-reveal` is read by the bars and by CountUp in
+   dashboard-sections.tsx, which is what keeps a row moving as one piece.
+   --------------------------------------------------------------------------- */
+:root {
+    --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --motion-cell: 520ms;
+    --motion-reveal: 900ms;
+    --motion-page: 700ms;
+
+    --theme-transition-duration: 320ms;
+    --theme-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Transitions off. Used on its own for the reduced-motion swap, and alongside
+   the View Transition classes so the real page underneath the snapshots is not
+   animating too -- otherwise its cascade surfaces the moment the snapshot is
+   removed and the live DOM is revealed.
+
+   Deliberately `transition`, not `animation`: `animate-pulse` on the status
+   dots and active-nav arrows should keep running throughout. */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+    transition: none !important;
+}
+
+/* Fallback for browsers without the View Transitions API. Overriding
+   `transition-property` as well as the duration is the point: it puts every
+   element on the same colour-only transition, so they move together and the
+   `transition-all duration-700` on #page-content cannot drag behind. */
+html.theme-fading,
+html.theme-fading *,
+html.theme-fading *::before,
+html.theme-fading *::after {
+    transition-property: color, background-color, border-color, outline-color,
+        text-decoration-color, fill, stroke !important;
+    transition-duration: var(--theme-transition-duration) !important;
+    transition-timing-function: var(--theme-transition-easing) !important;
+    transition-delay: 0s !important;
+}
+
+/* ---------------------------------------------------------------------------
+   View Transition snapshot
+
+   Every switch -- click or cross-tab -- retimes the browser's own crossfade
+   rather than redefining it, so its `plus-lighter` blending -- what stops the
+   two snapshots dipping through grey at the halfway point -- is left intact.
+   --------------------------------------------------------------------------- */
+html.theme-crossfade::view-transition-old(root),
+html.theme-crossfade::view-transition-new(root) {
+    animation-duration: var(--theme-transition-duration);
+    animation-timing-function: var(--theme-transition-easing);
+}
+
+/* The toggle's own icon swap is a hard display change, so it pops. Growing it
+   in ties it to the switch it launched.
+
+   Fallback path only, deliberately. Under a View Transition the live DOM is
+   captured into the "new" snapshot moments after the swap -- an icon caught at
+   its `opacity: 0` keyframe would be baked into that snapshot and simply
+   missing for the whole animation, and the crossfade covers the icon swap for
+   everyone else anyway.
+
+   `[data-theme-icon]` is named on the svg only for the weight it adds. The
+   toggle is a `group` and its icons carry `.icon-shake`, so the hover rule
+   further down -- three classes to this rule's two -- would otherwise win
+   while the pointer is on the button, which is exactly when a click arrives:
+   the swap would lose its grow-in on the one path that has nothing else
+   covering it. */
+html.theme-fading [data-theme-toggle] svg[data-theme-icon] {
+    animation: theme-icon-in var(--theme-transition-duration)
+        var(--theme-transition-easing);
+}
+
+@keyframes theme-icon-in {
+    from {
+        opacity: 0;
+        transform: rotate(-45deg) scale(0.6);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html.theme-fading [data-theme-toggle] svg[data-theme-icon] {
+        animation: none;
+    }
+}

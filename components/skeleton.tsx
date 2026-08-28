@@ -121,9 +121,9 @@ export function SkeletonGrid({
  * The page frame every `loading.tsx` sits in.
  *
  * Deliberately a `<div>` and never a `<main>`. Every real page renders exactly
- * one `<main>`, and globals.css hangs the content-entrance fade on that
- * element -- so the transition fires when the page replaces this, and not when
- * this replaces nothing.
+ * one `<main>`, and styles/animations.css hangs the content-entrance fade on
+ * that element -- so the transition fires when the page replaces this, and
+ * not when this replaces nothing.
  *
  * The two gutters are the two the site actually uses: listings and the home
  * page are roomier, articles and detail pages are tighter on small screens.

@@ -654,8 +654,15 @@ html.theme-crossfade::view-transition-new(root) {
    captured into the "new" snapshot moments after the swap -- an icon caught at
    its `opacity: 0` keyframe would be baked into that snapshot and simply
    missing for the whole animation, and the crossfade covers the icon swap for
-   everyone else anyway. */
-html.theme-fading [data-theme-toggle] svg {
+   everyone else anyway.
+
+   `[data-theme-icon]` is named on the svg only for the weight it adds. The
+   toggle is a `group` and its icons carry `.icon-shake`, so the hover rule
+   further down -- three classes to this rule's two -- would otherwise win
+   while the pointer is on the button, which is exactly when a click arrives:
+   the swap would lose its grow-in on the one path that has nothing else
+   covering it. */
+html.theme-fading [data-theme-toggle] svg[data-theme-icon] {
     animation: theme-icon-in var(--theme-transition-duration)
         var(--theme-transition-easing);
 }
@@ -672,7 +679,7 @@ html.theme-fading [data-theme-toggle] svg {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    html.theme-fading [data-theme-toggle] svg {
+    html.theme-fading [data-theme-toggle] svg[data-theme-icon] {
         animation: none;
     }
 }
@@ -837,6 +844,56 @@ html.theme-fading [data-theme-toggle] svg {
     .skeleton-pulse {
         @apply animate-pulse;
     }
+}
+
+/* ---------------------------------------------------------------------------
+   The nav icon on hover
+
+   Every navigable row in the sidebar and in the search modal answers a pointer
+   the same way: the icon shakes once as it arrives, and settles.
+
+   It used to *hold* a tilt -- `-rotate-12` for as long as the pointer stayed.
+   A held tilt is a state, which is the wrong tense for "this is clickable":
+   the row is not in a tilted mode, it is being pointed at. So the tilt still
+   happens; it just swings back and ends on its own.
+
+   It swings rather than slides because a rotation pivots about the icon's own
+   centre and a translation does not. Nothing in the row moves, and the glyph
+   keeps its optical alignment with the label beside it -- where a sideways
+   shake of a 20px icon in a 10px gap reads as the row twitching rather than as
+   the icon answering.
+
+   The amplitude decays, so it reads as something knocked and settling rather
+   than a metronome. The easing is `ease-in-out` rather than `--motion-ease`:
+   that curve spends most of its distance early, which is right for something
+   arriving and wrong at both ends of every swing here.
+
+   A named class rather than a hover variant written at each call site, for the
+   same reason `.skeleton-pulse` is one -- the reduced-motion override at the
+   end of this file needs something to name. The parent is Tailwind's `group`
+   marker, already on the row because the label and the background react too.
+   --------------------------------------------------------------------------- */
+@keyframes icon-shake {
+    0%,
+    100% {
+        transform: none;
+    }
+    20% {
+        transform: rotate(-11deg);
+    }
+    40% {
+        transform: rotate(8deg);
+    }
+    60% {
+        transform: rotate(-5deg);
+    }
+    80% {
+        transform: rotate(3deg);
+    }
+}
+
+.group:hover .icon-shake {
+    animation: icon-shake 420ms ease-in-out;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1163,6 +1220,12 @@ html.theme-fading [data-theme-toggle] svg {
     }
 
     .skeleton-pulse {
+        animation: none;
+    }
+
+    /* The same selector as the rule it cancels: a bare `.icon-shake` here is
+       one class against three and would lose. */
+    .group:hover .icon-shake {
         animation: none;
     }
 }

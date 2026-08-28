@@ -63,10 +63,7 @@ export function ThemeToggle({
     >
       <svg
         data-theme-icon="dark"
-        className={cn(
-          iconSize,
-          "transition-transform duration-500 ease-out group-hover:-rotate-[18deg] group-hover:scale-110 group-active:scale-90",
-        )}
+        className={cn(iconSize, ICON_MOTION)}
         stroke="currentColor"
         fill="none"
         strokeWidth={2}
@@ -79,10 +76,7 @@ export function ThemeToggle({
       </svg>
       <svg
         data-theme-icon="light"
-        className={cn(
-          iconSize,
-          "transition-transform duration-500 ease-out group-hover:rotate-90 group-hover:scale-110 group-active:scale-90",
-        )}
+        className={cn(iconSize, ICON_MOTION)}
         stroke="currentColor"
         fill="none"
         strokeWidth={2}
@@ -97,6 +91,21 @@ export function ThemeToggle({
     </button>
   );
 }
+
+/**
+ * Both icons, one string, because they are the same control seen in two
+ * states -- the moon and the sun used to hold a tilt of their own on hover
+ * (18 degrees one way, 90 the other), so pointing at the same button said two
+ * different things depending on the theme.
+ *
+ * `icon-shake` is the site's hover answer, defined in globals.css and shared
+ * with the nav and the search modal: one swing about the icon's centre, back
+ * to square. The press stays a transition rather than joining the keyframes,
+ * so it still reads once the shake has finished -- and the scale on hover is
+ * gone, because a control that both swings and grows is two answers to one
+ * pointer.
+ */
+const ICON_MOTION = "icon-shake transition-transform duration-500 ease-out group-active:scale-90";
 
 /** The hydration flag never changes after mount, so there is nothing to
  *  subscribe to. */

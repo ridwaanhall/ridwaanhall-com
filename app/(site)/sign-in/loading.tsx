@@ -8,10 +8,10 @@ import { SkeletonBar, SkeletonBlock, SkeletonPage } from "@/components/skeleton"
  * gives them. `rounded-lg` over `SkeletonBlock`'s `rounded-xl`, because that is
  * what the real card wears and `cn` lets the later utility win.
  *
- * **It exists so the group fallback does not answer for this route.** Without a
- * file here, `app/(site)/loading.tsx` covers it -- and that is the *home page's*
- * skeleton: a hero, a card rail, three marquee rows and a banner, settling into
- * one small centred card.
+ * **It exists because nothing else would answer for this route.** The group
+ * carries no skeleton of its own -- see `scripts/check-skeleton-scope.mjs` for
+ * why it must not -- so a route without a file here simply keeps the previous
+ * page on screen until its payload lands.
  *
  * `scripts/check-skeleton-shape.mjs` has never caught this one rendering: it
  * defeats prefetching and holds the navigation, and `/sign-in` still arrives

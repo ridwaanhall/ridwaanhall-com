@@ -5,7 +5,15 @@ import { SkeletonBar } from "@/components/skeleton";
  *
  * These are the admin's most-earned skeletons: every route under `/admin` sets
  * `instant = false`, so each navigation is a real round trip rather than a
- * cached shell, and this is what stands in for it every single time.
+ * cached shell, and a skeleton is what the reader looks at every single time.
+ *
+ * **Which is why `(index)` matters more here than anywhere else on the site.**
+ * A segment's loading module covers that segment's child slots, so at
+ * `app/admin/` this file was the fallback for every changelist and every
+ * record form -- and with nothing prerendered, that slow path was the only
+ * path, so a click on any model drew the index's three groups of cards before
+ * the screen it was actually opening. The group takes it out of their way.
+ * `scripts/check-skeleton-scope.mjs` keeps it out.
  *
  * No `SkeletonPage` -- the admin has its own chrome and its own gutters, which
  * `AdminMain` supplies.

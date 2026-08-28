@@ -3,11 +3,15 @@ import { SkeletonBar, SkeletonBlock, SkeletonPage } from "@/components/skeleton"
 /**
  * The home page, while it loads.
  *
- * Also the fallback for any route in this group that has no `loading.tsx` of
- * its own, which is a safety net and not a plan: what it hands such a route is
- * a *hero, a card rail and a skills marquee*, so a page shaped like anything
- * else settles by collapsing into place. Every route in the group has a file of
- * its own for that reason, and a new one arrives with one.
+ * **`(home)` is why this sits in a group of its own, and it is not cosmetic.**
+ * A segment's loading module is applied to that segment's child slots, so while
+ * this file lived at `app/(site)/` it was the fallback for every route in the
+ * group -- and it won, because on a navigation the target's own skeleton is
+ * still inside the payload being waited for. A click on Dashboard drew a hero,
+ * a card rail and a skills marquee. The group is a router segment but not a
+ * path, so it moves this down to a node with no routes under it and leaves the
+ * group's own slot with no loading data at all.
+ * `scripts/check-skeleton-scope.mjs` is what keeps it there.
  *
  * Mirrors the hero, the latest-blogs rail and the skills marquee with their
  * dividers, so the page settles into the same rhythm it will keep.

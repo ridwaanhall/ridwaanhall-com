@@ -179,6 +179,42 @@ supported build host and that failures may surface at runtime instead. Workers
 Builds runs on Linux, which is the real answer; keep local `cf-build` for
 inspecting a bundle, not for producing the one that ships.
 
+### A traced file is not a bundled file, and `pg` needs one Next cannot see
+
+`pg` declares `pg-cloudflare` as an *optional* dependency and resolves it
+conditionally: the `workerd` condition gets `dist/index.js`, the real socket
+implementation, and everything else gets `dist/empty.js`, a stub exporting
+nothing.
+
+Next's file tracer runs under the Node condition, so it traces the stub.
+OpenNext bundles the server under the workerd condition, so esbuild asks for
+`dist/index.js` -- a file nothing ever copied into `.open-next/`. The build dies
+at `Could not resolve "pg-cloudflare"`, in esbuild, several minutes after
+`next build` reported success.
+
+Marking the package external does not fix it. On workerd `pg` genuinely calls
+`new CloudflareSocket()` -- `isCloudflareRuntime()` reads
+`navigator.userAgent === "Cloudflare-Workers"`, the same signal
+`lib/db/client.ts` branches on -- and that socket is how a connection to
+Hyperdrive is opened at all. The file has to be present.
+
+`outputFileTracingIncludes` in `next.config.ts` is what puts it there. One route
+glob suffices: `copyTracedFiles` unions every route's trace into a single
+directory, so the file only needs pulling in once.
+
+**A local build proves nothing here.** On Windows `copyTracedFiles` symlinks
+instead of copying, so esbuild follows the link back into the real
+`node_modules` and resolves a file that was never copied. The bundle succeeds
+locally and fails on any Linux builder. To check the fix rather than the
+symlink, count the traces:
+
+```bash
+npm run build
+grep -rl "pg-cloudflare/dist/index.js" .next/server --include=*.nft.json | wc -l
+```
+
+Zero means only the stub will be bundled.
+
 ### `next/image` is Cloudflare Images
 
 The built-in optimizer is a native `sharp` binary and does not run on workerd.

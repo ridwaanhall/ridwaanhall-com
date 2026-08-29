@@ -71,7 +71,7 @@ const page = await context.newPage();
  *
  * Anchored on the class rather than on `button[aria-expanded]`. The collapse
  * control is a disclosure too and carries `aria-expanded` for the rail itself,
- * so the looser selector counts nine buttons where there are eight groups --
+ * so the looser selector counts one button more than there are groups --
  * and then reports "one expanded" on a page where nothing is open, which reads
  * as a bug in the accordion rather than in the count.
  */
@@ -287,7 +287,7 @@ check(
  * The collapsed state is a cookie, and a cookie has no opinion about width. A
  * phone reading `mini` must still get the 16rem drawer with every label
  * legible -- otherwise the same preference that tidies a desktop rail leaves a
- * touch reader with eight unlabelled icons.
+ * touch reader with nothing but unlabelled icons.
  */
 await context.addCookies([
   { name: "admin-rail", value: "mini", domain: "localhost", path: "/" },

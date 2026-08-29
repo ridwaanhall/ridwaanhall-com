@@ -12,7 +12,7 @@ import { MediaGallery } from "@/components/site/media-gallery";
 import { RichText } from "@/components/site/rich-text";
 import { getAboutData } from "@/lib/data/about";
 import { findBySlug, getProjects, type Project } from "@/lib/data/content";
-import { projectStatusColor, projectStatusDisplay } from "@/lib/data/project-status";
+import { projectStatusColor } from "@/lib/data/project-status";
 import { projectDetailSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { projectDetailSchemas } from "@/lib/seo/schemas-for-page";
@@ -71,7 +71,7 @@ export default async function ProjectDetailPage({
                     <span
                       className={`inline-flex items-center gap-1.5 ${projectStatusColor(project.status)} text-sm px-3 py-1.5 rounded-full backdrop-blur-sm`}
                     >
-                      {projectStatusDisplay(project.status)}
+                      {project.status_label}
                     </span>
                   </div>
                 )}

@@ -1,3 +1,5 @@
+import { eq } from "drizzle-orm";
+
 import type { PgColumn } from "drizzle-orm/pg-core";
 
 import {
@@ -604,7 +606,12 @@ export const skillForm: AdminFormModel = {
           column: skill.categoryId,
           label: "Category",
           kind: "reference",
-          reference: { table: category, value: category.id, label: category.label },
+          reference: {
+            table: category,
+            value: category.id,
+            label: category.label,
+            where: eq(category.kind, "skill"),
+          },
           help: "Groups the skill on the about page. Shared with projects and posts.",
         },
       ],

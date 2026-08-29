@@ -71,6 +71,13 @@ export const applicationStep = app.table("application_step", {
   position: integer().notNull().default(0),
 });
 
+export const availability = app.table("availability", {
+  id: uuid().primaryKey().defaultRandom(),
+  slug: text().notNull(),
+  label: text().notNull(),
+  position: integer().notNull().default(0),
+});
+
 export const award = app.table("award", {
   id: uuid().primaryKey().defaultRandom(),
   organizationId: uuid("organization_id").references((): AnyPgColumn => organization.id).notNull(),
@@ -145,6 +152,13 @@ export const comment = app.table("comment", {
   replyToId: uuid("reply_to_id").references((): AnyPgColumn => comment.id),
 });
 
+export const contactPreference = app.table("contact_preference", {
+  id: uuid().primaryKey().defaultRandom(),
+  slug: text().notNull(),
+  label: text().notNull(),
+  position: integer().notNull().default(0),
+});
+
 export const education = app.table("education", {
   id: uuid().primaryKey().defaultRandom(),
   organizationId: uuid("organization_id").references((): AnyPgColumn => organization.id).notNull(),
@@ -182,6 +196,13 @@ export const experience = app.table("experience", {
   isCurrent: boolean("is_current").notNull().default(false),
   periodStart: date("period_start").notNull(),
   periodEnd: date("period_end"),
+  position: integer().notNull().default(0),
+});
+
+export const experienceLevel = app.table("experience_level", {
+  id: uuid().primaryKey().defaultRandom(),
+  slug: text().notNull(),
+  label: text().notNull(),
   position: integer().notNull().default(0),
 });
 
@@ -255,10 +276,17 @@ export const legalDocument = app.table("legal_document", {
   id: uuid().primaryKey().defaultRandom(),
   slug: text().notNull(),
   title: text().notNull(),
-  documentType: text("document_type").notNull(),
   summary: text().notNull().default(''),
   isPublished: boolean("is_published").notNull().default(true),
   lastUpdated: timestamp("last_updated", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  position: integer().notNull().default(0),
+  typeId: uuid("type_id").references((): AnyPgColumn => legalDocumentType.id).notNull(),
+});
+
+export const legalDocumentType = app.table("legal_document_type", {
+  id: uuid().primaryKey().defaultRandom(),
+  slug: text().notNull(),
+  label: text().notNull(),
   position: integer().notNull().default(0),
 });
 
@@ -290,6 +318,13 @@ export const mediaAsset = app.table("media_asset", {
   source: text().notNull().default('storage'),
 });
 
+export const noticePeriod = app.table("notice_period", {
+  id: uuid().primaryKey().defaultRandom(),
+  slug: text().notNull(),
+  label: text().notNull(),
+  position: integer().notNull().default(0),
+});
+
 export const openToWorkListItem = app.table("open_to_work_list_item", {
   id: uuid().primaryKey().defaultRandom(),
   openToWorkProfileId: uuid("open_to_work_profile_id").references((): AnyPgColumn => openToWorkProfile.id).notNull(),
@@ -301,18 +336,25 @@ export const openToWorkListItem = app.table("open_to_work_list_item", {
 
 export const openToWorkProfile = app.table("open_to_work_profile", {
   id: uuid().primaryKey().defaultRandom(),
-  status: text().notNull().default(''),
-  availability: text().notNull().default(''),
   remote: boolean().notNull().default(false),
   relocation: boolean().notNull().default(false),
   showAllToolsSkills: boolean("show_all_tools_skills").notNull().default(false),
-  experienceLevel: text("experience_level").notNull().default(''),
   salaryExpectation: text("salary_expectation").notNull().default(''),
-  noticePeriod: text("notice_period").notNull().default(''),
-  workAuthorization: text("work_authorization").notNull().default(''),
-  contactPreference: text("contact_preference").notNull().default(''),
   interviewAvailability: text("interview_availability").notNull().default(''),
   additionalNotes: text("additional_notes").notNull().default(''),
+  statusId: uuid("status_id").references((): AnyPgColumn => openToWorkStatus.id),
+  availabilityId: uuid("availability_id").references((): AnyPgColumn => availability.id),
+  experienceLevelId: uuid("experience_level_id").references((): AnyPgColumn => experienceLevel.id),
+  noticePeriodId: uuid("notice_period_id").references((): AnyPgColumn => noticePeriod.id),
+  workAuthorizationId: uuid("work_authorization_id").references((): AnyPgColumn => workAuthorization.id),
+  contactPreferenceId: uuid("contact_preference_id").references((): AnyPgColumn => contactPreference.id),
+});
+
+export const openToWorkStatus = app.table("open_to_work_status", {
+  id: uuid().primaryKey().defaultRandom(),
+  slug: text().notNull(),
+  label: text().notNull(),
+  position: integer().notNull().default(0),
 });
 
 export const organization = app.table("organization", {
@@ -433,6 +475,13 @@ export const tag = app.table("tag", {
   id: uuid().primaryKey().defaultRandom(),
   slug: text().notNull(),
   label: text().notNull(),
+});
+
+export const workAuthorization = app.table("work_authorization", {
+  id: uuid().primaryKey().defaultRandom(),
+  slug: text().notNull(),
+  label: text().notNull(),
+  position: integer().notNull().default(0),
 });
 
 export const workMode = app.table("work_mode", {

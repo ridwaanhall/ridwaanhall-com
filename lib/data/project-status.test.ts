@@ -1,106 +1,60 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import {
-  PROJECT_STATUS,
-  PROJECT_STATUS_COLORS,
-  PROJECT_STATUS_DISPLAY,
-  projectStatusColor,
-  projectStatusDisplay,
-  projectStatusLabel,
-  projectStatusRank,
-} from "./project-status";
+import { PROJECT_STATUS_COLORS, projectStatusColor } from "./project-status";
 
-const ALL = Object.values(PROJECT_STATUS);
+/**
+ * The test this file used to be compared the module's own maps against each
+ * other -- every status has a label, every status has a colour -- which is a
+ * tautology as soon as both come from the same object literal. It passed for
+ * the whole time the keys disagreed with `project_status.slug` and every badge
+ * on the site rendered in the fallback.
+ *
+ * So the assertions below are about the *shape of a slug*, which is the thing
+ * that actually has to match the database, and about the fallback, which is
+ * what a status with no colour is supposed to get.
+ */
 
-describe("the vocabulary", () => {
-  it("gives every status a display label and a colour", () => {
-    for (const status of ALL) {
-      assert.ok(PROJECT_STATUS_DISPLAY[status], `no label for ${status}`);
-      assert.ok(PROJECT_STATUS_COLORS[status], `no colour for ${status}`);
+describe("PROJECT_STATUS_COLORS", () => {
+  it("is keyed the way a slug column is: lowercase, hyphenated, no underscores", () => {
+    for (const key of Object.keys(PROJECT_STATUS_COLORS)) {
+      assert.match(key, /^[a-z0-9]+(-[a-z0-9]+)*$/, `${key} is not a slug`);
     }
   });
 
-  it("names no status the vocabulary does not have", () => {
-    for (const key of [...Object.keys(PROJECT_STATUS_DISPLAY), ...Object.keys(PROJECT_STATUS_COLORS)]) {
-      assert.ok(ALL.includes(key as never), `${key} is not a status`);
+  it("names both a background and a foreground, written out in full", () => {
+    for (const [key, classes] of Object.entries(PROJECT_STATUS_COLORS)) {
+      assert.match(classes, /\bbg-/, `${key} has no background`);
+      assert.match(classes, /\btext-/, `${key} has no text colour`);
+      // An interpolated class is invisible to Tailwind's scanner, so a rule
+      // built from a template literal would never be generated.
+      assert.ok(!classes.includes("${"), `${key} is interpolated`);
     }
-  });
-});
-
-describe("projectStatusRank", () => {
-  it("ranks a known status by its place in the lifecycle", () => {
-    assert.notEqual(projectStatusRank(PROJECT_STATUS.COMPLETED), projectStatusRank(PROJECT_STATUS.DESIGN));
-  });
-
-  it("is case-insensitive, since the value comes from a column", () => {
-    assert.equal(projectStatusRank("COMPLETED"), projectStatusRank("completed"));
-  });
-
-  /*
-   * An unknown status sorts after every known one rather than before them --
-   * a new value added in the admin appears at the end of the list, not the top.
-   */
-  it("sorts an unknown or absent status after every known one", () => {
-    const known = ALL.map((status) => projectStatusRank(status));
-    const unknown = projectStatusRank("something-new");
-    for (const rank of known) assert.ok(unknown > rank, `${unknown} should exceed ${rank}`);
-    assert.equal(projectStatusRank(null), unknown);
-    assert.equal(projectStatusRank(undefined), unknown);
-  });
-});
-
-describe("projectStatusLabel", () => {
-  it("title-cases the raw value for the admin", () => {
-    assert.equal(projectStatusLabel("development_in_progress"), "Development In Progress");
-    assert.equal(projectStatusLabel("on_hold"), "On Hold");
-    assert.equal(projectStatusLabel("design"), "Design");
-  });
-});
-
-describe("projectStatusDisplay", () => {
-  /*
-   * Deliberately shorter than `projectStatusLabel`: the badge is editorial
-   * wording on the public site, the label is the raw value tidied for the admin.
-   */
-  it("uses the badge's editorial wording, not the admin's", () => {
-    assert.equal(projectStatusDisplay("development_in_progress"), "In Development");
-    assert.notEqual(projectStatusDisplay("development_in_progress"), projectStatusLabel("development_in_progress"));
-  });
-
-  it("is case-insensitive", () => {
-    assert.equal(projectStatusDisplay("COMPLETED"), "Completed");
-  });
-
-  it("title-cases an unknown status rather than rendering nothing", () => {
-    assert.equal(projectStatusDisplay("awaiting_budget"), "Awaiting Budget");
-  });
-
-  it("renders nothing for an absent status", () => {
-    assert.equal(projectStatusDisplay(null), "");
-    assert.equal(projectStatusDisplay(undefined), "");
-    assert.equal(projectStatusDisplay(""), "");
   });
 });
 
 describe("projectStatusColor", () => {
-  it("gives a known status its own colour", () => {
-    assert.equal(projectStatusColor(PROJECT_STATUS.COMPLETED), PROJECT_STATUS_COLORS[PROJECT_STATUS.COMPLETED]);
+  it("returns the pair a known slug names", () => {
+    assert.equal(projectStatusColor("completed"), PROJECT_STATUS_COLORS.completed);
+    assert.equal(
+      projectStatusColor("development-in-progress"),
+      PROJECT_STATUS_COLORS["development-in-progress"],
+    );
   });
 
-  it("is case-insensitive", () => {
+  it("is case-insensitive, since the value arrives from a column", () => {
     assert.equal(projectStatusColor("COMPLETED"), projectStatusColor("completed"));
   });
 
-  /*
-   * Always a class string, never undefined: an unstyled badge on the public
-   * site is the failure this guards against.
-   */
-  it("falls back to a neutral treatment for an unknown or absent status", () => {
+  it("falls back rather than returning nothing for a status added since", () => {
     const fallback = projectStatusColor(null);
-    assert.ok(fallback.length > 0);
-    assert.equal(projectStatusColor("awaiting_budget"), fallback);
+    assert.ok(fallback);
+    assert.equal(projectStatusColor("awaiting-budget"), fallback);
     assert.equal(projectStatusColor(undefined), fallback);
     assert.equal(projectStatusColor(""), fallback);
+  });
+
+  it("never returns an underscored key's colour, because no row is keyed that way", () => {
+    assert.equal(projectStatusColor("development_in_progress"), projectStatusColor(null));
   });
 });

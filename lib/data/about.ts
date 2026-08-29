@@ -594,7 +594,16 @@ export type JourneyStep = {
 
 export type Application = {
   id: string;
+  /**
+   * The status as written, and the slug it is written under.
+   *
+   * The card colours the outcome, and it keys that colour on `status_slug`
+   * rather than on `status`: the label is editable from the admin, so keying
+   * on it meant renaming "In Progress" to "In progress" silently dropped the
+   * badge to the neutral fallback with nothing to report it.
+   */
   status: string;
+  status_slug: string;
   company_name: string;
   position: string;
   employment_type: string;
@@ -617,6 +626,7 @@ export async function getApplications(): Promise<Application[]> {
         a: application,
         company: organization.name,
         status: applicationStatus.label,
+        statusSlug: applicationStatus.slug,
         employmentType: employmentType.label,
         workMode: workMode.label,
         source: applicationSource.label,
@@ -665,6 +675,7 @@ export async function getApplications(): Promise<Application[]> {
   const result: Application[] = apps.map((row) => ({
     id: row.a.id,
     status: row.status ?? "",
+    status_slug: row.statusSlug ?? "",
     company_name: row.company,
     position: row.a.title,
     employment_type: row.employmentType ?? "",

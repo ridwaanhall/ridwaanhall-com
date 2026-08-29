@@ -30,7 +30,7 @@ it is not somewhere to add anything. This is.
 
 ## The schema
 
-Everything reads and writes the **`app`** schema: 45 tables, uuid keys, real
+Everything reads and writes the **`app`** schema: 52 tables, uuid keys, real
 foreign keys with real referential actions, row-level security on every one.
 
 `drizzle/0000_init.sql` is the whole of it, in one file, and it runs against an
@@ -44,7 +44,7 @@ npx tsx scripts/check-baseline-schema.mjs      # the file still builds this sche
 npx tsx scripts/check-app-schema.mjs           # the mapping still matches it
 ```
 
-`lib/db/app-schema.ts` is **generated**, never edited by hand: 45 tables of
+`lib/db/app-schema.ts` is **generated**, never edited by hand: 52 tables of
 column names is exactly the transcription that fails silently, because a
 mistyped SQL name is a column the app writes to and never reads back.
 `drizzle-kit pull` cannot produce it — with `schemaFilter: ["app"]` it fetches
@@ -120,6 +120,15 @@ prefix so a leftover is obviously a harness's and not real content.
 `lib/admin/registry.ts` names every screen. `lib/admin/models/` holds one module
 per area, each declaring a changelist descriptor (columns, filters, search
 fields, ordering) and a form descriptor (fieldsets, field kinds, inlines).
+
+`lib/admin/models/settings.ts` is the exception to "one module per area": the
+**Settings** group is the vocabularies every other screen's dropdowns are drawn
+from, and fourteen of them are the same four columns (`slug`, `label`,
+`position`, and a count of what points at them). They come from one `vocabulary`
+factory rather than fourteen transcriptions, because fourteen hand-written
+copies of the same descriptor is precisely the shape that drifts. `category` and
+`project-status` are written out longhand beside it, each needing something the
+factory deliberately does not offer.
 `components/admin/changelist.tsx` and `record-form.tsx` render any of them.
 **Add a screen by adding a descriptor, not by writing a page.**
 `scripts/check-admin.mjs` fails if the registry and the descriptors disagree —
@@ -136,12 +145,21 @@ shut for a frame on every navigation into a new area — and a collapsed panel
 carries `inert`, because a `0fr` grid row is invisible and still focusable.
 `scripts/check-admin-nav.mjs` holds both, and the cookie round trip with them.
 
-### Every model has full CRUD, except one
+### Every model has full CRUD, except two
 
-`user` is the single exception, and it is written up at the descriptor: an
+`user` is the first, and it is written up at the descriptor: an
 account **is** a provider identity, so one made here is a row nobody can sign in
 to, and deleting one cascades through every comment and guestbook message that
-person wrote. `profile`, `hiring-profile` and `open-to-work-profile` are
+person wrote.
+
+`project-status` is the second, and for a different reason: a badge colour is a
+pair of Tailwind classes and **classes are never stored in the database**, so
+`lib/data/project-status.ts` keys them on the slug. A status created in the
+admin would therefore have no colour and render in the neutral fallback, which
+reads as a broken card rather than as a status nobody has picked a colour for.
+The screen offers the two things that *do* come from the row -- the label the
+badge prints and the position the projects page sorts by -- and refuses the one
+that cannot work. Its slug is `readOnly` for the same reason. `profile`, `hiring-profile` and `open-to-work-profile` are
 one-row by definition — `/admin/<key>` *is* that record's form, there is no
 list and no create route — which is a different thing from being refused.
 Everything else creates, reads, updates and deletes.
@@ -227,9 +245,47 @@ change survivable rather than catastrophic.
 `scripts/check-rls.mjs` enumerates the schemas this project owns rather than
 naming them, so a new one is covered from the moment it exists.
 
+**A table created by a delta arrives with RLS off.** The `DO $$` loop that
+enables it lives at the end of `0000_init.sql` and runs when *that file* runs —
+which is never, against a database that already exists. So the loop covers a
+fresh install and covers nothing else: seven tables added by a one-off migration
+were left readable straight through PostgREST by anyone holding the anon key,
+while `0000_init.sql` described them correctly and every other check passed.
+`check-baseline-schema.mjs` is what caught it, by comparing the live schema
+against the file rather than trusting either — **any delta that creates a table
+has to enable RLS itself**, and re-running the loop is the way to do it, since
+enabling it twice is a no-op.
+
 `drizzle-kit generate` does not model RLS, reads every table as "should be
 disabled", and emits `DISABLE ROW LEVEL SECURITY` for all of them. It is not
 used here, and **any generated SQL gets read line by line before it runs.**
+
+### A label is editorial; only the slug is an identifier
+
+Every lookup table here carries both, and the difference decides which one code
+is allowed to match on. A label is what somebody edits on its Settings screen —
+that is the entire point of the screen — so anything keyed on it breaks the
+moment it is used as intended, silently and only in the rendering.
+
+Both halves of this were live:
+
+- `project_status.slug` is hyphenated (`development-in-progress`) and
+  `lib/data/project-status.ts` keyed its labels *and* colours with underscores
+  (`development_in_progress`), while the read path selects the slug. Every
+  lookup missed. Every badge on the site rendered in the grey fallback with a
+  mangled `Development-In-Progress` beside it, and `projectStatusRank` returned
+  "unknown" for all of them, so the first of the two sort keys in `sortProjects`
+  did nothing whatsoever. It survived because the test compared the module's two
+  maps against each other — a tautology, and nothing a row participates in.
+- `application-card.tsx` keyed its status colours on the *label* (`In Progress`).
+  That worked only by coincidence, and would have gone grey on the first
+  rewording.
+
+So: the label and the lifecycle order come from the row and are rendered, never
+matched; the slug is the key and does not move. Where code must key on a
+vocabulary, the screen makes the slug `readOnly` and says why. **A test that
+compares two constants in the same module proves nothing about a column** —
+assert the shape a slug has to have instead.
 
 ### The admin draws its own form controls, and the CSS is class-scoped
 

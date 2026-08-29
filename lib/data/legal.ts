@@ -2,7 +2,7 @@ import { asc, eq } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { db } from "@/lib/db/client";
-import { legalDocument, legalSection } from "@/lib/db/app-schema";
+import { legalDocument, legalDocumentType, legalSection } from "@/lib/db/app-schema";
 
 import { TAGS } from "./tags";
 
@@ -60,9 +60,20 @@ export async function getLegalDocuments(): Promise<LegalDocument[]> {
   cacheLife("days");
 
   const [documents, sections] = await Promise.all([
+    // `document_type` stays the slug this has always returned -- `privacy`,
+    // `terms` -- rather than the label, so it remains a stable key for anything
+    // reading this payload while the label is free to be reworded.
     db
-      .select()
+      .select({
+        id: legalDocument.id,
+        title: legalDocument.title,
+        slug: legalDocument.slug,
+        summary: legalDocument.summary,
+        lastUpdated: legalDocument.lastUpdated,
+        documentType: legalDocumentType.slug,
+      })
       .from(legalDocument)
+      .innerJoin(legalDocumentType, eq(legalDocumentType.id, legalDocument.typeId))
       .where(eq(legalDocument.isPublished, true))
       .orderBy(asc(legalDocument.position), asc(legalDocument.title)),
     db

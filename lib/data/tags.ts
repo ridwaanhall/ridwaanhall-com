@@ -105,10 +105,25 @@ export const MODEL_TAGS: Record<string, readonly Tag[]> = {
   category: [TAGS.skill, TAGS.blog, TAGS.project],
   location: [TAGS.profile, TAGS.experience, TAGS.education, TAGS.application, TAGS.hiring, TAGS.opentowork],
   project_status: [TAGS.project],
-  employment_type: [TAGS.experience, TAGS.hiring, TAGS.opentowork],
-  work_mode: [TAGS.experience, TAGS.hiring, TAGS.opentowork],
+  // An application card names both of these, which the two lines below missed
+  // until the vocabularies got a screen and renaming one stopped being
+  // hypothetical.
+  employment_type: [TAGS.experience, TAGS.application, TAGS.hiring, TAGS.opentowork],
+  work_mode: [TAGS.experience, TAGS.application, TAGS.hiring, TAGS.opentowork],
   application_status: [TAGS.application],
   application_source: [TAGS.application],
+  legal_document_type: [TAGS.legal],
+
+  /*
+   * The six the open-to-work profile answers from. One page reads all of them,
+   * so they expire the same tag.
+   */
+  open_to_work_status: [TAGS.opentowork],
+  availability: [TAGS.opentowork],
+  experience_level: [TAGS.opentowork],
+  notice_period: [TAGS.opentowork],
+  work_authorization: [TAGS.opentowork],
+  contact_preference: [TAGS.opentowork],
 
   /*
    * An image is referenced from every area that can show one, so replacing the

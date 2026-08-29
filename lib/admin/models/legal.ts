@@ -1,7 +1,6 @@
 import { alias } from "drizzle-orm/pg-core";
 
-import { LEGAL_DOCUMENT_TYPE_CHOICES } from "@/lib/admin/choices";
-import { legalDocument, legalSection } from "@/lib/db/app-schema";
+import { legalDocument, legalDocumentType, legalSection } from "@/lib/db/app-schema";
 
 import { countWhere, lookup } from "@/lib/admin/sql";
 
@@ -12,8 +11,18 @@ import type { AdminListModel } from "@/lib/admin/list";
 
 // --- LegalDocument -----------------------------------------------------------
 
-const documentTypeLabel = (value: string) =>
-  LEGAL_DOCUMENT_TYPE_CHOICES.find((choice) => choice.value === value)?.label ?? value;
+/**
+ * The type's label, read from the row it now lives on.
+ *
+ * A `lookup` rather than a join because the changelist selects from one table:
+ * the same shape the guestbook lists use to resolve a username, and it keeps
+ * the column sortable on the label somebody actually sees.
+ */
+const documentTypeLabel = lookup<string>(
+  legalDocumentType.label,
+  legalDocumentType.id,
+  legalDocument.typeId,
+);
 
 /** How many sections hang off this document. */
 const sectionCount = countWhere(legalSection.documentId, legalDocument.id);
@@ -21,7 +30,7 @@ const sectionCount = countWhere(legalSection.documentId, legalDocument.id);
 export type LegalDocumentRow = {
   id: string;
   title: string;
-  documentType: string;
+  documentType: string | null;
   slug: string;
   isPublished: boolean;
   position: number;
@@ -36,7 +45,7 @@ export const legalDocumentList: AdminListModel<LegalDocumentRow> = {
   select: {
     id: legalDocument.id,
     title: legalDocument.title,
-    documentType: legalDocument.documentType,
+    documentType: documentTypeLabel,
     slug: legalDocument.slug,
     isPublished: legalDocument.isPublished,
     position: legalDocument.position,
@@ -49,8 +58,8 @@ export const legalDocumentList: AdminListModel<LegalDocumentRow> = {
       key: "document_type",
       label: "Type",
       kind: "muted",
-      sort: legalDocument.documentType,
-      value: (row) => documentTypeLabel(row.documentType),
+      sort: documentTypeLabel,
+      value: (row) => row.documentType,
     },
     { key: "slug", label: "Slug", kind: "code", sort: legalDocument.slug, value: (row) => row.slug },
     {
@@ -83,8 +92,14 @@ export const legalDocumentList: AdminListModel<LegalDocumentRow> = {
       key: "document_type",
       label: "Type",
       kind: "choice",
-      column: legalDocument.documentType,
-      choices: LEGAL_DOCUMENT_TYPE_CHOICES,
+      column: legalDocument.typeId,
+      // Only the types some document actually is, so the filter offers no
+      // option that returns an empty page.
+      choices: {
+        table: legalDocumentType,
+        value: legalDocumentType.id,
+        label: legalDocumentType.label,
+      },
     },
     { key: "is_published", label: "Published", kind: "boolean", column: legalDocument.isPublished },
   ],
@@ -197,13 +212,16 @@ export const legalDocumentForm: AdminFormModel = {
           help: "Part of the published URL. Changing it moves the document.",
         },
         {
-          name: "documentType",
-          column: legalDocument.documentType,
+          name: "typeId",
+          column: legalDocument.typeId,
           label: "Type",
-          kind: "select",
+          kind: "reference",
           required: true,
-          choices: LEGAL_DOCUMENT_TYPE_CHOICES,
-          maxLength: 20,
+          reference: {
+            table: legalDocumentType,
+            value: legalDocumentType.id,
+            label: legalDocumentType.label,
+          },
         },
         {
           name: "sortOrder",

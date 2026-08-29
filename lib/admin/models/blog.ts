@@ -1,3 +1,5 @@
+import { eq } from "drizzle-orm";
+
 import {
   blogImage,
   blogPost,
@@ -133,7 +135,12 @@ export const blogPostForm: AdminFormModel = {
           column: blogPost.categoryId,
           label: "Category",
           kind: "reference",
-          reference: { table: category, value: category.id, label: category.label },
+          reference: {
+            table: category,
+            value: category.id,
+            label: category.label,
+            where: eq(category.kind, "blog"),
+          },
         },
         {
           name: "tags",

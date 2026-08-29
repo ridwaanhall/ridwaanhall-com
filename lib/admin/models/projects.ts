@@ -1,3 +1,5 @@
+import { eq } from "drizzle-orm";
+
 import { lookupOr } from "@/lib/admin/sql";
 import {
   category,
@@ -140,7 +142,12 @@ export const projectForm: AdminFormModel = {
           column: project.categoryId,
           label: "Category",
           kind: "reference",
-          reference: { table: category, value: category.id, label: category.label },
+          reference: {
+            table: category,
+            value: category.id,
+            label: category.label,
+            where: eq(category.kind, "project"),
+          },
         },
         {
           name: "statusId",

@@ -1,117 +1,54 @@
 /**
- * Project lifecycle statuses.
+ * The badge colour a project's status renders in.
  *
- * Pure lifecycle logic with no database dependency: a vocabulary, a sort rank,
- * and the label and colour each status renders as.
+ * This module used to carry the whole vocabulary -- the twelve names, their
+ * display labels and their lifecycle order -- and none of it agreed with the
+ * database. `project_status.slug` is hyphenated (`development-in-progress`),
+ * every key here was underscored (`development_in_progress`), and
+ * `lib/data/content.ts` selects the slug: so every lookup missed. Each badge
+ * rendered in the neutral fallback with a mangled title-cased label, and every
+ * project sorted as though its status were unknown. Nothing caught it, because
+ * the tests compared these maps against each other rather than against a row.
+ *
+ * The label and the order are the row's now, read straight from
+ * `project_status` and editable on the Project status screen. What is left here
+ * is the one thing a row cannot carry: a colour is a pair of Tailwind classes,
+ * and **classes are never stored in the database** -- Tailwind finds them by
+ * scanning source text, so a class that exists only as a column value produces
+ * no rule at all. Keying them on the slug is what keeps that decision here
+ * while everything editorial lives where it can be edited.
+ *
+ * The consequence, and it is deliberate: a status this file has no colour for
+ * renders in the fallback. That is why the Project status screen offers no
+ * create and no delete, and why its slug is read-only -- the set is fixed until
+ * somebody adds a pair below.
  */
 
-export const PROJECT_STATUS = {
-  PLANNING_REQUIREMENTS: "planning_requirements",
-  DESIGN: "design",
-  DEVELOPMENT_IN_PROGRESS: "development_in_progress",
-  CODE_REVIEW: "code_review",
-  TESTING_QA: "testing_qa",
-  DEPLOYMENT_RELEASED: "deployment_released",
-  MAINTENANCE_SUPPORT: "maintenance_support",
-  COMPLETED: "completed",
-  ON_HOLD: "on_hold",
-  CANCELLED: "cancelled",
-  REOPENED: "reopened",
-  UPDATE_REQUIRED: "update_required",
-} as const;
-
-export type ProjectStatus = (typeof PROJECT_STATUS)[keyof typeof PROJECT_STATUS];
-
-/** Main lifecycle first, then branch/transitional states, then terminal ones. */
-const SORT_ORDER: ProjectStatus[] = [
-  PROJECT_STATUS.PLANNING_REQUIREMENTS,
-  PROJECT_STATUS.DESIGN,
-  PROJECT_STATUS.DEVELOPMENT_IN_PROGRESS,
-  PROJECT_STATUS.CODE_REVIEW,
-  PROJECT_STATUS.TESTING_QA,
-  PROJECT_STATUS.DEPLOYMENT_RELEASED,
-  PROJECT_STATUS.MAINTENANCE_SUPPORT,
-  PROJECT_STATUS.UPDATE_REQUIRED,
-  PROJECT_STATUS.REOPENED,
-  PROJECT_STATUS.ON_HOLD,
-  PROJECT_STATUS.CANCELLED,
-  PROJECT_STATUS.COMPLETED,
-];
-
-export const PROJECT_STATUS_SORT_RANK: Record<string, number> = Object.fromEntries(
-  SORT_ORDER.map((status, index) => [status, index]),
-);
-
-/** Unknown statuses sort after every known one, as in the Python original. */
-export function projectStatusRank(status: string | null | undefined): number {
-  const normalized = String(status ?? "").toLowerCase();
-  return PROJECT_STATUS_SORT_RANK[normalized] ?? SORT_ORDER.length;
-}
-
-/** "development_in_progress" -> "Development In Progress" (the admin's label). */
-export function projectStatusLabel(status: string): string {
-  return status
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
-
-/**
- * Display labels and badge colours.
- *
- * Every class string is
- * written out in full rather than composed, because Tailwind finds classes by
- * scanning source text -- an interpolated `bg-${hue}-400/90` is invisible to it
- * and the rule is simply never generated, with no error anywhere.
- */
-export const PROJECT_STATUS_DISPLAY: Record<string, string> = {
-  [PROJECT_STATUS.PLANNING_REQUIREMENTS]: "Planning",
-  [PROJECT_STATUS.DESIGN]: "Design",
-  [PROJECT_STATUS.DEVELOPMENT_IN_PROGRESS]: "In Development",
-  [PROJECT_STATUS.CODE_REVIEW]: "Code Review",
-  [PROJECT_STATUS.TESTING_QA]: "Testing",
-  [PROJECT_STATUS.DEPLOYMENT_RELEASED]: "Released",
-  [PROJECT_STATUS.MAINTENANCE_SUPPORT]: "Maintenance",
-  [PROJECT_STATUS.UPDATE_REQUIRED]: "Update Required",
-  [PROJECT_STATUS.REOPENED]: "Reopened",
-  [PROJECT_STATUS.ON_HOLD]: "On Hold",
-  [PROJECT_STATUS.CANCELLED]: "Cancelled",
-  [PROJECT_STATUS.COMPLETED]: "Completed",
-};
-
+/** Written out in full per status, never composed. An interpolated
+ * `bg-${hue}-400/90` is invisible to Tailwind's scanner and the rule is simply
+ * never generated, with no error anywhere. */
 export const PROJECT_STATUS_COLORS: Record<string, string> = {
-  [PROJECT_STATUS.PLANNING_REQUIREMENTS]: "bg-purple-400/90 text-purple-950",
-  [PROJECT_STATUS.DESIGN]: "bg-violet-400/90 text-violet-950",
-  [PROJECT_STATUS.DEVELOPMENT_IN_PROGRESS]: "bg-blue-400/90 text-blue-950",
-  [PROJECT_STATUS.CODE_REVIEW]: "bg-amber-400/90 text-amber-950",
-  [PROJECT_STATUS.TESTING_QA]: "bg-orange-400/90 text-orange-950",
-  [PROJECT_STATUS.DEPLOYMENT_RELEASED]: "bg-cyan-400/90 text-cyan-950",
-  [PROJECT_STATUS.MAINTENANCE_SUPPORT]: "bg-sky-400/90 text-sky-950",
-  [PROJECT_STATUS.COMPLETED]: "bg-emerald-400/90 text-emerald-950",
-  [PROJECT_STATUS.ON_HOLD]: "bg-zinc-400/90 text-zinc-950",
-  [PROJECT_STATUS.CANCELLED]: "bg-red-400/90 text-red-950",
-  [PROJECT_STATUS.REOPENED]: "bg-yellow-400/90 text-yellow-950",
-  [PROJECT_STATUS.UPDATE_REQUIRED]: "bg-rose-400/90 text-rose-950",
+  "planning-requirements": "bg-purple-400/90 text-purple-950",
+  design: "bg-violet-400/90 text-violet-950",
+  "development-in-progress": "bg-blue-400/90 text-blue-950",
+  "code-review": "bg-amber-400/90 text-amber-950",
+  "testing-qa": "bg-orange-400/90 text-orange-950",
+  "deployment-released": "bg-cyan-400/90 text-cyan-950",
+  "maintenance-support": "bg-sky-400/90 text-sky-950",
+  completed: "bg-emerald-400/90 text-emerald-950",
+  "on-hold": "bg-zinc-400/90 text-zinc-950",
+  cancelled: "bg-red-400/90 text-red-950",
+  reopened: "bg-yellow-400/90 text-yellow-950",
+  "update-required": "bg-rose-400/90 text-rose-950",
 };
 
 const FALLBACK_COLOR = "bg-zinc-500/20 text-zinc-300 border-zinc-500/30";
 
 /**
- * The label shown on a project's status badge.
- *
- * Distinct from `projectStatusLabel` above, which title-cases the raw value for
- * the admin ("Development In Progress"). The public badge uses shorter
- * editorial wording ("In Development"), and the two have always differed.
+ * Takes the slug, not the label. The slug is the stable identifier; the label
+ * beside it is editorial and can be reworded from the admin without any project
+ * losing its colour.
  */
-export function projectStatusDisplay(status: string | null | undefined): string {
-  if (!status) return "";
-  const key = String(status).toLowerCase();
-  return (
-    PROJECT_STATUS_DISPLAY[key] ??
-    key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
-  );
-}
-
 export function projectStatusColor(status: string | null | undefined): string {
   if (!status) return FALLBACK_COLOR;
   return PROJECT_STATUS_COLORS[String(status).toLowerCase()] ?? FALLBACK_COLOR;

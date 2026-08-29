@@ -189,6 +189,18 @@ export type ReferenceSource = {
    * several sources, since one source needs no heading to tell it apart.
    */
   groupLabel?: string;
+  /**
+   * Narrows the rows offered, for a table holding more than one vocabulary.
+   *
+   * `category` is the reason it exists: skills, projects and blog posts each
+   * have their own set of categories in one table, told apart by `kind` and
+   * kept apart by a CHECK constraint -- and all three dropdowns queried the
+   * whole table, so a skill's Category control offered every blog and project
+   * category too. Choosing one was a category that would render on the about
+   * page as a section nobody wrote, and nothing in the schema objected, because
+   * the foreign key is satisfied by any row.
+   */
+  where?: SQL;
 };
 
 /**

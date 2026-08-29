@@ -175,7 +175,12 @@ export async function loadReferenceOptions(
           // Loaded and labelled by the same function the changelist's
           // foreign-key filters use, so a label composed from several columns
           // works in both and neither can be blank in one and not the other.
-          const rows = await labelledRows(source.table, source.value, source.label);
+          const rows = await labelledRows(
+            source.table,
+            source.value,
+            source.label,
+            source.where,
+          );
           return rows.map((row) => ({
             ...row,
             // Only where there is more than one: a lone source needs no

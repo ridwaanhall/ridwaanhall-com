@@ -26,9 +26,12 @@
 --     row. Every table here is keyed by `gen_random_uuid()`.
 --
 --   * **Lookup tables for closed vocabularies.** Employment type, work mode,
---     application source and the two status sets are rows, not free text
---     repeated across four tables. Referenced by id, editable in one place, and
---     impossible to misspell into a new category by accident.
+--     application source, the two status sets, legal document type and the six
+--     the open-to-work profile answers from are rows, not free text repeated
+--     across four tables. Referenced by id, editable in one place, and
+--     impossible to misspell into a new category by accident. Every one of them
+--     has a screen under Settings in the admin, which is the point: a
+--     vocabulary nobody can edit is a vocabulary that gets edited in SQL.
 --
 --   * **One `tag` table.** Blog posts and projects share it rather than each
 --     carrying a list of free text, where `Python` and `python` are two
@@ -164,10 +167,71 @@ CREATE TABLE "app"."project_status" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "slug" text NOT NULL,
     "label" text NOT NULL,
-    -- The lifecycle order the projects list sorts by; it was a hard-coded
-    -- array in `lib/data/project-status.ts` keyed by string.
+    -- The lifecycle order the projects list sorts by. `lib/data/content.ts`
+    -- reads it, so reordering these rows reorders the projects page.
     "position" integer NOT NULL DEFAULT 0,
     CONSTRAINT "project_status_slug_key" UNIQUE ("slug")
+);--> statement-breakpoint
+
+CREATE TABLE "app"."legal_document_type" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "slug" text NOT NULL,
+    "label" text NOT NULL,
+    "position" integer NOT NULL DEFAULT 0,
+    CONSTRAINT "legal_document_type_slug_key" UNIQUE ("slug")
+);--> statement-breakpoint
+
+-- The six vocabularies the open-to-work profile chooses from. Each was a
+-- `text` column on that one row, which meant the set of answers existed only
+-- as whatever had last been typed into it: no way to offer the options, and
+-- "Mid-Level" and "Mid level" were different answers to the same question.
+
+CREATE TABLE "app"."open_to_work_status" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "slug" text NOT NULL,
+    "label" text NOT NULL,
+    "position" integer NOT NULL DEFAULT 0,
+    CONSTRAINT "open_to_work_status_slug_key" UNIQUE ("slug")
+);--> statement-breakpoint
+
+CREATE TABLE "app"."availability" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "slug" text NOT NULL,
+    "label" text NOT NULL,
+    "position" integer NOT NULL DEFAULT 0,
+    CONSTRAINT "availability_slug_key" UNIQUE ("slug")
+);--> statement-breakpoint
+
+CREATE TABLE "app"."experience_level" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "slug" text NOT NULL,
+    "label" text NOT NULL,
+    "position" integer NOT NULL DEFAULT 0,
+    CONSTRAINT "experience_level_slug_key" UNIQUE ("slug")
+);--> statement-breakpoint
+
+CREATE TABLE "app"."notice_period" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "slug" text NOT NULL,
+    "label" text NOT NULL,
+    "position" integer NOT NULL DEFAULT 0,
+    CONSTRAINT "notice_period_slug_key" UNIQUE ("slug")
+);--> statement-breakpoint
+
+CREATE TABLE "app"."work_authorization" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "slug" text NOT NULL,
+    "label" text NOT NULL,
+    "position" integer NOT NULL DEFAULT 0,
+    CONSTRAINT "work_authorization_slug_key" UNIQUE ("slug")
+);--> statement-breakpoint
+
+CREATE TABLE "app"."contact_preference" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "slug" text NOT NULL,
+    "label" text NOT NULL,
+    "position" integer NOT NULL DEFAULT 0,
+    CONSTRAINT "contact_preference_slug_key" UNIQUE ("slug")
 );--> statement-breakpoint
 
 -- ---------------------------------------------------------------------------
@@ -458,7 +522,9 @@ CREATE TABLE "app"."legal_document" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "slug" text NOT NULL,
     "title" text NOT NULL,
-    "document_type" text NOT NULL,
+    -- `RESTRICT`, because a type still naming a document is not spare. The
+    -- column is `NOT NULL`: every legal document is one of something.
+    "type_id" uuid NOT NULL REFERENCES "app"."legal_document_type"("id") ON DELETE RESTRICT,
     "summary" text NOT NULL DEFAULT '',
     "is_published" boolean NOT NULL DEFAULT true,
     "last_updated" timestamptz NOT NULL DEFAULT now(),
@@ -531,16 +597,20 @@ CREATE TABLE "app"."job_opening_list_item" (
 
 CREATE TABLE "app"."open_to_work_profile" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    "status" text NOT NULL DEFAULT '',
-    "availability" text NOT NULL DEFAULT '',
+    -- Six answers from six closed sets. Nullable, and `SET NULL` on delete:
+    -- these were `text NOT NULL DEFAULT ''`, so "not answered yet" is a state
+    -- the profile is allowed to be in and the read path renders as empty.
+    "status_id" uuid REFERENCES "app"."open_to_work_status"("id") ON DELETE SET NULL,
+    "availability_id" uuid REFERENCES "app"."availability"("id") ON DELETE SET NULL,
+    "experience_level_id" uuid REFERENCES "app"."experience_level"("id") ON DELETE SET NULL,
+    "notice_period_id" uuid REFERENCES "app"."notice_period"("id") ON DELETE SET NULL,
+    "work_authorization_id" uuid REFERENCES "app"."work_authorization"("id") ON DELETE SET NULL,
+    "contact_preference_id" uuid REFERENCES "app"."contact_preference"("id") ON DELETE SET NULL,
     "remote" boolean NOT NULL DEFAULT false,
     "relocation" boolean NOT NULL DEFAULT false,
     "show_all_tools_skills" boolean NOT NULL DEFAULT false,
-    "experience_level" text NOT NULL DEFAULT '',
+    -- Prose, not a vocabulary: a range, a sentence about when, and free notes.
     "salary_expectation" text NOT NULL DEFAULT '',
-    "notice_period" text NOT NULL DEFAULT '',
-    "work_authorization" text NOT NULL DEFAULT '',
-    "contact_preference" text NOT NULL DEFAULT '',
     "interview_availability" text NOT NULL DEFAULT '',
     "additional_notes" text NOT NULL DEFAULT ''
 );--> statement-breakpoint

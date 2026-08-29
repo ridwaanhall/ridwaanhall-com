@@ -1,13 +1,19 @@
 import { lookupOr } from "@/lib/admin/sql";
 import {
+  availability,
+  contactPreference,
   employmentType,
+  experienceLevel,
   hiringListItem,
   hiringProfile,
   jobOpening,
   jobOpeningListItem,
+  noticePeriod,
   openToWorkListItem,
   openToWorkProfile,
+  openToWorkStatus,
   portfolioHighlight,
+  workAuthorization,
 } from "@/lib/db/app-schema";
 
 import { locationField } from "@/lib/admin/models/about";
@@ -149,30 +155,68 @@ export const openToWorkProfileForm: AdminFormModel = {
   canDelete: false,
   fieldsets: [
     {
+      /*
+       * Five of these six were free text on this one row, which made the set of
+       * possible answers whatever had last been typed. They are vocabularies --
+       * every one has a handful of right answers and no others -- so they are
+       * rows now, chosen here and edited under Settings.
+       *
+       * `emptyLabel` on each because the columns are nullable: a profile that
+       * has not answered one yet is a state, and the control has to be able to
+       * say so rather than defaulting to whichever row sorts first.
+       */
       fields: [
-        { name: "status", column: openToWorkProfile.status, label: "Status", kind: "text", maxLength: 100 },
         {
-          name: "availability",
-          column: openToWorkProfile.availability,
+          name: "statusId",
+          column: openToWorkProfile.statusId,
+          label: "Status",
+          kind: "reference",
+          reference: {
+            table: openToWorkStatus,
+            value: openToWorkStatus.id,
+            label: openToWorkStatus.label,
+            emptyLabel: "Not set",
+          },
+        },
+        {
+          name: "availabilityId",
+          column: openToWorkProfile.availabilityId,
           label: "Availability",
-          kind: "text",
-          maxLength: 100,
+          kind: "reference",
+          reference: {
+            table: availability,
+            value: availability.id,
+            label: availability.label,
+            emptyLabel: "Not set",
+          },
         },
         {
-          name: "experienceLevel",
-          column: openToWorkProfile.experienceLevel,
+          name: "experienceLevelId",
+          column: openToWorkProfile.experienceLevelId,
           label: "Experience level",
-          kind: "text",
-          maxLength: 100,
+          kind: "reference",
+          reference: {
+            table: experienceLevel,
+            value: experienceLevel.id,
+            label: experienceLevel.label,
+            emptyLabel: "Not set",
+          },
         },
         {
-          name: "noticePeriod",
-          column: openToWorkProfile.noticePeriod,
+          name: "noticePeriodId",
+          column: openToWorkProfile.noticePeriodId,
           label: "Notice period",
-          kind: "text",
-          maxLength: 100,
+          kind: "reference",
+          reference: {
+            table: noticePeriod,
+            value: noticePeriod.id,
+            label: noticePeriod.label,
+            emptyLabel: "Not set",
+          },
         },
         {
+          // Free text, deliberately: a range with a currency and a qualifier is
+          // prose, and every real answer to it is different.
           name: "salaryExpectation",
           column: openToWorkProfile.salaryExpectation,
           label: "Salary expectation",
@@ -180,11 +224,16 @@ export const openToWorkProfileForm: AdminFormModel = {
           maxLength: 100,
         },
         {
-          name: "workAuthorization",
-          column: openToWorkProfile.workAuthorization,
+          name: "workAuthorizationId",
+          column: openToWorkProfile.workAuthorizationId,
           label: "Work authorization",
-          kind: "text",
-          maxLength: 100,
+          kind: "reference",
+          reference: {
+            table: workAuthorization,
+            value: workAuthorization.id,
+            label: workAuthorization.label,
+            emptyLabel: "Not set",
+          },
         },
       ],
     },
@@ -215,11 +264,16 @@ export const openToWorkProfileForm: AdminFormModel = {
       title: "Getting in touch",
       fields: [
         {
-          name: "contactPreference",
-          column: openToWorkProfile.contactPreference,
+          name: "contactPreferenceId",
+          column: openToWorkProfile.contactPreferenceId,
           label: "Preferred contact",
-          kind: "text",
-          maxLength: 100,
+          kind: "reference",
+          reference: {
+            table: contactPreference,
+            value: contactPreference.id,
+            label: contactPreference.label,
+            emptyLabel: "Not set",
+          },
         },
         {
           name: "interviewAvailability",

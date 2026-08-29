@@ -10,6 +10,7 @@ import {
   CubeIcon,
   PersonIcon,
   ScaleIcon,
+  SlidersIcon,
   UsersIcon,
 } from "@/components/admin/admin-icons";
 import { ADMIN_ENTRIES, ADMIN_GROUPS, entriesInGroup, type AdminGroup } from "@/lib/admin/registry";
@@ -22,7 +23,7 @@ import { requireStaff } from "@/lib/auth/staff";
  * matrix to reflect: anyone who can see this page can reach everything on it.
  *
  * The group icons are the rail's, from one table. Somebody arriving here and
- * then using the rail is looking at the same eight marks in the same eight
+ * then using the rail is looking at the same nine marks in the same nine
  * places, which is the whole of what makes an index and a nav feel like one
  * thing rather than two lists that happen to agree.
  */
@@ -35,6 +36,7 @@ const GROUP_ICON: Record<AdminGroup, typeof PersonIcon> = {
   Guestbook: ChatIcon,
   Comments: CommentIcon,
   Users: UsersIcon,
+  Settings: SlidersIcon,
 };
 
 /**

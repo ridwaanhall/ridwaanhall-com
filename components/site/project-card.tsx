@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import type { Project, ProjectSummary } from "@/lib/data/content";
-import { projectStatusColor, projectStatusDisplay } from "@/lib/data/project-status";
+import { projectStatusColor } from "@/lib/data/project-status";
 import { localIconUrl } from "@/lib/utils/icon-url";
 
 /** How many tech icons fit before they are summarised as "+N". */
@@ -65,7 +65,7 @@ export function ProjectCard({
               <div
                 className={`${projectStatusColor(project.status)} text-xs px-2 py-1 sm:px-3 sm:py-1.5 rounded-br-lg backdrop-blur-sm flex items-center gap-1.5 transition-all duration-300`}
               >
-                <span className="tracking-wide">{projectStatusDisplay(project.status)}</span>
+                <span className="tracking-wide">{project.status_label}</span>
               </div>
             </div>
           )}

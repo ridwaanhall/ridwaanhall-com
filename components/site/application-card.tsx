@@ -23,23 +23,29 @@ import type { Application } from "@/lib/data/about";
  * status name: Tailwind only generates a class it can see in the source, so an
  * interpolated one would produce no rule at all and the badge would be
  * unstyled.
+ *
+ * **Keyed on the slug, not on the label.** The label is edited from the
+ * Application status screen, so keying on it meant a rewording -- "In Progress"
+ * to "In progress" -- silently dropped the badge to the fallback, with the
+ * status still rendering correctly beside it and nothing to say what happened.
+ * The slug is the identifier and does not move.
  */
 const STATUS_STYLES: Record<string, string> = {
-  "In Progress": "text-blue-400",
-  Accepted: "text-emerald-400",
-  Rejected: "text-red-400",
-  Ghosted: "text-yellow-400",
-  Applied: "text-zinc-400",
+  "in-progress": "text-blue-400",
+  accepted: "text-emerald-400",
+  rejected: "text-red-400",
+  ghosted: "text-yellow-400",
+  applied: "text-zinc-400",
 };
 
 /**
  * Withdrawn has no colour of its own: it falls through to the neutral
  * treatment rather than rendering an unstyled badge.
  */
-const FALLBACK_STATUS = STATUS_STYLES.Applied;
+const FALLBACK_STATUS = STATUS_STYLES.applied;
 
 export function ApplicationCard({ application }: { application: Application }) {
-  const status = STATUS_STYLES[application.status] ?? FALLBACK_STATUS;
+  const status = STATUS_STYLES[application.status_slug] ?? FALLBACK_STATUS;
 
   const facts = [
     application.employment_type && { key: "employment", label: application.employment_type },

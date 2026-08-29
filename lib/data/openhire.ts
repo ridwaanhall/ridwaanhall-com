@@ -3,15 +3,21 @@ import { cacheLife, cacheTag } from "next/cache";
 
 import { db } from "@/lib/db/client";
 import {
+  availability,
+  contactPreference,
   employmentType,
+  experienceLevel,
   hiringListItem,
   hiringProfile,
   jobOpening,
   jobOpeningListItem,
   location,
+  noticePeriod,
   openToWorkListItem,
   openToWorkProfile,
+  openToWorkStatus,
   portfolioHighlight,
+  workAuthorization,
 } from "@/lib/db/app-schema";
 
 import { locationLabel } from "./location";
@@ -187,9 +193,34 @@ export async function getOpenToWorkData(): Promise<OpenToWorkData | null> {
   cacheTag(TAGS.opentowork);
   cacheLife("days");
 
-  const profile = await db.select().from(openToWorkProfile).limit(1);
-  const op = profile[0];
-  if (!op) return null;
+  /*
+   * Six lookups joined rather than six columns read. Each is `left`, because
+   * every one of those foreign keys is nullable -- a profile that has not
+   * answered a question yet is a state the schema allows -- and each is
+   * coalesced to `""` below, which is the shape this page has always rendered:
+   * an unanswered detail row is an empty one, not a missing key.
+   */
+  const profile = await db
+    .select({
+      p: openToWorkProfile,
+      status: openToWorkStatus.label,
+      availability: availability.label,
+      experienceLevel: experienceLevel.label,
+      noticePeriod: noticePeriod.label,
+      workAuthorization: workAuthorization.label,
+      contactPreference: contactPreference.label,
+    })
+    .from(openToWorkProfile)
+    .leftJoin(openToWorkStatus, eq(openToWorkStatus.id, openToWorkProfile.statusId))
+    .leftJoin(availability, eq(availability.id, openToWorkProfile.availabilityId))
+    .leftJoin(experienceLevel, eq(experienceLevel.id, openToWorkProfile.experienceLevelId))
+    .leftJoin(noticePeriod, eq(noticePeriod.id, openToWorkProfile.noticePeriodId))
+    .leftJoin(workAuthorization, eq(workAuthorization.id, openToWorkProfile.workAuthorizationId))
+    .leftJoin(contactPreference, eq(contactPreference.id, openToWorkProfile.contactPreferenceId))
+    .limit(1);
+  const row = profile[0];
+  if (!row) return null;
+  const op = row.p;
 
   const [items, highlights] = await Promise.all([
     db
@@ -213,24 +244,24 @@ export async function getOpenToWorkData(): Promise<OpenToWorkData | null> {
   const lists = byKind(items);
 
   return {
-    status: op.status,
-    availability: op.availability,
+    status: row.status ?? "",
+    availability: row.availability ?? "",
     remote: op.remote,
     relocation: op.relocation,
     type: lists.employment_type ?? [],
     preferred_roles: lists.preferred_role ?? [],
     skills_highlight: lists.skill_highlight ?? [],
     show_all_tools_skills: op.showAllToolsSkills,
-    experience_level: op.experienceLevel,
+    experience_level: row.experienceLevel ?? "",
     salary_expectation: op.salaryExpectation,
-    notice_period: op.noticePeriod,
-    work_authorization: op.workAuthorization,
+    notice_period: row.noticePeriod ?? "",
+    work_authorization: row.workAuthorization ?? "",
     languages: lists.language ?? [],
     preferred_locations: lists.preferred_location ?? [],
     location_types: lists.work_mode ?? [],
     remote_locations: lists.remote_location ?? [],
     portfolio_highlights: highlights.map((h) => ({ title: h.title, description: h.description })),
-    contact_preference: op.contactPreference,
+    contact_preference: row.contactPreference ?? "",
     interview_availability: op.interviewAvailability,
     additional_notes: op.additionalNotes,
   };

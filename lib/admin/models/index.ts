@@ -38,6 +38,36 @@ import {
   openToWorkProfileForm,
 } from "@/lib/admin/models/openhire";
 import { projectForm, projectList } from "@/lib/admin/models/projects";
+import {
+  applicationSourceForm,
+  applicationSourceList,
+  applicationStatusForm,
+  applicationStatusList,
+  availabilityForm,
+  availabilityList,
+  categoryForm,
+  categoryList,
+  contactPreferenceForm,
+  contactPreferenceList,
+  employmentTypeForm,
+  employmentTypeList,
+  experienceLevelForm,
+  experienceLevelList,
+  legalDocumentTypeForm,
+  legalDocumentTypeList,
+  noticePeriodForm,
+  noticePeriodList,
+  openToWorkStatusForm,
+  openToWorkStatusList,
+  projectStatusForm,
+  projectStatusList,
+  tagForm,
+  tagList,
+  workAuthorizationForm,
+  workAuthorizationList,
+  workModeForm,
+  workModeList,
+} from "@/lib/admin/models/settings";
 import { userForm, userList } from "@/lib/admin/models/users";
 
 import type { AdminFormModel } from "@/lib/admin/form";
@@ -88,6 +118,21 @@ const MODELS: AdminListModel<never>[] = [
   commentList,
   // users
   userList,
+  // settings -- the vocabularies every dropdown above is drawn from
+  categoryList,
+  tagList,
+  applicationStatusList,
+  applicationSourceList,
+  employmentTypeList,
+  workModeList,
+  projectStatusList,
+  legalDocumentTypeList,
+  openToWorkStatusList,
+  availabilityList,
+  experienceLevelList,
+  noticePeriodList,
+  workAuthorizationList,
+  contactPreferenceList,
 ];
 
 export const ADMIN_LIST_MODELS: Record<string, AdminListModel<never>> = Object.fromEntries(
@@ -134,6 +179,21 @@ const FORMS: AdminFormModel[] = [
   commentForm,
   // users
   userForm,
+  // settings
+  categoryForm,
+  tagForm,
+  applicationStatusForm,
+  applicationSourceForm,
+  employmentTypeForm,
+  workModeForm,
+  projectStatusForm,
+  legalDocumentTypeForm,
+  openToWorkStatusForm,
+  availabilityForm,
+  experienceLevelForm,
+  noticePeriodForm,
+  workAuthorizationForm,
+  contactPreferenceForm,
 ];
 
 export const ADMIN_FORM_MODELS: Record<string, AdminFormModel> = Object.fromEntries(

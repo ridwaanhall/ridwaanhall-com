@@ -21,7 +21,6 @@ import { assetUrl } from "@/lib/storage/media";
 import { plainText } from "@/lib/utils/plain-text";
 
 import type { Skill } from "./about";
-import { projectStatusRank } from "./project-status";
 import { TAGS } from "./tags";
 
 /**
@@ -100,7 +99,19 @@ export type Project = ImageCompat & {
   tags: string[];
   is_featured: boolean;
   featured_priority: number | null;
+  /**
+   * The status slug, which is what the badge's colour is keyed on, and its
+   * label and lifecycle order, which come from the row.
+   *
+   * Three fields rather than one because they answer three different
+   * questions and only the first is stable: `status` is an identifier code
+   * can match on, `status_label` is editorial and may be reworded from the
+   * admin at any time, and `status_rank` is where the status sits in the
+   * lifecycle -- also editable, and the thing `sortProjects` orders by.
+   */
   status: string;
+  status_label: string;
+  status_rank: number;
   created_at: Date | null;
   updated_at: Date | null;
 };
@@ -228,6 +239,8 @@ export async function getProjects(): Promise<Project[]> {
         updatedAt: project.updatedAt,
         category: category.label,
         status: projectStatus.slug,
+        statusLabel: projectStatus.label,
+        statusRank: projectStatus.position,
       })
       .from(project)
       .leftJoin(category, eq(category.id, project.categoryId))
@@ -306,6 +319,10 @@ export async function getProjects(): Promise<Project[]> {
       is_featured: row.isFeatured,
       featured_priority: row.featuredPriority,
       status: row.status ?? "",
+      status_label: row.statusLabel ?? "",
+      // A project with no status at all sorts after every project that has
+      // one, which is where an unknown status has always gone.
+      status_rank: row.statusRank ?? Number.MAX_SAFE_INTEGER,
       created_at: row.createdAt ? new Date(row.createdAt) : null,
       updated_at: row.updatedAt ? new Date(row.updatedAt) : null,
     }),
@@ -347,17 +364,19 @@ function groupAssets<T extends { storageKey: string; source: string; originalFil
 }
 
 /**
- * Presentation ordering for the projects list.
+ * Presentation ordering for the projects list: featured projects grouped
+ * first, and inside each group ordered by lifecycle status then newest first.
  *
- * Ported from `DataService.get_projects(sort_by_featured=True,
- * sort_by_status=True)`, which is what the listing page asks for: featured
- * projects grouped first, and inside each group ordered by lifecycle status
- * then newest first.
+ * The rank comes from `project_status.position`, so the order is the one set
+ * on the Project status screen. It used to come from an array in
+ * `lib/data/project-status.ts` keyed by an underscored status name, which no
+ * row has ever matched -- every project ranked as unknown, and the whole of
+ * this function's first sort did nothing.
  */
 export function sortProjects(projects: Project[]): Project[] {
   const created = (p: Project) => p.created_at?.getTime() ?? Number.NEGATIVE_INFINITY;
   const byStatusThenDate = [...projects].sort((a, b) => {
-    const rank = projectStatusRank(a.status) - projectStatusRank(b.status);
+    const rank = a.status_rank - b.status_rank;
     return rank !== 0 ? rank : created(b) - created(a);
   });
   return [
@@ -450,7 +469,8 @@ export function toBlogSummary(blog: BlogPost): BlogSummary {
 export type ProjectSummary = Pick<
   Project,
   | "id" | "title" | "slug" | "headline" | "category" | "tags" | "tech_stack"
-  | "is_featured" | "featured_priority" | "status" | "created_at" | "updated_at"
+  | "is_featured" | "featured_priority" | "status" | "status_label" | "status_rank"
+  | "created_at" | "updated_at"
   | "github_url" | "demo_url" | "image_url" | "img_name"
 >;
 
@@ -466,6 +486,8 @@ export function toProjectSummary(project: Project): ProjectSummary {
     is_featured: project.is_featured,
     featured_priority: project.featured_priority,
     status: project.status,
+    status_label: project.status_label,
+    status_rank: project.status_rank,
     created_at: project.created_at,
     updated_at: project.updated_at,
     github_url: project.github_url,

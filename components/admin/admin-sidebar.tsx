@@ -18,6 +18,7 @@ import {
   PersonIcon,
   RailIcon,
   ScaleIcon,
+  SlidersIcon,
   SquaresIcon,
   UsersIcon,
 } from "@/components/admin/admin-icons";
@@ -40,6 +41,7 @@ const GROUP_ICON: Record<AdminGroup, typeof PersonIcon> = {
   Guestbook: ChatIcon,
   Comments: CommentIcon,
   Users: UsersIcon,
+  Settings: SlidersIcon,
 };
 
 /**

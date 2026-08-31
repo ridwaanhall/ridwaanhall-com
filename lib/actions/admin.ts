@@ -1,6 +1,7 @@
 "use server";
 
 import { eq, getTableColumns, getTableName, inArray, sql } from "drizzle-orm";
+import type { Route } from "next";
 import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -17,6 +18,7 @@ import {
 } from "@/lib/admin/form";
 import { inlineImageKeys, saveInlines } from "@/lib/admin/inlines";
 import { formModelFor } from "@/lib/admin/models";
+import { adminPath, ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
 import { getStaffUser } from "@/lib/auth/staff";
 import { MODEL_TAGS } from "@/lib/data/tags";
 import { db } from "@/lib/db/client";
@@ -93,6 +95,23 @@ function uniqueField(model: AdminFormModel, error: unknown): string | null {
 }
 
 /**
+ * The URL a model's screen lives at.
+ *
+ * `revalidatePath` and `redirect` both name the path the browser is on or is
+ * about to be on, and a vocabulary that is a tab on a Settings page is two
+ * segments rather than one. Composing `/admin/<key>` here would revalidate a
+ * path that no longer answers and, worse, send a freshly created row to a 404
+ * -- a save that worked, reading as one that failed.
+ */
+function adminBase(model: AdminFormModel): string {
+  const entry = ADMIN_ENTRIES_BY_KEY.get(model.key);
+  // Unreachable for a model that has a screen; `descriptors.test.ts` asserts
+  // the registry and the descriptors name the same set. The flat path is the
+  // honest fallback rather than a throw inside a save that already succeeded.
+  return entry ? adminPath(entry) : `/admin/${model.key}`;
+}
+
+/**
  * `updateTag`, not `revalidateTag`.
  *
  * Both expire a tag; only `updateTag` does it *immediately*, and it is the one
@@ -108,7 +127,7 @@ function uniqueField(model: AdminFormModel, error: unknown): string | null {
  */
 function invalidate(model: AdminFormModel) {
   for (const tag of MODEL_TAGS[getTableName(model.from)] ?? []) updateTag(tag);
-  revalidatePath(`/admin/${model.key}`);
+  revalidatePath(adminBase(model));
 }
 
 /**
@@ -330,14 +349,17 @@ export async function saveRecord(
   if (stale.length > 0) await deleteUnreferenced(stale);
 
   invalidate(model);
+  const base = adminBase(model);
   if (id !== null) {
-    revalidatePath(`/admin/${model.key}/${id}`);
+    revalidatePath(`${base}/${id}`);
     return { ok: true, notice: "Saved." };
   }
 
   // Outside the `try`: `redirect` works by throwing, and catching it there would
-  // turn a successful save into "Something went wrong".
-  if (created !== null) redirect(`/admin/${model.key}/${created}`);
+  // turn a successful save into "Something went wrong". The cast is because
+  // `base` is composed from registry data rather than written as a literal, so
+  // it does not narrow to a typed route on its own.
+  if (created !== null) redirect(`${base}/${created}` as Route);
   return { ok: true, notice: "Created." };
 }
 

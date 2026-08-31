@@ -8,7 +8,7 @@ import { RecordForm } from "@/components/admin/record-form";
 import { toClientFieldsets, toClientInlines } from "@/lib/admin/form";
 import { formModelFor } from "@/lib/admin/models";
 import { blankFormValues, loadReferenceOptions } from "@/lib/admin/record";
-import { ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
+import { adminPath, ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
 import { requireStaff } from "@/lib/auth/staff";
 
 /**
@@ -50,11 +50,15 @@ export default async function AdminCreatePage({ params }: Params) {
   if (!entry || !form || form.canCreate === false) notFound();
 
   const referenceOptions = await loadReferenceOptions(form);
+  // Through `adminPath` rather than composing the key back into a path here.
+  // A second way of writing an admin URL is exactly the drift that having one
+  // function for it exists to prevent.
+  const listHref = adminPath(entry) as Route;
 
   return (
     <div className="admin-fade space-y-5">
       <Link
-        href={`/admin/${entry.key}` as Route}
+        href={listHref}
         className="inline-flex items-center gap-1.5 text-xs text-zinc-500 transition-colors hover:text-indigo-400"
       >
         <BackIcon height={14} width={14} />
@@ -75,7 +79,7 @@ export default async function AdminCreatePage({ params }: Params) {
         label={entry.label}
         typeLabel={entry.label}
         canDelete={false}
-        listHref={`/admin/${entry.key}` as Route}
+        listHref={listHref}
       />
     </div>
   );

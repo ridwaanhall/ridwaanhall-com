@@ -21,7 +21,7 @@ import {
   type FilterChoice,
   type ListParams,
 } from "@/lib/admin/list";
-import type { AdminEntry } from "@/lib/admin/registry";
+import { adminPath, type AdminEntry } from "@/lib/admin/registry";
 import { cn } from "@/lib/utils/cn";
 
 /**
@@ -133,7 +133,7 @@ export function Changelist<Row>({
 
         {filtered && (
           <Link
-            href={`/admin/${entry.key}` as Route}
+            href={adminPath(entry) as Route}
             className="rounded-md px-1 text-xs text-zinc-500 underline-offset-2 transition-colors hover:text-indigo-400 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
           >
             Clear
@@ -153,7 +153,7 @@ export function Changelist<Row>({
           */}
           {canCreate && (
             <Link
-              href={`/admin/${entry.key}/new` as Route}
+              href={`${adminPath(entry)}/new` as Route}
               className="inline-flex items-center gap-1.5 rounded-full border border-indigo-800 bg-indigo-500/10 px-3 py-1.5 text-xs font-medium text-indigo-300 transition-colors hover:bg-indigo-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
             >
               <PlusIcon height={13} width={13} />
@@ -223,7 +223,7 @@ export function Changelist<Row>({
                   >
                     {column.sort ? (
                       <Link
-                        href={sortHref(entry.key, params, defaultSort, column.key)}
+                        href={sortHref(entry, params, defaultSort, column.key)}
                         className={cn(
                           "inline-flex items-center gap-1 rounded transition-colors hover:text-zinc-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
                           active && "text-zinc-200",
@@ -285,7 +285,7 @@ export function Changelist<Row>({
                     >
                       {columnIndex === 0 ? (
                         <Link
-                          href={`/admin/${entry.key}/${id}` as Route}
+                          href={`${adminPath(entry)}/${id}` as Route}
                           className="rounded font-medium text-zinc-200 transition-colors hover:text-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
                         >
                           {String(column.value(row) ?? "")}
@@ -315,7 +315,7 @@ export function Changelist<Row>({
                   </p>
                   {filtered ? (
                     <Link
-                      href={`/admin/${entry.key}` as Route}
+                      href={adminPath(entry) as Route}
                       className="mt-2 inline-block rounded text-xs text-zinc-500 underline-offset-2 transition-colors hover:text-indigo-400 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
                     >
                       Clear the filters
@@ -323,7 +323,7 @@ export function Changelist<Row>({
                   ) : (
                     canCreate && (
                       <Link
-                        href={`/admin/${entry.key}/new` as Route}
+                        href={`${adminPath(entry)}/new` as Route}
                         className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-indigo-800 bg-indigo-500/10 px-3 py-1.5 text-xs font-medium text-indigo-300 transition-colors hover:bg-indigo-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
                       >
                         <PlusIcon height={13} width={13} />
@@ -342,7 +342,7 @@ export function Changelist<Row>({
       {page.pages > 1 && (
         <nav className="flex flex-wrap items-center gap-1" aria-label="Pages">
           <Step
-            entryKey={entry.key}
+            entry={entry}
             params={params}
             defaultSort={defaultSort}
             to={page.page - 1}
@@ -360,7 +360,7 @@ export function Changelist<Row>({
             ) : (
               <Link
                 key={entryPage}
-                href={listHref(entry.key, params, defaultSort, { page: entryPage })}
+                href={listHref(entry, params, defaultSort, { page: entryPage })}
                 aria-current={entryPage === page.page ? "page" : undefined}
                 className={cn(
                   "min-w-8 rounded-md border px-2 py-1 text-center text-xs tabular-nums transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
@@ -375,7 +375,7 @@ export function Changelist<Row>({
           )}
 
           <Step
-            entryKey={entry.key}
+            entry={entry}
             params={params}
             defaultSort={defaultSort}
             to={page.page + 1}
@@ -403,7 +403,7 @@ export function Changelist<Row>({
  * about having done something.
  */
 function Step({
-  entryKey,
+  entry,
   params,
   defaultSort,
   to,
@@ -411,7 +411,7 @@ function Step({
   label,
   children,
 }: {
-  entryKey: string;
+  entry: AdminEntry;
   params: ListParams;
   defaultSort: AdminListModel<unknown>["defaultSort"];
   to: number;
@@ -432,7 +432,7 @@ function Step({
 
   return (
     <Link
-      href={listHref(entryKey, params, defaultSort, { page: to })}
+      href={listHref(entry, params, defaultSort, { page: to })}
       aria-label={label}
       className={cn(
         className,

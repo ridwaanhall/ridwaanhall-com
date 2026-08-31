@@ -10,10 +10,18 @@
  * Adding a screen is adding an entry here and a descriptor there. There is no
  * page to write; `scripts/check-admin.mjs` fails if the two ever disagree.
  *
- * URLs are `/admin/<key>` -- one flat segment, not `<area>/<model>`. Every
- * model name in this project is unique, so an area segment would carry no
- * information, and one segment leaves `/admin/<key>/new` and
- * `/admin/<key>/<id>` unambiguous.
+ * URLs come in two shapes, and `adminPath` is the only place either is built.
+ * An ordinary screen is `/admin/<key>` -- one flat segment, not
+ * `<area>/<model>`, because every model name in this project is unique and an
+ * area segment would carry no information. A Settings screen is
+ * `/admin/<section>/<key>`: seventeen of the thirty-four are the dropdown
+ * vocabularies the other screens choose from, and seventeen sidebar rows was
+ * half the rail, so they are tabs on six section pages instead.
+ *
+ * Both depths leave `new` and a record id unambiguous -- whatever follows a
+ * screen is always one or the other. And because a section key and a model key
+ * are both a first segment, they are one namespace: `AdminSection` below says
+ * what that costs, and `descriptors.test.ts` is what holds them apart.
  */
 export type AdminGroup =
   | "About"

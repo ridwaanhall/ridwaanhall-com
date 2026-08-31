@@ -123,9 +123,20 @@ export default async function AdminIndexPage() {
                       written out at all -- without it Settings offers six names
                       for seventeen screens, and somebody looking for work modes
                       has nowhere left to find the word.
+
+                      It wraps, and nothing caps it. Job preferences joins six
+                      labels into 117 characters, and the narrowest box this
+                      paragraph gets is 289px -- three columns at exactly 1280,
+                      which is narrower than the single column at 390. Clipping
+                      to one line showed two of the six names there; capping at
+                      two still cut the last one, measured. Any cap is a number
+                      that holds until somebody adds a tab, and a cap that cuts a
+                      name is this paragraph failing at the one thing it is for.
+                      The cards stretch to their row, so a taller one costs only
+                      the row's height.
                     */}
                     {item.tabs && (
-                      <p className="mt-2 truncate text-[0.6875rem] text-zinc-600">
+                      <p className="mt-2 text-[0.6875rem] text-zinc-600">
                         {item.tabs.map((tab) => tab.labelPlural).join(" · ")}
                       </p>
                     )}

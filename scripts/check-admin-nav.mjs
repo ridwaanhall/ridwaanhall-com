@@ -43,6 +43,7 @@ config({ path: ".env", quiet: true });
 
 const { encode } = await import("next-auth/jwt");
 const { staffAccountId } = await import("./fixture-ids.mjs");
+const { ADMIN_SECTIONS, adminPath, sectionTabs } = await import("../lib/admin/registry.ts");
 
 const BASE = process.argv[2] ?? "http://localhost:3000";
 
@@ -151,6 +152,37 @@ check(
     (await expandedCount()) === 1,
   `${await expandedCount()} expanded`,
 );
+
+/*
+ * And a Settings tab, whose URL names a *section* rather than a model.
+ *
+ * `groupForPath` reads the first segment and has to try the sections before the
+ * entries, because `/admin/catalogue/location` carries `catalogue` there and no
+ * model is called that. Get it wrong and the lookup returns `null`, which is
+ * the same answer the index gives -- so the rail simply arrives with nothing
+ * expanded, on seventeen of the thirty-four screens, and looks like a rail
+ * somebody had already collapsed. Nothing else here would notice.
+ *
+ * Driven from the *last* tab of a section, not the first: a section's rail row
+ * links to its first tab, so anything that resolved the group from that href
+ * rather than from the segment would still pass on the first one.
+ */
+{
+  const section = ADMIN_SECTIONS.find((entry) => sectionTabs(entry.key).length > 1);
+  const tab = sectionTabs(section.key).at(-1);
+  await page.goto(BASE + adminPath(tab), { waitUntil: "load" });
+  await page.waitForTimeout(700);
+
+  // The panel id, built the way `admin-sidebar.tsx` builds it from the group's
+  // name -- one group here has a space in it, and this is the rail's own rule.
+  const panel = `#admin-group-${section.group.toLowerCase().replace(/\s+/g, "-")}`;
+  const open = await page.locator(panel).getAttribute("data-open");
+  check(
+    `a section's tab URL opens the ${section.group} group`,
+    open === "true" && (await expandedCount()) === 1,
+    `${adminPath(tab)}: data-open=${open}, ${await expandedCount()} expanded`,
+  );
+}
 
 // --- collapsing the rail -----------------------------------------------------
 

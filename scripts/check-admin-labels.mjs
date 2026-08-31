@@ -44,7 +44,7 @@ config({ path: ".env", quiet: true });
 const { chromium } = await import("playwright");
 const { staffAccountId } = await import("./fixture-ids.mjs");
 const { encode } = await import("next-auth/jwt");
-const { ADMIN_ENTRIES } = await import("../lib/admin/registry.ts");
+const { ADMIN_ENTRIES, adminPath } = await import("../lib/admin/registry.ts");
 const { formModelFor, listModelFor } = await import("../lib/admin/models/index.ts");
 const { db } = await import("../lib/db/client.ts");
 
@@ -96,15 +96,22 @@ async function sampleId(key) {
 
 const routes = [];
 for (const entry of ADMIN_ENTRIES) {
+  /*
+   * Where the screen lives, asked of the registry rather than written down. A
+   * Settings screen is a tab at `/admin/<section>/<key>` and its flat URL is
+   * refused; a not-found page carries no form and so no labels, which this
+   * would read as seventeen screens with nothing to measure -- a pass.
+   */
+  const screen = adminPath(entry);
   if (entry.singleton) {
-    routes.push(`/admin/${entry.key}`);
+    routes.push(screen);
     continue;
   }
   const id = await sampleId(entry.key);
-  if (id) routes.push(`/admin/${entry.key}/${id}`);
+  if (id) routes.push(`${screen}/${id}`);
   // A blank form reaches states a populated one does not: an image field with
   // nothing stored renders no preview, and so a shorter row.
-  if (formModelFor(entry.key)?.canCreate !== false) routes.push(`/admin/${entry.key}/new`);
+  if (formModelFor(entry.key)?.canCreate !== false) routes.push(`${screen}/new`);
 }
 
 const token = await encode({

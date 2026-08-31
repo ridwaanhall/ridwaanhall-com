@@ -41,6 +41,7 @@ const { staffAccountId } = await import("./fixture-ids.mjs");
 const { encode } = await import("next-auth/jwt");
 const { db, pool } = await import("../lib/db/client.ts");
 const { applicationStep, category, skill } = await import("../lib/db/app-schema.ts");
+const { ADMIN_ENTRIES_BY_KEY, adminPath } = await import("../lib/admin/registry.ts");
 const { eq, sql } = await import("drizzle-orm");
 
 /** Distinctive enough that a leftover row is obviously this script's. */
@@ -50,6 +51,13 @@ const BASE = process.argv[2] ?? "http://localhost:3000";
 const COOKIE = "authjs.session-token";
 /** Longer than the 200ms colour transition on `body`. */
 const SETTLE = 500;
+/*
+ * The screen the unhydrated form is driven on, from the registry rather than
+ * written down. `skill` is a Catalogue tab now and `/admin/skill` is refused,
+ * so a literal here would post a form that the not-found page never rendered
+ * -- and `adminPath` is the one place the URL is built either way.
+ */
+const SKILL = adminPath(ADMIN_ENTRIES_BY_KEY.get("skill"));
 
 const checks = [];
 const check = (name, pass, detail = "") => {
@@ -445,7 +453,7 @@ try {
       .where(eq(category.kind, "skill"))
       .limit(1);
 
-    await barePage.goto(`${BASE}/admin/skill/new`, { waitUntil: "domcontentloaded" });
+    await barePage.goto(`${BASE}${SKILL}/new`, { waitUntil: "domcontentloaded" });
     await barePage.waitForTimeout(2500);
 
     check(

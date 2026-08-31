@@ -32,7 +32,9 @@ config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { encode } = await import("next-auth/jwt");
-const { ADMIN_ENTRIES } = await import("../lib/admin/registry.ts");
+const { ADMIN_ENTRIES, ADMIN_SECTIONS, adminPath, sectionTabs } = await import(
+  "../lib/admin/registry.ts"
+);
 const { ADMIN_FORM_MODELS, ADMIN_LIST_MODELS } = await import("../lib/admin/models/index.ts");
 const { staffAccountId, nonStaffAccountId, idWhere } = await import("./fixture-ids.mjs");
 
@@ -168,6 +170,23 @@ const leaks = (body) => ROW_MARKERS.filter((marker) => body.includes(marker));
   check(
     "registry keys are unique",
     new Set(ADMIN_ENTRIES.map((entry) => entry.key)).size === ADMIN_ENTRIES.length,
+  );
+  /*
+   * And a section key is the same first segment as a model key, so the two are
+   * one namespace. Nothing in the type system says so -- `AdminSectionKey` and
+   * an entry's `key` are separate declarations that never meet, and both are
+   * strings. A collision costs one of the pair its URL: the list route resolves
+   * a section first, so the model behind the same word becomes unreachable
+   * while every check that only asks whether a page rendered still passes.
+   */
+  const modelKeys = new Set(ADMIN_ENTRIES.map((entry) => entry.key));
+  const collisions = ADMIN_SECTIONS.map((section) => section.key).filter((key) =>
+    modelKeys.has(key),
+  );
+  check(
+    "no section key collides with a model key",
+    collisions.length === 0,
+    collisions.join(", ") || `${ADMIN_SECTIONS.length} sections`,
   );
 }
 
@@ -307,7 +326,11 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
   const thin = [];
 
   for (const entry of ADMIN_ENTRIES) {
-    const { status, body } = await get(`/admin/${entry.key}`, staff);
+    // `adminPath`, never `/admin/${entry.key}`: half these screens are tabs on
+    // a Settings section now and answer at `/admin/<section>/<key>` alone, so a
+    // loop that builds the flat URL sweeps seventeen not-found pages and calls
+    // them broken -- or, worse, stops noticing the ones that are.
+    const { status, body } = await get(adminPath(entry), staff);
     if (entry.singleton) {
       // Its screen is a form, so what proves it rendered is a save button.
       if (status !== 200 || !body.includes("Save")) broken.push(`${entry.key} (${status})`);
@@ -352,6 +375,78 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
     named.length > 0,
     `${named.length} of ${rows(sections.body).length} on page 1`,
   );
+}
+
+// --- the settings sections ---------------------------------------------------
+
+/*
+ * Seventeen screens moved from `/admin/<key>` to `/admin/<section>/<key>`, and
+ * every part of that is a string: a caller left at the old URL type checks,
+ * lints, builds and answers a page with no list on it. The two checks below are
+ * halves of one claim and are only worth anything together -- "the old URL is
+ * gone" is satisfied by an admin where those screens stopped existing, and "the
+ * new URL works" is satisfied by one still serving both.
+ */
+{
+  const sectioned = ADMIN_ENTRIES.filter((entry) => entry.section);
+
+  /*
+   * Asserted on the absence of a changelist rather than on a status or on the
+   * not-found wording. The route is dynamic -- it reads the session before
+   * anything else -- so it cannot commit a 404; and in development the admin's
+   * not-found boundary rides along in *every* admin response's payload, so
+   * "Nothing here" appears on a perfectly good changelist too and says nothing
+   * about which page rendered. A table does.
+   */
+  const stillFlat = [];
+  for (const entry of sectioned) {
+    const stale = await get(`/admin/${entry.key}`, staff);
+    if (stale.body.includes("<table") || rows(stale.body).length) stillFlat.push(entry.key);
+  }
+  check(
+    "a sectioned screen no longer answers at the top level",
+    stillFlat.length === 0,
+    stillFlat.join(", ") || `${sectioned.length} keys refused`,
+  );
+
+  /*
+   * And one click from the rail lands on a working screen. A section's row
+   * points at its first tab, so that URL has to be a changelist with the
+   * section's whole strip above it, in the strip's own order.
+   */
+  for (const section of ADMIN_SECTIONS) {
+    const tabs = sectionTabs(section.key);
+    const [first] = tabs;
+    const { status, body } = await get(adminPath(first), staff);
+    /*
+     * The strip alone, and its links parsed rather than grepped.
+     *
+     * Scoped, because the rail marks this section's own row `aria-current` too
+     * and the streamed payload repeats both: the whole body reports four, and
+     * would report four with no strip on the page at all.
+     *
+     * Parsed, because these attributes do not come out in source order --
+     * `Link` renders `href` last, after the props passed through it, so the tag
+     * reads `<a aria-current="page" class="…" href="…">`. `check-admin.mjs`
+     * greps `<select name="category"` a few checks above precisely because that
+     * order *is* fixed; this one is Link's business and not this file's.
+     */
+    const strip =
+      body.split(`<nav aria-label="${section.label} settings"`)[1]?.split("</nav>")[0] ?? "";
+    const links = [...strip.matchAll(/<a\b([^>]*)>/g)].map((match) => match[1]);
+    const hrefs = links.map((attrs) => attrs.match(/href="([^"]*)"/)?.[1] ?? "");
+    const current = links.filter((attrs) => attrs.includes('aria-current="page"'));
+    check(
+      `${section.key} opens on ${first.key}, with a list and every tab beside it`,
+      status === 200 && body.includes("<table") && hrefs.join(" ") === tabs.map(adminPath).join(" "),
+      hrefs.join(" ") || "no tab strip",
+    );
+    check(
+      `and ${section.key} marks exactly one tab current, the open one`,
+      current.length === 1 && current[0].includes(`href="${adminPath(first)}"`),
+      `${current.length} marked`,
+    );
+  }
 }
 
 // --- layout ------------------------------------------------------------------

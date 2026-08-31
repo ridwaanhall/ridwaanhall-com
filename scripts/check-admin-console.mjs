@@ -40,7 +40,7 @@ config({ path: ".env", quiet: true });
 const { chromium } = await import("playwright");
 const { staffAccountId } = await import("./fixture-ids.mjs");
 const { encode } = await import("next-auth/jwt");
-const { ADMIN_ENTRIES } = await import("../lib/admin/registry.ts");
+const { ADMIN_ENTRIES, adminPath } = await import("../lib/admin/registry.ts");
 const { formModelFor, listModelFor } = await import("../lib/admin/models/index.ts");
 const { db } = await import("../lib/db/client.ts");
 
@@ -78,12 +78,19 @@ async function sampleId(key) {
 
 const routes = ["/admin"];
 for (const entry of ADMIN_ENTRIES) {
-  routes.push(`/admin/${entry.key}`);
+  /*
+   * Where the screen lives, asked of the registry rather than written down. A
+   * Settings screen is a tab at `/admin/<section>/<key>` and its flat URL is
+   * refused, so `/admin/${entry.key}` would sweep seventeen not-found pages --
+   * which render quietly, and so would be reported as seventeen clean screens.
+   */
+  const screen = adminPath(entry);
+  routes.push(screen);
   if (entry.singleton) continue;
   // A model with no rows has no edit screen to open, and that is not a fault.
   const id = await sampleId(entry.key);
-  if (id) routes.push(`/admin/${entry.key}/${id}`);
-  if (formModelFor(entry.key)?.canCreate !== false) routes.push(`/admin/${entry.key}/new`);
+  if (id) routes.push(`${screen}/${id}`);
+  if (formModelFor(entry.key)?.canCreate !== false) routes.push(`${screen}/new`);
 }
 
 const token = await encode({

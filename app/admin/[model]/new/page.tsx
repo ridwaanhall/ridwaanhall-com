@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   // The same condition the page 404s on, so a refused route does not sit in the
   // browser's tab and history offering to add something it will not add.
   const form = entry ? formModelFor(entry.key) : null;
-  const offered = entry && form && form.canCreate !== false;
+  const offered = entry && !entry.section && form && form.canCreate !== false;
   return { title: offered ? `Add ${entry.label.toLowerCase()} · Admin` : "Admin" };
 }
 
@@ -47,7 +47,7 @@ export default async function AdminCreatePage({ params }: Params) {
   const { model: key } = await params;
   const entry = ADMIN_ENTRIES_BY_KEY.get(key);
   const form = formModelFor(key);
-  if (!entry || !form || form.canCreate === false) notFound();
+  if (!entry || entry.section || !form || form.canCreate === false) notFound();
 
   const referenceOptions = await loadReferenceOptions(form);
   // Through `adminPath` rather than composing the key back into a path here.

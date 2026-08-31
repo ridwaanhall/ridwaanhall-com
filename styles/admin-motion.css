@@ -87,6 +87,37 @@
 }
 
 /* ---------------------------------------------------------------------------
+   The section strip's current tab
+
+   The same bargain as the nav item above -- `aria-current` drives the mark, so
+   there is no second class to keep in step -- turned through ninety degrees: a
+   2px bar that grows from the centre outwards along the bottom edge.
+
+   Anchored to a class, like every other selector in this sheet. It is imported
+   from `app/globals.css` and is therefore unlayered and global, so a rule
+   written against the element would reach the public site's own navigation.
+   --------------------------------------------------------------------------- */
+.admin-tab {
+    position: relative;
+    transition: color 200ms ease-out;
+}
+
+.admin-tab::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: -1px;
+    height: 2px;
+    background-color: var(--color-indigo-400);
+    transform: scaleX(0);
+    transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.admin-tab[aria-current="page"]::after {
+    transform: scaleX(1);
+}
+
+/* ---------------------------------------------------------------------------
    Group sections in the rail
 
    One group is open at a time, and the panel has to travel between nothing and
@@ -227,6 +258,8 @@
 
     .admin-nav-item,
     .admin-nav-item::before,
+    .admin-tab,
+    .admin-tab::after,
     .admin-hover-row,
     .admin-card,
     .admin-accordion,

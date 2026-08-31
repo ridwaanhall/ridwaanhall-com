@@ -1,15 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { Changelist } from "@/components/admin/changelist";
-import {
-  distinctChoices,
-  fetchAdminList,
-  needsLookup,
-  readListParams,
-  relatedChoices,
-  type FilterChoice,
-} from "@/lib/admin/list";
+import { ChangelistScreen } from "@/components/admin/changelist-screen";
 import { formModelFor, listModelFor } from "@/lib/admin/models";
 import { RecordForm } from "@/components/admin/record-form";
 import { toClientFieldsets, toClientInlines } from "@/lib/admin/form";
@@ -142,30 +134,6 @@ export default async function AdminListPage({ params, searchParams }: Params) {
   if (entry.singleton) return <SingletonScreen entryKey={key} />;
   if (!model) notFound();
 
-  const form = formModelFor(key);
-  const listParams = readListParams(model, await searchParams);
-
-  // Filters that read their vocabulary from the data need a query each -- the
-  // values present for a `"distinct"` filter, the referenced rows for a foreign
-  // key. They are independent of the page query and of each other, so they all
-  // go at once rather than in sequence, the same way the public data layer fans
-  // out with `Promise.all`.
-  const lookups = (model.filters ?? []).filter(needsLookup);
-
-  const [page, ...resolved] = await Promise.all([
-    fetchAdminList(model, listParams),
-    ...lookups.map((filter) =>
-      filter.choices === "distinct"
-        ? distinctChoices(model.from, filter.column)
-        : relatedChoices(model.from, filter.column, filter.choices),
-    ),
-  ]);
-
-  const filterChoices: Record<string, FilterChoice[]> = {};
-  lookups.forEach((filter, index) => {
-    filterChoices[filter.key] = resolved[index] ?? [];
-  });
-
   return (
     <div className="admin-fade space-y-4">
       <div>
@@ -173,16 +141,12 @@ export default async function AdminListPage({ params, searchParams }: Params) {
         <p className="mt-1 text-sm text-zinc-400">{entry.blurb}</p>
       </div>
 
-      <Changelist
-        entry={entry}
-        model={model}
-        params={listParams}
-        page={page}
-        filterChoices={filterChoices}
-        // A model with no form yet cannot create, and one whose descriptor says
-        // `canCreate: false` has a reason recorded there.
-        canCreate={form !== null && form.canCreate !== false}
-      />
+      {/*
+        The query and the table, shared with the tab route -- see
+        `changelist-screen.tsx`. The heading above it is not shared: this page
+        names the model, where a section's page names the section.
+      */}
+      <ChangelistScreen entry={entry} model={model} searchParams={searchParams} />
     </div>
   );
 }

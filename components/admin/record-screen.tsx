@@ -37,7 +37,7 @@ import { adminPath, type AdminEntry } from "@/lib/admin/registry";
  * `loadReferenceOptions`: a client module that imported it by accident should
  * fail at the import rather than at the query.
  */
-export async function Record({ entry, id }: { entry: AdminEntry; id: string }) {
+export async function RecordScreen({ entry, id }: { entry: AdminEntry; id: string }) {
   const recordId = id;
   const form = formModelFor(entry.key);
   const missing = (

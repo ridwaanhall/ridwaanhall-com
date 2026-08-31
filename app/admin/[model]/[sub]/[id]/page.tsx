@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { NothingHere } from "@/components/admin/nothing-here";
-import { Record } from "@/components/admin/record-screen";
+import { RecordScreen } from "@/components/admin/record-screen";
 import { RecordSkeleton } from "@/components/admin/record-skeleton";
 import { resolveAdminRoute } from "@/lib/admin/route";
 import { requireStaff } from "@/lib/auth/staff";
@@ -46,5 +46,5 @@ async function SectionRecord({
   const route = resolveAdminRoute(model, sub);
   if (!route || route.kind !== "tab") return <NothingHere message="No such screen." />;
 
-  return <Record entry={route.entry} id={id} />;
+  return <RecordScreen entry={route.entry} id={id} />;
 }

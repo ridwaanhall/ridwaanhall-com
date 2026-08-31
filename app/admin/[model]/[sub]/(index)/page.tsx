@@ -1,21 +1,13 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
-import { Changelist } from "@/components/admin/changelist";
+import { ChangelistScreen } from "@/components/admin/changelist-screen";
 import { ChangelistSkeleton } from "@/components/admin/changelist-skeleton";
 import { NothingHere } from "@/components/admin/nothing-here";
-import { Record } from "@/components/admin/record-screen";
+import { RecordScreen } from "@/components/admin/record-screen";
 import { RecordSkeleton } from "@/components/admin/record-skeleton";
 import { SectionTabs } from "@/components/admin/section-tabs";
-import {
-  distinctChoices,
-  fetchAdminList,
-  needsLookup,
-  readListParams,
-  relatedChoices,
-  type FilterChoice,
-} from "@/lib/admin/list";
-import { formModelFor, listModelFor } from "@/lib/admin/models";
+import { listModelFor } from "@/lib/admin/models";
 import type { AdminEntry } from "@/lib/admin/registry";
 import { resolveAdminRoute } from "@/lib/admin/route";
 import { requireStaff } from "@/lib/auth/staff";
@@ -84,7 +76,7 @@ async function Sub({
     return (
       <div className="space-y-5">
         <Suspense fallback={<RecordSkeleton />}>
-          <Record entry={route.entry} id={route.id} />
+          <RecordScreen entry={route.entry} id={route.id} />
         </Suspense>
       </div>
     );
@@ -117,10 +109,15 @@ async function Sub({
 /**
  * The changelist under a tab.
  *
- * The same query and the same component as `app/admin/[model]/(index)`, which
- * is the point: a section changes where a list *lives*, never what it is.
+ * The query and the table are `ChangelistScreen`, the same ones the flat route
+ * draws, which is the point: a section changes where a list *lives*, never what
+ * it is. What stays here is the answer to a key with no list descriptor. This
+ * route says so in place, under a strip that is already on screen and still
+ * offers the section's other tabs; the flat route calls `notFound()`, having
+ * nothing else to show. Both are deliberate, so neither moved into the shared
+ * module.
  */
-async function SectionList({
+function SectionList({
   entry,
   searchParams,
 }: {
@@ -130,37 +127,5 @@ async function SectionList({
   const model = listModelFor(entry.key);
   if (!model) return <NothingHere message="That screen has not been built yet." />;
 
-  const form = formModelFor(entry.key);
-  const listParams = readListParams(model, await searchParams);
-  // Filters that read their vocabulary from the data need a query each, and
-  // they are independent of the page query and of each other -- the same
-  // fan-out the flat changelist does. No settings vocabulary declares one
-  // today; a branch that silently ignored the first is a bug nobody notices
-  // until somebody adds it.
-  const lookups = (model.filters ?? []).filter(needsLookup);
-
-  const [page, ...resolved] = await Promise.all([
-    fetchAdminList(model, listParams),
-    ...lookups.map((filter) =>
-      filter.choices === "distinct"
-        ? distinctChoices(model.from, filter.column)
-        : relatedChoices(model.from, filter.column, filter.choices),
-    ),
-  ]);
-
-  const filterChoices: Record<string, FilterChoice[]> = {};
-  lookups.forEach((filter, index) => {
-    filterChoices[filter.key] = resolved[index] ?? [];
-  });
-
-  return (
-    <Changelist
-      entry={entry}
-      model={model}
-      params={listParams}
-      page={page}
-      filterChoices={filterChoices}
-      canCreate={form !== null && form.canCreate !== false}
-    />
-  );
+  return <ChangelistScreen entry={entry} model={model} searchParams={searchParams} />;
 }

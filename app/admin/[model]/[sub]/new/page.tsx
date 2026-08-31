@@ -12,17 +12,6 @@ import { adminPath } from "@/lib/admin/registry";
 import { resolveAdminRoute } from "@/lib/admin/route";
 import { requireStaff } from "@/lib/auth/staff";
 
-/**
- * The add form for a sectioned vocabulary.
- *
- * Static, so it takes precedence over `[id]` beside it and `new` can never be
- * read as a record id -- the same reason the shallower `new` route gives.
- *
- * Only a tab route reaches this. `/admin/blog-post/<uuid>/new` resolves to a
- * record and 404s, which is right: there is nothing below a record to add.
- */
-export const instant = false;
-
 export async function generateMetadata(
   props: PageProps<"/admin/[model]/[sub]/new">,
 ): Promise<Metadata> {
@@ -35,6 +24,23 @@ export async function generateMetadata(
   return { title: offered ? `Add ${route.entry.label.toLowerCase()} · Admin` : "Admin" };
 }
 
+/**
+ * Never prerendered: the first thing this page does is read the session, so
+ * there is no shell to build ahead of the request. The two routes beside it
+ * hand `params` down into a `<Suspense>` and so keep a shell worth
+ * prerendering; this one awaits at the top, as the flat `new` route does.
+ */
+export const instant = false;
+
+/**
+ * The add form for a sectioned vocabulary.
+ *
+ * Static, so it takes precedence over `[id]` beside it and `new` can never be
+ * read as a record id -- the same reason the shallower `new` route gives.
+ *
+ * Only a tab route reaches this. `/admin/blog-post/<uuid>/new` resolves to a
+ * record and 404s, which is right: there is nothing below a record to add.
+ */
 export default async function AdminSectionCreatePage(
   props: PageProps<"/admin/[model]/[sub]/new">,
 ) {

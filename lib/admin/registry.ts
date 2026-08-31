@@ -449,3 +449,72 @@ export function sectionTabs(key: AdminSectionKey): AdminEntry[] {
 export function adminPath(entry: AdminEntry): string {
   return entry.section ? `/admin/${entry.section}/${entry.key}` : `/admin/${entry.key}`;
 }
+
+/**
+ * A row in the sidebar and a card on the index: an ordinary screen, or a
+ * section standing in for its tabs.
+ */
+export type AdminNavItem = {
+  /** Where the row goes. A section points at its first tab. */
+  href: string;
+  /** The pathname prefix that marks the row current. */
+  match: string;
+  label: string;
+  blurb: string;
+  singleton?: boolean;
+  /** Present only for a section: what the page's strip offers. */
+  tabs?: AdminEntry[];
+};
+
+/**
+ * What one group offers, with its sections collapsed.
+ *
+ * The rail and the index page both list a group, and both must now show six
+ * things where Settings holds seventeen. Written twice, that is two chances to
+ * disagree about which; so it is written here, once.
+ *
+ * Unsectioned entries keep their registry positions. Sections are ordered by
+ * `ADMIN_SECTIONS`, not by where their first entry appears in `ADMIN_ENTRIES`.
+ * The latter would be a third, implicit ordering that disagrees with both the
+ * spec and the array's own comment. Where a group mixes unsectioned and
+ * sectioned entries (none do today), unsectioned rows come first, then
+ * sections.
+ */
+export function navItemsInGroup(group: AdminGroup): AdminNavItem[] {
+  const items: AdminNavItem[] = [];
+
+  // First, add all unsectioned entries in registry order.
+  for (const entry of entriesInGroup(group)) {
+    if (!entry.section) {
+      items.push({
+        href: adminPath(entry),
+        match: adminPath(entry),
+        label: entry.labelPlural,
+        blurb: entry.blurb,
+        singleton: entry.singleton,
+      });
+    }
+  }
+
+  // Then, add sections in ADMIN_SECTIONS order.
+  for (const section of ADMIN_SECTIONS) {
+    if (section.group !== group) continue;
+
+    const tabs = sectionTabs(section.key);
+    // Unreachable: `descriptors.test.ts` refuses both a section with no tabs
+    // and a section that is defined but has no entries. Skipped rather than
+    // thrown because the failure mode either way is a row that goes nowhere,
+    // and a throw here would take the whole rail down with it.
+    if (!tabs[0]) continue;
+
+    items.push({
+      href: adminPath(tabs[0]),
+      match: `/admin/${section.key}`,
+      label: section.label,
+      blurb: section.blurb,
+      tabs,
+    });
+  }
+
+  return items;
+}

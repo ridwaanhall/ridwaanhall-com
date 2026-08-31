@@ -9,6 +9,8 @@ import {
   ADMIN_GROUPS,
   ADMIN_SECTIONS,
   adminPath,
+  entriesInGroup,
+  navItemsInGroup,
   sectionTabs,
 } from "./registry";
 
@@ -315,5 +317,60 @@ describe("adminPath", () => {
     for (const entry of ADMIN_ENTRIES) {
       assert.match(adminPath(entry), /^\/admin\/[a-z0-9-]+(\/[a-z0-9-]+)?$/);
     }
+  });
+});
+
+describe("navItemsInGroup", () => {
+  it("collapses Settings to one row per section", () => {
+    assert.equal(navItemsInGroup("Settings").length, ADMIN_SECTIONS.length);
+  });
+
+  it("points a section at its first tab, so one click lands on a screen", () => {
+    const taxonomy = navItemsInGroup("Settings").find((item) => item.label === "Taxonomy");
+    assert.equal(taxonomy?.href, "/admin/taxonomy/category");
+  });
+
+  it("lists a group's sections in ADMIN_SECTIONS order, not first-entry order", () => {
+    assert.deepEqual(
+      navItemsInGroup("Settings").map((item) => item.label),
+      ["Catalogue", "Taxonomy", "Work", "Applying", "Job preferences", "Publishing"],
+    );
+  });
+
+  /*
+   * The sidebar's current test is `pathname === match || startsWith(match + "/")`.
+   * Without a prefix distinct from `href`, opening the second tab would
+   * un-highlight the section holding it.
+   */
+  it("marks a section current from any of its tabs", () => {
+    for (const item of navItemsInGroup("Settings")) {
+      assert.ok(item.tabs?.length, `${item.label} carries no tabs`);
+      for (const tab of item.tabs ?? []) {
+        assert.ok(
+          adminPath(tab).startsWith(`${item.match}/`),
+          `${tab.key} is not under ${item.match}`,
+        );
+      }
+    }
+  });
+
+  it("leaves a group with no sections as one row per entry", () => {
+    assert.equal(navItemsInGroup("About").length, entriesInGroup("About").length);
+  });
+
+  it("carries the singleton flag through, since the rail prints it", () => {
+    const profile = navItemsInGroup("About").find((item) => item.href === "/admin/profile");
+    assert.equal(profile?.singleton, true);
+  });
+
+  it("lists every screen exactly once, as a row or as a tab", () => {
+    const reachable = new Set<string>();
+    for (const group of ADMIN_GROUPS) {
+      for (const item of navItemsInGroup(group)) {
+        if (item.tabs) for (const tab of item.tabs) reachable.add(adminPath(tab));
+        else reachable.add(item.href);
+      }
+    }
+    assert.equal(reachable.size, ADMIN_ENTRIES.length);
   });
 });

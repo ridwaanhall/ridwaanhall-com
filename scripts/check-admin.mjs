@@ -417,6 +417,34 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
   for (const section of ADMIN_SECTIONS) {
     const tabs = sectionTabs(section.key);
     const [first] = tabs;
+
+    /*
+     * The section's *own* URL, not any tab's -- built by hand, the same way
+     * the stale flat URL above is, because `adminPath` takes an entry and a
+     * section is not one. This is the landing point for a typed URL or an old
+     * bookmark, and nothing else here drives it: every other check in this
+     * loop fetches `adminPath(first)` directly, which proves the tab page
+     * works but not that the section's own URL still finds it.
+     *
+     * Asserted on the redirect's destination rather than on its status. The
+     * route reads the session before anything else, which is what makes it
+     * dynamic, so `redirect()` cannot commit a 3xx any more than `notFound()`
+     * above can commit a 404 -- measured directly, this answers HTTP 200 with
+     * a `<meta http-equiv="refresh">` naming the destination in the body, the
+     * same "arrives after load" shape the redirect at sign-out has. Reading
+     * that destination, rather than merely checking a marker is present, is
+     * what would catch a redirect landing on the wrong tab.
+     */
+    const landing = await get(`/admin/${section.key}`, staff);
+    const redirectTarget = landing.body.match(
+      /<meta id="__next-page-redirect"[^>]*content="1;url=([^"]*)"/,
+    )?.[1];
+    check(
+      `${section.key}'s own URL lands on its first tab, ${first.key}`,
+      redirectTarget === adminPath(first),
+      redirectTarget ?? `no redirect marker found (status ${landing.status})`,
+    );
+
     const { status, body } = await get(adminPath(first), staff);
     /*
      * The strip alone, and its links parsed rather than grepped.

@@ -46,6 +46,92 @@ export const ADMIN_GROUPS: AdminGroup[] = [
   "Settings",
 ];
 
+/**
+ * A Settings page, and the vocabularies that are tabs on it.
+ *
+ * Seventeen of the thirty-four screens here are the dropdown vocabularies
+ * every other screen chooses from. As seventeen rows they were half the
+ * sidebar and ran past the fold, which made the Settings heading a label on a
+ * list rather than something that could put the list away.
+ *
+ * A section is one sidebar row and one page. Its tabs keep their own keys,
+ * their own descriptors and their own changelist state -- only the URL moves,
+ * from `/admin/<key>` to `/admin/<section>/<key>`.
+ *
+ * **A section key and a model key are one namespace**, because they are one
+ * URL segment. Nothing types that; `descriptors.test.ts` asserts it.
+ */
+export type AdminSectionKey =
+  | "catalogue"
+  | "taxonomy"
+  | "work"
+  | "applying"
+  | "job-preferences"
+  | "publishing";
+
+export type AdminSection = {
+  /** URL segment under `/admin`, and the page's identity. */
+  key: AdminSectionKey;
+  label: string;
+  group: AdminGroup;
+  /** One line under the name on the index page. */
+  blurb: string;
+};
+
+/**
+ * The six, in the order the sidebar lists them.
+ *
+ * Two names avoid the obvious choice. **Applying**, not "Applications",
+ * because About already has an `application` screen whose plural label is
+ * exactly that, and two sidebar rows reading the same word would trade one
+ * confusion for another in an interface whose whole job here is to shorten a
+ * list. **Job preferences**, not "Open to work", because that string is
+ * already a group heading three rows above -- and `availability`, the other
+ * candidate, is one of its own tabs and so cannot be its key.
+ */
+export const ADMIN_SECTIONS: AdminSection[] = [
+  {
+    key: "catalogue",
+    label: "Catalogue",
+    group: "Settings",
+    blurb: "The three records other screens point at: skills, organizations, places.",
+  },
+  {
+    key: "taxonomy",
+    label: "Taxonomy",
+    group: "Settings",
+    blurb: "Categories and tags, shared by posts, projects and skills.",
+  },
+  {
+    key: "work",
+    label: "Work",
+    group: "Settings",
+    blurb: "How a role is held: employment type and work mode.",
+  },
+  {
+    key: "applying",
+    label: "Applying",
+    group: "Settings",
+    blurb: "Where an application got to, and the board it went through.",
+  },
+  {
+    key: "job-preferences",
+    label: "Job preferences",
+    group: "Settings",
+    blurb: "The six answers the open-to-work page is built from.",
+  },
+  {
+    key: "publishing",
+    label: "Publishing",
+    group: "Settings",
+    blurb: "The project lifecycle, and what kind of document a policy page is.",
+  },
+];
+
+export const ADMIN_SECTIONS_BY_KEY = new Map<string, AdminSection>(
+  ADMIN_SECTIONS.map((section) => [section.key, section]),
+);
+
 export type AdminEntry = {
   /** URL segment under `/admin`, and the key `lib/admin/models/` files use. */
   key: string;
@@ -60,6 +146,13 @@ export type AdminEntry = {
   singleton?: boolean;
   /** One line under the name on the index page. */
   blurb: string;
+  /**
+   * The Settings page this screen is a tab on, if any.
+   *
+   * Set, the URL is `/admin/<section>/<key>` and the top-level `/admin/<key>`
+   * answers 404 -- one screen at two URLs is the drift this replaced.
+   */
+  section?: AdminSectionKey;
 };
 
 export const ADMIN_ENTRIES: AdminEntry[] = [
@@ -200,6 +293,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Skills",
     group: "Settings",
     blurb: "The catalogue behind the marquee and the tech stacks.",
+    section: "catalogue",
   },
   {
     key: "organization",
@@ -207,6 +301,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Organizations",
     group: "Settings",
     blurb: "The shared company, school and issuer record.",
+    section: "catalogue",
   },
   {
     key: "location",
@@ -214,6 +309,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Locations",
     group: "Settings",
     blurb: "The shared place record, named by every form that has a location.",
+    section: "catalogue",
   },
   {
     key: "category",
@@ -221,6 +317,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Categories",
     group: "Settings",
     blurb: "Three vocabularies in one table, kept apart by kind.",
+    section: "taxonomy",
   },
   {
     key: "tag",
@@ -228,6 +325,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Tags",
     group: "Settings",
     blurb: "Shared by blog posts and projects, so the spelling is settled once.",
+    section: "taxonomy",
   },
   {
     key: "application-status",
@@ -235,6 +333,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Application statuses",
     group: "Settings",
     blurb: "Where an application got to. The slug carries its colour.",
+    section: "applying",
   },
   {
     key: "application-source",
@@ -242,6 +341,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Applied via",
     group: "Settings",
     blurb: "The boards and sites an application was submitted through.",
+    section: "applying",
   },
   {
     key: "employment-type",
@@ -249,6 +349,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Employment types",
     group: "Settings",
     blurb: "Full-time, contract and the rest, shared by four screens.",
+    section: "work",
   },
   {
     key: "work-mode",
@@ -256,6 +357,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Work modes",
     group: "Settings",
     blurb: "Remote, on-site, hybrid.",
+    section: "work",
   },
   {
     key: "project-status",
@@ -263,6 +365,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Project statuses",
     group: "Settings",
     blurb: "The project lifecycle. Rename and reorder; the set itself is fixed.",
+    section: "publishing",
   },
   {
     key: "legal-document-type",
@@ -270,6 +373,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Legal document types",
     group: "Settings",
     blurb: "What kind of document a policy page is.",
+    section: "publishing",
   },
   {
     key: "open-to-work-status",
@@ -277,6 +381,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Open to work statuses",
     group: "Settings",
     blurb: "How actively you are looking.",
+    section: "job-preferences",
   },
   {
     key: "availability",
@@ -284,6 +389,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Availability",
     group: "Settings",
     blurb: "How soon you could start.",
+    section: "job-preferences",
   },
   {
     key: "experience-level",
@@ -291,6 +397,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Experience levels",
     group: "Settings",
     blurb: "The seniority band shown on the open-to-work page.",
+    section: "job-preferences",
   },
   {
     key: "notice-period",
@@ -298,6 +405,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Notice periods",
     group: "Settings",
     blurb: "How much notice your current commitment needs.",
+    section: "job-preferences",
   },
   {
     key: "work-authorization",
@@ -305,6 +413,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Work authorizations",
     group: "Settings",
     blurb: "Citizenship and sponsorship, as an employer would ask it.",
+    section: "job-preferences",
   },
   {
     key: "contact-preference",
@@ -312,6 +421,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Contact preferences",
     group: "Settings",
     blurb: "How you would rather be reached about a role.",
+    section: "job-preferences",
   },
 ];
 
@@ -320,4 +430,22 @@ export const ADMIN_ENTRIES_BY_KEY = new Map(ADMIN_ENTRIES.map((entry) => [entry.
 /** The entries in one group, in registry order. */
 export function entriesInGroup(group: AdminGroup): AdminEntry[] {
   return ADMIN_ENTRIES.filter((entry) => entry.group === group);
+}
+
+/** The tabs of one section, in registry order — which is the strip's order. */
+export function sectionTabs(key: AdminSectionKey): AdminEntry[] {
+  return ADMIN_ENTRIES.filter((entry) => entry.section === key);
+}
+
+/**
+ * Where a screen lives.
+ *
+ * **The only place an admin URL is built.** It was `/admin/${key}` in twelve
+ * places before sections existed, and a sectioned key makes every one of them
+ * wrong in a way nothing reports: both halves are strings, so a stale caller
+ * type checks, lints, builds, and 404s. Everything else composes on this --
+ * `${adminPath(entry)}/new`, `${adminPath(entry)}/${id}`.
+ */
+export function adminPath(entry: AdminEntry): string {
+  return entry.section ? `/admin/${entry.section}/${entry.key}` : `/admin/${entry.key}`;
 }

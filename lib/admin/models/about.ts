@@ -844,11 +844,6 @@ export const educationForm: AdminFormModel = {
       title: "Location",
       fields: [locationField(education.locationId)],
     },
-    {
-      title: "Achievements",
-      fields: [
-      ],
-    },
   ],
   inlines: [
     {
@@ -950,11 +945,6 @@ export const certificationForm: AdminFormModel = {
           kind: "checkbox",
           help: "Featured certifications lead the about page; the rest sit behind the LinkedIn link.",
         },
-      ],
-    },
-    {
-      title: "Achievements",
-      fields: [
       ],
     },
   ],

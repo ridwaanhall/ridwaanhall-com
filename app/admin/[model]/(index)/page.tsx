@@ -49,7 +49,10 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { model } = await params;
   const entry = ADMIN_ENTRIES_BY_KEY.get(model);
-  return { title: entry ? `${entry.labelPlural} · Admin` : "Admin" };
+  // The same condition the page 404s on for a sectioned key, so `/admin/tag`
+  // does not sit in the browser's tab and history titled "Tags" for a screen
+  // that answers not-found -- see the `entry.section` check below.
+  return { title: entry && !entry.section ? `${entry.labelPlural} · Admin` : "Admin" };
 }
 
 /**

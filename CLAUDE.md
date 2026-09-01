@@ -397,10 +397,15 @@ nothing short of clicking Save on that particular screen would have shown it.
 
 The skeleton beside `[model]/[sub]/(index)` stands in front of both shapes and
 cannot tell them apart either, because `loading.tsx` receives no params. It
-draws the commoner shape — a record form — and each branch draws its own
-correct fallback once the params resolve underneath it. This is the same
-trade `app/admin/[model]/(index)/loading.tsx` already documents for
-singletons.
+draws the commoner shape — a record form — and that shape is up for longer
+than a params await accounts for: the page's first await is the staff gate,
+not `params`, and the gate still blocks on a round trip to Supabase even
+though it shares its query with the layout's own check rather than issuing a
+second one. Only once the gate has answered does the tab branch open a
+fallback of its own, for the list beneath its header and strip; the record
+branch has nothing to show first and renders straight into the one already on
+screen. This is the same trade `components/admin/changelist-skeleton.tsx`
+already documents for singletons.
 
 ### Tailwind scans prose, and prose names classes
 

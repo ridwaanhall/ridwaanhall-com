@@ -35,8 +35,13 @@ export type AdminGroup =
   | "Settings";
 
 /**
- * The sidebar's order, and the index page's. There is no `order` field on an
- * entry -- this array and `ADMIN_ENTRIES` are the only two orderings there are.
+ * The sidebar's order, and the index page's -- for the groups themselves.
+ * There is no `order` field anywhere in this file; ordering is three separate
+ * arrays instead, one per level, and each governs only its own: `ADMIN_GROUPS`
+ * (this one) orders the groups; `ADMIN_SECTIONS` orders one group's sections
+ * against each other; `ADMIN_ENTRIES` orders a group's unsectioned rows, and
+ * separately orders the tabs within one section. `navItemsInGroup` is the one
+ * place that reads all three and folds them into a group's list.
  *
  * Settings sits last because it is the vocabularies the other screens choose
  * *from*: a dropdown's options are configuration, and nobody opens the admin to
@@ -102,7 +107,7 @@ export const ADMIN_SECTIONS: AdminSection[] = [
     key: "catalogue",
     label: "Catalogue",
     group: "Settings",
-    blurb: "The three records other screens point at: skills, organizations, places.",
+    blurb: "The records other screens point at: skills, organizations, places.",
   },
   {
     key: "taxonomy",
@@ -126,7 +131,7 @@ export const ADMIN_SECTIONS: AdminSection[] = [
     key: "job-preferences",
     label: "Job preferences",
     group: "Settings",
-    blurb: "The six answers the open-to-work page is built from.",
+    blurb: "The answers the open-to-work page is built from.",
   },
   {
     key: "publishing",
@@ -482,11 +487,15 @@ export type AdminNavItem = {
  * disagree about which; so it is written here, once.
  *
  * Unsectioned entries keep their registry positions. Sections are ordered by
- * `ADMIN_SECTIONS`, not by where their first entry appears in `ADMIN_ENTRIES`.
- * The latter would be a third, implicit ordering that disagrees with both the
- * spec and the array's own comment. Where a group mixes unsectioned and
- * sectioned entries (none do today), unsectioned rows come first, then
- * sections.
+ * `ADMIN_SECTIONS` -- see its own comment -- not by where their first entry
+ * happens to appear in `ADMIN_ENTRIES`. The two genuinely differ: by first
+ * appearance in `ADMIN_ENTRIES`, Settings would run catalogue, taxonomy,
+ * applying, work, publishing, job-preferences; `ADMIN_SECTIONS` says catalogue,
+ * taxonomy, work, applying, job-preferences, publishing. Following the former
+ * would tie a section's rail position to an accident of which of its tabs was
+ * declared first, rather than to the six sections' own deliberate order. Where
+ * a group mixes unsectioned and sectioned entries (none do today), unsectioned
+ * rows come first, then sections.
  */
 export function navItemsInGroup(group: AdminGroup): AdminNavItem[] {
   const items: AdminNavItem[] = [];
@@ -509,9 +518,9 @@ export function navItemsInGroup(group: AdminGroup): AdminNavItem[] {
     if (section.group !== group) continue;
 
     const tabs = sectionTabs(section.key);
-    // Unreachable: `descriptors.test.ts` refuses both a section with no tabs
-    // and a section that is defined but has no entries. Skipped rather than
-    // thrown because the failure mode either way is a row that goes nowhere,
+    // Unreachable: `descriptors.test.ts` refuses a section with no tabs --
+    // every declared section is required to name at least one entry. Skipped
+    // rather than thrown because the failure mode is a row that goes nowhere,
     // and a throw here would take the whole rail down with it.
     if (!tabs[0]) continue;
 

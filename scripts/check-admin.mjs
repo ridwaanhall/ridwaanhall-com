@@ -131,6 +131,27 @@ const leaks = (body) => ROW_MARKERS.filter((marker) => body.includes(marker));
   check("non-staff: a record URL discloses nothing either", !body.includes("Commit Message Style Guide"));
 }
 
+{
+  // The one URL shape sections added: a tab route renders both a strip naming
+  // the section's other screens and a changelist of row data underneath it --
+  // the two things the gate exists to withhold, in one response. Built with
+  // `adminPath`, the same as every other URL in this file. The strip lives in
+  // the `<nav aria-label="… settings">` the section checks below also key on,
+  // rather than on a tab's `labelPlural`: that string also appears in the
+  // page's `<title>`, which `generateMetadata` sets without a staff check on
+  // every admin route -- a pre-existing, wider pattern this file has never
+  // asserted against and this check is not the place to start.
+  const [section] = ADMIN_SECTIONS;
+  const tabs = sectionTabs(section.key);
+  const { body } = await get(adminPath(tabs[0]), nonStaff);
+  const strip = body.includes(`<nav aria-label="${section.label} settings"`);
+  check(
+    "non-staff: a section tab URL discloses no tab strip and no table either",
+    !strip && !body.includes("<table"),
+    strip ? "tab strip present" : body.includes("<table") ? "table markup present" : "clean",
+  );
+}
+
 // --- the registry ------------------------------------------------------------
 
 {

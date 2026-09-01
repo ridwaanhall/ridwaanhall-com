@@ -544,6 +544,33 @@ seen.
   The rules are pure and tested offline in `lib/storage/link.test.ts` and
   `lib/admin/image-source.test.ts`; `scripts/check-admin-image-link.mjs` drives
   the rest against the live bucket.
+- **A certificate's identity is its credential URL, not its title.** The 104
+  certifications imported from a saved LinkedIn page were deduplicated against
+  what was already stored, and four of them were there already *under different
+  titles* — one stored in English and listed in Indonesian
+  ("Machine Learning Terapan" against "Applied Machine Learning"), another
+  simply reworded between the two. Matching on title would have inserted all
+  four a second time; their `dicoding.com/certificates/…` and
+  `linkedin.com/learning/certificates/…` links match to the character. Compare
+  the *link*, normalised — LinkedIn appends `?trk=share_certificate` to some
+  copies of the same URL and not to others, and a trailing slash comes and goes.
+  Two things about that page are worth knowing before parsing another one. It
+  names every issuer of a LinkedIn Learning course "LinkedIn", which is a
+  different organization here from `LinkedIn Learning`, so one alias is declared
+  in `scripts/import-certifications.mjs` rather than guessed at by fuzzy
+  matching — a rule that decides two names are "similar enough" eventually
+  merges two organizations that are not, and `ON DELETE RESTRICT` then refuses
+  to let it be undone. And **the same course appears once per accrediting body**
+  — "Administrative Human Resources" is listed three times, from SHRM, HRCI and
+  LinkedIn Learning — so the same title on the same date is not a duplicate
+  unless the issuer matches too.
+- **A changelist may pin rows, and only in its default ordering.** `pinned` on
+  an `AdminListModel` leads the order clause so the certifications the about
+  page is curated around are reachable without paging through a hundred and
+  eleven rows. It is dropped the moment the reader sorts by anything else: a
+  list that says it is ordered by Title while eight rows sit above the As reads
+  as a fault, not a feature. Every other model leaves it unset and its query is
+  unchanged.
 - **An email's dark mode is an overlay, and an inline style outranks a class.**
   `lib/email/layout.ts` writes the light palette inline on every element and
   repaints it from one `<style>` block under `prefers-color-scheme: dark`. Every
@@ -701,6 +728,18 @@ The browser-driven ones need `npm run dev` running.
 `scripts/check-schema-parity.mjs` and `scripts/catch-up-from-public.mjs` are not
 part of this list. They exist for the one-off retirement of the `public` schema
 and are deleted with it — see `drizzle/9999_drop_public.sql`.
+
+`scripts/export-certifications.mjs` and `scripts/import-certifications.mjs` are
+not checks either, and they are the pair to reach for before and after any bulk
+edit of the certifications. The first writes every row to
+`certifications.dump.json` — named so the `*.dump.json` rule in `.gitignore`
+covers it, because a dump that can be committed eventually is. The second reads
+a saved LinkedIn "Licenses & certifications" page, matches each issuer to an
+organization, creates the ones that are missing with a name and a slug and
+nothing else, and inserts what is not already stored. It is a dry run unless
+given `--apply`, and that dry run is the review: it prints every row it would
+write, so the output is read before the second run rather than after it. Running
+it twice is safe — see the credential-URL rule above for what makes that true.
 
 `scripts/migrate-icons-to-storage.mjs` is not a check either. It uploads the
 skill icons from `public/static/svg/icon/` and repoints their rows, and it is

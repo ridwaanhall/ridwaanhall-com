@@ -1,6 +1,7 @@
 import type { Route } from "next";
 
 import type { ListParams } from "@/lib/admin/list";
+import { adminPath, type AdminEntry } from "@/lib/admin/registry";
 
 export type SortDefault = { key: string; dir: "asc" | "desc" };
 
@@ -12,12 +13,14 @@ export type SortDefault = { key: string; dir: "asc" | "desc" };
  * that inline in each component is how a search silently gets dropped by the
  * pagination, so all of them go through here.
  *
- * Anything at its default is left out, which keeps `/admin/blog-post` as the
- * URL of an untouched list rather than
+ * It takes the entry rather than its key because the base is `adminPath`'s to
+ * decide: one segment for an ordinary model, two for a vocabulary that is a tab
+ * on a Settings section. Anything at its default is left out, which keeps
+ * `/admin/blog-post` as the URL of an untouched list rather than
  * `/admin/blog-post?q=&page=1&sort=created_at&dir=desc`.
  */
 export function listHref(
-  key: string,
+  entry: AdminEntry,
   params: ListParams,
   defaultSort: SortDefault,
   overrides: Partial<ListParams> = {},
@@ -40,7 +43,8 @@ export function listHref(
   if (merged.page > 1) search.set("page", String(merged.page));
 
   const query = search.toString();
-  return (query ? `/admin/${key}?${query}` : `/admin/${key}`) as Route;
+  const base = adminPath(entry);
+  return (query ? `${base}?${query}` : base) as Route;
 }
 
 /**
@@ -52,11 +56,11 @@ export function listHref(
  * ones that were on screen.
  */
 export function sortHref(
-  key: string,
+  entry: AdminEntry,
   params: ListParams,
   defaultSort: SortDefault,
   column: string,
 ): Route {
   const dir: "asc" | "desc" = params.sort === column && params.dir === "asc" ? "desc" : "asc";
-  return listHref(key, params, defaultSort, { sort: column, dir, page: 1 });
+  return listHref(entry, params, defaultSort, { sort: column, dir, page: 1 });
 }

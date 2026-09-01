@@ -13,11 +13,15 @@ import {
   SlidersIcon,
   UsersIcon,
 } from "@/components/admin/admin-icons";
-import { ADMIN_ENTRIES, ADMIN_GROUPS, entriesInGroup, type AdminGroup } from "@/lib/admin/registry";
+import { ADMIN_ENTRIES, ADMIN_GROUPS, navItemsInGroup, type AdminGroup } from "@/lib/admin/registry";
 import { requireStaff } from "@/lib/auth/staff";
 
 /**
- * The admin index: every model, grouped as the sidebar groups them.
+ * The admin index: every screen, grouped as the sidebar groups them.
+ *
+ * A Settings section is one card standing in for its tabs, exactly as it is one
+ * row in the rail. The card names them underneath, so collapsing seventeen
+ * vocabularies into six pages hides none of them from somebody scanning for one.
  *
  * There is one privilege here, `is_staff`, so there is no per-model permission
  * matrix to reflect: anyone who can see this page can reach everything on it.
@@ -67,7 +71,7 @@ export default async function AdminIndexPage() {
 
       {ADMIN_GROUPS.map((group) => {
         const Icon = GROUP_ICON[group];
-        const entries = entriesInGroup(group);
+        const items = navItemsInGroup(group);
 
         return (
           <section key={group}>
@@ -79,17 +83,17 @@ export default async function AdminIndexPage() {
                 <Icon height={15} width={15} />
               </span>
               <h2 className="text-sm font-medium text-zinc-300">{group}</h2>
-              <span className="text-xs text-zinc-600 tabular-nums">{entries.length}</span>
+              <span className="text-xs text-zinc-600 tabular-nums">{items.length}</span>
               {/* A rule that starts where the heading ends, so eight sections
                   read as one column rather than eight separate boxes. */}
               <span aria-hidden="true" className="ml-1 h-px flex-1 bg-zinc-800" />
             </div>
 
             <ul className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
-              {entries.map((entry) => (
-                <li key={entry.key}>
+              {items.map((item) => (
+                <li key={item.href}>
                   <Link
-                    href={`/admin/${entry.key}` as Route}
+                    href={item.href as Route}
                     /*
                       Border and background only. This site has no shadows
                       anywhere, so a card that lifted on hover would be the one
@@ -100,9 +104,9 @@ export default async function AdminIndexPage() {
                   >
                     <div className="flex items-center gap-2">
                       <span className="truncate text-sm font-medium text-zinc-200">
-                        {entry.labelPlural}
+                        {item.label}
                       </span>
-                      {entry.singleton && (
+                      {item.singleton && (
                         <span className="shrink-0 rounded-full border border-zinc-800 px-1.5 py-0.5 text-[0.625rem] tracking-wide text-zinc-500 uppercase">
                           single row
                         </span>
@@ -112,7 +116,30 @@ export default async function AdminIndexPage() {
                         className="ml-auto shrink-0 text-zinc-700 transition-colors group-hover:text-indigo-400"
                       />
                     </div>
-                    <p className="mt-1.5 text-xs leading-relaxed text-zinc-500">{entry.blurb}</p>
+                    <p className="mt-1.5 text-xs leading-relaxed text-zinc-500">{item.blurb}</p>
+                    {/*
+                      A section's tabs, named. The rail lists the section rather
+                      than its tabs now, so this is the only place a vocabulary is
+                      written out at all -- without it Settings offers six names
+                      for seventeen screens, and somebody looking for work modes
+                      has nowhere left to find the word.
+
+                      It wraps, and nothing caps it. Job preferences joins six
+                      labels into 117 characters, and the narrowest box this
+                      paragraph gets is 289px -- three columns at exactly 1280,
+                      which is narrower than the single column at 390. Clipping
+                      to one line showed two of the six names there; capping at
+                      two still cut the last one, measured. Any cap is a number
+                      that holds until somebody adds a tab, and a cap that cuts a
+                      name is this paragraph failing at the one thing it is for.
+                      The cards stretch to their row, so a taller one costs only
+                      the row's height.
+                    */}
+                    {item.tabs && (
+                      <p className="mt-2 text-[0.6875rem] text-zinc-600">
+                        {item.tabs.map((tab) => tab.labelPlural).join(" · ")}
+                      </p>
+                    )}
                   </Link>
                 </li>
               ))}

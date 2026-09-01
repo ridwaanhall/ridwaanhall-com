@@ -26,7 +26,8 @@ import {
   ADMIN_ENTRIES,
   ADMIN_ENTRIES_BY_KEY,
   ADMIN_GROUPS,
-  entriesInGroup,
+  ADMIN_SECTIONS_BY_KEY,
+  navItemsInGroup,
   type AdminGroup,
 } from "@/lib/admin/registry";
 import { cn } from "@/lib/utils/cn";
@@ -58,13 +59,22 @@ const WIDE = "(min-width: 64rem)";
 
 /** The group a URL is inside, or `null` for the index and anything unknown. */
 function groupForPath(pathname: string): AdminGroup | null {
-  // `/admin/<key>/…` -- one flat segment, which is what the registry keys on.
   const key = pathname.split("/")[2];
   if (!key) return null;
-  return ADMIN_ENTRIES_BY_KEY.get(key)?.group ?? null;
+  // A section is a first segment too, and it is the one that names the group
+  // for every tab under it.
+  return (
+    ADMIN_SECTIONS_BY_KEY.get(key)?.group ?? ADMIN_ENTRIES_BY_KEY.get(key)?.group ?? null
+  );
 }
 
-/** The entries of one group, drawn the same way in the panel and the flyout. */
+/**
+ * The rows of one group, drawn the same way in the panel and the flyout.
+ *
+ * A section is one row standing in for its tabs, so the current test is on
+ * `match` and not on `href`: a section's `href` is its first tab, and matching
+ * on that would drop the marker the moment any other tab is the open one.
+ */
 function GroupEntries({
   group,
   pathname,
@@ -76,14 +86,13 @@ function GroupEntries({
 }) {
   return (
     <ul className="space-y-0.5">
-      {entriesInGroup(group).map((entry) => {
-        const href = `/admin/${entry.key}` as Route;
-        const active = pathname === href || pathname.startsWith(`${href}/`);
+      {navItemsInGroup(group).map((item) => {
+        const active = pathname === item.match || pathname.startsWith(`${item.match}/`);
 
         return (
-          <li key={entry.key}>
+          <li key={item.href}>
             <Link
-              href={href}
+              href={item.href as Route}
               onClick={onNavigate}
               aria-current={active ? "page" : undefined}
               /*
@@ -98,8 +107,8 @@ function GroupEntries({
                   : "text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200",
               )}
             >
-              <span className="truncate">{entry.labelPlural}</span>
-              {entry.singleton && (
+              <span className="truncate">{item.label}</span>
+              {item.singleton && (
                 <span className="ml-auto shrink-0 text-[0.625rem] tracking-wide text-zinc-600 uppercase">
                   one
                 </span>
@@ -471,7 +480,7 @@ export function AdminSidebar({
                         mini && "lg:hidden",
                       )}
                     >
-                      {entriesInGroup(group).length}
+                      {navItemsInGroup(group).length}
                     </span>
                     <ChevronIcon
                       aria-hidden="true"

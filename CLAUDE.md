@@ -378,6 +378,35 @@ Two smaller things that cost an afternoon each:
   `check-admin-controls.mjs` runs, is scripting **on** with
   `**/_next/static/chunks/**` blocked.
 
+### `/admin/<a>/<b>` is two shapes behind one route
+
+The second segment carries a record id for an ordinary model and a tab key for
+a section, and the file-system router cannot tell those apart -- both are
+`/admin/[model]/[sub]`, and both segments are strings on either side of the
+boundary. A URL assembled by hand therefore type checks, builds, lints, and
+only fails once a browser actually requests it and lands on "No such screen."
+`adminPath` is the only place an admin URL is built, and `resolveAdminRoute`
+the only place one is read back into a record or a tab; every route under
+`[model]/[sub]` asks it rather than parsing the segments itself.
+
+Worth naming the concrete consequence that already bit during this work: the
+post-create redirect in `lib/actions/admin.ts` kept building a flat URL after
+sections shipped, so Save on a settings form saved the row correctly and then
+landed on "No such screen" — a working save that reads as a failed one, and
+nothing short of clicking Save on that particular screen would have shown it.
+
+The skeleton beside `[model]/[sub]/(index)` stands in front of both shapes and
+cannot tell them apart either, because `loading.tsx` receives no params. It
+draws the commoner shape — a record form — and that shape is up for longer
+than a params await accounts for: the page's first await is the staff gate,
+not `params`, and the gate still blocks on a round trip to Supabase even
+though it shares its query with the layout's own check rather than issuing a
+second one. Only once the gate has answered does the tab branch open a
+fallback of its own, for the list beneath its header and strip; the record
+branch has nothing to show first and renders straight into the one already on
+screen. This is the same trade `components/admin/changelist-skeleton.tsx`
+already documents for singletons.
+
 ### Tailwind scans prose, and prose names classes
 
 Tailwind v4 walks every non-gitignored file and treats any word that parses as a

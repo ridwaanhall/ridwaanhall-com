@@ -1,19 +1,17 @@
-import type { Metadata } from "next";
+import "server-only";
+
 import type { Route } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
 
 import { BackIcon } from "@/components/admin/admin-icons";
 import { NothingHere } from "@/components/admin/nothing-here";
 import { RecordForm } from "@/components/admin/record-form";
-import { RecordSkeleton } from "@/components/admin/record-skeleton";
 import { toClientFieldsets, toClientInlines } from "@/lib/admin/form";
 import { loadInlineRows } from "@/lib/admin/inlines";
 import { imageUrlMap } from "@/lib/admin/media";
 import { formModelFor } from "@/lib/admin/models";
 import { loadFormValues, loadReferenceOptions } from "@/lib/admin/record";
-import { ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
-import { requireStaff } from "@/lib/auth/staff";
+import { adminPath, type AdminEntry } from "@/lib/admin/registry";
 
 /**
  * One record: the change form for it.
@@ -23,54 +21,30 @@ import { requireStaff } from "@/lib/auth/staff";
  * the moment its list exists, and a model gains editing by gaining a form
  * descriptor -- nothing in this file changes for it.
  *
- * The page component is deliberately **not** `async`: it hands the `params`
- * promise down and `Record` awaits it inside the boundary, so moving between a
- * changelist and a row paints the frame at once and streams the record into it.
- * The admin's chrome is already on screen for that navigation, and the layout
- * above still blocks on `staffGate` -- a shell that showed the sidebar before
- * the gate resolved would flash the whole admin at someone not entitled to it.
+ * **A module rather than a page, because two routes draw it.** A row of an
+ * ordinary model is at `/admin/<model>/<id>` and a row of a sectioned
+ * vocabulary is at `/admin/<section>/<tab>/<id>`, which are different route
+ * files with the same content below the URL. Two copies of a form loader is
+ * the shape this repository keeps catching: one of them gains a fix the other
+ * does not.
+ *
+ * It is handed the entry and the id already resolved, and neither gates nor
+ * parses. `resolveAdminRoute` is the only thing that can tell a record URL
+ * from a section's tab, and it has run -- after `requireStaff()` -- in the
+ * route that renders this.
+ *
+ * `server-only` at the head because it calls `loadFormValues` and
+ * `loadReferenceOptions`: a client module that imported it by accident should
+ * fail at the import rather than at the query.
  */
-type Params = PageProps<"/admin/[model]/[id]">["params"];
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Params;
-}): Promise<Metadata> {
-  const { model } = await params;
-  const entry = ADMIN_ENTRIES_BY_KEY.get(model);
-  return { title: entry ? `${entry.label} · Admin` : "Admin" };
-}
-
-export default function AdminDetailPage(props: PageProps<"/admin/[model]/[id]">) {
-  return (
-    <div className="admin-fade space-y-5">
-      <Suspense fallback={<RecordSkeleton />}>
-        <Record params={props.params} />
-      </Suspense>
-    </div>
-  );
-}
-
-async function Record({ params }: { params: Params }) {
-  await requireStaff();
-
-  const { model: key, id } = await params;
-  const entry = ADMIN_ENTRIES_BY_KEY.get(key);
-  /*
-   * Rendered, not thrown. `notFound()` inside this boundary resolves it to
-   * nothing once the shell is committed, leaving a blank page -- see the note
-   * on `NothingHere`.
-   */
-  if (!entry) return <NothingHere message="No such model." />;
-
+export async function RecordScreen({ entry, id }: { entry: AdminEntry; id: string }) {
   const recordId = id;
-  const form = formModelFor(key);
+  const form = formModelFor(entry.key);
   const missing = (
     <NothingHere
       message={`There is no ${entry.label.toLowerCase()} with id ${id}. It may have been deleted.`}
       backLabel={entry.labelPlural}
-      backHref={`/admin/${entry.key}` as Route}
+      backHref={adminPath(entry) as Route}
     />
   );
 
@@ -92,10 +66,10 @@ async function Record({ params }: { params: Params }) {
 
     return (
       <>
-        <Crumb label={entry.labelPlural} href={`/admin/${entry.key}` as Route} />
+        <Crumb label={entry.labelPlural} href={adminPath(entry) as Route} />
         <Heading title={label} type={entry.label} id={recordId} />
         <RecordForm
-          modelKey={key}
+          modelKey={entry.key}
           id={recordId}
           fieldsets={toClientFieldsets(form, referenceOptions, recordId)}
           inlines={toClientInlines(form, referenceOptions)}
@@ -106,7 +80,7 @@ async function Record({ params }: { params: Params }) {
           typeLabel={entry.label}
           canDelete={form.canDelete !== false}
           deleteWarning={form.deleteWarning}
-          listHref={`/admin/${entry.key}` as Route}
+          listHref={adminPath(entry) as Route}
         />
       </>
     );

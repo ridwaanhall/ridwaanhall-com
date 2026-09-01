@@ -35,6 +35,7 @@ const { chromium } = await import("playwright");
 const { staffAccountId, nonStaffAccountId } = await import("./fixture-ids.mjs");
 const { encode } = await import("next-auth/jwt");
 const { db, pool } = await import("../lib/db/client.ts");
+const { ADMIN_ENTRIES_BY_KEY, adminPath } = await import("../lib/admin/registry.ts");
 const { category, guestMessage, organization, skill, account } = await import(
   "../lib/db/app-schema.ts"
 );
@@ -47,6 +48,24 @@ const COOKIE = "authjs.session-token";
 
 const STAFF_ID = await staffAccountId();
 const READER_ID = await nonStaffAccountId();
+
+/**
+ * Where a screen lives, asked of the registry rather than written down.
+ *
+ * `skill` and `organization` are Settings screens, which is to say tabs at
+ * `/admin/catalogue/<key>` -- and the flat `/admin/skill` is refused outright.
+ * Both halves of that URL are strings, so a stale literal here type checks,
+ * lints and drives a not-found page: `page.fill` then fails on a field that
+ * was never rendered, tens of lines after the mistake. `adminPath` is the one
+ * place either shape is built, so the next move needs no edit in this file.
+ */
+const screen = (key) => {
+  const entry = ADMIN_ENTRIES_BY_KEY.get(key);
+  if (!entry) throw new Error(`${key} is not a registered admin screen`);
+  return adminPath(entry);
+};
+const SKILL = screen("skill");
+const ORGANIZATION = screen("organization");
 
 /** Distinctive enough that a leftover row is obviously this script's. */
 const MARK = `zz-admin-form-check-${Date.now()}`;
@@ -151,7 +170,7 @@ const keyOf = async (id) => (id ? await keyForMediaId(id) : "");
 
 try {
   // --- create ---------------------------------------------------------------
-  await page.goto(`${BASE}/admin/skill/new`, { waitUntil: "load" });
+  await page.goto(`${BASE}${SKILL}/new`, { waitUntil: "load" });
   await page.waitForTimeout(600);
 
   await fill("name", `${MARK} One`);
@@ -178,14 +197,26 @@ try {
   if (made) created.push(made.id);
   check("a record is created", Boolean(made), made ? `#${made.id}` : "no row");
   check("the slug filled itself from the name", made?.slug === `${MARK.toLowerCase()}-one`, made?.slug ?? "");
-  check(
-    "and the browser landed on the new record",
-    page.url().includes(`/admin/skill/${made?.id}`),
-    page.url().replace(BASE, ""),
-  );
+  /*
+   * Waited for, not sampled after `submit()`'s fixed pause.
+   *
+   * The create action redirects, and a Settings screen's record now lives one
+   * segment deeper -- `/admin/<section>/<key>/<id>` is a different route file
+   * from the form that posted it, so on a cold dev server the navigation is
+   * behind a first compile of that route and outruns any pause worth writing.
+   * The fixed sleep only ever measured how busy the machine was; this is the
+   * same repair the delete at the end of this file already carries.
+   */
+  const onRecord = made
+    ? await page
+        .waitForURL((url) => url.pathname === `${SKILL}/${made.id}`, { timeout: 15000 })
+        .then(() => true)
+        .catch(() => false)
+    : false;
+  check("and the browser landed on the new record", onRecord, page.url().replace(BASE, ""));
 
   // --- the site sees it immediately -----------------------------------------
-  const listed = await page.goto(`${BASE}/admin/skill?q=${encodeURIComponent(MARK)}`, {
+  const listed = await page.goto(`${BASE}${SKILL}?q=${encodeURIComponent(MARK)}`, {
     waitUntil: "load",
   });
   await page.waitForTimeout(500);
@@ -195,7 +226,7 @@ try {
   );
 
   // --- update ---------------------------------------------------------------
-  await page.goto(`${BASE}/admin/skill/${made.id}`, { waitUntil: "load" });
+  await page.goto(`${BASE}${SKILL}/${made.id}`, { waitUntil: "load" });
   await page.waitForTimeout(500);
   await choose("categoryId", secondCategory.id);
   await submit();
@@ -212,7 +243,7 @@ try {
   check("and it is confirmed in words the server chose", (await toast()).includes("Saved"));
 
   // --- validation -----------------------------------------------------------
-  await page.goto(`${BASE}/admin/skill/${made.id}`, { waitUntil: "load" });
+  await page.goto(`${BASE}${SKILL}/${made.id}`, { waitUntil: "load" });
   await page.waitForTimeout(500);
   await fill("slug", "Not A Slug!");
   // `noValidate` is set on the element rather than the markup so the browser
@@ -239,7 +270,7 @@ try {
     .from(skill)
     .where(ne(skill.id, made.id))
     .limit(1);
-  await page.goto(`${BASE}/admin/skill/${made.id}`, { waitUntil: "load" });
+  await page.goto(`${BASE}${SKILL}/${made.id}`, { waitUntil: "load" });
   await page.waitForTimeout(500);
   await fill("slug", existing.slug);
   await submit();
@@ -317,7 +348,7 @@ try {
    * fixed.
    */
   for (const key of ["user", "profile", "hiring-profile", "open-to-work-profile"]) {
-    await page.goto(`${BASE}/admin/${key}/new`, { waitUntil: "load" });
+    await page.goto(`${BASE}${screen(key)}/new`, { waitUntil: "load" });
     await page.waitForTimeout(600);
     // Asserted on what renders, not on the status: the route is dynamic, so
     // `notFound()` cannot set one. And on the *rendered* text rather than the
@@ -331,7 +362,7 @@ try {
   }
 
   for (const key of ["chat-message", "user-profile", "comment"]) {
-    await page.goto(`${BASE}/admin/${key}/new`, { waitUntil: "load" });
+    await page.goto(`${BASE}${screen(key)}/new`, { waitUntil: "load" });
     await page.waitForTimeout(600);
     const form = await page.locator('button[type="submit"]:text-matches("Create")').count();
     // The author is the point of the check as much as the button is: these are
@@ -389,7 +420,7 @@ try {
    * is being checked is that a replaced file is cleaned up and a removed one
    * too, which is a property of the save action and not of the storage client.
    */
-  await page.goto(`${BASE}/admin/organization/new`, { waitUntil: "load" });
+  await page.goto(`${BASE}${ORGANIZATION}/new`, { waitUntil: "load" });
   await page.waitForTimeout(600);
   await fill("name", `${MARK} Org`);
   await page.setInputFiles('input[type="file"]', {
@@ -409,7 +440,7 @@ try {
   check("an upload is stored against the record", Boolean(org?.logoId), firstKey || "no row");
   check("and the object is in the bucket", firstKey ? await objectExists(firstKey) : false);
 
-  await page.goto(`${BASE}/admin/organization/${org.id}`, { waitUntil: "load" });
+  await page.goto(`${BASE}${ORGANIZATION}/${org.id}`, { waitUntil: "load" });
   await page.waitForTimeout(600);
   await page.setInputFiles('input[type="file"]', {
     name: "second-logo.gif",
@@ -431,7 +462,7 @@ try {
     firstKey,
   );
 
-  await page.goto(`${BASE}/admin/organization/${org.id}`, { waitUntil: "load" });
+  await page.goto(`${BASE}${ORGANIZATION}/${org.id}`, { waitUntil: "load" });
   await page.waitForTimeout(600);
   // The form field is `logo`; `logoId` is the column behind it.
   await page.check('input[name="logo__clear"]');
@@ -446,7 +477,7 @@ try {
 
   // Saving an unrelated field must not blank the image. An empty file input is
   // "not edited", never "make it empty".
-  await page.goto(`${BASE}/admin/organization/${org.id}`, { waitUntil: "load" });
+  await page.goto(`${BASE}${ORGANIZATION}/${org.id}`, { waitUntil: "load" });
   await page.waitForTimeout(600);
   await page.setInputFiles('input[type="file"]', {
     name: "third-logo.png",
@@ -454,7 +485,7 @@ try {
     buffer: PNG,
   });
   await submit();
-  await page.goto(`${BASE}/admin/organization/${org.id}`, { waitUntil: "load" });
+  await page.goto(`${BASE}${ORGANIZATION}/${org.id}`, { waitUntil: "load" });
   await page.waitForTimeout(600);
   await fill("website", "https://example.com");
   await submit();
@@ -484,7 +515,7 @@ try {
   check("and its image with it", (await objectExists(survivor)) === false, survivor);
 
   // --- delete ---------------------------------------------------------------
-  await page.goto(`${BASE}/admin/skill/${made.id}`, { waitUntil: "load" });
+  await page.goto(`${BASE}${SKILL}/${made.id}`, { waitUntil: "load" });
   await page.waitForTimeout(500);
   await page.locator('button:has-text("Delete")').first().click();
   await page.waitForTimeout(500);
@@ -507,7 +538,7 @@ try {
    * ever measures how busy the machine is.
    */
   const landed = await page
-    .waitForURL((url) => url.pathname === "/admin/skill", { timeout: 15000 })
+    .waitForURL((url) => url.pathname === SKILL, { timeout: 15000 })
     .then(() => true)
     .catch(() => false);
 

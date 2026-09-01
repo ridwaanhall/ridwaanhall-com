@@ -3,7 +3,16 @@ import { describe, it } from "node:test";
 
 import { formFields } from "./form";
 import { ADMIN_FORM_MODELS, ADMIN_LIST_MODELS } from "./models";
-import { ADMIN_ENTRIES, ADMIN_ENTRIES_BY_KEY, ADMIN_GROUPS } from "./registry";
+import {
+  ADMIN_ENTRIES,
+  ADMIN_ENTRIES_BY_KEY,
+  ADMIN_GROUPS,
+  ADMIN_SECTIONS,
+  adminPath,
+  entriesInGroup,
+  navItemsInGroup,
+  sectionTabs,
+} from "./registry";
 
 /*
  * The admin is declarative: a screen is an entry here plus a descriptor there,
@@ -225,5 +234,143 @@ describe("every form descriptor", () => {
         assert.ok(model.deleteWarning, `${key}: deletes children but offers no warning`);
       }
     }
+  });
+});
+
+describe("the settings sections", () => {
+  /*
+   * A section key and a model key share one URL segment, so they share one
+   * namespace -- and nothing in the type system says so, since both are
+   * strings. `/admin/taxonomy` can be a section or a model, never both.
+   */
+  it("keeps section keys clear of model keys", () => {
+    const modelKeys = new Set(ADMIN_ENTRIES.map((entry) => entry.key));
+    for (const section of ADMIN_SECTIONS) {
+      assert.ok(!modelKeys.has(section.key), `${section.key} is both a section and a model`);
+    }
+  });
+
+  it("gives every section a unique key", () => {
+    const keys = ADMIN_SECTIONS.map((section) => section.key);
+    assert.equal(new Set(keys).size, keys.length, "duplicate section key");
+  });
+
+  it("gives every section a key a URL can carry", () => {
+    for (const section of ADMIN_SECTIONS) {
+      assert.match(section.key, /^[a-z0-9-]+$/, `${section.key} is not URL-safe`);
+    }
+  });
+
+  it("gives every section the label and blurb its screens render", () => {
+    for (const section of ADMIN_SECTIONS) {
+      assert.ok(section.label, `${section.key}: no label`);
+      assert.ok(section.blurb, `${section.key}: no blurb`);
+      assert.ok(ADMIN_GROUPS.includes(section.group), `${section.key}: unknown group`);
+    }
+  });
+
+  // A section with no tabs is a sidebar entry linking to nothing.
+  it("gives every section at least one tab", () => {
+    for (const section of ADMIN_SECTIONS) {
+      assert.ok(sectionTabs(section.key).length > 0, `${section.key} has no tabs`);
+    }
+  });
+
+  it("names a section that exists", () => {
+    const keys = new Set(ADMIN_SECTIONS.map((section) => section.key));
+    for (const entry of ADMIN_ENTRIES) {
+      if (!entry.section) continue;
+      assert.ok(keys.has(entry.section), `${entry.key} names no such section`);
+    }
+  });
+
+  /*
+   * The whole point of the change: without this, a vocabulary added later
+   * falls back to the top level and reappears as a row in the rail.
+   */
+  it("puts every Settings entry in a section", () => {
+    for (const entry of ADMIN_ENTRIES) {
+      if (entry.group !== "Settings") continue;
+      assert.ok(entry.section, `${entry.key} is in Settings with no section`);
+    }
+  });
+
+  it("keeps a section's tabs in the section's own group", () => {
+    for (const section of ADMIN_SECTIONS) {
+      for (const tab of sectionTabs(section.key)) {
+        assert.equal(tab.group, section.group, `${tab.key} is not in ${section.group}`);
+      }
+    }
+  });
+});
+
+describe("adminPath", () => {
+  it("puts a sectioned screen under its section", () => {
+    assert.equal(adminPath(ADMIN_ENTRIES_BY_KEY.get("tag")!), "/admin/taxonomy/tag");
+  });
+
+  it("leaves an unsectioned screen flat", () => {
+    assert.equal(adminPath(ADMIN_ENTRIES_BY_KEY.get("blog-post")!), "/admin/blog-post");
+  });
+
+  it("builds a path a URL can carry for every entry", () => {
+    for (const entry of ADMIN_ENTRIES) {
+      assert.match(adminPath(entry), /^\/admin\/[a-z0-9-]+(\/[a-z0-9-]+)?$/);
+    }
+  });
+});
+
+describe("navItemsInGroup", () => {
+  it("collapses Settings to one row per section", () => {
+    assert.equal(navItemsInGroup("Settings").length, ADMIN_SECTIONS.length);
+  });
+
+  it("points a section at its first tab, so one click lands on a screen", () => {
+    const taxonomy = navItemsInGroup("Settings").find((item) => item.label === "Taxonomy");
+    assert.equal(taxonomy?.href, "/admin/taxonomy/category");
+  });
+
+  it("lists a group's sections in ADMIN_SECTIONS order, not first-entry order", () => {
+    assert.deepEqual(
+      navItemsInGroup("Settings").map((item) => item.label),
+      ["Catalogue", "Taxonomy", "Work", "Applying", "Job preferences", "Publishing"],
+    );
+  });
+
+  /*
+   * The sidebar's current test is `pathname === match || startsWith(match + "/")`.
+   * Without a prefix distinct from `href`, opening the second tab would
+   * un-highlight the section holding it.
+   */
+  it("marks a section current from any of its tabs", () => {
+    for (const item of navItemsInGroup("Settings")) {
+      assert.ok(item.tabs?.length, `${item.label} carries no tabs`);
+      for (const tab of item.tabs ?? []) {
+        assert.ok(
+          adminPath(tab).startsWith(`${item.match}/`),
+          `${tab.key} is not under ${item.match}`,
+        );
+      }
+    }
+  });
+
+  it("leaves a group with no sections as one row per entry", () => {
+    assert.equal(navItemsInGroup("About").length, entriesInGroup("About").length);
+  });
+
+  it("carries the singleton flag through, since the rail prints it", () => {
+    const profile = navItemsInGroup("About").find((item) => item.href === "/admin/profile");
+    assert.equal(profile?.singleton, true);
+  });
+
+  it("lists every screen exactly once, as a row or as a tab", () => {
+    const reachable = new Set<string>();
+    for (const group of ADMIN_GROUPS) {
+      for (const item of navItemsInGroup(group)) {
+        if (item.tabs) for (const tab of item.tabs) reachable.add(adminPath(tab));
+        else reachable.add(item.href);
+      }
+    }
+    assert.equal(reachable.size, ADMIN_ENTRIES.length);
   });
 });

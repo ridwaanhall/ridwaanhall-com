@@ -1,22 +1,21 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import type { Metadata, Route } from "next";
+import { notFound, redirect } from "next/navigation";
 
-import { Changelist } from "@/components/admin/changelist";
-import {
-  distinctChoices,
-  fetchAdminList,
-  needsLookup,
-  readListParams,
-  relatedChoices,
-  type FilterChoice,
-} from "@/lib/admin/list";
+import { ChangelistScreen } from "@/components/admin/changelist-screen";
 import { formModelFor, listModelFor } from "@/lib/admin/models";
 import { RecordForm } from "@/components/admin/record-form";
 import { toClientFieldsets, toClientInlines } from "@/lib/admin/form";
 import { loadInlineRows } from "@/lib/admin/inlines";
 import { imageUrlMap } from "@/lib/admin/media";
 import { loadFormValues, loadReferenceOptions, singletonId } from "@/lib/admin/record";
-import { ADMIN_ENTRIES, ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
+import {
+  ADMIN_ENTRIES,
+  ADMIN_ENTRIES_BY_KEY,
+  ADMIN_SECTIONS,
+  ADMIN_SECTIONS_BY_KEY,
+  adminPath,
+  sectionTabs,
+} from "@/lib/admin/registry";
 import { requireStaff } from "@/lib/auth/staff";
 
 /**
@@ -41,13 +40,19 @@ type Params = { params: Promise<{ model: string }>; searchParams: Promise<Record
  * intent directly and is rejected outright under `cacheComponents`.
  */
 export function generateStaticParams() {
-  return ADMIN_ENTRIES.map((entry) => ({ model: entry.key }));
+  return [
+    ...ADMIN_ENTRIES.filter((entry) => !entry.section).map((entry) => ({ model: entry.key })),
+    ...ADMIN_SECTIONS.map((section) => ({ model: section.key })),
+  ];
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { model } = await params;
   const entry = ADMIN_ENTRIES_BY_KEY.get(model);
-  return { title: entry ? `${entry.labelPlural} · Admin` : "Admin" };
+  // The same condition the page 404s on for a sectioned key, so `/admin/tag`
+  // does not sit in the browser's tab and history titled "Tags" for a screen
+  // that answers not-found -- see the `entry.section` check below.
+  return { title: entry && !entry.section ? `${entry.labelPlural} · Admin` : "Admin" };
 }
 
 /**
@@ -124,6 +129,23 @@ export default async function AdminListPage({ params, searchParams }: Params) {
   await requireStaff();
 
   const { model: key } = await params;
+
+  /*
+   * A section has no list of its own -- its first tab is the screen. The
+   * redirect is a 200 whose body carries the navigation, since reading the
+   * session has already made this route dynamic; that is fine here, because
+   * the rail links straight to the first tab and only a typed URL or an old
+   * bookmark arrives at this line.
+   */
+  const section = ADMIN_SECTIONS_BY_KEY.get(key);
+  if (section) {
+    const [first] = sectionTabs(section.key);
+    // `adminPath` returns a plain string built at runtime; it is the codebase's
+    // one function for the job, so the cast stands in for the check `typedRoutes`
+    // cannot run over a value it cannot see at compile time.
+    if (first) redirect(adminPath(first) as Route);
+  }
+
   const entry = ADMIN_ENTRIES_BY_KEY.get(key);
   const model = listModelFor(key);
   /*
@@ -137,34 +159,13 @@ export default async function AdminListPage({ params, searchParams }: Params) {
    * this status either, since the admin is gated, `noindex` and disallowed in
    * `robots.txt`, so what a person sees is the whole of what it costs.
    */
-  if (!entry) notFound();
+  // A sectioned screen lives under its section and nowhere else. The registry
+  // still resolves the key, so without this `/admin/tag` keeps answering
+  // beside `/admin/taxonomy/tag` -- one screen at two URLs.
+  if (!entry || entry.section) notFound();
   // A one-row model has no changelist to render; see `SingletonScreen`.
   if (entry.singleton) return <SingletonScreen entryKey={key} />;
   if (!model) notFound();
-
-  const form = formModelFor(key);
-  const listParams = readListParams(model, await searchParams);
-
-  // Filters that read their vocabulary from the data need a query each -- the
-  // values present for a `"distinct"` filter, the referenced rows for a foreign
-  // key. They are independent of the page query and of each other, so they all
-  // go at once rather than in sequence, the same way the public data layer fans
-  // out with `Promise.all`.
-  const lookups = (model.filters ?? []).filter(needsLookup);
-
-  const [page, ...resolved] = await Promise.all([
-    fetchAdminList(model, listParams),
-    ...lookups.map((filter) =>
-      filter.choices === "distinct"
-        ? distinctChoices(model.from, filter.column)
-        : relatedChoices(model.from, filter.column, filter.choices),
-    ),
-  ]);
-
-  const filterChoices: Record<string, FilterChoice[]> = {};
-  lookups.forEach((filter, index) => {
-    filterChoices[filter.key] = resolved[index] ?? [];
-  });
 
   return (
     <div className="admin-fade space-y-4">
@@ -173,16 +174,12 @@ export default async function AdminListPage({ params, searchParams }: Params) {
         <p className="mt-1 text-sm text-zinc-400">{entry.blurb}</p>
       </div>
 
-      <Changelist
-        entry={entry}
-        model={model}
-        params={listParams}
-        page={page}
-        filterChoices={filterChoices}
-        // A model with no form yet cannot create, and one whose descriptor says
-        // `canCreate: false` has a reason recorded there.
-        canCreate={form !== null && form.canCreate !== false}
-      />
+      {/*
+        The query and the table, shared with the tab route -- see
+        `changelist-screen.tsx`. The heading above it is not shared: this page
+        names the model, where a section's page names the section.
+      */}
+      <ChangelistScreen entry={entry} model={model} searchParams={searchParams} />
     </div>
   );
 }

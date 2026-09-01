@@ -32,7 +32,9 @@ config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { encode } = await import("next-auth/jwt");
-const { ADMIN_ENTRIES } = await import("../lib/admin/registry.ts");
+const { ADMIN_ENTRIES, ADMIN_SECTIONS, adminPath, sectionTabs } = await import(
+  "../lib/admin/registry.ts"
+);
 const { ADMIN_FORM_MODELS, ADMIN_LIST_MODELS } = await import("../lib/admin/models/index.ts");
 const { staffAccountId, nonStaffAccountId, idWhere } = await import("./fixture-ids.mjs");
 
@@ -129,6 +131,27 @@ const leaks = (body) => ROW_MARKERS.filter((marker) => body.includes(marker));
   check("non-staff: a record URL discloses nothing either", !body.includes("Commit Message Style Guide"));
 }
 
+{
+  // The one URL shape sections added: a tab route renders both a strip naming
+  // the section's other screens and a changelist of row data underneath it --
+  // the two things the gate exists to withhold, in one response. Built with
+  // `adminPath`, the same as every other URL in this file. The strip lives in
+  // the `<nav aria-label="… settings">` the section checks below also key on,
+  // rather than on a tab's `labelPlural`: that string also appears in the
+  // page's `<title>`, which `generateMetadata` sets without a staff check on
+  // every admin route -- a pre-existing, wider pattern this file has never
+  // asserted against and this check is not the place to start.
+  const [section] = ADMIN_SECTIONS;
+  const tabs = sectionTabs(section.key);
+  const { body } = await get(adminPath(tabs[0]), nonStaff);
+  const strip = body.includes(`<nav aria-label="${section.label} settings"`);
+  check(
+    "non-staff: a section tab URL discloses no tab strip and no table either",
+    !strip && !body.includes("<table"),
+    strip ? "tab strip present" : body.includes("<table") ? "table markup present" : "clean",
+  );
+}
+
 // --- the registry ------------------------------------------------------------
 
 {
@@ -168,6 +191,23 @@ const leaks = (body) => ROW_MARKERS.filter((marker) => body.includes(marker));
   check(
     "registry keys are unique",
     new Set(ADMIN_ENTRIES.map((entry) => entry.key)).size === ADMIN_ENTRIES.length,
+  );
+  /*
+   * And a section key is the same first segment as a model key, so the two are
+   * one namespace. Nothing in the type system says so -- `AdminSectionKey` and
+   * an entry's `key` are separate declarations that never meet, and both are
+   * strings. A collision costs one of the pair its URL: the list route resolves
+   * a section first, so the model behind the same word becomes unreachable
+   * while every check that only asks whether a page rendered still passes.
+   */
+  const modelKeys = new Set(ADMIN_ENTRIES.map((entry) => entry.key));
+  const collisions = ADMIN_SECTIONS.map((section) => section.key).filter((key) =>
+    modelKeys.has(key),
+  );
+  check(
+    "no section key collides with a model key",
+    collisions.length === 0,
+    collisions.join(", ") || `${ADMIN_SECTIONS.length} sections`,
   );
 }
 
@@ -307,7 +347,11 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
   const thin = [];
 
   for (const entry of ADMIN_ENTRIES) {
-    const { status, body } = await get(`/admin/${entry.key}`, staff);
+    // `adminPath`, never `/admin/${entry.key}`: half these screens are tabs on
+    // a Settings section now and answer at `/admin/<section>/<key>` alone, so a
+    // loop that builds the flat URL sweeps seventeen not-found pages and calls
+    // them broken -- or, worse, stops noticing the ones that are.
+    const { status, body } = await get(adminPath(entry), staff);
     if (entry.singleton) {
       // Its screen is a form, so what proves it rendered is a save button.
       if (status !== 200 || !body.includes("Save")) broken.push(`${entry.key} (${status})`);
@@ -352,6 +396,106 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
     named.length > 0,
     `${named.length} of ${rows(sections.body).length} on page 1`,
   );
+}
+
+// --- the settings sections ---------------------------------------------------
+
+/*
+ * Seventeen screens moved from `/admin/<key>` to `/admin/<section>/<key>`, and
+ * every part of that is a string: a caller left at the old URL type checks,
+ * lints, builds and answers a page with no list on it. The two checks below are
+ * halves of one claim and are only worth anything together -- "the old URL is
+ * gone" is satisfied by an admin where those screens stopped existing, and "the
+ * new URL works" is satisfied by one still serving both.
+ */
+{
+  const sectioned = ADMIN_ENTRIES.filter((entry) => entry.section);
+
+  /*
+   * Asserted on the absence of a changelist rather than on a status or on the
+   * not-found wording. The route is dynamic -- it reads the session before
+   * anything else -- so it cannot commit a 404; and in development the admin's
+   * not-found boundary rides along in *every* admin response's payload, so
+   * "Nothing here" appears on a perfectly good changelist too and says nothing
+   * about which page rendered. A table does.
+   */
+  const stillFlat = [];
+  for (const entry of sectioned) {
+    const stale = await get(`/admin/${entry.key}`, staff);
+    if (stale.body.includes("<table") || rows(stale.body).length) stillFlat.push(entry.key);
+  }
+  check(
+    "a sectioned screen no longer answers at the top level",
+    stillFlat.length === 0,
+    stillFlat.join(", ") || `${sectioned.length} keys refused`,
+  );
+
+  /*
+   * And one click from the rail lands on a working screen. A section's row
+   * points at its first tab, so that URL has to be a changelist with the
+   * section's whole strip above it, in the strip's own order.
+   */
+  for (const section of ADMIN_SECTIONS) {
+    const tabs = sectionTabs(section.key);
+    const [first] = tabs;
+
+    /*
+     * The section's *own* URL, not any tab's -- built by hand, the same way
+     * the stale flat URL above is, because `adminPath` takes an entry and a
+     * section is not one. This is the landing point for a typed URL or an old
+     * bookmark, and nothing else here drives it: every other check in this
+     * loop fetches `adminPath(first)` directly, which proves the tab page
+     * works but not that the section's own URL still finds it.
+     *
+     * Asserted on the redirect's destination rather than on its status. The
+     * route reads the session before anything else, which is what makes it
+     * dynamic, so `redirect()` cannot commit a 3xx any more than `notFound()`
+     * above can commit a 404 -- measured directly, this answers HTTP 200 with
+     * a `<meta http-equiv="refresh">` naming the destination in the body, the
+     * same "arrives after load" shape the redirect at sign-out has. Reading
+     * that destination, rather than merely checking a marker is present, is
+     * what would catch a redirect landing on the wrong tab.
+     */
+    const landing = await get(`/admin/${section.key}`, staff);
+    const redirectTarget = landing.body.match(
+      /<meta id="__next-page-redirect"[^>]*content="1;url=([^"]*)"/,
+    )?.[1];
+    check(
+      `${section.key}'s own URL lands on its first tab, ${first.key}`,
+      redirectTarget === adminPath(first),
+      redirectTarget ?? `no redirect marker found (status ${landing.status})`,
+    );
+
+    const { status, body } = await get(adminPath(first), staff);
+    /*
+     * The strip alone, and its links parsed rather than grepped.
+     *
+     * Scoped, because the rail marks this section's own row `aria-current` too
+     * and the streamed payload repeats both: the whole body reports four, and
+     * would report four with no strip on the page at all.
+     *
+     * Parsed, because these attributes do not come out in source order --
+     * `Link` renders `href` last, after the props passed through it, so the tag
+     * reads `<a aria-current="page" class="…" href="…">`. `check-admin.mjs`
+     * greps `<select name="category"` a few checks above precisely because that
+     * order *is* fixed; this one is Link's business and not this file's.
+     */
+    const strip =
+      body.split(`<nav aria-label="${section.label} settings"`)[1]?.split("</nav>")[0] ?? "";
+    const links = [...strip.matchAll(/<a\b([^>]*)>/g)].map((match) => match[1]);
+    const hrefs = links.map((attrs) => attrs.match(/href="([^"]*)"/)?.[1] ?? "");
+    const current = links.filter((attrs) => attrs.includes('aria-current="page"'));
+    check(
+      `${section.key} opens on ${first.key}, with a list and every tab beside it`,
+      status === 200 && body.includes("<table") && hrefs.join(" ") === tabs.map(adminPath).join(" "),
+      hrefs.join(" ") || "no tab strip",
+    );
+    check(
+      `and ${section.key} marks exactly one tab current, the open one`,
+      current.length === 1 && current[0].includes(`href="${adminPath(first)}"`),
+      `${current.length} marked`,
+    );
+  }
 }
 
 // --- layout ------------------------------------------------------------------

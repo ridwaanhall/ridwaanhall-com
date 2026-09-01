@@ -9,8 +9,9 @@ import { SkeletonBar } from "@/components/skeleton";
  * response bodies, payload included, and that is only survivable because there
  * is nothing here to leak.
  *
- * Its own module because three places want it: the detail page's own
- * `<Suspense>`, and the `loading.tsx` of both the detail and the create route.
+ * Its own module because six places want it: the `[sub]/(index)` and
+ * `[sub]/[id]` pages' own `<Suspense>` fallbacks, and the `loading.tsx` beside
+ * each of those two plus `[sub]/new` and the flat `[model]/new`.
  *
  * The legend bar above the card is not decoration. A fieldset's name sits
  * *outside* its card, so leaving it out made the card land 18px higher than the

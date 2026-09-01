@@ -364,6 +364,14 @@ Three things depend on that: the form saves before the bundle arrives,
 browser's own restore and autofill need a real control. `hidden` is what hides
 it — a hidden form control still submits, only a `disabled` one does not.
 
+**The image field inverts that last sentence, and it is the one place here that
+does.** Its switch chooses between an upload and a link, so the input it is not
+showing must *not* post — hiding alone would send a file that was chosen before
+the reader changed their mind, and the save would be refused for supplying both.
+So that one carries `hidden` **and** `disabled` together, applied only once
+hydrated, and `check-admin-controls.mjs` asserts both attributes rather than
+just the visible one.
+
 Two smaller things that cost an afternoon each:
 
 - **Attribute order is part of the contract.** React emits attributes in the
@@ -511,6 +519,31 @@ seen.
   `lib/storage/cleanup.ts` counts references over: unlinking the last skill that
   names an icon now deletes the object and its row for good, where before the
   delete aimed at a path that had never been in the bucket.
+- **An image field takes bytes from two places, and only one of them is a
+  file.** Beside the upload there is a box for a link, and the link is a
+  *source* of bytes rather than a place the site points at: `saveRecord` fetches
+  it, `lib/storage/link.ts` decides whether what came back is acceptable, and
+  the bytes are then stored under the same content-addressed key an upload gets.
+  So a linked image and an uploaded one are the same thing by the time anything
+  renders either — one `media_asset` row with `source: "storage"`, one entry in
+  the reference count, one URL.
+  **That is the whole reason the URL is not stored.** Rendering a foreign host
+  would need `images.remotePatterns` in `next.config.ts` opened to arbitrary
+  hostnames, which makes `/_next/image` an open image proxy for anyone who finds
+  it, and the CSP's `img-src` widened to all of `https:` — and every image on
+  the site would then depend on somebody else's server staying up and permitting
+  hotlinks.
+  Three things the fetch must keep doing, none of them visible to `tsc`:
+  the hostname is **resolved and checked against the private ranges**, on every
+  redirect hop, because a link is otherwise a way to make this server issue
+  requests inside its own network; the body is **capped while it streams**,
+  since a limit applied to a finished response is a report on memory already
+  spent; and the type is **read from the bytes, never from `Content-Type`**,
+  because that header is what Supabase then serves the object with, so
+  believing it stores a page of HTML and serves it as an image.
+  The rules are pure and tested offline in `lib/storage/link.test.ts` and
+  `lib/admin/image-source.test.ts`; `scripts/check-admin-image-link.mjs` drives
+  the rest against the live bucket.
 - **An email's dark mode is an overlay, and an inline style outranks a class.**
   `lib/email/layout.ts` writes the light palette inline on every element and
   repaints it from one `<style>` block under `prefers-color-scheme: dark`. Every
@@ -650,6 +683,7 @@ npx tsx scripts/check-account-panel.mjs                 # sign in / sign out, bo
 npx tsx --conditions=react-server scripts/check-turnstile.mjs
 npx tsx --conditions=react-server scripts/check-storage.mjs
 npx tsx --conditions=react-server scripts/check-admin-media.mjs   # the id/key seam
+npx tsx --conditions=react-server scripts/check-admin-image-link.mjs # upload and link, one bucket
 npx tsx scripts/check-admin.mjs
 npx tsx scripts/check-admin-nav.mjs                     # one group open, and a rail that remembers
 npx tsx --conditions=react-server scripts/check-admin-console.mjs

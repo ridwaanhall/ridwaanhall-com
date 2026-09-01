@@ -1,12 +1,13 @@
 import { useState } from "react";
 
+import { BOXED_LABEL, CONTROL, INVALID } from "@/components/admin/control-classes";
 import { AdminDatePicker, toInputValue } from "@/components/admin/controls/date-picker";
 import { AdminSelect } from "@/components/admin/controls/select";
+import { ImageField } from "@/components/admin/image-field";
 import { KeyValueEditor, StringListEditor } from "@/components/admin/json-fields";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { adminDateTime } from "@/lib/admin/format";
-import { clearFieldName, optionLabel, type ClientField, type FormValues } from "@/lib/admin/form";
-import { IMAGE_TYPES } from "@/lib/storage/keys";
+import { optionLabel, type ClientField, type FormValues } from "@/lib/admin/form";
 import { cn } from "@/lib/utils/cn";
 
 /**
@@ -18,22 +19,6 @@ import { cn } from "@/lib/utils/cn";
  * browser and handled the same way; keeping the inputs uncontrolled is what
  * makes that true rather than nominally true.
  */
-const CONTROL =
-  "w-full rounded-md border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-200 placeholder-zinc-500 transition-colors hover:border-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
-
-const INVALID = "border-red-800 hover:border-red-700";
-
-/**
- * A label that wraps its own control, sized to the two of them and no further.
- *
- * `w-fit` and `self-start` are the whole point of this being one string. A
- * label activates its control from anywhere inside its box, and these labels
- * are laid out as grid or flex items, which are stretched to their cell by
- * default -- so the box was the width of the column and the height of the
- * tallest thing beside it, and every one of those empty pixels toggled a
- * checkbox. "Featured" was 477px wide around 83px of text.
- */
-const BOXED_LABEL = "flex w-fit items-center gap-2 self-start";
 
 export function Field({
   field,
@@ -223,49 +208,17 @@ export function Field({
   }
 
   if (field.kind === "image") {
-    const key = typeof value === "string" ? value : "";
     return (
       <Row field={field} id={id} describedBy={describedBy} error={error}>
-        <div className="space-y-2">
-          {key ? (
-            <div className="flex items-start gap-3">
-              {/*
-                A plain `img`, not `next/image`. The optimizer would cache a
-                derivative of a file that is about to be replaced, and the point
-                of this control is to show what is stored right now.
-              */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={imageUrls?.[name] ?? ""}
-                alt=""
-                className="h-16 w-16 rounded-md border border-zinc-800 object-contain"
-              />
-              <div className="min-w-0 flex-1">
-                <code className="block truncate text-xs break-all text-zinc-500">{key}</code>
-                {!field.required && (
-                  <label className={cn(BOXED_LABEL, "mt-1.5 text-xs text-zinc-400")}>
-                    <input
-                      type="checkbox"
-                      name={clearFieldName(name)}
-                      className="admin-check admin-check-sm"
-                    />
-                    Remove this image
-                  </label>
-                )}
-              </div>
-            </div>
-          ) : (
-            <p className="text-xs text-zinc-500">No image.</p>
-          )}
-          <input
-            type="file"
-            id={id}
-            name={name}
-            accept={Object.keys(IMAGE_TYPES).join(",")}
-            aria-describedby={describedBy || undefined}
-            className="admin-file block w-full text-xs text-zinc-400"
-          />
-        </div>
+        <ImageField
+          field={field}
+          name={name}
+          id={id}
+          describedBy={describedBy}
+          invalid={Boolean(error)}
+          storedKey={typeof value === "string" ? value : ""}
+          previewUrl={imageUrls?.[name] ?? ""}
+        />
       </Row>
     );
   }

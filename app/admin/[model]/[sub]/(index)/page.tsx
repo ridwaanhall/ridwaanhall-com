@@ -37,13 +37,19 @@ export async function generateMetadata({
  * **The gate runs before the branch.** Not only before a query: the tab strip
  * names screens, and the admin index already refuses to show a non-staff
  * reader the shape of this place. `getStaffUser` is wrapped in React's
- * request memo and the layout has already called it, so this costs no second
- * query.
+ * request memo and the layout has already called it, so `Sub`'s own call
+ * shares that single query rather than issuing a second one -- but it still
+ * blocks on that query's round trip to Supabase. `requireStaff()` is `Sub`'s
+ * first await, not `params`, so the outer boundary's fallback is up for a
+ * network hop on every settings-tab navigation, not a microtask. That is why
+ * `loading.tsx` beside this file draws a record form: the wrong furniture is
+ * up for the gate, and it is the far commoner of the two shapes underneath.
  *
- * Both branches then stream. The outer boundary covers the gate and the
- * params, which is why `loading.tsx` beside this file draws a record form: it
- * is the far commoner of the two, and the wrong furniture is on screen only
- * for that gap. Each branch draws its own correct stand-in below.
+ * Only the tab branch draws a second stand-in of its own, below, for the list
+ * that streams in under its header and strip. The record branch has nothing
+ * to show before its form, so it renders bare and leans on the outer
+ * boundary alone -- a second `<Suspense>` there would carry the same
+ * fallback as the one already covering it.
  */
 export default function AdminSubPage(props: PageProps<"/admin/[model]/[sub]">) {
   return (
@@ -75,9 +81,7 @@ async function Sub({
   if (route.kind === "record") {
     return (
       <div className="space-y-5">
-        <Suspense fallback={<RecordSkeleton />}>
-          <RecordScreen entry={route.entry} id={route.id} />
-        </Suspense>
+        <RecordScreen entry={route.entry} id={route.id} />
       </div>
     );
   }

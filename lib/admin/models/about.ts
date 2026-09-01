@@ -380,6 +380,12 @@ export const certificationList: AdminListModel<CertificationRow> = {
     placeholder: "Search title or organization",
   },
   defaultSort: { key: "issued", dir: "desc" },
+  /*
+   * The few that lead the about page lead this list too, so they can be found
+   * without paging through a hundred and eleven rows to reach them. Dropped the
+   * moment the reader sorts by anything else -- see `pinned` on the model.
+   */
+  pinned: certification.isFeatured,
   rowId: (row) => row.id,
 };
 
@@ -838,11 +844,6 @@ export const educationForm: AdminFormModel = {
       title: "Location",
       fields: [locationField(education.locationId)],
     },
-    {
-      title: "Achievements",
-      fields: [
-      ],
-    },
   ],
   inlines: [
     {
@@ -944,11 +945,6 @@ export const certificationForm: AdminFormModel = {
           kind: "checkbox",
           help: "Featured certifications lead the about page; the rest sit behind the LinkedIn link.",
         },
-      ],
-    },
-    {
-      title: "Achievements",
-      fields: [
       ],
     },
   ],

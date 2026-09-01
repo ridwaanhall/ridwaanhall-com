@@ -802,6 +802,16 @@ export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 /** The name of the checkbox that empties an image field. */
 export const clearFieldName = (field: string) => `${field}__clear`;
 
+/**
+ * The name of the text box that takes a link instead of a file.
+ *
+ * Derived from the field's name the same way the clear box is, so an inline row
+ * gets it prefixed for free: `positions:0:mediaId__link` posts alongside
+ * `positions:0:mediaId` without `applyImageFields` having to know which of the
+ * two shapes it is reading.
+ */
+export const linkFieldName = (field: string) => `${field}__link`;
+
 /** The inline as the browser needs it -- same rule as `toClientFieldsets`. */
 export function toClientInlines(
   model: AdminFormModel,

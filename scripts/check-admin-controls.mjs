@@ -428,7 +428,61 @@ try {
   }
 
   /* -----------------------------------------------------------------------
-     8. And all of it still works with nothing hydrated
+     8. The image field's switch, and the half of it that is invisible
+     -----------------------------------------------------------------------
+     An image field takes bytes from two places -- a file the browser posts, or
+     a link the server fetches -- and a switch chooses between them. Both inputs
+     are real and both render on the server, which is the same bargain every
+     control here makes.
+
+     What is worth asserting is the second attribute. The input the switch is
+     not showing is hidden **and disabled**, because a hidden form control still
+     submits and only a disabled one does not -- so hiding alone would post a
+     file that was chosen before the reader changed their mind and pasted a
+     link, and the save would be refused for supplying both. `hidden` on its own
+     is what every other control here wants, which is exactly why this one is
+     easy to write the same way and never notice.
+
+     `scripts/check-admin-image-link.mjs` drives what the two doors then do.
+     This is only about the control.
+  */
+  {
+    await page.goto(`${BASE}${SKILL}/new`, { waitUntil: "load" });
+    await page.waitForTimeout(1200);
+
+    const file = page.locator('input[type="file"]');
+    const link = page.locator('[name="iconId__link"]');
+    const toLink = page.locator('[aria-label="How to supply icon"] button:has-text("Link")');
+    const toUpload = page.locator('[aria-label="How to supply icon"] button:has-text("Upload")');
+
+    check("hydrated, the switch has taken over", (await toLink.count()) === 1);
+    check(
+      "and it opens on the file input, which is live",
+      (await file.isVisible()) && (await file.isEnabled()),
+    );
+    check(
+      "with the link box hidden and, crucially, disabled",
+      !(await link.isVisible()) && !(await link.isEnabled()),
+    );
+
+    await toLink.click();
+    await page.waitForTimeout(250);
+    check(
+      "choosing Link swaps which of the two is live",
+      (await link.isVisible()) && (await link.isEnabled()),
+    );
+    check(
+      "and takes the file input out of the submission",
+      !(await file.isVisible()) && !(await file.isEnabled()),
+    );
+
+    await toUpload.click();
+    await page.waitForTimeout(250);
+    check("and back", (await file.isEnabled()) && !(await link.isEnabled()));
+  }
+
+  /* -----------------------------------------------------------------------
+     9. And all of it still works with nothing hydrated
      -----------------------------------------------------------------------
      The whole design rests on this. Every drawn control is an enhancement over
      a real one, so a page whose bundle never arrives must still be a working

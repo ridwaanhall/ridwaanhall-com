@@ -226,6 +226,46 @@ describe("every form descriptor", () => {
     }
   });
 
+  /*
+   * An empty fieldset is not nothing on screen: `record-form.tsx` renders its
+   * legend and its bordered card regardless, so it draws a heading over an
+   * empty strip. It also counts towards the layout -- two fieldsets flow
+   * two-up, so one that holds nothing pushes the real fields into half the
+   * width and leaves dead space beside them.
+   *
+   * Both the certification and the education forms carried one, titled after
+   * the inline that follows them, and nothing objected: a descriptor is data,
+   * so `tsc` sees a valid `Fieldset` and the build sees a valid page.
+   */
+  it("gives every fieldset something to hold", () => {
+    for (const [key, model] of forms) {
+      for (const [index, fieldset] of model.fieldsets.entries()) {
+        assert.ok(
+          fieldset.fields.length > 0,
+          `${key}: fieldset ${index} (${fieldset.title ?? "untitled"}) has no fields`,
+        );
+      }
+    }
+  });
+
+  /*
+   * And a fieldset must not be titled after an inline, because the inline
+   * renders its own heading further down the same form -- so the reader is
+   * shown the same word twice with different things under it, and the first is
+   * the one that is not the editor they want.
+   */
+  it("does not head a fieldset with a name an inline already carries", () => {
+    for (const [key, model] of forms) {
+      const inlines = new Set((model.inlines ?? []).map((inline) => inline.title));
+      for (const fieldset of model.fieldsets) {
+        assert.ok(
+          !fieldset.title || !inlines.has(fieldset.title),
+          `${key}: a fieldset and an inline are both titled "${fieldset.title}"`,
+        );
+      }
+    }
+  });
+
   it("warns before a delete that takes children with it", () => {
     for (const [key, model] of forms) {
       if (model.canDelete === false) continue;

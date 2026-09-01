@@ -25,6 +25,7 @@ import { db } from "@/lib/db/client";
 import { applyImageFields, imageFields } from "@/lib/admin/images";
 import { keyForMediaId, mediaIdForKey } from "@/lib/admin/media";
 import { deleteUnreferenced } from "@/lib/storage/cleanup";
+import { REMOTE_FETCH_BUDGET_MS } from "@/lib/storage/fetch-image";
 import { sanitizeRichText } from "@/lib/utils/sanitize";
 import { isUuid } from "@/lib/utils/uuid";
 
@@ -230,12 +231,26 @@ export async function saveRecord(
   if (!parsed.ok) {
     return { ok: false, error: "Some fields need attention.", fieldErrors: parsed.errors };
   }
+  /*
+   * One deadline for every image this save has to fetch, opened before the
+   * first of them and shared with the inline rows below.
+   *
+   * A record can carry several image fields and each inline row carries its
+   * own, so a budget that applied per fetch would bound one call and say
+   * nothing about the save -- which is exactly the shape that turned a
+   * struggling upload into a live gateway error once already. Past the
+   * deadline a link fails with a sentence the reader can act on, while
+   * everything already stored stays stored.
+   */
+  const deadline = Date.now() + REMOTE_FETCH_BUDGET_MS;
 
   const pictures = imageFields(formFieldsFor(model, id));
   const images = await applyImageFields(
     pictures,
     data,
     await currentImages(model, pictures, id),
+    "",
+    { deadline },
   );
   if (!images.ok) {
     return { ok: false, error: "Some fields need attention.", fieldErrors: images.errors };
@@ -335,7 +350,7 @@ export async function saveRecord(
 
   const staleFromInlines: string[] = [];
   if (model.inlines?.length && parentId !== null) {
-    const inlined = await saveInlines(model.inlines, data, parentId);
+    const inlined = await saveInlines(model.inlines, data, parentId, { deadline });
     if (!inlined.ok) {
       return { ok: false, error: "Some fields need attention.", fieldErrors: inlined.errors };
     }

@@ -169,6 +169,11 @@ const measure = () =>
     .filter(Boolean);
 
 const offenders = [];
+// A route that resolves to "Nothing here" has no labels either, and an empty
+// sweep of zero offenders is indistinguishable from a clean one -- exactly
+// the gap a broken URL in `routes` would hide in. Tracked so the sweep fails
+// loudly on a not-found page instead of quietly measuring nothing on it.
+const formless = [];
 let labelCount = 0;
 // Noted while sweeping rather than guessed at: not every model has an image
 // field, and a route picked by its shape would quietly test nothing.
@@ -181,6 +186,14 @@ for (const path of routes) {
   // measured before its neighbour exists is measured against the wrong height.
   await page.waitForTimeout(1200);
 
+  // Scoped to `<main>`, the content column `AdminMain` renders -- not just
+  // `form`, because the topbar's sign-out button is *also* a form, with a
+  // hidden `$ACTION_ID_…` input for its server action. Every route carries
+  // that one regardless of what `<main>` renders, so an unscoped selector
+  // would count it and never see zero.
+  const controls = await page.locator("main form input, main form select, main form textarea").count();
+  if (controls === 0) formless.push(path);
+
   const labels = await page.evaluate(measure);
   labelCount += labels.length;
   for (const label of labels) {
@@ -190,6 +203,12 @@ for (const path of routes) {
   if (!fileRoute && (await page.locator('form input[type="file"]').count())) fileRoute = path;
   await page.close();
 }
+
+check(
+  "every route actually renders a form, not a not-found page with nothing to measure",
+  formless.length === 0,
+  formless.join(", "),
+);
 
 check(
   `no label reaches more than ${SLACK}px past its own content ` +

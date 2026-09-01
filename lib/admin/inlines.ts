@@ -181,6 +181,13 @@ export async function saveInlines(
   inlines: AdminInline[],
   data: FormData,
   parentId: string,
+  /**
+   * The save's own deadline for fetching linked images, opened by `saveRecord`
+   * and shared with the record's own fields. A gallery can carry seven rows,
+   * each with a link of its own, so a limit that reset per row would bound
+   * nothing at all.
+   */
+  { deadline }: { deadline?: number } = {},
 ): Promise<InlineResult> {
   const errors: Record<string, string> = {};
   const stale: string[] = [];
@@ -216,7 +223,7 @@ export async function saveInlines(
       let images: FormValues = {};
       if (pictures.length > 0) {
         const current = id === null ? {} : await currentInlineImages(inline, pictures, id);
-        const applied = await applyImageFields(pictures, data, current, prefix);
+        const applied = await applyImageFields(pictures, data, current, prefix, { deadline });
         if (!applied.ok) {
           Object.assign(errors, applied.errors);
           continue;

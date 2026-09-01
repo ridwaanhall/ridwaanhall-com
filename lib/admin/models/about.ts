@@ -380,6 +380,12 @@ export const certificationList: AdminListModel<CertificationRow> = {
     placeholder: "Search title or organization",
   },
   defaultSort: { key: "issued", dir: "desc" },
+  /*
+   * The few that lead the about page lead this list too, so they can be found
+   * without paging through a hundred and eleven rows to reach them. Dropped the
+   * moment the reader sorts by anything else -- see `pinned` on the model.
+   */
+  pinned: certification.isFeatured,
   rowId: (row) => row.id,
 };
 

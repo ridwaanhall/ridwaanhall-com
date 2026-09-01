@@ -451,10 +451,21 @@ export async function getCertifications(): Promise<Certification[]> {
       .from(certification)
       .innerJoin(organization, eq(certification.organizationId, organization.id))
       .leftJoin(mediaAsset, eq(mediaAsset.id, organization.logoId))
-      // Newest first. This read `order by id desc`, which on this data is the
-      // same sequence -- the certifications were entered in date order -- but
-      // says "most recently added" where the page means "most recent".
-      .orderBy(desc(certification.issued)),
+      /*
+       * Featured first, then newest.
+       *
+       * The date half read `order by id desc` once, which on this data was the
+       * same sequence -- the certifications were entered in date order -- but
+       * says "most recently added" where the page means "most recent".
+       *
+       * `is_featured` leads it, and this is the first thing that reads that
+       * column. It has been on the row and on the admin form since the
+       * beginning, and nothing ever consulted it: the tab rendered strictly by
+       * date, so ticking Featured did nothing at all. With a hundred and eleven
+       * certifications behind this tab, which ones lead is the whole of how it
+       * is curated.
+       */
+      .orderBy(desc(certification.isFeatured), desc(certification.issued)),
     db
       .select({
         certificationId: certificationAchievement.certificationId,

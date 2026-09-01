@@ -114,6 +114,20 @@ export type AdminListModel<Row> = {
    */
   search?: { fields: (PgColumn | SQL)[]; placeholder: string };
   defaultSort: { key: string; dir: "asc" | "desc" };
+  /**
+   * Rows to keep at the top, in the default ordering only.
+   *
+   * `certification.is_featured` is the one that needed it: with a hundred and
+   * eleven of them the list is only useful newest-first, and the handful the
+   * about page leads with have to be reachable without paging to find them.
+   *
+   * **Only while the reader is on `defaultSort`.** A changelist is a tool for
+   * finding a row, and a list that claims to be sorted by Title while eight
+   * rows sit above the As reads as a fault rather than as a feature -- so
+   * clicking any heading drops the pin. Every other model leaves this unset and
+   * its order clause is untouched.
+   */
+  pinned?: PgColumn | SQL;
   /** The row's primary key, for the change-form link. */
   /** The row's uuid, used to build its edit URL. */
   rowId: (row: Row) => string;
@@ -295,6 +309,22 @@ export async function fetchAdminList<Row>(
   const order = chosen?.sort ?? model.columns.find((column) => column.sort)?.sort;
   const direction = params.dir === "desc" ? desc : asc;
 
+  /*
+   * A pinned column leads the ordering, but only while the reader has not
+   * chosen one of their own.
+   *
+   * `parseListParams` falls back to the model's own `defaultSort` for a `?sort=`
+   * naming a column that cannot be sorted, so this is true both of a bare URL
+   * and of one that asks for the default explicitly -- which is the same thing
+   * a reader means either way.
+   */
+  const atDefault =
+    params.sort === model.defaultSort.key && params.dir === model.defaultSort.dir;
+  const clauses = [
+    ...(model.pinned && atDefault ? [desc(model.pinned)] : []),
+    ...(order ? [direction(order)] : []),
+  ];
+
   const [counted] = await db
     .select({ total: sql<number>`count(*)::int` })
     .from(model.from)
@@ -310,7 +340,7 @@ export async function fetchAdminList<Row>(
     .select(model.select)
     .from(model.from)
     .where(where)
-    .orderBy(...(order ? [direction(order)] : []))
+    .orderBy(...clauses)
     .limit(perPage)
     .offset((page - 1) * perPage);
 

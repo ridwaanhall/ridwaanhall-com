@@ -206,11 +206,11 @@ const orgSlugs = new Set(organizations.map((row) => row.slug));
  * What the database already holds, by the two keys a duplicate can be caught on.
  *
  * The credential URL is the real identity, and the live data is why: four
- * entries on this page are already stored under a *different title* -- LinkedIn
- * names one "Machine Learning Terapan" where the record says "Applied Machine
- * Learning", and another "Building RESTful Web APIs with Django" against
- * "Crafting REST APIs with Django" -- so a title comparison would have inserted
- * every one of them a second time. Their URLs match to the character.
+ * entries on this page are already stored under a *different title* -- one is
+ * listed in Indonesian as "Machine Learning Terapan" where the record says
+ * "Applied Machine Learning", and another is simply reworded between the two --
+ * so a title comparison would have inserted every one of them a second time.
+ * Their URLs match to the character.
  *
  * Title and date are the fallback for a row with no URL to compare, which is
  * exactly one entry here.

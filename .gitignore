@@ -75,6 +75,20 @@ plan/
 .vscode/
 text.txt
 
+# Pages saved from somewhere else, kept to read data off.
+#
+# Named directly rather than as `*.html`, the same bargain the dumps above
+# make: a blanket rule is the one nobody notices excluding a file that
+# belonged here.
+#
+# The reason these cannot simply sit untracked is Tailwind. It walks every
+# non-gitignored file and treats any word that parses as a class name as one in
+# use, so a page saved from another site brings that site's class vocabulary
+# into this build -- see the `@source not` lines in `app/globals.css` and
+# `scripts/check-css-sources.mjs`, which exist because prose merely *naming* a
+# utility was enough to emit it.
+certifications.html
+
 # Python leftovers from the Django build, until the virtualenv is removed.
 __pycache__/
 *.py[cod]

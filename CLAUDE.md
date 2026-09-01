@@ -729,6 +729,15 @@ The browser-driven ones need `npm run dev` running.
 part of this list. They exist for the one-off retirement of the `public` schema
 and are deleted with it — see `drizzle/9999_drop_public.sql`.
 
+`scripts/audit-storage.mjs` is not a check either, and it is the one that looks
+at the bucket rather than at the rows. Everything else here reasons outwards
+from the database -- `check-storage.mjs` proves `FILE_COLUMNS` is complete,
+`check-admin-forms.mjs` and `check-admin-image-link.mjs` prove that replacing or
+removing an image deletes the object it replaced -- so an object that leaked
+before those existed is invisible to all of them. It reports and exits 0: what
+it finds is a judgement call, and deleting a file because a script cannot find a
+row for it is precisely the mistake reference counting exists to prevent.
+
 `scripts/export-certifications.mjs` and `scripts/import-certifications.mjs` are
 not checks either, and they are the pair to reach for before and after any bulk
 edit of the certifications. The first writes every row to

@@ -85,27 +85,35 @@ const PNG = Buffer.from(
 );
 
 /**
- * The link this run pastes, taken from the database rather than written down.
+ * The two links this run pastes, taken from the database rather than written
+ * down.
  *
  * The public URL of an object already in this project's own bucket: a real
  * image over real HTTPS, on a host that is definitely up whenever the rest of
  * this script can run at all, and belonging to nobody else. Hard-coding a third
  * party would make a red result mean "somebody else's server is down" as often
  * as it meant a fault here.
+ *
+ * Two of them, because the replacement checks need a *second* image: pasting
+ * the same link again lands on the same content-addressed key and replaces
+ * nothing, which is exactly what the section above it asserts.
  */
-const [fixture] = await db
+const fixtures = await db
   .select({ storageKey: mediaAsset.storageKey })
   .from(mediaAsset)
   .where(eq(mediaAsset.source, "storage"))
-  .limit(1);
+  .limit(2);
 
-if (!fixture) throw new Error("No stored media_asset to link to; nothing to fetch.");
-if (!(await objectExists(fixture.storageKey))) {
-  throw new Error(`The fixture object ${fixture.storageKey} is not in the bucket.`);
+if (fixtures.length < 2) throw new Error("Need two stored media_asset rows to link to.");
+for (const row of fixtures) {
+  if (!(await objectExists(row.storageKey))) {
+    throw new Error(`The fixture object ${row.storageKey} is not in the bucket.`);
+  }
 }
 
-const LINK = mediaUrl(fixture.storageKey);
-console.log(`\nlinking ${LINK}\n`);
+const LINK = mediaUrl(fixtures[0].storageKey);
+const LINK2 = mediaUrl(fixtures[1].storageKey);
+console.log(`\nlinking ${LINK}\n    and ${LINK2}\n`);
 
 const token = await encode({
   token: { sub: await staffAccountId() },
@@ -238,6 +246,62 @@ try {
     .where(eq(mediaAsset.storageKey, firstKey));
   check("with exactly one media_asset naming it", rows.length === 1, `${rows.length} row(s)`);
 
+
+  // --- replacing an image takes the old one with it --------------------------
+  /*
+   * The bucket is not free, and nothing else deletes from it.
+   *
+   * `applyImageFields` hands the key it replaced back as `stale` and
+   * `saveRecord` passes that to `deleteUnreferenced` once the write has landed.
+   * `check-admin-forms.mjs` proves that for an upload replacing an upload; this
+   * proves it across the two doors, which is where it would quietly stop being
+   * true -- the link path is newer, and a `stale` that was only pushed on the
+   * upload branch would leak a file on every replacement and look like nothing
+   * at all until the storage bill arrived.
+   *
+   * "Which nothing else names" is the whole of the rule. The object is only
+   * removed because this `zz-` organisation was the last row pointing at it.
+   */
+  console.log("\nreplacing an image removes the one it replaced\n");
+
+  await page.goto(`${BASE}${ORGANIZATION}/${linked.id}`, { waitUntil: "load" });
+  await page.waitForTimeout(700);
+  await page.setInputFiles('input[type="file"]', {
+    name: "zz-replacement.png",
+    mimeType: "image/png",
+    buffer: PNG,
+  });
+  await submit();
+
+  const uploaded = await orgNamed(`${MARK} Linked`);
+  const uploadedKey = await keyOf(uploaded?.logoId);
+  if (uploadedKey) createdKeys.add(uploadedKey);
+
+  check("an upload replaces a linked image", Boolean(uploadedKey) && uploadedKey !== firstKey, uploadedKey);
+  check("the new object is in the bucket", uploadedKey ? await objectExists(uploadedKey) : false);
+  /*
+   * The linked object is still named by the second organisation this run made,
+   * so it must survive -- deleting on "one row let go" rather than on "no row
+   * holds it" is the bug reference counting exists to prevent.
+   */
+  check("and the linked one stays, because another record still names it", await objectExists(firstKey), firstKey);
+
+  // Now let the other one go too, and the file may finally be removed.
+  await page.goto(`${BASE}${ORGANIZATION}/${again.id}`, { waitUntil: "load" });
+  await page.waitForTimeout(700);
+  await paste(LINK2);
+  await submit();
+
+  const moved = await orgNamed(`${MARK} Again`);
+  const movedKey = await keyOf(moved?.logoId);
+  if (movedKey) createdKeys.add(movedKey);
+
+  check("the last record to name it can point elsewhere", Boolean(movedKey) && movedKey !== firstKey, movedKey);
+  check(
+    "and only then is the object it replaced deleted",
+    (await objectExists(firstKey)) === false,
+    firstKey,
+  );
   // --- links this must not follow -------------------------------------------
   console.log("\na link the server must not follow is refused\n");
 
@@ -252,9 +316,14 @@ try {
   await submit();
 
   const afterPrivate = await orgNamed(`${MARK} Linked`);
+  /*
+   * Against `uploadedKey`, not `firstKey`: the replacement section above
+   * deliberately changed what this record holds, and a refusal that changes
+   * nothing has to be measured against what it actually held at the time.
+   */
   check(
     "a link to a private address changes nothing",
-    (await keyOf(afterPrivate?.logoId)) === firstKey,
+    (await keyOf(afterPrivate?.logoId)) === uploadedKey,
   );
   check("and says so at the field", /not a host this can fetch/i.test(await fieldError()), await fieldError());
 
@@ -266,7 +335,7 @@ try {
   const afterMissing = await orgNamed(`${MARK} Linked`);
   check(
     "a link to nothing changes nothing",
-    (await keyOf(afterMissing?.logoId)) === firstKey,
+    (await keyOf(afterMissing?.logoId)) === uploadedKey,
   );
   check("and reports what the link answered", /answered \d{3}/i.test(await fieldError()), await fieldError());
 
@@ -307,7 +376,7 @@ try {
    */
   check(
     "a post carrying both changes nothing",
-    (await keyOf(afterBoth?.logoId)) === firstKey,
+    (await keyOf(afterBoth?.logoId)) === uploadedKey,
   );
   check(
     "and the message names the field",

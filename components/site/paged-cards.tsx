@@ -6,27 +6,40 @@ import { PaginationButtons } from "@/components/site/pagination";
 import { ITEMS_PER_PAGE, paginate } from "@/lib/api/pagination";
 
 /**
- * The applications list on `/about`, ten at a time.
+ * A list of cards on `/about`, ten at a time.
+ *
+ * Two tabs need this -- applications and certifications -- and the second is
+ * why it stopped being `ApplicationsPanel`: a hundred and eleven certifications
+ * in one column is not a list anybody reads to the end of. It is the same
+ * component either way, so it is one component.
  *
  * **The page lives here rather than in the URL.** Every other listing on the
  * site pages through `?page=`, because a page of `/blog` is a place you can
- * link someone to. This list is inside a tab whose selection is client state,
- * so `/about?page=3` would name a page that opens on the Intro tab with the
- * applications out of sight -- a link pointing at something its reader cannot
- * see. Keeping the page beside the tab state it belongs to also means paging
- * costs no navigation and no round trip.
+ * link someone to. These lists are inside a tab whose selection is client
+ * state, so `/about?page=3` would name a page that opens on the Intro tab with
+ * the list out of sight -- a link pointing at something its reader cannot see.
+ * Keeping the page beside the tab state it belongs to also means paging costs
+ * no navigation and no round trip.
  *
  * **Every card stays mounted**, hidden with `hidden` rather than unmounted --
  * the same thing `AboutTabs` does with the panels themselves, for the same
- * reason: the applications are the substance of this page and a crawler should
- * still find all of them. Nothing that was in the HTML before this existed has
- * left it.
+ * reason: these lists are the substance of this page and a crawler should still
+ * find all of them. Nothing that was in the HTML before this existed has left
+ * it, and that is what makes paging a hundred and eleven certifications safe to
+ * do at all.
  *
- * The cards arrive already rendered, as an array of elements, so
- * `ApplicationCard` and the data behind it stay on the server -- the same trick
+ * The cards arrive already rendered, as an array of elements, so the card
+ * components and the data behind them stay on the server -- the same trick
  * `SiteShell` uses for its account panel.
  */
-export function ApplicationsPanel({ cards }: { cards: React.ReactNode[] }) {
+export function PagedCards({
+  cards,
+  className = "space-y-4",
+}: {
+  cards: React.ReactNode[];
+  /** Spacing for the list, which differs between the two tabs. */
+  className?: string;
+}) {
   const [page, setPage] = useState(1);
   const list = useRef<HTMLDivElement>(null);
 
@@ -54,7 +67,7 @@ export function ApplicationsPanel({ cards }: { cards: React.ReactNode[] }) {
 
   return (
     <>
-      <div ref={list} className="space-y-4 scroll-mt-20 md:scroll-mt-0">
+      <div ref={list} className={`${className} scroll-mt-20 md:scroll-mt-0`}>
         {cards.map((card, index) => (
           // A wrapper rather than a prop on the card: `hidden` has to land on an
           // element this component owns. Spacing is unchanged -- the wrappers

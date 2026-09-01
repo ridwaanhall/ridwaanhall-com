@@ -11,7 +11,7 @@ import {
 } from "@/components/site/about-cards";
 import { AboutTabs } from "@/components/site/about-tabs";
 import { ApplicationCard } from "@/components/site/application-card";
-import { ApplicationsPanel } from "@/components/site/applications-panel";
+import { PagedCards } from "@/components/site/paged-cards";
 import { CvDownload } from "@/components/site/cv-download";
 import { LinkedInCertifications } from "@/components/site/linkedin-certifications";
 import { SponsorMe } from "@/components/site/sponsor-me";
@@ -93,11 +93,14 @@ export default async function AboutPage() {
       content: (
         <div className="mt-4 sm:mt-6">
           <LinkedInCertifications username={about.username} count={certifications.length} />
-          <div className="space-y-3 sm:space-y-4">
-            {certifications.map((certification) => (
+          {/* The banner stays outside the pager: it counts the whole list and
+              belongs to the tab, not to the page of cards under it. */}
+          <PagedCards
+            className="space-y-3 sm:space-y-4"
+            cards={certifications.map((certification) => (
               <CertificationCard key={certification.id} certification={certification} />
             ))}
-          </div>
+          />
         </div>
       ),
     },
@@ -107,7 +110,7 @@ export default async function AboutPage() {
       content: (
         <div className="mt-4">
           {applications.length > 0 ? (
-            <ApplicationsPanel
+            <PagedCards
               cards={applications.map((application) => (
                 <ApplicationCard key={application.id} application={application} />
               ))}

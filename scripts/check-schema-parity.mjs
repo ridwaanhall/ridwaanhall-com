@@ -63,7 +63,7 @@ const TRACKED = [
     label: "guestbook profiles",
     pub: `select u.username as k, u.username as shown
             from public.guestbook_userprofile p join public.auth_user u on u.id = p.user_id`,
-    app: `select a.username as k from app.guest_profile g join app.account a on a.id = g.account_id`,
+    app: `select a.username as k from app.public_access g join app.account a on a.id = g.account_id`,
   },
   {
     label: "guestbook messages",

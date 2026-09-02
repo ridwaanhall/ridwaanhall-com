@@ -84,9 +84,7 @@ export async function getThread(): Promise<Thread> {
       userId,
       fullName: profile?.fullName ?? "Unknown",
       profileImage: profile?.profileImage ?? null,
-      isAuthor: profile?.isAuthor ?? false,
-      isCoAuthor: profile?.isCoAuthor ?? false,
-      coAuthorOrder: profile?.coAuthorOrder ?? 0,
+      role: profile?.role ?? "public",
       email: maskEmail(profile?.email ?? ""),
     };
   };
@@ -117,8 +115,7 @@ export async function getThread(): Promise<Thread> {
         message: row.message,
         fullName: profile?.fullName ?? "Unknown",
         profileImage: profile?.profileImage ?? null,
-        isAuthor: profile?.isAuthor ?? false,
-        isCoAuthor: profile?.isCoAuthor ?? false,
+        role: profile?.role ?? "public",
       };
     }),
     messageCount: rows.length,

@@ -34,7 +34,7 @@ const { ADMIN_ENTRIES, ADMIN_ENTRIES_BY_KEY, adminPath } = await import(
 );
 const { db, pool } = await import("../lib/db/client.ts");
 const { account, adminAccess } = await import("../lib/db/app-schema.ts");
-const { and, eq, inArray } = await import("drizzle-orm");
+const { and, asc, eq, inArray, ne } = await import("drizzle-orm");
 const { idWhere } = await import("./fixture-ids.mjs");
 
 const BASE = process.argv[2] ?? "http://localhost:3000";
@@ -44,6 +44,22 @@ const check = (name, pass, detail = "") => {
   checks.push({ name, pass });
   console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
 };
+
+/**
+ * Cells of a changelist body, one array per row.
+ *
+ * The same shape `check-admin.mjs` uses. Tags are stripped rather than parsed:
+ * what is being asserted is the text a reader sees in a cell, and the markup
+ * around it is not the contract.
+ */
+function rows(html) {
+  const body = html.split("<tbody")[1]?.split("</tbody>")[0] ?? "";
+  return [...body.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)].map((match) =>
+    [...match[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((cell) =>
+      cell[1].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
+    ),
+  );
+}
 
 const cookieName = "authjs.session-token";
 
@@ -399,6 +415,59 @@ try {
     const { body } = await get("/admin/access", cookie);
     check("superuser: the access list opens", body.includes("<table"));
     check("superuser: and lists the staff accounts", body.includes(username));
+
+    /*
+     * The Screens column says what the database says.
+     *
+     * There was no assertion on this column, and it read `0` for every staff
+     * account while each of them held thirty-four view grants -- a correlated
+     * subquery written by hand, whose outer column rendered as a bare `"id"`
+     * that bound to `admin_access.id`. Nothing else here would have caught it:
+     * the number is derived, so no row is wrong in the database and every other
+     * check passes. Compared against a count taken separately, because a check
+     * that recomputed it the same way would agree with the bug.
+     */
+    const cells = rows(body);
+    const listed = new Map(
+      cells.filter((row) => row.length > 3).map((row) => [row[0], row[3]]),
+    );
+
+    /*
+     * Counted in JavaScript, from two flat queries, and that is not laziness.
+     * The first draft of this check wrote the reference count as its own
+     * correlated subquery -- and reproduced the bug exactly, reporting 0 for
+     * accounts the screen was now correctly showing as 34. Two queries with no
+     * correlation between them cannot get the correlation wrong.
+     */
+    const staffRows = await db
+      .select({ id: account.id, username: account.username, isSuperuser: account.isSuperuser })
+      .from(account)
+      .where(eq(account.isStaff, true));
+
+    const viewRows = await db
+      .select({ accountId: adminAccess.accountId })
+      .from(adminAccess)
+      .where(eq(adminAccess.canView, true));
+
+    const held = new Map();
+    for (const row of viewRows) held.set(row.accountId, (held.get(row.accountId) ?? 0) + 1);
+
+    const wrong = staffRows
+      .filter((row) => listed.has(row.username))
+      .filter((row) => {
+        const expected = row.isSuperuser ? "all" : String(held.get(row.id) ?? 0);
+        return listed.get(row.username) !== expected;
+      })
+      .map(
+        (row) =>
+          `${row.username}: shows ${listed.get(row.username)}, holds ${held.get(row.id) ?? 0}`,
+      );
+
+    check(
+      "superuser: and counts each account's screens as the rows do",
+      listed.size > 0 && wrong.length === 0,
+      wrong.join("; ") || `${listed.size} row(s) checked`,
+    );
   }
 
   {
@@ -484,12 +553,37 @@ try {
    * deletes.
    */
   {
+    /*
+     * A superuser that is *not* the account being edited, said in the query
+     * rather than assumed.
+     *
+     * This used to be `limit(1)` over every active superuser, with nothing
+     * excluding the subject and nothing ordering the result -- and the subject
+     * was made a superuser twenty lines above, so whether this picked somebody
+     * else was heap order and nothing more. When it picked the subject the
+     * harness signed in as the account it was editing, `saveAccess` refused it
+     * with "You cannot remove your own superuser access." -- correctly, and for
+     * the rule the comment above says is deliberately not driven here -- and
+     * the wait for "Saved." timed out forty-five seconds later, naming nothing.
+     *
+     * It surfaced when an unrelated `update app.account` rewrote a row and
+     * changed which one came back first, which is exactly how a query that
+     * leans on heap order fails: not when it is written, and not for a reason
+     * that points at it.
+     */
     const [owner] = await db
       .select({ id: account.id })
       .from(account)
-      .where(and(eq(account.isSuperuser, true), eq(account.isActive, true)))
+      .where(
+        and(
+          eq(account.isSuperuser, true),
+          eq(account.isActive, true),
+          ne(account.id, subjectId),
+        ),
+      )
+      .orderBy(asc(account.joinedAt), asc(account.id))
       .limit(1);
-    check("a superuser exists to drive the matrix", Boolean(owner));
+    check("a superuser other than the subject exists to drive the matrix", Boolean(owner));
 
     const browser = await chromium.launch();
     try {

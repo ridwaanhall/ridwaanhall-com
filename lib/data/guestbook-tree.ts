@@ -12,6 +12,8 @@
  * exercises the threading on plain objects, with no database anywhere near it.
  */
 
+import type { SiteRole } from "@/lib/auth/roles";
+
 /** Root plus two nested levels; see `buildThread`. */
 export const MAX_DEPTH = 3;
 
@@ -27,9 +29,8 @@ export type MessageAuthor = {
   userId: string;
   fullName: string;
   profileImage: string | null;
-  isAuthor: boolean;
-  isCoAuthor: boolean;
-  coAuthorOrder: number;
+  /** Drawn as a badge beside the name, and `"public"` draws none. */
+  role: SiteRole;
   /** Masked; see `maskEmail`. */
   email: string;
 };
@@ -53,8 +54,7 @@ export type PinnedMessage = {
   message: string;
   fullName: string;
   profileImage: string | null;
-  isAuthor: boolean;
-  isCoAuthor: boolean;
+  role: SiteRole;
 };
 
 export type Thread = {

@@ -58,11 +58,11 @@ try {
     // A real post and project, and two real accounts so the FKs hold.
     const [{ id: postId }] = (await tx.execute(sql`select id from app.blog_post order by slug limit 1`)).rows;
     const [{ id: projectId }] = (await tx.execute(sql`select id from app.project order by slug limit 1`)).rows;
-    const [{ id: authorId }] = (await tx.execute(
-      sql`select a.id from app.account a join app.guest_profile p on p.account_id = a.id where p.is_author order by a.joined_at limit 1`,
+    const [{ id: moderatorId }] = (await tx.execute(
+      sql`select a.id from app.account a where a.is_staff order by a.joined_at limit 1`,
     )).rows;
     const [{ id: strangerId }] = (await tx.execute(
-      sql`select a.id from app.account a join app.guest_profile p on p.account_id = a.id where not p.is_author and not p.is_co_author order by a.joined_at limit 1`,
+      sql`select a.id from app.account a where not a.is_staff order by a.joined_at limit 1`,
     )).rows;
 
     const add = async (body, { replyToId = null, accountId = strangerId, kind = BLOG, targetId = postId } = {}) => {
@@ -115,7 +115,7 @@ try {
     );
 
     // --- the section renders one level --------------------------------------
-    const viewerStranger = { userId: strangerId, isAuthor: false, isCoAuthor: false };
+    const viewerStranger = { userId: strangerId, moderate: false };
     let section = await getCommentSection({
       label: BLOG,
       targetId: postId,
@@ -137,10 +137,10 @@ try {
     const asOther = await getCommentSection({
       label: BLOG,
       targetId: postId,
-      viewer: { userId: authorId, isAuthor: true, isCoAuthor: false },
+      viewer: { userId: moderatorId, moderate: true },
       database: tx,
     });
-    check("an author may delete anyone's", asOther.comments[0].canDelete === true);
+    check("a moderator may delete anyone's", asOther.comments[0].canDelete === true);
 
     const signedOut = await getCommentSection({
       label: BLOG,
@@ -152,12 +152,12 @@ try {
       signedOut.comments.every((c) => !c.canDelete && c.replies.every((r) => !r.canDelete)));
 
     const stranger2 = (await tx.execute(
-      sql`select a.id from app.account a join app.guest_profile p on p.account_id = a.id where not p.is_author and not p.is_co_author and a.id <> ${strangerId} order by a.joined_at limit 1`,
+      sql`select a.id from app.account a where not a.is_staff and a.id <> ${strangerId} order by a.joined_at limit 1`,
     )).rows[0];
     check(
       "an ordinary reader may not delete someone else's",
       canDeleteComment({ userId: strangerId, isDeleted: false },
-        { userId: stranger2.id, isAuthor: false, isCoAuthor: false }) === false,
+        { userId: stranger2.id, moderate: false }) === false,
     );
 
     // --- soft delete ---------------------------------------------------------

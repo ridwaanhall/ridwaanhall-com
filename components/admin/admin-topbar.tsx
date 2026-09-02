@@ -2,9 +2,11 @@ import Link from "next/link";
 
 import { AdminBreadcrumb } from "@/components/admin/admin-breadcrumb";
 import { ForwardIcon } from "@/components/admin/admin-icons";
+import { RolePill } from "@/components/admin/role-pill";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { SignOutButton } from "@/components/sign-out-button";
 import { signOutHere } from "@/lib/actions/auth";
+import { adminRole } from "@/lib/auth/roles";
 import type { StaffUser } from "@/lib/auth/staff";
 
 /**
@@ -34,9 +36,15 @@ export function AdminTopbar({ user }: { user: StaffUser }) {
       <AdminBreadcrumb />
 
       <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
-        {/* No "superuser" badge: there is one privilege, so a badge every staff
-            account carries would mark nobody out. */}
-        <span className="hidden text-sm text-zinc-400 md:inline">{user.fullName}</span>
+        {/*
+          The name and the role, together, because either alone is half an
+          answer: who is signed in, and what that account can do. There is no
+          prop to thread -- `staffGate` already read the row this renders.
+        */}
+        <span className="hidden items-center gap-2 md:inline-flex">
+          <span className="text-sm text-zinc-400">{user.fullName}</span>
+          <RolePill role={adminRole(user.isSuperuser)} />
+        </span>
 
         <Link
           href="/"

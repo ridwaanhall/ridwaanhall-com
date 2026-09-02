@@ -44,6 +44,20 @@ export function AccessSkeleton() {
         <div>
           <SkeletonBar className="mb-1.5 h-3 w-16" />
           <div className="space-y-4">
+            {/* The preset card, above the groups: a label, three buttons and
+                a note. Same box as the role card, and it stands between the
+                legend and the first group -- so it is drawn here rather than
+                left out, which is how a page settles by jumping. */}
+            <div className="space-y-2.5 rounded-lg border border-zinc-800 px-3.5 py-3">
+              <div className="flex items-center gap-2">
+                <SkeletonBar className="h-3 w-16" />
+                <SkeletonBar className="h-6 w-14 rounded-md" />
+                <SkeletonBar className="h-6 w-20 rounded-md" />
+                <SkeletonBar className="h-6 w-20 rounded-md" />
+              </div>
+              <SkeletonBar className="h-3 w-80 max-w-full" />
+            </div>
+
             {[0, 1, 2].map((group) => (
               <div key={group} className="overflow-hidden rounded-lg border border-zinc-800">
                 <div className="flex items-center gap-2.5 border-b border-zinc-800 px-3 py-2">

@@ -53,11 +53,9 @@ function guestbookUrl(): string {
   return `${base}/guestbook/`;
 }
 
-/** The pill the emails show beside a name, or nothing for an ordinary visitor. */
+/** The pill the emails show beside a name, or nothing for an ordinary reader. */
 function roleOf(profile: UserProfile): BadgeTone | undefined {
-  if (profile.isAuthor) return "author";
-  if (profile.isCoAuthor) return "coAuthor";
-  return undefined;
+  return profile.role === "public" ? undefined : profile.role;
 }
 
 export async function notifyNewGuestbookMessage(messageId: string): Promise<void> {
@@ -101,14 +99,14 @@ export async function notifyNewGuestbookMessage(messageId: string): Promise<void
     const url = guestbookUrl();
     const role = roleOf(sender);
 
-    // The flags come from `guest_profile`, read from the database on every
-    // request. They are never in the session token, so revoking co-author takes
+    // The role comes from `account`, read from the database on every
+    // request. They are never in the session token, so taking a role away takes
     // effect on the next post rather than whenever a thirty-day JWT expires.
     const plan = planGuestbookEmails({
       sender: {
         email: sender.email,
-        isAuthor: sender.isAuthor,
-        isCoAuthor: sender.isCoAuthor,
+        isSuperuser: sender.role === "superuser",
+        isStaff: sender.role !== "public",
       },
       parentAuthor: original ? { email: original.email } : undefined,
       owners: ownerEmails(),

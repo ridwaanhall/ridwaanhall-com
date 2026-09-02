@@ -20,7 +20,7 @@ import { account, adminAccess } from "@/lib/db/app-schema";
  *
  * **Nothing here is read from the session token.** The flags and the grants
  * both come from the database on every request. That is the same rule
- * `lib/auth/profile.ts` applies to `is_author`/`is_co_author`, and it matters
+ * `lib/auth/profile.ts` applies to the public capabilities, and it matters
  * more with a matrix than it did with one boolean: sessions are thirty-day
  * JWTs, so a token minted while somebody was staff would keep asserting it for
  * a month after the flag was cleared -- and a token carrying a *grant set*
@@ -30,16 +30,17 @@ import { account, adminAccess } from "@/lib/db/app-schema";
  *
  * Three roles, and they are not degrees of one thing:
  *
- *   * `is_active` -- may sign in at all. Cleared, nothing else applies.
+ *   * `is_active` -- may write anything at all. Cleared, nothing else
+ *     applies, here or on the public site.
  *   * `is_staff` -- may reach the admin. What they reach *inside* it is the
  *     grant rows, one per screen.
  *   * `is_superuser` -- answers yes to every screen and every action, and is
  *     the only role that may edit anyone's grants.
  *
- * `guest_profile.is_author` and `is_co_author` are deliberately not here. They
- * are about the public site -- guestbook credit, comment moderation, who gets
- * emailed -- and answer a different question from what somebody may do in this
- * admin.
+ * They nest -- `account_superuser_is_staff` refuses a superuser who is not
+ * staff -- and what they mean on the *public* site is `lib/auth/public.ts`'s
+ * answer, not this module's. Both read the same two columns; they ask different
+ * questions of them.
  */
 export type StaffUser = AdminActor;
 

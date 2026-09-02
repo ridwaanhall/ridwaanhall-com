@@ -44,7 +44,7 @@ describe("MODEL_TAGS", () => {
      * expire and no entry here. Named rather than skipped by a rule, so that
      * caching one of them later fails this and prompts the tag to be added.
      */
-    const uncached = new Set(["guest_message", "guest_profile", "comment", "account"]);
+    const uncached = new Set(["guest_message", "public_access", "comment", "account"]);
 
     const missing: string[] = [];
     for (const [key, model] of Object.entries(ADMIN_FORM_MODELS)) {

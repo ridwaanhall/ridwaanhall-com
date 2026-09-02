@@ -7,6 +7,7 @@ import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 
 import { saveAccess, type AccessResult } from "@/lib/actions/access";
 import { ADMIN_ACTIONS, withImpliedView, type AdminAction, type Grant } from "@/lib/auth/permissions";
+import { ACCESS_PRESETS, grantsForPreset, type AccessPreset } from "@/lib/auth/presets";
 import { notify } from "@/lib/notify";
 import { cn } from "@/lib/utils/cn";
 
@@ -201,6 +202,33 @@ export function AccessMatrix({
       ADMIN_ACTIONS.every((act) => !offered(row, act) || shown(row, act)),
     );
 
+  /**
+   * Fill the whole matrix from a preset.
+   *
+   * Every cell goes through `offered`, so a preset can never tick something the
+   * descriptor refuses -- a singleton has no add whatever a preset says about
+   * its group, and a superuser-only action stays out unless the role is ticked.
+   * The preset decides the shape; the descriptor still decides what is possible.
+   *
+   * Nothing is written here. This ticks boxes and the reader presses Save,
+   * which is the point: a preset is a starting point to adjust, not a second
+   * way to grant.
+   */
+  function applyPreset(preset: AccessPreset) {
+    const wanted = grantsForPreset(preset);
+    setGrants(() => {
+      const next: Record<string, Grant> = {};
+      for (const row of rows) {
+        const grant: Grant = { view: false, add: false, change: false, delete: false };
+        for (const act of ADMIN_ACTIONS) {
+          grant[act] = (wanted[row.key]?.[act] ?? false) && offered(row, act);
+        }
+        next[row.key] = withImpliedView(grant);
+      }
+      return next;
+    });
+  }
+
   const granted = rows.filter((row) => (grants[row.key] ?? row.grant).view).length;
 
   return (
@@ -247,6 +275,34 @@ export function AccessMatrix({
         <legend className="mb-1.5 text-xs font-medium tracking-wide text-zinc-400 uppercase">
           Screens
         </legend>
+
+        {/*
+          Starting points, not roles. Nothing here is stored: a preset fills the
+          boxes below and the reader adjusts them and saves, so what ends up in
+          `admin_access` is still one row per screen and four booleans. Naming
+          them is what makes a hundred and twenty checkboxes approachable
+          without inventing a second permission model to keep in step.
+        */}
+        <div className="rounded-lg border border-zinc-800 bg-zinc-950/40 px-3.5 py-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-zinc-500">Start from</span>
+            {ACCESS_PRESETS.map((preset) => (
+              <button
+                key={preset.key}
+                type="button"
+                title={preset.blurb}
+                onClick={() => applyPreset(preset)}
+                className="cursor-pointer rounded-md border border-zinc-800 px-2.5 py-1 text-xs text-zinc-400 transition-colors hover:border-indigo-700/60 hover:bg-zinc-800 hover:text-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
+          <p className="mt-2 text-xs text-zinc-500">
+            Each one ticks the boxes below and changes nothing until you save.
+            None of them grants anything on Users.
+          </p>
+        </div>
 
         {groups.map(([group, rowsInGroup]) => (
           <div key={group} className="overflow-hidden rounded-lg border border-zinc-800">

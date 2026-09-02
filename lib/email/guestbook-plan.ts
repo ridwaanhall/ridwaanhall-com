@@ -11,17 +11,20 @@
  * **Roles decide, not addresses.** The previous rule asked whether the poster's
  * address appeared in `CONTACT_EMAIL_RECIPIENT`, which is the owner's *inbox*
  * and has no reason to match the address they signed in with -- so in practice
- * it never fired and the owner was emailed about their own posts. `is_author`
- * and `is_co_author` on `guest_profile` are what actually say who somebody is,
- * they are read from the database on every request, and they are already loaded
- * by the time this is called.
+ * it never fired and the owner was emailed about their own posts. `is_staff`
+ * and `is_superuser` on `account` are what actually say who somebody is, they
+ * are read from the database on every request, and they are already loaded by
+ * the time this is called.
  *
  * The two roles are deliberately not interchangeable:
  *
- *   - an **author** is the site's owner, so notifying them of their own post is
- *     telling them what they just did
- *   - a **co-author** is somebody else, so the owner still wants to know they
- *     posted -- they just do not need a receipt for their own message
+ *   - a **superuser** is the site's owner, so notifying them of their own post
+ *     is telling them what they just did
+ *   - **staff** is somebody else, so the owner still wants to know they posted
+ *     -- they just do not need a receipt for their own message
+ *
+ * Superuser implies staff, so the rule that suppresses the receipt covers both
+ * without naming both. Only the owner rule has to distinguish them.
  *
  * A reply notification ignores roles entirely. Being told that somebody
  * answered you is news whoever you are, and the only thing that suppresses it
@@ -38,7 +41,14 @@ export type Dispatch = {
 };
 
 export type PlanInput = {
-  sender: { email: string; isAuthor: boolean; isCoAuthor: boolean };
+  /**
+   * Who posted, by role rather than by address.
+   *
+   * `superuser` is the site's owner and `staff` is somebody helping; a reader
+   * is neither. Superuser implies staff (`account_superuser_is_staff`), so rule
+   * 2 below covers both without naming both.
+   */
+  sender: { email: string; isSuperuser: boolean; isStaff: boolean };
   /** The author of the message being replied to, when this is a reply. */
   parentAuthor?: { email: string };
   /** `CONTACT_EMAIL_RECIPIENT`, already split. */
@@ -57,9 +67,9 @@ export function planGuestbookEmails({ sender, parentAuthor, owners }: PlanInput)
 
   const plan: Dispatch[] = [];
 
-  // 1. Tell the owner. Not when the author posted: that is their own message.
-  //    A co-author's post is somebody else's, so it still goes out.
-  if (!sender.isAuthor && to.length > 0) {
+  // 1. Tell the owner. Not when the owner posted: that is their own message.
+  //    A staff member's post is somebody else's, so it still goes out.
+  if (!sender.isSuperuser && to.length > 0) {
     plan.push({
       kind: "owner",
       to,
@@ -71,9 +81,9 @@ export function planGuestbookEmails({ sender, parentAuthor, owners }: PlanInput)
     });
   }
 
-  // 2. Confirm to whoever posted. Skipped for both roles: neither needs a
-  //    receipt for a message they wrote on their own site.
-  if (!sender.isAuthor && !sender.isCoAuthor && senderEmail) {
+  // 2. Confirm to whoever posted. Skipped for staff, and so for a superuser
+  //    too: neither needs a receipt for a message they wrote on their own site.
+  if (!sender.isStaff && senderEmail) {
     plan.push({
       kind: "confirm",
       to: [senderEmail],

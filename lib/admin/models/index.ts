@@ -1,4 +1,7 @@
 import {
+  LOCATION_USAGE,
+  ORGANIZATION_USAGE,
+  SKILL_USAGE,
   applicationForm,
   applicationList,
   awardForm,
@@ -23,8 +26,6 @@ import { commentForm, commentList } from "@/lib/admin/models/comments";
 import {
   chatMessageForm,
   chatMessageList,
-  userProfileForm,
-  userProfileList,
 } from "@/lib/admin/models/guestbook";
 import {
   legalDocumentForm,
@@ -40,6 +41,7 @@ import {
 } from "@/lib/admin/models/openhire";
 import { projectForm, projectList } from "@/lib/admin/models/projects";
 import {
+  VOCABULARY_USAGE,
   applicationSourceForm,
   applicationSourceList,
   applicationStatusForm,
@@ -69,10 +71,14 @@ import {
   workModeForm,
   workModeList,
 } from "@/lib/admin/models/settings";
+import { publicAccessForm, publicAccessList } from "@/lib/admin/models/public-access";
 import { userForm, userList } from "@/lib/admin/models/users";
+
+import { location, organization, skill } from "@/lib/db/app-schema";
 
 import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
+import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 
 /**
  * The changelist descriptors, keyed the way the registry and the URLs are.
@@ -114,11 +120,11 @@ const MODELS: AdminListModel<never>[] = [
   legalSectionList,
   // guestbook
   chatMessageList,
-  userProfileList,
   // comments
   commentList,
   // users
   userList,
+  publicAccessList,
   // access -- the one list with no form beside it. Its record page is the
   // permission matrix, which is not a form over a table; see the descriptor.
   accessList,
@@ -184,11 +190,11 @@ const FORMS: AdminFormModel[] = [
   legalSectionForm,
   // guestbook
   chatMessageForm,
-  userProfileForm,
   // comments
   commentForm,
   // users
   userForm,
+  publicAccessForm,
   // settings
   categoryForm,
   tagForm,
@@ -213,3 +219,27 @@ export const ADMIN_FORM_MODELS: Record<string, AdminFormModel> = Object.fromEntr
 export function formModelFor(key: string): AdminFormModel | null {
   return ADMIN_FORM_MODELS[key] ?? null;
 }
+
+/**
+ * Every screen that shows a "Used by" count, and the foreign keys behind it.
+ *
+ * Read by `scripts/check-admin-usage.mjs`, which asks `pg_constraint` for the
+ * foreign keys actually pointing at each table and fails on any this map does
+ * not declare. A usage column is a transcription of the schema, and a
+ * transcription of the schema goes quietly out of date -- the organizations
+ * screen counted four of its five relations for as long as it took somebody to
+ * read the descriptor and the catalogue side by side.
+ *
+ * The vocabularies register themselves through the factory that builds them;
+ * the three catalogue screens declare their relations with a noun each, since
+ * their cells read as a sentence rather than as a number.
+ */
+export const ADMIN_USAGE: Record<string, { table: PgTable; columns: PgColumn[] }> = {
+  ...Object.fromEntries(VOCABULARY_USAGE),
+  skill: { table: skill, columns: SKILL_USAGE.map((relation) => relation.column) },
+  organization: {
+    table: organization,
+    columns: ORGANIZATION_USAGE.map((relation) => relation.column),
+  },
+  location: { table: location, columns: LOCATION_USAGE.map((relation) => relation.column) },
+};

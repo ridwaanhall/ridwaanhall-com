@@ -38,7 +38,7 @@ async function viewer() {
   if (!id) return null;
   const profile = await getUserProfile(id);
   return profile
-    ? { userId: profile.id, isAuthor: profile.isAuthor, isCoAuthor: profile.isCoAuthor }
+    ? { userId: profile.id, moderate: profile.can.moderateComments, post: profile.can.comment }
     : null;
 }
 
@@ -52,6 +52,18 @@ export async function postComment(formData: FormData): Promise<CommentResult> {
   // The section hides the form when signed out, but hiding a control is not
   // access control -- the endpoint has to refuse too.
   if (!who) return { ok: false, error: "Sign in to post a comment." };
+
+  /*
+   * And being signed in is no longer the whole of it.
+   *
+   * `can.comment` is false for an account somebody has switched off on the
+   * Public access screen, and for any account that is not active -- which used
+   * to mean nothing outside the admin, so a deactivated reader could still post
+   * here indefinitely. Said once in `lib/auth/public.ts`; asked here.
+   */
+  if (!who.post) {
+    return { ok: false, error: "This account cannot post comments." };
+  }
 
   const label = String(formData.get("content_type") ?? "");
   const targetId = String(formData.get("object_id") ?? "");

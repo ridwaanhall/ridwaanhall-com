@@ -1,5 +1,5 @@
 import { joined, lookupOr } from "@/lib/admin/sql";
-import { accountIdentity, account, guestProfile } from "@/lib/db/app-schema";
+import { accountIdentity, account, publicAccess } from "@/lib/db/app-schema";
 
 import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
@@ -70,9 +70,16 @@ const providerLabel = (value: string) =>
     .map((name) => PROVIDER_LABELS[name] ?? name)
     .join(", ");
 
-/** The two guestbook flags, which live on a separate row from the account. */
-const isAuthor = lookupOr(guestProfile.isAuthor, guestProfile.accountId, account.id, false);
-const isCoAuthor = lookupOr(guestProfile.isCoAuthor, guestProfile.accountId, account.id, false);
+/**
+ * The two public-site switches, which live on a separate row from the account.
+ *
+ * Shown here and edited on Public access, the same way the guestbook flags they
+ * replaced were shown here and edited on User profiles: one field with two
+ * homes is how the two drift. They are the only expression-backed boolean
+ * filters in the admin, which is why `ListFilter` splits its `column` union.
+ */
+const canComment = lookupOr(publicAccess.canComment, publicAccess.accountId, account.id, true);
+const canGuestbook = lookupOr(publicAccess.canGuestbook, publicAccess.accountId, account.id, true);
 
 export type UserRow = {
   id: string;
@@ -81,8 +88,8 @@ export type UserRow = {
   isStaff: boolean;
   isSuperuser: boolean;
   providers: string;
-  isAuthor: boolean;
-  isCoAuthor: boolean;
+  canComment: boolean;
+  canGuestbook: boolean;
   lastSeenAt: string | null;
 };
 
@@ -97,8 +104,8 @@ export const userList: AdminListModel<UserRow> = {
     isStaff: account.isStaff,
     isSuperuser: account.isSuperuser,
     providers,
-    isAuthor,
-    isCoAuthor,
+    canComment,
+    canGuestbook,
     lastSeenAt: account.lastSeenAt,
   },
   columns: [
@@ -132,13 +139,19 @@ export const userList: AdminListModel<UserRow> = {
       sort: account.isSuperuser,
       value: (row) => row.isSuperuser,
     },
-    { key: "is_author", label: "Author", kind: "bool", sort: isAuthor, value: (row) => row.isAuthor },
     {
-      key: "is_co_author",
-      label: "Co-author",
+      key: "can_comment",
+      label: "Comment",
       kind: "bool",
-      sort: isCoAuthor,
-      value: (row) => row.isCoAuthor,
+      sort: canComment,
+      value: (row) => row.canComment,
+    },
+    {
+      key: "can_guestbook",
+      label: "Guestbook",
+      kind: "bool",
+      sort: canGuestbook,
+      value: (row) => row.canGuestbook,
     },
     {
       key: "last_login",
@@ -174,8 +187,8 @@ export const userList: AdminListModel<UserRow> = {
     { key: "is_staff", label: "Staff", kind: "boolean", column: account.isStaff },
     { key: "is_superuser", label: "Superuser", kind: "boolean", column: account.isSuperuser },
     { key: "is_active", label: "Active", kind: "boolean", column: account.isActive },
-    { key: "is_author", label: "Author", kind: "boolean", column: isAuthor },
-    { key: "is_co_author", label: "Co-author", kind: "boolean", column: isCoAuthor },
+    { key: "can_comment", label: "Comment", kind: "boolean", column: canComment },
+    { key: "can_guestbook", label: "Guestbook", kind: "boolean", column: canGuestbook },
   ],
   search: {
     fields: [account.username, account.email, account.firstName, account.lastName],
@@ -250,7 +263,7 @@ export const userForm: AdminFormModel = {
           column: account.isStaff,
           label: "Staff",
           kind: "checkbox",
-          help: "Grants this admin. Read from the database on every request, so clearing it takes effect at once.",
+          help: "Opens this admin. An account given it for the first time starts on the default screens; Access is where they are narrowed. Read from the database on every request, so clearing it takes effect at once.",
         },
         {
           name: "isActive",
@@ -298,6 +311,24 @@ export const userForm: AdminFormModel = {
    * drift.
    */
   validate: async (values, { id, actorId, actorIsSuperuser }) => {
+    /*
+     * A superuser is always staff, and this is the one form that could say
+     * otherwise.
+     *
+     * `is_superuser` is read-only here, so its value arrives loaded from the
+     * row rather than from the reader -- but `is_staff` is a live checkbox
+     * beside it, and unticking it would write the pair the database refuses
+     * (`account_superuser_is_staff`). Caught here so the answer is a sentence
+     * on the form rather than a check violation to translate afterwards.
+     *
+     * Refused to *everybody*, superuser included: the rule is about the shape
+     * of an account, not about who outranks whom, and the way to make somebody
+     * not-staff is to take the role away first, on the screen that grants it.
+     */
+    if (values.isSuperuser && !values.isStaff) {
+      return "A superuser is always staff. Remove the superuser role on the Access screen first.";
+    }
+
     if (id === actorId) {
       if (!values.isStaff) return "You cannot remove your own staff access.";
       if (!values.isActive) return "You cannot deactivate your own account.";
@@ -321,5 +352,24 @@ export const userForm: AdminFormModel = {
       return "Only a superuser can take away a superuser's access.";
     }
     return null;
+  },
+
+  /*
+   * A staff account that reaches nothing reads as a broken admin.
+   *
+   * Ticking this box used to *be* the permission; it now only opens the door,
+   * and what is behind it is one row per screen in `admin_access`. An account
+   * flagged here with no such rows signs in successfully and gets a rail with
+   * no groups in it, an index with no cards, and no way to tell that apart from
+   * a deployment that failed.
+   *
+   * So the first time it happens, the account starts on the default preset --
+   * the site's own content, and nothing about other people. It is a starting
+   * point rather than a decision: the Access screen is where it is narrowed,
+   * and `seedDefaultGrants` refuses to touch an account that has any grant row
+   * at all, so a narrowing made there is never undone by a later save here.
+   */
+  afterSave: async (values, { id, seedDefaultGrants }) => {
+    if (values.isStaff) await seedDefaultGrants(id);
   },
 };

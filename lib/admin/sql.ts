@@ -1,4 +1,4 @@
-import { eq, sql, type SQL } from "drizzle-orm";
+import { and, eq, sql, type SQL } from "drizzle-orm";
 import { QueryBuilder, type PgColumn, type PgTable } from "drizzle-orm/pg-core";
 
 /**
@@ -7,23 +7,25 @@ import { QueryBuilder, type PgColumn, type PgTable } from "drizzle-orm/pg-core";
  * **Do not write these as a raw `sql` template.** Drizzle renders a column
  * interpolated into `sql` with its *bare* name, not `"table"."column"`, and a
  * correlated subquery is precisely the place where that decides which table a
- * name binds to. Written by hand, the users screen produced
+ * name binds to. Written by hand, the access list produced
  *
- *     coalesce((select "is_author" from "guestbook_userprofile"
- *               where "user_id" = "id"), false)
+ *     (select count(*) from "admin_access"
+ *      where "account_id" = "id" and "can_view")
  *
- * in which `"id"` binds to `guestbook_userprofile.id` rather than the
- * `auth_user.id` it was meant to correlate with -- so the condition reads
- * `user_id = id` on one table and means nothing. Passing the same thing through
- * the query builder gives
+ * in which `"id"` binds to `admin_access.id` rather than the `account.id` it
+ * was meant to correlate with -- so the condition compares two unrelated keys
+ * and matches nothing at all. Passing the same thing through the query builder
+ * gives
  *
- *     (select "is_author" from "guestbook_userprofile"
- *      where "guestbook_userprofile"."user_id" = "auth_user"."id")
+ *     (select count(*) from "admin_access"
+ *      where "admin_access"."account_id" = "account"."id" and ...)
  *
- * which is the intended query. The lookups that happened to work before did so
- * only because the outer column's name did not exist on the inner table, so
- * Postgres resolved it outward by elimination -- luck, not correctness, and it
- * ran out on the first self-referential one.
+ * which is the intended query. The lookups that happen to work do so only
+ * because the outer column's name does not exist on the inner table, so
+ * Postgres resolves it outward by elimination -- luck, not correctness, and the
+ * luck runs out the first time the two tables share a column name. `id` is on
+ * every table here, so any subquery correlating on a primary key is one hand-
+ * written template away from being silently wrong.
  *
  * `QueryBuilder` builds SQL without a connection, so this module stays free of
  * `lib/db/client.ts` and of `server-only`, and the check scripts can import the
@@ -79,4 +81,29 @@ export function countWhere(key: PgColumn, outer: PgColumn): SQL<number> {
     .select({ value: sql<number>`count(*)::int` })
     .from(key.table as PgTable)
     .where(eq(key, outer))})`;
+}
+
+/**
+ * The same, narrowed by something else on the inner table.
+ *
+ * This is the one that was missing, and its absence cost a screen. The access
+ * list counts the rows of `admin_access` where `can_view` is true, which
+ * `countWhere` alone cannot express -- so it was written out by hand as a raw
+ * `sql` template, and the correlation went exactly where the header of this
+ * file says it goes. `${account.id}` rendered as the bare name `"id"`,
+ * `admin_access` has an `id` column of its own, and the condition became
+ * `account_id = admin_access.id`: a comparison of two unrelated keys that
+ * matches nothing. Every staff account's Screens column read 0 while the
+ * database held thirty-four grants for each of them, and the header on that
+ * column sorted by the same constant.
+ *
+ * `and()` rather than a second argument to `where`, so the extra condition is
+ * the caller's to write with real columns and goes through the query builder
+ * with the rest of it.
+ */
+export function countWhereAnd(key: PgColumn, outer: PgColumn, extra: SQL): SQL<number> {
+  return sql<number>`(${qb
+    .select({ value: sql<number>`count(*)::int` })
+    .from(key.table as PgTable)
+    .where(and(eq(key, outer), extra))})`;
 }

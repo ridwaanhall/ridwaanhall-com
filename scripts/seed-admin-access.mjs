@@ -41,11 +41,57 @@ config({ path: ".env", quiet: true });
 
 const APPLY = process.argv.includes("--apply");
 
+/**
+ * Which shape to seed, from `lib/auth/presets.ts`.
+ *
+ * No flag means everything -- which is what this script was written for and
+ * must stay: the day per-screen permissions shipped had to be invisible to the
+ * people already using the admin, so an account that was staff under the old
+ * rule keeps reaching what it reached. `--preset=<key>` is for the other job
+ * this turned out to be useful for -- setting an account up from a terminal on
+ * the same three shapes the Access screen offers, rather than on a fourth idea
+ * of what a role is.
+ */
+/**
+ * Rewrite the rows that are already there, rather than only filling gaps.
+ *
+ * Without it this never narrows, which is what makes the original migration
+ * safe to re-run: it adds rows for screens added since and never undoes a
+ * narrowing somebody made on purpose. With it, the preset becomes the whole
+ * truth for every account it touches -- which is the other job, and the one
+ * that was needed the day the presets arrived after the grants had already
+ * been handed out in full.
+ *
+ * Only with a preset. `--reset` on its own would rewrite every account to all
+ * four booleans on every screen, which is the opposite of what anybody typing
+ * the word "reset" is asking for.
+ */
+const RESET = process.argv.includes("--reset");
+
+const PRESET_ARG = process.argv.find((arg) => arg.startsWith("--preset="));
+const PRESET_KEY = PRESET_ARG ? PRESET_ARG.slice("--preset=".length) : null;
+
 const { db, pool } = await import("../lib/db/client.ts");
 const { account, adminAccess } = await import("../lib/db/app-schema.ts");
 const { ADMIN_ENTRIES } = await import("../lib/admin/registry.ts");
 const { grantableEntries } = await import("../lib/auth/permissions.ts");
+const { ACCESS_PRESETS, grantsForPreset, presetByKey } = await import("../lib/auth/presets.ts");
 const { eq, or, sql } = await import("drizzle-orm");
+
+const PRESET = PRESET_KEY ? presetByKey(PRESET_KEY) : null;
+if (RESET && !PRESET) {
+  console.error("--reset needs a --preset= to reset to. Refusing to grant everything.");
+  await pool.end();
+  process.exit(1);
+}
+
+if (PRESET_KEY && !PRESET) {
+  console.error(
+    `No such preset: ${PRESET_KEY}. Try one of ${ACCESS_PRESETS.map((p) => p.key).join(", ")}.`,
+  );
+  await pool.end();
+  process.exit(1);
+}
 
 /**
  * The first superuser.
@@ -64,9 +110,34 @@ const FIRST_SUPERUSER = "ridwaanhall.dev@gmail.com";
  * granting the ability to grant is granting everything, so it is a role and not
  * a row. Seeding it would write a permission nothing ever reads.
  */
-const KEYS = grantableEntries(ADMIN_ENTRIES).map((entry) => entry.key);
+const GRANTABLE = grantableEntries(ADMIN_ENTRIES);
 
-console.log(`${KEYS.length} grantable screens.\n`);
+/**
+ * What one account is to be given, as a grant per screen.
+ *
+ * Without a preset this is all four booleans on every screen, which is the
+ * behaviour that made the migration invisible. With one it is whatever the
+ * preset says, and the screens it reaches nothing on are simply not written --
+ * so a later `--preset` run widens an account rather than laying down rows of
+ * falses that would then read as a deliberate narrowing.
+ */
+const WANTED = PRESET
+  ? grantsForPreset(PRESET)
+  : Object.fromEntries(
+      GRANTABLE.map((entry) => [entry.key, { view: true, add: true, change: true, delete: true }]),
+    );
+
+const KEYS = GRANTABLE.map((entry) => entry.key).filter((key) => {
+  const grant = WANTED[key];
+  return grant.view || grant.add || grant.change || grant.delete;
+});
+
+console.log(
+  PRESET
+    ? `${GRANTABLE.length} grantable screens, ${KEYS.length} reached by ${PRESET.label}.` +
+        "\n\n" + `${PRESET.label}: ${PRESET.blurb}` + "\n"
+    : `${GRANTABLE.length} grantable screens.` + "\n",
+);
 
 const accounts = await db
   .select({
@@ -135,16 +206,29 @@ const work = [];
 for (const row of accounts) {
   const already = held.get(row.id) ?? new Set();
   const missing = KEYS.filter((key) => !already.has(key));
-  work.push({ row, missing });
+  /*
+   * A superuser's rows are never consulted -- `can` short-circuits on the role
+   * -- so resetting them would rewrite a set nothing reads and quietly discard
+   * whatever would come back the day the role was removed.
+   */
+  const superuser = row.isSuperuser || row.email === FIRST_SUPERUSER;
+  const reset = RESET && !superuser ? GRANTABLE.map((entry) => entry.key) : [];
+  work.push({ row, missing, reset });
   console.log(
     `  ${row.username.padEnd(20)} ${String(already.size).padStart(3)} stored` +
       `, ${String(missing.length).padStart(3)} to add` +
-      (row.email === FIRST_SUPERUSER ? "  (superuser -- grants kept, not consulted)" : ""),
+      (reset.length > 0 ? `, ${reset.length} to rewrite` : "") +
+      (superuser ? "  (superuser -- grants kept, not consulted)" : ""),
   );
 }
 
 const total = work.reduce((sum, item) => sum + item.missing.length, 0);
-console.log(`\n${total} grant row(s) to insert.`);
+const rewritten = work.reduce((sum, item) => sum + item.reset.length, 0);
+console.log(
+  `\n${total} grant row(s) to insert` +
+    (RESET ? `, ${rewritten} to rewrite to ${PRESET.label}.` : ".") +
+    (RESET ? `\nAfter this, every screen not in the preset is refused.` : ""),
+);
 
 if (!APPLY) {
   console.log("\ndry run -- nothing written. Pass --apply to keep it.");
@@ -153,9 +237,48 @@ if (!APPLY) {
 }
 
 await db.transaction(async (tx) => {
-  await tx.update(account).set({ isSuperuser: true }).where(eq(account.id, first.id));
+  // Both flags: `account_superuser_is_staff` refuses one without the other, and
+  // the account this promotes is selected on either.
+  await tx
+    .update(account)
+    .set({ isSuperuser: true, isStaff: true })
+    .where(eq(account.id, first.id));
 
-  for (const { row, missing } of work) {
+  const rowFor = (accountId, key) => ({
+    accountId,
+    modelKey: key,
+    canView: WANTED[key].view,
+    canAdd: WANTED[key].add,
+    canChange: WANTED[key].change,
+    canDelete: WANTED[key].delete,
+  });
+
+  for (const { row, missing, reset } of work) {
+    /*
+     * `--reset` writes every grantable screen, including the ones the preset
+     * reaches nothing on -- as a row of four falses rather than as a deletion.
+     * The Access screen keeps such rows for the same reason: "narrowed to
+     * nothing" and "never set up" are different states, and `seedGrants`
+     * refuses to touch the first.
+     */
+    if (reset.length > 0) {
+      for (const key of reset) {
+        await tx
+          .insert(adminAccess)
+          .values(rowFor(row.id, key))
+          .onConflictDoUpdate({
+            target: [adminAccess.accountId, adminAccess.modelKey],
+            set: {
+              canView: WANTED[key].view,
+              canAdd: WANTED[key].add,
+              canChange: WANTED[key].change,
+              canDelete: WANTED[key].delete,
+            },
+          });
+      }
+      continue;
+    }
+
     if (missing.length === 0) continue;
     /*
      * `on conflict do nothing`, so a row the superuser has already narrowed is
@@ -165,16 +288,7 @@ await db.transaction(async (tx) => {
      */
     await tx
       .insert(adminAccess)
-      .values(
-        missing.map((key) => ({
-          accountId: row.id,
-          modelKey: key,
-          canView: true,
-          canAdd: true,
-          canChange: true,
-          canDelete: true,
-        })),
-      )
+      .values(missing.map((key) => rowFor(row.id, key)))
       .onConflictDoNothing({ target: [adminAccess.accountId, adminAccess.modelKey] });
   }
 });

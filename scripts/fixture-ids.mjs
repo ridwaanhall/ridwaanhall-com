@@ -45,9 +45,21 @@ async function one(what, sql, params = []) {
   return rows[0].id;
 }
 
-/** The site owner: the account the admin screens are opened as. */
+/**
+ * The site owner: the account the admin screens are opened as.
+ *
+ * **A superuser, said in the query.** It used to ask only for staff and get one
+ * by luck of `joined_at` -- which was harmless while every staff account held
+ * every grant, and stopped being harmless the moment they were narrowed to the
+ * Editor preset. A sweep that opens all thirty-five screens has to be driven by
+ * the one role that can open all thirty-five, or half of it reports not-found
+ * and calls it a broken screen.
+ */
 export const staffAccountId = () =>
-  one("active staff account", `select id from app.account where is_staff and is_active order by joined_at limit 1`);
+  one(
+    "active superuser account",
+    `select id from app.account where is_superuser and is_active order by joined_at limit 1`,
+  );
 
 /** A signed-in reader with no staff flag, for proving the gate refuses them. */
 export const nonStaffAccountId = () =>

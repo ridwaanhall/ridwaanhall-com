@@ -83,9 +83,9 @@ export type RelatedChoices = { table: PgTable; value: PgColumn; label: Reference
 export type ListFilter =
   /**
    * `column` may be an expression rather than a real column: the users screen
-   * filters on `is_author`, which lives on `guestbook_userprofile` and is read
-   * back through a subquery. The two lookup kinds below cannot do that, since
-   * they select *from* the column's table.
+   * filters on the two public switches, which live on `public_access` and are
+   * read back through a subquery. The two lookup kinds below cannot do that,
+   * since they select *from* the column's table.
    */
   | { key: string; label: string; kind: "boolean"; column: PgColumn | SQL }
   | {

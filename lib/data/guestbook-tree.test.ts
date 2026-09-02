@@ -13,9 +13,7 @@ function message(id: string, timestamp: string, replyToId: string | null = null)
     userId: `user-${id}`,
     fullName: `Name ${id}`,
     profileImage: null,
-    isAuthor: false,
-    isCoAuthor: false,
-    coAuthorOrder: 0,
+    role: "public",
     email: "",
     replyTo: replyToId
       ? {
@@ -24,9 +22,7 @@ function message(id: string, timestamp: string, replyToId: string | null = null)
           userId: `user-${replyToId}`,
           fullName: `Name ${replyToId}`,
           profileImage: null,
-          isAuthor: false,
-          isCoAuthor: false,
-          coAuthorOrder: 0,
+          role: "public",
           email: "",
         }
       : null,

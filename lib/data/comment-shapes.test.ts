@@ -18,9 +18,14 @@ describe("isCommentable", () => {
 describe("canDeleteComment", () => {
   const mine = { userId: "me", isDeleted: false };
   const theirs = { userId: "them", isDeleted: false };
-  const reader = { userId: "me", isAuthor: false, isCoAuthor: false };
-  const author = { userId: "me", isAuthor: true, isCoAuthor: false };
-  const coAuthor = { userId: "me", isAuthor: false, isCoAuthor: true };
+
+  /*
+   * The viewer carries the capability, not the role behind it. Which role
+   * moderates is `lib/auth/public.ts`'s answer and it has already changed once
+   * -- author-or-co-author became staff -- while this rule did not.
+   */
+  const reader = { userId: "me", moderate: false };
+  const moderator = { userId: "me", moderate: true };
 
   it("lets someone delete their own", () => {
     assert.equal(canDeleteComment(mine, reader), true);
@@ -30,9 +35,8 @@ describe("canDeleteComment", () => {
     assert.equal(canDeleteComment(theirs, reader), false);
   });
 
-  it("lets an author or co-author moderate anyone's", () => {
-    assert.equal(canDeleteComment(theirs, author), true);
-    assert.equal(canDeleteComment(theirs, coAuthor), true);
+  it("lets a moderator remove anyone's", () => {
+    assert.equal(canDeleteComment(theirs, moderator), true);
   });
 
   it("offers nothing to a signed-out reader", () => {
@@ -44,9 +48,9 @@ describe("canDeleteComment", () => {
    * The tombstone is the end state. Offering the control again would suggest
    * there is something left to remove.
    */
-  it("never offers to delete an already-deleted comment, even to an author", () => {
+  it("never offers to delete an already-deleted comment, even to a moderator", () => {
     const gone = { userId: "them", isDeleted: true };
-    assert.equal(canDeleteComment(gone, author), false);
+    assert.equal(canDeleteComment(gone, moderator), false);
     assert.equal(canDeleteComment({ userId: "me", isDeleted: true }, reader), false);
   });
 });

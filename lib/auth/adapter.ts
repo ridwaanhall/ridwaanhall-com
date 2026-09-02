@@ -3,14 +3,14 @@ import type { Adapter, AdapterAccount, AdapterUser } from "next-auth/adapters";
 
 import { uniqueUsername, usernameCandidates } from "@/lib/auth/username";
 import { db } from "@/lib/db/client";
-import { account, accountIdentity, guestProfile } from "@/lib/db/app-schema";
+import { account, accountIdentity, publicAccess } from "@/lib/db/app-schema";
 import { isUuid } from "@/lib/utils/uuid";
 
 /**
  * An Auth.js adapter over the site's own account tables.
  *
  * A sign-in reads and writes `app.account`, `app.account_identity` and
- * `app.guest_profile` -- three tables this application owns, rather than the
+ * `app.public_access` -- three tables this application owns, rather than the
  * shape Auth.js's stock adapters expect. Writing the adapter is what lets the
  * schema stay the one the rest of the site reads.
  *
@@ -146,18 +146,18 @@ export function accountAdapter(database: Database = db): Adapter {
         .returning(USER_COLUMNS);
 
       /*
-       * The guestbook profile, created with the account rather than lazily.
+       * The public-access row, created with the account rather than lazily.
        *
-       * Without it the guestbook falls back to `is_staff` for `is_author`,
-       * which is the right degradation but the wrong state -- and the admin
-       * screen that grants co-author edits this row, so it has to exist before
-       * anyone can be promoted.
+       * Both columns default to true, so `getUserProfiles` reads a missing row
+       * and a default row alike and nothing depends on this having run. It runs
+       * anyway because the Public access screen edits *rows*: without one there
+       * is nothing to switch, and an account nobody can restrict is a gap that
+       * only shows up the day somebody needs to.
        */
-      await database.insert(guestProfile).values({
+      await database.insert(publicAccess).values({
         accountId: created.id,
-        isAuthor: false,
-        isCoAuthor: false,
-        coAuthorOrder: 0,
+        canComment: true,
+        canGuestbook: true,
         createdAt: now(),
       });
 

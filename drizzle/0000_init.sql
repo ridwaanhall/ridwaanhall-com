@@ -285,7 +285,19 @@ CREATE TABLE "app"."account" (
     "is_active" boolean NOT NULL DEFAULT true,
     "joined_at" timestamptz NOT NULL DEFAULT now(),
     "last_seen_at" timestamptz,
-    CONSTRAINT "account_username_key" UNIQUE ("username")
+    CONSTRAINT "account_username_key" UNIQUE ("username"),
+    -- A superuser is always staff.
+    --
+    -- The two flags were independent, and one of the four combinations was a
+    -- lockout: `lib/auth/staff.ts` refuses an account that is not `is_staff`
+    -- before it ever looks at the role, so a superuser with the flag cleared
+    -- could not reach the admin -- and `is_superuser` is only editable from
+    -- inside it, by a superuser. The way back was raw SQL.
+    --
+    -- Here rather than in the gate, so there is one rule instead of a second
+    -- opinion: the application sets `is_staff` alongside the role in the one
+    -- place that grants it, and this refuses every other way in.
+    CONSTRAINT "account_superuser_is_staff" CHECK (NOT "is_superuser" OR "is_staff")
 );--> statement-breakpoint
 
 CREATE TABLE "app"."admin_access" (
@@ -702,14 +714,31 @@ CREATE TABLE "app"."portfolio_highlight" (
 -- Community
 -- ---------------------------------------------------------------------------
 
-CREATE TABLE "app"."guest_profile" (
+-- What one account may do on the *public* site, as against in the admin.
+--
+-- The pair to `admin_access` above, and deliberately shaped like it: one row
+-- per account, booleans, one screen. That one answers "what may this staff
+-- account open"; this one answers "may this reader still post at all".
+--
+-- It replaced `guest_profile`, which carried `is_author`, `is_co_author` and
+-- `co_author_order` -- a second role system, on a second table, answering the
+-- same question as `is_staff` and `is_superuser` at a different altitude. The
+-- roles folded into those two columns (author became superuser, co-author
+-- became staff, and the live rows already lined up exactly), which left this
+-- table free to hold what the public site never had: a way to refuse one
+-- person. Before it, posting a comment or a guestbook message was gated on
+-- "is there a session" and nothing else, with no rate limiting anywhere.
+--
+-- Both default true, so an account with no row here reads exactly like an
+-- account with a default one -- which is what lets `getUserProfiles` fall back
+-- rather than crash on a row that has not been written yet.
+CREATE TABLE "app"."public_access" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "account_id" uuid NOT NULL REFERENCES "app"."account"("id") ON DELETE CASCADE,
-    "is_author" boolean NOT NULL DEFAULT false,
-    "is_co_author" boolean NOT NULL DEFAULT false,
-    "co_author_order" integer NOT NULL DEFAULT 0,
+    "can_comment" boolean NOT NULL DEFAULT true,
+    "can_guestbook" boolean NOT NULL DEFAULT true,
     "created_at" timestamptz NOT NULL DEFAULT now(),
-    CONSTRAINT "guest_profile_account_key" UNIQUE ("account_id")
+    CONSTRAINT "public_access_account_key" UNIQUE ("account_id")
 );--> statement-breakpoint
 
 CREATE TABLE "app"."guest_message" (

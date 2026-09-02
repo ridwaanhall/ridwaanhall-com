@@ -1,29 +1,37 @@
+import type { SiteRole } from "@/lib/auth/roles";
+
 /**
- * The Author / Co-Author badge.
+ * The Superuser / Staff badge.
  *
  * One definition for what used to be three hand-copies: the message list, the
  * pinned card, and `buildRoleBadgeHtml()` in the guestbook's inline script.
+ *
+ * It said Author and Co-Author until those stopped being roles. The two
+ * treatments are unchanged and the mapping is the one the fold made -- author
+ * became superuser, co-author became staff -- so a message that carried the
+ * purple badge still carries it, under the name the rest of the site now uses.
+ *
+ * `public` draws nothing, which is the point of the role existing: it is what
+ * everybody has, and a badge on every message marks nobody out.
  *
  * The two sizes are spelled out rather than interpolated. Tailwind detects
  * classes as literal text, so a `text-[${n}px]` would compile to nothing at all
  * -- the same trap that made `pl-5` a no-op on the live site for seven lists.
  */
 export function RoleBadge({
-  isAuthor,
-  isCoAuthor,
+  role,
   small = false,
 }: {
-  isAuthor: boolean;
-  isCoAuthor: boolean;
+  role: SiteRole;
   /** The pinned card sits in a denser row. */
   small?: boolean;
 }) {
-  if (!isAuthor && !isCoAuthor) return null;
+  if (role === "public") return null;
 
   const glyph = small ? 9 : 10;
   const label = small ? "text-[8px]" : "text-[9px]";
 
-  if (isAuthor) {
+  if (role === "superuser") {
     return (
       <span className="inline-flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-1.5 py-0.5 text-violet-50">
         <svg
@@ -40,7 +48,7 @@ export function RoleBadge({
           <path d="M17 11c.34 0 .67.04 1 .09V6.27L10.5 3 3 6.27v4.91c0 4.54 3.2 8.79 7.5 9.82.55-.13 1.08-.32 1.6-.55-.69-.98-1.1-2.17-1.1-3.45 0-3.31 2.69-6 6-6z" />
           <path d="M17 13c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 1.38c.62 0 1.12.51 1.12 1.12s-.51 1.12-1.12 1.12-1.12-.51-1.12-1.12.5-1.12 1.12-1.12zm0 5.37c-.93 0-1.74-.46-2.24-1.17.05-.72 1.51-1.08 2.24-1.08s2.19.36 2.24 1.08c-.5.71-1.31 1.17-2.24 1.17z" />
         </svg>
-        <span className={label}>Author</span>
+        <span className={label}>Superuser</span>
       </span>
     );
   }
@@ -60,7 +68,7 @@ export function RoleBadge({
         <path fill="none" d="M0 0h24v24H0z" />
         <path d="M16 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L22 4H16zM10 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L16 4H10zM4 4l2.29 6.29c.18.18.43.29.71.29s.53-.11.71-.29L10 4H4zM7 14c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm10 0c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
       </svg>
-      <span className={label}>Co-Author</span>
+      <span className={label}>Staff</span>
     </span>
   );
 }

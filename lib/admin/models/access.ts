@@ -1,5 +1,6 @@
-import { eq, or, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
+import { countWhereAnd } from "@/lib/admin/sql";
 import { account, adminAccess } from "@/lib/db/app-schema";
 
 import type { AdminListModel } from "@/lib/admin/list";
@@ -47,11 +48,22 @@ export type AccessRow = {
  * A superuser's number does not come from this table at all; the column below
  * says so in words rather than printing a zero that would read as "no access"
  * for the one account that has all of it.
+ *
+ * **Through `countWhereAnd`, never as a raw `sql` template.** This was written
+ * by hand once and read 0 for every staff account for as long as it took
+ * somebody to notice, because Drizzle renders an interpolated column with its
+ * bare name: `${account.id}` came out as `"id"`, `admin_access` has an `id` of
+ * its own, and the correlation compared two unrelated keys. `lib/admin/sql.ts`
+ * exists for exactly this and its header tells the same story about a different
+ * table -- the trap is not that the rule is unknown, it is that a correlated
+ * subquery looks fine until the outer column's name also exists on the inner
+ * one, and `admin_access` is the first table here where it does.
  */
-const screens = sql<number>`(
-  select count(*)::int from ${adminAccess}
-  where ${adminAccess.accountId} = ${account.id} and ${adminAccess.canView}
-)`;
+const screens = countWhereAnd(
+  adminAccess.accountId,
+  account.id,
+  eq(adminAccess.canView, true),
+);
 
 export const accessList: AdminListModel<AccessRow> = {
   key: "access",
@@ -67,13 +79,16 @@ export const accessList: AdminListModel<AccessRow> = {
     lastSeenAt: account.lastSeenAt,
   },
   /*
-   * Staff or superuser. `or` rather than `is_staff` alone because the two flags
-   * are independent columns and nothing in the database ties them: an account
-   * marked superuser with the staff flag cleared cannot sign into the admin,
-   * and is exactly the row somebody needs to find in order to fix it. A screen
-   * about access that hides the broken case is not much use.
+   * Staff, which now includes every superuser.
+   *
+   * This used to be `or(is_staff, is_superuser)`, because the two were
+   * independent columns and the combination nobody wants -- superuser with the
+   * staff flag cleared, which cannot sign into the admin at all -- was a row
+   * somebody had to be able to find in order to fix. `account_superuser_is_staff`
+   * refuses that pair, so there is no longer a broken case to catch and the
+   * `or` would be a second opinion about a question the database has settled.
    */
-  baseWhere: or(eq(account.isStaff, true), eq(account.isSuperuser, true)),
+  baseWhere: eq(account.isStaff, true),
   columns: [
     { key: "username", label: "Username", sort: account.username, value: (row) => row.username },
     { key: "email", label: "Email", kind: "muted", sort: account.email, value: (row) => row.email },
@@ -127,7 +142,10 @@ export const accessAccountSelect = {
   email: account.email,
   firstName: account.firstName,
   lastName: account.lastName,
-  isStaff: account.isStaff,
+  // No `is_staff`: reaching this screen means the row passed `baseWhere`, and
+  // `account_superuser_is_staff` means a superuser passed it too. Selecting a
+  // column the page has nothing to say about is how a banner nobody can trigger
+  // survives a schema change.
   isSuperuser: account.isSuperuser,
   isActive: account.isActive,
 };

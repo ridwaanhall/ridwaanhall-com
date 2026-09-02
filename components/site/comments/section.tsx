@@ -21,11 +21,20 @@ export function Comments({
   section,
   slug,
   signedInAs,
+  canPost,
 }: {
   section: CommentSection;
   /** Which page to revalidate after a mutation. */
   slug: string;
   signedInAs: string | null;
+  /**
+   * Whether this reader may post at all, decided on the server.
+   *
+   * Hiding the form is not the gate -- `postComment` refuses the same reader
+   * whatever is on screen -- but a form that is going to be refused is a form
+   * that should say so before somebody types into it.
+   */
+  canPost: boolean;
 }) {
   const confirm = useConfirm();
   const [pending, startTransition] = useTransition();
@@ -72,7 +81,9 @@ export function Comments({
         {section.count} comment{section.count === 1 ? "" : "s"}
       </h2>
 
-      {signedIn ? (
+      {signedIn && !canPost && <CannotPost />}
+
+      {signedIn && canPost ? (
         <>
           <form ref={formRef} action={submit} className="mb-8">
             <input type="hidden" name="content_type" value={section.targetLabel} />
@@ -156,7 +167,7 @@ export function Comments({
             <div className="py-5 first:pt-0" key={comment.id}>
               <Comment
                 comment={comment}
-                canReply={signedIn}
+                canReply={signedIn && canPost}
                 onReply={(target) => {
                   setReplyTo(target);
                   bodyRef.current?.focus();
@@ -185,7 +196,7 @@ export function Comments({
                       <Comment
                         comment={reply}
                         isReply
-                        canReply={signedIn}
+                        canReply={signedIn && canPost}
                         onReply={(target) => {
                           setReplyTo(target);
                           bodyRef.current?.focus();
@@ -235,6 +246,21 @@ function SignOutButton() {
  * offering the same two providers as the guestbook, so there is one sign-in
  * story across the site.
  */
+/**
+ * Said plainly, rather than by a form that fails on submit.
+ *
+ * Deliberately does not say who decided or why: the reader cannot change it
+ * from here, and a reason is a conversation to have somewhere other than the
+ * bottom of a blog post.
+ */
+function CannotPost() {
+  return (
+    <p className="mb-8 rounded-lg border border-zinc-800 px-4 py-3 text-sm text-zinc-400">
+      Commenting is turned off for this account.
+    </p>
+  );
+}
+
 function SignInPrompt() {
   return (
     <div className="px-4 py-6 text-center">

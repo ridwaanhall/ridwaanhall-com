@@ -1,7 +1,9 @@
-import { eq, inArray } from "drizzle-orm";
+import { inArray } from "drizzle-orm";
 
 import { db } from "@/lib/db/client";
-import { account, accountIdentity, guestProfile } from "@/lib/db/app-schema";
+import { publicCapabilities, type PublicCapabilities } from "@/lib/auth/public";
+import { roleFor, type SiteRole } from "@/lib/auth/roles";
+import { account, accountIdentity, publicAccess } from "@/lib/db/app-schema";
 
 /**
  * Who a signed-in reader is, as the guestbook and comments need them.
@@ -16,10 +18,10 @@ import { account, accountIdentity, guestProfile } from "@/lib/db/app-schema";
  * Google wins when both are linked, which is the order the original walked.
  *
  * **The permission flags are read here, from the database, and never carried
- * in the session token.** `is_author` and `is_co_author` decide who may pin
- * and delete, and a JWT the reader holds for thirty days must not be the
- * authority on that -- revoking co-author would not take effect until their
- * token expired. The token carries identity; this carries permission.
+ * in the session token.** A JWT the reader holds for thirty days must not be
+ * the authority on what they may do: taking somebody's ability to comment away
+ * would not take effect until their token expired. The token carries identity;
+ * this carries permission.
  */
 export type UserProfile = {
   /** A uuid: every key in `app` is one. */
@@ -28,11 +30,17 @@ export type UserProfile = {
   fullName: string;
   email: string;
   profileImage: string | null;
-  isAuthor: boolean;
-  isCoAuthor: boolean;
-  coAuthorOrder: number;
-  /** `is_author || is_co_author` -- the single source of truth for pinning. */
-  canPin: boolean;
+  /** Public, staff or superuser -- the one role this account holds. */
+  role: SiteRole;
+  /**
+   * What they may actually do, already decided.
+   *
+   * The capabilities rather than the flags behind them, so no caller has to
+   * remember that pinning is staff-or-better while deleting a message is
+   * superuser-only, or that an inactive account answers no to all of it.
+   * `lib/auth/public.ts` is where that is written down once.
+   */
+  can: PublicCapabilities;
 };
 
 const GRAVATAR_FALLBACK = "https://www.gravatar.com/avatar/";
@@ -113,6 +121,8 @@ export async function getUserProfiles(
         lastName: account.lastName,
         email: account.email,
         isStaff: account.isStaff,
+        isSuperuser: account.isSuperuser,
+        isActive: account.isActive,
       })
       .from(account)
       .where(inArray(account.id, ids)),
@@ -126,13 +136,12 @@ export async function getUserProfiles(
       .where(inArray(accountIdentity.accountId, ids)),
     database
       .select({
-        userId: guestProfile.accountId,
-        isAuthor: guestProfile.isAuthor,
-        isCoAuthor: guestProfile.isCoAuthor,
-        coAuthorOrder: guestProfile.coAuthorOrder,
+        userId: publicAccess.accountId,
+        canComment: publicAccess.canComment,
+        canGuestbook: publicAccess.canGuestbook,
       })
-      .from(guestProfile)
-      .where(inArray(guestProfile.accountId, ids)),
+      .from(publicAccess)
+      .where(inArray(publicAccess.accountId, ids)),
   ]);
 
   const socialsByUser = new Map<string, { provider: string; extraData: unknown }[]>();
@@ -145,10 +154,17 @@ export async function getUserProfiles(
 
   for (const user of users) {
     const stored = profileByUser.get(user.id);
-    // No `guest_profile` row falls back to `is_staff`. Every account gets one
-    // at sign-up, but a read path must not crash on a row that is missing.
-    const isAuthor = stored ? stored.isAuthor : user.isStaff;
-    const isCoAuthor = stored ? stored.isCoAuthor : false;
+    /*
+     * A missing `public_access` row reads exactly like a default one.
+     *
+     * Every account gets one at sign-up, but a read path must not depend on
+     * that -- and here it does not have to, because both columns default to
+     * true. The old fallback had to guess (`is_author` fell back to `is_staff`,
+     * which was the right degradation and the wrong state); this one does not
+     * guess at all, it just says what the column would have said.
+     */
+    const canComment = stored ? stored.canComment : true;
+    const canGuestbook = stored ? stored.canGuestbook : true;
 
     const named = `${user.firstName} ${user.lastName}`.trim();
     const derived = fromSocialAccounts(socialsByUser.get(user.id) ?? [], {
@@ -163,10 +179,14 @@ export async function getUserProfiles(
       fullName: derived.fullName,
       email: derived.email,
       profileImage: derived.profileImage,
-      isAuthor,
-      isCoAuthor,
-      coAuthorOrder: isCoAuthor && stored ? stored.coAuthorOrder : 0,
-      canPin: isAuthor || isCoAuthor,
+      role: roleFor(user),
+      can: publicCapabilities({
+        isActive: user.isActive,
+        isStaff: user.isStaff,
+        isSuperuser: user.isSuperuser,
+        canComment,
+        canGuestbook,
+      }),
     });
   }
 
@@ -178,12 +198,3 @@ export async function getUserProfile(userId: string): Promise<UserProfile | null
   return (await getUserProfiles([userId])).get(userId) ?? null;
 }
 
-/** Whether a `guestbook_userprofile` row exists, used by the adapter. */
-export async function hasStoredProfile(userId: string): Promise<boolean> {
-  const rows = await db
-    .select({ id: guestProfile.id })
-    .from(guestProfile)
-    .where(eq(guestProfile.accountId, userId))
-    .limit(1);
-  return rows.length > 0;
-}

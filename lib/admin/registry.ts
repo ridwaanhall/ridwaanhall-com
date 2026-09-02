@@ -302,13 +302,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     group: "Guestbook",
     blurb: "The guestbook thread, and which messages are pinned.",
   },
-  {
-    key: "user-profile",
-    label: "User profile",
-    labelPlural: "User profiles",
-    group: "Guestbook",
-    blurb: "Author and co-author flags, and the co-author order.",
-  },
+
   {
     key: "comment",
     label: "Comment",
@@ -325,12 +319,30 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
   },
   {
     key: "access",
-    label: "Access",
-    labelPlural: "Access",
+    label: "Admin access",
+    labelPlural: "Admin access",
     group: "Access",
     custom: true,
     superuserOnly: true,
-    blurb: "What each staff account may view, add, change and delete.",
+    blurb: "What each staff account may view, add, change and delete in here.",
+  },
+  /*
+   * The other half of the group, and deliberately not `superuserOnly`.
+   *
+   * Handing out *admin* access is handing out everything, which is why the
+   * screen above is a role rather than a grant. Deciding whether one reader may
+   * still post is moderation, and moderation is what staff is for -- so this
+   * one is granted through the ordinary matrix like any other screen.
+   *
+   * It is also the only screen in the admin that lists every account rather
+   * than the staff ones: what it governs is what everybody has.
+   */
+  {
+    key: "public-access",
+    label: "Public access",
+    labelPlural: "Public access",
+    group: "Access",
+    blurb: "Who may comment and post to the guestbook. Every account has a row.",
   },
 
   /*

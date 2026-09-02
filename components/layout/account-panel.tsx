@@ -82,11 +82,23 @@ export async function AccountPanel() {
     );
   }
 
+  /*
+   * One role, already decided.
+   *
+   * `getUserProfile` reads it from `account` on every request, so this is the
+   * same answer the actions enforce with rather than a second opinion drawn
+   * from whether an Admin link happens to be in the menu. Public is drawn here
+   * and only here -- it is what every signed-in reader has, so a badge for it
+   * anywhere else would mark nobody out.
+   */
+  const role = viewer.role;
+
   return (
     <AccountMenu
       name={viewer.fullName}
       username={viewer.username}
       imageUrl={viewer.profileImage}
+      role={role}
     >
       {/* Admin above, and the act that costs something last. */}
       {staff && (

@@ -345,6 +345,23 @@ export function toClientFieldsets(
 export type FormValue = string | number | boolean | null | string[] | Record<string, string>;
 export type FormValues = Record<string, FormValue>;
 
+/** What `afterSave` is given. Capabilities, never a connection. */
+export type AfterSaveContext = {
+  /** The record's uuid. Always set -- a create has returned its key by now. */
+  id: string;
+  /** Whether this save made the row, as against changing one that existed. */
+  created: boolean;
+  /**
+   * Give an account the default screens, if it holds no grants at all.
+   *
+   * A no-op for an account with any row of its own, so it can never widen a
+   * narrowing somebody made on purpose -- it exists for the account that has
+   * just been made staff and would otherwise open an admin whose rail draws
+   * nothing, which reads as broken rather than as empty.
+   */
+  seedDefaultGrants: (accountId: string) => Promise<void>;
+};
+
 export type ValidationContext = {
   /** `null` when creating. */
   id: string | null;
@@ -414,6 +431,20 @@ export type AdminFormModel = {
    * Returns a message, or `null` to allow. Async so it can count rows.
    */
   validate?: (values: FormValues, context: ValidationContext) => Promise<string | null>;
+  /**
+   * Work the record needs done elsewhere, once the row has landed.
+   *
+   * Runs after the write, the join tables and the inlines, so everything it can
+   * see is committed. It cannot refuse the save -- by the time it runs there is
+   * nothing to refuse; a rule that can say no belongs in `validate`.
+   *
+   * Like `ValidationContext.exists`, what it needs is handed in rather than
+   * imported, and for the same reason: `lib/admin/models/` is read by the check
+   * harnesses and by `descriptors.test.ts`, and a descriptor that reached for
+   * `lib/db/client.ts` would open a connection every time one of them asked a
+   * form for its shape.
+   */
+  afterSave?: (values: FormValues, context: AfterSaveContext) => Promise<void>;
   /** Child rows edited on the same screen. */
   inlines?: AdminInline[];
   /**

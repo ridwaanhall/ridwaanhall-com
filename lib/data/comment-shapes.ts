@@ -7,6 +7,8 @@
  * bundle. Types alone would be erased; a constant is what drags it in.
  */
 
+import type { SiteRole } from "@/lib/auth/roles";
+
 /** `models.TextField(max_length=MAX_COMMENT_LENGTH)`. */
 export const MAX_COMMENT_LENGTH = 1000;
 
@@ -35,8 +37,8 @@ export type CommentAuthor = {
   displayName: string;
   username: string;
   profileImage: string | null;
-  isAuthor: boolean;
-  isCoAuthor: boolean;
+  /** Drawn as a badge beside the name, and `"public"` draws none. */
+  role: SiteRole;
 };
 
 export type CommentNode = CommentAuthor & {
@@ -58,16 +60,20 @@ export type CommentSection = {
 };
 
 /**
- * Own comment, or any comment when the viewer is an author or co-author.
+ * Own comment, or anybody's when the viewer may moderate.
  *
  * A deleted comment is never deletable: the tombstone is the end state, and
  * offering the control again would suggest there is something left to remove.
+ *
+ * The viewer carries the *capability*, not the role behind it. Which role
+ * moderates is `lib/auth/public.ts`'s answer and it has changed once already;
+ * this rule has not, and should not have to.
  */
 export function canDeleteComment(
   comment: { userId: string; isDeleted: boolean },
-  viewer: { userId: string; isAuthor: boolean; isCoAuthor: boolean } | null,
+  viewer: { userId: string; moderate: boolean } | null,
 ): boolean {
   if (!viewer || comment.isDeleted) return false;
   if (comment.userId === viewer.userId) return true;
-  return viewer.isAuthor || viewer.isCoAuthor;
+  return viewer.moderate;
 }

@@ -234,15 +234,6 @@ export const guestMessage = app.table("guest_message", {
   pinnedAt: timestamp("pinned_at", { withTimezone: true, mode: "string" }),
 });
 
-export const guestProfile = app.table("guest_profile", {
-  id: uuid().primaryKey().defaultRandom(),
-  accountId: uuid("account_id").references((): AnyPgColumn => account.id).notNull(),
-  isAuthor: boolean("is_author").notNull().default(false),
-  isCoAuthor: boolean("is_co_author").notNull().default(false),
-  coAuthorOrder: integer("co_author_order").notNull().default(0),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
-});
-
 export const hiringListItem = app.table("hiring_list_item", {
   id: uuid().primaryKey().defaultRandom(),
   hiringProfileId: uuid("hiring_profile_id").references((): AnyPgColumn => hiringProfile.id).notNull(),
@@ -472,6 +463,14 @@ export const projectTag = app.table("project_tag", {
   tagId: uuid("tag_id").references((): AnyPgColumn => tag.id).notNull(),
   position: integer().notNull().default(0),
 }, (t) => [primaryKey({ columns: [t.projectId, t.tagId] })]);
+
+export const publicAccess = app.table("public_access", {
+  id: uuid().primaryKey().defaultRandom(),
+  accountId: uuid("account_id").references((): AnyPgColumn => account.id).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  canComment: boolean("can_comment").notNull().default(true),
+  canGuestbook: boolean("can_guestbook").notNull().default(true),
+});
 
 export const skill = app.table("skill", {
   id: uuid().primaryKey().defaultRandom(),

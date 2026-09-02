@@ -76,13 +76,36 @@ try {
        select 1 from app.account_identity i
         where i.provider = s.provider and i.provider_uid = s.uid)`);
 
-  await step("guestbook profiles", `
-    insert into app.guest_profile (account_id, is_author, is_co_author, co_author_order, created_at)
-    select a.id, p.is_author, p.is_co_author, p.co_author_order, p.created_at
+  /*
+   * The legacy roles land on `account`, not beside the row they came from.
+   *
+   * `guestbook_userprofile.is_author` and `is_co_author` were a second role
+   * system; they folded into `is_superuser` and `is_staff`, so a catch-up has
+   * to write them where they live now. `app.public_access` inherits nothing
+   * from that table -- its two columns default to true and the old one had no
+   * equivalent, so a row is created empty of history.
+   */
+  await step("legacy author roles", `
+    update app.account a
+       set is_staff = true, is_superuser = true
+      from public.guestbook_userprofile p
+      join public.auth_user u on u.id = p.user_id
+     where a.username = u.username and p.is_author`);
+
+  await step("legacy co-author roles", `
+    update app.account a
+       set is_staff = true
+      from public.guestbook_userprofile p
+      join public.auth_user u on u.id = p.user_id
+     where a.username = u.username and p.is_co_author`);
+
+  await step("public access rows", `
+    insert into app.public_access (account_id, created_at)
+    select a.id, p.created_at
       from public.guestbook_userprofile p
       join public.auth_user u on u.id = p.user_id
       join app.account a on a.username = u.username
-     where not exists (select 1 from app.guest_profile g where g.account_id = a.id)`);
+     where not exists (select 1 from app.public_access g where g.account_id = a.id)`);
 
   /*
    * Matched on author, body and the clock truncated to the millisecond -- the

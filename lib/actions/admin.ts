@@ -19,6 +19,7 @@ import {
 import { inlineImageKeys, saveInlines } from "@/lib/admin/inlines";
 import { formModelFor } from "@/lib/admin/models";
 import { blockedDeleteMessage } from "@/lib/admin/blockers";
+import { seedDefaultGrants } from "@/lib/auth/grants";
 import { adminPath, ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
 import { permits } from "@/lib/auth/permissions";
 import { getStaffUser } from "@/lib/auth/staff";
@@ -383,6 +384,24 @@ export async function saveRecord(
   // twenty-one rows, one logo by three.
   const stale = [...images.stale, ...staleFromInlines];
   if (stale.length > 0) await deleteUnreferenced(stale);
+
+  /*
+   * Last, because everything it can see has to be committed: the row, its join
+   * tables and its inlines. It cannot refuse the save -- there is nothing left
+   * to refuse by here -- so a rule that can say no belongs in `validate`.
+   *
+   * What it needs is handed in rather than imported by the descriptor, for the
+   * reason `ValidationContext.exists` exists: `lib/admin/models/` is read by the
+   * check harnesses, and a descriptor reaching for the database would open a
+   * connection every time one of them asked a form for its shape.
+   */
+  if (model.afterSave && parentId !== null) {
+    await model.afterSave(values, {
+      id: parentId,
+      created: id === null,
+      seedDefaultGrants,
+    });
+  }
 
   invalidate(model);
   const base = adminBase(model);

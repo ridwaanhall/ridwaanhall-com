@@ -38,12 +38,19 @@ export async function CommentSectionFor({
   const profile = viewerId ? await getUserProfile(viewerId) : null;
 
   const viewer = profile
-    ? { userId: profile.id, isAuthor: profile.isAuthor, isCoAuthor: profile.isCoAuthor }
+    ? { userId: profile.id, moderate: profile.can.moderateComments }
     : null;
 
   const section = await getCommentSection({ label, targetId, viewer });
 
-  return <Comments section={section} slug={slug} signedInAs={profile?.fullName ?? null} />;
+  return (
+    <Comments
+      section={section}
+      slug={slug}
+      signedInAs={profile?.fullName ?? null}
+      canPost={profile?.can.comment ?? false}
+    />
+  );
 }
 
 /** Holds the section's height while it streams, so the page does not jump. */

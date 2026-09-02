@@ -24,6 +24,7 @@ export const account = app.table("account", {
   isActive: boolean("is_active").notNull().default(true),
   joinedAt: timestamp("joined_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
   lastSeenAt: timestamp("last_seen_at", { withTimezone: true, mode: "string" }),
+  isSuperuser: boolean("is_superuser").notNull().default(false),
 });
 
 export const accountIdentity = app.table("account_identity", {
@@ -33,6 +34,16 @@ export const accountIdentity = app.table("account_identity", {
   providerUid: text("provider_uid").notNull(),
   extra: jsonb().notNull().default({}),
   connectedAt: timestamp("connected_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+});
+
+export const adminAccess = app.table("admin_access", {
+  id: uuid().primaryKey().defaultRandom(),
+  accountId: uuid("account_id").references((): AnyPgColumn => account.id).notNull(),
+  modelKey: text("model_key").notNull(),
+  canView: boolean("can_view").notNull().default(false),
+  canAdd: boolean("can_add").notNull().default(false),
+  canChange: boolean("can_change").notNull().default(false),
+  canDelete: boolean("can_delete").notNull().default(false),
 });
 
 export const application = app.table("application", {
@@ -453,6 +464,7 @@ export const projectStatus = app.table("project_status", {
   slug: text().notNull(),
   label: text().notNull(),
   position: integer().notNull().default(0),
+  color: text().notNull().default('zinc'),
 });
 
 export const projectTag = app.table("project_tag", {

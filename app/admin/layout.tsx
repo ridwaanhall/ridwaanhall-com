@@ -6,6 +6,7 @@ import { AdminMain } from "@/components/admin/admin-main";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { AdminTopbar } from "@/components/admin/admin-topbar";
 import { RAIL_COOKIE, RAIL_MINI } from "@/lib/admin/rail";
+import { permittedKeys } from "@/lib/auth/permissions";
 import { staffGate } from "@/lib/auth/staff";
 
 /**
@@ -67,10 +68,30 @@ export default async function AdminLayout({ children }: { children: React.ReactN
    */
   const mini = (await cookies()).get(RAIL_COOKIE)?.value === RAIL_MINI;
 
+  /*
+   * Which screens this account may open, computed here and passed down.
+   *
+   * **The rail is a client component**, so this cannot be asked there: the
+   * answer needs the session and the database, and a client module importing
+   * `lib/auth/staff.ts` would not compile against `server-only` -- which is the
+   * good outcome. The bad one is subtler and this project has paid for it once:
+   * a value exported from a `"use client"` module and imported by a server one
+   * arrives as a client *reference* rather than the value, typed exactly as
+   * declared, so nothing reports it. The direction that works is props.
+   *
+   * A plain `string[]`, not a `Set`, because it crosses that boundary and a Set
+   * does not survive serialisation. `AdminSidebar` builds the Set on its side.
+   *
+   * Free, at this point: `getStaffUser` is memoised per request and
+   * `staffGate()` above has already read the row and the grants.
+   */
+  const permitted = permittedKeys(gate.user);
+
   return (
     <AdminShell
       signedInAs={gate.user.username}
       initialMini={mini}
+      permitted={permitted}
       topbar={<AdminTopbar user={gate.user} />}
     >
       <AdminMain>{children}</AdminMain>

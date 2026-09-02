@@ -52,11 +52,13 @@
 --     table with a `position`, so a list can be queried, counted and reordered
 --     without rewriting a whole document.
 --
---   * **Accounts carry identity and nothing more.** Everyone signs in through
---     Google or GitHub, so there is no password column to leak: `account` holds
---     identity and the two flags the app reads, and `account_identity` holds
---     the provider link. A comment names its target with a plain `target_kind`
---     and `target_id` rather than a generic-foreign-key mechanism.
+--   * **Accounts carry identity and authority, and no credential.** Everyone
+--     signs in through Google or GitHub, so there is no password column to
+--     leak: `account` holds identity and the three flags the app reads,
+--     `account_identity` holds the provider link, and `admin_access` holds what
+--     one staff account may do on each admin screen. A comment names its target
+--     with a plain `target_kind` and `target_id` rather than a
+--     generic-foreign-key mechanism.
 --
 -- `position` rather than `order`, which is reserved. Every ordering column is
 -- an integer with a stable default, so a list has an order before anyone sets
@@ -170,7 +172,31 @@ CREATE TABLE "app"."project_status" (
     -- The lifecycle order the projects list sorts by. `lib/data/content.ts`
     -- reads it, so reordering these rows reorders the projects page.
     "position" integer NOT NULL DEFAULT 0,
-    CONSTRAINT "project_status_slug_key" UNIQUE ("slug")
+    -- The badge's colour, as a **token** and never as a class.
+    --
+    -- `bg-purple-400/90 text-purple-950` is what renders; `purple` is what is
+    -- stored. That distinction is the whole point: Tailwind finds classes by
+    -- scanning source text, so a class that exists only as a column value
+    -- produces no rule at all -- while a token is just a key, exactly like the
+    -- slug beside it. `lib/data/project-status.ts` holds the eighteen pairs,
+    -- each written out in full, and `scripts/check-db-classes.mjs` is what
+    -- keeps the column from ever holding the class itself.
+    --
+    -- It is a column rather than a lookup keyed on the slug because that is
+    -- what lets a status be *created* here: keyed on the slug, a new row had no
+    -- colour and rendered in the neutral fallback, which reads as a broken card
+    -- rather than as a status nobody has picked a colour for.
+    --
+    -- The check lists the tokens rather than pointing at a table, because the
+    -- set is fixed by what the stylesheet can emit and is not editorial: adding
+    -- one means writing its class pair out in that module first.
+    "color" text NOT NULL DEFAULT 'zinc',
+    CONSTRAINT "project_status_slug_key" UNIQUE ("slug"),
+    CONSTRAINT "project_status_color_check" CHECK ("color" IN (
+        'purple', 'violet', 'indigo', 'blue', 'sky', 'cyan', 'teal',
+        'emerald', 'green', 'lime', 'yellow', 'amber', 'orange', 'red',
+        'rose', 'pink', 'fuchsia', 'zinc'
+    ))
 );--> statement-breakpoint
 
 CREATE TABLE "app"."legal_document_type" (
@@ -244,14 +270,46 @@ CREATE TABLE "app"."account" (
     "email" text NOT NULL DEFAULT '',
     "first_name" text NOT NULL DEFAULT '',
     "last_name" text NOT NULL DEFAULT '',
-    -- The two flags the application actually reads. `is_superuser`, the
-    -- permission matrix and the password hash are not here: every account is
-    -- OAuth, and staff access is one boolean read fresh per request.
+    -- The three flags the application reads, and no password hash: every
+    -- account is OAuth, so there is no credential here to store. All three are
+    -- read from this table on every request and never carried in the session
+    -- token -- see lib/auth/staff.ts for why a thirty-day JWT must not be
+    -- allowed to assert a privilege.
+    --
+    -- `is_superuser` is the whole of what that role is, and it is deliberately
+    -- a column here rather than a row in `admin_access`: it is not a grant but
+    -- the absence of the question, and it is what decides who may edit anyone
+    -- else's grants at all.
     "is_staff" boolean NOT NULL DEFAULT false,
+    "is_superuser" boolean NOT NULL DEFAULT false,
     "is_active" boolean NOT NULL DEFAULT true,
     "joined_at" timestamptz NOT NULL DEFAULT now(),
     "last_seen_at" timestamptz,
     CONSTRAINT "account_username_key" UNIQUE ("username")
+);--> statement-breakpoint
+
+CREATE TABLE "app"."admin_access" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "account_id" uuid NOT NULL REFERENCES "app"."account"("id") ON DELETE CASCADE,
+    -- A **registry key** from lib/admin/registry.ts -- `blog-post`, `tag`,
+    -- `legal-section` -- and deliberately not a table name. The admin is keyed
+    -- on screens rather than on tables, and the two do not line up: fourteen
+    -- vocabularies share one factory over fourteen tables, `legal-document` and
+    -- `legal-section` are two screens over a parent and its child, and
+    -- `comment.target_id` reads two tables from one screen. A permission on a
+    -- table could not say which screen it meant.
+    --
+    -- So no foreign key can cover this column, and nothing in the database
+    -- would refuse a key naming no screen. `descriptors.test.ts` asserts the
+    -- stored set against ADMIN_ENTRIES, and lib/auth/permissions.ts ignores a
+    -- key it does not recognise rather than trusting it: an unknown grant fails
+    -- closed.
+    "model_key" text NOT NULL,
+    "can_view" boolean NOT NULL DEFAULT false,
+    "can_add" boolean NOT NULL DEFAULT false,
+    "can_change" boolean NOT NULL DEFAULT false,
+    "can_delete" boolean NOT NULL DEFAULT false,
+    CONSTRAINT "admin_access_account_model_key" UNIQUE ("account_id", "model_key")
 );--> statement-breakpoint
 
 CREATE TABLE "app"."account_identity" (
@@ -692,6 +750,9 @@ CREATE INDEX "guest_message_pinned_idx" ON "app"."guest_message" ("is_pinned", "
 CREATE INDEX "comment_target_idx" ON "app"."comment" ("target_kind", "target_id", "created_at");--> statement-breakpoint
 CREATE INDEX "experience_position_idx" ON "app"."experience" ("position");--> statement-breakpoint
 CREATE INDEX "application_status_idx" ON "app"."application" ("status_id");--> statement-breakpoint
+-- Every request by a staff account reads that account's whole grant set, so
+-- this is the one lookup on the table that happens on every admin page.
+CREATE INDEX "admin_access_account_idx" ON "app"."admin_access" ("account_id");--> statement-breakpoint
 
 -- ---------------------------------------------------------------------------
 -- Row Level Security, on every table, with no policies

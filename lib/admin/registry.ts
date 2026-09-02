@@ -32,6 +32,7 @@ export type AdminGroup =
   | "Guestbook"
   | "Comments"
   | "Users"
+  | "Access"
   | "Settings";
 
 /**
@@ -56,6 +57,12 @@ export const ADMIN_GROUPS: AdminGroup[] = [
   "Guestbook",
   "Comments",
   "Users",
+  // Above Settings rather than beside Users, and its own group rather than a
+  // row in that one: Users answers "who exists", this answers "who may do
+  // what", and only a superuser sees it at all. A row that appears for one
+  // reader and not another is clearer as a whole group appearing than as a
+  // list that is sometimes one longer.
+  "Access",
   "Settings",
 ];
 
@@ -166,6 +173,31 @@ export type AdminEntry = {
    * answers 404 -- one screen at two URLs is the drift this replaced.
    */
   section?: AdminSectionKey;
+  /**
+   * A screen with its own route rather than a changelist and a form.
+   *
+   * Everything else here is rendered by `components/admin/changelist.tsx` and
+   * `record-form.tsx` from a descriptor, which is why adding a screen is adding
+   * data. The access matrix cannot be: its rows are *registry entries*, not
+   * columns of a table, so there is no form for the generic to draw. It gets
+   * `app/admin/access/` instead, and a static segment beats `[model]`.
+   *
+   * This is what tells `check-admin.mjs` and `descriptors.test.ts` not to
+   * expect a list or form descriptor for the key -- an entry without one is
+   * otherwise a screen that cannot be opened.
+   */
+  custom?: true;
+  /**
+   * Reachable only by a superuser, and never by a grant.
+   *
+   * There is one, and it is the screen that hands out grants. Making it
+   * grantable would let a superuser delegate the ability to delegate -- so a
+   * staff account granted it could give itself everything else, which is the
+   * same thing as being a superuser with none of the visibility. It is also
+   * left out of the matrix entirely rather than shown and disabled: a row
+   * nobody can ever tick is a question that should not have been asked.
+   */
+  superuserOnly?: true;
 };
 
 export const ADMIN_ENTRIES: AdminEntry[] = [
@@ -291,6 +323,15 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     group: "Users",
     blurb: "Accounts, and who may reach this admin at all.",
   },
+  {
+    key: "access",
+    label: "Access",
+    labelPlural: "Access",
+    group: "Access",
+    custom: true,
+    superuserOnly: true,
+    blurb: "What each staff account may view, add, change and delete.",
+  },
 
   /*
    * Settings: every vocabulary a dropdown elsewhere in this admin offers.
@@ -377,7 +418,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Project status",
     labelPlural: "Project statuses",
     group: "Settings",
-    blurb: "The project lifecycle. Rename and reorder; the set itself is fixed.",
+    blurb: "The project lifecycle, with the badge colour each status renders in.",
     section: "publishing",
   },
   {
@@ -480,6 +521,26 @@ export type AdminNavItem = {
 };
 
 /**
+ * Which screens this reader may open, as the nav wants it.
+ *
+ * `undefined` means "do not filter", which is what the check harnesses and the
+ * unit suite pass: they ask what the registry *offers*, not what one account
+ * reaches. Every screen in the running admin goes through the filtered form.
+ *
+ * A `ReadonlySet<string>` and not an array, because it is asked once per entry
+ * per render. **It is built on the server and the rail is a client component**,
+ * so the set is not what crosses that boundary -- `app/admin/layout.tsx` passes
+ * a plain `string[]` and `AdminSidebar` builds the set on its own side. A Set
+ * does not survive serialisation, and a constant imported the other way is
+ * worse: a value exported from a `"use client"` module reaches the server as a
+ * client *reference*, typed exactly as it was declared, so nothing reports it.
+ */
+export type PermittedKeys = ReadonlySet<string> | undefined;
+
+const reachable = (entry: AdminEntry, permitted: PermittedKeys) =>
+  permitted === undefined || permitted.has(entry.key);
+
+/**
  * What one group offers, with its sections collapsed.
  *
  * The rail and the index page both list a group, and both must now show six
@@ -497,11 +558,12 @@ export type AdminNavItem = {
  * a group mixes unsectioned and sectioned entries (none do today), unsectioned
  * rows come first, then sections.
  */
-export function navItemsInGroup(group: AdminGroup): AdminNavItem[] {
+export function navItemsInGroup(group: AdminGroup, permitted?: PermittedKeys): AdminNavItem[] {
   const items: AdminNavItem[] = [];
 
   // First, add all unsectioned entries in registry order.
   for (const entry of entriesInGroup(group)) {
+    if (!reachable(entry, permitted)) continue;
     if (!entry.section) {
       items.push({
         href: adminPath(entry),
@@ -517,11 +579,18 @@ export function navItemsInGroup(group: AdminGroup): AdminNavItem[] {
   for (const section of ADMIN_SECTIONS) {
     if (section.group !== group) continue;
 
-    const tabs = sectionTabs(section.key);
-    // Unreachable: `descriptors.test.ts` refuses a section with no tabs --
-    // every declared section is required to name at least one entry. Skipped
-    // rather than thrown because the failure mode is a row that goes nowhere,
-    // and a throw here would take the whole rail down with it.
+    /*
+     * The tabs this reader may open, which is also the strip they will get.
+     * A section whose every tab is refused is not drawn at all -- a row
+     * leading to a page whose only content is a strip of screens that answer
+     * not-found is worse than an absent row.
+     */
+    const tabs = sectionTabs(section.key).filter((tab) => reachable(tab, permitted));
+    // With no filter this is unreachable: `descriptors.test.ts` refuses a
+    // section with no tabs, so every declared section names at least one
+    // entry. Filtered, it is the ordinary case of a section nobody here can
+    // reach. Skipped rather than thrown either way -- the failure mode is a row
+    // that goes nowhere, and a throw would take the whole rail down with it.
     if (!tabs[0]) continue;
 
     items.push({

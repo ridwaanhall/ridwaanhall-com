@@ -1,6 +1,7 @@
 import { sql, type SQL } from "drizzle-orm";
 
 import { countWhere } from "@/lib/admin/sql";
+import { PROJECT_STATUS_COLOR_TOKENS } from "@/lib/data/project-status";
 import {
   application,
   applicationSource,
@@ -360,7 +361,7 @@ export const contactPreferenceForm = contactPreferenceVocab.form;
  */
 const projectStatusUsed = countWhere(project.statusId, projectStatus.id);
 
-export const projectStatusList: AdminListModel<VocabRow> = {
+export const projectStatusList: AdminListModel<VocabRow & { color: string }> = {
   key: "project-status",
   from: projectStatus,
   pk: projectStatus.id,
@@ -369,6 +370,7 @@ export const projectStatusList: AdminListModel<VocabRow> = {
     slug: projectStatus.slug,
     label: projectStatus.label,
     position: projectStatus.position,
+    color: projectStatus.color,
     used: projectStatusUsed,
   },
   columns: [
@@ -381,12 +383,31 @@ export const projectStatusList: AdminListModel<VocabRow> = {
       sort: projectStatus.position,
       value: (row) => row.position,
     },
+    // The token, not a swatch. A coloured dot here would need the class, and a
+    // class chosen from a row is exactly what this column exists to avoid --
+    // `check-db-classes.mjs` would fail on it, correctly.
+    {
+      key: "color",
+      label: "Colour",
+      kind: "code",
+      sort: projectStatus.color,
+      value: (row) => row.color,
+    },
     {
       key: "used",
       label: "Projects",
       kind: "number",
       sort: projectStatusUsed,
       value: (row) => row.used,
+    },
+  ],
+  filters: [
+    {
+      key: "color",
+      label: "Colour",
+      kind: "choice",
+      column: projectStatus.color,
+      choices: "distinct",
     },
   ],
   search: { fields: [projectStatus.label, projectStatus.slug], placeholder: "Search label or slug" },
@@ -399,8 +420,27 @@ export const projectStatusForm: AdminFormModel = {
   from: projectStatus,
   pk: projectStatus.id,
   label: (values) => String(values.label ?? "Project status"),
-  canCreate: false,
-  canDelete: false,
+  /*
+   * Created and deleted like every other vocabulary, which it could not be
+   * until the colour moved onto the row.
+   *
+   * The refusal was never about the lifecycle being sacred. It was that a badge
+   * colour is a pair of Tailwind classes, classes are never stored in the
+   * database, and `lib/data/project-status.ts` therefore keyed them on the slug
+   * -- so a status created here had no colour and rendered in the neutral
+   * fallback, which reads as a broken card rather than as a status nobody has
+   * picked a colour for. `project_status.color` holds a *token* now, chosen
+   * from the field below, and the classes stay in that module where Tailwind
+   * can see them.
+   *
+   * A status a project still uses cannot be deleted by anybody, superuser
+   * included -- the foreign key refuses it, and `lib/admin/blockers.ts` says
+   * how many projects are in the way.
+   */
+  canCreate: true,
+  canDelete: true,
+  deleteWarning:
+    "Projects still using this status keep it and block the delete, so this only removes a status nothing has been given.",
   fieldsets: [
     {
       help: "The badge on a project card reads the label; the projects page sorts on the order.",
@@ -414,12 +454,45 @@ export const projectStatusForm: AdminFormModel = {
           maxLength: 100,
         },
         {
+          /*
+           * Writable while the row is being made, fixed from then on.
+           *
+           * `readOnly: true` was right while the colour was keyed on it: the
+           * slug decided how the badge rendered. It is an ordinary identifier
+           * now -- but still an identifier, and `sortProjects` and the
+           * changelist filters match on it, so renaming one afterwards would
+           * silently re-point them. Read through `formFieldsFor`, never as
+           * `field.readOnly`: `"afterCreate"` is a truthy string and a bare
+           * test drops the field from the insert, which is a not-null violation
+           * on the one save it exists to make work.
+           */
           name: "slug",
           column: projectStatus.slug,
           label: "Slug",
           kind: "slug",
-          readOnly: true,
-          help: "The badge's colour is keyed on this, so it is fixed.",
+          readOnly: "afterCreate",
+          slugFrom: "label",
+          required: true,
+          help: "The identifier the projects page matches on. Set once, when the status is created.",
+        },
+        {
+          name: "color",
+          column: projectStatus.color,
+          label: "Colour",
+          kind: "select",
+          required: true,
+          /*
+           * The tokens come from the module that holds the class pairs, so the
+           * dropdown cannot offer a colour that renders as the fallback. The
+           * database's `project_status_color_check` is the other half, and it
+           * is a genuinely separate source -- which is the point: two lists
+           * that agree because one is derived from the other prove nothing.
+           */
+          choices: PROJECT_STATUS_COLOR_TOKENS.map((token) => ({
+            value: token,
+            label: token.charAt(0).toUpperCase() + token.slice(1),
+          })),
+          help: "The badge's colour on the projects page. Stored as a name, never as a class.",
         },
         {
           name: "position",

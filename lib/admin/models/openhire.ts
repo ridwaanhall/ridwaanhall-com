@@ -32,6 +32,19 @@ export const hiringProfileForm: AdminFormModel = {
   from: hiringProfile,
   pk: hiringProfile.id,
   label: () => "Hiring profile",
+  /*
+   * Refused to everybody, superuser included -- the one place in this admin
+   * where that role is not the answer.
+   *
+   * There is exactly one of these rows and nothing here can make another: the
+   * form *is* the record, so there is no create to fall back on. The public
+   * layout renders it on every page, so deleting it does not remove a record,
+   * it takes the site down, and leaves no way back through this interface.
+   *
+   * A different kind of refusal from the two `"superuser"` ones on `user` and
+   * `project-status`, which are about consequence. This one is about there
+   * being nothing on the other side of the act.
+   */
   canCreate: false,
   canDelete: false,
   fieldsets: [
@@ -151,6 +164,19 @@ export const openToWorkProfileForm: AdminFormModel = {
   from: openToWorkProfile,
   pk: openToWorkProfile.id,
   label: () => "Open to work profile",
+  /*
+   * Refused to everybody, superuser included -- the one place in this admin
+   * where that role is not the answer.
+   *
+   * There is exactly one of these rows and nothing here can make another: the
+   * form *is* the record, so there is no create to fall back on. The public
+   * layout renders it on every page, so deleting it does not remove a record,
+   * it takes the site down, and leaves no way back through this interface.
+   *
+   * A different kind of refusal from the two `"superuser"` ones on `user` and
+   * `project-status`, which are about consequence. This one is about there
+   * being nothing on the other side of the act.
+   */
   canCreate: false,
   canDelete: false,
   fieldsets: [

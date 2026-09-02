@@ -37,6 +37,38 @@ new installation has to replay every step in order, including the ones that only
 made sense against data that no longer exists. Git history is where the sequence
 lives.
 
+## Changing a database that already exists
+
+`0000_init.sql` runs against an empty database and nothing else, so a change to
+the live one needs the same change written as `ALTER`. Write that as a **throwaway
+delta**, apply it, and delete it in the same commit:
+
+```bash
+DELTA="drizzle/$(date +%Y%m%d)-delta.sql"   # any name; it is not going to survive
+
+node scripts/apply-migration.mjs "$DELTA"           # dry run: read every statement
+node scripts/apply-migration.mjs "$DELTA" --apply
+node scripts/gen-app-schema.mjs
+npx tsx scripts/check-baseline-schema.mjs   # the two now describe the same schema
+rm "$DELTA"
+```
+
+**Deleted, not kept.** A delta that stays becomes a rung, and a tree with rungs
+in it is a tree somebody eventually tries to replay -- against a database where
+half of them no longer make sense. `check-fresh-start.mjs` fails on a second
+baseline file for exactly that reason, and it is the check that noticed the
+first one being left behind. The applied change lives in `0000_init.sql`; the
+step that got it there lives in git history, which is where a sequence belongs.
+
+Two things a delta has to get right that this file does not:
+
+- **A table it creates arrives with RLS off.** The `DO $$` loop at the end of
+  `0000_init.sql` runs when *that file* runs, which is never against an existing
+  database. Re-run the loop at the end of the delta; enabling twice is a no-op.
+- **Restart `next dev` afterwards.** A running dev server keeps the old
+  `app-schema.ts`, so a newly added column reads as `undefined` inside it and
+  Drizzle throws from a stack that names nothing here.
+
 ## Write the SQL by hand
 
 `drizzle-kit generate` is not used here and `drizzle-kit migrate` has never run

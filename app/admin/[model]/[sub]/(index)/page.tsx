@@ -10,6 +10,7 @@ import { SectionTabs } from "@/components/admin/section-tabs";
 import { listModelFor } from "@/lib/admin/models";
 import type { AdminEntry } from "@/lib/admin/registry";
 import { resolveAdminRoute } from "@/lib/admin/route";
+import { can } from "@/lib/auth/permissions";
 import { requireStaff } from "@/lib/auth/staff";
 
 export async function generateMetadata({
@@ -68,7 +69,7 @@ async function Sub({
   params: PageProps<"/admin/[model]/[sub]">["params"];
   searchParams: PageProps<"/admin/[model]/[sub]">["searchParams"];
 }) {
-  await requireStaff();
+  const actor = await requireStaff();
 
   const { model, sub } = await params;
   const route = resolveAdminRoute(model, sub);
@@ -77,6 +78,17 @@ async function Sub({
    * nothing and leaves a blank page -- the reason `NothingHere` exists.
    */
   if (!route) return <NothingHere message="No such screen." />;
+
+  /*
+   * The permission gate, before either branch and before anything is read.
+   *
+   * Both shapes below open a query -- a record's form values, a tab's
+   * changelist -- and a refusal after either has run is a refusal whose Flight
+   * payload still carries the rows. It is the same sentence a URL that names no
+   * screen gets, and deliberately: a staff account is already inside the admin,
+   * so what it must not be handed is a map of which screens it is kept out of.
+   */
+  if (!can(actor, route.entry.key, "view")) return <NothingHere message="No such screen." />;
 
   if (route.kind === "record") {
     return (

@@ -47,6 +47,32 @@ export function lookupOr<T>(value: PgColumn, key: PgColumn, outer: PgColumn, fal
   return sql<T>`coalesce(${lookup<T>(value, key, outer)}, ${fallback})`;
 }
 
+/**
+ * Every value of `value` for the matching rows, joined into one string.
+ *
+ * `lookup` above takes the first row and is wrong wherever a record can have
+ * more than one -- an account's sign-in providers are the case here. One
+ * account holds one identity today, because a second provider offering an
+ * address an account already uses is refused rather than linked, so `lookup`
+ * would have looked correct indefinitely and then quietly dropped a provider
+ * the day that changed.
+ *
+ * Sorted, so the string is stable: without `order by` the same account can
+ * render "google, github" and "github, google" on consecutive requests, which
+ * reads as data changing under the reader and makes the column unsortable in
+ * any meaningful sense.
+ *
+ * Through the query builder like its neighbours, and for the same reason -- a
+ * column interpolated into a raw `sql` template renders with its bare name, and
+ * a correlated subquery is exactly where that binds to the wrong table.
+ */
+export function joined(value: PgColumn, key: PgColumn, outer: PgColumn): SQL<string> {
+  return sql<string>`coalesce((${qb
+    .select({ value: sql`string_agg(distinct ${value}, ', ' order by ${value})` })
+    .from(key.table as PgTable)
+    .where(eq(key, outer))}), '')`;
+}
+
 /** `(select count(*) from <table> where <key> = <outer>)`. */
 export function countWhere(key: PgColumn, outer: PgColumn): SQL<number> {
   return sql<number>`(${qb

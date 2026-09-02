@@ -351,6 +351,16 @@ export type ValidationContext = {
   /** The signed-in staff account's uuid, for rules about acting on yourself. */
   actorId: string;
   /**
+   * Whether the signed-in account holds the superuser role.
+   *
+   * A boolean rather than the whole actor, because a descriptor has no business
+   * with a grant map -- it would be one import away from asking permission
+   * questions that `lib/auth/permissions.ts` already answers. What a *rule*
+   * needs is the one fact it cannot reach: whether the person editing outranks
+   * the record they are editing. The users screen is the only rule that asks.
+   */
+  actorIsSuperuser: boolean;
+  /**
    * Whether any row of `table` has `column = value`.
    *
    * Handed in rather than queried by the descriptor, and that is a constraint
@@ -375,13 +385,28 @@ export type AdminFormModel = {
   /** Names the record in the heading, the toast and the confirm dialog. */
   label: (values: FormValues) => string;
   /**
-   * Whether the admin may add and remove rows of this model. Both default to
-   * true; each `false` here has a reason recorded at the descriptor -- a
-   * guestbook message is written by a reader, an account by a sign-in, a
-   * profile row by a signal.
+   * Whether the admin may add and remove rows of this model.
+   *
+   * Both default to true, and each `false` has a reason recorded at the
+   * descriptor -- a guestbook message is written by a reader, an account by a
+   * sign-in, a profile row by a signal.
+   *
+   * `"superuser"` is the third state: refused to staff, offered to a
+   * superuser. It exists for the two refusals that were about *consequences*
+   * rather than about impossibility -- deleting an account takes every comment
+   * and guestbook message that person wrote with it, and deleting a project
+   * status removes an option the projects page sorts on -- as against the three
+   * singletons, where the row cannot be recreated by anything in this admin and
+   * the site has no page without it. Those stay `false` for everybody.
+   *
+   * **`"superuser"` is a truthy string**, exactly like `readOnly:
+   * "afterCreate"` above, and it fails the same way: `model.canDelete !== false`
+   * reads it as *allowed* and offers the button to everyone. Every reader goes
+   * through `permits` or `roleAllows` in `lib/auth/permissions.ts`; nothing
+   * tests these properties directly.
    */
-  canCreate?: boolean;
-  canDelete?: boolean;
+  canCreate?: boolean | "superuser";
+  canDelete?: boolean | "superuser";
   /** What deleting takes with it, said plainly in the confirm dialog. */
   deleteWarning?: string;
   /**

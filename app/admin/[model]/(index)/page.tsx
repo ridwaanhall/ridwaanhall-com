@@ -16,6 +16,7 @@ import {
   adminPath,
   sectionTabs,
 } from "@/lib/admin/registry";
+import { can, permits } from "@/lib/auth/permissions";
 import { requireStaff } from "@/lib/auth/staff";
 
 /**
@@ -74,7 +75,7 @@ export const instant = false;
  * in place. All three such rows exist and are never created or deleted, so a
  * missing one is a broken database rather than a case to handle.
  */
-async function SingletonScreen({ entryKey }: { entryKey: string }) {
+async function SingletonScreen({ entryKey, canSave }: { entryKey: string; canSave: boolean }) {
   const entry = ADMIN_ENTRIES_BY_KEY.get(entryKey);
   const form = formModelFor(entryKey);
   if (!entry || !form) notFound();
@@ -115,6 +116,7 @@ async function SingletonScreen({ entryKey }: { entryKey: string }) {
         imageUrls={await imageUrlMap(form, values, inlineRows)}
         label={form.label(values)}
         typeLabel={entry.label}
+        canSave={canSave}
         canDelete={false}
         listHref="/admin"
       />
@@ -126,7 +128,7 @@ export default async function AdminListPage({ params, searchParams }: Params) {
   // First, and before anything is read. The layout's gate decides what a
   // rejected reader sees; this one decides whether the query runs at all --
   // see `requireStaff` for the payload leak that distinction closes.
-  await requireStaff();
+  const actor = await requireStaff();
 
   const { model: key } = await params;
 
@@ -136,14 +138,23 @@ export default async function AdminListPage({ params, searchParams }: Params) {
    * session has already made this route dynamic; that is fine here, because
    * the rail links straight to the first tab and only a typed URL or an old
    * bookmark arrives at this line.
+   *
+   * The first tab **this account may open**, not the first tab: the rail
+   * already points here at that one, so landing on a not-found would only
+   * happen to somebody who typed the section's own URL -- and sending them to
+   * a screen they cannot see would be a worse answer than the one below.
    */
   const section = ADMIN_SECTIONS_BY_KEY.get(key);
   if (section) {
-    const [first] = sectionTabs(section.key);
+    const [first] = sectionTabs(section.key).filter((tab) => can(actor, tab.key, "view"));
     // `adminPath` returns a plain string built at runtime; it is the codebase's
     // one function for the job, so the cast stands in for the check `typedRoutes`
     // cannot run over a value it cannot see at compile time.
     if (first) redirect(adminPath(first) as Route);
+    // Every tab refused. Not-found rather than an explanation, for the reason
+    // `requirePermission` gives: a staff account is already inside, and what
+    // it must not be handed is a list of the screens it is being kept out of.
+    notFound();
   }
 
   const entry = ADMIN_ENTRIES_BY_KEY.get(key);
@@ -163,8 +174,24 @@ export default async function AdminListPage({ params, searchParams }: Params) {
   // still resolves the key, so without this `/admin/tag` keeps answering
   // beside `/admin/taxonomy/tag` -- one screen at two URLs.
   if (!entry || entry.section) notFound();
+  /*
+   * The permission gate, and it is here rather than one line lower for the
+   * reason `requireStaff` is the page's first await: below this line the
+   * changelist query runs, and a refusal after it has run is a refusal that
+   * still put every row in the Flight payload. Nothing is read before this.
+   */
+  if (!can(actor, key, "view")) notFound();
   // A one-row model has no changelist to render; see `SingletonScreen`.
-  if (entry.singleton) return <SingletonScreen entryKey={key} />;
+  if (entry.singleton) {
+    // The *form* model, not the list one above: a singleton has no list, so
+    // `model` is null here, and `change` is a question about the form.
+    return (
+      <SingletonScreen
+        entryKey={key}
+        canSave={permits(actor, key, "change", formModelFor(key))}
+      />
+    );
+  }
   if (!model) notFound();
 
   return (

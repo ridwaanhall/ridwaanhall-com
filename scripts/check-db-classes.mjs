@@ -131,6 +131,63 @@ check(
   [...keyed].map(([c, where]) => `${c} (${where})`).join(", "),
 );
 
+/*
+ * The colour tokens, from two genuinely different sources.
+ *
+ * `project_status.color` is the one column here whose value *becomes* a class:
+ * `purple` is turned into `bg-purple-400/90 text-purple-950` by
+ * `lib/data/project-status.ts`. That is the safe shape, and the whole reason a
+ * status can be created in the admin at all. What it needs is for the two
+ * halves to agree, and they cannot be checked against each other in the unit
+ * suite -- one is a TypeScript object literal and the other is a CHECK
+ * constraint in Postgres. Comparing a constant to itself is what this
+ * repository's colour bug already cost once.
+ *
+ * A token the database accepts and the map has no pair for renders the neutral
+ * fallback: a status somebody deliberately picked a colour for, showing grey.
+ * A token the map has and the database refuses is a dropdown option that fails
+ * on save.
+ */
+const { PROJECT_STATUS_COLORS } = await import("../lib/data/project-status.ts");
+
+const [constraint] = await db
+  .execute(
+    sql`select pg_get_constraintdef(oid) as def from pg_constraint
+        where conname = 'project_status_color_check'`,
+  )
+  .then((r) => r.rows);
+
+check(Boolean(constraint), "the colour column carries a check constraint at all");
+
+if (constraint) {
+  const allowed = new Set([...String(constraint.def).matchAll(/'([a-z]+)'/g)].map((m) => m[1]));
+  const mapped = new Set(Object.keys(PROJECT_STATUS_COLORS));
+
+  const unmapped = [...allowed].filter((token) => !mapped.has(token));
+  const unallowed = [...mapped].filter((token) => !allowed.has(token));
+
+  check(
+    unmapped.length === 0,
+    `every colour the database accepts has classes written out (${allowed.size} token(s))`,
+    unmapped.join(", "),
+  );
+  check(
+    unallowed.length === 0,
+    "and every colour the admin offers is one the database accepts",
+    unallowed.join(", "),
+  );
+}
+
+const inUse = await db
+  .execute(sql`select distinct color from app.project_status`)
+  .then((r) => r.rows.map((row) => row.color));
+const orphaned = inUse.filter((token) => !(token in PROJECT_STATUS_COLORS));
+check(
+  orphaned.length === 0,
+  `every colour a status actually holds renders (${inUse.length} in use)`,
+  orphaned.join(", "),
+);
+
 console.log(
   failures === 0
     ? "\nNothing in the database names a CSS class. app/globals.css needs no inline source list."

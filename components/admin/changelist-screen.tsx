@@ -12,6 +12,8 @@ import {
 } from "@/lib/admin/list";
 import { formModelFor } from "@/lib/admin/models";
 import type { AdminEntry } from "@/lib/admin/registry";
+import { permits } from "@/lib/auth/permissions";
+import { requireStaff } from "@/lib/auth/staff";
 
 /**
  * One changelist: the query behind it, and the table.
@@ -47,6 +49,9 @@ export async function ChangelistScreen<Row>({
 }) {
   const form = formModelFor(entry.key);
   const listParams = readListParams(model, await searchParams);
+  // Free: memoised per request, and the route above has already asked. The
+  // `view` check happened there; this is only about the Add button.
+  const actor = await requireStaff();
 
   // Filters that read their vocabulary from the data need a query each -- the
   // values present for a `"distinct"` filter, the referenced rows for a foreign
@@ -76,9 +81,14 @@ export async function ChangelistScreen<Row>({
       params={listParams}
       page={page}
       filterChoices={filterChoices}
-      // A model with no form yet cannot create, and one whose descriptor says
-      // `canCreate: false` has a reason recorded there.
-      canCreate={form !== null && form.canCreate !== false}
+      /*
+        The descriptor's answer and this account's, together. A model with no
+        form cannot create; one whose descriptor refuses has the reason recorded
+        there; and one whose `canCreate` is `"superuser"` is offered to exactly
+        one role -- which `!== false` would have read as "everybody", since it
+        is a truthy string. `permits` is the only reader of that flag.
+      */
+      canCreate={permits(actor, entry.key, "add", form)}
     />
   );
 }

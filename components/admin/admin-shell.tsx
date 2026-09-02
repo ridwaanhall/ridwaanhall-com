@@ -36,11 +36,20 @@ import { cn } from "@/lib/utils/cn";
 export function AdminShell({
   signedInAs,
   initialMini,
+  permitted,
   topbar,
   children,
 }: {
   signedInAs: string;
   initialMini: boolean;
+  /**
+   * The registry keys this account may open, in registry order.
+   *
+   * Passed straight through to the rail. A plain array rather than a `Set`
+   * because this is the server/client boundary and a Set arrives as `{}`; the
+   * rail builds the Set once on its own side.
+   */
+  permitted: string[];
   topbar: React.ReactNode;
   children: React.ReactNode;
 }) {
@@ -61,7 +70,12 @@ export function AdminShell({
 
   return (
     <div className="min-h-screen bg-black">
-      <AdminSidebar signedInAs={signedInAs} mini={mini} onToggleMini={toggle} />
+      <AdminSidebar
+        signedInAs={signedInAs}
+        permitted={permitted}
+        mini={mini}
+        onToggleMini={toggle}
+      />
       {/*
         The same `admin-rail-shift` the rail carries, so the two move as one
         thing. Without it the rail animates its width over 260ms while the

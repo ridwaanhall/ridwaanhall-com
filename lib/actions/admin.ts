@@ -18,7 +18,9 @@ import {
 } from "@/lib/admin/form";
 import { inlineImageKeys, saveInlines } from "@/lib/admin/inlines";
 import { formModelFor } from "@/lib/admin/models";
+import { blockedDeleteMessage } from "@/lib/admin/blockers";
 import { adminPath, ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
+import { permits } from "@/lib/auth/permissions";
 import { getStaffUser } from "@/lib/auth/staff";
 import { MODEL_TAGS } from "@/lib/data/tags";
 import { db } from "@/lib/db/client";
@@ -32,11 +34,17 @@ import { isUuid } from "@/lib/utils/uuid";
 /**
  * Saving and deleting from the admin.
  *
- * **Every entry point re-checks staff itself.** A server action is a POST
- * endpoint with a generated id, not a function call from the page that rendered
- * the form -- it does not inherit `app/admin/layout.tsx`'s screen, and neither
- * does it inherit the page's `requireStaff()`. Anyone who can reach the action
- * id can invoke it, so `getStaffUser()` is the first line of both.
+ * **Every entry point re-checks staff and permission itself.** A server action
+ * is a POST endpoint with a generated id, not a function call from the page
+ * that rendered the form -- it does not inherit `app/admin/layout.tsx`'s
+ * screen, and neither does it inherit the page's `requireStaff()` or its
+ * `requirePermission()`. Anyone who can reach the action id can invoke it, so
+ * `getStaffUser()` is the first line of both and `permits()` is the second.
+ *
+ * The permission is asked with the model in hand, never as `can()` alone: a
+ * grant may not widen what a descriptor refuses, and the flags it refuses with
+ * are `boolean | "superuser"` -- a truthy string that reads as *allowed* to
+ * anything testing `!== false`. `permits` is the one place that resolves them.
  *
  * **Only declared fields are written.** `parseFormValues` walks the descriptor
  * and reads the names it expects rather than iterating the submitted
@@ -215,8 +223,20 @@ export async function saveRecord(
 
   const model = formModelFor(key);
   if (!model) return { ok: false, error: "Unknown record type." };
-  if (id === null && model.canCreate === false) {
-    return { ok: false, error: "Records of this kind are not created here." };
+  /*
+   * Creating and changing are two permissions, so they are two questions. The
+   * wording splits with them: "not created here" is about the model and is the
+   * same sentence for everybody, while a refused permission is about this
+   * account and must not describe the screen it is refusing -- somebody who
+   * cannot open Users should not learn from an error message that Users has an
+   * add form.
+   */
+  const action = id === null ? "add" : "change";
+  if (!permits(actor, key, action, model)) {
+    if (action === "add" && model.canCreate === false) {
+      return { ok: false, error: "Records of this kind are not created here." };
+    }
+    return { ok: false, error: "You are not permitted to do that." };
   }
   /*
    * The id rides in the form, so it is input. A non-uuid reaching a query
@@ -275,6 +295,7 @@ export async function saveRecord(
   const problem = await model.validate?.(values, {
     id,
     actorId: actor.id,
+    actorIsSuperuser: actor.isSuperuser,
     exists: async (table, column, value) => {
       if (!isUuid(value)) return false;
       const [row] = await db
@@ -413,16 +434,17 @@ const FOREIGN_KEY_VIOLATION = "23503";
 /**
  * Clear a record's children, then the record.
  *
- * Every foreign key here is `DEFERRABLE INITIALLY DEFERRED`, so the whole thing
- * runs in one transaction and the order within it does not matter -- the check
- * happens at commit, by which point parent and children are both gone. That is
- * also why this went unnoticed for a while: a transaction that rolls back never
- * reaches the check, which is exactly what a test cleaning up after itself does.
+ * One transaction, children first. **No foreign key here is deferrable**, so
+ * each statement is checked as it runs rather than at commit -- which is what
+ * makes the order inside this transaction load-bearing, and what makes a
+ * violation land on the statement that caused it instead of on the commit.
  *
  * What is *not* cleared is a reference this record does not own: an organization
  * an experience still names stays undeletable, which is what the `RESTRICT` on
  * that foreign key is for. It surfaces as a foreign-key violation, caught below
- * and reported rather than raised.
+ * and turned into a sentence naming what is in the way. **No role changes
+ * that** -- a superuser is a permission this application grants, and a foreign
+ * key is not a permission this application is asked about.
  */
 async function deleteWithChildren(model: AdminFormModel, id: string): Promise<void> {
   const targets = cascadeTargets(model);
@@ -466,8 +488,14 @@ export async function deleteRecord(key: string, id: string): Promise<SaveResult>
 
   const model = formModelFor(key);
   if (!model) return { ok: false, error: "Unknown record type." };
-  if (model.canDelete === false) {
-    return { ok: false, error: "Records of this kind are not deleted here." };
+  if (!permits(actor, key, "delete", model)) {
+    // `false` is a property of the model and says so; `"superuser"` and a
+    // missing grant are both properties of this account, and neither is
+    // described any further than "not permitted".
+    if (model.canDelete === false) {
+      return { ok: false, error: "Records of this kind are not deleted here." };
+    }
+    return { ok: false, error: "You are not permitted to do that." };
   }
   if (!isUuid(id)) return { ok: false, error: "That record no longer exists." };
 
@@ -480,10 +508,14 @@ export async function deleteRecord(key: string, id: string): Promise<SaveResult>
     await deleteWithChildren(model, id);
   } catch (error) {
     if (driverError(error)?.code === FOREIGN_KEY_VIOLATION) {
-      return {
-        ok: false,
-        error: "Something still refers to this record, so it cannot be deleted yet.",
-      };
+      /*
+       * Named rather than gestured at. No role gets past this -- a foreign key
+       * is not one of the questions this application answers -- so the useful
+       * thing is to say which rows are in the way and how many. See
+       * `lib/admin/blockers.ts`, which falls back to this sentence if the
+       * catalogue cannot be read.
+       */
+      return { ok: false, error: await blockedDeleteMessage(getTableName(model.from), id) };
     }
     throw error;
   }

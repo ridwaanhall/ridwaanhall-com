@@ -95,6 +95,27 @@ export type ListFilter =
       column: PgColumn;
       choices: FilterChoice[] | "distinct" | RelatedChoices;
     }
+  /**
+   * The same, over an *expression*.
+   *
+   * Split into its own member rather than widening `column` above, because the
+   * two lookup kinds are only meaningful for a real column: both select **from
+   * that column's table**, which an expression does not have. The users screen
+   * filters on the sign-in provider, which is a `string_agg` over
+   * `account_identity` -- there is no table to enumerate values from without
+   * running a different query entirely.
+   *
+   * So an expression must carry its options written out, and the type is what
+   * says so. `needsLookup` narrows on `choices` being an array, and this member
+   * is the reason that narrowing is sound rather than merely convenient.
+   */
+  | {
+      key: string;
+      label: string;
+      kind: "choice";
+      column: SQL;
+      choices: FilterChoice[];
+    }
   | { key: string; label: string; kind: "date"; column: PgColumn };
 
 export type AdminListModel<Row> = {
@@ -128,6 +149,20 @@ export type AdminListModel<Row> = {
    * its order clause is untouched.
    */
   pinned?: PgColumn | SQL;
+  /**
+   * Rows this list is *about*, ANDed into every query it runs.
+   *
+   * Not a filter: a filter is a control the reader operates and can clear,
+   * while this is part of what the screen is. The access list is the one that
+   * needed it -- it reads `account`, which the Users screen also reads, but it
+   * is a list of the people who can reach this admin rather than of everyone
+   * who has ever signed in. Without it the two screens would be the same list
+   * with different columns.
+   *
+   * It joins the search and filter conditions rather than replacing them, so
+   * searching within the screen still narrows what the screen already is.
+   */
+  baseWhere?: SQL;
   /** The row's primary key, for the change-form link. */
   /** The row's uuid, used to build its edit URL. */
   rowId: (row: Row) => string;
@@ -303,6 +338,9 @@ export async function fetchAdminList<Row>(
   const conditions = filterConditions(model, params);
   const search = searchCondition(model, params.q);
   if (search) conditions.push(search);
+  // First in the list makes no difference to the SQL and every difference to
+  // reading it: what the screen is, then what the reader asked of it.
+  if (model.baseWhere) conditions.unshift(model.baseWhere);
   const where = conditions.length > 0 ? and(...conditions) : undefined;
 
   const chosen = model.columns.find((column) => column.key === params.sort);
@@ -426,7 +464,7 @@ export async function relatedChoices(
  * only `choice` filters can be looked up, and only those are guaranteed to
  * carry a real column rather than an expression.
  */
-export type LookupFilter = Extract<ListFilter, { kind: "choice" }> & {
+export type LookupFilter = Extract<ListFilter, { kind: "choice"; column: PgColumn }> & {
   choices: "distinct" | RelatedChoices;
 };
 

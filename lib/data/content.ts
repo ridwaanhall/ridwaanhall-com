@@ -103,15 +103,22 @@ export type Project = ImageCompat & {
    * The status slug, which is what the badge's colour is keyed on, and its
    * label and lifecycle order, which come from the row.
    *
-   * Three fields rather than one because they answer three different
-   * questions and only the first is stable: `status` is an identifier code
-   * can match on, `status_label` is editorial and may be reworded from the
-   * admin at any time, and `status_rank` is where the status sits in the
-   * lifecycle -- also editable, and the thing `sortProjects` orders by.
+   * Four fields rather than one because they answer four different questions
+   * and only the first is stable: `status` is an identifier code can match on,
+   * `status_label` is editorial and may be reworded from the admin at any time,
+   * `status_rank` is where the status sits in the lifecycle -- also editable,
+   * and the thing `sortProjects` orders by -- and `status_color` is the token
+   * the badge is drawn from.
+   *
+   * `status_color` is a *token*, never a class: `purple`, which
+   * `projectStatusColor` turns into a pair of utilities. A class carried in a
+   * column would produce no rule at all, since Tailwind finds classes by
+   * scanning source text.
    */
   status: string;
   status_label: string;
   status_rank: number;
+  status_color: string;
   created_at: Date | null;
   updated_at: Date | null;
 };
@@ -241,6 +248,7 @@ export async function getProjects(): Promise<Project[]> {
         status: projectStatus.slug,
         statusLabel: projectStatus.label,
         statusRank: projectStatus.position,
+        statusColor: projectStatus.color,
       })
       .from(project)
       .leftJoin(category, eq(category.id, project.categoryId))
@@ -320,6 +328,10 @@ export async function getProjects(): Promise<Project[]> {
       featured_priority: row.featuredPriority,
       status: row.status ?? "",
       status_label: row.statusLabel ?? "",
+      // Empty, not `zinc`, for a project with no status row at all: that is the
+      // case `projectStatusColor`'s own fallback is for, and it is a different
+      // grey from the one a status can deliberately choose.
+      status_color: row.statusColor ?? "",
       // A project with no status at all sorts after every project that has
       // one, which is where an unknown status has always gone.
       status_rank: row.statusRank ?? Number.MAX_SAFE_INTEGER,
@@ -470,6 +482,7 @@ export type ProjectSummary = Pick<
   Project,
   | "id" | "title" | "slug" | "headline" | "category" | "tags" | "tech_stack"
   | "is_featured" | "featured_priority" | "status" | "status_label" | "status_rank"
+  | "status_color"
   | "created_at" | "updated_at"
   | "github_url" | "demo_url" | "image_url" | "img_name"
 >;
@@ -488,6 +501,7 @@ export function toProjectSummary(project: Project): ProjectSummary {
     status: project.status,
     status_label: project.status_label,
     status_rank: project.status_rank,
+    status_color: project.status_color,
     created_at: project.created_at,
     updated_at: project.updated_at,
     github_url: project.github_url,

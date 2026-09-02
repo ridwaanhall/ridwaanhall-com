@@ -22,12 +22,14 @@ import {
   profile,
   profileLink,
   profileSkillHighlight,
+  projectSkill,
   skill,
   workMode,
   applicationStatus as applicationStatusTable,
 } from "@/lib/db/app-schema";
 
 import { countWhere, lookup, lookupOr } from "@/lib/admin/sql";
+import { usageSentence, usageTotal, type UsageRelation } from "@/lib/admin/usage";
 
 import { composedLabel, type AdminFormModel, type FormField } from "@/lib/admin/form";
 import { locationLabel } from "@/lib/data/location";
@@ -391,7 +393,32 @@ export const certificationList: AdminListModel<CertificationRow> = {
 
 // --- Skill -------------------------------------------------------------------
 
-export type SkillRow = { id: string; name: string; slug: string; category: string };
+export type SkillRow = {
+  id: string;
+  name: string;
+  slug: string;
+  category: string;
+  projects: number;
+  highlights: number;
+};
+
+/**
+ * Every foreign key into `skill`, and what to call the rows behind it.
+ *
+ * Both are `ON DELETE CASCADE`, which makes this the screen where the count
+ * matters most rather than least. An organization is protected -- Postgres
+ * refuses to delete one an experience still names -- but a skill deleted here
+ * is removed from every project that listed it and from the profile
+ * highlights, silently, with nothing to refuse and nothing to undo it. The
+ * only warning available is the number, before the click.
+ */
+export const SKILL_USAGE: UsageRelation[] = [
+  { column: projectSkill.skillId, noun: "project" },
+  { column: profileSkillHighlight.skillId, noun: "highlight" },
+];
+
+const skillUsed = usageTotal(SKILL_USAGE, skill.id);
+const skillUsedBy = (fk: PgColumn) => countWhere(fk, skill.id);
 
 export const skillList: AdminListModel<SkillRow> = {
   key: "skill",
@@ -402,11 +429,26 @@ export const skillList: AdminListModel<SkillRow> = {
     name: skill.name,
     slug: skill.slug,
     category: skillCategory,
+    projects: skillUsedBy(projectSkill.skillId),
+    highlights: skillUsedBy(profileSkillHighlight.skillId),
   },
   columns: [
     { key: "name", label: "Name", sort: skill.name, value: (row) => row.name },
     { key: "slug", label: "Slug", kind: "code", sort: skill.slug, value: (row) => row.slug },
     { key: "category", label: "Category", kind: "muted", sort: skillCategory, value: (row) => row.category },
+    {
+      key: "used_by",
+      label: "Used by",
+      kind: "muted",
+      // Sorted by the total, which on this screen is the useful direction:
+      // 101 skills, and the ones nothing names are the ones to prune.
+      sort: skillUsed,
+      value: (row) =>
+        usageSentence([
+          [row.projects, "project"],
+          [row.highlights, "highlight"],
+        ]),
+    },
   ],
   filters: [
     {
@@ -515,30 +557,31 @@ export type OrganizationRow = {
   education: number;
   certifications: number;
   awards: number;
+  applications: number;
 };
 
 /**
- * How many rows point at this organisation, per relation.
+ * Every foreign key into `organization`, and what to call the rows behind it.
  *
- * Computed in the changelist query rather than per row, and the reason is
- * measured: counting each relation separately per row issues four queries for
- * every row -- 76 sequential round trips to Supabase for 19 organisations,
- * which timed the admin page out with a 504 in production. Counting them with
- * four joins instead is worse than it looks, because the joins multiply each
- * other: an organisation with 6 experiences and 1 certification reports
- * 6 certifications. Correlated subqueries have neither problem: each counts its
- * own table, and no join exists to multiply.
- */
-/**
- * `3 experiences`, and `1 experience`.
+ * All five, and the fifth is why this is a declared list rather than five
+ * entries typed into `select`: `application.organization_id` was added after
+ * this screen was written and nothing noticed for as long as it took somebody
+ * to read the two side by side. The changelist said an organization named by
+ * three job applications was `unused` while `blockers.ts` -- which reads
+ * `pg_constraint` rather than a transcription -- refused the delete and named
+ * them. `scripts/check-admin-usage.mjs` is what stops the next one.
  *
- * The counts columns read as a sentence, and "4 application" is not one. Every
- * noun these two columns use takes a plain `s`, so nothing more elaborate earns
- * its place.
+ * Ordered as the cell reads them, longest-standing relation first.
  */
-const counted = (count: unknown, noun: string) =>
-  `${count} ${Number(count) === 1 ? noun : `${noun}s`}`;
+export const ORGANIZATION_USAGE: UsageRelation[] = [
+  { column: experience.organizationId, noun: "experience" },
+  { column: education.organizationId, noun: "education" },
+  { column: certification.organizationId, noun: "certification" },
+  { column: award.organizationId, noun: "award" },
+  { column: application.organizationId, noun: "application" },
+];
 
+const organizationUsed = usageTotal(ORGANIZATION_USAGE, organization.id);
 const usedBy = (fk: PgColumn) => countWhere(fk, organization.id);
 
 export const organizationList: AdminListModel<OrganizationRow> = {
@@ -553,6 +596,7 @@ export const organizationList: AdminListModel<OrganizationRow> = {
     education: usedBy(education.organizationId),
     certifications: usedBy(certification.organizationId),
     awards: usedBy(award.organizationId),
+    applications: usedBy(application.organizationId),
   },
   columns: [
     { key: "name", label: "Name", sort: organization.name, value: (row) => row.name },
@@ -567,18 +611,18 @@ export const organizationList: AdminListModel<OrganizationRow> = {
       key: "used_by",
       label: "Used by",
       kind: "muted",
-      // Composed from four counts, so there is nothing single to ORDER BY.
-      // The header offers no sort rather than sorting on one of the four.
+      // The cell is a breakdown and the sort key is the total: five counts
+      // summed in SQL, so the header orders by how much an organization is
+      // relied on rather than by one relation standing in for the rest.
+      sort: organizationUsed,
       value: (row) =>
-        [
+        usageSentence([
           [row.experiences, "experience"],
           [row.education, "education"],
           [row.certifications, "certification"],
           [row.awards, "award"],
-        ]
-          .filter(([count]) => Number(count) > 0)
-          .map(([count, label]) => counted(count, String(label)))
-          .join(", ") || "unused",
+          [row.applications, "application"],
+        ]),
     },
   ],
   search: {
@@ -594,6 +638,12 @@ export const skillForm: AdminFormModel = {
   from: skill,
   pk: skill.id,
   label: (values) => String(values.name ?? "Skill"),
+  // The opposite of the organization's warning below, and worth saying for
+  // that reason: both foreign keys into `skill` are `ON DELETE CASCADE`, so
+  // nothing refuses this and nothing reports it afterwards. The row simply
+  // stops appearing in the tech stacks that listed it.
+  deleteWarning:
+    "This skill is removed from every project and profile highlight that lists it. Nothing refuses the delete, and the Used by column is the only warning.",
   fieldsets: [
     {
       fields: [
@@ -654,10 +704,13 @@ export const organizationForm: AdminFormModel = {
   from: organization,
   pk: organization.id,
   label: (values) => String(values.name ?? "Organization"),
-  // `on_delete=PROTECT` on all four relations, so Postgres refuses to remove one
-  // that is still in use and says so as a foreign-key violation. Offering the
-  // button is right: an organisation nothing references is genuinely deletable.
-  deleteWarning: "An organization still used by an experience, degree, award or certification cannot be removed.",
+  // `ON DELETE RESTRICT` on all five relations, so Postgres refuses to remove
+  // one that is still in use and `lib/admin/blockers.ts` turns that refusal
+  // into the rows behind it. Offering the button is right: an organization
+  // nothing references is genuinely deletable, and the Used by column says
+  // which those are.
+  deleteWarning:
+    "An organization still used by an experience, degree, award, certification or application cannot be removed.",
   fieldsets: [
     {
       fields: [
@@ -1267,14 +1320,26 @@ export type LocationRow = {
 };
 
 /**
- * How many rows point at this place, per relation.
+ * Every foreign key into `location`, and what to call the rows behind it.
  *
- * Correlated subqueries rather than joins, for the reason recorded on the
- * organization list: six joins multiply each other, so a place with 6
- * experiences and 1 degree would report 6 degrees. Counting each table on its
- * own has neither that problem nor the round trip per row that timed the
- * organization page out in production.
+ * All six are `ON DELETE SET NULL`, so nothing here ever refuses a delete --
+ * which is exactly why the count matters. `blockers.ts` filters on the actions
+ * that *refuse* and so has nothing to say about a place; without this column
+ * the only way to learn that a location is named by four records is to remove
+ * it and find four rows quietly emptied.
+ *
+ * Ordered as the cell reads them.
  */
+export const LOCATION_USAGE: UsageRelation[] = [
+  { column: experience.locationId, noun: "experience" },
+  { column: education.locationId, noun: "degree" },
+  { column: application.locationId, noun: "application" },
+  { column: jobOpening.locationId, noun: "opening" },
+  { column: openToWorkListItem.locationId, noun: "list entry" },
+  { column: profile.locationId, noun: "profile" },
+];
+
+const locationUsed = usageTotal(LOCATION_USAGE, location.id);
 const placesUsedBy = (fk: PgColumn) => countWhere(fk, location.id);
 
 /**
@@ -1324,20 +1389,18 @@ export const locationList: AdminListModel<LocationRow> = {
       key: "used_by",
       label: "Used by",
       kind: "muted",
-      // Composed from six counts, so there is nothing single to ORDER BY. The
-      // header offers no sort rather than sorting on one of the six.
+      // The breakdown in the cell, the total as the sort key -- so the places
+      // nothing names any more can be brought together and cleared out.
+      sort: locationUsed,
       value: (row) =>
-        [
+        usageSentence([
           [row.experiences, "experience"],
           [row.education, "degree"],
           [row.applications, "application"],
           [row.openings, "opening"],
           [row.listItems, "list entry"],
           [row.profiles, "profile"],
-        ]
-          .filter(([count]) => Number(count) > 0)
-          .map(([count, label]) => counted(count, String(label)))
-          .join(", ") || "unused",
+        ]),
     },
   ],
   search: {

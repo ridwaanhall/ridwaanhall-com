@@ -1,6 +1,7 @@
-import { sql, type SQL } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
 import { countWhere } from "@/lib/admin/sql";
+import { usageTotalOf } from "@/lib/admin/usage";
 import { PROJECT_STATUS_COLOR_TOKENS } from "@/lib/data/project-status";
 import {
   application,
@@ -83,24 +84,29 @@ type VocabSpec = {
   help?: string;
 };
 
-const sqlPlus = (a: SQL<number>, b: SQL<number>): SQL<number> => sql<number>`${a} + ${b}`;
-
 /**
- * The counts are summed in SQL rather than in `value`, so the column can be
- * sorted on. A vocabulary referenced from three places -- `employment_type` is
- * -- would otherwise offer a number the header cannot order by, which is the
- * compromise the organizations screen makes and is worth avoiding where the
- * shape allows.
+ * What each screen here counts into its "Used by" column, by registry key.
+ *
+ * Populated by the factory below as a side effect of building a vocabulary,
+ * rather than written out a second time: a separate list would be one more
+ * transcription of the schema, and a transcription of the schema is precisely
+ * what went out of date on the organizations screen. Recording it here means a
+ * vocabulary cannot be added to this module without `check-admin-usage.mjs`
+ * covering it.
+ *
+ * Every call happens while this module evaluates, so the map is complete before
+ * any importer can read it.
  */
-const usage = (columns: PgColumn[], id: PgColumn) =>
-  columns.map((column) => countWhere(column, id)).reduce(sqlPlus);
+export const VOCABULARY_USAGE = new Map<string, { table: PgTable; columns: PgColumn[] }>();
 
 function vocabulary(spec: VocabSpec): {
   list: AdminListModel<VocabRow>;
   form: AdminFormModel;
 } {
   const { key, table, id, slug, label, position, usedBy } = spec;
-  const used = usage(usedBy, id);
+  const used = usageTotalOf(usedBy, id);
+
+  VOCABULARY_USAGE.set(key, { table, columns: usedBy });
 
   const list: AdminListModel<VocabRow> = {
     key,
@@ -361,6 +367,11 @@ export const contactPreferenceForm = contactPreferenceVocab.form;
  */
 const projectStatusUsed = countWhere(project.statusId, projectStatus.id);
 
+VOCABULARY_USAGE.set("project-status", {
+  table: projectStatus,
+  columns: [project.statusId],
+});
+
 export const projectStatusList: AdminListModel<VocabRow & { color: string }> = {
   key: "project-status",
   from: projectStatus,
@@ -525,10 +536,12 @@ export const CATEGORY_KIND_CHOICES = [
   { value: "blog", label: "Blog" },
 ];
 
-const categoryUsed = sqlPlus(
-  sqlPlus(countWhere(skill.categoryId, category.id), countWhere(project.categoryId, category.id)),
-  countWhere(blogPost.categoryId, category.id),
-);
+const CATEGORY_USAGE = [skill.categoryId, project.categoryId, blogPost.categoryId];
+const categoryUsed = usageTotalOf(CATEGORY_USAGE, category.id);
+
+// Written out longhand rather than built by the factory, so it registers
+// itself -- see `VOCABULARY_USAGE`.
+VOCABULARY_USAGE.set("category", { table: category, columns: CATEGORY_USAGE });
 
 export type CategoryRow = VocabRow & { kind: string };
 

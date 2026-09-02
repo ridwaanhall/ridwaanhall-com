@@ -11,10 +11,10 @@
     "test:watch": "node --import tsx --import ./tests/setup.ts --test --watch \"lib/**/*.test.ts\""
   },
   "dependencies": {
-    "@tiptap/extension-table": "3.30.2",
+    "@tiptap/extension-table": "3.31.0",
     "@tiptap/pm": "3.30.2",
-    "@tiptap/react": "3.30.2",
-    "@tiptap/starter-kit": "3.30.2",
+    "@tiptap/react": "3.31.0",
+    "@tiptap/starter-kit": "3.31.0",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.2",
     "next": "16.3.1",

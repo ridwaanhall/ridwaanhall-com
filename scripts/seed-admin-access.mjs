@@ -41,11 +41,35 @@ config({ path: ".env", quiet: true });
 
 const APPLY = process.argv.includes("--apply");
 
+/**
+ * Which shape to seed, from `lib/auth/presets.ts`.
+ *
+ * No flag means everything -- which is what this script was written for and
+ * must stay: the day per-screen permissions shipped had to be invisible to the
+ * people already using the admin, so an account that was staff under the old
+ * rule keeps reaching what it reached. `--preset=<key>` is for the other job
+ * this turned out to be useful for -- setting an account up from a terminal on
+ * the same three shapes the Access screen offers, rather than on a fourth idea
+ * of what a role is.
+ */
+const PRESET_ARG = process.argv.find((arg) => arg.startsWith("--preset="));
+const PRESET_KEY = PRESET_ARG ? PRESET_ARG.slice("--preset=".length) : null;
+
 const { db, pool } = await import("../lib/db/client.ts");
 const { account, adminAccess } = await import("../lib/db/app-schema.ts");
 const { ADMIN_ENTRIES } = await import("../lib/admin/registry.ts");
 const { grantableEntries } = await import("../lib/auth/permissions.ts");
+const { ACCESS_PRESETS, grantsForPreset, presetByKey } = await import("../lib/auth/presets.ts");
 const { eq, or, sql } = await import("drizzle-orm");
+
+const PRESET = PRESET_KEY ? presetByKey(PRESET_KEY) : null;
+if (PRESET_KEY && !PRESET) {
+  console.error(
+    `No such preset: ${PRESET_KEY}. Try one of ${ACCESS_PRESETS.map((p) => p.key).join(", ")}.`,
+  );
+  await pool.end();
+  process.exit(1);
+}
 
 /**
  * The first superuser.
@@ -64,9 +88,34 @@ const FIRST_SUPERUSER = "ridwaanhall.dev@gmail.com";
  * granting the ability to grant is granting everything, so it is a role and not
  * a row. Seeding it would write a permission nothing ever reads.
  */
-const KEYS = grantableEntries(ADMIN_ENTRIES).map((entry) => entry.key);
+const GRANTABLE = grantableEntries(ADMIN_ENTRIES);
 
-console.log(`${KEYS.length} grantable screens.\n`);
+/**
+ * What one account is to be given, as a grant per screen.
+ *
+ * Without a preset this is all four booleans on every screen, which is the
+ * behaviour that made the migration invisible. With one it is whatever the
+ * preset says, and the screens it reaches nothing on are simply not written --
+ * so a later `--preset` run widens an account rather than laying down rows of
+ * falses that would then read as a deliberate narrowing.
+ */
+const WANTED = PRESET
+  ? grantsForPreset(PRESET)
+  : Object.fromEntries(
+      GRANTABLE.map((entry) => [entry.key, { view: true, add: true, change: true, delete: true }]),
+    );
+
+const KEYS = GRANTABLE.map((entry) => entry.key).filter((key) => {
+  const grant = WANTED[key];
+  return grant.view || grant.add || grant.change || grant.delete;
+});
+
+console.log(
+  PRESET
+    ? `${GRANTABLE.length} grantable screens, ${KEYS.length} reached by ${PRESET.label}.` +
+        "\n\n" + `${PRESET.label}: ${PRESET.blurb}` + "\n"
+    : `${GRANTABLE.length} grantable screens.` + "\n",
+);
 
 const accounts = await db
   .select({
@@ -174,10 +223,10 @@ await db.transaction(async (tx) => {
         missing.map((key) => ({
           accountId: row.id,
           modelKey: key,
-          canView: true,
-          canAdd: true,
-          canChange: true,
-          canDelete: true,
+          canView: WANTED[key].view,
+          canAdd: WANTED[key].add,
+          canChange: WANTED[key].change,
+          canDelete: WANTED[key].delete,
         })),
       )
       .onConflictDoNothing({ target: [adminAccess.accountId, adminAccess.modelKey] });

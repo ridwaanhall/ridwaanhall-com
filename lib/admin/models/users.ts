@@ -250,7 +250,7 @@ export const userForm: AdminFormModel = {
           column: account.isStaff,
           label: "Staff",
           kind: "checkbox",
-          help: "Grants this admin. Read from the database on every request, so clearing it takes effect at once.",
+          help: "Opens this admin. An account given it for the first time starts on the default screens; Access is where they are narrowed. Read from the database on every request, so clearing it takes effect at once.",
         },
         {
           name: "isActive",
@@ -339,5 +339,24 @@ export const userForm: AdminFormModel = {
       return "Only a superuser can take away a superuser's access.";
     }
     return null;
+  },
+
+  /*
+   * A staff account that reaches nothing reads as a broken admin.
+   *
+   * Ticking this box used to *be* the permission; it now only opens the door,
+   * and what is behind it is one row per screen in `admin_access`. An account
+   * flagged here with no such rows signs in successfully and gets a rail with
+   * no groups in it, an index with no cards, and no way to tell that apart from
+   * a deployment that failed.
+   *
+   * So the first time it happens, the account starts on the default preset --
+   * the site's own content, and nothing about other people. It is a starting
+   * point rather than a decision: the Access screen is where it is narrowed,
+   * and `seedDefaultGrants` refuses to touch an account that has any grant row
+   * at all, so a narrowing made there is never undone by a later save here.
+   */
+  afterSave: async (values, { id, seedDefaultGrants }) => {
+    if (values.isStaff) await seedDefaultGrants(id);
   },
 };

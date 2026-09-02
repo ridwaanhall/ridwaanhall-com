@@ -52,6 +52,22 @@ const APPLY = process.argv.includes("--apply");
  * the same three shapes the Access screen offers, rather than on a fourth idea
  * of what a role is.
  */
+/**
+ * Rewrite the rows that are already there, rather than only filling gaps.
+ *
+ * Without it this never narrows, which is what makes the original migration
+ * safe to re-run: it adds rows for screens added since and never undoes a
+ * narrowing somebody made on purpose. With it, the preset becomes the whole
+ * truth for every account it touches -- which is the other job, and the one
+ * that was needed the day the presets arrived after the grants had already
+ * been handed out in full.
+ *
+ * Only with a preset. `--reset` on its own would rewrite every account to all
+ * four booleans on every screen, which is the opposite of what anybody typing
+ * the word "reset" is asking for.
+ */
+const RESET = process.argv.includes("--reset");
+
 const PRESET_ARG = process.argv.find((arg) => arg.startsWith("--preset="));
 const PRESET_KEY = PRESET_ARG ? PRESET_ARG.slice("--preset=".length) : null;
 
@@ -63,6 +79,12 @@ const { ACCESS_PRESETS, grantsForPreset, presetByKey } = await import("../lib/au
 const { eq, or, sql } = await import("drizzle-orm");
 
 const PRESET = PRESET_KEY ? presetByKey(PRESET_KEY) : null;
+if (RESET && !PRESET) {
+  console.error("--reset needs a --preset= to reset to. Refusing to grant everything.");
+  await pool.end();
+  process.exit(1);
+}
+
 if (PRESET_KEY && !PRESET) {
   console.error(
     `No such preset: ${PRESET_KEY}. Try one of ${ACCESS_PRESETS.map((p) => p.key).join(", ")}.`,
@@ -184,16 +206,29 @@ const work = [];
 for (const row of accounts) {
   const already = held.get(row.id) ?? new Set();
   const missing = KEYS.filter((key) => !already.has(key));
-  work.push({ row, missing });
+  /*
+   * A superuser's rows are never consulted -- `can` short-circuits on the role
+   * -- so resetting them would rewrite a set nothing reads and quietly discard
+   * whatever would come back the day the role was removed.
+   */
+  const superuser = row.isSuperuser || row.email === FIRST_SUPERUSER;
+  const reset = RESET && !superuser ? GRANTABLE.map((entry) => entry.key) : [];
+  work.push({ row, missing, reset });
   console.log(
     `  ${row.username.padEnd(20)} ${String(already.size).padStart(3)} stored` +
       `, ${String(missing.length).padStart(3)} to add` +
-      (row.email === FIRST_SUPERUSER ? "  (superuser -- grants kept, not consulted)" : ""),
+      (reset.length > 0 ? `, ${reset.length} to rewrite` : "") +
+      (superuser ? "  (superuser -- grants kept, not consulted)" : ""),
   );
 }
 
 const total = work.reduce((sum, item) => sum + item.missing.length, 0);
-console.log(`\n${total} grant row(s) to insert.`);
+const rewritten = work.reduce((sum, item) => sum + item.reset.length, 0);
+console.log(
+  `\n${total} grant row(s) to insert` +
+    (RESET ? `, ${rewritten} to rewrite to ${PRESET.label}.` : ".") +
+    (RESET ? `\nAfter this, every screen not in the preset is refused.` : ""),
+);
 
 if (!APPLY) {
   console.log("\ndry run -- nothing written. Pass --apply to keep it.");
@@ -209,7 +244,41 @@ await db.transaction(async (tx) => {
     .set({ isSuperuser: true, isStaff: true })
     .where(eq(account.id, first.id));
 
-  for (const { row, missing } of work) {
+  const rowFor = (accountId, key) => ({
+    accountId,
+    modelKey: key,
+    canView: WANTED[key].view,
+    canAdd: WANTED[key].add,
+    canChange: WANTED[key].change,
+    canDelete: WANTED[key].delete,
+  });
+
+  for (const { row, missing, reset } of work) {
+    /*
+     * `--reset` writes every grantable screen, including the ones the preset
+     * reaches nothing on -- as a row of four falses rather than as a deletion.
+     * The Access screen keeps such rows for the same reason: "narrowed to
+     * nothing" and "never set up" are different states, and `seedGrants`
+     * refuses to touch the first.
+     */
+    if (reset.length > 0) {
+      for (const key of reset) {
+        await tx
+          .insert(adminAccess)
+          .values(rowFor(row.id, key))
+          .onConflictDoUpdate({
+            target: [adminAccess.accountId, adminAccess.modelKey],
+            set: {
+              canView: WANTED[key].view,
+              canAdd: WANTED[key].add,
+              canChange: WANTED[key].change,
+              canDelete: WANTED[key].delete,
+            },
+          });
+      }
+      continue;
+    }
+
     if (missing.length === 0) continue;
     /*
      * `on conflict do nothing`, so a row the superuser has already narrowed is
@@ -219,16 +288,7 @@ await db.transaction(async (tx) => {
      */
     await tx
       .insert(adminAccess)
-      .values(
-        missing.map((key) => ({
-          accountId: row.id,
-          modelKey: key,
-          canView: WANTED[key].view,
-          canAdd: WANTED[key].add,
-          canChange: WANTED[key].change,
-          canDelete: WANTED[key].delete,
-        })),
-      )
+      .values(missing.map((key) => rowFor(row.id, key)))
       .onConflictDoNothing({ target: [adminAccess.accountId, adminAccess.modelKey] });
   }
 });

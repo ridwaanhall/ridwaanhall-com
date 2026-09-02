@@ -345,9 +345,12 @@ try {
    * and `/admin/<key>` is that row's form, so there is no create route to
    * reach. Everything else creates, including the three that carry somebody
    * else's words and therefore have an author that is chosen once and then
-   * fixed.
+   * fixed. Public access joins the first list: its row is made by a sign-in,
+   * one per account, and deleting one would silently restore full access --
+   * both columns default to true -- which is a permission change wearing the
+   * clothes of a tidy-up.
    */
-  for (const key of ["user", "profile", "hiring-profile", "open-to-work-profile"]) {
+  for (const key of ["user", "public-access", "profile", "hiring-profile", "open-to-work-profile"]) {
     await page.goto(`${BASE}${screen(key)}/new`, { waitUntil: "load" });
     await page.waitForTimeout(600);
     // Asserted on what renders, not on the status: the route is dynamic, so
@@ -361,7 +364,7 @@ try {
     );
   }
 
-  for (const key of ["chat-message", "user-profile", "comment"]) {
+  for (const key of ["chat-message", "comment"]) {
     await page.goto(`${BASE}${screen(key)}/new`, { waitUntil: "load" });
     await page.waitForTimeout(600);
     const form = await page.locator('button[type="submit"]:text-matches("Create")').count();

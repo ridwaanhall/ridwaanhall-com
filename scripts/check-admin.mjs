@@ -73,7 +73,15 @@ async function get(path, cookie) {
 /** Cells of the changelist body, one array per row. */
 function rows(html) {
   const body = html.split("<tbody")[1]?.split("</tbody>")[0] ?? "";
-  if (body.includes("No blog posts")) return [];
+  /*
+   * The empty state is one `<tr>` with a `colSpan` cell, so a naive parse
+   * counts "nothing here" as a row. It used to name the blog post explicitly,
+   * which was enough while only the blog was counted -- and then a check on the
+   * users list read its empty state as one muted account and passed on the
+   * strength of it. Matched on the shape rather than the wording, so every
+   * screen is covered and the sentence stays free to change.
+   */
+  if (/<td[^>]*colspan=/i.test(body)) return [];
   return [...body.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)].map((match) =>
     [...match[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((cell) =>
       cell[1].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
@@ -389,22 +397,26 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
 }
 
 {
-  // The two screens whose columns come from a correlated subquery, checked on
-  // the value rather than the status: a mis-correlated subquery returns wrong
-  // data as readily as it errors.
-  const authors = await get("/admin/user?is_author=1", staff);
-  const coAuthors = await get("/admin/user?is_co_author=1", staff);
-  const authorRows = rows(authors.body);
-  const coAuthorRows = rows(coAuthors.body);
+  /*
+   * The columns that come from a correlated subquery, checked on the value
+   * rather than the status: a mis-correlated subquery returns wrong data as
+   * readily as it errors, and the admin's own history has two of those.
+   *
+   * These used to be the author and co-author flags, asserted against a
+   * hard-coded "one author called ridwan" -- which the fold made meaningless
+   * and would have inverted rather than failed. The two public switches are the
+   * correlated columns now. The *discriminating* case, an account with one
+   * switched off, is driven by `check-public-access.mjs`, which can write one
+   * in a rolled-back transaction; what is asserted here is that the two halves
+   * of the filter partition the list rather than both answering the same way.
+   */
+  const canComment = rows((await get("/admin/user?can_comment=1", staff)).body);
+  const cannotComment = rows((await get("/admin/user?can_comment=0", staff)).body);
+  const both = new Set([...canComment, ...cannotComment].map((row) => row[0]));
   check(
-    "the author flag reads from guestbook_userprofile, not auth_user",
-    authorRows.length === 1 && authorRows[0][0] === "ridwan",
-    authorRows.map((row) => row[0]).join(", "),
-  );
-  check(
-    "and so does the co-author flag",
-    coAuthorRows.length === 2 && !coAuthorRows.some((row) => row[0] === "ridwan"),
-    coAuthorRows.map((row) => row[0]).join(", "),
+    "the public switches read from public_access, not from account",
+    canComment.length > 0 && both.size === canComment.length + cannotComment.length,
+    `${canComment.length} may comment, ${cannotComment.length} may not`,
   );
 
   const sections = await get("/admin/legal-section", staff);

@@ -13,7 +13,7 @@
  *   - `account.username` is UNIQUE, and `username`, `email`, `first_name`,
  *     `last_name`, `joined_at` are all NOT NULL
  *   - `account_identity` is UNIQUE on `(provider, provider_uid)`
- *   - `guest_profile.account_id` is UNIQUE and a FK to `account`
+ *   - `public_access.account_id` is UNIQUE and a FK to `account`
  *
  * A stubbed database would only prove the stub agrees with itself.
  *
@@ -42,7 +42,7 @@ const counts = async (database) => {
     select
       (select count(*) from app.account)::int as users,
       (select count(*) from app.account_identity)::int as socials,
-      (select count(*) from app.guest_profile)::int as profiles
+      (select count(*) from app.public_access)::int as profiles
   `).then((r) => r.rows ?? r);
   return row;
 };
@@ -111,11 +111,11 @@ try {
       row.joined_at !== null && row.last_seen_at === null);
 
     const [profileRow] = await tx
-      .execute(sql`select * from app.guest_profile where account_id = ${created.id}`)
+      .execute(sql`select * from app.public_access where account_id = ${created.id}`)
       .then((r) => r.rows ?? r);
     check(
-      "createUser created the guestbook profile row",
-      !!profileRow && profileRow.is_author === false && profileRow.is_co_author === false,
+      "createUser created the public-access row, open by default",
+      !!profileRow && profileRow.can_comment === true && profileRow.can_guestbook === true,
     );
 
     // --- the username rule dedupes against live rows ------------------------
@@ -207,11 +207,29 @@ try {
     check(
       "getUserProfile resolves a live user",
       liveProfile !== null && liveProfile.id === existing.account_id,
-      liveProfile ? `${liveProfile.fullName} · author=${liveProfile.isAuthor} coAuthor=${liveProfile.isCoAuthor}` : "",
+      liveProfile ? `${liveProfile.fullName} · role=${liveProfile.role}` : "",
+    );
+    /*
+     * The capabilities are derived, not stored, so this asserts the derivation
+     * against the flags the row actually carries rather than against itself.
+     */
+    const [flags] = await tx
+      .execute(
+        sql`select is_active, is_staff, is_superuser from app.account
+             where id = ${existing.account_id}`,
+      )
+      .then((r) => r.rows ?? r);
+    check(
+      "the role comes from the account's own flags",
+      liveProfile !== null &&
+        liveProfile.role === (flags.is_superuser ? "superuser" : flags.is_staff ? "staff" : "public"),
+      liveProfile ? `${liveProfile.role} for staff=${flags.is_staff} su=${flags.is_superuser}` : "",
     );
     check(
-      "canPin is is_author || is_co_author",
-      liveProfile !== null && liveProfile.canPin === (liveProfile.isAuthor || liveProfile.isCoAuthor),
+      "pinning is staff-or-better and deleting a message is superuser-only",
+      liveProfile !== null &&
+        liveProfile.can.pin === (flags.is_active && flags.is_staff) &&
+        liveProfile.can.deleteMessages === (flags.is_active && flags.is_superuser),
     );
 
     throw ROLLBACK;

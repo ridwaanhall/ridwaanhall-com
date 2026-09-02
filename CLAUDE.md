@@ -173,6 +173,46 @@ model already refuses.
 this. They are about the *public* site -- guestbook credit, comment moderation,
 who gets emailed -- and answer a different question.
 
+**A superuser is always staff**, and that is a `CHECK` constraint
+(`account_superuser_is_staff`) rather than a rule in the gate. The two were
+independent columns and one of the four combinations was a lockout:
+`getStaffUser` refuses an account without `is_staff` before it ever looks at
+the role, and `is_superuser` is only editable from inside the admin, by a
+superuser -- so clearing that flag on the only superuser left raw SQL as the
+way back. In the database because that is where an invariant survives every
+path into the table; the two places that grant the role set both flags, the
+Users form refuses the pair with a sentence rather than letting a check
+violation arrive as one, and the Access screen consequently stopped hedging --
+its list is `is_staff` alone and the "not staff" banner is gone with the row it
+described.
+
+**A new staff account starts on a preset, once.** `is_staff` used to *be* the
+permission; it now only opens the door, so an account flagged staff with no
+`admin_access` rows signs in successfully and gets a rail with no groups --
+which reads as a broken deployment, not as an empty one. `lib/auth/presets.ts`
+declares three shapes **per registry group rather than as lists of keys**, so a
+screen added to Blog inherits what Blog gets and no list goes out of date; none
+of them grants anything on Users, because that is other people's addresses and
+sign-in identities. `userForm.afterSave` seeds the default the first time, and
+`seedGrants` refuses an account that holds *any* grant row, so a narrowing
+somebody made on purpose is never undone by a later save. The Access screen
+offers the same presets as buttons that tick boxes and write nothing.
+
+`afterSave` is handed `seedDefaultGrants` rather than importing it, for the
+reason `ValidationContext.exists()` exists: `lib/admin/models/` is read by the
+check harnesses and by `descriptors.test.ts`, and a descriptor that reached for
+`lib/db/client.ts` would open a connection every time one of them asked a form
+for its shape.
+
+**The role is drawn from one vocabulary.** `lib/auth/roles.ts` is pure and
+client-safe, and the admin topbar, the admin rail and the site's account row
+all read it -- three files answering the same question is how they come to
+disagree about whether the word is "Superuser", "Admin" or "Owner". The topbar
+used to carry a comment explaining why there was no badge at all ("there is one
+privilege, so a badge every staff account carries would mark nobody out"),
+which was true while `is_staff` was the whole system and stopped being true the
+day this section describes.
+
 ### Every model has full CRUD, with three exceptions
 
 `canCreate` and `canDelete` are `boolean | "superuser"`, and the third state is
@@ -333,6 +373,31 @@ add a foreign key and the message would drop back to saying nothing. It is
 fail-soft — anything that goes wrong falls back to the old sentence, since the
 caller is already handling one failure and a second thrown from there would turn
 a refused delete into a 500.
+
+### A "Used by" column is a transcription, and transcriptions rot
+
+`organization` counted four of its five referring tables. The fifth,
+`application.organization_id`, was added long after the descriptor was written,
+so an organization named by three job applications rendered as `unused` while
+`lib/admin/blockers.ts` -- which reads `pg_constraint` rather than a list --
+refused the delete and named them. Two answers to one question, and the wrong
+one was the one on screen before anybody pressed anything. Skills had no such
+column at all, which is the worse case rather than the milder one: both foreign
+keys into `skill` are `ON DELETE CASCADE`, so nothing refuses the delete and
+the skill simply stops appearing in every project that listed it.
+
+`scripts/check-admin-usage.mjs` asks the catalogue what actually points at each
+lookup table and fails on anything a screen does not declare. **Its query is
+`blockers.ts`'s without the `confdeltype in ('r','a')` filter**, and that
+difference is the whole point: that filter is right for "what would refuse this
+delete" and wrong for "what uses this record". Every foreign key into
+`location` is `SET NULL` and both into `skill` are `CASCADE`, so keeping it
+would report those two screens as having nothing to count -- a check that
+passes while saying nothing.
+
+The cell keeps its breakdown and sorts on the total (`usageTotal` in
+`lib/admin/usage.ts`), which removes the compromise `settings.ts` already named:
+a "Used by" composed in TypeScript offers a number the database cannot order by.
 
 ### `canDelete: "superuser"` is a truthy string
 
@@ -860,6 +925,7 @@ npx tsx --conditions=react-server scripts/check-turnstile.mjs
 npx tsx --conditions=react-server scripts/check-storage.mjs
 npx tsx --conditions=react-server scripts/check-admin-media.mjs   # the id/key seam
 npx tsx --conditions=react-server scripts/check-admin-image-link.mjs # upload and link, one bucket
+npx tsx scripts/check-admin-usage.mjs                   # every FK into a lookup table is counted
 npx tsx scripts/check-admin.mjs
 npx tsx --conditions=react-server scripts/check-admin-access.mjs   # roles, grants, and no leaked rows
 npx tsx scripts/check-admin-nav.mjs                     # one group open, and a rail that remembers

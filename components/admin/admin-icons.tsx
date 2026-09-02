@@ -102,6 +102,22 @@ export function UsersIcon(props: IconProps) {
   );
 }
 
+/**
+ * Access: a key.
+ *
+ * A shield was the other candidate and is the wrong picture -- it says
+ * "protected from", where this group is about what somebody is handed. A key
+ * is the thing being given out, which is what the screen underneath does.
+ */
+export function KeyIcon(props: IconProps) {
+  return (
+    <Stroked {...props}>
+      <circle cx="8" cy="12" r="4" />
+      <path d="M12 12h9M18 12v3M15.5 12v2" />
+    </Stroked>
+  );
+}
+
 export function SlidersIcon(props: IconProps) {
   return (
     <Stroked {...props}>

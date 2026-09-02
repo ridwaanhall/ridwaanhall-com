@@ -399,8 +399,27 @@ export const projectStatusForm: AdminFormModel = {
   from: projectStatus,
   pk: projectStatus.id,
   label: (values) => String(values.label ?? "Project status"),
+  /*
+   * Never created here, and deleted only by a superuser.
+   *
+   * **Create stays refused to everybody.** A badge colour is a pair of Tailwind
+   * classes and classes are never stored in the database, so
+   * `lib/data/project-status.ts` keys them on the slug. A status created here
+   * would have no colour and render in the neutral fallback, which reads as a
+   * broken card rather than as a status nobody has picked a colour for -- and
+   * that is as true of a row a superuser creates as of any other.
+   *
+   * **Delete is `"superuser"`.** Removing a status is the one direction that
+   * does not produce a colourless badge, and the projects that still name one
+   * are protected by the foreign key rather than by this flag: a status in use
+   * cannot be deleted by anybody, superuser included. What this opens is the
+   * unused row -- a status somebody has finished with -- which previously
+   * needed SQL.
+   */
   canCreate: false,
-  canDelete: false,
+  canDelete: "superuser",
+  deleteWarning:
+    "The colour keyed on this slug in lib/data/project-status.ts is left with nothing to match. Projects still using the status keep it and block the delete.",
   fieldsets: [
     {
       help: "The badge on a project card reads the label; the projects page sorts on the order.",

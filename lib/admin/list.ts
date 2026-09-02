@@ -128,6 +128,20 @@ export type AdminListModel<Row> = {
    * its order clause is untouched.
    */
   pinned?: PgColumn | SQL;
+  /**
+   * Rows this list is *about*, ANDed into every query it runs.
+   *
+   * Not a filter: a filter is a control the reader operates and can clear,
+   * while this is part of what the screen is. The access list is the one that
+   * needed it -- it reads `account`, which the Users screen also reads, but it
+   * is a list of the people who can reach this admin rather than of everyone
+   * who has ever signed in. Without it the two screens would be the same list
+   * with different columns.
+   *
+   * It joins the search and filter conditions rather than replacing them, so
+   * searching within the screen still narrows what the screen already is.
+   */
+  baseWhere?: SQL;
   /** The row's primary key, for the change-form link. */
   /** The row's uuid, used to build its edit URL. */
   rowId: (row: Row) => string;
@@ -303,6 +317,9 @@ export async function fetchAdminList<Row>(
   const conditions = filterConditions(model, params);
   const search = searchCondition(model, params.q);
   if (search) conditions.push(search);
+  // First in the list makes no difference to the SQL and every difference to
+  // reading it: what the screen is, then what the reader asked of it.
+  if (model.baseWhere) conditions.unshift(model.baseWhere);
   const where = conditions.length > 0 ? and(...conditions) : undefined;
 
   const chosen = model.columns.find((column) => column.key === params.sort);

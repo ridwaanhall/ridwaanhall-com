@@ -17,6 +17,7 @@ import {
   skillForm,
   skillList,
 } from "@/lib/admin/models/about";
+import { accessList } from "@/lib/admin/models/access";
 import { blogPostForm, blogPostList } from "@/lib/admin/models/blog";
 import { commentForm, commentList } from "@/lib/admin/models/comments";
 import {
@@ -80,10 +81,10 @@ import type { AdminListModel } from "@/lib/admin/list";
  * share their helpers -- four of the `about` lists resolve the same foreign
  * key, and both guestbook lists resolve a username.
  *
- * A model appears here once its list is built. The registry's `ready` flag and
- * this map have to agree, which `scripts/check-admin.mjs` asserts -- a `ready`
- * entry with no descriptor is a link to a 404, and a descriptor with no `ready`
- * entry is a screen nothing reaches.
+ * A model appears here once its list is built. The registry and this map have
+ * to agree, which `scripts/check-admin.mjs` asserts -- a registered entry with
+ * no descriptor is a link to a 404, and a descriptor no entry names is a screen
+ * nothing reaches.
  *
  * The value type is `AdminListModel<never>` rather than `AdminListModel<any>`,
  * and that is a real distinction and not pedantry. Every function the type
@@ -118,6 +119,9 @@ const MODELS: AdminListModel<never>[] = [
   commentList,
   // users
   userList,
+  // access -- the one list with no form beside it. Its record page is the
+  // permission matrix, which is not a form over a table; see the descriptor.
+  accessList,
   // settings -- the vocabularies every dropdown above is drawn from
   categoryList,
   tagList,
@@ -149,6 +153,12 @@ export function listModelFor(key: string) {
  * Separate from the changelists rather than folded into them: a list exists for
  * every model, and a form arrives per model as the fields it needs are built.
  * A key with a list but no form gets the read-only record view, which says so.
+ *
+ * `access` is the one key that has a list and will never have a form, and that
+ * is declared rather than pending: its record page is a matrix over the
+ * registry rather than a form over a table. `custom: true` on its registry
+ * entry is what says so, and what stops the checks reading the gap as a screen
+ * nobody finished.
  */
 const FORMS: AdminFormModel[] = [
   // about

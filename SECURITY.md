@@ -37,14 +37,36 @@ takeover works. `allowDangerousEmailAccountLinking` is set on neither provider.
 
 ### Authorization
 
-There is exactly one privilege, `is_staff`, and it is **read from the database
-on every request** — never carried in the session token. A token minted while
-someone was staff would otherwise keep asserting it for the thirty days until it
-expired, long after the flag was cleared.
+Three roles, and **all of them are read from the database on every request** —
+never carried in the session token. A token minted while someone was staff would
+otherwise keep asserting it for the thirty days until it expired, long after the
+flag was cleared, and a token carrying a whole *grant set* would keep asserting
+delete on every screen for just as long.
 
-Every admin page calls `requireStaff()` as its first `await`. Route handlers and
-server actions do not nest under a layout at all, so they call
-`isStaffRequest()` themselves.
+- `is_active` — may sign in at all.
+- `is_staff` — may reach `/admin`. What they reach inside it comes from
+  `app.admin_access`: one row per screen, with `view`, `add`, `change` and
+  `delete` as four independent booleans.
+- `is_superuser` — answers yes to every screen and every action, and is the only
+  role that may edit anybody's grants.
+
+`lib/auth/permissions.ts` is the whole rule, as a pure function, tested offline.
+Three parts of it fail *open* if a caller reasons about the rows itself, so
+nothing does: a grant naming a screen the registry no longer has is refused
+rather than honoured; the Access screen is never grantable, because granting the
+ability to grant is granting everything; and a grant may not widen what a model
+already refuses.
+
+Every admin page calls `requireStaff()` as its first `await` and its screen's
+`view` check as its second, before any query runs. Route handlers and server
+actions do not nest under a layout at all, so they call `isStaffRequest()` and
+`permits()` themselves.
+
+**No role gets past a foreign key.** `ON DELETE RESTRICT` is a property of the
+schema, not a permission this application grants, so a superuser deleting an
+organization five certifications still name is refused exactly as anybody else
+is. What the admin does is name the rows in the way —
+`lib/admin/blockers.ts`.
 
 **A layout is not an auth gate**, and this is the mistake worth stating out
 loud: React renders a layout and its children concurrently, so a layout that
@@ -52,6 +74,12 @@ returns "not permitted" instead of `{children}` changes only what is *displayed*
 — the page underneath still ran, and its data still ships in the payload below
 the visible HTML. `scripts/check-admin.mjs` reads whole response bodies,
 payload included, and fails if row data appears in one.
+
+The same hazard exists one level down, and
+`scripts/check-admin-access.mjs` is what holds it: the rail can hide a screen
+perfectly while its route still runs the query for somebody who may not see it.
+That harness creates a staff account with a narrowed grant set, reads the whole
+body of a screen it was not granted, and fails on any row data in it.
 
 ### Row Level Security
 

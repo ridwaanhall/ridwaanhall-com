@@ -82,6 +82,7 @@ export function RecordForm({
   imageUrls,
   label,
   typeLabel,
+  canSave,
   canDelete,
   deleteWarning,
   listHref,
@@ -106,6 +107,20 @@ export function RecordForm({
   label: string;
   /** The model, named -- "Skill", "Message". */
   typeLabel: string;
+  /**
+   * Whether this account may write the record it is looking at.
+   *
+   * `view` without `change` is a real grant and the commonest narrow one, so
+   * the form has to have a read-only shape. Every fieldset is disabled, the
+   * save and delete buttons go, and a line says why -- because the alternative
+   * is somebody filling in a long form and finding out at the end.
+   *
+   * **An affordance, not the gate.** `saveRecord` asks `permits` again on the
+   * server, which is what actually refuses the write: a disabled fieldset is a
+   * property of the markup, and a server action is a POST endpoint that does
+   * not care what the markup said.
+   */
+  canSave: boolean;
   canDelete: boolean;
   deleteWarning?: string;
   listHref: Route;
@@ -167,8 +182,18 @@ export function RecordForm({
   const busy = saving || deleting;
   const { shape, main, aside } = splitFieldsets(fieldsets);
 
+  /*
+   * Read-only disables the same way a save in flight does, so there is one
+   * disabled state rather than two that have to agree. `disabled` on the
+   * `<fieldset>` rather than on each control: it covers the inputs the admin
+   * draws itself as well as the native ones, and a disabled control does not
+   * submit -- which is a second reason the save button is gone rather than
+   * merely inert.
+   */
+  const locked = busy || !canSave;
+
   const renderFieldset = (fieldset: ClientFieldset, index: number) => (
-    <fieldset key={fieldset.title ?? index} disabled={busy} className="min-w-0">
+    <fieldset key={fieldset.title ?? index} disabled={locked} className="min-w-0">
       {/*
         A real `<legend>`, first child of its `<fieldset>`, which is what names
         the group for a screen reader. It stays above the card rather than
@@ -218,15 +243,23 @@ export function RecordForm({
       )}
 
       {/* Inlines are tables of child rows and are the widest thing on the page,
-          so they take the whole width whatever the fieldsets above them did. */}
+          so they take the whole width whatever the fieldsets above them did.
+
+          Each in its own `<fieldset>` rather than all of them in one, so the
+          form's `space-y-6` still sees one element per inline -- a single
+          wrapper would collapse the gaps between them into one. The fieldset is
+          here for `disabled`: an inline editor is outside the fieldsets above
+          and would otherwise stay live on a record somebody may only read, and
+          its rows would post. */}
       {inlines.map((inline) => (
-        <InlineEditor
-          key={inline.name}
-          inline={inline}
-          imageUrls={imageUrls}
-          rows={inlineRows[inline.name] ?? []}
-          errors={fieldErrors}
-        />
+        <fieldset key={inline.name} disabled={locked} className="min-w-0">
+          <InlineEditor
+            inline={inline}
+            imageUrls={imageUrls}
+            rows={inlineRows[inline.name] ?? []}
+            errors={fieldErrors}
+          />
+        </fieldset>
       ))}
 
       {/* The form-level message, for a rule no single field owns -- the pin cap,
@@ -250,19 +283,31 @@ export function RecordForm({
         background that reads just as well.
       */}
       <div className="sticky bottom-0 -mx-4 flex items-center gap-3 border-t border-zinc-800 bg-black px-4 py-3 lg:-mx-6 lg:px-6">
-        <button
-          type="submit"
-          disabled={busy}
-          className="cursor-pointer rounded-full border border-indigo-800 bg-indigo-500/10 px-5 py-1.5 text-sm font-medium text-indigo-300 transition-colors hover:bg-indigo-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:cursor-default disabled:opacity-60"
-        >
-          {saving ? "Saving…" : id === null ? "Create" : "Save"}
-        </button>
+        {canSave ? (
+          <button
+            type="submit"
+            disabled={busy}
+            className="cursor-pointer rounded-full border border-indigo-800 bg-indigo-500/10 px-5 py-1.5 text-sm font-medium text-indigo-300 transition-colors hover:bg-indigo-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:cursor-default disabled:opacity-60"
+          >
+            {saving ? "Saving…" : id === null ? "Create" : "Save"}
+          </button>
+        ) : (
+          /*
+            The bar keeps its height and its place, so a read-only record is the
+            same page with a different sentence in it rather than a page missing
+            its footer. Said in the bar the button would be in, which is where
+            somebody looks when they want to save.
+          */
+          <p className="text-sm text-zinc-500">
+            You can view this {typeLabel.toLowerCase()} but not change it.
+          </p>
+        )}
 
         <Link
           href={listHref}
           className="rounded-full px-2 py-1.5 text-sm text-zinc-500 transition-colors hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
         >
-          Cancel
+          {canSave ? "Cancel" : "Back"}
         </Link>
 
         {canDelete && id !== null && (

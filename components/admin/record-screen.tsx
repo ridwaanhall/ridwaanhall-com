@@ -12,6 +12,8 @@ import { imageUrlMap } from "@/lib/admin/media";
 import { formModelFor } from "@/lib/admin/models";
 import { loadFormValues, loadReferenceOptions } from "@/lib/admin/record";
 import { adminPath, type AdminEntry } from "@/lib/admin/registry";
+import { permits } from "@/lib/auth/permissions";
+import { requireStaff } from "@/lib/auth/staff";
 
 /**
  * One record: the change form for it.
@@ -28,10 +30,17 @@ import { adminPath, type AdminEntry } from "@/lib/admin/registry";
  * the shape this repository keeps catching: one of them gains a fix the other
  * does not.
  *
- * It is handed the entry and the id already resolved, and neither gates nor
- * parses. `resolveAdminRoute` is the only thing that can tell a record URL
- * from a section's tab, and it has run -- after `requireStaff()` -- in the
- * route that renders this.
+ * It is handed the entry and the id already resolved, and does not parse.
+ * `resolveAdminRoute` is the only thing that can tell a record URL from a
+ * section's tab, and it has run -- after `requireStaff()` and the route's own
+ * `view` check -- in the route that renders this.
+ *
+ * What it *does* ask for itself is `change` and `delete`, which decide whether
+ * this form is a form. That second `requireStaff` is free: `getStaffUser` is
+ * memoised per request, so it shares the query the route already made. Asking
+ * here rather than taking two more props keeps the questions beside the
+ * descriptor flags they have to be combined with -- `canDelete` is
+ * `boolean | "superuser"`, and `permits` is the only thing that may read it.
  *
  * `server-only` at the head because it calls `loadFormValues` and
  * `loadReferenceOptions`: a client module that imported it by accident should
@@ -40,6 +49,7 @@ import { adminPath, type AdminEntry } from "@/lib/admin/registry";
 export async function RecordScreen({ entry, id }: { entry: AdminEntry; id: string }) {
   const recordId = id;
   const form = formModelFor(entry.key);
+  const actor = await requireStaff();
   const missing = (
     <NothingHere
       message={`There is no ${entry.label.toLowerCase()} with id ${id}. It may have been deleted.`}
@@ -78,7 +88,8 @@ export async function RecordScreen({ entry, id }: { entry: AdminEntry; id: strin
           imageUrls={await imageUrlMap(form, values, inlineRows)}
           label={label}
           typeLabel={entry.label}
-          canDelete={form.canDelete !== false}
+          canSave={permits(actor, entry.key, "change", form)}
+          canDelete={permits(actor, entry.key, "delete", form)}
           deleteWarning={form.deleteWarning}
           listHref={adminPath(entry) as Route}
         />

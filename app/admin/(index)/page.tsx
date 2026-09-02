@@ -6,6 +6,7 @@ import {
   BriefcaseIcon,
   ChatIcon,
   ChevronIcon,
+  KeyIcon,
   CommentIcon,
   CubeIcon,
   PersonIcon,
@@ -13,7 +14,8 @@ import {
   SlidersIcon,
   UsersIcon,
 } from "@/components/admin/admin-icons";
-import { ADMIN_ENTRIES, ADMIN_GROUPS, navItemsInGroup, type AdminGroup } from "@/lib/admin/registry";
+import { ADMIN_GROUPS, navItemsInGroup, type AdminGroup } from "@/lib/admin/registry";
+import { permittedKeys } from "@/lib/auth/permissions";
 import { requireStaff } from "@/lib/auth/staff";
 
 /**
@@ -23,8 +25,13 @@ import { requireStaff } from "@/lib/auth/staff";
  * row in the rail. The card names them underneath, so collapsing seventeen
  * vocabularies into six pages hides none of them from somebody scanning for one.
  *
- * There is one privilege here, `is_staff`, so there is no per-model permission
- * matrix to reflect: anyone who can see this page can reach everything on it.
+ * It shows what *this account* may open, which is not the same as what the
+ * admin holds. A card leading to a screen that answers not-found is worse than
+ * no card, and a card that names a screen somebody is being kept out of hands
+ * them a map of the place instead of an explanation.
+ *
+ * The counts under each heading follow, so the page never claims an area holds
+ * more than it lists.
  *
  * The group icons are the rail's, from one table. Somebody arriving here and
  * then using the rail is looking at the same nine marks in the same nine
@@ -40,6 +47,7 @@ const GROUP_ICON: Record<AdminGroup, typeof PersonIcon> = {
   Guestbook: ChatIcon,
   Comments: CommentIcon,
   Users: UsersIcon,
+  Access: KeyIcon,
   Settings: SlidersIcon,
 };
 
@@ -55,7 +63,15 @@ export const instant = false;
 export default async function AdminIndexPage() {
   // No data of its own, but it still describes the shape of the admin, and a
   // non-staff reader has no business receiving that either.
-  await requireStaff();
+  const actor = await requireStaff();
+  const permitted = new Set(permittedKeys(actor));
+
+  const groups = ADMIN_GROUPS.map((group) => ({
+    group,
+    items: navItemsInGroup(group, permitted),
+  })).filter(({ items }) => items.length > 0);
+
+  const screens = groups.reduce((total, { items }) => total + items.length, 0);
 
   return (
     <div className="admin-fade space-y-9">
@@ -65,13 +81,27 @@ export default async function AdminIndexPage() {
           Content for ridwaanhall.com, read from and written to the live database.
         </p>
         <p className="mt-3 text-xs text-zinc-600">
-          {ADMIN_ENTRIES.length} screens across {ADMIN_GROUPS.length} areas
+          {screens} {screens === 1 ? "screen" : "screens"} across {groups.length}{" "}
+          {groups.length === 1 ? "area" : "areas"}
         </p>
       </div>
 
-      {ADMIN_GROUPS.map((group) => {
+      {/*
+        A staff account with no grants yet is a real state, not a fault: the
+        account is in, and nobody has said what it may do. Saying that plainly
+        is the difference between "your access has not been set up" and a page
+        that looks broken -- and it names who to ask, since the reader cannot
+        see the Access screen to find out.
+      */}
+      {groups.length === 0 && (
+        <p className="max-w-2xl rounded-lg border border-zinc-800 bg-zinc-950/40 p-4 text-sm text-zinc-400">
+          This account can sign in to the admin, but has not been given access to
+          any screen yet. A superuser sets that on the Access screen.
+        </p>
+      )}
+
+      {groups.map(({ group, items }) => {
         const Icon = GROUP_ICON[group];
-        const items = navItemsInGroup(group);
 
         return (
           <section key={group}>

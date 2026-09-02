@@ -3,7 +3,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import {
@@ -11,6 +11,7 @@ import {
   BriefcaseIcon,
   ChatIcon,
   ChevronIcon,
+  KeyIcon,
   CloseIcon,
   CommentIcon,
   CubeIcon,
@@ -23,7 +24,6 @@ import {
   UsersIcon,
 } from "@/components/admin/admin-icons";
 import {
-  ADMIN_ENTRIES,
   ADMIN_ENTRIES_BY_KEY,
   ADMIN_GROUPS,
   ADMIN_SECTIONS_BY_KEY,
@@ -42,6 +42,7 @@ const GROUP_ICON: Record<AdminGroup, typeof PersonIcon> = {
   Guestbook: ChatIcon,
   Comments: CommentIcon,
   Users: UsersIcon,
+  Access: KeyIcon,
   Settings: SlidersIcon,
 };
 
@@ -77,16 +78,18 @@ function groupForPath(pathname: string): AdminGroup | null {
  */
 function GroupEntries({
   group,
+  permitted,
   pathname,
   onNavigate,
 }: {
   group: AdminGroup;
+  permitted: ReadonlySet<string>;
   pathname: string;
   onNavigate: () => void;
 }) {
   return (
     <ul className="space-y-0.5">
-      {navItemsInGroup(group).map((item) => {
+      {navItemsInGroup(group, permitted).map((item) => {
         const active = pathname === item.match || pathname.startsWith(`${item.match}/`);
 
         return (
@@ -140,6 +143,7 @@ function GroupEntries({
  */
 function GroupFlyout({
   group,
+  permitted,
   anchor,
   autoFocus,
   pathname,
@@ -148,6 +152,7 @@ function GroupFlyout({
   onHoverOut,
 }: {
   group: AdminGroup;
+  permitted: ReadonlySet<string>;
   anchor: HTMLElement;
   /** Opened from the keyboard, which has to be put inside it to use it. */
   autoFocus: boolean;
@@ -230,7 +235,12 @@ function GroupFlyout({
       <p className="px-2 pb-1.5 text-[0.6875rem] font-medium tracking-wide text-zinc-500 uppercase">
         {group}
       </p>
-      <GroupEntries group={group} pathname={pathname} onNavigate={onClose} />
+      <GroupEntries
+        group={group}
+        permitted={permitted}
+        pathname={pathname}
+        onNavigate={onClose}
+      />
     </div>,
     document.body,
   );
@@ -263,15 +273,36 @@ const slug = (group: AdminGroup) => group.toLowerCase().replace(/\s+/g, "-");
  */
 export function AdminSidebar({
   signedInAs,
+  permitted: permittedKeys,
   mini,
   onToggleMini,
 }: {
   signedInAs: string;
+  /** Registry keys this account may open, from the layout. */
+  permitted: string[];
   mini: boolean;
   onToggleMini: () => void;
 }) {
   const [drawer, setDrawer] = useState(false);
   const pathname = usePathname();
+
+  /*
+   * The array becomes a Set once per change of the array, not once per row.
+   * The rail asks `has` for every entry in every group on every render, and
+   * the array arrives from the server because a Set does not cross that
+   * boundary -- see `app/admin/layout.tsx`.
+   */
+  const permitted = useMemo(() => new Set(permittedKeys), [permittedKeys]);
+
+  /*
+   * A group with nothing in it is not drawn at all.
+   *
+   * Not disabled and not empty: a heading that opens onto nothing tells
+   * somebody there is an area of this admin they are being kept out of, which
+   * is a map they were not given. It also decides the footer's count, so the
+   * rail never claims more screens than it lists.
+   */
+  const groups = ADMIN_GROUPS.filter((group) => navItemsInGroup(group, permitted).length > 0);
 
   /*
    * The open group follows the route, and a manual choice survives until the
@@ -419,7 +450,7 @@ export function AdminSidebar({
 
         <div className="custom-scroll flex-1 overflow-x-hidden overflow-y-auto px-2 py-3">
           <ul className="space-y-0.5">
-            {ADMIN_GROUPS.map((group) => {
+            {groups.map((group) => {
               const Icon = GROUP_ICON[group];
               const open = openGroup === group;
               const holdsActive = active === group;
@@ -480,7 +511,7 @@ export function AdminSidebar({
                         mini && "lg:hidden",
                       )}
                     >
-                      {navItemsInGroup(group).length}
+                      {navItemsInGroup(group, permitted).length}
                     </span>
                     <ChevronIcon
                       aria-hidden="true"
@@ -506,6 +537,7 @@ export function AdminSidebar({
                       <div className="mt-0.5 mb-1 ml-[1.4375rem] border-l border-zinc-800 pl-2">
                         <GroupEntries
                           group={group}
+                          permitted={permitted}
                           pathname={pathname}
                           onNavigate={() => setDrawer(false)}
                         />
@@ -549,8 +581,11 @@ export function AdminSidebar({
           </span>
           <span className="admin-rail-label min-w-0 flex-1" data-hidden={mini}>
             <span className="block truncate text-xs text-zinc-300">{signedInAs}</span>
+            {/* What this account can open, not what the admin holds. The two
+                differ for everybody but a superuser, and the smaller number is
+                the one that describes the rail above it. */}
             <span className="block truncate text-[0.6875rem] text-zinc-600">
-              {ADMIN_ENTRIES.length} screens
+              {permitted.size} {permitted.size === 1 ? "screen" : "screens"}
             </span>
           </span>
         </div>
@@ -560,6 +595,7 @@ export function AdminSidebar({
         <GroupFlyout
           key={flyout.group}
           group={flyout.group}
+          permitted={permitted}
           anchor={flyout.anchor}
           autoFocus={flyout.keyboard}
           pathname={pathname}

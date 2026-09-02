@@ -2,6 +2,8 @@ import type { Route } from "next";
 import Link from "next/link";
 
 import { adminPath, sectionTabs, type AdminSection } from "@/lib/admin/registry";
+import { can } from "@/lib/auth/permissions";
+import { requireStaff } from "@/lib/auth/staff";
 import { cn } from "@/lib/utils/cn";
 
 /**
@@ -18,22 +20,29 @@ import { cn } from "@/lib/utils/cn";
  * bargain `.admin-nav-item` makes: one source, so a tab cannot look current
  * while telling a screen reader it is not.
  *
- * A server component. It holds no state -- the URL is the state.
+ * A server component. It holds no state -- the URL is the state -- which is
+ * also what lets it ask who is reading and drop the tabs they cannot open. The
+ * rail already hides those screens, so a strip that still offered them would be
+ * the one place in the admin naming a screen this account is kept out of. The
+ * `requireStaff` is free: memoised per request, and the page above has run it.
  */
-export function SectionTabs({
+export async function SectionTabs({
   section,
   activeKey,
 }: {
   section: AdminSection;
   activeKey: string;
 }) {
+  const actor = await requireStaff();
+  const tabs = sectionTabs(section.key).filter((tab) => can(actor, tab.key, "view"));
+
   return (
     <div className="border-b border-zinc-800">
       <nav
         aria-label={`${section.label} settings`}
         className="-mb-px flex flex-wrap items-center gap-x-1"
       >
-        {sectionTabs(section.key).map((tab) => {
+        {tabs.map((tab) => {
           const current = tab.key === activeKey;
 
           return (

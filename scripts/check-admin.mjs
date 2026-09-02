@@ -157,6 +157,9 @@ const leaks = (body) => ROW_MARKERS.filter((marker) => body.includes(marker));
 {
   // A singleton has no changelist by definition: its screen is the record form,
   // so it is checked against that instead.
+  // A `custom` entry has a route of its own rather than a descriptor pair, so
+  // it is exempt from the form check below and asserted separately.
+  const custom = ADMIN_ENTRIES.filter((entry) => entry.custom);
   const listed = ADMIN_ENTRIES.filter((entry) => !entry.singleton).map((entry) => entry.key);
   const singletons = ADMIN_ENTRIES.filter((entry) => entry.singleton).map((entry) => entry.key);
   const built = Object.keys(ADMIN_LIST_MODELS);
@@ -179,14 +182,29 @@ const leaks = (body) => ROW_MARKERS.filter((marker) => body.includes(marker));
     modelWithoutEntry.join(", "),
   );
   // The record route has no read-only fallback: it renders a form or nothing.
-  // An entry without a form descriptor would be a screen that cannot be opened.
-  const entryWithoutForm = ADMIN_ENTRIES.map((entry) => entry.key).filter(
-    (key) => !(key in ADMIN_FORM_MODELS),
-  );
+  // An entry without a form descriptor would be a screen that cannot be opened
+  // -- unless it is `custom`, which says a route file renders it instead.
+  const entryWithoutForm = ADMIN_ENTRIES.filter((entry) => !entry.custom)
+    .map((entry) => entry.key)
+    .filter((key) => !(key in ADMIN_FORM_MODELS));
   check(
     "every registered screen has a form descriptor",
     entryWithoutForm.length === 0,
     entryWithoutForm.join(", ") || `${ADMIN_ENTRIES.length} screens`,
+  );
+  /*
+   * `custom` exempts an entry from the check above, so on its own it is a way
+   * to register a rail row leading to a 404 with every check still green. This
+   * is the other half: the route has to answer, and it has to answer for the
+   * account that may open it. Asserted against the running app rather than the
+   * file system -- `descriptors.test.ts` checks the files exist, and a file
+   * that exists is not a page that renders.
+   */
+  const customWithForm = custom.filter((entry) => entry.key in ADMIN_FORM_MODELS);
+  check(
+    "a custom screen declares no form descriptor",
+    customWithForm.length === 0,
+    customWithForm.map((entry) => entry.key).join(", ") || `${custom.length} custom`,
   );
   check(
     "registry keys are unique",

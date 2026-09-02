@@ -1081,8 +1081,19 @@ export const profileForm: AdminFormModel = {
   from: profile,
   pk: profile.id,
   label: (values) => String(values.name ?? "Profile"),
-  // `SingletonModel` forces `pk=1` and blocks delete. Without this row there is
-  // no site: every page in the public layout renders the profile block.
+  /*
+   * Refused to everybody, superuser included -- the one place in this admin
+   * where that role is not the answer.
+   *
+   * There is exactly one of these rows and nothing here can make another: the
+   * form *is* the record, so there is no create to fall back on. The public
+   * layout renders it on every page, so deleting it does not remove a record,
+   * it takes the site down, and leaves no way back through this interface.
+   *
+   * A different kind of refusal from the two `"superuser"` ones on `user` and
+   * `project-status`, which are about consequence. This one is about there
+   * being nothing on the other side of the act.
+   */
   canCreate: false,
   canDelete: false,
   fieldsets: [

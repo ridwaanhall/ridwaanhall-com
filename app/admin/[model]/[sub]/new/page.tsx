@@ -10,7 +10,8 @@ import { formModelFor } from "@/lib/admin/models";
 import { blankFormValues, loadReferenceOptions } from "@/lib/admin/record";
 import { adminPath } from "@/lib/admin/registry";
 import { resolveAdminRoute } from "@/lib/admin/route";
-import { requireStaff } from "@/lib/auth/staff";
+import { permits } from "@/lib/auth/permissions";
+import { getStaffUser, requireStaff } from "@/lib/auth/staff";
 
 export async function generateMetadata(
   props: PageProps<"/admin/[model]/[sub]/new">,
@@ -20,7 +21,8 @@ export async function generateMetadata(
   if (!route || route.kind !== "tab") return { title: "Admin" };
 
   const form = formModelFor(route.entry.key);
-  const offered = form !== null && form.canCreate !== false;
+  const actor = await getStaffUser();
+  const offered = form !== null && actor !== null && permits(actor, route.entry.key, "add", form);
   return { title: offered ? `Add ${route.entry.label.toLowerCase()} · Admin` : "Admin" };
 }
 
@@ -40,11 +42,15 @@ export const instant = false;
  *
  * Only a tab route reaches this. `/admin/blog-post/<uuid>/new` resolves to a
  * record and 404s, which is right: there is nothing below a record to add.
+ *
+ * The descriptor's refusal and this account's grant are one question, asked
+ * through `permits` -- see the flat `new` route beside this one for why
+ * `canCreate !== false` is not a test that can be written by hand any more.
  */
 export default async function AdminSectionCreatePage(
   props: PageProps<"/admin/[model]/[sub]/new">,
 ) {
-  await requireStaff();
+  const actor = await requireStaff();
 
   const { model, sub } = await props.params;
   const route = resolveAdminRoute(model, sub);
@@ -52,7 +58,8 @@ export default async function AdminSectionCreatePage(
 
   const { entry } = route;
   const form = formModelFor(entry.key);
-  if (!form || form.canCreate === false) notFound();
+  if (!form) notFound();
+  if (!permits(actor, entry.key, "add", form)) notFound();
 
   const referenceOptions = await loadReferenceOptions(form);
   const listHref = adminPath(entry) as Route;
@@ -80,6 +87,7 @@ export default async function AdminSectionCreatePage(
         values={blankFormValues(form)}
         label={entry.label}
         typeLabel={entry.label}
+        canSave
         canDelete={false}
         listHref={listHref}
       />

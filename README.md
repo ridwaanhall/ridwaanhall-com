@@ -19,7 +19,7 @@
 - **Interactive guestbook**: Google/GitHub OAuth login, threaded replies, author/co-author roles, message pinning (up to 3 at a time), automatic link detection, email notifications — or disable it entirely with one env var
 - **Blog and projects**: Paginated, searchable listings with multi-image support, tags, categories, threaded comments, and a project lifecycle status system
 - **SEO built in**: Per-page meta tags, Open Graph, Twitter Cards, JSON-LD schema, and auto-generated sitemaps/robots.txt
-- **Security-first**: row-level security on every Supabase table, a staff-gated admin whose permission is read from the database on every request, and Cloudflare Turnstile on the contact form
+- **Security-first**: row-level security on every Supabase table, an admin gated per screen — three roles and a view/add/change/delete grant on each of the thirty-five screens, all read from the database on every request and never carried in the session token — and Cloudflare Turnstile on the contact form
 - **Image optimization**: `next/image` over the Supabase Storage origin, with the size ladder trimmed to what the layouts actually request
 - **Built for touch as well as pointer**: mobile-first Tailwind CSS v4, with as little client JavaScript as the feature allows. Tooltips work on tap as well as hover, and every animation respects `prefers-reduced-motion`
 
@@ -156,9 +156,23 @@ npm run dev            # http://localhost:3000
 ```
 
 The site comes up empty, because nothing is seeded. To fill it: set up OAuth
-(below), sign in once so your account row exists, then set `is_staff` on it —
-`update app.account set is_staff = true where email = 'you@example.com';` — and
-`/admin` opens.
+(below), sign in once so your account row exists, then make that account staff
+**and** superuser —
+
+```sql
+update app.account
+   set is_staff = true, is_superuser = true
+ where email = 'you@example.com';
+```
+
+— and `/admin` opens. Both flags matter: `is_staff` is what gets you through the
+door, and `is_superuser` is what puts every screen behind it within reach. A
+staff account that is not superuser sees only the screens granted to it in
+`app.admin_access`, which for a fresh account is none — an admin with nothing in
+it, and the index page says so.
+
+Once you are in, `/admin/access` is where you hand out the rest: a checkbox per
+screen per action for everybody else who signs in.
 
 > **There is no local database.** `STORAGE_POSTGRES_URL` points at Supabase in
 > development as well as in production, so a page rendered locally shows live
@@ -248,9 +262,11 @@ Ridwan Halim. To adopt it as your own portfolio:
    writes to somebody else's site. Run `drizzle/0000_init.sql` against it; that
    creates every table and enables row-level security on all of them.
 2. **Your content** — nothing is seeded. Sign in once so your account row
-   exists, set `is_staff` on it in `app.account`, then add your bio, experience,
-   education, certifications, awards, skills, posts, projects, legal documents
-   and open-to-work status through `/admin`.
+   exists, set `is_staff` and `is_superuser` on it in `app.account` (superuser
+   is what reaches every screen; staff alone reaches only what
+   `app.admin_access` grants), then add your bio, experience, education,
+   certifications, awards, skills, posts, projects, legal documents and
+   open-to-work status through `/admin`.
 3. **Your branding** — `lib/seo/config.ts` hardcodes the site name, author and
    handles.
 4. **Your domain** — set `NEXT_PUBLIC_BASE_URL`, and register the OAuth redirect

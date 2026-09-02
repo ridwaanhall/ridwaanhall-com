@@ -15,9 +15,17 @@ import type { AdminListModel } from "@/lib/admin/list";
  * comes from a Google or GitHub sign-in, so there is no credential here to
  * change, reset, or leak.
  *
- * Groups and per-model permissions are likewise not built and do not exist in
- * the schema. There were zero groups and 152 permissions nothing consulted,
- * and every staff account flagged superuser -- a matrix with nothing to say.
+ * **The staff and active flags live here; the superuser flag and the grants do
+ * not.** They are on the Access screen instead, and that is one field one home
+ * rather than tidiness: `is_superuser` decides who may edit grants at all, so
+ * a form that any account with `change` on Users could reach would be a way to
+ * promote yourself. Splitting them also keeps the two questions apart -- this
+ * screen answers who exists and who gets in, that one answers what they may do
+ * once they are in.
+ *
+ * The superuser flag is still *shown* here, as a read-only column, because a
+ * list of accounts that does not say which of them can do everything is a list
+ * missing the thing you look at it for.
  */
 
 /** The two guestbook flags, which live on a separate row from the account. */
@@ -29,6 +37,7 @@ export type UserRow = {
   username: string;
   email: string;
   isStaff: boolean;
+  isSuperuser: boolean;
   isAuthor: boolean;
   isCoAuthor: boolean;
   lastSeenAt: string | null;
@@ -43,6 +52,7 @@ export const userList: AdminListModel<UserRow> = {
     username: account.username,
     email: account.email,
     isStaff: account.isStaff,
+    isSuperuser: account.isSuperuser,
     isAuthor,
     isCoAuthor,
     lastSeenAt: account.lastSeenAt,
@@ -59,6 +69,15 @@ export const userList: AdminListModel<UserRow> = {
       kind: "bool",
       sort: account.isStaff,
       value: (row) => row.isStaff,
+    },
+    // Read-only here by construction: a changelist column is a column. It is
+    // edited on the Access screen, which is also where its grants are.
+    {
+      key: "is_superuser",
+      label: "Superuser",
+      kind: "bool",
+      sort: account.isSuperuser,
+      value: (row) => row.isSuperuser,
     },
     { key: "is_author", label: "Author", kind: "bool", sort: isAuthor, value: (row) => row.isAuthor },
     {
@@ -80,6 +99,7 @@ export const userList: AdminListModel<UserRow> = {
     // `is_staff` is what `lib/auth/staff.ts` reads on every admin request, so
     // this filter answers "who can see this page" directly.
     { key: "is_staff", label: "Staff", kind: "boolean", column: account.isStaff },
+    { key: "is_superuser", label: "Superuser", kind: "boolean", column: account.isSuperuser },
     { key: "is_active", label: "Active", kind: "boolean", column: account.isActive },
     { key: "is_author", label: "Author", kind: "boolean", column: isAuthor },
     { key: "is_co_author", label: "Co-author", kind: "boolean", column: isCoAuthor },
@@ -98,23 +118,30 @@ export const userForm: AdminFormModel = {
   pk: account.id,
   label: (values) => String(values.username ?? "Account"),
   /*
-   * The single model in this admin without create and delete, and deliberately
-   * so rather than by omission -- every other one has both.
+   * Never created here, and deleted only by a superuser.
    *
-   * An account is created by a sign-in and by nothing else: the adapter writes
-   * one the first time a provider hands back an identity, so the account *is*
-   * that identity and there is no re-registration flow to recreate it. Deleting
-   * one cascades through every comment and guestbook message that person wrote,
-   * which is an unrecoverable loss no checkbox should be able to cause. Adding
-   * one by hand would produce a row no provider will ever hand back an identity
-   * for: an account nobody can sign in to.
+   * **Create is refused to everybody, including a superuser**, and that is not
+   * caution: an account is created by a sign-in and by nothing else. The
+   * adapter writes one the first time a provider hands back an identity, so the
+   * account *is* that identity. A row made by hand is one no provider will ever
+   * hand an identity back for -- an account nobody can sign in to, which is not
+   * a thing a stronger role should be able to make either.
    *
-   * What the admin does own here is on the form below -- the staff flag and the
-   * active flag, which are this application's decisions rather than the
-   * provider's.
+   * **Delete is `"superuser"`**, where it used to be refused outright. The
+   * reason it was refused has not changed -- deleting one cascades through
+   * every comment and guestbook message that person wrote -- but that is a
+   * question of consequence rather than of possibility, and refusing it to
+   * everybody meant an account could only be removed by hand in SQL, which is
+   * strictly worse: no confirmation, no warning, no record of the cascade.
+   * `deleteWarning` below is what the dialog says before it happens.
+   *
+   * The flag is read through `permits`, never as `canDelete !== false` -- see
+   * `lib/auth/permissions.ts`, where the truthy-string hazard is written up.
    */
   canCreate: false,
-  canDelete: false,
+  canDelete: "superuser",
+  deleteWarning:
+    "Every comment and guestbook message this person wrote is deleted with the account, along with their sign-in. Nothing here can recreate it: they would have to sign in again, as a new account.",
   fieldsets: [
     {
       title: "Identity",
@@ -149,10 +176,13 @@ export const userForm: AdminFormModel = {
    *
    * `staffGate` requires `is_active AND is_staff`, both read fresh per request,
    * so clearing either on your own account takes effect on the very next page
-   * load -- with no password to sign back in with, since every account is
-   * OAuth -- so clearing your own flag locks you out with nothing to sign back
-   * in with. There are three other staff accounts here, but relying on that is
-   * not a guard.
+   * load -- and every account here is OAuth, so there is no password to sign
+   * back in with. There are other staff accounts, but relying on one of them
+   * being available is not a guard.
+   *
+   * The same rule is written again on the Access screen for `is_superuser` and
+   * the grants. Twice rather than once because they are two forms writing two
+   * tables, and the shared thing between them is the sentence, not the code.
    *
    * The author and co-author flags are edited on User profiles, not here: they
    * live on a different table, and giving one field two homes is how the two

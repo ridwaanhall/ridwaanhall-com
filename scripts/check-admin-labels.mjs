@@ -45,6 +45,7 @@ const { chromium } = await import("playwright");
 const { staffAccountId } = await import("./fixture-ids.mjs");
 const { encode } = await import("next-auth/jwt");
 const { ADMIN_ENTRIES, adminPath } = await import("../lib/admin/registry.ts");
+const { roleAllows } = await import("../lib/auth/permissions.ts");
 const { formModelFor, listModelFor } = await import("../lib/admin/models/index.ts");
 const { db } = await import("../lib/db/client.ts");
 
@@ -109,9 +110,19 @@ for (const entry of ADMIN_ENTRIES) {
   }
   const id = await sampleId(entry.key);
   if (id) routes.push(`${screen}/${id}`);
-  // A blank form reaches states a populated one does not: an image field with
-  // nothing stored renders no preview, and so a shorter row.
-  if (formModelFor(entry.key)?.canCreate !== false) routes.push(`${screen}/new`);
+  /*
+   * A blank form reaches states a populated one does not: an image field with
+   * nothing stored renders no preview, and so a shorter row.
+   *
+   * Only where one exists. A screen with no form descriptor has no create
+   * route at all -- the access matrix is one, and `/admin/access/new` is a
+   * not-found page with nothing to measure, which is a pass this sweep must
+   * not be able to collect. And `canCreate` is `boolean | "superuser"`, so it
+   * is read through `roleAllows` rather than compared: this harness signs in as
+   * a plain staff account, which is what the `false` argument says.
+   */
+  const form = formModelFor(entry.key);
+  if (form && roleAllows(form.canCreate, false)) routes.push(`${screen}/new`);
 }
 
 const token = await encode({

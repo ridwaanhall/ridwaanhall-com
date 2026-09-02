@@ -30,12 +30,19 @@ it is not somewhere to add anything. This is.
 
 ## The schema
 
-Everything reads and writes the **`app`** schema: 52 tables, uuid keys, real
+Everything reads and writes the **`app`** schema: 53 tables, uuid keys, real
 foreign keys with real referential actions, row-level security on every one.
 
 `drizzle/0000_init.sql` is the whole of it, in one file, and it runs against an
 empty database. There is no ladder of migrations to replay — change that file,
 apply it, and re-run the two checks below.
+
+That file never runs against a database that already has a schema, so a change
+to a live one needs a **delta beside it** saying the same thing in `ALTER`
+form. `drizzle/0001_admin_access.sql` is the one that exists; both must describe
+the same schema afterwards, which is exactly what `check-baseline-schema.mjs`
+proves. See the RLS trap below for what a delta has to do that this file does
+not.
 
 ```bash
 node scripts/apply-migration.mjs drizzle/0000_init.sql --apply
@@ -44,7 +51,7 @@ npx tsx scripts/check-baseline-schema.mjs      # the file still builds this sche
 npx tsx scripts/check-app-schema.mjs           # the mapping still matches it
 ```
 
-`lib/db/app-schema.ts` is **generated**, never edited by hand: 52 tables of
+`lib/db/app-schema.ts` is **generated**, never edited by hand: 53 tables of
 column names is exactly the transcription that fails silently, because a
 mistyped SQL name is a column the app writes to and never reads back.
 `drizzle-kit pull` cannot produce it — with `schemaFilter: ["app"]` it fetches
@@ -145,26 +152,71 @@ shut for a frame on every navigation into a new area — and a collapsed panel
 carries `inert`, because a `0fr` grid row is invisible and still focusable.
 `scripts/check-admin-nav.mjs` holds both, and the cookie round trip with them.
 
-### Every model has full CRUD, except two
+### Three roles, and a grant per screen
 
-`user` is the first, and it is written up at the descriptor: an
-account **is** a provider identity, so one made here is a row nobody can sign in
-to, and deleting one cascades through every comment and guestbook message that
-person wrote.
+`account` carries `is_active` (may sign in), `is_staff` (may reach the admin)
+and `is_superuser` (answers yes to everything, and is the only role that may
+edit anybody's grants). What a staff account reaches *inside* the admin is
+`app.admin_access`: one row per **registry key** -- not per table -- with
+`view`, `add`, `change` and `delete` as four independent booleans.
 
-`project-status` is the second, and for a different reason: a badge colour is a
+`lib/auth/permissions.ts` is the whole rule, pure and tested offline. **Ask it,
+never the rows.** Three of its rules fail *open* when a caller reasons about
+`actor.grants` itself: a grant naming a screen the registry no longer has is
+refused rather than honoured, the Access screen is never grantable (granting
+the ability to grant is granting everything), and a grant may not widen what a
+model already refuses.
+
+`is_author` and `is_co_author` on `guest_profile` are deliberately not part of
+this. They are about the *public* site -- guestbook credit, comment moderation,
+who gets emailed -- and answer a different question.
+
+### Every model has full CRUD, with four exceptions and two of them are roles
+
+`canCreate` and `canDelete` are `boolean | "superuser"`, and the third state is
+the one to be careful with -- see the trap below.
+
+`user`: **create refused to everybody**, because an account *is* a provider
+identity and one made here is a row nobody can sign in to. **Delete is
+`"superuser"`**, because the reason it used to be refused outright -- it
+cascades through every comment and guestbook message that person wrote -- is a
+question of consequence rather than of possibility, and refusing it to everyone
+meant the only way to remove an account was SQL, with no confirmation and no
+warning.
+
+`project-status`: **create refused to everybody**, because a badge colour is a
 pair of Tailwind classes and **classes are never stored in the database**, so
 `lib/data/project-status.ts` keys them on the slug. A status created in the
-admin would therefore have no colour and render in the neutral fallback, which
-reads as a broken card rather than as a status nobody has picked a colour for.
-The screen offers the two things that *do* come from the row -- the label the
-badge prints and the position the projects page sorts by -- and refuses the one
-that cannot work. Its slug is `readOnly` for the same reason. `profile`, `hiring-profile` and `open-to-work-profile` are
-one-row by definition — `/admin/<key>` *is* that record's form, there is no
-list and no create route — which is a different thing from being refused.
-Everything else creates, reads, updates and deletes.
+admin would have no colour and render in the neutral fallback, which reads as a
+broken card -- as true for a superuser as for anyone. Its slug is `readOnly` for
+the same reason. **Delete is `"superuser"`**; a status a project still uses is
+held by the foreign key regardless of role.
+
+`profile`, `hiring-profile` and `open-to-work-profile`: **both refused to
+everybody, superuser included**, and this is the one place that role is not the
+answer. Each is one row by definition -- `/admin/<key>` *is* that record's form,
+there is no list and no create route -- and every page in the public layout
+renders the profile block, so deleting one takes the site down with nothing in
+the admin able to recreate it.
+
+Everything else creates, reads, updates and deletes, subject to the grant.
 `scripts/check-admin-forms.mjs` asserts both directions; "no add form" on its
 own is satisfied by an admin that cannot create anything at all.
+
+### One screen is not a descriptor
+
+`/admin/access` is the exception to "add a screen by adding a descriptor", and
+it is declared rather than accidental: `custom: true` on its registry entry says
+a route file renders it, and `superuserOnly: true` keeps it out of the rail, the
+index and the matrix for everybody else. Its rows are *registry entries* and its
+cells are four booleans on a join row, which no form descriptor can describe.
+
+It still has a list descriptor, so the changelist half is the ordinary generic
+-- search, sort, filters and paging come free and the screen looks like every
+other list here because it is one. `descriptors.test.ts` and `check-admin.mjs`
+between them stop `custom` becoming a way to forget a descriptor: a custom entry
+must have its route files, in an `(index)` group, and must not also declare a
+form.
 
 Three of those models are *about* somebody — a guestbook message, a comment, a
 reader's profile all name an account in a `NOT NULL` column with no default. So
@@ -205,7 +257,48 @@ payload included, and fails if row data appears in one.
 
 `is_staff` is read from the database on every request and never carried in the
 session token. Sessions are thirty-day JWTs; a token minted while someone was
-staff would keep asserting it for a month after the flag was cleared.
+staff would keep asserting it for a month after the flag was cleared. The same
+is true of `is_superuser` and of every grant row, and it matters more with a
+matrix than with one boolean: a token carrying a grant set would keep asserting
+delete on every screen for a month, with nothing a superuser could do but wait.
+
+**The gate is now two questions, and the second one is per page.** The layout
+cannot know which screen a page is about, so a staff account without `view` on
+a model would otherwise get a rail that omits the screen and a payload that
+carries all of its rows. Every model page asks `can(actor, key, "view")`
+immediately after `requireStaff()` and before `params` becomes a query.
+`scripts/check-admin-access.mjs` drives a narrowed account and fails on row data
+anywhere in the response.
+
+### A grant is not a cascade
+
+A superuser answers yes to every question *this application* asks. A foreign key
+is not one of them. `ON DELETE RESTRICT` on an organization five certifications
+still name refuses a superuser exactly as it refuses anybody, and no role, flag
+or grant changes that — the referring rows have to go or be repointed first.
+
+What the admin does instead is say which ones. `lib/admin/blockers.ts` reads
+`pg_constraint` for the foreign keys that would refuse, counts the rows behind
+each, and turns the failure into "1 experience and 1 application still refer to
+this record". Read from the catalogue rather than from a list on the descriptor,
+because a transcription of the schema is a thing that goes quietly out of date:
+add a foreign key and the message would drop back to saying nothing. It is
+fail-soft — anything that goes wrong falls back to the old sentence, since the
+caller is already handling one failure and a second thrown from there would turn
+a refused delete into a 500.
+
+### `canDelete: "superuser"` is a truthy string
+
+The same shape as `readOnly: "afterCreate"`, and it fails the same way:
+`model.canDelete !== false` reads the third state as *allowed* and offers a
+superuser-only delete to every staff account. It type checks, lints, builds, and
+is invisible until somebody deletes an account.
+
+**Read it through `permits()` or `roleAllows()` in `lib/auth/permissions.ts`,
+never as the property.** There were four call sites doing it by hand before this
+existed — the two `new` routes, `changelist-screen.tsx` and `record-screen.tsx`.
+`permits` also combines the flag with the grant, which is the other half nobody
+should write twice.
 
 ### A cascade declared in application code is not a cascade
 
@@ -355,6 +448,14 @@ of the boundary, so `tsc` and the build are satisfied, and the symptom is a
 preference that silently never applies -- indistinguishable from a cookie that
 failed to save. Shared constants go in a plain module both sides import;
 `lib/admin/rail.ts` is the one this cost.
+
+The rail's permission filter is the same boundary from the other direction.
+Which screens an account may open needs the session and the database, so it is
+computed in `app/admin/layout.tsx` and passed **down as a prop** -- as a plain
+`string[]`, because a `Set` does not survive serialisation and arrives as `{}`.
+`AdminSidebar` builds the Set on its own side. Asking the question in the client
+is not an option worth reaching for: `lib/auth/staff.ts` is `server-only`, so
+that at least fails at the import.
 
 **Every drawn control is an enhancement over a real one.** The server renders
 the `<select>` or the `<input type="date">`; it carries the `name`, it is what
@@ -712,6 +813,7 @@ npx tsx --conditions=react-server scripts/check-storage.mjs
 npx tsx --conditions=react-server scripts/check-admin-media.mjs   # the id/key seam
 npx tsx --conditions=react-server scripts/check-admin-image-link.mjs # upload and link, one bucket
 npx tsx scripts/check-admin.mjs
+npx tsx --conditions=react-server scripts/check-admin-access.mjs   # roles, grants, and no leaked rows
 npx tsx scripts/check-admin-nav.mjs                     # one group open, and a rail that remembers
 npx tsx --conditions=react-server scripts/check-admin-console.mjs
 npx tsx --conditions=react-server scripts/check-admin-forms.mjs
@@ -749,6 +851,21 @@ nothing else, and inserts what is not already stored. It is a dry run unless
 given `--apply`, and that dry run is the review: it prints every row it would
 write, so the output is read before the second run rather than after it. Running
 it twice is safe — see the credential-URL rule above for what makes that true.
+
+`scripts/seed-admin-access.mjs` is not a check. It is the other half of
+`drizzle/0001_admin_access.sql`: the migration makes the column and the table,
+and this fills them -- the first superuser, and full grants for every account
+that was already staff, so the day per-screen permissions shipped was invisible
+to the people already using the admin. It is a dry run unless given `--apply`,
+and safe to re-run: the grants go in with `on conflict do nothing`, so a second
+run adds rows for screens added since and never undoes a narrowing somebody
+made on purpose. Run it under `npx tsx`, not `node` -- it imports
+`lib/auth/permissions.ts`, which resolves the `@/` alias.
+
+**Run it after adding a screen.** A registry entry with no grant rows behind it
+is a screen every staff account is silently locked out of, and nothing else
+reports that: the rail simply does not draw it, which is indistinguishable from
+working correctly.
 
 `scripts/migrate-icons-to-storage.mjs` is not a check either. It uploads the
 skill icons from `public/static/svg/icon/` and repoints their rows, and it is

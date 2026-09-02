@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import { describe, it } from "node:test";
 
 import { formFields } from "./form";
@@ -66,10 +67,48 @@ describe("the registry and the descriptors agree", () => {
    * The record route renders a form or nothing -- there is no read-only
    * fallback. An entry without a form descriptor is a screen that cannot be
    * opened at all.
+   *
+   * Unless it is `custom`, which says the screen has a route of its own instead
+   * of a descriptor pair. That flag is the whole of the exemption, and the
+   * three assertions below are what stop it being a way to forget a descriptor:
+   * a custom entry must have a route file, must not also declare a form, and
+   * there must be a deliberately small number of them.
    */
   it("gives every registered screen a form descriptor", () => {
-    for (const entry of ADMIN_ENTRIES) {
+    for (const entry of ADMIN_ENTRIES.filter((candidate) => !candidate.custom)) {
       assert.ok(entry.key in ADMIN_FORM_MODELS, `${entry.key}: no form descriptor`);
+    }
+  });
+
+  it("gives a custom screen no form descriptor, since its route is the screen", () => {
+    for (const entry of ADMIN_ENTRIES.filter((candidate) => candidate.custom)) {
+      assert.ok(
+        !(entry.key in ADMIN_FORM_MODELS),
+        `${entry.key}: custom, but a form descriptor exists -- one of the two is wrong`,
+      );
+    }
+  });
+
+  /*
+   * A route file, not merely an intention. `custom` exempts an entry from the
+   * check above, so without this it is a way to register a rail row that leads
+   * to a 404 and have every test agree that is fine.
+   */
+  it("gives every custom screen the route that renders it", () => {
+    for (const entry of ADMIN_ENTRIES.filter((candidate) => candidate.custom)) {
+      const index = `app/admin/${entry.key}/(index)/page.tsx`;
+      assert.ok(existsSync(index), `${entry.key}: custom, but ${index} does not exist`);
+      /*
+       * And in a route group. A `loading.tsx` beside a page is also the
+       * fallback for that segment's child slots, so an index page directly
+       * under `<key>/` would draw its own skeleton on the way to every record
+       * beneath it. `check-skeleton-scope.mjs` holds this for the generated
+       * routes; a custom one is not in its scope.
+       */
+      assert.ok(
+        !existsSync(`app/admin/${entry.key}/page.tsx`),
+        `${entry.key}: an index page outside its (index) group`,
+      );
     }
   });
 

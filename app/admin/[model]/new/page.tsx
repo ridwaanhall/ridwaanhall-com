@@ -9,18 +9,26 @@ import { toClientFieldsets, toClientInlines } from "@/lib/admin/form";
 import { formModelFor } from "@/lib/admin/models";
 import { blankFormValues, loadReferenceOptions } from "@/lib/admin/record";
 import { adminPath, ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
-import { requireStaff } from "@/lib/auth/staff";
+import { permits } from "@/lib/auth/permissions";
+import { getStaffUser, requireStaff } from "@/lib/auth/staff";
 
 /**
  * The add form.
  *
  * Static, so it takes precedence over `[id]` and `new` can never be read as a
- * record id. It 404s for a model with no form, and for one whose descriptor
- * says `canCreate: false` -- an account is made by a sign-in, a guestbook
- * message by a reader, a profile row by a signal, and offering an empty form for
- * any of them would be offering something that cannot work. `saveRecord` refuses
- * the same case again on the server, since a form that is not rendered is not a
- * form that cannot be posted.
+ * record id. It answers not-found for a model with no form, for one whose
+ * descriptor refuses creation, and for an account without `add` on the screen
+ * -- an account is made by a sign-in, a guestbook message by a reader, a
+ * profile row by a signal, and offering an empty form for any of those is
+ * offering something that cannot work. `saveRecord` refuses each case again on
+ * the server, since a form that is not rendered is not a form that cannot be
+ * posted.
+ *
+ * The three questions are one call: `permits` combines the descriptor's flag
+ * with this account's grant, and it is the only thing that reads the flag.
+ * `canCreate` is `boolean | "superuser"`, so the `!== false` this used to test
+ * would read the third state as *allowed* and hand every staff account an add
+ * form for accounts.
  */
 type Params = { params: Promise<{ model: string }> };
 
@@ -30,7 +38,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   // The same condition the page 404s on, so a refused route does not sit in the
   // browser's tab and history offering to add something it will not add.
   const form = entry ? formModelFor(entry.key) : null;
-  const offered = entry && !entry.section && form && form.canCreate !== false;
+  // The actor, because "may this be added" now depends on who is asking. Free:
+  // `getStaffUser` is memoised per request and the layout has already run it.
+  const actor = await getStaffUser();
+  const offered =
+    entry && !entry.section && form && actor && permits(actor, entry.key, "add", form);
   return { title: offered ? `Add ${entry.label.toLowerCase()} · Admin` : "Admin" };
 }
 
@@ -42,12 +54,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export const instant = false;
 
 export default async function AdminCreatePage({ params }: Params) {
-  await requireStaff();
+  const actor = await requireStaff();
 
   const { model: key } = await params;
   const entry = ADMIN_ENTRIES_BY_KEY.get(key);
   const form = formModelFor(key);
-  if (!entry || entry.section || !form || form.canCreate === false) notFound();
+  if (!entry || entry.section || !form) notFound();
+  if (!permits(actor, key, "add", form)) notFound();
 
   const referenceOptions = await loadReferenceOptions(form);
   // Through `adminPath` rather than composing the key back into a path here.
@@ -78,6 +91,7 @@ export default async function AdminCreatePage({ params }: Params) {
         values={blankFormValues(form)}
         label={entry.label}
         typeLabel={entry.label}
+        canSave
         canDelete={false}
         listHref={listHref}
       />

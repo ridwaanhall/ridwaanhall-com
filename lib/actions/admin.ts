@@ -295,6 +295,7 @@ export async function saveRecord(
   const problem = await model.validate?.(values, {
     id,
     actorId: actor.id,
+    actorIsSuperuser: actor.isSuperuser,
     exists: async (table, column, value) => {
       if (!isUuid(value)) return false;
       const [row] = await db

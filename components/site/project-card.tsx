@@ -63,7 +63,7 @@ export function ProjectCard({
           {project.status && (
             <div className="absolute top-0 left-0 z-20">
               <div
-                className={`${projectStatusColor(project.status)} text-xs px-2 py-1 sm:px-3 sm:py-1.5 rounded-br-lg backdrop-blur-sm flex items-center gap-1.5 transition-all duration-300`}
+                className={`${projectStatusColor(project.status_color)} text-xs px-2 py-1 sm:px-3 sm:py-1.5 rounded-br-lg backdrop-blur-sm flex items-center gap-1.5 transition-all duration-300`}
               >
                 <span className="tracking-wide">{project.status_label}</span>
               </div>

@@ -95,6 +95,27 @@ export type ListFilter =
       column: PgColumn;
       choices: FilterChoice[] | "distinct" | RelatedChoices;
     }
+  /**
+   * The same, over an *expression*.
+   *
+   * Split into its own member rather than widening `column` above, because the
+   * two lookup kinds are only meaningful for a real column: both select **from
+   * that column's table**, which an expression does not have. The users screen
+   * filters on the sign-in provider, which is a `string_agg` over
+   * `account_identity` -- there is no table to enumerate values from without
+   * running a different query entirely.
+   *
+   * So an expression must carry its options written out, and the type is what
+   * says so. `needsLookup` narrows on `choices` being an array, and this member
+   * is the reason that narrowing is sound rather than merely convenient.
+   */
+  | {
+      key: string;
+      label: string;
+      kind: "choice";
+      column: SQL;
+      choices: FilterChoice[];
+    }
   | { key: string; label: string; kind: "date"; column: PgColumn };
 
 export type AdminListModel<Row> = {
@@ -443,7 +464,7 @@ export async function relatedChoices(
  * only `choice` filters can be looked up, and only those are guaranteed to
  * carry a real column rather than an expression.
  */
-export type LookupFilter = Extract<ListFilter, { kind: "choice" }> & {
+export type LookupFilter = Extract<ListFilter, { kind: "choice"; column: PgColumn }> & {
   choices: "distinct" | RelatedChoices;
 };
 

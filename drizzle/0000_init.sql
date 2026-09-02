@@ -172,7 +172,31 @@ CREATE TABLE "app"."project_status" (
     -- The lifecycle order the projects list sorts by. `lib/data/content.ts`
     -- reads it, so reordering these rows reorders the projects page.
     "position" integer NOT NULL DEFAULT 0,
-    CONSTRAINT "project_status_slug_key" UNIQUE ("slug")
+    -- The badge's colour, as a **token** and never as a class.
+    --
+    -- `bg-purple-400/90 text-purple-950` is what renders; `purple` is what is
+    -- stored. That distinction is the whole point: Tailwind finds classes by
+    -- scanning source text, so a class that exists only as a column value
+    -- produces no rule at all -- while a token is just a key, exactly like the
+    -- slug beside it. `lib/data/project-status.ts` holds the eighteen pairs,
+    -- each written out in full, and `scripts/check-db-classes.mjs` is what
+    -- keeps the column from ever holding the class itself.
+    --
+    -- It is a column rather than a lookup keyed on the slug because that is
+    -- what lets a status be *created* here: keyed on the slug, a new row had no
+    -- colour and rendered in the neutral fallback, which reads as a broken card
+    -- rather than as a status nobody has picked a colour for.
+    --
+    -- The check lists the tokens rather than pointing at a table, because the
+    -- set is fixed by what the stylesheet can emit and is not editorial: adding
+    -- one means writing its class pair out in that module first.
+    "color" text NOT NULL DEFAULT 'zinc',
+    CONSTRAINT "project_status_slug_key" UNIQUE ("slug"),
+    CONSTRAINT "project_status_color_check" CHECK ("color" IN (
+        'purple', 'violet', 'indigo', 'blue', 'sky', 'cyan', 'teal',
+        'emerald', 'green', 'lime', 'yellow', 'amber', 'orange', 'red',
+        'rose', 'pink', 'fuchsia', 'zinc'
+    ))
 );--> statement-breakpoint
 
 CREATE TABLE "app"."legal_document_type" (

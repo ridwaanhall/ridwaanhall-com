@@ -397,6 +397,41 @@ try {
       boxes > GRANTABLE.length,
       `${boxes} checkboxes for ${GRANTABLE.length} screens`,
     );
+    /*
+     * The matrix has to describe the role it is looking at.
+     *
+     * `user.delete` is `canDelete: "superuser"`, and the screen used to draw it
+     * as a dash reading "cannot be granted" on *every* account -- including a
+     * superuser's own, where the delete is real and available. So the one
+     * screen whose entire job is to say what somebody can do said the opposite
+     * of the truth about the account with the most power.
+     *
+     * A superuser sees a cell, and it is ticked. A staff account sees the dash,
+     * which for them is correct: no grant can reach it.
+     */
+    const cellFor = (html, key, act) => {
+      const at = html.indexOf(`name="${key}.${act}"`);
+      if (at === -1) return "absent";
+      // React renders `checked` as the bare attribute on the same tag.
+      const tag = html.slice(html.lastIndexOf("<input", at), html.indexOf(">", at));
+      return tag.includes("checked") ? "ticked" : "unticked";
+    };
+
+    check(
+      "superuser: a superuser-only action is a ticked box, not a dash",
+      cellFor(body, "user", "delete") === "ticked",
+      cellFor(body, "user", "delete"),
+    );
+    check(
+      "superuser: and every ordinary box is ticked too, whatever the rows say",
+      cellFor(body, WATCHED, "change") === "ticked",
+      cellFor(body, WATCHED, "change"),
+    );
+    check(
+      "superuser: an action refused to everybody stays a dash",
+      cellFor(body, "profile", "delete") === "absent",
+      cellFor(body, "profile", "delete"),
+    );
     check(
       "superuser: and no checkbox for the screen that hands out grants",
       !body.includes(`name="${SUPERUSER_ONLY.key}.view"`),
@@ -483,12 +518,16 @@ try {
        * locally and failed here: the action had not landed, the row was absent,
        * and the check reported "saving writes the row: no row" -- a real save
        * bug and a slow machine are indistinguishable through a timeout.
+       *
+       * Generous, because the first request after this component is edited pays
+       * for a Turbopack compile before anything renders -- which is a wait, not
+       * a failure, and 15s was not enough for it.
        */
       await page
         .locator("body")
         .filter({ hasText: /Saved./ })
         .first()
-        .waitFor({ timeout: 15000 });
+        .waitFor({ timeout: 45000 });
 
       const [stored] = await db
         .select({
@@ -521,6 +560,40 @@ try {
       // that is the whole reason the flags are read per request.
       const { body } = await get(`/admin/${WATCHED}`, cookie);
       check("and the screen opens on the next request, uncached", body.includes("<table"));
+
+      /*
+       * The other half of the matrix-truth check above. The save has just taken
+       * the superuser role away, so this account is staff again -- and for
+       * staff, `user.delete` genuinely cannot be granted and the dash is the
+       * honest answer. Asserted here rather than earlier because reading the
+       * matrix at all needs a superuser's session, which this block has.
+       */
+      const staffView = await get(`/admin/access/${subjectId}`, ownerCookie);
+      check(
+        "a staff account's matrix draws the superuser-only action as a dash",
+        !staffView.body.includes('name="user.delete"'),
+      );
+      check(
+        "and still offers the ordinary ones as boxes",
+        staffView.body.includes(`name="${WATCHED}.change"`),
+      );
+
+      /*
+       * Who signed in with what. `account_identity.provider` is the only place
+       * that says, and the Users screen showed nothing at all before -- the two
+       * kinds of account were indistinguishable on the screen whose subject is
+       * who can get in.
+       */
+      const users = await get("/admin/user", ownerCookie);
+      check(
+        "the users list names the sign-in provider",
+        users.text.includes("Signed in with"),
+      );
+      check(
+        "and prints it as the provider is spelled, not as it is stored",
+        users.text.includes("Google") || users.text.includes("GitHub"),
+        users.text.includes("Google") ? "Google" : users.text.includes("GitHub") ? "GitHub" : "neither",
+      );
     } finally {
       await browser.close();
     }

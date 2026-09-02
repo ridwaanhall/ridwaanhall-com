@@ -69,7 +69,7 @@ export default async function ProjectDetailPage({
                 {project.status && (
                   <div className="mb-4">
                     <span
-                      className={`inline-flex items-center gap-1.5 ${projectStatusColor(project.status)} text-sm px-3 py-1.5 rounded-full backdrop-blur-sm`}
+                      className={`inline-flex items-center gap-1.5 ${projectStatusColor(project.status_color)} text-sm px-3 py-1.5 rounded-full backdrop-blur-sm`}
                     >
                       {project.status_label}
                     </span>

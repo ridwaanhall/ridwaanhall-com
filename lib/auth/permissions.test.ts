@@ -7,7 +7,6 @@ import {
   can,
   grantableEntries,
   hasAnyAccess,
-  isReadOnly,
   NO_GRANT,
   permits,
   permittedKeys,
@@ -215,16 +214,7 @@ describe("withImpliedView", () => {
   });
 });
 
-describe("isReadOnly and hasAnyAccess", () => {
-  it("calls view without change read-only", () => {
-    const who = actor({ grants: { [ANY_KEY]: { ...NO_GRANT, view: true } } });
-    assert.equal(isReadOnly(who, ANY_KEY), true);
-  });
-
-  it("does not call a screen you cannot see read-only", () => {
-    assert.equal(isReadOnly(actor(), ANY_KEY), false);
-  });
-
+describe("hasAnyAccess", () => {
   it("says a superuser has access even with no rows", () => {
     assert.equal(hasAnyAccess(actor({ isSuperuser: true })), true);
   });

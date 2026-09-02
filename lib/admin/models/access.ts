@@ -1,4 +1,4 @@
-import { and, eq, or, sql } from "drizzle-orm";
+import { eq, or, sql } from "drizzle-orm";
 
 import { account, adminAccess } from "@/lib/db/app-schema";
 
@@ -131,8 +131,3 @@ export const accessAccountSelect = {
   isSuperuser: account.isSuperuser,
   isActive: account.isActive,
 };
-
-/** The condition that says an account belongs on this screen at all. */
-export const isAdminAccount = and(
-  or(eq(account.isStaff, true), eq(account.isSuperuser, true)),
-);

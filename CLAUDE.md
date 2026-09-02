@@ -38,11 +38,13 @@ empty database. There is no ladder of migrations to replay — change that file,
 apply it, and re-run the two checks below.
 
 That file never runs against a database that already has a schema, so a change
-to a live one needs a **delta beside it** saying the same thing in `ALTER`
-form. `drizzle/0001_admin_access.sql` is the one that exists; both must describe
-the same schema afterwards, which is exactly what `check-baseline-schema.mjs`
-proves. See the RLS trap below for what a delta has to do that this file does
-not.
+to a live one is written a second time as a **throwaway delta** in `ALTER` form,
+applied, and **deleted in the same commit** -- `drizzle/README.md` has the
+sequence. Deleted because a delta that stays is a rung, and
+`check-fresh-start.mjs` fails on a second baseline file for that reason; it is
+what caught the first one being left behind. The applied change lives in
+`0000_init.sql` and the step that got it there lives in git history. See the RLS
+trap below for what a delta has to do that this file does not.
 
 ```bash
 node scripts/apply-migration.mjs drizzle/0000_init.sql --apply
@@ -171,7 +173,7 @@ model already refuses.
 this. They are about the *public* site -- guestbook credit, comment moderation,
 who gets emailed -- and answer a different question.
 
-### Every model has full CRUD, with four exceptions and two of them are roles
+### Every model has full CRUD, with three exceptions
 
 `canCreate` and `canDelete` are `boolean | "superuser"`, and the third state is
 the one to be careful with -- see the trap below.
@@ -184,13 +186,23 @@ question of consequence rather than of possibility, and refusing it to everyone
 meant the only way to remove an account was SQL, with no confirmation and no
 warning.
 
-`project-status`: **create refused to everybody**, because a badge colour is a
-pair of Tailwind classes and **classes are never stored in the database**, so
-`lib/data/project-status.ts` keys them on the slug. A status created in the
-admin would have no colour and render in the neutral fallback, which reads as a
-broken card -- as true for a superuser as for anyone. Its slug is `readOnly` for
-the same reason. **Delete is `"superuser"`**; a status a project still uses is
-held by the foreign key regardless of role.
+`project-status`: **created and deleted like every other vocabulary**, which it
+could not be until the colour moved onto the row. The refusal was never about
+the lifecycle being sacred: a badge colour is a pair of Tailwind classes,
+**classes are never stored in the database**, and `lib/data/project-status.ts`
+therefore keyed them on the slug -- so a status created here had no colour and
+rendered in the neutral fallback, which reads as a broken card.
+`project_status.color` holds a **token** now (`purple`), chosen from a dropdown,
+and the classes stay in that module where Tailwind can see them. A token is not
+a class; it is a key, exactly like the slug. Its slug is `readOnly:
+"afterCreate"` -- writable once, fixed after, because `sortProjects` and the
+filters match on it.
+
+The two sources that have to agree are the map in `lib/data/project-status.ts`
+and `project_status_color_check` in the schema, and they genuinely cannot be
+compared in the unit suite -- one is an object literal, the other a constraint
+in Postgres. `scripts/check-db-classes.mjs` compares them against the live
+database, which is the only place both are visible.
 
 `profile`, `hiring-profile` and `open-to-work-profile`: **both refused to
 everybody, superuser included**, and this is the one place that role is not the
@@ -202,6 +214,22 @@ the admin able to recreate it.
 Everything else creates, reads, updates and deletes, subject to the grant.
 `scripts/check-admin-forms.mjs` asserts both directions; "no add form" on its
 own is satisfied by an admin that cannot create anything at all.
+
+### The matrix has to describe the role it is looking at
+
+The access screen draws a dash where an action cannot be granted, and there are
+**two** reasons for that, which must not be conflated. `unavailable` is refused
+to everybody -- a singleton has no add. `superuserOnly` is refused to *staff*:
+`user.delete` is a real action a superuser really has.
+
+Drawing both as a dash meant a superuser's own matrix showed "cannot be granted"
+beside a Delete they could perform, and every ordinary box unticked above an
+account that reaches everything -- because a superuser's access does not come
+from those rows at all (`can()` short-circuits on the role). The one screen
+whose job is to say what somebody can do said the opposite about the account
+with the most power. So a superuser-only cell becomes a cell once the role is
+ticked, and every cell shows granted; unticking the role reveals the stored
+grants again, which is what would come back.
 
 ### One screen is not a descriptor
 
@@ -269,6 +297,25 @@ carries all of its rows. Every model page asks `can(actor, key, "view")`
 immediately after `requireStaff()` and before `params` becomes a query.
 `scripts/check-admin-access.mjs` drives a narrowed account and fails on row data
 anywhere in the response.
+
+### A running `next dev` holds the old schema mapping
+
+`node scripts/gen-app-schema.mjs` rewrites `lib/db/app-schema.ts`, and a dev
+server that was already running does **not** reliably pick up a *new column* on
+an existing table. `projectStatus.color` was `undefined` inside that process
+while being perfectly present in a fresh one, so the query built a select over
+an undefined column and Drizzle threw
+
+    TypeError: Cannot read properties of undefined (reading 'replace')
+
+from a stack made entirely of React streaming frames, naming nothing in this
+repository. Every offline check passed, the same query run under `npx tsx`
+returned the right rows, and only one screen was affected -- which reads
+exactly like a bug in that screen's descriptor, and is where an hour goes.
+
+**Restart `next dev` after regenerating the mapping.** And when one screen
+errors while its query works in isolation, suspect the server's module graph
+before the descriptor.
 
 ### A grant is not a cascade
 
@@ -365,7 +412,8 @@ Both halves of this were live:
 - `project_status.slug` is hyphenated (`development-in-progress`) and
   `lib/data/project-status.ts` keyed its labels *and* colours with underscores
   (`development_in_progress`), while the read path selects the slug. Every
-  lookup missed. Every badge on the site rendered in the grey fallback with a
+  lookup missed. (The colour is keyed on `project_status.color` now, a token
+  the row carries -- which is also what lets a status be created at all.) Every badge on the site rendered in the grey fallback with a
   mangled `Development-In-Progress` beside it, and `projectStatusRank` returned
   "unknown" for all of them, so the first of the two sort keys in `sortProjects`
   did nothing whatsoever. It survived because the test compared the module's two
@@ -852,9 +900,9 @@ given `--apply`, and that dry run is the review: it prints every row it would
 write, so the output is read before the second run rather than after it. Running
 it twice is safe — see the credential-URL rule above for what makes that true.
 
-`scripts/seed-admin-access.mjs` is not a check. It is the other half of
-`drizzle/0001_admin_access.sql`: the migration makes the column and the table,
-and this fills them -- the first superuser, and full grants for every account
+`scripts/seed-admin-access.mjs` is not a check. It is the other half of the
+migration that added `account.is_superuser` and `app.admin_access`: that made
+the column and the table, and this fills them -- the first superuser, and full grants for every account
 that was already staff, so the day per-screen permissions shipped was invisible
 to the people already using the admin. It is a dry run unless given `--apply`,
 and safe to re-run: the grants go in with `on conflict do nothing`, so a second

@@ -113,16 +113,6 @@ export function permittedKeys(actor: AdminActor): string[] {
 }
 
 /**
- * A `view` that grants nothing else is a screen you can read.
- *
- * Decides whether a record is drawn as a form or as a page. The server refuses
- * the write either way; this is what stops somebody filling one in first.
- */
-export function isReadOnly(actor: AdminActor, key: string): boolean {
-  return can(actor, key, "view") && !can(actor, key, "change");
-}
-
-/**
  * Whether this actor reaches anything at all.
  *
  * A superuser with no rows in `admin_access` still sees everything, which is

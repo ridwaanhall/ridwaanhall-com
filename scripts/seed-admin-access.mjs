@@ -1,11 +1,13 @@
 /**
  * Seed the first superuser, and give every existing staff account full grants.
  *
- * `drizzle/0001_admin_access.sql` creates the column and the table; this fills
- * them. It is a separate step and not part of that file because the grants are
- * one row per **registry key**, and the registry lives in TypeScript -- seeding
- * from SQL would mean transcribing every key into a migration, which is exactly
- * the copy that goes quietly out of date.
+ * The migration that added `account.is_superuser` and `app.admin_access` made
+ * them; this fills them. A separate step, and not part of that SQL, because the
+ * grants are one row per **registry key** and the registry lives in TypeScript
+ * -- seeding from SQL would mean transcribing every key into a migration, which
+ * is exactly the copy that goes quietly out of date. It is also why this script
+ * outlives the delta, which is deleted once applied: the *schema* change happens
+ * once, but a screen added later needs its grant rows too.
  *
  * **Running it is not optional after the migration.** Before this, `is_staff`
  * was the whole of the permission and everyone holding it reached every screen.

@@ -464,6 +464,7 @@ export const projectStatus = app.table("project_status", {
   slug: text().notNull(),
   label: text().notNull(),
   position: integer().notNull().default(0),
+  color: text().notNull().default('zinc'),
 });
 
 export const projectTag = app.table("project_tag", {

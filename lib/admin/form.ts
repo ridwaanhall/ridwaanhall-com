@@ -351,6 +351,16 @@ export type ValidationContext = {
   /** The signed-in staff account's uuid, for rules about acting on yourself. */
   actorId: string;
   /**
+   * Whether the signed-in account holds the superuser role.
+   *
+   * A boolean rather than the whole actor, because a descriptor has no business
+   * with a grant map -- it would be one import away from asking permission
+   * questions that `lib/auth/permissions.ts` already answers. What a *rule*
+   * needs is the one fact it cannot reach: whether the person editing outranks
+   * the record they are editing. The users screen is the only rule that asks.
+   */
+  actorIsSuperuser: boolean;
+  /**
    * Whether any row of `table` has `column = value`.
    *
    * Handed in rather than queried by the descriptor, and that is a constraint

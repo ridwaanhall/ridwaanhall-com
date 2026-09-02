@@ -63,8 +63,9 @@ export default async function AdminAccessRecordPage({
   params,
 }: PageProps<"/admin/access/[id]">) {
   // First, and before the id is even parsed. Superuser rather than staff: this
-  // is the screen that hands out permissions.
-  await requireSuperuser();
+  // is the screen that hands out permissions. Held, because the matrix needs to
+  // know whether it is being pointed at the account that is editing it.
+  const actor = await requireSuperuser();
 
   const { id } = await params;
   const listHref = "/admin/access" as Route;
@@ -137,7 +138,6 @@ export default async function AdminAccessRecordPage({
   });
 
   const fullName = `${target.firstName} ${target.lastName}`.trim();
-  const actor = await requireSuperuser();
 
   return (
     <div className="admin-fade space-y-5">

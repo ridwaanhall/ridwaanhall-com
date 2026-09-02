@@ -123,9 +123,43 @@ export function AccessMatrix({
     return [...byGroup];
   }, [rows]);
 
-  /** Whether a cell exists at all for this screen and action. */
-  const offered = (row: MatrixRow, act: AdminAction) =>
-    !row.unavailable.includes(act) && !row.superuserOnly.includes(act);
+  /**
+   * Whether a cell exists at all for this screen and action, **for the role
+   * currently ticked**.
+   *
+   * Three answers, not two, and conflating the last two is what made this
+   * screen lie. `unavailable` is refused to everybody -- a singleton has no
+   * add, so no box could ever mean anything. `superuserOnly` is refused to
+   * *staff*: `user.delete` and `project-status.delete` are real actions that a
+   * superuser really has. Drawing both as a dash meant a superuser's own matrix
+   * showed "cannot be granted" beside a Delete they could perform, which is the
+   * screen describing the opposite of the truth.
+   *
+   * So a superuser-only cell is a cell once the role is ticked, and
+   * `granting` below fills it.
+   */
+  const offered = (row: MatrixRow, act: AdminAction) => {
+    if (row.unavailable.includes(act)) return false;
+    if (row.superuserOnly.includes(act)) return superuser;
+    return true;
+  };
+
+  /**
+   * What a cell shows.
+   *
+   * **A superuser's boxes do not come from the stored rows**, because neither
+   * does their access: `can()` short-circuits on the role before it looks at
+   * the grant map, so a superuser with a half-filled `admin_access` set still
+   * reaches everything. Rendering those rows would show a matrix of mostly
+   * unticked boxes above an account that has every one of them -- which is what
+   * this screen did, and what it was reported for.
+   *
+   * The stored values are still held in state and still shown the moment the
+   * role is unticked, so taking the role away reveals what would come back
+   * rather than blanking it.
+   */
+  const shown = (row: MatrixRow, act: AdminAction) =>
+    superuser ? true : (grants[row.key] ?? row.grant)[act];
 
   function setGrant(key: string, next: Grant) {
     setGrants((current) => ({ ...current, [key]: withImpliedView(next) }));
@@ -164,7 +198,7 @@ export function AccessMatrix({
 
   const allOn = (rowsInGroup: MatrixRow[]) =>
     rowsInGroup.every((row) =>
-      ADMIN_ACTIONS.every((act) => !offered(row, act) || (grants[row.key] ?? row.grant)[act]),
+      ADMIN_ACTIONS.every((act) => !offered(row, act) || shown(row, act)),
     );
 
   const granted = rows.filter((row) => (grants[row.key] ?? row.grant).view).length;
@@ -192,7 +226,7 @@ export function AccessMatrix({
           </label>
           <p className="mt-2 text-xs text-zinc-500">
             {superuser
-              ? "Every screen and every action, including this one. The grants below are kept but not consulted."
+              ? "Every screen and every action, including this one and the ones no grant can reach. The boxes below show that, and are not what is stored — untick this to see the grants that would come back."
               : "A superuser answers yes to every screen, and is the only role that can open this page."}
           </p>
           {isSelf && (
@@ -254,8 +288,6 @@ export function AccessMatrix({
                 </thead>
                 <tbody>
                   {rowsInGroup.map((row) => {
-                    const grant = grants[row.key] ?? row.grant;
-
                     return (
                       <tr key={row.key} className="border-b border-zinc-900 last:border-b-0">
                         <th
@@ -283,7 +315,7 @@ export function AccessMatrix({
                                   type="checkbox"
                                   name={`${row.key}.${act}`}
                                   className="admin-check"
-                                  checked={grant[act]}
+                                  checked={shown(row, act)}
                                   onChange={(event) => toggle(row, act, event.target.checked)}
                                 />
                               </label>
@@ -292,8 +324,8 @@ export function AccessMatrix({
                                 aria-hidden="true"
                                 title={
                                   row.superuserOnly.includes(act)
-                                    ? `${ACTION_LABEL[act]} on ${row.label} is a superuser action and cannot be granted.`
-                                    : `${row.label} has no ${ACTION_LABEL[act].toLowerCase()}.`
+                                    ? `${ACTION_LABEL[act]} on ${row.label} is a superuser action. Give this account the superuser role to grant it.`
+                                    : `${row.label} has no ${ACTION_LABEL[act].toLowerCase()}, for anybody.`
                                 }
                                 className={cn("text-zinc-700")}
                               >

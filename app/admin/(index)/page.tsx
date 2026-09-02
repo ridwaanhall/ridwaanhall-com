@@ -15,7 +15,7 @@ import {
   UsersIcon,
 } from "@/components/admin/admin-icons";
 import { ADMIN_GROUPS, navItemsInGroup, type AdminGroup } from "@/lib/admin/registry";
-import { permittedKeys } from "@/lib/auth/permissions";
+import { hasAnyAccess, permittedKeys } from "@/lib/auth/permissions";
 import { requireStaff } from "@/lib/auth/staff";
 
 /**
@@ -93,7 +93,7 @@ export default async function AdminIndexPage() {
         that looks broken -- and it names who to ask, since the reader cannot
         see the Access screen to find out.
       */}
-      {groups.length === 0 && (
+      {!hasAnyAccess(actor) && (
         <p className="max-w-2xl rounded-lg border border-zinc-800 bg-zinc-950/40 p-4 text-sm text-zinc-400">
           This account can sign in to the admin, but has not been given access to
           any screen yet. A superuser sets that on the Access screen.

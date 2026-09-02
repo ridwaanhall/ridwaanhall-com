@@ -418,7 +418,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Project status",
     labelPlural: "Project statuses",
     group: "Settings",
-    blurb: "The project lifecycle. Rename and reorder; the set itself is fixed.",
+    blurb: "The project lifecycle, with the badge colour each status renders in.",
     section: "publishing",
   },
   {

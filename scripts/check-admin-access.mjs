@@ -34,7 +34,7 @@ const { ADMIN_ENTRIES, ADMIN_ENTRIES_BY_KEY, adminPath } = await import(
 );
 const { db, pool } = await import("../lib/db/client.ts");
 const { account, adminAccess } = await import("../lib/db/app-schema.ts");
-const { and, eq, inArray } = await import("drizzle-orm");
+const { and, asc, eq, inArray, ne } = await import("drizzle-orm");
 const { idWhere } = await import("./fixture-ids.mjs");
 
 const BASE = process.argv[2] ?? "http://localhost:3000";
@@ -484,12 +484,37 @@ try {
    * deletes.
    */
   {
+    /*
+     * A superuser that is *not* the account being edited, said in the query
+     * rather than assumed.
+     *
+     * This used to be `limit(1)` over every active superuser, with nothing
+     * excluding the subject and nothing ordering the result -- and the subject
+     * was made a superuser twenty lines above, so whether this picked somebody
+     * else was heap order and nothing more. When it picked the subject the
+     * harness signed in as the account it was editing, `saveAccess` refused it
+     * with "You cannot remove your own superuser access." -- correctly, and for
+     * the rule the comment above says is deliberately not driven here -- and
+     * the wait for "Saved." timed out forty-five seconds later, naming nothing.
+     *
+     * It surfaced when an unrelated `update app.account` rewrote a row and
+     * changed which one came back first, which is exactly how a query that
+     * leans on heap order fails: not when it is written, and not for a reason
+     * that points at it.
+     */
     const [owner] = await db
       .select({ id: account.id })
       .from(account)
-      .where(and(eq(account.isSuperuser, true), eq(account.isActive, true)))
+      .where(
+        and(
+          eq(account.isSuperuser, true),
+          eq(account.isActive, true),
+          ne(account.id, subjectId),
+        ),
+      )
+      .orderBy(asc(account.joinedAt), asc(account.id))
       .limit(1);
-    check("a superuser exists to drive the matrix", Boolean(owner));
+    check("a superuser other than the subject exists to drive the matrix", Boolean(owner));
 
     const browser = await chromium.launch();
     try {

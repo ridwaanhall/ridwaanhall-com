@@ -153,7 +153,12 @@ if (!APPLY) {
 }
 
 await db.transaction(async (tx) => {
-  await tx.update(account).set({ isSuperuser: true }).where(eq(account.id, first.id));
+  // Both flags: `account_superuser_is_staff` refuses one without the other, and
+  // the account this promotes is selected on either.
+  await tx
+    .update(account)
+    .set({ isSuperuser: true, isStaff: true })
+    .where(eq(account.id, first.id));
 
   for (const { row, missing } of work) {
     if (missing.length === 0) continue;

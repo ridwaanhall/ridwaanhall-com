@@ -116,7 +116,15 @@ export async function saveAccess(
    * the rows that are waiting there for the day the role is taken away again.
    */
   if (isSuperuser) {
-    await db.update(account).set({ isSuperuser: true }).where(eq(account.id, accountId));
+    // `is_staff` with it, and not as a courtesy: `getStaffUser` refuses an
+    // account without that flag before it looks at the role, so granting one
+    // without the other would hand somebody a role they cannot use and no way
+    // back that does not go through SQL. `account_superuser_is_staff` refuses
+    // the pair in the database; this is what keeps this screen from meeting it.
+    await db
+      .update(account)
+      .set({ isSuperuser: true, isStaff: true })
+      .where(eq(account.id, accountId));
     revalidatePath("/admin/access");
     revalidatePath(`/admin/access/${accountId}`);
     return { ok: true, notice: "Saved. This account has full access." };

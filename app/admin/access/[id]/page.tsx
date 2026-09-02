@@ -158,20 +158,14 @@ export default async function AdminAccessRecordPage({
           </code>
         </p>
         {/*
-          An account without the staff flag cannot reach the admin whatever is
-          granted here, and the flag is edited on Users. Saying so is the
-          difference between a matrix that appears not to work and one that
-          tells you which other screen to visit.
+          There is no "not staff" banner beside this one any more: the list this
+          screen is reached from is staff only, and `account_superuser_is_staff`
+          refuses the one row that used to arrive here without the flag. Being
+          inactive is still legal and still stops a sign-in, so it still needs
+          saying -- and it is set on Users, not here.
         */}
-        {!target.isStaff && (
-          <p className="mt-3 rounded-md border border-amber-900/60 bg-amber-500/5 px-3 py-2 text-sm text-amber-500/90">
-            This account is not staff, so it cannot open the admin at all. The
-            grants below are kept and take effect when the staff flag is set,
-            which is done on the Users screen.
-          </p>
-        )}
         {!target.isActive && (
-          <p className="mt-2 rounded-md border border-amber-900/60 bg-amber-500/5 px-3 py-2 text-sm text-amber-500/90">
+          <p className="mt-3 rounded-md border border-amber-900/60 bg-amber-500/5 px-3 py-2 text-sm text-amber-500/90">
             This account is inactive, so it cannot sign in. Also set on Users.
           </p>
         )}

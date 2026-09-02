@@ -285,7 +285,19 @@ CREATE TABLE "app"."account" (
     "is_active" boolean NOT NULL DEFAULT true,
     "joined_at" timestamptz NOT NULL DEFAULT now(),
     "last_seen_at" timestamptz,
-    CONSTRAINT "account_username_key" UNIQUE ("username")
+    CONSTRAINT "account_username_key" UNIQUE ("username"),
+    -- A superuser is always staff.
+    --
+    -- The two flags were independent, and one of the four combinations was a
+    -- lockout: `lib/auth/staff.ts` refuses an account that is not `is_staff`
+    -- before it ever looks at the role, so a superuser with the flag cleared
+    -- could not reach the admin -- and `is_superuser` is only editable from
+    -- inside it, by a superuser. The way back was raw SQL.
+    --
+    -- Here rather than in the gate, so there is one rule instead of a second
+    -- opinion: the application sets `is_staff` alongside the role in the one
+    -- place that grants it, and this refuses every other way in.
+    CONSTRAINT "account_superuser_is_staff" CHECK (NOT "is_superuser" OR "is_staff")
 );--> statement-breakpoint
 
 CREATE TABLE "app"."admin_access" (

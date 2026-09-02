@@ -298,6 +298,24 @@ export const userForm: AdminFormModel = {
    * drift.
    */
   validate: async (values, { id, actorId, actorIsSuperuser }) => {
+    /*
+     * A superuser is always staff, and this is the one form that could say
+     * otherwise.
+     *
+     * `is_superuser` is read-only here, so its value arrives loaded from the
+     * row rather than from the reader -- but `is_staff` is a live checkbox
+     * beside it, and unticking it would write the pair the database refuses
+     * (`account_superuser_is_staff`). Caught here so the answer is a sentence
+     * on the form rather than a check violation to translate afterwards.
+     *
+     * Refused to *everybody*, superuser included: the rule is about the shape
+     * of an account, not about who outranks whom, and the way to make somebody
+     * not-staff is to take the role away first, on the screen that grants it.
+     */
+    if (values.isSuperuser && !values.isStaff) {
+      return "A superuser is always staff. Remove the superuser role on the Access screen first.";
+    }
+
     if (id === actorId) {
       if (!values.isStaff) return "You cannot remove your own staff access.";
       if (!values.isActive) return "You cannot deactivate your own account.";

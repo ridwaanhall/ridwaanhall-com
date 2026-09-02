@@ -63,14 +63,29 @@ async function get(path, cookie) {
     redirect: "manual",
   });
   const body = await response.text();
+
   /*
    * React separates adjacent expressions with an empty HTML comment, so a
    * template like `{n} {n === 1 ? "screen" : "screens"}` reaches the wire as
-   * `1<!-- --> <!-- -->screen` and no substring check for "1 screen" matches.
-   * Stripping them is what lets these assertions be written the way the JSX
-   * reads. The markers this file hunts for contain no comments either way.
+   * `1<!-- --> <!-- -->screen`, and no substring check for "1 screen" matches.
+   * Removing those two exact separators is what lets the assertions below be
+   * written the way the JSX reads.
+   *
+   * **Exact strings, not a regex over `<!--.*?-->`.** This is not sanitization
+   * and must not look like it: a regex that strips a multi-character sequence
+   * in one pass can leave the opening `<!--` behind when they nest, which is a
+   * real hazard in code that then treats the result as safe HTML -- CodeQL's
+   * `js/incomplete-multi-character-sanitization` flagged exactly that, and it
+   * was right to, even though nothing here renders `text` or trusts it. What
+   * this actually wants is narrower than the regex expressed: two literal
+   * separators React is known to emit, and nothing else. Suspense markers
+   * (`<!--$-->` and friends) are deliberately left alone -- no assertion spans
+   * one, and widening the removal is how a check starts matching across a
+   * boundary it should not.
    */
-  return { status: response.status, body, text: body.replace(/<!--[\s\S]*?-->/g, "") };
+  const text = body.split("<!-- -->").join("").split("<!---->").join("");
+
+  return { status: response.status, body, text };
 }
 
 /**

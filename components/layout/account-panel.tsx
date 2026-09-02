@@ -4,6 +4,7 @@ import { AccountMenu } from "@/components/layout/account-menu";
 import { SignOutButton } from "@/components/sign-out-button";
 import { SkeletonBar } from "@/components/skeleton";
 import { signOutHere } from "@/lib/actions/auth";
+import { rolesFor } from "@/lib/auth/roles";
 import { getStaffUser } from "@/lib/auth/staff";
 import { getViewer } from "@/lib/auth/viewer";
 
@@ -82,11 +83,26 @@ export async function AccountPanel() {
     );
   }
 
+  /*
+   * Both halves of this are already in hand, and neither is from the token.
+   * `staff` carries the admin roles and `viewer` the guestbook ones -- they are
+   * different questions about the same person, so an account holds one, both or
+   * neither, and the row says which rather than making somebody guess from
+   * whether an Admin link happens to be in the menu.
+   */
+  const roles = rolesFor({
+    isSuperuser: staff?.isSuperuser ?? false,
+    isStaff: staff !== null,
+    isAuthor: viewer.isAuthor,
+    isCoAuthor: viewer.isCoAuthor,
+  });
+
   return (
     <AccountMenu
       name={viewer.fullName}
       username={viewer.username}
       imageUrl={viewer.profileImage}
+      roles={roles}
     >
       {/* Admin above, and the act that costs something last. */}
       {staff && (

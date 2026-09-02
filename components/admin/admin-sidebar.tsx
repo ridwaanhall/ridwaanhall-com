@@ -30,6 +30,7 @@ import {
   navItemsInGroup,
   type AdminGroup,
 } from "@/lib/admin/registry";
+import { ROLE_LABEL, adminRole } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils/cn";
 import { useOutsidePointer, usePopoverPosition } from "@/lib/utils/use-popover";
 
@@ -273,11 +274,14 @@ const slug = (group: AdminGroup) => group.toLowerCase().replace(/\s+/g, "-");
  */
 export function AdminSidebar({
   signedInAs,
+  isSuperuser,
   permitted: permittedKeys,
   mini,
   onToggleMini,
 }: {
   signedInAs: string;
+  /** Superuser or staff. Computed in the layout -- see `AdminShell`. */
+  isSuperuser: boolean;
   /** Registry keys this account may open, from the layout. */
   permitted: string[];
   mini: boolean;
@@ -581,11 +585,21 @@ export function AdminSidebar({
           </span>
           <span className="admin-rail-label min-w-0 flex-1" data-hidden={mini}>
             <span className="block truncate text-xs text-zinc-300">{signedInAs}</span>
-            {/* What this account can open, not what the admin holds. The two
-                differ for everybody but a superuser, and the smaller number is
-                the one that describes the rail above it. */}
+            {/* The role, then what this account can open -- not what the admin
+                holds. The two differ for everybody but a superuser, and the
+                smaller number is the one that describes the rail above it.
+
+                The role is here because the count alone said how much without
+                saying what kind, and that is the half that matters: a
+                superuser's access does not come from these screens at all, so
+                a number beside an account that answers yes to everything reads
+                as a coincidence rather than as a rule. "all screens" for the
+                same reason, and it is the word the Access list already uses. */}
             <span className="block truncate text-[0.6875rem] text-zinc-600">
-              {permitted.size} {permitted.size === 1 ? "screen" : "screens"}
+              {ROLE_LABEL[adminRole(isSuperuser)]} ·{" "}
+              {isSuperuser
+                ? "all screens"
+                : `${permitted.size} ${permitted.size === 1 ? "screen" : "screens"}`}
             </span>
           </span>
         </div>

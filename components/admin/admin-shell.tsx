@@ -35,12 +35,23 @@ import { cn } from "@/lib/utils/cn";
  */
 export function AdminShell({
   signedInAs,
+  isSuperuser,
   initialMini,
   permitted,
   topbar,
   children,
 }: {
   signedInAs: string;
+  /**
+   * Which of the two roles this account holds.
+   *
+   * Computed in `app/admin/layout.tsx` and passed down, like `permitted`
+   * beside it and for the same reason: the answer needs the session and the
+   * database, `lib/auth/staff.ts` is `server-only`, and the rail is a client
+   * component. A boolean rather than a `SiteRole`, because that is the shape
+   * the row is in -- staff is the floor for reaching this admin at all.
+   */
+  isSuperuser: boolean;
   initialMini: boolean;
   /**
    * The registry keys this account may open, in registry order.
@@ -72,6 +83,7 @@ export function AdminShell({
     <div className="min-h-screen bg-black">
       <AdminSidebar
         signedInAs={signedInAs}
+        isSuperuser={isSuperuser}
         permitted={permitted}
         mini={mini}
         onToggleMini={toggle}

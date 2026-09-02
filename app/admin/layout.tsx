@@ -90,6 +90,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <AdminShell
       signedInAs={gate.user.username}
+      isSuperuser={gate.user.isSuperuser}
       initialMini={mini}
       permitted={permitted}
       topbar={<AdminTopbar user={gate.user} />}

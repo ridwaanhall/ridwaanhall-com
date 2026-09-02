@@ -5,6 +5,7 @@ import { useEffect, useId, useRef, useState } from "react";
 
 import { AccountChevronIcon } from "@/components/icons/nav-icons";
 import { AvatarFallback } from "@/components/site/guestbook/role-badge";
+import { ROLE_BLURB, ROLE_LABEL, type SiteRole } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils/cn";
 
 /**
@@ -37,12 +38,21 @@ export function AccountMenu({
   name,
   username,
   imageUrl,
+  roles,
   children,
 }: {
   name: string;
   username: string;
   /** Resolved on the server. A provider URL, or nothing if they have none. */
   imageUrl: string | null;
+  /**
+   * Every role this reader holds, most privileged first, or an empty array.
+   *
+   * A plain `string[]` because it crosses the server/client boundary, computed
+   * in `AccountPanel` where the two sources are already loaded. Most readers
+   * hold none, and then nothing is drawn.
+   */
+  roles: SiteRole[];
   /** The menu's rows: the admin link, and the form that signs out. */
   children: React.ReactNode;
 }) {
@@ -136,6 +146,30 @@ export function AccountMenu({
         <div className="min-w-0 flex-1">
           <div className="truncate text-sm leading-tight text-zinc-200">{name}</div>
           <div className="truncate text-xs leading-tight text-zinc-500">@{username}</div>
+          {/*
+            A line of its own rather than chips beside the name. This column is
+            about 170px once the avatar and the chevron have taken theirs, and
+            two badges crowded onto the name line would truncate the display
+            name that the row is mostly for.
+
+            Outline only, no fill: `status-badges.tsx` sets the house rule for
+            the sidebar -- nothing in this chrome shouts. The guestbook's own
+            filled badge stays where it is, on a message header, where being
+            loud is the point.
+          */}
+          {roles.length > 0 && (
+            <div className="mt-1 flex flex-wrap items-center gap-1">
+              {roles.map((role) => (
+                <span
+                  key={role}
+                  title={ROLE_BLURB[role]}
+                  className="pill-badge border border-zinc-700 px-1.5 py-0.5 text-[0.625rem] leading-none text-zinc-400"
+                >
+                  {ROLE_LABEL[role]}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         <AccountChevronIcon

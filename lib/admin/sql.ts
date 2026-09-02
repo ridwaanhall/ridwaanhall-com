@@ -1,4 +1,4 @@
-import { eq, sql, type SQL } from "drizzle-orm";
+import { and, eq, sql, type SQL } from "drizzle-orm";
 import { QueryBuilder, type PgColumn, type PgTable } from "drizzle-orm/pg-core";
 
 /**
@@ -79,4 +79,29 @@ export function countWhere(key: PgColumn, outer: PgColumn): SQL<number> {
     .select({ value: sql<number>`count(*)::int` })
     .from(key.table as PgTable)
     .where(eq(key, outer))})`;
+}
+
+/**
+ * The same, narrowed by something else on the inner table.
+ *
+ * This is the one that was missing, and its absence cost a screen. The access
+ * list counts the rows of `admin_access` where `can_view` is true, which
+ * `countWhere` alone cannot express -- so it was written out by hand as a raw
+ * `sql` template, and the correlation went exactly where the header of this
+ * file says it goes. `${account.id}` rendered as the bare name `"id"`,
+ * `admin_access` has an `id` column of its own, and the condition became
+ * `account_id = admin_access.id`: a comparison of two unrelated keys that
+ * matches nothing. Every staff account's Screens column read 0 while the
+ * database held thirty-four grants for each of them, and the header on that
+ * column sorted by the same constant.
+ *
+ * `and()` rather than a second argument to `where`, so the extra condition is
+ * the caller's to write with real columns and goes through the query builder
+ * with the rest of it.
+ */
+export function countWhereAnd(key: PgColumn, outer: PgColumn, extra: SQL): SQL<number> {
+  return sql<number>`(${qb
+    .select({ value: sql<number>`count(*)::int` })
+    .from(key.table as PgTable)
+    .where(and(eq(key, outer), extra))})`;
 }

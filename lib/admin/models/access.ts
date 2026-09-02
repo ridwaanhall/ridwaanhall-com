@@ -1,5 +1,6 @@
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
+import { countWhereAnd } from "@/lib/admin/sql";
 import { account, adminAccess } from "@/lib/db/app-schema";
 
 import type { AdminListModel } from "@/lib/admin/list";
@@ -47,11 +48,22 @@ export type AccessRow = {
  * A superuser's number does not come from this table at all; the column below
  * says so in words rather than printing a zero that would read as "no access"
  * for the one account that has all of it.
+ *
+ * **Through `countWhereAnd`, never as a raw `sql` template.** This was written
+ * by hand once and read 0 for every staff account for as long as it took
+ * somebody to notice, because Drizzle renders an interpolated column with its
+ * bare name: `${account.id}` came out as `"id"`, `admin_access` has an `id` of
+ * its own, and the correlation compared two unrelated keys. `lib/admin/sql.ts`
+ * exists for exactly this and its header tells the same story about a different
+ * table -- the trap is not that the rule is unknown, it is that a correlated
+ * subquery looks fine until the outer column's name also exists on the inner
+ * one, and `admin_access` is the first table here where it does.
  */
-const screens = sql<number>`(
-  select count(*)::int from ${adminAccess}
-  where ${adminAccess.accountId} = ${account.id} and ${adminAccess.canView}
-)`;
+const screens = countWhereAnd(
+  adminAccess.accountId,
+  account.id,
+  eq(adminAccess.canView, true),
+);
 
 export const accessList: AdminListModel<AccessRow> = {
   key: "access",

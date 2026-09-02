@@ -74,13 +74,13 @@ export function Comment({
             at a larger scale, and the original styled it differently here for
             that reason.
           */}
-          {comment.isAuthor ? (
+          {comment.role === "superuser" ? (
             <span className="inline-flex items-center rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-2 py-0.5 text-[11px] font-medium text-violet-50">
-              Author
+              Superuser
             </span>
-          ) : comment.isCoAuthor ? (
+          ) : comment.role === "staff" ? (
             <span className="inline-flex items-center rounded-full border border-zinc-700 bg-zinc-900 px-2 py-0.5 text-[11px] font-medium text-zinc-300">
-              Co-author
+              Staff
             </span>
           ) : null}
 

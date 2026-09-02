@@ -51,7 +51,7 @@ export async function getCommentSection({
 }: {
   label: CommentTargetLabel;
   targetId: string;
-  viewer: { userId: string; isAuthor: boolean; isCoAuthor: boolean } | null;
+  viewer: { userId: string; moderate: boolean } | null;
   database?: Database;
 }): Promise<CommentSection> {
   const rows = await database
@@ -87,8 +87,7 @@ export async function getCommentSection({
       username: profile?.username ?? "unknown",
       userId: row.userId,
       profileImage: profile?.profileImage ?? null,
-      isAuthor: profile?.isAuthor ?? false,
-      isCoAuthor: profile?.isCoAuthor ?? false,
+      role: profile?.role ?? "public",
       body: row.isDeleted ? "" : row.body,
       isDeleted: row.isDeleted,
       createdAt: row.createdAt,

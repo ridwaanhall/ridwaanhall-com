@@ -26,8 +26,6 @@ import { commentForm, commentList } from "@/lib/admin/models/comments";
 import {
   chatMessageForm,
   chatMessageList,
-  userProfileForm,
-  userProfileList,
 } from "@/lib/admin/models/guestbook";
 import {
   legalDocumentForm,
@@ -73,6 +71,7 @@ import {
   workModeForm,
   workModeList,
 } from "@/lib/admin/models/settings";
+import { publicAccessForm, publicAccessList } from "@/lib/admin/models/public-access";
 import { userForm, userList } from "@/lib/admin/models/users";
 
 import { location, organization, skill } from "@/lib/db/app-schema";
@@ -121,11 +120,11 @@ const MODELS: AdminListModel<never>[] = [
   legalSectionList,
   // guestbook
   chatMessageList,
-  userProfileList,
   // comments
   commentList,
   // users
   userList,
+  publicAccessList,
   // access -- the one list with no form beside it. Its record page is the
   // permission matrix, which is not a form over a table; see the descriptor.
   accessList,
@@ -191,11 +190,11 @@ const FORMS: AdminFormModel[] = [
   legalSectionForm,
   // guestbook
   chatMessageForm,
-  userProfileForm,
   // comments
   commentForm,
   // users
   userForm,
+  publicAccessForm,
   // settings
   categoryForm,
   tagForm,

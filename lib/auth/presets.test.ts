@@ -100,6 +100,38 @@ describe("ACCESS_PRESETS", () => {
     }
   });
 
+  /*
+   * Deciding whether a reader may still post is moderation, and belongs with
+   * removing what they wrote. Asserted from the registry rather than from a
+   * list of keys: the group is the unit, and a screen added to it later is
+   * covered by this without anybody remembering.
+   */
+  it("lets only the moderator preset reach the Access group", () => {
+    const inAccess = GRANTABLE.filter((entry) => entry.group === "Access").map(
+      (entry) => entry.key,
+    );
+    assert.ok(inAccess.length > 0, "the registry still has a grantable Access screen");
+
+    for (const preset of ACCESS_PRESETS) {
+      const grants = grantsForPreset(preset);
+      const reaches = inAccess.some((key) => grants[key]?.view);
+      assert.equal(reaches, preset.key === "moderator", `${preset.key} reaches ${inAccess}`);
+    }
+  });
+
+  it("never lets a preset add or delete an account's public access", () => {
+    const inAccess = GRANTABLE.filter((entry) => entry.group === "Access").map(
+      (entry) => entry.key,
+    );
+    for (const preset of ACCESS_PRESETS) {
+      const grants = grantsForPreset(preset);
+      for (const key of inAccess) {
+        assert.equal(grants[key]?.add, false, `${preset.key} adds ${key}`);
+        assert.equal(grants[key]?.delete, false, `${preset.key} deletes ${key}`);
+      }
+    }
+  });
+
   it("has a default that reaches more screens than the moderator does", () => {
     const reach = (key: string) =>
       Object.values(grantsForPreset(presetByKey(key)!)).filter((grant) => grant.view).length;

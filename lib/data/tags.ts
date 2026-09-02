@@ -141,7 +141,8 @@ export const MODEL_TAGS: Record<string, readonly Tag[]> = {
 };
 
 /*
- * The guestbook, comments and accounts are deliberately absent. None of those
- * read paths is cached -- a message has to appear the moment it is posted -- so
+ * The guestbook, comments, accounts and public access are deliberately absent.
+ * None of those read paths is cached -- a message has to appear the moment it is
+ * posted, and a permission taken away has to bite on the next request -- so
  * there is no tag to expire and listing one would suggest otherwise.
  */

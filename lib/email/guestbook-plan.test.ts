@@ -5,9 +5,10 @@ import { planGuestbookEmails, type Dispatch, type DispatchKind } from "./guestbo
 
 const OWNERS = ["hi@ridwaanhall.com"];
 
-const visitor = { email: "ada@example.com", isAuthor: false, isCoAuthor: false };
-const author = { email: "ridwan@example.com", isAuthor: true, isCoAuthor: false };
-const coAuthor = { email: "grace@example.com", isAuthor: false, isCoAuthor: true };
+const visitor = { email: "ada@example.com", isSuperuser: false, isStaff: false };
+// Superuser implies staff -- the database refuses the other pair.
+const owner = { email: "ridwan@example.com", isSuperuser: true, isStaff: true };
+const helper = { email: "grace@example.com", isSuperuser: false, isStaff: true };
 
 const kinds = (plan: Dispatch[]): DispatchKind[] => plan.map((d) => d.kind);
 const of = (plan: Dispatch[], kind: DispatchKind) => plan.find((d) => d.kind === kind);
@@ -37,20 +38,21 @@ describe("planGuestbookEmails — an ordinary visitor", () => {
 
 describe("planGuestbookEmails — roles", () => {
   /*
-   * The author is the site's owner. Telling them about their own post is
+   * A superuser is the site's owner. Telling them about their own post is
    * telling them what they just did, and a receipt is no better.
    */
-  it("sends nothing at all when the author posts", () => {
-    const plan = planGuestbookEmails({ sender: author, owners: OWNERS });
+  it("sends nothing at all when the owner posts", () => {
+    const plan = planGuestbookEmails({ sender: owner, owners: OWNERS });
     assert.deepEqual(plan, []);
   });
 
   /*
-   * A co-author is somebody else, so the owner does want to know. The receipt
-   * is what they do not need.
+   * Staff is somebody else, so the owner does want to know. The receipt is what
+   * they do not need -- and because superuser implies staff, the rule that
+   * suppresses it here suppresses it above too, without naming both roles.
    */
-  it("notifies the owner about a co-author, but sends them no receipt", () => {
-    const plan = planGuestbookEmails({ sender: coAuthor, owners: OWNERS });
+  it("notifies the owner about a staff post, but sends them no receipt", () => {
+    const plan = planGuestbookEmails({ sender: helper, owners: OWNERS });
     assert.deepEqual(kinds(plan), ["owner"]);
     assert.deepEqual(of(plan, "owner")?.replyTo, ["grace@example.com"]);
   });
@@ -92,10 +94,10 @@ describe("planGuestbookEmails — replies", () => {
   });
 
   /*
-   * Roles suppress the receipt, not the news. An author who is answered still
+   * Roles suppress the receipt, not the news. An owner who is answered still
    * hears about it, or replies to their own guestbook messages go unnoticed.
    */
-  it("still tells an author that somebody answered them", () => {
+  it("still tells the owner that somebody answered them", () => {
     const plan = planGuestbookEmails({
       sender: visitor,
       parentAuthor: { email: "ridwan@example.com" },
@@ -104,10 +106,10 @@ describe("planGuestbookEmails — replies", () => {
     assert.deepEqual(of(plan, "reply")?.to, ["ridwan@example.com"]);
   });
 
-  /* And an author replying to a visitor is news to that visitor. */
-  it("tells a visitor when the author answers them, sending the author nothing", () => {
+  /* And the owner replying to a visitor is news to that visitor. */
+  it("tells a visitor when the owner answers them, sending the owner nothing", () => {
     const plan = planGuestbookEmails({
-      sender: author,
+      sender: owner,
       parentAuthor: { email: "ada@example.com" },
       owners: OWNERS,
     });
@@ -134,7 +136,7 @@ describe("planGuestbookEmails — missing addresses", () => {
    */
   it("notifies the owner without a Reply-To when the poster has no address", () => {
     const plan = planGuestbookEmails({
-      sender: { email: "", isAuthor: false, isCoAuthor: false },
+      sender: { email: "", isSuperuser: false, isStaff: false },
       owners: OWNERS,
     });
     assert.deepEqual(kinds(plan), ["owner"]);

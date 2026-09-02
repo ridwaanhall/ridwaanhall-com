@@ -1,5 +1,5 @@
 import { joined, lookupOr } from "@/lib/admin/sql";
-import { accountIdentity, account, guestProfile } from "@/lib/db/app-schema";
+import { accountIdentity, account, publicAccess } from "@/lib/db/app-schema";
 
 import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
@@ -70,9 +70,16 @@ const providerLabel = (value: string) =>
     .map((name) => PROVIDER_LABELS[name] ?? name)
     .join(", ");
 
-/** The two guestbook flags, which live on a separate row from the account. */
-const isAuthor = lookupOr(guestProfile.isAuthor, guestProfile.accountId, account.id, false);
-const isCoAuthor = lookupOr(guestProfile.isCoAuthor, guestProfile.accountId, account.id, false);
+/**
+ * The two public-site switches, which live on a separate row from the account.
+ *
+ * Shown here and edited on Public access, the same way the guestbook flags they
+ * replaced were shown here and edited on User profiles: one field with two
+ * homes is how the two drift. They are the only expression-backed boolean
+ * filters in the admin, which is why `ListFilter` splits its `column` union.
+ */
+const canComment = lookupOr(publicAccess.canComment, publicAccess.accountId, account.id, true);
+const canGuestbook = lookupOr(publicAccess.canGuestbook, publicAccess.accountId, account.id, true);
 
 export type UserRow = {
   id: string;
@@ -81,8 +88,8 @@ export type UserRow = {
   isStaff: boolean;
   isSuperuser: boolean;
   providers: string;
-  isAuthor: boolean;
-  isCoAuthor: boolean;
+  canComment: boolean;
+  canGuestbook: boolean;
   lastSeenAt: string | null;
 };
 
@@ -97,8 +104,8 @@ export const userList: AdminListModel<UserRow> = {
     isStaff: account.isStaff,
     isSuperuser: account.isSuperuser,
     providers,
-    isAuthor,
-    isCoAuthor,
+    canComment,
+    canGuestbook,
     lastSeenAt: account.lastSeenAt,
   },
   columns: [
@@ -132,13 +139,19 @@ export const userList: AdminListModel<UserRow> = {
       sort: account.isSuperuser,
       value: (row) => row.isSuperuser,
     },
-    { key: "is_author", label: "Author", kind: "bool", sort: isAuthor, value: (row) => row.isAuthor },
     {
-      key: "is_co_author",
-      label: "Co-author",
+      key: "can_comment",
+      label: "Comment",
       kind: "bool",
-      sort: isCoAuthor,
-      value: (row) => row.isCoAuthor,
+      sort: canComment,
+      value: (row) => row.canComment,
+    },
+    {
+      key: "can_guestbook",
+      label: "Guestbook",
+      kind: "bool",
+      sort: canGuestbook,
+      value: (row) => row.canGuestbook,
     },
     {
       key: "last_login",
@@ -174,8 +187,8 @@ export const userList: AdminListModel<UserRow> = {
     { key: "is_staff", label: "Staff", kind: "boolean", column: account.isStaff },
     { key: "is_superuser", label: "Superuser", kind: "boolean", column: account.isSuperuser },
     { key: "is_active", label: "Active", kind: "boolean", column: account.isActive },
-    { key: "is_author", label: "Author", kind: "boolean", column: isAuthor },
-    { key: "is_co_author", label: "Co-author", kind: "boolean", column: isCoAuthor },
+    { key: "can_comment", label: "Comment", kind: "boolean", column: canComment },
+    { key: "can_guestbook", label: "Guestbook", kind: "boolean", column: canGuestbook },
   ],
   search: {
     fields: [account.username, account.email, account.firstName, account.lastName],

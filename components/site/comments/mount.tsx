@@ -38,7 +38,7 @@ export async function CommentSectionFor({
   const profile = viewerId ? await getUserProfile(viewerId) : null;
 
   const viewer = profile
-    ? { userId: profile.id, isAuthor: profile.isAuthor, isCoAuthor: profile.isCoAuthor }
+    ? { userId: profile.id, moderate: profile.can.moderateComments }
     : null;
 
   const section = await getCommentSection({ label, targetId, viewer });

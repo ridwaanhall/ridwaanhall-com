@@ -24,12 +24,16 @@ import { ROLE_BLURB, ROLE_LABEL, type SiteRole } from "@/lib/auth/roles";
 const SHAPE =
   "inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-[0.6875rem] leading-tight";
 
-/** Indigo for the role that answers yes to everything; zinc for the floor. */
+/**
+ * Indigo for the role that answers yes to everything; zinc for the floor.
+ *
+ * `public` has an entry because the type demands one, and it is never drawn
+ * here: reaching this admin means the account is at least staff.
+ */
 const TONE: Record<SiteRole, string> = {
   superuser: "border-indigo-800/60 text-indigo-400",
   staff: "border-zinc-800 text-zinc-500",
-  author: "border-zinc-800 text-zinc-500",
-  "co-author": "border-zinc-800 text-zinc-500",
+  public: "border-zinc-800 text-zinc-500",
 };
 
 export function RolePill({ role, className }: { role: SiteRole; className?: string }) {

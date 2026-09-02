@@ -38,7 +38,14 @@ export type Dispatch = {
 };
 
 export type PlanInput = {
-  sender: { email: string; isAuthor: boolean; isCoAuthor: boolean };
+  /**
+   * Who posted, by role rather than by address.
+   *
+   * `superuser` is the site's owner and `staff` is somebody helping; a reader
+   * is neither. Superuser implies staff (`account_superuser_is_staff`), so rule
+   * 2 below covers both without naming both.
+   */
+  sender: { email: string; isSuperuser: boolean; isStaff: boolean };
   /** The author of the message being replied to, when this is a reply. */
   parentAuthor?: { email: string };
   /** `CONTACT_EMAIL_RECIPIENT`, already split. */
@@ -57,9 +64,9 @@ export function planGuestbookEmails({ sender, parentAuthor, owners }: PlanInput)
 
   const plan: Dispatch[] = [];
 
-  // 1. Tell the owner. Not when the author posted: that is their own message.
-  //    A co-author's post is somebody else's, so it still goes out.
-  if (!sender.isAuthor && to.length > 0) {
+  // 1. Tell the owner. Not when the owner posted: that is their own message.
+  //    A staff member's post is somebody else's, so it still goes out.
+  if (!sender.isSuperuser && to.length > 0) {
     plan.push({
       kind: "owner",
       to,
@@ -71,9 +78,9 @@ export function planGuestbookEmails({ sender, parentAuthor, owners }: PlanInput)
     });
   }
 
-  // 2. Confirm to whoever posted. Skipped for both roles: neither needs a
-  //    receipt for a message they wrote on their own site.
-  if (!sender.isAuthor && !sender.isCoAuthor && senderEmail) {
+  // 2. Confirm to whoever posted. Skipped for staff, and so for a superuser
+  //    too: neither needs a receipt for a message they wrote on their own site.
+  if (!sender.isStaff && senderEmail) {
     plan.push({
       kind: "confirm",
       to: [senderEmail],

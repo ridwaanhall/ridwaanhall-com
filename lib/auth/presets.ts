@@ -54,9 +54,10 @@ export type AccessPreset = {
  * that is a decision somebody makes about one account, deliberately, on the
  * Access screen; it is not something a preset should hand out on the way past.
  *
- * `Access` is absent for a harder reason and is not merely unlisted: it is not
- * grantable at all (`grantableEntries` drops it, and `can` refuses it even if a
- * row said otherwise), because granting the ability to grant is granting
+ * The `Access` group is named by the moderator preset alone, and what it
+ * reaches there is only the Public access screen -- the admin access matrix is
+ * not grantable at all (`grantableEntries` drops it, and `can` refuses it even
+ * if a row said otherwise), because granting the ability to grant is granting
  * everything.
  */
 export const ACCESS_PRESETS: AccessPreset[] = [
@@ -86,6 +87,12 @@ export const ACCESS_PRESETS: AccessPreset[] = [
       Comments: MODERATE,
       Blog: READ,
       Projects: READ,
+      // Public access, and only for this one. Deciding whether a reader may
+      // still post belongs with removing what they wrote and nowhere else --
+      // an editor has no business in it. `grantableEntries` drops the admin
+      // access screen from this group before a preset ever sees it, so naming
+      // the group cannot hand out the ability to hand out access.
+      Access: { view: true, add: false, change: true, delete: false },
     },
   },
   {

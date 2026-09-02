@@ -38,7 +38,7 @@ export function AccountMenu({
   name,
   username,
   imageUrl,
-  roles,
+  role,
   children,
 }: {
   name: string;
@@ -46,13 +46,14 @@ export function AccountMenu({
   /** Resolved on the server. A provider URL, or nothing if they have none. */
   imageUrl: string | null;
   /**
-   * Every role this reader holds, most privileged first, or an empty array.
+   * The one role this reader holds -- public, staff or superuser.
    *
-   * A plain `string[]` because it crosses the server/client boundary, computed
-   * in `AccountPanel` where the two sources are already loaded. Most readers
-   * hold none, and then nothing is drawn.
+   * A plain string because it crosses the server/client boundary, computed in
+   * `AccountPanel` from what `getUserProfile` already read. Most readers are
+   * public, and this is the only place that badge is drawn: everywhere else it
+   * would be on every row and mark nobody out.
    */
-  roles: SiteRole[];
+  role: SiteRole;
   /** The menu's rows: the admin link, and the form that signs out. */
   children: React.ReactNode;
 }) {
@@ -157,19 +158,14 @@ export function AccountMenu({
             filled badge stays where it is, on a message header, where being
             loud is the point.
           */}
-          {roles.length > 0 && (
-            <div className="mt-1 flex flex-wrap items-center gap-1">
-              {roles.map((role) => (
-                <span
-                  key={role}
-                  title={ROLE_BLURB[role]}
-                  className="pill-badge border border-zinc-700 px-1.5 py-0.5 text-[0.625rem] leading-none text-zinc-400"
-                >
-                  {ROLE_LABEL[role]}
-                </span>
-              ))}
-            </div>
-          )}
+          <div className="mt-1 flex flex-wrap items-center gap-1">
+            <span
+              title={ROLE_BLURB[role]}
+              className="pill-badge border border-zinc-700 px-1.5 py-0.5 text-[0.625rem] leading-none text-zinc-400"
+            >
+              {ROLE_LABEL[role]}
+            </span>
+          </div>
         </div>
 
         <AccountChevronIcon

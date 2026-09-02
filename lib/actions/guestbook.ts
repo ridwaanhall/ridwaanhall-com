@@ -54,6 +54,15 @@ export async function sendMessage(formData: FormData): Promise<ActionResult> {
   if (!profile) return { ok: false, error: "Sign in to post a message." };
 
   /*
+   * And being signed in is no longer the whole of it. `can.guestbook` is false
+   * for an account switched off on the Public access screen, and for any
+   * inactive one -- which until now meant nothing outside the admin.
+   */
+  if (!profile.can.guestbook) {
+    return { ok: false, error: "This account cannot post to the guestbook." };
+  }
+
+  /*
    * Normalised, because the composer is a `<textarea>` and a message is stored
    * exactly as typed. A browser submitting a form rewrites every line break in
    * every field value to CRLF, so without this a two-line message is stored
@@ -117,8 +126,12 @@ export async function sendMessage(formData: FormData): Promise<ActionResult> {
 export async function deleteMessage(messageId: string): Promise<ActionResult> {
   const profile = await currentProfile();
   if (!profile) return { ok: false, error: "Sign in to manage messages." };
-  if (!profile.isAuthor) {
-    return { ok: false, error: "Permission denied - Only authors can delete messages" };
+  // Superuser, where pinning below is staff. The asymmetry is inherited rather
+  // than invented -- this was author-only while pinning was author-or-co-author
+  // -- and it earns its keep: a guestbook delete is a recursive hard delete
+  // with no tombstone, so it is the one public act nothing can undo.
+  if (!profile.can.deleteMessages) {
+    return { ok: false, error: "Only a superuser can delete a guestbook message." };
   }
 
   /*
@@ -163,11 +176,8 @@ export async function deleteMessage(messageId: string): Promise<ActionResult> {
 export async function togglePin(messageId: string): Promise<ActionResult> {
   const profile = await currentProfile();
   if (!profile) return { ok: false, error: "Sign in to manage messages." };
-  if (!profile.canPin) {
-    return {
-      ok: false,
-      error: "Permission denied - Only authors and co-authors can pin messages",
-    };
+  if (!profile.can.pin) {
+    return { ok: false, error: "Only staff can pin a guestbook message." };
   }
 
   const [message] = await db

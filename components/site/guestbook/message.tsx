@@ -27,8 +27,13 @@ import type { ThreadMessage } from "@/lib/data/guestbook-tree";
  */
 export type Viewer = {
   userId: string | null;
-  isAuthor: boolean;
+  /** Staff or better. */
   canPin: boolean;
+  /**
+   * Superuser only, and separate from `canPin` on purpose: this deletes the
+   * whole branch outright, with no tombstone and nothing to undo it with.
+   */
+  canDelete: boolean;
 };
 
 export type MessageActions = {
@@ -105,7 +110,7 @@ export function Message({
 
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-medium text-zinc-200">{message.fullName}</span>
-            <RoleBadge isAuthor={message.isAuthor} isCoAuthor={message.isCoAuthor} />
+            <RoleBadge role={message.role} />
             {message.isPinned && (
               <span
                 className="flex items-center gap-0.5 rounded-full bg-zinc-700 px-1.5 py-0.5 text-amber-400"
@@ -160,7 +165,7 @@ export function Message({
                 </button>
               )}
 
-              {viewer.isAuthor && (
+              {viewer.canDelete && (
                 <button
                   type="button"
                   onClick={() => actions.onDelete(message)}

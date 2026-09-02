@@ -80,8 +80,8 @@ async function Panel() {
       thread={thread}
       viewer={{
         userId: profile ? profile.id : null,
-        isAuthor: profile?.isAuthor ?? false,
-        canPin: profile?.canPin ?? false,
+        canPin: profile?.can.pin ?? false,
+        canDelete: profile?.can.deleteMessages ?? false,
       }}
       signedInAs={profile ? { name: profile.fullName, email: maskEmail(profile.email) } : null}
     />

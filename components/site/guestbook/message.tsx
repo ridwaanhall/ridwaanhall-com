@@ -27,6 +27,8 @@ import type { ThreadMessage } from "@/lib/data/guestbook-tree";
  */
 export type Viewer = {
   userId: string | null;
+  /** Whether this account may write in the guestbook at all. */
+  canPost: boolean;
   /** Staff or better. */
   canPin: boolean;
   /**

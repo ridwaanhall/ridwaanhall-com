@@ -67,6 +67,12 @@ export function GuestbookPanel({
   const listRef = useRef<HTMLDivElement>(null);
 
   const signedIn = viewer.userId !== null;
+  /*
+   * Hiding the composer is not the gate -- `sendMessage` refuses the same
+   * account whatever is on screen -- but a box that is going to be refused is a
+   * box that should say so before somebody writes in it.
+   */
+  const canPost = signedIn && viewer.canPost;
 
   /*
    * Open at the newest message, not the oldest.
@@ -129,6 +135,10 @@ export function GuestbookPanel({
   const actions: MessageActions = {
     busy,
     onReply(message) {
+      if (signedIn && !viewer.canPost) {
+        notify("Posting to the guestbook is turned off for this account.", "info");
+        return;
+      }
       if (!signedIn) {
         // An element rather than a string, because the message carries a link
         // -- the one case `notify` takes a node for.
@@ -268,7 +278,13 @@ export function GuestbookPanel({
       </div>
 
       <div className={PANEL_FOOTER}>
-        {signedIn ? (
+        {signedIn && !canPost && (
+          <p className="px-1 py-2 text-sm text-zinc-400">
+            Posting to the guestbook is turned off for this account.
+          </p>
+        )}
+
+        {canPost ? (
           <>
             <Composer
               text={text}

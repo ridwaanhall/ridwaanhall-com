@@ -80,6 +80,7 @@ async function Panel() {
       thread={thread}
       viewer={{
         userId: profile ? profile.id : null,
+        canPost: profile?.can.guestbook ?? false,
         canPin: profile?.can.pin ?? false,
         canDelete: profile?.can.deleteMessages ?? false,
       }}

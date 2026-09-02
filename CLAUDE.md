@@ -976,6 +976,12 @@ run adds rows for screens added since and never undoes a narrowing somebody
 made on purpose. Run it under `npx tsx`, not `node` -- it imports
 `lib/auth/permissions.ts`, which resolves the `@/` alias.
 
+`--preset=<editor|moderator|viewer>` narrows what it writes to one of the
+shapes in `lib/auth/presets.ts` -- the same three the Access screen offers, so a
+terminal and a browser cannot end up with two ideas of what a role is. Without
+the flag it still writes all four booleans on every screen, which is the
+behaviour the migration depended on and has to stay.
+
 **Run it after adding a screen.** A registry entry with no grant rows behind it
 is a screen every staff account is silently locked out of, and nothing else
 reports that: the rail simply does not draw it, which is indistinguishable from

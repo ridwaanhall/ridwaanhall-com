@@ -11,17 +11,20 @@
  * **Roles decide, not addresses.** The previous rule asked whether the poster's
  * address appeared in `CONTACT_EMAIL_RECIPIENT`, which is the owner's *inbox*
  * and has no reason to match the address they signed in with -- so in practice
- * it never fired and the owner was emailed about their own posts. `is_author`
- * and `is_co_author` on `guest_profile` are what actually say who somebody is,
- * they are read from the database on every request, and they are already loaded
- * by the time this is called.
+ * it never fired and the owner was emailed about their own posts. `is_staff`
+ * and `is_superuser` on `account` are what actually say who somebody is, they
+ * are read from the database on every request, and they are already loaded by
+ * the time this is called.
  *
  * The two roles are deliberately not interchangeable:
  *
- *   - an **author** is the site's owner, so notifying them of their own post is
- *     telling them what they just did
- *   - a **co-author** is somebody else, so the owner still wants to know they
- *     posted -- they just do not need a receipt for their own message
+ *   - a **superuser** is the site's owner, so notifying them of their own post
+ *     is telling them what they just did
+ *   - **staff** is somebody else, so the owner still wants to know they posted
+ *     -- they just do not need a receipt for their own message
+ *
+ * Superuser implies staff, so the rule that suppresses the receipt covers both
+ * without naming both. Only the owner rule has to distinguish them.
  *
  * A reply notification ignores roles entirely. Being told that somebody
  * answered you is news whoever you are, and the only thing that suppresses it

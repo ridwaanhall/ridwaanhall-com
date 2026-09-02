@@ -43,12 +43,24 @@ otherwise keep asserting it for the thirty days until it expired, long after the
 flag was cleared, and a token carrying a whole *grant set* would keep asserting
 delete on every screen for just as long.
 
-- `is_active` — may sign in at all.
+- `is_active` — may write anything at all. It gates `/admin` and, since the
+  public site grew permissions of its own, every public capability too:
+  commenting, the guestbook, pinning, moderating. It does **not** refuse the
+  sign-in itself, which is an Auth.js callback away and deliberately not taken —
+  the flag exists to stop the writing, not the reading.
 - `is_staff` — may reach `/admin`. What they reach inside it comes from
   `app.admin_access`: one row per screen, with `view`, `add`, `change` and
-  `delete` as four independent booleans.
-- `is_superuser` — answers yes to every screen and every action, and is the only
-  role that may edit anybody's grants.
+  `delete` as four independent booleans. On the public site it is the moderator:
+  delete anybody's comment, pin a guestbook message.
+- `is_superuser` — answers yes to every screen and every action, is the only
+  role that may edit anybody's grants, and the only one that may delete a
+  guestbook message outright. `account_superuser_is_staff` refuses a superuser
+  who is not staff, so the roles nest rather than overlap.
+
+Everything else is **public**: any signed-in reader may comment and write in the
+guestbook, subject to two switches on `app.public_access` (one row per account,
+both defaulting to true) that exist so one person can be stopped without
+deleting their account and every comment they ever wrote.
 
 `lib/auth/permissions.ts` is the whole rule, as a pure function, tested offline.
 Three parts of it fail *open* if a caller reasons about the rows itself, so

@@ -10,7 +10,7 @@ import { isUuid } from "@/lib/utils/uuid";
  * An Auth.js adapter over the site's own account tables.
  *
  * A sign-in reads and writes `app.account`, `app.account_identity` and
- * `app.guest_profile` -- three tables this application owns, rather than the
+ * `app.public_access` -- three tables this application owns, rather than the
  * shape Auth.js's stock adapters expect. Writing the adapter is what lets the
  * schema stay the one the rest of the site reads.
  *

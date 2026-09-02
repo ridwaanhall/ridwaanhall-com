@@ -99,7 +99,7 @@ export async function notifyNewGuestbookMessage(messageId: string): Promise<void
     const url = guestbookUrl();
     const role = roleOf(sender);
 
-    // The flags come from `guest_profile`, read from the database on every
+    // The role comes from `account`, read from the database on every
     // request. They are never in the session token, so taking a role away takes
     // effect on the next post rather than whenever a thirty-day JWT expires.
     const plan = planGuestbookEmails({

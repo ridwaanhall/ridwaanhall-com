@@ -154,7 +154,7 @@ shut for a frame on every navigation into a new area — and a collapsed panel
 carries `inert`, because a `0fr` grid row is invisible and still focusable.
 `scripts/check-admin-nav.mjs` holds both, and the cookie round trip with them.
 
-### Three roles, and a grant per screen
+### A grant per screen
 
 `account` carries `is_active` (may sign in), `is_staff` (may reach the admin)
 and `is_superuser` (answers yes to everything, and is the only role that may
@@ -169,9 +169,43 @@ refused rather than honoured, the Access screen is never grantable (granting
 the ability to grant is granting everything), and a grant may not widen what a
 model already refuses.
 
-`is_author` and `is_co_author` on `guest_profile` are deliberately not part of
-this. They are about the *public* site -- guestbook credit, comment moderation,
-who gets emailed -- and answer a different question.
+### Three roles, and they nest
+
+    public  ⊂  staff  ⊂  superuser
+
+There used to be four, over two tables: `is_staff` and `is_superuser` on
+`account`, `is_author` and `is_co_author` on `guest_profile`. The second pair
+was documented here as answering "a different question" -- the public site
+rather than the admin -- and the split looked principled right up until the rows
+were read. The one author *was* the one superuser and the two co-authors *were*
+two of the three staff. Two names for one person, on separate tables, kept in
+step by hand.
+
+So author folded into superuser and co-author into staff, which preserved every
+rule exactly because `account_superuser_is_staff` makes superuser ⊆ staff:
+pinning and comment moderation became plain `is_staff`, and deleting a guestbook
+message stayed superuser-only. That asymmetry is worth keeping rather than
+tidying: a guestbook delete is a recursive hard delete with no tombstone, so it
+is the one public act nothing can undo.
+
+**Public is not a column.** It is what every signed-in account has, and until
+`public_access` it had nothing behind it: posting a comment or a guestbook
+message was gated on "is there a session" and nothing else, with no rate
+limiting anywhere and no way to refuse one person short of deleting their
+account -- which takes every comment they ever wrote with it.
+
+`lib/auth/public.ts` is that rule, pure and tested offline, and it is the twin
+of `permissions.ts`: one decides what a role may do inside the admin, the other
+outside. **Ask for the capability, never the role.** A call site testing
+`isStaff` is a second copy of a decision that has already moved once.
+
+**`is_active` gates every public capability**, which is a fix rather than a
+feature. It was documented in three places as "may sign in at all" and read in
+exactly one -- `getStaffUser` -- so it meant "may reach the admin", and a
+deactivated account could still comment, post and pin indefinitely. It is
+deliberately *not* extended to sign-in itself: that would be an Auth.js `signIn`
+callback with a different blast radius, and the switch exists to stop the
+writing rather than the reading.
 
 **A superuser is always staff**, and that is a `CHECK` constraint
 (`account_superuser_is_staff`) rather than a rule in the gate. The two were
@@ -270,6 +304,24 @@ whose job is to say what somebody can do said the opposite about the account
 with the most power. So a superuser-only cell becomes a cell once the role is
 ticked, and every cell shows granted; unticking the role reveals the stored
 grants again, which is what would come back.
+
+### The Access group is two screens, and only one of them is a role
+
+`/admin/access` decides what a *staff* account may open in here: one row per
+registry key, four booleans, and `superuserOnly` because granting the ability to
+grant is granting everything.
+
+`/admin/public-access` decides whether an account may still post *out there*:
+two switches, one row per account, and it lists **every** account rather than
+the staff ones, because what it governs is what everybody has. It is
+deliberately **not** `superuserOnly` — moderating readers is a staff job, so it
+is granted through the ordinary matrix, and only the `moderator` preset reaches
+it. It is also an ordinary descriptor rather than a matrix: two switches on one
+row is exactly what the generic changelist and form already draw.
+
+Neither creates nor deletes its rows. A `public_access` row is written by a
+sign-in, and deleting one silently restores full access — both columns default
+to true — which is a permission change wearing the clothes of a tidy-up.
 
 ### One screen is not a descriptor
 
@@ -398,6 +450,31 @@ passes while saying nothing.
 The cell keeps its breakdown and sorts on the total (`usageTotal` in
 `lib/admin/usage.ts`), which removes the compromise `settings.ts` already named:
 a "Used by" composed in TypeScript offers a number the database cannot order by.
+
+### A correlated subquery binds to the wrong table the day the names collide
+
+`lib/admin/sql.ts` exists because Drizzle renders a column interpolated into a
+raw `sql` template with its *bare* name, not `"table"."column"` — and a
+correlated subquery is precisely where that decides which table a name binds to.
+Its header tells that story about `guestbook_userprofile`. It happened again
+anyway.
+
+The access list counts the screens an account may open, which is `count(*)` over
+`admin_access` **with a condition on the inner table** — something `countWhere`
+could not express, so the one place that needed it wrote the subquery out by
+hand. `${account.id}` came out as `"id"`, `admin_access` has an `id` of its own,
+and the correlation compared two unrelated keys. Every staff account's Screens
+column read **0** while the database held thirty-four grants for each of them,
+and the header sorted by the same constant.
+
+`countWhereAnd` is the missing helper. **Never hand-write one of these**, and
+note what made this survive: the number is *derived*, so no stored row is wrong,
+every other check passes, and the admin looks like it is working. The harness had
+no assertion on the column at all — and when one was written, its first draft
+computed the reference with its own correlated subquery and reproduced the bug,
+agreeing with the screen and proving nothing. **Check a derived value against
+something that derives it differently**, or against flat rows counted in
+JavaScript.
 
 ### `canDelete: "superuser"` is a truthy string
 
@@ -795,14 +872,16 @@ seen.
   `scripts/check-emails.mjs` asserts both directions, and separately that the
   reply notification renders **no address at all**: its `Reply-To` is the owner
   precisely so two visitors never learn each other's addresses.
-- **Guestbook mail routes on roles, not on addresses.** `is_author` and
-  `is_co_author` from `guest_profile` decide who is emailed —
+- **Guestbook mail routes on roles, not on addresses.** `is_superuser` and
+  `is_staff` decide who is emailed —
   `lib/email/guestbook-plan.ts` is the whole rule as a pure function, with the
   matrix under test offline. The version before it asked whether the poster's
   address appeared in `CONTACT_EMAIL_RECIPIENT`, which is the owner's *inbox*
   and has no reason to match the address they sign in with, so the exclusion
-  never fired. The two roles are not interchangeable: an author's own post
-  notifies nobody, a co-author's still notifies the owner.
+  never fired. The two roles are not interchangeable: a superuser's own post
+  notifies nobody, a staff member's still notifies the owner — and because
+  superuser implies staff, the rule that suppresses the receipt covers both
+  without naming both.
 - **A key that is not a uuid is not "no such row".** Postgres raises
   `22P02 invalid input syntax for type uuid` and the route answers 500 where the
   honest answer is not-found. Guard with `isUuid()` from `lib/utils/uuid.ts`
@@ -917,6 +996,7 @@ npx tsx --conditions=react-server scripts/check-page-loading.mjs   # bar + skele
 npx tsx --conditions=react-server scripts/check-skeleton-shape.mjs # each skeleton vs its page
 npx tsx scripts/check-auth-adapter.mjs                 # Auth.js vs the live schema
 npx tsx scripts/check-comments.mjs                     # comment rules, rolled back
+npx tsx scripts/check-public-access.mjs                # who may post, and what is_active means
 npx tsx scripts/check-emails.mjs                       # all five templates
 npx tsx scripts/check-db-classes.mjs                   # no classes in stored content
 npx tsx --conditions=react-server scripts/check-site-console.mjs

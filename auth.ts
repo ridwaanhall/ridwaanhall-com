@@ -20,9 +20,10 @@ import { isUuid } from "@/lib/utils/uuid";
  * the move an attacker makes.
  *
  * **Sessions are JWTs.** Nothing is stored per session; the token
- * carries identity only -- `is_author` and `is_co_author` are read from the
- * database at the point of use (`lib/auth/profile.ts`), because a thirty-day
- * token must not be the authority on who may delete other people's messages.
+ * carries identity only -- the role and the two public switches are read from
+ * the database at the point of use (`lib/auth/profile.ts`), because a
+ * thirty-day token must not be the authority on who may delete other people's
+ * messages, or on whether somebody may still post at all.
  */
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: accountAdapter(),

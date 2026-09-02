@@ -7,23 +7,25 @@ import { QueryBuilder, type PgColumn, type PgTable } from "drizzle-orm/pg-core";
  * **Do not write these as a raw `sql` template.** Drizzle renders a column
  * interpolated into `sql` with its *bare* name, not `"table"."column"`, and a
  * correlated subquery is precisely the place where that decides which table a
- * name binds to. Written by hand, the users screen produced
+ * name binds to. Written by hand, the access list produced
  *
- *     coalesce((select "is_author" from "guestbook_userprofile"
- *               where "user_id" = "id"), false)
+ *     (select count(*) from "admin_access"
+ *      where "account_id" = "id" and "can_view")
  *
- * in which `"id"` binds to `guestbook_userprofile.id` rather than the
- * `auth_user.id` it was meant to correlate with -- so the condition reads
- * `user_id = id` on one table and means nothing. Passing the same thing through
- * the query builder gives
+ * in which `"id"` binds to `admin_access.id` rather than the `account.id` it
+ * was meant to correlate with -- so the condition compares two unrelated keys
+ * and matches nothing at all. Passing the same thing through the query builder
+ * gives
  *
- *     (select "is_author" from "guestbook_userprofile"
- *      where "guestbook_userprofile"."user_id" = "auth_user"."id")
+ *     (select count(*) from "admin_access"
+ *      where "admin_access"."account_id" = "account"."id" and ...)
  *
- * which is the intended query. The lookups that happened to work before did so
- * only because the outer column's name did not exist on the inner table, so
- * Postgres resolved it outward by elimination -- luck, not correctness, and it
- * ran out on the first self-referential one.
+ * which is the intended query. The lookups that happen to work do so only
+ * because the outer column's name does not exist on the inner table, so
+ * Postgres resolves it outward by elimination -- luck, not correctness, and the
+ * luck runs out the first time the two tables share a column name. `id` is on
+ * every table here, so any subquery correlating on a primary key is one hand-
+ * written template away from being silently wrong.
  *
  * `QueryBuilder` builds SQL without a connection, so this module stays free of
  * `lib/db/client.ts` and of `server-only`, and the check scripts can import the

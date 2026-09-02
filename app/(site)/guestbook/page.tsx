@@ -27,10 +27,10 @@ export async function generateMetadata(): Promise<Metadata> {
  * guestbook that shows a message a minute after it was posted is broken.
  *
  * The viewer's permissions come from the database rather than the session
- * token -- `getUserProfile` reads `is_author` / `is_co_author` -- so revoking
- * co-author takes effect on the next page load rather than when a 30-day JWT
- * expires. The actions re-check the same way; this pair only decides which
- * controls to draw.
+ * token -- `getUserProfile` reads the role and the two public switches -- so
+ * taking a role away takes effect on the next page load rather than when a
+ * 30-day JWT expires. The actions re-check the same way; these three only
+ * decide which controls to draw.
  */
 export default function GuestbookPage() {
   return (

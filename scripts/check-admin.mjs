@@ -237,6 +237,24 @@ const leaks = (body) => ROW_MARKERS.filter((marker) => body.includes(marker));
   );
 }
 
+/**
+ * Where a named column sits, because its position is not the contract.
+ *
+ * Two checks below read a cell by index, and both went red the day a column
+ * was added to the blog changelist ahead of the ones they wanted -- reporting
+ * a broken sort and a broken default order, neither of which had moved. A
+ * reader identifies a column by its heading, so that is what these ask for.
+ */
+function columnIndex(html, label) {
+  const head = html.split("<thead")[1]?.split("</thead>")[0] ?? "";
+  const headers = [...head.matchAll(/<th[^>]*>([\s\S]*?)<\/th>/g)].map((cell) =>
+    cell[1].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().toLowerCase(),
+  );
+  const at = headers.findIndex((text) => text.startsWith(label.toLowerCase()));
+  if (at === -1) throw new Error(`no "${label}" column among: ${headers.join(" | ")}`);
+  return at;
+}
+
 // --- the changelist ----------------------------------------------------------
 
 const all = await get("/admin/blog-post", staff);
@@ -244,8 +262,9 @@ const allRows = rows(all.body);
 check("staff: the list renders", all.status === 200 && allRows.length > 0, `${allRows.length} rows`);
 
 {
-  // `ordering = ["-created_at"]` on the model, carried across as the default.
-  const dates = allRows.map((row) => row[4]);
+  // The descriptor's own `defaultSort`, which no query parameter has overridden.
+  const at = columnIndex(all.body, "Created");
+  const dates = allRows.map((row) => row[at]);
   const descending = dates.every((date, i) => i === 0 || dates[i - 1] >= date);
   check("newest first, as the model's own ordering had it", descending, `${dates[0]} … ${dates.at(-1)}`);
 }
@@ -287,8 +306,9 @@ check("staff: the list renders", all.status === 200 && allRows.length > 0, `${al
 {
   const asc = rows((await get("/admin/blog-post?sort=views&dir=asc", staff)).body);
   const desc = rows((await get("/admin/blog-post?sort=views&dir=desc", staff)).body);
-  const ascending = asc.every((row, i) => i === 0 || Number(asc[i - 1][3]) <= Number(row[3]));
-  check("sorting runs both ways", ascending && asc[0][0] !== desc[0][0], `${asc[0][3]} … ${desc[0][3]}`);
+  const at = columnIndex((await get("/admin/blog-post", staff)).body, "Views");
+  const ascending = asc.every((row, i) => i === 0 || Number(asc[i - 1][at]) <= Number(row[at]));
+  check("sorting runs both ways", ascending && asc[0][0] !== desc[0][0], `${asc[0][at]} … ${desc[0][at]}`);
 }
 
 {

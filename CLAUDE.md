@@ -289,6 +289,58 @@ Everything else creates, reads, updates and deletes, subject to the grant.
 `scripts/check-admin-forms.mjs` asserts both directions; "no add form" on its
 own is satisfied by an admin that cannot create anything at all.
 
+### A draft is a row, and only one column decides
+
+`blog_post.is_published` and `project.is_published` are the whole of what the
+public site looks at. `getBlogs` and `getProjects` in `lib/data/content.ts` are
+the only two places that ask, and everything a reader can reach resolves
+through them -- the listings, the detail pages, `generateStaticParams`, the
+sitemap, the JSON API and search -- so a draft is absent from all of them
+without any of them knowing the column exists.
+
+Both default to **off**, so a create through the admin is a draft. Before this
+existed, every save was a publish; there was no draft state anywhere except
+`legal_document.is_published`.
+
+**`published_at` is *when*, not *whether*.** That distinction is the reason for
+the column rather than a nicety: the read path had no `where` at all and merely
+ordered by `published_at DESC`, so setting it forward did not hide a post -- it
+sorted the unfinished draft **above everything finished** and prerendered it
+into the sitemap. The one control that read like "publish later" was the one
+that made the post most prominent.
+
+**The schedule cannot be `published_at <= now()` in the read path.** That is a
+cached function with a lifetime of days, so a clock comparison inside it is
+evaluated once when the entry is filled and frozen with it: a post scheduled
+for tomorrow would stay hidden for days after its moment. The flag moves
+instead, and `app/api/cron/publish` moves it hourly, guarded by `CRON_SECRET`.
+
+That endpoint **fails closed when the secret is unset** -- unlike
+`verifyTurnstile`, which passes. The asymmetry is deliberate: an unconfigured
+spam gate is a gate nobody set up, while an unauthenticated route that flips
+`is_published` publishes drafts for anyone who finds the path. What it costs is
+the usual quiet failure, so `CRON_SECRET` is in `docs/cutover.md`'s table and
+`check-live-config.mjs` asks the endpoint for its refusal: 401 means a secret is
+set, 503 means there is none.
+
+**Only posts can be scheduled.** `project` carries the same flag but no column
+saying when it should go live, and that is the honest shape -- a project goes
+public when there is something to link to, which is not a date known in advance.
+
+**`updateTag` is refused in a route handler.** It is Server Actions only; the
+API reference says so outright and the error names the restriction. So the job
+uses `revalidateTag(TAGS.blog, "max")`, which marks the tag stale rather than
+expiring it -- the post appears on the request after the first rather than on
+the first. Seconds, against a schedule measured in days. It is called **only
+when a row actually moved**: marking the tag every run would discard the blog
+payload hourly, which is the opposite of what `cacheLife("days")` is for.
+
+There is **no preview of a draft yet**. Seeing one rendered means publishing it,
+looking, and unpublishing -- the article page is 194 lines of inline JSX rather
+than a component something else could render, and `draftMode()` is not the way
+round it: reading it in `/blog/[slug]` makes that route dynamic for every
+reader, not only for staff.
+
 ### The matrix has to describe the role it is looking at
 
 The access screen draws a dash where an action cannot be granted, and there are
@@ -996,6 +1048,7 @@ npx tsx --conditions=react-server scripts/check-page-loading.mjs   # bar + skele
 npx tsx --conditions=react-server scripts/check-skeleton-shape.mjs # each skeleton vs its page
 npx tsx scripts/check-auth-adapter.mjs                 # Auth.js vs the live schema
 npx tsx scripts/check-comments.mjs                     # comment rules, rolled back
+node scripts/check-drafts.mjs                           # a draft stays a draft
 npx tsx scripts/check-public-access.mjs                # who may post, and what is_active means
 npx tsx scripts/check-emails.mjs                       # all five templates
 npx tsx scripts/check-db-classes.mjs                   # no classes in stored content

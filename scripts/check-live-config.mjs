@@ -64,6 +64,21 @@ try {
       "          verifyTurnstile() returns true and the form has no spam check at all.",
   );
 
+  /* --------------------------------------------------- scheduled posts */
+  /*
+   * Asked without credentials on purpose, and it writes nothing either way.
+   * The endpoint answers 401 when it has a secret to compare against and 503
+   * when it has none, so the refusal itself says which -- and a 503 is the only
+   * symptom there is. Nothing else about the site changes when `CRON_SECRET` is
+   * missing; scheduled posts just stay drafts forever.
+   */
+  const cron = await fetch(`${BASE}/api/cron/publish`, { redirect: "manual" });
+  check(
+    cron.status === 401,
+    "the publish job has a secret to check against",
+    "CRON_SECRET (runtime) -- a scheduled post is never published, and nothing reports it",
+  );
+
   /* --------------------------------------------------------- dashboard */
   const dashboard = await body("/dashboard");
   check(

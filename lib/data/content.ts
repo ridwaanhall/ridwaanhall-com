@@ -124,12 +124,24 @@ export type Project = ImageCompat & {
 };
 
 /**
- * Every blog post, newest first.
+ * Every **published** blog post, newest first.
  *
- * Newest first by `created_at`, **with `id` as a tiebreak**.
+ * `is_published` is the whole of what decides visibility, and this is the only
+ * place the public site asks. Everything downstream resolves through here --
+ * the listing, the detail pages, `generateStaticParams`, the sitemap, the JSON
+ * API and search -- so a draft is absent from all of them without any of them
+ * knowing the column exists.
+ *
+ * Deliberately not `published_at <= now()`. This is a cached read with a
+ * lifetime of days, so a clock comparison inside it is evaluated once when the
+ * entry is filled and then frozen: a post scheduled for tomorrow would stay
+ * hidden for days after its moment. The flag moves instead, and
+ * `app/api/cron/publish` is what moves it.
+ *
+ * Newest first by `published_at`, **with `id` as a tiebreak**.
  *
  * That is not tidiness. Four posts share the exact timestamp
- * 2025-03-23T17:00:00Z, and ordering by `created_at` alone leaves their
+ * 2025-03-23T17:00:00Z, and ordering by `published_at` alone leaves their
  * relative order to Postgres' physical row order -- which is not an order at
  * all, just wherever the tuples happen to sit. It is stable only until
  * something rewrites them: adding the `content_html` column and populating it
@@ -166,6 +178,7 @@ export async function getBlogs(): Promise<BlogPost[]> {
       .from(blogPost)
       .leftJoin(category, eq(category.id, blogPost.categoryId))
       .leftJoin(mediaAsset, eq(mediaAsset.id, blogPost.authorImageId))
+      .where(eq(blogPost.isPublished, true))
       .orderBy(desc(blogPost.publishedAt), desc(blogPost.id)),
     db
       .select({
@@ -217,11 +230,13 @@ export async function getBlogs(): Promise<BlogPost[]> {
 }
 
 /**
- * Every project, by id ascending.
+ * Every **published** project, oldest first.
  *
- * Matches `Project.Meta.ordering = ["id"]`, which is what
- * `ContentManager.get_projects()` returned. The presentation orderings that
- * `DataService.get_projects()` layered on top live in `sortProjects` below.
+ * Published for the reason `getBlogs` gives above, and by the same single
+ * column. The order here is only a stable base: what the site actually shows is
+ * `sortProjects` below, which leads on featured, then lifecycle status, then
+ * recency. Sorting by a column the rows agree on -- and tie-breaking on `id` --
+ * is what keeps that base from shifting under a rewrite.
  */
 export async function getProjects(): Promise<Project[]> {
   "use cache";
@@ -253,6 +268,7 @@ export async function getProjects(): Promise<Project[]> {
       .from(project)
       .leftJoin(category, eq(category.id, project.categoryId))
       .leftJoin(projectStatus, eq(projectStatus.id, project.statusId))
+      .where(eq(project.isPublished, true))
       .orderBy(asc(project.createdAt), asc(project.id)),
     db
       .select({

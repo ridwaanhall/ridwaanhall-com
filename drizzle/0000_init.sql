@@ -515,6 +515,9 @@ CREATE TABLE "app"."project" (
     "status_id" uuid REFERENCES "app"."project_status"("id") ON DELETE SET NULL,
     "is_featured" boolean NOT NULL DEFAULT false,
     "featured_priority" integer,
+    -- As on `blog_post`. A project is often written up well before there is
+    -- anything to link to.
+    "is_published" boolean NOT NULL DEFAULT false,
     "created_at" timestamptz NOT NULL DEFAULT now(),
     "updated_at" timestamptz NOT NULL DEFAULT now(),
     CONSTRAINT "project_slug_key" UNIQUE ("slug")
@@ -565,6 +568,16 @@ CREATE TABLE "app"."blog_post" (
     "is_featured" boolean NOT NULL DEFAULT false,
     "read_time" integer,
     "views" integer NOT NULL DEFAULT 0,
+    -- Whether the public site may show this at all. Every read path filters on
+    -- it and nothing else decides visibility, so a post can be saved, reread
+    -- and edited for as long as it takes without being live for any of it.
+    --
+    -- `published_at` is *when*, not *whether*: it orders the index and it is
+    -- what the publish job compares against, but on its own it hides nothing.
+    -- Setting it forward used to be the only thing resembling a schedule, and
+    -- it did the opposite -- the row was live immediately and sorted above
+    -- everything finished.
+    "is_published" boolean NOT NULL DEFAULT false,
     "published_at" timestamptz NOT NULL DEFAULT now(),
     "updated_at" timestamptz NOT NULL DEFAULT now(),
     CONSTRAINT "blog_post_slug_key" UNIQUE ("slug")
@@ -771,8 +784,13 @@ CREATE TABLE "app"."comment" (
 -- ---------------------------------------------------------------------------
 
 CREATE INDEX "project_status_featured_idx" ON "app"."project" ("status_id", "is_featured");--> statement-breakpoint
-CREATE INDEX "project_created_idx" ON "app"."project" ("created_at" DESC);--> statement-breakpoint
-CREATE INDEX "blog_post_published_idx" ON "app"."blog_post" ("published_at" DESC);--> statement-breakpoint
+-- Both lead with `is_published`, because every public read filters on it
+-- first and the publish job looks for exactly the rows it excludes. The
+-- ordering columns follow so one index serves the filter and the sort
+-- together; the trailing key is the tiebreak the read paths actually ask for,
+-- which the column alone never covered.
+CREATE INDEX "project_created_idx" ON "app"."project" ("is_published", "created_at", "id");--> statement-breakpoint
+CREATE INDEX "blog_post_published_idx" ON "app"."blog_post" ("is_published", "published_at" DESC, "id" DESC);--> statement-breakpoint
 CREATE INDEX "blog_post_featured_idx" ON "app"."blog_post" ("is_featured");--> statement-breakpoint
 CREATE INDEX "guest_message_posted_idx" ON "app"."guest_message" ("posted_at" DESC);--> statement-breakpoint
 CREATE INDEX "guest_message_pinned_idx" ON "app"."guest_message" ("is_pinned", "pinned_at" DESC);--> statement-breakpoint

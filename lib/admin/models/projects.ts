@@ -35,6 +35,7 @@ export type ProjectRow = {
   title: string;
   slug: string;
   status: string;
+  isPublished: boolean;
   isFeatured: boolean;
   featuredPriority: number | null;
 };
@@ -48,6 +49,7 @@ export const projectList: AdminListModel<ProjectRow> = {
     title: project.title,
     slug: project.slug,
     status: statusLabel,
+    isPublished: project.isPublished,
     isFeatured: project.isFeatured,
     featuredPriority: project.featuredPriority,
   },
@@ -62,6 +64,13 @@ export const projectList: AdminListModel<ProjectRow> = {
       // The label comes from `project_status`, which is the same row the cards
       // read -- there is no map to keep in step any more.
       value: (row) => row.status,
+    },
+    {
+      key: "is_published",
+      label: "Published",
+      kind: "bool",
+      sort: project.isPublished,
+      value: (row) => row.isPublished,
     },
     {
       key: "is_featured",
@@ -86,6 +95,7 @@ export const projectList: AdminListModel<ProjectRow> = {
       column: project.statusId,
       choices: { table: projectStatus, value: projectStatus.id, label: projectStatus.label },
     },
+    { key: "is_published", label: "Published", kind: "boolean", column: project.isPublished },
     { key: "is_featured", label: "Featured", kind: "boolean", column: project.isFeatured },
   ],
   search: {
@@ -219,6 +229,13 @@ export const projectForm: AdminFormModel = {
     {
       title: "Placement",
       fields: [
+        {
+          name: "isPublished",
+          column: project.isPublished,
+          label: "Published",
+          kind: "checkbox",
+          help: "Off, the project exists only here -- absent from the projects page, the home page, the sitemap and the API, and 404 at its own URL. Write it up while it is still being built and switch this on when there is something to link to.",
+        },
         {
           name: "isFeatured",
           column: project.isFeatured,

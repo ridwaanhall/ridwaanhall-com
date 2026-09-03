@@ -42,6 +42,15 @@ export type ActionResult = { ok: true; notice: string } | { ok: false; error: st
 
 const GUESTBOOK_PATH = "/guestbook";
 
+/**
+ * The key every guestbook pin contends on.
+ *
+ * Arbitrary, and it only has to be stable: advisory locks share one namespace
+ * across the whole database, so a second feature wanting one picks a different
+ * number and records it beside this.
+ */
+const GUESTBOOK_PIN_LOCK = 8_471_002;
+
 async function currentProfile() {
   const session = await auth();
   const id = session?.user?.id;
@@ -201,16 +210,25 @@ export async function togglePin(messageId: string): Promise<ActionResult> {
    * Pinning is capped, and the cap has to hold under concurrency.
    *
    * Two requests could otherwise both read a count under the limit and both
-   * save, pushing the pinned set past MAX_PINNED. Serialising them on one
-   * deterministic row lock -- the lowest id, which every pinner contends on --
-   * is what the original did, and for the reason it recorded: locking only the
-   * currently-pinned rows locks nothing when none are pinned yet, and can never
-   * cover a row another transaction is in the middle of flipping.
+   * save, pushing the pinned set past MAX_PINNED. So every pinner contends on
+   * one lock, held for the transaction that reads the count and writes the flag.
+   *
+   * **An advisory lock, not a row lock**, and the difference is not cosmetic.
+   * A row lock has to name a table, and a table name in a raw SQL string is
+   * invisible to `tsc`, to eslint, to the build and to the unit suite -- so
+   * nothing objects when it names a table this schema does not have, and
+   * `search_path` resolves it against whatever schema does. A row lock also has
+   * to find a *row*, so it locks nothing while the table is empty, which is
+   * precisely when two first pins would race. This names neither: the key is a
+   * constant, the lock exists whether or not any message does, and Postgres
+   * releases it when the transaction ends rather than in a `finally` somebody
+   * has to remember to write.
+   *
+   * The cast is what picks the overload -- `pg_advisory_xact_lock` accepts one
+   * bigint and also two ints, and an untyped parameter leaves that ambiguous.
    */
   const result = await db.transaction(async (tx) => {
-    await tx.execute(
-      sql`select id from guestbook_chatmessage order by id limit 1 for update`,
-    );
+    await tx.execute(sql`select pg_advisory_xact_lock(${GUESTBOOK_PIN_LOCK}::bigint)`);
 
     // Excluding this message means a concurrent request that already pinned it
     // does not make re-pinning it look like it would exceed the cap.

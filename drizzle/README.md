@@ -93,9 +93,18 @@ A PL/pgSQL `DO $$ ... BEGIN ... END $$` block is not transaction control and is
 allowed — its `BEGIN` opens a block, not a transaction. Dollar-quoted bodies are
 blanked before that check runs.
 
-## `9999_drop_public.sql`
+## There is no second schema
 
-Not part of the schema. It removes the tables the site's previous build left in
-`public`, and it must not run until the domain serves this application — the
-file's header has the pre-flight and the order to do it in. Delete it, and the
-two scripts its header names, once it has run.
+`public` is empty. It held the previous build's 42 tables until the domain was
+switched over; `9999_drop_public.sql` dropped them and was deleted with the two
+scripts that guarded the moment, which is what all three said to do.
+
+The empty schema is kept deliberately. It is named in the default
+`search_path` and Supabase's own tooling assumes it exists, so dropping the
+tables leaves the database in the state a new project would have — which
+`drop schema public cascade` would not.
+
+A table created there by accident is therefore reachable, unqualified, from
+every query this application makes. `check-rls.mjs` enumerates the schemas the
+project owns rather than naming them, so one appearing is covered from the
+moment it exists.

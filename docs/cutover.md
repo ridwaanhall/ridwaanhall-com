@@ -111,28 +111,28 @@ configuration. Each of these has failed for somebody at a cutover:
 
 ---
 
-## 5. Retire the old schema
+## 5. Retire the old schema — done
 
-**Only once steps 3 and 4 pass.** Until this point the previous build's data is
-untouched and rolling back is a DNS change; after it, it is a restore.
+The 42 tables the previous build left in `public` are dropped, along with their
+sequences. The empty schema is kept: it is named in the default `search_path`
+and Supabase's tooling assumes it exists, so this leaves the database in the
+state a new project would have.
 
-```bash
-npx tsx scripts/check-schema-parity.mjs           # anything `app` has not got?
-npx tsx scripts/catch-up-from-public.mjs          # dry run, if it reported rows
-npx tsx scripts/catch-up-from-public.mjs --apply
-```
+The parity check reported one gap before it ran — four posts whose view count
+was one ahead in `public`, because the old build kept counting until the domain
+moved. Those were carried across first, and nothing else differed.
 
-Back up before dropping. Then:
+The three files this step used are deleted, which each of them said to do.
 
-```bash
-node scripts/apply-migration.mjs drizzle/9999_drop_public.sql          # read it
-node scripts/apply-migration.mjs drizzle/9999_drop_public.sql --apply
-npx tsx scripts/check-rls.mjs
-```
-
-Afterwards, delete `drizzle/9999_drop_public.sql`,
-`scripts/check-schema-parity.mjs` and `scripts/catch-up-from-public.mjs`. All
-three exist only for this moment.
+What is worth carrying forward is why it was safe, since the same question
+returns the next time a second schema appears. No foreign key crossed the two
+schemas, nothing outside `public` depended on a table in it, and every extension
+lives in `extensions` rather than there. The one real coupling was not an import
+— those are all schema-qualified through `app-schema.ts` — but a table name
+inside a raw `sql``` template, unqualified, which `search_path` resolved past
+`app` into the old schema. Nothing type checks that. It was found by reading
+every raw template in the runtime code, and proved by dropping the tables inside
+a transaction and running the application's own queries before rolling back.
 
 ---
 

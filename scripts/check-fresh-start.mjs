@@ -140,17 +140,14 @@ const CONTENT_MENTIONS = {
   "CODE_OF_CONDUCT.md": 1, // the Contributor Covenant's own URL, which ends in .html
 
   /*
-   * The old schema's table names, in the three places naming them is the job.
-   *
-   * Two of these scripts exist only to read that schema -- one compares it row
-   * for row against `app`, the other copies across what it still holds -- and
-   * both are deleted with it at cutover, so these entries go the same way.
-   * CLAUDE.md is the trap log: it records a correlated subquery that bound to
-   * the wrong table, and that story does not survive having the table's name
+   * CLAUDE.md is the trap log. It records a correlated subquery that bound to
+   * the wrong table, and a lock that named a table in the schema this project
+   * used to share a database with -- neither story survives having the name
    * taken out of it.
+   *
+   * The two harnesses that used to be listed beside it read that schema for a
+   * living, and were deleted with it.
    */
-  "scripts/catch-up-from-public.mjs": 15,
-  "scripts/check-schema-parity.mjs": 4,
   "CLAUDE.md": 1,
 };
 
@@ -243,10 +240,14 @@ check(
 // The structural half: what the tree holds, not what it says
 // ---------------------------------------------------------------------------
 
+/*
+ * One file, and now genuinely one: this used to exclude the drop that removed
+ * the previous build's schema, which was a file under drizzle/ that was not
+ * part of the schema. It ran, and went.
+ */
 const sql = tracked.filter((f) => f.startsWith("drizzle/") && f.endsWith(".sql"));
-const baseline = sql.filter((f) => !f.includes("9999"));
 check(
-  baseline.length === 1 && baseline[0] === "drizzle/0000_init.sql",
+  sql.length === 1 && sql[0] === "drizzle/0000_init.sql",
   "the schema is one file, not a ladder to replay",
   sql.join(", "),
 );

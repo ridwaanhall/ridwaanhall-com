@@ -64,14 +64,26 @@ it applies `0000_init.sql` into a scratch schema inside a transaction, compares
 columns, keys, foreign-key actions, checks, indexes and RLS against the live
 schema, and rolls back.
 
-### One schema left to retire
+### The database holds one schema, and it is `app`
 
-There is still a `public` schema in the database, left by the site's previous
-build, and it is **not** this application's — nothing in this codebase reads it.
-It goes when the domain is switched over: `drizzle/9999_drop_public.sql` has the
-pre-flight and the order to do it in. `scripts/check-schema-parity.mjs` and
-`scripts/catch-up-from-public.mjs` exist only for that moment and are deleted
-with it.
+There was a second one. `public` held the 42 tables the site's previous build
+left behind, and it stayed while the domain still served that build. It is gone:
+the tables and their sequences are dropped, the empty schema is kept because it
+is named in the default `search_path` and Supabase's tooling assumes it exists.
+
+The file that dropped it and the two scripts that guarded the moment
+(`check-schema-parity.mjs`, `catch-up-from-public.mjs`) are deleted, which is
+what their own headers asked for.
+
+**What made it safe is worth keeping.** Nothing in `app` referred to `public` --
+no foreign key crossed the two, no view or trigger outside it depended on a
+table in it, and every extension lives in `extensions` rather than there. The
+one real coupling was a raw `for update` in `togglePin` naming an *unqualified*
+table that resolved past `app` into the old schema; it was found and replaced
+with an advisory lock first. That is the shape to look for if a third schema
+ever appears: not the imports, which are all schema-qualified through
+`app-schema.ts`, but a table name inside a `sql``` template, which nothing type
+checks and `search_path` will happily resolve somewhere unintended.
 
 ## Commands
 
@@ -1146,10 +1158,6 @@ npx tsx --conditions=react-server scripts/check-admin-controls.mjs
 
 A harness that imports a `server-only` module needs `--conditions=react-server`.
 The browser-driven ones need `npm run dev` running.
-
-`scripts/check-schema-parity.mjs` and `scripts/catch-up-from-public.mjs` are not
-part of this list. They exist for the one-off retirement of the `public` schema
-and are deleted with it — see `drizzle/9999_drop_public.sql`.
 
 `scripts/audit-storage.mjs` is not a check either, and it is the one that looks
 at the bucket rather than at the rows. Everything else here reasons outwards

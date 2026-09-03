@@ -9,7 +9,11 @@
 
 import type { SiteRole } from "@/lib/auth/roles";
 
-/** `models.TextField(max_length=MAX_COMMENT_LENGTH)`. */
+/**
+ * The composer caps typing at this and `postComment` refuses a body over it.
+ * The browser attribute is a courtesy; the action is the rule, since nothing
+ * stops a request arriving without one.
+ */
 export const MAX_COMMENT_LENGTH = 1000;
 
 /**

@@ -15,23 +15,19 @@ import { normaliseNewlines } from "@/lib/utils/newlines";
 /**
  * The guestbook's mutations.
  *
- * These replace the three AJAX views. The shape of the exchange changes and the
- * reason is worth recording: `SendMessageView` returned the whole messages
- * panel as rendered HTML inside a JSON field for the client to swap in
- * wholesale. The reason for that shape is real -- appending one node
- * client-side means deciding where it goes, which depends on the depth cap and
- * on whether its parent fell inside the fetched window, and that is a second
- * implementation of the threading free to disagree with the first.
- *
- * `revalidatePath` gets the same property without the HTML-in-JSON: the server
- * re-runs `getThread()` and React reconciles the result. There is still exactly
- * one implementation of the threading and one definition of the markup, which
- * was the whole point.
+ * **None of these returns markup, and that is the point.** Appending one
+ * message client-side means deciding where it goes, which depends on the depth
+ * cap and on whether its parent fell inside the fetched window -- a second
+ * implementation of the threading, free to disagree with the first.
+ * `revalidatePath` avoids that: the server re-runs `getThread()` and React
+ * reconciles the result, so there is one implementation of the threading and
+ * one definition of the markup.
  *
  * **Every action re-checks permission from the database.** The session token
- * says who you are; `getUserProfile` says what you may do. A JWT held for
- * thirty days must not be the authority on who can delete other people's
- * messages -- revoking co-author would not take effect until it expired.
+ * says who you are; `getUserProfile` says what you may do. Sessions are
+ * thirty-day JWTs, so a token that carried the answer would keep asserting it
+ * for a month after somebody's staff flag was cleared -- and deleting other
+ * people's messages is not a thing to be wrong about for a month.
  *
  * Notices are worded here rather than in the client, so these and the comment
  * views stay parallel: a reader sees one feature and it should not phrase

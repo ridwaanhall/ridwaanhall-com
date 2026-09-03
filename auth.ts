@@ -64,7 +64,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     /**
      * `token.sub` is the account's key, and the only place it is checked.
      *
-     * It was `auth_user.id`, an integer as a string. Keys are uuids now, and
+     * It used to be an integer key rendered as a string. Keys are uuids now,
+     * and
      * sessions are **thirty-day JWTs** -- so every reader signed in before the
      * schema moved is still presenting a token asserting `sub: "1"`, and will
      * be for a month. That subject names no row, and worse, it is not even a

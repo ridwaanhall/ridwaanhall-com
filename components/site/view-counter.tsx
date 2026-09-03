@@ -17,9 +17,10 @@ import { useEffect, useRef } from "react";
  * JavaScript off is not counted -- which is the right trade for a vanity metric
  * that must never delay or break the article.
  *
- * `POST /api/blog/<slug>/` is the endpoint, and it already existed;
- * `incrementBlogViews` issues a raw `views = views + 1` so concurrent readers
- * cannot lose an increment, exactly as `F("views") + 1` did.
+ * `POST /api/blog/<slug>/` is the endpoint. `incrementBlogViews` issues the
+ * increment as `views = views + 1` in SQL rather than reading the count and
+ * writing it back, so two readers arriving together cannot both read the same
+ * old value and record one view between them.
  *
  * Renders nothing.
  */

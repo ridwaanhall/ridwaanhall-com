@@ -345,9 +345,8 @@ export async function getProjects(): Promise<Project[]> {
  * Group child rows under their owner's id, in the order they arrived.
  *
  * Every read path here fans out with `Promise.all` and stitches the children
- * back together in memory rather than issuing a query per parent -- the same
- * shape the old `select_related`/`prefetch_related` pair produced, without the
- * N+1 that a naive port would have had.
+ * back together in memory rather than issuing a query per parent, which is
+ * what keeps a page of twenty posts at two queries instead of twenty-one.
  */
 function collect<T, V>(rows: T[], ownerId: (row: T) => string, value: (row: T) => V): Map<string, V[]> {
   const grouped = new Map<string, V[]>();

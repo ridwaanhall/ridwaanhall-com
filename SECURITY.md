@@ -168,9 +168,23 @@ for it. Widening a CSP is free and silent, so keep it to what breaks without it.
 ### Known gap: the policy is report-only
 
 The header is `Content-Security-Policy-Report-Only`, so **nothing is blocked**.
-That is the state to fix rather than the state to keep, and promoting it is
-renaming the header — plus adding back `upgrade-insecure-requests`, which a
-browser ignores in report-only mode and complains about on every page load.
+That is the state to fix rather than the state to keep.
+
+Reports now go somewhere, which is what promoting it waits on. `report-to` and
+the deprecated `report-uri` both point at `/api/csp-report`, which parses the
+two wire formats — Safari still only speaks the second — and logs one line per
+violation. It records the directive, the blocked URL and the disposition, and
+deliberately not the page URL or the source line: on this site those name what
+a visitor was reading, in exchange for nothing a policy decision needs.
+
+Until that endpoint existed the policy had no `report-to` and no `report-uri`
+at all, so it blocked nothing and reported nothing — a control that looked like
+one and was not, with no way for the evidence to promote it ever to arrive.
+`check-headers.mjs` fails a report-only policy that names no destination.
+
+Promoting it is renaming the header, plus adding back
+`upgrade-insecure-requests`, which a browser ignores in report-only mode and
+complains about on every page load.
 
 Two things are worth knowing before you promote it:
 

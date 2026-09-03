@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { readFileSync, readdirSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
 
 import { getTableName } from "drizzle-orm";
@@ -102,11 +104,92 @@ describe("MODEL_TAGS", () => {
    * dependency that is not real costs an occasional needless rebuild; omitting
    * a real one serves stale content.
    */
-  it("invalidates every area that renders a shared lookup table", () => {
-    for (const tag of [TAGS.experience, TAGS.education, TAGS.certification, TAGS.award]) {
-      assert.ok(MODEL_TAGS.organization?.includes(tag), `organization should invalidate "${tag}"`);
+  /*
+   * Read out of the read paths, not written down beside them.
+   *
+   * The list this replaced named four areas an organization is rendered by. A
+   * fifth had been added since -- `getApplications` selects `organization.name`
+   * for every card -- so the list was wrong, the assertion agreed with it, and
+   * renaming an organization left stale company names on screen with every
+   * check green. A second transcription of the same fact cannot catch the first
+   * one being incomplete; only something that derives it can.
+   *
+   * The rule is narrower than "list every area", and it is the one that
+   * matters: a cached read path that reads the table has to lose its entry when
+   * a row in that table changes, and an entry goes when *any* of its tags is
+   * expired. So each such function needs one tag in common with the list -- not
+   * all of them.
+   */
+  it("invalidates every read path that renders a shared lookup table", () => {
+    const missing: string[] = [];
+    for (const [table, tags] of Object.entries(MODEL_TAGS)) {
+      // Widened, because a tag read out of source is a plain string.
+      const expiring = new Set<string>(tags);
+      for (const [fn, reads] of cachedReadPaths()) {
+        if (!reads.tables.has(table)) continue;
+        if (reads.tags.some((tag) => expiring.has(tag))) continue;
+        missing.push(`${fn} reads "${table}" and is tagged [${reads.tags.join(", ")}]`);
+      }
     }
-    assert.ok(MODEL_TAGS.tag?.includes(TAGS.blog));
-    assert.ok(MODEL_TAGS.tag?.includes(TAGS.project));
+    assert.deepEqual(missing, [], `these read paths keep serving stale rows: ${missing.join("; ")}`);
   });
 });
+
+/**
+ * Every `"use cache"` function in `lib/data/`, with the tables it names and the
+ * tags it carries.
+ *
+ * A text scan rather than a parser, and it can afford to be: a read path here
+ * is one `export async function`, its tags are the `cacheTag(...)` calls in its
+ * own body.
+ *
+ * What counts as reading a table is deliberately narrow -- it has to be handed
+ * to `from` or to a join. Searching the whole body for the name instead
+ * reported eight more, every one of them a local variable named `profile` or
+ * the word "projects" inside a comment. A check that names innocent code
+ * beside the guilty is one somebody learns to skim.
+ */
+function cachedReadPaths(): Map<string, { tables: Set<string>; tags: string[] }> {
+  const dir = fileURLToPath(new URL(".", import.meta.url));
+  const found = new Map<string, { tables: Set<string>; tags: string[] }>();
+  const tables = Object.keys(MODEL_TAGS);
+  const tagValues = new Map(Object.entries(TAGS).map(([key, value]) => [key, value as string]));
+
+  for (const file of readdirSync(dir).filter((f) => f.endsWith(".ts") && !f.endsWith(".test.ts"))) {
+    const body = readFileSync(dir + file, "utf8");
+    for (const chunk of body.split(/\nexport /)) {
+      const name = /^async function (\w+)/.exec(chunk)?.[1];
+      if (!name || !chunk.includes('"use cache"')) continue;
+
+      // A call can carry more than one -- `cacheTag(TAGS.profile, TAGS.skill)`.
+      // Reading only the first argument is how this check came to report two
+      // read paths that were tagged perfectly well.
+      const tags = [...chunk.matchAll(new RegExp(String.raw`cacheTag\(([^)]*)\)`, 'g'))]
+        .flatMap(([, args]) => [...args.matchAll(new RegExp(String.raw`TAGS\.(\w+)|"([^"]+)"`, 'g'))])
+        .map(([, key, literal]) => (key ? tagValues.get(key) : literal))
+        .filter((tag): tag is string => Boolean(tag));
+
+      const named = new Set(tables.filter((table) => binds(chunk, camel(table))));
+      found.set(`${file}:${name}`, { tables: named, tags });
+    }
+  }
+  return found;
+}
+
+/**
+ * Whether a query in this chunk binds the named table.
+ *
+ * `from(x)` and the four joins are the only ways a table enters a Drizzle
+ * select, so this is the whole surface -- and unlike a bare name search it
+ * cannot be fooled by a comment, or by a local variable that happens to agree.
+ */
+function binds(chunk: string, table: string): boolean {
+  const call = String.raw`(?:from|innerJoin|leftJoin|rightJoin|fullJoin)\(\s*`;
+  return new RegExp(call + table + String.raw`\b`).test(chunk);
+}
+
+
+/** `guest_message` is `guestMessage` where a query names it. */
+function camel(table: string): string {
+  return table.replace(/_(\w)/g, (_, c: string) => c.toUpperCase());
+}

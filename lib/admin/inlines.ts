@@ -139,8 +139,22 @@ function toFormValue(field: FormField, raw: unknown): FormValues[string] {
 }
 
 export type InlineResult =
-  /** Keys the write orphaned, for the caller to hand to `deleteUnreferenced`. */
-  | { ok: true; stale: string[] }
+  | {
+      ok: true;
+      /** Keys the write orphaned, for the caller to hand to `deleteUnreferenced`. */
+      stale: string[];
+      /**
+       * Alt text the child rows carried, by storage key.
+       *
+       * Returned rather than written here for the same reason `stale` is: this
+       * module decides what the children should say, and the caller is the one
+       * holding the transaction that says it. An inline row's image is the
+       * commonest kind on this site -- a blog gallery, a project's screenshots
+       * -- so leaving these out would have shipped a field that worked on the
+       * record's own image and silently did nothing on every row beneath it.
+       */
+      alts: Record<string, string>;
+    }
   | { ok: false; errors: Record<string, string> };
 
 /**
@@ -191,6 +205,7 @@ export async function saveInlines(
 ): Promise<InlineResult> {
   const errors: Record<string, string> = {};
   const stale: string[] = [];
+  const alts: Record<string, string> = {};
   const work: { inline: AdminInline; rows: { id: string | null; values: FormValues }[] }[] = [];
 
   for (const inline of inlines) {
@@ -230,6 +245,7 @@ export async function saveInlines(
         }
         images = applied.values;
         stale.push(...applied.stale);
+        Object.assign(alts, applied.alts);
       }
 
       rows.push({ id, values: { ...parsed.values, ...images } });
@@ -328,7 +344,7 @@ export async function saveInlines(
     }
   }
 
-  return { ok: true, stale };
+  return { ok: true, stale, alts };
 }
 
 /** What one child row currently stores for each of its image fields. */

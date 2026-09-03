@@ -73,7 +73,8 @@ export async function keyForMediaId(id: string | null | undefined): Promise<stri
 }
 
 /**
- * The display URL for every stored image on a form, keyed by the input's name.
+ * The display URL and the alt text for every stored image on a form, each
+ * keyed by the input's name.
  *
  * **This cannot live in `lib/admin/form.ts`.** That module is part of the client
  * bundle -- it has no `"use client"` of its own, but `record-form.tsx` imports
@@ -104,11 +105,11 @@ export async function keyForMediaId(id: string | null | undefined): Promise<stri
  * knows which is which -- one query here feeds it, rather than each caller
  * guessing.
  */
-export async function imageUrlMap(
+export async function imageMeta(
   model: AdminFormModel,
   values: FormValues,
   inlineRows: Record<string, FormValues[]> = {},
-): Promise<Record<string, string>> {
+): Promise<{ imageUrls: Record<string, string>; imageAlts: Record<string, string> }> {
   const keyByName: Record<string, string> = {};
 
   const add = (name: string, value: unknown) => {
@@ -132,27 +133,57 @@ export async function imageUrlMap(
     }
   }
 
-  const sources = await sourcesForKeys(Object.values(keyByName));
+  // One query for both facts. They come off the same row, and an admin form
+  // render asking twice for it is two round trips to Supabase for nothing.
+  const assets = await assetsForKeys(Object.values(keyByName));
 
-  const urls: Record<string, string> = {};
+  // Named as the props they become, so a caller spreads them rather than
+  // restating the pair at each of the two form screens.
+  const imageUrls: Record<string, string> = {};
+  const imageAlts: Record<string, string> = {};
   for (const [name, key] of Object.entries(keyByName)) {
-    const source = sources.get(key);
+    const asset = assets.get(key);
     // A key with no asset row is nothing this owns -- an OAuth avatar is stored
-    // as a full URL. `mediaUrl` passes those through untouched.
-    urls[name] = source === undefined ? mediaUrl(key) : assetUrl({ storageKey: key, source });
+    // as a full URL. `mediaUrl` passes those through untouched, and there is no
+    // row to have described it.
+    imageUrls[name] =
+      asset === undefined ? mediaUrl(key) : assetUrl({ storageKey: key, source: asset.source });
+    imageAlts[name] = asset?.alt ?? "";
   }
-  return urls;
+  return { imageUrls, imageAlts };
 }
 
-/** Where each of these keys is served from, for the keys that name an asset. */
-async function sourcesForKeys(keys: string[]): Promise<Map<string, string>> {
+/** Where each of these keys is served from, and how it is described. */
+async function assetsForKeys(keys: string[]): Promise<Map<string, { source: string; alt: string }>> {
   const wanted = [...new Set(keys.filter(Boolean))];
   if (wanted.length === 0) return new Map();
 
   const rows = await db
-    .select({ storageKey: mediaAsset.storageKey, source: mediaAsset.source })
+    .select({ storageKey: mediaAsset.storageKey, source: mediaAsset.source, alt: mediaAsset.alt })
     .from(mediaAsset)
     .where(inArray(mediaAsset.storageKey, wanted));
 
-  return new Map(rows.map((row) => [row.storageKey, row.source]));
+  return new Map(rows.map((row) => [row.storageKey, { source: row.source, alt: row.alt }]));
+}
+
+/**
+ * Describe these images, by storage key.
+ *
+ * Keyed on the key rather than on the record, because that is what the column
+ * is keyed on. Writing the same alt twice for one key is a no-op, so a form
+ * carrying the same photo in two fields does not fight itself.
+ *
+ * A blank clears it. `media_asset.alt` is `NOT NULL DEFAULT ''`, and empty is
+ * the honest value for a decorative image -- a screen reader skips an `alt=""`
+ * and announces the filename of a missing one.
+ */
+export async function setImageAlts(alts: Record<string, string>): Promise<void> {
+  const entries = Object.entries(alts).filter(([key]) => key);
+  if (entries.length === 0) return;
+
+  await Promise.all(
+    entries.map(([key, alt]) =>
+      db.update(mediaAsset).set({ alt }).where(eq(mediaAsset.storageKey, key)),
+    ),
+  );
 }

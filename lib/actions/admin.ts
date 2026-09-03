@@ -26,7 +26,7 @@ import { getStaffUser } from "@/lib/auth/staff";
 import { MODEL_TAGS } from "@/lib/data/tags";
 import { db } from "@/lib/db/client";
 import { applyImageFields, imageFields } from "@/lib/admin/images";
-import { keyForMediaId, mediaIdForKey } from "@/lib/admin/media";
+import { keyForMediaId, mediaIdForKey, setImageAlts } from "@/lib/admin/media";
 import { deleteUnreferenced } from "@/lib/storage/cleanup";
 import { REMOTE_FETCH_BUDGET_MS } from "@/lib/storage/fetch-image";
 import { sanitizeRichText } from "@/lib/utils/sanitize";
@@ -371,13 +371,26 @@ export async function saveRecord(
   }
 
   const staleFromInlines: string[] = [];
+  const alts = { ...images.alts };
   if (model.inlines?.length && parentId !== null) {
     const inlined = await saveInlines(model.inlines, data, parentId, { deadline });
     if (!inlined.ok) {
       return { ok: false, error: "Some fields need attention.", fieldErrors: inlined.errors };
     }
     staleFromInlines.push(...inlined.stale);
+    Object.assign(alts, inlined.alts);
   }
+
+  /*
+   * The descriptions, after the rows and before the cleanup.
+   *
+   * After, because a file uploaded on this save has no `media_asset` row until
+   * `mediaIdForKey` made one, and there is nothing to describe before that.
+   * Before the cleanup, because that is what removes an asset the record has
+   * stopped naming -- describing a row that is about to be deleted is wasted,
+   * and describing one after it is gone silently updates nothing.
+   */
+  await setImageAlts(alts);
 
   // Only now that the write has landed. A file the record no longer names is
   // still not removed if any other row names it -- one author photo is shared by

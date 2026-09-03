@@ -341,6 +341,52 @@ than a component something else could render, and `draftMode()` is not the way
 round it: reading it in `/blog/[slug]` makes that route dynamic for every
 reader, not only for staff.
 
+### An image describes itself, and the record is only the fallback
+
+`media_asset.alt` was in the schema from the first migration and was the one
+column in it that **nothing read and nothing wrote** -- no form offered a field,
+no query selected it, and `image-field.tsx` rendered its own preview with a
+hardcoded `alt=""`. Alt text came from the *record* instead: a post's title, or
+`"<title> — image N of M"` for a gallery. So a post with five screenshots
+described all five as that post's title, five times over.
+
+**The description is on the asset, not on the record**, which the schema had
+already decided and is the right grain: one file here is named by up to
+twenty-one rows, and a photo of a person is a photo of that person wherever it
+appears. Editing it anywhere changes it everywhere, deliberately.
+
+`altFieldName` makes it a sidecar input beside `__clear` and `__link`, so an
+inline row's box posts as `images:0:mediaId__alt` with nothing special-casing
+it. Two things about the write are easy to get wrong and invisible when you do:
+
+- **It has to survive a save that touches no bytes.** Editing a description
+  without replacing the image is the commonest thing anybody will do here, and
+  `applyImageFields` returns early for an untouched field long before it would
+  reach the description -- so the alt is read at the top of the loop and
+  recorded against whichever key the field ends up holding, including the
+  existing one.
+- **Inline rows count.** A gallery *is* inlines, so an implementation that
+  handled only the record's own fields would work on the author photo and
+  silently do nothing on every image the feature exists for. `saveInlines`
+  returns its alts the way it returns `stale`, and `saveRecord` writes both maps
+  at once.
+
+On the way out it is `image_alts`, a **parallel array** rather than a richer
+`images` map. That map is published as-is by `/api/blog` and `/api/projects`;
+turning its values into objects would change that JSON for every reader to add
+a field most of them do not want. An entry is `""` where nothing has been
+written, which is most of them, and `MediaGallery` falls back to the built
+description there -- the two are asserted separately in
+`scripts/check-image-alt.mjs`, because preferring the stored one and keeping the
+fallback are different bugs and a check that conflates them passes while most of
+the site's images say nothing.
+
+**That harness waits for the "Saved." notice, not for `networkidle`.** The save
+is a server action and the network settles while the write is still in flight,
+so reading the row straight after reported an empty description and a working
+pipeline as broken -- twice, and the second time after a dev-server restart that
+was blamed for it.
+
 ### The matrix has to describe the role it is looking at
 
 The access screen draws a dash where an action cannot be granted, and there are
@@ -1072,6 +1118,7 @@ npx tsx scripts/check-account-panel.mjs                 # sign in / sign out, bo
 npx tsx --conditions=react-server scripts/check-turnstile.mjs
 npx tsx --conditions=react-server scripts/check-storage.mjs
 npx tsx --conditions=react-server scripts/check-admin-media.mjs   # the id/key seam
+npx tsx --conditions=react-server scripts/check-image-alt.mjs      # an image says what it is
 npx tsx --conditions=react-server scripts/check-admin-image-link.mjs # upload and link, one bucket
 npx tsx scripts/check-admin-usage.mjs                   # every FK into a lookup table is counted
 npx tsx scripts/check-admin.mjs

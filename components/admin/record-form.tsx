@@ -80,6 +80,7 @@ export function RecordForm({
   inlineRows = {},
   values,
   imageUrls,
+  imageAlts,
   label,
   typeLabel,
   canSave,
@@ -98,11 +99,12 @@ export function RecordForm({
   /**
    * Stored images, resolved to URLs on the server and keyed by input name.
    *
-   * See `imageUrlMap`: this file is `"use client"`, which puts `Field` in the
+   * See `imageMeta`: this file is `"use client"`, which puts `Field` in the
    * client bundle with it, and the storage host is not a `NEXT_PUBLIC_`
    * variable -- so the URL has to arrive already built.
    */
   imageUrls?: Record<string, string>;
+  imageAlts?: Record<string, string>;
   /** The record, named -- shown quoted in the confirm dialog. */
   label: string;
   /** The model, named -- "Skill", "Message". */
@@ -216,6 +218,7 @@ export function RecordForm({
             value={values[field.name] ?? null}
             error={fieldErrors[field.name]}
             imageUrls={imageUrls}
+            imageAlts={imageAlts}
           />
         ))}
       </div>
@@ -256,6 +259,7 @@ export function RecordForm({
           <InlineEditor
             inline={inline}
             imageUrls={imageUrls}
+            imageAlts={imageAlts}
             rows={inlineRows[inline.name] ?? []}
             errors={fieldErrors}
           />

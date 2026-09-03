@@ -8,7 +8,7 @@ import { NothingHere } from "@/components/admin/nothing-here";
 import { RecordForm } from "@/components/admin/record-form";
 import { toClientFieldsets, toClientInlines } from "@/lib/admin/form";
 import { loadInlineRows } from "@/lib/admin/inlines";
-import { imageUrlMap } from "@/lib/admin/media";
+import { imageMeta } from "@/lib/admin/media";
 import { formModelFor } from "@/lib/admin/models";
 import { loadFormValues, loadReferenceOptions } from "@/lib/admin/record";
 import { adminPath, type AdminEntry } from "@/lib/admin/registry";
@@ -85,7 +85,7 @@ export async function RecordScreen({ entry, id }: { entry: AdminEntry; id: strin
           inlines={toClientInlines(form, referenceOptions)}
           inlineRows={inlineRows}
           values={values}
-          imageUrls={await imageUrlMap(form, values, inlineRows)}
+          {...await imageMeta(form, values, inlineRows)}
           label={label}
           typeLabel={entry.label}
           canSave={permits(actor, entry.key, "change", form)}

@@ -26,6 +26,7 @@ export function Field({
   error,
   namePrefix = "",
   imageUrls,
+  imageAlts,
 }: {
   field: ClientField;
   value: FormValues[string];
@@ -37,9 +38,10 @@ export function Field({
    *
    * This file is in the client bundle, and the storage host is not a
    * `NEXT_PUBLIC_` variable, so calling `mediaUrl` here produced one URL on the
-   * server and a different one in the browser -- see `imageUrlMap`.
+   * server and a different one in the browser -- see `imageMeta`.
    */
   imageUrls?: Record<string, string>;
+  imageAlts?: Record<string, string>;
 }) {
   const name = `${namePrefix}${field.name}`;
   // The id has to be unique across the page, not only within one row, or a
@@ -218,6 +220,7 @@ export function Field({
           invalid={Boolean(error)}
           storedKey={typeof value === "string" ? value : ""}
           previewUrl={imageUrls?.[name] ?? ""}
+          alt={imageAlts?.[name] ?? ""}
         />
       </Row>
     );

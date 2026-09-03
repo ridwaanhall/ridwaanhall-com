@@ -6,7 +6,7 @@ import { formModelFor, listModelFor } from "@/lib/admin/models";
 import { RecordForm } from "@/components/admin/record-form";
 import { toClientFieldsets, toClientInlines } from "@/lib/admin/form";
 import { loadInlineRows } from "@/lib/admin/inlines";
-import { imageUrlMap } from "@/lib/admin/media";
+import { imageMeta } from "@/lib/admin/media";
 import { loadFormValues, loadReferenceOptions, singletonId } from "@/lib/admin/record";
 import {
   ADMIN_ENTRIES,
@@ -113,7 +113,7 @@ async function SingletonScreen({ entryKey, canSave }: { entryKey: string; canSav
         inlines={toClientInlines(form, referenceOptions)}
         inlineRows={inlineRows}
         values={values}
-        imageUrls={await imageUrlMap(form, values, inlineRows)}
+        {...await imageMeta(form, values, inlineRows)}
         label={form.label(values)}
         typeLabel={entry.label}
         canSave={canSave}

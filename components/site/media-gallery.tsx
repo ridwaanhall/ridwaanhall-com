@@ -31,12 +31,22 @@ const INTERVAL_MS: Record<Variant, number> = { blog: 4000, project: 5000 };
 
 export function MediaGallery({
   images,
+  alts = [],
   names,
   alt,
   variant,
   className,
 }: {
   images: string[];
+  /**
+   * What each image is described as, positionally alongside `images`.
+   *
+   * Empty where nothing has been written, which is most of them -- the fallback
+   * below is what those get. The column exists for the case the fallback cannot
+   * serve: five screenshots on one post, which it describes five times over as
+   * that post's title.
+   */
+  alts?: string[];
   names: string[];
   alt: string;
   variant: Variant;
@@ -75,7 +85,11 @@ export function MediaGallery({
 
   const lightboxImages: LightboxImage[] = images.map((src, position) => ({
     src,
-    alt: `${alt} — image ${position + 1} of ${count}`,
+    // The stored description stands on its own: it says what is in this
+    // image, so numbering it would be reading furniture to somebody who
+    // already has the sentence. The fallback is numbered because without it
+    // every slide announces the same title.
+    alt: alts[position] || `${alt} — image ${position + 1} of ${count}`,
     filename: names[position] || `image-${position + 1}`,
   }));
 
@@ -159,7 +173,7 @@ export function MediaGallery({
           <div className="aspect-video">
             <Image
               src={images[0]}
-              alt={alt}
+              alt={alts[0] || alt}
               width={1200}
               height={675}
               // Same as the slider branch above: one image, unambiguously

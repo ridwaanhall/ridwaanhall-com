@@ -45,9 +45,23 @@ type ImageCompat = {
   image_list?: string[];
   image_names?: string[];
   image_count?: number;
+  /**
+   * What each image is described as, positionally alongside `image_list`.
+   *
+   * A parallel array rather than a richer `images` map, because that map is
+   * part of the JSON these endpoints already serve -- turning its values into
+   * objects would break every reader of it to add a field most do not want.
+   *
+   * An entry is `""` where nothing has been written, which is the common case
+   * and not an error: the caller falls back to a description built from the
+   * record. The whole point of the column is the case that fallback cannot
+   * serve -- five screenshots on one post, which it describes five times as
+   * that post's title.
+   */
+  image_alts?: string[];
 };
 
-function withImageCompat<T extends ImageCompat>(data: T): T {
+function withImageCompat<T extends ImageCompat>(data: T, alts: Record<string, string> = {}): T {
   const names = Object.keys(data.images);
   if (names.length === 0) return data;
   const urls = Object.values(data.images);
@@ -58,6 +72,9 @@ function withImageCompat<T extends ImageCompat>(data: T): T {
     image_list: urls,
     image_names: names,
     image_count: names.length,
+    // Built from `names` rather than from the alt map's own key order, so the
+    // three arrays line up positionally however the map was assembled.
+    image_alts: names.map((name) => alts[name] ?? ""),
   };
 }
 
@@ -186,6 +203,7 @@ export async function getBlogs(): Promise<BlogPost[]> {
         storageKey: mediaAsset.storageKey,
         source: mediaAsset.source,
         originalFilename: mediaAsset.originalFilename,
+        alt: mediaAsset.alt,
       })
       .from(blogImage)
       .innerJoin(mediaAsset, eq(mediaAsset.id, blogImage.mediaId))
@@ -201,6 +219,7 @@ export async function getBlogs(): Promise<BlogPost[]> {
   ]);
 
   const imagesByPost = groupAssets(images, (row) => row.postId);
+  const altsByPost = groupAlts(images, (row) => row.postId);
   const tagsByPost = collect(tagRows, (row) => row.postId, (row) => row.label);
 
   return posts.map((post) =>
@@ -225,7 +244,7 @@ export async function getBlogs(): Promise<BlogPost[]> {
       is_featured: post.isFeatured,
       read_time: post.readTime,
       views: post.views,
-    }),
+    }, altsByPost.get(post.id) ?? {}),
   );
 }
 
@@ -276,6 +295,7 @@ export async function getProjects(): Promise<Project[]> {
         storageKey: mediaAsset.storageKey,
         source: mediaAsset.source,
         originalFilename: mediaAsset.originalFilename,
+        alt: mediaAsset.alt,
       })
       .from(projectImage)
       .innerJoin(mediaAsset, eq(mediaAsset.id, projectImage.mediaId))
@@ -310,6 +330,7 @@ export async function getProjects(): Promise<Project[]> {
   ]);
 
   const imagesByProject = groupAssets(images, (row) => row.projectId);
+  const altsByProject = groupAlts(images, (row) => row.projectId);
   const tagsByProject = collect(tagRows, (row) => row.projectId, (row) => row.label);
   const featuresByProject = collect(features, (row) => row.projectId, (row) => ({
     title: row.title,
@@ -353,7 +374,7 @@ export async function getProjects(): Promise<Project[]> {
       status_rank: row.statusRank ?? Number.MAX_SAFE_INTEGER,
       created_at: row.createdAt ? new Date(row.createdAt) : null,
       updated_at: row.updatedAt ? new Date(row.updatedAt) : null,
-    }),
+    }, altsByProject.get(row.id) ?? {}),
   );
 }
 
@@ -385,6 +406,28 @@ function groupAssets<T extends { storageKey: string; source: string; originalFil
     const owner = ownerId(row);
     const bucket = grouped.get(owner) ?? {};
     bucket[row.originalFilename] = assetUrl(row);
+    grouped.set(owner, bucket);
+  }
+  return grouped;
+}
+
+/**
+ * The same grouping, for what each image is described as.
+ *
+ * A second pass over rows already in memory rather than a wider `groupAssets`,
+ * which returns the map these endpoints publish as `images` -- widening it to
+ * hold pairs would change that JSON for every reader.
+ */
+function groupAlts<T extends { storageKey: string; originalFilename: string; alt: string }>(
+  rows: T[],
+  ownerId: (row: T) => string,
+): Map<string, Record<string, string>> {
+  const grouped = new Map<string, Record<string, string>>();
+  for (const row of rows) {
+    if (!row.storageKey || !row.alt) continue;
+    const owner = ownerId(row);
+    const bucket = grouped.get(owner) ?? {};
+    bucket[row.originalFilename] = row.alt;
     grouped.set(owner, bucket);
   }
   return grouped;

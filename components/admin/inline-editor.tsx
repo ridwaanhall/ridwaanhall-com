@@ -36,12 +36,14 @@ const ICON_BUTTON =
 
 export function InlineEditor({
   imageUrls,
+  imageAlts,
   inline,
   rows: initial,
   errors,
 }: {
   /** Stored images for this inline's rows, resolved server-side. See `Field`. */
   imageUrls?: Record<string, string>;
+  imageAlts?: Record<string, string>;
   inline: ClientInline;
   rows: InlineRow[];
   errors: Record<string, string>;
@@ -127,6 +129,7 @@ export function InlineEditor({
               {inline.fields.map((field) => (
                 <Field
                   imageUrls={imageUrls}
+                  imageAlts={imageAlts}
                   key={field.name}
                   field={field}
                   namePrefix={`${inline.name}:${index}:`}

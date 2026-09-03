@@ -868,6 +868,20 @@ export const clearFieldName = (field: string) => `${field}__clear`;
  */
 export const linkFieldName = (field: string) => `${field}__link`;
 
+/**
+ * The name of the box that describes the image for a reader who cannot see it.
+ *
+ * Named off the field like the other two, so an inline row's alt posts as
+ * `images:0:mediaId__alt` with nothing having to special-case it.
+ *
+ * What it writes is **`media_asset.alt`, not a column on the record**, and that
+ * is the schema's choice rather than a shortcut: alt text describes the image,
+ * and one file here is named by up to twenty-one rows. Editing it on any of
+ * them changes it for all of them, which is right -- a photo of a person is a
+ * photo of that person wherever it appears.
+ */
+export const altFieldName = (field: string) => `${field}__alt`;
+
 /** The inline as the browser needs it -- same rule as `toClientFieldsets`. */
 export function toClientInlines(
   model: AdminFormModel,

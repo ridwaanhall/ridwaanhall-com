@@ -313,7 +313,18 @@ that made the post most prominent.
 cached function with a lifetime of days, so a clock comparison inside it is
 evaluated once when the entry is filled and frozen with it: a post scheduled
 for tomorrow would stay hidden for days after its moment. The flag moves
-instead, and `app/api/cron/publish` moves it hourly, guarded by `CRON_SECRET`.
+instead, and `app/api/cron/publish` moves it, guarded by `CRON_SECRET`.
+
+**The schedule is a GitHub workflow rather than a Vercel cron**, and that is a
+plan limit rather than a preference. `vercel.json` carried a `crons` entry for
+about an hour: Hobby allows a cron job to run **once a day**, and a schedule it
+will not accept **fails the deployment** rather than the job -- so the site does
+not ship at all until the entry is removed, and the failure names a pricing page
+rather than a build error. A daily run would have been accepted and is not worth
+having, since a post due at nine could appear any time in the next twenty-four
+hours. `.github/workflows/publish.yml` calls the same endpoint every fifteen
+minutes; moving back is deleting that file and restoring the key, on a plan that
+allows it.
 
 That endpoint **fails closed when the secret is unset** -- unlike
 `verifyTurnstile`, which passes. The asymmetry is deliberate: an unconfigured

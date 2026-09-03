@@ -907,6 +907,21 @@ seen.
   — "Administrative Human Resources" is listed three times, from SHRM, HRCI and
   LinkedIn Learning — so the same title on the same date is not a duplicate
   unless the issuer matches too.
+- **The command palette reaches the content, and the listing search reads the
+  body.** Two halves of one gap. The palette indexed pages, socials and CV
+  links -- everything the site has except the two things it is made of -- so a
+  reader who remembered a post's title could not get to it from there. Its rows
+  now come from `/api/search` on the first open rather than in every page's
+  payload, which is eighty-odd titles that most readers never ask for. A row is
+  an `li` with a click handler, not an anchor, because this palette navigates
+  through the router: a check looking for `a[href^="/blog/"]` finds nothing, and
+  a `:below(heading)` selector counts the next section's rows too, so
+  `check-ui-state.mjs` asks for the section heading and the row count instead.
+  Separately, `searchBlogs` matched the title, summary, byline and tags but not
+  the body -- the blog was the one content type written at length whose text
+  could not be found -- while `searchProjects` had always searched its
+  description. Both strip to plain text first, or `href` and `span` become
+  search terms.
 - **A changelist may pin rows, and only in its default ordering.** `pinned` on
   an `AdminListModel` leads the order clause so the certifications the about
   page is curated around are reachable without paging through a hundred and

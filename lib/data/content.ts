@@ -433,6 +433,17 @@ export function searchBlogs(blogs: BlogPost[], query: string): BlogPost[] {
     (blog) =>
       blog.title.toLowerCase().includes(q) ||
       blog.description.toLowerCase().includes(q) ||
+      /*
+       * The body, as `searchProjects` below has always searched its
+       * description. Without it the blog was the one content type written at
+       * length whose text could not be found -- a search matched the title, the
+       * summary, the byline and the tags, which is to say the parts of a post
+       * that are not the post.
+       *
+       * Stripped to text first, or the markup is searchable instead: "span"
+       * would match every post carrying one and "http" every post with a link.
+       */
+      plainText(blog.content_html).toLowerCase().includes(q) ||
       blog.author.toLowerCase().includes(q) ||
       blog.tags.some((tag) => String(tag).toLowerCase().includes(q)),
   );

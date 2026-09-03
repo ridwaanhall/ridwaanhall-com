@@ -142,6 +142,28 @@ try {
   console.log(`  --    the publish endpoint was not asked (nothing serving ${BASE})`);
 }
 
+/*
+ * Anything this file has ever written, not only this run's.
+ *
+ * Everything above happens inside a transaction that is rolled back, so a leak
+ * should be impossible -- and an earlier version of this file, which wrote
+ * outside one and deleted in a `finally`, reported "the harness rows are gone"
+ * and left two posts in the live blog anyway. One of them published. So the
+ * question is asked again here, of the table rather than of the delete, and a
+ * leftover is a failure rather than a note.
+ */
+{
+  const { rows } = await pool.query(
+    "select slug from app.blog_post where slug like 'zz-%' " +
+      "union all select slug from app.project where slug like 'zz-%'",
+  );
+  check(
+    rows.length === 0,
+    "no harness row is left anywhere in the content",
+    `still there: ${rows.map((r) => r.slug).join(", ")}`,
+  );
+}
+
 await pool.end();
 console.log(failures ? `\n${failures} check(s) failed.` : "\nA draft stays a draft.");
 // Set rather than `process.exit`, which tears the loop down under the pool's own

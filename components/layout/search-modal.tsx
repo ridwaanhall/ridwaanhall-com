@@ -14,6 +14,7 @@ import {
   type SVGProps,
 } from "react";
 
+import { BlogIcon, ProjectsIcon } from "@/components/icons/nav-icons";
 import {
   CvCopyIcon,
   CvPdfIcon,
@@ -33,7 +34,11 @@ import type { AboutData } from "@/lib/data/about";
 import { cn } from "@/lib/utils/cn";
 import { startPageLoading } from "@/lib/utils/page-loading";
 
-type Section = "Pages" | "Socials" | "Links";
+type Section = "Pages" | "Posts" | "Projects" | "Socials" | "Links";
+
+/** One post or project, as the palette needs it. See `app/api/search`. */
+type ContentEntry = { title: string; slug: string; keywords: string };
+type PaletteContent = { posts: ContentEntry[]; projects: ContentEntry[] };
 
 type SearchEntry = {
   label: string;
@@ -192,12 +197,53 @@ function buildEntries(about: AboutData): SearchEntry[] {
   return entries;
 }
 
-const SECTION_ORDER: Section[] = ["Pages", "Socials", "Links"];
+const SECTION_ORDER: Section[] = ["Pages", "Posts", "Projects", "Socials", "Links"];
 const SECTION_CLASS: Record<Section, string> = {
   Pages: "search-item",
+  // Internal destinations, so they read as navigation rather than as links off
+  // the site -- the same class the nav rows already use.
+  Posts: "search-item",
+  Projects: "search-item",
   Socials: "social-item",
   Links: "external-item",
 };
+
+/**
+ * The content rows.
+ *
+ * The palette indexed pages, socials and CV links, which is everything except
+ * the two things the site is mostly made of -- it could not find a post or a
+ * project. These arrive from `/api/search` when the palette is first opened,
+ * rather than in the payload of every page, and `content` is null until then.
+ *
+ * `as Route` is the one cast here, and it is honest: `typedRoutes` cannot check
+ * a slug that comes out of the database, and `/blog/[slug]` is a route that
+ * exists. What it cannot promise is that the row is still there, which is the
+ * same promise the blog listing does not make either.
+ */
+function contentEntries(content: PaletteContent | null): SearchEntry[] {
+  if (!content) return [];
+  return [
+    ...content.posts.map(
+      (post): SearchEntry => ({
+        label: post.title,
+        keywords: post.keywords,
+        icon: BlogIcon,
+        section: "Posts",
+        href: `/blog/${post.slug}` as Route,
+      }),
+    ),
+    ...content.projects.map(
+      (entry): SearchEntry => ({
+        label: entry.title,
+        keywords: entry.keywords,
+        icon: ProjectsIcon,
+        section: "Projects",
+        href: `/projects/${entry.slug}` as Route,
+      }),
+    ),
+  ];
+}
 
 function SearchModal({
   about,
@@ -232,7 +278,29 @@ function SearchModal({
   // block below.
   const [highlighted, setHighlighted] = useState(NO_HIGHLIGHT);
 
-  const entries = useMemo(() => buildEntries(about), [about]);
+  /*
+   * Asked for once, on the first open, and kept for the life of the page.
+   *
+   * A ref rather than a `content === null` test, so a request that fails or
+   * comes back empty is not retried on every open. The palette is fully usable
+   * without it -- the pages, socials and links are built locally -- so a
+   * failure degrades to what it did before rather than to an error.
+   */
+  const [content, setContent] = useState<PaletteContent | null>(null);
+  const asked = useRef(false);
+  useEffect(() => {
+    if (!isOpen || asked.current) return;
+    asked.current = true;
+    void fetch("/api/search")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((body: { data?: PaletteContent } | null) => setContent(body?.data ?? null))
+      .catch(() => {});
+  }, [isOpen]);
+
+  const entries = useMemo(
+    () => [...buildEntries(about), ...contentEntries(content)],
+    [about, content],
+  );
 
   const matches = useMemo(() => {
     const q = query.toLowerCase().trim();
@@ -380,7 +448,7 @@ function SearchModal({
 
   if (!mounted) return null;
 
-  // The keyboard highlight walks one flat list across all three sections, so
+  // The keyboard highlight walks one flat list across every section, so
   // each entry needs its position in `matches`. Computed up front rather than
   // by incrementing a counter while rendering, which React 19 rejects as
   // reassignment after render completes.

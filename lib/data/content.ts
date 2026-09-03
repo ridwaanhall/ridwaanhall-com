@@ -45,9 +45,23 @@ type ImageCompat = {
   image_list?: string[];
   image_names?: string[];
   image_count?: number;
+  /**
+   * What each image is described as, positionally alongside `image_list`.
+   *
+   * A parallel array rather than a richer `images` map, because that map is
+   * part of the JSON these endpoints already serve -- turning its values into
+   * objects would break every reader of it to add a field most do not want.
+   *
+   * An entry is `""` where nothing has been written, which is the common case
+   * and not an error: the caller falls back to a description built from the
+   * record. The whole point of the column is the case that fallback cannot
+   * serve -- five screenshots on one post, which it describes five times as
+   * that post's title.
+   */
+  image_alts?: string[];
 };
 
-function withImageCompat<T extends ImageCompat>(data: T): T {
+function withImageCompat<T extends ImageCompat>(data: T, alts: Record<string, string> = {}): T {
   const names = Object.keys(data.images);
   if (names.length === 0) return data;
   const urls = Object.values(data.images);
@@ -58,6 +72,9 @@ function withImageCompat<T extends ImageCompat>(data: T): T {
     image_list: urls,
     image_names: names,
     image_count: names.length,
+    // Built from `names` rather than from the alt map's own key order, so the
+    // three arrays line up positionally however the map was assembled.
+    image_alts: names.map((name) => alts[name] ?? ""),
   };
 }
 
@@ -124,12 +141,24 @@ export type Project = ImageCompat & {
 };
 
 /**
- * Every blog post, newest first.
+ * Every **published** blog post, newest first.
  *
- * Newest first by `created_at`, **with `id` as a tiebreak**.
+ * `is_published` is the whole of what decides visibility, and this is the only
+ * place the public site asks. Everything downstream resolves through here --
+ * the listing, the detail pages, `generateStaticParams`, the sitemap, the JSON
+ * API and search -- so a draft is absent from all of them without any of them
+ * knowing the column exists.
+ *
+ * Deliberately not `published_at <= now()`. This is a cached read with a
+ * lifetime of days, so a clock comparison inside it is evaluated once when the
+ * entry is filled and then frozen: a post scheduled for tomorrow would stay
+ * hidden for days after its moment. The flag moves instead, and
+ * `app/api/cron/publish` is what moves it.
+ *
+ * Newest first by `published_at`, **with `id` as a tiebreak**.
  *
  * That is not tidiness. Four posts share the exact timestamp
- * 2025-03-23T17:00:00Z, and ordering by `created_at` alone leaves their
+ * 2025-03-23T17:00:00Z, and ordering by `published_at` alone leaves their
  * relative order to Postgres' physical row order -- which is not an order at
  * all, just wherever the tuples happen to sit. It is stable only until
  * something rewrites them: adding the `content_html` column and populating it
@@ -166,6 +195,7 @@ export async function getBlogs(): Promise<BlogPost[]> {
       .from(blogPost)
       .leftJoin(category, eq(category.id, blogPost.categoryId))
       .leftJoin(mediaAsset, eq(mediaAsset.id, blogPost.authorImageId))
+      .where(eq(blogPost.isPublished, true))
       .orderBy(desc(blogPost.publishedAt), desc(blogPost.id)),
     db
       .select({
@@ -173,6 +203,7 @@ export async function getBlogs(): Promise<BlogPost[]> {
         storageKey: mediaAsset.storageKey,
         source: mediaAsset.source,
         originalFilename: mediaAsset.originalFilename,
+        alt: mediaAsset.alt,
       })
       .from(blogImage)
       .innerJoin(mediaAsset, eq(mediaAsset.id, blogImage.mediaId))
@@ -188,6 +219,7 @@ export async function getBlogs(): Promise<BlogPost[]> {
   ]);
 
   const imagesByPost = groupAssets(images, (row) => row.postId);
+  const altsByPost = groupAlts(images, (row) => row.postId);
   const tagsByPost = collect(tagRows, (row) => row.postId, (row) => row.label);
 
   return posts.map((post) =>
@@ -212,16 +244,18 @@ export async function getBlogs(): Promise<BlogPost[]> {
       is_featured: post.isFeatured,
       read_time: post.readTime,
       views: post.views,
-    }),
+    }, altsByPost.get(post.id) ?? {}),
   );
 }
 
 /**
- * Every project, by id ascending.
+ * Every **published** project, oldest first.
  *
- * Matches `Project.Meta.ordering = ["id"]`, which is what
- * `ContentManager.get_projects()` returned. The presentation orderings that
- * `DataService.get_projects()` layered on top live in `sortProjects` below.
+ * Published for the reason `getBlogs` gives above, and by the same single
+ * column. The order here is only a stable base: what the site actually shows is
+ * `sortProjects` below, which leads on featured, then lifecycle status, then
+ * recency. Sorting by a column the rows agree on -- and tie-breaking on `id` --
+ * is what keeps that base from shifting under a rewrite.
  */
 export async function getProjects(): Promise<Project[]> {
   "use cache";
@@ -253,6 +287,7 @@ export async function getProjects(): Promise<Project[]> {
       .from(project)
       .leftJoin(category, eq(category.id, project.categoryId))
       .leftJoin(projectStatus, eq(projectStatus.id, project.statusId))
+      .where(eq(project.isPublished, true))
       .orderBy(asc(project.createdAt), asc(project.id)),
     db
       .select({
@@ -260,6 +295,7 @@ export async function getProjects(): Promise<Project[]> {
         storageKey: mediaAsset.storageKey,
         source: mediaAsset.source,
         originalFilename: mediaAsset.originalFilename,
+        alt: mediaAsset.alt,
       })
       .from(projectImage)
       .innerJoin(mediaAsset, eq(mediaAsset.id, projectImage.mediaId))
@@ -294,6 +330,7 @@ export async function getProjects(): Promise<Project[]> {
   ]);
 
   const imagesByProject = groupAssets(images, (row) => row.projectId);
+  const altsByProject = groupAlts(images, (row) => row.projectId);
   const tagsByProject = collect(tagRows, (row) => row.projectId, (row) => row.label);
   const featuresByProject = collect(features, (row) => row.projectId, (row) => ({
     title: row.title,
@@ -337,7 +374,7 @@ export async function getProjects(): Promise<Project[]> {
       status_rank: row.statusRank ?? Number.MAX_SAFE_INTEGER,
       created_at: row.createdAt ? new Date(row.createdAt) : null,
       updated_at: row.updatedAt ? new Date(row.updatedAt) : null,
-    }),
+    }, altsByProject.get(row.id) ?? {}),
   );
 }
 
@@ -345,9 +382,8 @@ export async function getProjects(): Promise<Project[]> {
  * Group child rows under their owner's id, in the order they arrived.
  *
  * Every read path here fans out with `Promise.all` and stitches the children
- * back together in memory rather than issuing a query per parent -- the same
- * shape the old `select_related`/`prefetch_related` pair produced, without the
- * N+1 that a naive port would have had.
+ * back together in memory rather than issuing a query per parent, which is
+ * what keeps a page of twenty posts at two queries instead of twenty-one.
  */
 function collect<T, V>(rows: T[], ownerId: (row: T) => string, value: (row: T) => V): Map<string, V[]> {
   const grouped = new Map<string, V[]>();
@@ -370,6 +406,28 @@ function groupAssets<T extends { storageKey: string; source: string; originalFil
     const owner = ownerId(row);
     const bucket = grouped.get(owner) ?? {};
     bucket[row.originalFilename] = assetUrl(row);
+    grouped.set(owner, bucket);
+  }
+  return grouped;
+}
+
+/**
+ * The same grouping, for what each image is described as.
+ *
+ * A second pass over rows already in memory rather than a wider `groupAssets`,
+ * which returns the map these endpoints publish as `images` -- widening it to
+ * hold pairs would change that JSON for every reader.
+ */
+function groupAlts<T extends { storageKey: string; originalFilename: string; alt: string }>(
+  rows: T[],
+  ownerId: (row: T) => string,
+): Map<string, Record<string, string>> {
+  const grouped = new Map<string, Record<string, string>>();
+  for (const row of rows) {
+    if (!row.storageKey || !row.alt) continue;
+    const owner = ownerId(row);
+    const bucket = grouped.get(owner) ?? {};
+    bucket[row.originalFilename] = row.alt;
     grouped.set(owner, bucket);
   }
   return grouped;
@@ -418,6 +476,17 @@ export function searchBlogs(blogs: BlogPost[], query: string): BlogPost[] {
     (blog) =>
       blog.title.toLowerCase().includes(q) ||
       blog.description.toLowerCase().includes(q) ||
+      /*
+       * The body, as `searchProjects` below has always searched its
+       * description. Without it the blog was the one content type written at
+       * length whose text could not be found -- a search matched the title, the
+       * summary, the byline and the tags, which is to say the parts of a post
+       * that are not the post.
+       *
+       * Stripped to text first, or the markup is searchable instead: "span"
+       * would match every post carrying one and "http" every post with a link.
+       */
+      plainText(blog.content_html).toLowerCase().includes(q) ||
       blog.author.toLowerCase().includes(q) ||
       blog.tags.some((tag) => String(tag).toLowerCase().includes(q)),
   );

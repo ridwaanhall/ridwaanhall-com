@@ -134,6 +134,7 @@ export default async function ProjectDetailPage({
                 <MediaGallery
                   images={project.image_list ?? []}
                   names={project.image_names ?? []}
+                alts={project.image_alts ?? []}
                   alt={project.title}
                   variant="project"
                   className="w-full"

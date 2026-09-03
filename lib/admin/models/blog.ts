@@ -24,6 +24,7 @@ export type BlogPostRow = {
   id: string;
   title: string;
   slug: string;
+  isPublished: boolean;
   isFeatured: boolean;
   views: number;
   createdAt: string;
@@ -37,6 +38,7 @@ export const blogPostList: AdminListModel<BlogPostRow> = {
     id: blogPost.id,
     title: blogPost.title,
     slug: blogPost.slug,
+    isPublished: blogPost.isPublished,
     isFeatured: blogPost.isFeatured,
     views: blogPost.views,
     createdAt: blogPost.publishedAt,
@@ -44,6 +46,15 @@ export const blogPostList: AdminListModel<BlogPostRow> = {
   columns: [
     { key: "title", label: "Title", sort: blogPost.title, value: (row) => row.title },
     { key: "slug", label: "Slug", kind: "code", sort: blogPost.slug, value: (row) => row.slug },
+    // Ahead of Featured, because an unpublished post being featured is not the
+    // more interesting half of that pair.
+    {
+      key: "is_published",
+      label: "Published",
+      kind: "bool",
+      sort: blogPost.isPublished,
+      value: (row) => row.isPublished,
+    },
     {
       key: "is_featured",
       label: "Featured",
@@ -67,6 +78,7 @@ export const blogPostList: AdminListModel<BlogPostRow> = {
     },
   ],
   filters: [
+    { key: "is_published", label: "Published", kind: "boolean", column: blogPost.isPublished },
     { key: "is_featured", label: "Featured", kind: "boolean", column: blogPost.isFeatured },
     // The categories actually present, not a fixed vocabulary, so a post that
     // introduces a new one adds its own filter option with nothing to update.
@@ -156,6 +168,13 @@ export const blogPostForm: AdminFormModel = {
           },
         },
         {
+          name: "isPublished",
+          column: blogPost.isPublished,
+          label: "Published",
+          kind: "checkbox",
+          help: "Off, the post exists only here -- absent from the blog, the sitemap, the API and search, and 404 at its own URL. To schedule one, set Published below to a future time and leave this off; it is switched on for you when that time passes.",
+        },
+        {
           name: "isFeatured",
           column: blogPost.isFeatured,
           label: "Featured",
@@ -232,6 +251,7 @@ export const blogPostForm: AdminFormModel = {
           column: blogPost.publishedAt,
           label: "Published",
           kind: "datetime",
+          help: "When, not whether -- it orders the blog page and it is the time the schedule waits for. Published above is what decides visibility.",
         },
         {
           name: "updatedAt",

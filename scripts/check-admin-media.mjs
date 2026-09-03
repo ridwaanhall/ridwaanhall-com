@@ -52,7 +52,7 @@ const { formFields } = await import("../lib/admin/form.ts");
 const { imageFields } = await import("../lib/admin/images.ts");
 const { loadFormValues } = await import("../lib/admin/record.ts");
 const { loadInlineRows, inlineImageKeys } = await import("../lib/admin/inlines.ts");
-const { imageUrlMap, keyForMediaId, mediaIdForKey } = await import("../lib/admin/media.ts");
+const { imageMeta, keyForMediaId, mediaIdForKey } = await import("../lib/admin/media.ts");
 const { objectExists } = await import("../lib/storage/objects.ts");
 const { eq, isNotNull } = await import("drizzle-orm");
 
@@ -110,7 +110,7 @@ for (const [key, model] of Object.entries(ADMIN_FORM_MODELS)) {
       typeof value === "string" && value !== "" && !UUID.test(value) && assets.has(value),
       String(value),
     );
-    for (const [name, url] of Object.entries(await imageUrlMap(model, values, {}))) {
+    for (const [name, url] of Object.entries((await imageMeta(model, values, {})).imageUrls)) {
       previews.set(`${key}.${name}`, url);
     }
   }
@@ -127,7 +127,7 @@ for (const [key, model] of Object.entries(ADMIN_FORM_MODELS)) {
         String(value),
       );
       for (const [name, url] of Object.entries(
-        await imageUrlMap(model, await loadFormValues(model, parentId), { [inline.name]: rows }),
+        (await imageMeta(model, await loadFormValues(model, parentId), { [inline.name]: rows })).imageUrls,
       )) {
         previews.set(`${key}/${name}`, url);
       }

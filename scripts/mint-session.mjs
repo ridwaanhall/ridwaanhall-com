@@ -1,5 +1,5 @@
 /**
- * Mint an Auth.js session cookie for a given `auth_user.id`.
+ * Mint an Auth.js session cookie for a given `account.id`.
  *
  * Signing in for real means driving a Google or GitHub consent screen, which a
  * check script cannot do. The session is a JWT this app signs itself, so the

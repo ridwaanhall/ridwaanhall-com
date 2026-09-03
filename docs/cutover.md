@@ -24,6 +24,7 @@ exactly why an unset one is easy to miss:
 | `DEFAULT_FROM_EMAIL` on an unverified domain | Every send 403s, naming the domain |
 | `CF_TURNSTILE_SECRET_KEY` | **Spam verification passes by design.** The form works and the gate is open |
 | `GITHUB_ACCESS_TOKEN` / `WAKATIME_API_KEY` | The dashboard panel is simply absent |
+| `CRON_SECRET` | **Scheduled posts never appear.** Everything else works; the endpoint answers 503 and only the publish workflow's own log says so — and it needs setting as a repository secret too, matching |
 | `STORAGE_SUPABASE_SERVICE_ROLE_KEY` | Admin uploads fail |
 
 **OAuth redirect URIs.** Both providers need

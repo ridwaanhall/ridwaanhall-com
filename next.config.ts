@@ -12,6 +12,20 @@ const supabaseHost = process.env.STORAGE_SUPABASE_URL
   ? new URL(process.env.STORAGE_SUPABASE_URL).hostname
   : undefined;
 
+/**
+ * Where violation reports go, as an absolute URL.
+ *
+ * `Reporting-Endpoints` takes a URL and browsers are not obliged to resolve a
+ * relative one, so this is built rather than written `/api/csp-report`. The
+ * legacy `report-uri` directive below is relative because that one always
+ * accepted it, and a site served on a host this variable does not name still
+ * gets reports through it.
+ */
+const REPORT_PATH = "/api/csp-report";
+const reportUrl = process.env.NEXT_PUBLIC_BASE_URL
+  ? new URL(REPORT_PATH, process.env.NEXT_PUBLIC_BASE_URL).toString()
+  : undefined;
+
 const nextConfig: NextConfig = {
   // Opts into `use cache` / `cacheTag` / `cacheLife`. Tag revalidation is
   // cross-instance by construction, which is what makes it usable on
@@ -151,7 +165,21 @@ const nextConfig: NextConfig = {
       "connect-src 'self' https://challenges.cloudflare.com",
       // The Turnstile widget renders in an iframe.
       "frame-src https://challenges.cloudflare.com",
-    ].join("; ");
+      /*
+       * Both, because two generations of this feature are in the field: Safari
+       * only speaks `report-uri`, and it is deprecated everywhere else. A
+       * browser that understands `report-to` ignores `report-uri`, so the pair
+       * does not double up.
+       *
+       * Without either -- which is how this shipped -- a report-only policy
+       * blocks nothing and reports nowhere, so the evidence its own comment
+       * asks for before promoting it can never arrive.
+       */
+      reportUrl ? "report-to csp-endpoint" : "",
+      `report-uri ${REPORT_PATH}`,
+    ]
+      .filter(Boolean)
+      .join("; ");
 
     return [
       {
@@ -165,6 +193,16 @@ const nextConfig: NextConfig = {
            * belongs in its own change once the reports are quiet.
            */
           { key: "Content-Security-Policy-Report-Only", value: csp },
+
+          /*
+           * Names the endpoint `report-to` refers to. Omitted rather than sent
+           * empty when there is no base URL to build one from, since a group
+           * the policy names and this header does not define is a report the
+           * browser drops.
+           */
+          ...(reportUrl
+            ? [{ key: "Reporting-Endpoints", value: `csp-endpoint="${reportUrl}"` }]
+            : []),
 
           /*
            * Two years, with preload. HSTS is hard to walk back -- a browser

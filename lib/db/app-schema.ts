@@ -120,6 +120,7 @@ export const blogPost = app.table("blog_post", {
   views: integer().notNull().default(0),
   publishedAt: timestamp("published_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  isPublished: boolean("is_published").notNull().default(false),
 });
 
 export const blogTag = app.table("blog_tag", {
@@ -427,6 +428,7 @@ export const project = app.table("project", {
   featuredPriority: integer("featured_priority"),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  isPublished: boolean("is_published").notNull().default(false),
 });
 
 export const projectFeature = app.table("project_feature", {

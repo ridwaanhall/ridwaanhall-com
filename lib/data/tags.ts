@@ -90,9 +90,17 @@ export const MODEL_TAGS: Record<string, readonly Tag[]> = {
 
   /*
    * Shared lookups, which is where the "err towards listing it" rule earns its
-   * keep. An organization is named by experience, education, certifications and
-   * awards; a tag by blog posts and projects; a location by the profile and by
-   * anything that records one.
+   * keep. An organization is named by experience, education, certifications,
+   * awards and applications; a tag by blog posts and projects; a location by
+   * the profile and by anything that records one.
+   *
+   * Applications were missing from that list, and the miss was invisible in the
+   * way these always are: `getApplications` selects `organization.name` and
+   * renders it on every card, so renaming an organization left the old name on
+   * screen for a `cacheLife("days")` window while every other area updated at
+   * once. Nothing was stored wrong and no check went red -- `location` two
+   * entries down had already been corrected for the same reason, which is what
+   * makes a hand-written list like this the thing to distrust.
    */
   organization: [
     TAGS.organization,
@@ -100,6 +108,7 @@ export const MODEL_TAGS: Record<string, readonly Tag[]> = {
     TAGS.education,
     TAGS.certification,
     TAGS.award,
+    TAGS.application,
   ],
   tag: [TAGS.blog, TAGS.project],
   category: [TAGS.skill, TAGS.blog, TAGS.project],

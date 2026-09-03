@@ -289,6 +289,115 @@ Everything else creates, reads, updates and deletes, subject to the grant.
 `scripts/check-admin-forms.mjs` asserts both directions; "no add form" on its
 own is satisfied by an admin that cannot create anything at all.
 
+### A draft is a row, and only one column decides
+
+`blog_post.is_published` and `project.is_published` are the whole of what the
+public site looks at. `getBlogs` and `getProjects` in `lib/data/content.ts` are
+the only two places that ask, and everything a reader can reach resolves
+through them -- the listings, the detail pages, `generateStaticParams`, the
+sitemap, the JSON API and search -- so a draft is absent from all of them
+without any of them knowing the column exists.
+
+Both default to **off**, so a create through the admin is a draft. Before this
+existed, every save was a publish; there was no draft state anywhere except
+`legal_document.is_published`.
+
+**`published_at` is *when*, not *whether*.** That distinction is the reason for
+the column rather than a nicety: the read path had no `where` at all and merely
+ordered by `published_at DESC`, so setting it forward did not hide a post -- it
+sorted the unfinished draft **above everything finished** and prerendered it
+into the sitemap. The one control that read like "publish later" was the one
+that made the post most prominent.
+
+**The schedule cannot be `published_at <= now()` in the read path.** That is a
+cached function with a lifetime of days, so a clock comparison inside it is
+evaluated once when the entry is filled and frozen with it: a post scheduled
+for tomorrow would stay hidden for days after its moment. The flag moves
+instead, and `app/api/cron/publish` moves it, guarded by `CRON_SECRET`.
+
+**The schedule is a GitHub workflow rather than a Vercel cron**, and that is a
+plan limit rather than a preference. `vercel.json` carried a `crons` entry for
+about an hour: Hobby allows a cron job to run **once a day**, and a schedule it
+will not accept **fails the deployment** rather than the job -- so the site does
+not ship at all until the entry is removed, and the failure names a pricing page
+rather than a build error. A daily run would have been accepted and is not worth
+having, since a post due at nine could appear any time in the next twenty-four
+hours. `.github/workflows/publish.yml` calls the same endpoint every fifteen
+minutes; moving back is deleting that file and restoring the key, on a plan that
+allows it.
+
+That endpoint **fails closed when the secret is unset** -- unlike
+`verifyTurnstile`, which passes. The asymmetry is deliberate: an unconfigured
+spam gate is a gate nobody set up, while an unauthenticated route that flips
+`is_published` publishes drafts for anyone who finds the path. What it costs is
+the usual quiet failure, so `CRON_SECRET` is in `docs/cutover.md`'s table and
+`check-live-config.mjs` asks the endpoint for its refusal: 401 means a secret is
+set, 503 means there is none.
+
+**Only posts can be scheduled.** `project` carries the same flag but no column
+saying when it should go live, and that is the honest shape -- a project goes
+public when there is something to link to, which is not a date known in advance.
+
+**`updateTag` is refused in a route handler.** It is Server Actions only; the
+API reference says so outright and the error names the restriction. So the job
+uses `revalidateTag(TAGS.blog, "max")`, which marks the tag stale rather than
+expiring it -- the post appears on the request after the first rather than on
+the first. Seconds, against a schedule measured in days. It is called **only
+when a row actually moved**: marking the tag every run would discard the blog
+payload hourly, which is the opposite of what `cacheLife("days")` is for.
+
+There is **no preview of a draft yet**. Seeing one rendered means publishing it,
+looking, and unpublishing -- the article page is 194 lines of inline JSX rather
+than a component something else could render, and `draftMode()` is not the way
+round it: reading it in `/blog/[slug]` makes that route dynamic for every
+reader, not only for staff.
+
+### An image describes itself, and the record is only the fallback
+
+`media_asset.alt` was in the schema from the first migration and was the one
+column in it that **nothing read and nothing wrote** -- no form offered a field,
+no query selected it, and `image-field.tsx` rendered its own preview with a
+hardcoded `alt=""`. Alt text came from the *record* instead: a post's title, or
+`"<title> — image N of M"` for a gallery. So a post with five screenshots
+described all five as that post's title, five times over.
+
+**The description is on the asset, not on the record**, which the schema had
+already decided and is the right grain: one file here is named by up to
+twenty-one rows, and a photo of a person is a photo of that person wherever it
+appears. Editing it anywhere changes it everywhere, deliberately.
+
+`altFieldName` makes it a sidecar input beside `__clear` and `__link`, so an
+inline row's box posts as `images:0:mediaId__alt` with nothing special-casing
+it. Two things about the write are easy to get wrong and invisible when you do:
+
+- **It has to survive a save that touches no bytes.** Editing a description
+  without replacing the image is the commonest thing anybody will do here, and
+  `applyImageFields` returns early for an untouched field long before it would
+  reach the description -- so the alt is read at the top of the loop and
+  recorded against whichever key the field ends up holding, including the
+  existing one.
+- **Inline rows count.** A gallery *is* inlines, so an implementation that
+  handled only the record's own fields would work on the author photo and
+  silently do nothing on every image the feature exists for. `saveInlines`
+  returns its alts the way it returns `stale`, and `saveRecord` writes both maps
+  at once.
+
+On the way out it is `image_alts`, a **parallel array** rather than a richer
+`images` map. That map is published as-is by `/api/blog` and `/api/projects`;
+turning its values into objects would change that JSON for every reader to add
+a field most of them do not want. An entry is `""` where nothing has been
+written, which is most of them, and `MediaGallery` falls back to the built
+description there -- the two are asserted separately in
+`scripts/check-image-alt.mjs`, because preferring the stored one and keeping the
+fallback are different bugs and a check that conflates them passes while most of
+the site's images say nothing.
+
+**That harness waits for the "Saved." notice, not for `networkidle`.** The save
+is a server action and the network settles while the write is still in flight,
+so reading the row straight after reported an empty description and a working
+pipeline as broken -- twice, and the second time after a dev-server restart that
+was blamed for it.
+
 ### The matrix has to describe the role it is looking at
 
 The access screen draws a dash where an action cannot be granted, and there are
@@ -855,6 +964,21 @@ seen.
   — "Administrative Human Resources" is listed three times, from SHRM, HRCI and
   LinkedIn Learning — so the same title on the same date is not a duplicate
   unless the issuer matches too.
+- **The command palette reaches the content, and the listing search reads the
+  body.** Two halves of one gap. The palette indexed pages, socials and CV
+  links -- everything the site has except the two things it is made of -- so a
+  reader who remembered a post's title could not get to it from there. Its rows
+  now come from `/api/search` on the first open rather than in every page's
+  payload, which is eighty-odd titles that most readers never ask for. A row is
+  an `li` with a click handler, not an anchor, because this palette navigates
+  through the router: a check looking for `a[href^="/blog/"]` finds nothing, and
+  a `:below(heading)` selector counts the next section's rows too, so
+  `check-ui-state.mjs` asks for the section heading and the row count instead.
+  Separately, `searchBlogs` matched the title, summary, byline and tags but not
+  the body -- the blog was the one content type written at length whose text
+  could not be found -- while `searchProjects` had always searched its
+  description. Both strip to plain text first, or `href` and `span` become
+  search terms.
 - **A changelist may pin rows, and only in its default ordering.** `pinned` on
   an `AdminListModel` leads the order clause so the certifications the about
   page is curated around are reachable without paging through a hundred and
@@ -996,6 +1120,7 @@ npx tsx --conditions=react-server scripts/check-page-loading.mjs   # bar + skele
 npx tsx --conditions=react-server scripts/check-skeleton-shape.mjs # each skeleton vs its page
 npx tsx scripts/check-auth-adapter.mjs                 # Auth.js vs the live schema
 npx tsx scripts/check-comments.mjs                     # comment rules, rolled back
+node scripts/check-drafts.mjs                           # a draft stays a draft
 npx tsx scripts/check-public-access.mjs                # who may post, and what is_active means
 npx tsx scripts/check-emails.mjs                       # all five templates
 npx tsx scripts/check-db-classes.mjs                   # no classes in stored content
@@ -1004,6 +1129,7 @@ npx tsx scripts/check-account-panel.mjs                 # sign in / sign out, bo
 npx tsx --conditions=react-server scripts/check-turnstile.mjs
 npx tsx --conditions=react-server scripts/check-storage.mjs
 npx tsx --conditions=react-server scripts/check-admin-media.mjs   # the id/key seam
+npx tsx --conditions=react-server scripts/check-image-alt.mjs      # an image says what it is
 npx tsx --conditions=react-server scripts/check-admin-image-link.mjs # upload and link, one bucket
 npx tsx scripts/check-admin-usage.mjs                   # every FK into a lookup table is counted
 npx tsx scripts/check-admin.mjs

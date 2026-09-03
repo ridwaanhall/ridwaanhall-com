@@ -15,23 +15,19 @@ import { normaliseNewlines } from "@/lib/utils/newlines";
 /**
  * The guestbook's mutations.
  *
- * These replace the three AJAX views. The shape of the exchange changes and the
- * reason is worth recording: `SendMessageView` returned the whole messages
- * panel as rendered HTML inside a JSON field for the client to swap in
- * wholesale. The reason for that shape is real -- appending one node
- * client-side means deciding where it goes, which depends on the depth cap and
- * on whether its parent fell inside the fetched window, and that is a second
- * implementation of the threading free to disagree with the first.
- *
- * `revalidatePath` gets the same property without the HTML-in-JSON: the server
- * re-runs `getThread()` and React reconciles the result. There is still exactly
- * one implementation of the threading and one definition of the markup, which
- * was the whole point.
+ * **None of these returns markup, and that is the point.** Appending one
+ * message client-side means deciding where it goes, which depends on the depth
+ * cap and on whether its parent fell inside the fetched window -- a second
+ * implementation of the threading, free to disagree with the first.
+ * `revalidatePath` avoids that: the server re-runs `getThread()` and React
+ * reconciles the result, so there is one implementation of the threading and
+ * one definition of the markup.
  *
  * **Every action re-checks permission from the database.** The session token
- * says who you are; `getUserProfile` says what you may do. A JWT held for
- * thirty days must not be the authority on who can delete other people's
- * messages -- revoking co-author would not take effect until it expired.
+ * says who you are; `getUserProfile` says what you may do. Sessions are
+ * thirty-day JWTs, so a token that carried the answer would keep asserting it
+ * for a month after somebody's staff flag was cleared -- and deleting other
+ * people's messages is not a thing to be wrong about for a month.
  *
  * Notices are worded here rather than in the client, so these and the comment
  * views stay parallel: a reader sees one feature and it should not phrase
@@ -41,6 +37,15 @@ import { normaliseNewlines } from "@/lib/utils/newlines";
 export type ActionResult = { ok: true; notice: string } | { ok: false; error: string };
 
 const GUESTBOOK_PATH = "/guestbook";
+
+/**
+ * The key every guestbook pin contends on.
+ *
+ * Arbitrary, and it only has to be stable: advisory locks share one namespace
+ * across the whole database, so a second feature wanting one picks a different
+ * number and records it beside this.
+ */
+const GUESTBOOK_PIN_LOCK = 8_471_002;
 
 async function currentProfile() {
   const session = await auth();
@@ -201,16 +206,25 @@ export async function togglePin(messageId: string): Promise<ActionResult> {
    * Pinning is capped, and the cap has to hold under concurrency.
    *
    * Two requests could otherwise both read a count under the limit and both
-   * save, pushing the pinned set past MAX_PINNED. Serialising them on one
-   * deterministic row lock -- the lowest id, which every pinner contends on --
-   * is what the original did, and for the reason it recorded: locking only the
-   * currently-pinned rows locks nothing when none are pinned yet, and can never
-   * cover a row another transaction is in the middle of flipping.
+   * save, pushing the pinned set past MAX_PINNED. So every pinner contends on
+   * one lock, held for the transaction that reads the count and writes the flag.
+   *
+   * **An advisory lock, not a row lock**, and the difference is not cosmetic.
+   * A row lock has to name a table, and a table name in a raw SQL string is
+   * invisible to `tsc`, to eslint, to the build and to the unit suite -- so
+   * nothing objects when it names a table this schema does not have, and
+   * `search_path` resolves it against whatever schema does. A row lock also has
+   * to find a *row*, so it locks nothing while the table is empty, which is
+   * precisely when two first pins would race. This names neither: the key is a
+   * constant, the lock exists whether or not any message does, and Postgres
+   * releases it when the transaction ends rather than in a `finally` somebody
+   * has to remember to write.
+   *
+   * The cast is what picks the overload -- `pg_advisory_xact_lock` accepts one
+   * bigint and also two ints, and an untyped parameter leaves that ambiguous.
    */
   const result = await db.transaction(async (tx) => {
-    await tx.execute(
-      sql`select id from guestbook_chatmessage order by id limit 1 for update`,
-    );
+    await tx.execute(sql`select pg_advisory_xact_lock(${GUESTBOOK_PIN_LOCK}::bigint)`);
 
     // Excluding this message means a concurrent request that already pinned it
     // does not make re-pinning it look like it would exceed the cap.

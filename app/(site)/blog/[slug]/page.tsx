@@ -147,6 +147,7 @@ export default async function BlogDetailPage({
               <MediaGallery
                 images={post.image_list ?? []}
                 names={post.image_names ?? []}
+                alts={post.image_alts ?? []}
                 alt={post.title}
                 variant="blog"
                 className="mb-6 md:mb-8"

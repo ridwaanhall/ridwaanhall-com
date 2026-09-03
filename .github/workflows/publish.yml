@@ -1,0 +1,70 @@
+name: Publish scheduled posts
+
+# Every fifteen minutes, plus a button for when somebody wants it now.
+#
+# **Not a Vercel cron, and not by preference.** `vercel.json` carried one for
+# about an hour: on the Hobby plan a cron job may run *once a day*, and a
+# schedule the plan will not accept fails the deployment rather than the job --
+# so the site does not ship at all until the entry is removed. A daily run would
+# have been accepted and was not worth having: a post due at nine could appear
+# at any point in the following twenty-four hours, which is not a schedule.
+#
+# The endpoint is the same either way, so moving back to a Vercel cron is
+# deleting this file and putting the `crons` key back, on a plan that allows it.
+#
+# GitHub delays scheduled runs under load, often by several minutes and
+# occasionally by more. That is the right kind of imprecision for something
+# measured in days -- and unlike the Vercel limit, being late is all it is.
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+# It calls one endpoint and reads nothing back out of the repository.
+permissions: {}
+
+concurrency:
+  group: publish-scheduled-posts
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask the site to publish anything due
+        env:
+          # Set both as repository secrets. `CRON_SECRET` has to match the one
+          # in the Vercel project, or the endpoint answers 401 and every run
+          # here fails -- which is the intended way to find that out.
+          SITE_URL: ${{ secrets.SITE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${CRON_SECRET:-}" ]; then
+            echo "CRON_SECRET is not set on this repository."
+            echo "Scheduled posts will never be published until it is."
+            exit 1
+          fi
+
+          # The body is worth printing: it names the slugs that went live, so a
+          # run that published nothing and a run that published four are told
+          # apart in the log rather than by going and looking.
+          response=$(mktemp)
+          status=$(curl -sS -o "$response" -w "%{http_code}" \
+            --max-time 60 --retry 2 --retry-connrefused \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            "${SITE_URL:-https://ridwaanhall.com}/api/cron/publish")
+
+          echo "HTTP ${status}"
+          cat "$response"
+          echo
+
+          # 503 means the site has no CRON_SECRET of its own, which is a
+          # different repair from 401 and worth failing separately for.
+          case "$status" in
+            200) ;;
+            401) echo "The site refused the secret this workflow sent."; exit 1 ;;
+            503) echo "The site has no CRON_SECRET set; it cannot publish anything."; exit 1 ;;
+            *) echo "Unexpected status."; exit 1 ;;
+          esac

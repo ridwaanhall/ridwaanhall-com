@@ -1,6 +1,7 @@
 import "server-only";
 
 import {
+  altFieldName,
   clearFieldName,
   linkFieldName,
   MAX_UPLOAD_BYTES,
@@ -21,7 +22,19 @@ import { putObject } from "@/lib/storage/objects";
  */
 
 export type ImageOutcome =
-  | { ok: true; values: FormValues; stale: string[] }
+  | {
+      ok: true;
+      values: FormValues;
+      stale: string[];
+      /**
+       * Alt text to write, keyed by **storage key** rather than by field.
+       *
+       * That is the grain `media_asset.alt` is stored at: one description per
+       * file, shared by every row naming it. Two fields carrying the same photo
+       * therefore collapse to one entry rather than fighting each other.
+       */
+      alts: Record<string, string>;
+    }
   | { ok: false; errors: Record<string, string> };
 
 /**
@@ -83,6 +96,7 @@ export async function applyImageFields(
   const values: FormValues = {};
   const errors: Record<string, string> = {};
   const stale: string[] = [];
+  const alts: Record<string, string> = {};
 
   for (const field of fields) {
     const name = `${prefix}${field.name}`;
@@ -90,6 +104,22 @@ export async function applyImageFields(
     const file = uploaded instanceof File && uploaded.size > 0 ? uploaded : null;
     const link = data.get(linkFieldName(name));
     const existing = current[field.name] ?? "";
+
+    /*
+     * Read before the source is decided, and recorded against whichever key
+     * the field ends up holding.
+     *
+     * A description is not bytes: it is edited on its own far more often than
+     * the image is replaced, and the commonest save touches no image at all.
+     * So this cannot live inside the branches below -- `untouched` returns
+     * before any of them, which is exactly the save where somebody has typed a
+     * description and nothing else.
+     */
+    const altValue = data.get(altFieldName(name));
+    const alt = typeof altValue === "string" ? altValue.trim() : null;
+    const describe = (key: string) => {
+      if (alt !== null && key) alts[key] = alt;
+    };
 
     const source = imageSourceFor({
       label: field.label,
@@ -105,11 +135,16 @@ export async function applyImageFields(
       continue;
     }
 
-    if (source.kind === "untouched") continue;
+    if (source.kind === "untouched") {
+      describe(existing);
+      continue;
+    }
 
     if (source.kind === "clear") {
       values[field.name] = field.column.notNull ? "" : null;
       if (existing) stale.push(existing);
+      // Nothing to describe: the field no longer names a file. The asset's own
+      // alt stays put for whatever else still points at it.
       continue;
     }
 
@@ -152,13 +187,14 @@ export async function applyImageFields(
     }
 
     values[field.name] = stored.key;
+    describe(stored.key);
     // Equal keys mean the same bytes -- the name carries a digest of them -- so
     // there is nothing stale to clean up. That holds across the two doors as
     // well: linking the image that is already stored there is a no-op.
     if (existing && existing !== stored.key) stale.push(existing);
   }
 
-  return Object.keys(errors).length > 0 ? { ok: false, errors } : { ok: true, values, stale };
+  return Object.keys(errors).length > 0 ? { ok: false, errors } : { ok: true, values, stale, alts };
 }
 
 /**

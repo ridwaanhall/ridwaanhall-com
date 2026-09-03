@@ -62,6 +62,49 @@ await page.fill("#search-modal input", "");
 await page.waitForTimeout(300);
 check("clearing the query unmarks again", (await marked()) === 0);
 
+/*
+ * The palette can reach the content, not only the furniture.
+ *
+ * It indexed pages, socials and CV links -- everything the site has except the
+ * two things it is made of -- so a reader who remembered a post's title had no
+ * way to get to it from here. The rows arrive from `/api/search` on the first
+ * open, so this is also the check that the fetch happened at all: without it
+ * the palette still works and simply never finds anything, which is exactly how
+ * it behaved before and reads as nothing being wrong.
+ */
+/*
+ * By section heading and row count, because a row here is a `li` with a click
+ * handler rather than an anchor -- this palette navigates through the router.
+ * Two earlier drafts of this asked for `a[href^="/blog/"]`, found nothing, and
+ * one of them still passed, because a `:below(heading)` selector counts every
+ * row beneath it including the next section's.
+ */
+const paletteText = await page.locator("#search-modal").innerText();
+check("the palette lists posts", paletteText.includes("POSTS"));
+check("and projects", paletteText.includes("PROJECTS"));
+
+/*
+ * The title is read from the endpoint the palette itself reads, so this does
+ * not carry a copy of somebody's post title that goes stale the day it is
+ * renamed. What it proves is the join: a title the API serves is a title the
+ * palette can be made to highlight.
+ */
+const catalogue = await (await fetch(`${BASE}/api/search`)).json();
+const sample = catalogue?.data?.posts?.[0]?.title ?? "";
+check("the palette's source lists at least one post", sample.length > 0, sample);
+
+await page.fill("#search-modal input", sample.slice(0, 18));
+await page.waitForTimeout(400);
+const found = (await page.locator("#search-modal li.highlighted").first().textContent()) ?? "";
+check(
+  "and typing a post's title marks that post",
+  found.toLowerCase().includes(sample.slice(0, 18).toLowerCase()),
+  found.trim().slice(0, 32),
+);
+
+await page.fill("#search-modal input", "");
+await page.waitForTimeout(300);
+
 await page.keyboard.press("Escape");
 await page.waitForTimeout(400);
 

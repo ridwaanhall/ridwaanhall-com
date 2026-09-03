@@ -76,6 +76,31 @@ const needles = [
   word("Base", "View"),
   word("List", "View"),
   word("Detail", "View"),
+
+  /*
+   * The old schema's table names.
+   *
+   * These are the first needles here that are not about *prose*. A comment
+   * citing the previous stack is unopenable; a raw SQL string naming one of its
+   * tables is load-bearing, and the way it fails is worse. `togglePin` locked
+   * one of these to serialise the pin cap: unqualified, so `search_path`
+   * resolved it past `app` into the schema left behind by the previous build,
+   * where it worked -- a lock only has to be the same row for everybody, and an
+   * arbitrary row in an unrelated schema is. Dropping that schema at cutover
+   * would have turned every pin into a `42P01`, and nothing else here could
+   * see it: raw SQL is invisible to the compiler, to eslint, to the build and
+   * to the unit suite alike.
+   *
+   * Named in full rather than by their shared prefix, which is a live path, a
+   * constant and two modules in this repository.
+   */
+  word("guestbook_", "chatmessage"),
+  word("guestbook_", "userprofile"),
+  word("auth_", "user"),
+
+  // The query-shaping pair, which read as ordinary nouns and are not.
+  word("select_", "related"),
+  word("prefetch_", "related"),
 ];
 
 /**
@@ -88,6 +113,12 @@ const needles = [
  * for a reason that has nothing to do with what it is for.
  */
 const patterns = [
+  /*
+   * The old ORM's field classes -- `TextField`, `CharField`, and the thirty
+   * others. A comment citing a column's old declaration says exactly what
+   * naming the framework says, and there are too many to list one at a time.
+   */
+  new RegExp(word("model", "s\.\w+", "Field\b")),
   new RegExp(word("\\", ".p", "y\\b")),
   new RegExp(word("[\\w-]+\\/[\\w-]+\\", ".htm", "l\\b")),
 ];
@@ -107,6 +138,20 @@ const CONTENT_MENTIONS = {
   "lib/seo/schema.ts": 1, // the same list again, in the JSON-LD `keywords`
   "components/site/search-form.tsx": 1, // a `?q=` example URL that searches for it
   "CODE_OF_CONDUCT.md": 1, // the Contributor Covenant's own URL, which ends in .html
+
+  /*
+   * The old schema's table names, in the three places naming them is the job.
+   *
+   * Two of these scripts exist only to read that schema -- one compares it row
+   * for row against `app`, the other copies across what it still holds -- and
+   * both are deleted with it at cutover, so these entries go the same way.
+   * CLAUDE.md is the trap log: it records a correlated subquery that bound to
+   * the wrong table, and that story does not survive having the table's name
+   * taken out of it.
+   */
+  "scripts/catch-up-from-public.mjs": 15,
+  "scripts/check-schema-parity.mjs": 4,
+  "CLAUDE.md": 1,
 };
 
 const tracked = execFileSync("git", ["ls-files"], { encoding: "utf8" })

@@ -97,11 +97,11 @@ try {
     check("createUser used the provider handle verbatim", row.username === "AdaLovelace", row.username);
     check("createUser split the name", row.first_name === "Ada" && row.last_name === "Lovelace");
     /*
-     * There is no password to check. `auth_user.password` was NOT NULL and the
-     * adapter filled it with an "unusable" `!` placeholder for accounts
-     * that could only ever sign in through a provider -- which is all 37 of
-     * them. Nothing authenticates against a password here, so the column is
-     * gone rather than filled with a value meaning "not applicable".
+     * There is no password to check, and no column to check one against. Every
+     * account here signs in through Google or GitHub, so a password column
+     * could only ever hold a value meaning "not applicable" -- which is a
+     * column that has to be filled, migrated and reasoned about forever in
+     * exchange for nothing.
      */
     check(
       "createUser left the account non-staff and active",

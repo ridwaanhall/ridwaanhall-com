@@ -146,6 +146,30 @@ try {
       !(policy["script-src"] ?? []).includes("'unsafe-eval'"),
       "script-src does not allow eval",
     );
+
+    /*
+     * A report-only policy that reports nowhere is the state this shipped in,
+     * and it is worse than no policy: it looks like a control and is not one,
+     * and the evidence its comment asks for before promoting it never arrives.
+     * So the reporting half is only required while the policy is report-only --
+     * an enforcing one is doing its job whether or not anybody is listening.
+     */
+    if (!enforcing) {
+      const group = policy["report-to"]?.[0];
+      const endpoints = headers.get("reporting-endpoints") ?? "";
+      check(
+        Boolean(policy["report-uri"] || group),
+        "a report-only policy says where to send reports",
+        "neither report-to nor report-uri is set, so nothing is collected",
+      );
+      if (group) {
+        check(
+          endpoints.includes(`${group}=`),
+          `Reporting-Endpoints defines the "${group}" group`,
+          `report-to names it and the header does not: ${endpoints || "(absent)"}`,
+        );
+      }
+    }
   }
 
   // A header set only on the document is a header most requests do not get.

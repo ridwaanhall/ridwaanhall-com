@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { BOXED_LABEL, CONTROL, INVALID } from "@/components/admin/control-classes";
-import { clearFieldName, linkFieldName, type ClientField } from "@/lib/admin/form";
+import { altFieldName, clearFieldName, linkFieldName, type ClientField } from "@/lib/admin/form";
 import { IMAGE_TYPES } from "@/lib/storage/keys";
 import { cn } from "@/lib/utils/cn";
 import { useHydrated } from "@/lib/utils/use-popover";
@@ -43,6 +43,7 @@ export function ImageField({
   invalid,
   storedKey,
   previewUrl,
+  alt,
 }: {
   field: ClientField;
   /** The input's `name`, already carrying an inline row's prefix. */
@@ -54,6 +55,8 @@ export function ImageField({
   storedKey: string;
   /** Built on the server: the host is not a `NEXT_PUBLIC_` variable. */
   previewUrl: string;
+  /** What the asset is described as today, or `""`. */
+  alt: string;
 }) {
   const hydrated = useHydrated();
   const [mode, setMode] = useState<Mode>("upload");
@@ -167,6 +170,38 @@ export function ImageField({
             Fetched and stored with your other media when you save.
           </p>
         </div>
+      </div>
+
+      {/*
+        What a reader who cannot see the image is told instead.
+
+        It writes `media_asset.alt`, which is on the *asset* rather than on the
+        record -- so it is one description per file, shared by every row naming
+        it. That is the right grain for what it says: a photo of a person is a
+        photo of that person wherever it appears.
+
+        Always enabled, unlike the two inputs above. It is not part of their
+        either/or -- a description can be edited without touching the image, and
+        `applyImageFields` reads it whether or not any bytes were supplied.
+
+        Empty is a real answer and not a missing one. A decorative image should
+        carry `alt=""`, which a screen reader skips; the site falls back to a
+        description built from the record only where nothing has been written
+        here.
+      */}
+      <div>
+        <label htmlFor={`${id}-alt`} className="mb-1 block w-fit text-xs text-zinc-400">
+          Alt text
+        </label>
+        <input
+          type="text"
+          id={`${id}-alt`}
+          name={altFieldName(name)}
+          defaultValue={alt}
+          maxLength={300}
+          placeholder="What is in the image?"
+          className={CONTROL}
+        />
       </div>
     </div>
   );

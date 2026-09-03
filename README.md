@@ -16,7 +16,7 @@
 - **Light and dark themes**: Dark by default, with a toggle in the sidebar and mobile navbar. Light mode is produced by remapping the Tailwind palette rather than by adding `dark:` variants, so both themes stay in sync automatically — see [Theming](#theming)
 - **Content caching**: Every read path is behind `use cache` with a tag per content area, so an edit invalidates only what it touched. Tag revalidation is cross-instance by construction, which matters on serverless where an edit handled by one instance must not leave the others stale
 - **Real-time dashboard**: Live GitHub contribution graph, WakaTime coding-activity stats, and a seven-day AI breakdown — tokens, estimated spend and cost by model — cut on Jakarta time and refreshed every 15 minutes
-- **Interactive guestbook**: Google/GitHub OAuth login, threaded replies, author/co-author roles, message pinning (up to 3 at a time), automatic link detection, email notifications — or disable it entirely with one env var
+- **Interactive guestbook**: Google/GitHub OAuth login, threaded replies, pinning by staff (up to 3 at a time), deletion by a superuser, automatic link detection, email notifications routed on role — or disable it entirely with one env var
 - **Blog and projects**: Paginated, searchable listings with multi-image support, tags, categories, threaded comments, and a project lifecycle status system
 - **SEO built in**: Per-page meta tags, Open Graph, Twitter Cards, JSON-LD schema, and auto-generated sitemaps/robots.txt
 - **Security-first**: row-level security on every Supabase table, an admin gated per screen — three roles and a view/add/change/delete grant on each of the thirty-five screens, all read from the database on every request and never carried in the session token — and Cloudflare Turnstile on the contact form
@@ -42,7 +42,7 @@
 app/
   (site)/            The public pages: home, about, blog, projects, dashboard,
                      contact, guestbook, openhire, legal
-  admin/             The admin. Two dynamic routes render all 18 screens
+  admin/             The admin. Two dynamic routes render all 35 screens
   api/               The few JSON endpoints the client actually calls
 components/
   site/              Page components
@@ -71,7 +71,7 @@ certifications, awards, skills, applications, projects, blog posts, legal
 documents, and the hiring / open-to-work status. Changing any of it is an edit
 in `/admin`, never a deploy.
 
-The schema is `drizzle/0000_init.sql` — 45 tables in their own `app` schema,
+The schema is `drizzle/0000_init.sql` — 53 tables in their own `app` schema,
 keyed by uuid, with real foreign keys and real referential actions. Run it once
 against an empty database and you have the whole thing. `lib/db/app-schema.ts`
 is the Drizzle mapping, generated from the live schema by
@@ -145,7 +145,7 @@ node scripts/apply-migration.mjs drizzle/0000_init.sql           # dry run first
 node scripts/apply-migration.mjs drizzle/0000_init.sql --apply
 ```
 
-That creates 45 tables and enables row-level security on every one of them.
+That creates 53 tables and enables row-level security on every one of them.
 `npx tsx scripts/check-baseline-schema.mjs` proves the file and the database
 agree, and `node scripts/db-probe.mjs` shows you what is there.
 

@@ -150,21 +150,47 @@ a file — one photo can easily be named by twenty rows, and deleting it because
 one of them stopped pointing at it would break the other nineteen.
 `scripts/check-storage.mjs` proves the column list against the live catalogue.
 
-## Known gap: HTTP security headers
+## HTTP security headers
 
-**This application does not currently set any HTTP security headers.** There is
-no `Content-Security-Policy`, `Strict-Transport-Security`, `X-Frame-Options`,
-`X-Content-Type-Options`, `Referrer-Policy` or `Permissions-Policy` configured
-in `next.config.ts`, and Vercel does not add them.
+`next.config.ts` sets seven, on every path: `Strict-Transport-Security`
+(two years, `includeSubDomains`, `preload`), `X-Content-Type-Options`,
+`X-Frame-Options`, `Referrer-Policy`, `Cross-Origin-Opener-Policy`,
+`Permissions-Policy` denying every powerful feature, and a content security
+policy. `scripts/check-headers.mjs` asserts all of them against a running app.
 
-If you are deploying this, add them. A `headers()` entry in `next.config.ts` is
-the place. CSP in particular needs testing against the real pages before it is
-enforced — start with `Content-Security-Policy-Report-Only`.
+Each origin in the policy is one the application actually loads from, and
+nothing else: the Turnstile widget and its frame, the Supabase host that serves
+uploaded media, and the three avatar hosts the guestbook and comments render
+from. The one exception is `static.cloudflareinsights.com`, which is listed
+because Cloudflare injects that script at its proxy whether or not the app asks
+for it. Widening a CSP is free and silent, so keep it to what breaks without it.
+
+### Known gap: the policy is report-only
+
+The header is `Content-Security-Policy-Report-Only`, so **nothing is blocked**.
+That is the state to fix rather than the state to keep, and promoting it is
+renaming the header — plus adding back `upgrade-insecure-requests`, which a
+browser ignores in report-only mode and complains about on every page load.
+
+Two things are worth knowing before you promote it:
+
+- `'unsafe-inline'` on `script-src` is deliberate and not removable here. The
+  theme is applied by a blocking pre-paint script, and the JSON-LD blocks are
+  inline scripts that CSP governs like any other. A nonce cannot be threaded
+  through a tree prerendered under `cacheComponents`, where the HTML exists
+  before any request does.
+- The rest of the policy still carries its weight without that — `default-src`,
+  `object-src 'none'`, `frame-ancestors 'none'`, `form-action` and a
+  `connect-src` that names two origins are what stop an injected script
+  loading or sending anything.
 
 ## If you are deploying this yourself
 
-1. **HTTPS only.** Enable HSTS once you are confident the certificate chain and
-   every subdomain are ready for it; HSTS is hard to walk back.
+1. **HTTPS only, and HSTS is already on.** The header ships with a two-year
+   `max-age`, `includeSubDomains` and `preload`. A browser that has seen it
+   refuses plain HTTP for the whole window whatever the site later says, so be
+   sure every subdomain is served over TLS *before* your first deploy, not
+   after.
 2. **Your own credentials.** Generate a fresh `AUTH_SECRET`, use your own OAuth
    applications, and register the redirect URIs for your domain. Never reuse
    the values from a fork.
@@ -189,6 +215,7 @@ real database and clean up after themselves. The ones that carry a security
 claim:
 
 ```bash
+node scripts/check-headers.mjs                                # every header, every origin
 npx tsx scripts/check-rls.mjs                                 # RLS on every table
 npx tsx scripts/check-admin.mjs                               # the admin gate leaks nothing
 npx tsx --conditions=react-server scripts/check-turnstile.mjs # the spam gate fails closed

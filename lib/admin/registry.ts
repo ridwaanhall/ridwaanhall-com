@@ -14,7 +14,7 @@
  * An ordinary screen is `/admin/<key>` -- one flat segment, not
  * `<area>/<model>`, because every model name in this project is unique and an
  * area segment would carry no information. A Settings screen is
- * `/admin/<section>/<key>`: seventeen of the thirty-four are the dropdown
+ * `/admin/<section>/<key>`: seventeen of the thirty-five are the dropdown
  * vocabularies the other screens choose from, and seventeen sidebar rows was
  * half the rail, so they are tabs on six section pages instead.
  *
@@ -69,7 +69,7 @@ export const ADMIN_GROUPS: AdminGroup[] = [
 /**
  * A Settings page, and the vocabularies that are tabs on it.
  *
- * Seventeen of the thirty-four screens here are the dropdown vocabularies
+ * Seventeen of the thirty-five screens here are the dropdown vocabularies
  * every other screen chooses from. As seventeen rows they were half the
  * sidebar and ran past the fold, which made the Settings heading a label on a
  * list rather than something that could put the list away.

@@ -14,7 +14,7 @@ import { getViewer } from "@/lib/auth/viewer";
  * inside the guestbook or a comment thread, and nothing anywhere said whether
  * anybody was signed in. So signing out of the admin -- which lands on the home
  * page -- looked exactly like signing out having failed. Whatever else changes
- * here, the sidebar has to keep answering "who is this" on sight.
+ * here, the chrome has to keep answering "who is this" on sight.
  *
  * **Signed in, that answer is the control.** The row naming the reader is the
  * button that opens their menu, so identity and the two things they can do
@@ -25,9 +25,9 @@ import { getViewer } from "@/lib/auth/viewer";
  * **Signed out, it stays a plain link.** One small pill, exactly as wide as its
  * label, and nothing hiding behind anything: this is what most readers get, and
  * it is the one control here that still works with no script at all. A control
- * the width of the column would read as the most important thing in the rail,
- * which it is not, and the availability chips beside `@username` had already
- * settled what a small, optional, self-sized control looks like here.
+ * as wide as whatever holds it would read as the most important thing in the
+ * chrome, which it is not, and the availability chips had already settled what
+ * a small, optional, self-sized control looks like here.
  *
  * **The hue waits to be asked for.** Both menu rows rest at the same grey and
  * take their colour on hover, the same bargain `StatusChip` strikes. Signing
@@ -42,12 +42,18 @@ import { getViewer } from "@/lib/auth/viewer";
  * links and drew it like one. It is an account action, and it belongs with the
  * other account action.
  *
- * This renders inside the sidebar's base, which owns the rule and the gutter --
- * see `SidebarFooter`. It is created once in `app/(site)/layout.tsx` and
- * rendered by both the rail and the drawer, so it streams into a layout that
- * stays fully prerendered. Both reads it makes are memoised for that reason:
- * the element renders twice per request, and without the memo that is two
- * identities and two staff checks to draw one row.
+ * **Two of these are created per request, one per placement.** They are made in
+ * `app/(site)/layout.tsx` and handed down as elements, so each streams into a
+ * layout that stays fully prerendered. One element rendered in both places
+ * cannot be two shapes -- the navbar's opens downward from a control the width
+ * of an avatar, the drawer's upward across a column -- and `variant` is what
+ * decides which. Both reads it makes are memoised, which is what makes the
+ * second element free: without the memo it would be two identities and two
+ * staff checks to draw one row.
+ *
+ * The drawer's copy renders inside the band that owns the rule and the gutter --
+ * see `SmallPrint`. The navbar's brings neither: a row that already has a
+ * bottom rule does not want a second one.
  */
 const PILL =
   "pill-badge cursor-pointer border border-zinc-700 px-2.5 py-1 text-xs text-zinc-400 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
@@ -68,7 +74,12 @@ const HOVER_ACCENT = "hover:border-indigo-700/60 hover:text-indigo-400";
 const HOVER_ADMIN = "hover:text-indigo-400";
 const HOVER_LEAVE = "hover:text-red-400";
 
-export async function AccountPanel() {
+export async function AccountPanel({
+  variant = "drawer",
+}: {
+  /** Where this copy is going: the navbar's row, or the drawer's band. */
+  variant?: "navbar" | "drawer";
+}) {
   const viewer = await getViewer();
   // Not from the session: `is_staff` is read from the database on every request
   // and never carried in the token -- see `lib/auth/staff.ts`.
@@ -99,6 +110,7 @@ export async function AccountPanel() {
       username={viewer.username}
       imageUrl={viewer.profileImage}
       role={role}
+      variant={variant}
     >
       {/* Admin above, and the act that costs something last. */}
       {staff && (
@@ -129,10 +141,11 @@ export async function AccountPanel() {
  *
  * Sized to the signed-out state, which is what most readers get: one `text-xs`
  * pill at the vertical padding it carries, so 26px tall and about as wide as
- * "Sign in". A signed-in row is 22px taller, and that difference is absorbed by
- * the rail's scroll region -- it sits above this and is the flexible child --
- * rather than moving the page. It draws no rule and no gutter of its own for
- * the same reason the real panel does not: the sidebar's base owns both.
+ * "Sign in". A signed-in row is 22px taller, and neither placement lets that
+ * difference move the page: the navbar's row is a fixed height, and in the
+ * drawer the band is pinned below a scroll region that absorbs it. It draws no
+ * rule and no gutter of its own for the same reason the real panel does not --
+ * whatever holds it owns both.
  */
 export function AccountPanelSkeleton() {
   return (

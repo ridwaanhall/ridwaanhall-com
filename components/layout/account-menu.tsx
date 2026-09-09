@@ -9,16 +9,26 @@ import { ROLE_BLURB, ROLE_LABEL, type SiteRole } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils/cn";
 
 /**
- * The account row at the base of the sidebar, and the menu behind it.
+ * The account control, and the menu behind it.
  *
- * The row is drawn to a nav item's geometry -- same inset, same corner, same
- * hover plate -- so it reads as the last entry in the sidebar's own list
- * rather than as a control bolted underneath it. What used to sit here was an
- * identity block with a second row of pills below it, which cost two rows and
- * put two session controls at the same weight as eight navigation links.
+ * The row is drawn to a nav item's geometry -- same corner, same hover plate --
+ * so it reads as one of the navigation's own entries rather than as a control
+ * bolted on beside them. What used to sit here was an identity block with a
+ * second row of pills below it, which cost two rows and put two session
+ * controls at the same weight as every navigation link.
  *
- * The menu opens *upward*. It is the last thing in a column pinned to the
- * bottom of the window, so there is nowhere below it to open into.
+ * **Which way it opens is the variant, and so is how much it says.** In the
+ * drawer it is the last thing in a column pinned to the bottom of the screen,
+ * with a column's width to spend: it opens upward, spans that width, and names
+ * the reader in two lines with their role beneath. In the navbar it shares a
+ * row with seven links and a search box, so it shrinks to the avatar and a
+ * chevron and opens downward into the page.
+ *
+ * **The compact one still says who it is, out loud.** An avatar carrying
+ * `alt=""` beside a chevron is a button with no accessible name, and the role
+ * badge is drawn nowhere else on the site -- so the navbar variant keeps all
+ * three in an `sr-only` line. That is `clip-path`, not `display: none`, so it
+ * is read out, it is found by a text query, and it takes no space.
  *
  * **The panel is hidden, never unmounted.** `SignOutButton` captures its form,
  * waits for the confirm dialog, and then calls `requestSubmit()` on it -- and
@@ -40,6 +50,7 @@ export function AccountMenu({
   imageUrl,
   role,
   children,
+  variant = "drawer",
 }: {
   name: string;
   username: string;
@@ -56,7 +67,10 @@ export function AccountMenu({
   role: SiteRole;
   /** The menu's rows: the admin link, and the form that signs out. */
   children: React.ReactNode;
+  /** `"drawer"` opens upward and spells the reader out; `"navbar"` does neither. */
+  variant?: "navbar" | "drawer";
 }) {
+  const navbar = variant === "navbar";
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [openedAt, setOpenedAt] = useState(pathname);
@@ -121,7 +135,11 @@ export function AccountMenu({
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((wasOpen) => !wasOpen)}
-        className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-left transition-colors hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        className={
+          navbar
+            ? "flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+            : "flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-left transition-colors hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        }
       >
         {imageUrl && !imageBroken ? (
           /* eslint-disable-next-line @next/next/no-img-element --
@@ -141,37 +159,45 @@ export function AccountMenu({
           <AvatarFallback className="w-8 h-8" glyph="w-4 h-4" />
         )}
 
-        {/* `min-w-0` is what lets the two lines truncate: without it this
-            column takes its content's width and the rail's 248px are simply
-            overrun by a long display name. */}
-        <div className="min-w-0 flex-1">
-          <div className="truncate text-sm leading-tight text-zinc-200">{name}</div>
-          <div className="truncate text-xs leading-tight text-zinc-500">@{username}</div>
-          {/*
-            A line of its own rather than chips beside the name. This column is
-            about 170px once the avatar and the chevron have taken theirs, and
-            two badges crowded onto the name line would truncate the display
-            name that the row is mostly for.
+        {navbar ? (
+          <span className="sr-only">
+            {name} @{username} {ROLE_LABEL[role]}
+          </span>
+        ) : (
+          /* `min-w-0` is what lets the two lines truncate: without it this
+             column takes its content's width and a long display name simply
+             overruns the drawer's. */
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-sm leading-tight text-zinc-200">{name}</div>
+            <div className="truncate text-xs leading-tight text-zinc-500">@{username}</div>
+            {/*
+              A line of its own rather than chips beside the name. This column is
+              about 170px once the avatar and the chevron have taken theirs, and
+              two badges crowded onto the name line would truncate the display
+              name that the row is mostly for.
 
-            Outline only, no fill: `status-badges.tsx` sets the house rule for
-            the sidebar -- nothing in this chrome shouts. The guestbook's own
-            filled badge stays where it is, on a message header, where being
-            loud is the point.
-          */}
-          <div className="mt-1 flex flex-wrap items-center gap-1">
-            <span
-              title={ROLE_BLURB[role]}
-              className="pill-badge border border-zinc-700 px-1.5 py-0.5 text-[0.625rem] leading-none text-zinc-400"
-            >
-              {ROLE_LABEL[role]}
-            </span>
+              Outline only, no fill: `status-badges.tsx` sets the house rule for
+              this chrome -- nothing in it shouts. The guestbook's own filled
+              badge stays where it is, on a message header, where being loud is
+              the point.
+            */}
+            <div className="mt-1 flex flex-wrap items-center gap-1">
+              <span
+                title={ROLE_BLURB[role]}
+                className="pill-badge border border-zinc-700 px-1.5 py-0.5 text-[0.625rem] leading-none text-zinc-400"
+              >
+                {ROLE_LABEL[role]}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
 
         <AccountChevronIcon
           className={cn(
             "flex-shrink-0 text-zinc-500 transition-transform duration-200",
-            open && "rotate-180",
+            // The glyph is drawn pointing up, so which state is the rotated one
+            // depends on which way the panel opens.
+            (navbar ? !open : open) && "rotate-180",
           )}
         />
       </button>
@@ -187,7 +213,12 @@ export function AccountMenu({
         id={panelId}
         hidden={!open}
         onClick={() => setOpen(false)}
-        className="absolute bottom-full left-0 right-0 z-20 mb-2 rounded-lg border border-zinc-700 bg-zinc-900 p-1"
+        data-account-panel
+        className={
+          navbar
+            ? "absolute top-full right-0 z-20 mt-2 w-56 rounded-lg border border-zinc-700 bg-zinc-900 p-1"
+            : "absolute bottom-full left-0 right-0 z-20 mb-2 rounded-lg border border-zinc-700 bg-zinc-900 p-1"
+        }
       >
         {children}
       </div>

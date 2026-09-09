@@ -135,8 +135,11 @@ const SIGN_IN = 'a[href="/sign-in"]';
 // assertion about the menu has to find it in order to open one.
 const TRIGGER = "[data-account-menu]";
 // Named structurally, not by its text: `:has-text()` is Playwright's and does
-// not exist in the DOM, and these are measured inside the page.
-const SIGN_OUT_ROW = 'div.border-t form button[type="submit"]';
+// not exist in the DOM, and these are measured inside the page. The panel is
+// named by its attribute for the same reason the trigger is -- the band that
+// used to identify it is a placement decision, and placement is the thing this
+// markup is meant to be free to change.
+const SIGN_OUT_ROW = '[data-account-panel] form button[type="submit"]';
 const SIGN_OUT = 'button:has-text("Sign out")';
 const ADMIN = 'a[href="/admin"]';
 
@@ -351,7 +354,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   const laidOut = await page.evaluate(() => {
     const shown = (sel) =>
       [...document.querySelectorAll(sel)].find((node) => node.offsetParent !== null);
-    const out = shown('div.border-t form button[type="submit"]')?.getBoundingClientRect();
+    const out = shown('[data-account-panel] form button[type="submit"]')?.getBoundingClientRect();
     const adm = shown('a[href="/admin"]')?.getBoundingClientRect();
     if (!out || !adm) return null;
     return { drift: Math.abs(adm.left - out.left), gap: Math.round(out.top - adm.bottom) };

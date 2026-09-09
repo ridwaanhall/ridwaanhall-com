@@ -21,6 +21,7 @@ import { getHiringData, getOpenToWorkData } from "@/lib/data/openhire";
 import { openhireSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { openhireSchemas } from "@/lib/seo/schemas-for-page";
+import { PAGE_GUTTER } from "@/lib/ui/shapes";
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutData();
@@ -69,8 +70,8 @@ export default async function OpenHirePage() {
   return (
     <>
       <JsonLdScript schemas={openhireSchemas()} />
-      <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <main className={PAGE_GUTTER}>
+        <div>
           <div className="mb-4 md:mb-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
               <div>

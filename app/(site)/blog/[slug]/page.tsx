@@ -21,6 +21,7 @@ import { blogDetailSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { blogDetailSchemas } from "@/lib/seo/schemas-for-page";
 import { isoDateTime, longDateTime, slugify } from "@/lib/utils/format";
+import { PAGE_GUTTER } from "@/lib/ui/shapes";
 
 /**
  * Prerender every known slug.
@@ -75,8 +76,8 @@ export default async function BlogDetailPage({
     <>
       <JsonLdScript schemas={blogDetailSchemas(about, post)} />
       <article>
-        <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
+        <main className={PAGE_GUTTER}>
+          <div>
             <header className="mb-6 md:mb-8">
               <h1 className="text-2xl lg:text-3xl font-medium mb-2 md:mb-3">{post.title}</h1>
 

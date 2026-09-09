@@ -62,13 +62,6 @@
         @apply rounded-xl overflow-hidden border border-zinc-700 transition-all duration-300;
     }
 
-    /* Filled surface card: the comment form shell and sign-in prompt.
-       Padding and the hover/focus-within border pseudo differ per
-       instance. */
-    .surface-card {
-        @apply rounded-xl border border-zinc-800 bg-zinc-900/40 transition-all duration-300;
-    }
-
     /* Blog/projects search box -- byte-identical in both search_form.html
        files. */
     .search-input {

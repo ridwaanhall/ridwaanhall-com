@@ -3,7 +3,7 @@ import { SkeletonBar, SkeletonBlock, SkeletonPage, SkeletonText } from "@/compon
 /** A project, while it loads. The blog post's shape with a metadata row. */
 export default function Loading() {
   return (
-    <SkeletonPage gutter="article">
+    <SkeletonPage>
       <header className="mb-6 md:mb-8">
         <SkeletonBar className="h-8 w-5/6 max-w-3xl mb-2 md:mb-3" />
 

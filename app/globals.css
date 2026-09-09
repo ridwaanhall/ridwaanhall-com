@@ -130,4 +130,88 @@
 
 @theme {
     --font-sans: var(--font-onest), ui-sans-serif, system-ui, sans-serif;
+
+    /* -----------------------------------------------------------------------
+       The type scale
+
+       Eight steps, named for the job rather than the size, and fluid: each one
+       carries its own range so `text-sm sm:text-base md:text-lg` stops being a
+       thing anybody writes. There were 29 distinct heading class strings for
+       six heading levels before this, which is what happens when every page
+       picks its own ladder.
+
+       `clamp` in rem rather than px so browser zoom still scales it, and the
+       middle term is `rem + vw` rather than `vw` alone for the same reason --
+       a purely viewport-relative size ignores the reader's own setting.
+
+       The site read small: `text-xs` was its single most-used size token, 116
+       uses, and card bodies were 12px. Everything here is one step up from
+       what it replaces.
+       ----------------------------------------------------------------------- */
+
+    /* Timestamps, axis labels, small print. Used sparingly -- it is the size
+       that swallowed the site. */
+    --text-caption: 0.75rem;
+    --text-caption--line-height: 1rem;
+
+    /* A byline, a date beside a heading, a chip. */
+    --text-meta: 0.8125rem;
+    --text-meta--line-height: 1.125rem;
+
+    /* Body copy inside a card, where the measure is short. */
+    --text-card: 0.875rem;
+    --text-card--line-height: 1.375rem;
+
+    /* Running text. */
+    --text-body: clamp(0.9375rem, 0.9rem + 0.18vw, 1rem);
+    --text-body--line-height: 1.6;
+
+    /* A card's own title, and a small heading inside a panel. */
+    --text-title: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    --text-title--line-height: 1.4;
+
+    /* The sentence under a page title. */
+    --text-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+    --text-lead--line-height: 1.55;
+
+    /* A section heading within a page. */
+    --text-section: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem);
+    --text-section--line-height: 1.3;
+
+    /* The page's own title. One per page. */
+    --text-page: clamp(1.625rem, 1.4rem + 1vw, 2.125rem);
+    --text-page--line-height: 1.15;
+
+    /* -----------------------------------------------------------------------
+       Vertical rhythm
+
+       Three steps, replacing five mutually exclusive mechanisms: a page drew
+       rules between its sections, another set `space-y-8` on a wrapper, a third
+       gave every panel a trailing margin, a fourth used a leading one, and the
+       page headers ended up with four different bottom margins for one job.
+       ----------------------------------------------------------------------- */
+
+    /* Between a heading and what it introduces, and between rows in a list. */
+    --spacing-block: 1.25rem;
+
+    /* Between one section of a page and the next. */
+    --spacing-section: clamp(2rem, 1.5rem + 1.5vw, 3rem);
+
+    /* Under a page header, before the page begins. */
+    --spacing-header: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
+
+    /* -----------------------------------------------------------------------
+       Measures
+
+       The reading column is capped and the page is not. Long-form text ran the
+       full width of the content column, which at 1216px is around 150
+       characters a line -- and widening the column made it worse rather than
+       better.
+       ----------------------------------------------------------------------- */
+
+    /* Running prose. `ch` so it tracks the face rather than a guess about it. */
+    --container-measure: 72ch;
+
+    /* A form. A contact form is a 600px object however much room it is given. */
+    --container-form: 38rem;
 }

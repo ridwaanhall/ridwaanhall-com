@@ -4,7 +4,7 @@ import { GuestbookPanelSkeleton } from "@/components/site/guestbook/panel-skelet
 /** The guestbook, while it loads. */
 export default function Loading() {
   return (
-    <SkeletonPage gutter="article">
+    <SkeletonPage>
       <div className="mb-4 md:mb-6">
         <SkeletonBar className="h-8 w-40 mb-3" />
         <SkeletonBar className="h-4 w-full max-w-2xl mb-2" />

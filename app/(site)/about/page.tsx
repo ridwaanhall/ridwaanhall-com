@@ -27,6 +27,7 @@ import {
 import { aboutSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { aboutSchemas } from "@/lib/seo/schemas-for-page";
+import { PAGE_GUTTER } from "@/lib/ui/shapes";
 // Stories are author-written HTML fragments; same allow-list as the blog body.
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -126,8 +127,8 @@ export default async function AboutPage() {
   return (
     <>
       <JsonLdScript schemas={await aboutSchemas(about)} />
-      <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <main className={PAGE_GUTTER}>
+        <div>
           <div className="mb-4 md:mb-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
               <div>

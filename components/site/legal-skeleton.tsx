@@ -10,7 +10,7 @@ import { SkeletonBar, SkeletonBlock, SkeletonPage, SkeletonText } from "@/compon
  */
 export function LegalSkeleton() {
   return (
-    <SkeletonPage gutter="article">
+    <SkeletonPage>
       <div className="mb-6 sm:mb-8">
         <SkeletonBar className="h-8 w-72 max-w-full mb-3" />
         <SkeletonBar className="h-4 w-full max-w-2xl mb-2" />

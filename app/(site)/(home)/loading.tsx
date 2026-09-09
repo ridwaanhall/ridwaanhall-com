@@ -1,4 +1,5 @@
 import { SkeletonBar, SkeletonBlock, SkeletonPage } from "@/components/skeleton";
+import { LISTING_CARD_H } from "@/lib/ui/shapes";
 
 /**
  * The home page, while it loads.
@@ -44,7 +45,7 @@ export default function Loading() {
           {/* The real rail scrolls horizontally; here it simply clips. */}
           <div className="flex gap-3 sm:gap-4 overflow-hidden">
             {[0, 1, 2, 3].map((i) => (
-              <SkeletonBlock key={i} className="flex-none w-80" style={{ height: 350 }} />
+              <SkeletonBlock key={i} className="flex-none w-80" style={{ height: LISTING_CARD_H }} />
             ))}
           </div>
         </div>

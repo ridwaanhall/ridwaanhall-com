@@ -9,7 +9,7 @@ import { SkeletonBar, SkeletonBlock, SkeletonPage, SkeletonText } from "@/compon
  */
 export default function Loading() {
   return (
-    <SkeletonPage gutter="article">
+    <SkeletonPage>
       <header className="mb-6 md:mb-8">
         <SkeletonBar className="h-8 w-5/6 max-w-3xl mb-2 md:mb-3" />
 

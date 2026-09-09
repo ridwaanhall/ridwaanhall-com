@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import { useCurrentYear } from "@/lib/utils/use-current-year";
+import { PAGE_GUTTER } from "@/lib/ui/shapes";
 
 /**
  * The shared error page.
@@ -38,7 +39,7 @@ export function ErrorPage({
   const year = useCurrentYear();
 
   return (
-    <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
+    <main className={PAGE_GUTTER}>
       <div className="mx-auto flex min-h-screen max-w-xl flex-col justify-center py-12">
         <span className="pill-badge self-start border border-zinc-700 px-2 py-0.5 text-xs text-zinc-400">
           Error {code}

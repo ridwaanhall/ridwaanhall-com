@@ -20,7 +20,7 @@ import { SkeletonBar, SkeletonBlock, SkeletonPage } from "@/components/skeleton"
  */
 export default function Loading() {
   return (
-    <SkeletonPage gutter="article">
+    <SkeletonPage>
       {/*
         "Contact Me" over its lead line, sized to `text-2xl lg:text-3xl` above
         `text-base sm:text-lg`. The second lead bar is there only below `sm`,

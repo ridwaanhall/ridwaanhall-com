@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { LegalDocument, LegalSection } from "@/lib/data/legal";
 import { longDate } from "@/lib/utils/format";
 import { sanitizeRichText } from "@/lib/utils/sanitize";
+import { PAGE_GUTTER } from "@/lib/ui/shapes";
 
 /**
  * A legal document: privacy policy, terms, or anything added later.
@@ -24,8 +25,8 @@ export function LegalDocumentPage({
 
   return (
     <>
-      <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <main className={PAGE_GUTTER}>
+        <div>
           <div className="mb-6 sm:mb-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-4">
               <div>

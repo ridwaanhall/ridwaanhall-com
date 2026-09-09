@@ -11,6 +11,7 @@ import { homepageSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { homepageSchemas } from "@/lib/seo/schemas-for-page";
 import { MARQUEE_SEEDS, shuffle } from "@/lib/utils/shuffle";
+import { PAGE_GUTTER } from "@/lib/ui/shapes";
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutData();
@@ -39,8 +40,8 @@ export default async function HomePage() {
   return (
     <>
       <JsonLdScript schemas={await homepageSchemas(about)} />
-      <main className="px-4 py-6 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <main className={PAGE_GUTTER}>
+        <div>
           <HomeIntro about={about} sponsorUrl={sponsorUrl} />
 
           <Divider />

@@ -1,3 +1,11 @@
+import {
+  BREAKDOWN_GRID,
+  LISTING_GRID,
+  PAGE_GUTTER,
+  STAT_GRID_4,
+  STAT_GRID_6,
+  SURFACE,
+} from "@/lib/ui/shapes";
 import { cn } from "@/lib/utils/cn";
 
 /**
@@ -21,7 +29,12 @@ export function SkeletonBar({ className }: { className?: string }) {
 }
 
 /**
- * A card-shaped surface, matching `.surface-card`'s border and fill.
+ * A card-shaped surface.
+ *
+ * It reads `SURFACE`, which is the same string the real surfaces read, so a
+ * skeleton's box and the box it stands in for cannot come to differ. They did:
+ * this was a hand-written copy of a class in `styles/components.css` that
+ * nothing else used any more.
  *
  * Takes children so a panel whose innards are worth sketching -- a form, a
  * table -- can be built inside one rather than beside it.
@@ -37,7 +50,7 @@ export function SkeletonBlock({
 }) {
   return (
     <div
-      className={cn("rounded-xl border border-zinc-800 bg-zinc-900/40", className)}
+      className={cn(SURFACE, className)}
       style={style}
     >
       {children}
@@ -65,28 +78,25 @@ export function SkeletonText({ lines = 3, className }: { lines?: number; classNa
 }
 
 /**
- * Every grid ladder a skeleton stands in for, keyed `<mobile>-<widest>`.
+ * Every grid ladder a skeleton stands in for, named for the thing it covers.
  *
- * The key names the two ends and the string carries whatever happens in
- * between: the listing ladder pairs its cards at `sm`, holds two through `lg`
- * and goes three at `xl`, so it is `1-3` even though its middle is a 2.
+ * **These are the page's own ladders, not copies of them.** The map used to
+ * hold five hand-written strings under a comment conceding that each "is read
+ * against the grid on the page it covers, and the two line up only when both
+ * are written the same way" -- which is a description of a thing that drifts,
+ * written by somebody who could see it coming. They are the same constants the
+ * pages import now, so there is no second copy left to disagree.
  *
- * A map of whole strings rather than a class assembled from the two counts:
- * Tailwind emits a class only where it can see it written out, so an
- * interpolated `lg:grid-cols-${columns}` produces no rule at all and the
- * skeleton collapses to one column at every width.
- *
- * The redundant steps are left in. `grid-cols-2` already holds at every width,
- * so `sm:grid-cols-2` after it is a no-op -- but each string is read against
- * the grid on the page it covers, and the two line up only when both are
- * written the same way.
+ * Whole strings rather than a class assembled from a count: Tailwind emits a
+ * class only where it can see it written out, so an interpolated column count
+ * produces no rule at all and the skeleton collapses to one column at every
+ * width.
  */
 const SKELETON_GRIDS = {
-  "1-2": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4",
-  "1-3": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4",
-  "2-2": "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4",
-  "1-4": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4",
-  "2-4": "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4",
+  listing: LISTING_GRID,
+  stat4: STAT_GRID_4,
+  stat6: STAT_GRID_6,
+  breakdown: BREAKDOWN_GRID,
 } as const;
 
 type SkeletonLadder = keyof typeof SKELETON_GRIDS;
@@ -102,19 +112,12 @@ type SkeletonLadder = keyof typeof SKELETON_GRIDS;
  */
 export function SkeletonGrid({
   count = 4,
-  ladder = "1-2",
+  ladder = "listing",
   height,
   className,
 }: {
   count?: number;
-  /**
-   * Which grid this stands in for, keyed as `SKELETON_GRIDS` is: cards across
-   * below `sm`, then at the widest step.
-   *
-   * Two across on a phone only where the real grid pairs them there -- it
-   * halves the row count, and a skeleton holding eight rows for a section that
-   * renders four overshoots it by half the panel on the narrowest screen.
-   */
+  /** Which of the page's grids this stands in for. */
   ladder?: SkeletonLadder;
   /** Pixel height of each cell -- the real card's, so the page does not jump. */
   height: number;
@@ -137,28 +140,25 @@ export function SkeletonGrid({
  * that element -- so the transition fires when the page replaces this, and
  * not when this replaces nothing.
  *
- * The two gutters are the two the site actually uses: listings and the home
- * page are roomier, articles and detail pages are tighter on small screens.
+ * **One gutter.** There were two, and which page got which followed no rule
+ * anybody could state -- `/blog` took the roomier one and `/projects`, the
+ * listing beside it with the same shape, took the tighter. They differ only
+ * below `sm`. With one, a route cannot pick the wrong one, and the thing that
+ * used to be checked is now impossible instead.
+ *
+ * The inner element is not decoration and must not be removed. Two harnesses
+ * measure through it -- one compares this frame's content edges against the
+ * navbar's and the footer's, the other compares a skeleton against the page it
+ * covers -- and both address it as the frame's only child. It carries the
+ * page's vertical rhythm, which is the job it has now that the width cap it
+ * used to hold is set further up.
  */
-export function SkeletonPage({
-  children,
-  gutter = "page",
-}: {
-  children: React.ReactNode;
-  gutter?: "page" | "article";
-}) {
+export function SkeletonPage({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      role="status"
-      aria-busy="true"
-      className={cn(
-        "skeleton-pulse",
-        gutter === "page" ? "px-4 py-6 md:px-6 lg:px-8" : "px-3 py-4 sm:px-4 md:px-6 lg:px-8",
-      )}
-    >
+    <div role="status" aria-busy="true" className={cn("skeleton-pulse", PAGE_GUTTER)}>
       {/* The shapes below are furniture; this is the only thing worth hearing. */}
       <span className="sr-only">Loading…</span>
-      <div className="max-w-7xl mx-auto" aria-hidden="true">
+      <div className="space-y-section" aria-hidden="true">
         {children}
       </div>
     </div>
@@ -168,15 +168,17 @@ export function SkeletonPage({
 /**
  * A page heading and its lead paragraph.
  *
- * Sized to `text-2xl lg:text-3xl` over `text-base sm:text-lg`, which is the
- * pairing every listing and section page opens with.
+ * Sized to the page scale over the lead scale, which is the pairing every page
+ * opens with. The lead is capped at the reading measure here for the same
+ * reason the real one is: a sentence set across the full content column is one
+ * the eye loses its place in.
  */
 export function SkeletonPageHeading({ className }: { className?: string }) {
   return (
-    <div className={cn("mb-4 md:mb-6", className)}>
-      <SkeletonBar className="h-8 w-56 mb-3" />
-      <SkeletonBar className="h-4 w-full max-w-2xl mb-2" />
-      <SkeletonBar className="h-4 w-3/5 max-w-lg" />
+    <div className={cn("mb-header", className)}>
+      <SkeletonBar className="h-9 w-64 mb-3" />
+      <SkeletonBar className="h-4 w-full max-w-measure mb-2" />
+      <SkeletonBar className="h-4 w-3/5 max-w-md" />
     </div>
   );
 }

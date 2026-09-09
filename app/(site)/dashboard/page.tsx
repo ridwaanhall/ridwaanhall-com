@@ -18,6 +18,7 @@ import { getWakatimeYear, type WakatimeYear } from "@/lib/data/wakatime-year";
 import { dashboardSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { dashboardSchemas } from "@/lib/seo/schemas-for-page";
+import { PAGE_GUTTER } from "@/lib/ui/shapes";
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutData();
@@ -32,8 +33,8 @@ export default async function DashboardPage() {
   return (
     <>
       <JsonLdScript schemas={await dashboardSchemas(about)} />
-      <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <main className={PAGE_GUTTER}>
+        <div>
           <div className="mb-6 md:mb-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
               <div>

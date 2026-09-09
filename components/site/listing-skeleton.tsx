@@ -1,4 +1,5 @@
 import { SkeletonBar, SkeletonGrid } from "@/components/skeleton";
+import { LISTING_CARD_H } from "@/lib/ui/shapes";
 
 /**
  * The blog and project listings, while their results resolve.
@@ -31,19 +32,10 @@ export function ListingBody() {
         <SkeletonBar className="h-10 w-full sm:max-w-sm md:max-w-md" />
       </div>
 
-      <SkeletonGrid count={4} ladder="1-3" height={LISTING_CARD_HEIGHT} />
+      <SkeletonGrid count={4} ladder="listing" height={LISTING_CARD_H} />
     </>
   );
 }
-
-/**
- * Shown while the results resolve.
- *
- * Sized to the real grid so the page does not jump when they arrive -- the
- * whole point of holding the space is that nothing below it moves. 350px is
- * the height `BlogCard` and `ProjectCard` both set on themselves.
- */
-export const LISTING_CARD_HEIGHT = 350;
 
 export function ListingSkeleton() {
   return (

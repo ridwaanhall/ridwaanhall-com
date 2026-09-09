@@ -12,6 +12,7 @@ import { maskEmail } from "@/lib/data/guestbook-tree";
 import { guestbookSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { guestbookSchemas } from "@/lib/seo/schemas-for-page";
+import { PAGE_GUTTER } from "@/lib/ui/shapes";
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutData();
@@ -36,8 +37,8 @@ export default function GuestbookPage() {
   return (
     <>
       <JsonLdScript schemas={guestbookSchemas()} />
-      <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <main className={PAGE_GUTTER}>
+        <div>
           <div className="mb-4 md:mb-6">
             <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
               Guestbook

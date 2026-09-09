@@ -18,6 +18,7 @@ import { buildMetadata } from "@/lib/seo/metadata";
 import { projectDetailSchemas } from "@/lib/seo/schemas-for-page";
 import { isoDateTime, longDate } from "@/lib/utils/format";
 import { localIconUrl } from "@/lib/utils/icon-url";
+import { PAGE_GUTTER } from "@/lib/ui/shapes";
 
 export async function generateStaticParams() {
   const projects = await getProjects();
@@ -53,8 +54,8 @@ export default async function ProjectDetailPage({
   return (
     <>
       <JsonLdScript schemas={projectDetailSchemas(about, project)} />
-      <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <main className={PAGE_GUTTER}>
+        <div>
           <div className="relative mb-6 sm:mb-8">
             <div className="relative z-10">
               <div className="flex flex-col">

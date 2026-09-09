@@ -23,7 +23,7 @@ import { SkeletonBar, SkeletonBlock, SkeletonPage } from "@/components/skeleton"
  */
 export default function Loading() {
   return (
-    <SkeletonPage gutter="article">
+    <SkeletonPage>
       <div className="flex min-h-[60vh] items-center justify-center">
         <SkeletonBlock className="w-full max-w-sm rounded-lg p-6">
           <SkeletonBar className="h-7 w-20" />

@@ -17,7 +17,7 @@ import { SkeletonBar, SkeletonBlock, SkeletonPage, SkeletonText } from "@/compon
  */
 export default function Loading() {
   return (
-    <SkeletonPage gutter="article">
+    <SkeletonPage>
       <div className="mb-4 md:mb-6">
         <SkeletonBar className="h-8 w-44 mb-3" />
         <SkeletonBar className="h-5 w-full max-w-2xl mb-2" />

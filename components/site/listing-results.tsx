@@ -1,6 +1,6 @@
 import { BlogCard } from "@/components/site/blog-card";
 import { Pagination } from "@/components/site/pagination";
-import { LISTING_CARD_HEIGHT, ListingSkeleton } from "@/components/site/listing-skeleton";
+import { ListingSkeleton } from "@/components/site/listing-skeleton";
 import { ProjectCard } from "@/components/site/project-card";
 import { SearchForm } from "@/components/site/search-form";
 import { paginate } from "@/lib/api/pagination";
@@ -140,4 +140,4 @@ function EmptyState({ noun }: { noun: string }) {
  * a `loading.tsx` that imported it from this module would pull `lib/data`, and
  * with it the database client, into a fallback made of rectangles.
  */
-export { LISTING_CARD_HEIGHT, ListingSkeleton };
+export { ListingSkeleton };

@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import type { BlogPost, BlogSummary } from "@/lib/data/content";
 import { isoDateTime, longDate, slugify } from "@/lib/utils/format";
+import { LISTING_CARD_H } from "@/lib/ui/shapes";
 import { cn } from "@/lib/utils/cn";
 
 /**
@@ -43,7 +44,7 @@ export function BlogCard({
   return (
     <Link href={`/blog/${blog.slug}`}>
       <div
-        style={{ height: 350 }}
+        style={{ height: LISTING_CARD_H }}
         className="group relative overflow-hidden rounded-xl border border-zinc-700 transition-all duration-300 transform h-full"
       >
         <div className="absolute inset-0">

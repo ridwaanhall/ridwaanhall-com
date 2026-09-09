@@ -4,6 +4,7 @@ import { Suspense } from "react";
 
 import { ProviderButtons } from "@/components/auth/provider-buttons";
 import { getViewer } from "@/lib/auth/viewer";
+import { PAGE_GUTTER } from "@/lib/ui/shapes";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -59,7 +60,7 @@ export default function SignInPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   return (
-    <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
+    <main className={PAGE_GUTTER}>
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="w-full max-w-sm rounded-lg border border-zinc-800 p-6">
           <h1 className="text-lg font-medium text-zinc-200">Sign in</h1>

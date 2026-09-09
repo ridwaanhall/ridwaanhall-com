@@ -9,7 +9,7 @@ import { DashboardPanelSkeleton } from "@/components/site/dashboard-skeleton";
  */
 export default function Loading() {
   return (
-    <SkeletonPage gutter="article">
+    <SkeletonPage>
       <div className="mb-6 md:mb-8">
         <SkeletonBar className="h-8 w-44 mb-3" />
         <SkeletonBar className="h-4 w-full max-w-2xl mb-2" />

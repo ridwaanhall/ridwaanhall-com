@@ -5,6 +5,8 @@ import {
 } from "@/components/site/disclosure";
 import { FactIcon, MetaItem, MetaRow, type FactKind } from "@/components/site/meta-row";
 import type { Application } from "@/lib/data/about";
+import { SURFACE_INTERACTIVE } from "@/lib/ui/shapes";
+import { cn } from "@/lib/utils/cn";
 
 /**
  * One job application, with its journey timeline.
@@ -56,7 +58,7 @@ export function ApplicationCard({ application }: { application: Application }) {
   ].filter(Boolean) as { key: FactKind; label: string }[];
 
   return (
-    <div className="card-outline group mb-4">
+    <div className={cn(SURFACE_INTERACTIVE, "group mb-4 overflow-hidden")}>
       <div className="p-3 sm:p-4">
         <div className="flex flex-col md:flex-row md:items-start gap-3 sm:gap-5">
           <div className="flex-grow w-full">

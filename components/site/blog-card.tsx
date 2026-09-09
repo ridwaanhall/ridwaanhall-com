@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import type { BlogPost, BlogSummary } from "@/lib/data/content";
 import { isoDateTime, longDate, slugify } from "@/lib/utils/format";
-import { LISTING_CARD_H } from "@/lib/ui/shapes";
+import { LISTING_CARD_H, SURFACE_INTERACTIVE } from "@/lib/ui/shapes";
 import { cn } from "@/lib/utils/cn";
 
 /**
@@ -45,7 +45,7 @@ export function BlogCard({
     <Link href={`/blog/${blog.slug}`}>
       <div
         style={{ height: LISTING_CARD_H }}
-        className="group relative overflow-hidden rounded-xl border border-zinc-700 transition-all duration-300 transform h-full"
+        className={cn(SURFACE_INTERACTIVE, "group relative h-full overflow-hidden")}
       >
         <div className="absolute inset-0">
           {blog.image_url && (

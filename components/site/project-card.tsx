@@ -4,6 +4,8 @@ import Link from "next/link";
 import type { Project, ProjectSummary } from "@/lib/data/content";
 import { projectStatusColor } from "@/lib/data/project-status";
 import { localIconUrl } from "@/lib/utils/icon-url";
+import { SURFACE_INTERACTIVE } from "@/lib/ui/shapes";
+import { cn } from "@/lib/utils/cn";
 
 /** How many tech icons fit before they are summarised as "+N". */
 const VISIBLE_TECH = 5;
@@ -26,7 +28,7 @@ export function ProjectCard({
 
   return (
     <Link href={`/projects/${project.slug}`} className="block h-full">
-      <div className="group backdrop-blur-sm rounded-xl overflow-hidden flex flex-col h-full transition-all duration-300 border border-zinc-800">
+      <div className={cn(SURFACE_INTERACTIVE, "group flex h-full flex-col overflow-hidden")}>
         <div className="relative aspect-[3/2] overflow-hidden">
           {project.image_url && (
             <Image

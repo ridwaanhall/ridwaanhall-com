@@ -8,6 +8,8 @@ import {
 } from "@/components/site/disclosure";
 import { MetaItem, MetaRow } from "@/components/site/meta-row";
 import type { Award, Certification, Education, Experience } from "@/lib/data/about";
+import { SURFACE } from "@/lib/ui/shapes";
+import { cn } from "@/lib/utils/cn";
 
 /**
  * The cards on the about page.
@@ -135,7 +137,7 @@ export function ExperienceCard({ company, roles }: { company: string; roles: Exp
 
   return (
     <div className="group">
-      <div className="card-outline backdrop-blur-sm">
+      <div className={cn(SURFACE, "overflow-hidden")}>
         <div className="p-4 border-b border-zinc-700/50">
           <div className="flex items-center space-x-4">
             <div className="flex-shrink-0">
@@ -290,7 +292,7 @@ export function EducationCard({ education }: { education: Education }) {
   );
 
   return (
-    <div className="card-outline">
+    <div className={cn(SURFACE, "overflow-hidden")}>
       <div className="p-3 sm:p-4">
         <div className="flex items-start gap-3 sm:gap-4">
           <div className="flex-shrink-0">
@@ -362,7 +364,7 @@ export function EducationCard({ education }: { education: Education }) {
  */
 export function AwardCard({ award }: { award: Award }) {
   return (
-    <div className="card-outline">
+    <div className={cn(SURFACE, "overflow-hidden")}>
       <div className="p-3 sm:p-4">
         <div className="flex items-start gap-3 sm:gap-4">
           <div className="flex-shrink-0">
@@ -448,7 +450,7 @@ export function CertificationCard({ certification }: { certification: Certificat
   const controls = hasAchievements || Boolean(certification.credential_url);
 
   return (
-    <div className="card-outline">
+    <div className={cn(SURFACE, "overflow-hidden")}>
       <div className="p-3 sm:p-4">
         <div className="flex items-start gap-3 sm:gap-4">
           <div className="flex-shrink-0">

@@ -16,9 +16,9 @@
    utilities in `@layer utilities`, and CSS cascade layers give ANY layered
    rule priority over an unlayered one regardless of specificity or source
    order. Left unlayered, these classes would permanently beat every
-   Tailwind utility placed alongside them -- e.g. `.card-outline`'s
-   `hover:border-zinc-700` would always win over a per-instance
-   `hover:border-indigo-500/50`, silently, with no error anywhere. Inside
+   Tailwind utility placed alongside them -- a `hover:border-zinc-700` written
+   here would always win over a per-instance `hover:border-indigo-500/50`,
+   silently, with no error anywhere. Inside
    `@layer components`, the normal `components` < `utilities` layer order
    restores the expected "utility wins" behavior.
    =========================================================================== */
@@ -61,18 +61,6 @@
         @apply inline-flex items-center text-xs font-medium transition-all duration-200 border border-zinc-700 hover:border-zinc-600;
     }
 
-    /* Outlined card shell: about's experience/education/application cards,
-       openhire's position cards. `backdrop-blur-sm` and padding vary per
-       card and stay inline.
-
-       The border does not brighten on hover any more; it sits at what used to
-       be the hover value all the time. A card is not a control -- a page of
-       them made every pointer movement flicker an outline somewhere, and the
-       edge was too faint to read the card's shape when the pointer was
-       elsewhere. Hover is left to things that are actually clickable. */
-    .card-outline {
-        @apply rounded-xl overflow-hidden border border-zinc-700 transition-all duration-300;
-    }
 
     /* Blog/projects search box -- byte-identical in both search_form.html
        files. */

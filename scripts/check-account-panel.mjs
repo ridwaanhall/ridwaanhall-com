@@ -179,14 +179,15 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   /*
    * A pill the width of its words, not the width of the column.
    *
-   * It was a full-width `h-11` button, which made signing in look like the
-   * thing the rail was for. Thirty pixels of slack is generous for two
-   * paddings and two borders and nowhere near a stretched control: the rail is
-   * 248px, so a full-width one would report about 150.
+   * It was a full-width `h-11` button, which made signing in look like the thing
+   * the chrome was for. Thirty pixels of slack is generous for two paddings and
+   * two borders and nowhere near a stretched control -- which is still the shape
+   * to guard against, only the shape has moved: a `w-full` or a `flex-1` in a
+   * navbar row would now report the better part of a thousand.
    */
   const signedOutPill = await pillShape(page, SIGN_IN);
   check(
-    "and it is a pill the width of its label, not of the rail",
+    "and it is a pill the width of its label, not of whatever holds it",
     signedOutPill.slack < 30 && signedOutPill.width < 100,
     `${signedOutPill.width}px wide, ${signedOutPill.slack}px of it not text`,
   );
@@ -366,32 +367,44 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   );
 
   /*
-   * One ruled band at the base of the sidebar, holding both.
+   * Two homes above `lg`, each with its own edge, and nothing left orphaned.
    *
-   * This used to be two -- the account, then the legal links -- each with a
-   * rule of its own, in a weight found nowhere else on the site so that the
-   * pair would read as banding rather than as an edge and a smudge. One band
-   * needs no such trick, and this is what says the two have not drifted apart
-   * again: the section carrying the account is the same element that carries
-   * the small print.
+   * These two used to share one ruled band at the base of the sidebar, and that
+   * band was the assertion: the section carrying the account was the same
+   * element that carried the small print. A row cannot hold the small print, so
+   * the account stayed in the chrome and the legal links went to a footer -- and
+   * the thing worth checking became that both landed somewhere ruled rather than
+   * loose in a page. The drawer's band is unchanged and is asserted below, at the
+   * width where it is the one on screen.
    */
-  const base = await page.evaluate(() => {
-    const bands = [...document.querySelectorAll("div.border-t")].filter(
-      (node) => node.offsetParent !== null && node.querySelector("[data-account-menu]"),
-    );
+  const homes = await page.evaluate(() => {
+    const onScreen = (node) => node && node.offsetParent !== null;
+    const shown = (sel) => [...document.querySelectorAll(sel)].filter(onScreen);
+
+    const account = shown("[data-account-menu]");
+    const privacy = shown('a[href="/privacy-policy"]');
+    const navbar = document.querySelector("[data-site-navbar]");
+    const footer = document.querySelector("footer");
+    const edge = (node) =>
+      node ? getComputedStyle(node).borderBottomWidth !== "0px" || getComputedStyle(node).borderTopWidth !== "0px" : false;
+
     return {
-      count: bands.length,
-      holdsSmallPrint:
-        bands.length === 1 && Boolean(bands[0].querySelector('a[href="/privacy-policy"]')),
+      accounts: account.length,
+      privacies: privacy.length,
+      accountInNavbar: account.length === 1 && Boolean(navbar?.contains(account[0])),
+      privacyInFooter: privacy.length === 1 && Boolean(footer?.contains(privacy[0])),
+      ruled: edge(navbar) && edge(footer),
     };
   });
   check(
-    "and the account and the small print share one ruled band",
-    base.count === 1 && base.holdsSmallPrint,
-    base.count === 1 && !base.holdsSmallPrint
-      ? "one band, without the legal links"
-      : `${base.count} band(s)`,
+    "and the account sits in the navbar, the small print in the footer",
+    homes.accounts === 1 &&
+      homes.privacies === 1 &&
+      homes.accountInNavbar &&
+      homes.privacyInFooter,
+    `${homes.accounts} account row(s), ${homes.privacies} legal link(s) on screen`,
   );
+  check("and both of those carry an edge of their own", homes.ruled);
 
   /*
    * The hue arrives on hover, and it is the hue that was meant.
@@ -442,6 +455,42 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
 
   const adminHue = await hovered(ADMIN, ADMIN);
   check("and the admin takes its own accent", adminHue === palette.indigo, `${adminHue}`);
+
+  /*
+   * The drawer still keeps them together, and that is where the original
+   * invariant still literally holds.
+   *
+   * One band, one rule, one gutter: the account, and the small print under it.
+   * It needed no trick to read as a pair, where the two separately ruled bands
+   * it replaced needed a border weight found nowhere else on the site.
+   */
+  await page.setViewportSize({ width: 375, height: 800 });
+  await page.reload({ waitUntil: "load" });
+  await page.waitForSelector(TRIGGER, { state: "attached", timeout: 20000 });
+  await page.click("button[aria-label='Open Sidebar']");
+  await page.waitForTimeout(600);
+  const base = await page.evaluate(() => {
+    const ruled = [...document.querySelectorAll("div.border-t")].filter(
+      (node) => node.offsetParent !== null && node.querySelector("[data-account-menu]"),
+    );
+    // The innermost one. The drawer's own panel carries a rule too and contains
+    // everything below it, so it matches as well -- and the claim here is about
+    // the tightest ruled section holding the account, not about any ancestor
+    // that happens to have an edge.
+    const bands = ruled.filter((node) => !ruled.some((other) => other !== node && node.contains(other)));
+    return {
+      count: bands.length,
+      holdsSmallPrint:
+        bands.length === 1 && Boolean(bands[0].querySelector('a[href="/privacy-policy"]')),
+    };
+  });
+  check(
+    "and in the drawer the account and the small print still share one ruled band",
+    base.count === 1 && base.holdsSmallPrint,
+    base.count === 1 && !base.holdsSmallPrint
+      ? "one band, without the legal links"
+      : `${base.count} band(s)`,
+  );
 
   await context.close();
 }

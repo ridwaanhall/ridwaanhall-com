@@ -6,13 +6,19 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { NavLinks } from "@/components/layout/nav-links";
 import { ProfileAvatar } from "@/components/layout/profile-avatar";
 import { SearchTrigger } from "@/components/layout/search-trigger";
-import { SIDEBAR_BASE, SidebarFooter } from "@/components/layout/sidebar-footer";
+import { DRAWER_BASE, SmallPrint } from "@/components/layout/small-print";
 import { StatusBadges } from "@/components/layout/status-badges";
 import type { AboutData } from "@/lib/data/about";
 import { cn } from "@/lib/utils/cn";
 
 /**
- * The mobile navigation drawer.
+ * The navigation drawer, below `lg`.
+ *
+ * It carries everything the navbar cannot fit on a narrow screen, which is most
+ * of it: the links, the search box, the availability chips and the account. The
+ * threshold used to be `md`, when a fixed rail took over from 768px up; a row of
+ * seven labelled links wants a thousand pixels rather than seven hundred, so a
+ * tablet gets this instead.
  *
  * **It has no close button.** It is dismissed three ways -- dragged down,
  * backdrop tap, or Escape -- and this component owns all three. The X button
@@ -188,7 +194,7 @@ export function MobileDrawer({
     <div
       id="mobile-sidebar"
       className={cn(
-        "fixed inset-0 z-40 bg-transparent bg-opacity-60 backdrop-blur-sm md:hidden",
+        "fixed inset-0 z-40 bg-transparent bg-opacity-60 backdrop-blur-sm lg:hidden",
         !visible && "hidden",
       )}
       aria-hidden={!isOpen}
@@ -239,9 +245,9 @@ export function MobileDrawer({
             it is closed: they are on screen in the DOM but not reachable. */}
         <SearchTrigger tabIndex={isOpen ? 0 : -1} />
         <NavLinks tabIndex={isOpen ? 0 : -1} />
-        <div className={SIDEBAR_BASE}>
+        <div className={DRAWER_BASE}>
           {account}
-          <SidebarFooter about={about} />
+          <SmallPrint about={about} variant="drawer" />
         </div>
       </div>
     </div>

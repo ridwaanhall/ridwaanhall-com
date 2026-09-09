@@ -7,7 +7,7 @@
  * presented `sub: "1"` -- an integer key, from when they were integers. Sessions
  * are thirty-day JWTs, so *every* signed-in reader was holding one. Comparing a
  * `uuid` column against it raises `22P02 invalid input syntax for type uuid`,
- * which reached the sidebar's admin link as a console error and would have
+ * which reached the account menu's admin link as a console error and would have
  * reached the first server action such a reader submitted as a 500.
  *
  * Nothing else saw it. `compare-layout.mjs` measures a signed-out page,
@@ -16,7 +16,7 @@
  * carrying a real token, which is what this is.
  *
  * **Four states, because the bug only existed in one of them.** Signed out,
- * signed in as an ordinary reader, signed in as staff (the sidebar renders an
+ * signed in as an ordinary reader, signed in as staff (the account menu offers an
  * admin link for them and nobody else), and signed in with a token whose
  * subject no longer names anybody -- the last being both the stale-session case
  * and the general "a cookie can say anything" case. A page is expected to be

@@ -97,7 +97,7 @@ function contrast(a, b) {
  * Make the next navigation genuinely slow, and keep it that way.
  *
  * Delaying the RSC payload is the obvious half. Refusing prefetches is the half
- * that took a flaky check to find: the rail prefetches every route it links to
+ * that took a flaky check to find: the nav prefetches every route it links to
  * while the page is settling, so by the time a click arrives the payload is
  * already in the client Router Cache and no request is made at all. The
  * navigation is then instant, there is nothing to wait for, and a check that
@@ -243,7 +243,7 @@ try {
       OBSERVE,
     );
 
-    // Two links match at this width -- the rail's and the mobile drawer's,
+    // Two links match at this width -- the navbar's and the mobile drawer's,
     // which is off-screen. `:visible` picks the one a reader could click.
     await page.locator('a[href="/dashboard"]:visible').first().click();
     const frames = await watching;
@@ -292,7 +292,7 @@ try {
     */
     const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
     await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
-    // Let the rail's prefetches land, so the second trip is genuinely cached.
+    // Let the nav's prefetches land, so the second trip is genuinely cached.
     await page.waitForTimeout(1500);
 
     /*

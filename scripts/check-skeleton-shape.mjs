@@ -96,10 +96,18 @@ const HEIGHT_TOLERANCE = 0.2;
 /*
  * Narrow first, because that is the width the gutters disagree at; wide second,
  * because that is where a skeleton has the most window left to leave empty.
+ *
+ * 1360 rather than 1280, and not for the extra pixels. 1280 is exactly the `xl`
+ * boundary, which is where the listings gain a third column and the navbar gains
+ * the name and the spelled-out search box -- and Chrome resolves a media query
+ * against the initial containing block, which excludes a classic scrollbar. So a
+ * 1280 viewport may land on either side of that boundary depending on how the
+ * scrollbar is drawn, and this harness would be deciding a layout question by
+ * accident. 1360 is inside `xl` either way.
  */
 const VIEWPORTS = [
   { label: "375", width: 375, height: 812 },
-  { label: "1280", width: 1280, height: 900 },
+  { label: "1360", width: 1360, height: 900 },
 ];
 
 const checks = [];
@@ -133,8 +141,8 @@ const ROUTES = [
   { label: "/dashboard", from: "/", link: 'a[href="/dashboard"]' },
   { label: "/contact", from: "/", link: 'a[href="/contact"]' },
   { label: "/guestbook", from: "/", link: 'a[href="/guestbook"]' },
-  // Reached from the sidebar's account panel, which offers it to a signed-out
-  // reader at every width -- in the rail above `md`, in the drawer below it.
+  // Reached from the account panel, which offers it to a signed-out reader at
+  // every width -- in the navbar from `lg` up, in the drawer below it.
   { label: "/sign-in", from: "/", link: 'a[href="/sign-in"]' },
   // The two detail routes, reached from a card on their own listing.
   { label: "/blog/[slug]", from: "/blog", link: 'a[href^="/blog/"]' },
@@ -144,7 +152,7 @@ const ROUTES = [
 /**
  * Make the navigation slow enough to catch, and keep the router cache empty.
  *
- * The same shape as `check-page-loading.mjs`, and for the same reason: the rail
+ * The same shape as `check-page-loading.mjs`, and for the same reason: the nav
  * prefetches every route it links to while the page settles, and a payload
  * already in the client Router Cache means an instant navigation with no
  * skeleton in it at all. Prefetches are held rather than refused -- a refused
@@ -165,10 +173,12 @@ const throttle = async (page, ms) => {
 /**
  * Where the route-level skeleton lives, and nowhere else.
  *
- * `#page-content > div` is the content column in `site-shell.tsx`, and its one
- * child is whatever the router is currently showing -- the `loading.tsx`
- * skeleton, or the page. Anchoring here rather than searching the subtree is
- * what separates the two kinds of skeleton this site has.
+ * `#page-content` is the content column in `site-shell.tsx`, and its one child is
+ * whatever the router is currently showing -- the `loading.tsx` skeleton, or the
+ * page. Anchoring here rather than searching the subtree is what separates the
+ * two kinds of skeleton this site has. It used to be a level deeper: there was a
+ * wrapper inside carrying the margin that kept the column clear of the sidebar,
+ * and with the sidebar gone that wrapper had no remaining job.
  *
  * The distinction is easy to miss and produces confident nonsense. Four
  * components render `role="status" aria-busy="true"` from inside a page, as the
@@ -178,7 +188,7 @@ const throttle = async (page, ms) => {
  * compares a panel against a whole page and reports a wild disagreement about
  * a skeleton that is perfectly correct.
  */
-const SKELETON = '#page-content > div > [role="status"][aria-busy="true"]';
+const SKELETON = '#page-content > [role="status"][aria-busy="true"]';
 
 /*
  * Not `> div > main`: the blog post wraps its `<main>` in an `<article>`, and
@@ -345,14 +355,14 @@ try {
       await page.waitForTimeout(2500);
 
       /*
-        Below `md` the rail is gone and its links live in the drawer, which is
-        closed -- so a nav link has to be uncovered before it can be clicked.
+        Below `lg` the navbar carries no links -- they live in the drawer, which
+        is closed -- so a nav link has to be uncovered before it can be clicked.
         Only then, though: the two detail routes are reached from a card in the
         page itself, and opening the drawer over one is how that click came to
         time out rather than navigate.
       */
       let target = page.locator(`${route.link}:visible`).first();
-      if (viewport.width < 768 && !(await target.isVisible().catch(() => false))) {
+      if (viewport.width < 1024 && !(await target.isVisible().catch(() => false))) {
         await page.locator('button[aria-label="Open Sidebar"]').click();
         await page.waitForTimeout(500);
         target = page.locator(`${route.link}:visible`).first();

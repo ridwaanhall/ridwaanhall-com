@@ -5,11 +5,12 @@ import type { AboutData } from "@/lib/data/about";
 /**
  * The three availability flags, in one place.
  *
- * They appear on four screens -- the desktop rail, the mobile drawer, the home
- * hero and the about intro -- and until now each of those spelled out its own
- * labels and its own colours. They had already drifted apart: the hero said
- * "Under the Weather", the drawer said "Unwell", the rail said "Open to Work"
- * and the about intro said "Currently Open to Work", all for one boolean.
+ * They appear on four screens -- the navbar, the mobile drawer, the home hero
+ * and the about intro -- and until they were gathered here each of those spelled
+ * out its own labels and its own colours. They had already drifted apart: the
+ * hero said "Under the Weather", the drawer said "Unwell", the sidebar said
+ * "Open to Work" and the about intro said "Currently Open to Work", all for one
+ * boolean.
  *
  * `short` is what a narrow column gets. It is not a nicety: three badges beside
  * a 148px heading is 258px of content, which at 375px used to start the third
@@ -76,47 +77,48 @@ export function StatusChip({
 }
 
 /**
- * Availability badges for the sidebar rail and the mobile drawer.
+ * Availability badges for the navbar and the mobile drawer.
  *
  * **All three can be true at once**, and that is the case worth testing before
- * judging any change here. In the 248px rail three badges beside `@username`
- * wrapped onto two lines and collided with it; in the mobile drawer they
- * additionally forced the name to wrap. Both placements therefore give the
- * badges their own row -- see the callers.
+ * judging any change here. Three of them is about 190px, which is why the navbar
+ * shows them only from `2xl`: below that the row is already spending everything
+ * it has on seven links, a name and a search box, and a wrapped navbar is worse
+ * than a fact stated a screen further down. The home hero, the about intro and
+ * the OpenHire link in the footer all still carry it.
  *
- * The rail used to fuse Open and Hiring into a single gradient pill, because two
- * tinted pills with dots did not fit its 248px. Without the fill and the dots
- * they do, so that special case is gone and both variants now differ only in
- * padding -- and in the rail spelling out "Open to Work" where the drawer, which
- * has width to spare but little height, abbreviates.
+ * **Everything abbreviates.** The sidebar spelled "Open to Work" out while it was
+ * the only flag set, because it had a whole column's width and one line to fill.
+ * A row has neither, and a chip that changes width when an unrelated flag is
+ * flipped moves every control beside it -- so the short labels are the labels
+ * now, in both placements.
+ *
+ * The two differ in axis and in nothing else: the drawer wraps them under the
+ * name, the navbar keeps them on the line and refuses to wrap.
  */
 export function StatusBadges({
   about,
   variant,
 }: {
   about: Pick<AboutData, "is_open_to_work" | "is_hiring" | "is_sick">;
-  variant: "rail" | "drawer";
+  variant: "navbar" | "drawer";
 }) {
   const { is_open_to_work: open, is_hiring: hiring, is_sick: sick } = about;
   if (!open && !hiring && !sick) return null;
 
-  const rail = variant === "rail";
-  const size = `${rail ? "px-2 py-1" : "px-2 py-0.5"} text-xs`;
-  // The rail has room for "Open to Work" only while it is the sole flag; with
-  // Hiring beside it the pair has to be two words wide, not four.
-  const abbreviate = !rail || (open && hiring);
+  const navbar = variant === "navbar";
+  const size = "px-2 py-0.5 text-xs";
 
   return (
     <div
       className={
-        rail
-          ? "flex flex-wrap items-center gap-1 w-full mt-2"
+        navbar
+          ? "hidden shrink-0 items-center gap-1 2xl:flex"
           : "flex flex-wrap gap-1 min-w-0 mt-1.5"
       }
     >
       {(open || hiring) && (
-        <Link href="/openhire" className={rail ? "inline-flex gap-1" : "flex gap-1"}>
-          {open && <StatusChip flag="open" short={abbreviate} className={size} />}
+        <Link href="/openhire" className={navbar ? "inline-flex shrink-0 gap-1" : "flex gap-1"}>
+          {open && <StatusChip flag="open" short className={size} />}
           {hiring && <StatusChip flag="hiring" short className={size} />}
         </Link>
       )}

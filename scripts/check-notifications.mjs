@@ -4,7 +4,7 @@
  * That element animates a `translateY`, and a transformed ancestor becomes the
  * containing block for its `position: fixed` descendants -- a stack rendered
  * inside it would be positioned against the content column instead of the
- * viewport, and the confirm dialog's backdrop blur would stop at the sidebar.
+ * viewport, and the confirm dialog's backdrop blur would stop at the navbar.
  *
  * Asserted structurally rather than by eye
  * because nothing else in that tree caught it; the same is true here, and the

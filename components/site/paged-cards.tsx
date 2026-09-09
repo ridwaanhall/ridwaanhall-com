@@ -60,14 +60,15 @@ export function PagedCards({
      * bottom of page one would otherwise leave the reader at the bottom of it.
      * A navigation does this for /blog on its own; here it has to be asked for.
      * The scroll margin on the list is what keeps the first card clear of the
-     * fixed header the shell draws on a narrow screen.
+     * navbar, which is sticky at every width now rather than fixed on a narrow
+     * one -- so it is a clearance at both, and the taller row needs the larger.
      */
     list.current?.scrollIntoView();
   };
 
   return (
     <>
-      <div ref={list} className={`${className} scroll-mt-20 md:scroll-mt-0`}>
+      <div ref={list} className={`${className} scroll-mt-16 lg:scroll-mt-20`}>
         {cards.map((card, index) => (
           // A wrapper rather than a prop on the card: `hidden` has to land on an
           // element this component owns. Spacing is unchanged -- the wrappers

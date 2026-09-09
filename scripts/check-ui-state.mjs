@@ -34,8 +34,12 @@ const check = (name, pass, detail = "") => {
 };
 
 const marked = () => page.locator("#search-modal li.highlighted").count();
-// The rail's button, not the drawer's -- both exist in the DOM at this width.
-const openPalette = () => page.locator('button:has-text("Search")').last().click();
+// The navbar's button, not the drawer's -- both are in the DOM at this width and
+// only one is on screen, so this picks by visibility. It used to pick the last of
+// the two, which worked only while the drawer happened to be written first; and it
+// cannot pick by text, because the navbar's compact button spells "Search" out
+// only from `xl`.
+const openPalette = () => page.locator("[data-search-trigger]:visible").first().click();
 
 // --- the search palette ------------------------------------------------------
 await page.goto(`${BASE}/about`, { waitUntil: "load" });
@@ -130,7 +134,7 @@ const first = await widgetId();
 check("a widget is rendered", Boolean(first), first ?? "");
 check("the site starts dark", (await page.getAttribute("html", "data-theme")) === "dark");
 
-await page.locator("[data-theme-toggle]").last().click();
+await page.locator("[data-theme-toggle]").click();
 await page.waitForTimeout(2500);
 check("the site switches to light", (await page.getAttribute("html", "data-theme")) === "light");
 
@@ -138,7 +142,7 @@ const second = await widgetId();
 check("the widget is recreated for the new theme", Boolean(second) && second !== first, `${first} -> ${second}`);
 check("and only one survives", (await widgetCount()) === 1);
 
-await page.locator("[data-theme-toggle]").last().click();
+await page.locator("[data-theme-toggle]").click();
 await page.waitForTimeout(2500);
 const third = await widgetId();
 check("recreated again on the way back", Boolean(third) && third !== second, `${second} -> ${third}`);

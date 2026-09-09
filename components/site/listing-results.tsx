@@ -50,17 +50,17 @@ export async function BlogResults({
 
       <ResultCount query={query} count={paged.count} />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
         {paged.items.length > 0 ? (
           /*
             The first row, not the first card. This grid is two across from
-            `sm`, so two cards share the top row at the same size, and either
-            can be the Largest Contentful Paint -- on /projects Chrome picked
-            the second. Marking one and not its neighbour silences the warning
-            only half the time.
+            `sm` and three from `xl`, so every card in the top row is the same
+            size and any of them can be the Largest Contentful Paint -- on
+            /projects Chrome picked the second. Marking one and not its
+            neighbours silences the warning only some of the time.
           */
           paged.items.map((post, position) => (
-            <BlogCard key={post.slug} blog={post} eager={position < 2} />
+            <BlogCard key={post.slug} blog={post} eager={position < 3} />
           ))
         ) : (
           <EmptyState noun="blogs" />
@@ -96,11 +96,11 @@ export async function ProjectResults({
 
       <ResultCount query={query} count={paged.count} />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 mb-6">
         {paged.items.length > 0 ? (
-          // Both cards of the top row -- see the note on the blog grid above.
+          // Every card of the top row -- see the note on the blog grid above.
           paged.items.map((project, position) => (
-            <ProjectCard key={project.slug} project={project} eager={position < 2} />
+            <ProjectCard key={project.slug} project={project} eager={position < 3} />
           ))
         ) : (
           <EmptyState noun="projects" />

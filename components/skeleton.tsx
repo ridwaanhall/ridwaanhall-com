@@ -65,7 +65,11 @@ export function SkeletonText({ lines = 3, className }: { lines?: number; classNa
 }
 
 /**
- * Every grid ladder a skeleton stands in for, keyed `<mobile>-<large>`.
+ * Every grid ladder a skeleton stands in for, keyed `<mobile>-<widest>`.
+ *
+ * The key names the two ends and the string carries whatever happens in
+ * between: the listing ladder pairs its cards at `sm`, holds two through `lg`
+ * and goes three at `xl`, so it is `1-3` even though its middle is a 2.
  *
  * A map of whole strings rather than a class assembled from the two counts:
  * Tailwind emits a class only where it can see it written out, so an
@@ -79,37 +83,45 @@ export function SkeletonText({ lines = 3, className }: { lines?: number; classNa
  */
 const SKELETON_GRIDS = {
   "1-2": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4",
+  "1-3": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4",
   "2-2": "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4",
   "1-4": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4",
   "2-4": "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4",
 } as const;
 
+type SkeletonLadder = keyof typeof SKELETON_GRIDS;
+
 /**
  * The listing grid.
+ *
+ * **The ladder is named, not built from two counts.** It used to take `columns`
+ * and `mobileColumns` as independent numbers, which claims every pairing of the
+ * two while the map holds only the five the site actually uses -- so asking for
+ * three across on a wide screen and two on a phone type checked and then
+ * indexed the map with a key that is not in it.
  */
 export function SkeletonGrid({
   count = 4,
-  columns = 2,
-  mobileColumns = 1,
+  ladder = "1-2",
   height,
   className,
 }: {
   count?: number;
-  columns?: 2 | 4;
   /**
-   * Cards across below `sm`. Two only where the real grid pairs them there --
-   * it halves the row count, and a skeleton holding eight rows for a section
-   * that renders four overshoots it by half the panel on the narrowest screen.
+   * Which grid this stands in for, keyed as `SKELETON_GRIDS` is: cards across
+   * below `sm`, then at the widest step.
+   *
+   * Two across on a phone only where the real grid pairs them there -- it
+   * halves the row count, and a skeleton holding eight rows for a section that
+   * renders four overshoots it by half the panel on the narrowest screen.
    */
-  mobileColumns?: 1 | 2;
+  ladder?: SkeletonLadder;
   /** Pixel height of each cell -- the real card's, so the page does not jump. */
   height: number;
   className?: string;
 }) {
-  const grid = SKELETON_GRIDS[`${mobileColumns}-${columns}`];
-
   return (
-    <div className={cn(grid, className)}>
+    <div className={cn(SKELETON_GRIDS[ladder], className)}>
       {Array.from({ length: count }, (_, i) => (
         <SkeletonBlock key={i} style={{ height }} />
       ))}

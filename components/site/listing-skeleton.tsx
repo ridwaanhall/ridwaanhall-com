@@ -16,8 +16,13 @@ import { SkeletonBar, SkeletonGrid } from "@/components/skeleton";
  * not the search row above it, which is inside the same boundary, so the grid
  * dropped by the height of a form field the moment the results came back. One
  * definition, used by both, is what stops that being possible.
+ *
+ * The ladder is written here rather than taken as a prop. Both listings use the
+ * same one and always have; a count that could differ per caller, with no
+ * caller passing it, is a knob that drifts out of step with the grid it is
+ * supposed to be standing in for.
  */
-export function ListingBody({ columns = 2 }: { columns?: 2 | 4 }) {
+export function ListingBody() {
   return (
     <>
       {/* The search box, right-aligned above the grid, at the width
@@ -26,7 +31,7 @@ export function ListingBody({ columns = 2 }: { columns?: 2 | 4 }) {
         <SkeletonBar className="h-10 w-full sm:max-w-sm md:max-w-md" />
       </div>
 
-      <SkeletonGrid count={4} columns={columns} height={LISTING_CARD_HEIGHT} />
+      <SkeletonGrid count={4} ladder="1-3" height={LISTING_CARD_HEIGHT} />
     </>
   );
 }
@@ -40,12 +45,12 @@ export function ListingBody({ columns = 2 }: { columns?: 2 | 4 }) {
  */
 export const LISTING_CARD_HEIGHT = 350;
 
-export function ListingSkeleton({ columns = 2 }: { columns?: 2 | 4 }) {
+export function ListingSkeleton() {
   return (
     <div className="skeleton-pulse" role="status" aria-busy="true">
       <span className="sr-only">Loading results…</span>
       <div aria-hidden="true">
-        <ListingBody columns={columns} />
+        <ListingBody />
       </div>
     </div>
   );

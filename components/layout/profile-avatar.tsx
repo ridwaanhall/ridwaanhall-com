@@ -3,9 +3,9 @@ import Image from "next/image";
 /**
  * Profile photo.
  *
- * Rendered in three places -- the mobile navbar, the mobile drawer and the
- * desktop rail -- which is why `size` is a prop: the placements are genuinely
- * different contexts, not an inconsistency to normalise away.
+ * Rendered in two places -- the navbar and the mobile drawer -- which is why
+ * `size` is a prop: the placements are genuinely different contexts, not an
+ * inconsistency to normalise away.
  *
  * It carries **no status dot**. An amber pulsing `is_sick` badge and a green
  * `is_active` one used to sit in the bottom-right corner; both were removed
@@ -13,19 +13,20 @@ import Image from "next/image";
  * still stated in words by the status badges under the username, so nothing is
  * lost. Don't add it back without asking.
  *
- * `eager` marks the copy that is above the fold, which is one of them at a
- * time: the mobile navbar's below `md`, the desktop rail's above it.
+ * `eager` marks the copy that is above the fold. That is the navbar's, at every
+ * width: the drawer's is behind a closed panel and stays lazy.
  *
  * It sets `loading="eager"`, which replaces the `priority` prop Next 16
  * deprecated and is what Next names when it reports an image as the Largest
  * Contentful Paint.
  *
  * Not Next's `preload`, which is the stronger form: that calls
- * `ReactDOM.preload` itself and so is guaranteed a `<link>` in the head. This
- * page has two avatars in the markup at once -- the navbar's below `md` and
- * the rail's above it, at different widths and so different optimizer URLs --
- * and the head cannot know which one the viewport will show. The heroes get
- * the guarantee; these take React's ordinary handling.
+ * `ReactDOM.preload` itself and so is guaranteed a `<link>` in the head. It was
+ * unavailable while the chrome drew two avatars at once, at different widths and
+ * so different optimizer URLs, with no way for the head to know which the
+ * viewport would show; one navbar leaves one non-lazy copy, so the option is
+ * open now. The heroes still get the guarantee and this takes React's ordinary
+ * handling, which is a preload either way -- see below.
  *
  * Which is still a preload, and worth being exact about: React hoists a
  * `<link rel="preload">` for every non-lazy `<img>` it renders on the server,
@@ -47,7 +48,7 @@ export function ProfileAvatar({
   eager?: boolean;
 }) {
   if (!src) {
-    // A missing photo must not render a broken image in the rail header.
+    // A missing photo must not render a broken image in the navbar.
     return (
       <div
         className={`shrink-0 rounded-full bg-zinc-800 ${className ?? ""}`}

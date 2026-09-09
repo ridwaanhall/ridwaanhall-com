@@ -101,7 +101,7 @@ ridwaanhall-com/
 ├── components/
 │   ├── site/               # Page components
 │   ├── admin/              # Generic changelist, form, field, inline
-│   ├── layout/             # Sidebar, drawer, search palette, theme toggle
+│   ├── layout/             # Navbar, footer, drawer, search palette, theme toggle
 │   └── providers/          # Toasts, confirm dialog, tooltips, theme
 ├── lib/
 │   ├── data/               # Read paths, each behind `use cache`

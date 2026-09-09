@@ -136,6 +136,48 @@ prefix so a leftover is obviously a harness's and not real content.
 - `components/` — `site/` for the public pages, `admin/` for the admin,
   `layout/` and `providers/` shared.
 
+### The site's chrome is one header
+
+`components/layout/site-navbar.tsx` is the whole of the public site's
+navigation, at every width, and it replaced a 248px column fixed to the left of
+the window from `md` up. Three things follow from it being **one** `<header>`
+rather than a mobile bar and a desktop rail:
+
+- **Exactly one theme toggle is a fact, not a coincidence.** There is one in the
+  document and the drawer deliberately has none. It used to be two, kept
+  complementary by two `hidden` rules, with nothing but a harness between the
+  site and a breakpoint band carrying two or none.
+- **One `banner` landmark**, and one non-lazy avatar -- which is why
+  `profile-avatar.tsx` no longer reasons about which of two copies the viewport
+  will show.
+- **The threshold is `lg`, not `md`.** Seven labelled links, an avatar, a search
+  box, a toggle and the account want more than a 768px row, so a tablet gets the
+  drawer a phone already had. Above `lg` the row earns its parts back as it
+  widens: links at `lg`, the name and the spelled-out search box at `xl`, the
+  availability chips at `2xl`.
+
+**The navbar, the footer and every page carry the cap and the gutter on one
+element** -- `mx-auto max-w-7xl px-4 md:px-6 lg:px-8`. Written as a cap wrapping
+a padded child instead, the chrome's contents sit a gutter's width inside the
+page's, and the three left edges part company on any screen wide enough to reach
+the cap: not on a laptop, and visibly on a monitor.
+
+`scripts/check-breakpoints.mjs` is what holds all of it, at twelve widths. It
+asserts one toggle, exactly one way into the navigation (the inline row or the
+hamburger, never both and never neither), one shared measure, and a row that
+never wraps -- **including with all three availability chips set**, which the
+live profile has none of, so that case is measured against a probe the harness
+builds rather than against the page. The breakpoints above were chosen by
+measuring glyph advances, which is an estimate; that assertion is what makes
+them a fact, so change the class strings against the harness rather than against
+the arithmetic.
+
+`components/layout/small-print.tsx` is the other half of the old rail's base.
+The legal links and the copyright are in `site-footer.tsx` now, the account is
+in the navbar, and the one ruled band that held both survives only in the
+drawer -- which is where `check-admin`-style "one band" assertion still lives,
+at 375 with the drawer open.
+
 ### The admin is declarative
 
 `lib/admin/registry.ts` names every screen. `lib/admin/models/` holds one module
@@ -1124,7 +1166,7 @@ npx tsx scripts/check-baseline-schema.mjs              # 0000_init.sql builds ex
 npx tsx scripts/check-app-schema.mjs                   # the generated mapping matches `app`
 node scripts/gen-app-schema.mjs                        # regenerate it after any DDL
 npx tsx scripts/check-rls.mjs                          # RLS on every table
-node scripts/check-breakpoints.mjs                     # one visible theme toggle
+node scripts/check-breakpoints.mjs                     # the navbar, at twelve widths
 node scripts/check-notifications.mjs                   # toasts outside the transform
 node scripts/check-ui-state.mjs                        # palette + Turnstile theme
 node scripts/check-skeleton-scope.mjs                  # one skeleton, one page

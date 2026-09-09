@@ -10,10 +10,10 @@ import { getUserProfile, type UserProfile } from "@/lib/auth/profile";
  *
  * **Wrapped in `cache()`, and that is not an optimisation.** The account panel
  * is created once in `app/(site)/layout.tsx` and rendered in two places -- the
- * desktop rail and the mobile drawer -- so the component runs twice on every
+ * navbar and the mobile drawer -- so the component runs twice on every
  * request. Without the request-scoped memo that is two identities read from the
  * database to draw one name. `getStaffUser` is wrapped for exactly this reason
- * and the sidebar asks both.
+ * and the chrome asks both.
  *
  * No guard on the subject: `auth.ts`'s `session` callback is the one place a
  * token becomes a session, and it already refuses a `sub` that is not a uuid.

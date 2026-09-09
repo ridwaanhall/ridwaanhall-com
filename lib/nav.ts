@@ -29,7 +29,7 @@ export type NavItem = {
 /**
  * The primary navigation, in order.
  *
- * One definition, rendered by both the desktop rail and the mobile drawer --
+ * One definition, rendered by both the navbar and the mobile drawer --
  * not two hand-maintained copies of the same seven links.
  */
 export const NAV_ITEMS: NavItem[] = [

@@ -11,7 +11,7 @@ import { useBodyScrollLock, useEscape, useModalTransition } from "@/lib/utils/us
  * the notification stack: that element animates a transform, and a transformed
  * ancestor becomes the containing block for its `position: fixed` descendants,
  * so a dialog rendered inside it could only ever cover the content column and
- * would leave the sidebar unblurred.
+ * would leave the navbar unblurred.
  *
  * **Confirmation is one promise, not two modes.** A server-rendered page needs
  * two: one that posts the dialog's own form, and one that dispatches an event

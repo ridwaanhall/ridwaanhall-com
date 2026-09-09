@@ -79,7 +79,7 @@ const nextConfig: NextConfig = {
     deviceSizes: [375, 640, 768, 1024, 1280, 1536],
     // 16 is absent because Next 16 dropped it from the default ladder, and
     // nothing here would pick it anyway: the smallest rendered image is the
-    // 40px sidebar avatar.
+    // 40px navbar avatar.
     imageSizes: [32, 48, 64, 96, 128, 256, 384],
   },
 

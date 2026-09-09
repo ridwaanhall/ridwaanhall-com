@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils/cn";
 /**
  * Light/dark theme toggle.
  *
- * Rendered twice -- the mobile navbar (below `md`) and the rail's `@username`
+ * Rendered once, in the navbar, at every width. It used to be twice -- a mobile
+ * navbar's and a desktop rail's `@username`
  * row (from `md` up) -- and **exactly one is on screen at any width**. Nothing
  * in CI catches a breakpoint band with none or two, so verify 375 / 767 / 768 /
  * 900 / 1023 / 1024 / 1440 after touching either placement.
@@ -121,7 +122,7 @@ const FADE_MS = 320;
  * Flipping `data-theme` changes the computed colour of nearly every element at
  * once, and each then animates over whatever duration it declares -- `<body>`
  * is duration-200, `#page-content` is duration-700, 148 elements are
- * duration-300. Left alone the page changes in a visible cascade, sidebar
+ * duration-300. Left alone the page changes in a visible cascade, the chrome
  * first and content column half a second later. The cause is the durations
  * *disagreeing*, not animation as such, so the fix makes everything move in
  * lockstep rather than suppressing motion.

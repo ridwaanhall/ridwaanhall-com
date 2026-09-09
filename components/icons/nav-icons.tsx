@@ -3,7 +3,7 @@ import type { SVGProps } from "react";
 /**
  * Navigation and chrome icons.
  *
- * One component each, used by both the mobile drawer and the desktop rail --
+ * One component each, used by both the navbar and the mobile drawer --
  * not the same paths inlined twice. Plain components rather than an
  * icon-library import, so the whole set ships as markup with no runtime behind
  * it.
@@ -207,8 +207,10 @@ export function HamburgerIcon(props: IconProps) {
 /**
  * The chevron on the account row, pointing at where its menu will open.
  *
- * Smaller than the rest of the set and flipped upward, because the menu it
- * belongs to is pinned to the bottom of the sidebar and opens over the nav.
+ * Smaller than the rest of the set, and drawn pointing upward because that is
+ * where the drawer's menu opens -- it is the last row of a column pinned to the
+ * bottom of the screen. The navbar's opens downward instead, so that variant
+ * rotates the glyph at rest rather than when open.
  */
 export function AccountChevronIcon(props: IconProps) {
   return (

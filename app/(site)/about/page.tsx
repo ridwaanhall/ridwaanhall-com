@@ -160,7 +160,7 @@ function Section({ children }: { children: React.ReactNode }) {
 function Intro({ about, sponsorUrl }: { about: AboutData; sponsorUrl: string }) {
   /*
    * Which flags are live. The wording and the hover colour come from
-   * `AVAILABILITY`, shared with the rail, the drawer and the home hero.
+   * `AVAILABILITY`, shared with the navbar, the drawer and the home hero.
    */
   const flags = [
     about.is_open_to_work && "open",

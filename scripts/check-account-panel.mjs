@@ -1,5 +1,5 @@
 /**
- * The sidebar's account row, checked against the running app.
+ * The account row, checked against the running app.
  *
  * The site had no account chrome at all before this: signing in was reachable
  * only from inside the guestbook or a comment thread, and nothing anywhere said
@@ -17,10 +17,11 @@
  * - **Signed out it is a plain link, and stays one.** That is what most readers
  *   get and the only control here that works with no script, so its shape is
  *   measured rather than merely found.
- * - **The panel is rendered twice per request** -- once by the desktop rail,
- *   once by the mobile drawer -- from one element created in the layout. Both
- *   are in the DOM at every width; exactly one is visible. A count of elements
- *   would pass while the wrong one showed, so these measure visibility.
+ * - **The panel is rendered twice per request** -- once by the navbar, once by
+ *   the mobile drawer -- from two elements created in the layout, because the
+ *   two placements are not the same shape. Both are in the DOM at every width;
+ *   exactly one is visible. A count of elements would pass while the wrong one
+ *   showed, so these measure visibility.
  * - **`/sign-in` must work before hydration.** Both provider buttons are real
  *   forms posting a server action, and this reads the server body to prove it
  *   rather than the hydrated DOM, which would pass either way.
@@ -79,10 +80,12 @@ async function visible(page, selector) {
 /**
  * Wait until one copy of the control is actually on screen.
  *
- * Not `waitForSelector`: the drawer's copy comes first in the DOM -- the shell
- * renders it before the rail -- so waiting on the selector waits on the *hidden*
- * one and times out at every desktop width. Both copies exist at every width by
- * design; visibility is the whole question.
+ * Not `waitForSelector`: one of the two copies is always hidden, so waiting on
+ * the selector can wait on that one and time out with the other on screen the
+ * whole time. Which copy comes first in the DOM has changed once already -- the
+ * shell used to render the drawer before the rail and now renders the navbar
+ * before the drawer -- so nothing here picks by position. Both copies exist at
+ * every width by design; visibility is the whole question.
  */
 async function waitVisible(page, selector, timeout = 20000) {
   const deadline = Date.now() + timeout;
@@ -193,7 +196,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   );
   check("and it is fully rounded", signedOutPill.round, signedOutPill.shape);
 
-  // The drawer's copy, at a width where the rail is gone.
+  // The drawer's copy, at a width where the navbar carries no account.
   await page.setViewportSize({ width: 375, height: 800 });
   await page.reload({ waitUntil: "load" });
   // Nothing to wait *for* here -- the assertion is that neither copy shows --
@@ -297,7 +300,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   /*
    * Wait on the chrome, not on the URL.
    *
-   * Signing out from the sidebar redirects to `/` from `/`, so a
+   * Signing out from the chrome redirects to `/` from `/`, so a
    * `waitForURL(pathname === "/")` is already true and resolves before the
    * action has even been sent -- which then reads the cookie jar too early and
    * reports a session that is about to be cleared as one that never was. The
@@ -308,7 +311,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   check("and the chrome says so without a reload", flipped, page.url().replace(BASE, ""));
 
   const remaining = (await context.cookies()).find((c) => c.name === cookieName && c.value);
-  check("signing out from the sidebar clears the session", !remaining);
+  check("signing out from the chrome clears the session", !remaining);
   await context.close();
 }
 
@@ -369,7 +372,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   /*
    * Two homes above `lg`, each with its own edge, and nothing left orphaned.
    *
-   * These two used to share one ruled band at the base of the sidebar, and that
+   * These two used to share one ruled band at the base of the rail, and that
    * band was the assertion: the section carrying the account was the same
    * element that carried the small print. A row cannot hold the small print, so
    * the account stayed in the chrome and the legal links went to a footer -- and

@@ -30,7 +30,7 @@ export function HomeIntro({ about, sponsorUrl }: { about: AboutData; sponsorUrl:
               {about.location.residency}, {about.location.country} {about.location.flag}
             </span>
             {/* The wording and the hover colour come from `AVAILABILITY`, so the
-                hero, the rail, the drawer and the about intro cannot drift apart
+                hero, the navbar, the drawer and the about intro cannot drift apart
                 again -- they used to give four answers for three booleans. */}
             {(about.is_open_to_work || about.is_hiring) && (
               <Link href="/openhire" className="inline-flex gap-1 mx-1">

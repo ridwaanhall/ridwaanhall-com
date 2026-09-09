@@ -192,7 +192,7 @@ for (const width of WIDTHS) {
 await browser.close();
 console.log(
   failures === 0
-    ? "\nOne toggle, one way into the nav, and a row that fits, at every width."
+    ? "\nOne toggle, one way into the nav, a row that fits, and one shared measure."
     : `\n${failures} width(s) wrong.`,
 );
 process.exit(failures === 0 ? 0 : 1);

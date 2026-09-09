@@ -21,8 +21,8 @@ import { AUTHOR, SITE_NAME, SITE_URL } from "./config";
  *   recorded "https://ridwaanhall.com/about/hi@ridwaanhall.com" as a profile
  *   link. It is published through `email` instead.
  * - **No `SearchAction`.** Advertising one made Google crawl
- *   "/search?q={search_term_string}" literally and log a 404. The sidebar
- *   search filters a fixed list client-side; there is no query URL to point at.
+ *   "/search?q={search_term_string}" literally and log a 404. The command
+ *   palette filters a fixed list client-side; there is no query URL to point at.
  */
 
 export type JsonLd = Record<string, unknown>;

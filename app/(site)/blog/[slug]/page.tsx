@@ -26,7 +26,7 @@ import { isoDateTime, longDateTime, slugify } from "@/lib/utils/format";
  * Prerender every known slug.
  *
  * Not only a performance win: under Cache Components a dynamic segment is URL
- * data, so a layout that reads `usePathname()` -- which the sidebar does, to
+ * data, so a layout that reads `usePathname()` -- which the navbar does, to
  * mark the current nav item -- cannot be prerendered for an unknown param.
  * Enumerating the slugs gives each page a concrete path at build time and the
  * whole shell prerenders, instead of the nav streaming in and flashing empty.

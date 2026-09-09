@@ -10,7 +10,7 @@ import { useCurrentYear } from "@/lib/utils/use-current-year";
  * `not-found.tsx` and `error.tsx` both render it, and both sit inside the root
  * layout, so the palette, fonts and theme script come from one place.
  *
- * It deliberately renders *outside* the site shell -- no sidebar, no nav. An
+ * It deliberately renders *outside* the site shell -- no navbar, no footer. An
  * error page that reproduces the whole chrome invites the reader to keep
  * browsing from a broken state; the link row near the bottom gives them the
  * same destinations without the pretence that the page loaded. It also takes
@@ -21,7 +21,7 @@ import { useCurrentYear } from "@/lib/utils/use-current-year";
  * red-to-pink gradient behind the status code, a pulsing ring around a warning
  * triangle, `font-bold` and `font-semibold` in a site that uses neither. It
  * reads as a page of this site now -- the heading and description of any other
- * page, the home hero's `action-btn` pair, the sidebar footer's bulleted link
+ * page, the home hero's `action-btn` pair, the small print's bulleted link
  * row -- and the status code is a quiet chip rather than the loudest thing on
  * screen. What the reader needs to know is what went wrong and where to go,
  * and the title says the first.

@@ -68,7 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             for its `position: fixed` descendants. A stack or a dialog rendered
             inside it would be positioned against the content column instead of
             the viewport -- the dialog's backdrop blur would stop at the
-            sidebar. `scripts/check-notifications.mjs` asserts this
+            navbar. `scripts/check-notifications.mjs` asserts this
             structurally, because nothing else would catch it.
 
             `ConfirmDialogProvider` wraps `{children}` because `useConfirm`

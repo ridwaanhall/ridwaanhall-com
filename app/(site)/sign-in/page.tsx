@@ -49,7 +49,7 @@ const ERRORS: Record<string, string> = {
  *
  * What it buys back, and the trade worth knowing: a reader who is already
  * signed in now sees the card for the moment before the bounce, where blocking
- * meant they never saw it. The sidebar does not offer them this page, so that
+ * meant they never saw it. The navigation does not offer them this page, so that
  * is a typed URL or a stale link against every signed-out reader who clicks
  * Sign in.
  */

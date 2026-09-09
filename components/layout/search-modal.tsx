@@ -262,7 +262,7 @@ function SearchModal({
    *
    * Only the Pages section can be, and only its internal destinations -- the
    * socials and the CV links go somewhere else entirely. `isActive` is the same
-   * predicate the sidebar's nav uses, so `/blog/<slug>/` marks Blog here for
+   * predicate the navbar's nav uses, so `/blog/<slug>/` marks Blog here for
    * the same reason it highlights Blog there -- one definition, two places.
    */
   const isHere = useCallback(
@@ -536,7 +536,7 @@ function SearchModal({
                        * original dropped the entry's `data-url`, which left the
                        * click handler with nowhere to go; here there is simply
                        * no handler. It also keeps the row's `cursor-pointer`,
-                       * which the port does not -- the sidebar's own current
+                       * which the port does not -- the navbar's own current
                        * item is a `role="button"` with no href and therefore no
                        * pointer cursor, and this was asked to match it.
                        */
@@ -568,7 +568,7 @@ function SearchModal({
                           >
                             <div className="flex items-center gap-5">
                               {/* The row you are on cannot be hovered, so it
-                                  marks itself the way the sidebar's current
+                                  marks itself the way the navbar's current
                                   item does -- pulsing, beside a label that
                                   pulses with it -- rather than by holding the
                                   shake's tilt as a pose. */}

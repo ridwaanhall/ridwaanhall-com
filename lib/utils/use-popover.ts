@@ -56,7 +56,7 @@ const GAP = 4;
  * top-left corner of the screen before it jumps to its anchor.
  *
  * Scroll listening is `capture: true` so it fires for *any* scrolling ancestor,
- * not only the window -- the sidebar and the record form both scroll, and a
+ * not only the window -- the admin's rail and its record form both scroll, and a
  * panel anchored to a control inside one would otherwise stay where it was
  * while the control moved away underneath it.
  */

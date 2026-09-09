@@ -612,7 +612,7 @@ function GitHub({ stats }: { stats: GitHubStats }) {
           The window, not the account. Every other section here says what
           period it covers, and the calendar below is the twelve months
           GitHub's `contributionCalendar` returns when asked for no range.
-          The handle it used to carry said nothing the sidebar does not.
+          The handle it used to carry said nothing the navbar does not.
         */}
         <p className="text-xs sm:text-sm">Last Year</p>
       </div>

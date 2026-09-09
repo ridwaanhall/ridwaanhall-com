@@ -13,7 +13,7 @@
 
 - **Database-backed content**: Blog posts, projects, bio, experience, skills, awards, legal documents and more live as real tables — manage all of it from the `/admin` panel, with no deploy needed to change content
 - **Supabase-powered**: Postgres and Storage (blog and project images, logos, the profile photo) both on Supabase, reached through Drizzle ORM and a small storage client rather than an SDK
-- **Light and dark themes**: Dark by default, with a toggle in the sidebar and mobile navbar. Light mode is produced by remapping the Tailwind palette rather than by adding `dark:` variants, so both themes stay in sync automatically — see [Theming](#theming)
+- **Light and dark themes**: Dark by default, with a toggle in the navbar. Light mode is produced by remapping the Tailwind palette rather than by adding `dark:` variants, so both themes stay in sync automatically — see [Theming](#theming)
 - **Content caching**: Every read path is behind `use cache` with a tag per content area, so an edit invalidates only what it touched. Tag revalidation is cross-instance by construction, which matters on serverless where an edit handled by one instance must not leave the others stale
 - **Real-time dashboard**: Live GitHub contribution graph, WakaTime coding-activity stats, and a seven-day AI breakdown — tokens, estimated spend and cost by model — cut on Jakarta time and refreshed every 15 minutes
 - **Interactive guestbook**: Google/GitHub OAuth login, threaded replies, pinning by staff (up to 3 at a time), deletion by a superuser, automatic link detection, email notifications routed on role — or disable it entirely with one env var
@@ -47,7 +47,7 @@ app/
 components/
   site/              Page components
   admin/             The generic changelist, form, field and inline renderers
-  layout/            Sidebar, drawer, search palette, theme toggle
+  layout/            Navbar, footer, drawer, search palette, theme toggle
   providers/         Toasts, confirm dialog, tooltips, theme, click spark
 lib/
   data/              Read paths, each behind `use cache` with a tag
@@ -86,7 +86,7 @@ components render all of them. Adding a screen is adding a descriptor.
 
 ## Theming
 
-The site ships dark by default, with a light theme behind a toggle beside `@username` in the sidebar and, on small screens, next to the menu button. The choice is stored in `localStorage`; the OS `prefers-color-scheme` is deliberately not consulted, because dark is the default rather than a fallback.
+The site ships dark by default, with a light theme behind a toggle in the navbar, next to the search box on a wide screen and next to the menu button on a narrow one. The choice is stored in `localStorage`; the OS `prefers-color-scheme` is deliberately not consulted, because dark is the default rather than a fallback.
 
 Light mode is **not** built from `dark:` variants. Templates are written in ordinary dark-mode Tailwind classes, and light mode redefines the palette itself under `html[data-theme="light"]` in `app/globals.css`. Tailwind v4 compiles every theme color utility to a variable reference (`.bg-zinc-800` becomes `background-color: var(--color-zinc-800)`), so remapping the ramps re-skins the whole site without touching a single template.
 

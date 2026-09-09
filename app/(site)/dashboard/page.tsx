@@ -19,6 +19,7 @@ import { dashboardSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { dashboardSchemas } from "@/lib/seo/schemas-for-page";
 import { PAGE_GUTTER } from "@/lib/ui/shapes";
+import { PageHeader } from "@/components/site/ui/page-header";
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutData();
@@ -35,19 +36,10 @@ export default async function DashboardPage() {
       <JsonLdScript schemas={await dashboardSchemas(about)} />
       <main className={PAGE_GUTTER}>
         <div>
-          <div className="mb-6 md:mb-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
-              <div>
-                <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                  Dashboard
-                </h1>
-                <p className="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">
-                  Every line of code leaves a trace. This shows mine, from focused hours to
-                  committed nights.
-                </p>
-              </div>
-            </div>
-          </div>
+          <PageHeader
+            title="Dashboard"
+            lead="Every line of code leaves a trace. This shows mine, from focused hours to committed nights."
+          />
 
           {/*
             Each panel streams independently. They call third-party APIs, so

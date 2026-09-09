@@ -164,21 +164,3 @@ export function SkeletonPage({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-
-/**
- * A page heading and its lead paragraph.
- *
- * Sized to the page scale over the lead scale, which is the pairing every page
- * opens with. The lead is capped at the reading measure here for the same
- * reason the real one is: a sentence set across the full content column is one
- * the eye loses its place in.
- */
-export function SkeletonPageHeading({ className }: { className?: string }) {
-  return (
-    <div className={cn("mb-header", className)}>
-      <SkeletonBar className="h-9 w-64 mb-3" />
-      <SkeletonBar className="h-4 w-full max-w-measure mb-2" />
-      <SkeletonBar className="h-4 w-3/5 max-w-md" />
-    </div>
-  );
-}

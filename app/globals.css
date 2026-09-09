@@ -191,8 +191,16 @@
        page headers ended up with four different bottom margins for one job.
        ----------------------------------------------------------------------- */
 
-    /* Between a heading and what it introduces, and between rows in a list. */
-    --spacing-block: 1.25rem;
+    /* Between a heading and what it introduces, and between rows in a list.
+       Named `stack` rather than `block`, which is the obvious word and is a
+       trap: a spacing key becomes a value in every namespace that takes one,
+       so `--spacing-block` makes `inline-block` resolve as the `inline-*`
+       utility carrying that value instead of as `display: inline-block`. Every
+       element with `line-clamp-2 … inline-block` silently became 1.25rem wide,
+       which on a card title reads as two characters a line. Avoid any key that
+       is also the tail of a real utility -- `block`, `flex`, `row`, `grid`,
+       `none`, `auto`, `full`. */
+    --spacing-stack: 1.25rem;
 
     /* Between one section of a page and the next. */
     --spacing-section: clamp(2rem, 1.5rem + 1.5vw, 3rem);

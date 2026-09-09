@@ -6,6 +6,8 @@ import { SearchForm } from "@/components/site/search-form";
 import { paginate } from "@/lib/api/pagination";
 import type { BlogPost, Project } from "@/lib/data/content";
 import { searchBlogs, searchProjects } from "@/lib/data/content";
+import { LISTING_GRID } from "@/lib/ui/shapes";
+import { cn } from "@/lib/utils/cn";
 
 /**
  * The request-dependent half of a listing page.
@@ -50,7 +52,7 @@ export async function BlogResults({
 
       <ResultCount query={query} count={paged.count} />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
+      <div className={LISTING_GRID}>
         {paged.items.length > 0 ? (
           /*
             The first row, not the first card. This grid is two across from
@@ -96,7 +98,7 @@ export async function ProjectResults({
 
       <ResultCount query={query} count={paged.count} />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 mb-6">
+      <div className={cn(LISTING_GRID, "mb-6")}>
         {paged.items.length > 0 ? (
           // Every card of the top row -- see the note on the blog grid above.
           paged.items.map((project, position) => (

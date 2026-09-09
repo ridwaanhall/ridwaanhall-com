@@ -113,13 +113,14 @@ export const RAIL_MAIN = "min-w-0 lg:col-start-1 lg:row-start-1";
 /**
  * Blog and project listings.
  *
- * Two across, and it stops there. Three would fit the raw width, but these
- * listings carry a rail now, and two cards at about 400px read better than
- * three at 260 -- a card whose image is wider than its text is tall stops
- * looking like a card. It is also what makes `LISTING_CARD_H` honest for both
- * card types at once.
+ * A card wants to be about 400px wide -- much wider and its image is wider than
+ * its text is tall, and it stops reading as a card. So the column count is
+ * whatever gets there: three across the bare 1216px column today, and two once
+ * these listings gain a rail and the grid has about 840px to spend. The page
+ * and its skeleton both read this, so that change is one line and cannot leave
+ * the two disagreeing.
  */
-export const LISTING_GRID = "grid grid-cols-1 sm:grid-cols-2 gap-4";
+export const LISTING_GRID = "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4";
 
 /** Four readings across on a wide screen, two on a phone. */
 export const STAT_GRID_4 = "grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4";

@@ -1,5 +1,6 @@
-import { SkeletonBar, SkeletonPage } from "@/components/skeleton";
+import { SkeletonPage } from "@/components/skeleton";
 import { DashboardPanelSkeleton } from "@/components/site/dashboard-skeleton";
+import { PageHeaderSkeleton } from "@/components/site/ui/page-header";
 
 /**
  * The dashboard, while it loads.
@@ -10,11 +11,7 @@ import { DashboardPanelSkeleton } from "@/components/site/dashboard-skeleton";
 export default function Loading() {
   return (
     <SkeletonPage>
-      <div className="mb-6 md:mb-8">
-        <SkeletonBar className="h-8 w-44 mb-3" />
-        <SkeletonBar className="h-4 w-full max-w-2xl mb-2" />
-        <SkeletonBar className="h-4 w-3/5 max-w-lg" />
-      </div>
+      <PageHeaderSkeleton />
 
       <DashboardPanelSkeleton panel="today" />
       <DashboardPanelSkeleton panel="wakatime" />

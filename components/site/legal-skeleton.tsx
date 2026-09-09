@@ -1,44 +1,43 @@
-import { SkeletonBar, SkeletonBlock, SkeletonPage, SkeletonText } from "@/components/skeleton";
+import { SkeletonBar, SkeletonPage, SkeletonText } from "@/components/skeleton";
+import { PageHeaderSkeleton } from "@/components/site/ui/page-header";
 
 /**
  * A legal document, while it loads.
  *
  * One component for three routes: `/terms`, `/privacy-policy` and the
  * `/legal/[slug]` catch-all all render `LegalDocumentPage`, so they all wait
- * for the same shape -- a summary, then bordered sections, then the
- * cross-links at the foot.
+ * for the same shape -- a title and summary, then numbered clauses divided by
+ * rules, then the cross-links at the foot.
+ *
+ * The header comes from `PageHeaderSkeleton`, which lives beside the header it
+ * stands in for. What is drawn here is only what this page adds to it.
  */
 export function LegalSkeleton() {
   return (
     <SkeletonPage>
-      <div className="mb-6 sm:mb-8">
-        <SkeletonBar className="h-8 w-72 max-w-full mb-3" />
-        <SkeletonBar className="h-4 w-full max-w-2xl mb-2" />
-        <SkeletonBar className="h-4 w-2/5 max-w-md" />
-      </div>
+      <div>
+        <PageHeaderSkeleton />
 
-      <div className="space-y-4">
-        {[0, 1, 2, 3].map((section) => (
-          <div key={section} className="border border-zinc-700 rounded-lg p-4">
-            <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
-              <div className="flex items-center gap-3 flex-1">
-                <SkeletonBar className="h-5 w-5 rounded" />
+        <div className="divide-y divide-zinc-800">
+          {[0, 1, 2, 3].map((clause) => (
+            <div key={clause} className="py-6 first:pt-0">
+              <div className="mb-stack flex items-baseline gap-3">
+                {/* The clause number, then its heading. */}
+                <SkeletonBar className="h-5 w-3" />
                 <SkeletonBar className="h-5 w-56 max-w-full" />
               </div>
-              {/* The "last updated" pill sits on the first section only. */}
-              {section === 0 && <SkeletonBar className="h-6 w-32 rounded-full" />}
+              <SkeletonText lines={4} className="max-w-measure" />
             </div>
-            <SkeletonText lines={4} />
-          </div>
-        ))}
+          ))}
+        </div>
 
-        <SkeletonBlock className="rounded-lg border-zinc-700 p-4">
-          <SkeletonBar className="h-5 w-48 mb-3" />
-          <div className="flex flex-wrap gap-2">
-            <SkeletonBar className="h-10 w-36 rounded-lg" />
-            <SkeletonBar className="h-10 w-32 rounded-lg" />
+        <div className="mt-section border-t border-zinc-800 pt-6">
+          <SkeletonBar className="h-4 w-36" />
+          <div className="mt-3 flex flex-wrap gap-2">
+            <SkeletonBar className="h-8 w-36 rounded-full" />
+            <SkeletonBar className="h-8 w-32 rounded-full" />
           </div>
-        </SkeletonBlock>
+        </div>
       </div>
     </SkeletonPage>
   );

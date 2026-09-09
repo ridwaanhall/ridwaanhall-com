@@ -22,6 +22,7 @@ import { openhireSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { openhireSchemas } from "@/lib/seo/schemas-for-page";
 import { PAGE_GUTTER } from "@/lib/ui/shapes";
+import { PageHeader } from "@/components/site/ui/page-header";
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutData();
@@ -72,18 +73,10 @@ export default async function OpenHirePage() {
       <JsonLdScript schemas={openhireSchemas()} />
       <main className={PAGE_GUTTER}>
         <div>
-          <div className="mb-4 md:mb-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
-              <div>
-                <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                  Career Opportunities
-                </h1>
-                <p className="mt-2 text-base sm:text-lg text-zinc-300 leading-relaxed">
-                  {intro(about.is_open_to_work, about.is_hiring)}
-                </p>
-              </div>
-            </div>
-          </div>
+          <PageHeader
+            title="Career Opportunities"
+            lead={intro(about.is_open_to_work, about.is_hiring)}
+          />
 
           {about.is_open_to_work && about.is_hiring ? (
             <AboutTabs

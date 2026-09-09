@@ -1,15 +1,12 @@
-import { SkeletonBar, SkeletonPage } from "@/components/skeleton";
+import { SkeletonPage } from "@/components/skeleton";
 import { GuestbookPanelSkeleton } from "@/components/site/guestbook/panel-skeleton";
+import { PageHeaderSkeleton } from "@/components/site/ui/page-header";
 
 /** The guestbook, while it loads. */
 export default function Loading() {
   return (
     <SkeletonPage>
-      <div className="mb-4 md:mb-6">
-        <SkeletonBar className="h-8 w-40 mb-3" />
-        <SkeletonBar className="h-4 w-full max-w-2xl mb-2" />
-        <SkeletonBar className="h-4 w-3/5 max-w-lg" />
-      </div>
+      <PageHeaderSkeleton />
 
       <GuestbookPanelSkeleton />
     </SkeletonPage>

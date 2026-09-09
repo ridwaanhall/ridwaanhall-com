@@ -14,6 +14,7 @@ import { projectsListSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { projectsListSchemas } from "@/lib/seo/schemas-for-page";
 import { PAGE_GUTTER } from "@/lib/ui/shapes";
+import { PageHeader } from "@/components/site/ui/page-header";
 
 export async function generateMetadata({
   searchParams,
@@ -49,19 +50,10 @@ export default async function ProjectsPage({
       <JsonLdScript schemas={projectsListSchemas(about, sorted)} />
       <main className={PAGE_GUTTER}>
         <div>
-          <div className="mb-6 md:mb-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
-              <div>
-                <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                  My Projects
-                </h1>
-                <p className="mt-2 text-base sm:text-lg leading-relaxed">
-                  Where effort met execution, these projects are artifacts of discipline and
-                  continuous learning.
-                </p>
-              </div>
-            </div>
-          </div>
+          <PageHeader
+            title="My Projects"
+            lead="Where effort met execution, these projects are artifacts of discipline and continuous learning."
+          />
 
           <Suspense fallback={<ListingSkeleton />}>
             <ProjectResults projects={sorted} searchParams={searchParams} />

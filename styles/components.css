@@ -24,6 +24,18 @@
    =========================================================================== */
 
 @layer components {
+    /* Anything a link can land on sits under a sticky navbar, so it needs to
+       clear it. 5rem is the bar's 4rem plus one step.
+
+       `.toc-target` is set by the page on a section it owns; the `.prose-content`
+       rule reaches into stored HTML, where no class of ours can be put -- the
+       sanitiser allows none -- which is the whole reason these two live in a
+       stylesheet rather than as a utility. */
+    .toc-target,
+    .prose-content :is(h2, h3, h4) {
+        scroll-margin-top: 5rem;
+    }
+
     /* Circular icon button: blog share row, blog/projects "back" link.
        `group` / `cursor-pointer` / the copy button's focus ring stay inline
        since not every instance wants them. */

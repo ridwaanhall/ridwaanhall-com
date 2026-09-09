@@ -1,4 +1,5 @@
 import { SkeletonBar, SkeletonBlock, SkeletonPage, SkeletonText } from "@/components/skeleton";
+import { PageHeaderSkeleton } from "@/components/site/ui/page-header";
 
 /**
  * The about page, while it loads.
@@ -18,11 +19,7 @@ import { SkeletonBar, SkeletonBlock, SkeletonPage, SkeletonText } from "@/compon
 export default function Loading() {
   return (
     <SkeletonPage>
-      <div className="mb-4 md:mb-6">
-        <SkeletonBar className="h-8 w-44 mb-3" />
-        <SkeletonBar className="h-5 w-full max-w-2xl mb-2" />
-        <SkeletonBar className="h-5 w-3/5 max-w-lg" />
-      </div>
+      <PageHeaderSkeleton />
 
       {/* The tab strip: `p-2 sm:p-4` buttons over a rule, as `AboutTabs` draws
           them, so the panel below starts at the same line. */}

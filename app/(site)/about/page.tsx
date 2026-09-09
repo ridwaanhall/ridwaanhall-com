@@ -28,6 +28,7 @@ import { aboutSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { aboutSchemas } from "@/lib/seo/schemas-for-page";
 import { PAGE_GUTTER } from "@/lib/ui/shapes";
+import { PageHeader } from "@/components/site/ui/page-header";
 // Stories are author-written HTML fragments; same allow-list as the blog body.
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -129,19 +130,15 @@ export default async function AboutPage() {
       <JsonLdScript schemas={await aboutSchemas(about)} />
       <main className={PAGE_GUTTER}>
         <div>
-          <div className="mb-4 md:mb-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
-              <div>
-                <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                  About Me
-                </h1>
-                <p className="mt-2 text-base sm:text-lg text-zinc-300 leading-relaxed">
-                  Built on belief and shaped through code. This is the path I&rsquo;ve taken, and
-                  the trace I continue leaving.
-                </p>
-              </div>
-            </div>
-          </div>
+          <PageHeader
+            title="About Me"
+            lead={
+              <>
+                Built on belief and shaped through code. This is the path I&rsquo;ve taken, and
+                the trace I continue leaving.
+              </>
+            }
+          />
 
           <AboutTabs tabs={tabs} />
         </div>

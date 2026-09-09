@@ -1,4 +1,5 @@
 import { SkeletonBar, SkeletonBlock, SkeletonPage } from "@/components/skeleton";
+import { PageHeaderSkeleton } from "@/components/site/ui/page-header";
 
 /**
  * The contact page, while it loads.
@@ -21,18 +22,7 @@ import { SkeletonBar, SkeletonBlock, SkeletonPage } from "@/components/skeleton"
 export default function Loading() {
   return (
     <SkeletonPage>
-      {/*
-        "Contact Me" over its lead line, sized to `text-2xl lg:text-3xl` above
-        `text-base sm:text-lg`. The second lead bar is there only below `sm`,
-        where the sentence wraps -- which is the difference between a 73px
-        heading and a 92px one, and the only part of this file that is above
-        the fold on every screen.
-      */}
-      <div className="mb-6 sm:mb-8">
-        <SkeletonBar className="h-8 lg:h-9 w-48 mb-2" />
-        <SkeletonBar className="h-6 sm:h-7 w-full max-w-2xl mt-1 sm:mt-2" />
-        <SkeletonBar className="h-6 w-2/3 mt-1 sm:hidden" />
-      </div>
+      <PageHeaderSkeleton />
 
       {/*
         The social links: heading, description, then five cards that sit on one

@@ -13,6 +13,7 @@ import { guestbookSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { guestbookSchemas } from "@/lib/seo/schemas-for-page";
 import { PAGE_GUTTER } from "@/lib/ui/shapes";
+import { PageHeader } from "@/components/site/ui/page-header";
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutData();
@@ -39,15 +40,10 @@ export default function GuestbookPage() {
       <JsonLdScript schemas={guestbookSchemas()} />
       <main className={PAGE_GUTTER}>
         <div>
-          <div className="mb-4 md:mb-6">
-            <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-              Guestbook
-            </h1>
-            <p className="mt-2 text-base sm:text-lg text-zinc-300 leading-relaxed">
-              Leave a trace of your own. Say hello, ask something, or just let me know you were
-              here.
-            </p>
-          </div>
+          <PageHeader
+            title="Guestbook"
+            lead="Leave a trace of your own. Say hello, ask something, or just let me know you were here."
+          />
 
           {/*
             The heading above is static and prerenders; everything below reads

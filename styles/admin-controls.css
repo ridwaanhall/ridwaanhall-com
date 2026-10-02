@@ -85,8 +85,8 @@
  *
  * A background image has no such ambiguity. The stroke is pinned white rather
  * than taken from a ramp because its contrast target is the indigo fill beneath
- * it, which does not change with the theme -- the same reasoning `.media-scrim`
- * carries in app/globals.css.
+ * it, which does not change with the theme: a mark drawn over a fill answers
+ * to the fill, not to the page.
  */
 .admin-check:checked {
     background-color: var(--color-indigo-500);

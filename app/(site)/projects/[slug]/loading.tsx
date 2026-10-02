@@ -1,36 +1,40 @@
-import { SkeletonBar, SkeletonBlock, SkeletonPage, SkeletonText } from "@/components/skeleton";
+import { SkeletonBar, SkeletonPage, SkeletonText } from "@/components/skeleton";
 
-/** A project, while it loads. The blog post's shape with a metadata row. */
+/**
+ * A project, while it loads: the back link, the status line, the title, the
+ * headline and the two actions, the gallery, then the description beside the
+ * stack column.
+ */
 export default function Loading() {
   return (
-    <SkeletonPage gutter="article">
-      <header className="mb-6 md:mb-8">
-        <SkeletonBar className="h-8 w-5/6 max-w-3xl mb-2 md:mb-3" />
-
-        {/* Status, dates and the link/share controls. */}
-        <div className="flex flex-col mb-4 gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <SkeletonBar className="h-6 w-24 rounded-full" />
-            <SkeletonBar className="h-4 w-40" />
-          </div>
-          <div className="flex flex-wrap gap-2 mt-1">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <SkeletonBar key={i} className="w-8 h-8 sm:w-9 sm:h-9 rounded-full" />
-            ))}
-          </div>
+    <SkeletonPage>
+      <header className="pt-10 md:pt-16">
+        <SkeletonBar className="h-4 w-24" />
+        <SkeletonBar className="mt-10 h-4 w-72 max-w-full" />
+        <SkeletonBar className="mt-5 h-12 w-3/4 max-w-2xl sm:h-14 md:h-16" />
+        <SkeletonBar className="mt-6 h-5 w-full max-w-2xl" />
+        <div className="mt-10 flex gap-3">
+          <SkeletonBar className="h-10 w-28 rounded-lg" />
+          <SkeletonBar className="h-10 w-24 rounded-lg" />
         </div>
-
-        <SkeletonBlock className="mb-6 md:mb-8 h-60 sm:h-72 md:h-96" />
       </header>
 
-      <SkeletonText lines={8} className="mb-8 md:mb-10" />
+      <SkeletonBar className="mt-12 aspect-video w-full rounded-lg md:mt-16" />
 
-      {/* Tech stack. */}
-      <SkeletonBar className="h-6 w-32 mb-2" />
-      <div className="flex flex-wrap gap-1.5 sm:gap-2">
-        {[0, 1, 2, 3, 4, 5].map((i) => (
-          <SkeletonBar key={i} className="h-6 w-24 rounded-full" />
-        ))}
+      <div className="mt-16 grid gap-16 border-t border-zinc-800 pt-12 md:mt-20 md:pt-16 lg:grid-cols-[1fr_17rem]">
+        <div>
+          <SkeletonBar className="mb-6 h-4 w-24" />
+          <SkeletonText lines={6} />
+        </div>
+        <div className="space-y-4">
+          <SkeletonBar className="mb-6 h-4 w-20" />
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="flex gap-3">
+              <SkeletonBar className="h-5 w-5 rounded" />
+              <SkeletonBar className="h-4 w-28" />
+            </div>
+          ))}
+        </div>
       </div>
     </SkeletonPage>
   );

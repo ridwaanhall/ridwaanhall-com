@@ -136,6 +136,42 @@ prefix so a leftover is obviously a harness's and not real content.
 - `components/` — `site/` for the public pages, `admin/` for the admin,
   `layout/` and `providers/` shared.
 
+### The public site is one column, one neutral, and GSAP
+
+The public pages were redesigned from a fixed left rail and card grids into a
+top navbar (`components/layout/site-navbar.tsx`), a full-screen menu below
+`lg` (`site-menu.tsx`) and a footer (`site-footer.tsx`), around one centred
+column. Four shapes make every page, all in `components/site/ui.tsx`: a
+`PageHeader`, a ruled `Section`, a row in a list, a button. **Add to a page
+with those rather than a new card.** Listings are `BlogList` rows and
+`ProjectGrid` tiles from `components/site/content-rows.tsx`; the About page is
+one indexed page (`SectionIndex`) rather than tabs, and its records are the
+timeline in `about-entries.tsx`.
+
+Colour is the zinc ramp plus `indigo-400` for focus rings only. The other hues
+survive only where they *are* the information -- a project's lifecycle dot,
+an application's outcome dot, a toast's border, chart series that must be
+told apart -- and always beside a word, never as the only signal.
+
+Motion is GSAP (`gsap`, `@gsap/react`, ScrollTrigger, SplitText) and lives in
+`components/motion/`. **Mark what moves with `<Reveal>` or `<SplitHeading>`,
+never with a data attribute that a page-wide script finds.** That was the
+first version, and it logged a hydration mismatch on every page: GSAP animates
+by writing inline styles, the listings stream in behind `<Suspense>`, and a
+page-level scan wrote styles onto elements React had not hydrated yet. A
+component's layout effect runs only once its own element is hydrated, so each
+of these touches one element at the one safe moment.
+
+The hidden starting state is CSS, not JavaScript: an inline script in the root
+layout's `<head>` sets `html.motion` before first paint, only without
+`prefers-reduced-motion`, and `styles/site.css` hides `[data-reveal]` and
+`[data-split]` under it -- with a three-second failsafe animation that shows
+everything if the bundle never arrives. `PageMotion` sets `html.motion-live`
+to cancel the failsafe once GSAP owns the elements; leaving it running would
+fight GSAP, because an animation outranks inline styles. The navbar hides on
+scroll down and returns on scroll up **or when anything in it takes focus** --
+a focused control the reader cannot see is worse than no animation.
+
 ### The admin is declarative
 
 `lib/admin/registry.ts` names every screen. `lib/admin/models/` holds one module
@@ -681,7 +717,8 @@ Both halves of this were live:
   "unknown" for all of them, so the first of the two sort keys in `sortProjects`
   did nothing whatsoever. It survived because the test compared the module's two
   maps against each other — a tautology, and nothing a row participates in.
-- `application-card.tsx` keyed its status colours on the *label* (`In Progress`).
+- The application card (now `ApplicationEntry` in `about-entries.tsx`) keyed
+  its status colours on the *label* (`In Progress`).
   That worked only by coincidence, and would have gone grey on the first
   rewording.
 

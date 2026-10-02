@@ -206,7 +206,7 @@ export function GuestbookPanel({
             onClick={() => setPinnedOpen((open) => !open)}
             aria-expanded={pinnedOpen}
             aria-controls="guestbook-pinned"
-            className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-xs font-medium text-amber-400 transition-colors hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+            className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-xs font-medium text-zinc-200 transition-colors hover:bg-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
           >
             <PinIcon className="h-3.5 w-3.5" filled />
             <span>
@@ -236,7 +236,7 @@ export function GuestbookPanel({
         <div
           id="guestbook-pinned"
           hidden={!pinnedOpen}
-          className="flex-shrink-0 space-y-1.5 border-b border-zinc-800 bg-zinc-900/40 px-3 py-2.5"
+          className="flex-shrink-0 space-y-1.5 border-b border-zinc-800 px-3 py-2.5"
         >
           {thread.pinned.map((pinned) => (
             <PinnedCard

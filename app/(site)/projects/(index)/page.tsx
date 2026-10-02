@@ -8,6 +8,7 @@ import {
   readListingParams,
   type ListingSearchParams,
 } from "@/components/site/listing-results";
+import { CONTAINER, PageHeader } from "@/components/site/ui";
 import { getAboutData } from "@/lib/data/about";
 import { getProjects, sortProjects } from "@/lib/data/content";
 import { projectsListSeo } from "@/lib/seo/data";
@@ -46,23 +47,14 @@ export default async function ProjectsPage({
   return (
     <>
       <JsonLdScript schemas={projectsListSchemas(about, sorted)} />
-      <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-6 md:mb-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
-              <div>
-                <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                  My Projects
-                </h1>
-                <p className="mt-2 text-base sm:text-lg leading-relaxed">
-                  Where effort met execution, these projects are artifacts of discipline and
-                  continuous learning.
-                </p>
-              </div>
-            </div>
-          </div>
+      <main className={CONTAINER}>
+        <PageHeader
+          title="Projects"
+          lead="Where effort met execution, these projects are artifacts of discipline and continuous learning."
+        />
 
-          <Suspense fallback={<ListingSkeleton />}>
+        <div className="border-t border-zinc-800 pt-12 pb-4 md:pt-16">
+          <Suspense fallback={<ListingSkeleton shape="tiles" />}>
             <ProjectResults projects={sorted} searchParams={searchParams} />
           </Suspense>
         </div>

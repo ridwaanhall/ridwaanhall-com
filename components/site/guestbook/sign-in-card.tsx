@@ -23,7 +23,7 @@ export function SignInCard() {
         avatar — see the{" "}
         <a
           href="/privacy-policy"
-          className="text-indigo-400 underline transition-colors hover:text-indigo-300"
+          className="text-zinc-100 underline decoration-zinc-600 underline-offset-2 transition-colors hover:decoration-zinc-100"
         >
           privacy policy
         </a>
@@ -55,7 +55,7 @@ function ProviderButton({
     <button
       type="button"
       onClick={() => signInWith(provider, "/guestbook")}
-      className="inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-zinc-700 bg-zinc-800 text-sm text-zinc-200 transition-colors hover:border-zinc-600 hover:bg-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+      className="inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-zinc-800 text-sm text-zinc-200 transition-colors hover:border-zinc-600 hover:bg-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
     >
       {children}
       {label}

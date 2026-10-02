@@ -22,9 +22,9 @@ type Cell = (
 ) => React.ReactNode;
 
 const CHEVRON_CELL =
-  "page-cell rounded-md text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200";
+  "page-cell rounded-md text-sm text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-100";
 const NUMBER_CELL =
-  "page-cell rounded-md text-xs sm:text-sm transition-all hover:bg-zinc-800 hover:text-zinc-200";
+  "page-cell rounded-md text-sm text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-100";
 
 /**
  * The bar itself.
@@ -42,13 +42,13 @@ function PaginationBar({ page, cell }: { page: PageState; cell: Cell }) {
 
   return (
     <nav className="flex justify-center" aria-label="Pagination">
-      <ul className="inline-flex items-center gap-0.5 sm:gap-1 rounded-lg p-0.5 sm:p-1 backdrop-blur-sm border border-zinc-800">
+      <ul className="inline-flex items-center gap-1">
         <li>
           {page.has_previous ? (
             cell(page.page - 1, CHEVRON_CELL, <ChevronLeft />, "Previous page")
           ) : (
             <span
-              className="page-cell rounded-md text-sm text-zinc-500 cursor-not-allowed"
+              className="page-cell rounded-md text-sm text-zinc-700 cursor-not-allowed"
               aria-disabled="true"
             >
               <ChevronLeft />
@@ -67,7 +67,7 @@ function PaginationBar({ page, cell }: { page: PageState; cell: Cell }) {
             <li key={item}>
               <span
                 aria-current="page"
-                className="page-cell rounded-md bg-zinc-800 text-xs sm:text-sm font-medium"
+                className="page-cell rounded-md bg-zinc-100 text-sm font-medium text-black"
               >
                 {item}
               </span>
@@ -82,7 +82,7 @@ function PaginationBar({ page, cell }: { page: PageState; cell: Cell }) {
             cell(page.page + 1, CHEVRON_CELL, <ChevronRight />, "Next page")
           ) : (
             <span
-              className="page-cell rounded-md text-sm text-zinc-500 cursor-not-allowed"
+              className="page-cell rounded-md text-sm text-zinc-700 cursor-not-allowed"
               aria-disabled="true"
             >
               <ChevronRight />

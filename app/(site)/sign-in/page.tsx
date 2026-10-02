@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CONTAINER } from "@/components/site/ui";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -59,16 +60,16 @@ export default function SignInPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   return (
-    <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="w-full max-w-sm rounded-lg border border-zinc-800 p-6">
-          <h1 className="text-lg font-medium text-zinc-200">Sign in</h1>
-          <p className="mt-2 text-sm text-zinc-400">
+    <main className={CONTAINER}>
+      <div className="flex min-h-[70vh] items-center justify-center py-16">
+        <div className="w-full max-w-sm">
+          <h1 className="text-4xl font-medium tracking-tight text-zinc-100">Sign in</h1>
+          <p className="mt-4 text-base leading-relaxed text-zinc-400">
             To comment and to sign the guestbook. Nothing is shared beyond your name and
             avatar &mdash; see the{" "}
             <a
               href="/privacy-policy"
-              className="text-indigo-400 underline transition-colors hover:text-indigo-300"
+              className="text-zinc-100 underline decoration-zinc-600 underline-offset-2 transition-colors hover:decoration-zinc-100"
             >
               privacy policy
             </a>
@@ -82,7 +83,7 @@ export default function SignInPage({
             <SignInNotice searchParams={searchParams} />
           </Suspense>
 
-          <div className="mt-5">
+          <div className="mt-10">
             <ProviderButtons redirectTo="/" />
           </div>
         </div>

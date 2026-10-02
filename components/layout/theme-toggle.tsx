@@ -29,8 +29,12 @@ import { cn } from "@/lib/utils/cn";
 export function ThemeToggle({
   iconSize = "h-4 w-4",
   bare = false,
+  className,
 }: {
   iconSize?: string;
+  /** Replaces the default chrome entirely -- the navbar draws its icon
+   *  buttons as one matched set. */
+  className?: string;
   /** Drop the padding and hover plate. Used inline beside text, where a hover
    *  chip would read as a second control. */
   bare?: boolean;
@@ -58,8 +62,12 @@ export function ThemeToggle({
       aria-pressed={hydrated ? resolvedTheme === "light" : undefined}
       title="Toggle light or dark theme"
       className={cn(
-        "group inline-flex cursor-pointer items-center justify-center rounded-md text-zinc-500 transition-colors hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
-        !bare && "p-1.5 hover:bg-zinc-800",
+        "group",
+        className ??
+          cn(
+            "inline-flex cursor-pointer items-center justify-center rounded-md text-zinc-500 transition-colors hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
+            !bare && "p-1.5 hover:bg-zinc-800",
+          ),
       )}
     >
       <svg

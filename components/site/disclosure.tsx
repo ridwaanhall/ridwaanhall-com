@@ -99,7 +99,7 @@ export function DisclosureButton({
       <span>{open ? "Show less" : "Show more"}</span>
       <svg
         className={`w-3 h-3 ml-1.5 transition-transform duration-200 ${
-          open ? "rotate-180" : "animate-pulse"
+          open ? "rotate-180" : ""
         }`}
         fill="none"
         stroke="currentColor"

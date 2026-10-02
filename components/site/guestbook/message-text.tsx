@@ -23,7 +23,7 @@ export function MessageText({ text }: { text: string }) {
         href={trimmed}
         target="_blank"
         rel="noopener noreferrer nofollow"
-        className="text-indigo-400 underline break-all hover:text-indigo-300"
+        className="text-zinc-100 underline decoration-zinc-500 underline-offset-2 break-all hover:decoration-zinc-100"
       >
         {trimmed}
       </a>

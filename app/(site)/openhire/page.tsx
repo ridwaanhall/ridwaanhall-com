@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { CONTAINER, PageHeader } from "@/components/site/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { AboutTabs } from "@/components/site/about-tabs";
 import {
@@ -69,21 +70,10 @@ export default async function OpenHirePage() {
   return (
     <>
       <JsonLdScript schemas={openhireSchemas()} />
-      <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-4 md:mb-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
-              <div>
-                <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                  Career Opportunities
-                </h1>
-                <p className="mt-2 text-base sm:text-lg text-zinc-300 leading-relaxed">
-                  {intro(about.is_open_to_work, about.is_hiring)}
-                </p>
-              </div>
-            </div>
-          </div>
+      <main className={CONTAINER}>
+        <PageHeader title="Career Opportunities" lead={intro(about.is_open_to_work, about.is_hiring)} />
 
+        <div className="pb-8">
           {about.is_open_to_work && about.is_hiring ? (
             <AboutTabs
               tabs={[
@@ -92,7 +82,9 @@ export default async function OpenHirePage() {
               ]}
             />
           ) : (
-            <div className="w-full">{about.is_open_to_work ? openPanel : hiringPanel}</div>
+            <div className="w-full border-t border-zinc-800">
+              {about.is_open_to_work ? openPanel : hiringPanel}
+            </div>
           )}
         </div>
       </main>
@@ -102,11 +94,7 @@ export default async function OpenHirePage() {
 
 /** The wrapper both panels share. */
 function Panel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mt-4 sm:mt-6">
-      <div className="space-y-4">{children}</div>
-    </div>
-  );
+  return <div className="border-b border-zinc-800">{children}</div>;
 }
 
 function OpenToWorkPanel({
@@ -127,7 +115,7 @@ function OpenToWorkPanel({
         paths={[ICON.user]}
         badge={<StatusPill text={data.status} />}
       >
-        <div className="space-y-2">
+        <div>
           <DetailRow label="Availability">{data.availability}</DetailRow>
           <DetailRow label="Employment Type">{data.type.join(", ")}</DetailRow>
           <DetailRow label="Remote Work" muted={false}>
@@ -148,7 +136,7 @@ function OpenToWorkPanel({
       </SectionCard>
 
       <SectionCard title="Professional Details" paths={[ICON.idCard]}>
-        <div className="space-y-2">
+        <div>
           <DetailRow label="Experience Level">{data.experience_level}</DetailRow>
           <DetailRow label="Salary Expectation">{data.salary_expectation}</DetailRow>
           <DetailRow label="Notice Period">{data.notice_period}</DetailRow>
@@ -157,7 +145,7 @@ function OpenToWorkPanel({
       </SectionCard>
 
       <SectionCard title="Languages & Preferences" paths={[ICON.translate]}>
-        <div className="space-y-2">
+        <div>
           <DetailRow label="Languages">{data.languages.join(", ")}</DetailRow>
           <DetailRow label="Contact Preference">{data.contact_preference}</DetailRow>
           <DetailRow label="Interview Availability">{data.interview_availability}</DetailRow>
@@ -179,8 +167,8 @@ function OpenToWorkPanel({
 
 function LocationGroup({ title, items }: { title: string; items: string[] }) {
   return (
-    <div className="p-2">
-      <h3 className="text-lg font-medium text-indigo-400 mb-3">{title}</h3>
+    <div className="py-2 first:pt-0">
+      <h3 className="mb-2 text-sm text-zinc-400">{title}</h3>
       <TagList items={items} className="mt-1.5" />
     </div>
   );
@@ -197,22 +185,22 @@ function ToolsTable({ tools }: { tools: Record<string, Skill[]> }) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-zinc-700">
-              <th className="text-left py-2 px-3 text-zinc-400 font-medium text-xs uppercase tracking-wider w-28 sm:w-36">
+            <tr className="border-b border-zinc-800">
+              <th className="w-28 py-2 pr-4 text-left text-xs font-normal text-zinc-500 sm:w-36">
                 Category
               </th>
-              <th className="text-left py-2 px-3 text-zinc-400 font-medium text-xs uppercase tracking-wider">
+              <th className="py-2 text-left text-xs font-normal text-zinc-500">
                 Tools
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-700/50">
+          <tbody className="divide-y divide-zinc-900">
             {Object.entries(tools).map(([category, skills]) => (
-              <tr key={category} className="hover:bg-zinc-800/30 transition-colors">
-                <td className="py-2 px-3 font-medium text-zinc-300 text-xs sm:text-sm align-top whitespace-nowrap">
+              <tr key={category}>
+                <td className="py-2.5 pr-4 align-top text-sm whitespace-nowrap text-zinc-100">
                   {category}
                 </td>
-                <td className="py-2 px-3 text-zinc-400 text-xs">
+                <td className="py-2.5 text-sm leading-relaxed text-zinc-400">
                   {skills.map((skill) => skill.name).join(", ")}
                 </td>
               </tr>
@@ -240,7 +228,7 @@ function HiringPanel({ data }: { data: HiringData }) {
               href={data.website}
               target="_blank"
               rel="noopener"
-              className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-colors text-sm mt-1"
+              className="mt-1 inline-flex items-center gap-2 text-sm text-zinc-100 underline decoration-zinc-600 underline-offset-2 transition-colors hover:decoration-zinc-100"
             >
               <svg
                 className="w-4 h-4"
@@ -278,11 +266,11 @@ function HiringPanel({ data }: { data: HiringData }) {
       </SectionCard>
 
       <SectionCard title="Application Process" paths={[ICON.clipboard]}>
-        <div className="space-y-2">
+        <div>
           {data.application_process.map((step, index) => (
-            <div key={step} className="flex items-start gap-3 p-2 bg-zinc-800/30 rounded">
-              <span className="flex-shrink-0 w-6 h-6 bg-indigo-900/30 text-indigo-300 rounded-full flex items-center justify-center text-xs font-medium border border-indigo-700/50">
-                {index + 1}
+            <div key={step} className="flex items-start gap-4 border-b border-zinc-900 py-3 last:border-b-0">
+              <span className="w-6 flex-shrink-0 pt-px text-sm tabular-nums text-zinc-600">
+                {String(index + 1).padStart(2, "0")}
               </span>
               <span className="text-sm text-zinc-300">{step}</span>
             </div>
@@ -313,7 +301,7 @@ function HiringPanel({ data }: { data: HiringData }) {
       ) : null}
 
       <SectionCard title="Contact Information" paths={[ICON.mail]}>
-        <div className="space-y-2">
+        <div>
           <DetailRow label="General Inquiries">{data.contact_info.email}</DetailRow>
           <DetailRow label="Applications">{data.contact_info.application_email}</DetailRow>
           <DetailRow label="Response Time">{data.contact_info.response_time}</DetailRow>

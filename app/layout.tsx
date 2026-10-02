@@ -39,12 +39,28 @@ export const viewport: Viewport = {
   themeColor: "#000000",
 };
 
+const MOTION_SCRIPT =
+  "try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('motion')}catch(e){}";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // suppressHydrationWarning is required by next-themes: its pre-paint script
     // writes data-theme on <html> before React hydrates, so the server and
     // client markup legitimately differ on that one attribute.
     <html lang="en" className={onest.variable} suppressHydrationWarning>
+      <head>
+        {/*
+          Before first paint, so content that is about to animate in is hidden
+          rather than painted in place and then snapped back. Skipped entirely
+          for a reader who prefers reduced motion. `styles/site.css` carries the
+          failsafe that shows everything if the bundle never takes over, and
+          `components/motion/page-motion.tsx` is what does. Here, in the root
+          layout's head, because this element never re-renders on the client:
+          a script rendered by a page would be created again on navigation,
+          which React refuses to execute and warns about.
+        */}
+        <script dangerouslySetInnerHTML={{ __html: MOTION_SCRIPT }} />
+      </head>
       <body className="bg-black text-zinc-300 transition-colors duration-200">
         <ThemeProvider>
           <ThemeColorSync />

@@ -319,7 +319,9 @@ export function PageLoadingBar() {
       aria-hidden="true"
       data-state="idle"
       style={{ width: "0%" }}
-      className="fixed top-0 left-0 h-0.5 z-[70] bg-gradient-to-r from-teal-400 via-teal-300 to-teal-500"
+      // The strongest neutral, like every other mark the public site makes: a
+      // teal gradient here was the one colour left that meant nothing.
+      className="fixed top-0 left-0 h-0.5 z-[70] bg-zinc-100"
     />
   );
 }

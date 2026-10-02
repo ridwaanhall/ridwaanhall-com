@@ -38,7 +38,7 @@ export function PositionCard({
     <Disclosure>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-2">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="text-lg font-medium text-zinc-200">{position.title}</h3>
+          <h3 className="text-lg font-medium text-zinc-100">{position.title}</h3>
           <span className="pill-badge px-2.5 py-0.5 text-xs border border-zinc-700 text-zinc-400">
             {position.experience_required}
           </span>
@@ -75,15 +75,15 @@ export function PositionCard({
           <BulletLines items={position.responsibilities} />
         </Group>
         <Group title="What We Offer">
-          <BulletLines items={position.benefits} dotClass="bg-emerald-400" />
+          <BulletLines items={position.benefits} />
         </Group>
 
-        <div className="mt-4 pt-3 border-t border-zinc-700/50">
+        <div className="mt-6">
           <a
             href={`mailto:${applicationEmail}?subject=${encodeURIComponent(
               `Application for ${position.title}`,
             )}`}
-            className="toggle-pill group px-2 py-1 rounded-full"
+            className="group inline-flex h-10 items-center gap-2 rounded-lg bg-zinc-100 px-4 text-sm font-medium text-black transition-colors hover:bg-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
           >
             <svg
               className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-1.5"
@@ -118,8 +118,8 @@ export function PositionCard({
 
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="mt-3">
-      <h5 className="text-sm font-medium text-zinc-300 mb-2">{title}</h5>
+    <div className="mt-5">
+      <h5 className="mb-2 text-sm text-zinc-400">{title}</h5>
       {children}
     </div>
   );

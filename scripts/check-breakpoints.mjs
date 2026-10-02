@@ -1,8 +1,9 @@
 /**
  * Verify the one-visible-theme-toggle invariant across breakpoints.
  *
- * The toggle is rendered twice -- mobile navbar below `md`, desktop rail from
- * `md` up -- and exactly one must be on screen at any width. A breakpoint band
+ * The toggle lives in the top navbar and never hides; the links collapse into
+ * the menu button below `lg`, and exactly one toggle must be on screen at any
+ * width -- the mobile menu carries none of its own. A breakpoint band
  * with none, or with two, is invisible to tsc, eslint and the build, so this
  * checks it directly in a real browser. The widths bracket every boundary that
  * matters.
@@ -39,10 +40,9 @@ for (const width of WIDTHS) {
       toggles: seen("[data-theme-toggle]"),
       // Attribute-substring selectors so the Tailwind class's colon needs no
       // escaping through however many layers of quoting this file travels.
-      rails: seen('div[class*="w-62"]'),
       navbars: seen("header"),
-      hamburgers: seen('[aria-label="Open Sidebar"]'),
-      searchBoxes: seen('button[class*="border-zinc-700"]'),
+      hamburgers: seen('[aria-label="Open menu"]'),
+      searchBoxes: seen('button[aria-label="Search"]'),
     };
   });
 
@@ -50,7 +50,7 @@ for (const width of WIDTHS) {
   if (!ok) failures++;
   console.log(
     `  ${ok ? "ok  " : "FAIL"} ${String(width).padStart(4)}px  ` +
-      `toggles=${counts.toggles} rail=${counts.rails} navbar=${counts.navbars} ` +
+      `toggles=${counts.toggles} navbar=${counts.navbars} ` +
       `hamburger=${counts.hamburgers} search=${counts.searchBoxes}`,
   );
 }

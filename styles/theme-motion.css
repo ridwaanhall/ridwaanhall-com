@@ -2,8 +2,8 @@
    Theme-dependent surfaces, and the motion vocabulary they share
 
    What the palette remap in `theme-light.css` cannot express: colours chosen
-   per theme rather than mapped (the heatmap's empty cell), overlays that are
-   not surfaces (`.media-scrim`), the toggle's own icons, and the movement that
+   per theme rather than mapped (the heatmap's empty cell), the toggle's own
+   icons, and the movement that
    plays when `data-theme` flips.
 
    The shared entrance vocabulary lives here rather than beside each feature
@@ -92,46 +92,6 @@
    inventing a new relationship. */
 html[data-theme="light"] .contrib-empty {
     background-color: oklch(96% 0.001 286.375);
-}
-
-/* ---------------------------------------------------------------------------
-   Overlays on photography are not surfaces
-
-   .media-scrim is the project card's hover CTA ("View project"): no veil
-   behind it -- the point of the hover is to see the blurred, zoomed photo,
-   not have it dimmed under a tint. Its contrast target is the *photo*, which
-   doesn't change with the theme, so it's hand-coded in literal rgb() rather
-   than a Tailwind token: pin the label white and give it a dark drop-shadow
-   halo, the same trick map/photo overlays use to stay readable over
-   unpredictable backgrounds without a background of their own. `filter:
-   drop-shadow` (not `text-shadow`) is what reaches the label's icon as well
-   as its text -- the icon is an SVG with no glyphs to cast from.
-
-   .photo-scrim is the opposite case: a bottom-anchored fade behind real UI
-   text (blog featured slider, blog card, homepage Latest Blogs slider) whose
-   contrast target is deliberately the *page*, so it uses var(--color-black)
-   and is meant to change with the theme -- dark toward a dark canvas, light
-   toward a light one -- which is also why the text sitting on it (title,
-   date, description, author) is plain text-zinc-*, not a pinned color: it
-   already mirrors correctly against whichever canvas tone the scrim is
-   fading toward. color-mix() keeps every stop translucent rather than
-   opaque, so the fade only ever covers roughly the bottom two-thirds of the
-   photo and never reads as a flat panel -- an earlier version pinned this to
-   one literal opaque-at-the-bottom value in both themes, which read as
-   heavier than intended and stopped following the page at all.
-   --------------------------------------------------------------------------- */
-.media-scrim {
-    color: rgb(255 255 255);
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.9)) drop-shadow(0 2px 10px rgb(0 0 0 / 0.7));
-}
-
-.photo-scrim {
-    background-image: linear-gradient(
-        to top,
-        color-mix(in srgb, var(--color-black) 78%, transparent) 0%,
-        color-mix(in srgb, var(--color-black) 40%, transparent) 38%,
-        transparent 68%
-    );
 }
 
 /* ---------------------------------------------------------------------------

@@ -33,7 +33,7 @@ export function RoleBadge({
 
   if (role === "superuser") {
     return (
-      <span className="inline-flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-1.5 py-0.5 text-violet-50">
+      <span className="inline-flex items-center gap-0.5 rounded-full bg-zinc-100 px-1.5 py-0.5 text-black">
         <svg
           stroke="currentColor"
           fill="currentColor"
@@ -54,7 +54,7 @@ export function RoleBadge({
   }
 
   return (
-    <span className="inline-flex items-center gap-0.5 rounded-full bg-gradient-to-bl from-amber-700 via-yellow-800 to-amber-700 px-1.5 py-0.5 text-amber-50">
+    <span className="inline-flex items-center gap-0.5 rounded-full border border-zinc-600 px-1.5 py-0.5 text-zinc-200">
       <svg
         stroke="currentColor"
         fill="currentColor"
@@ -77,9 +77,9 @@ export function RoleBadge({
 export function AvatarFallback({ className, glyph }: { className: string; glyph: string }) {
   return (
     <div
-      className={`rounded-full border border-zinc-800 flex-shrink-0 bg-gradient-to-br from-zinc-500 to-purple-600 flex items-center justify-center ${className}`}
+      className={`rounded-full border border-zinc-800 flex-shrink-0 bg-zinc-800 flex items-center justify-center ${className}`}
     >
-      <svg className={`${glyph} text-white`} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <svg className={`${glyph} text-zinc-400`} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
       </svg>
     </div>

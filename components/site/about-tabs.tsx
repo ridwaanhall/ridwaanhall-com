@@ -46,7 +46,7 @@ export function AboutTabs({ tabs }: { tabs: AboutTab[] }) {
     if (!button) return;
     setMark({
       left: button.offsetLeft,
-      top: button.offsetTop + button.offsetHeight - 2,
+      top: button.offsetTop + button.offsetHeight - 1,
       width: button.offsetWidth,
     });
   }, [active]);
@@ -77,10 +77,10 @@ export function AboutTabs({ tabs }: { tabs: AboutTab[] }) {
 
   return (
     <>
-      <div className="mb-6 border-b border-zinc-700">
+      <div className="border-b border-zinc-800">
         <div
           ref={stripRef}
-          className="relative flex flex-wrap min-w-full -mb-px text-sm font-medium text-center"
+          className="relative flex flex-wrap min-w-full -mb-px gap-6 text-sm"
           role="tablist"
         >
           {tabs.map((tab) => {
@@ -98,8 +98,8 @@ export function AboutTabs({ tabs }: { tabs: AboutTab[] }) {
                   else buttons.current.delete(tab.id);
                 }}
                 onClick={() => select(tab.id)}
-                className={`inline-block cursor-pointer p-2 sm:p-4 rounded-t-lg transition-colors hover:text-zinc-300 flex-1 sm:flex-none whitespace-nowrap ${
-                  selected ? "text-zinc-300" : ""
+                className={`inline-block cursor-pointer py-4 whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 ${
+                  selected ? "text-zinc-100" : "text-zinc-500 hover:text-zinc-200"
                 }`}
               >
                 {tab.label}
@@ -115,7 +115,7 @@ export function AboutTabs({ tabs }: { tabs: AboutTab[] }) {
           {mark && (
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute h-0.5 bg-zinc-300 transition-all duration-300 ease-out"
+              className="pointer-events-none absolute h-px bg-zinc-100 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
               style={{ left: mark.left, top: mark.top, width: mark.width }}
             />
           )}

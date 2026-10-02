@@ -91,14 +91,14 @@ export function ShareRow({
           height="18"
           fill="currentColor"
           viewBox="0 0 24 24"
-          className="text-zinc-300 group-hover:text-white"
+          className="text-current"
           aria-hidden="true"
         >
           <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
         </svg>
         {copied && (
           <span
-            className="absolute left-1/2 -translate-x-1/2 -bottom-7 whitespace-nowrap rounded bg-green-900/90 px-2 py-0.5 text-xs text-green-300"
+            className="absolute left-1/2 -translate-x-1/2 -bottom-7 whitespace-nowrap rounded bg-zinc-100 px-2 py-0.5 text-xs text-black"
             role="status"
           >
             Copied
@@ -136,7 +136,7 @@ function ShareLink({
         height="18"
         fill="currentColor"
         viewBox="0 0 24 24"
-        className="text-zinc-300 group-hover:text-white"
+        className="text-current"
         aria-hidden="true"
       >
         {children}

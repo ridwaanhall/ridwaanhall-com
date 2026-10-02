@@ -42,30 +42,30 @@ import { getViewer } from "@/lib/auth/viewer";
  * links and drew it like one. It is an account action, and it belongs with the
  * other account action.
  *
- * This renders inside the sidebar's base, which owns the rule and the gutter --
- * see `SidebarFooter`. It is created once in `app/(site)/layout.tsx` and
- * rendered by both the rail and the drawer, so it streams into a layout that
+ * It is created once in `app/(site)/layout.tsx` and rendered twice -- in the
+ * navbar from `lg` up, where `AccountMenu` draws it as an avatar that drops a
+ * panel down, and in the mobile menu below that -- so it streams into a layout that
  * stays fully prerendered. Both reads it makes are memoised for that reason:
  * the element renders twice per request, and without the memo that is two
  * identities and two staff checks to draw one row.
  */
 const PILL =
-  "pill-badge cursor-pointer border border-zinc-700 px-2.5 py-1 text-xs text-zinc-400 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+  "pill-badge cursor-pointer border border-zinc-800 px-3 py-1 text-sm text-zinc-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 
 /**
  * A row of the account menu: full width, because a menu's rows are a list and a
  * list has one left edge.
  */
 const MENU_ROW =
-  "flex w-full cursor-pointer items-center rounded-md px-3 py-2 text-left text-sm text-zinc-300 transition-colors hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+  "flex w-full cursor-pointer items-center rounded-md px-3 py-2 text-left text-sm text-zinc-300 transition-colors hover:bg-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 
 /*
  * Written out rather than composed from the hue. Tailwind emits only a class it
  * can see in the source, so building one from a variable would produce no rule
  * at all -- the same reason `status-badges.tsx` spells its three out.
  */
-const HOVER_ACCENT = "hover:border-indigo-700/60 hover:text-indigo-400";
-const HOVER_ADMIN = "hover:text-indigo-400";
+const HOVER_ACCENT = "hover:border-zinc-600 hover:text-zinc-100";
+const HOVER_ADMIN = "hover:text-zinc-100";
 const HOVER_LEAVE = "hover:text-red-400";
 
 export async function AccountPanel() {

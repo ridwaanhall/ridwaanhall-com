@@ -115,7 +115,7 @@ export function Message({
             <RoleBadge role={message.role} />
             {message.isPinned && (
               <span
-                className="flex items-center gap-0.5 rounded-full bg-zinc-700 px-1.5 py-0.5 text-amber-400"
+                className="flex items-center gap-0.5 rounded-full border border-zinc-700 px-1.5 py-0.5 text-zinc-300"
                 title="Pinned message"
               >
                 <PinIcon className="w-2.5 h-2.5" filled />
@@ -128,7 +128,7 @@ export function Message({
           </div>
 
           <div className="flex items-start gap-2">
-            <p className="w-fit min-w-0 rounded-xl rounded-tl-none bg-zinc-800 px-3 py-2 break-words group-hover/msg:bg-zinc-700 transition-colors">
+            <p className="w-fit min-w-0 rounded-xl rounded-tl-none bg-zinc-900 px-3.5 py-2 break-words text-zinc-200 group-hover/msg:bg-zinc-800 transition-colors">
               <MessageText text={message.message} />
             </p>
 
@@ -144,7 +144,7 @@ export function Message({
               <button
                 type="button"
                 onClick={() => actions.onReply(message)}
-                className="p-1.5 rounded-lg hover:bg-zinc-700 transition-colors"
+                className="p-1.5 rounded-lg hover:bg-zinc-800 transition-colors"
                 title={signedIn ? "Reply to this message" : "Sign in to reply"}
               >
                 <ReplyIcon className="w-4 h-4 text-zinc-400 hover:text-zinc-200 transition-colors" />
@@ -155,12 +155,12 @@ export function Message({
                   type="button"
                   onClick={() => actions.onPin(message)}
                   disabled={busy}
-                  className="p-1.5 rounded-lg hover:bg-amber-900/30 transition-colors disabled:opacity-50"
+                  className="p-1.5 rounded-lg hover:bg-zinc-800 transition-colors disabled:opacity-50"
                   title={message.isPinned ? "Unpin this message" : "Pin this message"}
                 >
                   <PinIcon
                     className={`w-4 h-4 transition-colors ${
-                      message.isPinned ? "text-amber-400" : "text-zinc-400 hover:text-amber-400"
+                      message.isPinned ? "text-zinc-100" : "text-zinc-400 hover:text-zinc-100"
                     }`}
                     filled={message.isPinned}
                   />

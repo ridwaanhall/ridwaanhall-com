@@ -34,8 +34,8 @@ const check = (name, pass, detail = "") => {
 };
 
 const marked = () => page.locator("#search-modal li.highlighted").count();
-// The rail's button, not the drawer's -- both exist in the DOM at this width.
-const openPalette = () => page.locator('button:has-text("Search")').last().click();
+// The navbar's search button: an icon, so it is found by its label.
+const openPalette = () => page.locator('header button[aria-label="Search"]').click();
 
 // --- the search palette ------------------------------------------------------
 await page.goto(`${BASE}/about`, { waitUntil: "load" });

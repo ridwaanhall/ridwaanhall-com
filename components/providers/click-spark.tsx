@@ -184,6 +184,9 @@ export function ClickSpark() {
       // Primary button only -- a right-click opening a context menu should not
       // throw sparks. Touch taps report button 0.
       if (event.button !== 0 || reduceMotion.matches) return;
+      // The admin only. The public site's motion is GSAP's and deliberately
+      // quiet; a burst on every click is decoration it no longer wears.
+      if (!window.location.pathname.startsWith("/admin")) return;
       spark(event.clientX, event.clientY);
     };
 

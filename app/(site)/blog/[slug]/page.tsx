@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { VerifiedIcon } from "@/components/icons/nav-icons";
+import { Reveal, SplitHeading } from "@/components/motion/reveal";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import {
   CommentSectionFor,
@@ -13,6 +13,7 @@ import {
 import { MediaGallery } from "@/components/site/media-gallery";
 import { RichText } from "@/components/site/rich-text";
 import { ShareRow } from "@/components/site/share-row";
+import { BackLink, CONTAINER, Dot } from "@/components/site/ui";
 import { ViewCounter } from "@/components/site/view-counter";
 import { getAboutData } from "@/lib/data/about";
 import { findBySlug, getBlogs } from "@/lib/data/content";
@@ -74,122 +75,118 @@ export default async function BlogDetailPage({
   return (
     <>
       <JsonLdScript schemas={blogDetailSchemas(about, post)} />
-      <article>
-        <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            <header className="mb-6 md:mb-8">
-              <h1 className="text-2xl lg:text-3xl font-medium mb-2 md:mb-3">{post.title}</h1>
+      <main className={CONTAINER}>
+        <article>
+          <header className="mx-auto max-w-3xl pt-10 md:pt-16">
+            <Reveal>
+              <BackLink href="/blog">All posts</BackLink>
+            </Reveal>
 
-              <div className="flex flex-col mb-4 gap-3">
-                <div className="flex items-center gap-2 md:gap-3">
-                  {post.author_image && (
-                    <Image
-                      src={post.author_image}
-                      alt={post.author}
-                      width={50}
-                      height={50}
-                      className="w-8 h-8 sm:w-9 sm:h-9 rounded-full"
-                    />
+            <Reveal className="mt-10 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-500">
+              {post.category && (
+                <>
+                  <span>{post.category}</span>
+                  <Dot />
+                </>
+              )}
+              <time dateTime={isoDateTime(post.created_at)}>{longDateTime(post.created_at)}</time>
+              {post.read_time ? (
+                <>
+                  <Dot />
+                  <span>{post.read_time} min read</span>
+                </>
+              ) : null}
+            </Reveal>
+
+            <SplitHeading className="mt-5 text-4xl font-medium leading-[1.08] tracking-tight text-balance text-zinc-100 sm:text-5xl">
+              {post.title}
+            </SplitHeading>
+
+            {post.description && (
+              <Reveal as="p" className="mt-6 text-lg leading-relaxed text-pretty text-zinc-400 sm:text-xl">
+                {post.description}
+              </Reveal>
+            )}
+
+            <Reveal className="mt-10 flex flex-wrap items-center justify-between gap-6 border-y border-zinc-800 py-5">
+              <div className="flex items-center gap-3">
+                {post.author_image && (
+                  <Image
+                    src={post.author_image}
+                    alt={post.author}
+                    width={40}
+                    height={40}
+                    className="h-9 w-9 rounded-full object-cover"
+                  />
+                )}
+                <div className="flex flex-col">
+                  <a
+                    href="https://bio.ridwaanhall.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-fit items-center gap-1 text-sm font-medium text-zinc-100"
+                  >
+                    <span className="link-draw">{post.author}</span>
+                    <VerifiedIcon className="text-zinc-400" height={15} width={15} />
+                  </a>
+                  {edited ? (
+                    <span className="text-xs text-zinc-500">Edited {longDateTime(post.updated_at)}</span>
+                  ) : (
+                    <span className="text-xs text-zinc-500">@{post.username}</span>
                   )}
-                  <div className="flex flex-col">
-                    <a
-                      href="https://bio.ridwaanhall.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center underline hover:text-zinc-200 hover:underline transition-colors duration-200 w-fit"
-                    >
-                      <span className="font-medium">{post.author}</span>
-                      <VerifiedIcon className="text-blue-400 ml-1" height={18} width={18} />
-                    </a>
-                    <div className="text-xs sm:text-sm">
-                      <time dateTime={isoDateTime(post.created_at)}>
-                        {longDateTime(post.created_at)}
-                      </time>
-                      {edited && (
-                        <>
-                          <span className="mx-1">•</span>
-                          <span className="text-zinc-400 italic">
-                            Edited {longDateTime(post.updated_at)}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-2 mt-1">
-                  <Link
-                    href="/blog"
-                    className="icon-btn cursor-pointer"
-                    aria-label="Back to blog"
-                    title="Back to blog"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      fill="currentColor"
-                      viewBox="0 0 48 48"
-                      className="text-zinc-300"
-                      aria-hidden="true"
-                    >
-                      <path d="m3.88 21.88 15.3-15.3a1 1 0 0 1 1.4 0L23.4 9.4a1 1 0 0 1-.02 1.43L12.74 21H43a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H12.74l10.64 10.17a1 1 0 0 1 .02 1.43l-2.81 2.81a1 1 0 0 1-1.42 0L3.87 26.12a3 3 0 0 1 0-4.24Z" />
-                    </svg>
-                    <span className="sr-only">Back to blog</span>
-                  </Link>
-
-                  <div className="w-px h-6 bg-zinc-600 mx-1 mt-1" />
-
-                  <ShareRow url={url} title={post.title} description={post.description} />
                 </div>
               </div>
+              <div className="flex flex-wrap gap-2">
+                <ShareRow url={url} title={post.title} description={post.description} />
+              </div>
+            </Reveal>
+          </header>
 
-              <MediaGallery
-                images={post.image_list ?? []}
-                names={post.image_names ?? []}
-                alts={post.image_alts ?? []}
-                alt={post.title}
-                variant="blog"
-                className="mb-6 md:mb-8"
-              />
-            </header>
+          <Reveal className="mx-auto mt-12 max-w-4xl">
+            <MediaGallery
+              images={post.image_list ?? []}
+              names={post.image_names ?? []}
+              alts={post.image_alts ?? []}
+              alt={post.title}
+              variant="blog"
+              className=""
+            />
+          </Reveal>
 
-            {/*
-              One HTML body, styled entirely by element from styles/prose.css.
-              No class name reaches this from the database: see the allow-list
-              in lib/utils/sanitize.ts, and scripts/check-db-classes.mjs, which
-              proves it against live content.
-            */}
-            <RichText html={post.content_html} className="max-w-none mb-8 md:mb-10" />
+          {/*
+            One HTML body, styled entirely by element from styles/prose.css.
+            No class name reaches this from the database: see the allow-list
+            in lib/utils/sanitize.ts, and scripts/check-db-classes.mjs, which
+            proves it against live content.
+          */}
+          <RichText html={post.content_html} className="mx-auto mt-12 max-w-3xl md:mt-16" />
 
-            <footer>
-              <h2 className="text-lg sm:text-xl font-semibold mb-2 md:mb-3">Tags</h2>
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+          {post.tags.length > 0 && (
+            <footer className="mx-auto mt-12 max-w-3xl border-t border-zinc-800 pt-8">
+              <h2 className="sr-only">Tags</h2>
+              <ul className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-zinc-500">
                 {post.tags.map(String).map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs font-medium rounded-full bg-zinc-900 px-2 py-0.5 sm:px-2.5 sm:py-1 font-mono"
-                  >
-                    #{slugify(tag)}
-                  </span>
+                  <li key={tag}>#{slugify(tag)}</li>
                 ))}
-              </div>
+              </ul>
             </footer>
+          )}
 
-            {/*
-              Comments read the session cookie and uncached rows, so they sit
-              behind a boundary -- under `cacheComponents` an uncached read
-              outside one stops the whole route prerendering, and the article
-              above it should not wait on them either.
-            */}
+          {/*
+            Comments read the session cookie and uncached rows, so they sit
+            behind a boundary -- under `cacheComponents` an uncached read
+            outside one stops the whole route prerendering, and the article
+            above it should not wait on them either.
+          */}
+          <div className="mx-auto max-w-3xl">
             <Suspense fallback={<CommentSectionSkeleton />}>
               <CommentSectionFor label="blog_post" targetId={post.id} slug={post.slug} />
             </Suspense>
-
-            <ViewCounter slug={post.slug} />
           </div>
-        </main>
-      </article>
+
+          <ViewCounter slug={post.slug} />
+        </article>
+      </main>
     </>
   );
 }

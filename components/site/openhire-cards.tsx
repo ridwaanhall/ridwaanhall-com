@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { Reveal } from "@/components/motion/reveal";
+
 /**
  * The building blocks of the OpenHire page.
  *
@@ -32,61 +34,46 @@ export function SectionIcon({ paths }: { paths: readonly string[] }) {
  * cards use -- the heading takes `flex-1` so the pill sits hard against the
  * right edge.
  */
+/**
+ * One block of the OpenHire page: its name in the left column, its content in
+ * the right, ruled above. It was a bordered card with an icon before every
+ * title; a dozen of those stacked read as a dashboard. `paths` is still
+ * accepted so callers keep naming their icon, but the editorial layout no
+ * longer draws it.
+ */
 export function SectionCard({
   title,
-  paths,
   badge,
   children,
 }: {
   title: string;
-  paths: readonly string[];
+  paths?: readonly string[];
   badge?: ReactNode;
   children: ReactNode;
 }) {
   return (
-    <div className="border border-zinc-700 rounded-lg p-4">
-      {badge ? (
-        <div className="flex flex-wrap items-start justify-between w-full gap-2 mb-3">
-          <h2 className="text-base sm:text-lg md:text-xl font-medium text-zinc-300 break-words flex-1 flex items-center">
-            <SectionIcon paths={paths} />
-            {title}
-          </h2>
-          {badge}
-        </div>
-      ) : (
-        <h2 className="text-base sm:text-lg md:text-xl font-medium text-zinc-300 break-words flex items-center mb-3">
-          <SectionIcon paths={paths} />
-          {title}
-        </h2>
-      )}
-      {children}
-    </div>
+    <Reveal
+      as="section"
+      className="grid grid-cols-1 gap-x-10 gap-y-4 border-t border-zinc-800 py-8 md:grid-cols-[12rem_1fr]"
+    >
+      <div className="flex flex-wrap items-center gap-3 md:flex-col md:items-start">
+        <h2 className="text-sm text-zinc-500">{title}</h2>
+        {badge}
+      </div>
+      <div className="min-w-0">{children}</div>
+    </Reveal>
   );
 }
 
-/**
- * The status pill in a section heading.
- *
- * Neutral, like every other availability marker on the site -- the same reason
- * given on `StatusChip` in `components/layout/status-badges.tsx`. It used to
- * carry an indigo gradient and a pulsing dot whose colour was passed in by the
- * caller and meant nothing beyond "this is the open-to-work one".
- */
 export function StatusPill({ text }: { text: string }) {
   return (
-    <span className="inline-flex flex-shrink-0 items-center text-xs text-zinc-400 px-2 py-1 rounded-full border border-zinc-700 whitespace-nowrap">
+    <span className="inline-flex items-center gap-1.5 text-xs whitespace-nowrap text-zinc-300">
+      <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-green-500" />
       {text}
     </span>
   );
 }
 
-/**
- * One label/value row.
- *
- * `muted` is the default because almost every value is `text-zinc-400`; the
- * two rows that colour their own value (Remote Work, Relocation) turn it off
- * and supply the colour themselves.
- */
 export function DetailRow({
   label,
   muted = true,
@@ -97,65 +84,43 @@ export function DetailRow({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 bg-zinc-800/30 rounded">
-      <span className="font-medium text-sm">{label}</span>
-      <span className={`text-sm ${muted ? "text-zinc-400 " : ""}mt-1 sm:mt-0`}>{children}</span>
+    <div className="flex flex-col gap-1 border-b border-zinc-900 py-3 last:border-b-0 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+      <span className="text-sm text-zinc-400">{label}</span>
+      <span className={`text-sm sm:text-right ${muted ? "text-zinc-100" : ""}`}>{children}</span>
     </div>
   );
 }
 
-/** A yes/no value, coloured rather than muted. */
+/** A yes or a no, in words. The red/green it used to wear said nothing the words did not. */
 export function YesNo({ yes, on, off }: { yes: boolean; on: string; off: string }) {
-  return yes ? (
-    <span className="text-emerald-400">{on}</span>
-  ) : (
-    <span className="text-red-400">{off}</span>
-  );
+  return yes ? <span className="text-zinc-100">{on}</span> : <span className="text-zinc-500">{off}</span>;
 }
 
-/** The pill list used for roles, skills, locations and position requirements. */
 export function TagList({ items, className = "" }: { items: string[]; className?: string }) {
   return (
-    <div className={`flex flex-wrap gap-2${className ? ` ${className}` : ""}`}>
+    <ul className={`flex flex-wrap gap-2${className ? ` ${className}` : ""}`}>
       {items.map((item) => (
-        <span
-          key={item}
-          className="px-2 py-1 bg-zinc-800/50 text-zinc-300 rounded-full text-xs border border-zinc-700/50"
-        >
+        <li key={item} className="rounded-md border border-zinc-800 px-2.5 py-1 text-sm text-zinc-300">
           {item}
-        </span>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 
-/**
- * The bulleted lines used by culture, requirements, responsibilities and
- * benefits. `dotClass` is the only thing that varies -- benefits are emerald,
- * everything else zinc.
- */
-export function BulletLines({
-  items,
-  dotClass = "bg-zinc-400",
-}: {
-  items: string[];
-  dotClass?: string;
-}) {
+export function BulletLines({ items }: { items: string[]; dotClass?: string }) {
   return (
-    <div className="space-y-1 ml-1">
+    <ul className="space-y-2">
       {items.map((item) => (
-        <div key={item} className="flex items-start group">
-          <div className="flex-shrink-0 w-3 h-3 mt-0.5">
-            <div className={`w-1.5 h-1.5 ${dotClass} rounded-full mt-1`} />
-          </div>
-          <p className="text-sm leading-relaxed text-zinc-400">{item}</p>
-        </div>
+        <li key={item} className="relative pl-4 text-sm leading-relaxed text-zinc-300">
+          <span aria-hidden="true" className="absolute top-[0.7em] left-0 h-px w-2 bg-zinc-600" />
+          {item}
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 
-/** Every heading icon on the page, named by what it depicts. */
 export const ICON = {
   user: "M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z",
   briefcase:

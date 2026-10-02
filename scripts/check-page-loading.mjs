@@ -390,11 +390,14 @@ try {
     const measured = await page.evaluate((toRgb) => {
       const convert = new Function(`return ${toRgb}`)();
       const el = document.getElementById("page-loading-bar");
-      const image = getComputedStyle(el).backgroundImage;
-      // Any function-form colour: the stops arrive as lab(), the canvas as rgb().
-      const found = image.match(/(?:lab|lch|oklab|oklch|rgba?|hsla?|color)\([^)]*\)/g) ?? [];
+      const probe = document.createElement("span");
+      probe.style.color = "var(--color-zinc-100)";
+      document.body.appendChild(probe);
+      const strongest = getComputedStyle(probe).color;
+      probe.remove();
       return {
-        stops: convert(found),
+        bar: convert([getComputedStyle(el).backgroundColor])[0],
+        strongest: convert([strongest])[0],
         canvas: convert([getComputedStyle(document.body).backgroundColor])[0],
         theme: document.documentElement.dataset.theme,
       };
@@ -402,17 +405,15 @@ try {
 
     check(`${theme}: the page is in that theme`, measured.theme === theme, measured.theme);
 
-    const stops = measured.stops;
-    const canvas = measured.canvas;
+    // One neutral, not an accent: the bar is the site's strongest text colour,
+    // which the light theme remaps along with everything else.
+    const same = measured.bar && measured.strongest &&
+      measured.bar.every((channel, i) => Math.abs(channel - measured.strongest[i]) <= 1);
+    check(`${theme}: the bar is the strongest neutral`, Boolean(same),
+      measured.bar ? measured.bar.join(",") : "no colour");
 
-    check(`${theme}: the gradient resolves to real colours`, stops.length >= 3,
-      `${stops.length} stop(s)`);
-    check(`${theme}: every stop is still teal, not grey`,
-      stops.length > 0 && stops.every(([r, g, b]) => g > r && b > r),
-      stops.map((s) => s.join(",")).join(" | "));
-
-    const worst = stops.length && canvas ? Math.min(...stops.map((s) => contrast(s, canvas))) : 0;
-    check(`${theme}: it is visible against the canvas`, worst >= 1.6, `contrast ${worst.toFixed(2)}:1`);
+    const worst = measured.bar && measured.canvas ? contrast(measured.bar, measured.canvas) : 0;
+    check(`${theme}: it is visible against the canvas`, worst >= 3, `contrast ${worst.toFixed(2)}:1`);
 
     await page.close();
   }
@@ -461,8 +462,12 @@ try {
     const widths = await watching;
     check("but still says the site is working", widths.length > 0 && widths.some((w) => w > 0),
       widths.join(",") || "never appeared");
-    check("and it holds still instead of creeping", new Set(widths).size <= 1,
-      widths.length ? `${new Set(widths).size} distinct width(s)` : "n/a");
+    // Creep is movement *before* the page lands. The jump to the full width is
+    // the bar finishing, and a navigation quick enough to finish inside the
+    // window records it too -- which is not creep, so it is left out.
+    const creeping = new Set(widths.filter((width) => width < 1280));
+    check("and it holds still instead of creeping", creeping.size <= 1,
+      widths.length ? `${creeping.size} distinct width(s) before landing` : "n/a");
 
     const pulsing = await page
       .locator('[role="status"][aria-busy="true"]')

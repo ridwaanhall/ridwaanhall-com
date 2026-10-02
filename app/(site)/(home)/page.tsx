@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 
 import { JsonLdScript } from "@/components/seo/json-ld";
+import { Reveal } from "@/components/motion/reveal";
+import { SkillTicker } from "@/components/motion/skill-ticker";
+import { BlogList, ProjectGrid } from "@/components/site/content-rows";
 import { HomeIntro } from "@/components/site/home-intro";
-import { LatestBlogs } from "@/components/site/latest-blogs";
-import { SkillsMarquee } from "@/components/site/skills-marquee";
 import { SponsorMe } from "@/components/site/sponsor-me";
+import { ArrowLink, CONTAINER, Section } from "@/components/site/ui";
 import { getAboutData, getSkills } from "@/lib/data/about";
-import { getBlogs, toBlogSummary } from "@/lib/data/content";
+import { getBlogs, getProjects, sortProjects, toBlogSummary, toProjectSummary } from "@/lib/data/content";
 import { homepageSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { homepageSchemas } from "@/lib/seo/schemas-for-page";
@@ -18,54 +20,55 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(homepageSeo(about), about);
 }
 
+/**
+ * The home page: who, what has been made, what has been written, with what.
+ *
+ * Selected work is new here. The old home page linked to the projects only
+ * through the navigation, which buried the thing a portfolio is for; the four
+ * shown are the head of `sortProjects`, the same order /projects opens with.
+ */
 export default async function HomePage() {
-  const [about, blogs, skills] = await Promise.all([getAboutData(), getBlogs(), getSkills()]);
+  const [about, blogs, projects, skills] = await Promise.all([
+    getAboutData(),
+    getBlogs(),
+    getProjects(),
+    getSkills(),
+  ]);
   if (!about) return null;
 
-  // The third donate link is the sponsor URL, which is also what the search
-  // palette's "Support" entry points at.
   const sponsorUrl = about.donate[2]?.url ?? "";
   const latest = blogs.slice(0, 5).map(toBlogSummary);
-  const marqueeRows = MARQUEE_SEEDS.map((seed) => shuffle(skills, seed)) as [
-    typeof skills,
-    typeof skills,
-    typeof skills,
-  ];
-
-  const hasBlogs = latest.length > 0;
-  const hasSkills = skills.length > 0;
-  const hasSponsor = Boolean(sponsorUrl);
+  const selected = sortProjects(projects).slice(0, 4).map(toProjectSummary);
+  const tickerRows = MARQUEE_SEEDS.slice(0, 2).map((seed) => shuffle(skills, seed));
 
   return (
     <>
       <JsonLdScript schemas={await homepageSchemas(about)} />
-      <main className="px-4 py-6 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <HomeIntro about={about} sponsorUrl={sponsorUrl} />
+      <main className={CONTAINER}>
+        <HomeIntro about={about} sponsorUrl={sponsorUrl} />
 
-          <Divider />
+        {selected.length > 0 && (
+          <Section title="Selected work" action={<ArrowLink href="/projects">All projects</ArrowLink>}>
+            <ProjectGrid projects={selected} />
+          </Section>
+        )}
 
-          {hasBlogs && (
-            <>
-              <LatestBlogs blogs={latest} />
-              {(hasSkills || hasSponsor) && <Divider />}
-            </>
-          )}
+        {latest.length > 0 && (
+          <Section title="Latest writing" action={<ArrowLink href="/blog">All posts</ArrowLink>}>
+            <BlogList posts={latest} />
+          </Section>
+        )}
 
-          {hasSkills && (
-            <>
-              <SkillsMarquee rows={marqueeRows} />
-              {hasSponsor && <Divider />}
-            </>
-          )}
+        {skills.length > 0 && (
+          <Section title="Tools I've used">
+            <Reveal>
+              <SkillTicker rows={tickerRows} />
+            </Reveal>
+          </Section>
+        )}
 
-          {hasSponsor && <SponsorMe sponsorUrl={sponsorUrl} />}
-        </div>
+        <SponsorMe sponsorUrl={sponsorUrl} />
       </main>
     </>
   );
-}
-
-function Divider() {
-  return <div className="w-full mx-auto border-t border-zinc-700 my-4 md:my-6 lg:my-6" />;
 }

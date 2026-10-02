@@ -75,8 +75,8 @@ export function Comments({
   }
 
   return (
-    <section id="comments" className="mt-10 sm:mt-12 pt-8 border-t border-zinc-800">
-      <h2 className="text-lg sm:text-xl font-medium mb-4 md:mb-6 flex items-center gap-2">
+    <section id="comments" className="mt-16 pt-12 border-t border-zinc-800">
+      <h2 className="text-xl sm:text-2xl font-medium tracking-tight text-zinc-100 mb-6 md:mb-8 flex items-center gap-2">
         <ChatIcon className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-500" />
         {section.count} comment{section.count === 1 ? "" : "s"}
       </h2>
@@ -126,7 +126,7 @@ export function Comments({
               placeholder="Share your thoughts…"
               required
               aria-label="Comment"
-              className="w-full rounded-md border border-zinc-700 hover:border-zinc-400 px-3 py-2 focus:outline-none focus:border-zinc-400 bg-transparent placeholder-zinc-400 text-zinc-300 hover:text-zinc-200 transition-all duration-300 resize-y"
+              className="w-full rounded-lg border border-zinc-800 hover:border-zinc-700 px-3.5 py-3 focus:outline-none focus:border-zinc-500 bg-transparent placeholder-zinc-500 text-zinc-100 transition-colors resize-y"
             />
 
             {/* The hint and the button keep the row they were in; only their
@@ -138,7 +138,7 @@ export function Comments({
               <button
                 type="submit"
                 disabled={pending}
-                className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-zinc-700 hover:border-zinc-400 bg-zinc-800 hover:bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-300 hover:text-zinc-200 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-zinc-100 px-4 h-10 text-sm font-medium text-black transition-colors hover:bg-zinc-300 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 <SendIcon />
                 Post comment
@@ -267,7 +267,7 @@ function SignInPrompt() {
       <ChatIcon className="mx-auto mb-3 h-6 w-6 text-zinc-600" />
       <p className="text-zinc-400 mb-4 text-sm sm:text-base">
         Sign in to join the conversation. Rest assured, your information is secure. See my{" "}
-        <Link href="/privacy-policy" className="text-indigo-400 hover:text-indigo-300 underline">
+        <Link href="/privacy-policy" className="text-zinc-100 underline decoration-zinc-600 underline-offset-2 hover:decoration-zinc-100">
           privacy policy
         </Link>{" "}
         for more.
@@ -297,7 +297,7 @@ function ProviderButton({
     <button
       type="button"
       onClick={() => signInWith(provider, window.location.pathname)}
-      className="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-100 hover:border-indigo-500/70 hover:bg-zinc-800 transition-all duration-300 cursor-pointer"
+      className="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-100 hover:border-zinc-500 hover:bg-zinc-900 transition-all duration-300 cursor-pointer"
     >
       {children}
       {label}

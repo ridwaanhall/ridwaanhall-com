@@ -4,24 +4,22 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ImageLightbox, type LightboxImage } from "@/components/site/image-lightbox";
-import { SliderDots } from "@/components/site/slider-dots";
 
 /**
- * The Mac-window image frame used by blog posts and projects.
+ * The image set on a blog post or a project.
  *
- * A single image gets the frame -- three traffic-light dots and the filename in
- * a header strip. Several get a transform track inside it with prev/next
- * buttons, dot indicators and an auto-advance, and the header's filename
- * follows whichever slide is showing.
+ * A clean frame and a caption row beneath it: the current file's name, where
+ * in the set the reader is, and the controls. It used to be drawn as a macOS
+ * window -- three traffic-light dots and a title bar -- which is decoration
+ * pretending to be chrome. Every image now opens the lightbox on click, for
+ * posts as well as projects.
  *
- * One component with a `variant`, not two near-identical sliders of 120 lines
- * each differing in three class prefixes and the auto-advance interval.
+ * Several images slide on a transform track and auto-advance, paused while
+ * the pointer is over them, while the lightbox is open, and entirely for a
+ * reader who prefers reduced motion.
  *
- * The dot row is `SliderDots`, shared with the featured-post slider. Each of
- * the three used to carry its own copy of the class strings, and a project's
- * active dot had picked up an `sm:w-2` after its `w-4` -- so above 640px it was
- * the same circle as its neighbours, and which image you were on was said only
- * by half a step of opacity.
+ * One component with a `variant`, not two near-identical sliders differing in
+ * a class prefix and the auto-advance interval.
  */
 
 type Variant = "blog" | "project";
@@ -93,116 +91,89 @@ export function MediaGallery({
     filename: names[position] || `image-${position + 1}`,
   }));
 
-  const frame = (
-    <div className="gallery-frame">
-      <div className="gallery-header">
-        <div className="flex items-center gap-1 sm:gap-1.5">
-          <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500 hover:bg-red-400 transition-all duration-300" />
-          <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 transition-all duration-300" />
-          <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500 hover:bg-green-400 transition-all duration-300" />
+  const zoomLabel = multiple ? "Magnify Images" : "Magnify Image";
+
+  return (
+    <figure className={className}>
+      <div
+        className="relative overflow-hidden rounded-lg bg-zinc-900"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        <div
+          className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+          style={{ transform: `translateX(-${index * 100}%)` }}
+        >
+          {images.map((src, position) => (
+            <button
+              key={src}
+              type="button"
+              tabIndex={position === index ? 0 : -1}
+              aria-hidden={position !== index || undefined}
+              onClick={() => setLightboxAt(position)}
+              title={zoomLabel}
+              className="block aspect-video w-full flex-shrink-0 cursor-zoom-in focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-400"
+            >
+              <Image
+                src={src}
+                alt={lightboxImages[position].alt}
+                width={1200}
+                height={675}
+                preload={position === 0}
+                className="h-full w-full object-cover object-center"
+              />
+            </button>
+          ))}
         </div>
-        <span className="ml-auto text-xs hidden sm:block current-filename">
-          {names[index] || (variant === "blog" ? "blog-image" : "image")}
-        </span>
       </div>
 
-      {multiple ? (
-        <div
-          className={`${variant}-slider-container relative w-full`}
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-        >
-          <div
-            className={`${variant}-slider-wrapper flex transition-transform duration-500 ease-in-out`}
-            style={{ transform: `translateX(-${index * 100}%)` }}
-          >
-            {images.map((src, position) => (
-              <div key={src} className={`${variant}-slide w-full flex-shrink-0`}>
-                <div className="aspect-video">
-                  <Image
-                    src={src}
-                    alt={lightboxImages[position].alt}
-                    width={1200}
-                    height={675}
-                    // The article's hero, and the largest paint on the page
-                    // at every width, so this is where the explicit preload is
-                    // spent rather than on a viewport-dependent guess.
-                    // `preload` replaces the deprecated `priority`.
-                    preload={position === 0}
-                    className="w-full h-full object-cover object-center"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 z-30 flex space-x-1 sm:space-x-2">
+      {/* The caption row: which file, where in the set, and the controls. */}
+      <figcaption className="mt-3 flex items-center gap-4 text-xs text-zinc-500">
+        <span className="current-filename min-w-0 truncate">
+          {names[index] || (variant === "blog" ? "blog-image" : "image")}
+        </span>
+        {multiple && (
+          <div className="ml-auto flex shrink-0 items-center gap-1">
+            <span className="mr-2 tabular-nums">
+              {index + 1} / {count}
+            </span>
             <button
               type="button"
-              className={`${navClass(variant, "prev")} gallery-nav-btn rounded-l-lg`}
+              className={`${navClass(variant, "prev")} ${GALLERY_BUTTON}`}
               title="Previous Image"
+              aria-label="Previous Image"
               onClick={() => go(index - 1)}
             >
               <ChevronIcon d="M15 19l-7-7 7-7" />
             </button>
             <button
               type="button"
-              className={`${navClass(variant, "next")} gallery-nav-btn rounded-r-lg`}
+              className={`${navClass(variant, "next")} ${GALLERY_BUTTON}`}
               title="Next Image"
+              aria-label="Next Image"
               onClick={() => go(index + 1)}
             >
               <ChevronIcon d="M9 5l7 7-7 7" />
             </button>
           </div>
-
-          <SliderDots
-            count={count}
-            active={index}
-            onSelect={go}
-            title={(position) =>
-              variant === "blog" ? `Image ${position}` : `Go to image ${position}`
-            }
-          />
-
-          {variant === "project" && (
-            <MagnifyButton label="Magnify Images" onClick={() => setLightboxAt(index)} />
-          )}
-        </div>
-      ) : (
-        <div className="relative w-full">
-          <div className="aspect-video">
-            <Image
-              src={images[0]}
-              alt={alts[0] || alt}
-              width={1200}
-              height={675}
-              // Same as the slider branch above: one image, unambiguously
-              // the hero, so it earns the explicit preload.
-              preload
-              className="w-full h-full object-cover object-center"
+        )}
+        <button
+          type="button"
+          title={zoomLabel}
+          aria-label={zoomLabel}
+          onClick={() => setLightboxAt(index)}
+          className={`magnify-button ${GALLERY_BUTTON} ${multiple ? "" : "ml-auto"}`}
+        >
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.75}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
             />
-          </div>
-          {variant === "project" && (
-            <MagnifyButton label="Magnify Image" onClick={() => setLightboxAt(0)} />
-          )}
-        </div>
-      )}
-    </div>
-  );
-
-  return (
-    <div className={className}>
-      {variant === "blog" && multiple ? (
-        <div className="blog-image-gallery mb-4">{frame}</div>
-      ) : (
-        frame
-      )}
-
-      {multiple && (
-        <p className={`text-sm text-zinc-400 text-center${variant === "project" ? " mt-2" : ""}`}>
-          {count} image{count === 1 ? "" : "s"} • Use arrows or dots to navigate
-        </p>
-      )}
+          </svg>
+        </button>
+      </figcaption>
 
       {lightboxAt !== null && (
         <ImageLightbox
@@ -211,11 +182,13 @@ export function MediaGallery({
           onClose={() => setLightboxAt(null)}
         />
       )}
-    </div>
+    </figure>
   );
 }
 
-/** The prev/next button's variant-specific hooks, kept for the CSS selectors. */
+const GALLERY_BUTTON =
+  "inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+
 function navClass(variant: Variant, direction: "prev" | "next"): string {
   return variant === "blog" ? `blog-slider-nav blog-${direction}` : `project-${direction}`;
 }
@@ -228,36 +201,10 @@ function navClass(variant: Variant, direction: "prev" | "next"): string {
  * file under `staticfiles/js/`. Written as markup they are visible to the
  * compiler in the ordinary way.
  */
-function MagnifyButton({ label, onClick }: { label: string; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      title={label}
-      onClick={onClick}
-      className="magnify-button cursor-pointer absolute bottom-2 left-2 sm:bottom-4 sm:left-4 z-30 bg-zinc-900/70 hover:bg-zinc-800/70 border border-zinc-800 w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center transition-all duration-300 focus:outline-none transform hover:scale-105"
-    >
-      <svg
-        className="w-4 h-4 sm:w-5 sm:h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-        />
-      </svg>
-    </button>
-  );
-}
-
 function ChevronIcon({ d }: { d: string }) {
   return (
     <svg
-      className="w-4 h-4 sm:w-5 sm:h-5"
+      className="h-4 w-4"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"

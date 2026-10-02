@@ -296,3 +296,96 @@
     border-radius: 0.5rem;
     margin-bottom: 1rem;
 }
+
+/* ===========================================================================
+   The redesign's reading measure
+
+   Appended rather than edited into the rules above, so the measured history
+   they record stays legible: everything from here on is a deliberate change,
+   not a reproduction. Larger body type with more leading for the narrower
+   column, headings in the strongest neutral at the site's emphasis weight,
+   links that are underlined rather than coloured, and code on the canvas with
+   a hairline instead of a grey slab.
+   =========================================================================== */
+.prose-content {
+    font-size: 1rem;
+    line-height: 1.75rem;
+}
+
+@media (min-width: 768px) {
+    .prose-content {
+        font-size: 1.0625rem;
+        line-height: 1.875rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .prose-content {
+        font-size: 1.125rem;
+        line-height: 2rem;
+    }
+}
+
+.prose-content p {
+    margin-bottom: 1.25rem;
+}
+
+.prose-content h2 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: var(--color-zinc-100);
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.prose-content h3 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    font-weight: 500;
+    color: var(--color-zinc-100);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.prose-content h4 {
+    font-size: 1.0625rem;
+    line-height: 1.5rem;
+    font-weight: 500;
+    color: var(--color-zinc-100);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.prose-content blockquote {
+    border-left: 1px solid var(--color-zinc-600);
+}
+
+.prose-content a {
+    color: var(--color-zinc-100);
+    text-decoration-color: var(--color-zinc-600);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: text-decoration-color 200ms;
+}
+
+.prose-content a:hover {
+    color: var(--color-zinc-100);
+    text-decoration-color: var(--color-zinc-100);
+}
+
+.prose-content pre {
+    background-color: var(--color-zinc-950);
+    border: 1px solid var(--color-zinc-800);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+    line-height: 1.6rem;
+}
+
+/* The about page's letter keeps the size of the column it sits in. */
+.prose-content.prose-stories {
+    font-size: inherit;
+    line-height: inherit;
+}

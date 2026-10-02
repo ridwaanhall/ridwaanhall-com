@@ -75,7 +75,7 @@ export function Comment({
             that reason.
           */}
           {comment.role === "superuser" ? (
-            <span className="inline-flex items-center rounded-full bg-gradient-to-bl from-purple-800 via-violet-900 to-purple-800 px-2 py-0.5 text-[11px] font-medium text-violet-50">
+            <span className="inline-flex items-center rounded-full bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-black">
               Superuser
             </span>
           ) : comment.role === "staff" ? (
@@ -115,7 +115,7 @@ export function Comment({
                 <button
                   type="button"
                   onClick={() => onReply(comment)}
-                  className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-zinc-500 hover:text-indigo-300 hover:bg-zinc-900 border border-transparent hover:border-zinc-800 transition-all duration-300"
+                  className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-zinc-500 hover:text-zinc-100 hover:bg-zinc-900 border border-transparent hover:border-zinc-800 transition-all duration-300"
                 >
                   <ReplyIcon className="w-3.5 h-3.5" />
                   Reply

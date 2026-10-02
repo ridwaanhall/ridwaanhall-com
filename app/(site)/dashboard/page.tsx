@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
+import { CONTAINER, PageHeader } from "@/components/site/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { ActivityHeatmap } from "@/components/site/activity-heatmap";
 import { BulletScale } from "@/components/site/bullet-scale";
@@ -32,22 +33,12 @@ export default async function DashboardPage() {
   return (
     <>
       <JsonLdScript schemas={await dashboardSchemas(about)} />
-      <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-6 md:mb-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
-              <div>
-                <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                  Dashboard
-                </h1>
-                <p className="mt-1 sm:mt-2 text-base sm:text-lg leading-relaxed">
-                  Every line of code leaves a trace. This shows mine, from focused hours to
-                  committed nights.
-                </p>
-              </div>
-            </div>
-          </div>
-
+      <main className={CONTAINER}>
+        <PageHeader
+          title="Dashboard"
+          lead="Every line of code leaves a trace. This shows mine, from focused hours to committed nights."
+        />
+        <div className="pb-8">
           {/*
             Each panel streams independently. They call third-party APIs, so
             none should hold up the page or the others -- and a panel whose API
@@ -147,13 +138,13 @@ async function GitHubPanel({ about }: { about: AboutData }) {
  */
 function TodayRhythm({ day }: { day: WakatimeDay }) {
   return (
-    <div className="mb-6">
-      <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
-        <h2 className="text-xl font-medium">Today&rsquo;s Rhythm</h2>
-        <p className="text-xs sm:text-sm">{day.date}</p>
+    <section className="border-t border-zinc-800 py-12 md:py-16">
+      <div className="mb-8 flex flex-row items-baseline justify-between gap-2">
+        <h2 className="text-2xl font-medium tracking-tight text-zinc-100">Today&rsquo;s Rhythm</h2>
+        <p className="text-sm text-zinc-500">{day.date}</p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
         <DayStat
           label="Sessions"
           hint={`A quarter of an hour away starts a new one. ${day.total} logged in total.`}
@@ -168,7 +159,7 @@ function TodayRhythm({ day }: { day: WakatimeDay }) {
         <DayStat label="Peak Hour" hint={day.peak_hour_detail} value={day.peak_hour} />
       </div>
 
-      <div className="mt-4">
+      <div className="mt-12">
         <ChartPanel title="Along the Clock" gradient="from-pink-500 to-purple-600">
           <DayTimeline
             blocks={day.blocks}
@@ -178,7 +169,7 @@ function TodayRhythm({ day }: { day: WakatimeDay }) {
           />
         </ChartPanel>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -196,13 +187,13 @@ function TodayRhythm({ day }: { day: WakatimeDay }) {
  */
 function CodingRhythm({ rhythm }: { rhythm: WakatimeRhythm }) {
   return (
-    <div className="mb-6">
-      <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
-        <h2 className="text-xl font-medium">Coding Rhythm</h2>
-        <p className="text-xs sm:text-sm">Last Year</p>
+    <section className="border-t border-zinc-800 py-12 md:py-16">
+      <div className="mb-8 flex flex-row items-baseline justify-between gap-2">
+        <h2 className="text-2xl font-medium tracking-tight text-zinc-100">Coding Rhythm</h2>
+        <p className="text-sm text-zinc-500">Last Year</p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
         <RhythmStat label="Busiest Day" hint={rhythm.busiest_detail} value={rhythm.busiest} />
         <RhythmStat label="Most AI-Heavy" hint={rhythm.most_ai_detail} value={rhythm.most_ai} />
         {rhythm.has_trend && (
@@ -222,7 +213,7 @@ function CodingRhythm({ rhythm }: { rhythm: WakatimeRhythm }) {
         )}
       </div>
 
-      <div className="mt-4">
+      <div className="mt-12">
         <ChartPanel title="Weekday Rhythm" gradient="from-violet-400 to-purple-600">
           <ColumnChart
             days={rhythm.weekdays}
@@ -235,7 +226,7 @@ function CodingRhythm({ rhythm }: { rhythm: WakatimeRhythm }) {
       </div>
 
       {rhythm.has_trend && (
-        <div className="mt-6">
+        <div className="mt-12">
           <ChartPanel title="AI Share of Lines" gradient="from-purple-500 to-violet-600">
             <TrendChart
               points={rhythm.trend}
@@ -258,19 +249,19 @@ function CodingRhythm({ rhythm }: { rhythm: WakatimeRhythm }) {
           maxLabel={rhythm.community_max_label}
         />
       )}
-    </div>
+    </section>
   );
 }
 
 function Wakatime({ stats }: { stats: WakatimeStats }) {
   return (
-    <div className="mb-6">
-      <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
-        <h2 className="text-xl font-medium">WakaTime Statistics</h2>
-        <p className="text-xs sm:text-sm">Live Trace</p>
+    <section className="border-t border-zinc-800 py-12 md:py-16">
+      <div className="mb-8 flex flex-row items-baseline justify-between gap-2">
+        <h2 className="text-2xl font-medium tracking-tight text-zinc-100">WakaTime Statistics</h2>
+        <p className="text-sm text-zinc-500">Live Trace</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
         <StatCard label="Begin Trace" value={stats.start_date} />
         <StatCard label="End Trace" value={stats.end_date} />
         <StatCard label="Daily Focus" value={stats.daily_average} />
@@ -320,14 +311,14 @@ function Wakatime({ stats }: { stats: WakatimeStats }) {
         pairs elsewhere on this page: three panels sharing a 768px row leaves
         each about 240px, which is narrower than "Writing Docs" beside a bar.
       */}
-      <div className="mt-4 grid gap-6 sm:gap-4 lg:grid-cols-3">
+      <div className="mt-12 grid gap-10 lg:grid-cols-3 lg:gap-8">
         <GradientPanel title="Top Languages" gradient="from-indigo-400 to-purple-600">
           {stats.top_3_languages.length > 0 ? (
             stats.top_3_languages.map((language) => (
               <PercentBar
                 key={language.name}
                 entry={language}
-                gradient="bg-gradient-to-r from-indigo-400 to-purple-600"
+                gradient="bg-zinc-300"
               />
             ))
           ) : (
@@ -341,7 +332,7 @@ function Wakatime({ stats }: { stats: WakatimeStats }) {
               <PercentBar
                 key={category.name}
                 entry={category}
-                gradient="bg-gradient-to-r from-purple-500 to-pink-600"
+                gradient="bg-zinc-300"
               />
             ))
           ) : (
@@ -355,7 +346,7 @@ function Wakatime({ stats }: { stats: WakatimeStats }) {
               <PercentBar
                 key={editor.name}
                 entry={editor}
-                gradient="bg-gradient-to-r from-pink-500 to-rose-600"
+                gradient="bg-zinc-300"
               />
             ))
           ) : (
@@ -365,7 +356,7 @@ function Wakatime({ stats }: { stats: WakatimeStats }) {
       </div>
 
       <AiAnalytics ai={stats.ai} />
-    </div>
+    </section>
   );
 }
 
@@ -389,13 +380,13 @@ function Wakatime({ stats }: { stats: WakatimeStats }) {
  */
 function AiAnalytics({ ai }: { ai: WakatimeAi }) {
   return (
-    <div className="mt-6">
-      <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
-        <h2 className="text-xl font-medium">AI Coding Analytics</h2>
-        <p className="text-xs sm:text-sm">Last 7 Days</p>
+    <div className="mt-16">
+      <div className="mb-8 flex flex-row items-baseline justify-between gap-2">
+        <h2 className="text-2xl font-medium tracking-tight text-zinc-100">AI Coding Analytics</h2>
+        <p className="text-sm text-zinc-500">Last 7 Days</p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
         <AiStat
           label="Tokens In"
           hint={`${ai.tokens_in_exact}. ${ai.ai_line_percent}% of lines changed were written by AI.`}
@@ -453,18 +444,18 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
         rightLabel="Human"
         rightValue={`${ai.human_lines.toLocaleString("en-US")} lines`}
         percent={ai.ai_line_percent}
-        gradient="bg-gradient-to-r from-yellow-400 to-amber-600"
+        gradient="bg-zinc-300"
         border="border-amber-500/50"
       />
 
-      <div className="mt-4 flex flex-col gap-6 sm:gap-4 md:flex-row">
+      <div className="mt-12 flex flex-col gap-10 md:flex-row md:gap-8">
         <GradientPanel title="Cost by Model" gradient="from-yellow-400 to-amber-600">
           {ai.models.length > 0 ? (
             ai.models.map((model) => (
               <PercentBar
                 key={model.name}
                 entry={model}
-                gradient="bg-gradient-to-r from-yellow-400 to-amber-600"
+                gradient="bg-zinc-300"
               />
             ))
           ) : (
@@ -478,7 +469,7 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
               <PercentBar
                 key={project.name}
                 entry={project}
-                gradient="bg-gradient-to-r from-amber-500 to-orange-600"
+                gradient="bg-zinc-300"
               />
             ))
           ) : (
@@ -505,13 +496,13 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
  */
 function CodingYear({ year }: { year: WakatimeYear }) {
   return (
-    <div className="mb-6">
-      <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
-        <h2 className="text-xl font-medium">Coding Year</h2>
-        <p className="text-xs sm:text-sm">Last Year</p>
+    <section className="border-t border-zinc-800 py-12 md:py-16">
+      <div className="mb-8 flex flex-row items-baseline justify-between gap-2">
+        <h2 className="text-2xl font-medium tracking-tight text-zinc-100">Coding Year</h2>
+        <p className="text-sm text-zinc-500">Last Year</p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
         <YearStat label="Total Coded" hint={year.range} value={year.total} />
         <YearStat label="Daily Focus" value={year.daily_average} />
         <YearStat label="Peak Day" hint={year.best_day_date} value={year.best_day} />
@@ -539,7 +530,7 @@ function CodingYear({ year }: { year: WakatimeYear }) {
         rightLabel="Human"
         rightValue={`${year.human_lines} lines`}
         percent={year.ai_line_percent}
-        gradient="bg-gradient-to-r from-teal-400 to-cyan-600"
+        gradient="bg-zinc-300"
         border="border-cyan-500/50"
       />
 
@@ -551,14 +542,14 @@ function CodingYear({ year }: { year: WakatimeYear }) {
         label="Coding hours for the past year"
       />
 
-      <div className="mt-4 grid gap-6 sm:gap-4 lg:grid-cols-3">
+      <div className="mt-12 grid gap-10 lg:grid-cols-3 lg:gap-8">
         <GradientPanel title="Top Languages" gradient="from-teal-400 to-cyan-600">
           {year.languages.length > 0 ? (
             year.languages.map((language) => (
               <PercentBar
                 key={language.name}
                 entry={language}
-                gradient="bg-gradient-to-r from-teal-400 to-cyan-600"
+                gradient="bg-zinc-300"
               />
             ))
           ) : (
@@ -572,7 +563,7 @@ function CodingYear({ year }: { year: WakatimeYear }) {
               <PercentBar
                 key={project.name}
                 entry={project}
-                gradient="bg-gradient-to-r from-cyan-500 to-sky-600"
+                gradient="bg-zinc-300"
               />
             ))
           ) : (
@@ -586,7 +577,7 @@ function CodingYear({ year }: { year: WakatimeYear }) {
               <PercentBar
                 key={system.name}
                 entry={system}
-                gradient="bg-gradient-to-r from-sky-400 to-teal-600"
+                gradient="bg-zinc-300"
               />
             ))
           ) : (
@@ -594,7 +585,7 @@ function CodingYear({ year }: { year: WakatimeYear }) {
           )}
         </GradientPanel>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -605,19 +596,19 @@ function GitHub({ stats }: { stats: GitHubStats }) {
       : "No active streak";
 
   return (
-    <div className="mb-6">
-      <div className="flex flex-row items-center justify-between mb-3 md:mb-4 gap-2">
-        <h2 className="text-xl font-medium">GitHub Statistics</h2>
+    <section className="border-t border-zinc-800 py-12 md:py-16">
+      <div className="mb-8 flex flex-row items-baseline justify-between gap-2">
+        <h2 className="text-2xl font-medium tracking-tight text-zinc-100">GitHub Statistics</h2>
         {/*
           The window, not the account. Every other section here says what
           period it covers, and the calendar below is the twelve months
           GitHub's `contributionCalendar` returns when asked for no range.
           The handle it used to carry said nothing the sidebar does not.
         */}
-        <p className="text-xs sm:text-sm">Last Year</p>
+        <p className="text-sm text-zinc-500">Last Year</p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
         <GitHubStat label="Total" value={stats.total_contributions} />
         <GitHubStat label="This Week" value={stats.this_week} />
         <GitHubStat
@@ -644,11 +635,22 @@ function GitHub({ stats }: { stats: GitHubStats }) {
         unit="contributions"
         label="GitHub contribution calendar for the past year"
       />
-    </div>
+    </section>
   );
 }
 
 // --- building blocks -------------------------------------------------------
+
+/*
+ * Every figure on the page is drawn the same way: a hairline above, the label
+ * in the muted neutral, the number large in the strongest one. There were six
+ * of these, each its own colour of bordered card -- indigo, amber, cyan, pink,
+ * violet, green -- which made the page read as a legend for a chart that was
+ * not there. The section headings already say which figures belong together.
+ */
+const STAT = "border-t border-zinc-800 pt-4";
+const STAT_LABEL = "text-sm text-zinc-500";
+const STAT_VALUE = "mt-2 text-2xl font-medium tracking-tight tabular-nums text-zinc-100 sm:text-3xl";
 
 function StatCard({
   label,
@@ -661,16 +663,14 @@ function StatCard({
 }) {
   return (
     <div
-      className={`bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-indigo-500/50 transition-all duration-300 ${
-        hint ? "relative z-10 overflow-visible" : "overflow-hidden"
-      }`}
+      className={`${STAT} ${hint ? "relative z-10 overflow-visible" : "overflow-hidden"}`}
     >
-      <h3 className="font-medium text-xs sm:text-sm">
+      <h3 className={STAT_LABEL}>
         {label}
         {hint && <HelpIcon title={hint} />}
       </h3>
       <div className="flex items-center justify-between">
-        <p className="text-indigo-400 sm:text-xl">{value}</p>
+        <p className={STAT_VALUE}>{value}</p>
       </div>
     </div>
   );
@@ -695,16 +695,14 @@ function AiStat({
 }) {
   return (
     <div
-      className={`bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-amber-500/50 transition-all duration-300 ${
-        hint ? "relative z-10 overflow-visible" : "overflow-hidden"
-      }`}
+      className={`${STAT} ${hint ? "relative z-10 overflow-visible" : "overflow-hidden"}`}
     >
-      <h3 className="font-medium text-xs sm:text-sm">
+      <h3 className={STAT_LABEL}>
         {label}
         {hint && <HelpIcon title={hint} />}
       </h3>
       <div className="flex items-center justify-between">
-        <p className="text-amber-400 sm:text-xl">{value}</p>
+        <p className={STAT_VALUE}>{value}</p>
       </div>
     </div>
   );
@@ -729,16 +727,14 @@ function YearStat({
 }) {
   return (
     <div
-      className={`bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-cyan-500/50 transition-all duration-300 ${
-        hint ? "relative z-10 overflow-visible" : "overflow-hidden"
-      }`}
+      className={`${STAT} ${hint ? "relative z-10 overflow-visible" : "overflow-hidden"}`}
     >
-      <h3 className="font-medium text-xs sm:text-sm">
+      <h3 className={STAT_LABEL}>
         {label}
         {hint && <HelpIcon title={hint} />}
       </h3>
       <div className="flex items-center justify-between">
-        <p className="text-cyan-400 sm:text-xl">{value}</p>
+        <p className={STAT_VALUE}>{value}</p>
       </div>
     </div>
   );
@@ -763,16 +759,14 @@ function DayStat({
 }) {
   return (
     <div
-      className={`bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-pink-500/50 transition-all duration-300 ${
-        hint ? "relative z-10 overflow-visible" : "overflow-hidden"
-      }`}
+      className={`${STAT} ${hint ? "relative z-10 overflow-visible" : "overflow-hidden"}`}
     >
-      <h3 className="font-medium text-xs sm:text-sm">
+      <h3 className={STAT_LABEL}>
         {label}
         {hint && <HelpIcon title={hint} />}
       </h3>
       <div className="flex items-center justify-between">
-        <p className="text-pink-400 sm:text-xl">{value}</p>
+        <p className={STAT_VALUE}>{value}</p>
       </div>
     </div>
   );
@@ -790,16 +784,14 @@ function RhythmStat({
 }) {
   return (
     <div
-      className={`bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-violet-500/50 transition-all duration-300 ${
-        hint ? "relative z-10 overflow-visible" : "overflow-hidden"
-      }`}
+      className={`${STAT} ${hint ? "relative z-10 overflow-visible" : "overflow-hidden"}`}
     >
-      <h3 className="font-medium text-xs sm:text-sm">
+      <h3 className={STAT_LABEL}>
         {label}
         {hint && <HelpIcon title={hint} />}
       </h3>
       <div className="flex items-center justify-between">
-        <p className="text-violet-400 sm:text-xl">{value}</p>
+        <p className={STAT_VALUE}>{value}</p>
       </div>
     </div>
   );
@@ -818,17 +810,15 @@ function GitHubStat({
 }) {
   return (
     <div
-      className={`bg-transparent backdrop-blur-sm rounded-lg sm:rounded-xl px-3 py-2 border border-green-500/50 transition-all duration-300 ${
-        labelHint || suffix ? "relative z-10 overflow-visible" : "overflow-hidden"
-      }`}
+      className={`${STAT} ${labelHint || suffix ? "relative z-10 overflow-visible" : "overflow-hidden"}`}
     >
-      <h3 className="font-medium text-xs sm:text-sm">
+      <h3 className={STAT_LABEL}>
         {label}
         {labelHint && <HelpIcon title={labelHint} />}
       </h3>
       <div className="flex items-center justify-between">
-        <p className="text-xl sm:text-2xl md:text-2xl">
-          <CountUp value={value} className="text-green-600" />
+        <p className={STAT_VALUE}>
+          <CountUp value={value} className="text-zinc-100" />
           {suffix}
         </p>
       </div>
@@ -853,14 +843,13 @@ function ChartPanel({
   gradient: string;
   children: React.ReactNode;
 }) {
+  // `gradient` is still accepted so each call site keeps naming its panel's
+  // tone, but the frame is one hairline now, the same for every panel.
+  void gradient;
   return (
-    <div
-      className={`bg-gradient-to-r ${gradient} relative flex flex-1 flex-col gap-2 rounded-lg sm:rounded-xl p-[2px]`}
-    >
-      <div className="h-full w-full rounded-lg sm:rounded-xl bg-black p-3 sm:p-4">
-        <h3 className="absolute -top-3 left-3 bg-black px-2">{title}</h3>
-        {children}
-      </div>
+    <div className="flex flex-1 flex-col gap-4 border-t border-zinc-800 pt-4">
+      <h3 className="text-sm text-zinc-500">{title}</h3>
+      <div className="min-w-0">{children}</div>
     </div>
   );
 }

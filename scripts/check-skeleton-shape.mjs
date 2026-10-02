@@ -133,8 +133,8 @@ const ROUTES = [
   { label: "/dashboard", from: "/", link: 'a[href="/dashboard"]' },
   { label: "/contact", from: "/", link: 'a[href="/contact"]' },
   { label: "/guestbook", from: "/", link: 'a[href="/guestbook"]' },
-  // Reached from the sidebar's account panel, which offers it to a signed-out
-  // reader at every width -- in the rail above `md`, in the drawer below it.
+  // Reached from the account panel, which offers it to a signed-out reader at
+  // every width -- in the navbar from `lg` up, in the menu below it.
   { label: "/sign-in", from: "/", link: 'a[href="/sign-in"]' },
   // The two detail routes, reached from a card on their own listing.
   { label: "/blog/[slug]", from: "/blog", link: 'a[href^="/blog/"]' },
@@ -165,9 +165,8 @@ const throttle = async (page, ms) => {
 /**
  * Where the route-level skeleton lives, and nowhere else.
  *
- * `#page-content > div` is the content column in `site-shell.tsx`, and its one
- * child is whatever the router is currently showing -- the `loading.tsx`
- * skeleton, or the page. Anchoring here rather than searching the subtree is
+ * `#page-content`'s own children are whatever the router is currently showing
+ * -- the `loading.tsx` skeleton, or the page. Anchoring here rather than searching the subtree is
  * what separates the two kinds of skeleton this site has.
  *
  * The distinction is easy to miss and produces confident nonsense. Four
@@ -178,7 +177,7 @@ const throttle = async (page, ms) => {
  * compares a panel against a whole page and reports a wild disagreement about
  * a skeleton that is perfectly correct.
  */
-const SKELETON = '#page-content > div > [role="status"][aria-busy="true"]';
+const SKELETON = '#page-content > [role="status"][aria-busy="true"]';
 
 /*
  * Not `> div > main`: the blog post wraps its `<main>` in an `<article>`, and
@@ -191,10 +190,11 @@ const REAL = "#page-content main";
 /**
  * The outer box, and the content column inside it.
  *
- * Both states have the same two-element shape -- an element carrying the page
- * gutter, wrapping one that carries `max-w-7xl mx-auto` -- which is what makes
- * them comparable at all. The gutter shows up as the inner element's left edge
- * and width; the outer element's height is the space being held.
+ * The skeleton is a status element wrapping the content column; a page's
+ * `<main>` *is* the content column (`CONTAINER` in components/site/ui.tsx),
+ * so for the page the outer box and the column are the same element. Either
+ * way the column's left edge and width are the gutter, and the outer box's
+ * height is the space being held.
  */
 const MEASURE = `
   (kind, selectors) => {
@@ -202,7 +202,7 @@ const MEASURE = `
     if (!root) return null;
     const inner = kind === "skeleton"
       ? root.querySelector(':scope > [aria-hidden="true"]')
-      : root.querySelector(":scope > div");
+      : root;
     if (!inner) return null;
     const outer = root.getBoundingClientRect();
     const box = inner.getBoundingClientRect();
@@ -345,15 +345,14 @@ try {
       await page.waitForTimeout(2500);
 
       /*
-        Below `md` the rail is gone and its links live in the drawer, which is
-        closed -- so a nav link has to be uncovered before it can be clicked.
-        Only then, though: the two detail routes are reached from a card in the
-        page itself, and opening the drawer over one is how that click came to
-        time out rather than navigate.
+        Below `lg` the navbar's links live in the menu, which is closed -- so a
+        nav link has to be uncovered before it can be clicked. Only then,
+        though: most routes are also linked from the page or its footer, and
+        opening the menu over one of those is how a click comes to time out.
       */
       let target = page.locator(`${route.link}:visible`).first();
-      if (viewport.width < 768 && !(await target.isVisible().catch(() => false))) {
-        await page.locator('button[aria-label="Open Sidebar"]').click();
+      if (viewport.width < 1024 && !(await target.isVisible().catch(() => false))) {
+        await page.locator('button[aria-label="Open menu"]').click();
         await page.waitForTimeout(500);
         target = page.locator(`${route.link}:visible`).first();
       }

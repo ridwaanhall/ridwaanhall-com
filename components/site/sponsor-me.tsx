@@ -1,43 +1,29 @@
-import { HeartIcon } from "@/components/site/home-intro";
+import { Reveal } from "@/components/motion/reveal";
+import { ArrowUpRightIcon, BUTTON_SECONDARY } from "@/components/site/ui";
 
 /**
- * The "Support My Work" panel, shown on the homepage and the about page.
+ * The invitation to sponsor, as one quiet line rather than a pink banner.
  *
- * The two decorative circles are `hidden md:block` -- at narrow widths they
- * would sit on top of the text rather than behind it.
+ * Same words and the same link as before; the gradient, the decorative discs
+ * and the pulsing heart are gone. A request for support reads as more
+ * sincere when it is not the loudest thing on the page.
  */
 export function SponsorMe({ sponsorUrl }: { sponsorUrl: string }) {
   if (!sponsorUrl) return null;
 
   return (
-    <div className="relative mt-4 sm:mt-6 rounded-2xl overflow-hidden border bg-gradient-to-tr border-pink-400/50 from-pink-950 to-pink-800 transition-all duration-300 hover:border-pink-500">
-      <div className="p-4 sm:p-6 md:p-8">
-        <div className="flex-1 text-center md:text-left">
-          <h3 className="text-lg sm:text-xl mb-2 text-pink-300">Support My Work</h3>
-          <p className="text-pink-100 text-sm sm:text-base mb-4">
-            Help me continue creating open source projects and sharing knowledge with the community!
-          </p>
-
-          <div className="flex flex-wrap justify-center md:justify-start gap-2 sm:gap-3 mt-2">
-            <a
-              href={sponsorUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg border border-pink-700 bg-pink-950/60 hover:border-pink-400 hover:bg-pink-800/30 transition-all duration-300 text-sm text-pink-200"
-            >
-              <HeartIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 animate-pulse" />
-              Support
-            </a>
-          </div>
-
-          <div className="absolute top-0 right-0 -mt-4 -mr-4 hidden md:block">
-            <div className="w-20 h-20 rounded-full bg-pink-400/10" />
-          </div>
-          <div className="absolute bottom-0 left-0 -mb-6 -ml-6 hidden md:block">
-            <div className="w-16 h-16 rounded-full bg-pink-500/10" />
-          </div>
-        </div>
+    <Reveal className="flex flex-col gap-6 border-t border-zinc-800 py-12 sm:flex-row sm:items-center sm:justify-between md:py-16"
+    >
+      <div className="max-w-xl">
+        <h2 className="text-xl font-medium tracking-tight text-zinc-100 sm:text-2xl">Support My Work</h2>
+        <p className="mt-2 text-base leading-relaxed text-zinc-400">
+          Help me continue creating open source projects and sharing knowledge with the community!
+        </p>
       </div>
-    </div>
+      <a href={sponsorUrl} target="_blank" rel="noopener noreferrer" className={`${BUTTON_SECONDARY} self-start sm:self-auto`}>
+        Support
+        <ArrowUpRightIcon className="h-4 w-4" />
+      </a>
+    </Reveal>
   );
 }

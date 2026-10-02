@@ -1,0 +1,148 @@
+/* ===========================================================================
+   The public site's motion and the few rules utilities cannot express
+
+   Imported last from app/globals.css, unlayered like its siblings, so every
+   selector here is anchored to an attribute or a class of its own -- never to
+   a bare element -- and no rule sets a property that a utility on the same
+   element also sets. See CLAUDE.md, "An unlayered stylesheet outranks every
+   Tailwind utility".
+   =========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   Reveal-on-scroll, before and after GSAP
+
+   `html.motion` is set by the root layout's inline script, before first
+   paint, and only when the reader has not asked for reduced motion. It hides
+   what `components/motion/page-motion.tsx` is about to animate, so the page
+   does not paint once in place and then jump back to animate in.
+
+   The failsafe is what makes that safe: if the bundle never arrives, a
+   zero-length animation three seconds in shows everything. `motion-live`,
+   set the moment GSAP takes over, cancels it -- an animation outranks inline
+   styles, so leaving it running would fight GSAP's own opacity.
+   --------------------------------------------------------------------------- */
+@keyframes motion-failsafe {
+    to {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+html.motion [data-reveal] {
+    opacity: 0;
+    animation: motion-failsafe 0s linear 3s forwards;
+}
+
+html.motion [data-split] {
+    visibility: hidden;
+    animation: motion-failsafe 0s linear 3s forwards;
+}
+
+html.motion-live [data-reveal],
+html.motion-live [data-split] {
+    animation: none;
+}
+
+/* SplitText wraps each line in a mask; descenders must not be clipped. */
+.split-line {
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+}
+
+/* ---------------------------------------------------------------------------
+   Text links that draw their underline
+
+   A background stroke rather than `text-decoration`, so it can grow from the
+   left and wrap across lines with the text.
+   --------------------------------------------------------------------------- */
+.link-draw {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0 1px;
+    transition:
+        background-size 400ms cubic-bezier(0.22, 1, 0.36, 1),
+        color 200ms ease;
+}
+
+.link-draw:hover,
+.link-draw:focus-visible,
+.group:hover .link-draw {
+    background-size: 100% 1px;
+}
+
+/* ---------------------------------------------------------------------------
+   The cursor-following preview on the blog and project lists
+
+   Positioned by GSAP's quickTo; this only fixes the box and keeps it out of
+   the way of the pointer it follows.
+   --------------------------------------------------------------------------- */
+.hover-preview {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 30;
+    width: 18rem;
+    aspect-ratio: 3 / 2;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.hover-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ---------------------------------------------------------------------------
+   Navbar
+
+   The bottom rule appears once the page has scrolled, so the bar reads as part
+   of the canvas at the top and as chrome everywhere else.
+   --------------------------------------------------------------------------- */
+.site-header {
+    border-bottom: 1px solid transparent;
+    transition: border-color 300ms ease;
+}
+
+.site-header[data-scrolled="true"] {
+    border-bottom-color: var(--color-zinc-800);
+}
+
+/* The sliding indicator under the current nav link. */
+.nav-indicator {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    height: 1px;
+    width: 0;
+    background: var(--color-zinc-100);
+    opacity: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Skill ticker
+
+   The track is translated by GSAP. Faded at both ends with a mask so it needs
+   to know nothing about the colour behind it.
+   --------------------------------------------------------------------------- */
+.ticker {
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.ticker-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+}
+
+/* ---------------------------------------------------------------------------
+   Selection, in the one neutral the site is built from
+   --------------------------------------------------------------------------- */
+.site-root ::selection {
+    background: var(--color-zinc-100);
+    color: var(--color-black);
+}

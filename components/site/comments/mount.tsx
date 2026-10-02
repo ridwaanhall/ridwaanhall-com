@@ -57,7 +57,7 @@ export async function CommentSectionFor({
 export function CommentSectionSkeleton() {
   return (
     <section
-      className="skeleton-pulse mt-10 sm:mt-12 pt-8 border-t border-zinc-800"
+      className="skeleton-pulse mt-16 pt-12 border-t border-zinc-800"
       role="status"
       aria-busy="true"
     >

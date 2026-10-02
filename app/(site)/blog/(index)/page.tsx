@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { JsonLdScript } from "@/components/seo/json-ld";
-import { FeaturedSlider } from "@/components/site/featured-slider";
+import { FeaturedPosts } from "@/components/site/content-rows";
 import {
   BlogResults,
   ListingSkeleton,
   readListingParams,
   type ListingSearchParams,
 } from "@/components/site/listing-results";
+import { CONTAINER, PageHeader, Section } from "@/components/site/ui";
 import { getAboutData } from "@/lib/data/about";
 import { getBlogs, toBlogSummary } from "@/lib/data/content";
 import { blogListSeo } from "@/lib/seo/data";
@@ -44,32 +45,25 @@ export default async function BlogPage({ searchParams }: { searchParams: Listing
   return (
     <>
       <JsonLdScript schemas={blogListSchemas(about, posts)} />
-      <main className="px-4 py-6 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="space-y-8 relative z-10">
-            <FeaturedSlider posts={featured} />
+      <main className={CONTAINER}>
+        <PageHeader
+          title="Blog"
+          lead="Not all traces are written in code. Some live here in thoughts, questions, and quiet observations."
+        />
 
-            <div className="mt-4 sm:mt-6 mb-4 sm:mb-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-6">
-                <div>
-                  <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                    Latest Blogs
-                  </h1>
-                  <p className="mt-1 sm:mt-2 text-sm sm:text-base md:text-lg leading-relaxed">
-                    Not all traces are written in code. Some live here in thoughts, questions, and
-                    quiet observations.
-                  </p>
-                </div>
-              </div>
-            </div>
+        {featured.length > 0 && (
+          <Section title="Featured">
+            <FeaturedPosts posts={featured} />
+          </Section>
+        )}
 
-            {/* Everything below depends on `?q=` and `?page=`, which are request
-                data -- behind a boundary so the shell above still prerenders. */}
-            <Suspense fallback={<ListingSkeleton />}>
-              <BlogResults posts={posts} searchParams={searchParams} />
-            </Suspense>
-          </div>
-        </div>
+        <Section title="All posts">
+          {/* Everything below depends on `?q=` and `?page=`, which are request
+              data -- behind a boundary so the shell above still prerenders. */}
+          <Suspense fallback={<ListingSkeleton />}>
+            <BlogResults posts={posts} searchParams={searchParams} />
+          </Suspense>
+        </Section>
       </main>
     </>
   );

@@ -1,7 +1,6 @@
-import { BlogCard } from "@/components/site/blog-card";
+import { BlogList, ProjectGrid } from "@/components/site/content-rows";
 import { Pagination } from "@/components/site/pagination";
-import { LISTING_CARD_HEIGHT, ListingSkeleton } from "@/components/site/listing-skeleton";
-import { ProjectCard } from "@/components/site/project-card";
+import { ListingSkeleton } from "@/components/site/listing-skeleton";
 import { SearchForm } from "@/components/site/search-form";
 import { paginate } from "@/lib/api/pagination";
 import type { BlogPost, Project } from "@/lib/data/content";
@@ -44,31 +43,15 @@ export async function BlogResults({
 
   return (
     <>
-      <div className="mb-4 flex justify-end">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <ResultCount query={query} count={paged.count} total={posts.length} noun="posts" />
         <SearchForm placeholder="Search blogs..." query={query} basePath="/blog" />
       </div>
 
-      <ResultCount query={query} count={paged.count} />
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
-        {paged.items.length > 0 ? (
-          /*
-            The first row, not the first card. This grid is two across from
-            `sm`, so two cards share the top row at the same size, and either
-            can be the Largest Contentful Paint -- on /projects Chrome picked
-            the second. Marking one and not its neighbour silences the warning
-            only half the time.
-          */
-          paged.items.map((post, position) => (
-            <BlogCard key={post.slug} blog={post} eager={position < 2} />
-          ))
-        ) : (
-          <EmptyState noun="blogs" />
-        )}
-      </div>
+      {paged.items.length > 0 ? <BlogList posts={paged.items} /> : <EmptyState noun="blogs" />}
 
       {paged.pages > 1 && (
-        <div className="mt-4">
+        <div className="mt-12">
           <Pagination page={paged} basePath="/blog" query={query} />
         </div>
       )}
@@ -90,25 +73,21 @@ export async function ProjectResults({
 
   return (
     <>
-      <div className="mb-4 flex justify-end">
+      <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <ResultCount query={query} count={paged.count} total={projects.length} noun="projects" />
         <SearchForm placeholder="Search projects..." query={query} basePath="/projects" />
       </div>
 
-      <ResultCount query={query} count={paged.count} />
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 mb-6">
-        {paged.items.length > 0 ? (
-          // Both cards of the top row -- see the note on the blog grid above.
-          paged.items.map((project, position) => (
-            <ProjectCard key={project.slug} project={project} eager={position < 2} />
-          ))
-        ) : (
-          <EmptyState noun="projects" />
-        )}
-      </div>
+      {paged.items.length > 0 ? (
+        // The first row, not the first tile: two share it from `sm`, and
+        // either can be the Largest Contentful Paint.
+        <ProjectGrid projects={paged.items} eagerCount={2} />
+      ) : (
+        <EmptyState noun="projects" />
+      )}
 
       {paged.pages > 1 && (
-        <div className="mt-4">
+        <div className="mt-16">
           <Pagination page={paged} basePath="/projects" query={query} />
         </div>
       )}
@@ -116,21 +95,37 @@ export async function ProjectResults({
   );
 }
 
-function ResultCount({ query, count }: { query: string; count: number }) {
-  if (!query) return null;
+function ResultCount({
+  query,
+  count,
+  total,
+  noun,
+}: {
+  query: string;
+  count: number;
+  total: number;
+  noun: string;
+}) {
   return (
-    <p className="mt-1 mb-4 text-sm text-zinc-400 text-right">
-      Showing results for <span className="font-semibold text-indigo-300">&quot;{query}&quot;</span>{" "}
-      ({count} found)
+    <p className="text-sm text-zinc-500" aria-live="polite">
+      {query ? (
+        <>
+          Showing results for <span className="text-zinc-100">&quot;{query}&quot;</span> ({count} found)
+        </>
+      ) : (
+        <>
+          {total} {noun}
+        </>
+      )}
     </p>
   );
 }
 
 function EmptyState({ noun }: { noun: string }) {
   return (
-    <div className="col-span-full text-center text-zinc-400 py-12">
-      <h2 className="text-xl font-semibold mb-2">No {noun} found.</h2>
-      <p className="text-base">Try a different search keyword.</p>
+    <div className="border-y border-zinc-800 py-20 text-center">
+      <h2 className="text-xl font-medium text-zinc-100">No {noun} found.</h2>
+      <p className="mt-2 text-base text-zinc-400">Try a different search keyword.</p>
     </div>
   );
 }
@@ -140,4 +135,4 @@ function EmptyState({ noun }: { noun: string }) {
  * a `loading.tsx` that imported it from this module would pull `lib/data`, and
  * with it the database client, into a fallback made of rectangles.
  */
-export { LISTING_CARD_HEIGHT, ListingSkeleton };
+export { ListingSkeleton };

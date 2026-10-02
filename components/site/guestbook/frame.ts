@@ -20,7 +20,7 @@
  * natural height, and this is where it settles.
  */
 export const PANEL_FRAME =
-  "flex flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/40 " +
+  "flex flex-col overflow-hidden rounded-xl border border-zinc-800 " +
   "min-h-[min(78vh,720px)] max-h-[min(85vh,860px)]";
 
 /** The header strip and the composer footer, shared so both states match. */

@@ -74,11 +74,9 @@
 @keyframes page-enter {
     from {
         opacity: 0;
-        transform: translateY(2rem);
     }
     to {
         opacity: 1;
-        transform: none;
     }
 }
 

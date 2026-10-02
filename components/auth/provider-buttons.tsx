@@ -20,7 +20,7 @@ import { signInWith } from "@/lib/actions/auth";
  * redirect otherwise.
  */
 const PROVIDER_CLASS =
-  "flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-zinc-700 px-4 py-2 text-sm text-zinc-200 transition-colors hover:border-zinc-600 hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+  "flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-zinc-800 h-11 px-4 text-sm text-zinc-200 transition-colors hover:border-zinc-600 hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 
 export function ProviderButtons({ redirectTo }: { redirectTo: string }) {
   return (

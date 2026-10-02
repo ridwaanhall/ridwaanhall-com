@@ -1,20 +1,22 @@
 import type { Metadata } from "next";
 
 import { JsonLdScript } from "@/components/seo/json-ld";
-import { StatusChip, type AvailabilityKey } from "@/components/layout/status-badges";
-import { RichText } from "@/components/site/rich-text";
+import { AVAILABILITY, type AvailabilityKey } from "@/components/layout/status-badges";
+import { Reveal } from "@/components/motion/reveal";
+import { SectionIndex } from "@/components/motion/section-index";
 import {
-  AwardCard,
-  CertificationCard,
-  EducationCard,
-  ExperienceCard,
-} from "@/components/site/about-cards";
-import { AboutTabs } from "@/components/site/about-tabs";
-import { ApplicationCard } from "@/components/site/application-card";
-import { PagedCards } from "@/components/site/paged-cards";
+  ApplicationEntry,
+  AwardEntry,
+  CertificationEntry,
+  EducationEntry,
+  ExperienceEntry,
+  Timeline,
+} from "@/components/site/about-entries";
 import { CvDownload } from "@/components/site/cv-download";
-import { LinkedInCertifications } from "@/components/site/linkedin-certifications";
+import { PagedCards } from "@/components/site/paged-cards";
+import { RichText } from "@/components/site/rich-text";
 import { SponsorMe } from "@/components/site/sponsor-me";
+import { ArrowLink, CONTAINER, PageHeader, StatusDot } from "@/components/site/ui";
 import type { AboutData, Experience } from "@/lib/data/about";
 import {
   getAboutData,
@@ -48,119 +50,145 @@ export default async function AboutPage() {
 
   const sponsorUrl = about.donate[2]?.url ?? "";
 
-  const tabs = [
-    {
-      id: "intro",
-      label: "Intro",
-      content: <Intro about={about} sponsorUrl={sponsorUrl} />,
-    },
-    {
-      id: "experiences",
-      label: "Experiences",
-      content: (
-        <Section>
-          {groupByCompany(experiences).map(([company, roles]) => (
-            <ExperienceCard key={company} company={company} roles={roles} />
-          ))}
-        </Section>
-      ),
-    },
-    {
-      id: "education",
-      label: "Education",
-      content: (
-        <Section>
-          {education.map((item) => (
-            <EducationCard key={`${item.degree}-${item.institution}`} education={item} />
-          ))}
-        </Section>
-      ),
-    },
-    {
-      id: "awards",
-      label: "Awards",
-      content: (
-        <Section>
-          {awards.map((award) => (
-            <AwardCard key={award.id} award={award} />
-          ))}
-        </Section>
-      ),
-    },
-    {
-      id: "certifications",
-      label: "Certifications",
-      content: (
-        <div className="mt-4 sm:mt-6">
-          <LinkedInCertifications username={about.username} count={certifications.length} />
-          {/* The banner stays outside the pager: it counts the whole list and
-              belongs to the tab, not to the page of cards under it. */}
-          <PagedCards
-            className="space-y-3 sm:space-y-4"
-            cards={certifications.map((certification) => (
-              <CertificationCard key={certification.id} certification={certification} />
-            ))}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "applications",
-      label: "Applications",
-      content: (
-        <div className="mt-4">
-          {applications.length > 0 ? (
-            <PagedCards
-              cards={applications.map((application) => (
-                <ApplicationCard key={application.id} application={application} />
-              ))}
-            />
-          ) : (
-            <p className="text-zinc-400">No applications found.</p>
-          )}
-        </div>
-      ),
-    },
-  ];
+  /*
+   * One page with an index rather than six tabs. Each tab used to hide five
+   * sixths of the page behind a click; laid end to end, the reader scrolls
+   * and the index says where they are. The ids are the tab ids they replace.
+   */
+  const sections = [
+    { id: "intro", label: "Intro", show: true },
+    { id: "experiences", label: "Experiences", show: experiences.length > 0 },
+    { id: "education", label: "Education", show: education.length > 0 },
+    { id: "awards", label: "Awards", show: awards.length > 0 },
+    { id: "certifications", label: "Certifications", show: certifications.length > 0 },
+    { id: "applications", label: "Applications", show: true },
+  ].filter((section) => section.show);
 
   return (
     <>
       <JsonLdScript schemas={await aboutSchemas(about)} />
-      <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-4 md:mb-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
-              <div>
-                <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                  About Me
-                </h1>
-                <p className="mt-2 text-base sm:text-lg text-zinc-300 leading-relaxed">
-                  Built on belief and shaped through code. This is the path I&rsquo;ve taken, and
-                  the trace I continue leaving.
-                </p>
-              </div>
-            </div>
-          </div>
+      <main className={CONTAINER}>
+        <PageHeader
+          title="About"
+          lead={
+            <>
+              Built on belief and shaped through code. This is the path I&rsquo;ve taken, and the
+              trace I continue leaving.
+            </>
+          }
+        />
 
-          <AboutTabs tabs={tabs} />
+        <div className="grid gap-12 border-t border-zinc-800 pt-12 md:pt-16 lg:grid-cols-[11rem_1fr] lg:gap-16">
+          <aside className="hidden lg:block">
+            <div className="sticky top-28">
+              <SectionIndex items={sections.map(({ id, label }) => ({ id, label }))} />
+            </div>
+          </aside>
+
+          <div className="min-w-0 space-y-24">
+            <AboutSection id="intro" title="Intro">
+              <Intro about={about} />
+            </AboutSection>
+
+            {experiences.length > 0 && (
+              <AboutSection id="experiences" title="Experiences">
+                <Timeline>
+                  {groupByCompany(experiences).map(([company, roles]) => (
+                    <ExperienceEntry key={company} company={company} roles={roles} />
+                  ))}
+                </Timeline>
+              </AboutSection>
+            )}
+
+            {education.length > 0 && (
+              <AboutSection id="education" title="Education">
+                <Timeline>
+                  {education.map((item) => (
+                    <EducationEntry key={`${item.degree}-${item.institution}`} education={item} />
+                  ))}
+                </Timeline>
+              </AboutSection>
+            )}
+
+            {awards.length > 0 && (
+              <AboutSection id="awards" title="Awards">
+                <Timeline>
+                  {awards.map((award) => (
+                    <AwardEntry key={award.id} award={award} />
+                  ))}
+                </Timeline>
+              </AboutSection>
+            )}
+
+            {certifications.length > 0 && (
+              <AboutSection
+                id="certifications"
+                title="Certifications"
+                aside={
+                  <ArrowLink href={`https://linkedin.com/in/${about.username}/details/certifications/`}>
+                    View All 115+ Certifications
+                  </ArrowLink>
+                }
+              >
+                <p className="mb-6 text-sm text-zinc-500">
+                  Showing {certifications.length} here; the full record lives on LinkedIn.
+                </p>
+                <PagedCards
+                  className="border-b border-zinc-800"
+                  cards={certifications.map((certification) => (
+                    <CertificationEntry key={certification.id} certification={certification} />
+                  ))}
+                />
+              </AboutSection>
+            )}
+
+            <AboutSection id="applications" title="Applications">
+              {applications.length > 0 ? (
+                <PagedCards
+                  className="border-b border-zinc-800"
+                  cards={applications.map((application) => (
+                    <ApplicationEntry key={application.id} application={application} />
+                  ))}
+                />
+              ) : (
+                <p className="text-zinc-400">No applications found.</p>
+              )}
+            </AboutSection>
+
+            <SponsorMe sponsorUrl={sponsorUrl} />
+          </div>
         </div>
       </main>
     </>
   );
 }
 
-function Section({ children }: { children: React.ReactNode }) {
+function AboutSection({
+  id,
+  title,
+  aside,
+  children,
+}: {
+  id: string;
+  title: string;
+  aside?: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="mt-4 sm:mt-6">
-      <div className="space-y-3 sm:space-y-4">{children}</div>
-    </div>
+    <section id={id} className="scroll-mt-28">
+      <Reveal className="mb-8 flex flex-wrap items-baseline justify-between gap-4">
+        <h2 className="text-2xl font-medium tracking-tight text-zinc-100 sm:text-3xl">{title}</h2>
+        {aside}
+      </Reveal>
+      {children}
+    </section>
   );
 }
 
-function Intro({ about, sponsorUrl }: { about: AboutData; sponsorUrl: string }) {
+function Intro({ about }: { about: AboutData }) {
   /*
-   * Which flags are live. The wording and the hover colour come from
-   * `AVAILABILITY`, shared with the rail, the drawer and the home hero.
+   * Every flag that is set, short label below `sm` -- "Under the Weather"
+   * beside a heading is what used to push a 375px page sideways.
    */
   const flags = [
     about.is_open_to_work && "open",
@@ -169,70 +197,42 @@ function Intro({ about, sponsorUrl }: { about: AboutData; sponsorUrl: string }) 
   ].filter(Boolean) as AvailabilityKey[];
 
   return (
-    <div className="mt-4 sm:mt-6">
+    <div>
+      {flags.length > 0 && (
+        <Reveal className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-zinc-400">
+          {flags.map((flag) => (
+            <span key={flag} className="inline-flex items-center gap-2" title={flag === "sick" ? AVAILABILITY.sick.title : undefined}>
+              {flag === "sick" ? (
+                <span aria-hidden="true" className="h-2 w-2 rounded-full bg-zinc-500" />
+              ) : (
+                <StatusDot />
+              )}
+              <span className="sm:hidden">{AVAILABILITY[flag].short}</span>
+              <span className="hidden sm:inline">{AVAILABILITY[flag].label}</span>
+            </span>
+          ))}
+        </Reveal>
+      )}
+
+      <Reveal>
+        <p className="text-xl font-medium text-zinc-100">Assalamu&apos;alaikum</p>
+        {/*
+          The letter, as rich text: one HTML body the admin edits the way it
+          edits a blog post. `prose-stories` keeps it on this column's type
+          rather than the article scale -- see styles/prose.css.
+        */}
+        <RichText
+          html={about.stories_html}
+          className="prose-stories mt-5 text-lg leading-relaxed text-zinc-300"
+        />
+        <p className="mt-5 text-xl font-medium text-zinc-100">Wassalamu&apos;alaikum</p>
+      </Reveal>
+
       <CvDownload />
-
-      <div className="space-y-3 sm:space-y-4">
-        <div className="border border-zinc-700 rounded-xl p-4">
-          {/*
-            `flex-wrap` on both rows, which the original had on neither. With
-            all three flags set the badges are 258px of content next to a 148px
-            heading, so at 375px the third one started 24px *past* the right
-            edge of the viewport and the whole page scrolled sideways. Above
-            `sm` there is room for one line and nothing moves, so this only
-            ever takes effect where the original was broken.
-          */}
-          <div className="flex flex-wrap items-center justify-between gap-y-2 mb-2 sm:mb-3">
-            <p className="text-lg sm:text-xl font-medium">Assalamu&apos;alaikum</p>
-            {/*
-              Sized to match the mobile drawer's badges rather than carrying a
-              second, larger scale for the same three flags. Both labels are
-              rendered and one is hidden per width: the short one below `sm`,
-              where "Under the Weather" beside a heading is what used to push a
-              375px page sideways.
-            */}
-            <div className="flex flex-wrap gap-1.5">
-              {flags.map((flag) => (
-                <span key={flag}>
-                  <StatusChip flag={flag} short className="px-2 py-0.5 text-xs sm:hidden" />
-                  <StatusChip flag={flag} className="px-2 py-0.5 text-xs hidden sm:inline-flex" />
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/*
-            The letter, as rich text.
-            
-            It is one HTML body rather than an array of paragraph strings,
-            so the admin edits it the way it edits a blog post. `prose-stories`
-            keeps this block on the page's own typography rather than the
-            article scale `.prose-content` sets -- see styles/prose.css. The
-            markup that reaches the browser is identical either way.
-          */}
-          <RichText html={about.stories_html} className="prose-stories" />
-
-          <p className="text-lg sm:text-xl font-medium mt-3 sm:mt-3">
-            Wassalamu&apos;alaikum
-          </p>
-        </div>
-
-        <SponsorMe sponsorUrl={sponsorUrl} />
-      </div>
     </div>
   );
 }
 
-/**
- * Group roles by company, preserving the order they arrive in.
- *
- * Somebody with three roles at one employer should read as one entry with three
- * roles, not as the same company printed three times.
- *
- * A Map rather than grouping consecutive runs: it preserves insertion order, so
- * already-sorted input comes out in the order the sort chose, and it still does
- * the right thing if two runs of the same company are ever separated.
- */
 function groupByCompany(experiences: Experience[]): [string, Experience[]][] {
   const groups = new Map<string, Experience[]>();
   for (const experience of experiences) {

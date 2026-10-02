@@ -44,7 +44,7 @@ export function PinnedCard({
   }, [expanded, pinned.message]);
 
   return (
-    <div className="flex items-start gap-2 bg-zinc-800 rounded-lg px-3 py-2">
+    <div className="flex items-start gap-2 border border-zinc-800 rounded-lg px-3 py-2">
       {pinned.profileImage ? (
         // eslint-disable-next-line @next/next/no-img-element -- see message.tsx
         <img
@@ -74,7 +74,7 @@ export function PinnedCard({
           <button
             type="button"
             onClick={() => setExpanded((open) => !open)}
-            className="text-[10px] text-indigo-400 hover:text-indigo-300 mt-0.5 cursor-pointer"
+            className="text-[10px] text-zinc-400 underline hover:text-zinc-100 mt-0.5 cursor-pointer"
           >
             {expanded ? "Show less" : "Read more"}
           </button>
@@ -86,10 +86,10 @@ export function PinnedCard({
           type="button"
           onClick={() => onUnpin(pinned.id)}
           disabled={busy}
-          className="flex-shrink-0 p-1 rounded hover:bg-amber-900/30 transition-colors disabled:opacity-50"
+          className="flex-shrink-0 p-1 rounded hover:bg-zinc-800 transition-colors disabled:opacity-50"
           title="Unpin this message"
         >
-          <PinIcon className="w-3.5 h-3.5 text-amber-400" filled />
+          <PinIcon className="w-3.5 h-3.5 text-zinc-100" filled />
         </button>
       )}
     </div>

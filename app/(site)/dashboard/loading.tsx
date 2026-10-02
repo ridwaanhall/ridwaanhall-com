@@ -1,4 +1,4 @@
-import { SkeletonBar, SkeletonPage } from "@/components/skeleton";
+import { SkeletonPage, SkeletonPageHeading } from "@/components/skeleton";
 import { DashboardPanelSkeleton } from "@/components/site/dashboard-skeleton";
 
 /**
@@ -9,18 +9,15 @@ import { DashboardPanelSkeleton } from "@/components/site/dashboard-skeleton";
  */
 export default function Loading() {
   return (
-    <SkeletonPage gutter="article">
-      <div className="mb-6 md:mb-8">
-        <SkeletonBar className="h-8 w-44 mb-3" />
-        <SkeletonBar className="h-4 w-full max-w-2xl mb-2" />
-        <SkeletonBar className="h-4 w-3/5 max-w-lg" />
-      </div>
+    <SkeletonPage>
+      <SkeletonPageHeading />
 
       <DashboardPanelSkeleton panel="today" />
       <DashboardPanelSkeleton panel="wakatime" />
       <DashboardPanelSkeleton panel="year" />
       <DashboardPanelSkeleton panel="rhythm" />
       <DashboardPanelSkeleton panel="github" />
+      <div className="pb-8" />
     </SkeletonPage>
   );
 }

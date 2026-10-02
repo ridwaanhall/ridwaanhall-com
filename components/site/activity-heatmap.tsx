@@ -43,14 +43,14 @@ const TONES: Record<
   { levels: [string, string, string, string]; ring: string; hover: string }
 > = {
   green: {
-    levels: ["bg-green-600/20", "bg-green-600/50", "bg-green-600/90", "bg-green-500"],
-    ring: "border-green-400/30",
-    hover: "hover:border hover:border-green-400/30",
+    levels: ["bg-zinc-100/15", "bg-zinc-100/35", "bg-zinc-100/65", "bg-zinc-100"],
+    ring: "border-zinc-400/30",
+    hover: "hover:border hover:border-zinc-400/50",
   },
   teal: {
-    levels: ["bg-teal-600/20", "bg-teal-600/50", "bg-teal-500/90", "bg-cyan-400"],
-    ring: "border-cyan-400/30",
-    hover: "hover:border hover:border-cyan-400/30",
+    levels: ["bg-zinc-100/15", "bg-zinc-100/35", "bg-zinc-100/65", "bg-zinc-100"],
+    ring: "border-zinc-400/30",
+    hover: "hover:border hover:border-zinc-400/50",
   },
 };
 

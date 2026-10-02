@@ -5,7 +5,7 @@
 
    Two groups, and the distinction is worth keeping straight.
 
-   The first eleven are hand-written because they express things utilities
+   The first ten are hand-written because they express things utilities
    cannot -- scrollbar pseudo-elements, the lightbox chrome, the tooltip, the
    click spark, the admin's own drawn form controls. The last four were carved
    out of *this* file, which had reached 1231 lines holding a 281-line palette
@@ -33,7 +33,6 @@
    others reuse.
    --------------------------------------------------------------------------- */
 @import "../styles/clickSpark.css";
-@import "../styles/skillSlider.css";
 @import "../styles/hideScroll.css";
 @import "../styles/sidebarSearch.css";
 @import "../styles/globalScrollbar.css";
@@ -50,6 +49,9 @@
 @import "../styles/theme-motion.css";
 @import "../styles/components.css";
 @import "../styles/animations.css";
+/* The redesigned public site: reveal states, drawn underlines, the navbar
+   rule. Last, per the rule above. */
+@import "../styles/site.css";
 
 /* ---------------------------------------------------------------------------
    Keep source detection off prose and off our own stylesheets

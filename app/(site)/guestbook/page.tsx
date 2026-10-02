@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { auth } from "@/auth";
+import { CONTAINER, PageHeader } from "@/components/site/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { GuestbookPanel } from "@/components/site/guestbook/panel";
 import { GuestbookPanelSkeleton } from "@/components/site/guestbook/panel-skeleton";
@@ -36,25 +37,13 @@ export default function GuestbookPage() {
   return (
     <>
       <JsonLdScript schemas={guestbookSchemas()} />
-      <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-4 md:mb-6">
-            <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-              Guestbook
-            </h1>
-            <p className="mt-2 text-base sm:text-lg text-zinc-300 leading-relaxed">
-              Leave a trace of your own. Say hello, ask something, or just let me know you were
-              here.
-            </p>
-          </div>
+      <main className={CONTAINER}>
+        <PageHeader
+          title="Guestbook"
+          lead="Leave a trace of your own. Say hello, ask something, or just let me know you were here."
+        />
 
-          {/*
-            The heading above is static and prerenders; everything below reads
-            the session cookie and the live thread, neither of which is cached.
-            Under `cacheComponents` an uncached read outside a boundary is a
-            build error (`blocking-prerender-dynamic`), and rightly so -- this
-            is the same shape the dashboard uses for its two API panels.
-          */}
+        <div className="border-t border-zinc-800 pt-12 pb-8 md:pt-16">
           <Suspense fallback={<GuestbookPanelSkeleton />}>
             <Panel />
           </Suspense>

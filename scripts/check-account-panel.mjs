@@ -136,7 +136,8 @@ const SIGN_IN = 'a[href="/sign-in"]';
 const TRIGGER = "[data-account-menu]";
 // Named structurally, not by its text: `:has-text()` is Playwright's and does
 // not exist in the DOM, and these are measured inside the page.
-const SIGN_OUT_ROW = 'div.border-t form button[type="submit"]';
+// The menu panel is the trigger's next sibling, wherever the row is drawn.
+const SIGN_OUT_ROW = '[data-account-menu] + div form button[type="submit"]';
 const SIGN_OUT = 'button:has-text("Sign out")';
 const ADMIN = 'a[href="/admin"]';
 
@@ -162,7 +163,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
 
   const rail = await visible(page, SIGN_IN);
   check(
-    "signed out at 1280px: one visible way in, and the drawer's copy hidden",
+    "signed out at 1280px: one visible way in, and the menu's copy hidden",
     rail.shown === 1 && rail.total === 2,
     `${rail.shown} of ${rail.total} visible`,
   );
@@ -196,11 +197,11 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   // so wait for the panel to have streamed in at all before measuring.
   await page.waitForSelector(SIGN_IN, { state: "attached", timeout: 20000 });
   const shut = await visible(page, SIGN_IN);
-  await page.click("button[aria-label='Open Sidebar']");
+  await page.click("button[aria-label='Open menu']");
   await page.waitForTimeout(600);
   const open = await visible(page, SIGN_IN);
   check(
-    "signed out at 375px: reachable through the drawer and only there",
+    "signed out at 375px: reachable through the menu and only there",
     shut.shown === 0 && open.shown === 1,
     `${shut.shown} shut -> ${open.shown} open`,
   );
@@ -217,7 +218,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
 
   const rows = await visible(page, TRIGGER);
   check(
-    "signed in: one visible account row, and the drawer's copy hidden",
+    "signed in: one visible account row, and the menu's copy hidden",
     rows.shown === 1 && rows.total === 2,
     `${rows.shown} of ${rows.total} visible`,
   );
@@ -304,7 +305,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   check("and the chrome says so without a reload", flipped, page.url().replace(BASE, ""));
 
   const remaining = (await context.cookies()).find((c) => c.name === cookieName && c.value);
-  check("signing out from the sidebar clears the session", !remaining);
+  check("signing out from the account menu clears the session", !remaining);
   await context.close();
 }
 
@@ -335,7 +336,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   await openMenu(page);
   const admin = await visible(page, ADMIN);
   check(
-    "and opening it offers one way in, the drawer's copy hidden",
+    "and opening it offers one way in, the menu's copy hidden",
     admin.shown === 1 && admin.total === 2,
     `${admin.shown} of ${admin.total} visible`,
   );
@@ -351,7 +352,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   const laidOut = await page.evaluate(() => {
     const shown = (sel) =>
       [...document.querySelectorAll(sel)].find((node) => node.offsetParent !== null);
-    const out = shown('div.border-t form button[type="submit"]')?.getBoundingClientRect();
+    const out = shown('[data-account-menu] + div form button[type="submit"]')?.getBoundingClientRect();
     const adm = shown('a[href="/admin"]')?.getBoundingClientRect();
     if (!out || !adm) return null;
     return { drift: Math.abs(adm.left - out.left), gap: Math.round(out.top - adm.bottom) };
@@ -363,31 +364,29 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   );
 
   /*
-   * One ruled band at the base of the sidebar, holding both.
+   * In the top bar, at the end of it, and opening downward.
    *
-   * This used to be two -- the account, then the legal links -- each with a
-   * rule of its own, in a weight found nowhere else on the site so that the
-   * pair would read as banding rather than as an edge and a smudge. One band
-   * needs no such trick, and this is what says the two have not drifted apart
-   * again: the section carrying the account is the same element that carries
-   * the small print.
+   * The account used to sit in a ruled band at the base of a left rail, with
+   * the legal links -- which moved to the footer with the rest of the small
+   * print when the rail became a navbar. What has to stay true now is that
+   * the visible row is the bar's, and that its panel drops into the page
+   * rather than up off the top of the screen.
    */
-  const base = await page.evaluate(() => {
-    const bands = [...document.querySelectorAll("div.border-t")].filter(
-      (node) => node.offsetParent !== null && node.querySelector("[data-account-menu]"),
+  const bar = await page.evaluate(() => {
+    const trigger = [...document.querySelectorAll("[data-account-menu]")].find(
+      (node) => node.offsetParent !== null,
     );
+    const panel = trigger?.nextElementSibling;
+    if (!trigger || !panel) return null;
     return {
-      count: bands.length,
-      holdsSmallPrint:
-        bands.length === 1 && Boolean(bands[0].querySelector('a[href="/privacy-policy"]')),
+      inHeader: Boolean(trigger.closest("header")),
+      below: panel.getBoundingClientRect().top >= trigger.getBoundingClientRect().bottom,
     };
   });
   check(
-    "and the account and the small print share one ruled band",
-    base.count === 1 && base.holdsSmallPrint,
-    base.count === 1 && !base.holdsSmallPrint
-      ? "one band, without the legal links"
-      : `${base.count} band(s)`,
+    "and the account sits in the navbar, its panel dropping below it",
+    bar !== null && bar.inHeader && bar.below,
+    bar ? `in header: ${bar.inHeader}, below: ${bar.below}` : "not found",
   );
 
   /*
@@ -412,7 +411,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
       probe.style.color = `var(${variable})`;
       return getComputedStyle(probe).color;
     };
-    const values = { red: read("--color-red-400"), indigo: read("--color-indigo-400") };
+    const values = { red: read("--color-red-400"), strong: read("--color-zinc-100") };
     probe.remove();
     return values;
   });
@@ -437,8 +436,10 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
     `${outHue}`,
   );
 
+  // One accent on the public site, and it is not spent on a menu row: the
+  // admin link brightens to the strongest neutral, like every other link.
   const adminHue = await hovered(ADMIN, ADMIN);
-  check("and the admin takes its own accent", adminHue === palette.indigo, `${adminHue}`);
+  check("and the admin brightens to the strongest neutral", adminHue === palette.strong, `${adminHue}`);
 
   await context.close();
 }

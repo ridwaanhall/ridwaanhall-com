@@ -1,28 +1,30 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
-import { HamburgerIcon, VerifiedIcon } from "@/components/icons/nav-icons";
-import { MobileDrawer } from "@/components/layout/mobile-drawer";
-import { ProfileAvatar } from "@/components/layout/profile-avatar";
 import { SearchModalProvider } from "@/components/layout/search-modal";
-import { SidebarRail } from "@/components/layout/sidebar-rail";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { SiteFooter } from "@/components/layout/site-footer";
+import { SiteMenu } from "@/components/layout/site-menu";
+import { SiteNavbar } from "@/components/layout/site-navbar";
+import { PageMotion } from "@/components/motion/page-motion";
 import type { AboutData } from "@/lib/data/about";
 
 /**
- * The page chrome: mobile navbar, mobile drawer, desktop rail, content column.
+ * The page chrome: a navbar across the top, the page, a footer.
  *
- * A client component only because the drawer's open state has to be shared
- * between the navbar's hamburger and the drawer itself. The rail and its
- * children are passed through as rendered elements where they can be, so the
- * server still does the work.
+ * It used to be a fixed left rail with a bottom-sheet drawer below `md`. The
+ * redesign puts navigation where a reader looks for it first and gives the
+ * content the full width of one centred column.
  *
- * **Exactly one theme toggle is visible at any width**: the navbar's below
- * `md`, the rail's from `md` up. Nothing in CI catches a breakpoint band with
- * none or two, so verify 375 / 767 / 768 / 900 / 1023 / 1024 / 1440 after
- * changing either.
+ * A client component only because the menu's open state is shared between the
+ * navbar's button and the menu itself. The account panel arrives from the
+ * layout as an already-suspended element and is rendered twice -- in the bar
+ * from `lg` up, in the menu below it -- so the session read stays on the
+ * server and this file never needs to know its answer.
+ *
+ * **Exactly one theme toggle is visible at any width**: the bar's, which never
+ * hides. `scripts/check-breakpoints.mjs` verifies it.
  */
 export function SiteShell({
   about,
@@ -30,73 +32,47 @@ export function SiteShell({
   children,
 }: {
   about: AboutData;
-  /**
-   * The account panel -- sign in, or who is signed in -- already wrapped in its
-   * own `<Suspense>` by the layout. An element rather than a flag because the
-   * answer comes from the database and this component is `"use client"`:
-   * handing the element down keeps the session read on the server, and keeps
-   * this file from needing to know what the answer is.
-   */
   account?: React.ReactNode;
   children: React.ReactNode;
 }) {
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuAt, setMenuAt] = useState(pathname);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+
+  // Navigating closes the menu, decided in the render that already knows the
+  // route changed -- an effect would paint the menu once over the new page.
+  if (menuAt !== pathname) {
+    setMenuAt(pathname);
+    if (menuOpen) setMenuOpen(false);
+  }
 
   return (
     <SearchModalProvider about={about}>
-      <header className="md:hidden bg-black border-b border-zinc-800 fixed top-0 left-0 w-full z-40">
-        <div className="flex items-center gap-3 p-4">
-          <ProfileAvatar src={about.image_url} name={about.name} size={40} eager />
-          <div className="flex items-center gap-2">
-            <div className="text-lg font-medium text-zinc-200">{about.name}</div>
-            <VerifiedIcon className="text-blue-400 w-5 h-5" />
-          </div>
-          {/* Toggle and hamburger are a matched pair -- same padding, radius and
-              hover treatment, so they read as one control group. */}
-          <div className="ml-auto flex items-center gap-0.5">
-            <ThemeToggle iconSize="h-6 w-6" />
-            <button
-              type="button"
-              onClick={() => setDrawerOpen(true)}
-              className="inline-flex items-center justify-center rounded-md p-1.5 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-              aria-label="Open Sidebar"
-            >
-              <HamburgerIcon />
-            </button>
-          </div>
+      <div className="site-root flex min-h-dvh flex-col">
+        <SiteNavbar
+          about={about}
+          account={account}
+          menuOpen={menuOpen}
+          onOpenMenu={() => setMenuOpen(true)}
+        />
+        <SiteMenu about={about} account={account} open={menuOpen} onClose={closeMenu} />
+
+        {/*
+          Keyed on the pathname so each navigation mounts a fresh page: the
+          entrance fade in styles/animations.css replays, and PageMotion's
+          triggers and splits belong to exactly one page.
+
+          This element animates, and an animated ancestor becomes the
+          containing block for `position: fixed` descendants -- which is why
+          the navbar, the menu, the search modal, the toast stack and the
+          confirm dialog all render as siblings of it rather than inside.
+        */}
+        <div key={pathname} id="page-content" className="flex-1 pt-16">
+          <PageMotion>{children}</PageMotion>
         </div>
-      </header>
 
-      <MobileDrawer
-        about={about}
-        account={account}
-        isOpen={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-      />
-
-      <div className="mx-auto max-w-6xl pt-20 lg:pt-0">
-        <div className="flex flex-col lg:flex-row lg:gap-2 lg:py-4 xl:pb-8">
-          <SidebarRail about={about} account={account} />
-          {/*
-            Keyed on the pathname so the entrance animation replays on every
-            navigation -- client-side routing keeps the element, so without the
-            key it would animate once and never again.
-
-            The 500ms delay that used to precede each navigation is gone. It
-            existed so the outgoing page could finish fading before the browser
-            left it -- with client-side routing there is no page load to mask,
-            so it would be half a second of waiting for nothing.
-
-            Note this element animates a transform, and a transformed ancestor
-            becomes the containing block for its position:fixed descendants.
-            That is why the search modal, and later the toast stack and confirm
-            dialog, are rendered as siblings of this element and not inside it.
-          */}
-          <div key={pathname} id="page-content" className="z-10 w-full">
-            <div className="flex-1 md:ml-62">{children}</div>
-          </div>
-        </div>
+        <SiteFooter about={about} />
       </div>
     </SearchModalProvider>
   );

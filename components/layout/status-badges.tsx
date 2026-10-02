@@ -17,8 +17,8 @@ import type { AboutData } from "@/lib/data/about";
  *
  * Classes are written out in full rather than composed from the hue. Tailwind
  * only emits a class it can see in the source, so a template string would
- * produce no rule at all -- the same reason recorded at the top of
- * `components/site/application-card.tsx`.
+ * produce no rule at all -- the same reason the outcome dots in
+ * `components/site/about-entries.tsx` are spelled out.
  */
 export const AVAILABILITY = {
   open: {

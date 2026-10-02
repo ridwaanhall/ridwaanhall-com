@@ -1,4 +1,5 @@
-import { SkeletonBar, SkeletonBlock, SkeletonGrid } from "@/components/skeleton";
+import { SkeletonBar, SkeletonBlock } from "@/components/skeleton";
+import { cn } from "@/lib/utils/cn";
 
 /**
  * One dashboard panel, holding its height while its API answers.
@@ -27,11 +28,11 @@ export function DashboardPanelSkeleton({
   panel: "today" | "wakatime" | "year" | "rhythm" | "github";
 }) {
   return (
-    <div className="skeleton-pulse mb-6" role="status" aria-busy="true">
+    <div className="skeleton-pulse border-t border-zinc-800 py-12 md:py-16" role="status" aria-busy="true">
       <span className="sr-only">Loading statistics…</span>
       <div aria-hidden="true">
         {/* The panel heading and the caption opposite it. */}
-        <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
+        <div className="mb-8 flex flex-row items-baseline justify-between gap-2">
           <SkeletonBar className="h-7 w-56 bg-zinc-900/60" />
           <SkeletonBar className="h-4 w-24 bg-zinc-900/60" />
         </div>
@@ -44,8 +45,8 @@ export function DashboardPanelSkeleton({
               ribbon is the same depth throughout and the legend wraps within
               its own row rather than adding one.
             */}
-            <SkeletonGrid count={4} columns={4} mobileColumns={2} height={76} />
-            <SkeletonBlock className="mt-4 h-[136px] rounded-lg sm:rounded-xl" />
+            <StatGrid count={4} columns={4} />
+            <SkeletonBlock className="mt-12 h-[136px] rounded-lg sm:rounded-xl" />
           </>
         ) : panel === "rhythm" ? (
           <>
@@ -61,10 +62,10 @@ export function DashboardPanelSkeleton({
               that fails safely: the page settles upward into the gap rather
               than shoving the calendar below it down past a reader's finger.
             */}
-            <SkeletonGrid count={4} columns={4} mobileColumns={2} height={76} />
-            <SkeletonBlock className="mt-4 h-[260px] rounded-lg sm:h-[284px] sm:rounded-xl" />
-            <SkeletonBlock className="mt-6 h-[156px] rounded-lg sm:h-[196px] sm:rounded-xl" />
-            <SkeletonBlock className="mt-3 h-[128px] rounded-lg sm:mt-4 sm:h-[124px] sm:rounded-xl" />
+            <StatGrid count={4} columns={4} />
+            <SkeletonBlock className="mt-12 h-[260px] rounded-lg sm:h-[284px] sm:rounded-xl" />
+            <SkeletonBlock className="mt-12 h-[156px] rounded-lg sm:h-[196px] sm:rounded-xl" />
+            <SkeletonBlock className="mt-12 h-[128px] rounded-lg sm:h-[124px] sm:rounded-xl" />
           </>
         ) : panel === "year" ? (
           <>
@@ -75,10 +76,10 @@ export function DashboardPanelSkeleton({
               a single block would understate the section by two panel heights
               on exactly the screens where the jump is worst.
             */}
-            <SkeletonGrid count={8} columns={4} mobileColumns={2} height={76} />
-            <SkeletonBlock className="mt-3 sm:mt-4 h-[88px] rounded-lg sm:rounded-xl" />
-            <SkeletonBlock className="mt-4 h-[168px] border-0 bg-zinc-900/40" />
-            <div className="mt-4 grid gap-6 sm:gap-4 lg:grid-cols-3">
+            <StatGrid count={8} columns={4} />
+            <SkeletonBlock className="mt-12 h-[88px] rounded-lg sm:rounded-xl" />
+            <SkeletonBlock className="mt-12 h-[168px] border-0 bg-zinc-900/40" />
+            <div className="mt-12 grid gap-10 lg:grid-cols-3 lg:gap-8">
               <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
               <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
               <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
@@ -87,10 +88,10 @@ export function DashboardPanelSkeleton({
         ) : panel === "wakatime" ? (
           <>
             {/* Six stat cards, two across. */}
-            <SkeletonGrid count={6} columns={2} height={76} />
+            <StatGrid count={6} columns={2} />
 
             {/* Languages, Categories and Editors: three across from `lg`. */}
-            <div className="mt-4 grid gap-6 sm:gap-4 lg:grid-cols-3">
+            <div className="mt-12 grid gap-10 lg:grid-cols-3 lg:gap-8">
               <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
               <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
               <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
@@ -110,30 +111,44 @@ export function DashboardPanelSkeleton({
               settles upward into the gap rather than shoving the GitHub panel
               down past a reader's finger.
             */}
-            <div className="mt-6 flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
+            <div className="mt-16 mb-8 flex flex-row items-baseline justify-between gap-2">
               <SkeletonBar className="h-7 w-56 bg-zinc-900/60" />
               <SkeletonBar className="h-4 w-24 bg-zinc-900/60" />
             </div>
-            <SkeletonGrid count={8} columns={4} mobileColumns={2} height={76} />
-            <SkeletonBlock className="mt-3 sm:mt-4 h-[88px] rounded-lg sm:rounded-xl" />
-            <div className="mt-4 flex flex-col gap-6 sm:gap-4 md:flex-row">
+            <StatGrid count={8} columns={4} />
+            <SkeletonBlock className="mt-12 h-[88px] rounded-lg sm:rounded-xl" />
+            <div className="mt-12 flex flex-col gap-10 md:flex-row md:gap-8">
               <SkeletonBlock className="flex-1 h-[152px] rounded-lg sm:rounded-xl" />
               <SkeletonBlock className="flex-1 h-[152px] rounded-lg sm:rounded-xl" />
             </div>
           </>
         ) : (
           <>
-            <SkeletonGrid count={4} columns={4} mobileColumns={2} height={76} />
+            <StatGrid count={4} columns={4} />
 
             {/*
               The contribution heatmap: seven rows of cells over a month strip,
               with a legend beneath. It scrolls sideways on a narrow screen, so
               the height is what matters and it is the same at every width.
             */}
-            <SkeletonBlock className="mt-4 h-[168px] border-0 bg-zinc-900/40" />
+            <SkeletonBlock className="mt-12 h-[168px] border-0 bg-zinc-900/40" />
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+/** The page's figures: a hairline, a label and a large number, in a grid. */
+function StatGrid({ count, columns }: { count: number; columns: 2 | 4 }) {
+  return (
+    <div className={cn("grid grid-cols-2 gap-x-6 gap-y-8", columns === 4 ? "lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2")}>
+      {Array.from({ length: count }, (_, i) => (
+        <div key={i} className="border-t border-zinc-800 pt-4">
+          <SkeletonBar className="h-4 w-24" />
+          <SkeletonBar className="mt-3 h-8 w-20" />
+        </div>
+      ))}
     </div>
   );
 }

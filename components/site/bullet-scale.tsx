@@ -51,7 +51,7 @@ export function BulletScale({
   const ref = useReveal<HTMLDivElement>(() => setCounting(true));
 
   return (
-    <div ref={ref} className="mt-3 rounded-lg border border-violet-500/50 p-3 sm:mt-4 sm:rounded-xl sm:p-4">
+    <div ref={ref} className="mt-3 rounded-lg border border-zinc-700 p-3 sm:mt-4 sm:rounded-xl sm:p-4">
       <div className="mb-2 flex items-center justify-between gap-2 text-xs sm:text-sm">
         <span className="font-medium">
           Your daily average <span className="text-zinc-400">{youLabel}</span>
@@ -66,7 +66,7 @@ export function BulletScale({
 
       <div className="relative h-2.5 rounded-full bg-zinc-800/50">
         <span
-          className="percent-bar absolute top-0 left-0 h-2.5 rounded-full bg-gradient-to-r from-violet-400 to-purple-600"
+          className="percent-bar absolute top-0 left-0 h-2.5 rounded-full bg-zinc-300"
           style={{ "--bar-width": `${youPercent}%` } as React.CSSProperties}
         />
 

@@ -121,7 +121,8 @@ export function AccountMenu({
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((wasOpen) => !wasOpen)}
-        className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-left transition-colors hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        title={name}
+        className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-left transition-colors hover:bg-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 group-data-[account-slot=bar]/acct:w-auto group-data-[account-slot=bar]/acct:rounded-full group-data-[account-slot=bar]/acct:p-0.5"
       >
         {imageUrl && !imageBroken ? (
           /* eslint-disable-next-line @next/next/no-img-element --
@@ -144,7 +145,7 @@ export function AccountMenu({
         {/* `min-w-0` is what lets the two lines truncate: without it this
             column takes its content's width and the rail's 248px are simply
             overrun by a long display name. */}
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 group-data-[account-slot=bar]/acct:sr-only">
           <div className="truncate text-sm leading-tight text-zinc-200">{name}</div>
           <div className="truncate text-xs leading-tight text-zinc-500">@{username}</div>
           {/*
@@ -170,7 +171,7 @@ export function AccountMenu({
 
         <AccountChevronIcon
           className={cn(
-            "flex-shrink-0 text-zinc-500 transition-transform duration-200",
+            "flex-shrink-0 text-zinc-500 transition-transform duration-200 group-data-[account-slot=bar]/acct:hidden",
             open && "rotate-180",
           )}
         />
@@ -187,8 +188,16 @@ export function AccountMenu({
         id={panelId}
         hidden={!open}
         onClick={() => setOpen(false)}
-        className="absolute bottom-full left-0 right-0 z-20 mb-2 rounded-lg border border-zinc-700 bg-zinc-900 p-1"
+        className="absolute bottom-full left-0 right-0 z-20 mb-2 rounded-lg border border-zinc-800 bg-zinc-950 p-1 group-data-[account-slot=bar]/acct:top-full group-data-[account-slot=bar]/acct:bottom-auto group-data-[account-slot=bar]/acct:left-auto group-data-[account-slot=bar]/acct:mt-2 group-data-[account-slot=bar]/acct:mb-0 group-data-[account-slot=bar]/acct:w-60"
       >
+        {/* In the top bar the trigger is only an avatar, so the panel says
+            whose it is before offering anything. */}
+        <div className="hidden border-b border-zinc-800 px-3 pt-2 pb-2.5 group-data-[account-slot=bar]/acct:block">
+          <div className="truncate text-sm text-zinc-100">{name}</div>
+          <div className="truncate text-xs text-zinc-500">
+            @{username} · {ROLE_LABEL[role]}
+          </div>
+        </div>
         {children}
       </div>
     </div>

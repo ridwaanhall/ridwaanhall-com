@@ -31,8 +31,16 @@ export function ErrorPage({
   code = 404,
   title = "Page Not Found",
   message = "Sorry, the page you are looking for doesn't seem to exist or may have been moved.",
+  embedded = false,
 }: {
   code?: number | string;
+  /**
+   * Rendered inside the site's own navbar and footer -- a `notFound()` thrown
+   * by a public page. The page then drops its full-screen height and its own
+   * link row: the chrome around it already carries both, and drawing them
+   * twice is what left a 404 inside the site with two copyright lines.
+   */
+  embedded?: boolean;
   title?: string;
   message?: string;
 }) {
@@ -40,7 +48,7 @@ export function ErrorPage({
 
   return (
     <main className="mx-auto w-full max-w-5xl px-5 sm:px-8">
-      <div className="flex min-h-screen flex-col justify-center py-16">
+      <div className={embedded ? "py-20 md:py-28" : "flex min-h-screen flex-col justify-center py-16"}>
         <p aria-hidden="true" className="text-[7rem] leading-none font-medium tracking-tighter text-zinc-800 select-none sm:text-[10rem]">
           {code}
         </p>
@@ -62,24 +70,26 @@ export function ErrorPage({
           </button>
         </div>
 
-        <div className="mt-16 flex flex-col gap-3 border-t border-zinc-800 pt-6 text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
-          <nav aria-label="Pages" className="flex flex-wrap gap-x-5 gap-y-1">
-            {(
-              [
-                ["/", "Home"],
-                ["/about", "About"],
-                ["/projects", "Projects"],
-                ["/blog", "Blog"],
-                ["/contact", "Contact"],
-              ] as const
-            ).map(([href, label]) => (
-              <Link key={href} href={href} className="transition-colors hover:text-zinc-100">
-                {label}
-              </Link>
-            ))}
-          </nav>
-          <p className="text-xs">&copy; 2025 - {year} Ridwan Halim</p>
-        </div>
+        {!embedded && (
+          <div className="mt-16 flex flex-col gap-3 border-t border-zinc-800 pt-6 text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
+            <nav aria-label="Pages" className="flex flex-wrap gap-x-5 gap-y-1">
+              {(
+                [
+                  ["/", "Home"],
+                  ["/about", "About"],
+                  ["/projects", "Projects"],
+                  ["/blog", "Blog"],
+                  ["/contact", "Contact"],
+                ] as const
+              ).map(([href, label]) => (
+                <Link key={href} href={href} className="transition-colors hover:text-zinc-100">
+                  {label}
+                </Link>
+              ))}
+            </nav>
+            <p className="text-xs">&copy; 2025 - {year} Ridwan Halim</p>
+          </div>
+        )}
       </div>
     </main>
   );

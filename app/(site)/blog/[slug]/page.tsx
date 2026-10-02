@@ -11,7 +11,6 @@ import {
   CommentSectionSkeleton,
 } from "@/components/site/comments/mount";
 import { MediaGallery } from "@/components/site/media-gallery";
-import { RichText } from "@/components/site/rich-text";
 import { ShareRow } from "@/components/site/share-row";
 import { ViewCounter } from "@/components/site/view-counter";
 import { getAboutData } from "@/lib/data/about";
@@ -22,6 +21,10 @@ import { buildMetadata } from "@/lib/seo/metadata";
 import { blogDetailSchemas } from "@/lib/seo/schemas-for-page";
 import { isoDateTime, longDateTime, slugify } from "@/lib/utils/format";
 import { PAGE_GUTTER } from "@/lib/ui/shapes";
+import { prepareArticle } from "@/lib/utils/toc";
+import { TocNav } from "@/components/site/ui/toc-nav";
+import { RailLayout } from "@/components/site/ui/rail";
+import { ArticleBody } from "@/components/site/ui/article-body";
 
 /**
  * Prerender every known slug.
@@ -71,6 +74,10 @@ export default async function BlogDetailPage({
   // Only call it edited when the timestamps genuinely differ; they are equal on
   // a post that has never been revised.
   const edited = post.updated_at.getTime() > post.created_at.getTime();
+  // One pass: the body is sanitised and its headings are given ids, and the
+  // list of those headings becomes the rail. The ids cannot come from the
+  // content -- the sanitiser strips every `id` before this runs.
+  const { html: body, headings } = prepareArticle(post.content_html);
 
   return (
     <>
@@ -78,10 +85,10 @@ export default async function BlogDetailPage({
       <article>
         <main className={PAGE_GUTTER}>
           <div>
-            <header className="mb-6 md:mb-8">
-              <h1 className="text-2xl lg:text-3xl font-medium mb-2 md:mb-3">{post.title}</h1>
+            <header className="mb-header">
+              <h1 className="text-page font-medium tracking-tight text-balance">{post.title}</h1>
 
-              <div className="flex flex-col mb-4 gap-3">
+              <div className="mt-4 flex flex-col gap-3">
                 <div className="flex items-center gap-2 md:gap-3">
                   {post.author_image && (
                     <Image
@@ -102,7 +109,7 @@ export default async function BlogDetailPage({
                       <span className="font-medium">{post.author}</span>
                       <VerifiedIcon className="text-blue-400 ml-1" height={18} width={18} />
                     </a>
-                    <div className="text-xs sm:text-sm">
+                    <div className="text-meta text-zinc-400">
                       <time dateTime={isoDateTime(post.created_at)}>
                         {longDateTime(post.created_at)}
                       </time>
@@ -118,7 +125,7 @@ export default async function BlogDetailPage({
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2 mt-1">
+                <div className="flex flex-wrap gap-2">
                   <Link
                     href="/blog"
                     className="icon-btn cursor-pointer"
@@ -155,37 +162,41 @@ export default async function BlogDetailPage({
               />
             </header>
 
-            {/*
-              One HTML body, styled entirely by element from styles/prose.css.
-              No class name reaches this from the database: see the allow-list
-              in lib/utils/sanitize.ts, and scripts/check-db-classes.mjs, which
-              proves it against live content.
-            */}
-            <RichText html={post.content_html} className="max-w-none mb-8 md:mb-10" />
+            <RailLayout rail={<TocNav headings={headings} />}>
+              {/*
+                One HTML body, styled entirely by element from styles/prose.css.
+                No class name reaches it from the database: see the allow-list in
+                lib/utils/sanitize.ts, and scripts/check-db-classes.mjs, which
+                proves it against live content. It goes through `ArticleBody`
+                rather than `RichText` because the heading ids are added after
+                that sanitising pass and a second one would strip them out.
+              */}
+              <ArticleBody html={body} className="mb-section" />
 
-            <footer>
-              <h2 className="text-lg sm:text-xl font-semibold mb-2 md:mb-3">Tags</h2>
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                {post.tags.map(String).map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs font-medium rounded-full bg-zinc-900 px-2 py-0.5 sm:px-2.5 sm:py-1 font-mono"
-                  >
-                    #{slugify(tag)}
-                  </span>
-                ))}
-              </div>
-            </footer>
+              <footer>
+                <h2 className="mb-stack text-section font-medium">Tags</h2>
+                <div className="flex flex-wrap gap-2">
+                  {post.tags.map(String).map((tag) => (
+                    <span
+                      key={tag}
+                      className="pill-badge border border-zinc-800 px-2.5 py-1 font-mono text-caption text-zinc-400"
+                    >
+                      #{slugify(tag)}
+                    </span>
+                  ))}
+                </div>
+              </footer>
 
-            {/*
-              Comments read the session cookie and uncached rows, so they sit
-              behind a boundary -- under `cacheComponents` an uncached read
-              outside one stops the whole route prerendering, and the article
-              above it should not wait on them either.
-            */}
-            <Suspense fallback={<CommentSectionSkeleton />}>
-              <CommentSectionFor label="blog_post" targetId={post.id} slug={post.slug} />
-            </Suspense>
+              {/*
+                Comments read the session cookie and uncached rows, so they sit
+                behind a boundary -- under `cacheComponents` an uncached read
+                outside one stops the whole route prerendering, and the article
+                above it should not wait on them either.
+              */}
+              <Suspense fallback={<CommentSectionSkeleton />}>
+                <CommentSectionFor label="blog_post" targetId={post.id} slug={post.slug} />
+              </Suspense>
+            </RailLayout>
 
             <ViewCounter slug={post.slug} />
           </div>

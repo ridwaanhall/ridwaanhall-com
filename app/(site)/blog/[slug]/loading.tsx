@@ -11,8 +11,8 @@ export default function Loading() {
       <header className="mx-auto max-w-3xl pt-10 md:pt-16">
         <SkeletonBar className="h-4 w-20" />
         <SkeletonBar className="mt-12 h-3 w-64" />
-        <SkeletonBar className="mt-5 h-10 w-full sm:h-12 md:h-[3.75rem]" />
-        <SkeletonBar className="mt-2 h-10 w-2/3 sm:h-12 md:h-[3.75rem]" />
+        <SkeletonBar className="mt-5 h-8 w-full sm:h-9 md:h-[2.6rem]" />
+        <SkeletonBar className="mt-2 h-8 w-2/3 sm:h-9 md:h-[2.6rem]" />
         <SkeletonBar className="mt-7 h-5 w-full" />
         <SkeletonBar className="mt-2.5 h-5 w-4/5" />
         <div className="mt-10 flex items-center justify-between">

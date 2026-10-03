@@ -113,7 +113,7 @@ export function Composer({
           maxLength={MAX_MESSAGE_LENGTH}
           placeholder="Write something…"
           aria-label="Message"
-          className="min-h-11 flex-1 resize-none rounded-3xl border border-zinc-500 bg-transparent px-5 py-2.5 font-serif leading-6 text-zinc-200 placeholder-zinc-500 transition-colors duration-300 custom-scroll hover:border-zinc-300 focus:border-zinc-100 focus:outline-none"
+          className="min-h-11 flex-1 resize-none rounded-lg border border-zinc-500 bg-transparent px-4 py-2.5 font-serif leading-6 text-zinc-200 placeholder-zinc-500 transition-colors duration-300 custom-scroll hover:border-zinc-300 focus:border-zinc-100 focus:outline-none"
         />
 
         {/* Round, and the same height as an empty field, so the two sit on one

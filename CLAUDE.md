@@ -157,7 +157,8 @@ by fill. The one place an edge survives is a **control**: buttons, fields and
 toggles keep a border at `zinc-500`, the lightest step that clears three to
 one against the canvas in *both* themes (`zinc-600` does not in light mode).
 Every button-like control is `rounded-full`; a multi-line field is
-`rounded-3xl`. Data marks -- heatmap cells, bars -- are not "borders".
+`rounded-lg` -- a box of writing reads as a page, and a large radius made it
+look inflated. Data marks -- heatmap cells, bars -- are not "borders".
 
 Colour is the zinc ramp plus `indigo-400` for focus rings only. The other hues
 survive only where they *are* the information -- a project's lifecycle dot,

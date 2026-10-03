@@ -128,7 +128,7 @@ export function Comments({
               placeholder="Share your thoughts…"
               required
               aria-label="Comment"
-              className="w-full resize-y rounded-3xl border border-zinc-500 bg-transparent px-5 py-3.5 font-serif leading-relaxed text-zinc-100 placeholder-zinc-500 transition-colors duration-300 hover:border-zinc-300 focus:border-zinc-100 focus:outline-none"
+              className="w-full resize-y rounded-lg border border-zinc-500 bg-transparent px-4 py-3 font-serif leading-relaxed text-zinc-100 placeholder-zinc-500 transition-colors duration-300 hover:border-zinc-300 focus:border-zinc-100 focus:outline-none"
             />
 
             {/* The hint and the button keep the row they were in; only their

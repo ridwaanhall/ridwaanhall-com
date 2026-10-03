@@ -243,7 +243,7 @@ function Intro({ about }: { about: AboutData }) {
       )}
 
       <Reveal>
-        <p className="font-serif text-2xl font-[420] text-zinc-100 italic">Assalamu&apos;alaikum</p>
+        <p className="font-serif text-xl font-[420] text-zinc-100 italic">Assalamu&apos;alaikum</p>
         {/*
           The letter, as rich text: one HTML body the admin edits the way it
           edits a blog post. `prose-stories` keeps it on this column's type
@@ -253,7 +253,7 @@ function Intro({ about }: { about: AboutData }) {
           html={about.stories_html}
           className="prose-stories mt-5 text-lg leading-relaxed text-zinc-300"
         />
-        <p className="mt-6 font-serif text-2xl font-[420] text-zinc-100 italic">Wassalamu&apos;alaikum</p>
+        <p className="mt-6 font-serif text-xl font-[420] text-zinc-100 italic">Wassalamu&apos;alaikum</p>
       </Reveal>
 
       <CvDownload />

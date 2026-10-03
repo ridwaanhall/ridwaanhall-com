@@ -103,7 +103,7 @@
 }
 
 .prose-content h2 {
-    font-size: clamp(1.375rem, 1.2rem + 0.75vw, 1.75rem);
+    font-size: clamp(1.25rem, 1.15rem + 0.45vw, 1.5rem);
     line-height: 1.15;
     font-weight: 560;
     font-stretch: 108%;
@@ -113,7 +113,7 @@
 }
 
 .prose-content h3 {
-    font-size: 1.1875rem;
+    font-size: 1.125rem;
     line-height: 1.3;
     font-weight: 580;
     font-stretch: 104%;

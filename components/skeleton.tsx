@@ -157,7 +157,7 @@ export function SkeletonPage({
 export function SkeletonPageHeading({ className }: { className?: string }) {
   return (
     <div className={cn("pt-12 pb-14 md:pt-24 md:pb-20", className)}>
-      <SkeletonBar className="h-11 w-3/4 max-w-xl sm:h-14 md:h-[4.5rem]" />
+      <SkeletonBar className="h-9 w-3/4 max-w-xl sm:h-11 md:h-[3.25rem]" />
       <SkeletonBar className="mt-7 h-5 w-full max-w-2xl" />
       <SkeletonBar className="mt-3 h-5 w-3/5 max-w-lg" />
     </div>
@@ -170,7 +170,7 @@ export function SkeletonSectionHeading({ action = true }: { action?: boolean }) 
     <div className="mb-10 flex items-end justify-between md:mb-12">
       <div>
         <SkeletonBar className="mb-3 h-3 w-24" />
-        <SkeletonBar className="h-8 w-48" />
+        <SkeletonBar className="h-6 w-48 md:h-7" />
       </div>
       {action && <SkeletonBar className="mb-1 h-4 w-24" />}
     </div>

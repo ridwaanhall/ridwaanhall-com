@@ -140,7 +140,7 @@ function PanelHeading() {
   return (
     <div className="mb-10 md:mb-12">
       <SkeletonBar className="mb-3 h-3 w-24 bg-zinc-900/60" />
-      <SkeletonBar className="h-8 w-56 bg-zinc-900/60" />
+      <SkeletonBar className="h-6 w-56 bg-zinc-900/60 md:h-7" />
     </div>
   );
 }
@@ -152,7 +152,7 @@ function StatGrid({ count, columns }: { count: number; columns: 2 | 4 }) {
       {Array.from({ length: count }, (_, i) => (
         <div key={i}>
           <SkeletonBar className="h-3 w-24" />
-          <SkeletonBar className="mt-3 h-8 w-24 sm:h-11" />
+          <SkeletonBar className="mt-3 h-6 w-24 sm:h-7" />
         </div>
       ))}
     </div>

@@ -40,7 +40,7 @@ export function GuestbookPanelSkeleton() {
 
         <div className={PANEL_FOOTER}>
           <div className="flex items-end gap-2">
-            <SkeletonBar className="h-11 flex-1 rounded-3xl" />
+            <SkeletonBar className="h-11 flex-1 rounded-lg" />
             <SkeletonBar className="h-11 w-11 flex-shrink-0 rounded-full" />
           </div>
           <SkeletonBar className="mt-3 h-3.5 w-56" />

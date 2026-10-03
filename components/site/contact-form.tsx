@@ -97,10 +97,11 @@ const LABEL = "type-meta mb-2 block text-zinc-400";
 /*
  * A field is a control, so it keeps the edge every control on the site has --
  * drawn at the step that clears three to one against the canvas -- and the
- * pill shape the buttons have. The message box takes a large radius instead:
- * a pill around six lines of text would bite into the first and last of them.
+ * pill shape the buttons have. The message box is the exception: a box of
+ * writing reads as a page, not a control, so it takes a small radius -- a large
+ * one bites into the first and last lines and makes the field look inflated.
  */
 const FIELD =
   "h-11 w-full rounded-full border border-zinc-500 bg-transparent px-5 text-zinc-100 placeholder-zinc-500 transition-colors duration-300 hover:border-zinc-300 focus:border-zinc-100 focus:outline-none";
 
-const AREA = "h-auto resize-y rounded-3xl py-3.5 leading-relaxed";
+const AREA = "h-auto resize-y rounded-lg px-4 py-3 leading-relaxed";

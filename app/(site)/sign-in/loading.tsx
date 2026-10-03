@@ -6,7 +6,7 @@ export default function Loading() {
     <SkeletonPage>
       <div className="flex min-h-[70vh] items-center justify-center py-16">
         <div className="w-full max-w-sm">
-          <SkeletonBar className="h-11 w-40 sm:h-14" />
+          <SkeletonBar className="h-9 w-40 sm:h-12" />
           <div className="mt-5 space-y-2.5">
             <SkeletonBar className="h-5 w-full" />
             <SkeletonBar className="h-5 w-11/12" />

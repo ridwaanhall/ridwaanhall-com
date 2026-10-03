@@ -24,8 +24,8 @@ export default function Loading() {
     <SkeletonPage>
       <section className="pt-16 pb-16 md:pt-32 md:pb-24">
         <SkeletonBar className="h-3 w-64" />
-        <SkeletonBar className="mt-8 h-12 w-4/5 max-w-3xl sm:h-16 md:h-[5.5rem]" />
-        <SkeletonBar className="mt-3 h-12 w-3/5 max-w-2xl sm:h-16 md:h-[5.5rem]" />
+        <SkeletonBar className="mt-8 h-9 w-3/5 max-w-xl sm:h-12 md:h-16" />
+        <SkeletonBar className="mt-4 h-6 w-4/5 max-w-2xl md:h-7" />
         <SkeletonBar className="mt-9 h-5 w-full max-w-2xl" />
         <SkeletonBar className="mt-3 h-5 w-2/3 max-w-xl" />
         <div className="mt-11 flex gap-3">

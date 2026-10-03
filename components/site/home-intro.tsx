@@ -11,7 +11,8 @@ import { cn } from "@/lib/utils/cn";
  * The homepage hero.
  *
  * Type does the work: a status line set as a trace, the greeting at the
- * largest size on the site, the bio in the reading face, and two or three
+ * largest size on the site with the role a size down beneath it, the bio in
+ * the reading face, and two or three
  * buttons. The order and the conditions of the buttons are fixed: "Hireable"
  * when open to work, otherwise "Support" if there is a sponsor link.
  */
@@ -51,8 +52,10 @@ export function HomeIntro({ about, sponsorUrl }: { about: AboutData; sponsorUrl:
         {/* One string per run of text: SplitText breaks lines at text-node
             boundaries, so "{name}." written as two nodes let the full stop
             wrap onto a line of its own on a phone. */}
-        {`Hi, I'm ${about.first_name}. `}
-        <span className="text-zinc-500">{`${about.role}.`}</span>
+        {`Hi, I'm ${about.first_name}.`}
+        {/* The role is the second half of the same heading, a size down and
+            on its own line: one statement, read name first. */}
+        <span className="mt-4 block type-section text-zinc-500">{`${about.role}.`}</span>
       </SplitHeading>
 
       <Reveal as="p" className="mt-9 max-w-2xl type-lead text-zinc-400">

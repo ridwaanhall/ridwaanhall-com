@@ -52,7 +52,7 @@ export function ErrorPage({
       <div className={embedded ? "py-20 md:py-28" : "flex min-h-screen flex-col justify-center py-16"}>
         <p
           aria-hidden="true"
-          className="text-[clamp(7rem,4rem+14vw,13rem)] leading-[0.85] font-[600] tracking-[-0.06em] text-zinc-800 select-none [font-stretch:125%]"
+          className="text-[clamp(4.5rem,3rem+6vw,7.5rem)] leading-[0.9] font-[600] tracking-[-0.06em] text-zinc-800 select-none [font-stretch:125%]"
         >
           {code}
         </p>

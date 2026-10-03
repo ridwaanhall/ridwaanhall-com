@@ -64,7 +64,7 @@ export function CommentSectionSkeleton() {
       <span className="sr-only">Loading comments…</span>
       <div aria-hidden="true">
         <SkeletonBar className="h-8 w-40" />
-        <SkeletonBlock className="mt-8 h-32 rounded-3xl" />
+        <SkeletonBlock className="mt-8 h-32 rounded-lg" />
       </div>
     </section>
   );

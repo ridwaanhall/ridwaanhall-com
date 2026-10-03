@@ -269,7 +269,11 @@ export function ArrowFx({ direction = "right", className }: { direction?: Direct
   useHostMotion(ref, (host, el) => {
     const [out, back] = Array.from(el.children) as HTMLElement[];
     const { x, y } = TRAVEL[direction];
-    gsap.set(back, { xPercent: -x, yPercent: -y });
+    // The waiting copy is parked off-stage by CSS, and GSAP reads an existing
+    // transform into its pixel `x`/`y`. Left there, that offset survives the
+    // tween below -- which only moves the percentages -- and the arrow never
+    // comes back into view. Zero the pixels and park it in percentages alone.
+    gsap.set(back, { x: 0, y: 0, xPercent: -x, yPercent: -y });
     const tl = gsap
       .timeline({ paused: true, defaults: { duration: 0.5, ease: EASE } })
       .to(out, { xPercent: x, yPercent: y }, 0)
@@ -282,6 +286,7 @@ export function ArrowFx({ direction = "right", className }: { direction?: Direct
     return () => {
       stop();
       tl.kill();
+      gsap.set([out, back], { clearProps: "transform" });
     };
   });
 

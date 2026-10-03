@@ -150,6 +150,12 @@
    these**: both would set the same property, and which wins would be a
    question of sort order rather than of intent.
 
+   The ceiling is deliberately low: the largest thing on the site is 64px,
+   a page title 52px, a figure 26px. Width and tracking carry the display
+   voice, so size does not have to -- an earlier scale that leaned on size had
+   headlines filling the screen and dashboard figures shouting over their
+   labels.
+
    Mona Sans is variable in width, and the scale spends it: display roles are
    set wider and tighter, item and body roles at their natural width. Large
    sizes are fluid between a phone and a desktop column, so a heading never
@@ -159,63 +165,63 @@
 /* The home page's greeting: the largest thing on the site, once. */
 @utility type-hero {
     font-family: var(--font-sans);
-    font-size: clamp(2.75rem, 1.55rem + 5.4vw, 6.25rem);
-    line-height: 0.95;
+    font-size: clamp(2.25rem, 1.6rem + 2.9vw, 4rem);
+    line-height: 1;
     font-weight: 560;
-    font-stretch: 118%;
-    letter-spacing: -0.045em;
+    font-stretch: 114%;
+    letter-spacing: -0.04em;
     text-wrap: balance;
 }
 
 /* Every other page's title. */
 @utility type-title {
     font-family: var(--font-sans);
-    font-size: clamp(2.5rem, 1.6rem + 3.9vw, 5rem);
-    line-height: 0.98;
+    font-size: clamp(2rem, 1.55rem + 2vw, 3.25rem);
+    line-height: 1.02;
     font-weight: 560;
-    font-stretch: 116%;
-    letter-spacing: -0.042em;
+    font-stretch: 112%;
+    letter-spacing: -0.035em;
     text-wrap: balance;
 }
 
 /* A post's or a project's own title: a page title, but for a sentence. */
 @utility type-headline {
     font-family: var(--font-sans);
-    font-size: clamp(2.125rem, 1.45rem + 2.9vw, 3.75rem);
-    line-height: 1.02;
+    font-size: clamp(1.625rem, 1.35rem + 1.25vw, 2.375rem);
+    line-height: 1.1;
     font-weight: 560;
-    font-stretch: 112%;
-    letter-spacing: -0.038em;
+    font-stretch: 108%;
+    letter-spacing: -0.03em;
     text-wrap: balance;
 }
 
 /* A section heading. */
 @utility type-section {
     font-family: var(--font-sans);
-    font-size: clamp(1.5rem, 1.18rem + 1.35vw, 2.25rem);
-    line-height: 1.08;
+    font-size: clamp(1.25rem, 1.1rem + 0.65vw, 1.625rem);
+    line-height: 1.15;
     font-weight: 550;
-    font-stretch: 110%;
-    letter-spacing: -0.03em;
+    font-stretch: 106%;
+    letter-spacing: -0.022em;
     text-wrap: balance;
 }
 
 /* The title of one thing in a list: a post, a project, a role. */
 @utility type-item {
     font-family: var(--font-sans);
-    font-size: clamp(1.0625rem, 0.98rem + 0.36vw, 1.3125rem);
-    line-height: 1.3;
+    font-size: clamp(1rem, 0.96rem + 0.18vw, 1.125rem);
+    line-height: 1.35;
     font-weight: 560;
-    font-stretch: 104%;
-    letter-spacing: -0.014em;
+    font-stretch: 102%;
+    letter-spacing: -0.01em;
     text-wrap: balance;
 }
 
 /* The reading voice at the head of a page: a lead, a bio. */
 @utility type-lead {
     font-family: var(--font-serif);
-    font-size: clamp(1.125rem, 0.99rem + 0.62vw, 1.5rem);
-    line-height: 1.5;
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+    line-height: 1.55;
     font-weight: 360;
     letter-spacing: -0.006em;
     font-variant-numeric: oldstyle-nums proportional-nums;
@@ -225,11 +231,11 @@
 /* A figure on the dashboard, and anything else that is a number to be read. */
 @utility type-figure {
     font-family: var(--font-sans);
-    font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);
-    line-height: 1;
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+    line-height: 1.1;
     font-weight: 520;
-    font-stretch: 112%;
-    letter-spacing: -0.035em;
+    font-stretch: 106%;
+    letter-spacing: -0.025em;
     font-variant-numeric: tabular-nums;
 }
 

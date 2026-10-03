@@ -139,10 +139,11 @@ prefix so a leftover is obviously a harness's and not real content.
 
 ### The public site is "Foothill"
 
-A design built from the data alone: Boyolali sits between Merbabu and Merapi,
-so the home page leads with a contour map of the two -- a real heightfield in
-`components/foothill/contours.ts`, traced into nested loops -- and the rest is
-typographic, ruled lists rather than cards. Light is the default theme.
+A design built from the data alone. The home page leads with the owner's
+name and his portrait -- an engraving in horizontal lines, generated from his
+photograph and stored as his profile image like any other upload -- and the
+rest is image-led: projects and posts are pictures set straight on the paper,
+with no box around any of them. Light is the default theme.
 
 - **Six tokens paint everything.** `--fh-paper`, `raise`, `ink`, `mute`,
   `line` and `sulfur` live in `styles/site.css`, redefined under
@@ -151,21 +152,47 @@ typographic, ruled lists rather than cards. Light is the default theme.
   a zinc class on a public page -- those belong to the admin's remap. The
   dashboard's five chart slots and heat ramp sit beside them and were checked
   for colour-vision separation in both themes; re-run the dataviz validator
-  before changing one.
-- **Three faces**, from `app/fonts.ts`: Familjen Grotesk for interface and
-  headings, Newsreader (`.fh-serif`) for reading, JetBrains Mono (`.fh-mono`)
-  for data. Onest stays for the admin.
-- **Motion is GSAP, declared by attribute.** `PageMotion`, once per page, runs
-  `data-fh-split` and `data-fh-enter` on the heading block; anything below the
-  fold is a `<Reveal>`. Never animate from a page-wide script into a
-  `<Suspense>` boundary: the script runs before that boundary hydrates, and
-  styling markup React has not claimed is a hydration mismatch -- `<Reveal>`
-  exists because the first version did exactly that.
+  before changing one. `--fh-print` is the portrait's plate, light in both
+  themes: the engraving's line weight is its shading, so inverting it prints a
+  negative.
+- **One family, two cuts**, from `app/fonts.ts`: Funnel Display for headings,
+  Funnel Sans for everything read, JetBrains Mono (`.fh-mono`) for the
+  dashboard's figures and code only. The type scale is five constants in
+  `components/foothill/classes.ts` (`H1`, `H2`, `H3`, `LEAD`, `META`); a new
+  heading is one of them. Onest stays for the admin.
+- **No kicker labels, no em dashes in copy.** Small tracked capitals above
+  every heading and a sentence broken by a dash are the two marks of a
+  generated page; a section says what it is in its own title (`Heading`, with
+  its count set small beside it), and copy uses a comma or a full stop.
+- **Every glyph is an SVG from `components/foothill/icons.tsx`.** `Icon` for
+  arrows and actions, `Brand` for a provider or a network, keyed by the
+  platform name the database stores. Never a text arrow. An action that is a
+  link is `ActionLink`, which owns the arrow, the rolling label and whether the
+  link leaves the site.
+- **Motion is GSAP, in `components/foothill/motion.tsx`.** `PageMotion`, once
+  per page, runs `data-fh-split` and `data-fh-enter` on the heading block;
+  anything below is a component wrapped round its own content -- `Reveal` for
+  blocks and headings, `Animate` for charts (marks labelled `data-fh-bar`,
+  `-col`, `-cell`, `-draw`), `CountUp` for figures, `Roll` for a label that
+  rolls on hover. Never animate from a page-wide script into a `<Suspense>`
+  boundary: the script runs before that boundary hydrates, and styling markup
+  React has not claimed is a hydration mismatch.
   `useMountedByHydration` decides whether an entrance may play: markup the
   server painted must not be hidden and shown again, so only client-mounted
   pages enter, plus anything marked `data-fh-hold` (hidden by CSS until GSAP
-  or a fallback animation reveals it). Everything is gated on
+  or a fallback animation reveals it). **Never hold a control** -- a held
+  element is invisible until its script runs, which for a theme toggle is a
+  page without one, and `check-breakpoints.mjs` counts it as missing. A tween
+  that animates a held element must leave `visibility` inline when it clears
+  its props, or the stylesheet hides it again. Everything is gated on
   `prefers-reduced-motion: no-preference`.
+- **`Roll` splits its label into characters.** SplitText replaces the text
+  node React wrote, so a label that changes ("Send" to "Sending…") is a new
+  span, keyed on the text, never an update to the old one. The rolling copy is
+  a text-shadow, so the label's text is exactly what was passed in.
+- **A long index loads as it is scrolled.** `CardGrid` shows a batch and the
+  next when its end nears the viewport; search stays a server-side GET, so a
+  filtered list is still a URL.
 - **A page's frame is `MAIN` and `WRAP`** from `components/foothill/layout.ts`,
   and its skeleton uses the same two through `components/foothill/skeleton.tsx`
   -- which is what `check-skeleton-shape.mjs` measures. The first `div` inside

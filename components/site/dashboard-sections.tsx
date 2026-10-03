@@ -138,8 +138,6 @@ export function SplitBar({
   rightLabel,
   rightValue,
   percent,
-  gradient,
-  border,
 }: {
   leftLabel: string;
   leftValue: string;
@@ -147,9 +145,6 @@ export function SplitBar({
   rightValue: string;
   /** The left share, 0-100. The right one is what is left of the track. */
   percent: number;
-  /** Written out in full -- Tailwind cannot see an interpolated gradient. */
-  gradient: string;
-  border: string;
 }) {
   const [counting, setCounting] = useState(false);
   const ref = useReveal<HTMLDivElement>(() => setCounting(true));
@@ -157,7 +152,7 @@ export function SplitBar({
   return (
     <div
       ref={ref}
-      className={`mt-3 sm:mt-4 rounded-lg sm:rounded-xl border p-3 sm:p-4 ${border}`}
+      className="mt-3 sm:mt-4 rounded-lg sm:rounded-xl border border-zinc-800 p-3 sm:p-4"
     >
       <div className="mb-2 flex items-center justify-between gap-2 text-xs sm:text-sm">
         <span className="font-medium">
@@ -169,7 +164,7 @@ export function SplitBar({
       </div>
       <div className="relative h-2 rounded-full bg-zinc-800/50">
         <span
-          className={`${gradient} percent-bar absolute left-0 top-0 h-2 rounded-full`}
+          className="bg-zinc-300 percent-bar absolute left-0 top-0 h-2 rounded-full"
           style={{ "--bar-width": `${percent}%` } as React.CSSProperties}
         />
       </div>

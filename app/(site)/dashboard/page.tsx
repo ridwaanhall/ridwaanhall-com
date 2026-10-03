@@ -444,8 +444,6 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
         rightLabel="Human"
         rightValue={`${ai.human_lines.toLocaleString("en-US")} lines`}
         percent={ai.ai_line_percent}
-        gradient="bg-zinc-300"
-        border="border-amber-500/50"
       />
 
       <div className="mt-12 flex flex-col gap-10 md:flex-row md:gap-8">
@@ -530,8 +528,6 @@ function CodingYear({ year }: { year: WakatimeYear }) {
         rightLabel="Human"
         rightValue={`${year.human_lines} lines`}
         percent={year.ai_line_percent}
-        gradient="bg-zinc-300"
-        border="border-cyan-500/50"
       />
 
       <ActivityHeatmap

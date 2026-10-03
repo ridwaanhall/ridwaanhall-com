@@ -58,3 +58,21 @@ export function RowsSkeleton({ count, height, className }: { count: number; heig
     </div>
   );
 }
+
+/**
+ * A listing's results while `searchParams` is read: the search line, the
+ * count, ten rows. Here rather than beside the results so a route's
+ * `loading.tsx` can draw it without importing the client list.
+ */
+export function ResultsSkeleton({ rowHeight }: { rowHeight: number }) {
+  return (
+    <div role="status" aria-busy="true" className="skeleton-pulse">
+      <span className="sr-only">Loading…</span>
+      <div aria-hidden="true">
+        <Bar className="h-12 w-full" />
+        <Bar className="mt-6 h-3 w-40" />
+        <RowsSkeleton count={10} height={rowHeight} className="mt-4" />
+      </div>
+    </div>
+  );
+}

@@ -1173,7 +1173,7 @@ export const profileForm: AdminFormModel = {
     },
     {
       title: "Status",
-      help: "All three can be true at once, and the sidebar stacks the badges when they are.",
+      help: "All three can be true at once, and the site lists each of them when they are.",
       fields: [
         { name: "isOpenToWork", column: profile.isOpenToWork, label: "Open to work", kind: "checkbox" },
         { name: "isHiring", column: profile.isHiring, label: "Hiring", kind: "checkbox" },

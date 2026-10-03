@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { MAIN, WRAP } from "@/components/foothill/layout";
-import { ProjectResults, ResultsSkeleton } from "@/components/foothill/listing";
+import { ProjectResults } from "@/components/foothill/listing";
+import { ResultsSkeleton } from "@/components/foothill/skeleton";
 import { PageMotion } from "@/components/foothill/page-motion";
 import { PageHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";

@@ -124,11 +124,10 @@ const patterns = [
 ];
 
 /*
- * Three places name a framework as *content* rather than as provenance, and
+ * Two places name a framework as *content* rather than as provenance, and
  * they are correct to. The site owner lists it among their skills, so it
- * belongs in the SEO keywords the same way Python and Machine Learning do, and
- * one comment uses a search for it as the example of what a `?q=` URL looks
- * like. Stripping those would be editing someone's CV to satisfy a lint rule.
+ * belongs in the SEO keywords the same way Python and Machine Learning do.
+ * Stripping those would be editing someone's CV to satisfy a lint rule.
  *
  * Recorded as an exact count per file rather than a blanket exemption: a new
  * comparison written into any of these still fails, because the count moves.
@@ -136,7 +135,6 @@ const patterns = [
 const CONTENT_MENTIONS = {
   "lib/seo/config.ts": 1, // `technical` keywords -- a skill, listed beside Python
   "lib/seo/schema.ts": 1, // the same list again, in the JSON-LD `keywords`
-  "components/site/search-form.tsx": 1, // a `?q=` example URL that searches for it
   "CODE_OF_CONDUCT.md": 1, // the Contributor Covenant's own URL, which ends in .html
 
   /*

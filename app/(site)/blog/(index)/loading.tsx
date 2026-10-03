@@ -1,28 +1,27 @@
-import { SkeletonBar, SkeletonBlock, SkeletonPage } from "@/components/skeleton";
-import { ListingBody } from "@/components/site/listing-skeleton";
+import { Bar, HeadSkeleton, PageSkeleton, ResultsSkeleton } from "@/components/foothill/skeleton";
 
-/**
- * The blog index, while it loads.
- *
- * The featured slider's photo is `h-60 sm:h-72 md:h-80`, and below it is
- * `ListingBody` -- the same piece the results boundary falls back to once the
- * shell has arrived, so the search row and the grid are drawn identically at
- * both moments.
- */
+/** The writing index while it loads: heading, the three to start with, the list. */
 export default function Loading() {
   return (
-    <SkeletonPage>
-      <div className="space-y-8">
-        <SkeletonBlock className="h-60 sm:h-72 md:h-80 mb-4 sm:mb-6 border-zinc-800" />
-
-        <div className="mt-4 sm:mt-6 mb-4 sm:mb-6">
-          <SkeletonBar className="h-8 w-48 mb-3" />
-          <SkeletonBar className="h-4 w-full max-w-2xl mb-2" />
-          <SkeletonBar className="h-4 w-3/5 max-w-lg" />
-        </div>
-
-        <ListingBody />
+    <PageSkeleton>
+      <HeadSkeleton />
+      <div className="mt-16 border-t border-line pt-4 md:mt-24">
+        <Bar className="h-3 w-32" />
       </div>
-    </SkeletonPage>
+      <div className="mt-8 grid gap-10 md:grid-cols-3 md:gap-8">
+        {[0, 1, 2].map((i) => (
+          <div key={i}>
+            <Bar className="h-3 w-28" />
+            <Bar className="mt-3 h-8 w-full" />
+            <Bar className="mt-2 h-8 w-[70%]" />
+            <Bar className="mt-3 h-4 w-full" />
+            <Bar className="mt-2 h-4 w-[85%]" />
+          </div>
+        ))}
+      </div>
+      <div className="mt-20 md:mt-28">
+        <ResultsSkeleton rowHeight={117} />
+      </div>
+    </PageSkeleton>
   );
 }

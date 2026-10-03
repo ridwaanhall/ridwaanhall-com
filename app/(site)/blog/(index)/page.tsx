@@ -4,7 +4,8 @@ import { Suspense } from "react";
 
 import { EYEBROW } from "@/components/foothill/classes";
 import { MAIN, WRAP } from "@/components/foothill/layout";
-import { BlogResults, ResultsSkeleton } from "@/components/foothill/listing";
+import { BlogResults } from "@/components/foothill/listing";
+import { ResultsSkeleton } from "@/components/foothill/skeleton";
 import { PageMotion } from "@/components/foothill/page-motion";
 import { Reveal } from "@/components/foothill/reveal";
 import { postRow } from "@/components/foothill/rows";

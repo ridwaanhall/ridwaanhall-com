@@ -3,11 +3,11 @@
 /* ---------------------------------------------------------------------------
    Every rule the site has, imported rather than linked
 
-   Two groups, and the distinction is worth keeping straight.
+   Three groups, and the distinction is worth keeping straight.
 
-   The first eleven are hand-written because they express things utilities
-   cannot -- scrollbar pseudo-elements, the lightbox chrome, the tooltip, the
-   click spark, the admin's own drawn form controls. The last four were carved
+   The first seven are hand-written because they express things utilities
+   cannot -- scrollbar pseudo-elements, the tooltip, the click spark, rich
+   text, the admin's own drawn form controls. The next four were carved
    out of *this* file, which had reached 1231 lines holding a 281-line palette
    remap, nine keyframe blocks and Tailwind's wiring together; they are here
    for legibility, not because they express anything special.
@@ -26,19 +26,16 @@
    the sequence their contents held in this file, and the compiled stylesheet
    is byte-for-byte what it was before the split.
 
-   Anything added here goes at the end, for the same reason.
+   Anything added here goes at the end, for the same reason -- which is where
+   the public site's own sheet sits, after all of them.
 
-   Five of the first group carry their own `html[data-theme="light"]` blocks;
+   Several of the first group carry their own `html[data-theme="light"]` blocks;
    globalScrollbar.css also exports the shared `--scrollbar-*` tokens the
    others reuse.
    --------------------------------------------------------------------------- */
 @import "../styles/clickSpark.css";
-@import "../styles/skillSlider.css";
-@import "../styles/hideScroll.css";
-@import "../styles/sidebarSearch.css";
 @import "../styles/globalScrollbar.css";
 @import "../styles/tooltip.css";
-@import "../styles/imageLightbox.css";
 /* Rich-text body styling. New in the Next.js port -- it replaces the
    per-block Tailwind classes the content used to carry. */
 @import "../styles/prose.css";

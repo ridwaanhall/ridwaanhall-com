@@ -286,7 +286,6 @@ html[data-theme="light"] {
 /* `ring-1 ring-black/5` on the two floating panels. Overriding the color
    variable rather than `box-shadow` keeps Tailwind's own ring composition
    intact. */
-html[data-theme="light"] #confirm-dialog-content,
-html[data-theme="light"] #search-modal-content {
+html[data-theme="light"] #confirm-dialog-content {
     --tw-ring-color: rgb(0 0 0 / 0.06);
 }

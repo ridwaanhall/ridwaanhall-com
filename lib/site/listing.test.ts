@@ -5,8 +5,8 @@ import { listingHref, readListingParams } from "./listing";
 
 describe("readListingParams", () => {
   it("trims the query and floors the page at 1", async () => {
-    assert.deepEqual(await readListingParams(Promise.resolve({ q: "  django ", page: "0" })), {
-      query: "django",
+    assert.deepEqual(await readListingParams(Promise.resolve({ q: "  python ", page: "0" })), {
+      query: "python",
       page: 1,
     });
   });

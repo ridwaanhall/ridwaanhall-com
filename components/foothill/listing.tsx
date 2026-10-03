@@ -2,7 +2,6 @@ import { PostList } from "@/components/foothill/post-list";
 import { Pagination } from "@/components/foothill/pagination";
 import { postRow, workRow } from "@/components/foothill/rows";
 import { SearchForm } from "@/components/foothill/search-form";
-import { Bar, RowsSkeleton } from "@/components/foothill/skeleton";
 import { WorkIndex } from "@/components/foothill/work-index";
 import { paginate } from "@/lib/api/pagination";
 import type { BlogPost, Project } from "@/lib/data/content";
@@ -94,19 +93,5 @@ function Empty({ basePath }: { basePath: string }) {
       </a>
       .
     </p>
-  );
-}
-
-/** Holds the results' place while `searchParams` is read. */
-export function ResultsSkeleton({ rowHeight }: { rowHeight: number }) {
-  return (
-    <div role="status" aria-busy="true" className="skeleton-pulse">
-      <span className="sr-only">Loading…</span>
-      <div aria-hidden="true">
-        <Bar className="h-12 w-full" />
-        <Bar className="mt-6 h-3 w-40" />
-        <RowsSkeleton count={10} height={rowHeight} className="mt-4" />
-      </div>
-    </div>
   );
 }

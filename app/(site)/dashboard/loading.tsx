@@ -1,26 +1,20 @@
-import { SkeletonBar, SkeletonPage } from "@/components/skeleton";
-import { DashboardPanelSkeleton } from "@/components/site/dashboard-skeleton";
+import { Bar, HeadSkeleton, PageSkeleton } from "@/components/foothill/skeleton";
 
-/**
- * The dashboard, while it loads.
- *
- * The same five panel skeletons the page's own `<Suspense>` boundaries use, so
- * the wait before the shell arrives looks like the wait after it.
- */
+/** The dashboard while it loads: heading, then the first two panels' frames. */
 export default function Loading() {
   return (
-    <SkeletonPage gutter="article">
-      <div className="mb-6 md:mb-8">
-        <SkeletonBar className="h-8 w-44 mb-3" />
-        <SkeletonBar className="h-4 w-full max-w-2xl mb-2" />
-        <SkeletonBar className="h-4 w-3/5 max-w-lg" />
+    <PageSkeleton>
+      <HeadSkeleton />
+      <div className="mt-20 space-y-28 md:mt-24">
+        {[260, 560].map((height) => (
+          <div key={height}>
+            <div className="border-t border-line pt-4">
+              <Bar className="h-3 w-32" />
+            </div>
+            <Bar className="mt-8 w-full" style={{ height: height - 60 }} />
+          </div>
+        ))}
       </div>
-
-      <DashboardPanelSkeleton panel="today" />
-      <DashboardPanelSkeleton panel="wakatime" />
-      <DashboardPanelSkeleton panel="year" />
-      <DashboardPanelSkeleton panel="rhythm" />
-      <DashboardPanelSkeleton panel="github" />
-    </SkeletonPage>
+    </PageSkeleton>
   );
 }

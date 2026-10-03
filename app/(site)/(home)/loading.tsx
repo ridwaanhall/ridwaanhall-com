@@ -15,7 +15,7 @@ export default function Loading() {
             <Bar className="h-12 w-36 rounded-full" />
           </div>
         </div>
-        <Bar className="mx-auto aspect-square w-full max-w-[420px] rounded-[18px] lg:col-span-5 lg:max-w-none" />
+        <Bar className="mx-auto hidden aspect-square w-full max-w-[420px] rounded-[18px] md:block lg:col-span-5 lg:max-w-none" />
       </div>
       <Bar className="mt-32 h-11 w-56 md:mt-44" />
       <CardsSkeleton className="mt-12" />

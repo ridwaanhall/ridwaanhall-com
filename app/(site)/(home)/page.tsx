@@ -123,7 +123,7 @@ export default async function HomePage() {
               src={about.image_url}
               alt={about.image_alt || `${about.name}, drawn in horizontal lines`}
               caption={about.portrait === "photo" ? "Drawn line by line from a photograph." : undefined}
-              className="mx-auto w-full max-w-[420px] lg:col-span-5 lg:max-w-none"
+              className="mx-auto hidden w-full max-w-[420px] md:block lg:col-span-5 lg:max-w-none"
             />
           )}
         </div>

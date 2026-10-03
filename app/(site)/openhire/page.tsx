@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { EYEBROW, LINE_BUTTON, SOLID_BUTTON } from "@/components/foothill/classes";
 import { MAIN, WRAP } from "@/components/foothill/layout";
 import { PageMotion } from "@/components/foothill/page-motion";
+import { Reveal } from "@/components/foothill/reveal";
 import { Arrow, Fact, PageHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import type { Skill } from "@/lib/data/about";
@@ -130,15 +131,15 @@ function OpenToWork({
     <div className="mt-10 grid gap-14 lg:grid-cols-12 lg:gap-10">
       <div className="lg:col-span-7">
         {data.status && (
-          <p data-fh-reveal className="flex items-center gap-3 text-[15px] text-ink">
+          <Reveal as="p" className="flex items-center gap-3 text-[15px] text-ink">
             <span aria-hidden="true" className="h-2 w-2 rounded-full bg-sulfur-mark" />
             {data.status}
             {data.availability && <span className="text-mute">· available {data.availability.toLowerCase()}</span>}
-          </p>
+          </Reveal>
         )}
 
         {data.preferred_roles.length > 0 && (
-          <ul data-fh-reveal data-fh-stagger className="mt-8">
+          <Reveal as="ul" stagger className="mt-8">
             {data.preferred_roles.map((role) => (
               <li
                 key={role}
@@ -147,22 +148,22 @@ function OpenToWork({
                 {role}
               </li>
             ))}
-          </ul>
+          </Reveal>
         )}
 
-        <div data-fh-reveal className="mt-12 border-t border-line">
+        <Reveal as="div" className="mt-12 border-t border-line">
           <Tags label="Employment" items={data.type} />
           <Tags label="Work mode" items={data.location_types} />
           <Tags label="Preferred locations" items={data.preferred_locations} />
           <Tags label="Remote, from" items={data.remote_locations} />
           <Tags label="Languages" items={data.languages} />
           <Tags label="Strongest in" items={data.skills_highlight} />
-        </div>
+        </Reveal>
 
         {data.portfolio_highlights.length > 0 && (
           <div className="mt-14">
             <p className={EYEBROW}>Worth a look</p>
-            <ul data-fh-reveal data-fh-stagger className="mt-4 border-b border-line">
+            <Reveal as="ul" stagger className="mt-4 border-b border-line">
               {data.portfolio_highlights.map((item) => (
                 <li key={item.title} className="border-t border-line py-4">
                   <p className="text-[17px] text-ink">{item.title}</p>
@@ -171,14 +172,14 @@ function OpenToWork({
                   )}
                 </li>
               ))}
-            </ul>
+            </Reveal>
           </div>
         )}
 
         {tools && Object.keys(tools).length > 0 && (
           <div className="mt-14">
             <p className={EYEBROW}>Every tool I use</p>
-            <dl data-fh-reveal className="mt-4 grid gap-x-10 border-t border-line md:grid-cols-2">
+            <Reveal as="dl" className="mt-4 grid gap-x-10 border-t border-line md:grid-cols-2">
               {Object.entries(tools).map(([category, list]) => (
                 <div key={category} className="border-b border-line py-3.5">
                   <dt className="text-[13px] text-mute">{category}</dt>
@@ -187,14 +188,14 @@ function OpenToWork({
                   </dd>
                 </div>
               ))}
-            </dl>
+            </Reveal>
           </div>
         )}
       </div>
 
       <aside className="lg:col-span-4 lg:col-start-9">
         <div className="lg:sticky lg:top-28">
-          <dl data-fh-reveal className="border-t border-line">
+          <Reveal as="dl" className="border-t border-line">
             {data.experience_level && <Fact label="Level">{data.experience_level}</Fact>}
             {data.availability && <Fact label="Available">{data.availability}</Fact>}
             {data.notice_period && <Fact label="Notice">{data.notice_period}</Fact>}
@@ -204,7 +205,7 @@ function OpenToWork({
             {data.salary_expectation && <Fact label="Salary">{data.salary_expectation}</Fact>}
             {data.interview_availability && <Fact label="Interviews">{data.interview_availability}</Fact>}
             {data.contact_preference && <Fact label="Reach me by">{data.contact_preference}</Fact>}
-          </dl>
+          </Reveal>
           {data.additional_notes && (
             <p className="fh-serif mt-6 text-[17px] leading-relaxed text-mute italic">{data.additional_notes}</p>
           )}
@@ -229,14 +230,14 @@ function Hiring({ data }: { data: HiringData }) {
     <div className="mt-10">
       <div className="grid gap-10 lg:grid-cols-12">
         <div className="lg:col-span-7">
-          <p data-fh-reveal className="text-[clamp(1.75rem,1.3rem+2vw,2.75rem)] leading-[1.1] font-medium tracking-[-0.03em] text-ink">
+          <Reveal as="p" className="text-[clamp(1.75rem,1.3rem+2vw,2.75rem)] leading-[1.1] font-medium tracking-[-0.03em] text-ink">
             {data.company_name}
             {data.hiring_status && (
               <span className="fh-mono ml-4 align-middle text-[11px] tracking-[0.14em] text-sulfur uppercase">
                 {data.hiring_status}
               </span>
             )}
-          </p>
+          </Reveal>
           {data.company_description && (
             <p className="fh-serif mt-4 max-w-[52ch] text-[20px] leading-[1.45] text-mute">
               {data.company_description}
@@ -268,38 +269,38 @@ function Hiring({ data }: { data: HiringData }) {
           <div>
             <p className={EYEBROW}>How it goes</p>
             {/* Numbered because it is a sequence: each step follows the last. */}
-            <ol data-fh-reveal data-fh-stagger className="mt-4 border-b border-line">
+            <Reveal as="ol" stagger className="mt-4 border-b border-line">
               {data.application_process.map((step, index) => (
                 <li key={step} className="grid grid-cols-[2.5rem_minmax(0,1fr)] border-t border-line py-3.5 text-[15px] leading-relaxed">
                   <span className="fh-mono text-[12px] text-mute tabular-nums">{index + 1}</span>
                   <span className="text-ink">{step}</span>
                 </li>
               ))}
-            </ol>
+            </Reveal>
           </div>
         )}
         {data.company_culture.length > 0 && (
           <div>
             <p className={EYEBROW}>What it is like</p>
-            <ul data-fh-reveal data-fh-stagger className="mt-4 border-b border-line">
+            <Reveal as="ul" stagger className="mt-4 border-b border-line">
               {data.company_culture.map((line) => (
                 <li key={line} className="border-t border-line py-3.5 text-[15px] leading-relaxed text-ink">
                   {line}
                 </li>
               ))}
-            </ul>
+            </Reveal>
           </div>
         )}
         {(data.requirements.general.length > 0 || data.requirements.technical.length > 0) && (
           <div>
             <p className={EYEBROW}>What we look for</p>
-            <ul data-fh-reveal className="mt-4 border-b border-line">
+            <Reveal as="ul" className="mt-4 border-b border-line">
               {[...data.requirements.general, ...data.requirements.technical].map((line) => (
                 <li key={line} className="border-t border-line py-3.5 text-[15px] leading-relaxed text-ink">
                   {line}
                 </li>
               ))}
-            </ul>
+            </Reveal>
           </div>
         )}
         <div>

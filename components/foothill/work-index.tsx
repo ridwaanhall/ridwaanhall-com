@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
 
+import { Reveal } from "@/components/foothill/reveal";
 import { StatusDot } from "@/components/foothill/ui";
 import { EASE, gsap, MOTION_OK, useGSAP } from "@/lib/motion/gsap";
 
@@ -68,7 +69,7 @@ export function WorkIndex({ rows, eagerFirst = false }: { rows: WorkRow[]; eager
 
   return (
     <div ref={root} onPointerLeave={hide}>
-      <ul data-fh-reveal data-fh-stagger className="border-b border-line">
+      <Reveal as="ul" stagger className="border-b border-line">
         {rows.map((row, index) => (
           <li key={row.slug} className="border-t border-line">
             <Link
@@ -96,7 +97,7 @@ export function WorkIndex({ rows, eagerFirst = false }: { rows: WorkRow[]; eager
             </Link>
           </li>
         ))}
-      </ul>
+      </Reveal>
 
       <div
         ref={preview}

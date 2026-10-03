@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Reveal } from "@/components/foothill/reveal";
 import type { PostRow } from "@/components/foothill/rows";
 import { shortDate } from "@/lib/site/display";
 import { cn } from "@/lib/utils/cn";
@@ -20,7 +21,7 @@ export function PostList({
   dateStyle?: "full" | "day";
 }) {
   return (
-    <ul data-fh-reveal data-fh-stagger className={cn("border-b border-line", className)}>
+    <Reveal as="ul" stagger className={cn("border-b border-line", className)}>
       {posts.map((post) => (
         <li key={post.slug} className="border-t border-line">
           <Link
@@ -49,6 +50,6 @@ export function PostList({
           </Link>
         </li>
       ))}
-    </ul>
+    </Reveal>
   );
 }

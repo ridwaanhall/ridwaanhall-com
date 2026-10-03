@@ -4,6 +4,7 @@ import Image from "next/image";
 import { EYEBROW } from "@/components/foothill/classes";
 import { MAIN, WRAP } from "@/components/foothill/layout";
 import { PageMotion } from "@/components/foothill/page-motion";
+import { Reveal } from "@/components/foothill/reveal";
 import { monthYearLabel } from "@/components/foothill/rows";
 import { SectionIndex } from "@/components/foothill/section-index";
 import { ShowMore } from "@/components/foothill/show-more";
@@ -146,11 +147,11 @@ export default async function AboutPage() {
                 <h2 id="education-title" className={EYEBROW}>
                   Education
                 </h2>
-                <ol data-fh-reveal data-fh-stagger className="mt-8 border-b border-line">
+                <Reveal as="ol" stagger className="mt-8 border-b border-line">
                   {education.map((item) => (
                     <EducationRow key={`${item.institution}-${item.degree}`} item={item} />
                   ))}
-                </ol>
+                </Reveal>
               </section>
             )}
 
@@ -162,7 +163,7 @@ export default async function AboutPage() {
                     {Object.values(skills).reduce((sum, list) => sum + list.length, 0)}
                   </span>
                 </h2>
-                <dl data-fh-reveal className="mt-8 grid gap-x-10 border-t border-line md:grid-cols-2">
+                <Reveal as="dl" className="mt-8 grid gap-x-10 border-t border-line md:grid-cols-2">
                   {Object.entries(skills).map(([category, list]) => (
                     <div key={category} className="border-b border-line py-4">
                       <dt className="text-[13px] text-mute">{category}</dt>
@@ -171,7 +172,7 @@ export default async function AboutPage() {
                       </dd>
                     </div>
                   ))}
-                </dl>
+                </Reveal>
               </section>
             )}
 
@@ -180,7 +181,7 @@ export default async function AboutPage() {
                 <h2 id="recognition-title" className={EYEBROW}>
                   Recognition <span className="ml-2 text-ink">{awards.length}</span>
                 </h2>
-                <ol data-fh-reveal data-fh-stagger className="mt-8 border-b border-line">
+                <Reveal as="ol" stagger className="mt-8 border-b border-line">
                   {awards.map((award) => (
                     <li
                       key={award.id}
@@ -206,7 +207,7 @@ export default async function AboutPage() {
                       </div>
                     </li>
                   ))}
-                </ol>
+                </Reveal>
               </section>
             )}
 
@@ -278,7 +279,7 @@ function periodLabel(role: Experience): string {
 function ExperienceGroup({ company, roles }: { company: string; roles: Experience[] }) {
   const website = roles.find((role) => role.website)?.website;
   return (
-    <li data-fh-reveal className="grid gap-y-4 border-t border-line py-7 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-x-8">
+    <Reveal as="li" className="grid gap-y-4 border-t border-line py-7 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-x-8">
       <div>
         <p className="text-[17px] font-medium text-ink">
           {website ? (
@@ -324,7 +325,7 @@ function ExperienceGroup({ company, roles }: { company: string; roles: Experienc
           </li>
         ))}
       </ol>
-    </li>
+    </Reveal>
   );
 }
 
@@ -416,7 +417,7 @@ function JobHunt({ applications }: { applications: Application[] }) {
         taught me.
       </p>
 
-      <div data-fh-reveal className="mt-8">
+      <Reveal as="div" className="mt-8">
         <div className="flex h-2.5 w-full overflow-hidden rounded-full bg-raise" role="img" aria-label={outcomes.map(([slug, list]) => `${list.length} ${label(slug, list)}`).join(", ")}>
           {outcomes.map(([slug, list]) => (
             <span
@@ -437,7 +438,7 @@ function JobHunt({ applications }: { applications: Application[] }) {
             </div>
           ))}
         </dl>
-      </div>
+      </Reveal>
 
       <ShowMore noun="applications" className="mt-10 border-b border-line">
         {applications.map((app) => (

@@ -7,6 +7,7 @@ import { contours, SUMMITS } from "@/components/foothill/contours";
 import { MAIN, WRAP } from "@/components/foothill/layout";
 import { PageMotion } from "@/components/foothill/page-motion";
 import { PostList } from "@/components/foothill/post-list";
+import { Reveal } from "@/components/foothill/reveal";
 import { featuredProjects, monthYearLabel, postRow, workRow } from "@/components/foothill/rows";
 import { SkillMarquee } from "@/components/foothill/skill-marquee";
 import { Arrow, SectionHead } from "@/components/foothill/ui";
@@ -143,10 +144,10 @@ export default async function HomePage() {
           <section aria-labelledby="home-now" className="mt-28 md:mt-36">
             <SectionHead id="home-now" label="Now" href="/about" linkLabel="The longer story" />
             <div className="mt-8 grid gap-10 md:grid-cols-12">
-              <p data-fh-reveal className="fh-serif text-[22px] leading-[1.4] text-ink md:col-span-5">
+              <Reveal as="p" className="fh-serif text-[22px] leading-[1.4] text-ink md:col-span-5">
                 {sentence(about.short_bio.split(". ")[0])}.
-              </p>
-              <ul data-fh-reveal data-fh-stagger className="md:col-span-6 md:col-start-7">
+              </Reveal>
+              <Reveal as="ul" stagger className="md:col-span-6 md:col-start-7">
                 {current.map((role) => (
                   <li
                     key={role.id}
@@ -170,7 +171,7 @@ export default async function HomePage() {
                     </span>
                   </li>
                 ))}
-              </ul>
+              </Reveal>
             </div>
           </section>
         )}
@@ -192,8 +193,8 @@ export default async function HomePage() {
           <section aria-labelledby="home-toolkit" className="mt-28 md:mt-36">
             <SectionHead id="home-toolkit" label="Toolkit" count={skills.length} />
             {about.skills.length > 0 && (
-              <p
-                data-fh-reveal
+              <Reveal
+                as="p"
                 className="mt-8 max-w-[22ch] text-[clamp(2rem,1.4rem+2.6vw,3.5rem)] leading-[1.05] font-medium tracking-[-0.03em] text-ink"
               >
                 {about.skills.map((name, index) => (
@@ -203,7 +204,7 @@ export default async function HomePage() {
                   </span>
                 ))}
                 <span className="text-mute">, and the rest below.</span>
-              </p>
+              </Reveal>
             )}
           </section>
         )}
@@ -213,13 +214,13 @@ export default async function HomePage() {
 
       <div className={WRAP}>
         <section className="mt-28 border-t border-line pt-16 md:mt-40 md:pt-24">
-          <p
-            data-fh-reveal
+          <Reveal
+            as="p"
             className="fh-serif max-w-[22ch] text-[clamp(2rem,1.3rem+3vw,4rem)] leading-[1.08] tracking-[-0.01em] text-ink"
           >
             {sentence(about.short_cta)}
-          </p>
-          <div data-fh-reveal className="mt-10 flex flex-wrap items-center gap-3">
+          </Reveal>
+          <Reveal as="div" className="mt-10 flex flex-wrap items-center gap-3">
             <Link href="/about" className={`group ${SOLID_BUTTON}`}>
               Read about me <Arrow />
             </Link>
@@ -236,7 +237,7 @@ export default async function HomePage() {
                 Support on {sponsor.platform} <Arrow diagonal />
               </a>
             )}
-          </div>
+          </Reveal>
         </section>
       </div>
       <PageMotion />

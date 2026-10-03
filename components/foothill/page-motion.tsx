@@ -3,17 +3,7 @@
 import { useRef } from "react";
 
 import { EASE, gsap, MOTION_OK, SplitText, useGSAP } from "@/lib/motion/gsap";
-
-/**
- * Whether this is the first page the document has shown.
- *
- * Module state rather than component state, because it is a fact about the
- * document: the server's HTML for the first page has already been painted
- * when this mounts, so animating it *from* hidden would show it, hide it and
- * show it again. Every later page arrives by client navigation, mounts before
- * its first paint, and can enter from nothing without a flash.
- */
-let documentFresh = true;
+import { useMountedByHydration } from "@/lib/motion/use-hydrated-mount";
 
 /**
  * The page's motion, declared by attribute and run from one place.
@@ -28,22 +18,21 @@ let documentFresh = true;
  *                    CSS (`.fh-site [data-fh-hold]` in styles/site.css), so
  *                    there is no painted copy to flash; a CSS animation
  *                    reveals it anyway if this script never runs.
- *   data-fh-reveal   rises in once, the first time it scrolls into view;
- *                    with data-fh-stagger its children do, one after another
  *
- * Rendered once inside each page's `<main>`, and scoped to it.
+ * Rendered once inside each page's `<main>`, and scoped to it. It touches
+ * only the page's own heading block, which sits outside every `<Suspense>`
+ * boundary: anything below the fold animates through `<Reveal>`, which waits
+ * for its own content to hydrate.
  */
 export function PageMotion() {
   const marker = useRef<HTMLSpanElement>(null);
+  const fresh = useMountedByHydration();
 
   useGSAP(() => {
     const scope = marker.current?.closest("main");
     if (!scope) return;
-    const fresh = documentFresh;
-    documentFresh = false;
-
-    // On a fresh document only what was held back may enter; everything else
-    // is already on screen.
+    // On the server's own page only what was held back may enter; everything
+    // else is already on screen.
     const arriving = (selector: string) =>
       Array.from(scope.querySelectorAll<HTMLElement>(selector)).filter(
         (el) => !fresh || el.hasAttribute("data-fh-hold"),
@@ -83,21 +72,6 @@ export function PageMotion() {
           clearProps: "transform,opacity",
         });
       }
-
-      scope.querySelectorAll<HTMLElement>("[data-fh-reveal]").forEach((block) => {
-        // Already on screen on a fresh document: it has been seen, leave it.
-        if (fresh && block.getBoundingClientRect().top < window.innerHeight) return;
-        const targets = block.hasAttribute("data-fh-stagger") ? Array.from(block.children) : [block];
-        gsap.from(targets, {
-          y: 22,
-          autoAlpha: 0,
-          duration: 0.8,
-          ease: EASE,
-          stagger: 0.05,
-          clearProps: "transform,opacity,visibility",
-          scrollTrigger: { trigger: block, start: "top 90%", once: true },
-        });
-      });
     });
 
     return () => mm.revert();

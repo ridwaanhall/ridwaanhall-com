@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef, useState } from "react";
 
-import { RollLabel } from "@/components/motion/interactive";
+import { NudgeText } from "@/components/motion/interactive";
 import { cn } from "@/lib/utils/cn";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -77,11 +77,11 @@ export function SectionIndex({ items }: { items: { id: string; label: string }[]
               href={`#${item.id}`}
               aria-current={active === item.id ? "location" : undefined}
               className={cn(
-                "block rounded-full py-1.5 pl-5 text-sm transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
+                "block rounded-full py-1.5 pl-5 text-sm transition-colors duration-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
                 active === item.id ? "text-zinc-100" : "text-zinc-500 hover:text-zinc-200",
               )}
             >
-              <RollLabel press={false}>{item.label}</RollLabel>
+              <NudgeText>{item.label}</NudgeText>
             </a>
           </li>
         ))}

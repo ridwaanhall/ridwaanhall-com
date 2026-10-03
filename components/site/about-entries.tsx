@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils/cn";
  */
 
 const LINK =
-  "rounded-full transition-colors duration-300 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+  "rounded-full transition-colors duration-500 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 
 function OrgMark({ logo, name, className }: { logo: string; name: string; className?: string }) {
   if (!logo) {
@@ -35,7 +35,7 @@ function OrgMark({ logo, name, className }: { logo: string; name: string; classN
       <span
         aria-hidden="true"
         className={cn(
-          "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-zinc-900 text-xs font-medium text-zinc-500",
+          "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-zinc-900 text-xs font-medium text-zinc-500",
           className,
         )}
       >
@@ -49,7 +49,7 @@ function OrgMark({ logo, name, className }: { logo: string; name: string; classN
       alt={`${name} logo`}
       width={72}
       height={72}
-      className={cn("h-9 w-9 shrink-0 rounded-lg object-cover", className)}
+      className={cn("h-8 w-8 shrink-0 rounded-lg object-cover", className)}
     />
   );
 }
@@ -68,7 +68,7 @@ function Org({ name, website }: { name: string; website: string }) {
 function Bullets({ items }: { items: string[] }) {
   if (items.length === 0) return null;
   return (
-    <ul className="mt-4 space-y-2 text-[0.9375rem] leading-relaxed text-pretty text-zinc-400">
+    <ul className="mt-3 space-y-1.5 text-sm leading-relaxed text-pretty text-zinc-400">
       {items.map((item, index) => (
         <li key={index} className="relative pl-4">
           <span aria-hidden="true" className="absolute top-[0.7em] left-0 h-px w-2 bg-zinc-600" />
@@ -82,7 +82,7 @@ function Bullets({ items }: { items: string[] }) {
 /** One row of the timeline: the period on the left, the record on the right. */
 function Entry({ when, children }: { when: React.ReactNode; children: React.ReactNode }) {
   return (
-    <Reveal as="li" className="grid grid-cols-1 gap-x-10 gap-y-2 py-7 md:grid-cols-[10rem_1fr]">
+    <Reveal as="li" className="grid grid-cols-1 gap-x-8 gap-y-2 py-5 md:grid-cols-[9rem_1fr]">
       <div className="type-meta pt-1 text-zinc-500">{when}</div>
       <div className="min-w-0">{children}</div>
     </Reveal>
@@ -124,7 +124,7 @@ export function ExperienceEntry({ company, roles }: { company: string; roles: Ex
           <div className="flex min-w-0 items-center gap-3">
             <OrgMark logo={first.logo} name={company} />
             <div className="min-w-0">
-              <h3 className="type-item text-zinc-100">
+              <h3 className="text-base leading-snug font-[560] tracking-[-0.01em] text-zinc-100 [font-stretch:104%]">
                 <Org name={company} website={first.website} />
               </h3>
               <p className="type-meta text-zinc-500">
@@ -136,13 +136,13 @@ export function ExperienceEntry({ company, roles }: { company: string; roles: Ex
           {hasMore && <DisclosureButton />}
         </div>
 
-        <p className="mt-4 text-[0.9375rem] text-zinc-300">
+        <p className="mt-3 text-sm text-zinc-300">
           {first.title}
           {roles.length > 1 && <span className="text-zinc-500"> and {roles.length - 1} more</span>}
         </p>
 
         {hasMore && (
-          <DisclosurePanel className="space-y-8 pt-7">
+          <DisclosurePanel className="space-y-6 pt-5">
             {roles.map((role) => (
               <div key={`${role.title}-${role.period.start_iso}`} className="pl-4">
                 <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -187,10 +187,10 @@ export function EducationEntry({ education }: { education: Education }) {
       <div className="flex items-center gap-3">
         <OrgMark logo={education.logo} name={education.institution} className="rounded-full" />
         <div className="min-w-0">
-          <h3 className="type-item text-zinc-100">
+          <h3 className="text-base leading-snug font-[560] tracking-[-0.01em] text-zinc-100 [font-stretch:104%]">
             <Org name={education.institution} website={education.website} />
           </h3>
-          <p className="text-[0.9375rem] text-zinc-400">
+          <p className="text-sm text-zinc-400">
             {education.degree}
             {education.alias ? ` (${education.alias})` : ""}
           </p>
@@ -212,14 +212,14 @@ export function AwardEntry({ award }: { award: Award }) {
       <div className="flex items-center gap-3">
         <OrgMark logo={award.logo} name={award.institution} />
         <div className="min-w-0">
-          <h3 className="type-item text-zinc-100">{award.title}</h3>
-          <p className="text-[0.9375rem] text-zinc-400">
+          <h3 className="text-base leading-snug font-[560] tracking-[-0.01em] text-zinc-100 [font-stretch:104%]">{award.title}</h3>
+          <p className="text-sm text-zinc-400">
             <Org name={award.institution} website={award.website} />
           </p>
         </div>
       </div>
       {award.description && (
-        <p className="mt-3 text-[0.9375rem] leading-relaxed text-pretty text-zinc-400">{award.description}</p>
+        <p className="mt-2 text-sm leading-relaxed text-pretty text-zinc-400">{award.description}</p>
       )}
       {award.credential_url && <CredentialLink href={award.credential_url} />}
     </Entry>
@@ -228,7 +228,7 @@ export function AwardEntry({ award }: { award: Award }) {
 
 export function CertificationEntry({ certification }: { certification: Certification }) {
   return (
-    <div className="grid grid-cols-1 gap-x-10 gap-y-1 py-5 md:grid-cols-[10rem_1fr]">
+    <div className="grid grid-cols-1 gap-x-8 gap-y-1 py-4 md:grid-cols-[9rem_1fr]">
       <div className="type-meta pt-1 text-zinc-500">{monthYearText(certification.issued)}</div>
       <div className="flex min-w-0 items-start gap-3">
         <OrgMark logo={certification.logo} name={certification.institution} className="h-7 w-7" />
@@ -281,7 +281,7 @@ export function ApplicationEntry({ application }: { application: Application }) 
   ].filter(Boolean) as string[];
 
   return (
-    <div className="py-5">
+    <div className="py-4">
       <Disclosure>
         <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
           <div className="min-w-0">
@@ -342,7 +342,7 @@ export function ApplicationEntry({ application }: { application: Application }) 
         )}
 
         {application.lessons_learned && (
-          <p className="mt-3 font-serif text-[0.9375rem] leading-relaxed text-pretty text-zinc-400">
+          <p className="mt-2 font-serif text-sm leading-relaxed text-pretty text-zinc-400">
             <span className="font-sans text-zinc-200">Lessons learned:</span> {application.lessons_learned}
           </p>
         )}

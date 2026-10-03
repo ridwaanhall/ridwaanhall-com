@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useCallback, useState } from "react";
 
+import { BackToTop } from "@/components/layout/back-to-top";
 import { SearchModalProvider } from "@/components/layout/search-modal";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteMenu } from "@/components/layout/site-menu";
@@ -73,6 +74,7 @@ export function SiteShell({
         </div>
 
         <SiteFooter about={about} />
+        <BackToTop />
       </div>
     </SearchModalProvider>
   );

@@ -23,9 +23,9 @@ type Cell = (
 ) => React.ReactNode;
 
 const CHEVRON_CELL =
-  "page-cell rounded-full text-sm text-zinc-400 transition-colors duration-300 hover:bg-zinc-900 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+  "page-cell rounded-full text-sm text-zinc-400 transition-colors duration-500 hover:bg-zinc-900 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 const NUMBER_CELL =
-  "page-cell rounded-full text-sm tabular-nums text-zinc-400 transition-colors duration-300 hover:bg-zinc-900 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+  "page-cell rounded-full text-sm tabular-nums text-zinc-400 transition-colors duration-500 hover:bg-zinc-900 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 
 /**
  * The bar itself.

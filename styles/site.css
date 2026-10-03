@@ -87,15 +87,19 @@ html.motion-live [data-split] {
     display: inline-block;
 }
 
-/* The outlined button's hover surface, below the label in paint order. */
-.roll-fill {
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: var(--color-zinc-100);
-    transform: scaleY(0);
-    transform-origin: 50% 100%;
-    pointer-events: none;
+/* The index rule that grows in front of a list entry on hover. Zero wide at
+   rest, so the entry sits exactly where a plain link would. */
+.nudge {
+    display: inline-flex;
+    align-items: center;
+}
+
+.nudge-rule {
+    display: inline-block;
+    width: 0;
+    height: 1px;
+    flex-shrink: 0;
+    background: currentColor;
 }
 
 /* An underline drawn as a background stroke, so it follows text that wraps.

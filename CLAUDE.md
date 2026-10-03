@@ -189,18 +189,32 @@ component's layout effect runs only once its own element is hydrated, so each
 of these touches one element at the one safe moment.
 
 Hover and press are the same rule applied to pointing, in
-`components/motion/interactive.tsx`: `RollLabel` (a label whose letters roll,
-plus the outlined button's rising fill and the host's give under the
-pointer), `LineText` (an underline drawn in and out), `ArrowFx` (an arrow that
-travels), `IconFx` and `MediaHover`. Each sits *inside* the link or button it
-animates and listens to that host, touching only what it renders. Two things
-about `RollLabel` are easy to undo: the accessible name is a visually hidden
-copy and both letter rows are `aria-hidden` -- a row of per-letter boxes is
-read, and matched by role queries, as "C o n t a c t" -- and the outlined
-button's text colour belongs to the GSAP gesture, never a `hover:` class, or a
-reader with reduced motion gets dark text with no light surface under it.
-Pills therefore transition named properties, never `transition-all`: the press
-is a GSAP scale on the same element.
+`components/motion/interactive.tsx`, and **each kind of target moves the way
+its function suggests** rather than one gesture everywhere: places you go roll
+their letters (`RollLabel` -- navbar, filled buttons, page numbers), things you
+read draw an underline (`LineText`), lists you pick from nudge like an index
+(`NudgeText` -- footer, About index, legal links), a project's name opens out
+(`SpreadText`), a mono trace that is a link re-scrambles (`ScrambleHover`),
+lists you scan dim everything but the item pointed at (`HoverDim`), icons
+lift (`IconFx`), arrows travel (`ArrowFx`), pictures ease closer
+(`MediaHover`). Every duration is in that file's one table. Each piece sits
+*inside* the link or button it animates and listens to that host, touching
+only what it renders.
+
+**Outlined buttons take none of them.** A bordered control's hover is its fill
+lighting (`hover:bg-zinc-800`) and nothing inside it moves -- no roll, no
+travelling arrow, no lifting icon. Pills transition named properties, never
+`transition-all`, because the press on filled ones is a GSAP scale on the
+same element.
+
+`RollLabel`'s accessible name is a visually hidden copy and both letter rows
+are `aria-hidden` -- a row of per-letter boxes is read, and matched by role
+queries, as "C o n t a c t".
+
+**`ArrowFx` must zero `x`/`y` when it parks its second copy.** The copy is
+parked off-stage by a CSS transform, GSAP reads an existing transform into its
+pixel `x`, and a tween that only moves `xPercent` back to 0 leaves that pixel
+offset in place -- so every arrow vanished on hover and never came back.
 
 **The browser pane renders at about one frame a second**, so GSAP timing seen
 there is meaningless -- an entrance can look stuck for seconds. Judge motion

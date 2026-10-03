@@ -128,8 +128,8 @@ const FADE_MS = 320;
  *
  * Flipping `data-theme` changes the computed colour of nearly every element at
  * once, and each then animates over whatever duration it declares -- `<body>`
- * is duration-200, `#page-content` is duration-700, 148 elements are
- * duration-300. Left alone the page changes in a visible cascade, sidebar
+ * is duration-300, `#page-content` is duration-700, 148 elements are
+ * duration-500. Left alone the page changes in a visible cascade, sidebar
  * first and content column half a second later. The cause is the durations
  * *disagreeing*, not animation as such, so the fix makes everything move in
  * lockstep rather than suppressing motion.

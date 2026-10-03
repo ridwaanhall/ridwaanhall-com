@@ -102,6 +102,6 @@ const LABEL = "type-meta mb-2 block text-zinc-400";
  * one bites into the first and last lines and makes the field look inflated.
  */
 const FIELD =
-  "h-11 w-full rounded-full border border-zinc-500 bg-transparent px-5 text-zinc-100 placeholder-zinc-500 transition-colors duration-300 hover:border-zinc-300 focus:border-zinc-100 focus:outline-none";
+  "h-11 w-full rounded-full border border-zinc-500 bg-transparent px-5 text-zinc-100 placeholder-zinc-500 transition-colors duration-500 hover:border-zinc-300 focus:border-zinc-100 focus:outline-none";
 
 const AREA = "h-auto resize-y rounded-lg px-4 py-3 leading-relaxed";

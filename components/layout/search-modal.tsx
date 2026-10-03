@@ -55,7 +55,7 @@ type SearchEntry = {
   { external: true; href: string } | { external?: false; href: Route }
 );
 
-/** Must match the `duration-300` on the root and the panel. */
+/** Must match the `duration-500` on the root and the panel. */
 const EXIT_MS = 300;
 
 /** No row marked -- the pointer left the list and is not on anything. */
@@ -457,7 +457,7 @@ function SearchModal({
   return (
     <div
       id="search-modal"
-      className={`fixed inset-0 z-50 transition-all duration-300 ease-out ${
+      className={`fixed inset-0 z-50 transition-all duration-500 ease-out ${
         shown ? "backdrop-blur-md" : "backdrop-blur-none pointer-events-none"
       }`}
       role="dialog"
@@ -471,7 +471,7 @@ function SearchModal({
       >
         <div
           id="search-modal-content"
-          className={`relative mx-auto max-w-xl w-full overflow-hidden rounded-3xl bg-zinc-900 transition-all duration-300 ease-out ${
+          className={`relative mx-auto max-w-xl w-full overflow-hidden rounded-3xl bg-zinc-900 transition-all duration-500 ease-out ${
             shown ? "scale-100 opacity-100" : "scale-95 opacity-0"
           }`}
           onClick={(event) => event.stopPropagation()}

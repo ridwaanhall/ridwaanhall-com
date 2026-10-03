@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { AccountMenu } from "@/components/layout/account-menu";
-import { RollLabel } from "@/components/motion/interactive";
+import { NudgeText } from "@/components/motion/interactive";
 import { SignOutButton } from "@/components/sign-out-button";
 import { SkeletonBar } from "@/components/skeleton";
 import { signOutHere } from "@/lib/actions/auth";
@@ -51,7 +51,7 @@ import { getViewer } from "@/lib/auth/viewer";
  * identities and two staff checks to draw one row.
  */
 const PILL =
-  "relative inline-flex h-8 cursor-pointer items-center overflow-hidden rounded-full border border-zinc-500 px-3.5 text-sm text-zinc-100 transition-[color,border-color] duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+  "relative inline-flex h-8 cursor-pointer items-center overflow-hidden rounded-full border border-zinc-500 px-3 text-sm text-zinc-100 transition-[color,background-color,border-color] duration-500 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 
 /**
  * A row of the account menu: full width, because a menu's rows are a list and a
@@ -65,7 +65,7 @@ const MENU_ROW =
  * can see in the source, so building one from a variable would produce no rule
  * at all -- the same reason `status-badges.tsx` spells its three out.
  */
-const HOVER_ACCENT = "hover:border-zinc-300";
+const HOVER_ACCENT = "hover:border-zinc-300 hover:bg-zinc-800";
 const HOVER_ADMIN = "hover:text-zinc-100";
 const HOVER_LEAVE = "hover:text-red-400";
 
@@ -78,9 +78,7 @@ export async function AccountPanel() {
   if (!viewer) {
     return (
       <Link href="/sign-in" className={`${PILL} ${HOVER_ACCENT}`}>
-        <RollLabel fill className="relative">
-          Sign in
-        </RollLabel>
+        Sign in
       </Link>
     );
   }
@@ -106,7 +104,7 @@ export async function AccountPanel() {
       {/* Admin above, and the act that costs something last. */}
       {staff && (
         <Link href="/admin" className={`${MENU_ROW} ${HOVER_ADMIN}`}>
-          <RollLabel>Admin</RollLabel>
+          <NudgeText>Admin</NudgeText>
         </Link>
       )}
 
@@ -140,7 +138,7 @@ export async function AccountPanel() {
 export function AccountPanelSkeleton() {
   return (
     <div aria-hidden="true">
-      <SkeletonBar className="h-8 w-[4.75rem] rounded-full skeleton-pulse" />
+      <SkeletonBar className="h-8 w-[4.375rem] rounded-full skeleton-pulse" />
     </div>
   );
 }

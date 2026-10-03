@@ -5,7 +5,7 @@ import {
   LinkedInIcon,
   SupportIcon,
 } from "@/components/icons/link-icons";
-import { ArrowFx, IconFx, RollLabel } from "@/components/motion/interactive";
+import { ArrowFx, HoverDim, IconFx } from "@/components/motion/interactive";
 import { Reveal, SplitHeading } from "@/components/motion/reveal";
 import type { AboutData } from "@/lib/data/about";
 
@@ -38,27 +38,28 @@ export function SocialLinks({ about }: { about: AboutData }) {
       <p className="mt-3 text-[0.9375rem] text-pretty text-zinc-500">
         Here&rsquo;s where ideas become conversations&mdash;feel free to reach out.
       </p>
-      <ul className="mt-8">
+      {/* Choosing where to write: the other rows step back from the one
+          pointed at, and its mark lifts. */}
+      <HoverDim as="ul" className="mt-8">
         {links.map((link) => (
           <Reveal as="li" key={link.label}>
             <a
+              data-dim-item=""
               href={link.href}
               // `mailto:` opens the mail client in place; the rest are other sites.
               {...(link.href.startsWith("mailto:") ? {} : { target: "_blank", rel: "noopener noreferrer" })}
-              className="flex items-center gap-4 rounded-full py-3.5 text-zinc-400 transition-colors duration-300 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+              className="flex items-center gap-4 rounded-full py-3.5 text-zinc-400 transition-colors duration-500 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
             >
               <IconFx className="h-5 w-5 shrink-0 items-center justify-center [&_svg]:h-5 [&_svg]:w-5">
                 {link.icon}
               </IconFx>
-              <span className="type-item text-zinc-100">
-                <RollLabel press={false}>{link.label}</RollLabel>
-              </span>
+              <span className="type-item text-zinc-100">{link.label}</span>
               <span className="type-meta ml-auto min-w-0 truncate text-zinc-500">{link.detail}</span>
               <ArrowFx direction="up-right" className="h-4 w-4" />
             </a>
           </Reveal>
         ))}
-      </ul>
+      </HoverDim>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { SearchIcon } from "@/components/icons/nav-icons";
-import { RollLabel } from "@/components/motion/interactive";
+import { LineText } from "@/components/motion/interactive";
 import { BUTTON_SECONDARY, ButtonContent } from "@/components/site/ui";
 
 /**
@@ -38,18 +38,18 @@ export function SearchForm({
           onChange={(event) => setValue(event.target.value)}
           placeholder={placeholder}
           aria-label={placeholder}
-          className="h-11 w-full rounded-full border border-zinc-500 bg-transparent pr-4 pl-10 text-sm text-zinc-100 transition-colors duration-300 placeholder:text-zinc-500 hover:border-zinc-300 focus:border-zinc-100 focus:outline-none"
+          className="h-11 w-full rounded-full border border-zinc-500 bg-transparent pr-4 pl-10 text-sm text-zinc-100 transition-colors duration-500 placeholder:text-zinc-500 hover:border-zinc-300 focus:border-zinc-100 focus:outline-none"
         />
       </div>
       <button type="submit" id="searchButton" disabled={!enabled} className={BUTTON_SECONDARY}>
-        <ButtonContent label="Search" fill />
+        <ButtonContent label="Search" outlined />
       </button>
       {query && (
         <Link
           href={basePath as Route}
           className="ml-1 rounded-full text-sm whitespace-nowrap text-zinc-400 transition-colors hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
         >
-          <RollLabel>Clear</RollLabel>
+          <LineText>Clear</LineText>
         </Link>
       )}
     </form>

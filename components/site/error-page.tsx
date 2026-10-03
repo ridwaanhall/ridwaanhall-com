@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { RollLabel } from "@/components/motion/interactive";
+import { NudgeText } from "@/components/motion/interactive";
 import { BUTTON_PRIMARY, BUTTON_SECONDARY, ButtonContent } from "@/components/site/ui";
 import { useCurrentYear } from "@/lib/utils/use-current-year";
 
@@ -70,7 +70,7 @@ export function ErrorPage({
               failure -- offered here it would look like a retry that does
               nothing. */}
           <button type="button" onClick={() => window.history.back()} className={BUTTON_SECONDARY}>
-            <ButtonContent label="Go back" fill />
+            <ButtonContent label="Go back" outlined />
           </button>
         </div>
 
@@ -87,7 +87,7 @@ export function ErrorPage({
                 ] as const
               ).map(([href, label]) => (
                 <Link key={href} href={href} className="rounded-full transition-colors hover:text-zinc-100">
-                  <RollLabel>{label}</RollLabel>
+                  <NudgeText>{label}</NudgeText>
                 </Link>
               ))}
             </nav>

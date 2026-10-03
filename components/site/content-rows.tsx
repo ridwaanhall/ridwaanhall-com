@@ -2,7 +2,7 @@ import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 
 import { HoverPreviewList } from "@/components/motion/hover-preview";
-import { ArrowFx, LineText, MediaHover } from "@/components/motion/interactive";
+import { ArrowFx, HoverDim, LineText, MediaHover, SpreadText } from "@/components/motion/interactive";
 import { Reveal } from "@/components/motion/reveal";
 import type { BlogPost, BlogSummary, Project, ProjectSummary } from "@/lib/data/content";
 import { localIconUrl } from "@/lib/utils/icon-url";
@@ -44,11 +44,12 @@ export function BlogList({
 }) {
   return (
     <HoverPreviewList className={className}>
-      <ul>
+      {/* A list read by scanning: the rows not pointed at step back. */}
+      <HoverDim as="ul">
         {posts.map((post) => (
           <BlogRow key={post.slug} post={post} />
         ))}
-      </ul>
+      </HoverDim>
     </HoverPreviewList>
   );
 }
@@ -60,6 +61,7 @@ export function BlogRow({ post }: { post: BlogPost | BlogSummary }) {
       <Link
         href={`/blog/${post.slug}`}
         data-preview={previewSrc(post.image_url)}
+        data-dim-item=""
         className={cn(
           "group grid grid-cols-1 gap-x-10 gap-y-2 rounded-2xl py-6 md:grid-cols-[9rem_1fr_auto] md:py-7",
           FOCUS,
@@ -177,8 +179,10 @@ export function ProjectTile({
         </MediaHover>
 
         <div className="mt-5 flex items-start justify-between gap-4">
+          {/* A name to look at, not a line to read: it opens out rather than
+              drawing an underline the way a post's title does. */}
           <h3 className="type-item text-zinc-100">
-            <LineText>{project.title}</LineText>
+            <SpreadText>{project.title}</SpreadText>
           </h3>
           <ArrowFx direction="up-right" className="mt-1 h-4 w-4 text-zinc-400" />
         </div>

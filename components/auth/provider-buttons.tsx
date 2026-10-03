@@ -32,7 +32,7 @@ export function ProviderButtons({ redirectTo }: { redirectTo: string }) {
         }}
       >
         <button type="submit" className={PROVIDER_CLASS}>
-          <ButtonContent label="Continue with Google" fill leading={<GoogleMark />} />
+          <ButtonContent label="Continue with Google" outlined leading={<GoogleMark />} />
         </button>
       </form>
       <form
@@ -42,7 +42,7 @@ export function ProviderButtons({ redirectTo }: { redirectTo: string }) {
         }}
       >
         <button type="submit" className={PROVIDER_CLASS}>
-          <ButtonContent label="Continue with GitHub" fill leading={<GitHubMark />} />
+          <ButtonContent label="Continue with GitHub" outlined leading={<GitHubMark />} />
         </button>
       </form>
     </div>

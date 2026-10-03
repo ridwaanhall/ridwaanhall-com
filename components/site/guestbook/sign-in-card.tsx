@@ -58,7 +58,7 @@ function ProviderButton({
       onClick={() => signInWith(provider, "/guestbook")}
       className={BUTTON_SECONDARY}
     >
-      <ButtonContent label={label} fill leading={children} />
+      <ButtonContent label={label} outlined leading={children} />
     </button>
   );
 }

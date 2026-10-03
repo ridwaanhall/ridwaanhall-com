@@ -40,9 +40,9 @@ function flush() {
   gsap.to(batch, {
     opacity: 1,
     y: 0,
-    duration: 0.9,
+    duration: 1.25,
     ease: "power3.out",
-    stagger: 0.07,
+    stagger: 0.1,
     overwrite: true,
   });
 }
@@ -72,7 +72,7 @@ export function Reveal({
       if (!el || !document.documentElement.classList.contains("motion")) return;
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.set(el, { opacity: 0, y: 24 });
+        gsap.set(el, { opacity: 0, y: 28 });
         ScrollTrigger.create({ trigger: el, start: "top 94%", once: true, onEnter: () => enqueue(el) });
       });
       mm.add("(prefers-reduced-motion: reduce)", () => {
@@ -132,9 +132,9 @@ export function SplitHeading({
             gsap.set(el, { visibility: "visible" });
             return gsap.from(self.lines, {
               yPercent: 110,
-              duration: 1.1,
+              duration: 1.45,
               ease: "expo.out",
-              stagger: 0.09,
+              stagger: 0.12,
               delay,
             });
           },

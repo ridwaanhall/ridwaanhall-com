@@ -190,7 +190,7 @@ export function MediaGallery({
 }
 
 const GALLERY_BUTTON =
-  "inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-zinc-400 transition-colors duration-300 hover:bg-zinc-900 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+  "inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-zinc-400 transition-colors duration-500 hover:bg-zinc-900 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 
 function navClass(variant: Variant, direction: "prev" | "next"): string {
   return variant === "blog" ? `blog-slider-nav blog-${direction}` : `project-${direction}`;

@@ -99,7 +99,7 @@ export function AboutTabs({ tabs }: { tabs: AboutTab[] }) {
                   else buttons.current.delete(tab.id);
                 }}
                 onClick={() => select(tab.id)}
-                className={`relative z-10 inline-flex h-9 cursor-pointer items-center rounded-full px-4 whitespace-nowrap transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 ${
+                className={`relative z-10 inline-flex h-9 cursor-pointer items-center rounded-full px-4 whitespace-nowrap transition-colors duration-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 ${
                   selected ? "text-zinc-100" : "text-zinc-500 hover:text-zinc-200"
                 }`}
               >

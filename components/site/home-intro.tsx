@@ -30,7 +30,7 @@ export function HomeIntro({ about, sponsorUrl }: { about: AboutData; sponsorUrl:
         {statuses.length > 0 && (
           <Link
             href="/openhire"
-            className={cn("inline-flex items-center gap-2 rounded-full transition-colors duration-300 hover:text-zinc-100", FOCUS)}
+            className={cn("inline-flex items-center gap-2 rounded-full transition-colors duration-500 hover:text-zinc-100", FOCUS)}
           >
             <StatusDot />
             <RollLabel>{statuses.join(" · ")}</RollLabel>

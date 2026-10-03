@@ -168,7 +168,7 @@ export function AccountMenu({
 
         <AccountChevronIcon
           className={cn(
-            "flex-shrink-0 text-zinc-500 transition-transform duration-200 group-data-[account-slot=bar]/acct:hidden",
+            "flex-shrink-0 text-zinc-500 transition-transform duration-300 group-data-[account-slot=bar]/acct:hidden",
             open && "rotate-180",
           )}
         />

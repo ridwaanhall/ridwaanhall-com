@@ -41,15 +41,15 @@ export function HoverPreviewList({
 
       const mm = gsap.matchMedia();
       mm.add("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)", () => {
-        const xTo = gsap.quickTo(frame, "x", { duration: 0.55, ease: "power3.out" });
-        const yTo = gsap.quickTo(frame, "y", { duration: 0.55, ease: "power3.out" });
+        const xTo = gsap.quickTo(frame, "x", { duration: 0.8, ease: "power3.out" });
+        const yTo = gsap.quickTo(frame, "y", { duration: 0.8, ease: "power3.out" });
         const tilt = gsap.quickTo(frame, "rotation", { duration: 0.6, ease: "power3.out" });
         let lastX = 0;
         let current = "";
 
         const hide = () => {
           current = "";
-          gsap.to(frame, { autoAlpha: 0, scale: 0.92, duration: 0.25, ease: "power2.out" });
+          gsap.to(frame, { autoAlpha: 0, scale: 0.92, duration: 0.4, ease: "power2.out" });
         };
 
         const onMove = (event: PointerEvent) => {
@@ -71,7 +71,7 @@ export function HoverPreviewList({
           }
           current = src;
           img.src = src;
-          gsap.to(frame, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "power3.out" });
+          gsap.to(frame, { autoAlpha: 1, scale: 1, duration: 0.55, ease: "power3.out" });
         };
 
         gsap.set(frame, { scale: 0.92 });

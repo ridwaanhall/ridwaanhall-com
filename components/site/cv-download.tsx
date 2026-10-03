@@ -33,7 +33,7 @@ export function CvDownload() {
         {FORMATS.map((format) => (
           <li key={format.href}>
             <Link href={format.href} className={`${BUTTON_SECONDARY} h-9 px-4`}>
-              <ButtonContent label={format.label} fill arrow="up-right" />
+              <ButtonContent label={format.label} outlined arrow="up-right" />
             </Link>
           </li>
         ))}

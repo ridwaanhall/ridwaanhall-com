@@ -44,7 +44,7 @@ export function ScrambleIn({
           once: true,
           onEnter: () =>
             gsap.to(el, {
-              duration: Math.min(1.4, 0.5 + text.length * 0.035),
+              duration: Math.min(1.9, 0.8 + text.length * 0.045),
               ease: "none",
               scrambleText: { text, chars: "01·:/_-", speed: 0.5, revealDelay: 0.15 },
             }),

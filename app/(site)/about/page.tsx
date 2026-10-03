@@ -86,7 +86,7 @@ export default async function AboutPage() {
             </div>
           </aside>
 
-          <div className="min-w-0 space-y-28">
+          <div className="min-w-0 space-y-20">
             <AboutSection id="intro" title="Intro">
               <Intro about={about} />
             </AboutSection>
@@ -195,7 +195,7 @@ function AboutSection({
 }) {
   return (
     <section id={id} className="scroll-mt-28">
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
           {marker && (
             <Reveal className="mb-3">
@@ -227,7 +227,7 @@ function Intro({ about }: { about: AboutData }) {
   return (
     <div>
       {flags.length > 0 && (
-        <Reveal className="type-meta mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-zinc-400">
+        <Reveal className="type-meta mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-zinc-400">
           {flags.map((flag) => (
             <span key={flag} className="inline-flex items-center gap-2" title={flag === "sick" ? AVAILABILITY.sick.title : undefined}>
               {flag === "sick" ? (

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { RollLabel } from "@/components/motion/interactive";
+import { LineText } from "@/components/motion/interactive";
 import { MessageText } from "@/components/site/guestbook/message-text";
 import { AvatarFallback, PinIcon, RoleBadge } from "@/components/site/guestbook/role-badge";
 import type { PinnedMessage } from "@/lib/data/guestbook-tree";
@@ -77,7 +77,7 @@ export function PinnedCard({
             onClick={() => setExpanded((open) => !open)}
             className="type-meta mt-0.5 cursor-pointer rounded-full text-zinc-400 transition-colors hover:text-zinc-100"
           >
-            <RollLabel>{expanded ? "Show less" : "Read more"}</RollLabel>
+            <LineText>{expanded ? "Show less" : "Read more"}</LineText>
           </button>
         )}
       </div>

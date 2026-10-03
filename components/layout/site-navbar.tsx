@@ -62,7 +62,7 @@ export function SiteNavbar({
     () => {
       const bar = header.current;
       if (!bar) return;
-      const show = gsap.quickTo(bar, "yPercent", { duration: 0.45, ease: "power3.out" });
+      const show = gsap.quickTo(bar, "yPercent", { duration: 0.6, ease: "power3.out" });
       const trigger = ScrollTrigger.create({
         start: 0,
         end: "max",
@@ -111,7 +111,7 @@ export function SiteNavbar({
           x: active.offsetLeft,
           width: active.offsetWidth,
           opacity: 1,
-          duration: animate && !reduce ? 0.5 : 0,
+          duration: animate && !reduce ? 0.8 : 0,
           ease: "expo.out",
         });
       };
@@ -155,7 +155,7 @@ export function SiteNavbar({
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "block rounded-full py-5 text-sm transition-colors duration-300",
+                      "block rounded-full py-5 text-sm transition-colors duration-500",
                       FOCUS,
                       active ? "text-zinc-100" : "text-zinc-400 hover:text-zinc-100",
                     )}

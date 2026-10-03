@@ -13,11 +13,11 @@ import {
 } from "./wakatime-format";
 
 describe("formatTime", () => {
-  it("writes hours and minutes the way the cards read them", () => {
-    assert.equal(formatTime(7384), "2 hours 3 minutes");
-    assert.equal(formatTime(3600), "1 hour");
-    assert.equal(formatTime(2700), "45 minutes");
-    assert.equal(formatTime(60), "1 minute");
+  it("writes hours and minutes the way WakaTime does", () => {
+    assert.equal(formatTime(7384), "2 hrs 3 mins");
+    assert.equal(formatTime(3600), "1 hr");
+    assert.equal(formatTime(2700), "45 mins");
+    assert.equal(formatTime(60), "1 min");
   });
 
   it("drops to seconds only below a minute, so a card is never blank", () => {

@@ -40,7 +40,7 @@ export const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 foc
  * transition on `transform` would drag behind it.
  */
 const BUTTON = cn(
-  "relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full px-5 text-sm font-medium transition-[color,background-color,border-color] duration-300 disabled:cursor-not-allowed disabled:opacity-50",
+  "relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full px-5 text-sm font-medium transition-[color,background-color,border-color] duration-500 ease-out disabled:cursor-not-allowed disabled:opacity-50",
   FOCUS,
 );
 
@@ -49,12 +49,19 @@ export const BUTTON_PRIMARY = cn(BUTTON, "bg-zinc-100 text-black hover:bg-zinc-3
 /**
  * zinc-500 is the lightest step that clears three to one against the canvas
  * in both themes; the step below it reads as a smudge in light mode.
+ *
+ * Its hover is the surface, not the words: the fill comes up a step and the
+ * edge brightens, and the label stays still. A button with an outline already
+ * says "press here" by its shape, so lighting it is the whole of the answer.
  */
-export const BUTTON_SECONDARY = cn(BUTTON, "border border-zinc-500 text-zinc-100 hover:border-zinc-300");
+export const BUTTON_SECONDARY = cn(
+  BUTTON,
+  "border border-zinc-500 text-zinc-100 hover:border-zinc-300 hover:bg-zinc-800 active:bg-zinc-700",
+);
 
 /** A round icon-only control: search, theme, menu, share, pagination arrows. */
 export const ICON_BUTTON = cn(
-  "relative inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-zinc-400 transition-[color,background-color] duration-300 hover:bg-zinc-900 hover:text-zinc-100",
+  "relative inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-zinc-400 transition-[color,background-color] duration-500 ease-out hover:bg-zinc-900 hover:text-zinc-100",
   FOCUS,
 );
 
@@ -64,8 +71,8 @@ export const TEXT_LINK = cn("rounded-full text-zinc-100", FOCUS);
 type ArrowDirection = "right" | "left" | "up" | "up-right" | "down";
 
 /**
- * A button that goes somewhere. The label rolls on hover; the outlined
- * variant also fills; an optional arrow travels.
+ * A button that goes somewhere. A filled button's label rolls on hover; an
+ * outlined one lights its surface instead; an optional arrow travels.
  */
 export function ButtonLink({
   href,
@@ -85,7 +92,7 @@ export function ButtonLink({
 }) {
   const external = /^(https?:|mailto:)/.test(href);
   const classes = cn(variant === "primary" ? BUTTON_PRIMARY : BUTTON_SECONDARY, className);
-  const content = <ButtonContent label={children} fill={variant === "secondary"} arrow={arrow} leading={leading} />;
+  const content = <ButtonContent label={children} outlined={variant === "secondary"} arrow={arrow} leading={leading} />;
 
   return external ? (
     <a href={href} target={href.startsWith("mailto:") ? undefined : "_blank"} rel="noopener noreferrer" className={classes}>
@@ -101,22 +108,60 @@ export function ButtonLink({
 /** The inside of any pill button, for the places that render a `<button>`. */
 export function ButtonContent({
   label,
-  fill = false,
+  outlined = false,
   arrow,
   leading,
 }: {
   label: string;
-  fill?: boolean;
+  /** An outlined button: the label stays still, and the hover is its fill. */
+  outlined?: boolean;
   arrow?: ArrowDirection;
   leading?: React.ReactNode;
 }) {
   return (
     <>
-      <RollLabel fill={fill} leading={leading} className="relative">
-        {label}
-      </RollLabel>
-      {arrow && <ArrowFx direction={arrow} className="relative h-3.5 w-3.5" />}
+      {outlined ? (
+        <>
+          {leading && <span className="inline-flex">{leading}</span>}
+          <span>{label}</span>
+        </>
+      ) : (
+        <RollLabel leading={leading} className="relative">
+          {label}
+        </RollLabel>
+      )}
+      {arrow &&
+        (outlined ? (
+          <StillArrow direction={arrow} />
+        ) : (
+          <ArrowFx direction={arrow} className="relative h-3.5 w-3.5" />
+        ))}
     </>
+  );
+}
+
+/** The arrow an outlined button carries: drawn, but it does not travel. */
+function StillArrow({ direction }: { direction: ArrowDirection }) {
+  const path: Record<ArrowDirection, string> = {
+    right: "M5 12h14M13 6l6 6-6 6",
+    left: "M19 12H5M11 6l-6 6 6 6",
+    up: "M12 19V5M6 11l6-6 6 6",
+    "up-right": "M7 17 17 7M8 7h9v9",
+    down: "M12 5v14M6 13l6 6 6-6",
+  };
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="h-3.5 w-3.5"
+    >
+      <path d={path[direction]} />
+    </svg>
   );
 }
 
@@ -219,7 +264,7 @@ export function ArrowLink({
     </>
   );
   const classes = cn(
-    "inline-flex shrink-0 items-center gap-1.5 rounded-full text-sm text-zinc-400 transition-colors duration-300 hover:text-zinc-100",
+    "inline-flex shrink-0 items-center gap-1.5 rounded-full text-sm text-zinc-400 transition-colors duration-500 hover:text-zinc-100",
     FOCUS,
     className,
   );
@@ -240,7 +285,7 @@ export function BackLink({ href, children }: { href: Route; children: string }) 
     <Link
       href={href}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full text-sm text-zinc-500 transition-colors duration-300 hover:text-zinc-100",
+        "inline-flex items-center gap-1.5 rounded-full text-sm text-zinc-500 transition-colors duration-500 hover:text-zinc-100",
         FOCUS,
       )}
     >

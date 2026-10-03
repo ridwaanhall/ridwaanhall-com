@@ -207,14 +207,14 @@ export function GuestbookPanel({
             onClick={() => setPinnedOpen((open) => !open)}
             aria-expanded={pinnedOpen}
             aria-controls="guestbook-pinned"
-            className="inline-flex h-8 items-center gap-1.5 rounded-full border border-zinc-500 px-3 text-xs font-medium text-zinc-200 transition-colors duration-300 hover:border-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+            className="inline-flex h-8 items-center gap-1.5 rounded-full border border-zinc-500 px-3 text-xs font-medium text-zinc-200 transition-[color,background-color,border-color] duration-500 ease-out hover:border-zinc-300 hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
           >
             <PinIcon className="h-3.5 w-3.5" filled />
             <span>
               Pinned {thread.pinned.length}/{MAX_PINNED}
             </span>
             <svg
-              className={`h-3 w-3 transition-transform duration-200 ${pinnedOpen ? "rotate-180" : ""}`}
+              className={`h-3 w-3 transition-transform duration-300 ${pinnedOpen ? "rotate-180" : ""}`}
               fill="none"
               stroke="currentColor"
               strokeWidth={2}

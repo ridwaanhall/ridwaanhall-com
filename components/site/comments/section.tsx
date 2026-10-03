@@ -107,7 +107,7 @@ export function Comments({
                 <button
                   type="button"
                   onClick={() => setReplyTo(null)}
-                  className="ml-2 flex-shrink-0 cursor-pointer rounded-full p-1.5 text-zinc-500 transition-colors duration-300 hover:bg-zinc-800 hover:text-zinc-200"
+                  className="ml-2 flex-shrink-0 cursor-pointer rounded-full p-1.5 text-zinc-500 transition-colors duration-500 hover:bg-zinc-800 hover:text-zinc-200"
                   title="Cancel reply"
                   aria-label="Cancel reply"
                 >
@@ -128,7 +128,7 @@ export function Comments({
               placeholder="Share your thoughts…"
               required
               aria-label="Comment"
-              className="w-full resize-y rounded-lg border border-zinc-500 bg-transparent px-4 py-3 font-serif leading-relaxed text-zinc-100 placeholder-zinc-500 transition-colors duration-300 hover:border-zinc-300 focus:border-zinc-100 focus:outline-none"
+              className="w-full resize-y rounded-lg border border-zinc-500 bg-transparent px-4 py-3 font-serif leading-relaxed text-zinc-100 placeholder-zinc-500 transition-colors duration-500 hover:border-zinc-300 focus:border-zinc-100 focus:outline-none"
             />
 
             {/* The hint and the button keep the row they were in; only their
@@ -233,7 +233,7 @@ function SignOutButton() {
           await signOutHere(window.location.pathname);
         }
       }}
-      className="cursor-pointer rounded-full text-zinc-300 transition-colors duration-300 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+      className="cursor-pointer rounded-full text-zinc-300 transition-colors duration-500 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
     >
       <LineText>Sign out</LineText>
     </button>
@@ -300,7 +300,7 @@ function ProviderButton({
       onClick={() => signInWith(provider, window.location.pathname)}
       className={BUTTON_SECONDARY}
     >
-      <ButtonContent label={label} fill leading={children} />
+      <ButtonContent label={label} outlined leading={children} />
     </button>
   );
 }

@@ -29,7 +29,7 @@
        step that clears three to one against the canvas. The transition names
        its properties: the press is a GSAP scale on this element. */
     .icon-btn {
-        @apply flex items-center justify-center w-9 h-9 rounded-full border border-zinc-500 text-zinc-300 hover:border-zinc-300 hover:bg-zinc-900 hover:text-zinc-100 transition-[color,background-color,border-color] duration-300;
+        @apply flex items-center justify-center w-9 h-9 rounded-full border border-zinc-500 text-zinc-300 hover:border-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 transition-[color,background-color,border-color] duration-500 ease-out;
     }
 
     /* Status/count pill shape (sidebar, about intro, home hero, "Current"/

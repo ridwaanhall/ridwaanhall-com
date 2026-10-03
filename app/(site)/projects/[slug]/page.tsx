@@ -245,7 +245,7 @@ function ActionButtons({ project }: { project: Project }) {
           className={project.demo_url ? BUTTON_SECONDARY : BUTTON_PRIMARY}
           aria-label="View source"
         >
-          <ButtonContent label="Source" fill={Boolean(project.demo_url)} leading={<GitHubMark />} />
+          <ButtonContent label="Source" outlined={Boolean(project.demo_url)} leading={<GitHubMark />} />
         </a>
       )}
     </Reveal>

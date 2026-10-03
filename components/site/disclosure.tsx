@@ -4,8 +4,6 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { createContext, useContext, useId, useRef, useState } from "react";
 
-import { ArrowFx, RollLabel } from "@/components/motion/interactive";
-
 gsap.registerPlugin(useGSAP);
 
 /**
@@ -71,12 +69,12 @@ export function Disclosure({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * The toggle: a rounded-full outlined control like every other button here,
- * with a label that rolls and a chevron that turns over as the panel opens.
+ * The toggle: a rounded-full outlined control like every other outlined button
+ * here, so its hover is its fill lighting, and an arrow that turns over as the
+ * panel opens.
  *
- * "Show more" / "Show less" are the same length on purpose -- the label rolls
- * letter by letter, and two words of equal width keep the button from jumping
- * when one replaces the other.
+ * "Show more" / "Show less" are the same length on purpose: two words of equal
+ * width keep the button from jumping when one replaces the other.
  */
 export function DisclosureButton({
   label = "Show more",
@@ -94,18 +92,25 @@ export function DisclosureButton({
       type="button"
       className={
         className ??
-        "group relative inline-flex h-8 shrink-0 cursor-pointer items-center gap-1.5 overflow-hidden rounded-full border border-zinc-500 px-3.5 text-xs font-medium text-zinc-200 transition-colors duration-300 hover:border-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        "group relative inline-flex h-8 shrink-0 cursor-pointer items-center gap-1.5 overflow-hidden rounded-full border border-zinc-500 px-3.5 text-xs font-medium text-zinc-200 transition-[color,background-color,border-color] duration-500 ease-out hover:border-zinc-300 hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
       }
       onClick={toggle}
       aria-expanded={open}
       aria-controls={panelId}
     >
-      <RollLabel fill className="relative">
-        {open ? openLabel : label}
-      </RollLabel>
-      <span className={`relative h-3 w-3 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${open ? "rotate-180" : ""}`}>
-        <ArrowFx direction="down" className="h-3 w-3" />
-      </span>
+      <span>{open ? openLabel : label}</span>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.75}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+        className={`h-3 w-3 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${open ? "rotate-180" : ""}`}
+      >
+        <path d="M12 5v14M6 13l6 6 6-6" />
+      </svg>
     </button>
   );
 }
@@ -155,17 +160,17 @@ export function DisclosurePanel({
         gsap.fromTo(
           el,
           { height: el.offsetHeight },
-          { height: "auto", duration: reduce ? 0 : 0.7, ease: "expo.out", overwrite: true },
+          { height: "auto", duration: reduce ? 0 : 0.95, ease: "expo.out", overwrite: true },
         );
         if (!reduce && rows.length > 0) {
           gsap.fromTo(
             rows,
             { opacity: 0, y: 10 },
-            { opacity: 1, y: 0, duration: 0.6, ease: "power3.out", stagger: 0.045, delay: 0.08, overwrite: true },
+            { opacity: 1, y: 0, duration: 0.85, ease: "power3.out", stagger: 0.06, delay: 0.1, overwrite: true },
           );
         }
       } else {
-        gsap.to(el, { height: 0, duration: reduce ? 0 : 0.5, ease: "expo.out", overwrite: true });
+        gsap.to(el, { height: 0, duration: reduce ? 0 : 0.7, ease: "expo.out", overwrite: true });
       }
     },
     { dependencies: [open] },

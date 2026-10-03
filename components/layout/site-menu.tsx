@@ -10,7 +10,7 @@ import type { AboutData } from "@/lib/data/about";
 import { isActive, visibleNavItems } from "@/lib/nav";
 import { cn } from "@/lib/utils/cn";
 
-import { IconFx, RollLabel } from "@/components/motion/interactive";
+import { HoverDim, IconFx, NudgeText } from "@/components/motion/interactive";
 import { CONTAINER, FOCUS, ICON_BUTTON } from "@/components/site/ui";
 
 gsap.registerPlugin(useGSAP);
@@ -66,12 +66,12 @@ export function SiteMenu({
           .fromTo(
             el,
             { clipPath: "inset(0% 0% 100% 0%)" },
-            { clipPath: "inset(0% 0% 0% 0%)", duration: reduce ? 0 : 0.6, ease: "expo.inOut" },
+            { clipPath: "inset(0% 0% 0% 0%)", duration: reduce ? 0 : 0.85, ease: "expo.inOut" },
           )
           .fromTo(
             links,
             { yPercent: reduce ? 0 : 110 },
-            { yPercent: 0, duration: reduce ? 0 : 0.8, ease: "expo.out", stagger: 0.05 },
+            { yPercent: 0, duration: reduce ? 0 : 1.05, ease: "expo.out", stagger: 0.07 },
             reduce ? 0 : "-=0.25",
           )
           .fromTo(rest, { opacity: 0 }, { opacity: 1, duration: reduce ? 0 : 0.5 }, "<0.2");
@@ -79,7 +79,7 @@ export function SiteMenu({
       } else {
         gsap.to(el, {
           clipPath: "inset(0% 0% 100% 0%)",
-          duration: reduce ? 0 : 0.45,
+          duration: reduce ? 0 : 0.65,
           ease: "expo.inOut",
           onComplete: () => setMounted(false),
         });
@@ -135,7 +135,7 @@ export function SiteMenu({
       </div>
 
       <nav aria-label="Main" className={cn(CONTAINER, "flex-1 pt-6")}>
-        <ul className="flex flex-col">
+        <HoverDim as="ul" className="flex flex-col">
           {items.map((item) => {
             const active = isActive(item, pathname);
             return (
@@ -143,9 +143,10 @@ export function SiteMenu({
                 <Link
                   href={item.href}
                   data-menu-link
+                  data-dim-item=""
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "type-title flex items-baseline justify-between rounded-2xl py-2 transition-colors duration-300",
+                    "type-title flex items-baseline justify-between rounded-2xl py-2 transition-colors duration-500",
                     FOCUS,
                     active ? "text-zinc-100" : "text-zinc-500 hover:text-zinc-100",
                   )}
@@ -156,7 +157,7 @@ export function SiteMenu({
               </li>
             );
           })}
-        </ul>
+        </HoverDim>
       </nav>
 
       <div data-menu-fade className={cn(CONTAINER, "shrink-0 space-y-6 pt-10 pb-8")}>
@@ -165,14 +166,14 @@ export function SiteMenu({
         </div>
         <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-zinc-500">
           <Link href="/privacy-policy" className={cn("rounded-full transition-colors hover:text-zinc-200", FOCUS)}>
-            <RollLabel>Privacy</RollLabel>
+            <NudgeText>Privacy</NudgeText>
           </Link>
           <Link href="/terms" className={cn("rounded-full transition-colors hover:text-zinc-200", FOCUS)}>
-            <RollLabel>Terms</RollLabel>
+            <NudgeText>Terms</NudgeText>
           </Link>
           {(about.is_open_to_work || about.is_hiring) && (
             <Link href="/openhire" className={cn("rounded-full transition-colors hover:text-zinc-200", FOCUS)}>
-              <RollLabel>OpenHire</RollLabel>
+              <NudgeText>OpenHire</NudgeText>
             </Link>
           )}
         </div>

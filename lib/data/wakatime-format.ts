@@ -27,14 +27,22 @@ export function daysAgo(isoDate: string, days: number): string {
   return date.toISOString().slice(0, 10);
 }
 
-/** "2 hours 5 minutes", "45 minutes", "30 secs", "0 mins". */
+/**
+ * "2 hrs 5 mins", "45 mins", "1 hr", "30 secs", "0 mins".
+ *
+ * WakaTime's own wording, abbreviations and all. Several figures on the
+ * dashboard are WakaTime's `human_readable_*` strings passed straight through
+ * ("27 hrs 31 mins"), and the rest are computed here; written out in full they
+ * sat beside each other as "1 hour 52 minutes" and "935 hrs 29 mins", two
+ * spellings of one unit on one page.
+ */
 export function formatTime(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "0 mins";
 
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
-  const hourStr = hours > 0 ? `${hours} ${hours === 1 ? "hour" : "hours"}` : "";
-  const minuteStr = minutes > 0 ? `${minutes} ${minutes === 1 ? "minute" : "minutes"}` : "";
+  const hourStr = hours > 0 ? `${hours} ${hours === 1 ? "hr" : "hrs"}` : "";
+  const minuteStr = minutes > 0 ? `${minutes} ${minutes === 1 ? "min" : "mins"}` : "";
 
   if (hours > 0 && minutes > 0) return `${hourStr} ${minuteStr}`;
   if (hours > 0) return hourStr;

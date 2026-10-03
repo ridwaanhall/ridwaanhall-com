@@ -1,6 +1,6 @@
 "use client";
 
-import { RollLabel } from "@/components/motion/interactive";
+import { IconFx } from "@/components/motion/interactive";
 import type { CommentNode } from "@/lib/data/comment-shapes";
 
 /**
@@ -116,10 +116,12 @@ export function Comment({
                 <button
                   type="button"
                   onClick={() => onReply(comment)}
-                  className="inline-flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-1 text-zinc-500 transition-colors duration-300 hover:bg-zinc-900 hover:text-zinc-100"
+                  className="inline-flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-1 text-zinc-500 transition-colors duration-500 hover:bg-zinc-900 hover:text-zinc-100"
                 >
-                  <ReplyIcon className="w-3.5 h-3.5" />
-                  <RollLabel>Reply</RollLabel>
+                  <IconFx>
+                    <ReplyIcon className="w-3.5 h-3.5" />
+                  </IconFx>
+                  Reply
                 </button>
               )}
 
@@ -128,10 +130,12 @@ export function Comment({
                   type="button"
                   onClick={() => onDelete(comment)}
                   disabled={busy}
-                  className="inline-flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-1 text-zinc-500 transition-colors duration-300 hover:bg-red-950/40 hover:text-red-300 disabled:opacity-50"
+                  className="inline-flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-1 text-zinc-500 transition-colors duration-500 hover:bg-red-950/40 hover:text-red-300 disabled:opacity-50"
                 >
-                  <TrashIcon className="w-3.5 h-3.5" />
-                  <RollLabel>Delete</RollLabel>
+                  <IconFx>
+                    <TrashIcon className="w-3.5 h-3.5" />
+                  </IconFx>
+                  Delete
                 </button>
               )}
             </div>

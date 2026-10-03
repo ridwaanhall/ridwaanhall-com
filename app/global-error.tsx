@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { ErrorPage } from "@/components/site/error-page";
 
-import { onest } from "./fonts";
+import { familjen, jetbrains, newsreader, onest } from "./fonts";
 
 import "./globals.css";
 
@@ -41,12 +41,12 @@ export default function GlobalError({ error }: { error: Error & { digest?: strin
   }, [error]);
 
   return (
-    <html lang="en" className={onest.variable}>
-      <body className="bg-black text-zinc-300">
-        <title>Something Went Wrong &middot; Ridwan Halim</title>
+    <html lang="en" className={`${onest.variable} ${familjen.variable} ${newsreader.variable} ${jetbrains.variable}`}>
+      <body>
+        <title>Something broke &middot; Ridwan Halim</title>
         <ErrorPage
           code={500}
-          title="Something Went Wrong"
+          title="Something broke."
           message="The page could not be rendered at all. It has been logged; please try again in a moment."
         />
       </body>

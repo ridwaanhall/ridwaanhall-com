@@ -39,7 +39,30 @@ function links(about: AboutData): (Pick<NavItem, "label" | "href" | "matchNested
  * moved, so at the top of a page the bar is part of the paper.
  */
 export function Navbar({ about, account }: { about: AboutData; account: React.ReactNode }) {
-  const pathname = usePathname();
+  return <NavbarAt about={about} account={account} pathname={usePathname()} />;
+}
+
+/**
+ * The bar before the pathname is known.
+ *
+ * Under Cache Components `usePathname` suspends while prerendering a route
+ * whose params were not listed in advance -- a 404 for an unknown slug is
+ * one -- so the shell renders the bar inside `<Suspense>` with this as the
+ * fallback: the same bar, with no link marked current.
+ */
+export function NavbarFallback({ about, account }: { about: AboutData; account: React.ReactNode }) {
+  return <NavbarAt about={about} account={account} pathname="" />;
+}
+
+function NavbarAt({
+  about,
+  account,
+  pathname,
+}: {
+  about: AboutData;
+  account: React.ReactNode;
+  pathname: string;
+}) {
   const palette = usePalette();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);

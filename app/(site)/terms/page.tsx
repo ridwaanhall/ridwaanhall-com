@@ -7,7 +7,7 @@ import { legalDocumentSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { legalDocumentSchemas } from "@/lib/seo/schemas-for-page";
 import { JsonLdScript } from "@/components/seo/json-ld";
-import { LegalDocumentPage } from "@/components/site/legal-document";
+import { LegalDocumentPage } from "@/components/foothill/legal";
 
 /**
  * Terms keeps its own `/terms/` path rather than living under `/legal/`.

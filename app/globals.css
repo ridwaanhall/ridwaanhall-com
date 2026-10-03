@@ -50,7 +50,7 @@
 @import "../styles/theme-motion.css";
 @import "../styles/components.css";
 @import "../styles/animations.css";
-/* The public site. Last, so its tokens and scoped rules settle any tie with
+/* The public site. Last, so its tokens and its scoped rules settle any tie with
    the shared sheets above. Every rule in it is anchored to the site shell. */
 @import "../styles/site.css";
 

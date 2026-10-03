@@ -22,7 +22,14 @@ import { signInWith } from "@/lib/actions/auth";
 const PROVIDER_CLASS =
   "flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-zinc-700 px-4 py-2 text-sm text-zinc-200 transition-colors hover:border-zinc-600 hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 
-export function ProviderButtons({ redirectTo }: { redirectTo: string }) {
+export function ProviderButtons({
+  redirectTo,
+  buttonClassName = PROVIDER_CLASS,
+}: {
+  redirectTo: string;
+  /** The public site draws these in its own palette; the admin keeps the default. */
+  buttonClassName?: string;
+}) {
   return (
     <div className="space-y-2">
       <form
@@ -31,7 +38,7 @@ export function ProviderButtons({ redirectTo }: { redirectTo: string }) {
           await signInWith("google", redirectTo);
         }}
       >
-        <button type="submit" className={PROVIDER_CLASS}>
+        <button type="submit" className={buttonClassName}>
           <GoogleMark />
           Continue with Google
         </button>
@@ -42,7 +49,7 @@ export function ProviderButtons({ redirectTo }: { redirectTo: string }) {
           await signInWith("github", redirectTo);
         }}
       >
-        <button type="submit" className={PROVIDER_CLASS}>
+        <button type="submit" className={buttonClassName}>
           <GitHubMark />
           Continue with GitHub
         </button>

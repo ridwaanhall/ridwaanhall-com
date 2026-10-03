@@ -467,3 +467,19 @@ body:has(.fh-site) {
   --fh-heat-3: #2a9677;
   --fh-heat-4: #5cc7a4;
 }
+
+/* ---------------------------------------------------------------------------
+   The error page inside the site shell
+
+   `ErrorPage` brings its own bar for the routes no layout wraps; a missing
+   post renders it inside the site shell, which already has one.
+   --------------------------------------------------------------------------- */
+
+.fh-site .fh-error {
+  min-height: 70vh;
+  padding-top: 4rem;
+}
+
+.fh-site .fh-error .fh-error-chrome {
+  display: none;
+}

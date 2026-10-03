@@ -29,13 +29,13 @@ export function LegalDocumentPage({
           the split and are left alone. */}
       <PageHeader title={`${document.title_lead} ${document.title_accent}`} lead={document.summary || undefined}>
         {document.last_updated && (
-          <Reveal as="p" className="mt-6 text-sm text-zinc-500">
+          <Reveal as="p" className="type-meta mt-7 text-zinc-500">
             Last updated {longDate(document.last_updated)}
           </Reveal>
         )}
       </PageHeader>
 
-      <div className="max-w-3xl border-t border-zinc-800 pb-8">
+      <div className="max-w-3xl pb-8">
         {document.sections.length > 0 ? (
           document.sections.map((section) => <Section key={section.heading} section={section} />)
         ) : (
@@ -43,9 +43,9 @@ export function LegalDocumentPage({
         )}
 
         {others.length > 0 && (
-          <section className="border-t border-zinc-800 py-10">
-            <h2 className="mb-4 text-sm text-zinc-500">Related documents</h2>
-            <ul className="space-y-2">
+          <section className="pt-14 pb-10">
+            <h2 className="type-meta mb-5 text-zinc-500">Related documents</h2>
+            <ul className="space-y-3">
               {others.map((other) => (
                 <li key={other.slug}>
                   <ArrowLink href={other.url as Route} className="text-base text-zinc-200">
@@ -63,16 +63,16 @@ export function LegalDocumentPage({
 
 function Section({ section }: { section: LegalSection }) {
   return (
-    <Reveal as="section" className="border-t border-zinc-800 py-10 first:border-t-0">
-      <h2 className="text-xl font-medium tracking-tight text-zinc-100 sm:text-2xl">{section.heading}</h2>
-      <div className="mt-4 space-y-4 text-zinc-300">
+    <Reveal as="section" className="py-10">
+      <h2 className="type-section text-zinc-100">{section.heading}</h2>
+      <div className="mt-5 space-y-4 text-zinc-300">
         <Body body={section.body} />
         <DefinitionList items={section.items} />
       </div>
 
       {(section.children ?? []).map((child) => (
         <div key={child.heading} className="mt-8 space-y-3">
-          <h3 className="text-lg font-medium text-zinc-100">{child.heading}</h3>
+          <h3 className="type-item text-zinc-100">{child.heading}</h3>
           <div className="space-y-4 text-zinc-300">
             <Body body={child.body} />
             <DefinitionList items={child.items} />
@@ -87,7 +87,7 @@ function Body({ body }: { body: string }) {
   if (!body) return null;
   return (
     <p
-      className="leading-relaxed whitespace-pre-line text-base sm:text-[17px]"
+      className="font-serif text-[1.0625rem] leading-[1.7] whitespace-pre-line text-pretty sm:text-lg"
       dangerouslySetInnerHTML={{ __html: sanitizeRichText(body) }}
     />
   );
@@ -108,7 +108,7 @@ function DefinitionList({ items }: { items: Record<string, unknown>; spaced?: bo
     return (
       <ul className="space-y-2">
         {items.map((item, index) => (
-          <li key={index} className="relative pl-4 text-sm leading-relaxed text-zinc-300">
+          <li key={index} className="relative pl-4 font-serif text-base leading-relaxed text-zinc-300">
             <span aria-hidden="true" className="absolute top-[0.7em] left-0 h-px w-2 bg-zinc-600" />
             <span dangerouslySetInnerHTML={{ __html: sanitizeRichText(String(item ?? "")) }} />
           </li>
@@ -121,10 +121,10 @@ function DefinitionList({ items }: { items: Record<string, unknown>; spaced?: bo
   if (entries.length === 0) return null;
 
   return (
-    <dl className="divide-y divide-zinc-900 border-y border-zinc-900">
+    <dl>
       {entries.map(([term, description]) => (
         <div key={term} className="grid gap-1 py-3 sm:grid-cols-[12rem_1fr] sm:gap-6">
-          <dt className="text-sm text-zinc-100">{term}</dt>
+          <dt className="text-sm font-[560] text-zinc-100">{term}</dt>
           <dd
             className="text-sm leading-relaxed text-zinc-400"
             dangerouslySetInnerHTML={{ __html: sanitizeRichText(String(description ?? "")) }}

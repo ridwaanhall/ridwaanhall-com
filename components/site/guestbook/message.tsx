@@ -1,5 +1,6 @@
 "use client";
 
+import { IconFx } from "@/components/motion/interactive";
 import { MessageText } from "@/components/site/guestbook/message-text";
 import {
   AvatarFallback,
@@ -101,7 +102,7 @@ export function Message({
             entire flat list used to be.
           */}
           {message.showReplyTo && message.replyTo && (
-            <div className="flex items-center gap-1 text-xs text-zinc-500">
+            <div className="type-meta flex items-center gap-1 text-zinc-500">
               <ReplyIcon className="w-3 h-3 flex-shrink-0" />
               <span className="truncate">
                 <ReplyCaption message={message} viewer={viewer} mine={mine} />{" "}
@@ -111,24 +112,21 @@ export function Message({
           )}
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-medium text-zinc-200">{message.fullName}</span>
+            <span className="text-sm font-[560] text-zinc-100">{message.fullName}</span>
             <RoleBadge role={message.role} />
             {message.isPinned && (
-              <span
-                className="flex items-center gap-0.5 rounded-full border border-zinc-700 px-1.5 py-0.5 text-zinc-300"
-                title="Pinned message"
-              >
+              <span className="flex items-center gap-0.5 rounded-full bg-zinc-800 px-1.5 py-0.5 text-zinc-300" title="Pinned message">
                 <PinIcon className="w-2.5 h-2.5" filled />
-                <span className="text-[9px]">Pinned</span>
+                <span className="font-mono text-[9px]">Pinned</span>
               </span>
             )}
-            <time dateTime={message.timestamp} className="text-xs text-zinc-500">
+            <time dateTime={message.timestamp} className="type-meta text-zinc-500">
               {formatTimestamp(message.timestamp)}
             </time>
           </div>
 
           <div className="flex items-start gap-2">
-            <p className="w-fit min-w-0 rounded-xl rounded-tl-none bg-zinc-900 px-3.5 py-2 break-words text-zinc-200 group-hover/msg:bg-zinc-800 transition-colors">
+            <p className="w-fit min-w-0 rounded-2xl rounded-tl-md bg-zinc-900 px-4 py-2.5 font-serif text-[0.9375rem] leading-relaxed break-words text-zinc-200 transition-colors group-hover/msg:bg-zinc-800">
               <MessageText text={message.message} />
             </p>
 
@@ -144,10 +142,12 @@ export function Message({
               <button
                 type="button"
                 onClick={() => actions.onReply(message)}
-                className="p-1.5 rounded-lg hover:bg-zinc-800 transition-colors"
+                className="rounded-full p-1.5 transition-colors hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
                 title={signedIn ? "Reply to this message" : "Sign in to reply"}
               >
-                <ReplyIcon className="w-4 h-4 text-zinc-400 hover:text-zinc-200 transition-colors" />
+                <IconFx>
+                  <ReplyIcon className="w-4 h-4 text-zinc-400 hover:text-zinc-200 transition-colors" />
+                </IconFx>
               </button>
 
               {viewer.canPin && (
@@ -155,15 +155,17 @@ export function Message({
                   type="button"
                   onClick={() => actions.onPin(message)}
                   disabled={busy}
-                  className="p-1.5 rounded-lg hover:bg-zinc-800 transition-colors disabled:opacity-50"
+                  className="rounded-full p-1.5 transition-colors hover:bg-zinc-800 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
                   title={message.isPinned ? "Unpin this message" : "Pin this message"}
                 >
-                  <PinIcon
-                    className={`w-4 h-4 transition-colors ${
-                      message.isPinned ? "text-zinc-100" : "text-zinc-400 hover:text-zinc-100"
-                    }`}
-                    filled={message.isPinned}
-                  />
+                  <IconFx>
+                    <PinIcon
+                      className={`w-4 h-4 transition-colors ${
+                        message.isPinned ? "text-zinc-100" : "text-zinc-400 hover:text-zinc-100"
+                      }`}
+                      filled={message.isPinned}
+                    />
+                  </IconFx>
                 </button>
               )}
 
@@ -172,7 +174,7 @@ export function Message({
                   type="button"
                   onClick={() => actions.onDelete(message)}
                   disabled={busy}
-                  className="p-1.5 rounded-lg hover:bg-red-900/30 transition-colors disabled:opacity-50"
+                  className="rounded-full p-1.5 transition-colors hover:bg-red-900/30 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
                   title="Delete this message"
                 >
                   <svg

@@ -1,6 +1,7 @@
 "use client";
 
 import { useConfirm } from "@/components/providers/confirm-dialog";
+import { RollLabel } from "@/components/motion/interactive";
 
 /**
  * Sign out, confirmed through the shared dialog.
@@ -50,7 +51,7 @@ export function SignOutButton({
       }}
       className={className}
     >
-      Sign out
+      <RollLabel>Sign out</RollLabel>
     </button>
   );
 }

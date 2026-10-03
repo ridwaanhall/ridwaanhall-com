@@ -107,7 +107,7 @@ function ResultCount({
   noun: string;
 }) {
   return (
-    <p className="text-sm text-zinc-500" aria-live="polite">
+    <p className="type-meta text-zinc-500" aria-live="polite">
       {query ? (
         <>
           Showing results for <span className="text-zinc-100">&quot;{query}&quot;</span> ({count} found)
@@ -123,9 +123,9 @@ function ResultCount({
 
 function EmptyState({ noun }: { noun: string }) {
   return (
-    <div className="border-y border-zinc-800 py-20 text-center">
-      <h2 className="text-xl font-medium text-zinc-100">No {noun} found.</h2>
-      <p className="mt-2 text-base text-zinc-400">Try a different search keyword.</p>
+    <div className="py-20 text-center">
+      <h2 className="type-section text-zinc-100">No {noun} found.</h2>
+      <p className="mt-3 type-lead text-zinc-400">Try a different search keyword.</p>
     </div>
   );
 }

@@ -67,13 +67,13 @@ export function ColumnChart({
           topmost one from hanging off the panel.
         */}
         <div className="relative h-40 w-14 shrink-0 sm:h-48 sm:w-16">
-          <span className="absolute right-0 top-0 -translate-y-1/2 text-xs text-zinc-400">
+          <span className="absolute right-0 top-0 -translate-y-1/2 type-meta text-zinc-400">
             {peakLabel}
           </span>
-          <span className="absolute right-0 top-1/2 -translate-y-1/2 text-xs text-zinc-400">
+          <span className="absolute right-0 top-1/2 -translate-y-1/2 type-meta text-zinc-400">
             {halfLabel}
           </span>
-          <span className="absolute right-0 top-full -translate-y-1/2 text-xs text-zinc-400">0</span>
+          <span className="absolute right-0 top-full -translate-y-1/2 type-meta text-zinc-400">0</span>
         </div>
 
         <div
@@ -115,14 +115,14 @@ export function ColumnChart({
 
       <div className="mt-2 flex gap-2">
         <div className="w-14 shrink-0 sm:w-16" />
-        <div className="grid flex-1 grid-cols-7 gap-1 text-center text-xs text-zinc-400 sm:gap-2">
+        <div className="grid flex-1 grid-cols-7 gap-1 text-center type-meta text-zinc-400 sm:gap-2">
           {days.map((day) => (
             <span key={day.name}>{day.short}</span>
           ))}
         </div>
       </div>
 
-      <ul className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm">
+      <ul className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 type-meta">
         {categories.map((category) => (
           <li key={category.name} className="flex items-center gap-1.5">
             <span className={`h-2.5 w-2.5 rounded-xs ${fill(category.slot)}`} />

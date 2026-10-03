@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { RollLabel } from "@/components/motion/interactive";
 import { MessageText } from "@/components/site/guestbook/message-text";
 import { AvatarFallback, PinIcon, RoleBadge } from "@/components/site/guestbook/role-badge";
 import type { PinnedMessage } from "@/lib/data/guestbook-tree";
@@ -44,7 +45,7 @@ export function PinnedCard({
   }, [expanded, pinned.message]);
 
   return (
-    <div className="flex items-start gap-2 border border-zinc-800 rounded-lg px-3 py-2">
+    <div className="flex items-start gap-2.5">
       {pinned.profileImage ? (
         // eslint-disable-next-line @next/next/no-img-element -- see message.tsx
         <img
@@ -53,10 +54,10 @@ export function PinnedCard({
           width={28}
           height={28}
           loading="lazy"
-          className="w-7 h-7 rounded-full border border-zinc-700 flex-shrink-0 object-cover"
+          className="w-7 h-7 rounded-full bg-zinc-900 flex-shrink-0 object-cover"
         />
       ) : (
-        <AvatarFallback className="w-7 h-7 border-zinc-700" glyph="w-3.5 h-3.5" />
+        <AvatarFallback className="w-7 h-7" glyph="w-3.5 h-3.5" />
       )}
 
       <div className="flex-1 min-w-0">
@@ -66,7 +67,7 @@ export function PinnedCard({
         </div>
         <div
           ref={bodyRef}
-          className={`text-xs text-zinc-400 ${expanded ? "" : "line-clamp-2"}`}
+          className={`font-serif text-sm text-zinc-400 ${expanded ? "" : "line-clamp-2"}`}
         >
           <MessageText text={pinned.message} />
         </div>
@@ -74,9 +75,9 @@ export function PinnedCard({
           <button
             type="button"
             onClick={() => setExpanded((open) => !open)}
-            className="text-[10px] text-zinc-400 underline hover:text-zinc-100 mt-0.5 cursor-pointer"
+            className="type-meta mt-0.5 cursor-pointer rounded-full text-zinc-400 transition-colors hover:text-zinc-100"
           >
-            {expanded ? "Show less" : "Read more"}
+            <RollLabel>{expanded ? "Show less" : "Read more"}</RollLabel>
           </button>
         )}
       </div>
@@ -86,7 +87,7 @@ export function PinnedCard({
           type="button"
           onClick={() => onUnpin(pinned.id)}
           disabled={busy}
-          className="flex-shrink-0 p-1 rounded hover:bg-zinc-800 transition-colors disabled:opacity-50"
+          className="flex-shrink-0 rounded-full p-1.5 transition-colors hover:bg-zinc-800 disabled:opacity-50"
           title="Unpin this message"
         >
           <PinIcon className="w-3.5 h-3.5 text-zinc-100" filled />

@@ -1,4 +1,5 @@
 import { GitHubMark, GoogleMark } from "@/components/icons/provider-marks";
+import { BUTTON_SECONDARY, ButtonContent } from "@/components/site/ui";
 import { signInWith } from "@/lib/actions/auth";
 
 /**
@@ -19,8 +20,7 @@ import { signInWith } from "@/lib/actions/auth";
  * it regardless, because a redirect target that came from a request is an open
  * redirect otherwise.
  */
-const PROVIDER_CLASS =
-  "flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-zinc-800 h-11 px-4 text-sm text-zinc-200 transition-colors hover:border-zinc-600 hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+const PROVIDER_CLASS = `${BUTTON_SECONDARY} flex w-full`;
 
 export function ProviderButtons({ redirectTo }: { redirectTo: string }) {
   return (
@@ -32,8 +32,7 @@ export function ProviderButtons({ redirectTo }: { redirectTo: string }) {
         }}
       >
         <button type="submit" className={PROVIDER_CLASS}>
-          <GoogleMark />
-          Continue with Google
+          <ButtonContent label="Continue with Google" fill leading={<GoogleMark />} />
         </button>
       </form>
       <form
@@ -43,8 +42,7 @@ export function ProviderButtons({ redirectTo }: { redirectTo: string }) {
         }}
       >
         <button type="submit" className={PROVIDER_CLASS}>
-          <GitHubMark />
-          Continue with GitHub
+          <ButtonContent label="Continue with GitHub" fill leading={<GitHubMark />} />
         </button>
       </form>
     </div>

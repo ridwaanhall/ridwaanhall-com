@@ -22,30 +22,30 @@ import {
 export default function Loading() {
   return (
     <SkeletonPage>
-      <section className="pt-14 pb-16 md:pt-28 md:pb-24">
-        <SkeletonBar className="h-4 w-64" />
-        <SkeletonBar className="mt-8 h-12 w-4/5 max-w-3xl sm:h-14 md:h-16" />
-        <SkeletonBar className="mt-3 h-12 w-3/5 max-w-2xl sm:h-14 md:h-16" />
-        <SkeletonBar className="mt-8 h-5 w-full max-w-2xl" />
+      <section className="pt-16 pb-16 md:pt-32 md:pb-24">
+        <SkeletonBar className="h-3 w-64" />
+        <SkeletonBar className="mt-8 h-12 w-4/5 max-w-3xl sm:h-16 md:h-[5.5rem]" />
+        <SkeletonBar className="mt-3 h-12 w-3/5 max-w-2xl sm:h-16 md:h-[5.5rem]" />
+        <SkeletonBar className="mt-9 h-5 w-full max-w-2xl" />
         <SkeletonBar className="mt-3 h-5 w-2/3 max-w-xl" />
-        <div className="mt-10 flex gap-3">
+        <div className="mt-11 flex gap-3">
           {[0, 1, 2].map((i) => (
-            <SkeletonBar key={i} className="h-10 w-24 rounded-lg" />
+            <SkeletonBar key={i} className="h-11 w-28 rounded-full" />
           ))}
         </div>
       </section>
 
-      <section className="border-t border-zinc-800 py-12 md:py-16">
+      <section className="py-14 md:py-20">
         <SkeletonSectionHeading />
         <SkeletonTiles />
       </section>
 
-      <section className="border-t border-zinc-800 py-12 md:py-16">
+      <section className="py-14 md:py-20">
         <SkeletonSectionHeading />
         <SkeletonRows />
       </section>
 
-      <section className="border-t border-zinc-800 py-12 md:py-16">
+      <section className="py-14 md:py-20">
         <SkeletonSectionHeading action={false} />
         {[0, 1].map((row) => (
           <div key={row} className="flex gap-10 overflow-hidden py-2.5">

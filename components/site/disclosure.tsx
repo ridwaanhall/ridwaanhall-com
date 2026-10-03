@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useId, useState } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { createContext, useContext, useId, useRef, useState } from "react";
+
+import { ArrowFx, RollLabel } from "@/components/motion/interactive";
+
+gsap.registerPlugin(useGSAP);
 
 /**
  * The "Show more" toggle used across the about page.
@@ -65,25 +71,20 @@ export function Disclosure({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * `rounded-full` everywhere, rather than a pill on the experience and
- * application cards and `rounded-lg` on education and certifications, for what
- * is the same control in all four places.
+ * The toggle: a rounded-full outlined control like every other button here,
+ * with a label that rolls and a chevron that turns over as the panel opens.
  *
- * The default padding is the application card's, which is the tightest of the
- * four and the one the about page's tabs are read against. It used to be a step
- * roomier, with education and applications each overriding it back down -- so
- * the shared default was the shape only two of the callers wanted, and "Show
- * more" was visibly a different size depending on which tab you were on.
- *
- * **Nothing overrides it now.** `CredentialLink` on the about cards and the
- * "Apply for …" link on an openhire position are the same `toggle-pill` at the
- * same size, so every pill the site draws is one height, and a reader crossing
- * from a certification to a job posting meets one control rather than two that
- * nearly match.
+ * "Show more" / "Show less" are the same length on purpose -- the label rolls
+ * letter by letter, and two words of equal width keep the button from jumping
+ * when one replaces the other.
  */
 export function DisclosureButton({
-  className = "toggle-pill cursor-pointer px-2 py-1 rounded-full",
+  label = "Show more",
+  openLabel = "Show less",
+  className,
 }: {
+  label?: string;
+  openLabel?: string;
   className?: string;
 }) {
   const { open, toggle, panelId } = useDisclosure();
@@ -91,47 +92,42 @@ export function DisclosureButton({
   return (
     <button
       type="button"
-      className={className}
+      className={
+        className ??
+        "group relative inline-flex h-8 shrink-0 cursor-pointer items-center gap-1.5 overflow-hidden rounded-full border border-zinc-500 px-3.5 text-xs font-medium text-zinc-200 transition-colors duration-300 hover:border-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+      }
       onClick={toggle}
       aria-expanded={open}
       aria-controls={panelId}
     >
-      <span>{open ? "Show less" : "Show more"}</span>
-      <svg
-        className={`w-3 h-3 ml-1.5 transition-transform duration-200 ${
-          open ? "rotate-180" : ""
-        }`}
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M19 9l-7 7-7-7"
-        />
-      </svg>
+      <RollLabel fill className="relative">
+        {open ? openLabel : label}
+      </RollLabel>
+      <span className={`relative h-3 w-3 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${open ? "rotate-180" : ""}`}>
+        <ArrowFx direction="down" className="h-3 w-3" />
+      </span>
     </button>
   );
 }
 
 /**
- * The animated panel.
+ * The panel, opened and closed by GSAP rather than by a CSS row transition.
  *
- * `grid-template-rows: 0fr -> 1fr` rather than the original's measured
- * `max-height`. It reads the same at 300ms and needs no `scrollHeight` probe,
- * no second timeout to put `hidden` back, and no upper bound to overshoot when
- * the content is shorter than the guess -- which is what made the original's
- * collapse start slowly on a short card and snap on a long one.
+ * Height to `auto` is the thing CSS cannot tween, and it is what makes the
+ * open feel measured on a short panel and a long one alike: GSAP measures the
+ * content at the moment of opening, so there is no guessed maximum to
+ * overshoot. The rows inside then arrive in a short stagger, so a list of
+ * responsibilities reads as unfolding rather than as a block sliding down.
  *
- * Collapsed the panel is exactly zero-height, so a card is the same height
- * before the first click as if it were `hidden`. Any spacing above the content
- * therefore belongs *inside* it: a margin on this element would still occupy
- * its pixels while closed. `className` is for the one card that keeps a `mt-1`
- * gap even when collapsed.
+ * Closed, the panel is a zero-height box -- the class is the closed state, so
+ * it holds before the bundle arrives -- and `inert`, so a collapsed panel's
+ * links are out of the tab order and out of the accessibility tree. The
+ * content itself stays in the document: these are the substance of the about
+ * page, and a crawler and in-page search should find them closed or open.
+ *
+ * Spacing above the content belongs *inside* the panel (`className` lands on
+ * the inner box): a margin on the outer one would occupy its pixels while
+ * closed.
  */
 export function DisclosurePanel({
   className = "",
@@ -141,15 +137,43 @@ export function DisclosurePanel({
   children: React.ReactNode;
 }) {
   const { open, panelId } = useDisclosure();
+  const ref = useRef<HTMLDivElement>(null);
+  const settled = useRef(false);
+
+  useGSAP(
+    () => {
+      const el = ref.current;
+      if (!el) return;
+      // The first run is hydration: the markup already is the closed state.
+      if (!settled.current) {
+        settled.current = true;
+        return;
+      }
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const rows = Array.from(el.firstElementChild?.children ?? []);
+      if (open) {
+        gsap.fromTo(
+          el,
+          { height: el.offsetHeight },
+          { height: "auto", duration: reduce ? 0 : 0.7, ease: "expo.out", overwrite: true },
+        );
+        if (!reduce && rows.length > 0) {
+          gsap.fromTo(
+            rows,
+            { opacity: 0, y: 10 },
+            { opacity: 1, y: 0, duration: 0.6, ease: "power3.out", stagger: 0.045, delay: 0.08, overwrite: true },
+          );
+        }
+      } else {
+        gsap.to(el, { height: 0, duration: reduce ? 0 : 0.5, ease: "expo.out", overwrite: true });
+      }
+    },
+    { dependencies: [open] },
+  );
 
   return (
-    <div
-      id={panelId}
-      className={`grid transition-all duration-300 ease-in-out ${
-        open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-      }${className ? ` ${className}` : ""}`}
-    >
-      <div className="overflow-hidden">{children}</div>
+    <div ref={ref} id={panelId} inert={!open} className="h-0 overflow-hidden">
+      <div className={className}>{children}</div>
     </div>
   );
 }

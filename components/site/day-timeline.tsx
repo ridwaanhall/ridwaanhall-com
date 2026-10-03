@@ -155,7 +155,7 @@ export function DayTimeline({
         ))}
 
         {!hasActivity && (
-          <span className="absolute inset-0 flex items-center justify-center text-xs text-zinc-400 sm:text-sm">
+          <span className="absolute inset-0 flex items-center justify-center type-meta text-zinc-400">
             Nothing logged today yet
           </span>
         )}
@@ -166,7 +166,7 @@ export function DayTimeline({
         {HOURS.map((hour) => (
           <span
             key={hour}
-            className={`absolute text-xs text-zinc-400 ${
+            className={`absolute type-meta text-zinc-400 ${
               hour === 0 ? "" : hour === 24 ? "-translate-x-full" : "-translate-x-1/2"
             }`}
             style={{ left: `${(hour / 24) * 100}%` }}
@@ -181,7 +181,7 @@ export function DayTimeline({
         ))}
       </div>
 
-      <ul className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm">
+      <ul className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 type-meta">
         {languages.map((language) => (
           <li key={language.name} className="flex items-center gap-1.5" title={language.time}>
             <span className={`h-2.5 w-2.5 rounded-xs ${fill(language.slot)}`} />

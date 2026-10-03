@@ -4,6 +4,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { VerifiedIcon } from "@/components/icons/nav-icons";
+import { LineText } from "@/components/motion/interactive";
+import { ReadingProgress } from "@/components/motion/reading-progress";
 import { Reveal, SplitHeading } from "@/components/motion/reveal";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import {
@@ -77,12 +79,13 @@ export default async function BlogDetailPage({
       <JsonLdScript schemas={blogDetailSchemas(about, post)} />
       <main className={CONTAINER}>
         <article>
+          <ReadingProgress />
           <header className="mx-auto max-w-3xl pt-10 md:pt-16">
             <Reveal>
               <BackLink href="/blog">All posts</BackLink>
             </Reveal>
 
-            <Reveal className="mt-10 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-500">
+            <Reveal className="type-meta mt-12 flex flex-wrap items-center gap-x-2 gap-y-1 text-zinc-500">
               {post.category && (
                 <>
                   <span>{post.category}</span>
@@ -98,17 +101,15 @@ export default async function BlogDetailPage({
               ) : null}
             </Reveal>
 
-            <SplitHeading className="mt-5 text-4xl font-medium leading-[1.08] tracking-tight text-balance text-zinc-100 sm:text-5xl">
-              {post.title}
-            </SplitHeading>
+            <SplitHeading className="mt-5 type-headline text-zinc-100">{post.title}</SplitHeading>
 
             {post.description && (
-              <Reveal as="p" className="mt-6 text-lg leading-relaxed text-pretty text-zinc-400 sm:text-xl">
+              <Reveal as="p" className="mt-7 type-lead text-zinc-400">
                 {post.description}
               </Reveal>
             )}
 
-            <Reveal className="mt-10 flex flex-wrap items-center justify-between gap-6 border-y border-zinc-800 py-5">
+            <Reveal className="mt-10 flex flex-wrap items-center justify-between gap-6">
               <div className="flex items-center gap-3">
                 {post.author_image && (
                   <Image
@@ -124,15 +125,15 @@ export default async function BlogDetailPage({
                     href="https://bio.ridwaanhall.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex w-fit items-center gap-1 text-sm font-medium text-zinc-100"
+                    className="inline-flex w-fit items-center gap-1 rounded-full text-sm font-medium text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
                   >
-                    <span className="link-draw">{post.author}</span>
+                    <LineText>{post.author}</LineText>
                     <VerifiedIcon className="text-zinc-400" height={15} width={15} />
                   </a>
                   {edited ? (
-                    <span className="text-xs text-zinc-500">Edited {longDateTime(post.updated_at)}</span>
+                    <span className="type-meta text-zinc-500">Edited {longDateTime(post.updated_at)}</span>
                   ) : (
-                    <span className="text-xs text-zinc-500">@{post.username}</span>
+                    <span className="type-meta text-zinc-500">@{post.username}</span>
                   )}
                 </div>
               </div>
@@ -162,9 +163,9 @@ export default async function BlogDetailPage({
           <RichText html={post.content_html} className="mx-auto mt-12 max-w-3xl md:mt-16" />
 
           {post.tags.length > 0 && (
-            <footer className="mx-auto mt-12 max-w-3xl border-t border-zinc-800 pt-8">
+            <footer className="mx-auto mt-16 max-w-3xl">
               <h2 className="sr-only">Tags</h2>
-              <ul className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-zinc-500">
+              <ul className="type-meta flex flex-wrap gap-x-4 gap-y-2 text-zinc-500">
                 {post.tags.map(String).map((tag) => (
                   <li key={tag}>#{slugify(tag)}</li>
                 ))}

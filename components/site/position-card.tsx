@@ -4,6 +4,7 @@ import {
   DisclosurePanel,
 } from "@/components/site/disclosure";
 import { FactIcon, MetaItem, MetaRow } from "@/components/site/meta-row";
+import { BUTTON_PRIMARY, ButtonContent } from "@/components/site/ui";
 import type { Position } from "@/lib/data/openhire";
 
 import { BulletLines, ICON, TagList } from "./openhire-cards";
@@ -38,10 +39,8 @@ export function PositionCard({
     <Disclosure>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-2">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="text-lg font-medium text-zinc-100">{position.title}</h3>
-          <span className="pill-badge px-2.5 py-0.5 text-xs border border-zinc-700 text-zinc-400">
-            {position.experience_required}
-          </span>
+          <h3 className="type-item text-zinc-100">{position.title}</h3>
+          <span className="type-meta text-zinc-400">{position.experience_required}</span>
         </div>
         <div className="flex-shrink-0">
           <DisclosureButton />
@@ -83,32 +82,23 @@ export function PositionCard({
             href={`mailto:${applicationEmail}?subject=${encodeURIComponent(
               `Application for ${position.title}`,
             )}`}
-            className="group inline-flex h-10 items-center gap-2 rounded-lg bg-zinc-100 px-4 text-sm font-medium text-black transition-colors hover:bg-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+            className={BUTTON_PRIMARY}
           >
-            <svg
-              className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-1.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={ICON.mail} />
-            </svg>
-            <span>Apply for {position.title}</span>
-            <svg
-              className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-1.5 transition-transform group-hover:translate-x-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M14 5l7 7m0 0l-7 7m7-7H3"
-              />
-            </svg>
+            <ButtonContent
+              label={`Apply for ${position.title}`}
+              arrow="right"
+              leading={
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={ICON.mail} />
+                </svg>
+              }
+            />
           </a>
         </div>
       </DisclosurePanel>
@@ -119,7 +109,7 @@ export function PositionCard({
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="mt-5">
-      <h5 className="mb-2 text-sm text-zinc-400">{title}</h5>
+      <h5 className="type-meta mb-3 text-zinc-500">{title}</h5>
       {children}
     </div>
   );

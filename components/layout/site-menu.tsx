@@ -10,7 +10,8 @@ import type { AboutData } from "@/lib/data/about";
 import { isActive, visibleNavItems } from "@/lib/nav";
 import { cn } from "@/lib/utils/cn";
 
-import { CONTAINER } from "@/components/site/ui";
+import { IconFx, RollLabel } from "@/components/motion/interactive";
+import { CONTAINER, FOCUS, ICON_BUTTON } from "@/components/site/ui";
 
 gsap.registerPlugin(useGSAP);
 
@@ -117,17 +118,19 @@ export function SiteMenu({
       className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-black lg:hidden"
     >
       <div className={cn(CONTAINER, "flex h-16 shrink-0 items-center justify-between")}>
-        <span className="text-[15px] font-medium tracking-tight text-zinc-100">{about.name}</span>
+        <span className="text-[0.9375rem] font-[580] tracking-[-0.02em] text-zinc-100 [font-stretch:110%]">{about.name}</span>
         <button
           ref={closeButton}
           type="button"
           onClick={onClose}
           aria-label="Close menu"
-          className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+          className={ICON_BUTTON}
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" aria-hidden="true" className="h-5 w-5">
-            <path d="M6 6l12 12M18 6 6 18" />
-          </svg>
+          <IconFx>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" aria-hidden="true" className="h-5 w-5">
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
+          </IconFx>
         </button>
       </div>
 
@@ -136,18 +139,19 @@ export function SiteMenu({
           {items.map((item) => {
             const active = isActive(item, pathname);
             return (
-              <li key={item.href} className="overflow-hidden border-b border-zinc-900">
+              <li key={item.href} className="overflow-hidden">
                 <Link
                   href={item.href}
                   data-menu-link
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex items-baseline justify-between py-3 text-3xl font-medium tracking-tight transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 sm:text-4xl",
+                    "type-title flex items-baseline justify-between rounded-2xl py-2 transition-colors duration-300",
+                    FOCUS,
                     active ? "text-zinc-100" : "text-zinc-500 hover:text-zinc-100",
                   )}
                 >
                   {item.label}
-                  {active && <span className="text-sm font-normal text-zinc-500">Current</span>}
+                  {active && <span className="type-meta text-zinc-500">current</span>}
                 </Link>
               </li>
             );
@@ -160,10 +164,16 @@ export function SiteMenu({
           {account}
         </div>
         <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-zinc-500">
-          <Link href="/privacy-policy" className="hover:text-zinc-200">Privacy</Link>
-          <Link href="/terms" className="hover:text-zinc-200">Terms</Link>
+          <Link href="/privacy-policy" className={cn("rounded-full transition-colors hover:text-zinc-200", FOCUS)}>
+            <RollLabel>Privacy</RollLabel>
+          </Link>
+          <Link href="/terms" className={cn("rounded-full transition-colors hover:text-zinc-200", FOCUS)}>
+            <RollLabel>Terms</RollLabel>
+          </Link>
           {(about.is_open_to_work || about.is_hiring) && (
-            <Link href="/openhire" className="hover:text-zinc-200">OpenHire</Link>
+            <Link href="/openhire" className={cn("rounded-full transition-colors hover:text-zinc-200", FOCUS)}>
+              <RollLabel>OpenHire</RollLabel>
+            </Link>
           )}
         </div>
       </div>

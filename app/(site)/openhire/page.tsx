@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { ArrowFx, LineText } from "@/components/motion/interactive";
+
 import { CONTAINER, PageHeader } from "@/components/site/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { AboutTabs } from "@/components/site/about-tabs";
@@ -82,7 +84,7 @@ export default async function OpenHirePage() {
               ]}
             />
           ) : (
-            <div className="w-full border-t border-zinc-800">
+            <div className="w-full">
               {about.is_open_to_work ? openPanel : hiringPanel}
             </div>
           )}
@@ -94,7 +96,7 @@ export default async function OpenHirePage() {
 
 /** The wrapper both panels share. */
 function Panel({ children }: { children: React.ReactNode }) {
-  return <div className="border-b border-zinc-800">{children}</div>;
+  return <div>{children}</div>;
 }
 
 function OpenToWorkPanel({
@@ -185,16 +187,16 @@ function ToolsTable({ tools }: { tools: Record<string, Skill[]> }) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-zinc-800">
-              <th className="w-28 py-2 pr-4 text-left text-xs font-normal text-zinc-500 sm:w-36">
+            <tr>
+              <th className="type-meta w-28 py-2 pr-4 text-left font-normal text-zinc-500 sm:w-36">
                 Category
               </th>
-              <th className="py-2 text-left text-xs font-normal text-zinc-500">
+              <th className="type-meta py-2 text-left font-normal text-zinc-500">
                 Tools
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-900">
+          <tbody>
             {Object.entries(tools).map(([category, skills]) => (
               <tr key={category}>
                 <td className="py-2.5 pr-4 align-top text-sm whitespace-nowrap text-zinc-100">
@@ -221,30 +223,17 @@ function HiringPanel({ data }: { data: HiringData }) {
         badge={<StatusPill text={data.hiring_status} />}
       >
         <div className="space-y-2">
-          <h3 className="text-lg font-medium text-zinc-200">{data.company_name}</h3>
-          <p className="text-sm leading-relaxed text-zinc-400">{data.company_description}</p>
+          <h3 className="type-item text-zinc-100">{data.company_name}</h3>
+          <p className="text-[0.9375rem] leading-relaxed text-pretty text-zinc-400">{data.company_description}</p>
           {data.website ? (
             <a
               href={data.website}
               target="_blank"
               rel="noopener"
-              className="mt-1 inline-flex items-center gap-2 text-sm text-zinc-100 underline decoration-zinc-600 underline-offset-2 transition-colors hover:decoration-zinc-100"
+              className="mt-1 inline-flex items-center gap-1.5 rounded-full text-sm text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                />
-              </svg>
-              Visit {data.company_name}
+              <LineText>Visit {data.company_name}</LineText>
+              <ArrowFx direction="up-right" className="h-3.5 w-3.5" />
             </a>
           ) : null}
         </div>
@@ -268,8 +257,8 @@ function HiringPanel({ data }: { data: HiringData }) {
       <SectionCard title="Application Process" paths={[ICON.clipboard]}>
         <div>
           {data.application_process.map((step, index) => (
-            <div key={step} className="flex items-start gap-4 border-b border-zinc-900 py-3 last:border-b-0">
-              <span className="w-6 flex-shrink-0 pt-px text-sm tabular-nums text-zinc-600">
+            <div key={step} className="flex items-start gap-4 py-2.5">
+              <span className="type-meta w-6 flex-shrink-0 pt-1 text-zinc-500">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <span className="text-sm text-zinc-300">{step}</span>
@@ -311,7 +300,7 @@ function HiringPanel({ data }: { data: HiringData }) {
 
       {data.additional_notes ? (
         <SectionCard title="Join Our Team" paths={[ICON.info]}>
-          <p className="text-sm leading-relaxed text-zinc-400">{data.additional_notes}</p>
+          <p className="text-[0.9375rem] leading-relaxed text-pretty text-zinc-400">{data.additional_notes}</p>
         </SectionCard>
       ) : null}
     </Panel>

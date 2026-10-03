@@ -18,11 +18,14 @@
  *
  * The height is a band because the panel scrolls internally -- it has no
  * natural height, and this is where it settles.
+ *
+ * There is no frame around it and no rule above the composer. The feed is
+ * the only part that scrolls, and it says so by fading out at both ends
+ * (`.feed-fade` in styles/site.css) -- which is the one thing a border was
+ * telling the reader, said without drawing a box on a page that has none.
  */
-export const PANEL_FRAME =
-  "flex flex-col overflow-hidden rounded-xl border border-zinc-800 " +
-  "min-h-[min(78vh,720px)] max-h-[min(85vh,860px)]";
+export const PANEL_FRAME = "flex flex-col overflow-hidden min-h-[min(78vh,720px)] max-h-[min(85vh,860px)]";
 
 /** The header strip and the composer footer, shared so both states match. */
-export const PANEL_HEADER = "flex-shrink-0 border-b border-zinc-800 px-3 py-2.5";
-export const PANEL_FOOTER = "flex-shrink-0 border-t border-zinc-800 p-3";
+export const PANEL_HEADER = "flex-shrink-0 py-2.5";
+export const PANEL_FOOTER = "flex-shrink-0 pt-4";

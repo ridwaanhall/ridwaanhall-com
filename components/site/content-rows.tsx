@@ -1,9 +1,9 @@
 import Image, { getImageProps } from "next/image";
-import { Reveal } from "@/components/motion/reveal";
 import Link from "next/link";
 
 import { HoverPreviewList } from "@/components/motion/hover-preview";
-import { ArrowUpRightIcon } from "@/components/site/ui";
+import { ArrowFx, LineText, MediaHover } from "@/components/motion/interactive";
+import { Reveal } from "@/components/motion/reveal";
 import type { BlogPost, BlogSummary, Project, ProjectSummary } from "@/lib/data/content";
 import { localIconUrl } from "@/lib/utils/icon-url";
 import { isoDateTime, longDate, slugify } from "@/lib/utils/format";
@@ -21,6 +21,10 @@ import { cn } from "@/lib/utils/cn";
  * there is a pointer to follow. Projects stay visual, because a project is
  * something to look at, but as an image with a caption beneath it rather than
  * a bordered card with badges stamped on the screenshot.
+ *
+ * Nothing is ruled off. Rows are separated by their own padding and the date
+ * column's rhythm; dates, read times and tags are set in mono, as the traces
+ * they are, so the titles are the only thing at reading size.
  */
 
 const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400";
@@ -40,7 +44,7 @@ export function BlogList({
 }) {
   return (
     <HoverPreviewList className={className}>
-      <ul className="border-b border-zinc-800">
+      <ul>
         {posts.map((post) => (
           <BlogRow key={post.slug} post={post} />
         ))}
@@ -52,29 +56,29 @@ export function BlogList({
 export function BlogRow({ post }: { post: BlogPost | BlogSummary }) {
   const tags = post.tags.map(String);
   return (
-    <Reveal as="li" className="border-t border-zinc-800">
+    <Reveal as="li">
       <Link
         href={`/blog/${post.slug}`}
         data-preview={previewSrc(post.image_url)}
         className={cn(
-          "group grid grid-cols-1 gap-x-10 gap-y-2 rounded-sm py-7 md:grid-cols-[9rem_1fr_auto]",
+          "group grid grid-cols-1 gap-x-10 gap-y-2 rounded-2xl py-6 md:grid-cols-[9rem_1fr_auto] md:py-7",
           FOCUS,
         )}
       >
-        <time dateTime={isoDateTime(post.created_at)} className="pt-1 text-sm tabular-nums text-zinc-500">
+        <time dateTime={isoDateTime(post.created_at)} className="type-meta pt-1.5 text-zinc-500">
           {longDate(post.created_at)}
         </time>
         <div className="min-w-0">
-          <h3 className="text-lg font-medium leading-snug tracking-tight text-zinc-100 sm:text-xl">
-            <span className="link-draw">{post.title}</span>
+          <h3 className="type-item text-zinc-100">
+            <LineText>{post.title}</LineText>
           </h3>
           {post.description && (
-            <p className="mt-2 line-clamp-2 max-w-2xl text-sm leading-relaxed text-zinc-400 sm:text-base">
+            <p className="mt-2 line-clamp-2 max-w-2xl text-[0.9375rem] leading-relaxed text-pretty text-zinc-400">
               {post.description}
             </p>
           )}
           {tags.length > 0 && (
-            <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-zinc-500">
+            <p className="type-meta mt-3 flex flex-wrap gap-x-3 gap-y-1 text-zinc-500">
               {tags.slice(0, 4).map((tag) => (
                 <span key={tag}>#{slugify(tag)}</span>
               ))}
@@ -82,8 +86,9 @@ export function BlogRow({ post }: { post: BlogPost | BlogSummary }) {
             </p>
           )}
         </div>
-        <span className="hidden pt-1 text-sm whitespace-nowrap text-zinc-500 md:block">
+        <span className="type-meta hidden items-start gap-2 pt-1.5 whitespace-nowrap text-zinc-500 md:flex">
           {post.read_time ? `${post.read_time} min read` : null}
+          <ArrowFx direction="right" className="mt-[0.2em] h-3 w-3 text-zinc-400" />
         </span>
       </Link>
     </Reveal>
@@ -94,7 +99,7 @@ export function BlogRow({ post }: { post: BlogPost | BlogSummary }) {
 export function ProjectStatus({ label, color }: { label: string; color: string }) {
   if (!label) return null;
   return (
-    <span className="inline-flex items-center gap-1.5 text-xs text-zinc-400">
+    <span className="type-meta inline-flex items-center gap-1.5 text-zinc-400">
       <span className={cn("h-1.5 w-1.5 rounded-full", STATUS_DOT[color] ?? "bg-zinc-500")} aria-hidden="true" />
       {label}
     </span>
@@ -157,8 +162,8 @@ export function ProjectTile({
 
   return (
     <Reveal as="li">
-      <Link href={`/projects/${project.slug}`} className={cn("group block rounded-lg", FOCUS)}>
-        <div className="relative aspect-[3/2] overflow-hidden rounded-lg bg-zinc-900">
+      <Link href={`/projects/${project.slug}`} className={cn("group block rounded-2xl", FOCUS)}>
+        <MediaHover className="aspect-[3/2] rounded-xl bg-zinc-900">
           {project.image_url && (
             <Image
               src={project.image_url}
@@ -166,24 +171,24 @@ export function ProjectTile({
               fill
               sizes="(min-width: 1024px) 460px, (min-width: 640px) 50vw, 100vw"
               loading={eager ? "eager" : "lazy"}
-              className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+              className="object-cover"
             />
           )}
-        </div>
+        </MediaHover>
 
         <div className="mt-5 flex items-start justify-between gap-4">
-          <h3 className="text-lg font-medium leading-snug tracking-tight text-zinc-100">
-            <span className="link-draw">{project.title}</span>
+          <h3 className="type-item text-zinc-100">
+            <LineText>{project.title}</LineText>
           </h3>
-          <ArrowUpRightIcon className="mt-1 h-4 w-4 shrink-0 text-zinc-500 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-zinc-100" />
+          <ArrowFx direction="up-right" className="mt-1 h-4 w-4 text-zinc-400" />
         </div>
         {project.headline && (
-          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-zinc-400">{project.headline}</p>
+          <p className="mt-2 line-clamp-2 text-[0.9375rem] leading-relaxed text-pretty text-zinc-400">{project.headline}</p>
         )}
 
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
           <ProjectStatus label={project.status ? project.status_label : ""} color={project.status_color} />
-          {project.is_featured && <span className="text-xs text-zinc-500">Featured</span>}
+          {project.is_featured && <span className="type-meta text-zinc-500">Featured</span>}
           {project.tech_stack.length > 0 && (
             <span className="ml-auto flex items-center gap-2">
               {tech.slice(0, VISIBLE_TECH).map((item) => (
@@ -200,7 +205,7 @@ export function ProjectTile({
                 />
               ))}
               {overflow > 0 && (
-                <span className="text-xs text-zinc-500" title={`${overflow} more technologies`}>
+                <span className="type-meta text-zinc-500" title={`${overflow} more technologies`}>
                   +{overflow}
                 </span>
               )}
@@ -228,9 +233,9 @@ export function FeaturedPosts({ posts }: { posts: (BlogPost | BlogSummary)[] }) 
       <Reveal as="article">
         <Link
           href={`/blog/${lead.slug}`}
-          className={cn("group grid items-end gap-8 rounded-lg md:grid-cols-[1.4fr_1fr]", FOCUS)}
+          className={cn("group grid items-end gap-8 rounded-2xl md:grid-cols-[1.4fr_1fr]", FOCUS)}
         >
-          <div className="relative aspect-[16/10] overflow-hidden rounded-lg bg-zinc-900">
+          <MediaHover className="aspect-[16/10] rounded-xl bg-zinc-900">
             {lead.image_url && (
               <Image
                 src={lead.image_url}
@@ -238,20 +243,20 @@ export function FeaturedPosts({ posts }: { posts: (BlogPost | BlogSummary)[] }) 
                 fill
                 preload
                 sizes="(min-width: 1024px) 560px, (min-width: 768px) 58vw, 100vw"
-                className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+                className="object-cover"
               />
             )}
-          </div>
+          </MediaHover>
           <div>
-            <p className="text-sm text-zinc-500">
+            <p className="type-meta text-zinc-500">
               <time dateTime={isoDateTime(lead.created_at)}>{longDate(lead.created_at)}</time>
               {lead.read_time ? ` · ${lead.read_time} min read` : null}
             </p>
-            <h3 className="mt-3 text-2xl font-medium leading-tight tracking-tight text-balance text-zinc-100 sm:text-3xl">
-              <span className="link-draw">{lead.title}</span>
+            <h3 className="mt-3 type-section text-zinc-100">
+              <LineText>{lead.title}</LineText>
             </h3>
             {lead.description && (
-              <p className="mt-4 line-clamp-3 text-base leading-relaxed text-zinc-400">{lead.description}</p>
+              <p className="mt-4 line-clamp-3 type-lead text-zinc-400">{lead.description}</p>
             )}
           </div>
         </Link>
@@ -267,23 +272,23 @@ export function FeaturedPosts({ posts }: { posts: (BlogPost | BlogSummary)[] }) 
         >
           {rest.map((post) => (
             <Reveal as="li" key={post.slug}>
-              <Link href={`/blog/${post.slug}`} className={cn("group block rounded-lg", FOCUS)}>
-                <div className="relative aspect-[3/2] overflow-hidden rounded-lg bg-zinc-900">
+              <Link href={`/blog/${post.slug}`} className={cn("group block rounded-2xl", FOCUS)}>
+                <MediaHover className="aspect-[3/2] rounded-xl bg-zinc-900">
                   {post.image_url && (
                     <Image
                       src={post.image_url}
                       alt={`Featured image for blog: ${post.title}`}
                       fill
                       sizes="(min-width: 1024px) 220px, (min-width: 640px) 50vw, 100vw"
-                      className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+                      className="object-cover"
                     />
                   )}
-                </div>
-                <p className="mt-4 text-xs text-zinc-500">
+                </MediaHover>
+                <p className="type-meta mt-4 text-zinc-500">
                   <time dateTime={isoDateTime(post.created_at)}>{longDate(post.created_at)}</time>
                 </p>
-                <h3 className="mt-1.5 line-clamp-3 text-base font-medium leading-snug text-zinc-100">
-                  <span className="link-draw">{post.title}</span>
+                <h3 className="mt-1.5 line-clamp-3 text-base font-[560] leading-snug text-balance text-zinc-100">
+                  <LineText>{post.title}</LineText>
                 </h3>
               </Link>
             </Reveal>

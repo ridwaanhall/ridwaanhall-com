@@ -50,25 +50,119 @@ html.motion-live [data-split] {
 }
 
 /* ---------------------------------------------------------------------------
-   Text links that draw their underline
+   Hover motion's resting states
 
-   A background stroke rather than `text-decoration`, so it can grow from the
-   left and wrap across lines with the text.
+   `components/motion/interactive.tsx` animates these with GSAP. What is here
+   is only the shape each piece has before and without it, so a reader on
+   touch, with reduced motion, or before the bundle arrives sees a finished
+   control rather than a half-built one.
    --------------------------------------------------------------------------- */
+
+/* A rolling label: the real text on top, an aria-hidden copy parked below,
+   clipped to one line. The padding keeps descenders inside the clip. */
+.roll {
+    position: relative;
+    display: inline-flex;
+    overflow: hidden;
+    white-space: pre;
+    padding-block: 0.1em;
+    margin-block: -0.1em;
+}
+
+/* The rows are decoration; the hidden copy beside them is the text, and the
+   one a selection picks up. */
+.roll-row {
+    display: inline-flex;
+    user-select: none;
+}
+
+.roll-under {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    padding-top: 0.1em;
+}
+
+.roll-char {
+    display: inline-block;
+}
+
+/* The outlined button's hover surface, below the label in paint order. */
+.roll-fill {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--color-zinc-100);
+    transform: scaleY(0);
+    transform-origin: 50% 100%;
+    pointer-events: none;
+}
+
+/* An underline drawn as a background stroke, so it follows text that wraps.
+   At rest it is absent; keyboard focus draws it in full, motion or not. */
+.line-text {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0% 100%;
+    background-size: 0% 1px;
+}
+
+:focus-visible .line-text {
+    background-size: 100% 1px;
+}
+
+/* Two copies of one arrow; the second waits outside the clip to come in. */
+.arrow-fx {
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.arrow-fx > svg {
+    display: block;
+}
+
+.arrow-fx > .arrow-fx-back {
+    position: absolute;
+    inset: 0;
+    transform: translateX(-110%);
+}
+
+/* Links inside stored prose cannot carry a component, so they draw their line
+   the same way in CSS. */
 .link-draw {
     background-image: linear-gradient(currentColor, currentColor);
     background-repeat: no-repeat;
     background-position: 0 100%;
     background-size: 0 1px;
     transition:
-        background-size 400ms cubic-bezier(0.22, 1, 0.36, 1),
+        background-size 500ms cubic-bezier(0.16, 1, 0.3, 1),
         color 200ms ease;
 }
 
 .link-draw:hover,
-.link-draw:focus-visible,
-.group:hover .link-draw {
+.link-draw:focus-visible {
     background-size: 100% 1px;
+}
+
+/* ---------------------------------------------------------------------------
+   Reading progress on an article
+
+   A hairline under the navbar, scrubbed by GSAP to how far through the post
+   the reader is. It starts collapsed, so a reader without motion simply never
+   sees it -- the scrollbar already says the same thing.
+   --------------------------------------------------------------------------- */
+.reading-progress {
+    position: fixed;
+    inset-inline: 0;
+    top: 0;
+    z-index: 45;
+    height: 2px;
+    background: var(--color-zinc-100);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    pointer-events: none;
 }
 
 /* ---------------------------------------------------------------------------
@@ -100,16 +194,17 @@ html.motion-live [data-split] {
 /* ---------------------------------------------------------------------------
    Navbar
 
-   The bottom rule appears once the page has scrolled, so the bar reads as part
-   of the canvas at the top and as chrome everywhere else.
+   No rule under it. Once the page has left the top the bar takes a faint
+   veil of the canvas, so text scrolling beneath it is muted rather than
+   cut off by a line.
    --------------------------------------------------------------------------- */
 .site-header {
-    border-bottom: 1px solid transparent;
-    transition: border-color 300ms ease;
+    transition: background-color 300ms ease;
 }
 
 .site-header[data-scrolled="true"] {
-    border-bottom-color: var(--color-zinc-800);
+    background-color: color-mix(in oklab, var(--color-black) 82%, transparent);
+    backdrop-filter: blur(14px) saturate(1.2);
 }
 
 /* The sliding indicator under the current nav link. */
@@ -145,4 +240,16 @@ html.motion-live [data-split] {
 .site-root ::selection {
     background: var(--color-zinc-100);
     color: var(--color-black);
+}
+
+/* ---------------------------------------------------------------------------
+   A feed that scrolls inside the page
+
+   The guestbook thread has no frame, so its two ends fade into the canvas
+   instead: the one thing a border used to say -- this part scrolls, and there
+   is more above and below -- said without drawing a box. A mask rather than a
+   gradient overlay, so it needs to know nothing about the colour behind it.
+   --------------------------------------------------------------------------- */
+.feed-fade {
+    mask-image: linear-gradient(to bottom, transparent, black 2.5rem, black calc(100% - 2.5rem), transparent);
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { AccountMenu } from "@/components/layout/account-menu";
+import { RollLabel } from "@/components/motion/interactive";
 import { SignOutButton } from "@/components/sign-out-button";
 import { SkeletonBar } from "@/components/skeleton";
 import { signOutHere } from "@/lib/actions/auth";
@@ -50,21 +51,21 @@ import { getViewer } from "@/lib/auth/viewer";
  * identities and two staff checks to draw one row.
  */
 const PILL =
-  "pill-badge cursor-pointer border border-zinc-800 px-3 py-1 text-sm text-zinc-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+  "relative inline-flex h-8 cursor-pointer items-center overflow-hidden rounded-full border border-zinc-500 px-3.5 text-sm text-zinc-100 transition-[color,border-color] duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 
 /**
  * A row of the account menu: full width, because a menu's rows are a list and a
  * list has one left edge.
  */
 const MENU_ROW =
-  "flex w-full cursor-pointer items-center rounded-md px-3 py-2 text-left text-sm text-zinc-300 transition-colors hover:bg-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+  "flex w-full cursor-pointer items-center rounded-full px-3.5 py-2 text-left text-sm text-zinc-300 transition-colors hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 
 /*
  * Written out rather than composed from the hue. Tailwind emits only a class it
  * can see in the source, so building one from a variable would produce no rule
  * at all -- the same reason `status-badges.tsx` spells its three out.
  */
-const HOVER_ACCENT = "hover:border-zinc-600 hover:text-zinc-100";
+const HOVER_ACCENT = "hover:border-zinc-300";
 const HOVER_ADMIN = "hover:text-zinc-100";
 const HOVER_LEAVE = "hover:text-red-400";
 
@@ -77,7 +78,9 @@ export async function AccountPanel() {
   if (!viewer) {
     return (
       <Link href="/sign-in" className={`${PILL} ${HOVER_ACCENT}`}>
-        Sign in
+        <RollLabel fill className="relative">
+          Sign in
+        </RollLabel>
       </Link>
     );
   }
@@ -103,7 +106,7 @@ export async function AccountPanel() {
       {/* Admin above, and the act that costs something last. */}
       {staff && (
         <Link href="/admin" className={`${MENU_ROW} ${HOVER_ADMIN}`}>
-          Admin
+          <RollLabel>Admin</RollLabel>
         </Link>
       )}
 
@@ -127,9 +130,9 @@ export async function AccountPanel() {
 /**
  * What stands in the prerendered shell until the session is known.
  *
- * Sized to the signed-out state, which is what most readers get: one `text-xs`
- * pill at the vertical padding it carries, so 26px tall and about as wide as
- * "Sign in". A signed-in row is 22px taller, and that difference is absorbed by
+ * Sized to the signed-out state, which is what most readers get: one pill,
+ * 32px tall and about as wide as "Sign in". A signed-in row is taller, and
+ * that difference is absorbed by
  * the rail's scroll region -- it sits above this and is the flexible child --
  * rather than moving the page. It draws no rule and no gutter of its own for
  * the same reason the real panel does not: the sidebar's base owns both.
@@ -137,7 +140,7 @@ export async function AccountPanel() {
 export function AccountPanelSkeleton() {
   return (
     <div aria-hidden="true">
-      <SkeletonBar className="h-[26px] w-16 rounded-full skeleton-pulse" />
+      <SkeletonBar className="h-8 w-[4.75rem] rounded-full skeleton-pulse" />
     </div>
   );
 }

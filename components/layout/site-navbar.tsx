@@ -11,15 +11,14 @@ import { SearchIcon } from "@/components/icons/nav-icons";
 import { ProfileAvatar } from "@/components/layout/profile-avatar";
 import { useSearchModal } from "@/components/layout/search-modal";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
-import { CONTAINER } from "@/components/site/ui";
+import { IconFx, RollLabel } from "@/components/motion/interactive";
+import { CONTAINER, FOCUS, ICON_BUTTON } from "@/components/site/ui";
 import type { AboutData } from "@/lib/data/about";
 import { isActive, visibleNavItems } from "@/lib/nav";
 import { cn } from "@/lib/utils/cn";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const ICON_BUTTON =
-  "inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 
 /**
  * The site's navigation, across the top.
@@ -27,9 +26,9 @@ const ICON_BUTTON =
  * It replaced a fixed left rail. Three behaviours, all GSAP:
  *
  * - **It steps aside while reading.** Scrolling down past the first screen
- *   slides it up out of view; any scroll up brings it back. A hairline appears
- *   under it once the page has left the top, so at rest it is part of the
- *   canvas and in use it is chrome.
+ *   slides it up out of view; any scroll up brings it back. Once the page has
+ *   left the top it takes a blurred veil of the canvas rather than a rule, so
+ *   text passing beneath it is muted rather than cut off by a line.
  * - **The current page is underlined by one moving rule**, not by a style on
  *   each link, so a navigation slides the rule to its new place instead of
  *   one underline vanishing and another appearing.
@@ -119,7 +118,7 @@ export function SiteNavbar({
       place(rule.style.opacity !== "");
       const onResize = () => place(false);
       window.addEventListener("resize", onResize);
-      // Onest arrives after first layout and changes every link's width.
+      // The web font arrives after first layout and changes every link's width.
       document.fonts?.ready.then(() => place(false));
       return () => window.removeEventListener("resize", onResize);
     },
@@ -127,12 +126,12 @@ export function SiteNavbar({
   );
 
   return (
-    <header ref={header} data-site-header className="site-header fixed inset-x-0 top-0 z-40 bg-black">
+    <header ref={header} data-site-header className="site-header fixed inset-x-0 top-0 z-40">
       <div className={cn(CONTAINER, "flex h-16 items-center gap-6")}>
         <Link
           href="/"
           aria-label={`${about.name}, home`}
-          className="group flex min-w-0 items-center gap-2.5 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400"
+          className="group flex min-w-0 items-center gap-2.5 rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400"
         >
           <ProfileAvatar
             src={about.image_url}
@@ -141,8 +140,8 @@ export function SiteNavbar({
             eager
             className="transition-transform duration-500 group-hover:scale-110"
           />
-          <span className="truncate text-[15px] font-medium tracking-tight text-zinc-100">
-            {about.name}
+          <span className="truncate text-[0.9375rem] font-[580] tracking-[-0.02em] text-zinc-100 [font-stretch:110%]">
+            <RollLabel press={false}>{about.name}</RollLabel>
           </span>
         </Link>
 
@@ -156,11 +155,12 @@ export function SiteNavbar({
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "block rounded-sm py-5 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
+                      "block rounded-full py-5 text-sm transition-colors duration-300",
+                      FOCUS,
                       active ? "text-zinc-100" : "text-zinc-400 hover:text-zinc-100",
                     )}
                   >
-                    {item.label}
+                    <RollLabel press={false}>{item.label}</RollLabel>
                   </Link>
                 </li>
               );
@@ -171,7 +171,9 @@ export function SiteNavbar({
 
         <div className="ml-auto flex items-center gap-1 lg:ml-0">
           <button type="button" onClick={openSearch} aria-label="Search" className={ICON_BUTTON}>
-            <SearchIcon className="h-[18px] w-[18px]" />
+            <IconFx>
+              <SearchIcon className="h-[18px] w-[18px]" />
+            </IconFx>
           </button>
           <ThemeToggle iconSize="h-[18px] w-[18px]" className={ICON_BUTTON} />
           <div className="group/acct ml-2 hidden lg:block" data-account-slot="bar">
@@ -185,7 +187,9 @@ export function SiteNavbar({
             aria-controls="site-menu"
             className={cn(ICON_BUTTON, "lg:hidden")}
           >
-            <MenuIcon />
+            <IconFx>
+              <MenuIcon />
+            </IconFx>
           </button>
         </div>
       </div>

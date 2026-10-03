@@ -28,7 +28,7 @@ export default async function ContactPage() {
           lead={<>Some conversations don&rsquo;t start with code, they begin with a message.</>}
         />
 
-        <div className="grid gap-16 border-t border-zinc-800 pt-12 pb-8 md:pt-16 lg:grid-cols-[1fr_1.15fr] lg:gap-20">
+        <div className="grid gap-16 pt-4 pb-8 lg:grid-cols-[1fr_1.15fr] lg:gap-20">
           <SocialLinks about={about} />
           <ContactForm />
         </div>

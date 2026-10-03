@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ImageLightbox, type LightboxImage } from "@/components/site/image-lightbox";
+import { ArrowFx, IconFx } from "@/components/motion/interactive";
 
 /**
  * The image set on a blog post or a project.
@@ -96,7 +97,7 @@ export function MediaGallery({
   return (
     <figure className={className}>
       <div
-        className="relative overflow-hidden rounded-lg bg-zinc-900"
+        className="relative overflow-hidden rounded-xl bg-zinc-900"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
@@ -128,13 +129,13 @@ export function MediaGallery({
       </div>
 
       {/* The caption row: which file, where in the set, and the controls. */}
-      <figcaption className="mt-3 flex items-center gap-4 text-xs text-zinc-500">
+      <figcaption className="type-meta mt-3 flex items-center gap-4 text-zinc-500">
         <span className="current-filename min-w-0 truncate">
           {names[index] || (variant === "blog" ? "blog-image" : "image")}
         </span>
         {multiple && (
           <div className="ml-auto flex shrink-0 items-center gap-1">
-            <span className="mr-2 tabular-nums">
+            <span className="mr-2">
               {index + 1} / {count}
             </span>
             <button
@@ -144,7 +145,7 @@ export function MediaGallery({
               aria-label="Previous Image"
               onClick={() => go(index - 1)}
             >
-              <ChevronIcon d="M15 19l-7-7 7-7" />
+              <ArrowFx direction="left" className="h-4 w-4" />
             </button>
             <button
               type="button"
@@ -153,7 +154,7 @@ export function MediaGallery({
               aria-label="Next Image"
               onClick={() => go(index + 1)}
             >
-              <ChevronIcon d="M9 5l7 7-7 7" />
+              <ArrowFx direction="right" className="h-4 w-4" />
             </button>
           </div>
         )}
@@ -164,14 +165,16 @@ export function MediaGallery({
           onClick={() => setLightboxAt(index)}
           className={`magnify-button ${GALLERY_BUTTON} ${multiple ? "" : "ml-auto"}`}
         >
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.75}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-            />
-          </svg>
+          <IconFx>
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.75}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+              />
+            </svg>
+          </IconFx>
         </button>
       </figcaption>
 
@@ -187,30 +190,9 @@ export function MediaGallery({
 }
 
 const GALLERY_BUTTON =
-  "inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+  "inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-zinc-400 transition-colors duration-300 hover:bg-zinc-900 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 
 function navClass(variant: Variant, direction: "prev" | "next"): string {
   return variant === "blog" ? `blog-slider-nav blog-${direction}` : `project-${direction}`;
 }
 
-/**
- * The button that opens the lightbox.
- *
- * `imageLightbox.js` injected this from JavaScript half a second after the page
- * loaded -- which is also how its Tailwind classes came to be scanned out of a
- * file under `staticfiles/js/`. Written as markup they are visible to the
- * compiler in the ordinary way.
- */
-function ChevronIcon({ d }: { d: string }) {
-  return (
-    <svg
-      className="h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={d} />
-    </svg>
-  );
-}

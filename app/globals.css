@@ -115,21 +115,131 @@
    --------------------------------------------------------------------------- */
 
 /* ---------------------------------------------------------------------------
-   Onest
+   The three faces
 
-   The faces themselves come from `next/font/google`, which downloads them at
-   build time, serves them from this origin under /_next/static/media, and
-   writes one `@font-face` per subset with the `unicode-range` that selects it.
-   The call and the reasoning for its options are in `app/fonts.ts`.
+   They come from `next/font/google`, which downloads them at build time,
+   serves them from this origin under /_next/static/media, and writes one
+   `@font-face` per subset with the `unicode-range` that selects it. The calls
+   and the reasoning for each face are in `app/fonts.ts`.
 
-   What is left here is the wiring: `--font-onest` is the variable that call
-   declares, and it carries next/font's size-adjusted fallback face after the
-   real one, so text laid out before the download finishes is close enough in
-   metrics not to reflow when it arrives. Naming it through Tailwind's
-   `--font-sans` is what makes `font-sans` and the inherited body font both
-   resolve to Onest.
+   What is left here is the wiring. Each variable carries next/font's
+   size-adjusted fallback face after the real one, so text laid out before the
+   download finishes is close enough in metrics not to reflow when it arrives.
+   Naming them through Tailwind's tokens is what makes the inherited body font,
+   and the sans, serif and mono font utilities, resolve to them.
    --------------------------------------------------------------------------- */
 
 @theme {
-    --font-sans: var(--font-onest), ui-sans-serif, system-ui, sans-serif;
+    --font-sans: var(--font-mona), ui-sans-serif, system-ui, sans-serif;
+    --font-serif: var(--font-literata), ui-serif, Georgia, serif;
+    --font-mono: var(--font-martian), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* ---------------------------------------------------------------------------
+   The type scale
+
+   Eight roles, and every piece of text on the public site is one of them.
+   They used to be spelled out at each call site -- a size, a weight, a
+   tracking step and a leading, chosen fresh every time -- which is how one
+   page came to have five sizes of section heading. A role is a decision made
+   once.
+
+   Utilities rather than component classes, so they sort with the rest of
+   Tailwind's output and a colour utility beside one still applies. **Never
+   put a size, leading or tracking utility on the same element as one of
+   these**: both would set the same property, and which wins would be a
+   question of sort order rather than of intent.
+
+   Mona Sans is variable in width, and the scale spends it: display roles are
+   set wider and tighter, item and body roles at their natural width. Large
+   sizes are fluid between a phone and a desktop column, so a heading never
+   needs a breakpoint to stop wrapping into a ladder.
+   --------------------------------------------------------------------------- */
+
+/* The home page's greeting: the largest thing on the site, once. */
+@utility type-hero {
+    font-family: var(--font-sans);
+    font-size: clamp(2.75rem, 1.55rem + 5.4vw, 6.25rem);
+    line-height: 0.95;
+    font-weight: 560;
+    font-stretch: 118%;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+}
+
+/* Every other page's title. */
+@utility type-title {
+    font-family: var(--font-sans);
+    font-size: clamp(2.5rem, 1.6rem + 3.9vw, 5rem);
+    line-height: 0.98;
+    font-weight: 560;
+    font-stretch: 116%;
+    letter-spacing: -0.042em;
+    text-wrap: balance;
+}
+
+/* A post's or a project's own title: a page title, but for a sentence. */
+@utility type-headline {
+    font-family: var(--font-sans);
+    font-size: clamp(2.125rem, 1.45rem + 2.9vw, 3.75rem);
+    line-height: 1.02;
+    font-weight: 560;
+    font-stretch: 112%;
+    letter-spacing: -0.038em;
+    text-wrap: balance;
+}
+
+/* A section heading. */
+@utility type-section {
+    font-family: var(--font-sans);
+    font-size: clamp(1.5rem, 1.18rem + 1.35vw, 2.25rem);
+    line-height: 1.08;
+    font-weight: 550;
+    font-stretch: 110%;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+}
+
+/* The title of one thing in a list: a post, a project, a role. */
+@utility type-item {
+    font-family: var(--font-sans);
+    font-size: clamp(1.0625rem, 0.98rem + 0.36vw, 1.3125rem);
+    line-height: 1.3;
+    font-weight: 560;
+    font-stretch: 104%;
+    letter-spacing: -0.014em;
+    text-wrap: balance;
+}
+
+/* The reading voice at the head of a page: a lead, a bio. */
+@utility type-lead {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 0.99rem + 0.62vw, 1.5rem);
+    line-height: 1.5;
+    font-weight: 360;
+    letter-spacing: -0.006em;
+    font-variant-numeric: oldstyle-nums proportional-nums;
+    text-wrap: pretty;
+}
+
+/* A figure on the dashboard, and anything else that is a number to be read. */
+@utility type-figure {
+    font-family: var(--font-sans);
+    font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);
+    line-height: 1;
+    font-weight: 520;
+    font-stretch: 112%;
+    letter-spacing: -0.035em;
+    font-variant-numeric: tabular-nums;
+}
+
+/* A trace: a date, a duration, a count, a tag, a label above a figure. */
+@utility type-meta {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.55;
+    font-weight: 400;
+    font-stretch: 87.5%;
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
 }

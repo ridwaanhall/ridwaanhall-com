@@ -1,29 +1,28 @@
 import { Reveal } from "@/components/motion/reveal";
-import { ArrowUpRightIcon, BUTTON_SECONDARY } from "@/components/site/ui";
+import { ButtonLink } from "@/components/site/ui";
 
 /**
  * The invitation to sponsor, as one quiet line rather than a pink banner.
  *
  * Same words and the same link as before; the gradient, the decorative discs
  * and the pulsing heart are gone. A request for support reads as more
- * sincere when it is not the loudest thing on the page.
+ * sincere when it is not the loudest thing on the page -- so no rule or box
+ * sets it apart either, only the space above it.
  */
 export function SponsorMe({ sponsorUrl }: { sponsorUrl: string }) {
   if (!sponsorUrl) return null;
 
   return (
-    <Reveal className="flex flex-col gap-6 border-t border-zinc-800 py-12 sm:flex-row sm:items-center sm:justify-between md:py-16"
-    >
+    <Reveal className="flex flex-col gap-6 py-14 sm:flex-row sm:items-center sm:justify-between md:py-20">
       <div className="max-w-xl">
-        <h2 className="text-xl font-medium tracking-tight text-zinc-100 sm:text-2xl">Support My Work</h2>
-        <p className="mt-2 text-base leading-relaxed text-zinc-400">
+        <h2 className="type-section text-zinc-100">Support my work</h2>
+        <p className="mt-3 type-lead text-zinc-400">
           Help me continue creating open source projects and sharing knowledge with the community!
         </p>
       </div>
-      <a href={sponsorUrl} target="_blank" rel="noopener noreferrer" className={`${BUTTON_SECONDARY} self-start sm:self-auto`}>
+      <ButtonLink href={sponsorUrl} variant="secondary" arrow="up-right" className="self-start sm:self-auto">
         Support
-        <ArrowUpRightIcon className="h-4 w-4" />
-      </a>
+      </ButtonLink>
     </Reveal>
   );
 }

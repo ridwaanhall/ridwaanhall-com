@@ -1,5 +1,6 @@
 "use client";
 
+import { RollLabel } from "@/components/motion/interactive";
 import type { CommentNode } from "@/lib/data/comment-shapes";
 
 /**
@@ -56,7 +57,7 @@ export function Comment({
         />
       ) : (
         <div
-          className={`${isReply ? "w-7 h-7 text-xs" : "w-9 h-9 text-sm"} rounded-full bg-zinc-900 border border-zinc-800 flex-shrink-0 mt-0.5 flex items-center justify-center text-zinc-400 font-medium`}
+          className={`${isReply ? "w-7 h-7 text-xs" : "w-9 h-9 text-sm"} rounded-full bg-zinc-900 flex-shrink-0 mt-0.5 flex items-center justify-center text-zinc-400 font-medium`}
         >
           {comment.username.slice(0, 1).toUpperCase()}
         </div>
@@ -79,7 +80,7 @@ export function Comment({
               Superuser
             </span>
           ) : comment.role === "staff" ? (
-            <span className="inline-flex items-center rounded-full border border-zinc-700 bg-zinc-900 px-2 py-0.5 text-[11px] font-medium text-zinc-300">
+            <span className="inline-flex items-center rounded-full bg-zinc-800 px-2 py-0.5 text-[11px] font-medium text-zinc-300">
               Staff
             </span>
           ) : null}
@@ -87,7 +88,7 @@ export function Comment({
           <time
             dateTime={comment.createdAt}
             title={TITLE_FORMAT.format(created)}
-            className="text-xs text-zinc-500 font-mono"
+            className="type-meta text-zinc-500"
           >
             {DATE_FORMAT.format(created)}
           </time>
@@ -101,7 +102,7 @@ export function Comment({
         ) : (
           <>
             <p
-              className={`mt-1 ${isReply ? "text-sm" : ""} text-zinc-300 whitespace-pre-line break-words leading-relaxed`}
+              className={`mt-1 font-serif ${isReply ? "text-sm" : "text-[0.9375rem]"} text-zinc-300 whitespace-pre-line break-words leading-relaxed`}
             >
               {comment.body}
             </p>
@@ -115,10 +116,10 @@ export function Comment({
                 <button
                   type="button"
                   onClick={() => onReply(comment)}
-                  className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-zinc-500 hover:text-zinc-100 hover:bg-zinc-900 border border-transparent hover:border-zinc-800 transition-all duration-300"
+                  className="inline-flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-1 text-zinc-500 transition-colors duration-300 hover:bg-zinc-900 hover:text-zinc-100"
                 >
                   <ReplyIcon className="w-3.5 h-3.5" />
-                  Reply
+                  <RollLabel>Reply</RollLabel>
                 </button>
               )}
 
@@ -127,10 +128,10 @@ export function Comment({
                   type="button"
                   onClick={() => onDelete(comment)}
                   disabled={busy}
-                  className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-zinc-500 hover:text-red-300 hover:bg-red-950/40 border border-transparent hover:border-red-900/60 transition-all duration-300 disabled:opacity-50"
+                  className="inline-flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-1 text-zinc-500 transition-colors duration-300 hover:bg-red-950/40 hover:text-red-300 disabled:opacity-50"
                 >
                   <TrashIcon className="w-3.5 h-3.5" />
-                  Delete
+                  <RollLabel>Delete</RollLabel>
                 </button>
               )}
             </div>

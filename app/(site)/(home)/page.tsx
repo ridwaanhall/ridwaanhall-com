@@ -48,19 +48,27 @@ export default async function HomePage() {
         <HomeIntro about={about} sponsorUrl={sponsorUrl} />
 
         {selected.length > 0 && (
-          <Section title="Selected work" action={<ArrowLink href="/projects">All projects</ArrowLink>}>
+          <Section
+            title="Selected work"
+            marker={`${selected.length} of ${projects.length} projects`}
+            action={<ArrowLink href="/projects">All projects</ArrowLink>}
+          >
             <ProjectGrid projects={selected} />
           </Section>
         )}
 
         {latest.length > 0 && (
-          <Section title="Latest writing" action={<ArrowLink href="/blog">All posts</ArrowLink>}>
+          <Section
+            title="Latest writing"
+            marker={`${latest.length} of ${blogs.length} posts`}
+            action={<ArrowLink href="/blog">All posts</ArrowLink>}
+          >
             <BlogList posts={latest} />
           </Section>
         )}
 
         {skills.length > 0 && (
-          <Section title="Tools I've used">
+          <Section title="Tools I've used" marker={`${skills.length} tools`}>
             <Reveal>
               <SkillTicker rows={tickerRows} />
             </Reveal>

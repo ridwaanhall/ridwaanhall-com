@@ -1,21 +1,25 @@
 import Image from "next/image";
 
+import { ArrowFx, LineText } from "@/components/motion/interactive";
 import { Reveal } from "@/components/motion/reveal";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@/components/site/disclosure";
-import { ArrowUpRightIcon } from "@/components/site/ui";
 import type { Application, Award, Certification, Education, Experience } from "@/lib/data/about";
 import { cn } from "@/lib/utils/cn";
 
 /**
  * The About page's records, as a timeline rather than a stack of cards.
  *
- * Every entry is the same shape: when, on the left in the muted neutral;
- * what and where, on the right; then whatever detail the record carries. The
- * details are shown outright -- responsibilities and achievements used to sit
- * behind a "Show more" on every card, so the page's actual content was one
- * click away per item. The application journeys keep their disclosure, because
- * a journey is a table of up to a dozen steps and sixty-odd of them open at
- * once would bury the list.
+ * Every entry is the same shape: when, on the left as a mono trace; what and
+ * where, on the right; then whatever detail the record carries. Nothing is
+ * ruled off -- entries are separated by their own padding.
+ *
+ * Two kinds of detail sit behind a "Show more". An employer's roles and their
+ * responsibilities, because laid out in full they made this page fifteen
+ * thousand pixels tall and buried every section below them -- collapsed, an
+ * entry still says who, when, and the latest role. And an application's
+ * journey, because it is a table of up to a dozen steps and sixty-odd of them
+ * open at once would bury the list. Awards, education and certifications
+ * stay open: their detail is a line or two.
  *
  * Colour is gone from all of it but the application outcome, where the colour
  * *is* the information -- and that is a dot beside the word, never the word's
@@ -23,7 +27,7 @@ import { cn } from "@/lib/utils/cn";
  */
 
 const LINK =
-  "rounded-sm transition-colors hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+  "rounded-full transition-colors duration-300 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 
 function OrgMark({ logo, name, className }: { logo: string; name: string; className?: string }) {
   if (!logo) {
@@ -31,7 +35,7 @@ function OrgMark({ logo, name, className }: { logo: string; name: string; classN
       <span
         aria-hidden="true"
         className={cn(
-          "flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-zinc-800 text-xs font-medium text-zinc-500",
+          "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-zinc-900 text-xs font-medium text-zinc-500",
           className,
         )}
       >
@@ -45,7 +49,7 @@ function OrgMark({ logo, name, className }: { logo: string; name: string; classN
       alt={`${name} logo`}
       width={72}
       height={72}
-      className={cn("h-9 w-9 shrink-0 rounded-md object-cover", className)}
+      className={cn("h-9 w-9 shrink-0 rounded-lg object-cover", className)}
     />
   );
 }
@@ -53,8 +57,8 @@ function OrgMark({ logo, name, className }: { logo: string; name: string; classN
 function Org({ name, website }: { name: string; website: string }) {
   return website ? (
     <a href={website} target="_blank" rel="noopener noreferrer" className={cn(LINK, "inline-flex items-center gap-1")}>
-      {name}
-      <ArrowUpRightIcon className="h-3 w-3 opacity-60" />
+      <LineText>{name}</LineText>
+      <ArrowFx direction="up-right" className="h-3 w-3 opacity-60" />
     </a>
   ) : (
     <>{name}</>
@@ -64,7 +68,7 @@ function Org({ name, website }: { name: string; website: string }) {
 function Bullets({ items }: { items: string[] }) {
   if (items.length === 0) return null;
   return (
-    <ul className="mt-4 space-y-2 text-sm leading-relaxed text-zinc-400">
+    <ul className="mt-4 space-y-2 text-[0.9375rem] leading-relaxed text-pretty text-zinc-400">
       {items.map((item, index) => (
         <li key={index} className="relative pl-4">
           <span aria-hidden="true" className="absolute top-[0.7em] left-0 h-px w-2 bg-zinc-600" />
@@ -78,28 +82,34 @@ function Bullets({ items }: { items: string[] }) {
 /** One row of the timeline: the period on the left, the record on the right. */
 function Entry({ when, children }: { when: React.ReactNode; children: React.ReactNode }) {
   return (
-    <Reveal
-      as="li"
-      className="grid grid-cols-1 gap-x-10 gap-y-2 border-t border-zinc-800 py-8 md:grid-cols-[10rem_1fr]"
-    >
-      <div className="pt-0.5 text-sm tabular-nums text-zinc-500">{when}</div>
+    <Reveal as="li" className="grid grid-cols-1 gap-x-10 gap-y-2 py-7 md:grid-cols-[10rem_1fr]">
+      <div className="type-meta pt-1 text-zinc-500">{when}</div>
       <div className="min-w-0">{children}</div>
     </Reveal>
   );
 }
 
 export function Timeline({ children }: { children: React.ReactNode }) {
-  return <ol className="border-b border-zinc-800">{children}</ol>;
+  return <ol>{children}</ol>;
 }
 
 function monthYearText(value: { month: string; year: number } | null | undefined): string {
   return value ? `${value.month} ${value.year}` : "";
 }
 
+/**
+ * One employer, however many roles were held there.
+ *
+ * Collapsed, it is the company, how many positions, and the latest role --
+ * enough to scan the page by. "Show more" opens every role with its dates,
+ * terms and responsibilities. An employer with one role and nothing written
+ * under it has nothing to open, so it gets no button.
+ */
 export function ExperienceEntry({ company, roles }: { company: string; roles: Experience[] }) {
   const first = roles[0];
   const start = roles[roles.length - 1]?.period.start;
   const end = first.period.end;
+  const hasMore = roles.length > 1 || roles.some((role) => role.responsibilities.length > 0);
 
   return (
     <Entry
@@ -109,43 +119,56 @@ export function ExperienceEntry({ company, roles }: { company: string; roles: Ex
         </>
       }
     >
-      <div className="flex items-center gap-3">
-        <OrgMark logo={first.logo} name={company} />
-        <div className="min-w-0">
-          <h3 className="text-lg font-medium tracking-tight text-zinc-100">
-            <Org name={company} website={first.website} />
-          </h3>
-          <p className="text-xs text-zinc-500">
-            {roles.length} position{roles.length === 1 ? "" : "s"}
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-6 space-y-8 border-l border-zinc-800 pl-5">
-        {roles.map((role) => (
-          <div key={`${role.title}-${role.period.start_iso}`}>
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-              <h4 className="text-base font-medium text-zinc-100">{role.title}</h4>
-              {role.is_current && <span className="text-xs text-zinc-500">Current</span>}
+      <Disclosure>
+        <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <OrgMark logo={first.logo} name={company} />
+            <div className="min-w-0">
+              <h3 className="type-item text-zinc-100">
+                <Org name={company} website={first.website} />
+              </h3>
+              <p className="type-meta text-zinc-500">
+                {roles.length} position{roles.length === 1 ? "" : "s"}
+                {first.is_current ? " · current" : ""}
+              </p>
             </div>
-            <p className="mt-1 flex flex-wrap gap-x-2 text-sm text-zinc-500">
-              <span>
-                {monthYearText(role.period.start)} –{" "}
-                {role.period.end === "Present" ? "Present" : monthYearText(role.period.end)}
-              </span>
-              {role.employment_type && <span>· {role.employment_type}</span>}
-              {(role.location_type || role.location) && (
-                <span>
-                  · {role.location_type}
-                  {role.location_type && role.location ? ", " : ""}
-                  {role.location}
-                </span>
-              )}
-            </p>
-            <Bullets items={role.responsibilities} />
           </div>
-        ))}
-      </div>
+          {hasMore && <DisclosureButton />}
+        </div>
+
+        <p className="mt-4 text-[0.9375rem] text-zinc-300">
+          {first.title}
+          {roles.length > 1 && <span className="text-zinc-500"> and {roles.length - 1} more</span>}
+        </p>
+
+        {hasMore && (
+          <DisclosurePanel className="space-y-8 pt-7">
+            {roles.map((role) => (
+              <div key={`${role.title}-${role.period.start_iso}`} className="pl-4">
+                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <h4 className="text-base font-[560] text-zinc-100">{role.title}</h4>
+                  {role.is_current && <span className="type-meta text-zinc-500">current</span>}
+                </div>
+                <p className="type-meta mt-1.5 flex flex-wrap gap-x-2 text-zinc-500">
+                  <span>
+                    {monthYearText(role.period.start)} –{" "}
+                    {role.period.end === "Present" ? "Present" : monthYearText(role.period.end)}
+                  </span>
+                  {role.employment_type && <span>· {role.employment_type}</span>}
+                  {(role.location_type || role.location) && (
+                    <span>
+                      · {role.location_type}
+                      {role.location_type && role.location ? ", " : ""}
+                      {role.location}
+                    </span>
+                  )}
+                </p>
+                <Bullets items={role.responsibilities} />
+              </div>
+            ))}
+          </DisclosurePanel>
+        )}
+      </Disclosure>
     </Entry>
   );
 }
@@ -164,17 +187,17 @@ export function EducationEntry({ education }: { education: Education }) {
       <div className="flex items-center gap-3">
         <OrgMark logo={education.logo} name={education.institution} className="rounded-full" />
         <div className="min-w-0">
-          <h3 className="text-lg font-medium tracking-tight text-zinc-100">
+          <h3 className="type-item text-zinc-100">
             <Org name={education.institution} website={education.website} />
           </h3>
-          <p className="text-sm text-zinc-400">
+          <p className="text-[0.9375rem] text-zinc-400">
             {education.degree}
             {education.alias ? ` (${education.alias})` : ""}
           </p>
         </div>
       </div>
       {education.location.regency && (
-        <p className="mt-3 text-sm text-zinc-500">
+        <p className="type-meta mt-3 text-zinc-500">
           {education.location.regency}, {education.location.province} {education.location.flag}
         </p>
       )}
@@ -189,13 +212,15 @@ export function AwardEntry({ award }: { award: Award }) {
       <div className="flex items-center gap-3">
         <OrgMark logo={award.logo} name={award.institution} />
         <div className="min-w-0">
-          <h3 className="text-lg font-medium tracking-tight text-zinc-100">{award.title}</h3>
-          <p className="text-sm text-zinc-400">
+          <h3 className="type-item text-zinc-100">{award.title}</h3>
+          <p className="text-[0.9375rem] text-zinc-400">
             <Org name={award.institution} website={award.website} />
           </p>
         </div>
       </div>
-      {award.description && <p className="mt-3 text-sm leading-relaxed text-zinc-400">{award.description}</p>}
+      {award.description && (
+        <p className="mt-3 text-[0.9375rem] leading-relaxed text-pretty text-zinc-400">{award.description}</p>
+      )}
       {award.credential_url && <CredentialLink href={award.credential_url} />}
     </Entry>
   );
@@ -203,12 +228,12 @@ export function AwardEntry({ award }: { award: Award }) {
 
 export function CertificationEntry({ certification }: { certification: Certification }) {
   return (
-    <div className="grid grid-cols-1 gap-x-10 gap-y-1 border-t border-zinc-800 py-6 md:grid-cols-[10rem_1fr]">
-      <div className="pt-0.5 text-sm tabular-nums text-zinc-500">{monthYearText(certification.issued)}</div>
+    <div className="grid grid-cols-1 gap-x-10 gap-y-1 py-5 md:grid-cols-[10rem_1fr]">
+      <div className="type-meta pt-1 text-zinc-500">{monthYearText(certification.issued)}</div>
       <div className="flex min-w-0 items-start gap-3">
         <OrgMark logo={certification.logo} name={certification.institution} className="h-7 w-7" />
         <div className="min-w-0">
-          <h3 className="text-base font-medium text-zinc-100">{certification.title}</h3>
+          <h3 className="text-base font-[560] text-balance text-zinc-100">{certification.title}</h3>
           <p className="text-sm text-zinc-500">
             <Org name={certification.institution} website={certification.website} />
           </p>
@@ -226,10 +251,10 @@ function CredentialLink({ href }: { href: string }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={cn(LINK, "group mt-3 inline-flex items-center gap-1 text-sm text-zinc-400")}
+      className={cn(LINK, "mt-3 inline-flex items-center gap-1 text-sm text-zinc-400")}
     >
-      <span className="link-draw">View Credential</span>
-      <ArrowUpRightIcon className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+      <LineText>View credential</LineText>
+      <ArrowFx direction="up-right" className="h-3.5 w-3.5" />
     </a>
   );
 }
@@ -256,18 +281,18 @@ export function ApplicationEntry({ application }: { application: Application }) 
   ].filter(Boolean) as string[];
 
   return (
-    <div className="border-t border-zinc-800 py-6">
+    <div className="py-5">
       <Disclosure>
         <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
           <div className="min-w-0">
-            <h3 className="text-base font-medium text-zinc-100">
+            <h3 className="text-base font-[560] text-zinc-100">
               {application.position}
               <span className="font-normal text-zinc-500"> at {application.company_name}</span>
             </h3>
-            {facts.length > 0 && <p className="mt-1 text-sm text-zinc-500">{facts.join(" · ")}</p>}
+            {facts.length > 0 && <p className="type-meta mt-1.5 text-zinc-500">{facts.join(" · ")}</p>}
           </div>
           <div className="flex shrink-0 items-center gap-4">
-            <span className="inline-flex items-center gap-1.5 text-xs text-zinc-300">
+            <span className="type-meta inline-flex items-center gap-1.5 text-zinc-300">
               <span
                 aria-hidden="true"
                 className={cn("h-1.5 w-1.5 rounded-full", OUTCOME_DOT[application.status_slug] ?? "bg-zinc-400")}
@@ -279,22 +304,22 @@ export function ApplicationEntry({ application }: { application: Application }) 
         </div>
 
         {application.journey.length > 0 && (
-          <DisclosurePanel className="mt-4">
+          <DisclosurePanel className="pt-5">
             <div className="custom-scroll max-h-[60vh] overflow-auto">
               <table className="w-full table-auto text-sm">
                 <thead>
-                  <tr className="border-b border-zinc-800">
+                  <tr>
                     {["Timestamp", "Step", "Details", "Notes"].map((heading) => (
-                      <th key={heading} className="py-2 pr-4 text-left text-xs font-normal text-zinc-500">
+                      <th key={heading} className="type-meta py-2.5 pr-4 text-left font-normal text-zinc-500">
                         {heading}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-900">
+                <tbody>
                   {application.journey.map((step, index) => (
                     <tr key={index}>
-                      <td className="py-2 pr-4 align-top text-xs whitespace-nowrap">
+                      <td className="type-meta py-2.5 pr-4 align-top whitespace-nowrap">
                         {step.timestamp ? (
                           <>
                             <span className="text-zinc-400">{stepDate(step.timestamp)}</span>
@@ -305,9 +330,9 @@ export function ApplicationEntry({ application }: { application: Application }) 
                           <span className="text-zinc-600">-</span>
                         )}
                       </td>
-                      <td className="py-2 pr-4 align-top text-zinc-100">{step.title}</td>
-                      <td className="py-2 pr-4 align-top break-words text-zinc-400">{step.details}</td>
-                      <td className="py-2 align-top text-xs break-words text-zinc-500">{step.notes}</td>
+                      <td className="py-2.5 pr-4 align-top text-zinc-100">{step.title}</td>
+                      <td className="py-2.5 pr-4 align-top break-words text-zinc-400">{step.details}</td>
+                      <td className="py-2.5 align-top text-xs break-words text-zinc-500">{step.notes}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -317,8 +342,8 @@ export function ApplicationEntry({ application }: { application: Application }) 
         )}
 
         {application.lessons_learned && (
-          <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-            <span className="text-zinc-200">Lessons Learned:</span> {application.lessons_learned}
+          <p className="mt-3 font-serif text-[0.9375rem] leading-relaxed text-pretty text-zinc-400">
+            <span className="font-sans text-zinc-200">Lessons learned:</span> {application.lessons_learned}
           </p>
         )}
       </Disclosure>

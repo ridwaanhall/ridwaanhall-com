@@ -1,32 +1,64 @@
-import { Onest } from "next/font/google";
+import { Literata, Martian_Mono, Mona_Sans } from "next/font/google";
 
 /**
- * Onest, self-hosted by `next/font`.
+ * The site's three faces, self-hosted by `next/font`, one job each.
  *
- * Its own module rather than a constant in `layout.tsx`, because
- * `global-error.tsx` needs the same variable and is a Client Component:
+ * - **Mona Sans** is the voice of the interface and of every heading. It is
+ *   variable in width as well as weight, and the width is the point: display
+ *   sizes are set wider than body text, so one family carries both a headline
+ *   and a label without a second sans to pair it with.
+ * - **Literata** is the reading voice -- page leads, article and project
+ *   bodies, and whatever visitors write in the guestbook and comments. A book
+ *   face with an optical-size axis, so it tightens at caption sizes and opens
+ *   up at lead sizes on its own.
+ * - **Martian Mono** carries the traces: dates, durations, counts, tags, the
+ *   labels above figures, code. Set narrower than its default width, so a date
+ *   beside a title reads as an annotation rather than as a second heading.
+ *
+ * Literata and Martian Mono both cover Cyrillic, and that decides which face
+ * sets user-written text: guestbook messages are written by real visitors, and
+ * Mona Sans has no Cyrillic.
+ *
+ * Their own module rather than constants in `layout.tsx`, because
+ * `global-error.tsx` needs the same variables and is a Client Component:
  * importing the layout from it would drag the layout -- and every provider it
- * mounts -- across into the client bundle. What is here compiles to a plain
- * object at build time and costs nothing on either side of that line.
+ * mounts -- across into the client bundle.
  *
- * `preload: false` is the whole of the tuning, and it is deliberate. `subsets`
- * is what drives preloading, so listing all four -- which is what keeps
- * Cyrillic working -- would otherwise put four `<link rel="preload">` tags in
- * every document and fetch the Cyrillic faces for every reader, almost none of
- * whom need them. Left off, the browser reads the `unicode-range` on each
+ * `preload: false` throughout. `subsets` is what drives preloading, so listing
+ * the Cyrillic ones would otherwise put their files in every document's
+ * preload list. Left off, the browser reads the `unicode-range` on each
  * generated `@font-face` and fetches only the file a page's characters
- * actually land in, which is what the hand-written `@font-face` block this
- * replaced did.
+ * actually land in.
  *
- * All four subsets rather than latin alone: guestbook messages are written by
- * real visitors, and dropping Cyrillic would render theirs in a fallback.
- *
- * `app/globals.css` names `--font-onest` through Tailwind's `--font-sans`.
+ * `app/globals.css` names the three variables through Tailwind's font tokens.
  */
-export const onest = Onest({
-  subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
+export const monaSans = Mona_Sans({
+  subsets: ["latin", "latin-ext"],
   weight: "variable",
+  axes: ["wdth"],
   display: "swap",
   preload: false,
-  variable: "--font-onest",
+  variable: "--font-mona",
 });
+
+export const literata = Literata({
+  subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
+  weight: "variable",
+  style: ["normal", "italic"],
+  axes: ["opsz"],
+  display: "swap",
+  preload: false,
+  variable: "--font-literata",
+});
+
+export const martianMono = Martian_Mono({
+  subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
+  weight: "variable",
+  axes: ["wdth"],
+  display: "swap",
+  preload: false,
+  variable: "--font-martian",
+});
+
+/** All three variables, for the `<html>` element. */
+export const fontVariables = `${monaSans.variable} ${literata.variable} ${martianMono.variable}`;

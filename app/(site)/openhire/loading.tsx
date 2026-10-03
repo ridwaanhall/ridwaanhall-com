@@ -8,19 +8,13 @@ export default function Loading() {
   return (
     <SkeletonPage>
       <SkeletonPageHeading />
-      <div className="flex gap-6 border-b border-zinc-800 py-4">
-        <SkeletonBar className="h-4 w-24" />
-        <SkeletonBar className="h-4 w-14" />
-      </div>
+      <SkeletonBar className="mb-4 h-11 w-52 rounded-full" />
       {[0, 1, 2, 3].map((section) => (
-        <div
-          key={section}
-          className="grid grid-cols-1 gap-x-10 gap-y-4 border-t border-zinc-800 py-8 md:grid-cols-[12rem_1fr]"
-        >
-          <SkeletonBar className="h-4 w-32" />
+        <div key={section} className="grid grid-cols-1 gap-x-10 gap-y-4 py-9 md:grid-cols-[12rem_1fr]">
+          <SkeletonBar className="mt-1 h-3 w-32" />
           <div>
             {[0, 1, 2].map((row) => (
-              <div key={row} className="flex justify-between gap-4 border-b border-zinc-900 py-3">
+              <div key={row} className="flex justify-between gap-4 py-2.5">
                 <SkeletonBar className="h-4 w-36" />
                 <SkeletonBar className="h-4 w-24" />
               </div>

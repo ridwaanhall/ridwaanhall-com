@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { RollLabel } from "@/components/motion/interactive";
 
 export type AboutTab = {
   id: string;
@@ -77,10 +78,10 @@ export function AboutTabs({ tabs }: { tabs: AboutTab[] }) {
 
   return (
     <>
-      <div className="border-b border-zinc-800">
+      <div className="mb-4">
         <div
           ref={stripRef}
-          className="relative flex flex-wrap min-w-full -mb-px gap-6 text-sm"
+          className="relative inline-flex flex-wrap gap-1 rounded-full bg-zinc-900 p-1 text-sm"
           role="tablist"
         >
           {tabs.map((tab) => {
@@ -98,11 +99,11 @@ export function AboutTabs({ tabs }: { tabs: AboutTab[] }) {
                   else buttons.current.delete(tab.id);
                 }}
                 onClick={() => select(tab.id)}
-                className={`inline-block cursor-pointer py-4 whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 ${
+                className={`relative z-10 inline-flex h-9 cursor-pointer items-center rounded-full px-4 whitespace-nowrap transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 ${
                   selected ? "text-zinc-100" : "text-zinc-500 hover:text-zinc-200"
                 }`}
               >
-                {tab.label}
+                <RollLabel>{tab.label}</RollLabel>
               </button>
             );
           })}
@@ -115,8 +116,8 @@ export function AboutTabs({ tabs }: { tabs: AboutTab[] }) {
           {mark && (
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute h-px bg-zinc-100 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-              style={{ left: mark.left, top: mark.top, width: mark.width }}
+              className="pointer-events-none absolute inset-y-1 rounded-full bg-zinc-700 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{ left: mark.left, width: mark.width }}
             />
           )}
         </div>

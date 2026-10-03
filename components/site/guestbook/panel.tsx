@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, useTransition } from "react";
 
+import { LineText } from "@/components/motion/interactive";
 import { useConfirm } from "@/components/providers/confirm-dialog";
 import { Composer, ComposerHint } from "@/components/site/guestbook/composer";
 import {
@@ -196,7 +197,7 @@ export function GuestbookPanel({
   return (
     <div className={PANEL_FRAME}>
       <div className={`${PANEL_HEADER} flex items-center justify-between gap-3`}>
-        <p className="text-sm text-zinc-400">
+        <p className="type-meta text-zinc-400">
           {thread.messageCount} message{thread.messageCount === 1 ? "" : "s"}
         </p>
 
@@ -206,7 +207,7 @@ export function GuestbookPanel({
             onClick={() => setPinnedOpen((open) => !open)}
             aria-expanded={pinnedOpen}
             aria-controls="guestbook-pinned"
-            className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-xs font-medium text-zinc-200 transition-colors hover:bg-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+            className="inline-flex h-8 items-center gap-1.5 rounded-full border border-zinc-500 px-3 text-xs font-medium text-zinc-200 transition-colors duration-300 hover:border-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
           >
             <PinIcon className="h-3.5 w-3.5" filled />
             <span>
@@ -236,7 +237,7 @@ export function GuestbookPanel({
         <div
           id="guestbook-pinned"
           hidden={!pinnedOpen}
-          className="flex-shrink-0 space-y-1.5 border-b border-zinc-800 px-3 py-2.5"
+          className="flex-shrink-0 space-y-3 py-3"
         >
           {thread.pinned.map((pinned) => (
             <PinnedCard
@@ -258,7 +259,7 @@ export function GuestbookPanel({
       <div
         id="guestbook-messages"
         ref={listRef}
-        className="custom-scroll flex-1 space-y-5 overflow-y-auto overscroll-contain px-3 py-4"
+        className="feed-fade custom-scroll flex-1 space-y-6 overflow-y-auto overscroll-contain py-6"
       >
         {thread.roots.length > 0 ? (
           thread.roots.map((message) => (
@@ -269,7 +270,7 @@ export function GuestbookPanel({
             <ChatIcon className="mb-4 h-12 w-12 text-zinc-600" />
             {/* A `<p>`, not a heading. This is the first thing in the region and
                 the page's own `<h1>` is four levels above it. */}
-            <p className="mb-1 text-base font-medium text-zinc-300">
+            <p className="mb-1 type-item text-zinc-300">
               Nothing here yet
             </p>
             <p className="text-sm">Be the first to leave a message.</p>
@@ -279,7 +280,7 @@ export function GuestbookPanel({
 
       <div className={PANEL_FOOTER}>
         {signedIn && !canPost && (
-          <p className="px-1 py-2 text-sm text-zinc-400">
+          <p className="py-2 text-sm text-zinc-400">
             Posting to the guestbook is turned off for this account.
           </p>
         )}
@@ -296,7 +297,7 @@ export function GuestbookPanel({
               inputRef={inputRef}
             />
 
-            <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs text-zinc-500">
+            <div className="type-meta mt-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-zinc-500">
               <span className="min-w-0 truncate">
                 Signed in as {signedInAs?.name}
                 {signedInAs?.email ? ` (${signedInAs.email})` : ""} ·{" "}
@@ -312,9 +313,9 @@ export function GuestbookPanel({
                     });
                     if (accepted) await signOutHere("/guestbook");
                   }}
-                  className="cursor-pointer underline transition-colors hover:text-zinc-300"
+                  className="cursor-pointer rounded-full text-zinc-300 transition-colors hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
                 >
-                  Sign out
+                  <LineText>Sign out</LineText>
                 </button>
               </span>
               <ComposerHint text={text} />

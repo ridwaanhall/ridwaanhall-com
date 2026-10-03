@@ -43,7 +43,7 @@ export default function GuestbookPage() {
           lead="Leave a trace of your own. Say hello, ask something, or just let me know you were here."
         />
 
-        <div className="border-t border-zinc-800 pt-12 pb-8 md:pt-16">
+        <div className="pt-4 pb-8">
           <Suspense fallback={<GuestbookPanelSkeleton />}>
             <Panel />
           </Suspense>

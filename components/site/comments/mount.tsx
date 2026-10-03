@@ -57,14 +57,14 @@ export async function CommentSectionFor({
 export function CommentSectionSkeleton() {
   return (
     <section
-      className="skeleton-pulse mt-16 pt-12 border-t border-zinc-800"
+      className="skeleton-pulse mt-20 pt-4"
       role="status"
       aria-busy="true"
     >
       <span className="sr-only">Loading comments…</span>
       <div aria-hidden="true">
-        <SkeletonBar className="h-7 w-32" />
-        <SkeletonBlock className="mt-6 h-32" />
+        <SkeletonBar className="h-8 w-40" />
+        <SkeletonBlock className="mt-8 h-32 rounded-3xl" />
       </div>
     </section>
   );

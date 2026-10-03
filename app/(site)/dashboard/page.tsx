@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
-import { CONTAINER, PageHeader } from "@/components/site/ui";
+import { CONTAINER, PageHeader, Section } from "@/components/site/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { ActivityHeatmap } from "@/components/site/activity-heatmap";
 import { BulletScale } from "@/components/site/bullet-scale";
@@ -138,25 +138,21 @@ async function GitHubPanel({ about }: { about: AboutData }) {
  */
 function TodayRhythm({ day }: { day: WakatimeDay }) {
   return (
-    <section className="border-t border-zinc-800 py-12 md:py-16">
-      <div className="mb-8 flex flex-row items-baseline justify-between gap-2">
-        <h2 className="text-2xl font-medium tracking-tight text-zinc-100">Today&rsquo;s Rhythm</h2>
-        <p className="text-sm text-zinc-500">{day.date}</p>
-      </div>
+    <Section title="Today’s Rhythm" marker={day.date}>
 
-      <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
-        <DayStat
+      <div className="grid grid-cols-2 gap-x-8 gap-y-10 lg:grid-cols-4">
+        <StatCard
           label="Sessions"
           hint={`A quarter of an hour away starts a new one. ${day.total} logged in total.`}
           value={day.sessions}
         />
-        <DayStat label="Longest Session" value={day.longest_session} />
-        <DayStat
+        <StatCard label="Longest Session" value={day.longest_session} />
+        <StatCard
           label="Active Window"
           hint={`Longest break away: ${day.longest_break}`}
           value={day.active_window}
         />
-        <DayStat label="Peak Hour" hint={day.peak_hour_detail} value={day.peak_hour} />
+        <StatCard label="Peak Hour" hint={day.peak_hour_detail} value={day.peak_hour} />
       </div>
 
       <div className="mt-12">
@@ -169,7 +165,7 @@ function TodayRhythm({ day }: { day: WakatimeDay }) {
           />
         </ChartPanel>
       </div>
-    </section>
+    </Section>
   );
 }
 
@@ -187,26 +183,22 @@ function TodayRhythm({ day }: { day: WakatimeDay }) {
  */
 function CodingRhythm({ rhythm }: { rhythm: WakatimeRhythm }) {
   return (
-    <section className="border-t border-zinc-800 py-12 md:py-16">
-      <div className="mb-8 flex flex-row items-baseline justify-between gap-2">
-        <h2 className="text-2xl font-medium tracking-tight text-zinc-100">Coding Rhythm</h2>
-        <p className="text-sm text-zinc-500">Last Year</p>
-      </div>
+    <Section title="Coding Rhythm" marker="Last year">
 
-      <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
-        <RhythmStat label="Busiest Day" hint={rhythm.busiest_detail} value={rhythm.busiest} />
-        <RhythmStat label="Most AI-Heavy" hint={rhythm.most_ai_detail} value={rhythm.most_ai} />
+      <div className="grid grid-cols-2 gap-x-8 gap-y-10 lg:grid-cols-4">
+        <StatCard label="Busiest Day" hint={rhythm.busiest_detail} value={rhythm.busiest} />
+        <StatCard label="Most AI-Heavy" hint={rhythm.most_ai_detail} value={rhythm.most_ai} />
         {rhythm.has_trend && (
-          <RhythmStat label="AI Share Now" hint={rhythm.trend_detail} value={rhythm.trend_now} />
+          <StatCard label="AI Share Now" hint={rhythm.trend_detail} value={rhythm.trend_now} />
         )}
         {rhythm.has_comparison && (
-          <RhythmStat
+          <StatCard
             label="vs Community"
             hint={`The median WakaTime user codes ${rhythm.community_median_label} a day`}
             value={
               <>
                 {rhythm.multiple}
-                <span className="text-xs text-zinc-400">x median</span>
+                <span className="type-meta ml-1 text-zinc-400">x median</span>
               </>
             }
           />
@@ -249,19 +241,15 @@ function CodingRhythm({ rhythm }: { rhythm: WakatimeRhythm }) {
           maxLabel={rhythm.community_max_label}
         />
       )}
-    </section>
+    </Section>
   );
 }
 
 function Wakatime({ stats }: { stats: WakatimeStats }) {
   return (
-    <section className="border-t border-zinc-800 py-12 md:py-16">
-      <div className="mb-8 flex flex-row items-baseline justify-between gap-2">
-        <h2 className="text-2xl font-medium tracking-tight text-zinc-100">WakaTime Statistics</h2>
-        <p className="text-sm text-zinc-500">Live Trace</p>
-      </div>
+    <Section title="WakaTime Statistics" marker="Live trace">
 
-      <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2">
         <StatCard label="Begin Trace" value={stats.start_date} />
         <StatCard label="End Trace" value={stats.end_date} />
         <StatCard label="Daily Focus" value={stats.daily_average} />
@@ -275,7 +263,7 @@ function Wakatime({ stats }: { stats: WakatimeStats }) {
               {stats.today_coding}
               {stats.today_change_type !== "same" && (
                 <span
-                  className={`text-xs -ml-1 ${
+                  className={`type-meta ml-1 ${
                     stats.today_change_type === "increase" ? "text-green-500" : "text-red-500"
                   }`}
                 >
@@ -356,7 +344,7 @@ function Wakatime({ stats }: { stats: WakatimeStats }) {
       </div>
 
       <AiAnalytics ai={stats.ai} />
-    </section>
+    </Section>
   );
 }
 
@@ -380,21 +368,17 @@ function Wakatime({ stats }: { stats: WakatimeStats }) {
  */
 function AiAnalytics({ ai }: { ai: WakatimeAi }) {
   return (
-    <div className="mt-16">
-      <div className="mb-8 flex flex-row items-baseline justify-between gap-2">
-        <h2 className="text-2xl font-medium tracking-tight text-zinc-100">AI Coding Analytics</h2>
-        <p className="text-sm text-zinc-500">Last 7 Days</p>
-      </div>
+    <Section title="AI Coding Analytics" marker="Last 7 days" className="pb-0 md:pb-0">
 
-      <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
-        <AiStat
+      <div className="grid grid-cols-2 gap-x-8 gap-y-10 lg:grid-cols-4">
+        <StatCard
           label="Tokens In"
           hint={`${ai.tokens_in_exact}. ${ai.ai_line_percent}% of lines changed were written by AI.`}
           value={ai.tokens_in}
         />
-        <AiStat label="Tokens Out" hint={ai.tokens_out_exact} value={ai.tokens_out} />
-        <AiStat label="Prompts" hint={`Averaging ${ai.prompt_avg} each`} value={ai.prompts} />
-        <AiStat label="Avg Prompt" value={ai.prompt_avg} />
+        <StatCard label="Tokens Out" hint={ai.tokens_out_exact} value={ai.tokens_out} />
+        <StatCard label="Prompts" hint={`Averaging ${ai.prompt_avg} each`} value={ai.prompts} />
+        <StatCard label="Avg Prompt" value={ai.prompt_avg} />
         {ai.has_heuristics && (
           <>
             {/*
@@ -403,29 +387,29 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
               carrying one each. A week that cost nothing is a real $0; an
               outage is not, and only the flag can tell them apart.
             */}
-            <AiStat
+            <StatCard
               label="Est. Spend"
               hint="What the week's AI models cost, as WakaTime estimates it"
               value={ai.spend}
             />
-            <AiStat label="AI Sessions" value={ai.sessions} />
-            <AiStat
+            <StatCard label="AI Sessions" value={ai.sessions} />
+            <StatCard
               label="Human Review"
               hint={ai.review_detail}
               value={
                 <>
                   {ai.review_percent}{" "}
-                  <span className="text-xs text-zinc-400">({ai.review_sessions} sessions)</span>
+                  <span className="type-meta text-zinc-400">({ai.review_sessions} sessions)</span>
                 </>
               }
             />
-            <AiStat
+            <StatCard
               label="Human Follow-up"
               hint={ai.follow_up_detail}
               value={
                 <>
                   {ai.follow_up_percent}{" "}
-                  <span className="text-xs text-zinc-400">({ai.follow_up_sessions} sessions)</span>
+                  <span className="type-meta text-zinc-400">({ai.follow_up_sessions} sessions)</span>
                 </>
               }
             />
@@ -475,7 +459,7 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
           )}
         </GradientPanel>
       </div>
-    </div>
+    </Section>
   );
 }
 
@@ -494,32 +478,28 @@ function AiAnalytics({ ai }: { ai: WakatimeAi }) {
  */
 function CodingYear({ year }: { year: WakatimeYear }) {
   return (
-    <section className="border-t border-zinc-800 py-12 md:py-16">
-      <div className="mb-8 flex flex-row items-baseline justify-between gap-2">
-        <h2 className="text-2xl font-medium tracking-tight text-zinc-100">Coding Year</h2>
-        <p className="text-sm text-zinc-500">Last Year</p>
-      </div>
+    <Section title="Coding Year" marker="Last year">
 
-      <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
-        <YearStat label="Total Coded" hint={year.range} value={year.total} />
-        <YearStat label="Daily Focus" value={year.daily_average} />
-        <YearStat label="Peak Day" hint={year.best_day_date} value={year.best_day} />
-        <YearStat
+      <div className="grid grid-cols-2 gap-x-8 gap-y-10 lg:grid-cols-4">
+        <StatCard label="Total Coded" hint={year.range} value={year.total} />
+        <StatCard label="Daily Focus" value={year.daily_average} />
+        <StatCard label="Peak Day" hint={year.best_day_date} value={year.best_day} />
+        <StatCard
           /* WakaTime counts the days you did not code and calls them holidays. */
           label="Days Coded"
           hint={`${year.days_total - year.days_coded} days with no coding on them`}
           value={
             <>
               {year.days_coded}{" "}
-              <span className="text-xs text-zinc-400">of {year.days_total}</span>
+              <span className="type-meta text-zinc-400">of {year.days_total}</span>
             </>
           }
         />
 
-        <YearStat label="AI Spend" hint="Estimated across the year" value={year.ai_spend} />
-        <YearStat label="AI Sessions" value={year.ai_sessions} />
-        <YearStat label="Prompts" hint={`Averaging ${year.ai_prompt_avg} each`} value={year.ai_prompts} />
-        <YearStat label="Tokens" hint={year.tokens_exact} value={year.tokens} />
+        <StatCard label="AI Spend" hint="Estimated across the year" value={year.ai_spend} />
+        <StatCard label="AI Sessions" value={year.ai_sessions} />
+        <StatCard label="Prompts" hint={`Averaging ${year.ai_prompt_avg} each`} value={year.ai_prompts} />
+        <StatCard label="Tokens" hint={year.tokens_exact} value={year.tokens} />
       </div>
 
       <SplitBar
@@ -581,7 +561,7 @@ function CodingYear({ year }: { year: WakatimeYear }) {
           )}
         </GradientPanel>
       </div>
-    </section>
+    </Section>
   );
 }
 
@@ -591,20 +571,14 @@ function GitHub({ stats }: { stats: GitHubStats }) {
       ? `${shortDate(stats.current_streak_start)} - ${shortDate(stats.current_streak_end)}`
       : "No active streak";
 
+  /*
+   * The marker is the window, not the account. Every other section here says
+   * what period it covers, and the calendar below is the twelve months
+   * GitHub's `contributionCalendar` returns when asked for no range.
+   */
   return (
-    <section className="border-t border-zinc-800 py-12 md:py-16">
-      <div className="mb-8 flex flex-row items-baseline justify-between gap-2">
-        <h2 className="text-2xl font-medium tracking-tight text-zinc-100">GitHub Statistics</h2>
-        {/*
-          The window, not the account. Every other section here says what
-          period it covers, and the calendar below is the twelve months
-          GitHub's `contributionCalendar` returns when asked for no range.
-          The handle it used to carry said nothing the sidebar does not.
-        */}
-        <p className="text-sm text-zinc-500">Last Year</p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
+    <Section title="GitHub Statistics" marker="Last year">
+      <div className="grid grid-cols-2 gap-x-8 gap-y-10 lg:grid-cols-4">
         <GitHubStat label="Total" value={stats.total_contributions} />
         <GitHubStat label="This Week" value={stats.this_week} />
         <GitHubStat
@@ -612,7 +586,7 @@ function GitHub({ stats }: { stats: GitHubStats }) {
           value={stats.current_streak}
           labelHint={`${stats.longest_streak} days longest streak`}
           suffix={
-            <span className="text-sm text-zinc-400">
+            <span className="type-meta ml-1.5 text-zinc-400">
               days <HelpIcon title={streakRange} />
             </span>
           }
@@ -620,7 +594,7 @@ function GitHub({ stats }: { stats: GitHubStats }) {
         <GitHubStat
           label="Average"
           value={stats.average}
-          suffix={<span className="text-sm text-zinc-400">/day</span>}
+          suffix={<span className="type-meta ml-1 text-zinc-400">/day</span>}
         />
       </div>
 
@@ -631,22 +605,22 @@ function GitHub({ stats }: { stats: GitHubStats }) {
         unit="contributions"
         label="GitHub contribution calendar for the past year"
       />
-    </section>
+    </Section>
   );
 }
 
 // --- building blocks -------------------------------------------------------
 
 /*
- * Every figure on the page is drawn the same way: a hairline above, the label
- * in the muted neutral, the number large in the strongest one. There were six
- * of these, each its own colour of bordered card -- indigo, amber, cyan, pink,
- * violet, green -- which made the page read as a legend for a chart that was
- * not there. The section headings already say which figures belong together.
+ * Every figure on the page is drawn the same way: the label as a mono trace,
+ * the number large in the display face. No rule above it and no box around
+ * it -- the grid's spacing groups the figures, and the section heading says
+ * what they are figures of. There used to be six colours of bordered card
+ * here, then six identical components each carrying a hairline; one is what
+ * the page actually needs.
  */
-const STAT = "border-t border-zinc-800 pt-4";
-const STAT_LABEL = "text-sm text-zinc-500";
-const STAT_VALUE = "mt-2 text-2xl font-medium tracking-tight tabular-nums text-zinc-100 sm:text-3xl";
+const STAT_LABEL = "type-meta flex items-center gap-1.5 text-zinc-500";
+const STAT_VALUE = "mt-3 type-figure text-zinc-100";
 
 function StatCard({
   label,
@@ -658,9 +632,7 @@ function StatCard({
   hint?: string;
 }) {
   return (
-    <div
-      className={`${STAT} ${hint ? "relative z-10 overflow-visible" : "overflow-hidden"}`}
-    >
+    <div className={hint ? "relative z-10 overflow-visible" : "overflow-hidden"}>
       <h3 className={STAT_LABEL}>
         {label}
         {hint && <HelpIcon title={hint} />}
@@ -672,126 +644,9 @@ function StatCard({
   );
 }
 
-/**
- * A card in the AI section.
- *
- * `StatCard` in amber, and a separate component for the same reason `YearStat`
- * is one: Tailwind emits a class only where it can see it written out, so a
- * border colour interpolated from a `tone` prop produces no rule at all and
- * the card comes out unbordered.
- */
-function AiStat({
-  label,
-  value,
-  hint,
-}: {
-  label: React.ReactNode;
-  value: React.ReactNode;
-  hint?: string;
-}) {
-  return (
-    <div
-      className={`${STAT} ${hint ? "relative z-10 overflow-visible" : "overflow-hidden"}`}
-    >
-      <h3 className={STAT_LABEL}>
-        {label}
-        {hint && <HelpIcon title={hint} />}
-      </h3>
-      <div className="flex items-center justify-between">
-        <p className={STAT_VALUE}>{value}</p>
-      </div>
-    </div>
-  );
-}
 
-/**
- * A card in the year section.
- *
- * `StatCard` in another colour, and a separate component rather than a
- * `tone` prop on it: Tailwind generates a class only where it can see one
- * written out, so a border interpolated from a prop would produce no rule at
- * all and the card would come out unbordered.
- */
-function YearStat({
-  label,
-  value,
-  hint,
-}: {
-  label: React.ReactNode;
-  value: React.ReactNode;
-  hint?: string;
-}) {
-  return (
-    <div
-      className={`${STAT} ${hint ? "relative z-10 overflow-visible" : "overflow-hidden"}`}
-    >
-      <h3 className={STAT_LABEL}>
-        {label}
-        {hint && <HelpIcon title={hint} />}
-      </h3>
-      <div className="flex items-center justify-between">
-        <p className={STAT_VALUE}>{value}</p>
-      </div>
-    </div>
-  );
-}
 
-/**
- * A card in today's section.
- *
- * `StatCard` in another colour, and a separate component rather than a `tone`
- * prop for the reason written at `YearStat`: Tailwind generates a class only
- * where it can see one written out, so a border interpolated from a prop
- * produces no rule and the card comes out unbordered.
- */
-function DayStat({
-  label,
-  value,
-  hint,
-}: {
-  label: React.ReactNode;
-  value: React.ReactNode;
-  hint?: string;
-}) {
-  return (
-    <div
-      className={`${STAT} ${hint ? "relative z-10 overflow-visible" : "overflow-hidden"}`}
-    >
-      <h3 className={STAT_LABEL}>
-        {label}
-        {hint && <HelpIcon title={hint} />}
-      </h3>
-      <div className="flex items-center justify-between">
-        <p className={STAT_VALUE}>{value}</p>
-      </div>
-    </div>
-  );
-}
 
-/** A card in the rhythm section. Written out for the reason `DayStat` is. */
-function RhythmStat({
-  label,
-  value,
-  hint,
-}: {
-  label: React.ReactNode;
-  value: React.ReactNode;
-  hint?: string;
-}) {
-  return (
-    <div
-      className={`${STAT} ${hint ? "relative z-10 overflow-visible" : "overflow-hidden"}`}
-    >
-      <h3 className={STAT_LABEL}>
-        {label}
-        {hint && <HelpIcon title={hint} />}
-      </h3>
-      <div className="flex items-center justify-between">
-        <p className={STAT_VALUE}>{value}</p>
-      </div>
-    </div>
-  );
-}
 
 function GitHubStat({
   label,
@@ -805,9 +660,7 @@ function GitHubStat({
   suffix?: React.ReactNode;
 }) {
   return (
-    <div
-      className={`${STAT} ${labelHint || suffix ? "relative z-10 overflow-visible" : "overflow-hidden"}`}
-    >
+    <div className={labelHint || suffix ? "relative z-10 overflow-visible" : "overflow-hidden"}>
       <h3 className={STAT_LABEL}>
         {label}
         {labelHint && <HelpIcon title={labelHint} />}
@@ -823,11 +676,11 @@ function GitHubStat({
 }
 
 /**
- * The hairline frame with its title notched into the top edge.
+ * A chart's title above the chart, and nothing around either.
  *
- * Split out from `GradientPanel` when the charts arrived: they want the frame
- * and not the three-track list inside it. One component still owns the frame,
- * so the two kinds of panel cannot drift apart on a radius or a padding step.
+ * Split out from `GradientPanel` when the charts arrived: they want the title
+ * and not the three-track list beneath it. One component still owns the
+ * spacing, so the two kinds of panel cannot drift apart on a step.
  */
 function ChartPanel({
   title,
@@ -840,11 +693,11 @@ function ChartPanel({
   children: React.ReactNode;
 }) {
   // `gradient` is still accepted so each call site keeps naming its panel's
-  // tone, but the frame is one hairline now, the same for every panel.
+  // tone, but every panel is drawn the same way now.
   void gradient;
   return (
-    <div className="flex flex-1 flex-col gap-4 border-t border-zinc-800 pt-4">
-      <h3 className="text-sm text-zinc-500">{title}</h3>
+    <div className="flex flex-1 flex-col gap-5">
+      <h3 className="type-meta text-zinc-500">{title}</h3>
       <div className="min-w-0">{children}</div>
     </div>
   );
@@ -886,7 +739,7 @@ function GradientPanel({
 
 /** `col-span-3` because it shares the `<ul>` with the rows and their three tracks. */
 function EmptyRow({ children }: { children: React.ReactNode }) {
-  return <li className="col-span-3 text-center text-zinc-400 text-sm py-4">{children}</li>;
+  return <li className="col-span-3 py-4 text-center text-sm text-zinc-400">{children}</li>;
 }
 
 /**

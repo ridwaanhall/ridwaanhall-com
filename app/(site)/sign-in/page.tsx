@@ -63,13 +63,13 @@ export default function SignInPage({
     <main className={CONTAINER}>
       <div className="flex min-h-[70vh] items-center justify-center py-16">
         <div className="w-full max-w-sm">
-          <h1 className="text-4xl font-medium tracking-tight text-zinc-100">Sign in</h1>
-          <p className="mt-4 text-base leading-relaxed text-zinc-400">
+          <h1 className="type-title text-zinc-100">Sign in</h1>
+          <p className="mt-5 type-lead text-zinc-400">
             To comment and to sign the guestbook. Nothing is shared beyond your name and
             avatar &mdash; see the{" "}
             <a
               href="/privacy-policy"
-              className="text-zinc-100 underline decoration-zinc-600 underline-offset-2 transition-colors hover:decoration-zinc-100"
+              className="rounded-full text-zinc-100 underline decoration-zinc-600 underline-offset-4 transition-colors hover:decoration-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
             >
               privacy policy
             </a>
@@ -111,7 +111,7 @@ async function SignInNotice({ searchParams }: { searchParams: Promise<{ error?: 
   return (
     <p
       role="alert"
-      className="mt-4 rounded-lg border border-red-800 bg-red-950/40 px-3 py-2 text-sm text-red-300"
+      className="mt-5 rounded-2xl bg-red-950/50 px-4 py-2.5 text-sm text-red-300"
     >
       {ERRORS[error] ?? "That sign-in did not complete. Try again."}
     </p>

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 
+import { IconFx } from "@/components/motion/interactive";
 import { ReplyIcon } from "@/components/site/guestbook/role-badge";
 import { MAX_MESSAGE_LENGTH, type ThreadMessage } from "@/lib/data/guestbook-tree";
 
@@ -65,7 +66,7 @@ export function Composer({
       {replyTo && (
         /* Inside the composer rather than above it, so it reads as part of what
            is being written rather than as a notice about it. */
-        <div className="flex items-center gap-2 rounded-lg border border-zinc-800 px-3 py-2 text-sm">
+        <div className="flex items-center gap-2 rounded-full bg-zinc-900 py-1.5 pr-1.5 pl-4 text-sm">
           <ReplyIcon className="h-4 w-4 flex-shrink-0 text-zinc-500" />
           <span className="min-w-0 flex-1 truncate text-zinc-500">
             Replying to <span className="font-medium text-zinc-300">{replyTo.fullName}</span>
@@ -74,7 +75,7 @@ export function Composer({
           <button
             type="button"
             onClick={onCancelReply}
-            className="flex-shrink-0 rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+            className="flex-shrink-0 rounded-full p-1.5 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
             aria-label="Cancel reply"
           >
             <svg
@@ -112,17 +113,18 @@ export function Composer({
           maxLength={MAX_MESSAGE_LENGTH}
           placeholder="Write something…"
           aria-label="Message"
-          className="min-h-11 flex-1 resize-none rounded-lg border border-zinc-800 bg-transparent px-3 py-2.5 leading-6 text-zinc-200 placeholder-zinc-500 transition-colors custom-scroll focus:border-zinc-500 focus:outline-none"
+          className="min-h-11 flex-1 resize-none rounded-3xl border border-zinc-500 bg-transparent px-5 py-2.5 font-serif leading-6 text-zinc-200 placeholder-zinc-500 transition-colors duration-300 custom-scroll hover:border-zinc-300 focus:border-zinc-100 focus:outline-none"
         />
 
-        {/* Square, and the same height as an empty field, so the two sit on one
+        {/* Round, and the same height as an empty field, so the two sit on one
             line rather than the button overhanging. */}
         <button
           type="submit"
           disabled={pending || empty}
-          className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-black transition-colors hover:bg-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:opacity-40"
+          className="flex h-11 w-11 flex-shrink-0 cursor-pointer items-center justify-center rounded-full bg-zinc-100 text-black transition-colors hover:bg-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:cursor-not-allowed disabled:opacity-40"
           aria-label="Send message"
         >
+          <IconFx>
           <svg
             className="h-5 w-5"
             stroke="currentColor"
@@ -136,6 +138,7 @@ export function Composer({
             <line x1="22" y1="2" x2="11" y2="13" />
             <polygon points="22 2 15 22 11 13 2 9 22 2" />
           </svg>
+          </IconFx>
         </button>
       </div>
     </form>

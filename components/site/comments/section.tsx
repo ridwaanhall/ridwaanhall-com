@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useRef, useState, useTransition } from "react";
 
 import { GitHubMark, GoogleMark } from "@/components/icons/provider-marks";
+import { LineText } from "@/components/motion/interactive";
 import { useConfirm } from "@/components/providers/confirm-dialog";
 import { Comment, ReplyIcon } from "@/components/site/comments/comment";
+import { BUTTON_PRIMARY, BUTTON_SECONDARY, ButtonContent } from "@/components/site/ui";
 import { signInWith } from "@/lib/actions/auth";
 import { deleteComment, postComment } from "@/lib/actions/comments";
 import { MAX_COMMENT_LENGTH, type CommentNode, type CommentSection } from "@/lib/data/comment-shapes";
@@ -75,9 +77,9 @@ export function Comments({
   }
 
   return (
-    <section id="comments" className="mt-16 pt-12 border-t border-zinc-800">
-      <h2 className="text-xl sm:text-2xl font-medium tracking-tight text-zinc-100 mb-6 md:mb-8 flex items-center gap-2">
-        <ChatIcon className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-500" />
+    <section id="comments" className="mt-20 pt-4">
+      <h2 className="type-section mb-8 flex items-center gap-2.5 text-zinc-100 md:mb-10">
+        <ChatIcon className="h-5 w-5 text-zinc-500" />
         {section.count} comment{section.count === 1 ? "" : "s"}
       </h2>
 
@@ -96,7 +98,7 @@ export function Comments({
                 inside the comment section's own rule -- with the reply chip and
                 the textarea each drawing a third and a fourth. */}
             {replyTo && (
-                <div className="mb-3 flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm">
+                <div className="mb-3 flex items-center justify-between rounded-full bg-zinc-900 py-1.5 pr-1.5 pl-4 text-sm">
                   <span className="flex items-center gap-1.5 text-zinc-400 min-w-0">
                     <ReplyIcon className="w-3.5 h-3.5 flex-shrink-0" />
                     Replying to
@@ -105,7 +107,7 @@ export function Comments({
                 <button
                   type="button"
                   onClick={() => setReplyTo(null)}
-                  className="ml-2 flex-shrink-0 rounded-md p-1 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-all duration-300"
+                  className="ml-2 flex-shrink-0 cursor-pointer rounded-full p-1.5 text-zinc-500 transition-colors duration-300 hover:bg-zinc-800 hover:text-zinc-200"
                   title="Cancel reply"
                   aria-label="Cancel reply"
                 >
@@ -126,27 +128,26 @@ export function Comments({
               placeholder="Share your thoughts…"
               required
               aria-label="Comment"
-              className="w-full rounded-lg border border-zinc-800 hover:border-zinc-700 px-3.5 py-3 focus:outline-none focus:border-zinc-500 bg-transparent placeholder-zinc-500 text-zinc-100 transition-colors resize-y"
+              className="w-full resize-y rounded-3xl border border-zinc-500 bg-transparent px-5 py-3.5 font-serif leading-relaxed text-zinc-100 placeholder-zinc-500 transition-colors duration-300 hover:border-zinc-300 focus:border-zinc-100 focus:outline-none"
             />
 
             {/* The hint and the button keep the row they were in; only their
                 treatment changes. */}
             <div className="mt-3 flex items-center justify-between gap-3 flex-wrap">
-              <span className="text-xs text-zinc-600">
+              <span className="type-meta text-zinc-500">
                 Markdown isn&rsquo;t supported — plain text only.
               </span>
               <button
                 type="submit"
                 disabled={pending}
-                className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-zinc-100 px-4 h-10 text-sm font-medium text-black transition-colors hover:bg-zinc-300 disabled:opacity-60 disabled:cursor-not-allowed"
+                className={BUTTON_PRIMARY}
               >
-                <SendIcon />
-                Post comment
+                <ButtonContent label="Post comment" leading={<SendIcon />} />
               </button>
             </div>
           </form>
 
-          <p className="-mt-6 mb-8 text-xs text-zinc-500">
+          <p className="type-meta -mt-5 mb-10 text-zinc-500">
             Signed in as <span className="text-zinc-400">{signedInAs}</span> ·{" "}
             <SignOutButton />
           </p>
@@ -157,7 +158,7 @@ export function Comments({
         </div>
       )}
 
-      <div className="divide-y divide-zinc-900">
+      <div>
         {section.comments.length === 0 ? (
           <p className="py-6 text-center text-sm text-zinc-500">
             No comments yet. Be the first to share your thoughts.
@@ -232,9 +233,9 @@ function SignOutButton() {
           await signOutHere(window.location.pathname);
         }
       }}
-      className="text-zinc-400 underline hover:text-zinc-200 transition-colors duration-300"
+      className="cursor-pointer rounded-full text-zinc-300 transition-colors duration-300 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
     >
-      Sign out
+      <LineText>Sign out</LineText>
     </button>
   );
 }
@@ -255,7 +256,7 @@ function SignOutButton() {
  */
 function CannotPost() {
   return (
-    <p className="mb-8 rounded-lg border border-zinc-800 px-4 py-3 text-sm text-zinc-400">
+    <p className="mb-8 text-sm text-zinc-400">
       Commenting is turned off for this account.
     </p>
   );
@@ -263,11 +264,11 @@ function CannotPost() {
 
 function SignInPrompt() {
   return (
-    <div className="px-4 py-6 text-center">
-      <ChatIcon className="mx-auto mb-3 h-6 w-6 text-zinc-600" />
-      <p className="text-zinc-400 mb-4 text-sm sm:text-base">
+    <div className="py-6 text-center">
+      <ChatIcon className="mx-auto mb-4 h-6 w-6 text-zinc-600" />
+      <p className="mx-auto mb-6 max-w-md text-[0.9375rem] text-pretty text-zinc-400">
         Sign in to join the conversation. Rest assured, your information is secure. See my{" "}
-        <Link href="/privacy-policy" className="text-zinc-100 underline decoration-zinc-600 underline-offset-2 hover:decoration-zinc-100">
+        <Link href="/privacy-policy" className="rounded-full text-zinc-100 underline decoration-zinc-600 underline-offset-4 hover:decoration-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400">
           privacy policy
         </Link>{" "}
         for more.
@@ -297,10 +298,9 @@ function ProviderButton({
     <button
       type="button"
       onClick={() => signInWith(provider, window.location.pathname)}
-      className="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-100 hover:border-zinc-500 hover:bg-zinc-900 transition-all duration-300 cursor-pointer"
+      className={BUTTON_SECONDARY}
     >
-      {children}
-      {label}
+      <ButtonContent label={label} fill leading={children} />
     </button>
   );
 }

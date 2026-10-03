@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 
-import { BUTTON_PRIMARY, BUTTON_SECONDARY } from "@/components/site/ui";
+import { RollLabel } from "@/components/motion/interactive";
+import { BUTTON_PRIMARY, BUTTON_SECONDARY, ButtonContent } from "@/components/site/ui";
 import { useCurrentYear } from "@/lib/utils/use-current-year";
 
 /**
@@ -49,29 +50,32 @@ export function ErrorPage({
   return (
     <main className="mx-auto w-full max-w-5xl px-5 sm:px-8">
       <div className={embedded ? "py-20 md:py-28" : "flex min-h-screen flex-col justify-center py-16"}>
-        <p aria-hidden="true" className="text-[7rem] leading-none font-medium tracking-tighter text-zinc-800 select-none sm:text-[10rem]">
+        <p
+          aria-hidden="true"
+          className="text-[clamp(7rem,4rem+14vw,13rem)] leading-[0.85] font-[600] tracking-[-0.06em] text-zinc-800 select-none [font-stretch:125%]"
+        >
           {code}
         </p>
         <p className="sr-only">Error {code}</p>
 
-        <h1 className="mt-6 text-4xl font-medium tracking-tight text-zinc-100 sm:text-5xl">{title}</h1>
-        <p className="mt-4 max-w-xl text-lg leading-relaxed text-zinc-400">{message}</p>
+        <h1 className="mt-8 type-title text-zinc-100">{title}</h1>
+        <p className="mt-5 max-w-xl type-lead text-zinc-400">{message}</p>
 
         <div className="mt-10 flex flex-wrap gap-3">
           <Link href="/" className={BUTTON_PRIMARY}>
-            Homepage
+            <ButtonContent label="Homepage" arrow="right" />
           </Link>
           {/* `window.history.back()` rather than the error boundary's `retry`.
               Retrying re-renders the segment, which helps only for a transient
               failure -- offered here it would look like a retry that does
               nothing. */}
-          <button type="button" onClick={() => window.history.back()} className={`${BUTTON_SECONDARY} cursor-pointer`}>
-            Go back
+          <button type="button" onClick={() => window.history.back()} className={BUTTON_SECONDARY}>
+            <ButtonContent label="Go back" fill />
           </button>
         </div>
 
         {!embedded && (
-          <div className="mt-16 flex flex-col gap-3 border-t border-zinc-800 pt-6 text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-20 flex flex-col gap-3 text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
             <nav aria-label="Pages" className="flex flex-wrap gap-x-5 gap-y-1">
               {(
                 [
@@ -82,12 +86,12 @@ export function ErrorPage({
                   ["/contact", "Contact"],
                 ] as const
               ).map(([href, label]) => (
-                <Link key={href} href={href} className="transition-colors hover:text-zinc-100">
-                  {label}
+                <Link key={href} href={href} className="rounded-full transition-colors hover:text-zinc-100">
+                  <RollLabel>{label}</RollLabel>
                 </Link>
               ))}
             </nav>
-            <p className="text-xs">&copy; 2025 - {year} Ridwan Halim</p>
+            <p className="type-meta">&copy; 2025 - {year} Ridwan Halim</p>
           </div>
         )}
       </div>

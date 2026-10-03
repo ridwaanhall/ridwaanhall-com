@@ -53,9 +53,9 @@ export function TrendChart({ points, label }: { points: TrendWeek[]; label: stri
           other, so a shared gutter is also what lines their plots up.
         */}
         <div className="relative h-32 w-14 shrink-0 sm:h-40 sm:w-16">
-          <span className="absolute right-0 top-0 -translate-y-1/2 text-xs text-zinc-400">100%</span>
-          <span className="absolute right-0 top-1/2 -translate-y-1/2 text-xs text-zinc-400">50%</span>
-          <span className="absolute right-0 top-full -translate-y-1/2 text-xs text-zinc-400">0%</span>
+          <span className="absolute right-0 top-0 -translate-y-1/2 type-meta text-zinc-400">100%</span>
+          <span className="absolute right-0 top-1/2 -translate-y-1/2 type-meta text-zinc-400">50%</span>
+          <span className="absolute right-0 top-full -translate-y-1/2 type-meta text-zinc-400">0%</span>
         </div>
 
         <div className="relative flex-1 text-violet-400">

@@ -1,20 +1,29 @@
 import type { Route } from "next";
-import { Reveal, SplitHeading } from "@/components/motion/reveal";
 import Link from "next/link";
 
+import { ArrowFx, LineText, RollLabel } from "@/components/motion/interactive";
+import { Reveal, SplitHeading } from "@/components/motion/reveal";
+import { ScrambleIn } from "@/components/motion/scramble";
 import { cn } from "@/lib/utils/cn";
 
 /**
  * The public site's few building blocks.
  *
- * The redesign is one column, one neutral ramp and hairlines: no card grids,
- * no tinted panels, no shadows. Everything a page is made of is one of these
- * four shapes -- a page header, a ruled section, a row in a list, a button --
- * so the pages cannot drift into four dialects of the same idea.
+ * One column, one neutral ramp, and no boxes: no cards, no hairlines between
+ * sections, no outlined panels. What separates one thing from the next is
+ * space and type -- a section is a heading with room around it, and the small
+ * mono marker above the heading says what the section holds. Everything a page
+ * is made of is one of these shapes, so the pages cannot drift into dialects
+ * of the same idea.
  *
- * Server-safe on purpose: no hooks, no `"use client"`. Motion is declared with
- * `Reveal` and `SplitHeading` from `components/motion/reveal`, which are
- * client components that server components can render around their content.
+ * The one place a line survives is a control's edge: a button or a field has
+ * to show where it can be pressed or typed into, and those borders are drawn
+ * firmly enough to be seen (three to one against the canvas, in both themes).
+ *
+ * Server-safe on purpose: no hooks, no `"use client"`. Motion is declared by
+ * placing the client pieces from `components/motion` inside the markup --
+ * `Reveal` and `SplitHeading` for arrival, `RollLabel`, `LineText` and
+ * `ArrowFx` for hover.
  */
 
 /** The content column. Every page and the chrome share this edge. */
@@ -23,43 +32,122 @@ export const CONTAINER = "mx-auto w-full max-w-5xl px-5 sm:px-8";
 /** The narrower measure for running text: articles, legal pages. */
 export const PROSE_CONTAINER = "mx-auto w-full max-w-3xl px-5 sm:px-8";
 
-const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+export const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 
-export const BUTTON_PRIMARY = cn(
-  "inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-zinc-100 px-4 text-sm font-medium text-black transition-colors hover:bg-zinc-300 disabled:cursor-not-allowed disabled:opacity-50",
+/*
+ * Every button is a pill. The transition names its properties rather than
+ * `all`, because the press is a GSAP scale on this element and a CSS
+ * transition on `transform` would drag behind it.
+ */
+const BUTTON = cn(
+  "relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full px-5 text-sm font-medium transition-[color,background-color,border-color] duration-300 disabled:cursor-not-allowed disabled:opacity-50",
   FOCUS,
 );
 
-export const BUTTON_SECONDARY = cn(
-  "inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-zinc-700 px-4 text-sm font-medium text-zinc-200 transition-colors hover:border-zinc-500 hover:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50",
-  FOCUS,
-);
-
-/** A quiet inline link: muted until hovered, underline drawn from the left. */
-export const TEXT_LINK = cn("link-draw rounded-sm text-zinc-100", FOCUS);
+export const BUTTON_PRIMARY = cn(BUTTON, "bg-zinc-100 text-black hover:bg-zinc-300");
 
 /**
- * A page's opening: the title, split into lines that rise into place, and an
- * optional lead and trailing content (actions, meta).
+ * zinc-500 is the lightest step that clears three to one against the canvas
+ * in both themes; the step below it reads as a smudge in light mode.
+ */
+export const BUTTON_SECONDARY = cn(BUTTON, "border border-zinc-500 text-zinc-100 hover:border-zinc-300");
+
+/** A round icon-only control: search, theme, menu, share, pagination arrows. */
+export const ICON_BUTTON = cn(
+  "relative inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-zinc-400 transition-[color,background-color] duration-300 hover:bg-zinc-900 hover:text-zinc-100",
+  FOCUS,
+);
+
+/** A quiet inline link. Wrap its text in `LineText` for the drawn underline. */
+export const TEXT_LINK = cn("rounded-full text-zinc-100", FOCUS);
+
+type ArrowDirection = "right" | "left" | "up" | "up-right" | "down";
+
+/**
+ * A button that goes somewhere. The label rolls on hover; the outlined
+ * variant also fills; an optional arrow travels.
+ */
+export function ButtonLink({
+  href,
+  children,
+  variant = "primary",
+  arrow,
+  leading,
+  className,
+}: {
+  href: Route | string;
+  children: string;
+  variant?: "primary" | "secondary";
+  arrow?: ArrowDirection;
+  /** An icon before the label, e.g. a brand mark. */
+  leading?: React.ReactNode;
+  className?: string;
+}) {
+  const external = /^(https?:|mailto:)/.test(href);
+  const classes = cn(variant === "primary" ? BUTTON_PRIMARY : BUTTON_SECONDARY, className);
+  const content = <ButtonContent label={children} fill={variant === "secondary"} arrow={arrow} leading={leading} />;
+
+  return external ? (
+    <a href={href} target={href.startsWith("mailto:") ? undefined : "_blank"} rel="noopener noreferrer" className={classes}>
+      {content}
+    </a>
+  ) : (
+    <Link href={href as Route} className={classes}>
+      {content}
+    </Link>
+  );
+}
+
+/** The inside of any pill button, for the places that render a `<button>`. */
+export function ButtonContent({
+  label,
+  fill = false,
+  arrow,
+  leading,
+}: {
+  label: string;
+  fill?: boolean;
+  arrow?: ArrowDirection;
+  leading?: React.ReactNode;
+}) {
+  return (
+    <>
+      <RollLabel fill={fill} leading={leading} className="relative">
+        {label}
+      </RollLabel>
+      {arrow && <ArrowFx direction={arrow} className="relative h-3.5 w-3.5" />}
+    </>
+  );
+}
+
+/**
+ * A page's opening: an optional marker, the title split into lines that rise
+ * into place, a lead in the reading face, and any trailing content.
  */
 export function PageHeader({
   title,
   lead,
+  marker,
   children,
   className,
 }: {
   title: React.ReactNode;
   lead?: React.ReactNode;
+  /** A short fact set in mono above the title: a count, a date, a place. */
+  marker?: string;
   children?: React.ReactNode;
   className?: string;
 }) {
   return (
-    <header className={cn("pt-10 pb-12 md:pt-20 md:pb-16", className)}>
-      <SplitHeading className="max-w-4xl text-4xl font-medium leading-[1.05] tracking-tight text-balance text-zinc-100 sm:text-5xl md:text-6xl">
-        {title}
-      </SplitHeading>
+    <header className={cn("pt-12 pb-14 md:pt-24 md:pb-20", className)}>
+      {marker && (
+        <Reveal className="mb-6">
+          <ScrambleIn className="type-meta text-zinc-500">{marker}</ScrambleIn>
+        </Reveal>
+      )}
+      <SplitHeading className="max-w-4xl type-title text-zinc-100">{title}</SplitHeading>
       {lead && (
-        <Reveal as="p" className="mt-6 max-w-2xl text-base leading-relaxed text-pretty text-zinc-400 sm:text-lg">
+        <Reveal as="p" className="mt-7 max-w-2xl type-lead text-zinc-400">
           {lead}
         </Reveal>
       )}
@@ -68,54 +156,70 @@ export function PageHeader({
   );
 }
 
-/** A ruled section with a heading and an optional link on the same line. */
+/**
+ * A section: space above and below, a mono marker, a heading that rises by
+ * line, and an optional action level with it. No rule -- the marker and the
+ * room around the heading are what say a new section has begun.
+ */
 export function Section({
   title,
+  marker,
   action,
   children,
   id,
   className,
 }: {
   title?: React.ReactNode;
+  /** What the section holds, as a fact: "4 of 64", "last 7 days". */
+  marker?: string;
   action?: React.ReactNode;
   children: React.ReactNode;
   id?: string;
   className?: string;
 }) {
   return (
-    <section id={id} className={cn("scroll-mt-24 border-t border-zinc-800 py-12 md:py-16", className)}>
-      {(title || action) && (
-        <Reveal className="mb-8 flex items-baseline justify-between gap-4 md:mb-10">
-          {title && (
-            <h2 className="text-xl font-medium tracking-tight text-zinc-100 sm:text-2xl">{title}</h2>
-          )}
-          {action}
-        </Reveal>
+    <section id={id} className={cn("scroll-mt-24 py-14 md:py-20", className)}>
+      {(title || action || marker) && (
+        <div className="mb-10 flex items-end justify-between gap-6 md:mb-12">
+          <div className="min-w-0">
+            {marker && (
+              <Reveal className="mb-3">
+                <ScrambleIn className="type-meta text-zinc-500">{marker}</ScrambleIn>
+              </Reveal>
+            )}
+            {title && (
+              <SplitHeading as="h2" className="type-section text-zinc-100">
+                {title}
+              </SplitHeading>
+            )}
+          </div>
+          {action && <Reveal className="shrink-0 pb-1">{action}</Reveal>}
+        </div>
       )}
       {children}
     </section>
   );
 }
 
-/** "View all" and its kin: a short label with an arrow that nudges on hover. */
+/** "View all" and its kin: a label that rolls and an arrow that travels. */
 export function ArrowLink({
   href,
   children,
   className,
 }: {
   href: Route | string;
-  children: React.ReactNode;
+  children: string;
   className?: string;
 }) {
   const external = /^https?:\/\//.test(href);
   const content = (
     <>
-      <span className="link-draw">{children}</span>
-      <ArrowRightIcon className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+      <RollLabel>{children}</RollLabel>
+      <ArrowFx direction={external ? "up-right" : "right"} className="h-3.5 w-3.5" />
     </>
   );
   const classes = cn(
-    "group inline-flex shrink-0 items-center gap-1.5 rounded-sm text-sm text-zinc-400 transition-colors hover:text-zinc-100",
+    "inline-flex shrink-0 items-center gap-1.5 rounded-full text-sm text-zinc-400 transition-colors duration-300 hover:text-zinc-100",
     FOCUS,
     className,
   );
@@ -129,6 +233,25 @@ export function ArrowLink({
     </Link>
   );
 }
+
+/** "All posts", "All projects": the way back from a detail page. */
+export function BackLink({ href, children }: { href: Route; children: string }) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full text-sm text-zinc-500 transition-colors duration-300 hover:text-zinc-100",
+        FOCUS,
+      )}
+    >
+      <ArrowFx direction="left" className="h-3.5 w-3.5" />
+      <RollLabel>{children}</RollLabel>
+    </Link>
+  );
+}
+
+/** Underlined text inside a link, re-exported for server components. */
+export { LineText };
 
 export function ArrowRightIcon({ className }: { className?: string }) {
   return (
@@ -171,22 +294,6 @@ export function StatusDot({ className }: { className?: string }) {
       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60 motion-reduce:animate-none" />
       <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
     </span>
-  );
-}
-
-/** "All posts", "All projects": the way back from a detail page. */
-export function BackLink({ href, children }: { href: Route; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      className={cn(
-        "group inline-flex items-center gap-1.5 rounded-sm text-sm text-zinc-500 transition-colors hover:text-zinc-100",
-        FOCUS,
-      )}
-    >
-      <ArrowRightIcon className="h-3.5 w-3.5 rotate-180 transition-transform duration-300 group-hover:-translate-x-0.5" />
-      {children}
-    </Link>
   );
 }
 

@@ -53,7 +53,7 @@ export default async function ProjectsPage({
           lead="Where effort met execution, these projects are artifacts of discipline and continuous learning."
         />
 
-        <div className="border-t border-zinc-800 pt-12 pb-4 md:pt-16">
+        <div className="pt-4 pb-4">
           <Suspense fallback={<ListingSkeleton shape="tiles" />}>
             <ProjectResults projects={sorted} searchParams={searchParams} />
           </Suspense>

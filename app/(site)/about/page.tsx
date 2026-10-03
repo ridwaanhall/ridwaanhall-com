@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { AVAILABILITY, type AvailabilityKey } from "@/components/layout/status-badges";
-import { Reveal } from "@/components/motion/reveal";
+import { Reveal, SplitHeading } from "@/components/motion/reveal";
+import { ScrambleIn } from "@/components/motion/scramble";
 import { SectionIndex } from "@/components/motion/section-index";
 import {
   ApplicationEntry,
@@ -78,20 +79,24 @@ export default async function AboutPage() {
           }
         />
 
-        <div className="grid gap-12 border-t border-zinc-800 pt-12 md:pt-16 lg:grid-cols-[11rem_1fr] lg:gap-16">
+        <div className="grid gap-12 pt-4 lg:grid-cols-[11rem_1fr] lg:gap-16">
           <aside className="hidden lg:block">
             <div className="sticky top-28">
               <SectionIndex items={sections.map(({ id, label }) => ({ id, label }))} />
             </div>
           </aside>
 
-          <div className="min-w-0 space-y-24">
+          <div className="min-w-0 space-y-28">
             <AboutSection id="intro" title="Intro">
               <Intro about={about} />
             </AboutSection>
 
             {experiences.length > 0 && (
-              <AboutSection id="experiences" title="Experiences">
+              <AboutSection
+                id="experiences"
+                title="Experiences"
+                marker={`${groupByCompany(experiences).length} employers · ${experiences.length} roles`}
+              >
                 <Timeline>
                   {groupByCompany(experiences).map(([company, roles]) => (
                     <ExperienceEntry key={company} company={company} roles={roles} />
@@ -101,7 +106,7 @@ export default async function AboutPage() {
             )}
 
             {education.length > 0 && (
-              <AboutSection id="education" title="Education">
+              <AboutSection id="education" title="Education" marker={`${education.length} schools`}>
                 <Timeline>
                   {education.map((item) => (
                     <EducationEntry key={`${item.degree}-${item.institution}`} education={item} />
@@ -111,7 +116,7 @@ export default async function AboutPage() {
             )}
 
             {awards.length > 0 && (
-              <AboutSection id="awards" title="Awards">
+              <AboutSection id="awards" title="Awards" marker={`${awards.length} awards`}>
                 <Timeline>
                   {awards.map((award) => (
                     <AwardEntry key={award.id} award={award} />
@@ -124,17 +129,18 @@ export default async function AboutPage() {
               <AboutSection
                 id="certifications"
                 title="Certifications"
+                marker={`${certifications.length} of 115+`}
                 aside={
                   <ArrowLink href={`https://linkedin.com/in/${about.username}/details/certifications/`}>
                     View All 115+ Certifications
                   </ArrowLink>
                 }
               >
-                <p className="mb-6 text-sm text-zinc-500">
+                <p className="mb-4 text-sm text-zinc-500">
                   Showing {certifications.length} here; the full record lives on LinkedIn.
                 </p>
                 <PagedCards
-                  className="border-b border-zinc-800"
+                  className=""
                   cards={certifications.map((certification) => (
                     <CertificationEntry key={certification.id} certification={certification} />
                   ))}
@@ -142,10 +148,14 @@ export default async function AboutPage() {
               </AboutSection>
             )}
 
-            <AboutSection id="applications" title="Applications">
+            <AboutSection
+              id="applications"
+              title="Applications"
+              marker={applications.length > 0 ? `${applications.length} applications` : undefined}
+            >
               {applications.length > 0 ? (
                 <PagedCards
-                  className="border-b border-zinc-800"
+                  className=""
                   cards={applications.map((application) => (
                     <ApplicationEntry key={application.id} application={application} />
                   ))}
@@ -163,23 +173,41 @@ export default async function AboutPage() {
   );
 }
 
+/**
+ * A section of the page: a mono marker counting what it holds, the heading,
+ * and an optional link level with it. The same shape `Section` draws on every
+ * other page, without its vertical padding -- here the column's own spacing
+ * does that job, and the index beside it needs the headings to start where
+ * the section does.
+ */
 function AboutSection({
   id,
   title,
+  marker,
   aside,
   children,
 }: {
   id: string;
   title: string;
+  marker?: string;
   aside?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
     <section id={id} className="scroll-mt-28">
-      <Reveal className="mb-8 flex flex-wrap items-baseline justify-between gap-4">
-        <h2 className="text-2xl font-medium tracking-tight text-zinc-100 sm:text-3xl">{title}</h2>
-        {aside}
-      </Reveal>
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div className="min-w-0">
+          {marker && (
+            <Reveal className="mb-3">
+              <ScrambleIn className="type-meta text-zinc-500">{marker}</ScrambleIn>
+            </Reveal>
+          )}
+          <SplitHeading as="h2" className="type-section text-zinc-100">
+            {title}
+          </SplitHeading>
+        </div>
+        {aside && <Reveal className="pb-1">{aside}</Reveal>}
+      </div>
       {children}
     </section>
   );
@@ -199,7 +227,7 @@ function Intro({ about }: { about: AboutData }) {
   return (
     <div>
       {flags.length > 0 && (
-        <Reveal className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-zinc-400">
+        <Reveal className="type-meta mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-zinc-400">
           {flags.map((flag) => (
             <span key={flag} className="inline-flex items-center gap-2" title={flag === "sick" ? AVAILABILITY.sick.title : undefined}>
               {flag === "sick" ? (
@@ -215,7 +243,7 @@ function Intro({ about }: { about: AboutData }) {
       )}
 
       <Reveal>
-        <p className="text-xl font-medium text-zinc-100">Assalamu&apos;alaikum</p>
+        <p className="font-serif text-2xl font-[420] text-zinc-100 italic">Assalamu&apos;alaikum</p>
         {/*
           The letter, as rich text: one HTML body the admin edits the way it
           edits a blog post. `prose-stories` keeps it on this column's type
@@ -225,7 +253,7 @@ function Intro({ about }: { about: AboutData }) {
           html={about.stories_html}
           className="prose-stories mt-5 text-lg leading-relaxed text-zinc-300"
         />
-        <p className="mt-5 text-xl font-medium text-zinc-100">Wassalamu&apos;alaikum</p>
+        <p className="mt-6 font-serif text-2xl font-[420] text-zinc-100 italic">Wassalamu&apos;alaikum</p>
       </Reveal>
 
       <CvDownload />

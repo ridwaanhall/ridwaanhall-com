@@ -15,7 +15,7 @@
  * of prose.
  */
 export function MetaRow({ children }: { children: React.ReactNode }) {
-  return <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-zinc-400">{children}</div>;
+  return <div className="type-meta flex flex-wrap gap-x-4 gap-y-1.5 text-zinc-400">{children}</div>;
 }
 
 export function MetaItem({ children }: { children: React.ReactNode }) {

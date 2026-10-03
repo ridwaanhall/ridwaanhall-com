@@ -28,14 +28,11 @@ export function DashboardPanelSkeleton({
   panel: "today" | "wakatime" | "year" | "rhythm" | "github";
 }) {
   return (
-    <div className="skeleton-pulse border-t border-zinc-800 py-12 md:py-16" role="status" aria-busy="true">
+    <div className="skeleton-pulse py-14 md:py-20" role="status" aria-busy="true">
       <span className="sr-only">Loading statistics…</span>
       <div aria-hidden="true">
-        {/* The panel heading and the caption opposite it. */}
-        <div className="mb-8 flex flex-row items-baseline justify-between gap-2">
-          <SkeletonBar className="h-7 w-56 bg-zinc-900/60" />
-          <SkeletonBar className="h-4 w-24 bg-zinc-900/60" />
-        </div>
+        {/* The panel's marker, then its heading. */}
+        <PanelHeading />
 
         {panel === "today" ? (
           <>
@@ -46,7 +43,7 @@ export function DashboardPanelSkeleton({
               its own row rather than adding one.
             */}
             <StatGrid count={4} columns={4} />
-            <SkeletonBlock className="mt-12 h-[136px] rounded-lg sm:rounded-xl" />
+            <SkeletonBlock className="mt-12 h-[120px]" />
           </>
         ) : panel === "rhythm" ? (
           <>
@@ -63,9 +60,9 @@ export function DashboardPanelSkeleton({
               than shoving the calendar below it down past a reader's finger.
             */}
             <StatGrid count={4} columns={4} />
-            <SkeletonBlock className="mt-12 h-[260px] rounded-lg sm:h-[284px] sm:rounded-xl" />
-            <SkeletonBlock className="mt-12 h-[156px] rounded-lg sm:h-[196px] sm:rounded-xl" />
-            <SkeletonBlock className="mt-12 h-[128px] rounded-lg sm:h-[124px] sm:rounded-xl" />
+            <SkeletonBlock className="mt-12 h-[244px] sm:h-[268px]" />
+            <SkeletonBlock className="mt-12 h-[140px] sm:h-[180px]" />
+            <SkeletonBlock className="mt-12 h-[100px] sm:h-[96px]" />
           </>
         ) : panel === "year" ? (
           <>
@@ -77,12 +74,12 @@ export function DashboardPanelSkeleton({
               on exactly the screens where the jump is worst.
             */}
             <StatGrid count={8} columns={4} />
-            <SkeletonBlock className="mt-12 h-[88px] rounded-lg sm:rounded-xl" />
-            <SkeletonBlock className="mt-12 h-[168px] border-0 bg-zinc-900/40" />
+            <SkeletonBlock className="mt-12 h-[65px]" />
+            <SkeletonBlock className="mt-12 h-[168px]" />
             <div className="mt-12 grid gap-10 lg:grid-cols-3 lg:gap-8">
-              <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
-              <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
-              <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
+              <SkeletonBlock className="h-[136px]" />
+              <SkeletonBlock className="h-[136px]" />
+              <SkeletonBlock className="h-[136px]" />
             </div>
           </>
         ) : panel === "wakatime" ? (
@@ -92,9 +89,9 @@ export function DashboardPanelSkeleton({
 
             {/* Languages, Categories and Editors: three across from `lg`. */}
             <div className="mt-12 grid gap-10 lg:grid-cols-3 lg:gap-8">
-              <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
-              <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
-              <SkeletonBlock className="h-[152px] rounded-lg sm:rounded-xl" />
+              <SkeletonBlock className="h-[136px]" />
+              <SkeletonBlock className="h-[136px]" />
+              <SkeletonBlock className="h-[136px]" />
             </div>
 
             {/*
@@ -111,15 +108,14 @@ export function DashboardPanelSkeleton({
               settles upward into the gap rather than shoving the GitHub panel
               down past a reader's finger.
             */}
-            <div className="mt-16 mb-8 flex flex-row items-baseline justify-between gap-2">
-              <SkeletonBar className="h-7 w-56 bg-zinc-900/60" />
-              <SkeletonBar className="h-4 w-24 bg-zinc-900/60" />
+            <div className="pt-14 md:pt-20">
+              <PanelHeading />
             </div>
             <StatGrid count={8} columns={4} />
-            <SkeletonBlock className="mt-12 h-[88px] rounded-lg sm:rounded-xl" />
+            <SkeletonBlock className="mt-12 h-[65px]" />
             <div className="mt-12 flex flex-col gap-10 md:flex-row md:gap-8">
-              <SkeletonBlock className="flex-1 h-[152px] rounded-lg sm:rounded-xl" />
-              <SkeletonBlock className="flex-1 h-[152px] rounded-lg sm:rounded-xl" />
+              <SkeletonBlock className="h-[136px] flex-1" />
+              <SkeletonBlock className="h-[136px] flex-1" />
             </div>
           </>
         ) : (
@@ -131,7 +127,7 @@ export function DashboardPanelSkeleton({
               with a legend beneath. It scrolls sideways on a narrow screen, so
               the height is what matters and it is the same at every width.
             */}
-            <SkeletonBlock className="mt-12 h-[168px] border-0 bg-zinc-900/40" />
+            <SkeletonBlock className="mt-12 h-[168px]" />
           </>
         )}
       </div>
@@ -139,14 +135,24 @@ export function DashboardPanelSkeleton({
   );
 }
 
-/** The page's figures: a hairline, a label and a large number, in a grid. */
+/** `Section`'s heading as the dashboard draws it: a mono marker, then the title. */
+function PanelHeading() {
+  return (
+    <div className="mb-10 md:mb-12">
+      <SkeletonBar className="mb-3 h-3 w-24 bg-zinc-900/60" />
+      <SkeletonBar className="h-8 w-56 bg-zinc-900/60" />
+    </div>
+  );
+}
+
+/** The page's figures: a mono label and a large number, in a grid, unruled. */
 function StatGrid({ count, columns }: { count: number; columns: 2 | 4 }) {
   return (
-    <div className={cn("grid grid-cols-2 gap-x-6 gap-y-8", columns === 4 ? "lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2")}>
+    <div className={cn("grid grid-cols-2 gap-x-8 gap-y-10", columns === 4 ? "lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2")}>
       {Array.from({ length: count }, (_, i) => (
-        <div key={i} className="border-t border-zinc-800 pt-4">
-          <SkeletonBar className="h-4 w-24" />
-          <SkeletonBar className="mt-3 h-8 w-20" />
+        <div key={i}>
+          <SkeletonBar className="h-3 w-24" />
+          <SkeletonBar className="mt-3 h-8 w-24 sm:h-11" />
         </div>
       ))}
     </div>

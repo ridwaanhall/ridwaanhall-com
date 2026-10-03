@@ -51,10 +51,10 @@ export function BulletScale({
   const ref = useReveal<HTMLDivElement>(() => setCounting(true));
 
   return (
-    <div ref={ref} className="mt-3 rounded-lg border border-zinc-700 p-3 sm:mt-4 sm:rounded-xl sm:p-4">
-      <div className="mb-2 flex items-center justify-between gap-2 text-xs sm:text-sm">
+    <div ref={ref} className="mt-12">
+      <div className="mb-3 flex items-baseline justify-between gap-2 text-sm">
         <span className="font-medium">
-          Your daily average <span className="text-zinc-400">{youLabel}</span>
+          Your daily average <span className="type-meta text-zinc-400">{youLabel}</span>
         </span>
         <span className="font-medium">
           <span className="text-zinc-400">vs the median</span>{" "}
@@ -86,7 +86,7 @@ export function BulletScale({
         />
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-400">
+      <div className="type-meta mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-zinc-400">
         <span className="flex items-center gap-1.5">
           <span className="h-2.5 w-0.5 rounded-full bg-zinc-300" />
           Median {medianLabel}
@@ -97,7 +97,7 @@ export function BulletScale({
         </span>
       </div>
 
-      <p className="mt-2 text-xs text-zinc-400">
+      <p className="mt-2 text-sm text-zinc-500">
         The scale ends at {axisLabel} a day. The busiest WakaTime user on record logs {maxLabel}.
       </p>
     </div>

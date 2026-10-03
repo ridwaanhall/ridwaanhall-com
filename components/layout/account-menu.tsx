@@ -122,7 +122,7 @@ export function AccountMenu({
         aria-controls={panelId}
         onClick={() => setOpen((wasOpen) => !wasOpen)}
         title={name}
-        className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-left transition-colors hover:bg-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 group-data-[account-slot=bar]/acct:w-auto group-data-[account-slot=bar]/acct:rounded-full group-data-[account-slot=bar]/acct:p-0.5"
+        className="flex w-full cursor-pointer items-center gap-2.5 rounded-full px-3 py-2 text-left transition-colors hover:bg-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 group-data-[account-slot=bar]/acct:w-auto group-data-[account-slot=bar]/acct:p-0.5"
       >
         {imageUrl && !imageBroken ? (
           /* eslint-disable-next-line @next/next/no-img-element --
@@ -147,23 +147,20 @@ export function AccountMenu({
             overrun by a long display name. */}
         <div className="min-w-0 flex-1 group-data-[account-slot=bar]/acct:sr-only">
           <div className="truncate text-sm leading-tight text-zinc-200">{name}</div>
-          <div className="truncate text-xs leading-tight text-zinc-500">@{username}</div>
+          <div className="type-meta truncate leading-tight text-zinc-500">@{username}</div>
           {/*
             A line of its own rather than chips beside the name. This column is
             about 170px once the avatar and the chevron have taken theirs, and
             two badges crowded onto the name line would truncate the display
             name that the row is mostly for.
 
-            Outline only, no fill: `status-badges.tsx` sets the house rule for
-            the sidebar -- nothing in this chrome shouts. The guestbook's own
-            filled badge stays where it is, on a message header, where being
-            loud is the point.
+            Set as a trace rather than a chip: nothing in this chrome shouts,
+            and an outlined chip would be the one box in a row of plain text.
+            The guestbook's own badge stays where it is, on a message header,
+            where being loud is the point.
           */}
           <div className="mt-1 flex flex-wrap items-center gap-1">
-            <span
-              title={ROLE_BLURB[role]}
-              className="pill-badge border border-zinc-700 px-1.5 py-0.5 text-[0.625rem] leading-none text-zinc-400"
-            >
+            <span title={ROLE_BLURB[role]} className="type-meta leading-none text-zinc-400">
               {ROLE_LABEL[role]}
             </span>
           </div>
@@ -188,13 +185,14 @@ export function AccountMenu({
         id={panelId}
         hidden={!open}
         onClick={() => setOpen(false)}
-        className="absolute bottom-full left-0 right-0 z-20 mb-2 rounded-lg border border-zinc-800 bg-zinc-950 p-1 group-data-[account-slot=bar]/acct:top-full group-data-[account-slot=bar]/acct:bottom-auto group-data-[account-slot=bar]/acct:left-auto group-data-[account-slot=bar]/acct:mt-2 group-data-[account-slot=bar]/acct:mb-0 group-data-[account-slot=bar]/acct:w-60"
+        className="absolute bottom-full left-0 right-0 z-20 mb-2 rounded-3xl bg-zinc-900 p-1.5 group-data-[account-slot=bar]/acct:top-full group-data-[account-slot=bar]/acct:bottom-auto group-data-[account-slot=bar]/acct:left-auto group-data-[account-slot=bar]/acct:mt-2 group-data-[account-slot=bar]/acct:mb-0 group-data-[account-slot=bar]/acct:w-60"
       >
         {/* In the top bar the trigger is only an avatar, so the panel says
-            whose it is before offering anything. */}
-        <div className="hidden border-b border-zinc-800 px-3 pt-2 pb-2.5 group-data-[account-slot=bar]/acct:block">
+            whose it is before offering anything. A floating layer separates
+            from the page by its fill, so nothing here is ruled. */}
+        <div className="hidden px-3.5 pt-2.5 pb-3 group-data-[account-slot=bar]/acct:block">
           <div className="truncate text-sm text-zinc-100">{name}</div>
-          <div className="truncate text-xs text-zinc-500">
+          <div className="type-meta truncate text-zinc-500">
             @{username} · {ROLE_LABEL[role]}
           </div>
         </div>

@@ -19,13 +19,13 @@ export function GuestbookPanelSkeleton() {
 
       <div className={PANEL_FRAME} aria-hidden="true">
         <div className={`${PANEL_HEADER} flex items-center justify-between`}>
-          <SkeletonBar className="h-4 w-28" />
-          <SkeletonBar className="h-4 w-24" />
+          <SkeletonBar className="h-3.5 w-24" />
+          <SkeletonBar className="h-8 w-28 rounded-full" />
         </div>
 
         {/* A few messages, at the rhythm `Message` sets: an avatar beside a
             name line and a bubble, with one reply indented under the second. */}
-        <div className="flex-1 space-y-5 px-3 py-4">
+        <div className="flex-1 space-y-6 py-6">
           {[0, 1, 2].map((row) => (
             <div key={row}>
               <MessageRow />
@@ -40,10 +40,10 @@ export function GuestbookPanelSkeleton() {
 
         <div className={PANEL_FOOTER}>
           <div className="flex items-end gap-2">
-            <SkeletonBar className="h-11 flex-1 rounded-lg" />
-            <SkeletonBar className="h-11 w-11 flex-shrink-0 rounded-lg" />
+            <SkeletonBar className="h-11 flex-1 rounded-3xl" />
+            <SkeletonBar className="h-11 w-11 flex-shrink-0 rounded-full" />
           </div>
-          <SkeletonBar className="mt-2.5 h-3.5 w-56" />
+          <SkeletonBar className="mt-3 h-3.5 w-56" />
         </div>
       </div>
     </div>
@@ -56,7 +56,7 @@ function MessageRow({ short = false }: { short?: boolean }) {
       <SkeletonBar className="h-9 w-9 flex-shrink-0 rounded-full" />
       <div className="min-w-0 flex-1 space-y-1.5">
         <SkeletonBar className="h-3.5 w-40" />
-        <SkeletonBar className={`h-9 rounded-xl rounded-tl-none ${short ? "w-1/2" : "w-3/4"}`} />
+        <SkeletonBar className={`h-10 rounded-2xl rounded-tl-md ${short ? "w-1/2" : "w-3/4"}`} />
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { BUTTON_SECONDARY, ButtonContent } from "@/components/site/ui";
 import { GitHubMark, GoogleMark } from "@/components/icons/provider-marks";
 import { signInWith } from "@/lib/actions/auth";
 
@@ -23,7 +24,7 @@ export function SignInCard() {
         avatar — see the{" "}
         <a
           href="/privacy-policy"
-          className="text-zinc-100 underline decoration-zinc-600 underline-offset-2 transition-colors hover:decoration-zinc-100"
+          className="rounded-full text-zinc-100 underline decoration-zinc-600 underline-offset-4 transition-colors hover:decoration-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
         >
           privacy policy
         </a>
@@ -55,10 +56,9 @@ function ProviderButton({
     <button
       type="button"
       onClick={() => signInWith(provider, "/guestbook")}
-      className="inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-zinc-800 text-sm text-zinc-200 transition-colors hover:border-zinc-600 hover:bg-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+      className={BUTTON_SECONDARY}
     >
-      {children}
-      {label}
+      <ButtonContent label={label} fill leading={children} />
     </button>
   );
 }

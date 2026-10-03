@@ -22,7 +22,10 @@ export function SkeletonBar({ className }: { className?: string }) {
 }
 
 /**
- * A card-shaped surface, matching `.surface-card`'s border and fill.
+ * A block of something not yet drawn: an image, a chart, a form.
+ *
+ * A fill and no border, like everything else on the site now; the radius is
+ * the media radius, which is the shape most of these stand in for.
  *
  * Takes children so a panel whose innards are worth sketching -- a form, a
  * table -- can be built inside one rather than beside it.
@@ -38,7 +41,7 @@ export function SkeletonBlock({
 }) {
   return (
     <div
-      className={cn("rounded-xl border border-zinc-800 bg-zinc-900/40", className)}
+      className={cn("rounded-xl bg-zinc-900/60", className)}
       style={style}
     >
       {children}
@@ -147,44 +150,47 @@ export function SkeletonPage({
   );
 }
 
-/** Stands in for `PageHeader`: the same padding, a title and a lead. */
+/**
+ * Stands in for `PageHeader`: the same padding, a title at the title role's
+ * height, and a lead in the reading face's two lines.
+ */
 export function SkeletonPageHeading({ className }: { className?: string }) {
   return (
-    <div className={cn("pt-10 pb-12 md:pt-20 md:pb-16", className)}>
-      <SkeletonBar className="h-10 w-3/4 max-w-xl sm:h-12 md:h-14" />
-      <SkeletonBar className="mt-6 h-4 w-full max-w-2xl" />
-      <SkeletonBar className="mt-2.5 h-4 w-3/5 max-w-lg" />
+    <div className={cn("pt-12 pb-14 md:pt-24 md:pb-20", className)}>
+      <SkeletonBar className="h-11 w-3/4 max-w-xl sm:h-14 md:h-[4.5rem]" />
+      <SkeletonBar className="mt-7 h-5 w-full max-w-2xl" />
+      <SkeletonBar className="mt-3 h-5 w-3/5 max-w-lg" />
     </div>
   );
 }
 
-/** Stands in for a `Section` heading row. */
+/** Stands in for a `Section` heading row: the mono marker, then the heading. */
 export function SkeletonSectionHeading({ action = true }: { action?: boolean }) {
   return (
-    <div className="mb-8 flex items-baseline justify-between md:mb-10">
-      <SkeletonBar className="h-7 w-44" />
-      {action && <SkeletonBar className="h-4 w-20" />}
+    <div className="mb-10 flex items-end justify-between md:mb-12">
+      <div>
+        <SkeletonBar className="mb-3 h-3 w-24" />
+        <SkeletonBar className="h-8 w-48" />
+      </div>
+      {action && <SkeletonBar className="mb-1 h-4 w-24" />}
     </div>
   );
 }
 
-/** Stands in for `BlogList`: ruled rows of date, title, summary and tags. */
+/** Stands in for `BlogList`: rows of date, title, summary and tags. */
 export function SkeletonRows({ count = 5 }: { count?: number }) {
   return (
-    <div className="border-b border-zinc-800">
+    <div>
       {Array.from({ length: count }, (_, i) => (
-        <div
-          key={i}
-          className="grid grid-cols-1 gap-x-10 gap-y-2 border-t border-zinc-800 py-7 md:grid-cols-[9rem_1fr_auto]"
-        >
-          <SkeletonBar className="mt-1 h-4 w-28" />
+        <div key={i} className="grid grid-cols-1 gap-x-10 gap-y-2 py-6 md:grid-cols-[9rem_1fr_auto] md:py-7">
+          <SkeletonBar className="mt-1.5 h-3 w-24" />
           <div>
             <SkeletonBar className="h-6 w-3/4" />
             <SkeletonBar className="mt-3 h-4 w-full max-w-2xl" />
             <SkeletonBar className="mt-2 h-4 w-2/3" />
             <SkeletonBar className="mt-4 h-3 w-40" />
           </div>
-          <SkeletonBar className="mt-1 hidden h-4 w-20 md:block" />
+          <SkeletonBar className="mt-1.5 hidden h-3 w-20 md:block" />
         </div>
       ))}
     </div>
@@ -197,7 +203,7 @@ export function SkeletonTiles({ count = 4 }: { count?: number }) {
     <div className="grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2">
       {Array.from({ length: count }, (_, i) => (
         <div key={i}>
-          <SkeletonBar className="aspect-[3/2] w-full rounded-lg" />
+          <SkeletonBar className="aspect-[3/2] w-full rounded-xl" />
           <SkeletonBar className="mt-5 h-6 w-1/2" />
           <SkeletonBar className="mt-3 h-4 w-full" />
           <SkeletonBar className="mt-4 h-3 w-1/3" />

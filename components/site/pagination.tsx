@@ -1,6 +1,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 
+import { ArrowFx, RollLabel } from "@/components/motion/interactive";
 import type { Paginated } from "@/lib/api/pagination";
 
 /** Everything the bar needs to draw itself; the items are none of its business. */
@@ -22,9 +23,9 @@ type Cell = (
 ) => React.ReactNode;
 
 const CHEVRON_CELL =
-  "page-cell rounded-md text-sm text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-100";
+  "page-cell rounded-full text-sm text-zinc-400 transition-colors duration-300 hover:bg-zinc-900 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 const NUMBER_CELL =
-  "page-cell rounded-md text-sm text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-100";
+  "page-cell rounded-full text-sm tabular-nums text-zinc-400 transition-colors duration-300 hover:bg-zinc-900 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
 
 /**
  * The bar itself.
@@ -48,7 +49,7 @@ function PaginationBar({ page, cell }: { page: PageState; cell: Cell }) {
             cell(page.page - 1, CHEVRON_CELL, <ChevronLeft />, "Previous page")
           ) : (
             <span
-              className="page-cell rounded-md text-sm text-zinc-700 cursor-not-allowed"
+              className="page-cell rounded-full text-sm text-zinc-700 cursor-not-allowed"
               aria-disabled="true"
             >
               <ChevronLeft />
@@ -67,13 +68,13 @@ function PaginationBar({ page, cell }: { page: PageState; cell: Cell }) {
             <li key={item}>
               <span
                 aria-current="page"
-                className="page-cell rounded-md bg-zinc-100 text-sm font-medium text-black"
+                className="page-cell rounded-full bg-zinc-100 text-sm font-medium tabular-nums text-black"
               >
                 {item}
               </span>
             </li>
           ) : (
-            <li key={item}>{cell(item, NUMBER_CELL, item)}</li>
+            <li key={item}>{cell(item, NUMBER_CELL, <RollLabel>{String(item)}</RollLabel>)}</li>
           ),
         )}
 
@@ -82,7 +83,7 @@ function PaginationBar({ page, cell }: { page: PageState; cell: Cell }) {
             cell(page.page + 1, CHEVRON_CELL, <ChevronRight />, "Next page")
           ) : (
             <span
-              className="page-cell rounded-md text-sm text-zinc-700 cursor-not-allowed"
+              className="page-cell rounded-full text-sm text-zinc-700 cursor-not-allowed"
               aria-disabled="true"
             >
               <ChevronRight />
@@ -173,38 +174,15 @@ export function PaginationButtons({
   );
 }
 
+/*
+ * Arrows rather than chevrons, so paging moves the way every other "go" on the
+ * site does. A dead end draws the same arrow; it travels only on hover, and a
+ * disabled cell is drawn too dim to invite one.
+ */
 function ChevronLeft() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-4 w-4 sm:h-5 sm:w-5"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        fillRule="evenodd"
-        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
+  return <ArrowFx direction="left" className="h-4 w-4" />;
 }
 
 function ChevronRight() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-4 w-4 sm:h-5 sm:w-5"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        fillRule="evenodd"
-        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
+  return <ArrowFx direction="right" className="h-4 w-4" />;
 }

@@ -52,12 +52,9 @@ export function SectionCard({
   children: ReactNode;
 }) {
   return (
-    <Reveal
-      as="section"
-      className="grid grid-cols-1 gap-x-10 gap-y-4 border-t border-zinc-800 py-8 md:grid-cols-[12rem_1fr]"
-    >
+    <Reveal as="section" className="grid grid-cols-1 gap-x-10 gap-y-4 py-9 md:grid-cols-[12rem_1fr]">
       <div className="flex flex-wrap items-center gap-3 md:flex-col md:items-start">
-        <h2 className="text-sm text-zinc-500">{title}</h2>
+        <h2 className="type-meta pt-1 text-zinc-500">{title}</h2>
         {badge}
       </div>
       <div className="min-w-0">{children}</div>
@@ -67,7 +64,7 @@ export function SectionCard({
 
 export function StatusPill({ text }: { text: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 text-xs whitespace-nowrap text-zinc-300">
+    <span className="type-meta inline-flex items-center gap-1.5 whitespace-nowrap text-zinc-300">
       <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-green-500" />
       {text}
     </span>
@@ -84,7 +81,7 @@ export function DetailRow({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-1 border-b border-zinc-900 py-3 last:border-b-0 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+    <div className="flex flex-col gap-1 py-2.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
       <span className="text-sm text-zinc-400">{label}</span>
       <span className={`text-sm sm:text-right ${muted ? "text-zinc-100" : ""}`}>{children}</span>
     </div>
@@ -100,7 +97,7 @@ export function TagList({ items, className = "" }: { items: string[]; className?
   return (
     <ul className={`flex flex-wrap gap-2${className ? ` ${className}` : ""}`}>
       {items.map((item) => (
-        <li key={item} className="rounded-md border border-zinc-800 px-2.5 py-1 text-sm text-zinc-300">
+        <li key={item} className="type-meta rounded-full bg-zinc-900 px-3 py-1 text-zinc-300">
           {item}
         </li>
       ))}
@@ -112,7 +109,7 @@ export function BulletLines({ items }: { items: string[]; dotClass?: string }) {
   return (
     <ul className="space-y-2">
       {items.map((item) => (
-        <li key={item} className="relative pl-4 text-sm leading-relaxed text-zinc-300">
+        <li key={item} className="relative pl-4 text-[0.9375rem] leading-relaxed text-pretty text-zinc-300">
           <span aria-hidden="true" className="absolute top-[0.7em] left-0 h-px w-2 bg-zinc-600" />
           {item}
         </li>

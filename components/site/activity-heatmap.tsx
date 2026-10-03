@@ -178,9 +178,9 @@ export function ActivityHeatmap({
         </div>
 
         <div className="mt-2 flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0">
-          <div className="flex items-center text-xs sm:text-sm flex-shrink-0">
-            <div className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm bg-transparent py-1 rounded-lg whitespace-nowrap">
-              <span className="font-medium text-zinc-400">Less</span>
+          <div className="type-meta flex flex-shrink-0 items-center">
+            <div className="flex items-center space-x-1 py-1 whitespace-nowrap sm:space-x-2">
+              <span className="text-zinc-400">Less</span>
               <div className="flex space-x-0.5 sm:space-x-1">
                 {[
                   `contrib-empty border ${palette.ring}`,
@@ -195,12 +195,12 @@ export function ActivityHeatmap({
                   />
                 ))}
               </div>
-              <span className="font-medium text-zinc-400">More</span>
+              <span className="text-zinc-400">More</span>
             </div>
           </div>
 
           <div
-            className={`text-xs sm:text-sm text-zinc-400 h-6 transition-opacity duration-200 flex-shrink ${
+            className={`type-meta text-zinc-400 h-6 transition-opacity duration-200 flex-shrink ${
               detail ? "opacity-100" : "opacity-0"
             }`}
             // Announced politely so a screen reader is not interrupted by every
@@ -294,7 +294,7 @@ function MonthLabels({
       {monthLabels(weeks, months).map((month) => (
         <div
           key={month.key}
-          className="absolute text-xs text-zinc-400 font-medium"
+          className="absolute type-meta text-zinc-400"
           style={{ left: `${(month.column / COLUMNS) * 100}%` }}
         >
           {month.name}

@@ -24,11 +24,12 @@
    =========================================================================== */
 
 @layer components {
-    /* Circular icon button: blog share row, blog/projects "back" link.
-       `group` / `cursor-pointer` / the copy button's focus ring stay inline
-       since not every instance wants them. */
+    /* Circular icon button: the blog's share row. An outlined control like
+       every other button on the public site, so its edge is drawn at the
+       step that clears three to one against the canvas. The transition names
+       its properties: the press is a GSAP scale on this element. */
     .icon-btn {
-        @apply flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-zinc-800 text-zinc-400 hover:border-zinc-600 hover:bg-zinc-900 hover:text-zinc-100 transition-all duration-300;
+        @apply flex items-center justify-center w-9 h-9 rounded-full border border-zinc-500 text-zinc-300 hover:border-zinc-300 hover:bg-zinc-900 hover:text-zinc-100 transition-[color,background-color,border-color] duration-300;
     }
 
     /* Status/count pill shape (sidebar, about intro, home hero, "Current"/
@@ -63,10 +64,11 @@
         @apply flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center;
     }
 
-    /* Avatar with a hairline ring: guestbook message + comment author
-       photo. Size stays inline -- comment replies shrink to w-7 h-7. */
+    /* A round avatar: guestbook message, comment author, account menu. No
+       ring -- a photo has an edge of its own. Size stays inline; comment
+       replies shrink to w-7 h-7. */
     .avatar-ring {
-        @apply rounded-full border border-zinc-800 flex-shrink-0 object-cover;
+        @apply rounded-full bg-zinc-900 flex-shrink-0 object-cover;
     }
 
     /* Every loading skeleton breathes together.

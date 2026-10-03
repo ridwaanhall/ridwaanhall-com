@@ -142,16 +142,41 @@ The public pages were redesigned from a fixed left rail and card grids into a
 top navbar (`components/layout/site-navbar.tsx`), a full-screen menu below
 `lg` (`site-menu.tsx`) and a footer (`site-footer.tsx`), around one centred
 column. Four shapes make every page, all in `components/site/ui.tsx`: a
-`PageHeader`, a ruled `Section`, a row in a list, a button. **Add to a page
-with those rather than a new card.** Listings are `BlogList` rows and
+`PageHeader`, a `Section`, a row in a list, a button. **Add to a page with
+those rather than a new card.** Listings are `BlogList` rows and
 `ProjectGrid` tiles from `components/site/content-rows.tsx`; the About page is
 one indexed page (`SectionIndex`) rather than tabs, and its records are the
 timeline in `about-entries.tsx`.
 
+**No boxes and no rules.** Sections, rows, stats, chart panels and timeline
+entries are separated by space and type, not by hairlines or bordered cards;
+a section says it has begun with a short mono *marker* above its heading
+(`Section`'s `marker`), which must state a fact -- a count, a period -- and
+never decorate. Floating layers (menus, the search palette, toasts) separate
+by fill. The one place an edge survives is a **control**: buttons, fields and
+toggles keep a border at `zinc-500`, the lightest step that clears three to
+one against the canvas in *both* themes (`zinc-600` does not in light mode).
+Every button-like control is `rounded-full`; a multi-line field is
+`rounded-3xl`. Data marks -- heatmap cells, bars -- are not "borders".
+
 Colour is the zinc ramp plus `indigo-400` for focus rings only. The other hues
 survive only where they *are* the information -- a project's lifecycle dot,
-an application's outcome dot, a toast's border, chart series that must be
-told apart -- and always beside a word, never as the only signal.
+an application's outcome dot, a toast's dot, chart series that must be told
+apart -- and always beside a word, never as the only signal.
+
+**Three faces, one job each** (`app/fonts.ts`): Mona Sans for the interface
+and every heading, set *wider* at display sizes through its width axis;
+Literata for reading -- leads, article and project bodies, and anything a
+visitor wrote, because it covers Cyrillic and Mona Sans does not; Martian Mono
+for traces -- dates, durations, counts, tags, stat labels, code. Text takes
+one of the eight `type-*` roles defined with `@utility` in `app/globals.css`
+(hero, title, headline, section, item, lead, figure, meta). **Never put a
+size, leading or tracking utility on the same element as a role**: both set
+the same property and the winner is a matter of sort order.
+
+**SplitText breaks lines at text-node boundaries.** `{name}.` in JSX is two
+nodes, and on a phone the full stop wrapped onto a line of its own. Build a
+split heading's text as one string.
 
 Motion is GSAP (`gsap`, `@gsap/react`, ScrollTrigger, SplitText) and lives in
 `components/motion/`. **Mark what moves with `<Reveal>` or `<SplitHeading>`,
@@ -161,6 +186,24 @@ by writing inline styles, the listings stream in behind `<Suspense>`, and a
 page-level scan wrote styles onto elements React had not hydrated yet. A
 component's layout effect runs only once its own element is hydrated, so each
 of these touches one element at the one safe moment.
+
+Hover and press are the same rule applied to pointing, in
+`components/motion/interactive.tsx`: `RollLabel` (a label whose letters roll,
+plus the outlined button's rising fill and the host's give under the
+pointer), `LineText` (an underline drawn in and out), `ArrowFx` (an arrow that
+travels), `IconFx` and `MediaHover`. Each sits *inside* the link or button it
+animates and listens to that host, touching only what it renders. Two things
+about `RollLabel` are easy to undo: the accessible name is a visually hidden
+copy and both letter rows are `aria-hidden` -- a row of per-letter boxes is
+read, and matched by role queries, as "C o n t a c t" -- and the outlined
+button's text colour belongs to the GSAP gesture, never a `hover:` class, or a
+reader with reduced motion gets dark text with no light surface under it.
+Pills therefore transition named properties, never `transition-all`: the press
+is a GSAP scale on the same element.
+
+**The browser pane renders at about one frame a second**, so GSAP timing seen
+there is meaningless -- an entrance can look stuck for seconds. Judge motion
+in Playwright, or against `next start`.
 
 The hidden starting state is CSS, not JavaScript: an inline script in the root
 layout's `<head>` sets `html.motion` before first paint, only without

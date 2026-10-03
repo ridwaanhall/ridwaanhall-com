@@ -3,7 +3,8 @@
 import { useRef, useState, useTransition } from "react";
 
 import { resetTurnstile, TurnstileWidget } from "@/components/site/turnstile-widget";
-import { BUTTON_PRIMARY } from "@/components/site/ui";
+import { SplitHeading } from "@/components/motion/reveal";
+import { BUTTON_PRIMARY, ButtonContent } from "@/components/site/ui";
 import { submitContact } from "@/lib/actions/contact";
 import { notify } from "@/lib/notify";
 
@@ -30,8 +31,10 @@ export function ContactForm() {
 
   return (
     <div>
-      <h2 className="text-xl font-medium tracking-tight text-zinc-100">Send me a message</h2>
-      <p className="mt-2 text-sm text-zinc-500">
+      <SplitHeading as="h2" className="type-section text-zinc-100">
+        Send me a message
+      </SplitHeading>
+      <p className="mt-3 text-[0.9375rem] text-pretty text-zinc-500">
         Have a thought, a question, or just want to say hello? Leave a note&mdash;I read them all.
       </p>
 
@@ -67,11 +70,11 @@ export function ContactForm() {
           </div>
           <label>
             <span className={LABEL}>Message</span>
-            <textarea className={`${FIELD} resize-y`} rows={6} placeholder="Message*" name="message" required />
+            <textarea className={`${FIELD} ${AREA}`} rows={6} placeholder="Message*" name="message" required />
           </label>
           <TurnstileWidget />
-          <button className={`${BUTTON_PRIMARY} cursor-pointer self-start`} type="submit" id="submit-btn" disabled={pending}>
-            {pending ? "Sending…" : "Begin the conversation"}
+          <button className={`${BUTTON_PRIMARY} self-start`} type="submit" id="submit-btn" disabled={pending}>
+            <ButtonContent label={pending ? "Sending…" : "Begin the conversation"} arrow="right" />
           </button>
           {status && (
             <p className="text-sm text-zinc-400" role="status">
@@ -89,7 +92,15 @@ export function ContactForm() {
   );
 }
 
-const LABEL = "mb-2 block text-sm text-zinc-400";
+const LABEL = "type-meta mb-2 block text-zinc-400";
 
+/*
+ * A field is a control, so it keeps the edge every control on the site has --
+ * drawn at the step that clears three to one against the canvas -- and the
+ * pill shape the buttons have. The message box takes a large radius instead:
+ * a pill around six lines of text would bite into the first and last of them.
+ */
 const FIELD =
-  "w-full rounded-lg border border-zinc-800 bg-transparent px-3.5 py-2.5 text-zinc-100 placeholder-zinc-600 transition-colors hover:border-zinc-700 focus:border-zinc-500 focus:outline-none";
+  "h-11 w-full rounded-full border border-zinc-500 bg-transparent px-5 text-zinc-100 placeholder-zinc-500 transition-colors duration-300 hover:border-zinc-300 focus:border-zinc-100 focus:outline-none";
+
+const AREA = "h-auto resize-y rounded-3xl py-3.5 leading-relaxed";

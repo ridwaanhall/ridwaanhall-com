@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { SearchIcon } from "@/components/icons/nav-icons";
-import { BUTTON_SECONDARY } from "@/components/site/ui";
+import { RollLabel } from "@/components/motion/interactive";
+import { BUTTON_SECONDARY, ButtonContent } from "@/components/site/ui";
 
 /**
  * The listing search: a plain GET form, so a search is a URL.
@@ -28,7 +29,7 @@ export function SearchForm({
   return (
     <form method="get" action="" role="search" className="flex w-full items-center gap-2 sm:max-w-md">
       <div className="relative flex-1">
-        <SearchIcon className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+        <SearchIcon className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-zinc-500" />
         <input
           type="text"
           name="q"
@@ -37,18 +38,18 @@ export function SearchForm({
           onChange={(event) => setValue(event.target.value)}
           placeholder={placeholder}
           aria-label={placeholder}
-          className="h-10 w-full rounded-lg border border-zinc-800 bg-transparent pr-3 pl-9 text-sm text-zinc-100 transition-colors placeholder:text-zinc-500 hover:border-zinc-700 focus:border-zinc-500 focus:outline-none"
+          className="h-11 w-full rounded-full border border-zinc-500 bg-transparent pr-4 pl-10 text-sm text-zinc-100 transition-colors duration-300 placeholder:text-zinc-500 hover:border-zinc-300 focus:border-zinc-100 focus:outline-none"
         />
       </div>
-      <button type="submit" id="searchButton" disabled={!enabled} className={`${BUTTON_SECONDARY} cursor-pointer`}>
-        Search
+      <button type="submit" id="searchButton" disabled={!enabled} className={BUTTON_SECONDARY}>
+        <ButtonContent label="Search" fill />
       </button>
       {query && (
         <Link
           href={basePath as Route}
-          className="link-draw ml-1 text-sm whitespace-nowrap text-zinc-400 hover:text-zinc-100"
+          className="ml-1 rounded-full text-sm whitespace-nowrap text-zinc-400 transition-colors hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
         >
-          Clear
+          <RollLabel>Clear</RollLabel>
         </Link>
       )}
     </form>

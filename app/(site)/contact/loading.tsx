@@ -8,31 +8,31 @@ export default function Loading() {
   return (
     <SkeletonPage>
       <SkeletonPageHeading />
-      <div className="grid gap-16 border-t border-zinc-800 pt-12 pb-8 md:pt-16 lg:grid-cols-[1fr_1.15fr] lg:gap-20">
+      <div className="grid gap-16 pt-4 pb-8 lg:grid-cols-[1fr_1.15fr] lg:gap-20">
         <div>
-          <SkeletonBar className="h-7 w-44" />
-          <SkeletonBar className="mt-2 h-4 w-full max-w-sm" />
-          <div className="mt-8 border-b border-zinc-800">
+          <SkeletonBar className="h-8 w-52" />
+          <SkeletonBar className="mt-3 h-4 w-full max-w-sm" />
+          <div className="mt-8">
             {[0, 1, 2, 3, 4].map((i) => (
-              <div key={i} className="flex items-center gap-4 border-t border-zinc-800 py-4">
-                <SkeletonBar className="h-5 w-5 rounded" />
+              <div key={i} className="flex items-center gap-4 py-3.5">
+                <SkeletonBar className="h-5 w-5 rounded-full" />
                 <SkeletonBar className="h-5 w-24" />
-                <SkeletonBar className="ml-auto h-4 w-36" />
+                <SkeletonBar className="ml-auto h-3 w-36" />
               </div>
             ))}
           </div>
         </div>
         <div>
-          <SkeletonBar className="h-7 w-48" />
-          <SkeletonBar className="mt-2 h-4 w-full max-w-md" />
+          <SkeletonBar className="h-8 w-56" />
+          <SkeletonBar className="mt-3 h-4 w-full max-w-md" />
           <div className="mt-8 flex flex-col gap-5">
             <div className="flex flex-col gap-5 sm:flex-row">
-              <SkeletonBar className="h-[74px] flex-1 rounded-lg" />
-              <SkeletonBar className="h-[74px] flex-1 rounded-lg" />
+              <SkeletonBar className="h-[69px] flex-1 rounded-full" />
+              <SkeletonBar className="h-[69px] flex-1 rounded-full" />
             </div>
-            <SkeletonBar className="h-[180px] rounded-lg" />
+            <SkeletonBar className="h-[210px] rounded-3xl" />
             <SkeletonBar className="h-[65px] w-full max-w-[300px]" />
-            <SkeletonBar className="h-10 w-48 rounded-lg" />
+            <SkeletonBar className="h-11 w-56 rounded-full" />
           </div>
         </div>
       </div>

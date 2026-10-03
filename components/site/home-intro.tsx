@@ -1,18 +1,19 @@
 import Link from "next/link";
 
+import { RollLabel } from "@/components/motion/interactive";
 import { Reveal, SplitHeading } from "@/components/motion/reveal";
 import { AVAILABILITY } from "@/components/layout/status-badges";
-import { BUTTON_PRIMARY, BUTTON_SECONDARY, StatusDot } from "@/components/site/ui";
+import { ButtonLink, FOCUS, StatusDot } from "@/components/site/ui";
 import type { AboutData } from "@/lib/data/about";
+import { cn } from "@/lib/utils/cn";
 
 /**
  * The homepage hero.
  *
- * Type does the work: a status line, the greeting set large, the bio as a lead
- * and two or three buttons. The colour-coded pills it replaced (indigo About,
- * green Hireable, pink Support) are one primary and the rest outlined -- the
- * order and the conditions are unchanged: "Hireable" when open to work,
- * otherwise "Support" if there is a sponsor link.
+ * Type does the work: a status line set as a trace, the greeting at the
+ * largest size on the site, the bio in the reading face, and two or three
+ * buttons. The order and the conditions of the buttons are fixed: "Hireable"
+ * when open to work, otherwise "Support" if there is a sponsor link.
  */
 export function HomeIntro({ about, sponsorUrl }: { about: AboutData; sponsorUrl: string }) {
   const statuses = [
@@ -23,15 +24,15 @@ export function HomeIntro({ about, sponsorUrl }: { about: AboutData; sponsorUrl:
   const place = [about.location.residency, about.location.country].filter(Boolean).join(", ");
 
   return (
-    <section className="pt-14 pb-16 md:pt-28 md:pb-24">
-      <Reveal className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-zinc-400">
+    <section className="pt-16 pb-16 md:pt-32 md:pb-24">
+      <Reveal className="type-meta flex flex-wrap items-center gap-x-5 gap-y-2 text-zinc-400">
         {statuses.length > 0 && (
           <Link
             href="/openhire"
-            className="inline-flex items-center gap-2 rounded-sm transition-colors hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+            className={cn("inline-flex items-center gap-2 rounded-full transition-colors duration-300 hover:text-zinc-100", FOCUS)}
           >
             <StatusDot />
-            {statuses.join(" · ")}
+            <RollLabel>{statuses.join(" · ")}</RollLabel>
           </Link>
         )}
         {about.is_sick && (
@@ -46,32 +47,35 @@ export function HomeIntro({ about, sponsorUrl }: { about: AboutData; sponsorUrl:
         )}
       </Reveal>
 
-      <SplitHeading className="mt-8 max-w-4xl text-5xl font-medium leading-[1.02] tracking-tight text-balance text-zinc-100 sm:text-6xl md:text-7xl">
-        Hi, I&apos;m {about.first_name}.{" "}
-        <span className="text-zinc-500">{about.role}.</span>
+      <SplitHeading className="mt-8 max-w-5xl type-hero text-zinc-100">
+        {/* One string per run of text: SplitText breaks lines at text-node
+            boundaries, so "{name}." written as two nodes let the full stop
+            wrap onto a line of its own on a phone. */}
+        {`Hi, I'm ${about.first_name}. `}
+        <span className="text-zinc-500">{`${about.role}.`}</span>
       </SplitHeading>
 
-      <Reveal as="p" className="mt-8 max-w-2xl text-lg leading-relaxed text-pretty text-zinc-400 sm:text-xl">
+      <Reveal as="p" className="mt-9 max-w-2xl type-lead text-zinc-400">
         {about.short_description.length > 0
           ? about.short_bio
           : "Coding by day, memorizing Quran by heart—who else but me? I'm a passionate Python developer and DevOps engineer crafting digital solutions that matter."}
       </Reveal>
 
-      <Reveal className="mt-10 flex flex-wrap gap-3">
-        <Link href="/about" className={BUTTON_PRIMARY}>
+      <Reveal className="mt-11 flex flex-wrap gap-3">
+        <ButtonLink href="/about" arrow="right">
           About me
-        </Link>
-        <Link href="/contact" className={BUTTON_SECONDARY}>
+        </ButtonLink>
+        <ButtonLink href="/contact" variant="secondary">
           Contact
-        </Link>
+        </ButtonLink>
         {about.is_open_to_work ? (
-          <Link href="/openhire" className={BUTTON_SECONDARY}>
+          <ButtonLink href="/openhire" variant="secondary">
             Hireable
-          </Link>
+          </ButtonLink>
         ) : sponsorUrl ? (
-          <a href={sponsorUrl} target="_blank" rel="noopener noreferrer" className={BUTTON_SECONDARY}>
+          <ButtonLink href={sponsorUrl} variant="secondary" arrow="up-right">
             Support
-          </a>
+          </ButtonLink>
         ) : null}
       </Reveal>
     </section>

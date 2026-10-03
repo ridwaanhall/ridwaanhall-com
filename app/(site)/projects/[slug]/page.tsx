@@ -12,10 +12,10 @@ import { MediaGallery } from "@/components/site/media-gallery";
 import { ProjectStatus } from "@/components/site/content-rows";
 import { RichText } from "@/components/site/rich-text";
 import {
-  ArrowUpRightIcon,
   BackLink,
   BUTTON_PRIMARY,
   BUTTON_SECONDARY,
+  ButtonContent,
   CONTAINER,
   Dot,
 } from "@/components/site/ui";
@@ -69,7 +69,7 @@ export default async function ProjectDetailPage({
             <BackLink href="/projects">All projects</BackLink>
           </Reveal>
 
-          <Reveal className="mt-10 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-500">
+          <Reveal className="type-meta mt-12 flex flex-wrap items-center gap-x-2 gap-y-1 text-zinc-500">
             {project.status && (
               <>
                 <ProjectStatus label={project.status_label} color={project.status_color} />
@@ -95,12 +95,10 @@ export default async function ProjectDetailPage({
             )}
           </Reveal>
 
-          <SplitHeading className="mt-5 max-w-4xl text-4xl font-medium leading-[1.05] tracking-tight text-balance text-zinc-100 sm:text-5xl md:text-6xl">
-            {project.title}
-          </SplitHeading>
+          <SplitHeading className="mt-5 max-w-4xl type-headline text-zinc-100">{project.title}</SplitHeading>
 
           {project.headline && (
-            <Reveal as="p" className="mt-6 max-w-2xl text-lg leading-relaxed text-pretty text-zinc-400 sm:text-xl">
+            <Reveal as="p" className="mt-7 max-w-2xl type-lead text-zinc-400">
               {project.headline}
             </Reveal>
           )}
@@ -119,7 +117,7 @@ export default async function ProjectDetailPage({
           />
         </Reveal>
 
-        <div className="mt-16 grid gap-16 border-t border-zinc-800 pt-12 md:mt-20 md:pt-16 lg:grid-cols-[1fr_17rem]">
+        <div className="mt-20 grid gap-16 md:mt-28 lg:grid-cols-[1fr_17rem]">
           <div className="min-w-0 space-y-16">
             {project.description_html && (
               <section>
@@ -138,25 +136,23 @@ export default async function ProjectDetailPage({
             {project.features.length > 0 && (
               <section>
                 <SectionHeading>Features</SectionHeading>
-                <ol className="border-b border-zinc-800">
-                  {project.features.map((feature, position) => (
-                    <Reveal
-                      as="li"
-                      key={feature.title}
-                      className="grid grid-cols-[2.5rem_1fr] gap-x-4 border-t border-zinc-800 py-5"
-                    >
-                      <span className="pt-0.5 text-sm tabular-nums text-zinc-600">
-                        {String(position + 1).padStart(2, "0")}
-                      </span>
-                      <div>
-                        <h3 className="text-base font-medium text-zinc-100">{feature.title}</h3>
-                        {feature.description && (
-                          <p className="mt-1 text-sm leading-relaxed text-zinc-400">{feature.description}</p>
-                        )}
-                      </div>
+                {/*
+                  Unnumbered. The features are kept in an order, but it is an
+                  editor's order rather than a sequence a reader follows, and a
+                  "01 / 02" gutter claims otherwise.
+                */}
+                <ul className="space-y-7">
+                  {project.features.map((feature) => (
+                    <Reveal as="li" key={feature.title}>
+                      <h3 className="type-item text-zinc-100">{feature.title}</h3>
+                      {feature.description && (
+                        <p className="mt-1.5 max-w-2xl text-[0.9375rem] leading-relaxed text-pretty text-zinc-400">
+                          {feature.description}
+                        </p>
+                      )}
                     </Reveal>
                   ))}
-                </ol>
+                </ul>
               </section>
             )}
           </div>
@@ -179,12 +175,12 @@ export default async function ProjectDetailPage({
                           loading="lazy"
                         />
                       ) : (
-                        <span className="mt-0.5 h-5 w-5 shrink-0 rounded bg-zinc-900" aria-hidden="true" />
+                        <span className="mt-0.5 h-5 w-5 shrink-0 rounded-full bg-zinc-900" aria-hidden="true" />
                       )}
                       <div className="min-w-0">
                         <p className="text-sm text-zinc-100">{tech.name}</p>
                         {tech.description && (
-                          <p className="mt-0.5 text-xs leading-relaxed text-zinc-500">{tech.description}</p>
+                          <p className="mt-0.5 text-[0.8125rem] leading-relaxed text-zinc-500">{tech.description}</p>
                         )}
                       </div>
                     </Reveal>
@@ -196,7 +192,7 @@ export default async function ProjectDetailPage({
             {project.tags.length > 0 && (
               <section>
                 <SectionHeading>Tags</SectionHeading>
-                <ul className="flex flex-wrap gap-x-3 gap-y-1.5 text-sm text-zinc-500">
+                <ul className="type-meta flex flex-wrap gap-x-3 gap-y-1.5 text-zinc-500">
                   {project.tags.map(String).map((tag) => (
                     <li key={tag}>#{slugify(tag)}</li>
                   ))}
@@ -217,8 +213,12 @@ export default async function ProjectDetailPage({
   );
 }
 
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return <h2 className="mb-6 text-sm text-zinc-500">{children}</h2>;
+function SectionHeading({ children }: { children: string }) {
+  return (
+    <SplitHeading as="h2" className="mb-7 type-section text-zinc-100">
+      {children}
+    </SplitHeading>
+  );
 }
 
 function ActionButtons({ project }: { project: Project }) {
@@ -234,8 +234,7 @@ function ActionButtons({ project }: { project: Project }) {
           className={BUTTON_PRIMARY}
           aria-label="Open live demo"
         >
-          Live demo
-          <ArrowUpRightIcon className="h-4 w-4" />
+          <ButtonContent label="Live demo" arrow="up-right" />
         </a>
       )}
       {project.github_url && (
@@ -246,19 +245,12 @@ function ActionButtons({ project }: { project: Project }) {
           className={project.demo_url ? BUTTON_SECONDARY : BUTTON_PRIMARY}
           aria-label="View source"
         >
-          <GitHubMark />
-          Source
+          <ButtonContent label="Source" fill={Boolean(project.demo_url)} leading={<GitHubMark />} />
         </a>
       )}
     </Reveal>
   );
 }
-
-
-
-
-
-
 
 function GitHubMark() {
   return (

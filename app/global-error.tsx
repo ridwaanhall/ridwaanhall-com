@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { ErrorPage } from "@/components/site/error-page";
 
-import { onest } from "./fonts";
+import { fontVariables } from "./fonts";
 
 import "./globals.css";
 
@@ -23,7 +23,7 @@ import "./globals.css";
  * - `<html>` and `<body>` -- nothing else renders them at this point.
  * - `globals.css` -- the root layout's import is not in effect, so without
  *   this the palette and every utility class below are simply absent.
- * - the font variable -- same reason; `--font-onest` is declared by the class
+ * - the font variables -- same reason; they are declared by the class
  *   `next/font` generates, and that class is applied per element tree.
  *
  * What it deliberately does *not* repeat is the theme provider. There is no
@@ -41,7 +41,7 @@ export default function GlobalError({ error }: { error: Error & { digest?: strin
   }, [error]);
 
   return (
-    <html lang="en" className={onest.variable}>
+    <html lang="en" className={fontVariables}>
       <body className="bg-black text-zinc-300">
         <title>Something Went Wrong &middot; Ridwan Halim</title>
         <ErrorPage

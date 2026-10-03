@@ -54,7 +54,7 @@ export function RoleBadge({
   }
 
   return (
-    <span className="inline-flex items-center gap-0.5 rounded-full border border-zinc-600 px-1.5 py-0.5 text-zinc-200">
+    <span className="inline-flex items-center gap-0.5 rounded-full bg-zinc-800 px-1.5 py-0.5 text-zinc-200">
       <svg
         stroke="currentColor"
         fill="currentColor"
@@ -77,7 +77,7 @@ export function RoleBadge({
 export function AvatarFallback({ className, glyph }: { className: string; glyph: string }) {
   return (
     <div
-      className={`rounded-full border border-zinc-800 flex-shrink-0 bg-zinc-800 flex items-center justify-center ${className}`}
+      className={`rounded-full flex-shrink-0 bg-zinc-800 flex items-center justify-center ${className}`}
     >
       <svg className={`${glyph} text-zinc-400`} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />

@@ -6,7 +6,7 @@ export default function Loading() {
   return (
     <SkeletonPage>
       <SkeletonPageHeading />
-      <div className="border-t border-zinc-800 pt-12 pb-8 md:pt-16">
+      <div className="pt-4 pb-8">
         <GuestbookPanelSkeleton />
       </div>
     </SkeletonPage>

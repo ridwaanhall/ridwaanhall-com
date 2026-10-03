@@ -150,16 +150,13 @@ export function SplitBar({
   const ref = useReveal<HTMLDivElement>(() => setCounting(true));
 
   return (
-    <div
-      ref={ref}
-      className="mt-3 sm:mt-4 rounded-lg sm:rounded-xl border border-zinc-800 p-3 sm:p-4"
-    >
-      <div className="mb-2 flex items-center justify-between gap-2 text-xs sm:text-sm">
+    <div ref={ref} className="mt-12">
+      <div className="mb-3 flex items-baseline justify-between gap-2 text-sm">
         <span className="font-medium">
-          {leftLabel} <span className="text-zinc-400">{leftValue}</span>
+          {leftLabel} <span className="type-meta text-zinc-400">{leftValue}</span>
         </span>
         <span className="font-medium">
-          <span className="text-zinc-400">{rightValue}</span> {rightLabel}
+          <span className="type-meta text-zinc-400">{rightValue}</span> {rightLabel}
         </span>
       </div>
       <div className="relative h-2 rounded-full bg-zinc-800/50">
@@ -168,7 +165,7 @@ export function SplitBar({
           style={{ "--bar-width": `${percent}%` } as React.CSSProperties}
         />
       </div>
-      <p className="mt-2 text-right text-xs text-zinc-400">
+      <p className="type-meta mt-2 text-right text-zinc-400">
         <CountUp value={percent} run={counting} />% written by AI
       </p>
     </div>
@@ -223,7 +220,7 @@ export function PercentBar({
           style={{ "--bar-width": `${entry.percent}%` } as React.CSSProperties}
         />
       </div>
-      <div className="text-right text-sm font-medium whitespace-nowrap">
+      <div className="type-meta text-right whitespace-nowrap text-zinc-300">
         {entry.value ?? (
           <>
             {/*

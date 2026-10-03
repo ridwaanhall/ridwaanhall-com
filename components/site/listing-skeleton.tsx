@@ -14,8 +14,8 @@ export function ListingBody({ shape = "rows" }: { shape?: ListingShape }) {
   return (
     <>
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <SkeletonBar className="h-4 w-20" />
-        <SkeletonBar className="h-10 w-full rounded-lg sm:max-w-md" />
+        <SkeletonBar className="h-3 w-20" />
+        <SkeletonBar className="h-11 w-full rounded-full sm:max-w-md" />
       </div>
       {shape === "rows" ? <SkeletonRows count={6} /> : <SkeletonTiles count={4} />}
     </>

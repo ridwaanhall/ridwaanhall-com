@@ -471,12 +471,12 @@ function SearchModal({
       >
         <div
           id="search-modal-content"
-          className={`relative mx-auto max-w-xl w-full overflow-hidden rounded-xl border-2 border-zinc-800 bg-black ring-1 ring-black/5 transition-all duration-300 ease-out ${
+          className={`relative mx-auto max-w-xl w-full overflow-hidden rounded-3xl bg-zinc-900 transition-all duration-300 ease-out ${
             shown ? "scale-100 opacity-100" : "scale-95 opacity-0"
           }`}
           onClick={(event) => event.stopPropagation()}
         >
-          <div className="flex items-center gap-3 border-b border-zinc-800 px-4">
+          <div className="flex items-center gap-3 px-5">
             <ModalSearchIcon />
             <input
               ref={inputRef}
@@ -515,7 +515,7 @@ function SearchModal({
            * pointer leaves the list rather than on every row-to-row move.
            */}
           <div
-            className="max-h-80 overflow-y-auto px-1 py-2"
+            className="max-h-80 overflow-y-auto px-1 pb-2"
             onMouseLeave={() => setHighlighted(NO_HIGHLIGHT)}
           >
             {SECTION_ORDER.map((section) => {
@@ -524,7 +524,7 @@ function SearchModal({
 
               return (
                 <div className="py-1" key={section}>
-                  <div className="my-2 px-5 text-xs font-medium text-zinc-500">
+                  <div className="type-meta my-2 px-6 text-zinc-500">
                     {section.toUpperCase()}
                   </div>
                   <ul className="space-y-1">
@@ -560,7 +560,7 @@ function SearchModal({
                         >
                           <div
                             className={cn(
-                              "text-zinc-300 group mx-2 flex items-center justify-between gap-3 rounded-md px-4 py-2",
+                              "text-zinc-300 group mx-2 flex items-center justify-between gap-3 rounded-full px-4 py-2",
                               here
                                 ? "cursor-default bg-zinc-800"
                                 : "cursor-pointer hover:bg-zinc-800",
@@ -578,11 +578,11 @@ function SearchModal({
                               <span>{entry.label}</span>
                             </div>
                             {here ? (
-                              <span className="animate-pulse text-xs text-zinc-400">
+                              <span className="type-meta animate-pulse text-zinc-400">
                                 You are here
                               </span>
                             ) : (
-                              <div className="rounded-md border border-zinc-500 px-1.5 py-0.5 text-xs text-zinc-400">
+                              <div className="type-meta text-zinc-500">
                                 {section === "Pages" ? "Pages" : "Link"}
                               </div>
                             )}

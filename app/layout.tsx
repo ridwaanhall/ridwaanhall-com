@@ -9,7 +9,7 @@ import { ThemeColorSync } from "@/components/providers/theme-color-sync";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Tooltips } from "@/components/providers/tooltips";
 
-import { onest } from "./fonts";
+import { fontVariables } from "./fonts";
 
 import "./globals.css";
 
@@ -47,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     // suppressHydrationWarning is required by next-themes: its pre-paint script
     // writes data-theme on <html> before React hydrates, so the server and
     // client markup legitimately differ on that one attribute.
-    <html lang="en" className={onest.variable} suppressHydrationWarning>
+    <html lang="en" className={fontVariables} suppressHydrationWarning>
       <head>
         {/*
           Before first paint, so content that is about to animate in is hidden

@@ -10,7 +10,7 @@ export default function Loading() {
   return (
     <SkeletonPage>
       <SkeletonPageHeading />
-      <div className="border-t border-zinc-800 pt-12 pb-4 md:pt-16">
+      <div className="pt-4 pb-4">
         <ListingBody shape="tiles" />
       </div>
     </SkeletonPage>

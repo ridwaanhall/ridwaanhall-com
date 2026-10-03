@@ -1,26 +1,20 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { EYEBROW, LINE_BUTTON, SOLID_BUTTON } from "@/components/foothill/classes";
+import { MAIN, WRAP } from "@/components/foothill/layout";
+import { PageMotion } from "@/components/foothill/page-motion";
+import { Arrow, Fact, PageHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
-import { AboutTabs } from "@/components/site/about-tabs";
-import {
-  BulletLines,
-  DetailRow,
-  ICON,
-  SectionCard,
-  StatusPill,
-  TagList,
-  YesNo,
-} from "@/components/site/openhire-cards";
-import { CvDownload } from "@/components/site/cv-download";
-import { PositionCard } from "@/components/site/position-card";
 import type { Skill } from "@/lib/data/about";
 import { getAboutData, getSkillsByCategory } from "@/lib/data/about";
-import type { HiringData, OpenToWorkData } from "@/lib/data/openhire";
+import type { HiringData, OpenToWorkData, Position } from "@/lib/data/openhire";
 import { getHiringData, getOpenToWorkData } from "@/lib/data/openhire";
 import { openhireSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { openhireSchemas } from "@/lib/seo/schemas-for-page";
+import { bareUrl } from "@/lib/site/display";
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutData();
@@ -28,304 +22,361 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(openhireSeo(about), about);
 }
 
-/**
- * The intro line, which states whichever combination of the two flags is set.
- * Three branches, not four: the page 404s when neither flag is on, so "neither"
- * never reaches here.
- */
-function intro(openToWork: boolean, hiring: boolean): string {
+function heading(openToWork: boolean, hiring: boolean) {
   if (openToWork && hiring) {
-    return "Connecting talent with opportunity. I'm open to new roles and actively hiring great people.";
+    return {
+      title: "Open to work, and hiring.",
+      lead: "Both doors are open. If you have a role for me, the first half is for you; if you want to build with RoneAI, the second is.",
+    };
   }
-  if (openToWork) return "Currently open to new opportunities and exciting challenges.";
-  return "Building amazing teams and looking for passionate individuals to join us.";
+  if (openToWork) {
+    return {
+      title: "Open to work.",
+      lead: "What I am looking for, when I can start, and how to reach me.",
+    };
+  }
+  return {
+    title: "Hiring.",
+    lead: "RoneAI is looking for people who like to build carefully. Here is what is open and how to apply.",
+  };
 }
 
 export default async function OpenHirePage() {
   const about = await getAboutData();
   if (!about) return null;
-
-  // The page exists only while one of the flags is set -- the same check
-  // OpenHireView made before raising Http404.
   if (!about.is_open_to_work && !about.is_hiring) notFound();
 
-  const [openToWork, hiring] = await Promise.all([getOpenToWorkData(), getHiringData()]);
-
-  // `used_tools_skills` is not stored on the profile: the view built it from
-  // the skills catalogue whenever the flag was set, and so does this.
-  const toolsByCategory = openToWork?.show_all_tools_skills ? await getSkillsByCategory() : null;
-
-  const openPanel = openToWork ? (
-    <OpenToWorkPanel data={openToWork} tools={toolsByCategory} />
-  ) : (
-    <p className="text-zinc-400">Open to work information is not available at the moment.</p>
-  );
-  const hiringPanel = hiring ? (
-    <HiringPanel data={hiring} />
-  ) : (
-    <p className="text-zinc-400">Hiring information is not available at the moment.</p>
-  );
+  const [openToWork, hiring] = await Promise.all([
+    about.is_open_to_work ? getOpenToWorkData() : Promise.resolve(null),
+    about.is_hiring ? getHiringData() : Promise.resolve(null),
+  ]);
+  const tools = openToWork?.show_all_tools_skills ? await getSkillsByCategory() : null;
+  const head = heading(about.is_open_to_work, about.is_hiring);
 
   return (
-    <>
+    <main className={MAIN}>
       <JsonLdScript schemas={openhireSchemas()} />
-      <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-4 md:mb-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
-              <div>
-                <h1 className="text-2xl lg:text-3xl font-medium mb-2 tracking-tight">
-                  Career Opportunities
-                </h1>
-                <p className="mt-2 text-base sm:text-lg text-zinc-300 leading-relaxed">
-                  {intro(about.is_open_to_work, about.is_hiring)}
-                </p>
-              </div>
+      <div className={WRAP}>
+        <PageHead eyebrow="Open-hire" title={head.title} lead={head.lead}>
+          {about.is_open_to_work && about.is_hiring && (
+            <div data-fh-enter className="mt-8 flex flex-wrap gap-3">
+              <a href="#open-to-work" className={SOLID_BUTTON}>
+                I have a role for you
+              </a>
+              <a href="#hiring" className={LINE_BUTTON}>
+                I want to join RoneAI
+              </a>
             </div>
-          </div>
-
-          {about.is_open_to_work && about.is_hiring ? (
-            <AboutTabs
-              tabs={[
-                { id: "opentowork", label: "Open to Work", content: openPanel },
-                { id: "hiring", label: "Hiring", content: hiringPanel },
-              ]}
-            />
-          ) : (
-            <div className="w-full">{about.is_open_to_work ? openPanel : hiringPanel}</div>
           )}
-        </div>
-      </main>
-    </>
+        </PageHead>
+
+        {about.is_open_to_work && (
+          <section id="open-to-work" aria-labelledby="otw-title" className="mt-24 scroll-mt-28 md:mt-32">
+            <h2 id="otw-title" className={`${EYEBROW} border-t border-line pt-4`}>
+              Open to work
+            </h2>
+            {openToWork ? (
+              <OpenToWork data={openToWork} tools={tools} cv={about.cv} />
+            ) : (
+              <Unavailable what="The details of what I am looking for" />
+            )}
+          </section>
+        )}
+
+        {about.is_hiring && (
+          <section id="hiring" aria-labelledby="hiring-title" className="mt-24 scroll-mt-28 md:mt-32">
+            <h2 id="hiring-title" className={`${EYEBROW} border-t border-line pt-4`}>
+              Hiring
+            </h2>
+            {hiring ? <Hiring data={hiring} /> : <Unavailable what="The open positions" />}
+          </section>
+        )}
+      </div>
+      <PageMotion />
+    </main>
   );
 }
 
-/** The wrapper both panels share. */
-function Panel({ children }: { children: React.ReactNode }) {
+function Unavailable({ what }: { what: string }) {
   return (
-    <div className="mt-4 sm:mt-6">
-      <div className="space-y-4">{children}</div>
+    <p className="mt-8 text-[17px] text-mute">
+      {what} are not published right now. Email me and I will send them over.
+    </p>
+  );
+}
+
+function Tags({ label, items }: { label: string; items: string[] }) {
+  if (!items.length) return null;
+  return (
+    <div className="border-b border-line py-4">
+      <p className="text-[13px] text-mute">{label}</p>
+      <p className="mt-1.5 text-[16px] leading-relaxed text-ink">{items.join(", ")}</p>
     </div>
   );
 }
 
-function OpenToWorkPanel({
+const yes = (value: boolean) => (value ? "Yes" : "No");
+
+function OpenToWork({
   data,
   tools,
+  cv,
 }: {
   data: OpenToWorkData;
   tools: Record<string, Skill[]> | null;
+  cv: { main: string; latest: string; copy: string };
 }) {
   return (
-    <Panel>
-      {/* The same banner the about page's Intro tab opens with, rather than a
-          second CV block with its own layout and one format fewer. */}
-      <CvDownload />
+    <div className="mt-10 grid gap-14 lg:grid-cols-12 lg:gap-10">
+      <div className="lg:col-span-7">
+        {data.status && (
+          <p data-fh-reveal className="flex items-center gap-3 text-[15px] text-ink">
+            <span aria-hidden="true" className="h-2 w-2 rounded-full bg-sulfur-mark" />
+            {data.status}
+            {data.availability && <span className="text-mute">· available {data.availability.toLowerCase()}</span>}
+          </p>
+        )}
 
-      <SectionCard
-        title="Status & Availability"
-        paths={[ICON.user]}
-        badge={<StatusPill text={data.status} />}
-      >
-        <div className="space-y-2">
-          <DetailRow label="Availability">{data.availability}</DetailRow>
-          <DetailRow label="Employment Type">{data.type.join(", ")}</DetailRow>
-          <DetailRow label="Remote Work" muted={false}>
-            <YesNo yes={data.remote} on="Available" off="Not Available" />
-          </DetailRow>
-          <DetailRow label="Relocation" muted={false}>
-            <YesNo yes={data.relocation} on="Open to Relocate" off="No Relocation" />
-          </DetailRow>
+        {data.preferred_roles.length > 0 && (
+          <ul data-fh-reveal data-fh-stagger className="mt-8">
+            {data.preferred_roles.map((role) => (
+              <li
+                key={role}
+                className="border-t border-line py-3 text-[clamp(1.375rem,1.1rem+1.2vw,2.125rem)] leading-tight font-medium tracking-[-0.025em] text-ink last:border-b"
+              >
+                {role}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div data-fh-reveal className="mt-12 border-t border-line">
+          <Tags label="Employment" items={data.type} />
+          <Tags label="Work mode" items={data.location_types} />
+          <Tags label="Preferred locations" items={data.preferred_locations} />
+          <Tags label="Remote, from" items={data.remote_locations} />
+          <Tags label="Languages" items={data.languages} />
+          <Tags label="Strongest in" items={data.skills_highlight} />
         </div>
-      </SectionCard>
 
-      <SectionCard title="Preferred Roles" paths={[ICON.briefcase]}>
-        <TagList items={data.preferred_roles} />
-      </SectionCard>
+        {data.portfolio_highlights.length > 0 && (
+          <div className="mt-14">
+            <p className={EYEBROW}>Worth a look</p>
+            <ul data-fh-reveal data-fh-stagger className="mt-4 border-b border-line">
+              {data.portfolio_highlights.map((item) => (
+                <li key={item.title} className="border-t border-line py-4">
+                  <p className="text-[17px] text-ink">{item.title}</p>
+                  {item.description && (
+                    <p className="mt-1 max-w-[62ch] text-[15px] leading-relaxed text-mute">{item.description}</p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-      <SectionCard title="Skills Highlight" paths={[ICON.lightbulb]}>
-        <TagList items={data.skills_highlight} />
-      </SectionCard>
+        {tools && Object.keys(tools).length > 0 && (
+          <div className="mt-14">
+            <p className={EYEBROW}>Every tool I use</p>
+            <dl data-fh-reveal className="mt-4 grid gap-x-10 border-t border-line md:grid-cols-2">
+              {Object.entries(tools).map(([category, list]) => (
+                <div key={category} className="border-b border-line py-3.5">
+                  <dt className="text-[13px] text-mute">{category}</dt>
+                  <dd className="mt-1 text-[15px] leading-relaxed text-ink">
+                    {list.map((skill) => skill.name).join(", ")}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        )}
+      </div>
 
-      <SectionCard title="Professional Details" paths={[ICON.idCard]}>
-        <div className="space-y-2">
-          <DetailRow label="Experience Level">{data.experience_level}</DetailRow>
-          <DetailRow label="Salary Expectation">{data.salary_expectation}</DetailRow>
-          <DetailRow label="Notice Period">{data.notice_period}</DetailRow>
-          <DetailRow label="Work Authorization">{data.work_authorization}</DetailRow>
+      <aside className="lg:col-span-4 lg:col-start-9">
+        <div className="lg:sticky lg:top-28">
+          <dl data-fh-reveal className="border-t border-line">
+            {data.experience_level && <Fact label="Level">{data.experience_level}</Fact>}
+            {data.availability && <Fact label="Available">{data.availability}</Fact>}
+            {data.notice_period && <Fact label="Notice">{data.notice_period}</Fact>}
+            {data.work_authorization && <Fact label="Authorised">{data.work_authorization}</Fact>}
+            <Fact label="Remote">{yes(data.remote)}</Fact>
+            <Fact label="Relocate">{yes(data.relocation)}</Fact>
+            {data.salary_expectation && <Fact label="Salary">{data.salary_expectation}</Fact>}
+            {data.interview_availability && <Fact label="Interviews">{data.interview_availability}</Fact>}
+            {data.contact_preference && <Fact label="Reach me by">{data.contact_preference}</Fact>}
+          </dl>
+          {data.additional_notes && (
+            <p className="fh-serif mt-6 text-[17px] leading-relaxed text-mute italic">{data.additional_notes}</p>
+          )}
+          <div className="mt-8 flex flex-wrap gap-3">
+            {cv.main && (
+              <a href="/cv" target="_blank" rel="noopener noreferrer" className={`group ${SOLID_BUTTON}`}>
+                Read the CV <Arrow diagonal />
+              </a>
+            )}
+            <Link href="/contact" className={LINE_BUTTON}>
+              Get in touch
+            </Link>
+          </div>
         </div>
-      </SectionCard>
-
-      <SectionCard title="Languages & Preferences" paths={[ICON.translate]}>
-        <div className="space-y-2">
-          <DetailRow label="Languages">{data.languages.join(", ")}</DetailRow>
-          <DetailRow label="Contact Preference">{data.contact_preference}</DetailRow>
-          <DetailRow label="Interview Availability">{data.interview_availability}</DetailRow>
-        </div>
-      </SectionCard>
-
-      <SectionCard title="Location Preferences" paths={[ICON.pinOuter, ICON.pinInner]}>
-        <div className="space-y-0">
-          <LocationGroup title="Work Arrangements" items={data.location_types} />
-          <LocationGroup title="On-site Locations" items={data.preferred_locations} />
-          <LocationGroup title="Remote Locations" items={data.remote_locations} />
-        </div>
-      </SectionCard>
-
-      {tools && Object.keys(tools).length > 0 ? <ToolsTable tools={tools} /> : null}
-    </Panel>
-  );
-}
-
-function LocationGroup({ title, items }: { title: string; items: string[] }) {
-  return (
-    <div className="p-2">
-      <h3 className="text-lg font-medium text-indigo-400 mb-3">{title}</h3>
-      <TagList items={items} className="mt-1.5" />
+      </aside>
     </div>
   );
 }
 
-/**
- * The skills catalogue as a category/tools table.
- *
- * One row per category, tools joined with commas.
- */
-function ToolsTable({ tools }: { tools: Record<string, Skill[]> }) {
+function Hiring({ data }: { data: HiringData }) {
   return (
-    <SectionCard title="Tools & Technologies" paths={[ICON.cogOuter, ICON.cogInner]}>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-zinc-700">
-              <th className="text-left py-2 px-3 text-zinc-400 font-medium text-xs uppercase tracking-wider w-28 sm:w-36">
-                Category
-              </th>
-              <th className="text-left py-2 px-3 text-zinc-400 font-medium text-xs uppercase tracking-wider">
-                Tools
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-zinc-700/50">
-            {Object.entries(tools).map(([category, skills]) => (
-              <tr key={category} className="hover:bg-zinc-800/30 transition-colors">
-                <td className="py-2 px-3 font-medium text-zinc-300 text-xs sm:text-sm align-top whitespace-nowrap">
-                  {category}
-                </td>
-                <td className="py-2 px-3 text-zinc-400 text-xs">
-                  {skills.map((skill) => skill.name).join(", ")}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="mt-10">
+      <div className="grid gap-10 lg:grid-cols-12">
+        <div className="lg:col-span-7">
+          <p data-fh-reveal className="text-[clamp(1.75rem,1.3rem+2vw,2.75rem)] leading-[1.1] font-medium tracking-[-0.03em] text-ink">
+            {data.company_name}
+            {data.hiring_status && (
+              <span className="fh-mono ml-4 align-middle text-[11px] tracking-[0.14em] text-sulfur uppercase">
+                {data.hiring_status}
+              </span>
+            )}
+          </p>
+          {data.company_description && (
+            <p className="fh-serif mt-4 max-w-[52ch] text-[20px] leading-[1.45] text-mute">
+              {data.company_description}
+            </p>
+          )}
+          {data.website && (
+            <a href={data.website} target="_blank" rel="noopener noreferrer" className="group mt-4 inline-block text-[15px] text-ink">
+              <span className="fh-link">{bareUrl(data.website)}</span> <Arrow diagonal className="text-mute" />
+            </a>
+          )}
+        </div>
       </div>
-    </SectionCard>
+
+      {data.positions.length > 0 && (
+        <div className="mt-14">
+          <p className={EYEBROW}>
+            Open positions <span className="ml-2 text-ink">{data.positions.length}</span>
+          </p>
+          <ul className="mt-4 border-b border-line">
+            {data.positions.map((position) => (
+              <PositionRow key={position.title} position={position} email={data.contact_info.application_email} />
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div className="mt-16 grid gap-14 md:grid-cols-2">
+        {data.application_process.length > 0 && (
+          <div>
+            <p className={EYEBROW}>How it goes</p>
+            {/* Numbered because it is a sequence: each step follows the last. */}
+            <ol data-fh-reveal data-fh-stagger className="mt-4 border-b border-line">
+              {data.application_process.map((step, index) => (
+                <li key={step} className="grid grid-cols-[2.5rem_minmax(0,1fr)] border-t border-line py-3.5 text-[15px] leading-relaxed">
+                  <span className="fh-mono text-[12px] text-mute tabular-nums">{index + 1}</span>
+                  <span className="text-ink">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+        {data.company_culture.length > 0 && (
+          <div>
+            <p className={EYEBROW}>What it is like</p>
+            <ul data-fh-reveal data-fh-stagger className="mt-4 border-b border-line">
+              {data.company_culture.map((line) => (
+                <li key={line} className="border-t border-line py-3.5 text-[15px] leading-relaxed text-ink">
+                  {line}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {(data.requirements.general.length > 0 || data.requirements.technical.length > 0) && (
+          <div>
+            <p className={EYEBROW}>What we look for</p>
+            <ul data-fh-reveal className="mt-4 border-b border-line">
+              {[...data.requirements.general, ...data.requirements.technical].map((line) => (
+                <li key={line} className="border-t border-line py-3.5 text-[15px] leading-relaxed text-ink">
+                  {line}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <div>
+          <p className={EYEBROW}>Contact</p>
+          <dl className="mt-4 border-t border-line">
+            {data.contact_info.email && (
+              <Fact label="Email">
+                <a href={`mailto:${data.contact_info.email}`} className="fh-link">
+                  {data.contact_info.email}
+                </a>
+              </Fact>
+            )}
+            {data.contact_info.application_email && (
+              <Fact label="Apply to">
+                <a href={`mailto:${data.contact_info.application_email}`} className="fh-link">
+                  {data.contact_info.application_email}
+                </a>
+              </Fact>
+            )}
+            {data.contact_info.response_time && <Fact label="Reply">{data.contact_info.response_time}</Fact>}
+            {data.contact_info.interview_process && <Fact label="Interviews">{data.contact_info.interview_process}</Fact>}
+          </dl>
+          {data.additional_notes && (
+            <p className="fh-serif mt-6 text-[17px] leading-relaxed text-mute italic">{data.additional_notes}</p>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
-function HiringPanel({ data }: { data: HiringData }) {
+function PositionRow({ position, email }: { position: Position; email: string }) {
+  const lists: [string, string[]][] = [
+    ["You will", position.responsibilities],
+    ["You bring", position.skills_required],
+    ["You get", position.benefits],
+  ];
   return (
-    <Panel>
-      <SectionCard
-        title="Company Overview"
-        paths={[ICON.building]}
-        badge={<StatusPill text={data.hiring_status} />}
-      >
-        <div className="space-y-2">
-          <h3 className="text-lg font-medium text-zinc-200">{data.company_name}</h3>
-          <p className="text-sm leading-relaxed text-zinc-400">{data.company_description}</p>
-          {data.website ? (
+    <li className="border-t border-line">
+      <details className="group">
+        <summary className="grid cursor-pointer list-none gap-y-1.5 py-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-baseline md:gap-x-8 [&::-webkit-details-marker]:hidden">
+          <span className="text-[clamp(1.25rem,1.05rem+0.9vw,1.75rem)] font-medium tracking-[-0.02em] text-ink">
+            {position.title}
+          </span>
+          <span className="fh-mono flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-mute">
+            {[position.type, position.location, position.salary_range].filter(Boolean).join(" · ")}
+            <span className="inline-block transition-transform group-open:rotate-45">+</span>
+          </span>
+        </summary>
+        <div className="pb-8">
+          {position.experience_required && (
+            <p className="text-[15px] text-mute">Experience: {position.experience_required}</p>
+          )}
+          <div className="mt-6 grid gap-10 md:grid-cols-3">
+            {lists
+              .filter(([, items]) => items.length > 0)
+              .map(([label, items]) => (
+                <div key={label}>
+                  <p className="text-[13px] text-mute">{label}</p>
+                  <ul className="mt-2 space-y-1.5 text-[15px] leading-relaxed text-ink">
+                    {items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+          </div>
+          {email && (
             <a
-              href={data.website}
-              target="_blank"
-              rel="noopener"
-              className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-colors text-sm mt-1"
+              href={`mailto:${email}?subject=${encodeURIComponent(`Application: ${position.title}`)}`}
+              className={`group mt-8 ${SOLID_BUTTON}`}
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                />
-              </svg>
-              Visit {data.company_name}
+              Apply for this role <Arrow />
             </a>
-          ) : null}
+          )}
         </div>
-      </SectionCard>
-
-      <SectionCard title="Open Positions" paths={[ICON.briefcase]}>
-        {/* Wider than the `space-y-3` these had while each was its own bordered
-            box. Without the box, 12px is not enough to say where one posting
-            ends and the next begins. */}
-        <div className="space-y-6">
-          {data.positions.map((position) => (
-            <PositionCard
-              key={position.title}
-              position={position}
-              applicationEmail={data.contact_info.application_email}
-            />
-          ))}
-        </div>
-      </SectionCard>
-
-      <SectionCard title="Application Process" paths={[ICON.clipboard]}>
-        <div className="space-y-2">
-          {data.application_process.map((step, index) => (
-            <div key={step} className="flex items-start gap-3 p-2 bg-zinc-800/30 rounded">
-              <span className="flex-shrink-0 w-6 h-6 bg-indigo-900/30 text-indigo-300 rounded-full flex items-center justify-center text-xs font-medium border border-indigo-700/50">
-                {index + 1}
-              </span>
-              <span className="text-sm text-zinc-300">{step}</span>
-            </div>
-          ))}
-        </div>
-      </SectionCard>
-
-      {/*
-        Full width, one after another, like every other section on the page.
-        These were three columns from `md` up, which gave a bulleted list a
-        third of the measure and set them to a different rhythm from Contact
-        Information and Application Process directly above and below.
-      */}
-      <SectionCard title="Company Culture" paths={[ICON.users]}>
-        <BulletLines items={data.company_culture} />
-      </SectionCard>
-
-      {data.requirements.general.length > 0 ? (
-        <SectionCard title="General Requirements" paths={[ICON.shield]}>
-          <BulletLines items={data.requirements.general} />
-        </SectionCard>
-      ) : null}
-
-      {data.requirements.technical.length > 0 ? (
-        <SectionCard title="Technical Requirements" paths={[ICON.code]}>
-          <BulletLines items={data.requirements.technical} />
-        </SectionCard>
-      ) : null}
-
-      <SectionCard title="Contact Information" paths={[ICON.mail]}>
-        <div className="space-y-2">
-          <DetailRow label="General Inquiries">{data.contact_info.email}</DetailRow>
-          <DetailRow label="Applications">{data.contact_info.application_email}</DetailRow>
-          <DetailRow label="Response Time">{data.contact_info.response_time}</DetailRow>
-          <DetailRow label="Interview Process">{data.contact_info.interview_process}</DetailRow>
-        </div>
-      </SectionCard>
-
-      {data.additional_notes ? (
-        <SectionCard title="Join Our Team" paths={[ICON.info]}>
-          <p className="text-sm leading-relaxed text-zinc-400">{data.additional_notes}</p>
-        </SectionCard>
-      ) : null}
-    </Panel>
+      </details>
+    </li>
   );
 }

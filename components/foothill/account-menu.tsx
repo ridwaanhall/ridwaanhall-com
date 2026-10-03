@@ -3,7 +3,9 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 
+import { Icon } from "@/components/foothill/icons";
 import { ROLE_BLURB, ROLE_LABEL, type SiteRole } from "@/lib/auth/roles";
+import { gsap, MOTION_OK } from "@/lib/motion/gsap";
 import { cn } from "@/lib/utils/cn";
 
 /**
@@ -47,6 +49,12 @@ export function AccountMenu({
   useEffect(() => {
     if (!open) return;
     panel.current?.querySelector<HTMLElement>("a, button")?.focus();
+    if (window.matchMedia(MOTION_OK).matches)
+      gsap.fromTo(
+        panel.current,
+        { y: -8, scale: 0.97, autoAlpha: 0, transformOrigin: "100% 0%" },
+        { y: 0, scale: 1, autoAlpha: 1, duration: 0.35, ease: "expo.out", clearProps: "transform,opacity,visibility" },
+      );
 
     const onPointer = (event: PointerEvent) => {
       if (!root.current?.contains(event.target as Node)) setOpen(false);
@@ -87,7 +95,8 @@ export function AccountMenu({
             {name.slice(0, 1).toUpperCase()}
           </span>
         )}
-        <span className="fh-mono max-w-[9rem] truncate text-[12px]">@{username}</span>
+        <span className="max-w-[9rem] truncate text-[14px]">@{username}</span>
+        <Icon name="chevron-down" className={cn("h-3.5 w-3.5 transition-transform duration-500", open && "rotate-180")} />
       </button>
 
       <div
@@ -96,12 +105,12 @@ export function AccountMenu({
         role="menu"
         hidden={!open}
         className={cn(
-          "absolute right-0 top-[calc(100%+10px)] z-50 w-64 rounded-lg border border-line bg-paper p-2 text-ink",
+          "absolute right-0 top-[calc(100%+10px)] z-50 w-64 rounded-[16px] border border-line bg-paper p-2 text-ink",
         )}
       >
         <div className="border-b border-line px-3 pt-2 pb-3">
           <p className="truncate text-[15px] font-medium">{name}</p>
-          <p className="fh-mono mt-1 text-[11px] text-mute" title={ROLE_BLURB[role]}>
+          <p className="mt-1 text-[13px] text-mute" title={ROLE_BLURB[role]}>
             {ROLE_LABEL[role]}
           </p>
         </div>

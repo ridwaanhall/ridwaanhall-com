@@ -1,63 +1,143 @@
 import type { Route } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
-import { EYEBROW } from "@/components/foothill/classes";
+import { H1, H2, LEAD, LINE_BUTTON, SOLID_BUTTON } from "@/components/foothill/classes";
+import { Icon, type IconName } from "@/components/foothill/icons";
+import { CountUp, Reveal, Roll } from "@/components/foothill/motion";
 import { statusDot } from "@/lib/site/status-colors";
 import { cn } from "@/lib/utils/cn";
 
 /**
- * The opening of a section: a hairline, a mono label, and what the section
- * holds counted beside it, with an optional link to the rest.
+ * Every link that is an action rather than a word in a sentence: a button
+ * shaped link, or a quiet one with an arrow.
  *
- * The count is the point of the label rather than ornament -- "Writing 20"
- * tells a reader how much is behind the five shown.
+ * One component so the three shapes cannot drift: the label rolls on hover,
+ * the arrow is the same SVG everywhere and moves the way its direction says
+ * -- forward for a page on this site, up and out for somewhere else.
  */
+export function ActionLink({
+  href,
+  children,
+  variant = "text",
+  icon,
+  external,
+  download,
+  className,
+}: {
+  href: string;
+  children: string;
+  variant?: "solid" | "line" | "text";
+  icon?: IconName | null;
+  /** Opens elsewhere: a new tab, and the up-and-out arrow. Inferred from the href. */
+  external?: boolean;
+  download?: boolean;
+  className?: string;
+}) {
+  const away = external ?? /^(https?:|mailto:)/.test(href);
+  const glyph = icon === null ? null : (icon ?? (away ? "arrow-up-right" : "arrow-right"));
+  const classes = cn(
+    variant === "solid" && SOLID_BUTTON,
+    variant === "line" && LINE_BUTTON,
+    variant === "text" &&
+      "group inline-flex items-center gap-2 text-[15px] font-medium text-ink transition-colors hover:text-sulfur",
+    className,
+  );
+  const back = glyph === "arrow-left";
+  const body = (
+    <>
+      {!back && <Roll>{children}</Roll>}
+      {glyph && (
+        <Icon
+          name={glyph}
+          className={cn(
+            "transition-transform duration-500 ease-[cubic-bezier(.2,.8,.2,1)]",
+            glyph === "arrow-up-right"
+              ? "group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              : glyph === "arrow-left"
+                ? "group-hover:-translate-x-1"
+                : glyph === "arrow-down"
+                  ? "group-hover:translate-y-0.5"
+                  : "group-hover:translate-x-1",
+          )}
+        />
+      )}
+      {back && <Roll>{children}</Roll>}
+    </>
+  );
+
+  if (away || download)
+    return (
+      <a
+        href={href}
+        className={classes}
+        {...(away ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        {...(download ? { download: true } : {})}
+      >
+        {body}
+      </a>
+    );
+  return (
+    <Link href={href as Route} className={classes}>
+      {body}
+    </Link>
+  );
+}
+
+/**
+ * A section's title, rising into place line by line as it is reached, with
+ * how many entries sit under it set small against its first line -- "Writing
+ * 20" tells a reader how much the few shown are drawn from, without a kicker
+ * above the title saying so.
+ */
+export function Heading({
+  id,
+  children,
+  count,
+  className,
+}: {
+  id?: string;
+  children: string;
+  count?: number;
+  className?: string;
+}) {
+  return (
+    <h2 id={id} className={cn(H2, "flex items-start gap-[0.25em]", className)}>
+      <Reveal as="span" lines className="block">
+        {children}
+      </Reveal>
+      {count !== undefined && (
+        <span className="mt-[0.1em] shrink-0 font-text text-[0.32em] font-normal tracking-normal text-mute">
+          <CountUp value={count} />
+        </span>
+      )}
+    </h2>
+  );
+}
+
+/** The opening of a section: its title and count, and the way to the rest. */
 export function SectionHead({
-  label,
+  title,
   count,
   href,
   linkLabel,
   id,
   className,
 }: {
-  label: string;
+  title: string;
   count?: number;
-  href?: Route;
+  href?: string;
   linkLabel?: string;
   id?: string;
   className?: string;
 }) {
   return (
-    <div className={cn("flex items-baseline justify-between gap-6 border-t border-line pt-4", className)}>
-      <h2 id={id} className={EYEBROW}>
-        {label}
-        {count !== undefined && <span className="ml-2 text-ink tabular-nums">{count}</span>}
-      </h2>
-      {href && linkLabel && (
-        <Link href={href} className="group text-[14px] text-mute transition-colors hover:text-ink">
-          {linkLabel}
-          <Arrow className="ml-1.5" />
-        </Link>
-      )}
+    <div className={cn("flex flex-wrap items-end justify-between gap-x-8 gap-y-4", className)}>
+      <Heading id={id} count={count}>
+        {title}
+      </Heading>
+      {href && linkLabel && <ActionLink href={href}>{linkLabel}</ActionLink>}
     </div>
-  );
-}
-
-/** A right arrow that leans forward when its link is hovered (`group`). */
-export function Arrow({ className, diagonal = false }: { className?: string; diagonal?: boolean }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={cn(
-        "inline-block transition-transform duration-300",
-        diagonal
-          ? "group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-          : "group-hover:translate-x-1",
-        className,
-      )}
-    >
-      {diagonal ? "↗" : "→"}
-    </span>
   );
 }
 
@@ -84,31 +164,29 @@ export function StatusDot({
   );
 }
 
-/** A page's heading block: an eyebrow, a large title, and a lead line. */
+/**
+ * A page's heading block: the title, a lead, and whatever the page puts under
+ * them. What kind of page this is lives in the navbar's current link and the
+ * document title, so there is no label above it.
+ */
 export function PageHead({
-  eyebrow,
   title,
   lead,
   children,
+  className,
 }: {
-  eyebrow: string;
   title: React.ReactNode;
   lead?: React.ReactNode;
   children?: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <header className="max-w-[880px]">
-      <p data-fh-enter className={EYEBROW}>
-        {eyebrow}
-      </p>
-      <h1
-        data-fh-split
-        className="mt-5 text-[clamp(2.5rem,1.6rem+4vw,4.75rem)] leading-[1.02] font-medium tracking-[-0.035em] text-ink"
-      >
+    <header className={cn("max-w-[980px]", className)}>
+      <h1 data-fh-split className={H1}>
         {title}
       </h1>
       {lead && (
-        <p data-fh-enter className="fh-serif mt-6 max-w-[60ch] text-[clamp(1.125rem,1rem+0.5vw,1.375rem)] leading-[1.5] text-mute">
+        <p data-fh-enter className={cn(LEAD, "mt-7 max-w-[56ch]")}>
           {lead}
         </p>
       )}
@@ -117,12 +195,50 @@ export function PageHead({
   );
 }
 
-/** A mono key and its value, for the ruled fact lists on detail pages. */
+/** A key and its value, for the ruled fact lists on detail pages. */
 export function Fact({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-baseline justify-between gap-6 border-b border-line py-3 text-[15px]">
-      <dt className="fh-mono shrink-0 text-[11px] tracking-[0.14em] text-mute uppercase">{label}</dt>
+      <dt className="shrink-0 text-mute">{label}</dt>
       <dd className="text-right text-ink">{children}</dd>
     </div>
+  );
+}
+
+/**
+ * An organisation's logo, or its initials when it has none.
+ *
+ * Most organisations have no logo on file, so the fallback is the common case
+ * and is drawn to sit beside a real logo without looking like a missing image.
+ * Logos are shown in grey and take their colour back on hover.
+ */
+export function Logo({ src, name, className }: { src: string; name: string; className?: string }) {
+  const box = cn(
+    "relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-[10px] border border-line bg-raise",
+    className,
+  );
+  if (!src) {
+    const initials = name
+      .split(/\s+/)
+      .filter((word) => /^[A-Za-z0-9]/.test(word))
+      .slice(0, 2)
+      .map((word) => word[0].toUpperCase())
+      .join("");
+    return (
+      <span aria-hidden="true" className={cn(box, "font-display text-[13px] font-semibold text-mute")}>
+        {initials || "·"}
+      </span>
+    );
+  }
+  return (
+    <span className={cn(box, "bg-white")}>
+      <Image
+        src={src}
+        alt={`${name} logo`}
+        fill
+        sizes="44px"
+        className="fh-logo object-contain p-1.5"
+      />
+    </span>
   );
 }

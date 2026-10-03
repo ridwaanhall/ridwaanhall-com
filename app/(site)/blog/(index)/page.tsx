@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 
-import { EYEBROW } from "@/components/foothill/classes";
+import { META } from "@/components/foothill/classes";
+import { Icon } from "@/components/foothill/icons";
 import { MAIN, WRAP } from "@/components/foothill/layout";
 import { BlogResults } from "@/components/foothill/listing";
+import { PageMotion, Reveal } from "@/components/foothill/motion";
+import { postCard } from "@/components/foothill/rows";
 import { ResultsSkeleton } from "@/components/foothill/skeleton";
-import { PageMotion } from "@/components/foothill/page-motion";
-import { Reveal } from "@/components/foothill/reveal";
-import { postRow } from "@/components/foothill/rows";
 import { PageHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { getAboutData } from "@/lib/data/about";
@@ -16,7 +17,6 @@ import { getBlogs } from "@/lib/data/content";
 import { blogListSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { blogListSchemas } from "@/lib/seo/schemas-for-page";
-import { shortDate } from "@/lib/site/display";
 import { readListingParams, type ListingSearchParams } from "@/lib/site/listing";
 
 export async function generateMetadata({
@@ -37,43 +37,53 @@ export default async function BlogPage({ searchParams }: { searchParams: Listing
   const [about, posts] = await Promise.all([getAboutData(), getBlogs()]);
   if (!about) return null;
 
-  const featured = posts.filter((post) => post.is_featured).slice(0, 3).map(postRow);
+  // The post to start with: the newest one the owner has marked as featured,
+  // or simply the newest.
+  const lead = postCard(posts.find((post) => post.is_featured) ?? posts[0]);
 
   return (
     <main className={MAIN}>
       <JsonLdScript schemas={blogListSchemas(about, posts)} />
       <div className={WRAP}>
         <PageHead
-          eyebrow={`Writing · ${posts.length}`}
           title="Mostly about code, sometimes about everything else."
           lead="Building software, keeping open APIs alive, and what I think about away from the keyboard."
         />
 
-        {featured.length > 0 && (
-          <section aria-labelledby="featured-title" className="mt-16 md:mt-24">
-            <h2 id="featured-title" className={`${EYEBROW} border-t border-line pt-4`}>
-              Start with these
-            </h2>
-            <Reveal as="ul" stagger className="mt-8 grid gap-10 md:grid-cols-3 md:gap-8">
-              {featured.map((post) => (
-                <li key={post.slug}>
-                  <Link href={`/blog/${post.slug}`} className="group block">
-                    <p className="fh-mono text-[11px] text-mute">
-                      {shortDate(post.date)} · {post.minutes} min
-                    </p>
-                    <p className="mt-3 text-[clamp(1.375rem,1.15rem+0.9vw,1.875rem)] leading-[1.12] font-medium tracking-[-0.025em] text-ink decoration-sulfur-mark decoration-2 underline-offset-[6px] group-hover:underline">
-                      {post.title}
-                    </p>
-                    <p className="mt-3 line-clamp-3 text-[15px] leading-relaxed text-mute">{post.description}</p>
-                  </Link>
-                </li>
-              ))}
-            </Reveal>
-          </section>
+        {posts.length > 0 && (
+          <Reveal as="section" aria-label="Start here" className="mt-16 md:mt-24">
+            <Link href={lead.href as `/blog/${string}`} className="group grid items-end gap-8 lg:grid-cols-12 lg:gap-10">
+              <div className="relative aspect-[16/10] overflow-hidden rounded-[18px] bg-raise lg:col-span-7">
+                {lead.image && (
+                  <Image
+                    src={lead.image}
+                    alt={lead.imageAlt}
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 700px, 100vw"
+                    className="object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(.2,.8,.2,1)] group-hover:scale-[1.04]"
+                  />
+                )}
+              </div>
+              <div className="lg:col-span-5 lg:pb-2">
+                <p className={META}>
+                  <span className="text-ink">Start here.</span> {lead.meta.join(", ")}
+                </p>
+                <h2 className="mt-4 font-display text-[clamp(1.9rem,1.3rem+2.4vw,3.25rem)] leading-[1.02] font-medium tracking-[-0.035em] text-ink">
+                  <span className="fh-underline">{lead.title}</span>
+                </h2>
+                <p className="mt-5 line-clamp-3 text-[17px] leading-relaxed text-mute">{lead.summary}</p>
+                <span className="mt-7 inline-flex items-center gap-2 text-[15px] font-medium text-ink">
+                  Read it
+                  <Icon name="arrow-right" className="transition-transform duration-500 group-hover:translate-x-1" />
+                </span>
+              </div>
+            </Link>
+          </Reveal>
         )}
 
-        <section aria-label="All writing" className="mt-20 md:mt-28">
-          <Suspense fallback={<ResultsSkeleton rowHeight={117} />}>
+        <section aria-label="All writing" className="mt-24 md:mt-32">
+          <Suspense fallback={<ResultsSkeleton />}>
             <BlogResults posts={posts} searchParams={searchParams} />
           </Suspense>
         </section>

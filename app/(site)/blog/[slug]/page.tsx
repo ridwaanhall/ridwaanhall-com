@@ -4,12 +4,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import { EYEBROW } from "@/components/foothill/classes";
+import { CardGrid } from "@/components/foothill/cards";
+import {H1, LEAD } from "@/components/foothill/classes";
 import { Gallery } from "@/components/foothill/gallery";
 import { MAIN, MEASURE, WRAP } from "@/components/foothill/layout";
-import { PageMotion } from "@/components/foothill/page-motion";
-import { ReadingProgress } from "@/components/foothill/reading-progress";
+import {PageMotion, ReadingProgress } from "@/components/foothill/motion";
+import { postCard } from "@/components/foothill/rows";
 import { Share } from "@/components/foothill/share";
+import { ActionLink, Heading } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { CommentSectionFor, CommentSectionSkeleton } from "@/components/site/comments/mount";
 import { RichText } from "@/components/site/rich-text";
@@ -44,49 +46,42 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
   const url = `${SITE_URL}/blog/${post.slug}`;
   const edited = post.updated_at.getTime() - post.created_at.getTime() > 24 * 60 * 60 * 1000;
   const minutes = readingMinutes(post.read_time, post.content_html);
-  // Posts are newest first, so the one after this in the list is the one
-  // written before it.
+  // Posts are newest first: the two after this one were written before it.
   const at = posts.findIndex((entry) => entry.slug === post.slug);
-  const older = posts[at + 1];
+  const earlier = posts.slice(at + 1, at + 3);
+  const more = earlier.length ? earlier : posts.filter((entry) => entry.slug !== post.slug).slice(0, 2);
 
   return (
     <main className={MAIN}>
       <JsonLdScript schemas={blogDetailSchemas(about, post)} />
       <div className={WRAP}>
         <article>
-          <header className="mx-auto max-w-[880px]">
-            <p data-fh-enter className="fh-mono flex flex-wrap gap-x-3 gap-y-1 text-[12px] text-mute">
-              <Link href="/blog" className="text-ink hover:text-sulfur">
-                ← Writing
-              </Link>
-              <span className="text-line">/</span>
+          <header className="mx-auto max-w-[920px]">
+            <div data-fh-enter className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[14px] text-mute">
+              <ActionLink href="/blog" icon="arrow-left" className="text-[14px] text-mute hover:text-ink">
+                Writing
+              </ActionLink>
+              <span aria-hidden="true" className="h-3 w-px bg-line" />
               <span>{postCategory(post.category)}</span>
-            </p>
-            <h1
-              data-fh-split
-              className="mt-8 text-[clamp(2.25rem,1.5rem+3.4vw,4.25rem)] leading-[1.04] font-medium tracking-[-0.035em] text-ink"
-            >
+            </div>
+            <h1 data-fh-split className={`${H1} mt-8 text-[clamp(2.4rem,1.4rem+4.2vw,5rem)] leading-[0.98]`}>
               {post.title}
             </h1>
             {post.description && (
-              <p data-fh-enter className="fh-serif mt-6 text-[clamp(1.2rem,1.05rem+0.6vw,1.5rem)] leading-[1.45] text-mute">
+              <p data-fh-enter className={`${LEAD} mt-7`}>
                 {post.description}
               </p>
             )}
-            <div data-fh-enter className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-y border-line py-4">
+            <div data-fh-enter className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3">
               <span className="flex items-center gap-3">
                 {post.author_image && (
-                  <Image
-                    src={post.author_image}
-                    alt=""
-                    width={28}
-                    height={28}
-                    className="h-7 w-7 rounded-full object-cover"
-                  />
+                  <span className="fh-print relative h-9 w-9 overflow-hidden rounded-full">
+                    <Image src={post.author_image} alt="" fill sizes="36px" className="object-cover" />
+                  </span>
                 )}
-                <span className="text-[14px] text-ink">{post.author}</span>
+                <span className="text-[15px] font-medium text-ink">{post.author}</span>
               </span>
-              <span className="fh-mono flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-mute">
+              <span className="flex flex-wrap gap-x-5 gap-y-1 text-[14px] text-mute">
                 <time dateTime={isoDateTime(post.created_at)}>{shortDate(post.created_at)}</time>
                 <span>{minutes} min read</span>
                 <span>{post.views.toLocaleString("en-US")} views</span>
@@ -96,12 +91,12 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
           </header>
 
           {post.image_list && post.image_list.length > 0 && (
-            <div data-fh-enter className="mx-auto mt-12 max-w-[1104px]">
+            <div data-fh-enter className="mx-auto mt-14 max-w-[1104px]">
               <Gallery images={post.image_list} alts={post.image_alts} title={post.title} layout="cover" eager />
             </div>
           )}
 
-          <div id="post-body" className={`mx-auto mt-14 ${MEASURE}`}>
+          <div id="post-body" className={`mx-auto mt-16 ${MEASURE}`}>
             <RichText html={post.content_html} className="fh-prose" />
 
             {post.tags.length > 0 && (
@@ -110,9 +105,9 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                   <li key={tag}>
                     <Link
                       href={`/blog?q=${encodeURIComponent(tag)}`}
-                      className="fh-mono inline-block rounded-full border border-line px-3 py-1 text-[11px] text-mute transition-colors hover:border-ink hover:text-ink"
+                      className="inline-block rounded-full bg-raise px-3.5 py-1.5 text-[13px] text-mute transition-colors hover:bg-ink hover:text-paper"
                     >
-                      {tag}
+                      #{tag}
                     </Link>
                   </li>
                 ))}
@@ -125,19 +120,14 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
           </div>
         </article>
 
-        {older && (
-          <nav aria-label="Keep reading" className={`mx-auto mt-20 ${MEASURE}`}>
-            <p className={EYEBROW}>Written before this</p>
-            <Link href={`/blog/${older.slug}`} className="group mt-3 block">
-              <span className="text-[clamp(1.375rem,1.15rem+0.9vw,1.875rem)] leading-tight font-medium tracking-[-0.025em] text-ink decoration-sulfur-mark decoration-2 underline-offset-[6px] group-hover:underline">
-                {older.title}
-              </span>
-              <span className="mt-2 block text-[15px] text-mute">{older.description}</span>
-            </Link>
-          </nav>
+        {more.length > 0 && (
+          <section aria-labelledby="keep-reading" className="mt-28 md:mt-36">
+            <Heading id="keep-reading">Keep reading</Heading>
+            <CardGrid cards={more.map(postCard)} batch={2} rhythm={false} span="lg:col-span-6" className="mt-12" />
+          </section>
         )}
 
-        <div className={`mx-auto mt-20 ${MEASURE}`}>
+        <div className={`mx-auto mt-24 ${MEASURE}`}>
           <Suspense fallback={<CommentSectionSkeleton />}>
             <CommentSectionFor label="blog_post" targetId={post.id} slug={post.slug} />
           </Suspense>

@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { auth } from "@/auth";
 import { Guestbook } from "@/components/foothill/guestbook";
 import { MAIN, WRAP } from "@/components/foothill/layout";
-import { PageMotion } from "@/components/foothill/page-motion";
+import { PageMotion } from "@/components/foothill/motion";
 import { Bar } from "@/components/foothill/skeleton";
 import { PageHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
@@ -31,7 +31,6 @@ export default function GuestbookPage() {
           <div className="lg:col-span-4">
             <div className="lg:sticky lg:top-28">
               <PageHead
-                eyebrow="Guestbook"
                 title="Leave a line."
                 lead="Say hello, ask a question, or tell me one of the APIs is down. I read every message."
               />
@@ -82,9 +81,9 @@ function GuestbookSkeleton() {
   return (
     <div role="status" aria-busy="true" className="skeleton-pulse">
       <span className="sr-only">Loading…</span>
-      <div aria-hidden="true" className="overflow-hidden rounded-lg border border-line">
-        <div className="border-b border-line px-5 py-3.5">
-          <Bar className="h-3 w-24" />
+      <div aria-hidden="true" className="overflow-hidden rounded-[20px] border border-line">
+        <div className="border-b border-line px-5 py-4">
+          <Bar className="h-5 w-28" />
         </div>
         <div className="h-[min(68vh,720px)] px-5 py-6">
           {[0, 1, 2, 3].map((i) => (

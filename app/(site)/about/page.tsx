@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 
-import { EYEBROW } from "@/components/foothill/classes";
+import {H3, META } from "@/components/foothill/classes";
+import { Icon } from "@/components/foothill/icons";
 import { MAIN, WRAP } from "@/components/foothill/layout";
-import { PageMotion } from "@/components/foothill/page-motion";
-import { Reveal } from "@/components/foothill/reveal";
+import { Animate, CountUp, PageMotion, Reveal } from "@/components/foothill/motion";
+import { Portrait } from "@/components/foothill/portrait";
 import { monthYearLabel } from "@/components/foothill/rows";
 import { SectionIndex } from "@/components/foothill/section-index";
 import { ShowMore } from "@/components/foothill/show-more";
-import { Arrow, Fact, PageHead } from "@/components/foothill/ui";
+import { ActionLink, Fact, Heading, Logo, PageHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { RichText } from "@/components/site/rich-text";
 import type { Application, Certification, Education, Experience } from "@/lib/data/about";
@@ -43,6 +43,27 @@ const SECTIONS = [
   { id: "job-hunt", label: "The job hunt" },
 ];
 
+/** A section's title, with how many entries sit under it. */
+function Title({ id, children, count }: { id: string; children: string; count?: number }) {
+  return (
+    <Heading id={`${id}-title`} count={count}>
+      {children}
+    </Heading>
+  );
+}
+
+/** The plus that turns into a cross while its `<details>` is open. */
+function Toggle() {
+  return (
+    <span
+      aria-hidden="true"
+      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line text-ink transition-[transform,background-color] duration-500 group-open:rotate-45 group-open:bg-raise group-hover:border-ink"
+    >
+      <Icon name="plus" className="h-3.5 w-3.5" />
+    </span>
+  );
+}
+
 export default async function AboutPage() {
   const [about, experiences, education, awards, certifications, applications, skills] =
     await Promise.all([
@@ -71,7 +92,6 @@ export default async function AboutPage() {
       <JsonLdScript schemas={await aboutSchemas(about)} />
       <div className={WRAP}>
         <PageHead
-          eyebrow="About"
           title={
             <>
               {about.first_name || about.name}, known online as{" "}
@@ -89,25 +109,22 @@ export default async function AboutPage() {
             </div>
           </aside>
 
-          <div className="min-w-0 space-y-28 lg:col-span-9">
+          <div className="min-w-0 space-y-32 lg:col-span-9">
             <section id="story" aria-labelledby="story-title" className="scroll-mt-28">
-              <h2 id="story-title" className={EYEBROW}>
+              <h2 id="story-title" className="sr-only">
                 Story
               </h2>
-              <div className="mt-8 grid gap-10 md:grid-cols-[minmax(0,1fr)_14rem]">
-                <RichText html={about.stories_html} className="fh-prose fh-prose-lead" />
-                <div className="md:order-first md:col-start-2 md:row-start-1">
+              <div className="grid gap-12 md:grid-cols-[minmax(0,1fr)_15rem]">
+                <Reveal>
+                  <RichText html={about.stories_html} className="fh-prose fh-prose-lead" />
+                </Reveal>
+                <div className="md:col-start-2 md:row-start-1">
                   {about.image_url && (
-                    <div className="relative aspect-[4/5] w-40 overflow-hidden rounded-md bg-raise md:w-full">
-                      <Image
-                        src={about.image_url}
-                        alt={`${about.name}, a portrait`}
-                        fill
-                        sizes="(min-width: 768px) 224px, 160px"
-                        className="object-cover grayscale-[0.2]"
-                        priority
-                      />
-                    </div>
+                    <Portrait
+                      src={about.image_url}
+                      alt={`${about.name}, drawn in horizontal lines`}
+                      className="w-48 md:w-full"
+                    />
                   )}
                   <dl className="mt-6 border-t border-line">
                     <Fact label="Based in">
@@ -131,10 +148,10 @@ export default async function AboutPage() {
 
             {experiences.length > 0 && (
               <section id="experience" aria-labelledby="experience-title" className="scroll-mt-28">
-                <h2 id="experience-title" className={EYEBROW}>
-                  Experience <span className="ml-2 text-ink">{experiences.length}</span>
-                </h2>
-                <ol className="mt-8 border-b border-line">
+                <Title id="experience" count={experiences.length}>
+                  Where I have worked
+                </Title>
+                <ol className="mt-12 space-y-14">
                   {groupBy(experiences, (role) => role.company).map(([company, roles]) => (
                     <ExperienceGroup key={company} company={company} roles={roles} />
                   ))}
@@ -144,10 +161,8 @@ export default async function AboutPage() {
 
             {education.length > 0 && (
               <section id="education" aria-labelledby="education-title" className="scroll-mt-28">
-                <h2 id="education-title" className={EYEBROW}>
-                  Education
-                </h2>
-                <Reveal as="ol" stagger className="mt-8 border-b border-line">
+                <Title id="education">Where I studied</Title>
+                <Reveal as="ol" stagger className="mt-12 space-y-10">
                   {education.map((item) => (
                     <EducationRow key={`${item.institution}-${item.degree}`} item={item} />
                   ))}
@@ -157,17 +172,14 @@ export default async function AboutPage() {
 
             {Object.keys(skills).length > 0 && (
               <section id="skills" aria-labelledby="skills-title" className="scroll-mt-28">
-                <h2 id="skills-title" className={EYEBROW}>
-                  Skills{" "}
-                  <span className="ml-2 text-ink">
-                    {Object.values(skills).reduce((sum, list) => sum + list.length, 0)}
-                  </span>
-                </h2>
-                <Reveal as="dl" className="mt-8 grid gap-x-10 border-t border-line md:grid-cols-2">
+                <Title id="skills" count={Object.values(skills).reduce((sum, list) => sum + list.length, 0)}>
+                  What I work with
+                </Title>
+                <Reveal as="dl" stagger className="mt-12 grid gap-x-10 gap-y-8 md:grid-cols-2">
                   {Object.entries(skills).map(([category, list]) => (
-                    <div key={category} className="border-b border-line py-4">
-                      <dt className="text-[13px] text-mute">{category}</dt>
-                      <dd className="mt-1.5 text-[16px] leading-relaxed text-ink">
+                    <div key={category}>
+                      <dt className="text-[14px] text-mute">{category}</dt>
+                      <dd className="mt-2 text-[17px] leading-relaxed text-ink">
                         {list.map((skill) => skill.name).join(", ")}
                       </dd>
                     </div>
@@ -178,31 +190,28 @@ export default async function AboutPage() {
 
             {awards.length > 0 && (
               <section id="recognition" aria-labelledby="recognition-title" className="scroll-mt-28">
-                <h2 id="recognition-title" className={EYEBROW}>
-                  Recognition <span className="ml-2 text-ink">{awards.length}</span>
-                </h2>
-                <Reveal as="ol" stagger className="mt-8 border-b border-line">
+                <Title id="recognition" count={awards.length}>
+                  Recognition
+                </Title>
+                <Reveal as="ol" stagger className="mt-12 space-y-10">
                   {awards.map((award) => (
-                    <li
-                      key={award.id}
-                      className="grid gap-y-1.5 border-t border-line py-5 md:grid-cols-[7rem_minmax(0,1fr)] md:gap-x-8"
-                    >
-                      <span className="fh-mono text-[12px] text-mute">{monthYearLabel(award.issued)}</span>
-                      <div>
-                        <p className="text-[18px] leading-snug text-ink">
+                    <li key={award.id} className="group flex gap-5">
+                      <Logo src={award.logo} name={award.institution} />
+                      <div className="min-w-0">
+                        <p className={H3}>
                           {award.credential_url ? (
-                            <a href={award.credential_url} target="_blank" rel="noopener noreferrer" className="fh-link">
+                            <a href={award.credential_url} target="_blank" rel="noopener noreferrer" className="fh-underline">
                               {award.title}
                             </a>
                           ) : (
                             award.title
                           )}
                         </p>
-                        <p className="mt-1 text-[14px] text-mute">{award.institution}</p>
+                        <p className={`${META} mt-2`}>
+                          {award.institution}, {monthYearLabel(award.issued)}
+                        </p>
                         {award.description && award.description !== award.title && (
-                          <p className="mt-2 max-w-[62ch] text-[15px] leading-relaxed text-mute">
-                            {award.description}
-                          </p>
+                          <p className="mt-3 max-w-[62ch] text-[16px] leading-relaxed text-mute">{award.description}</p>
                         )}
                       </div>
                     </li>
@@ -213,18 +222,13 @@ export default async function AboutPage() {
 
             {certifications.length > 0 && (
               <section id="certifications" aria-labelledby="certifications-title" className="scroll-mt-28">
-                <div className="flex flex-wrap items-baseline justify-between gap-4">
-                  <h2 id="certifications-title" className={EYEBROW}>
-                    Certifications <span className="ml-2 text-ink">{certifications.length}</span>
-                  </h2>
-                  <a
-                    href={`https://www.linkedin.com/in/${about.username}/details/certifications/`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group text-[14px] text-mute transition-colors hover:text-ink"
-                  >
-                    All of them on LinkedIn <Arrow diagonal />
-                  </a>
+                <div className="flex flex-wrap items-end justify-between gap-6">
+                  <Title id="certifications" count={certifications.length}>
+                    Certifications
+                  </Title>
+                  <ActionLink href={`https://www.linkedin.com/in/${about.username}/details/certifications/`}>
+                    All of them on LinkedIn
+                  </ActionLink>
                 </div>
                 <Certifications items={certifications} />
               </section>
@@ -232,9 +236,9 @@ export default async function AboutPage() {
 
             {applications.length > 0 && (
               <section id="job-hunt" aria-labelledby="job-hunt-title" className="scroll-mt-28">
-                <h2 id="job-hunt-title" className={EYEBROW}>
-                  The job hunt, in public <span className="ml-2 text-ink">{applications.length}</span>
-                </h2>
+                <Title id="job-hunt" count={applications.length}>
+                  The job hunt, in public
+                </Title>
                 <JobHunt applications={applications} />
               </section>
             )}
@@ -248,21 +252,21 @@ export default async function AboutPage() {
 
 function CvLinks({ cv, className }: { cv: { main: string; latest: string; copy: string }; className?: string }) {
   const links = [
-    { href: "/cv", label: "CV", show: cv.main },
-    { href: "/cv-latest", label: "Latest CV", show: cv.latest },
-    { href: "/cv-copy", label: "Copy the CV", show: cv.copy },
+    { href: "/cv", label: "Read the CV", show: cv.main },
+    { href: "/cv-latest", label: "The latest edit", show: cv.latest },
+    { href: "/cv-copy", label: "Make a copy", show: cv.copy },
   ].filter((link) => link.show);
   if (!links.length) return null;
   return (
     <div className={className}>
-      <p className={EYEBROW}>Résumé</p>
-      <ul className="mt-3 space-y-1.5">
+      <p className="text-[14px] font-medium text-ink">Résumé</p>
+      <ul className="mt-3 space-y-2">
         {links.map((link) => (
           <li key={link.href}>
-            {/* Plain anchors: these are redirects to documents, not pages. */}
-            <a href={link.href} target="_blank" rel="noopener noreferrer" className="group text-[14px] text-ink">
-              <span className="fh-link">{link.label}</span> <Arrow diagonal className="text-mute" />
-            </a>
+            {/* External: these are redirects to documents, not pages. */}
+            <ActionLink href={link.href} external icon="doc" className="text-[15px] text-mute hover:text-ink">
+              {link.label}
+            </ActionLink>
           </li>
         ))}
       </ul>
@@ -273,58 +277,69 @@ function CvLinks({ cv, className }: { cv: { main: string; latest: string; copy: 
 function periodLabel(role: Experience): string {
   const start = monthYearLabel(role.period.start);
   const end = role.period.end === "Present" ? "now" : monthYearLabel(role.period.end);
-  return start === end ? start : `${start} – ${end}`;
+  return start === end ? start : `${start} to ${end}`;
 }
 
 function ExperienceGroup({ company, roles }: { company: string; roles: Experience[] }) {
   const website = roles.find((role) => role.website)?.website;
+  const logo = roles.find((role) => role.logo)?.logo ?? "";
   return (
-    <Reveal as="li" className="grid gap-y-4 border-t border-line py-7 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-x-8">
-      <div>
-        <p className="text-[17px] font-medium text-ink">
+    <Reveal as="li" className="group grid gap-6 md:grid-cols-[3.5rem_minmax(0,1fr)]">
+      <Logo src={logo} name={company} className="h-14 w-14 rounded-[14px]" />
+      <div className="min-w-0">
+        <p className="font-display text-[clamp(1.5rem,1.25rem+1vw,2rem)] leading-tight font-medium tracking-[-0.025em] text-ink">
           {website ? (
-            <a href={website} target="_blank" rel="noopener noreferrer" className="fh-link">
+            <a href={website} target="_blank" rel="noopener noreferrer" className="fh-underline">
               {company}
             </a>
           ) : (
             company
           )}
         </p>
-        {roles.length > 1 && <p className="fh-mono mt-1 text-[11px] text-mute">{roles.length} roles</p>}
-      </div>
-      <ol className="space-y-6">
-        {roles.map((role) => (
-          <li key={role.id}>
-            <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-              <p className="text-[17px] text-ink">
-                {role.title}
-                {role.is_current && (
-                  <span className="fh-mono ml-3 text-[10px] tracking-[0.14em] text-sulfur uppercase">Current</span>
+        {roles.length > 1 && <p className={`${META} mt-1`}>{roles.length} roles</p>}
+        <ol className="mt-6 space-y-7 border-l border-line pl-6">
+          {roles.map((role) => (
+            <li key={role.id} className="relative">
+              <span
+                aria-hidden="true"
+                className={cn(
+                  "absolute top-[0.55em] -left-[29px] h-[9px] w-[9px] rounded-full border-2 border-paper",
+                  role.is_current ? "bg-sulfur-mark" : "bg-line",
                 )}
+              />
+              <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+                <p className="text-[18px] font-medium text-ink">
+                  {role.title}
+                  {role.is_current && (
+                    <span className="ml-3 rounded-full bg-raise px-2 py-0.5 align-middle text-[12px] font-normal text-ink">
+                      Current
+                    </span>
+                  )}
+                </p>
+                <p className={META}>{periodLabel(role)}</p>
+              </div>
+              <p className={`${META} mt-1`}>
+                {[role.employment_type, role.location_type, role.location].filter(Boolean).join(", ")}
               </p>
-              <p className="fh-mono text-[12px] text-mute">{periodLabel(role)}</p>
-            </div>
-            <p className="mt-1 text-[14px] text-mute">
-              {[role.employment_type, role.location_type, role.location].filter(Boolean).join(" · ")}
-            </p>
-            {role.responsibilities.length > 0 && (
-              <details className="group mt-3">
-                <summary className="fh-mono inline-flex cursor-pointer list-none items-center gap-2 text-[11px] tracking-[0.1em] text-mute uppercase hover:text-ink [&::-webkit-details-marker]:hidden">
-                  <span className="inline-block transition-transform group-open:rotate-45">+</span>
-                  What I did
-                </summary>
-                <ul className="mt-3 max-w-[64ch] space-y-2 text-[15px] leading-relaxed text-mute">
-                  {role.responsibilities.map((task) => (
-                    <li key={task} className="relative pl-5 before:absolute before:top-[0.7em] before:left-0 before:h-px before:w-2.5 before:bg-line">
-                      {task}
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            )}
-          </li>
-        ))}
-      </ol>
+              {role.responsibilities.length > 0 && (
+                <details className="group/role mt-3">
+                  <summary className="inline-flex cursor-pointer list-none items-center gap-2 text-[14px] font-medium text-ink [&::-webkit-details-marker]:hidden">
+                    <Icon name="plus" className="h-3.5 w-3.5 transition-transform duration-500 group-open/role:rotate-45" />
+                    What I did
+                  </summary>
+                  <ul className="mt-3 max-w-[64ch] space-y-2 text-[16px] leading-relaxed text-mute">
+                    {role.responsibilities.map((task) => (
+                      <li key={task} className="relative pl-5 before:absolute before:top-[0.75em] before:left-0 before:h-px before:w-2.5 before:bg-mute">
+                        {task}
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+            </li>
+          ))}
+        </ol>
+      </div>
     </Reveal>
   );
 }
@@ -332,20 +347,29 @@ function ExperienceGroup({ company, roles }: { company: string; roles: Experienc
 function EducationRow({ item }: { item: Education }) {
   const span =
     item.years ||
-    (item.date ? [monthYearLabel(item.date.start), monthYearLabel(item.date.end)].filter(Boolean).join(" – ") : "");
+    (item.date ? [monthYearLabel(item.date.start), monthYearLabel(item.date.end)].filter(Boolean).join(" to ") : "");
   return (
-    <li className="grid gap-y-1.5 border-t border-line py-5 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-x-8">
-      <p className="fh-mono text-[12px] text-mute">{span}</p>
-      <div>
-        <p className="text-[17px] text-ink">{item.institution}</p>
-        <p className="mt-1 text-[14px] text-mute">
+    <li className="group flex gap-5">
+      <Logo src={item.logo} name={item.institution} className="h-14 w-14 rounded-[14px]" />
+      <div className="min-w-0">
+        <p className={H3}>
+          {item.website ? (
+            <a href={item.website} target="_blank" rel="noopener noreferrer" className="fh-underline">
+              {item.institution}
+            </a>
+          ) : (
+            item.institution
+          )}
+        </p>
+        <p className={`${META} mt-2`}>
           {item.degree}
-          {item.alias && ` · ${item.alias}`}
+          {item.alias && `, ${item.alias}`}
+          {span && `, ${span}`}
         </p>
         {item.achievements.length > 0 && (
-          <ul className="mt-3 max-w-[64ch] space-y-1.5 text-[15px] leading-relaxed text-mute">
+          <ul className="mt-3 max-w-[64ch] space-y-1.5 text-[16px] leading-relaxed text-mute">
             {item.achievements.map((line) => (
-              <li key={line} className="relative pl-5 before:absolute before:top-[0.7em] before:left-0 before:h-px before:w-2.5 before:bg-line">
+              <li key={line} className="relative pl-5 before:absolute before:top-[0.75em] before:left-0 before:h-px before:w-2.5 before:bg-mute">
                 {line}
               </li>
             ))}
@@ -359,34 +383,40 @@ function EducationRow({ item }: { item: Education }) {
 function Certifications({ items }: { items: Certification[] }) {
   const byYear = groupBy(items, (item) => item.issued?.year ?? 0);
   return (
-    <div className="mt-8 border-b border-line">
+    <div className="mt-12 border-b border-line">
       {byYear.map(([year, list], index) => (
         <details key={year} open={index === 0} className="group border-t border-line">
-          <summary className="flex cursor-pointer list-none items-baseline justify-between py-4 [&::-webkit-details-marker]:hidden">
-            <span className="text-[22px] font-medium tracking-[-0.02em] text-ink tabular-nums">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 [&::-webkit-details-marker]:hidden">
+            <span className="font-display text-[clamp(1.6rem,1.3rem+1.2vw,2.25rem)] font-medium tracking-[-0.03em] text-ink tabular-nums">
               {year || "Undated"}
             </span>
-            <span className="fh-mono text-[12px] text-mute">
-              {list.length} <span className="ml-2 inline-block transition-transform group-open:rotate-45">+</span>
+            <span className="flex items-center gap-4 text-[14px] text-mute">
+              {list.length} {list.length === 1 ? "certificate" : "certificates"}
+              <Toggle />
             </span>
           </summary>
-          <ul className="pb-4">
+          <ul className="grid gap-x-8 gap-y-5 pb-8 md:grid-cols-2">
             {list.map((cert) => (
-              <li
-                key={cert.id}
-                className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-6 border-t border-line/60 py-2.5 text-[15px]"
-              >
+              <li key={cert.id} className="group flex min-w-0 gap-4">
+                <Logo src={cert.logo} name={cert.institution} className="h-9 w-9 rounded-[8px]" />
                 <span className="min-w-0">
                   {cert.credential_url ? (
-                    <a href={cert.credential_url} target="_blank" rel="noopener noreferrer" className="fh-link text-ink">
-                      {cert.title}
+                    <a
+                      href={cert.credential_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[16px] leading-snug text-ink"
+                    >
+                      <span className="fh-underline">{cert.title}</span>
                     </a>
                   ) : (
-                    <span className="text-ink">{cert.title}</span>
+                    <span className="text-[16px] leading-snug text-ink">{cert.title}</span>
                   )}
-                  <span className="text-mute"> — {cert.institution}</span>
+                  <span className={`${META} mt-1 block`}>
+                    {cert.institution}
+                    {cert.issued && `, ${cert.issued.month.slice(0, 3)}`}
+                  </span>
                 </span>
-                <span className="fh-mono text-[11px] text-mute">{cert.issued?.month.slice(0, 3)}</span>
               </li>
             ))}
           </ul>
@@ -401,7 +431,7 @@ const OUTCOME_ORDER = ["accepted", "rejected", "ghosted"];
 const OUTCOME_TONE: Record<string, string> = {
   accepted: "bg-sulfur-mark",
   rejected: "bg-mute",
-  ghosted: "bg-line",
+  ghosted: "bg-mute/35",
 };
 
 function JobHunt({ applications }: { applications: Application[] }) {
@@ -412,35 +442,45 @@ function JobHunt({ applications }: { applications: Application[] }) {
 
   return (
     <div className="mt-8">
-      <p className="fh-serif max-w-[52ch] text-[20px] leading-[1.45] text-ink">
+      <Reveal as="p" className="max-w-[52ch] text-[19px] leading-relaxed text-mute">
         Every application, kept rather than tidied away: who, for what, how far it got, and what it
         taught me.
-      </p>
+      </Reveal>
 
-      <Reveal as="div" className="mt-8">
-        <div className="flex h-2.5 w-full overflow-hidden rounded-full bg-raise" role="img" aria-label={outcomes.map(([slug, list]) => `${list.length} ${label(slug, list)}`).join(", ")}>
+      <Animate className="mt-12">
+        <dl className="grid grid-cols-3 gap-6">
           {outcomes.map(([slug, list]) => (
-            <span
-              key={slug}
-              className={cn("h-full", OUTCOME_TONE[slug] ?? "bg-mute")}
-              style={{ width: `${(list.length / total) * 100}%` }}
-            />
-          ))}
-        </div>
-        <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-2">
-          {outcomes.map(([slug, list]) => (
-            <div key={slug} className="flex items-baseline gap-2">
-              <span aria-hidden="true" className={cn("h-2 w-2 translate-y-[-1px] rounded-full", OUTCOME_TONE[slug] ?? "bg-mute")} />
-              <dt className="text-[14px] text-mute">{label(slug, list)}</dt>
-              <dd className="fh-mono text-[13px] text-ink tabular-nums">
-                {list.length} <span className="text-mute">({Math.round((list.length / total) * 100)}%)</span>
+            <div key={slug}>
+              <dt className="flex items-center gap-2 text-[14px] text-mute">
+                <span aria-hidden="true" className={cn("h-2 w-2 rounded-full", OUTCOME_TONE[slug] ?? "bg-mute")} />
+                {label(slug, list)}
+              </dt>
+              <dd className="mt-2 font-display text-[clamp(2.25rem,1.6rem+2.6vw,3.75rem)] leading-none font-medium tracking-[-0.04em] text-ink">
+                <CountUp value={list.length} />
+                <span className="ml-2 font-text text-[15px] font-normal tracking-normal text-mute">
+                  {Math.round((list.length / total) * 100)}%
+                </span>
               </dd>
             </div>
           ))}
         </dl>
-      </Reveal>
+        <div
+          className="mt-8 flex h-3 w-full gap-[3px] overflow-hidden rounded-full"
+          role="img"
+          aria-label={outcomes.map(([slug, list]) => `${list.length} ${label(slug, list)}`).join(", ")}
+        >
+          {outcomes.map(([slug, list]) => (
+            <span
+              key={slug}
+              data-fh-bar
+              className={cn("h-full first:rounded-l-full last:rounded-r-full", OUTCOME_TONE[slug] ?? "bg-mute")}
+              style={{ width: `${(list.length / total) * 100}%` }}
+            />
+          ))}
+        </div>
+      </Animate>
 
-      <ShowMore noun="applications" className="mt-10 border-b border-line">
+      <ShowMore noun="applications" className="mt-14 border-b border-line">
         {applications.map((app) => (
           <ApplicationRow key={app.id} app={app} />
         ))}
@@ -461,42 +501,45 @@ function label(slug: string, list: Application[]): string {
 function ApplicationRow({ app }: { app: Application }) {
   return (
     <details className="group border-t border-line">
-      <summary className="grid cursor-pointer list-none grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-6 gap-y-1 py-4 [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden">
         <span className="min-w-0">
-          <span className="block truncate text-[16px] text-ink">{app.position}</span>
-          <span className="block truncate text-[14px] text-mute">
+          <span className="block truncate text-[17px] font-medium text-ink">{app.position}</span>
+          <span className={`${META} mt-0.5 block truncate`}>
             {app.company_name}
-            {app.location_type && ` · ${app.location_type}`}
+            {app.location_type && `, ${app.location_type.toLowerCase()}`}
           </span>
         </span>
-        <span className="fh-mono flex items-center gap-2 text-[11px] tracking-[0.08em] text-mute uppercase">
-          <span aria-hidden="true" className={cn("h-1.5 w-1.5 rounded-full", OUTCOME_TONE[app.status_slug] ?? "bg-mute")} />
-          {app.status}
-          <span className="ml-1 inline-block transition-transform group-open:rotate-45">+</span>
+        <span className="flex shrink-0 items-center gap-4 text-[14px] text-mute">
+          <span className="hidden items-center gap-2 sm:flex">
+            <span aria-hidden="true" className={cn("h-2 w-2 rounded-full", OUTCOME_TONE[app.status_slug] ?? "bg-mute")} />
+            {app.status}
+          </span>
+          <Toggle />
         </span>
       </summary>
-      <div className="grid gap-6 pb-6 md:grid-cols-[minmax(0,1fr)_14rem] md:gap-10">
+      <div className="grid gap-8 pb-8 md:grid-cols-[minmax(0,1fr)_15rem] md:gap-10">
         {app.journey.length > 0 ? (
-          <ol className="relative ml-1 space-y-4 border-l border-line pl-5">
+          <ol className="relative ml-1 space-y-5 border-l border-line pl-6">
             {app.journey.map((step, index) => (
               <li key={index} className="relative">
-                <span aria-hidden="true" className="absolute top-[0.55em] -left-[24.5px] h-2 w-2 rounded-full border border-mute bg-paper" />
-                <p className="text-[15px] text-ink">{step.title}</p>
+                <span aria-hidden="true" className="absolute top-[0.5em] -left-[29.5px] h-[9px] w-[9px] rounded-full border-2 border-paper bg-mute" />
+                <p className="text-[16px] font-medium text-ink">{step.title}</p>
                 {step.timestamp && (
-                  <p className="fh-mono mt-0.5 text-[11px] text-mute">
-                    {step.timestamp.toISOString().slice(0, 10)}
+                  <p className={`${META} mt-0.5`}>
+                    {step.timestamp.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })}
                   </p>
                 )}
-                {step.details && <p className="mt-1 text-[14px] leading-relaxed text-mute">{step.details}</p>}
-                {step.notes && <p className="mt-1 text-[14px] leading-relaxed text-mute italic">{step.notes}</p>}
+                {step.details && <p className="mt-1.5 text-[15px] leading-relaxed text-mute">{step.details}</p>}
+                {step.notes && <p className="mt-1.5 text-[15px] leading-relaxed text-mute">{step.notes}</p>}
               </li>
             ))}
           </ol>
         ) : (
-          <p className="text-[14px] text-mute">No steps were recorded for this one.</p>
+          <p className="text-[15px] text-mute">No steps were recorded for this one.</p>
         )}
         <dl className="border-t border-line text-[14px]">
           {[
+            ["Status", app.status],
             ["Type", app.employment_type],
             ["Where", app.location],
             ["Via", app.applied_via],
@@ -504,16 +547,16 @@ function ApplicationRow({ app }: { app: Application }) {
           ]
             .filter(([, value]) => value)
             .map(([key, value]) => (
-              <div key={key} className="flex justify-between gap-4 border-b border-line py-2">
+              <div key={key} className="flex justify-between gap-4 border-b border-line py-2.5">
                 <dt className="text-mute">{key}</dt>
                 <dd className="text-right text-ink">{value}</dd>
               </div>
             ))}
         </dl>
         {app.lessons_learned && (
-          <p className="fh-serif text-[17px] leading-relaxed text-ink italic md:col-span-2">
-            &ldquo;{app.lessons_learned}&rdquo;
-          </p>
+          <blockquote className="border-l-2 border-sulfur-mark pl-5 text-[18px] leading-relaxed text-ink md:col-span-2">
+            {app.lessons_learned}
+          </blockquote>
         )}
       </div>
     </details>

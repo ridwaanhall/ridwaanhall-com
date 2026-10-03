@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { EYEBROW, LINE_BUTTON, SOLID_BUTTON } from "@/components/foothill/classes";
+import {EYEBROW, H3, LINE_BUTTON, SOLID_BUTTON } from "@/components/foothill/classes";
+import { Icon } from "@/components/foothill/icons";
 import { MAIN, WRAP } from "@/components/foothill/layout";
-import { PageMotion } from "@/components/foothill/page-motion";
-import { Reveal } from "@/components/foothill/reveal";
-import { Arrow, Fact, PageHead } from "@/components/foothill/ui";
+import { PageMotion, Reveal, Roll } from "@/components/foothill/motion";
+import { ActionLink, Fact, Heading, PageHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import type { Skill } from "@/lib/data/about";
 import { getAboutData, getSkillsByCategory } from "@/lib/data/about";
@@ -58,14 +57,16 @@ export default async function OpenHirePage() {
     <main className={MAIN}>
       <JsonLdScript schemas={openhireSchemas()} />
       <div className={WRAP}>
-        <PageHead eyebrow="Open-hire" title={head.title} lead={head.lead}>
+        <PageHead title={head.title} lead={head.lead}>
           {about.is_open_to_work && about.is_hiring && (
             <div data-fh-enter className="mt-8 flex flex-wrap gap-3">
               <a href="#open-to-work" className={SOLID_BUTTON}>
-                I have a role for you
+                <Roll>I have a role for you</Roll>
+                <Icon name="arrow-down" className="transition-transform duration-500 group-hover:translate-y-0.5" />
               </a>
               <a href="#hiring" className={LINE_BUTTON}>
-                I want to join RoneAI
+                <Roll>I want to join RoneAI</Roll>
+                <Icon name="arrow-down" className="transition-transform duration-500 group-hover:translate-y-0.5" />
               </a>
             </div>
           )}
@@ -73,9 +74,7 @@ export default async function OpenHirePage() {
 
         {about.is_open_to_work && (
           <section id="open-to-work" aria-labelledby="otw-title" className="mt-24 scroll-mt-28 md:mt-32">
-            <h2 id="otw-title" className={`${EYEBROW} border-t border-line pt-4`}>
-              Open to work
-            </h2>
+            <Heading id="otw-title">What I am looking for</Heading>
             {openToWork ? (
               <OpenToWork data={openToWork} tools={tools} cv={about.cv} />
             ) : (
@@ -86,9 +85,7 @@ export default async function OpenHirePage() {
 
         {about.is_hiring && (
           <section id="hiring" aria-labelledby="hiring-title" className="mt-24 scroll-mt-28 md:mt-32">
-            <h2 id="hiring-title" className={`${EYEBROW} border-t border-line pt-4`}>
-              Hiring
-            </h2>
+            <Heading id="hiring-title">Build with RoneAI</Heading>
             {hiring ? <Hiring data={hiring} /> : <Unavailable what="The open positions" />}
           </section>
         )}
@@ -134,7 +131,7 @@ function OpenToWork({
           <Reveal as="p" className="flex items-center gap-3 text-[15px] text-ink">
             <span aria-hidden="true" className="h-2 w-2 rounded-full bg-sulfur-mark" />
             {data.status}
-            {data.availability && <span className="text-mute">· available {data.availability.toLowerCase()}</span>}
+            {data.availability && <span className="text-mute">, available {data.availability.toLowerCase()}</span>}
           </Reveal>
         )}
 
@@ -143,7 +140,7 @@ function OpenToWork({
             {data.preferred_roles.map((role) => (
               <li
                 key={role}
-                className="border-t border-line py-3 text-[clamp(1.375rem,1.1rem+1.2vw,2.125rem)] leading-tight font-medium tracking-[-0.025em] text-ink last:border-b"
+                className="border-t border-line py-3 font-display text-[clamp(1.375rem,1.1rem+1.2vw,2.125rem)] leading-tight font-medium tracking-[-0.025em] text-ink last:border-b"
               >
                 {role}
               </li>
@@ -207,17 +204,17 @@ function OpenToWork({
             {data.contact_preference && <Fact label="Reach me by">{data.contact_preference}</Fact>}
           </Reveal>
           {data.additional_notes && (
-            <p className="fh-serif mt-6 text-[17px] leading-relaxed text-mute italic">{data.additional_notes}</p>
+            <p className="mt-6 text-[17px] leading-relaxed text-mute">{data.additional_notes}</p>
           )}
           <div className="mt-8 flex flex-wrap gap-3">
             {cv.main && (
-              <a href="/cv" target="_blank" rel="noopener noreferrer" className={`group ${SOLID_BUTTON}`}>
-                Read the CV <Arrow diagonal />
-              </a>
+              <ActionLink href="/cv" external variant="solid" icon="doc">
+                Read the CV
+              </ActionLink>
             )}
-            <Link href="/contact" className={LINE_BUTTON}>
+            <ActionLink href="/contact" variant="line" icon="mail">
               Get in touch
-            </Link>
+            </ActionLink>
           </div>
         </div>
       </aside>
@@ -230,31 +227,30 @@ function Hiring({ data }: { data: HiringData }) {
     <div className="mt-10">
       <div className="grid gap-10 lg:grid-cols-12">
         <div className="lg:col-span-7">
-          <Reveal as="p" className="text-[clamp(1.75rem,1.3rem+2vw,2.75rem)] leading-[1.1] font-medium tracking-[-0.03em] text-ink">
+          <Reveal as="p" className="font-display text-[clamp(1.75rem,1.3rem+2vw,2.75rem)] leading-[1.1] font-medium tracking-[-0.03em] text-ink">
             {data.company_name}
             {data.hiring_status && (
-              <span className="fh-mono ml-4 align-middle text-[11px] tracking-[0.14em] text-sulfur uppercase">
+              <span className="ml-4 rounded-full bg-raise px-3 py-1 align-middle font-text text-[13px] font-normal tracking-normal text-ink">
                 {data.hiring_status}
               </span>
             )}
           </Reveal>
           {data.company_description && (
-            <p className="fh-serif mt-4 max-w-[52ch] text-[20px] leading-[1.45] text-mute">
-              {data.company_description}
-            </p>
+            <p className="mt-4 max-w-[52ch] text-[19px] leading-[1.5] text-mute">{data.company_description}</p>
           )}
           {data.website && (
-            <a href={data.website} target="_blank" rel="noopener noreferrer" className="group mt-4 inline-block text-[15px] text-ink">
-              <span className="fh-link">{bareUrl(data.website)}</span> <Arrow diagonal className="text-mute" />
-            </a>
+            <ActionLink href={data.website} className="mt-5">
+              {bareUrl(data.website)}
+            </ActionLink>
           )}
         </div>
       </div>
 
       {data.positions.length > 0 && (
         <div className="mt-14">
-          <p className={EYEBROW}>
-            Open positions <span className="ml-2 text-ink">{data.positions.length}</span>
+          <p className={H3}>
+            Open positions
+            <sup className="ml-1.5 font-text text-[0.55em] font-normal text-mute">{data.positions.length}</sup>
           </p>
           <ul className="mt-4 border-b border-line">
             {data.positions.map((position) => (
@@ -272,7 +268,7 @@ function Hiring({ data }: { data: HiringData }) {
             <Reveal as="ol" stagger className="mt-4 border-b border-line">
               {data.application_process.map((step, index) => (
                 <li key={step} className="grid grid-cols-[2.5rem_minmax(0,1fr)] border-t border-line py-3.5 text-[15px] leading-relaxed">
-                  <span className="fh-mono text-[12px] text-mute tabular-nums">{index + 1}</span>
+                  <span className="font-display text-[15px] font-medium text-mute tabular-nums">{index + 1}</span>
                   <span className="text-ink">{step}</span>
                 </li>
               ))}
@@ -324,7 +320,7 @@ function Hiring({ data }: { data: HiringData }) {
             {data.contact_info.interview_process && <Fact label="Interviews">{data.contact_info.interview_process}</Fact>}
           </dl>
           {data.additional_notes && (
-            <p className="fh-serif mt-6 text-[17px] leading-relaxed text-mute italic">{data.additional_notes}</p>
+            <p className="mt-6 text-[17px] leading-relaxed text-mute">{data.additional_notes}</p>
           )}
         </div>
       </div>
@@ -342,12 +338,17 @@ function PositionRow({ position, email }: { position: Position; email: string })
     <li className="border-t border-line">
       <details className="group">
         <summary className="grid cursor-pointer list-none gap-y-1.5 py-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-baseline md:gap-x-8 [&::-webkit-details-marker]:hidden">
-          <span className="text-[clamp(1.25rem,1.05rem+0.9vw,1.75rem)] font-medium tracking-[-0.02em] text-ink">
+          <span className="font-display text-[clamp(1.25rem,1.05rem+0.9vw,1.75rem)] font-medium tracking-[-0.02em] text-ink">
             {position.title}
           </span>
-          <span className="fh-mono flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-mute">
-            {[position.type, position.location, position.salary_range].filter(Boolean).join(" · ")}
-            <span className="inline-block transition-transform group-open:rotate-45">+</span>
+          <span className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px] text-mute">
+            {[position.type, position.location, position.salary_range].filter(Boolean).join(", ")}
+            <span
+              aria-hidden="true"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-ink transition-transform duration-500 group-open:rotate-45"
+            >
+              <Icon name="plus" className="h-3.5 w-3.5" />
+            </span>
           </span>
         </summary>
         <div className="pb-8">
@@ -371,9 +372,10 @@ function PositionRow({ position, email }: { position: Position; email: string })
           {email && (
             <a
               href={`mailto:${email}?subject=${encodeURIComponent(`Application: ${position.title}`)}`}
-              className={`group mt-8 ${SOLID_BUTTON}`}
+              className={`mt-8 ${SOLID_BUTTON}`}
             >
-              Apply for this role <Arrow />
+              <Roll>Apply for this role</Roll>
+              <Icon name="send" className="transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
           )}
         </div>

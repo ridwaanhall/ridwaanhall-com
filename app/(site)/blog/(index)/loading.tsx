@@ -1,26 +1,22 @@
 import { Bar, HeadSkeleton, PageSkeleton, ResultsSkeleton } from "@/components/foothill/skeleton";
 
-/** The writing index while it loads: heading, the three to start with, the list. */
+/** The writing index while it loads: heading, the post to start with, the rest. */
 export default function Loading() {
   return (
     <PageSkeleton>
       <HeadSkeleton />
-      <div className="mt-16 border-t border-line pt-4 md:mt-24">
-        <Bar className="h-3 w-32" />
+      <div className="mt-16 grid items-end gap-8 md:mt-24 lg:grid-cols-12 lg:gap-10">
+        <Bar className="aspect-[16/10] w-full rounded-[18px] lg:col-span-7" />
+        <div className="lg:col-span-5">
+          <Bar className="h-4 w-48" />
+          <Bar className="mt-4 h-10 w-full" />
+          <Bar className="mt-2 h-10 w-[70%]" />
+          <Bar className="mt-5 h-4 w-full" />
+          <Bar className="mt-2 h-4 w-[85%]" />
+        </div>
       </div>
-      <div className="mt-8 grid gap-10 md:grid-cols-3 md:gap-8">
-        {[0, 1, 2].map((i) => (
-          <div key={i}>
-            <Bar className="h-3 w-28" />
-            <Bar className="mt-3 h-8 w-full" />
-            <Bar className="mt-2 h-8 w-[70%]" />
-            <Bar className="mt-3 h-4 w-full" />
-            <Bar className="mt-2 h-4 w-[85%]" />
-          </div>
-        ))}
-      </div>
-      <div className="mt-20 md:mt-28">
-        <ResultsSkeleton rowHeight={117} />
+      <div className="mt-24 md:mt-32">
+        <ResultsSkeleton />
       </div>
     </PageSkeleton>
   );

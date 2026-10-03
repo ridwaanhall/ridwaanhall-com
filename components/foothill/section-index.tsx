@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { gsap, MOTION_OK, useGSAP } from "@/lib/motion/gsap";
 import { cn } from "@/lib/utils/cn";
 
 /**
  * A long page's table of contents, marking the section being read.
  *
  * Plain anchors, so it works before hydration and with scripting off; the
- * observer only adds which one is current.
+ * observer only adds which one is current, and the marker beside the list
+ * slides to it rather than jumping.
  */
 export function SectionIndex({
   sections,
@@ -18,6 +20,8 @@ export function SectionIndex({
   label?: string;
 }) {
   const [current, setCurrent] = useState(sections[0]?.id ?? "");
+  const list = useRef<HTMLUListElement>(null);
+  const marker = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     // Not `getElementById`: a page the reader left stays in the document,
@@ -44,27 +48,43 @@ export function SectionIndex({
     return () => observer.disconnect();
   }, [sections]);
 
+  useGSAP(
+    () => {
+      const link = list.current?.querySelector<HTMLElement>(`[href="#${current}"]`);
+      if (!link || !marker.current) return;
+      const target = { y: link.offsetTop, height: link.offsetHeight };
+      if (window.matchMedia(MOTION_OK).matches) gsap.to(marker.current, { ...target, duration: 0.5, ease: "expo.out" });
+      else gsap.set(marker.current, target);
+    },
+    { dependencies: [current] },
+  );
+
   return (
     <nav aria-label={label}>
-      <p className="fh-mono text-[11px] tracking-[0.16em] text-mute uppercase">{label}</p>
-      <ul className="mt-4 space-y-1 border-l border-line">
+      <p className="text-[14px] font-medium text-ink">{label}</p>
+      <div className="relative mt-4 border-l border-line">
+        <span
+          ref={marker}
+          aria-hidden="true"
+          className="absolute top-0 -left-px h-0 w-[2px] rounded-full bg-sulfur-mark"
+        />
+        <ul ref={list}>
         {sections.map((section) => (
           <li key={section.id}>
             <a
               href={`#${section.id}`}
               aria-current={current === section.id ? "location" : undefined}
               className={cn(
-                "-ml-px block border-l py-1.5 pl-4 text-[14px] transition-colors",
-                current === section.id
-                  ? "border-sulfur-mark text-ink"
-                  : "border-transparent text-mute hover:text-ink",
+                "block py-1.5 pl-4 text-[15px] transition-colors",
+                current === section.id ? "text-ink" : "text-mute hover:text-ink",
               )}
             >
               {section.label}
             </a>
           </li>
         ))}
-      </ul>
+        </ul>
+      </div>
     </nav>
   );
 }

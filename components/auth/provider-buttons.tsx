@@ -1,4 +1,4 @@
-import { GitHubMark, GoogleMark } from "@/components/icons/provider-marks";
+import { Brand } from "@/components/foothill/icons";
 import { signInWith } from "@/lib/actions/auth";
 
 /**
@@ -39,7 +39,7 @@ export function ProviderButtons({
         }}
       >
         <button type="submit" className={buttonClassName}>
-          <GoogleMark />
+          <Brand name="google" className="h-[18px] w-[18px]" />
           Continue with Google
         </button>
       </form>
@@ -50,7 +50,7 @@ export function ProviderButtons({
         }}
       >
         <button type="submit" className={buttonClassName}>
-          <GitHubMark />
+          <Brand name="github" className="h-[18px] w-[18px]" />
           Continue with GitHub
         </button>
       </form>

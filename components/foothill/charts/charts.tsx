@@ -55,6 +55,7 @@ export function DayRibbon({ blocks, label }: { blocks: DayBlock[]; label: string
         {blocks.map((block, i) => (
           <span
             key={i}
+            data-fh-bar
             title={block.detail}
             className="absolute inset-y-1.5 rounded-[2px] outline-2 outline-raise"
             style={{
@@ -128,7 +129,8 @@ export function Heatmap({
                   return day ? (
                     <span
                       key={weekday}
-                      title={`${day.date} · ${describe(day.value)}`}
+                      data-fh-cell
+                      title={`${day.date}: ${describe(day.value)}`}
                       className="aspect-square rounded-[2px]"
                       style={{ background: heatColor(day.value, peak) }}
                     />
@@ -178,7 +180,7 @@ export function WeekColumns({
         <div className="absolute inset-0 grid grid-cols-7 items-end gap-2 border-b border-ink/40 md:gap-4">
           {days.map((day) => (
             <div key={day.name} title={day.detail} className="flex h-full flex-col justify-end">
-              <div className="flex flex-col-reverse gap-[2px] overflow-hidden rounded-t-[4px]" style={{ height: `${day.height}%` }}>
+              <div data-fh-col className="flex flex-col-reverse gap-[2px] overflow-hidden rounded-t-[4px]" style={{ height: `${day.height}%` }}>
                 {day.segments.map((segment) => (
                   <span
                     key={segment.name}
@@ -212,8 +214,8 @@ export function TrendLine({ points, label }: { points: TrendWeek[]; label: strin
     <figure role="img" aria-label={label}>
       <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="h-40 w-full overflow-visible">
         <line x1="0" x2={W} y1={H} y2={H} className="stroke-line" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-        <path d={area} fill="var(--fh-s1)" opacity="0.12" />
-        <path d={line} fill="none" stroke="var(--fh-s1)" strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
+        <path data-fh-fade d={area} fill="var(--fh-s1)" opacity="0.12" />
+        <path data-fh-draw pathLength={1} d={line} fill="none" stroke="var(--fh-s1)" strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
         {xy.map(([x, y], i) => (
           <circle key={i} cx={x} cy={y} r="10" fill="transparent">
             <title>{points[i].detail}</title>
@@ -239,7 +241,7 @@ export function Bullet({
   return (
     <figure role="img" aria-label={label} className="pt-6 pb-8">
       <div className="relative h-3 rounded-full bg-raise">
-        <div className="absolute inset-y-0 left-0 rounded-full bg-ink" style={{ width: `${Math.min(100, value)}%` }} title={valueLabel} />
+        <div data-fh-bar className="absolute inset-y-0 left-0 rounded-full bg-ink" style={{ width: `${Math.min(100, value)}%` }} title={valueLabel} />
         {marks.map((mark, i) => (
           <div key={mark.label} className="absolute -inset-y-2 w-px bg-mute" style={{ left: `${Math.min(100, mark.at)}%` }}>
             <span
@@ -267,11 +269,12 @@ export function RankBars({ entries, slotted = false }: { entries: WakatimeEntry[
           <div className="flex items-baseline justify-between gap-4 text-[14px]">
             <span className="truncate text-ink">{entry.name}</span>
             <span className="fh-mono shrink-0 text-[11px] text-mute tabular-nums">
-              {entry.time} · {Math.round(entry.percent)}%
+              {entry.time}, {Math.round(entry.percent)}%
             </span>
           </div>
           <div className="mt-1.5 h-1.5 rounded-full bg-raise">
             <div
+              data-fh-bar
               className="h-full rounded-full"
               style={{ width: `${(entry.percent / top) * 100}%`, background: slotted ? seriesColor(i) : "var(--fh-ink)" }}
             />
@@ -297,6 +300,7 @@ export function SplitBar({
         {parts.map((part) => (
           <span
             key={part.name}
+            data-fh-bar
             title={`${part.name}: ${part.value.toLocaleString("en-US")}`}
             style={{ width: `${(part.value / total) * 100}%`, background: seriesColor(part.slot) }}
           />
@@ -307,7 +311,7 @@ export function SplitBar({
           items={parts.map((part) => ({
             name: part.name,
             slot: part.slot,
-            note: `${part.value.toLocaleString("en-US")} · ${Math.round((part.value / total) * 100)}%`,
+            note: `${part.value.toLocaleString("en-US")}, ${Math.round((part.value / total) * 100)}%`,
           }))}
         />
       </div>

@@ -4,10 +4,10 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { ProviderButtons } from "@/components/auth/provider-buttons";
-import { EYEBROW, LINE_BUTTON } from "@/components/foothill/classes";
+import { LINE_BUTTON } from "@/components/foothill/classes";
 import { MAIN, WRAP } from "@/components/foothill/layout";
 import { Mark } from "@/components/foothill/mark";
-import { PageMotion } from "@/components/foothill/page-motion";
+import { PageMotion } from "@/components/foothill/motion";
 import { getViewer } from "@/lib/auth/viewer";
 
 export const metadata: Metadata = {
@@ -30,14 +30,11 @@ export default function SignInPage({ searchParams }: { searchParams: Promise<{ e
       <div className={WRAP}>
         <div className="mx-auto max-w-[440px] py-8 md:py-16">
           <Mark className="h-5 w-9 text-ink" />
-          <p data-fh-enter className={`${EYEBROW} mt-10`}>
-            Sign in
-          </p>
-          <h1 data-fh-split className="mt-4 text-[clamp(2.25rem,1.8rem+2vw,3.25rem)] leading-[1.05] font-medium tracking-[-0.035em] text-ink">
+          <h1 data-fh-split className="mt-10 font-display text-[clamp(2.5rem,1.8rem+2.6vw,3.75rem)] leading-[1] font-medium tracking-[-0.04em] text-ink">
             Join the conversation.
           </h1>
           <p data-fh-enter className="mt-5 text-[16px] leading-relaxed text-mute">
-            To comment and to sign the guestbook. Nothing is shared beyond your name and avatar &mdash; see
+            To comment and to sign the guestbook. Nothing is shared beyond your name and avatar. See
             the{" "}
             <Link href="/privacy-policy" className="fh-link text-ink">
               privacy policy
@@ -53,7 +50,7 @@ export default function SignInPage({ searchParams }: { searchParams: Promise<{ e
           </Suspense>
 
           <div data-fh-enter className="mt-10">
-            <ProviderButtons redirectTo="/" buttonClassName={`${LINE_BUTTON} w-full justify-center py-3`} />
+            <ProviderButtons redirectTo="/" buttonClassName={`${LINE_BUTTON} w-full justify-center`} />
           </div>
         </div>
       </div>

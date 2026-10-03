@@ -4,7 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import { ICON_BUTTON } from "@/components/foothill/classes";
+import { Icon } from "@/components/foothill/icons";
 import { Mark } from "@/components/foothill/mark";
+import { Roll } from "@/components/foothill/motion";
 import { usePalette } from "@/components/foothill/palette";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import type { AboutData } from "@/lib/data/about";
@@ -13,11 +16,8 @@ import { isActive, visibleNavItems, type NavItem } from "@/lib/nav";
 import { availability, hasOpenhire } from "@/lib/site/display";
 import { cn } from "@/lib/utils/cn";
 
-const TOGGLE =
-  "group inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-mute transition-colors hover:bg-raise hover:text-ink";
-
 /** The bar's links: the primary navigation without Home, which the mark is. */
-function links(about: AboutData): (Pick<NavItem, "label" | "href" | "matchNested">)[] {
+function links(about: AboutData): Pick<NavItem, "label" | "href" | "matchNested">[] {
   const items = visibleNavItems().filter((item) => item.href !== "/");
   if (!hasOpenhire(about)) return items;
   // Open-hire sits beside Contact: both are how somebody gets in touch.
@@ -30,9 +30,9 @@ function links(about: AboutData): (Pick<NavItem, "label" | "href" | "matchNested
  * The site's navigation: one bar across the top.
  *
  * From `lg` it carries every link, the reader's status, search, the theme and
- * the account. Below that it keeps the mark, search, the theme and a Menu
- * button, and the links open in a full-screen menu. There is exactly one theme
- * toggle at every width -- the menu does not carry a second.
+ * the account. Below that it is three round controls -- search, theme, menu --
+ * and the links open in a full-screen menu. There is exactly one theme toggle
+ * at every width; the menu does not carry a second.
  *
  * It steps out of the way while reading downward and returns the moment the
  * reader scrolls up, and the rule under it appears only once the page has
@@ -93,10 +93,10 @@ function NavbarAt({
       const goingUp = y < last - 4;
       if (goingDown && y > 160 && !hidden) {
         hidden = true;
-        gsap.to(header.current, { yPercent: -100, duration: reduce ? 0 : 0.45, ease: EASE });
+        gsap.to(header.current, { yPercent: -100, duration: reduce ? 0 : 0.5, ease: "power3.inOut" });
       } else if ((goingUp || y < 160) && hidden) {
         hidden = false;
-        gsap.to(header.current, { yPercent: 0, duration: reduce ? 0 : 0.45, ease: EASE });
+        gsap.to(header.current, { yPercent: 0, duration: reduce ? 0 : 0.5, ease: EASE });
       }
       if (goingDown || goingUp) last = y;
     };
@@ -117,7 +117,7 @@ function NavbarAt({
       }
       const target = { x: current.offsetLeft, width: current.offsetWidth, autoAlpha: 1 };
       const animate = window.matchMedia(MOTION_OK).matches && gsap.getProperty(line, "opacity") !== 0;
-      if (animate) gsap.to(line, { ...target, duration: 0.5, ease: EASE });
+      if (animate) gsap.to(line, { ...target, duration: 0.6, ease: "expo.out" });
       else gsap.set(line, target);
     },
     { dependencies: [pathname] },
@@ -127,18 +127,18 @@ function NavbarAt({
     <header ref={header} className="fixed inset-x-0 top-0 z-50">
       <div
         className={cn(
-          "border-b bg-paper/85 backdrop-blur-md transition-colors duration-300",
+          "border-b bg-paper/80 backdrop-blur-md transition-colors duration-300",
           scrolled || menuOpen ? "border-line" : "border-transparent",
         )}
       >
         <div className="mx-auto flex h-16 w-full max-w-[1200px] items-center justify-between gap-6 px-4 md:px-8 xl:px-12">
           <Link
             href="/"
-            className="flex items-center gap-2.5 text-[17px] font-semibold tracking-[-0.02em] text-ink"
+            className="group flex items-center gap-2.5 font-display text-[18px] font-semibold tracking-[-0.025em] text-ink"
             aria-label={`${about.username}, home`}
           >
-            <Mark className="h-4 w-7" />
-            <span>{about.username}</span>
+            <Mark className="h-4 w-7 transition-transform duration-500 group-hover:-translate-y-0.5" />
+            <Roll>{about.username}</Roll>
           </Link>
 
           <nav aria-label="Primary" className="hidden lg:block">
@@ -155,7 +155,7 @@ function NavbarAt({
                         current ? "text-ink" : "text-mute hover:text-ink",
                       )}
                     >
-                      {item.label}
+                      <Roll>{item.label}</Roll>
                     </Link>
                   </li>
                 );
@@ -168,52 +168,38 @@ function NavbarAt({
             </ul>
           </nav>
 
-          <div className="flex items-center gap-1.5 md:gap-3">
-            {headline && (
-              <StatusLink line={headline} className="mr-2 hidden xl:inline-flex" />
-            )}
+          <div className="flex items-center gap-1 md:gap-1.5">
+            {headline && <StatusLink line={headline} className="mr-3 hidden xl:inline-flex" />}
             <button
               type="button"
-              onClick={palette.open}
-              className="flex h-9 cursor-pointer items-center gap-2 rounded-full px-2.5 text-[14px] text-mute transition-colors hover:bg-raise hover:text-ink"
+                onClick={palette.open}
+              aria-label="Search"
+              title="Search (Ctrl K)"
+              className={ICON_BUTTON}
             >
-              <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" aria-hidden="true">
-                <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.5" />
-                <path d="M13.5 13.5 L18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-              <span className="sr-only md:not-sr-only">Search</span>
-              <kbd className="fh-mono hidden rounded border border-line px-1.5 text-[10px] leading-[18px] text-mute md:inline">
-                ⌘K
-              </kbd>
+              <Icon name="search" className="h-[18px] w-[18px] transition-transform duration-500 group-hover:-rotate-12" />
             </button>
-            <ThemeToggle className={TOGGLE} />
-            <div className="hidden items-center lg:flex">{account}</div>
+            <span className="inline-flex">
+              <ThemeToggle className={ICON_BUTTON} iconSize="h-[18px] w-[18px]" />
+            </span>
+            <div className="ml-2 hidden items-center lg:flex">
+              {account}
+            </div>
             <button
               type="button"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
               aria-controls="fh-menu"
               onClick={() => {
                 setMenuAt(pathname);
                 setMenuOpen((open) => !open);
               }}
-              className="flex h-9 cursor-pointer items-center gap-2 rounded-full pl-2 text-[14px] text-ink lg:hidden"
+              className={cn(ICON_BUTTON, "lg:hidden")}
             >
-              <span>{menuOpen ? "Close" : "Menu"}</span>
-              <span aria-hidden="true" className="relative block h-3 w-4">
-                <span
-                  className={cn(
-                    "absolute left-0 h-px w-4 bg-ink transition-transform duration-300",
-                    menuOpen ? "top-1.5 rotate-45" : "top-0.5",
-                  )}
-                />
-                <span
-                  className={cn(
-                    "absolute left-0 h-px w-4 bg-ink transition-transform duration-300",
-                    menuOpen ? "top-1.5 -rotate-45" : "top-2.5",
-                  )}
-                />
-              </span>
+              <svg viewBox="0 0 24 24" className="fh-burger h-[18px] w-[18px]" aria-hidden="true">
+                <path d="M3.5 9h17" />
+                <path d="M3.5 15h17" />
+              </svg>
             </button>
           </div>
         </div>
@@ -247,7 +233,7 @@ function StatusLink({
       {line.label}
     </>
   );
-  const classes = cn("items-center gap-2 text-[13px] text-mute", className);
+  const classes = cn("items-center gap-2 text-[14px] text-mute", className);
   return line.href ? (
     <Link href={line.href} className={cn(classes, "transition-colors hover:text-ink")} title={line.detail}>
       {body}
@@ -262,8 +248,11 @@ function StatusLink({
 /**
  * The links below `lg`, over the whole page.
  *
- * `hidden` while closed rather than merely invisible, so its sign-in link and
- * account menu are not a second focusable copy of the ones in the bar.
+ * Mounted while open and while it is closing: `shown` trails `open` by the
+ * length of the exit, so the links leave the way they arrived instead of
+ * vanishing. `hidden` once it has gone rather than merely invisible, so its
+ * sign-in link and account menu are not a second focusable copy of the ones
+ * in the bar.
  */
 function MobileMenu({
   open,
@@ -281,63 +270,88 @@ function MobileMenu({
   status: ReturnType<typeof availability>;
 }) {
   const panel = useRef<HTMLDivElement>(null);
+  const [shown, setShown] = useState(open);
+  const [was, setWas] = useState(open);
+
+  // Opening shows it at once; closing waits for the exit below to finish.
+  if (open !== was) {
+    setWas(open);
+    if (open) setShown(true);
+  }
 
   useEffect(() => {
-    if (!open) return;
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    panel.current?.querySelector<HTMLElement>("a")?.focus();
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
+    const el = panel.current;
+    if (!el) return;
+    const motion = window.matchMedia(MOTION_OK).matches;
+    const rows = el.querySelectorAll("[data-menu-item]");
 
-    const mm = gsap.matchMedia();
-    mm.add(MOTION_OK, () => {
-      gsap.from(panel.current, { autoAlpha: 0, duration: 0.25 });
-      gsap.from("[data-menu-item]", {
-        yPercent: 60,
+    if (open) {
+      const previous = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      el.querySelector<HTMLElement>("a")?.focus();
+      const onKey = (event: KeyboardEvent) => {
+        if (event.key === "Escape") onClose();
+      };
+      document.addEventListener("keydown", onKey);
+      const tl = motion
+        ? gsap
+            .timeline()
+            .fromTo(el, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 0.6, ease: "expo.out" })
+            .fromTo(
+              rows,
+              { yPercent: 70, autoAlpha: 0 },
+              { yPercent: 0, autoAlpha: 1, duration: 0.7, ease: EASE, stagger: 0.045 },
+              0.12,
+            )
+        : null;
+      return () => {
+        tl?.kill();
+        document.body.style.overflow = previous;
+        document.removeEventListener("keydown", onKey);
+      };
+    }
+
+    if (!shown) return;
+    // Under reduced motion the same timeline runs at no length, so the panel
+    // still leaves through `onComplete` rather than a second code path.
+    const tl = gsap
+      .timeline({ onComplete: () => setShown(false) })
+      .to(rows, {
+        yPercent: -40,
         autoAlpha: 0,
-        duration: 0.6,
-        ease: EASE,
-        stagger: 0.045,
-      });
-    });
-
+        duration: motion ? 0.3 : 0,
+        ease: "power2.in",
+        stagger: { each: motion ? 0.025 : 0, from: "end" },
+      })
+      .to(el, { clipPath: "inset(0 0 100% 0)", duration: motion ? 0.45 : 0, ease: "expo.inOut" }, motion ? "-=0.15" : 0)
+      .set([el, rows], { clearProps: "clipPath,transform,opacity,visibility" });
     return () => {
-      document.body.style.overflow = previous;
-      document.removeEventListener("keydown", onKey);
-      mm.revert();
+      tl.kill();
     };
-  }, [open, onClose]);
+  }, [open, shown, onClose]);
 
   return (
     <div
       id="fh-menu"
       ref={panel}
-      hidden={!open}
+      hidden={!shown}
       className="fixed inset-x-0 top-16 bottom-0 overflow-y-auto bg-paper lg:hidden"
     >
-      <div className="mx-auto flex min-h-full w-full max-w-[1200px] flex-col px-4 pt-8 pb-10 md:px-8">
+      <div className="mx-auto flex min-h-full w-full max-w-[1200px] flex-col px-4 pt-6 pb-10 md:px-8">
         <nav aria-label="Menu">
           <ul className="flex flex-col">
-            <li data-menu-item>
-              <Link
-                href="/"
-                aria-current={pathname === "/" ? "page" : undefined}
-                className="block border-b border-line py-3.5 text-[30px] font-medium tracking-[-0.02em] text-ink aria-[current=page]:text-sulfur"
-              >
-                Home
-              </Link>
-            </li>
-            {items.map((item) => (
-              <li key={item.href} data-menu-item>
+            {[{ label: "Home", href: "/" as const, matchNested: false }, ...items].map((item) => (
+              <li key={item.href} data-menu-item className="overflow-hidden border-b border-line">
                 <Link
                   href={item.href}
-                  aria-current={isActive(item, pathname) ? "page" : undefined}
-                  className="block border-b border-line py-3.5 text-[30px] font-medium tracking-[-0.02em] text-ink aria-[current=page]:text-sulfur"
+                  aria-current={(item.href === "/" ? pathname === "/" : isActive(item, pathname)) ? "page" : undefined}
+                  className="group flex items-center justify-between py-3.5 font-display text-[clamp(1.9rem,1.4rem+3vw,2.75rem)] leading-none font-medium tracking-[-0.03em] text-ink aria-[current=page]:text-sulfur"
                 >
-                  {item.label}
+                  <Roll>{item.label}</Roll>
+                  <Icon
+                    name="arrow-right"
+                    className="h-6 w-6 -translate-x-2 text-mute opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100 group-aria-[current=page]:translate-x-0 group-aria-[current=page]:opacity-100"
+                  />
                 </Link>
               </li>
             ))}

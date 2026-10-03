@@ -148,7 +148,7 @@
     --color-line: var(--fh-line);
     --color-sulfur: var(--fh-sulfur);
     --color-sulfur-mark: var(--fh-sulfur-mark);
-    --font-display: var(--font-familjen), ui-sans-serif, system-ui, sans-serif;
-    --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
+    --font-display: var(--font-funnel-display), ui-sans-serif, system-ui, sans-serif;
+    --font-text: var(--font-funnel-sans), ui-sans-serif, system-ui, sans-serif;
     --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 }

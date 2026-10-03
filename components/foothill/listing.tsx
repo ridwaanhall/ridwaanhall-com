@@ -1,22 +1,40 @@
-import { PostList } from "@/components/foothill/post-list";
-import { Pagination } from "@/components/foothill/pagination";
-import { postRow, workRow } from "@/components/foothill/rows";
+import { CardGrid } from "@/components/foothill/cards";
+import { postCard, projectCard } from "@/components/foothill/rows";
 import { SearchForm } from "@/components/foothill/search-form";
-import { WorkIndex } from "@/components/foothill/work-index";
-import { paginate } from "@/lib/api/pagination";
 import type { BlogPost, Project } from "@/lib/data/content";
 import { searchBlogs, searchProjects } from "@/lib/data/content";
-import { groupBy, yearOf } from "@/lib/site/display";
 import { readListingParams, type ListingSearchParams } from "@/lib/site/listing";
 
-function Summary({ query, start, end, count, noun }: { query: string; start: number; end: number; count: number; noun: string }) {
+/*
+ * A listing's results: the search box, a sentence saying what matched, and
+ * the cards. Searching happens here, on the server, against the whole list;
+ * the grid then reveals the matches a batch at a time as the reader scrolls.
+ */
+
+function Summary({ query, count, noun }: { query: string; count: number; noun: string }) {
+  if (!query) return null;
   return (
-    <p className="fh-mono mt-6 text-[12px] text-mute" aria-live="polite">
-      {count === 0
-        ? `Nothing matches “${query}”.`
-        : query
-          ? `${count} ${noun} matching “${query}” · ${start}–${end}`
-          : `${start}–${end} of ${count} ${noun}`}
+    <p className="mt-5 text-[15px] text-mute" aria-live="polite">
+      {count === 0 ? (
+        <>Nothing matches &ldquo;{query}&rdquo;.</>
+      ) : (
+        <>
+          {count} {count === 1 ? noun.replace(/s$/, "") : noun} matching{" "}
+          <span className="text-ink">&ldquo;{query}&rdquo;</span>
+        </>
+      )}
+    </p>
+  );
+}
+
+function Empty({ basePath }: { basePath: string }) {
+  return (
+    <p className="mt-10 text-[17px] text-mute">
+      Try a shorter word, or{" "}
+      <a href={basePath} className="fh-link text-ink">
+        see everything
+      </a>
+      .
     </p>
   );
 }
@@ -28,23 +46,18 @@ export async function ProjectResults({
   projects: Project[];
   searchParams: ListingSearchParams;
 }) {
-  const { query, page } = await readListingParams(searchParams);
+  const { query } = await readListingParams(searchParams);
   const matches = query ? searchProjects(projects, query) : projects;
-  const result = paginate(matches, page);
-  const start = (result.page - 1) * 10 + 1;
 
   return (
     <div>
-      <SearchForm basePath="/projects" query={query} placeholder="Search work by name, stack or kind" />
-      <Summary query={query} start={start} end={start + result.items.length - 1} count={result.count} noun="projects" />
-      {result.items.length > 0 ? (
-        <div className="mt-4">
-          <WorkIndex rows={result.items.map(workRow)} />
-        </div>
+      <SearchForm basePath="/projects" query={query} placeholder="Search by name, stack or kind" />
+      <Summary query={query} count={matches.length} noun="projects" />
+      {matches.length > 0 ? (
+        <CardGrid cards={matches.map(projectCard)} noun="projects" eager={2} className="mt-14" />
       ) : (
         <Empty basePath="/projects" />
       )}
-      <Pagination result={result} basePath="/projects" query={query} />
     </div>
   );
 }
@@ -56,42 +69,18 @@ export async function BlogResults({
   posts: BlogPost[];
   searchParams: ListingSearchParams;
 }) {
-  const { query, page } = await readListingParams(searchParams);
+  const { query } = await readListingParams(searchParams);
   const matches = query ? searchBlogs(posts, query) : posts;
-  const result = paginate(matches, page);
-  const start = (result.page - 1) * 10 + 1;
 
   return (
     <div>
-      <SearchForm basePath="/blog" query={query} placeholder="Search writing by title, topic or tag" />
-      <Summary query={query} start={start} end={start + result.items.length - 1} count={result.count} noun="posts" />
-      {result.items.length > 0 ? (
-        <div className="mt-4 space-y-12">
-          {groupBy(result.items, (post) => yearOf(post.created_at)).map(([year, list]) => (
-            <section key={year ?? "undated"} aria-label={year ? `Posts from ${year}` : "Undated posts"}>
-              <h3 className="text-[clamp(1.75rem,1.4rem+1.6vw,2.5rem)] font-medium tracking-[-0.03em] text-mute tabular-nums">
-                {year ?? "Undated"}
-              </h3>
-              <PostList posts={list.map(postRow)} dateStyle="day" className="mt-3" />
-            </section>
-          ))}
-        </div>
+      <SearchForm basePath="/blog" query={query} placeholder="Search by title, topic or tag" />
+      <Summary query={query} count={matches.length} noun="posts" />
+      {matches.length > 0 ? (
+        <CardGrid cards={matches.map(postCard)} noun="posts" className="mt-14" />
       ) : (
         <Empty basePath="/blog" />
       )}
-      <Pagination result={result} basePath="/blog" query={query} />
     </div>
-  );
-}
-
-function Empty({ basePath }: { basePath: string }) {
-  return (
-    <p className="mt-10 border-t border-line pt-8 text-[17px] text-mute">
-      Try a shorter word, or{" "}
-      <a href={basePath} className="fh-link text-ink">
-        see everything
-      </a>
-      .
-    </p>
   );
 }

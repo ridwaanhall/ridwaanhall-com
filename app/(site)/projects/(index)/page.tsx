@@ -3,8 +3,8 @@ import { Suspense } from "react";
 
 import { MAIN, WRAP } from "@/components/foothill/layout";
 import { ProjectResults } from "@/components/foothill/listing";
+import { CountUp, PageMotion } from "@/components/foothill/motion";
 import { ResultsSkeleton } from "@/components/foothill/skeleton";
-import { PageMotion } from "@/components/foothill/page-motion";
 import { PageHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { getAboutData } from "@/lib/data/about";
@@ -33,20 +33,29 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Lis
   if (!about) return null;
 
   const sorted = sortProjects(all);
+  const live = sorted.filter((project) => project.demo_url).length;
 
   return (
     <main className={MAIN}>
       <JsonLdScript schemas={projectsListSchemas(about, sorted)} />
       <div className={WRAP}>
         <PageHead
-          eyebrow={`Work · ${sorted.length}`}
           title="Things I have built, and keep building."
           lead="APIs other developers lean on, dashboards, machine-learning models, a few stores and the occasional experiment."
-        />
-        <div className="mt-16 md:mt-20">
+        >
+          <p data-fh-enter className="mt-8 flex flex-wrap gap-x-8 gap-y-2 text-[15px] text-mute">
+            <span>
+              <CountUp value={sorted.length} className="font-display text-[22px] font-medium text-ink" /> projects
+            </span>
+            <span>
+              <CountUp value={live} className="font-display text-[22px] font-medium text-ink" /> live to try
+            </span>
+          </p>
+        </PageHead>
+        <div className="mt-16 md:mt-24">
           {/* `searchParams` makes this half dynamic; the heading above stays
               in the static shell. */}
-          <Suspense fallback={<ResultsSkeleton rowHeight={81} />}>
+          <Suspense fallback={<ResultsSkeleton />}>
             <ProjectResults projects={sorted} searchParams={searchParams} />
           </Suspense>
         </div>

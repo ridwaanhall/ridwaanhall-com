@@ -1,4 +1,4 @@
-import { Familjen_Grotesk, JetBrains_Mono, Newsreader, Onest } from "next/font/google";
+import { Funnel_Display, Funnel_Sans, JetBrains_Mono, Onest } from "next/font/google";
 
 /**
  * Onest, self-hosted by `next/font`.
@@ -32,35 +32,35 @@ export const onest = Onest({
 });
 
 /*
- * The public site's three faces. The admin keeps Onest; these are applied only
+ * The public site's faces. The admin keeps Onest; these are applied only
  * inside the site shell, so nothing the admin renders changes metrics.
  *
- * Familjen Grotesk is the voice -- headings, navigation, interface text.
- * Newsreader is for reading: post bodies, project write-ups, the about story.
- * JetBrains Mono carries data -- dates, counts, coordinates, code.
+ * One family in two cuts carries everything a reader reads: Funnel Display for
+ * headings and the few large statements, Funnel Sans for interface and running
+ * text. A sans for both, deliberately -- a serif brought in only for "reading"
+ * is a second voice the content never asked for. JetBrains Mono is kept for
+ * data alone: the dashboard's figures and code.
  *
  * `preload: false` for the same reason as above: the browser fetches only the
- * subset file a page's characters actually land in. Familjen has no Cyrillic
- * subset, so a guestbook message in Cyrillic falls through to the system face
- * named after it in `styles/site.css`.
+ * subset file a page's characters actually land in. Neither Funnel cut has a
+ * Cyrillic subset, so a guestbook message in Cyrillic falls through to the
+ * system face named after it in `styles/site.css`.
  */
-export const familjen = Familjen_Grotesk({
+export const funnelDisplay = Funnel_Display({
   subsets: ["latin", "latin-ext"],
   weight: "variable",
-  style: ["normal", "italic"],
   display: "swap",
   preload: false,
-  variable: "--font-familjen",
+  variable: "--font-funnel-display",
 });
 
-export const newsreader = Newsreader({
+export const funnelSans = Funnel_Sans({
   subsets: ["latin", "latin-ext"],
   weight: "variable",
   style: ["normal", "italic"],
-  axes: ["opsz"],
   display: "swap",
   preload: false,
-  variable: "--font-newsreader",
+  variable: "--font-funnel-sans",
 });
 
 export const jetbrains = JetBrains_Mono({

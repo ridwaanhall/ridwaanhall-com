@@ -2,7 +2,9 @@
 
 import { useRef, useState, useTransition } from "react";
 
-import { EYEBROW, SOLID_BUTTON, TEXT_BUTTON } from "@/components/foothill/classes";
+import { H2, LINE_BUTTON, SOLID_BUTTON, TEXT_BUTTON } from "@/components/foothill/classes";
+import { Brand, Icon } from "@/components/foothill/icons";
+import { Roll } from "@/components/foothill/motion";
 import { useConfirm } from "@/components/providers/confirm-dialog";
 import { signInWith } from "@/lib/actions/auth";
 import { deleteComment, postComment } from "@/lib/actions/comments";
@@ -75,8 +77,11 @@ export function Comments({
 
   return (
     <section id="comments" aria-labelledby="comments-title" className="scroll-mt-28">
-      <h2 id="comments-title" className={`${EYEBROW} border-t border-line pt-4`}>
-        Comments <span className="ml-2 text-ink tabular-nums">{section.count}</span>
+      <h2 id="comments-title" className={`${H2} text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)]`}>
+        Comments
+        <sup className="ml-2 align-super font-text text-[0.4em] font-normal tracking-normal text-mute tabular-nums">
+          {section.count}
+        </sup>
       </h2>
 
       {section.comments.length > 0 ? (
@@ -97,7 +102,7 @@ export function Comments({
           ))}
         </ol>
       ) : (
-        <p className="fh-serif mt-6 text-[20px] text-mute italic">
+        <p className="mt-6 text-[18px] leading-relaxed text-mute">
           Nobody has said anything about this {noun} yet. You could be the first.
         </p>
       )}
@@ -123,6 +128,7 @@ export function Comments({
               <p className="mb-3 flex items-center gap-3 text-[14px] text-mute">
                 Replying to <span className="text-ink">{replyTo.displayName}</span>
                 <button type="button" onClick={() => setReplyTo(null)} className={TEXT_BUTTON}>
+                  <Icon name="close" className="h-3.5 w-3.5" />
                   Cancel
                 </button>
               </p>
@@ -140,14 +146,15 @@ export function Comments({
               rows={4}
               required
               placeholder={`Say something about this ${noun}, as ${signedInAs}`}
-              className="w-full resize-y rounded-md border border-line bg-transparent px-4 py-3 text-[16px] leading-relaxed text-ink outline-none transition-colors placeholder:text-mute focus:border-ink"
+              className="w-full resize-y rounded-[14px] border border-line bg-transparent px-4 py-3 text-[16px] leading-relaxed text-ink outline-none transition-colors placeholder:text-mute focus:border-ink"
             />
             <div className="mt-3 flex items-center justify-between gap-4">
-              <span className="fh-mono text-[11px] text-mute tabular-nums">
+              <span className="text-[13px] text-mute tabular-nums">
                 {body.length} / {MAX_COMMENT_LENGTH}
               </span>
               <button type="submit" disabled={pending || !body.trim()} className={SOLID_BUTTON}>
-                {pending ? "Posting…" : replyTo ? "Post reply" : "Post comment"}
+                <Roll>{pending ? "Posting…" : replyTo ? "Post reply" : "Post comment"}</Roll>
+                <Icon name="send" className="transition-transform duration-500 group-enabled:group-hover:translate-x-0.5 group-enabled:group-hover:-translate-y-0.5" />
               </button>
             </div>
           </form>
@@ -175,9 +182,9 @@ function Comment({
         <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <span className="text-[15px] font-medium text-ink">{comment.displayName}</span>
           {comment.role !== "public" && (
-            <span className="fh-mono text-[10px] tracking-[0.12em] text-sulfur uppercase">{ROLE_LABEL[comment.role]}</span>
+            <span className="rounded-full bg-raise px-2 py-0.5 text-[12px] text-ink">{ROLE_LABEL[comment.role]}</span>
           )}
-          <time dateTime={comment.createdAt} className="fh-mono text-[11px] text-mute">
+          <time dateTime={comment.createdAt} className="text-[13px] text-mute">
             {shortDate(comment.createdAt)}
           </time>
         </p>
@@ -190,11 +197,13 @@ function Comment({
           <div className="mt-2 flex gap-5">
             {onReply && (
               <button type="button" onClick={() => onReply(comment)} className={TEXT_BUTTON}>
+                <Icon name="reply" className="h-3.5 w-3.5" />
                 Reply
               </button>
             )}
             {comment.canDelete && (
               <button type="button" onClick={() => onDelete(comment)} disabled={busy} className={TEXT_BUTTON}>
+                <Icon name="trash" className="h-3.5 w-3.5" />
                 Delete
               </button>
             )}
@@ -236,14 +245,16 @@ export function SignInPrompt({ redirectTo }: { redirectTo?: string }) {
     });
 
   return (
-    <div className="flex flex-wrap items-center gap-x-5 gap-y-3 rounded-md border border-dashed border-line px-5 py-4">
-      <p className="text-[15px] text-mute">Sign in to join in.</p>
-      <div className="flex gap-4">
-        <button type="button" disabled={pending} onClick={() => go("github")} className="cursor-pointer text-[15px] text-ink disabled:opacity-50">
-          <span className="fh-link">Continue with GitHub</span>
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <p className="text-[16px] text-mute">Sign in to join in. Only your name and avatar are shown.</p>
+      <div className="flex flex-wrap gap-2">
+        <button type="button" disabled={pending} onClick={() => go("github")} className={`${LINE_BUTTON} h-11 px-5`}>
+          <Brand name="github" className="h-[18px] w-[18px]" />
+          <Roll>Continue with GitHub</Roll>
         </button>
-        <button type="button" disabled={pending} onClick={() => go("google")} className="cursor-pointer text-[15px] text-ink disabled:opacity-50">
-          <span className="fh-link">Continue with Google</span>
+        <button type="button" disabled={pending} onClick={() => go("google")} className={`${LINE_BUTTON} h-11 px-5`}>
+          <Brand name="google" className="h-[18px] w-[18px]" />
+          <Roll>Continue with Google</Roll>
         </button>
       </div>
     </div>

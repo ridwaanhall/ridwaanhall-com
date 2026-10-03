@@ -1,32 +1,24 @@
-import { WRAP } from "@/components/foothill/layout";
-import { Bar, PageSkeleton, RowsSkeleton } from "@/components/foothill/skeleton";
+import { Bar, CardsSkeleton, PageSkeleton } from "@/components/foothill/skeleton";
 
-/**
- * The home page while it loads: the hero's text column, then the work index.
- * Full-bleed like the page, whose hero runs edge to edge.
- */
+/** The home page while it loads: the name and the portrait, then the work. */
 export default function Loading() {
   return (
-    <PageSkeleton bleed>
-      <div className={WRAP}>
-      <div className="max-w-[560px] lg:pt-10">
-        <Bar className="h-3 w-64" />
-        <Bar className="mt-6 h-[clamp(3rem,1.9rem+6vw,6.9rem)] w-[80%]" />
-        <Bar className="mt-3 h-[clamp(3rem,1.9rem+6vw,6.9rem)] w-[62%]" />
-        <Bar className="mt-8 h-5 w-72" />
-        <Bar className="mt-4 h-6 w-full max-w-[34ch]" />
-        <Bar className="mt-2 h-6 w-[70%] max-w-[26ch]" />
-        <Bar className="mt-8 h-4 w-full max-w-md" />
-        <div className="mt-10 flex gap-3">
-          <Bar className="h-11 w-36 rounded-full" />
-          <Bar className="h-11 w-32 rounded-full" />
+    <PageSkeleton>
+      <div className="grid items-end gap-12 lg:grid-cols-12 lg:gap-10">
+        <div className="lg:col-span-7">
+          <Bar className="h-[clamp(3.1rem,1.2rem+8.3vw,8.6rem)] w-[70%]" />
+          <Bar className="mt-3 h-[clamp(3.1rem,1.2rem+8.3vw,8.6rem)] w-[62%]" />
+          <Bar className="mt-8 h-7 w-full max-w-[30ch]" />
+          <Bar className="mt-2 h-7 w-[70%] max-w-[22ch]" />
+          <div className="mt-10 flex gap-3">
+            <Bar className="h-12 w-40 rounded-full" />
+            <Bar className="h-12 w-36 rounded-full" />
+          </div>
         </div>
+        <Bar className="mx-auto aspect-square w-full max-w-[420px] rounded-[18px] lg:col-span-5 lg:max-w-none" />
       </div>
-      <div className="mt-28 border-t border-line pt-4 md:mt-40">
-        <Bar className="h-3 w-32" />
-      </div>
-      <RowsSkeleton count={4} height={81} className="mt-2" />
-      </div>
+      <Bar className="mt-32 h-14 w-64 md:mt-44" />
+      <CardsSkeleton className="mt-12" />
     </PageSkeleton>
   );
 }

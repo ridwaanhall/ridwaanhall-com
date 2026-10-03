@@ -12,9 +12,8 @@ import {
   TrendLine,
   WeekColumns,
 } from "@/components/foothill/charts/charts";
-import { CountUp } from "@/components/foothill/charts/count-up";
 import { MAIN, WRAP } from "@/components/foothill/layout";
-import { PageMotion } from "@/components/foothill/page-motion";
+import { Animate, CountUp, PageMotion } from "@/components/foothill/motion";
 import { Bar } from "@/components/foothill/skeleton";
 import { PageHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
@@ -54,7 +53,6 @@ export default async function DashboardPage() {
       <JsonLdScript schemas={await dashboardSchemas(about)} />
       <div className={WRAP}>
         <PageHead
-          eyebrow="Dashboard"
           title="The work, measured."
           lead="Time in the editor from WakaTime and contributions from GitHub, read live. Nothing here is typed in by hand."
         />
@@ -95,7 +93,7 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section aria-labelledby={id}>
+    <Animate as="section" aria-labelledby={id}>
       <div className="flex flex-wrap items-baseline justify-between gap-4 border-t border-line pt-4">
         <h2 id={id} className={EYEBROW}>
           {title}
@@ -106,7 +104,24 @@ function Panel({
         </p>
       </div>
       {children}
-    </section>
+    </Animate>
+  );
+}
+
+/**
+ * A reading as written by its source -- "1,204 hrs 31 mins" -- with every
+ * number in it counting up into place and the words left as they are.
+ */
+function Figure({ value }: { value: React.ReactNode }) {
+  if (typeof value !== "string") return <>{value}</>;
+  return (
+    <>
+      {value.split(/(\d[\d,]*(?:\.\d+)?)/).map((part, i) => {
+        if (i % 2 === 0) return part;
+        const decimals = part.includes(".") ? part.split(".")[1].length : 0;
+        return <CountUp key={i} value={Number(part.replace(/,/g, ""))} decimals={decimals} />;
+      })}
+    </>
   );
 }
 
@@ -118,7 +133,7 @@ function Readings({ items, className }: { items: { label: string; value: React.R
         <div key={item.label} className="border-r border-b border-line px-4 py-5 md:border-b-0" title={item.detail}>
           <dt className="text-[13px] text-mute">{item.label}</dt>
           <dd className="mt-2 text-[clamp(1.375rem,1.1rem+1.1vw,2rem)] leading-none font-medium tracking-[-0.03em] text-ink tabular-nums">
-            {item.value}
+            <Figure value={item.value} />
           </dd>
           {item.detail && <p className="fh-mono mt-2 truncate text-[11px] text-mute">{item.detail}</p>}
         </div>
@@ -188,7 +203,7 @@ async function OverviewPanel() {
   const ai = stats.ai;
 
   return (
-    <Panel id="overview" title="In the editor" source="WakaTime" note={`${stats.start_date} – ${stats.end_date}`}>
+    <Panel id="overview" title="In the editor" source="WakaTime" note={`${stats.start_date} to ${stats.end_date}`}>
       <Readings
         className="mt-8"
         items={[
@@ -417,7 +432,7 @@ async function GitHubPanel({ username }: { username: string }) {
                 <span className="text-mute"> days</span>
               </>
             ),
-            detail: github.current_streak_start && github.current_streak_end ? `${github.current_streak_start} – ${github.current_streak_end}` : undefined,
+            detail: github.current_streak_start && github.current_streak_end ? `${github.current_streak_start} to ${github.current_streak_end}` : undefined,
           },
           {
             label: "Longest streak",

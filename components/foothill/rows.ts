@@ -1,27 +1,55 @@
 /**
- * Content records shaped for the site's list rows.
+ * Content records shaped for the site's cards.
  *
- * A plain module, so a server page builds the rows and hands a client list
+ * A plain module, so a server page builds the cards and hands a client grid
  * only what it draws -- never the whole record, whose HTML bodies would ride
  * along in the payload for nothing.
  */
 
-import type { WorkRow } from "@/components/foothill/work-index";
 import type { MonthYear } from "@/lib/data/format";
 import type { BlogPost, Project } from "@/lib/data/content";
-import { displayLabel, postCategory, readingMinutes, yearOf } from "@/lib/site/display";
+import { displayLabel, postCategory, readingMinutes, shortDate, yearOf } from "@/lib/site/display";
 
-export function workRow(project: Project): WorkRow {
+/** One project or one post, as a card draws it. */
+export type Card = {
+  key: string;
+  href: string;
+  title: string;
+  summary: string;
+  image: string | null;
+  imageAlt: string;
+  /** Small facts under the title, in reading order. */
+  meta: string[];
+  status?: { label: string; color: string };
+};
+
+export function projectCard(project: Project): Card {
+  const year = yearOf(project.created_at);
   return {
-    slug: project.slug,
+    key: project.slug,
+    href: `/projects/${project.slug}`,
     title: project.title,
-    headline: project.headline,
-    category: displayLabel(project.category),
-    year: yearOf(project.created_at),
-    status: project.status_label,
-    statusColor: project.status_color,
+    summary: project.headline,
     image: project.image_url ?? null,
     imageAlt: project.image_alts?.[0] || `${project.title}, a screenshot`,
+    meta: [displayLabel(project.category), year ? String(year) : ""].filter(Boolean),
+    status: project.status_label ? { label: project.status_label, color: project.status_color } : undefined,
+  };
+}
+
+export function postCard(post: BlogPost): Card {
+  return {
+    key: post.slug,
+    href: `/blog/${post.slug}`,
+    title: post.title,
+    summary: post.description,
+    image: post.image_list?.[0] ?? null,
+    imageAlt: post.image_alts?.[0] || post.title,
+    meta: [
+      shortDate(post.created_at),
+      postCategory(post.category),
+      `${readingMinutes(post.read_time, post.content_html)} min read`,
+    ],
   };
 }
 
@@ -41,28 +69,6 @@ export function featuredProjects(projects: Project[]): Project[] {
         a.index - b.index,
     )
     .map(({ project }) => project);
-}
-
-export type PostRow = {
-  slug: string;
-  title: string;
-  description: string;
-  category: string;
-  date: Date;
-  minutes: number;
-  views: number;
-};
-
-export function postRow(post: BlogPost): PostRow {
-  return {
-    slug: post.slug,
-    title: post.title,
-    description: post.description,
-    category: postCategory(post.category),
-    date: post.created_at,
-    minutes: readingMinutes(post.read_time, post.content_html),
-    views: post.views,
-  };
 }
 
 /** "Jan 2023", for a role's start. */

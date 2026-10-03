@@ -4,6 +4,8 @@ import { useEffect, useLayoutEffect, useRef, useState, useTransition } from "rea
 
 import { Avatar, SignInPrompt } from "@/components/foothill/comments";
 import { SOLID_BUTTON, TEXT_BUTTON } from "@/components/foothill/classes";
+import { Icon } from "@/components/foothill/icons";
+import { Roll } from "@/components/foothill/motion";
 import { useConfirm } from "@/components/providers/confirm-dialog";
 import { signOutHere } from "@/lib/actions/auth";
 import { deleteMessage, sendMessage, togglePin } from "@/lib/actions/guestbook";
@@ -104,10 +106,11 @@ export function Guestbook({
   };
 
   return (
-    <div className="overflow-hidden rounded-lg border border-line">
-      <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-3.5">
-        <p className="fh-mono text-[12px] text-mute tabular-nums">
-          {thread.messageCount} message{thread.messageCount === 1 ? "" : "s"}
+    <div className="overflow-hidden rounded-[20px] border border-line">
+      <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-4">
+        <p className="text-[14px] text-mute">
+          <span className="font-display text-[20px] font-medium text-ink tabular-nums">{thread.messageCount}</span>{" "}
+          message{thread.messageCount === 1 ? "" : "s"}
         </p>
         {thread.pinned.length > 0 && (
           <button
@@ -117,10 +120,9 @@ export function Guestbook({
             aria-controls="guestbook-pinned"
             className={TEXT_BUTTON}
           >
+            <Icon name="pin" className="h-3.5 w-3.5" />
             Pinned {thread.pinned.length}/{MAX_PINNED}
-            <span aria-hidden="true" className={cn("transition-transform", pinnedOpen && "rotate-180")}>
-              ↓
-            </span>
+            <Icon name="chevron-down" className={cn("h-3.5 w-3.5 transition-transform duration-500", pinnedOpen && "rotate-180")} />
           </button>
         )}
       </div>
@@ -133,7 +135,7 @@ export function Guestbook({
                 <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sulfur-mark" />
                 <p className="min-w-0 flex-1 text-[15px] leading-relaxed [overflow-wrap:anywhere] text-ink">
                   <span className="font-medium">{pinned.fullName}</span>
-                  <span className="text-mute"> — </span>
+                  <span className="text-mute">: </span>
                   {pinned.message}
                 </p>
                 {viewer.canPin && (
@@ -170,7 +172,7 @@ export function Guestbook({
             />
           ))
         ) : (
-          <p className="fh-serif py-16 text-center text-[20px] text-mute italic">
+          <p className="py-16 text-center text-[18px] text-mute">
             Nothing here yet. The first line is yours.
           </p>
         )}
@@ -194,6 +196,7 @@ export function Guestbook({
                   Replying to <span className="text-ink">{replyTo.fullName}</span>
                 </span>
                 <button type="button" onClick={() => setReplyTo(null)} className={TEXT_BUTTON}>
+                  <Icon name="close" className="h-3.5 w-3.5" />
                   Cancel
                 </button>
               </p>
@@ -223,11 +226,12 @@ export function Guestbook({
                 disabled={pending || text.trim().length < MIN_MESSAGE_LENGTH}
                 className={SOLID_BUTTON}
               >
-                {pending ? "Sending…" : "Send"}
+                <Roll>{pending ? "Sending…" : "Send"}</Roll>
+                <Icon name="send" className="transition-transform duration-500 group-enabled:group-hover:translate-x-0.5 group-enabled:group-hover:-translate-y-0.5" />
               </button>
             </div>
-            <p className="fh-mono mt-2 flex justify-between gap-4 text-[11px] text-mute">
-              <span>Enter to send · Shift+Enter for a new line</span>
+            <p className="mt-2 flex justify-between gap-4 text-[12px] text-mute">
+              <span>Enter to send, Shift+Enter for a new line</span>
               <span className="tabular-nums">
                 {text.length}/{MAX_MESSAGE_LENGTH}
               </span>
@@ -249,8 +253,9 @@ export function Guestbook({
             <span>
               Signed in as <span className="text-ink">{signedInAs.name}</span> ({signedInAs.email})
             </span>
-            <button type="submit" className="cursor-pointer text-ink hover:underline">
+            <button type="submit" className="inline-flex cursor-pointer items-center gap-1.5 text-ink hover:underline">
               Sign out
+              <Icon name="arrow-right" className="h-3.5 w-3.5" />
             </button>
           </form>
         )}
@@ -286,16 +291,24 @@ function Entry({
           <p className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
             <span className="text-[15px] font-medium text-ink">{message.fullName}</span>
             {message.role !== "public" && (
-              <span className="fh-mono text-[10px] tracking-[0.12em] text-sulfur uppercase">{ROLE_LABEL[message.role]}</span>
+              <span className="rounded-full bg-raise px-2 py-0.5 text-[12px] text-ink">{ROLE_LABEL[message.role]}</span>
             )}
-            {message.isPinned && <span className="fh-mono text-[10px] tracking-[0.12em] text-mute uppercase">Pinned</span>}
-            <time dateTime={message.timestamp} className="fh-mono text-[11px] text-mute">
+            {message.isPinned && (
+              <span className="inline-flex items-center gap-1 text-[12px] text-sulfur">
+                <Icon name="pin" className="h-3 w-3" />
+                Pinned
+              </span>
+            )}
+            <time dateTime={message.timestamp} className="text-[13px] text-mute">
               {shortDate(message.timestamp)}
             </time>
           </p>
           {message.showReplyTo && message.replyTo && (
-            <p className="mt-1 min-w-0 truncate text-[13px] text-mute">
-              ↳ {message.replyTo.fullName}: {message.replyTo.message}
+            <p className="mt-1 flex min-w-0 items-center gap-1.5 text-[13px] text-mute">
+              <Icon name="corner-down-right" className="h-3.5 w-3.5" />
+              <span className="truncate">
+                {message.replyTo.fullName}: {message.replyTo.message}
+              </span>
             </p>
           )}
           <p className="mt-1 text-[15px] leading-relaxed whitespace-pre-line [overflow-wrap:anywhere] text-ink">{message.message}</p>
@@ -303,16 +316,19 @@ function Entry({
             <div className="mt-2 flex gap-5">
               {onReply && (
                 <button type="button" onClick={() => onReply(message)} className={TEXT_BUTTON}>
+                  <Icon name="reply" className="h-3.5 w-3.5" />
                   Reply
                 </button>
               )}
               {viewer.canPin && (
                 <button type="button" onClick={() => onPin(message)} disabled={busy === message.id} className={TEXT_BUTTON}>
+                  <Icon name="pin" className="h-3.5 w-3.5" />
                   {message.isPinned ? "Unpin" : "Pin"}
                 </button>
               )}
               {viewer.canDelete && (
                 <button type="button" onClick={() => onDelete(message)} disabled={busy === message.id} className={TEXT_BUTTON}>
+                  <Icon name="trash" className="h-3.5 w-3.5" />
                   Delete
                 </button>
               )}

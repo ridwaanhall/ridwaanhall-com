@@ -4,10 +4,12 @@ import { Suspense } from "react";
 
 import { Navbar, NavbarFallback } from "@/components/foothill/navbar";
 import { PaletteProvider } from "@/components/foothill/palette";
+import { ScrollTop } from "@/components/foothill/scroll-top";
 import type { AboutData } from "@/lib/data/about";
 
 /**
- * The public site's frame: the navbar, the page, the footer.
+ * The public site's frame: the navbar, the page, the footer, and the way back
+ * to the top.
  *
  * `#page-content` is not keyed on the pathname. The router already mounts a
  * fresh page whenever a segment changes -- two posts are two cache keys -- and
@@ -48,10 +50,11 @@ export function SiteShell({
         <Suspense fallback={<NavbarFallback about={about} account={account} />}>
           <Navbar about={about} account={account} />
         </Suspense>
-        <div id="page-content" className="flex-1">
+        <div id="page-content" tabIndex={-1} className="flex-1 outline-none">
           <div>{children}</div>
         </div>
         {footer}
+        <ScrollTop />
       </div>
     </PaletteProvider>
   );

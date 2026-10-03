@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { ErrorPage } from "@/components/site/error-page";
 
-import { familjen, jetbrains, newsreader, onest } from "./fonts";
+import { funnelDisplay, funnelSans, jetbrains, onest } from "./fonts";
 
 import "./globals.css";
 
@@ -41,7 +41,7 @@ export default function GlobalError({ error }: { error: Error & { digest?: strin
   }, [error]);
 
   return (
-    <html lang="en" className={`${onest.variable} ${familjen.variable} ${newsreader.variable} ${jetbrains.variable}`}>
+    <html lang="en" className={`${onest.variable} ${funnelDisplay.variable} ${funnelSans.variable} ${jetbrains.variable}`}>
       <body>
         <title>Something broke &middot; Ridwan Halim</title>
         <ErrorPage

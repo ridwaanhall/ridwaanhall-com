@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { Icon } from "@/components/foothill/icons";
+import { gsap, MOTION_OK } from "@/lib/motion/gsap";
 import { cn } from "@/lib/utils/cn";
 
 /**
@@ -36,7 +38,15 @@ export function Gallery({
 
   const open = (i: number) => {
     setIndex(i);
-    dialog.current?.showModal();
+    const el = dialog.current;
+    if (!el) return;
+    el.showModal();
+    if (window.matchMedia(MOTION_OK).matches)
+      gsap.fromTo(
+        el.querySelector("[data-stage]"),
+        { scale: 0.92, autoAlpha: 0 },
+        { scale: 1, autoAlpha: 1, duration: 0.6, ease: "expo.out", clearProps: "transform,opacity,visibility" },
+      );
   };
   const step = useCallback((by: number) => setIndex((i) => (i + by + count) % count), [count]);
 
@@ -60,7 +70,7 @@ export function Gallery({
           <button
             type="button"
             onClick={() => open(0)}
-            className="relative block aspect-[16/9] w-full cursor-zoom-in overflow-hidden rounded-md border border-line bg-raise"
+            className="relative block aspect-[16/9] w-full cursor-zoom-in overflow-hidden rounded-[18px] bg-raise"
           >
             <Image
               src={images[0]}
@@ -86,7 +96,7 @@ export function Gallery({
         className="fh-site m-0 h-dvh max-h-none w-screen max-w-none bg-transparent p-0 backdrop:bg-[var(--fh-scrim)] backdrop:backdrop-blur-sm"
       >
         <div className="pointer-events-none flex h-full flex-col items-center justify-center gap-4 p-4 md:p-10">
-          <div className="pointer-events-auto relative h-full max-h-[80vh] w-full max-w-[1400px]">
+          <div data-stage className="pointer-events-auto relative h-full max-h-[80vh] w-full max-w-[1400px]">
             <Image
               key={images[index]}
               src={images[index]}
@@ -98,24 +108,25 @@ export function Gallery({
           </div>
           <div className="pointer-events-auto flex items-center gap-2 rounded-full border border-line bg-paper px-2 py-1.5 text-ink">
             {count > 1 && (
-              <button type="button" onClick={() => step(-1)} aria-label="Previous image" className="h-8 w-8 cursor-pointer rounded-full hover:bg-raise">
-                ←
+              <button type="button" onClick={() => step(-1)} aria-label="Previous image" className="group flex h-9 w-9 cursor-pointer items-center justify-center rounded-full hover:bg-raise">
+                <Icon name="arrow-left" className="transition-transform duration-500 group-hover:-translate-x-0.5" />
               </button>
             )}
-            <span className="fh-mono px-2 text-[12px] tabular-nums" aria-live="polite">
+            <span className="px-2 text-[13px] tabular-nums" aria-live="polite">
               {index + 1} / {count}
             </span>
             {count > 1 && (
-              <button type="button" onClick={() => step(1)} aria-label="Next image" className="h-8 w-8 cursor-pointer rounded-full hover:bg-raise">
-                →
+              <button type="button" onClick={() => step(1)} aria-label="Next image" className="group flex h-9 w-9 cursor-pointer items-center justify-center rounded-full hover:bg-raise">
+                <Icon name="arrow-right" className="transition-transform duration-500 group-hover:translate-x-0.5" />
               </button>
             )}
             <button
               type="button"
               onClick={() => dialog.current?.close()}
-              className="fh-mono ml-1 cursor-pointer rounded-full px-3 py-1 text-[11px] tracking-[0.1em] uppercase hover:bg-raise"
+              aria-label="Close"
+              className="group ml-1 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full hover:bg-raise"
             >
-              Close
+              <Icon name="close" className="transition-transform duration-500 group-hover:rotate-90" />
             </button>
           </div>
         </div>
@@ -144,13 +155,13 @@ function Strip({
           <button
             type="button"
             onClick={() => onOpen(i + offset)}
-            className="relative block aspect-[16/10] w-[78vw] cursor-zoom-in overflow-hidden rounded-md border border-line bg-raise sm:w-[420px]"
+            className="relative block aspect-[16/10] w-[78vw] cursor-zoom-in overflow-hidden rounded-[14px] bg-raise sm:w-[460px]"
           >
             <Image
               src={src}
               alt={altFor(i + offset)}
               fill
-              sizes="(min-width: 640px) 420px, 78vw"
+              sizes="(min-width: 640px) 460px, 78vw"
               className="object-cover transition-transform duration-700 ease-out hover:scale-[1.03]"
               priority={eager && i === 0}
             />

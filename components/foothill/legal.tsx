@@ -1,9 +1,9 @@
 import type { Route } from "next";
 import Link from "next/link";
 
-import { EYEBROW } from "@/components/foothill/classes";
+import { EYEBROW, H1, LEAD } from "@/components/foothill/classes";
 import { MAIN, MEASURE, WRAP } from "@/components/foothill/layout";
-import { PageMotion } from "@/components/foothill/page-motion";
+import { PageMotion } from "@/components/foothill/motion";
 import { SectionIndex } from "@/components/foothill/section-index";
 import type { LegalDocument, LegalSection } from "@/lib/data/legal";
 import { longDate, slugify } from "@/lib/utils/format";
@@ -22,20 +22,17 @@ export function LegalDocumentPage({ document, siblings }: { document: LegalDocum
     <main className={MAIN}>
       <div className={WRAP}>
         <header className="max-w-[880px]">
-          <p data-fh-enter className={EYEBROW}>
-            Last updated {longDate(document.last_updated)}
-          </p>
-          <h1
-            data-fh-split
-            className="mt-5 text-[clamp(2.5rem,1.6rem+4vw,4.75rem)] leading-[1.02] font-medium tracking-[-0.035em] text-ink"
-          >
+          <h1 data-fh-split className={H1}>
             {document.title}
           </h1>
           {document.summary && (
-            <p data-fh-enter className="fh-serif mt-6 max-w-[60ch] text-[clamp(1.125rem,1rem+0.5vw,1.375rem)] leading-[1.5] text-mute">
+            <p data-fh-enter className={`${LEAD} mt-7 max-w-[60ch]`}>
               {document.summary}
             </p>
           )}
+          <p data-fh-enter className="mt-6 text-[14px] text-mute">
+            Last updated {longDate(document.last_updated)}
+          </p>
         </header>
 
         <div className="mt-16 grid gap-14 lg:grid-cols-12 lg:gap-10">
@@ -94,8 +91,8 @@ export function LegalDocumentPage({ document, siblings }: { document: LegalDocum
 function Section({ section, number }: { section: Required<LegalSection>; number: number }) {
   return (
     <section id={slugify(section.heading)} className="scroll-mt-28 border-t border-line pt-6 pb-12">
-      <h2 className="flex items-baseline gap-4 text-[24px] leading-tight font-medium tracking-[-0.02em] text-ink">
-        <span className="fh-mono text-[12px] text-mute tabular-nums">{String(number).padStart(2, "0")}</span>
+      <h2 className="flex items-baseline gap-4 text-[26px] leading-tight font-medium tracking-[-0.025em] text-ink">
+        <span className="text-[16px] text-mute tabular-nums">{number}.</span>
         {section.heading}
       </h2>
       <Body body={section.body} />
@@ -120,7 +117,7 @@ function Body({ body }: { body: string }) {
   if (!body) return null;
   return (
     <p
-      className="fh-serif mt-4 text-[18px] leading-[1.65] whitespace-pre-line text-ink [&_a]:underline [&_a]:decoration-sulfur-mark [&_a]:underline-offset-2"
+      className="mt-4 text-[17px] leading-[1.7] whitespace-pre-line text-ink [&_a]:underline [&_a]:decoration-sulfur-mark [&_a]:underline-offset-2"
       dangerouslySetInnerHTML={{ __html: sanitizeRichText(body) }}
     />
   );

@@ -12,6 +12,7 @@ import {
   useState,
 } from "react";
 
+import { Icon } from "@/components/foothill/icons";
 import type { AboutData } from "@/lib/data/about";
 import { EASE, gsap, MOTION_OK } from "@/lib/motion/gsap";
 import { NAV_ITEMS } from "@/lib/nav";
@@ -169,8 +170,17 @@ function Palette({ about, onClose }: { about: AboutData; onClose: () => void }) 
     input.current?.focus();
     const mm = gsap.matchMedia();
     mm.add(MOTION_OK, () => {
-      gsap.from(backdrop.current, { autoAlpha: 0, duration: 0.25 });
-      gsap.from(panel.current, { y: -12, autoAlpha: 0, duration: 0.35, ease: EASE });
+      gsap.from(backdrop.current, { autoAlpha: 0, duration: 0.3 });
+      gsap.from(panel.current, { y: -16, scale: 0.97, autoAlpha: 0, duration: 0.45, ease: EASE });
+      gsap.from(panel.current?.querySelectorAll("li") ?? [], {
+        x: -8,
+        autoAlpha: 0,
+        duration: 0.4,
+        ease: EASE,
+        stagger: 0.012,
+        delay: 0.08,
+        clearProps: "transform,opacity,visibility",
+      });
     });
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -298,13 +308,10 @@ function Palette({ about, onClose }: { about: AboutData; onClose: () => void }) 
       <div
         id="search-modal-content"
         ref={panel}
-        className="relative flex max-h-[70vh] w-full max-w-[620px] flex-col overflow-hidden rounded-lg border border-line bg-paper text-ink"
+        className="relative flex max-h-[70vh] w-full max-w-[620px] flex-col overflow-hidden rounded-[20px] border border-line bg-paper text-ink"
       >
         <div className="flex items-center gap-3 border-b border-line px-5">
-          <svg viewBox="0 0 20 20" className="h-4 w-4 shrink-0 text-mute" fill="none" aria-hidden="true">
-            <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.5" />
-            <path d="M13.5 13.5 L18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
+          <Icon name="search" className="h-5 w-5 text-mute" />
           <input
             ref={input}
             value={query}
@@ -316,7 +323,14 @@ function Palette({ about, onClose }: { about: AboutData; onClose: () => void }) 
             aria-label="Search"
             className="h-14 w-full bg-transparent text-[17px] text-ink outline-none placeholder:text-mute"
           />
-          <kbd className="fh-mono shrink-0 rounded border border-line px-1.5 py-0.5 text-[10px] text-mute">ESC</kbd>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close search"
+            className="group flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-mute transition-colors hover:bg-raise hover:text-ink"
+          >
+            <Icon name="close" className="transition-transform duration-500 group-hover:rotate-90" />
+          </button>
         </div>
         <div ref={list} className="overflow-y-auto overscroll-contain px-2 py-2">
           {sections.length === 0 && (
@@ -326,7 +340,7 @@ function Palette({ about, onClose }: { about: AboutData; onClose: () => void }) 
           )}
           {sections.map((section) => (
             <div key={section.title} className="py-1.5">
-              <h2 className="fh-mono px-3 pt-2 pb-1.5 text-[10px] tracking-[0.16em] text-mute uppercase">
+              <h2 className="px-3 pt-2 pb-1.5 text-[11px] font-medium tracking-[0.08em] text-mute uppercase">
                 {section.title}
               </h2>
               <ul>
@@ -340,14 +354,18 @@ function Palette({ about, onClose }: { about: AboutData; onClose: () => void }) 
                       onMouseLeave={() => setActive(-1)}
                       onClick={() => go(entry)}
                       className={cn(
-                        "flex cursor-pointer items-baseline justify-between gap-4 rounded-md px-3 py-2.5 text-[15px]",
+                        "group flex cursor-pointer items-center justify-between gap-4 rounded-[10px] px-3 py-2.5 text-[15px]",
                         mine === active && "highlighted bg-raise",
                       )}
                     >
-                      <span className="truncate">{entry.label}</span>
-                      <span className="fh-mono shrink-0 truncate text-[11px] text-mute">
-                        {entry.external ? `${entry.hint} ↗` : entry.hint}
+                      <span className="flex min-w-0 items-center gap-3">
+                        <Icon
+                          name={entry.external ? "arrow-up-right" : section.title === "Posts" ? "doc" : "arrow-right"}
+                          className="text-mute transition-transform duration-300 group-[.highlighted]:translate-x-0.5 group-[.highlighted]:text-ink"
+                        />
+                        <span className="truncate">{entry.label}</span>
                       </span>
+                      <span className="shrink-0 truncate text-[12px] text-mute">{entry.hint}</span>
                     </li>
                   );
                 })}
@@ -355,7 +373,10 @@ function Palette({ about, onClose }: { about: AboutData; onClose: () => void }) 
             </div>
           ))}
           {!content && !query && (
-            <p className="fh-mono px-3 py-3 text-[11px] text-mute">Loading writing and work…</p>
+            <p className="flex items-center gap-3 px-3 py-3 text-[13px] text-mute">
+              <span aria-hidden="true" className="fh-loader" />
+              Loading writing and work…
+            </p>
           )}
         </div>
       </div>

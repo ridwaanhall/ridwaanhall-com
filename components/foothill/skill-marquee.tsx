@@ -9,7 +9,16 @@ import { cn } from "@/lib/utils/cn";
  * paused on hover and still under reduced motion -- where it becomes a row a
  * reader can scroll sideways instead.
  */
-export function SkillMarquee({ skills, className }: { skills: Skill[]; className?: string }) {
+export function SkillMarquee({
+  skills,
+  reverse = false,
+  className,
+}: {
+  skills: Skill[];
+  /** Runs the other way: two rows passing each other read as one band. */
+  reverse?: boolean;
+  className?: string;
+}) {
   return (
     <div
       className={cn(
@@ -19,7 +28,7 @@ export function SkillMarquee({ skills, className }: { skills: Skill[]; className
       aria-label="Other tools I use"
       role="region"
     >
-      <ul className="fh-marquee-track flex w-max">
+      <ul className="fh-marquee-track flex w-max" data-reverse={reverse || undefined}>
         {[0, 1].map((copy) =>
           skills.map((skill) => (
             <li
@@ -39,7 +48,7 @@ export function SkillMarquee({ skills, className }: { skills: Skill[]; className
                   className="fh-icon-adapt h-[18px] w-[18px]"
                 />
               )}
-              <span className="text-[15px] whitespace-nowrap text-mute transition-colors group-hover:text-ink">
+              <span className="text-[16px] whitespace-nowrap text-mute transition-colors group-hover:text-ink">
                 {skill.name}
               </span>
             </li>

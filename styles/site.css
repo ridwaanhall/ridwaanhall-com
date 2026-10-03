@@ -27,6 +27,10 @@
   --fh-sulfur: #7a6300;
   --fh-sulfur-mark: #c9a40e;
   --fh-scrim: rgb(20 32 27 / 0.42);
+  /* The portrait's plate. It stays light in both themes: the engraving's line
+     weight *is* its shading, so inverting it would print a negative. */
+  --fh-print: #e6eae4;
+  --fh-thumb: rgb(91 105 99 / 0.45);
 }
 
 :root[data-theme="dark"] {
@@ -38,6 +42,8 @@
   --fh-sulfur: #e0be3c;
   --fh-sulfur-mark: #e0be3c;
   --fh-scrim: rgb(5 8 7 / 0.66);
+  --fh-print: #d5dbd3;
+  --fh-thumb: rgb(139 152 145 / 0.4);
 }
 
 /* The body is shared with the admin and carries the admin's colours as
@@ -49,11 +55,27 @@ body:has(.fh-site) {
 }
 
 .fh-site {
-  font-family: var(--font-familjen), ui-sans-serif, system-ui, "Segoe UI", sans-serif;
-  font-feature-settings: "ss01";
+  font-family: var(--font-funnel-sans), ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  font-kerning: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+/* Headings are the display cut and set their own size by utility; what they
+   share is how they break. `balance` keeps a two-line title from leaving one
+   word on its own, `pretty` does the same for the last line of a paragraph. */
+.fh-site :is(h1, h2, h3, h4),
+.fh-display {
+  font-family: var(--font-funnel-display), var(--font-funnel-sans), ui-sans-serif, system-ui, sans-serif;
+  text-wrap: balance;
+  font-optical-sizing: auto;
+}
+
+.fh-site p {
+  text-wrap: pretty;
 }
 
 .fh-site ::selection {
@@ -68,14 +90,78 @@ body:has(.fh-site) {
   border-radius: 2px;
 }
 
-.fh-serif {
-  font-family: var(--font-newsreader), ui-serif, Georgia, serif;
-  font-optical-sizing: auto;
-}
-
+/* Data only: the dashboard's figures, code. Never a label or a caption. */
 .fh-mono {
   font-family: var(--font-jetbrains), ui-monospace, "SFMono-Regular", Menlo, monospace;
   font-feature-settings: "zero";
+}
+
+/* ---------------------------------------------------------------------------
+   Scrollbars
+
+   Every scrolling surface on the site -- the page, the palette's results, the
+   menu, a gallery strip, a code block -- wears the same thin thumb in the
+   page's own grey, so a scrollbar reads as part of the paper rather than as
+   the operating system's furniture. `scrollbar-*` for the engines that know
+   it; the `::-webkit-` pair for the ones that only know that.
+   --------------------------------------------------------------------------- */
+
+html:has(.fh-site),
+.fh-site,
+.fh-site * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--fh-thumb) transparent;
+}
+
+html:has(.fh-site)::-webkit-scrollbar,
+.fh-site ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html:has(.fh-site)::-webkit-scrollbar-track,
+.fh-site ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html:has(.fh-site)::-webkit-scrollbar-thumb,
+.fh-site ::-webkit-scrollbar-thumb {
+  background-color: var(--fh-thumb);
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+html:has(.fh-site)::-webkit-scrollbar-thumb:hover,
+.fh-site ::-webkit-scrollbar-thumb:hover {
+  background-color: var(--fh-mute);
+}
+
+/* ---------------------------------------------------------------------------
+   Rolling labels
+
+   `Roll` splits a label into characters and lifts each one by its own height
+   on hover. The copy that rises in underneath is the character's own shadow,
+   one line down, so there is never a second copy of the text in the document.
+   The box clips at exactly one line.
+   --------------------------------------------------------------------------- */
+
+.fh-roll {
+  display: inline-block;
+  overflow: hidden;
+  line-height: 1.25;
+  vertical-align: bottom;
+}
+
+.fh-roll-char {
+  text-shadow: 0 1.25em currentColor;
+}
+
+/* SplitText masks heading lines; a descender must not be clipped by its own
+   mask, so the line box gets a little room below. */
+.fh-site .fh-line {
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
 }
 
 /* ---------------------------------------------------------------------------
@@ -111,9 +197,8 @@ body:has(.fh-site) {
    --------------------------------------------------------------------------- */
 
 .fh-prose.prose-content {
-  font-family: var(--font-newsreader), ui-serif, Georgia, serif;
-  font-size: 1.1875rem;
-  line-height: 1.7;
+  font-size: 1.125rem;
+  line-height: 1.72;
   color: var(--fh-ink);
 }
 
@@ -133,27 +218,25 @@ body:has(.fh-site) {
 .fh-prose.prose-content h2,
 .fh-prose.prose-content h3,
 .fh-prose.prose-content h4 {
-  font-family: var(--font-familjen), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-funnel-display), ui-sans-serif, system-ui, sans-serif;
   color: var(--fh-ink);
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
+  font-weight: 500;
   line-height: 1.2;
   margin-top: 2.2em;
   margin-bottom: 0.6em;
 }
 
 .fh-prose.prose-content h2 {
-  font-size: 1.75rem;
-  font-weight: 600;
+  font-size: 1.875rem;
 }
 
 .fh-prose.prose-content h3 {
-  font-size: 1.375rem;
-  font-weight: 600;
+  font-size: 1.4rem;
 }
 
 .fh-prose.prose-content h4 {
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 1.15rem;
 }
 
 .fh-prose.prose-content a {
@@ -218,7 +301,6 @@ body:has(.fh-site) {
   margin-left: 0;
   padding-left: 1.2em;
   border-left: 2px solid var(--fh-sulfur-mark);
-  font-style: italic;
   color: var(--fh-mute);
 }
 
@@ -265,7 +347,6 @@ body:has(.fh-site) {
 .fh-prose.prose-content table {
   width: 100%;
   border-collapse: collapse;
-  font-family: var(--font-familjen), ui-sans-serif, system-ui, sans-serif;
   font-size: 0.95rem;
 }
 
@@ -290,40 +371,20 @@ body:has(.fh-site) {
 
 /* The about story is set larger: it is read as a statement, not a document. */
 .fh-prose.fh-prose-lead.prose-content {
-  font-size: clamp(1.25rem, 1.05rem + 0.6vw, 1.5rem);
-  line-height: 1.55;
+  font-size: clamp(1.2rem, 1.05rem + 0.45vw, 1.4rem);
+  line-height: 1.6;
 }
 
 /* ---------------------------------------------------------------------------
-   The contour hero
+   The portrait plate
 
-   Each path carries `pathLength="1"`, so a dash of 1 is the whole line no
-   matter how long it really is. The lines start undrawn; GSAP draws them. The
-   animation below is the safety net, not the effect: if the script never runs
-   the lines still arrive, and GSAP sets `animation: none` inline before it
-   takes over, since a running CSS animation would otherwise outrank its inline
-   styles.
+   The engraving is black line on transparency, so it is printed on a plate
+   that keeps one light paper in both themes -- a print hung on the wall,
+   rather than a negative.
    --------------------------------------------------------------------------- */
 
-.fh-contour path {
-  fill: none;
-  stroke: var(--fh-line);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: fh-contour-reveal 0s linear 2.4s forwards;
-}
-
-.fh-contour path[data-active="true"] {
-  stroke: var(--fh-sulfur-mark);
-  stroke-width: 1.5;
-}
-
-@keyframes fh-contour-reveal {
-  to {
-    stroke-dashoffset: 0;
-  }
+.fh-print {
+  background-color: var(--fh-print);
 }
 
 /* ---------------------------------------------------------------------------
@@ -335,6 +396,11 @@ body:has(.fh-site) {
 
 .fh-marquee-track {
   animation: fh-marquee 70s linear infinite;
+}
+
+.fh-marquee-track[data-reverse] {
+  animation-direction: reverse;
+  animation-duration: 85s;
 }
 
 .fh-marquee:hover .fh-marquee-track {
@@ -367,17 +433,28 @@ body:has(.fh-site) {
   filter: none;
 }
 
+/* Organisation logos sit in grey until pointed at, so a page of them reads as
+   one list rather than a wall of brand colours. */
+.fh-logo {
+  filter: grayscale(1);
+  opacity: 0.85;
+  transition:
+    filter 400ms ease,
+    opacity 400ms ease;
+}
+
+.group:hover .fh-logo {
+  filter: none;
+  opacity: 1;
+}
+
 /* ---------------------------------------------------------------------------
-   Scroll-hidden strips (the gallery, the mobile filter rows)
+   Horizontal strips (the gallery): snap to each image, thin thumb below
    --------------------------------------------------------------------------- */
 
 .fh-strip {
-  scrollbar-width: none;
   scroll-snap-type: x mandatory;
-}
-
-.fh-strip::-webkit-scrollbar {
-  display: none;
+  padding-bottom: 12px;
 }
 
 /* ---------------------------------------------------------------------------
@@ -387,11 +464,6 @@ body:has(.fh-site) {
    --------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .fh-contour path {
-    animation: none;
-    stroke-dashoffset: 0;
-  }
-
   .fh-marquee-track {
     animation: none;
   }
@@ -482,4 +554,83 @@ body:has(.fh-site) {
 
 .fh-site .fh-error .fh-error-chrome {
   display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   The menu button
+
+   Two strokes that cross into a close mark while the menu is open. Drawn here
+   rather than as two icons so the strokes travel between the two states
+   instead of swapping.
+   --------------------------------------------------------------------------- */
+
+.fh-burger path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+  transition: transform 450ms cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+[aria-expanded="true"] > .fh-burger path:first-child {
+  transform: translateY(3px) rotate(45deg);
+}
+
+[aria-expanded="true"] > .fh-burger path:last-child {
+  transform: translateY(-3px) rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fh-burger path {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   A card title's underline
+
+   Drawn as a background so it follows the title onto a second line, and grows
+   from the left while the card is pointed at.
+   --------------------------------------------------------------------------- */
+
+.fh-underline {
+  background-image: linear-gradient(var(--fh-sulfur-mark), var(--fh-sulfur-mark));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  transition: background-size 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  padding-bottom: 0.06em;
+}
+
+.group:hover .fh-underline,
+.group:focus-visible .fh-underline {
+  background-size: 100% 2px;
+}
+
+/* The small turning arc beside "Showing 9 of 64" while more are on the way. */
+.fh-loader {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--fh-line);
+  border-top-color: var(--fh-ink);
+  animation: fh-spin 900ms linear infinite;
+}
+
+@keyframes fh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fh-underline {
+    transition: none;
+  }
+
+  .fh-loader {
+    animation: none;
+  }
 }

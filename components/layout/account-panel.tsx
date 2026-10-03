@@ -2,6 +2,8 @@ import Link from "next/link";
 
 import { AccountMenu } from "@/components/foothill/account-menu";
 import { ACCOUNT_ROW } from "@/components/foothill/classes";
+import { Icon } from "@/components/foothill/icons";
+import { Roll } from "@/components/foothill/motion";
 import { SignOutButton } from "@/components/sign-out-button";
 import { signOutHere } from "@/lib/actions/auth";
 import { getStaffUser } from "@/lib/auth/staff";
@@ -24,7 +26,7 @@ export async function AccountPanel() {
   if (!viewer) {
     return (
       <Link href="/sign-in" className="text-[14px] text-mute transition-colors hover:text-ink">
-        Sign in
+        <Roll>Sign in</Roll>
       </Link>
     );
   }
@@ -39,6 +41,7 @@ export async function AccountPanel() {
       {/* Admin above, and the act that costs something last. */}
       {staff && (
         <Link href="/admin" className={ACCOUNT_ROW}>
+          <Icon name="pulse" className="text-mute" />
           Admin
         </Link>
       )}

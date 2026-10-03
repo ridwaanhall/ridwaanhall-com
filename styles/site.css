@@ -723,7 +723,9 @@ html:has(.fh-site)::-webkit-scrollbar-thumb:hover,
   outline: none;
 }
 
-/* A contact field shows focus by its own border turning to ink. */
+/* A contact field shows focus by its own border turning to ink, and keeps
+   its own corners -- the site ring above would square them to 2px. */
 #contact-form :is(input, textarea):focus-visible {
   outline: none;
+  border-radius: var(--radius-md);
 }

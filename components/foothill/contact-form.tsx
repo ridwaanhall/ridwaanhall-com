@@ -39,16 +39,16 @@ export function ContactForm() {
       <div className="grid gap-8 md:grid-cols-2">
         <label className="block">
           <span className={EYEBROW}>Your name</span>
-          <input name="name" required maxLength={100} autoComplete="name" className={FIELD} />
+          <input name="name" required maxLength={100} autoComplete="name" placeholder="Jane Doe" className={FIELD} />
         </label>
         <label className="block">
           <span className={EYEBROW}>Email to reply to</span>
-          <input name="email" type="email" required maxLength={254} autoComplete="email" className={FIELD} />
+          <input name="email" type="email" required maxLength={254} autoComplete="email" placeholder="you@example.com" className={FIELD} />
         </label>
       </div>
       <label className="block">
         <span className={EYEBROW}>Message</span>
-        <textarea name="message" required maxLength={5000} rows={5} className={`${FIELD} resize-y leading-relaxed`} />
+        <textarea name="message" required maxLength={5000} rows={5} placeholder="What are you working on, and how can I help?" className={`${FIELD} resize-y leading-relaxed`} />
       </label>
       <TurnstileWidget />
       <button id="submit-btn" type="submit" disabled={pending} className={SOLID_BUTTON}>

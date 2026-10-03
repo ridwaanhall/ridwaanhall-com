@@ -5,9 +5,8 @@
 
    Three groups, and the distinction is worth keeping straight.
 
-   The first seven are hand-written because they express things utilities
-   cannot -- scrollbar pseudo-elements, the tooltip, the click spark, rich
-   text, the admin's own drawn form controls. The next four were carved
+   The first six are hand-written because they express things utilities
+   cannot -- scrollbar pseudo-elements, the tooltip, rich text, the admin's own drawn form controls. The next four were carved
    out of *this* file, which had reached 1231 lines holding a 281-line palette
    remap, nine keyframe blocks and Tailwind's wiring together; they are here
    for legibility, not because they express anything special.
@@ -33,7 +32,6 @@
    globalScrollbar.css also exports the shared `--scrollbar-*` tokens the
    others reuse.
    --------------------------------------------------------------------------- */
-@import "../styles/clickSpark.css";
 @import "../styles/globalScrollbar.css";
 @import "../styles/tooltip.css";
 /* Rich-text body styling. New in the Next.js port -- it replaces the

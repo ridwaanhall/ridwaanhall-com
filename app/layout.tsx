@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 
 import { PageLoadingBar } from "@/components/layout/page-loading-bar";
-import { ClickSpark } from "@/components/providers/click-spark";
 import { ConfirmDialogProvider } from "@/components/providers/confirm-dialog";
 import { Notifications } from "@/components/providers/notifications";
 import { ThemeColorSync } from "@/components/providers/theme-color-sync";
@@ -55,18 +54,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider>
           <ThemeColorSync />
           {/*
-            Two document-wide behaviours, mounted once. Both render nothing and
-            append their own element to `document.body` -- the tooltip chip and
-            the spark canvas are `position: fixed`, and `#page-content` carries
-            a transform, which would otherwise become their containing block.
+            A document-wide behaviour, mounted once. It renders nothing and
+            appends its own chip to `document.body` -- the chip is
+            `position: fixed`, and `#page-content` carries a transform, which
+            would otherwise become its containing block.
 
-            They are delegated from `document` rather than attached per
-            element, which is what lets them cover markup that appears later
-            (gallery controls, lightbox buttons, a panel that was hidden) with
-            no observer and no re-scan.
+            It is delegated from `document` rather than attached per element,
+            which is what lets it cover markup that appears later (gallery
+            controls, lightbox buttons, a panel that was hidden) with no
+            observer and no re-scan.
           */}
           <Tooltips />
-          <ClickSpark />
           {/*
             The toast stack and the confirm dialog, both at body level and both
             for the same reason as the two above: `#page-content` animates a

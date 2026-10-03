@@ -10,7 +10,7 @@
  *  1. **The bar is outside `#page-content`.** That element animates a
  *     transform, and a transformed ancestor becomes the containing block for
  *     its `position: fixed` descendants -- the same trap the toast stack, the
- *     tooltips, the spark canvas and the confirm dialog are all placed to
+ *     tooltips and the confirm dialog are all placed to
  *     avoid. `check-notifications.mjs` asserts it for the toasts; this is the
  *     same assertion for the bar, plus the measurement that catches it: pinned
  *     to the viewport, the bar starts at the viewport's own corner.

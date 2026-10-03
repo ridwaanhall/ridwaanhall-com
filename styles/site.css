@@ -714,6 +714,7 @@ html:has(.fh-site)::-webkit-scrollbar-thumb:hover,
   background: #fff;
   mix-blend-mode: difference;
   pointer-events: none;
+  will-change: transform, opacity;
   opacity: 0;
 }
 

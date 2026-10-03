@@ -96,6 +96,10 @@ export type AboutData = {
   username: string;
   aka: string;
   image_url: string;
+  /** What the image shows, from its asset; "" where nothing is written. */
+  image_alt: string;
+  /** Whether `image_url` is the photograph or the faceless avatar. */
+  portrait: "photo" | "avatar";
   personal_website: string;
   cv: { main: string; latest: string; copy: string };
   role: string;
@@ -180,7 +184,9 @@ export async function getAboutData(): Promise<AboutData | null> {
       flag: location.flag,
       storageKey: mediaAsset.storageKey,
       source: mediaAsset.source,
+      alt: mediaAsset.alt,
       avatarKey: avatarAsset.storageKey,
+      avatarAlt: avatarAsset.alt,
       avatarSource: avatarAsset.source,
     })
     .from(profile)
@@ -191,6 +197,8 @@ export async function getAboutData(): Promise<AboutData | null> {
   if (!row) return null;
 
   const { p } = row;
+  // The avatar only when one is set, so the choice can never blank the page.
+  const avatar = p.portrait === "avatar" && Boolean(row.avatarKey);
 
   const [links, highlights] = await Promise.all([
     // All three link lists in one query: they share a table and differ only by
@@ -222,12 +230,14 @@ export async function getAboutData(): Promise<AboutData | null> {
     username: p.username,
     aka: p.aka,
     image_url: assetUrl(
-      p.portrait === "avatar" && row.avatarKey
-        ? { storageKey: row.avatarKey, source: row.avatarSource ?? "storage" }
+      avatar
+        ? { storageKey: row.avatarKey!, source: row.avatarSource ?? "storage" }
         : row.storageKey
           ? { storageKey: row.storageKey, source: row.source ?? "storage" }
           : null,
     ),
+    image_alt: (avatar ? row.avatarAlt : row.alt) ?? "",
+    portrait: avatar ? "avatar" : "photo",
     personal_website: p.personalWebsite,
     cv: { main: cv.main ?? "", latest: cv.latest ?? "", copy: cv.copy ?? "" },
     role: p.role,

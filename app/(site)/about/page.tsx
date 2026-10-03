@@ -110,7 +110,7 @@ export default async function AboutPage() {
                   {about.image_url && (
                     <Portrait
                       src={about.image_url}
-                      alt={`${about.name}, drawn in horizontal lines`}
+                      alt={about.image_alt || `${about.name}, drawn in horizontal lines`}
                       className="w-48 md:w-full"
                     />
                   )}

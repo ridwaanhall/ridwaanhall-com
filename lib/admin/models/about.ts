@@ -1175,7 +1175,7 @@ export const profileForm: AdminFormModel = {
           label: "Avatar",
           kind: "image",
           prefix: "profile",
-          help: "A faceless drawing in the same lines as the photo.",
+          help: "Shown instead of the photo when chosen below. Engraved in the same lines.",
         },
         {
           name: "portrait",

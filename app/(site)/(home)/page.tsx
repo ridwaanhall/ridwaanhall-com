@@ -121,8 +121,8 @@ export default async function HomePage() {
           {about.image_url && (
             <Portrait
               src={about.image_url}
-              alt={`${about.name}, drawn in horizontal lines`}
-              caption="Drawn line by line from a photograph."
+              alt={about.image_alt || `${about.name}, drawn in horizontal lines`}
+              caption={about.portrait === "photo" ? "Drawn line by line from a photograph." : undefined}
               className="mx-auto w-full max-w-[420px] lg:col-span-5 lg:max-w-none"
             />
           )}

@@ -142,7 +142,8 @@ prefix so a leftover is obviously a harness's and not real content.
 A design built from the data alone. The home page leads with the owner's
 name and his portrait -- an engraving in horizontal lines, generated from his
 photograph and stored as his profile image like any other upload, or a
-faceless avatar engraved the same way, whichever `profile.portrait` names --
+faceless avatar (a question mark) engraved the same way, whichever
+`profile.portrait` names --
 and the rest is image-led: projects and posts are pictures set straight on the paper,
 with no box around any of them. Light is the default theme.
 
@@ -160,7 +161,9 @@ with no box around any of them. Light is the default theme.
   both the photo (`image_id`) and the avatar (`avatar_id`); `portrait` picks
   one, and the avatar falls back to the photo while none is set. A post whose
   author image *is* the profile's photo follows that choice too, which is why
-  `getBlogs` carries the profile tag and a profile save expires the blog.
+  `getBlogs` carries the profile tag and a profile save expires the blog. The
+  alt text is the asset's own, and the "from a photograph" caption shows only
+  under the photo.
 - **One family, two cuts**, from `app/fonts.ts`: Funnel Display for headings,
   Funnel Sans for everything read, JetBrains Mono (`.fh-mono`) for the
   dashboard's figures and code only. The type scale is five constants in
@@ -797,7 +800,7 @@ selectors and fails on a bare element name.
 
 ### An unlayered stylesheet outranks every Tailwind utility
 
-Tailwind v4 emits its utilities into `@layer utilities`. The fifteen sheets
+Tailwind v4 emits its utilities into `@layer utilities`. The eleven sheets
 under `styles/` are imported from `app/globals.css` **outside every layer**, and
 unlayered rules beat layered ones outright -- specificity is never consulted, so
 this is not something a longer selector or an `!important` in the markup can

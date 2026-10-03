@@ -425,3 +425,45 @@ body:has(.fh-site) {
     visibility: visible;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Chart colours
+
+   Five categorical slots for the dashboard's languages and categories, in a
+   fixed order that follows the entity (`slot` is decided in lib/data and is
+   the entity's rank there, never repainted here). Validated with the dataviz
+   checks against both surfaces: every adjacent pair stays apart under the
+   three colour-vision deficiencies, and the dark column is its own stepping
+   rather than a flip. Slot 2 sits just under 3:1 on the mist, which is why
+   every chart that uses it carries a text legend.
+
+   The heat ramp is one hue, pine, light to dark -- magnitude, not identity.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --fh-s1: #14896b;
+  --fh-s2: #a8860a;
+  --fh-s3: #4f74c4;
+  --fh-s4: #c95f3b;
+  --fh-s5: #8d6cc0;
+  --fh-s0: #a3aea8;
+  --fh-heat-0: #e0e5df;
+  --fh-heat-1: #b5d2c5;
+  --fh-heat-2: #7cb49e;
+  --fh-heat-3: #3d9579;
+  --fh-heat-4: #146b55;
+}
+
+:root[data-theme="dark"] {
+  --fh-s1: #1f9c7c;
+  --fh-s2: #a88a0b;
+  --fh-s3: #5f84d6;
+  --fh-s4: #d26a44;
+  --fh-s5: #9479d6;
+  --fh-s0: #4a5651;
+  --fh-heat-0: #19211e;
+  --fh-heat-1: #1c4639;
+  --fh-heat-2: #1f6b56;
+  --fh-heat-3: #2a9677;
+  --fh-heat-4: #5cc7a4;
+}

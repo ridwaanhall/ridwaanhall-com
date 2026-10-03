@@ -53,6 +53,6 @@ export const LINE_BUTTON =
 export const ICON_BUTTON =
   "group inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-ink transition-colors hover:bg-raise";
 
-/** A text field: a single rule underneath, no box. */
+/** A text field: a thin rounded box that firms up on hover and focus. */
 export const FIELD =
-  "w-full border-0 border-b border-line bg-transparent px-0 py-3 text-[17px] text-ink outline-none transition-colors placeholder:text-mute focus:border-ink";
+  "mt-2 w-full rounded-md border border-line bg-transparent px-3.5 py-2.5 text-[16px] text-ink outline-none transition-colors placeholder:text-mute hover:border-mute focus:border-ink";

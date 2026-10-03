@@ -722,3 +722,8 @@ html:has(.fh-site)::-webkit-scrollbar-thumb:hover,
 #search-modal input:focus-visible {
   outline: none;
 }
+
+/* A contact field shows focus by its own border turning to ink. */
+#contact-form :is(input, textarea):focus-visible {
+  outline: none;
+}

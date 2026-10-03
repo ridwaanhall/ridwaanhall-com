@@ -718,6 +718,6 @@ html:has(.fh-site)::-webkit-scrollbar-thumb:hover,
 }
 
 /* Inside the palette's text box, a native caret does the job. */
-.fh-site #search-modal input:focus-visible {
+#search-modal input:focus-visible {
   outline: none;
 }

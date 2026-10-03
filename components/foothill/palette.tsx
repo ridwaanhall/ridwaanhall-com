@@ -402,11 +402,11 @@ function Palette({
                       )}
                     >
                       <span className="flex min-w-0 items-center gap-3">
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] bg-raise text-mute transition-colors group-[.highlighted]:bg-ink group-[.highlighted]:text-paper">
+                        <span className="flex shrink-0 text-mute transition-colors group-[.highlighted]:text-ink">
                           {entry.brand ? (
-                            <Brand name={entry.brand} className="h-3.5 w-3.5" />
+                            <Brand name={entry.brand} className="h-5 w-5" />
                           ) : (
-                            <Icon name={entry.icon ?? "arrow-right"} className="h-3.5 w-3.5" />
+                            <Icon name={entry.icon ?? "arrow-right"} className="h-5 w-5" />
                           )}
                         </span>
                         <span className="truncate">{entry.label}</span>

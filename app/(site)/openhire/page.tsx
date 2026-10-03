@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import {EYEBROW, H3, LINE_BUTTON, SOLID_BUTTON } from "@/components/foothill/classes";
+import { Collapsible } from "@/components/foothill/expand";
 import { Icon } from "@/components/foothill/icons";
 import { MAIN, WRAP } from "@/components/foothill/layout";
 import { PageMotion, Reveal, Roll } from "@/components/foothill/motion";
@@ -336,21 +337,19 @@ function PositionRow({ position, email }: { position: Position; email: string })
   ];
   return (
     <li className="border-t border-line">
-      <details className="group">
-        <summary className="grid cursor-pointer list-none gap-y-1.5 py-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-baseline md:gap-x-8 [&::-webkit-details-marker]:hidden">
-          <span className="font-display text-[clamp(1.25rem,1.05rem+0.9vw,1.75rem)] font-medium tracking-[-0.02em] text-ink">
-            {position.title}
-          </span>
-          <span className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px] text-mute">
-            {[position.type, position.location, position.salary_range].filter(Boolean).join(", ")}
-            <span
-              aria-hidden="true"
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-ink transition-transform duration-500 group-open:rotate-45"
-            >
-              <Icon name="plus" className="h-3.5 w-3.5" />
+      <Collapsible
+        summaryClassName="py-6"
+        summary={
+          <span className="grid flex-1 gap-y-1.5 md:grid-cols-[minmax(0,1fr)_auto] md:items-baseline md:gap-x-8">
+            <span className="font-display text-[clamp(1.25rem,1.05rem+0.9vw,1.75rem)] font-medium tracking-[-0.02em] text-ink">
+              {position.title}
+            </span>
+            <span className="text-[14px] text-mute">
+              {[position.type, position.location, position.salary_range].filter(Boolean).join(", ")}
             </span>
           </span>
-        </summary>
+        }
+      >
         <div className="pb-8">
           {position.experience_required && (
             <p className="text-[15px] text-mute">Experience: {position.experience_required}</p>
@@ -379,7 +378,7 @@ function PositionRow({ position, email }: { position: Position; email: string })
             </a>
           )}
         </div>
-      </details>
+      </Collapsible>
     </li>
   );
 }

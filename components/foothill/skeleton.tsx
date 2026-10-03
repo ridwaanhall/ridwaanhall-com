@@ -32,12 +32,12 @@ export function Bar({ className, style }: { className?: string; style?: React.CS
 export function HeadSkeleton({ lead = true }: { lead?: boolean }) {
   return (
     <div className="max-w-[980px]">
-      <Bar className="h-[clamp(2.5rem,1.2rem+5.3vw,6rem)] w-[85%]" />
-      <Bar className="mt-3 h-[clamp(2.5rem,1.2rem+5.3vw,6rem)] w-[55%]" />
+      <Bar className="h-[clamp(2.3rem,1.35rem+3.45vw,4.3rem)] w-[85%]" />
+      <Bar className="mt-1 h-[clamp(2.3rem,1.35rem+3.45vw,4.3rem)] w-[55%]" />
       {lead && (
         <>
-          <Bar className="mt-8 h-6 w-full max-w-[56ch]" />
-          <Bar className="mt-2.5 h-6 w-[70%] max-w-[40ch]" />
+          <Bar className="mt-7 h-5 w-full max-w-[56ch]" />
+          <Bar className="mt-2.5 h-5 w-[70%] max-w-[40ch]" />
         </>
       )}
     </div>

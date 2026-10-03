@@ -2,7 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 
-import { H2, LINE_BUTTON, SOLID_BUTTON, TEXT_BUTTON } from "@/components/foothill/classes";
+import { H2, SOLID_BUTTON, TEXT_BUTTON } from "@/components/foothill/classes";
 import { Brand, Icon } from "@/components/foothill/icons";
 import { Roll } from "@/components/foothill/motion";
 import { useConfirm } from "@/components/providers/confirm-dialog";
@@ -244,19 +244,27 @@ export function SignInPrompt({ redirectTo }: { redirectTo?: string }) {
       await signInWith(provider, redirectTo ?? window.location.pathname);
     });
 
+  const provider = (name: "github" | "google", label: string) => (
+    <button
+      type="button"
+      disabled={pending}
+      onClick={() => go(name)}
+      className="group inline-flex cursor-pointer items-center gap-1.5 font-medium text-ink disabled:opacity-50"
+    >
+      <Brand name={name} className="h-4 w-4 transition-transform duration-500 group-hover:-rotate-12" />
+      <span className="fh-underline">{label}</span>
+    </button>
+  );
+
+  // One sentence rather than a panel: it is an aside to the conversation, not
+  // a gate in front of it.
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <p className="text-[16px] text-mute">Sign in to join in. Only your name and avatar are shown.</p>
-      <div className="flex flex-wrap gap-2">
-        <button type="button" disabled={pending} onClick={() => go("github")} className={`${LINE_BUTTON} h-11 px-5`}>
-          <Brand name="github" className="h-[18px] w-[18px]" />
-          <Roll>Continue with GitHub</Roll>
-        </button>
-        <button type="button" disabled={pending} onClick={() => go("google")} className={`${LINE_BUTTON} h-11 px-5`}>
-          <Brand name="google" className="h-[18px] w-[18px]" />
-          <Roll>Continue with Google</Roll>
-        </button>
-      </div>
-    </div>
+    <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px] text-mute">
+      <span>Sign in with</span>
+      {provider("github", "GitHub")}
+      <span>or</span>
+      {provider("google", "Google")}
+      <span>to join in.</span>
+    </p>
   );
 }

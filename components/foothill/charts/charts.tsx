@@ -18,12 +18,12 @@ import type { CalendarWeek } from "@/lib/utils/coding-calendar";
 import { cn } from "@/lib/utils/cn";
 
 /** A categorical slot's colour; -1 is the leftover "everything else" row. */
-export function seriesColor(slot: number): string {
+function seriesColor(slot: number): string {
   return slot >= 0 && slot < 5 ? `var(--fh-s${slot + 1})` : "var(--fh-s0)";
 }
 
 /** A day's value as one of five steps of the heat ramp. */
-export function heatColor(value: number, peak: number): string {
+function heatColor(value: number, peak: number): string {
   if (value <= 0 || peak <= 0) return "var(--fh-heat-0)";
   const step = Math.min(4, Math.max(1, Math.ceil((value / peak) * 4)));
   return `var(--fh-heat-${step})`;
@@ -121,7 +121,7 @@ export function Heatmap({
               </span>
             ))}
           </div>
-          <div role="img" aria-label={label} className="grid flex-1 grid-cols-[repeat(53,minmax(0,1fr))] gap-[3px]">
+          <div role="img" aria-label={label} data-fh-sweep className="grid flex-1 grid-cols-[repeat(53,minmax(0,1fr))] gap-[3px]">
             {weeks.map((week) => (
               <div key={week.firstDay} className="grid grid-rows-7 gap-[3px]">
                 {Array.from({ length: 7 }, (_, weekday) => {
@@ -129,7 +129,7 @@ export function Heatmap({
                   return day ? (
                     <span
                       key={weekday}
-                      data-fh-cell
+
                       title={`${day.date}: ${describe(day.value)}`}
                       className="aspect-square rounded-[2px]"
                       style={{ background: heatColor(day.value, peak) }}

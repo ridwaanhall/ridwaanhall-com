@@ -65,12 +65,12 @@ export default async function HomePage() {
           plain wrapper: the route's skeleton is measured against the page's
           first block. */}
       <div className={WRAP}>
-        <div className="grid items-end gap-12 lg:grid-cols-12 lg:gap-10">
+        <div className="fh-frame grid items-end gap-12 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-7">
             <h1
               data-fh-split
               data-fh-hold
-              className="font-display text-[clamp(3.6rem,1.4rem+9.6vw,10rem)] leading-[0.86] font-semibold tracking-[-0.055em] text-ink"
+              className="font-display text-[clamp(3rem,1.4rem+6.4vw,7rem)] leading-[0.88] font-semibold tracking-[-0.055em] text-ink"
             >
               {first}
               <br />
@@ -79,7 +79,7 @@ export default async function HomePage() {
             <p
               data-fh-enter
               data-fh-hold
-              className="mt-8 max-w-[30ch] text-[clamp(1.3rem,1.05rem+1vw,1.85rem)] leading-[1.3] tracking-[-0.01em] text-ink"
+              className="mt-8 max-w-[30ch] text-[clamp(1.2rem,1.05rem+0.6vw,1.55rem)] leading-[1.35] tracking-[-0.01em] text-ink"
             >
               {about.role}. {sentence(about.short_description)}
             </p>
@@ -199,7 +199,7 @@ export default async function HomePage() {
             <Reveal
               as="p"
               lines
-              className="max-w-[24ch] font-display text-[clamp(2rem,1.3rem+3vw,4rem)] leading-[1.02] font-medium tracking-[-0.035em] text-ink"
+              className="max-w-[24ch] font-display text-[clamp(1.75rem,1.3rem+2vw,3rem)] leading-[1.05] font-medium tracking-[-0.035em] text-ink"
             >
               {`Most days it is ${listed(about.skills)}. The other ${rest.length} drift past below.`}
             </Reveal>
@@ -219,7 +219,7 @@ export default async function HomePage() {
           <Reveal
             as="p"
             lines
-            className="max-w-[20ch] font-display text-[clamp(2.25rem,1.3rem+4vw,5rem)] leading-[1] font-medium tracking-[-0.04em] text-ink"
+            className="max-w-[20ch] font-display text-[clamp(1.9rem,1.3rem+2.6vw,3.5rem)] leading-[1.04] font-medium tracking-[-0.04em] text-ink"
           >
             {sentence(about.short_cta)}
           </Reveal>

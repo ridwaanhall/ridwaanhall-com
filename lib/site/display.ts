@@ -73,14 +73,6 @@ export function shortDate(value: Date | string): string {
   }).format(date);
 }
 
-/** "01.22", for the date column inside a year group, where the year is the heading. */
-export function monthDay(value: Date | string): string {
-  const date = value instanceof Date ? value : new Date(value);
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(date.getUTCDate()).padStart(2, "0");
-  return `${month}.${day}`;
-}
-
 /** Group items by a key, keeping first-seen order of the groups and of the items. */
 export function groupBy<T, K>(items: T[], key: (item: T) => K): [K, T[]][] {
   const groups = new Map<K, T[]>();

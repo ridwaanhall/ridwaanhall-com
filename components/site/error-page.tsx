@@ -35,13 +35,13 @@ export function ErrorPage({
         <p
           data-fh-enter
           aria-hidden="true"
-          className="font-display text-[clamp(5rem,3rem+10vw,11rem)] leading-[0.8] font-semibold tracking-[-0.06em] text-line"
+          className="font-display text-[clamp(4.5rem,3rem+7vw,8rem)] leading-[0.8] font-semibold tracking-[-0.06em] text-line"
         >
           {code}
         </p>
         <h1
           data-fh-split
-          className="mt-8 max-w-[16ch] font-display text-[clamp(2.5rem,1.6rem+4.2vw,5rem)] leading-[0.95] font-medium tracking-[-0.04em]"
+          className="mt-8 max-w-[16ch] font-display text-[clamp(2.2rem,1.5rem+3vw,4rem)] leading-[1] font-medium tracking-[-0.04em]"
         >
           {title}
         </h1>

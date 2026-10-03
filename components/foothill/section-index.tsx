@@ -59,6 +59,20 @@ export function SectionIndex({
     { dependencies: [current] },
   );
 
+  // A jump within the page glides there instead of cutting, and is recorded
+  // without a navigation: it is the same page, so nothing should report one
+  // as loading.
+  const jump = (event: React.MouseEvent, id: string) => {
+    const target = Array.from(document.querySelectorAll<HTMLElement>(`[id="${id}"]`)).find(
+      (el) => el.offsetParent !== null,
+    );
+    if (!target) return;
+    event.preventDefault();
+    target.scrollIntoView({ behavior: window.matchMedia(MOTION_OK).matches ? "smooth" : "auto", block: "start" });
+    history.replaceState(history.state, "", `#${id}`);
+    setCurrent(id);
+  };
+
   return (
     <nav aria-label={label}>
       <p className="text-[14px] font-medium text-ink">{label}</p>
@@ -73,6 +87,7 @@ export function SectionIndex({
           <li key={section.id}>
             <a
               href={`#${section.id}`}
+              onClick={(event) => jump(event, section.id)}
               aria-current={current === section.id ? "location" : undefined}
               className={cn(
                 "block py-1.5 pl-4 text-[15px] transition-colors",

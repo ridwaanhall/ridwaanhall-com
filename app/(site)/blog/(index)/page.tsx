@@ -69,7 +69,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Listing
                 <p className={META}>
                   <span className="text-ink">Start here.</span> {lead.meta.join(", ")}
                 </p>
-                <h2 className="mt-4 font-display text-[clamp(1.9rem,1.3rem+2.4vw,3.25rem)] leading-[1.02] font-medium tracking-[-0.035em] text-ink">
+                <h2 className="mt-4 font-display text-[clamp(1.6rem,1.25rem+1.6vw,2.5rem)] leading-[1.06] font-medium tracking-[-0.035em] text-ink">
                   <span className="fh-underline">{lead.title}</span>
                 </h2>
                 <p className="mt-5 line-clamp-3 text-[17px] leading-relaxed text-mute">{lead.summary}</p>

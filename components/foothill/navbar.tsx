@@ -13,6 +13,7 @@ import { ThemeToggle } from "@/components/layout/theme-toggle";
 import type { AboutData } from "@/lib/data/about";
 import { EASE, gsap, MOTION_OK, useGSAP } from "@/lib/motion/gsap";
 import { isActive, visibleNavItems, type NavItem } from "@/lib/nav";
+import { usePresence } from "@/lib/motion/use-presence";
 import { availability, hasOpenhire } from "@/lib/site/display";
 import { cn } from "@/lib/utils/cn";
 
@@ -248,11 +249,9 @@ function StatusLink({
 /**
  * The links below `lg`, over the whole page.
  *
- * Mounted while open and while it is closing: `shown` trails `open` by the
- * length of the exit, so the links leave the way they arrived instead of
- * vanishing. `hidden` once it has gone rather than merely invisible, so its
- * sign-in link and account menu are not a second focusable copy of the ones
- * in the bar.
+ * It leaves the way it arrived (`usePresence`), and is `hidden` once it has
+ * gone rather than merely invisible, so its sign-in link and account menu are
+ * not a second focusable copy of the ones in the bar.
  */
 function MobileMenu({
   open,
@@ -270,65 +269,39 @@ function MobileMenu({
   status: ReturnType<typeof availability>;
 }) {
   const panel = useRef<HTMLDivElement>(null);
-  const [shown, setShown] = useState(open);
-  const [was, setWas] = useState(open);
+  const shown = usePresence(open, panel, {
+    enter: (tl, el) =>
+      tl
+        .fromTo(el, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 0.6, ease: "expo.out" })
+        .fromTo(
+          el.querySelectorAll("[data-menu-item]"),
+          { yPercent: 70, autoAlpha: 0 },
+          { yPercent: 0, autoAlpha: 1, duration: 0.7, ease: EASE, stagger: 0.045 },
+          0.12,
+        ),
+    exit: (tl, el) => {
+      const rows = el.querySelectorAll("[data-menu-item]");
+      tl.to(rows, { yPercent: -40, autoAlpha: 0, duration: 0.3, ease: "power2.in", stagger: { each: 0.025, from: "end" } })
+        .to(el, { clipPath: "inset(0 0 100% 0)", duration: 0.45, ease: "expo.inOut" }, "-=0.15");
+    },
+  });
 
-  // Opening shows it at once; closing waits for the exit below to finish.
-  if (open !== was) {
-    setWas(open);
-    if (open) setShown(true);
-  }
-
+  // While open: the page behind holds still, Escape closes, focus starts on
+  // the first link.
   useEffect(() => {
-    const el = panel.current;
-    if (!el) return;
-    const motion = window.matchMedia(MOTION_OK).matches;
-    const rows = el.querySelectorAll("[data-menu-item]");
-
-    if (open) {
-      const previous = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      el.querySelector<HTMLElement>("a")?.focus();
-      const onKey = (event: KeyboardEvent) => {
-        if (event.key === "Escape") onClose();
-      };
-      document.addEventListener("keydown", onKey);
-      const tl = motion
-        ? gsap
-            .timeline()
-            .fromTo(el, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 0.6, ease: "expo.out" })
-            .fromTo(
-              rows,
-              { yPercent: 70, autoAlpha: 0 },
-              { yPercent: 0, autoAlpha: 1, duration: 0.7, ease: EASE, stagger: 0.045 },
-              0.12,
-            )
-        : null;
-      return () => {
-        tl?.kill();
-        document.body.style.overflow = previous;
-        document.removeEventListener("keydown", onKey);
-      };
-    }
-
-    if (!shown) return;
-    // Under reduced motion the same timeline runs at no length, so the panel
-    // still leaves through `onComplete` rather than a second code path.
-    const tl = gsap
-      .timeline({ onComplete: () => setShown(false) })
-      .to(rows, {
-        yPercent: -40,
-        autoAlpha: 0,
-        duration: motion ? 0.3 : 0,
-        ease: "power2.in",
-        stagger: { each: motion ? 0.025 : 0, from: "end" },
-      })
-      .to(el, { clipPath: "inset(0 0 100% 0)", duration: motion ? 0.45 : 0, ease: "expo.inOut" }, motion ? "-=0.15" : 0)
-      .set([el, rows], { clearProps: "clipPath,transform,opacity,visibility" });
-    return () => {
-      tl.kill();
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    panel.current?.querySelector<HTMLElement>("a")?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
     };
-  }, [open, shown, onClose]);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = previous;
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open, onClose]);
 
   return (
     <div

@@ -9,7 +9,7 @@ import { H3 } from "@/components/foothill/classes";
 import { Icon } from "@/components/foothill/icons";
 import type { Card } from "@/components/foothill/rows";
 import { StatusDot } from "@/components/foothill/ui";
-import { gsap, MOTION_OK, ScrollTrigger, useGSAP } from "@/lib/motion/gsap";
+import { gsap, MOTION_OK, useGSAP } from "@/lib/motion/gsap";
 import { useMountedByHydration } from "@/lib/motion/use-hydrated-mount";
 import { cn } from "@/lib/utils/cn";
 
@@ -81,9 +81,9 @@ export function CardGrid({
     return () => observer.disconnect();
   }, [more, batch, cards.length, shown]);
 
-  // Each card rises in as it is reached; the image is uncovered from below
-  // a moment after its card arrives. Only cards not yet seen are animated, so
-  // a new batch does not replay the ones above it.
+  // Each card rises in as it is reached. Only cards not seen yet are
+  // watched, so a new batch does not replay the ones above it; cards that
+  // come into view together rise one after another.
   useGSAP(
     () => {
       const root = list.current;
@@ -95,20 +95,18 @@ export function CardGrid({
       if (!fresh.length) return;
       const mm = gsap.matchMedia();
       mm.add(MOTION_OK, () => {
-        gsap.set(fresh, { autoAlpha: 0, y: 40 });
-        gsap.set(fresh.map((card) => card.querySelector("[data-card-media]")), { clipPath: "inset(18% 0 0 0 round 16px)" });
-        ScrollTrigger.batch(fresh, {
-          start: "top 92%",
-          once: true,
-          onEnter: (entered) => {
-            gsap.to(entered, { autoAlpha: 1, y: 0, duration: 1, ease: "expo.out", stagger: 0.09, clearProps: "transform,opacity,visibility" });
-            gsap.to(
-              entered.map((card) => (card as HTMLElement).querySelector("[data-card-media]")),
-              { clipPath: "inset(0% 0 0 0 round 16px)", duration: 1.2, ease: "expo.out", stagger: 0.09, clearProps: "clipPath" },
-            );
+        gsap.set(fresh, { autoAlpha: 0, y: 48 });
+        const observer = new IntersectionObserver(
+          (entries) => {
+            const arrived = entries.filter((entry) => entry.isIntersecting).map((entry) => entry.target);
+            if (!arrived.length) return;
+            arrived.forEach((card) => observer.unobserve(card));
+            gsap.to(arrived, { autoAlpha: 1, y: 0, duration: 1, ease: "expo.out", stagger: 0.08, clearProps: "transform,opacity,visibility" });
           },
-        });
-        ScrollTrigger.refresh();
+          { rootMargin: "0px 0px -6% 0px" },
+        );
+        fresh.forEach((card) => observer.observe(card));
+        return () => observer.disconnect();
       });
       return () => mm.revert();
     },
@@ -157,13 +155,9 @@ function CardLink({ card, ratio, eager }: { card: Card; ratio: string; eager: bo
             fill
             sizes="(min-width: 1024px) 680px, (min-width: 640px) 50vw, 100vw"
             priority={eager}
+            loading={eager ? undefined : "eager"}
             className="object-cover object-top transition-transform duration-[1400ms] ease-[cubic-bezier(.2,.8,.2,1)] group-hover:scale-[1.045]"
           />
-        )}
-        {card.status && (
-          <span className="absolute top-3 left-3 rounded-full bg-paper/85 px-2.5 py-1 text-[12px] text-ink backdrop-blur-md">
-            <StatusDot label={card.status.label} color={card.status.color} />
-          </span>
         )}
         <span
           aria-hidden="true"
@@ -172,20 +166,22 @@ function CardLink({ card, ratio, eager }: { card: Card; ratio: string; eager: bo
           <Icon name="arrow-up-right" className="h-4 w-4" />
         </span>
       </div>
-      <h3 className={cn(H3, "mt-5")}>
+      {/* Two lines at most for the title and two for the summary, each
+          holding its two lines even when it needs one, so every card in a
+          row ends level and the facts beneath line up across it. */}
+      <h3 className={cn(H3, "mt-5 line-clamp-2 min-h-[2.2em]")}>
         <span className="fh-underline">{card.title}</span>
       </h3>
-      {card.summary && <p className="mt-2 line-clamp-2 max-w-[52ch] text-[15px] leading-relaxed text-mute">{card.summary}</p>}
-      {card.meta.length > 0 && (
-        <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[13px] text-mute">
-          {card.meta.map((fact, i) => (
-            <span key={fact} className="flex items-center gap-3">
-              {i > 0 && <span aria-hidden="true" className="h-[3px] w-[3px] rounded-full bg-mute/60" />}
-              {fact}
-            </span>
-          ))}
-        </p>
-      )}
+      <p className="mt-2 line-clamp-2 min-h-[3.25em] max-w-[52ch] text-[15px] leading-relaxed text-mute">{card.summary}</p>
+      <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-mute">
+        {card.status && <StatusDot label={card.status.label} color={card.status.color} className="text-ink" />}
+        {card.meta.map((fact, i) => (
+          <span key={fact} className="flex items-center gap-3">
+            {(i > 0 || card.status) && <span aria-hidden="true" className="h-[3px] w-[3px] rounded-full bg-mute/60" />}
+            {fact}
+          </span>
+        ))}
+      </p>
     </Link>
   );
 }

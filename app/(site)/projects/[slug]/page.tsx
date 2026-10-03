@@ -57,7 +57,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       <JsonLdScript schemas={projectDetailSchemas(about, project)} />
       <div className={WRAP}>
         <article>
-          <header className="max-w-[980px]">
+          <header className="fh-frame max-w-[980px]">
             <div data-fh-enter className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[14px] text-mute">
               <ActionLink href="/projects" icon="arrow-left" className="text-[14px] text-mute hover:text-ink">
                 Work

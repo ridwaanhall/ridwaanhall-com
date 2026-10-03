@@ -5,7 +5,7 @@ import { useEffect, useId, useRef, useState } from "react";
 
 import { Icon } from "@/components/foothill/icons";
 import { ROLE_BLURB, ROLE_LABEL, type SiteRole } from "@/lib/auth/roles";
-import { gsap, MOTION_OK } from "@/lib/motion/gsap";
+import { usePresence } from "@/lib/motion/use-presence";
 import { cn } from "@/lib/utils/cn";
 
 /**
@@ -46,15 +46,20 @@ export function AccountMenu({
     setOpenedAt(pathname);
   }
 
+  const shown = usePresence(open, panel, {
+    enter: (tl, el) =>
+      tl.fromTo(
+        el,
+        { y: -8, scale: 0.97, autoAlpha: 0, transformOrigin: "100% 0%" },
+        { y: 0, scale: 1, autoAlpha: 1, duration: 0.35, ease: "expo.out", clearProps: "transform,opacity,visibility" },
+      ),
+    exit: (tl, el) =>
+      tl.to(el, { y: -6, scale: 0.97, autoAlpha: 0, duration: 0.22, ease: "power2.in" }),
+  });
+
   useEffect(() => {
     if (!open) return;
     panel.current?.querySelector<HTMLElement>("a, button")?.focus();
-    if (window.matchMedia(MOTION_OK).matches)
-      gsap.fromTo(
-        panel.current,
-        { y: -8, scale: 0.97, autoAlpha: 0, transformOrigin: "100% 0%" },
-        { y: 0, scale: 1, autoAlpha: 1, duration: 0.35, ease: "expo.out", clearProps: "transform,opacity,visibility" },
-      );
 
     const onPointer = (event: PointerEvent) => {
       if (!root.current?.contains(event.target as Node)) setOpen(false);
@@ -103,7 +108,7 @@ export function AccountMenu({
         id={id}
         ref={panel}
         role="menu"
-        hidden={!open}
+        hidden={!shown}
         className={cn(
           "absolute right-0 top-[calc(100%+10px)] z-50 w-64 rounded-[16px] border border-line bg-paper p-2 text-ink",
         )}

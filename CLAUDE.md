@@ -190,6 +190,24 @@ with no box around any of them. Light is the default theme.
   node React wrote, so a label that changes ("Send" to "Sending…") is a new
   span, keyed on the text, never an update to the old one. The rolling copy is
   a text-shadow, so the label's text is exactly what was passed in.
+- **An entrance waits on an IntersectionObserver, never a ScrollTrigger.**
+  `onSeen` in `motion.tsx` is the one trigger every reveal uses. A
+  ScrollTrigger works out its start against the scroll offset of the moment
+  it is created, and on a client navigation that is still the previous
+  page's: a block already on screen counted as "scrolled past" and never
+  entered, so the projects index arrived blank until the reader scrolled.
+  ScrollTrigger stays for what scrubs (the reading line, the portrait's
+  drift).
+- **What opens also closes.** `usePresence` (`lib/motion/use-presence.ts`)
+  keeps a menu, a dialog or a panel mounted for the length of its exit, so
+  nothing on the site vanishes; `Expand` and `Collapsible`
+  (`components/foothill/expand.tsx`) are the disclosure built on it and
+  replace `<details>`, which can only snap. A collapsible's controls read
+  their own `group/trigger`, never a bare `group` -- a `<details class="group">`
+  lit every logo and underline inside it when any one was pointed at.
+- **A chart of many marks moves as one.** A tween per heatmap cell (371 of
+  them) is what made the dashboard stutter; `data-fh-sweep` uncovers the
+  whole grid behind one soft-edged mask instead.
 - **A long index loads as it is scrolled.** `CardGrid` shows a batch and the
   next when its end nears the viewport; search stays a server-side GET, so a
   filtered list is still a URL.

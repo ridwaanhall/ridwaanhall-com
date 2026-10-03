@@ -21,7 +21,7 @@ export function LegalDocumentPage({ document, siblings }: { document: LegalDocum
   return (
     <main className={MAIN}>
       <div className={WRAP}>
-        <header className="max-w-[880px]">
+        <header className="fh-frame max-w-[880px]">
           <h1 data-fh-split className={H1}>
             {document.title}
           </h1>

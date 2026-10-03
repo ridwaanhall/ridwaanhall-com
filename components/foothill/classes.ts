@@ -14,18 +14,18 @@
 
 /** A page's title. */
 export const H1 =
-  "font-display text-[clamp(2.75rem,1.3rem+5.8vw,6.5rem)] leading-[0.92] font-medium tracking-[-0.042em] text-ink";
+  "font-display text-[clamp(2.4rem,1.4rem+3.6vw,4.5rem)] leading-[0.96] font-medium tracking-[-0.042em] text-ink";
 
 /** A section's title. */
 export const H2 =
-  "font-display text-[clamp(2rem,1.35rem+2.7vw,3.75rem)] leading-[0.98] font-medium tracking-[-0.036em] text-ink";
+  "font-display text-[clamp(1.8rem,1.3rem+2vw,3rem)] leading-[1] font-medium tracking-[-0.036em] text-ink";
 
 /** A card's or an entry's title. */
 export const H3 =
-  "font-display text-[clamp(1.3rem,1.12rem+0.7vw,1.7rem)] leading-[1.1] font-medium tracking-[-0.022em] text-ink";
+  "font-display text-[clamp(1.2rem,1.08rem+0.5vw,1.5rem)] leading-[1.15] font-medium tracking-[-0.022em] text-ink";
 
 /** The paragraph under a title. */
-export const LEAD = "text-[clamp(1.15rem,1rem+0.55vw,1.45rem)] leading-[1.45] text-mute";
+export const LEAD = "text-[clamp(1.075rem,1rem+0.35vw,1.3rem)] leading-[1.5] text-mute";
 
 /** Small supporting text: dates, places, counts beside a title. */
 export const META = "text-[14px] leading-snug text-mute";

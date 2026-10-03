@@ -154,7 +154,8 @@ html:has(.fh-site)::-webkit-scrollbar-thumb:hover,
 }
 
 .fh-roll-char {
-  text-shadow: 0 1.25em currentColor;
+  /* A whole button-height down when `Roll` sits in a filled or outlined button. */
+  text-shadow: 0 var(--fh-roll-gap, 1.25em) currentColor;
 }
 
 /* SplitText masks heading lines; a descender must not be clipped by its own
@@ -369,12 +370,6 @@ html:has(.fh-site)::-webkit-scrollbar-thumb:hover,
   background: none;
 }
 
-/* The about story is set larger: it is read as a statement, not a document. */
-.fh-prose.fh-prose-lead.prose-content {
-  font-size: clamp(1.2rem, 1.05rem + 0.45vw, 1.4rem);
-  line-height: 1.6;
-}
-
 /* ---------------------------------------------------------------------------
    The portrait plate
 
@@ -395,12 +390,12 @@ html:has(.fh-site)::-webkit-scrollbar-thumb:hover,
    --------------------------------------------------------------------------- */
 
 .fh-marquee-track {
-  animation: fh-marquee 70s linear infinite;
+  animation: fh-marquee 150s linear infinite;
 }
 
 .fh-marquee-track[data-reverse] {
   animation-direction: reverse;
-  animation-duration: 85s;
+  animation-duration: 180s;
 }
 
 .fh-marquee:hover .fh-marquee-track {
@@ -633,4 +628,96 @@ html:has(.fh-site)::-webkit-scrollbar-thumb:hover,
   .fh-loader {
     animation: none;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   The frame round a page's opening
+
+   A rounded hairline drawn behind the title block that is only really there
+   along the top: it fades out down the sides and away towards the corners,
+   with a faint dot grid inside fading the same way. Drawn on a pseudo-element
+   with negative insets, so the heading's own box -- what its skeleton is
+   measured against -- does not move by a pixel. The insets stay inside the
+   page gutter at every width, or the frame would push the page sideways.
+   --------------------------------------------------------------------------- */
+
+.fh-frame {
+  position: relative;
+  isolation: isolate;
+}
+
+.fh-frame::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -28px -12px -36px;
+  border: 1px solid var(--fh-line);
+  border-radius: 28px;
+  background-image: radial-gradient(var(--fh-line) 1px, transparent 1.5px);
+  background-size: 22px 22px;
+  background-position: 11px 11px;
+  pointer-events: none;
+  -webkit-mask-image:
+    linear-gradient(to bottom, #000, rgb(0 0 0 / 0.55) 50%, transparent 96%),
+    linear-gradient(to right, rgb(0 0 0 / 0.35), #000 14%, #000 86%, rgb(0 0 0 / 0.35));
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, #000, rgb(0 0 0 / 0.55) 50%, transparent 96%),
+    linear-gradient(to right, rgb(0 0 0 / 0.35), #000 14%, #000 86%, rgb(0 0 0 / 0.35));
+  mask-composite: intersect;
+}
+
+@media (min-width: 768px) {
+  .fh-frame::before {
+    inset: -44px -24px -48px;
+    border-radius: 36px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .fh-frame::before {
+    inset: -48px -40px -56px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   The heatmap's sweep
+
+   One mask over the whole grid, its soft edge moved across by a single tween
+   on `--fh-sweep`. At rest the edge sits past the far side, so the grid is
+   simply whole -- without a script, and after the sweep.
+   --------------------------------------------------------------------------- */
+
+[data-fh-sweep] {
+  -webkit-mask-image: linear-gradient(90deg, #000 var(--fh-sweep, 120%), transparent calc(var(--fh-sweep, 120%) + 18%));
+  mask-image: linear-gradient(90deg, #000 var(--fh-sweep, 120%), transparent calc(var(--fh-sweep, 120%) + 18%));
+}
+
+/* ---------------------------------------------------------------------------
+   The cursor
+
+   A disc that follows a fine pointer and inverts whatever it passes over, so
+   a word under it stays readable whatever colour either of them is. It grows
+   over anything clickable and gives on a press. The system cursor stays: this
+   is a companion to it, not a replacement for something people rely on.
+   --------------------------------------------------------------------------- */
+
+.fh-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 999px;
+  background: #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* Inside the palette's text box, a native caret does the job. */
+.fh-site #search-modal input:focus-visible {
+  outline: none;
 }

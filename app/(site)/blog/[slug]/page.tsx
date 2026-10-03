@@ -56,7 +56,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
       <JsonLdScript schemas={blogDetailSchemas(about, post)} />
       <div className={WRAP}>
         <article>
-          <header className="mx-auto max-w-[920px]">
+          <header className="fh-frame mx-auto max-w-[920px]">
             <div data-fh-enter className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[14px] text-mute">
               <ActionLink href="/blog" icon="arrow-left" className="text-[14px] text-mute hover:text-ink">
                 Writing
@@ -64,7 +64,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               <span aria-hidden="true" className="h-3 w-px bg-line" />
               <span>{postCategory(post.category)}</span>
             </div>
-            <h1 data-fh-split className={`${H1} mt-8 text-[clamp(2.4rem,1.4rem+4.2vw,5rem)] leading-[0.98]`}>
+            <h1 data-fh-split className={`${H1} mt-8 text-[clamp(2.1rem,1.4rem+2.8vw,3.75rem)] leading-[1]`}>
               {post.title}
             </h1>
             {post.description && (

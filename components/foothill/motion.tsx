@@ -32,6 +32,29 @@ function mayEnter(el: Element, byHydration: boolean): boolean {
   return !byHydration || el.getBoundingClientRect().top > window.innerHeight;
 }
 
+/**
+ * Play an entrance the first time its element is on screen.
+ *
+ * An IntersectionObserver rather than a ScrollTrigger, for one reason: it
+ * answers from where the element actually is when it starts watching. A
+ * trigger computes its start position against the scroll offset of the
+ * moment -- and on a client navigation that is still the previous page's
+ * offset, so a block already on screen was judged "scrolled past" and never
+ * entered: the projects index arrived blank until the reader scrolled.
+ */
+function onSeen(el: Element, play: () => void): () => void {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      observer.disconnect();
+      play();
+    },
+    { rootMargin: "0px 0px -8% 0px" },
+  );
+  observer.observe(el);
+  return () => observer.disconnect();
+}
+
 /** Hand a held element from the CSS fallback to GSAP. */
 function release(el: Element) {
   if (el.hasAttribute("data-fh-hold")) gsap.set(el, { animation: "none", visibility: "visible" });
@@ -116,7 +139,6 @@ export function Reveal({
   as: Component = "div",
   stagger = false,
   lines = false,
-  hold = false,
   delay = 0,
   className,
   children,
@@ -125,7 +147,6 @@ export function Reveal({
   as?: Tag;
   stagger?: boolean;
   lines?: boolean;
-  hold?: boolean;
   delay?: number;
   className?: string;
   children: React.ReactNode;
@@ -140,30 +161,26 @@ export function Reveal({
     const mm = gsap.matchMedia();
     mm.add(MOTION_OK, () => {
       release(block);
-      const trigger = { trigger: block, start: "top 88%", once: true };
-      if (lines) {
-        const split = SplitText.create(block, { type: "lines,words", mask: "lines", linesClass: "fh-line" });
-        gsap.from(split.words, {
-          yPercent: 110,
-          rotate: 3,
-          duration: 1,
-          ease: "expo.out",
-          stagger: 0.025,
-          delay,
-          scrollTrigger: trigger,
-        });
-        return () => split.revert();
-      }
-      gsap.from(stagger ? Array.from(block.children) : block, {
-        y: 28,
-        autoAlpha: 0,
-        duration: 0.9,
-        ease: EASE,
-        stagger: 0.07,
-        delay,
-        clearProps: "transform,opacity",
-        scrollTrigger: trigger,
-      });
+      const split = lines
+        ? SplitText.create(block, { type: "lines,words", mask: "lines", linesClass: "fh-line" })
+        : null;
+      const tween = split
+        ? gsap.from(split.words, { yPercent: 110, rotate: 3, duration: 1, ease: "expo.out", stagger: 0.025, delay, paused: true })
+        : gsap.from(stagger ? Array.from(block.children) : block, {
+            y: 28,
+            autoAlpha: 0,
+            duration: 0.9,
+            ease: EASE,
+            stagger: 0.07,
+            delay,
+            paused: true,
+            clearProps: "transform,opacity",
+          });
+      const stop = onSeen(block, () => tween.play());
+      return () => {
+        stop();
+        split?.revert();
+      };
     });
     return () => mm.revert();
   });
@@ -172,7 +189,6 @@ export function Reveal({
     <Component
       ref={ref as React.Ref<never>}
       data-fh-scope=""
-      data-fh-hold={hold ? "" : undefined}
       className={className}
       {...rest}
     >
@@ -199,10 +215,22 @@ export function Roll({ children, className }: { children: string; className?: st
     const mm = gsap.matchMedia();
     mm.add(`${MOTION_OK} and (hover: hover)`, () => {
       const split = SplitText.create(el, { type: "chars", charsClass: "fh-roll-char" });
-      const host = el.closest("a, button, summary, label") ?? el;
+      const host = el.closest<HTMLElement>("a, button, summary, label") ?? el;
+      // Inside a filled or outlined button the letters leave through the
+      // button's own edge, not the label's: the copy waits a whole button
+      // height below, and the button clips both.
+      const look = getComputedStyle(host);
+      const boxed = host !== el && (look.backgroundColor !== "rgba(0, 0, 0, 0)" || parseFloat(look.borderTopWidth) > 0);
+      const gap = boxed ? host.getBoundingClientRect().height : 0;
+      const overflow = host.style.overflow;
+      if (boxed) {
+        el.style.overflow = "visible";
+        el.style.setProperty("--fh-roll-gap", `${gap}px`);
+        host.style.overflow = "hidden";
+      }
       const roll = gsap
         .timeline({ paused: true })
-        .to(split.chars, { yPercent: -100, duration: 0.5, ease: "power3.inOut", stagger: 0.016 });
+        .to(split.chars, { ...(boxed ? { y: -gap } : { yPercent: -100 }), duration: 0.5, ease: "power3.inOut", stagger: 0.016 });
       const play = () => roll.play();
       const back = () => roll.reverse();
       host.addEventListener("pointerenter", play);
@@ -214,6 +242,7 @@ export function Roll({ children, className }: { children: string; className?: st
         host.removeEventListener("pointerleave", back);
         host.removeEventListener("focusin", play);
         host.removeEventListener("focusout", back);
+        host.style.overflow = overflow;
         split.revert();
       };
     });
@@ -259,20 +288,22 @@ export function CountUp({
     mm.add(MOTION_OK, () => {
       const counter = { n: 0 };
       const onScreen = byHydration && el.getBoundingClientRect().top < window.innerHeight;
-      gsap.to(counter, {
+      const tween = gsap.to(counter, {
         n: value,
         duration: 1.6,
         ease: "power3.out",
         delay: onScreen ? 0.2 : 0,
+        paused: true,
         onStart: () => {
           el.textContent = format(0);
         },
         onUpdate: () => {
           el.textContent = format(counter.n);
         },
-        scrollTrigger: onScreen ? undefined : { trigger: el, start: "top 92%", once: true },
       });
+      const stop = onSeen(el, () => tween.play());
       return () => {
+        stop();
         el.textContent = format(value);
       };
     });
@@ -294,20 +325,19 @@ export function CountUp({
  *
  *   data-fh-bar    grows from its left edge
  *   data-fh-col    grows from its baseline
- *   data-fh-cell   pops in, rippling out from the first cell
+ *   data-fh-sweep  uncovered left to right behind a soft edge -- one tween
+ *                  for a whole grid, where a tween per cell (a year is 371)
+ *                  is what made the dashboard stutter
  *   data-fh-draw   an SVG stroke that draws itself
  *   data-fh-fade   fades in once the strokes are under way
- *   data-fh-dot    scales in after the lines are drawn
  */
 export function Animate({
   as: Component = "div",
-  hold = false,
   className,
   children,
   ...rest
 }: {
   as?: Tag;
-  hold?: boolean;
   className?: string;
   children: React.ReactNode;
 } & Omit<React.HTMLAttributes<HTMLElement>, "className" | "children">) {
@@ -321,10 +351,7 @@ export function Animate({
     mm.add(MOTION_OK, () => {
       release(scope);
       const q = <T extends Element>(selector: string) => Array.from(scope.querySelectorAll<T>(selector));
-      const tl = gsap.timeline({
-        defaults: { ease: EASE },
-        scrollTrigger: { trigger: scope, start: "top 85%", once: true },
-      });
+      const tl = gsap.timeline({ defaults: { ease: EASE }, paused: true });
       tl.from(scope, { autoAlpha: 0, y: 16, duration: 0.6, clearProps: "transform,opacity" });
       const bars = q("[data-fh-bar]");
       if (bars.length)
@@ -332,18 +359,12 @@ export function Animate({
       const cols = q("[data-fh-col]");
       if (cols.length)
         tl.from(cols, { scaleY: 0, transformOrigin: "50% 100%", duration: 0.9, ease: "expo.out", stagger: 0.03 }, 0.1);
-      const cells = q("[data-fh-cell]");
-      if (cells.length)
-        tl.from(
-          cells,
-          {
-            scale: 0,
-            autoAlpha: 0,
-            transformOrigin: "50% 50%",
-            duration: 0.5,
-            ease: "back.out(2)",
-            stagger: { each: Math.min(0.012, 1.2 / cells.length), from: "start" },
-          },
+      const sweeps = q("[data-fh-sweep]");
+      if (sweeps.length)
+        tl.fromTo(
+          sweeps,
+          { "--fh-sweep": "-20%" },
+          { "--fh-sweep": "120%", duration: 1.8, ease: "power2.inOut", clearProps: "--fh-sweep" },
           0.1,
         );
       const strokes = q<SVGGeometryElement>("[data-fh-draw]");
@@ -361,9 +382,7 @@ export function Animate({
       });
       const fades = q("[data-fh-fade]");
       if (fades.length) tl.from(fades, { autoAlpha: 0, duration: 1.2, ease: "power1.out" }, 0.6);
-      const dots = q("[data-fh-dot]");
-      if (dots.length)
-        tl.from(dots, { scale: 0, transformOrigin: "50% 50%", duration: 0.4, ease: "back.out(3)", stagger: 0.03 }, ">-0.4");
+      return onSeen(scope, () => tl.play());
     });
     return () => mm.revert();
   });
@@ -372,7 +391,6 @@ export function Animate({
     <Component
       ref={ref as React.Ref<never>}
       data-fh-scope=""
-      data-fh-hold={hold ? "" : undefined}
       className={className}
       {...rest}
     >

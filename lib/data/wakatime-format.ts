@@ -27,14 +27,21 @@ export function daysAgo(isoDate: string, days: number): string {
   return date.toISOString().slice(0, 10);
 }
 
-/** "2 hours 5 minutes", "45 minutes", "30 secs", "0 mins". */
+/**
+ * "2 hrs 5 mins", "45 mins", "30 secs", "0 mins".
+ *
+ * Abbreviated because WakaTime writes its own totals that way ("685 hrs 21
+ * mins") and both kinds sit side by side on the dashboard: a card reading
+ * "3 hours 58 minutes" beside one reading "3 hrs 7 mins" looks like two
+ * different sources, which it is, and which the reader should not have to see.
+ */
 export function formatTime(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "0 mins";
 
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
-  const hourStr = hours > 0 ? `${hours} ${hours === 1 ? "hour" : "hours"}` : "";
-  const minuteStr = minutes > 0 ? `${minutes} ${minutes === 1 ? "minute" : "minutes"}` : "";
+  const hourStr = hours > 0 ? `${hours} ${hours === 1 ? "hr" : "hrs"}` : "";
+  const minuteStr = minutes > 0 ? `${minutes} ${minutes === 1 ? "min" : "mins"}` : "";
 
   if (hours > 0 && minutes > 0) return `${hourStr} ${minuteStr}`;
   if (hours > 0) return hourStr;
@@ -46,8 +53,8 @@ export function formatTime(seconds: number): string {
 /**
  * "2h 42m", "46m", "0m".
  *
- * `formatTime` writes a duration the way a sentence would, which is right for a
- * card and wrong for a chart axis: "2 hours 42 minutes" wraps to three lines in
+ * `formatTime` writes a duration the way a card reads it, which is wrong for a
+ * chart axis: "2 hrs 42 mins" wraps to three lines in
  * a 56px gutter and lands on top of the panel title above it. This is the same
  * duration with the words taken out.
  */

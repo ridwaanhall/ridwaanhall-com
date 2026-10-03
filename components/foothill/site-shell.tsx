@@ -4,6 +4,7 @@ import { Suspense } from "react";
 
 import { Navbar, NavbarFallback } from "@/components/foothill/navbar";
 import { PaletteProvider } from "@/components/foothill/palette";
+import { Cursor } from "@/components/foothill/cursor";
 import { ScrollTop } from "@/components/foothill/scroll-top";
 import type { AboutData } from "@/lib/data/about";
 
@@ -55,6 +56,7 @@ export function SiteShell({
         </div>
         {footer}
         <ScrollTop />
+        <Cursor />
       </div>
     </PaletteProvider>
   );

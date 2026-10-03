@@ -181,7 +181,7 @@ export function PageHead({
   className?: string;
 }) {
   return (
-    <header className={cn("max-w-[980px]", className)}>
+    <header className={cn("fh-frame max-w-[980px]", className)}>
       <h1 data-fh-split className={H1}>
         {title}
       </h1>

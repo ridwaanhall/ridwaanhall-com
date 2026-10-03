@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import {H3, META } from "@/components/foothill/classes";
-import { Icon } from "@/components/foothill/icons";
+import { Collapsible } from "@/components/foothill/expand";
 import { MAIN, WRAP } from "@/components/foothill/layout";
 import { Animate, CountUp, PageMotion, Reveal } from "@/components/foothill/motion";
 import { Portrait } from "@/components/foothill/portrait";
@@ -49,18 +49,6 @@ function Title({ id, children, count }: { id: string; children: string; count?: 
     <Heading id={`${id}-title`} count={count}>
       {children}
     </Heading>
-  );
-}
-
-/** The plus that turns into a cross while its `<details>` is open. */
-function Toggle() {
-  return (
-    <span
-      aria-hidden="true"
-      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line text-ink transition-[transform,background-color] duration-500 group-open:rotate-45 group-open:bg-raise group-hover:border-ink"
-    >
-      <Icon name="plus" className="h-3.5 w-3.5" />
-    </span>
   );
 }
 
@@ -116,7 +104,7 @@ export default async function AboutPage() {
               </h2>
               <div className="grid gap-12 md:grid-cols-[minmax(0,1fr)_15rem]">
                 <Reveal>
-                  <RichText html={about.stories_html} className="fh-prose fh-prose-lead" />
+                  <RichText html={about.stories_html} className="fh-prose" />
                 </Reveal>
                 <div className="md:col-start-2 md:row-start-1">
                   {about.image_url && (
@@ -132,7 +120,6 @@ export default async function AboutPage() {
                         .filter(Boolean)
                         .join(", ")}
                     </Fact>
-                    {about.aka && <Fact label="Also">{about.aka}</Fact>}
                     {about.personal_website && (
                       <Fact label="Site">
                         <a href={about.personal_website} className="fh-link">
@@ -322,19 +309,9 @@ function ExperienceGroup({ company, roles }: { company: string; roles: Experienc
                 {[role.employment_type, role.location_type, role.location].filter(Boolean).join(", ")}
               </p>
               {role.responsibilities.length > 0 && (
-                <details className="group/role mt-3">
-                  <summary className="inline-flex cursor-pointer list-none items-center gap-2 text-[14px] font-medium text-ink [&::-webkit-details-marker]:hidden">
-                    <Icon name="plus" className="h-3.5 w-3.5 transition-transform duration-500 group-open/role:rotate-45" />
-                    What I did
-                  </summary>
-                  <ul className="mt-3 max-w-[64ch] space-y-2 text-[16px] leading-relaxed text-mute">
-                    {role.responsibilities.map((task) => (
-                      <li key={task} className="relative pl-5 before:absolute before:top-[0.75em] before:left-0 before:h-px before:w-2.5 before:bg-mute">
-                        {task}
-                      </li>
-                    ))}
-                  </ul>
-                </details>
+                <Collapsible plain summary="What I did" className="mt-3">
+                  <Points items={role.responsibilities} />
+                </Collapsible>
               )}
             </li>
           ))}
@@ -367,13 +344,9 @@ function EducationRow({ item }: { item: Education }) {
           {span && `, ${span}`}
         </p>
         {item.achievements.length > 0 && (
-          <ul className="mt-3 max-w-[64ch] space-y-1.5 text-[16px] leading-relaxed text-mute">
-            {item.achievements.map((line) => (
-              <li key={line} className="relative pl-5 before:absolute before:top-[0.75em] before:left-0 before:h-px before:w-2.5 before:bg-mute">
-                {line}
-              </li>
-            ))}
-          </ul>
+          <Collapsible plain summary="What I took from it" className="mt-3">
+            <Points items={item.achievements} />
+          </Collapsible>
         )}
       </div>
     </li>
@@ -385,16 +358,22 @@ function Certifications({ items }: { items: Certification[] }) {
   return (
     <div className="mt-12 border-b border-line">
       {byYear.map(([year, list], index) => (
-        <details key={year} open={index === 0} className="group border-t border-line">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 [&::-webkit-details-marker]:hidden">
-            <span className="font-display text-[clamp(1.6rem,1.3rem+1.2vw,2.25rem)] font-medium tracking-[-0.03em] text-ink tabular-nums">
-              {year || "Undated"}
+        <Collapsible
+          key={year}
+          defaultOpen={index === 0}
+          className="border-t border-line"
+          summaryClassName="py-5"
+          summary={
+            <span className="flex flex-1 items-baseline justify-between gap-4">
+              <span className="font-display text-[clamp(1.6rem,1.3rem+1.2vw,2.25rem)] font-medium tracking-[-0.03em] text-ink tabular-nums">
+                {year || "Undated"}
+              </span>
+              <span className="text-[14px] text-mute">
+                {list.length} {list.length === 1 ? "certificate" : "certificates"}
+              </span>
             </span>
-            <span className="flex items-center gap-4 text-[14px] text-mute">
-              {list.length} {list.length === 1 ? "certificate" : "certificates"}
-              <Toggle />
-            </span>
-          </summary>
+          }
+        >
           <ul className="grid gap-x-8 gap-y-5 pb-8 md:grid-cols-2">
             {list.map((cert) => (
               <li key={cert.id} className="group flex min-w-0 gap-4">
@@ -420,7 +399,7 @@ function Certifications({ items }: { items: Certification[] }) {
               </li>
             ))}
           </ul>
-        </details>
+        </Collapsible>
       ))}
     </div>
   );
@@ -500,23 +479,25 @@ function label(slug: string, list: Application[]): string {
 
 function ApplicationRow({ app }: { app: Application }) {
   return (
-    <details className="group border-t border-line">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden">
-        <span className="min-w-0">
-          <span className="block truncate text-[17px] font-medium text-ink">{app.position}</span>
-          <span className={`${META} mt-0.5 block truncate`}>
-            {app.company_name}
-            {app.location_type && `, ${app.location_type.toLowerCase()}`}
+    <Collapsible
+      className="border-t border-line"
+      summaryClassName="py-5"
+      summary={
+        <span className="flex min-w-0 flex-1 items-center justify-between gap-6">
+          <span className="min-w-0">
+            <span className="block truncate text-[17px] font-medium text-ink">{app.position}</span>
+            <span className={`${META} mt-0.5 block truncate`}>
+              {app.company_name}
+              {app.location_type && `, ${app.location_type.toLowerCase()}`}
+            </span>
           </span>
-        </span>
-        <span className="flex shrink-0 items-center gap-4 text-[14px] text-mute">
-          <span className="hidden items-center gap-2 sm:flex">
+          <span className="hidden shrink-0 items-center gap-2 text-[14px] text-mute sm:flex">
             <span aria-hidden="true" className={cn("h-2 w-2 rounded-full", OUTCOME_TONE[app.status_slug] ?? "bg-mute")} />
             {app.status}
           </span>
-          <Toggle />
         </span>
-      </summary>
+      }
+    >
       <div className="grid gap-8 pb-8 md:grid-cols-[minmax(0,1fr)_15rem] md:gap-10">
         {app.journey.length > 0 ? (
           <ol className="relative ml-1 space-y-5 border-l border-line pl-6">
@@ -559,6 +540,19 @@ function ApplicationRow({ app }: { app: Application }) {
           </blockquote>
         )}
       </div>
-    </details>
+    </Collapsible>
+  );
+}
+
+/** A short list of plain points, ruled with a dash rather than a bullet. */
+function Points({ items }: { items: string[] }) {
+  return (
+    <ul className="max-w-[64ch] space-y-2 pt-3 text-[16px] leading-relaxed text-mute">
+      {items.map((item) => (
+        <li key={item} className="relative pl-5 before:absolute before:top-[0.75em] before:left-0 before:h-px before:w-2.5 before:bg-mute">
+          {item}
+        </li>
+      ))}
+    </ul>
   );
 }

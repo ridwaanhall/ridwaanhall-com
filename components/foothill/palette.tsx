@@ -12,16 +12,20 @@ import {
   useState,
 } from "react";
 
-import { Icon } from "@/components/foothill/icons";
+import { Brand, Icon, type IconName } from "@/components/foothill/icons";
 import type { AboutData } from "@/lib/data/about";
 import { EASE, gsap, MOTION_OK } from "@/lib/motion/gsap";
 import { NAV_ITEMS } from "@/lib/nav";
 import { socialLinks } from "@/lib/site/display";
 import { cn } from "@/lib/utils/cn";
+import { usePresence } from "@/lib/motion/use-presence";
 import { startPageLoading } from "@/lib/utils/page-loading";
 
 type Entry = {
   id: string;
+  /** What the row is drawn with: a glyph of our own, or a network's mark. */
+  icon?: IconName;
+  brand?: string;
   label: string;
   hint: string;
   href: string;
@@ -44,6 +48,20 @@ const PaletteContext = createContext<PaletteApi>({ open: () => {}, close: () => 
 
 export const usePalette = () => useContext(PaletteContext);
 
+/** Each page's own glyph, so a row says where it goes before it is read. */
+const PAGE_ICON: Record<string, IconName> = {
+  "/": "home",
+  "/projects": "grid",
+  "/blog": "pen",
+  "/about": "user",
+  "/dashboard": "chart",
+  "/guestbook": "book",
+  "/contact": "mail",
+  "/openhire": "briefcase",
+  "/privacy-policy": "shield",
+  "/terms": "doc",
+};
+
 function staticSections(about: AboutData): Section[] {
   const pages: Entry[] = [
     ...NAV_ITEMS.map(({ label, href }) => ({ label, href: href as string })),
@@ -51,6 +69,7 @@ function staticSections(about: AboutData): Section[] {
     { label: "Terms", href: "/terms" },
   ].map(({ label, href }) => ({
     id: `page:${href}`,
+    icon: PAGE_ICON[href] ?? "arrow-right",
     label,
     hint: href,
     href,
@@ -60,6 +79,7 @@ function staticSections(about: AboutData): Section[] {
 
   const socials: Entry[] = socialLinks(about).map(({ label, href }) => ({
     id: `social:${label}`,
+    brand: label,
     label,
     hint: href.replace(/^https?:\/\//, ""),
     href,
@@ -69,6 +89,7 @@ function staticSections(about: AboutData): Section[] {
   if (about.social_media.email) {
     socials.unshift({
       id: "social:email",
+      brand: "email",
       label: "Email",
       hint: about.social_media.email,
       href: `mailto:${about.social_media.email}`,
@@ -83,6 +104,7 @@ function staticSections(about: AboutData): Section[] {
     { label: "CV, make a copy", href: "/cv-copy", hint: "A copy you can edit" },
   ].map((entry) => ({
     id: `link:${entry.href}`,
+    icon: "doc" as const,
     external: false,
     keywords: `${entry.label} cv resume ${entry.hint}`.toLowerCase(),
     ...entry,
@@ -91,6 +113,7 @@ function staticSections(about: AboutData): Section[] {
   if (support?.url) {
     links.push({
       id: "link:support",
+      icon: "heart",
       label: "Support my work",
       hint: support.platform,
       href: support.url,
@@ -142,11 +165,19 @@ export function PaletteProvider({ about, children }: { about: AboutData; childre
   }, [isOpen, open, close]);
 
   const api = useMemo(() => ({ open, close }), [open, close]);
+  // It folds away the way it arrived before it unmounts.
+  const root = useRef<HTMLDivElement>(null);
+  const shown = usePresence(isOpen, root, {
+    exit: (tl, el) =>
+      tl
+        .to(el.querySelector("#search-modal-content"), { y: -10, scale: 0.97, autoAlpha: 0, duration: 0.22, ease: "power2.in" })
+        .to(el.querySelector("#search-modal-backdrop"), { autoAlpha: 0, duration: 0.25 }, 0),
+  });
 
   return (
     <PaletteContext.Provider value={api}>
       {children}
-      {isOpen && <Palette about={about} onClose={close} />}
+      {shown && <Palette root={root} about={about} onClose={close} />}
     </PaletteContext.Provider>
   );
 }
@@ -154,7 +185,15 @@ export function PaletteProvider({ about, children }: { about: AboutData; childre
 // Fetched once per document, shared by every opening after the first.
 let contentCache: Section[] | null = null;
 
-function Palette({ about, onClose }: { about: AboutData; onClose: () => void }) {
+function Palette({
+  root,
+  about,
+  onClose,
+}: {
+  root: React.RefObject<HTMLDivElement | null>;
+  about: AboutData;
+  onClose: () => void;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const [query, setQuery] = useState("");
@@ -202,6 +241,7 @@ function Palette({ about, onClose }: { about: AboutData; onClose: () => void }) 
             title: "Posts",
             entries: payload.data.posts.map((post) => ({
               id: `post:${post.slug}`,
+              icon: "pen",
               label: post.title,
               hint: "Writing",
               href: `/blog/${post.slug}`,
@@ -213,6 +253,7 @@ function Palette({ about, onClose }: { about: AboutData; onClose: () => void }) 
             title: "Projects",
             entries: payload.data.projects.map((project) => ({
               id: `project:${project.slug}`,
+              icon: "grid",
               label: project.title,
               hint: "Work",
               href: `/projects/${project.slug}`,
@@ -236,7 +277,8 @@ function Palette({ about, onClose }: { about: AboutData; onClose: () => void }) 
 
   const sections = useMemo(() => {
     const [pages, socials, links] = staticSections(about);
-    const all = [pages, ...(content ?? []), socials, links];
+    // Where to go first, then who to find, then the long lists of content.
+    const all = [pages, socials, links, ...(content ?? [])];
     const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
     if (!terms.length) return all;
     return all
@@ -292,6 +334,7 @@ function Palette({ about, onClose }: { about: AboutData; onClose: () => void }) 
 
   return (
     <div
+      ref={root}
       id="search-modal"
       role="dialog"
       aria-modal="true"
@@ -359,13 +402,19 @@ function Palette({ about, onClose }: { about: AboutData; onClose: () => void }) 
                       )}
                     >
                       <span className="flex min-w-0 items-center gap-3">
-                        <Icon
-                          name={entry.external ? "arrow-up-right" : section.title === "Posts" ? "doc" : "arrow-right"}
-                          className="text-mute transition-transform duration-300 group-[.highlighted]:translate-x-0.5 group-[.highlighted]:text-ink"
-                        />
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] bg-raise text-mute transition-colors group-[.highlighted]:bg-ink group-[.highlighted]:text-paper">
+                          {entry.brand ? (
+                            <Brand name={entry.brand} className="h-3.5 w-3.5" />
+                          ) : (
+                            <Icon name={entry.icon ?? "arrow-right"} className="h-3.5 w-3.5" />
+                          )}
+                        </span>
                         <span className="truncate">{entry.label}</span>
                       </span>
-                      <span className="shrink-0 truncate text-[12px] text-mute">{entry.hint}</span>
+                      <span className="flex shrink-0 items-center gap-1.5 truncate text-[12px] text-mute">
+                        {entry.hint}
+                        {entry.external && <Icon name="arrow-up-right" className="h-3 w-3" />}
+                      </span>
                     </li>
                   );
                 })}

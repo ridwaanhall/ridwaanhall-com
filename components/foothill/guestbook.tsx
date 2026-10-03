@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, useTransition } from "react";
 
 import { Avatar, SignInPrompt } from "@/components/foothill/comments";
+import { Expand } from "@/components/foothill/expand";
 import { SOLID_BUTTON, TEXT_BUTTON } from "@/components/foothill/classes";
 import { Icon } from "@/components/foothill/icons";
 import { Roll } from "@/components/foothill/motion";
@@ -128,11 +129,11 @@ export function Guestbook({
       </div>
 
       {thread.pinned.length > 0 && (
-        <div id="guestbook-pinned" hidden={!pinnedOpen} className="border-b border-line bg-raise/60 px-5 py-4">
-          <ul className="space-y-3">
+        <Expand open={pinnedOpen} id="guestbook-pinned" className="border-b border-line bg-raise/60">
+          <ul className="space-y-3 px-5 py-4">
             {thread.pinned.map((pinned) => (
               <li key={pinned.id} className="flex items-start gap-3">
-                <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sulfur-mark" />
+                <Avatar src={pinned.profileImage} name={pinned.fullName} size={24} />
                 <p className="min-w-0 flex-1 text-[15px] leading-relaxed [overflow-wrap:anywhere] text-ink">
                   <span className="font-medium">{pinned.fullName}</span>
                   <span className="text-mute">: </span>
@@ -151,7 +152,7 @@ export function Guestbook({
               </li>
             ))}
           </ul>
-        </div>
+        </Expand>
       )}
 
       <div

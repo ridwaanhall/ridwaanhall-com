@@ -98,8 +98,8 @@ export type AboutData = {
   image_url: string;
   /** What the image shows, from its asset; "" where nothing is written. */
   image_alt: string;
-  /** Whether `image_url` is the photograph or the faceless avatar. */
-  portrait: "photo" | "avatar";
+  /** Which image `image_url` is: the photograph, the avatar, or the blur. */
+  portrait: "photo" | "avatar" | "blur";
   personal_website: string;
   cv: { main: string; latest: string; copy: string };
   role: string;
@@ -163,8 +163,9 @@ export async function getAboutDataWithStatus(): Promise<AboutDataWithStatus | nu
   return { ...data, is_active: isWorkingHours() };
 }
 
-/** The profile's avatar, joined beside its photo. */
+/** The profile's avatar and blur, joined beside its photo. */
 const avatarAsset = alias(mediaAsset, "avatar_asset");
+const blurAsset = alias(mediaAsset, "blur_asset");
 
 /** The cached about payload. Safe to call from a prerendered tree. */
 export async function getAboutData(): Promise<AboutData | null> {
@@ -188,17 +189,34 @@ export async function getAboutData(): Promise<AboutData | null> {
       avatarKey: avatarAsset.storageKey,
       avatarAlt: avatarAsset.alt,
       avatarSource: avatarAsset.source,
+      blurKey: blurAsset.storageKey,
+      blurAlt: blurAsset.alt,
+      blurSource: blurAsset.source,
     })
     .from(profile)
     .leftJoin(location, eq(location.id, profile.locationId))
     .leftJoin(mediaAsset, eq(mediaAsset.id, profile.imageId))
     .leftJoin(avatarAsset, eq(avatarAsset.id, profile.avatarId))
+    .leftJoin(blurAsset, eq(blurAsset.id, profile.blurId))
     .limit(1);
   if (!row) return null;
 
   const { p } = row;
-  // The avatar only when one is set, so the choice can never blank the page.
-  const avatar = p.portrait === "avatar" && Boolean(row.avatarKey);
+  // A choice whose image is not set falls back to the photo, so the choice can
+  // never blank the page.
+  const photo = row.storageKey ? { storageKey: row.storageKey, source: row.source ?? "storage" } : null;
+  const portrait =
+    p.portrait === "avatar" && row.avatarKey
+      ? "avatar"
+      : p.portrait === "blur" && row.blurKey
+        ? "blur"
+        : "photo";
+  const shown =
+    portrait === "avatar"
+      ? { storageKey: row.avatarKey!, source: row.avatarSource ?? "storage", alt: row.avatarAlt }
+      : portrait === "blur"
+        ? { storageKey: row.blurKey!, source: row.blurSource ?? "storage", alt: row.blurAlt }
+        : photo && { ...photo, alt: row.alt };
 
   const [links, highlights] = await Promise.all([
     // All three link lists in one query: they share a table and differ only by
@@ -229,15 +247,9 @@ export async function getAboutData(): Promise<AboutData | null> {
     last_name: p.lastName,
     username: p.username,
     aka: p.aka,
-    image_url: assetUrl(
-      avatar
-        ? { storageKey: row.avatarKey!, source: row.avatarSource ?? "storage" }
-        : row.storageKey
-          ? { storageKey: row.storageKey, source: row.source ?? "storage" }
-          : null,
-    ),
-    image_alt: (avatar ? row.avatarAlt : row.alt) ?? "",
-    portrait: avatar ? "avatar" : "photo",
+    image_url: assetUrl(shown),
+    image_alt: shown?.alt ?? "",
+    portrait,
     personal_website: p.personalWebsite,
     cv: { main: cv.main ?? "", latest: cv.latest ?? "", copy: cv.copy ?? "" },
     role: p.role,

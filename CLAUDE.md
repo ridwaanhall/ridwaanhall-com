@@ -140,12 +140,11 @@ prefix so a leftover is obviously a harness's and not real content.
 ### The public site is "Foothill"
 
 A design built from the data alone. The home page leads with the owner's
-name and his portrait -- an engraving in horizontal lines, generated from his
-photograph and stored as his profile image like any other upload, or a
-faceless avatar (a question mark) engraved the same way, whichever
-`profile.portrait` names --
-and the rest is image-led: projects and posts are pictures set straight on the paper,
-with no box around any of them. Light is the default theme.
+name; his portrait -- an engraving in horizontal lines, generated from his
+photograph and stored as his profile image like any other upload -- sits on
+the about page. The rest is image-led: projects and posts are pictures set
+straight on the paper, with no box around any of them. Light is the default
+theme.
 
 - **Six tokens paint everything.** `--fh-paper`, `raise`, `ink`, `mute`,
   `line` and `sulfur` live in `styles/site.css`, redefined under
@@ -158,12 +157,17 @@ with no box around any of them. Light is the default theme.
   themes: the engraving's line weight is its shading, so inverting it prints a
   negative.
 - **The portrait is a choice, and it reaches the bylines.** The profile stores
-  both the photo (`image_id`) and the avatar (`avatar_id`); `portrait` picks
-  one, and the avatar falls back to the photo while none is set. A post whose
-  author image *is* the profile's photo follows that choice too, which is why
-  `getBlogs` carries the profile tag and a profile save expires the blog. The
-  alt text is the asset's own, and the "from a photograph" caption shows only
-  under the photo.
+  three images: the photo (`image_id`), the blur (`blur_id`, the same
+  engraving with the face smoothed away) and the avatar (`avatar_id`, a
+  question mark). `portrait` picks one, and a choice whose image is not set
+  falls back to the photo. A post whose author image *is* the profile's photo
+  follows that choice too, which is why `getBlogs` carries the profile tag and
+  a profile save expires the blog. The alt text is the asset's own.
+- **A page heading has something beside it.** A heading and its lead fill a
+  little over half the frame; `PageHead`'s `aside` takes the rest, usually a
+  `Glance` -- three or four ruled facts drawn from what the page already
+  loaded, never copy written to fill the space. Its skeleton is
+  `HeadSkeleton`'s `aside`, with the same number of rows.
 - **One family, two cuts**, from `app/fonts.ts`: Funnel Display for headings,
   Funnel Sans for everything read, JetBrains Mono (`.fh-mono`) for the
   dashboard's figures and code only. The type scale is five constants in
@@ -990,7 +994,7 @@ seen.
   on delete. One author photo is named by twenty-one rows; deleting because one
   row stopped naming it would break the others. The key lives on `media_asset`
   and everything else points at it with a foreign key, so the count is over
-  those seven columns — `lib/storage/cleanup.ts` lists them and
+  those eight columns — `lib/storage/cleanup.ts` lists them and
   `scripts/check-storage.mjs` proves the list against the catalogue.
 - **A form works in storage keys; the schema works in asset ids.** A column like
   `project_image.media_id` names a `media_asset` row, because one file is named

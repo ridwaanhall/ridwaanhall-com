@@ -1,11 +1,11 @@
-import { Bar, CardsSkeleton, PageSkeleton } from "@/components/foothill/skeleton";
+import { Bar, CardsSkeleton, GlanceSkeleton, PageSkeleton } from "@/components/foothill/skeleton";
 
-/** The home page while it loads: the name and the portrait, then the work. */
+/** The home page while it loads: the name and what is newest, then the work. */
 export default function Loading() {
   return (
     <PageSkeleton>
       <div className="grid items-end gap-12 lg:grid-cols-12 lg:gap-10">
-        <div className="lg:col-span-7">
+        <div className="lg:col-span-8">
           <Bar className="h-[clamp(2.6rem,1.2rem+5.6vw,6.1rem)] w-[70%]" />
           <Bar className="mt-1 h-[clamp(2.6rem,1.2rem+5.6vw,6.1rem)] w-[62%]" />
           <Bar className="mt-8 h-6 w-full max-w-[30ch]" />
@@ -15,7 +15,9 @@ export default function Loading() {
             <Bar className="h-12 w-36 rounded-full" />
           </div>
         </div>
-        <Bar className="mx-auto hidden aspect-square w-full max-w-[420px] rounded-[18px] md:block lg:col-span-5 lg:max-w-none" />
+        <div className="lg:col-span-4 lg:col-start-9">
+          <GlanceSkeleton rows={4} />
+        </div>
       </div>
       <Bar className="mt-32 h-11 w-56 md:mt-44" />
       <CardsSkeleton className="mt-12" />

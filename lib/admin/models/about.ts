@@ -1178,6 +1178,14 @@ export const profileForm: AdminFormModel = {
           help: "Shown instead of the photo when chosen below. Engraved in the same lines.",
         },
         {
+          name: "blur",
+          column: profile.blurId,
+          label: "Blur",
+          kind: "image",
+          prefix: "profile",
+          help: "The photo with its face smoothed away, line for line the same everywhere else.",
+        },
+        {
           name: "portrait",
           column: profile.portrait,
           label: "Show on the site",
@@ -1187,8 +1195,9 @@ export const profileForm: AdminFormModel = {
           choices: [
             { value: "photo", label: "Photo" },
             { value: "avatar", label: "Avatar" },
+            { value: "blur", label: "Blur" },
           ],
-          help: "Which of the two the site and every post byline show. Avatar falls back to the photo while none is set.",
+          help: "What the about page and every post byline show. A choice whose image is not set falls back to the photo.",
         },
       ],
     },

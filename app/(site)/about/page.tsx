@@ -8,7 +8,7 @@ import { Portrait } from "@/components/foothill/portrait";
 import { monthYearLabel } from "@/components/foothill/rows";
 import { SectionIndex } from "@/components/foothill/section-index";
 import { ShowMore } from "@/components/foothill/show-more";
-import { ActionLink, Fact, Heading, Logo, PageHead } from "@/components/foothill/ui";
+import { ActionLink, Fact, Glance, Heading, Logo, PageHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { RichText } from "@/components/site/rich-text";
 import type { Application, Certification, Education, Experience } from "@/lib/data/about";
@@ -87,6 +87,20 @@ export default async function AboutPage() {
             </>
           }
           lead={about.long_description.split(". ").slice(0, 2).join(". ") + "."}
+          aside={
+            <Glance
+              items={(
+                [
+                  ["Roles held", experiences.length],
+                  ["Skills", Object.values(skills).flat().length],
+                  ["Certifications", certifications.length],
+                  ["Awards", awards.length],
+                ] as const
+              )
+                .filter(([, count]) => count > 0)
+                .map(([label, count]) => ({ label, value: <CountUp value={count} /> }))}
+            />
+          }
         />
 
         <div className="mt-20 grid gap-14 lg:grid-cols-12 lg:gap-10">

@@ -4,13 +4,13 @@ import { ContactForm } from "@/components/foothill/contact-form";
 import { Brand, Icon } from "@/components/foothill/icons";
 import { MAIN, WRAP } from "@/components/foothill/layout";
 import { PageMotion, Reveal, Roll } from "@/components/foothill/motion";
-import { PageHead } from "@/components/foothill/ui";
+import { Glance, PageHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { getAboutData } from "@/lib/data/about";
 import { contactSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { contactSchemas } from "@/lib/seo/schemas-for-page";
-import { bareUrl, socialLinks } from "@/lib/site/display";
+import { bareUrl, basedIn, socialLinks } from "@/lib/site/display";
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutData();
@@ -33,6 +33,15 @@ export default async function ContactPage() {
             about.is_sick
               ? "I'm recovering at the moment, so replies may be slower than usual, but every message is read."
               : "Work, a question about one of the APIs, or just a note. Every message is read."
+          }
+          aside={
+            <Glance
+              items={[
+                { label: "Replies", value: about.is_sick ? "Slower than usual" : "In 1 to 2 hours" },
+                { label: "Hours", value: "Weekdays, GMT+7" },
+                { label: "Based in", value: basedIn(about) },
+              ]}
+            />
           }
         />
 

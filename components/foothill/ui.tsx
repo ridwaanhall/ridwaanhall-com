@@ -172,16 +172,23 @@ export function StatusDot({
 export function PageHead({
   title,
   lead,
+  aside,
   children,
   className,
 }: {
   title: React.ReactNode;
   lead?: React.ReactNode;
+  /**
+   * What sits to the right of the heading on a wide screen, and under it on a
+   * narrow one: a few facts about the page (`Glance`), or the portrait. A
+   * heading alone used a third of the frame and left the rest of it empty.
+   */
+  aside?: React.ReactNode;
   children?: React.ReactNode;
   className?: string;
 }) {
-  return (
-    <header className={cn("fh-frame max-w-[980px]", className)}>
+  const text = (
+    <>
       <h1 data-fh-split className={H1}>
         {title}
       </h1>
@@ -191,7 +198,29 @@ export function PageHead({
         </p>
       )}
       {children}
+    </>
+  );
+  if (!aside) return <header className={cn("fh-frame max-w-[980px]", className)}>{text}</header>;
+  return (
+    <header className={cn("fh-frame grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-10", className)}>
+      <div className="lg:col-span-8">{text}</div>
+      <div data-fh-enter className="lg:col-span-4">
+        {aside}
+      </div>
     </header>
+  );
+}
+
+/** A few facts about a page, ruled, for the right of its heading. */
+export function Glance({ items }: { items: { label: string; value: React.ReactNode }[] }) {
+  return (
+    <dl className="border-t border-line">
+      {items.map((item) => (
+        <Fact key={item.label} label={item.label}>
+          {item.value}
+        </Fact>
+      ))}
+    </dl>
   );
 }
 

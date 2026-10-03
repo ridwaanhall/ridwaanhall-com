@@ -5,17 +5,16 @@ import { CardGrid } from "@/components/foothill/cards";
 import {H3, META } from "@/components/foothill/classes";
 import { MAIN, WRAP } from "@/components/foothill/layout";
 import { PageMotion, Reveal } from "@/components/foothill/motion";
-import { Portrait } from "@/components/foothill/portrait";
 import { featuredProjects, monthYearLabel, postCard, projectCard } from "@/components/foothill/rows";
 import { SkillMarquee } from "@/components/foothill/skill-marquee";
-import { ActionLink, Heading, Logo, SectionHead } from "@/components/foothill/ui";
+import { ActionLink, Glance, Heading, Logo, SectionHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { getAboutData, getExperiences, getSkills } from "@/lib/data/about";
 import { getBlogs, getProjects, sortProjects } from "@/lib/data/content";
 import { homepageSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { homepageSchemas } from "@/lib/seo/schemas-for-page";
-import { availability } from "@/lib/site/display";
+import { availability, basedIn, newest } from "@/lib/site/display";
 import { MARQUEE_SEEDS, shuffle } from "@/lib/utils/shuffle";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -57,16 +56,18 @@ export default async function HomePage() {
   const sponsor = about.donate[2];
   const first = about.first_name || about.name.split(" ")[0];
   const last = about.last_name || about.name.split(" ").slice(1).join(" ");
+  const newestWork = newest(projects);
+  const latestPost = blogs[0];
 
   return (
     <main className={MAIN}>
       <JsonLdScript schemas={await homepageSchemas(about)} />
-      {/* The hero: who, what he does, and his face. First in `<main>` and a
-          plain wrapper: the route's skeleton is measured against the page's
-          first block. */}
+      {/* The hero: who he is and what he does, with what is newest beside it.
+          First in `<main>` and a plain wrapper: the route's skeleton is
+          measured against the page's first block. */}
       <div className={WRAP}>
         <div className="fh-frame grid items-end gap-12 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-8">
             <h1
               data-fh-split
               data-fh-hold
@@ -118,14 +119,20 @@ export default async function HomePage() {
             )}
           </div>
 
-          {about.image_url && (
-            <Portrait
-              src={about.image_url}
-              alt={about.image_alt || `${about.name}, drawn in horizontal lines`}
-              caption={about.portrait === "photo" ? "Drawn line by line from a photograph." : undefined}
-              className="mx-auto hidden w-full max-w-[420px] md:block lg:col-span-5 lg:max-w-none"
+          <div data-fh-enter data-fh-hold className="lg:col-span-4 lg:col-start-9">
+            <Glance
+              items={[
+                ...(newestWork
+                  ? [{ label: "Newest work", value: <Link href={`/projects/${newestWork.slug}`} className="fh-link">{newestWork.title}</Link> }]
+                  : []),
+                ...(latestPost
+                  ? [{ label: "Latest writing", value: <Link href={`/blog/${latestPost.slug}`} className="fh-link">{latestPost.title}</Link> }]
+                  : []),
+                { label: "Based in", value: basedIn(about) },
+                { label: "Projects", value: projects.length },
+              ]}
             />
-          )}
+          </div>
         </div>
       </div>
 

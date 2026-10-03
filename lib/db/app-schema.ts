@@ -398,6 +398,7 @@ export const profile = app.table("profile", {
   personalWebsite: text("personal_website").notNull().default(''),
   avatarId: uuid("avatar_id").references((): AnyPgColumn => mediaAsset.id),
   portrait: text().notNull().default('photo'),
+  blurId: uuid("blur_id").references((): AnyPgColumn => mediaAsset.id),
 });
 
 export const profileLink = app.table("profile_link", {

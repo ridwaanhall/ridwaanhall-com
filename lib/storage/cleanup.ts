@@ -46,6 +46,7 @@ import {
 export const FILE_COLUMNS: PgColumn[] = [
   profile.imageId,
   profile.avatarId,
+  profile.blurId,
   organization.logoId,
   blogPost.authorImageId,
   blogImage.mediaId,
@@ -83,7 +84,7 @@ export async function isReferenced(key: string): Promise<boolean> {
   /*
    * The key is resolved to its asset once, and the columns are then asked about
    * that id. Comparing each column to the key directly is no longer possible --
-   * they hold ids -- and resolving per column would repeat the same lookup seven
+   * they hold ids -- and resolving per column would repeat the same lookup eight
    * times in a statement that runs once per file in a cascade.
    *
    * A key with no asset row is a file nothing could be pointing at, which is an

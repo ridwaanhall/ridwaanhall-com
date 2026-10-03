@@ -150,3 +150,15 @@ export function socialLinks(about: AboutData): { label: string; href: string }[]
   ];
   return entries.filter(([, href]) => Boolean(href)).map(([label, href]) => ({ label, href }));
 }
+
+/** Where the owner lives, as the about page says it: residency, then province. */
+export function basedIn(about: Pick<AboutData, "location">): string {
+  return [about.location.residency || about.location.regency, about.location.province].filter(Boolean).join(", ");
+}
+
+/** The most recently started project, by its own date rather than its rank. */
+export function newest<T extends { created_at: Date | null }>(projects: T[]): T | undefined {
+  return projects
+    .filter((project) => project.created_at)
+    .reduce<T | undefined>((best, project) => (!best || project.created_at! > best.created_at! ? project : best), undefined);
+}

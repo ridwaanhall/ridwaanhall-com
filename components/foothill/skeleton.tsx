@@ -28,10 +28,13 @@ export function Bar({ className, style }: { className?: string; style?: React.CS
   return <div className={cn("rounded-[4px] bg-raise", className)} style={style} />;
 }
 
-/** A page heading as `PageHead` draws it: two title lines and a lead. */
-export function HeadSkeleton({ lead = true }: { lead?: boolean }) {
-  return (
-    <div className="max-w-[980px]">
+/**
+ * A page heading as `PageHead` draws it: two title lines and a lead, and the
+ * `Glance` beside them, `aside` ruled rows long.
+ */
+export function HeadSkeleton({ lead = true, aside }: { lead?: boolean; aside?: number }) {
+  const text = (
+    <>
       <Bar className="h-[clamp(2.3rem,1.35rem+3.45vw,4.3rem)] w-[85%]" />
       <Bar className="mt-1 h-[clamp(2.3rem,1.35rem+3.45vw,4.3rem)] w-[55%]" />
       {lead && (
@@ -40,6 +43,29 @@ export function HeadSkeleton({ lead = true }: { lead?: boolean }) {
           <Bar className="mt-2.5 h-5 w-[70%] max-w-[40ch]" />
         </>
       )}
+    </>
+  );
+  if (aside === undefined) return <div className="max-w-[980px]">{text}</div>;
+  return (
+    <div className="grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-10">
+      <div className="lg:col-span-8">{text}</div>
+      <div className="lg:col-span-4">
+        <GlanceSkeleton rows={aside} />
+      </div>
+    </div>
+  );
+}
+
+/** `Glance` while it loads: its ruled rows. */
+export function GlanceSkeleton({ rows }: { rows: number }) {
+  return (
+    <div className="border-t border-line">
+      {Array.from({ length: rows }, (_, i) => (
+        <div key={i} className="flex items-center justify-between gap-6 border-b border-line py-3">
+          <Bar className="h-[18px] w-20" />
+          <Bar className="h-[18px] w-28" />
+        </div>
+      ))}
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { Collapsible } from "@/components/foothill/expand";
 import { Icon } from "@/components/foothill/icons";
 import { MAIN, WRAP } from "@/components/foothill/layout";
 import { PageMotion, Reveal, Roll } from "@/components/foothill/motion";
-import { ActionLink, Fact, Heading, PageHead } from "@/components/foothill/ui";
+import { ActionLink, Fact, Glance, Heading, PageHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import type { Skill } from "@/lib/data/about";
 import { getAboutData, getSkillsByCategory } from "@/lib/data/about";
@@ -53,12 +53,20 @@ export default async function OpenHirePage() {
   ]);
   const tools = openToWork?.show_all_tools_skills ? await getSkillsByCategory() : null;
   const head = heading(about.is_open_to_work, about.is_hiring);
+  // The page's answers in brief: when he could start and how, and what is
+  // open at RoneAI. A blank value is a field nobody filled in, so it is left out.
+  const glance = [
+    { label: "Available", value: openToWork?.availability },
+    { label: "Works", value: openToWork?.location_types.join(", ") },
+    { label: "Open positions", value: hiring ? String(hiring.positions.length) : "" },
+    { label: "Replies", value: hiring?.contact_info.response_time },
+  ].filter((item): item is { label: string; value: string } => Boolean(item.value));
 
   return (
     <main className={MAIN}>
       <JsonLdScript schemas={openhireSchemas()} />
       <div className={WRAP}>
-        <PageHead title={head.title} lead={head.lead}>
+        <PageHead title={head.title} lead={head.lead} aside={glance.length > 0 && <Glance items={glance} />}>
           {about.is_open_to_work && about.is_hiring && (
             <div data-fh-enter className="mt-8 flex flex-wrap gap-3">
               <a href="#open-to-work" className={SOLID_BUTTON}>

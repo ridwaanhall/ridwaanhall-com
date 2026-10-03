@@ -7,16 +7,17 @@ import { META } from "@/components/foothill/classes";
 import { Icon } from "@/components/foothill/icons";
 import { MAIN, WRAP } from "@/components/foothill/layout";
 import { BlogResults } from "@/components/foothill/listing";
-import { PageMotion, Reveal } from "@/components/foothill/motion";
+import { CountUp, PageMotion, Reveal } from "@/components/foothill/motion";
 import { postCard } from "@/components/foothill/rows";
 import { ResultsSkeleton } from "@/components/foothill/skeleton";
-import { PageHead } from "@/components/foothill/ui";
+import { Glance, PageHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { getAboutData } from "@/lib/data/about";
 import { getBlogs } from "@/lib/data/content";
 import { blogListSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { blogListSchemas } from "@/lib/seo/schemas-for-page";
+import { readingMinutes, shortDate } from "@/lib/site/display";
 import { readListingParams, type ListingSearchParams } from "@/lib/site/listing";
 
 export async function generateMetadata({
@@ -40,6 +41,8 @@ export default async function BlogPage({ searchParams }: { searchParams: Listing
   // The post to start with: the newest one the owner has marked as featured,
   // or simply the newest.
   const lead = postCard(posts.find((post) => post.is_featured) ?? posts[0]);
+  const minutes = posts.reduce((sum, post) => sum + readingMinutes(post.read_time, post.content_html), 0);
+  const latest = posts[0];
 
   return (
     <main className={MAIN}>
@@ -48,6 +51,15 @@ export default async function BlogPage({ searchParams }: { searchParams: Listing
         <PageHead
           title="Mostly about code, sometimes about everything else."
           lead="Building software, keeping open APIs alive, and what I think about away from the keyboard."
+          aside={
+            <Glance
+              items={[
+                { label: "Posts", value: <CountUp value={posts.length} /> },
+                { label: "To read them all", value: <><CountUp value={Math.round(minutes / 6) / 10} decimals={1} /> hrs</> },
+                ...(latest ? [{ label: "Last written", value: shortDate(latest.created_at) }] : []),
+              ]}
+            />
+          }
         />
 
         {posts.length > 0 && (

@@ -4,7 +4,7 @@ import { Bar, HeadSkeleton, PageSkeleton } from "@/components/foothill/skeleton"
 export default function Loading() {
   return (
     <PageSkeleton>
-      <HeadSkeleton />
+      <HeadSkeleton aside={4} />
       <div className="mt-24 border-t border-line pt-4 md:mt-32">
         <Bar className="h-3 w-28" />
       </div>

@@ -25,8 +25,9 @@ import { plainText } from "@/lib/utils/plain-text";
 import type { Skill } from "./about";
 import { TAGS } from "./tags";
 
-/** The profile's avatar, for a byline that shares the profile's photo. */
+/** The profile's avatar or blur, for a byline that shares the profile's photo. */
 const avatarAsset = alias(mediaAsset, "avatar_asset");
+const blurAsset = alias(mediaAsset, "blur_asset");
 
 /**
  * Blog posts and projects.
@@ -200,12 +201,15 @@ export async function getBlogs(): Promise<BlogPost[]> {
         authorImageSource: mediaAsset.source,
         avatarKey: avatarAsset.storageKey,
         avatarSource: avatarAsset.source,
+        blurKey: blurAsset.storageKey,
+        blurSource: blurAsset.source,
       })
       .from(blogPost)
       .leftJoin(category, eq(category.id, blogPost.categoryId))
       .leftJoin(mediaAsset, eq(mediaAsset.id, blogPost.authorImageId))
-      .leftJoin(profile, and(eq(profile.imageId, blogPost.authorImageId), eq(profile.portrait, "avatar")))
-      .leftJoin(avatarAsset, eq(avatarAsset.id, profile.avatarId))
+      .leftJoin(profile, eq(profile.imageId, blogPost.authorImageId))
+      .leftJoin(avatarAsset, and(eq(avatarAsset.id, profile.avatarId), eq(profile.portrait, "avatar")))
+      .leftJoin(blurAsset, and(eq(blurAsset.id, profile.blurId), eq(profile.portrait, "blur")))
       .where(eq(blogPost.isPublished, true))
       .orderBy(desc(blogPost.publishedAt), desc(blogPost.id)),
     db
@@ -244,9 +248,11 @@ export async function getBlogs(): Promise<BlogPost[]> {
       author_image: assetUrl(
         post.avatarKey
           ? { storageKey: post.avatarKey, source: post.avatarSource ?? "storage" }
-          : post.authorImageKey
-            ? { storageKey: post.authorImageKey, source: post.authorImageSource ?? "storage" }
-            : null,
+          : post.blurKey
+            ? { storageKey: post.blurKey, source: post.blurSource ?? "storage" }
+            : post.authorImageKey
+              ? { storageKey: post.authorImageKey, source: post.authorImageSource ?? "storage" }
+              : null,
       ),
       images: imagesByPost.get(post.id) ?? {},
       created_at: new Date(post.publishedAt),

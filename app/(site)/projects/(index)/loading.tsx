@@ -4,7 +4,7 @@ import { HeadSkeleton, PageSkeleton, ResultsSkeleton } from "@/components/foothi
 export default function Loading() {
   return (
     <PageSkeleton>
-      <HeadSkeleton />
+      <HeadSkeleton aside={3} />
       <div className="mt-16 md:mt-24">
         <ResultsSkeleton />
       </div>

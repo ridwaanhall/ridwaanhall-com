@@ -15,7 +15,7 @@ import {
 import { MAIN, WRAP } from "@/components/foothill/layout";
 import { Animate, CountUp, PageMotion } from "@/components/foothill/motion";
 import { Bar } from "@/components/foothill/skeleton";
-import { PageHead } from "@/components/foothill/ui";
+import { Glance, PageHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { getAboutData } from "@/lib/data/about";
 import { getGitHubStats } from "@/lib/data/github";
@@ -55,6 +55,24 @@ export default async function DashboardPage() {
         <PageHead
           title="The work, measured."
           lead="Time in the editor from WakaTime and contributions from GitHub, read live. Nothing here is typed in by hand."
+          aside={
+            <Glance
+              items={[
+                { label: "Editor time", value: "WakaTime" },
+                {
+                  label: "Contributions",
+                  value: (
+                    <a href={`https://github.com/${about.username}`} target="_blank" rel="noopener noreferrer" className="fh-link">
+                      @{about.username}
+                    </a>
+                  ),
+                },
+                // The panels' cache lifetimes in lib/data: fifteen minutes for
+                // today and GitHub, an hour for the year and the rhythm.
+                { label: "Refreshed", value: "Every 15 minutes" },
+              ]}
+            />
+          }
         />
         <div className="mt-20 space-y-28 md:mt-24">
           <Suspense fallback={<PanelSkeleton className="h-[400px] lg:h-[200px]" />}>

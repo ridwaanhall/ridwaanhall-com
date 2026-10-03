@@ -4,7 +4,7 @@ import { Bar, HeadSkeleton, PageSkeleton } from "@/components/foothill/skeleton"
 export default function Loading() {
   return (
     <PageSkeleton>
-      <HeadSkeleton />
+      <HeadSkeleton aside={3} />
       <div className="mt-20 space-y-28 md:mt-24">
         {["h-[400px] lg:h-[200px]", "h-[1100px] md:h-[620px]"].map((height) => (
           <div key={height}>

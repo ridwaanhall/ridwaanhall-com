@@ -83,11 +83,16 @@ body:has(.fh-site) {
   color: #14201b;
 }
 
-/* One focus ring for the whole site: sulfur, offset, never removed. */
-.fh-site :focus-visible {
-  outline: 2px solid var(--fh-sulfur-mark);
-  outline-offset: 3px;
-  border-radius: 2px;
+/* One focus ring for the whole site: sulfur, offset, never removed.
+   In the base layer so its 2px corner is only a default: unlayered, it beat
+   every rounding utility and squared a field or a plate the moment it took
+   focus. */
+@layer base {
+  .fh-site :focus-visible {
+    outline: 2px solid var(--fh-sulfur-mark);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
 }
 
 /* Data only: the dashboard's figures, code. Never a label or a caption. */
@@ -716,16 +721,4 @@ html:has(.fh-site)::-webkit-scrollbar-thumb:hover,
   pointer-events: none;
   will-change: transform, opacity;
   opacity: 0;
-}
-
-/* Inside the palette's text box, a native caret does the job. */
-#search-modal input:focus-visible {
-  outline: none;
-}
-
-/* A contact field shows focus by its own border turning to ink, and keeps
-   its own corners -- the site ring above would square them to 2px. */
-#contact-form :is(input, textarea):focus-visible {
-  outline: none;
-  border-radius: var(--radius-md);
 }

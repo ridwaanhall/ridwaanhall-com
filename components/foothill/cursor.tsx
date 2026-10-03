@@ -37,11 +37,21 @@ export function Cursor() {
         toY(event.clientY);
         if (gsap.getProperty(el, "opacity") === 0 && size !== 0) gsap.to(el, { autoAlpha: 1, duration: 0.3 });
       };
+      // Over text the disc takes the size of the letters under it -- a caption
+      // gets a small one, a page title a large one -- so it covers about one
+      // line of whatever is being read. Clickable things get a little more.
       const onOver = (event: PointerEvent) => {
         const target = event.target as Element | null;
-        if (target?.closest(TYPING)) resize(0, 0);
-        else if (target?.closest(CLICKABLE)) resize(3.4);
-        else resize(1);
+        if (!target || target.closest(TYPING)) return resize(0, 0);
+        const clickable = target.closest(CLICKABLE);
+        const holdsText = Array.from(target.childNodes).some(
+          (node) => node.nodeType === Node.TEXT_NODE && node.textContent?.trim(),
+        );
+        const textBox = holdsText ? target : clickable;
+        if (!textBox) return resize(1);
+        const letters = parseFloat(getComputedStyle(textBox).fontSize) || 16;
+        const scale = (letters * (clickable ? 1.9 : 1.4)) / 14;
+        resize(Math.round(Math.min(10, Math.max(1, scale)) * 10) / 10);
       };
       const onDown = () => gsap.to(el, { scale: size * 0.75, duration: 0.15, overwrite: "auto" });
       const onUp = () => gsap.to(el, { scale: size, duration: 0.4, ease: "back.out(3)", overwrite: "auto" });

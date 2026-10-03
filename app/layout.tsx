@@ -9,7 +9,7 @@ import { ThemeColorSync } from "@/components/providers/theme-color-sync";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Tooltips } from "@/components/providers/tooltips";
 
-import { onest } from "./fonts";
+import { familjen, jetbrains, newsreader, onest } from "./fonts";
 
 import "./globals.css";
 
@@ -44,7 +44,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     // suppressHydrationWarning is required by next-themes: its pre-paint script
     // writes data-theme on <html> before React hydrates, so the server and
     // client markup legitimately differ on that one attribute.
-    <html lang="en" className={onest.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${onest.variable} ${familjen.variable} ${newsreader.variable} ${jetbrains.variable}`}
+      suppressHydrationWarning
+    >
       <body className="bg-black text-zinc-300 transition-colors duration-200">
         <ThemeProvider>
           <ThemeColorSync />

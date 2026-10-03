@@ -29,17 +29,19 @@ export type NavItem = {
 /**
  * The primary navigation, in order.
  *
- * One definition, rendered by both the desktop rail and the mobile drawer --
- * not two hand-maintained copies of the same seven links.
+ * One definition, rendered by the navbar, the mobile menu and the command
+ * palette -- not three hand-maintained copies of the same seven links. The
+ * labels name what a reader finds there (work, writing) rather than the
+ * route; the hrefs are the routes and do not move.
  */
 export const NAV_ITEMS: NavItem[] = [
   { label: "Home", href: "/", icon: HomeIcon },
-  { label: "Dashboard", href: "/dashboard", icon: DashboardIcon },
-  { label: "Projects", href: "/projects", icon: ProjectsIcon, matchNested: true },
-  { label: "Blog", href: "/blog", icon: BlogIcon, matchNested: true },
+  { label: "Work", href: "/projects", icon: ProjectsIcon, matchNested: true },
+  { label: "Writing", href: "/blog", icon: BlogIcon, matchNested: true },
   { label: "About", href: "/about", icon: AboutIcon },
-  { label: "Contact", href: "/contact", icon: ContactIcon },
+  { label: "Dashboard", href: "/dashboard", icon: DashboardIcon },
   { label: "Guestbook", href: "/guestbook", icon: GuestbookIcon, requiresGuestbook: true },
+  { label: "Contact", href: "/contact", icon: ContactIcon },
 ];
 
 /**

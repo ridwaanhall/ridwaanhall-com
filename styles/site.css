@@ -1,0 +1,427 @@
+/* ---------------------------------------------------------------------------
+   The public site: tokens, base type, and the few things utilities cannot say
+
+   Everything the public site paints comes from the six `--fh-*` tokens below,
+   exposed to Tailwind as `paper`, `raise`, `ink`, `mute`, `line` and `sulfur`
+   through `@theme inline` in app/globals.css. Light is the default; dark is a
+   redefinition of the same six, so no element anywhere carries a theme
+   variant.
+
+   The admin never reads these. It keeps its own remap in theme-light.css, and
+   every rule below is anchored to `.fh-site` or to an `fh-` class, so nothing
+   here reaches a screen the site shell does not wrap.
+
+   Like the other sheets this is unlayered, so a property set here beats any
+   utility on the same element. Nothing in this file sets a property that a
+   component also sets with a utility.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --fh-paper: #edefea;
+  --fh-raise: #e2e6e0;
+  --fh-ink: #14201b;
+  --fh-mute: #5b6963;
+  --fh-line: #cdd4cd;
+  /* Sulfur. The darker value is for text, where the brighter one would fail
+     contrast on the mist background; marks and fills use `--fh-sulfur-mark`. */
+  --fh-sulfur: #7a6300;
+  --fh-sulfur-mark: #c9a40e;
+  --fh-scrim: rgb(20 32 27 / 0.42);
+}
+
+:root[data-theme="dark"] {
+  --fh-paper: #0f1412;
+  --fh-raise: #161d1a;
+  --fh-ink: #e4e9e3;
+  --fh-mute: #8b9891;
+  --fh-line: #25302b;
+  --fh-sulfur: #e0be3c;
+  --fh-sulfur-mark: #e0be3c;
+  --fh-scrim: rgb(5 8 7 / 0.66);
+}
+
+/* The body is shared with the admin and carries the admin's colours as
+   utilities; on a page the site shell wraps, the page behind an overscroll
+   bounce is the site's paper instead. */
+body:has(.fh-site) {
+  background-color: var(--fh-paper);
+  color: var(--fh-ink);
+}
+
+.fh-site {
+  font-family: var(--font-familjen), ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  font-feature-settings: "ss01";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.fh-site ::selection {
+  background-color: var(--fh-sulfur-mark);
+  color: #14201b;
+}
+
+/* One focus ring for the whole site: sulfur, offset, never removed. */
+.fh-site :focus-visible {
+  outline: 2px solid var(--fh-sulfur-mark);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.fh-serif {
+  font-family: var(--font-newsreader), ui-serif, Georgia, serif;
+  font-optical-sizing: auto;
+}
+
+.fh-mono {
+  font-family: var(--font-jetbrains), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-feature-settings: "zero";
+}
+
+/* ---------------------------------------------------------------------------
+   Links in running text
+
+   An underline that thickens and turns sulfur on hover. Drawn with
+   text-decoration rather than a pseudo-element so it wraps with the text.
+   --------------------------------------------------------------------------- */
+
+.fh-link {
+  text-decoration-line: underline;
+  text-decoration-color: var(--fh-line);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition:
+    text-decoration-color 160ms ease,
+    text-decoration-thickness 160ms ease;
+}
+
+.fh-link:hover {
+  text-decoration-color: var(--fh-sulfur-mark);
+  text-decoration-thickness: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+   Rich text: post bodies, project write-ups, the about story
+
+   Scoped to `.fh-prose`, which `RichText` receives beside its own
+   `prose-content`. The admin editor styles `.prose-content` alone and never
+   carries this class, so these rules only ever meet the public site.
+   Specificity is one class higher than prose.css on purpose -- that sheet is
+   shared, and these must win wherever both apply.
+   --------------------------------------------------------------------------- */
+
+.fh-prose.prose-content {
+  font-family: var(--font-newsreader), ui-serif, Georgia, serif;
+  font-size: 1.1875rem;
+  line-height: 1.7;
+  color: var(--fh-ink);
+}
+
+.fh-prose.prose-content > * + * {
+  margin-top: 1.1em;
+}
+
+.fh-prose.prose-content p {
+  margin: 0;
+  color: inherit;
+}
+
+.fh-prose.prose-content * + p {
+  margin-top: 1.1em;
+}
+
+.fh-prose.prose-content h2,
+.fh-prose.prose-content h3,
+.fh-prose.prose-content h4 {
+  font-family: var(--font-familjen), ui-sans-serif, system-ui, sans-serif;
+  color: var(--fh-ink);
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  margin-top: 2.2em;
+  margin-bottom: 0.6em;
+}
+
+.fh-prose.prose-content h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.fh-prose.prose-content h3 {
+  font-size: 1.375rem;
+  font-weight: 600;
+}
+
+.fh-prose.prose-content h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.fh-prose.prose-content a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--fh-sulfur-mark);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.fh-prose.prose-content a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.fh-prose.prose-content strong {
+  color: var(--fh-ink);
+  font-weight: 600;
+}
+
+.fh-prose.prose-content em {
+  font-style: italic;
+}
+
+.fh-prose.prose-content ul,
+.fh-prose.prose-content ol {
+  padding-left: 1.4em;
+}
+
+.fh-prose.prose-content ul {
+  list-style: none;
+}
+
+.fh-prose.prose-content ul > li {
+  position: relative;
+}
+
+.fh-prose.prose-content ul > li::before {
+  content: "";
+  position: absolute;
+  left: -1.05em;
+  top: 0.78em;
+  width: 0.45em;
+  height: 1px;
+  background-color: var(--fh-mute);
+}
+
+.fh-prose.prose-content ol {
+  list-style: decimal;
+}
+
+.fh-prose.prose-content ol > li::marker {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 0.8em;
+  color: var(--fh-mute);
+}
+
+.fh-prose.prose-content li + li {
+  margin-top: 0.35em;
+}
+
+.fh-prose.prose-content blockquote {
+  margin-left: 0;
+  padding-left: 1.2em;
+  border-left: 2px solid var(--fh-sulfur-mark);
+  font-style: italic;
+  color: var(--fh-mute);
+}
+
+.fh-prose.prose-content hr {
+  border: 0;
+  border-top: 1px solid var(--fh-line);
+  margin: 2.5em 0;
+}
+
+.fh-prose.prose-content :not(pre) > code {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 0.82em;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  background-color: var(--fh-raise);
+  color: var(--fh-ink);
+}
+
+.fh-prose.prose-content pre {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  padding: 1.1rem 1.25rem;
+  border-radius: 6px;
+  border: 1px solid var(--fh-line);
+  background-color: var(--fh-raise);
+  color: var(--fh-ink);
+  overflow-x: auto;
+}
+
+.fh-prose.prose-content pre code {
+  font-family: inherit;
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+.fh-prose.prose-content img {
+  border-radius: 6px;
+  border: 1px solid var(--fh-line);
+}
+
+.fh-prose.prose-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-familjen), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.95rem;
+}
+
+.fh-prose.prose-content th,
+.fh-prose.prose-content td {
+  text-align: left;
+  padding: 0.55em 0.75em 0.55em 0;
+  border-bottom: 1px solid var(--fh-line);
+  background: none;
+}
+
+.fh-prose.prose-content th {
+  font-weight: 600;
+  color: var(--fh-ink);
+}
+
+.fh-prose.prose-content thead tr,
+.fh-prose.prose-content tbody tr,
+.fh-prose.prose-content tbody tr:nth-child(even) {
+  background: none;
+}
+
+/* The about story is set larger: it is read as a statement, not a document. */
+.fh-prose.fh-prose-lead.prose-content {
+  font-size: clamp(1.25rem, 1.05rem + 0.6vw, 1.5rem);
+  line-height: 1.55;
+}
+
+/* ---------------------------------------------------------------------------
+   The contour hero
+
+   Each path carries `pathLength="1"`, so a dash of 1 is the whole line no
+   matter how long it really is. The lines start undrawn; GSAP draws them. The
+   animation below is the safety net, not the effect: if the script never runs
+   the lines still arrive, and GSAP sets `animation: none` inline before it
+   takes over, since a running CSS animation would otherwise outrank its inline
+   styles.
+   --------------------------------------------------------------------------- */
+
+.fh-contour path {
+  fill: none;
+  stroke: var(--fh-line);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: fh-contour-reveal 0s linear 2.4s forwards;
+}
+
+.fh-contour path[data-active="true"] {
+  stroke: var(--fh-sulfur-mark);
+  stroke-width: 1.5;
+}
+
+@keyframes fh-contour-reveal {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   The skill marquee
+
+   Pure CSS: an infinite translate is exactly what keyframes are for, and it
+   needs no script to keep running. It stops on hover so a name can be read.
+   --------------------------------------------------------------------------- */
+
+.fh-marquee-track {
+  animation: fh-marquee 70s linear infinite;
+}
+
+.fh-marquee:hover .fh-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes fh-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Skill icons are single-colour SVGs drawn for a dark ground; in light mode
+   they are pulled toward the ink so none of them disappears into the mist. */
+:root:not([data-theme="dark"]) .fh-icon-adapt {
+  filter: grayscale(1) brightness(0.35);
+}
+
+:root[data-theme="dark"] .fh-icon-adapt {
+  filter: grayscale(1) brightness(1.6);
+}
+
+/* Its own colour back on hover. Here rather than as a utility on the image,
+   since the filter above is unlayered and would beat it. */
+.fh-icon-adapt {
+  transition: filter 300ms ease;
+}
+
+:root .group:hover .fh-icon-adapt {
+  filter: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll-hidden strips (the gallery, the mobile filter rows)
+   --------------------------------------------------------------------------- */
+
+.fh-strip {
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+}
+
+.fh-strip::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion
+
+   GSAP is gated by matchMedia; these are the CSS halves of the same promise.
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .fh-contour path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .fh-marquee-track {
+    animation: none;
+  }
+}
+
+/* The page entrance is GSAP's on this site, not the shared fade. */
+.fh-site #page-content,
+.fh-site #page-content main {
+  animation: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Held entrances
+
+   An element marked `data-fh-hold` animates in on the document's first page,
+   where everything else is simply painted. It starts hidden so the server's
+   copy never flashes before the animation hides it again; `PageMotion` sets
+   `animation: none` and takes over. If it never runs, this reveals the
+   element on its own a moment later.
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .fh-site [data-fh-hold] {
+    visibility: hidden;
+    animation: fh-unhold 0s linear 1.2s forwards;
+  }
+}
+
+@keyframes fh-unhold {
+  to {
+    visibility: visible;
+  }
+}

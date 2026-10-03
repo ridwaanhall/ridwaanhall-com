@@ -50,6 +50,9 @@
 @import "../styles/theme-motion.css";
 @import "../styles/components.css";
 @import "../styles/animations.css";
+/* The public site. Last, so its tokens and scoped rules settle any tie with
+   the shared sheets above. Every rule in it is anchored to the site shell. */
+@import "../styles/site.css";
 
 /* ---------------------------------------------------------------------------
    Keep source detection off prose and off our own stylesheets
@@ -130,4 +133,25 @@
 
 @theme {
     --font-sans: var(--font-onest), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ---------------------------------------------------------------------------
+   The public site's palette and faces, as utilities
+
+   `inline` so a utility compiles to the variable itself rather than to a copy
+   of its value taken at build time: the six tokens are redefined per theme in
+   styles/site.css, and `bg-paper` has to follow them.
+   --------------------------------------------------------------------------- */
+
+@theme inline {
+    --color-paper: var(--fh-paper);
+    --color-raise: var(--fh-raise);
+    --color-ink: var(--fh-ink);
+    --color-mute: var(--fh-mute);
+    --color-line: var(--fh-line);
+    --color-sulfur: var(--fh-sulfur);
+    --color-sulfur-mark: var(--fh-sulfur-mark);
+    --font-display: var(--font-familjen), ui-sans-serif, system-ui, sans-serif;
+    --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
+    --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 }

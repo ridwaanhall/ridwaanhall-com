@@ -29,8 +29,12 @@ import { cn } from "@/lib/utils/cn";
 export function ThemeToggle({
   iconSize = "h-4 w-4",
   bare = false,
+  className,
 }: {
   iconSize?: string;
+  /** Replaces the button's own classes outright. The public site draws the
+   *  toggle in its own palette; the admin passes nothing and keeps these. */
+  className?: string;
   /** Drop the padding and hover plate. Used inline beside text, where a hover
    *  chip would read as a second control. */
   bare?: boolean;
@@ -57,10 +61,13 @@ export function ThemeToggle({
       // be a guess baked into the prerendered HTML.
       aria-pressed={hydrated ? resolvedTheme === "light" : undefined}
       title="Toggle light or dark theme"
-      className={cn(
-        "group inline-flex cursor-pointer items-center justify-center rounded-md text-zinc-500 transition-colors hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
-        !bare && "p-1.5 hover:bg-zinc-800",
-      )}
+      className={
+        className ??
+        cn(
+          "group inline-flex cursor-pointer items-center justify-center rounded-md text-zinc-500 transition-colors hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
+          !bare && "p-1.5 hover:bg-zinc-800",
+        )
+      }
     >
       <svg
         data-theme-icon="dark"

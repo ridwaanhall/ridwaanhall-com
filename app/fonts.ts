@@ -1,4 +1,4 @@
-import { Onest } from "next/font/google";
+import { Familjen_Grotesk, JetBrains_Mono, Newsreader, Onest } from "next/font/google";
 
 /**
  * Onest, self-hosted by `next/font`.
@@ -29,4 +29,44 @@ export const onest = Onest({
   display: "swap",
   preload: false,
   variable: "--font-onest",
+});
+
+/*
+ * The public site's three faces. The admin keeps Onest; these are applied only
+ * inside the site shell, so nothing the admin renders changes metrics.
+ *
+ * Familjen Grotesk is the voice -- headings, navigation, interface text.
+ * Newsreader is for reading: post bodies, project write-ups, the about story.
+ * JetBrains Mono carries data -- dates, counts, coordinates, code.
+ *
+ * `preload: false` for the same reason as above: the browser fetches only the
+ * subset file a page's characters actually land in. Familjen has no Cyrillic
+ * subset, so a guestbook message in Cyrillic falls through to the system face
+ * named after it in `styles/site.css`.
+ */
+export const familjen = Familjen_Grotesk({
+  subsets: ["latin", "latin-ext"],
+  weight: "variable",
+  style: ["normal", "italic"],
+  display: "swap",
+  preload: false,
+  variable: "--font-familjen",
+});
+
+export const newsreader = Newsreader({
+  subsets: ["latin", "latin-ext"],
+  weight: "variable",
+  style: ["normal", "italic"],
+  axes: ["opsz"],
+  display: "swap",
+  preload: false,
+  variable: "--font-newsreader",
+});
+
+export const jetbrains = JetBrains_Mono({
+  subsets: ["latin", "latin-ext", "cyrillic"],
+  weight: "variable",
+  display: "swap",
+  preload: false,
+  variable: "--font-jetbrains",
 });

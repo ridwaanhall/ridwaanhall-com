@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<style>.d{display:none}@media (prefers-color-scheme:dark){.l{display:none}.d{display:inline}}</style>
+<g class="l">
+  <rect width="32" height="32" rx="7" fill="#edefea"/>
+  <g transform="translate(5 10.314285714285715) scale(0.7857142857142857)">
+    <path d="M1 15 L9 2.5 L13.5 9 L17.5 4 L27 15" fill="none" stroke="#14201b" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="17.5" cy="4" r="2.068" fill="#c9a40e"/>
+  </g>
+</g><g class="d">
+  <rect width="32" height="32" rx="7" fill="#0f1412"/>
+  <g transform="translate(5 10.314285714285715) scale(0.7857142857142857)">
+    <path d="M1 15 L9 2.5 L13.5 9 L17.5 4 L27 15" fill="none" stroke="#e4e9e3" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="17.5" cy="4" r="2.068" fill="#e0be3c"/>
+  </g>
+</g>
+</svg>

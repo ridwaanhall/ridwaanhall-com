@@ -16,9 +16,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? "https://ridwaanhall.com"),
   // Favicons are hand-placed under public/favicon/ rather than generated, so
-  // they are declared here rather than discovered by file convention.
+  // they are declared here rather than discovered by file convention. They are
+  // the navbar's mark on a paper tile; the SVG follows the browser's theme.
   icons: {
     icon: [
+      { url: "/favicon/icon.svg", type: "image/svg+xml" },
       { url: "/favicon/favicon.ico", type: "image/x-icon" },
       { url: "/favicon/favicon-16x16.png", type: "image/png", sizes: "16x16" },
       { url: "/favicon/favicon-32x32.png", type: "image/png", sizes: "32x32" },

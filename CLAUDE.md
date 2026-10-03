@@ -141,8 +141,9 @@ prefix so a leftover is obviously a harness's and not real content.
 
 A design built from the data alone. The home page leads with the owner's
 name and his portrait -- an engraving in horizontal lines, generated from his
-photograph and stored as his profile image like any other upload -- and the
-rest is image-led: projects and posts are pictures set straight on the paper,
+photograph and stored as his profile image like any other upload, or a
+faceless avatar engraved the same way, whichever `profile.portrait` names --
+and the rest is image-led: projects and posts are pictures set straight on the paper,
 with no box around any of them. Light is the default theme.
 
 - **Six tokens paint everything.** `--fh-paper`, `raise`, `ink`, `mute`,
@@ -155,6 +156,11 @@ with no box around any of them. Light is the default theme.
   before changing one. `--fh-print` is the portrait's plate, light in both
   themes: the engraving's line weight is its shading, so inverting it prints a
   negative.
+- **The portrait is a choice, and it reaches the bylines.** The profile stores
+  both the photo (`image_id`) and the avatar (`avatar_id`); `portrait` picks
+  one, and the avatar falls back to the photo while none is set. A post whose
+  author image *is* the profile's photo follows that choice too, which is why
+  `getBlogs` carries the profile tag and a profile save expires the blog.
 - **One family, two cuts**, from `app/fonts.ts`: Funnel Display for headings,
   Funnel Sans for everything read, JetBrains Mono (`.fh-mono`) for the
   dashboard's figures and code only. The type scale is five constants in
@@ -981,7 +987,7 @@ seen.
   on delete. One author photo is named by twenty-one rows; deleting because one
   row stopped naming it would break the others. The key lives on `media_asset`
   and everything else points at it with a foreign key, so the count is over
-  those six columns — `lib/storage/cleanup.ts` lists them and
+  those seven columns — `lib/storage/cleanup.ts` lists them and
   `scripts/check-storage.mjs` proves the list against the catalogue.
 - **A form works in storage keys; the schema works in asset ids.** A column like
   `project_image.media_id` names a `media_asset` row, because one file is named

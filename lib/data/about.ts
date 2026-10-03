@@ -1,4 +1,5 @@
 import { asc, desc, eq } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { db } from "@/lib/db/client";
@@ -158,6 +159,9 @@ export async function getAboutDataWithStatus(): Promise<AboutDataWithStatus | nu
   return { ...data, is_active: isWorkingHours() };
 }
 
+/** The profile's avatar, joined beside its photo. */
+const avatarAsset = alias(mediaAsset, "avatar_asset");
+
 /** The cached about payload. Safe to call from a prerendered tree. */
 export async function getAboutData(): Promise<AboutData | null> {
   "use cache";
@@ -176,10 +180,13 @@ export async function getAboutData(): Promise<AboutData | null> {
       flag: location.flag,
       storageKey: mediaAsset.storageKey,
       source: mediaAsset.source,
+      avatarKey: avatarAsset.storageKey,
+      avatarSource: avatarAsset.source,
     })
     .from(profile)
     .leftJoin(location, eq(location.id, profile.locationId))
     .leftJoin(mediaAsset, eq(mediaAsset.id, profile.imageId))
+    .leftJoin(avatarAsset, eq(avatarAsset.id, profile.avatarId))
     .limit(1);
   if (!row) return null;
 
@@ -214,7 +221,13 @@ export async function getAboutData(): Promise<AboutData | null> {
     last_name: p.lastName,
     username: p.username,
     aka: p.aka,
-    image_url: assetUrl(row.storageKey ? { storageKey: row.storageKey, source: row.source ?? "storage" } : null),
+    image_url: assetUrl(
+      p.portrait === "avatar" && row.avatarKey
+        ? { storageKey: row.avatarKey, source: row.avatarSource ?? "storage" }
+        : row.storageKey
+          ? { storageKey: row.storageKey, source: row.source ?? "storage" }
+          : null,
+    ),
     personal_website: p.personalWebsite,
     cv: { main: cv.main ?? "", latest: cv.latest ?? "", copy: cv.copy ?? "" },
     role: p.role,

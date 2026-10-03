@@ -120,6 +120,8 @@ export function PageLoadingBar() {
   const pending = useRef(false);
   /** When it began, so the bar can be held for `MIN_VISIBLE_MS`. */
   const startedAt = useRef(0);
+  /** The path and query on screen, so a history step within it is no navigation. */
+  const committed = useRef("");
 
   const clearTimers = useCallback(() => {
     const t = timers.current;
@@ -279,13 +281,24 @@ export function PageLoadingBar() {
       start();
     }
 
+    /*
+      Following an in-page `#anchor` fires `popstate` too, and so does Back
+      across one. The route has not changed, so nothing would ever call
+      `finish()` and the bar crept for `MAX_WAIT_MS` over a page that had
+      already scrolled. Only a history step that lands on another URL counts.
+    */
+    function onPopState() {
+      if (window.location.pathname + window.location.search === committed.current) return;
+      start();
+    }
+
     document.addEventListener("click", onClick, true);
     document.addEventListener("submit", onSubmit, true);
-    window.addEventListener("popstate", start);
+    window.addEventListener("popstate", onPopState);
     return () => {
       document.removeEventListener("click", onClick, true);
       document.removeEventListener("submit", onSubmit, true);
-      window.removeEventListener("popstate", start);
+      window.removeEventListener("popstate", onPopState);
     };
   }, [start]);
 
@@ -297,6 +310,7 @@ export function PageLoadingBar() {
   const settled = `${pathname}?${searchParams}`;
   const mounted = useRef(false);
   useEffect(() => {
+    committed.current = window.location.pathname + window.location.search;
     if (!mounted.current) {
       mounted.current = true;
       return;

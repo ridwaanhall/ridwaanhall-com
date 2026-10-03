@@ -27,7 +27,7 @@ config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { db, pool } = await import("../lib/db/client.ts");
-const { mediaAsset, organization } = await import("../lib/db/app-schema.ts");
+const { blogPost, mediaAsset, organization } = await import("../lib/db/app-schema.ts");
 const { mediaIdForKey } = await import("../lib/admin/media.ts");
 const { eq, like, inArray } = await import("drizzle-orm");
 const { deleteObject, objectExists, putObject, storageConfigured } = await import(
@@ -87,9 +87,17 @@ try {
   // --- reference counting ----------------------------------------------------
   check("an unreferenced key reports as such", (await isReferenced(first.key)) === false);
   check("an empty key is never treated as an orphan", (await isReferenced("")) === true);
+  // Read from the rows rather than named here: the author photo has been
+  // replaced before, and a hardcoded key then tested a file nothing named.
+  const [shared] = await db
+    .select({ key: mediaAsset.storageKey })
+    .from(blogPost)
+    .innerJoin(mediaAsset, eq(mediaAsset.id, blogPost.authorImageId))
+    .limit(1);
   check(
     "a key the live data shares is referenced",
-    await isReferenced("profile/ridwaanhall_20250913_2.webp"),
+    Boolean(shared) && (await isReferenced(shared.key)),
+    shared?.key,
   );
 
   /*

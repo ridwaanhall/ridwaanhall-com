@@ -1169,6 +1169,27 @@ export const profileForm: AdminFormModel = {
           // which is still in the bucket because it is still referenced.
           help: "Shared with every blog post's author photo. Replacing it here changes only the profile.",
         },
+        {
+          name: "avatar",
+          column: profile.avatarId,
+          label: "Avatar",
+          kind: "image",
+          prefix: "profile",
+          help: "A faceless drawing in the same lines as the photo.",
+        },
+        {
+          name: "portrait",
+          column: profile.portrait,
+          label: "Show on the site",
+          kind: "select",
+          required: true,
+          // The column's own CHECK constraint, spelled out.
+          choices: [
+            { value: "photo", label: "Photo" },
+            { value: "avatar", label: "Avatar" },
+          ],
+          help: "Which of the two the site and every post byline show. Avatar falls back to the photo while none is set.",
+        },
       ],
     },
     {

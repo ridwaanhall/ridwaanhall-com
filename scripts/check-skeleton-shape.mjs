@@ -345,15 +345,15 @@ try {
       await page.waitForTimeout(2500);
 
       /*
-        Below `md` the rail is gone and its links live in the drawer, which is
+        Below `lg` the navbar's links live in the full-screen menu, which is
         closed -- so a nav link has to be uncovered before it can be clicked.
-        Only then, though: the two detail routes are reached from a card in the
-        page itself, and opening the drawer over one is how that click came to
-        time out rather than navigate.
+        Only then, though: the two detail routes are reached from a row in the
+        page itself, and opening the menu over one is how that click would time
+        out rather than navigate.
       */
       let target = page.locator(`${route.link}:visible`).first();
-      if (viewport.width < 768 && !(await target.isVisible().catch(() => false))) {
-        await page.locator('button[aria-label="Open Sidebar"]').click();
+      if (viewport.width < 1024 && !(await target.isVisible().catch(() => false))) {
+        await page.locator('button[aria-label="Open menu"]').click();
         await page.waitForTimeout(500);
         target = page.locator(`${route.link}:visible`).first();
       }

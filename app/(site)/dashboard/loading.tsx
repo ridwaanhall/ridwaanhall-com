@@ -6,12 +6,12 @@ export default function Loading() {
     <PageSkeleton>
       <HeadSkeleton />
       <div className="mt-20 space-y-28 md:mt-24">
-        {[260, 560].map((height) => (
+        {["h-[400px] lg:h-[200px]", "h-[1100px] md:h-[620px]"].map((height) => (
           <div key={height}>
             <div className="border-t border-line pt-4">
               <Bar className="h-3 w-32" />
             </div>
-            <Bar className="mt-8 w-full" style={{ height: height - 60 }} />
+            <Bar className={`mt-8 w-full ${height}`} />
           </div>
         ))}
       </div>

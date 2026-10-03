@@ -52,8 +52,6 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
   return (
     <main className={MAIN}>
       <JsonLdScript schemas={blogDetailSchemas(about, post)} />
-      <ReadingProgress target="#post-body" />
-      <ViewCounter slug={post.slug} />
       <div className={WRAP}>
         <article>
           <header className="mx-auto max-w-[880px]">
@@ -145,6 +143,10 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
           </Suspense>
         </div>
       </div>
+      {/* After the content, not before: the route's skeleton is measured
+          against the first block in `<main>`, and these draw nothing there. */}
+      <ReadingProgress target="#post-body" />
+      <ViewCounter slug={post.slug} />
       <PageMotion />
     </main>
   );

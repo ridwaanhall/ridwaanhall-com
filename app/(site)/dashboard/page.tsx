@@ -59,19 +59,19 @@ export default async function DashboardPage() {
           lead="Time in the editor from WakaTime and contributions from GitHub, read live. Nothing here is typed in by hand."
         />
         <div className="mt-20 space-y-28 md:mt-24">
-          <Suspense fallback={<PanelSkeleton height={260} />}>
+          <Suspense fallback={<PanelSkeleton className="h-[400px] lg:h-[200px]" />}>
             <TodayPanel />
           </Suspense>
-          <Suspense fallback={<PanelSkeleton height={560} />}>
+          <Suspense fallback={<PanelSkeleton className="h-[1100px] md:h-[620px]" />}>
             <OverviewPanel />
           </Suspense>
-          <Suspense fallback={<PanelSkeleton height={420} />}>
+          <Suspense fallback={<PanelSkeleton className="h-[640px] md:h-[520px]" />}>
             <YearPanel />
           </Suspense>
-          <Suspense fallback={<PanelSkeleton height={620} />}>
+          <Suspense fallback={<PanelSkeleton className="h-[1000px] lg:h-[640px]" />}>
             <RhythmPanel />
           </Suspense>
-          <Suspense fallback={<PanelSkeleton height={380} />}>
+          <Suspense fallback={<PanelSkeleton className="h-[460px] md:h-[380px]" />}>
             <GitHubPanel username={about.username} />
           </Suspense>
         </div>
@@ -127,7 +127,8 @@ function Readings({ items, className }: { items: { label: string; value: React.R
   );
 }
 
-function PanelSkeleton({ height }: { height: number }) {
+/** A panel's frame while its source answers, sized per breakpoint like the panel. */
+function PanelSkeleton({ className }: { className: string }) {
   return (
     <div role="status" aria-busy="true" className="skeleton-pulse">
       <span className="sr-only">Loading…</span>
@@ -135,7 +136,7 @@ function PanelSkeleton({ height }: { height: number }) {
         <div className="border-t border-line pt-4">
           <Bar className="h-3 w-32" />
         </div>
-        <Bar className="mt-8 w-full" style={{ height: height - 60 }} />
+        <Bar className={cn("mt-8 w-full", className)} />
       </div>
     </div>
   );

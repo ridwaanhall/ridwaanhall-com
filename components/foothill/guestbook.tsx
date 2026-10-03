@@ -131,7 +131,7 @@ export function Guestbook({
             {thread.pinned.map((pinned) => (
               <li key={pinned.id} className="flex items-start gap-3">
                 <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sulfur-mark" />
-                <p className="min-w-0 flex-1 text-[15px] leading-relaxed text-ink">
+                <p className="min-w-0 flex-1 text-[15px] leading-relaxed [overflow-wrap:anywhere] text-ink">
                   <span className="font-medium">{pinned.fullName}</span>
                   <span className="text-mute"> — </span>
                   {pinned.message}
@@ -294,11 +294,11 @@ function Entry({
             </time>
           </p>
           {message.showReplyTo && message.replyTo && (
-            <p className="mt-1 truncate text-[13px] text-mute">
+            <p className="mt-1 min-w-0 truncate text-[13px] text-mute">
               ↳ {message.replyTo.fullName}: {message.replyTo.message}
             </p>
           )}
-          <p className="mt-1 text-[15px] leading-relaxed break-words whitespace-pre-line text-ink">{message.message}</p>
+          <p className="mt-1 text-[15px] leading-relaxed whitespace-pre-line [overflow-wrap:anywhere] text-ink">{message.message}</p>
           {(onReply || viewer.canPin || viewer.canDelete) && (
             <div className="mt-2 flex gap-5">
               {onReply && (

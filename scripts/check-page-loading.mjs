@@ -565,8 +565,10 @@ try {
     await page.unroute("**/*");
     await page.waitForURL("**/about", { timeout: 15000 }).catch(() => {});
     await page.waitForSelector("main", { timeout: 15000 }).catch(() => {});
-    const mains = await page.locator("main").count();
-    check("and the real page arrives with its <main>", mains === 1, `${mains} main element(s)`);
+    // Visible ones: under Cache Components the page navigated away from stays
+    // in the document inside a hidden `<Activity>`, `<main>` and all.
+    const mains = await page.locator("main:visible").count();
+    check("and the real page arrives with its <main>", mains === 1, `${mains} visible main element(s)`);
 
     await page.close();
   }

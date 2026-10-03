@@ -1,5 +1,5 @@
 /**
- * The sidebar's account row, checked against the running app.
+ * The navbar's account control, checked against the running app.
  *
  * The site had no account chrome at all before this: signing in was reachable
  * only from inside the guestbook or a comment thread, and nothing anywhere said
@@ -17,10 +17,11 @@
  * - **Signed out it is a plain link, and stays one.** That is what most readers
  *   get and the only control here that works with no script, so its shape is
  *   measured rather than merely found.
- * - **The panel is rendered twice per request** -- once by the desktop rail,
- *   once by the mobile drawer -- from one element created in the layout. Both
- *   are in the DOM at every width; exactly one is visible. A count of elements
- *   would pass while the wrong one showed, so these measure visibility.
+ * - **The panel is rendered twice per request** -- once in the bar from `lg`
+ *   up, once in the full-screen menu below it -- from one element created in
+ *   the layout. Both are in the DOM at every width; at most one is visible. A
+ *   count of elements would pass while the wrong one showed, so these measure
+ *   visibility.
  * - **`/sign-in` must work before hydration.** Both provider buttons are real
  *   forms posting a server action, and this reads the server body to prove it
  *   rather than the hydrated DOM, which would pass either way.
@@ -79,10 +80,9 @@ async function visible(page, selector) {
 /**
  * Wait until one copy of the control is actually on screen.
  *
- * Not `waitForSelector`: the drawer's copy comes first in the DOM -- the shell
- * renders it before the rail -- so waiting on the selector waits on the *hidden*
- * one and times out at every desktop width. Both copies exist at every width by
- * design; visibility is the whole question.
+ * Not `waitForSelector`: below `lg` the bar's copy comes first in the DOM and is
+ * the hidden one, so waiting on the selector waits on it and times out. Both
+ * copies exist at every width by design; visibility is the whole question.
  */
 async function waitVisible(page, selector, timeout = 20000) {
   const deadline = Date.now() + timeout;
@@ -97,17 +97,12 @@ async function waitVisible(page, selector, timeout = 20000) {
  * The measured shape of the signed-out control.
  *
  * `slack` is the whole point: the width the control adds beyond the width of
- * the words inside it. A pill that hugs its label has about twenty pixels of
- * it -- two paddings and two borders -- where one stretched to the column has a
- * hundred and fifty. Measuring the text with a `Range` rather than assuming a
- * character width is what makes that a real number instead of a guess.
- *
- * `round` asks whether the corner radius is at least half the height, which is
- * what "fully rounded" means at any size. Tailwind's fully-rounded utility
- * computes to an enormous length rather than to a percentage, so the value
- * cannot be compared against a literal.
+ * the words inside it. A text link that hugs its label has next to none, where
+ * a control stretched across its container has a hundred pixels or more.
+ * Measuring the text with a `Range` rather than assuming a character width is
+ * what makes that a real number instead of a guess.
  */
-async function pillShape(page, selector) {
+async function linkShape(page, selector) {
   return page.evaluate((sel) => {
     const el = [...document.querySelectorAll(sel)].find((node) => node.offsetParent !== null);
     if (!el) return null;
@@ -124,7 +119,6 @@ async function pillShape(page, selector) {
       ].join(", "),
       width: Math.round(rect.width),
       slack: Math.round(rect.width - text.width),
-      round: parseFloat(style.borderTopLeftRadius) >= rect.height / 2,
     };
   }, selector);
 }
@@ -136,11 +130,11 @@ const SIGN_IN = 'a[href="/sign-in"]';
 const TRIGGER = "[data-account-menu]";
 // Named structurally, not by its text: `:has-text()` is Playwright's and does
 // not exist in the DOM, and these are measured inside the page.
-const SIGN_OUT_ROW = 'div.border-t form button[type="submit"]';
+const SIGN_OUT_ROW = '[role="menu"] form button[type="submit"]';
 const SIGN_OUT = 'button:has-text("Sign out")';
 const ADMIN = 'a[href="/admin"]';
 
-// Both copies are in the DOM at every width and the drawer's comes first, so
+// Both copies are in the DOM at every width, one of them hidden, so
 // anything that acts on a control -- clicking it, reading its label -- has to
 // name the visible one explicitly or it acts on the hidden one.
 const SHOWN = (selector) => `${selector}:visible`;
@@ -160,11 +154,11 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   await page.goto(`${BASE}/`, { waitUntil: "load" });
   await waitVisible(page, SIGN_IN);
 
-  const rail = await visible(page, SIGN_IN);
+  const bar = await visible(page, SIGN_IN);
   check(
-    "signed out at 1280px: one visible way in, and the drawer's copy hidden",
-    rail.shown === 1 && rail.total === 2,
-    `${rail.shown} of ${rail.total} visible`,
+    "signed out at 1280px: one visible way in, and the menu's copy hidden",
+    bar.shown === 1 && bar.total === 2,
+    `${bar.shown} of ${bar.total} visible`,
   );
   check(
     "and it is labelled, not an icon somebody has to guess at",
@@ -174,33 +168,31 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   check("and there is no account row to open", (await visible(page, TRIGGER)).total === 0);
 
   /*
-   * A pill the width of its words, not the width of the column.
+   * A quiet link the width of its words.
    *
-   * It was a full-width `h-11` button, which made signing in look like the
-   * thing the rail was for. Thirty pixels of slack is generous for two
-   * paddings and two borders and nowhere near a stretched control: the rail is
-   * 248px, so a full-width one would report about 150.
+   * Signing in is something a reader does to comment, not what the bar is
+   * for, so it sits beside the theme toggle as text rather than as a button.
+   * A dozen pixels of slack allows for sub-pixel layout and nothing more.
    */
-  const signedOutPill = await pillShape(page, SIGN_IN);
+  const signedOutLink = await linkShape(page, SIGN_IN);
   check(
-    "and it is a pill the width of its label, not of the rail",
-    signedOutPill.slack < 30 && signedOutPill.width < 100,
-    `${signedOutPill.width}px wide, ${signedOutPill.slack}px of it not text`,
+    "and it is a link the width of its label",
+    signedOutLink.slack < 12 && signedOutLink.width < 100,
+    `${signedOutLink.width}px wide, ${signedOutLink.slack}px of it not text; ${signedOutLink.shape}`,
   );
-  check("and it is fully rounded", signedOutPill.round, signedOutPill.shape);
 
-  // The drawer's copy, at a width where the rail is gone.
+  // The menu's copy, at a width where the bar no longer carries it.
   await page.setViewportSize({ width: 375, height: 800 });
   await page.reload({ waitUntil: "load" });
   // Nothing to wait *for* here -- the assertion is that neither copy shows --
   // so wait for the panel to have streamed in at all before measuring.
   await page.waitForSelector(SIGN_IN, { state: "attached", timeout: 20000 });
   const shut = await visible(page, SIGN_IN);
-  await page.click("button[aria-label='Open Sidebar']");
+  await page.click("button[aria-label='Open menu']");
   await page.waitForTimeout(600);
   const open = await visible(page, SIGN_IN);
   check(
-    "signed out at 375px: reachable through the drawer and only there",
+    "signed out at 375px: reachable through the menu and only there",
     shut.shown === 0 && open.shown === 1,
     `${shut.shown} shut -> ${open.shown} open`,
   );
@@ -217,7 +209,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
 
   const rows = await visible(page, TRIGGER);
   check(
-    "signed in: one visible account row, and the drawer's copy hidden",
+    "signed in: one visible account row, and the menu's copy hidden",
     rows.shown === 1 && rows.total === 2,
     `${rows.shown} of ${rows.total} visible`,
   );
@@ -293,7 +285,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   /*
    * Wait on the chrome, not on the URL.
    *
-   * Signing out from the sidebar redirects to `/` from `/`, so a
+   * Signing out from the navbar redirects to `/` from `/`, so a
    * `waitForURL(pathname === "/")` is already true and resolves before the
    * action has even been sent -- which then reads the cookie jar too early and
    * reports a session that is about to be cleared as one that never was. The
@@ -304,7 +296,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   check("and the chrome says so without a reload", flipped, page.url().replace(BASE, ""));
 
   const remaining = (await context.cookies()).find((c) => c.name === cookieName && c.value);
-  check("signing out from the sidebar clears the session", !remaining);
+  check("signing out from the navbar clears the session", !remaining);
   await context.close();
 }
 
@@ -335,7 +327,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   await openMenu(page);
   const admin = await visible(page, ADMIN);
   check(
-    "and opening it offers one way in, the drawer's copy hidden",
+    "and opening it offers one way in, the menu's copy hidden",
     admin.shown === 1 && admin.total === 2,
     `${admin.shown} of ${admin.total} visible`,
   );
@@ -351,7 +343,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   const laidOut = await page.evaluate(() => {
     const shown = (sel) =>
       [...document.querySelectorAll(sel)].find((node) => node.offsetParent !== null);
-    const out = shown('div.border-t form button[type="submit"]')?.getBoundingClientRect();
+    const out = shown('[role="menu"] form button[type="submit"]')?.getBoundingClientRect();
     const adm = shown('a[href="/admin"]')?.getBoundingClientRect();
     if (!out || !adm) return null;
     return { drift: Math.abs(adm.left - out.left), gap: Math.round(out.top - adm.bottom) };
@@ -363,82 +355,44 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
   );
 
   /*
-   * One ruled band at the base of the sidebar, holding both.
+   * Both rows live in the one panel the account control opens.
    *
-   * This used to be two -- the account, then the legal links -- each with a
-   * rule of its own, in a weight found nowhere else on the site so that the
-   * pair would read as banding rather than as an edge and a smudge. One band
-   * needs no such trick, and this is what says the two have not drifted apart
-   * again: the section carrying the account is the same element that carries
-   * the small print.
+   * Admin and Sign out are the two account actions; one drifting out of the
+   * panel -- back into the footer's small print, say -- is the regression this
+   * names, and it would pass every check above.
    */
-  const base = await page.evaluate(() => {
-    const bands = [...document.querySelectorAll("div.border-t")].filter(
-      (node) => node.offsetParent !== null && node.querySelector("[data-account-menu]"),
+  const together = await page.evaluate(() => {
+    const panel = [...document.querySelectorAll('[role="menu"]')].find((node) => !node.hidden);
+    return Boolean(
+      panel?.querySelector('a[href="/admin"]') && panel.querySelector('form button[type="submit"]'),
     );
-    return {
-      count: bands.length,
-      holdsSmallPrint:
-        bands.length === 1 && Boolean(bands[0].querySelector('a[href="/privacy-policy"]')),
-    };
   });
-  check(
-    "and the account and the small print share one ruled band",
-    base.count === 1 && base.holdsSmallPrint,
-    base.count === 1 && !base.holdsSmallPrint
-      ? "one band, without the legal links"
-      : `${base.count} band(s)`,
-  );
+  check("and both live in the panel the account row opens", together);
 
   /*
-   * The hue arrives on hover, and it is the hue that was meant.
+   * A row answers the pointer.
    *
-   * Read against a probe painted from the palette variable rather than against
-   * a literal: Tailwind v4 emits a wide-gamut space and the string form is a
-   * representation detail that would make this red for no reason. Comparing two
-   * values the browser produced sidesteps it entirely -- and it would still
-   * catch the failure worth catching, which is a hover class Tailwind never
-   * emitted, leaving the row grey.
-   *
-   * Both are asserted because they are the whole point of drawing the two
-   * alike: same row, and the only thing telling them apart is what signing out
-   * costs.
+   * Read as the background before and after hovering rather than against a
+   * literal: the palette is a set of variables per theme, and the failure worth
+   * catching is a hover class Tailwind never emitted, which leaves the two equal.
    */
-  const palette = await page.evaluate(() => {
-    const probe = document.createElement("span");
-    probe.style.display = "none";
-    document.body.appendChild(probe);
-    const read = (variable) => {
-      probe.style.color = `var(${variable})`;
-      return getComputedStyle(probe).color;
-    };
-    const values = { red: read("--color-red-400"), indigo: read("--color-indigo-400") };
-    probe.remove();
-    return values;
-  });
-
-  /*
-   * Two selectors, because the two halves run in different places: the hover is
-   * Playwright's and may use `:has-text()`, the read is the page's and may not.
-   */
-  const hovered = async (hoverSelector, readSelector) => {
-    await page.locator(SHOWN(hoverSelector)).first().hover();
-    await page.waitForTimeout(400);
-    return page.evaluate((sel) => {
+  const background = (selector) =>
+    page.evaluate((sel) => {
       const el = [...document.querySelectorAll(sel)].find((node) => node.offsetParent !== null);
-      return el ? getComputedStyle(el).color : null;
-    }, readSelector);
-  };
+      return el ? getComputedStyle(el).backgroundColor : null;
+    }, selector);
 
-  const outHue = await hovered(SIGN_OUT, SIGN_OUT_ROW);
-  check(
-    "signing out goes red on hover, because it is the one that costs",
-    outHue === palette.red,
-    `${outHue}`,
-  );
+  const outBefore = await background(SIGN_OUT_ROW);
+  await page.locator(SHOWN(SIGN_OUT)).first().hover();
+  await page.waitForTimeout(400);
+  const outAfter = await background(SIGN_OUT_ROW);
+  check("signing out answers a pointer", outBefore !== outAfter, `${outBefore} -> ${outAfter}`);
 
-  const adminHue = await hovered(ADMIN, ADMIN);
-  check("and the admin takes its own accent", adminHue === palette.indigo, `${adminHue}`);
+  const adminBefore = await background(ADMIN);
+  await page.locator(SHOWN(ADMIN)).first().hover();
+  await page.waitForTimeout(400);
+  const adminAfter = await background(ADMIN);
+  check("and so does the admin", adminBefore !== adminAfter, `${adminBefore} -> ${adminAfter}`);
 
   await context.close();
 }

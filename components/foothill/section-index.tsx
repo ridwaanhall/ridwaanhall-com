@@ -20,9 +20,16 @@ export function SectionIndex({
   const [current, setCurrent] = useState(sections[0]?.id ?? "");
 
   useEffect(() => {
+    // Not `getElementById`: a page the reader left stays in the document,
+    // hidden, so two documents' sections can share an id. The visible one is
+    // the one being read.
     const targets = sections
-      .map((section) => document.getElementById(section.id))
-      .filter((el): el is HTMLElement => el !== null);
+      .map((section) =>
+        Array.from(document.querySelectorAll<HTMLElement>(`[id="${section.id}"]`)).find(
+          (el) => el.offsetParent !== null,
+        ),
+      )
+      .filter((el): el is HTMLElement => el !== undefined);
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries.filter((entry) => entry.isIntersecting);

@@ -184,7 +184,7 @@ function Comment({
         {comment.isDeleted ? (
           <p className="mt-1.5 text-[15px] text-mute italic">This comment was deleted.</p>
         ) : (
-          <p className="mt-1.5 text-[16px] leading-relaxed whitespace-pre-line text-ink">{comment.body}</p>
+          <p className="mt-1.5 text-[16px] leading-relaxed whitespace-pre-line [overflow-wrap:anywhere] text-ink">{comment.body}</p>
         )}
         {!comment.isDeleted && (onReply || comment.canDelete) && (
           <div className="mt-2 flex gap-5">

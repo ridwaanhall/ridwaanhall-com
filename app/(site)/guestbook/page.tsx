@@ -37,7 +37,7 @@ export default function GuestbookPage() {
               />
             </div>
           </div>
-          <div className="lg:col-span-8">
+          <div className="min-w-0 lg:col-span-8">
             {/*
               The heading above is static and prerenders; everything below
               reads the session cookie and the live thread, neither of which is

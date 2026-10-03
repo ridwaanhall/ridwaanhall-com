@@ -337,6 +337,7 @@ function Palette({ about, onClose }: { about: AboutData; onClose: () => void }) 
                     <li
                       key={entry.id}
                       onMouseEnter={() => setActive(mine)}
+                      onMouseLeave={() => setActive(-1)}
                       onClick={() => go(entry)}
                       className={cn(
                         "flex cursor-pointer items-baseline justify-between gap-4 rounded-md px-3 py-2.5 text-[15px]",

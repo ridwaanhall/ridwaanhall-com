@@ -128,11 +128,11 @@ await page.waitForTimeout(1500);
 
 const first = await widgetId();
 check("a widget is rendered", Boolean(first), first ?? "");
-check("the site starts dark", (await page.getAttribute("html", "data-theme")) === "dark");
+check("the site starts light", (await page.getAttribute("html", "data-theme")) === "light");
 
 await page.locator("[data-theme-toggle]").last().click();
 await page.waitForTimeout(2500);
-check("the site switches to light", (await page.getAttribute("html", "data-theme")) === "light");
+check("the site switches to dark", (await page.getAttribute("html", "data-theme")) === "dark");
 
 const second = await widgetId();
 check("the widget is recreated for the new theme", Boolean(second) && second !== first, `${first} -> ${second}`);

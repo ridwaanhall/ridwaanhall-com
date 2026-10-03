@@ -1,9 +1,14 @@
+import { WRAP } from "@/components/foothill/layout";
 import { Bar, PageSkeleton, RowsSkeleton } from "@/components/foothill/skeleton";
 
-/** The home page while it loads: the hero's text column, then the work index. */
+/**
+ * The home page while it loads: the hero's text column, then the work index.
+ * Full-bleed like the page, whose hero runs edge to edge.
+ */
 export default function Loading() {
   return (
-    <PageSkeleton>
+    <PageSkeleton bleed>
+      <div className={WRAP}>
       <div className="max-w-[560px] lg:pt-10">
         <Bar className="h-3 w-64" />
         <Bar className="mt-6 h-[clamp(3rem,1.9rem+6vw,6.9rem)] w-[80%]" />
@@ -21,6 +26,7 @@ export default function Loading() {
         <Bar className="h-3 w-32" />
       </div>
       <RowsSkeleton count={4} height={81} className="mt-2" />
+      </div>
     </PageSkeleton>
   );
 }

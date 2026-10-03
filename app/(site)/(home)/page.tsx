@@ -57,8 +57,10 @@ export default async function HomePage() {
     <main className={MAIN}>
       <JsonLdScript schemas={await homepageSchemas(about)} />
       {/* The hero: who, what, and where -- the where drawn as the land. On
-          a wide screen the map runs off the right edge behind the text. */}
-      <section className="relative overflow-hidden lg:min-h-[620px]">
+          a wide screen the map runs off the right edge behind the text. A
+          div rather than a section, and first in `<main>`: the route's
+          skeleton is measured against the page's first block. */}
+      <div className="relative overflow-hidden lg:min-h-[620px]">
         <div className={WRAP}>
           <div className="relative z-10 max-w-[560px] lg:pt-10 lg:pb-20">
             <p data-fh-enter data-fh-hold className={EYEBROW}>
@@ -122,7 +124,7 @@ export default async function HomePage() {
         <div className="relative mt-14 h-[280px] sm:h-[380px] lg:absolute lg:inset-y-0 lg:right-[-4%] lg:mt-0 lg:h-auto lg:w-[64%] lg:[mask-image:linear-gradient(to_right,transparent,black_32%)]">
           <ContourField lines={contours()} summits={SUMMITS} />
         </div>
-      </section>
+      </div>
 
       <div className={WRAP}>
         {selected.length > 0 && (

@@ -13,10 +13,10 @@
    THE NEUTRALS AND THE ACCENT ARE THE PUBLIC SITE'S
    -------------------------------------------------
    zinc, black, white and indigo are defined below from the site's own tokens
-   (`--fh-paper`, `raise`, `ink`, `mute`, `line`, `sulfur` in styles/site.css),
-   which already change with the theme. So the admin is the same paper, ink
-   and sulfur as the pages it edits, in both themes, from one table rather
-   than two -- the 50-odd hand-tuned light values these replaced are gone.
+   (`--fh-paper`, `raise`, `ink`, `mute`, `line` in styles/site.css), which
+   already change with the theme. So the admin is the same paper and ink as
+   the pages it edits, in both themes, from one table rather than two -- the
+   50-odd hand-tuned light values these replaced are gone.
 
        black      the canvas        paper
        zinc-950   a faint panel     raise, half strength
@@ -26,13 +26,10 @@
        zinc-500   the dimmest text  mute
        zinc-400 .. 200              mute stepping toward ink
        zinc-100, 50, white          ink
-       indigo     focus, accent     sulfur: the text value up to 400, the
-                                    mark value from 500, mixed into the line
-                                    for the borders and washes below that
-
-   `--fh-sulfur` is the shade of sulfur that passes contrast as text on the
-   mist background, which is why the text steps take it rather than the
-   brighter mark.
+       indigo     focus, accent     ink: the site has no accent colour, so
+                                    what the admin marks out it marks in the
+                                    text's own colour, and mixes ink into the
+                                    line for the borders and washes
 
    THE STATUS HUES STILL NEED A LIGHT TABLE
    ----------------------------------------
@@ -67,17 +64,17 @@
     --color-zinc-900: var(--fh-raise);
     --color-zinc-950: color-mix(in oklab, var(--fh-raise) 50%, var(--fh-paper));
 
-    --color-indigo-50: var(--fh-sulfur);
-    --color-indigo-100: var(--fh-sulfur);
-    --color-indigo-200: var(--fh-sulfur);
-    --color-indigo-300: var(--fh-sulfur);
-    --color-indigo-400: var(--fh-sulfur);
-    --color-indigo-500: var(--fh-sulfur-mark);
-    --color-indigo-600: var(--fh-sulfur-mark);
-    --color-indigo-700: color-mix(in oklab, var(--fh-sulfur-mark) 60%, var(--fh-line));
-    --color-indigo-800: color-mix(in oklab, var(--fh-sulfur-mark) 40%, var(--fh-line));
-    --color-indigo-900: color-mix(in oklab, var(--fh-sulfur-mark) 22%, var(--fh-paper));
-    --color-indigo-950: color-mix(in oklab, var(--fh-sulfur-mark) 12%, var(--fh-paper));
+    --color-indigo-50: var(--fh-ink);
+    --color-indigo-100: var(--fh-ink);
+    --color-indigo-200: var(--fh-ink);
+    --color-indigo-300: var(--fh-ink);
+    --color-indigo-400: var(--fh-ink);
+    --color-indigo-500: var(--fh-ink);
+    --color-indigo-600: var(--fh-ink);
+    --color-indigo-700: color-mix(in oklab, var(--fh-ink) 45%, var(--fh-line));
+    --color-indigo-800: color-mix(in oklab, var(--fh-ink) 30%, var(--fh-line));
+    --color-indigo-900: color-mix(in oklab, var(--fh-ink) 14%, var(--fh-paper));
+    --color-indigo-950: color-mix(in oklab, var(--fh-ink) 8%, var(--fh-paper));
 }
 
 html[data-theme="dark"] {

@@ -138,7 +138,7 @@ function OpenToWork({
       <div className="lg:col-span-7">
         {data.status && (
           <Reveal as="p" className="flex items-center gap-3 text-[15px] text-ink">
-            <span aria-hidden="true" className="h-2 w-2 rounded-full bg-sulfur-mark" />
+            <span aria-hidden="true" className="h-2 w-2 rounded-full bg-ink" />
             {data.status}
             {data.availability && <span className="text-mute">, available {data.availability.toLowerCase()}</span>}
           </Reveal>

@@ -72,7 +72,7 @@ async function SignInNotice({ searchParams }: { searchParams: Promise<{ error?: 
   if (!error) return null;
 
   return (
-    <p role="alert" className="mt-8 border-l-2 border-sulfur-mark pl-4 text-[15px] leading-relaxed text-ink">
+    <p role="alert" className="mt-8 border-l-2 border-ink pl-4 text-[15px] leading-relaxed text-ink">
       {ERRORS[error] ?? "That sign-in did not complete. Try again."}
     </p>
   );

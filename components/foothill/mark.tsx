@@ -12,7 +12,7 @@ export function Mark({ className }: { className?: string }) {
         strokeLinejoin="round"
         strokeLinecap="round"
       />
-      <circle cx="17.5" cy="4" r="1.5" className="fill-sulfur-mark" />
+      <circle cx="17.5" cy="4" r="1.5" className="fill-ink" />
     </svg>
   );
 }

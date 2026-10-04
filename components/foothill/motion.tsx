@@ -400,7 +400,7 @@ export function Animate({
 }
 
 /**
- * A sulfur hairline across the top that fills as an article is read.
+ * A hairline in ink across the top that fills as an article is read.
  *
  * It measures the element named by `target`, not the page, so the comments
  * under a post do not count as reading it. Under reduced motion it still
@@ -428,7 +428,7 @@ export function ReadingProgress({ target }: { target: string }) {
     <div
       ref={bar}
       aria-hidden="true"
-      className="fixed inset-x-0 top-0 z-[55] h-[2px] origin-left scale-x-0 bg-sulfur-mark"
+      className="fixed inset-x-0 top-0 z-[55] h-[2px] origin-left scale-x-0 bg-ink"
     />
   );
 }

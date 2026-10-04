@@ -307,10 +307,8 @@ function DayCell({
       onClick={onPick}
       className={cn(
         "admin-option rounded-md py-1 text-center text-xs",
-        isSelected && "admin-day-selected",
         !inMonth && "text-zinc-600",
         isToday && !isSelected && "admin-day-today",
-        isSelected && "bg-indigo-500 text-white hover:bg-indigo-500",
       )}
     >
       {day.getDate()}

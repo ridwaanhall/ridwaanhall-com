@@ -36,13 +36,19 @@
  * The two glyphs, as data URIs.
  *
  * `:root` is a pseudo-class rather than an element selector, so this does not
- * breach the rule above: it declares two custom properties, both prefixed, and
+ * breach the rule above: it declares three custom properties, all prefixed, and
  * a custom property that nothing reads paints nothing. The site is unaffected.
+ *
+ * A data URI cannot read a custom property, so the tick -- paper on a box
+ * filled with ink -- is written once per theme. The chevron is a grey that
+ * reads on either.
  */
 :root {
-    --admin-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2314201b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.5l3.5 3.5L13 4.5'/%3E%3C/svg%3E");
-    --admin-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2371717a' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+    --admin-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23edefea' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.5l3.5 3.5L13 4.5'/%3E%3C/svg%3E");
+    --admin-tick-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%230f1412' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.5l3.5 3.5L13 4.5'/%3E%3C/svg%3E");
+    --admin-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%237a8781' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
 }
+
 
 /* ---------------------------------------------------------------------------
    Checkbox
@@ -92,6 +98,10 @@
     background-color: var(--color-indigo-500);
     border-color: var(--color-indigo-500);
     background-image: var(--admin-tick);
+}
+
+[data-theme="dark"] .admin-check:checked {
+    background-image: var(--admin-tick-dark);
 }
 
 .admin-check:focus-visible {

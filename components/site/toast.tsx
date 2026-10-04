@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils/cn";
 export type ToastVariant = "success" | "error" | "info";
 
 const VARIANTS: Record<ToastVariant, { icon: IconName; mark: string; time: string; word: string }> = {
-  success: { icon: "check", mark: "bg-ink text-paper", time: "bg-sulfur-mark", word: "Success:" },
+  success: { icon: "check", mark: "bg-ink text-paper", time: "bg-ink", word: "Success:" },
   error: { icon: "alert", mark: "bg-red-500/15 text-red-400", time: "bg-red-500", word: "Error:" },
   info: { icon: "info", mark: "bg-line text-ink", time: "bg-mute", word: "Note:" },
 };

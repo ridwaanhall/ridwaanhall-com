@@ -27,10 +27,10 @@
  *     them, so there is no threshold any more -- what removes the flash is
  *     finishing the gesture rather than declining to start it.
  *
- *  3. **The bar is sulfur, and visible, in both themes.** It is the site's one
- *     accent, the same as the reading line on a post, and it is drawn from a
- *     token that changes with the theme -- so this measures that it resolves
- *     to a yellow, not a grey, and stands off the canvas in each.
+ *  3. **The bar is ink, and visible, in both themes.** The site has no accent
+ *     colour, so the bar is drawn in the text's own, from a token that
+ *     changes with the theme -- this measures that it stands well off the
+ *     canvas in each, which a value left over from one theme would not.
  *
  *  4. **A skeleton renders no `<main>`.** The content-entrance fade in
  *     `styles/animations.css` keys on that element precisely because a
@@ -401,12 +401,8 @@ try {
     const { stops, canvas } = measured;
 
     check(`${theme}: the bar resolves to a real colour`, stops.length === 1, `${stops.length} colour(s)`);
-    check(`${theme}: it is sulfur, not grey`,
-      stops.length > 0 && stops.every(([r, g, b]) => r - b > 80 && g - b > 60),
-      stops.map((s) => s.join(",")).join(" | "));
-
     const worst = stops.length && canvas ? Math.min(...stops.map((s) => contrast(s, canvas))) : 0;
-    check(`${theme}: it is visible against the canvas`, worst >= 1.6, `contrast ${worst.toFixed(2)}:1`);
+    check(`${theme}: it stands off the canvas as text does`, worst >= 7, `contrast ${worst.toFixed(2)}:1`);
 
     await page.close();
   }

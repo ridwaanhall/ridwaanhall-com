@@ -80,7 +80,7 @@ export function SectionIndex({
         <span
           ref={marker}
           aria-hidden="true"
-          className="absolute top-0 -left-px h-0 w-[2px] rounded-full bg-sulfur-mark"
+          className="absolute top-0 -left-px h-0 w-[2px] rounded-full bg-ink"
         />
         <ul ref={list}>
         {sections.map((section) => (

@@ -117,7 +117,7 @@ function Body({ body }: { body: string }) {
   if (!body) return null;
   return (
     <p
-      className="mt-4 text-[17px] leading-[1.7] whitespace-pre-line text-ink [&_a]:underline [&_a]:decoration-sulfur-mark [&_a]:underline-offset-2"
+      className="mt-4 text-[17px] leading-[1.7] whitespace-pre-line text-ink [&_a]:underline [&_a]:decoration-ink [&_a]:underline-offset-2"
       dangerouslySetInnerHTML={{ __html: sanitizeRichText(body) }}
     />
   );

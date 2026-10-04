@@ -333,7 +333,7 @@ export function PageLoadingBar() {
       aria-hidden="true"
       data-state="idle"
       style={{ width: "0%" }}
-      className="fixed top-0 left-0 z-[70] h-0.5 bg-sulfur-mark"
+      className="fixed top-0 left-0 z-[70] h-0.5 bg-ink"
     />
   );
 }

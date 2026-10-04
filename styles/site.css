@@ -1,15 +1,17 @@
 /* ---------------------------------------------------------------------------
    The public site: tokens, base type, and the few things utilities cannot say
 
-   Everything the public site paints comes from the six `--fh-*` tokens below,
-   exposed to Tailwind as `paper`, `raise`, `ink`, `mute`, `line` and `sulfur`
-   through `@theme inline` in app/globals.css. Light is the default; dark is a
-   redefinition of the same six, so no element anywhere carries a theme
-   variant.
+   Everything the public site paints comes from the five `--fh-*` tokens below,
+   exposed to Tailwind as `paper`, `raise`, `ink`, `mute` and `line` through
+   `@theme inline` in app/globals.css. Light is the default; dark is a
+   redefinition of the same five, so no element anywhere carries a theme
+   variant. There is no accent colour: where a page needs emphasis -- a
+   focus ring, a progress line, an active mark -- it uses ink, the colour of
+   the text itself, and a chart's own hues are the only colour on the site.
 
-   The admin never reads these. It keeps its own remap in theme-light.css, and
-   every rule below is anchored to `.fh-site` or to an `fh-` class, so nothing
-   here reaches a screen the site shell does not wrap.
+   The admin reads the same tokens, through the palette theme-light.css
+   defines from them. Every rule below is anchored to `.fh-site` or to an
+   `fh-` class except the text selection, which is the whole site's.
 
    Like the other sheets this is unlayered, so a property set here beats any
    utility on the same element. Nothing in this file sets a property that a
@@ -22,10 +24,6 @@
   --fh-ink: #14201b;
   --fh-mute: #5b6963;
   --fh-line: #cdd4cd;
-  /* Sulfur. The darker value is for text, where the brighter one would fail
-     contrast on the mist background; marks and fills use `--fh-sulfur-mark`. */
-  --fh-sulfur: #7a6300;
-  --fh-sulfur-mark: #c9a40e;
   --fh-scrim: rgb(20 32 27 / 0.42);
   /* The portrait's plate. It stays light in both themes: the engraving's line
      weight *is* its shading, so inverting it would print a negative. */
@@ -39,8 +37,6 @@
   --fh-ink: #e4e9e3;
   --fh-mute: #8b9891;
   --fh-line: #25302b;
-  --fh-sulfur: #e0be3c;
-  --fh-sulfur-mark: #e0be3c;
   --fh-scrim: rgb(5 8 7 / 0.66);
   --fh-print: #d5dbd3;
   --fh-thumb: rgb(139 152 145 / 0.4);
@@ -78,18 +74,20 @@ body:has(.fh-site) {
   text-wrap: pretty;
 }
 
-.fh-site ::selection {
-  background-color: var(--fh-sulfur-mark);
-  color: #14201b;
+/* Selected text is the theme turned over: ink behind, paper in front. The
+   whole site's, the admin included, so a selection looks the same anywhere. */
+::selection {
+  background-color: var(--fh-ink);
+  color: var(--fh-paper);
 }
 
-/* One focus ring for the whole site: sulfur, offset, never removed.
+/* One focus ring for the whole site: ink, offset, never removed.
    In the base layer so its 2px corner is only a default: unlayered, it beat
    every rounding utility and squared a field or a plate the moment it took
    focus. */
 @layer base {
   .fh-site :focus-visible {
-    outline: 2px solid var(--fh-sulfur-mark);
+    outline: 2px solid var(--fh-ink);
     outline-offset: 3px;
     border-radius: 2px;
   }
@@ -132,7 +130,7 @@ body:has(.fh-site) {
 /* ---------------------------------------------------------------------------
    Links in running text
 
-   An underline that thickens and turns sulfur on hover. Drawn with
+   An underline that thickens and darkens to ink on hover. Drawn with
    text-decoration rather than a pseudo-element so it wraps with the text.
    --------------------------------------------------------------------------- */
 
@@ -147,7 +145,7 @@ body:has(.fh-site) {
 }
 
 .fh-link:hover {
-  text-decoration-color: var(--fh-sulfur-mark);
+  text-decoration-color: var(--fh-ink);
   text-decoration-thickness: 2px;
 }
 
@@ -207,7 +205,7 @@ body:has(.fh-site) {
 .fh-prose.prose-content a {
   color: inherit;
   text-decoration-line: underline;
-  text-decoration-color: var(--fh-sulfur-mark);
+  text-decoration-color: var(--fh-ink);
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
 }
@@ -265,7 +263,7 @@ body:has(.fh-site) {
 .fh-prose.prose-content blockquote {
   margin-left: 0;
   padding-left: 1.2em;
-  border-left: 2px solid var(--fh-sulfur-mark);
+  border-left: 2px solid var(--fh-ink);
   color: var(--fh-mute);
 }
 
@@ -479,18 +477,18 @@ body:has(.fh-site) {
    the entity's rank there, never repainted here). Validated with the dataviz
    checks against both surfaces: every adjacent pair stays apart under the
    three colour-vision deficiencies, and the dark column is its own stepping
-   rather than a flip. Slot 2 sits just under 3:1 on the mist, which is why
-   every chart that uses it carries a text legend.
+   rather than a flip. No yellow and no orange: the site has no warm accent,
+   so a chart does not borrow one. All five clear 3:1 on both surfaces.
 
    The heat ramp is one hue, pine, light to dark -- magnitude, not identity.
    --------------------------------------------------------------------------- */
 
 :root {
   --fh-s1: #14896b;
-  --fh-s2: #a8860a;
-  --fh-s3: #4f74c4;
-  --fh-s4: #c95f3b;
-  --fh-s5: #8d6cc0;
+  --fh-s2: #4f74c4;
+  --fh-s3: #c23b4f;
+  --fh-s4: #8d6cc0;
+  --fh-s5: #5d8a2a;
   --fh-s0: #a3aea8;
   --fh-heat-0: #e0e5df;
   --fh-heat-1: #b5d2c5;
@@ -501,10 +499,10 @@ body:has(.fh-site) {
 
 :root[data-theme="dark"] {
   --fh-s1: #1f9c7c;
-  --fh-s2: #a88a0b;
-  --fh-s3: #5f84d6;
-  --fh-s4: #d26a44;
-  --fh-s5: #9479d6;
+  --fh-s2: #5f84d6;
+  --fh-s3: #d9566a;
+  --fh-s4: #9479d6;
+  --fh-s5: #76a43a;
   --fh-s0: #4a5651;
   --fh-heat-0: #19211e;
   --fh-heat-1: #1c4639;
@@ -569,7 +567,7 @@ body:has(.fh-site) {
    --------------------------------------------------------------------------- */
 
 .fh-underline {
-  background-image: linear-gradient(var(--fh-sulfur-mark), var(--fh-sulfur-mark));
+  background-image: linear-gradient(var(--fh-ink), var(--fh-ink));
   background-repeat: no-repeat;
   background-position: 0 100%;
   background-size: 0% 2px;

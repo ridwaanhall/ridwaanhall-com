@@ -43,7 +43,7 @@ export const TEXT_BUTTON =
 
 /** The one solid button style: ink on paper, inverted. */
 export const SOLID_BUTTON =
-  "group inline-flex h-12 cursor-pointer items-center justify-center gap-2.5 rounded-full bg-ink px-6 text-[15px] font-medium text-paper transition-[background-color,transform] duration-300 hover:bg-[color-mix(in_oklab,var(--fh-ink)_86%,var(--fh-sulfur-mark))] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40";
+  "group inline-flex h-12 cursor-pointer items-center justify-center gap-2.5 rounded-full bg-ink px-6 text-[15px] font-medium text-paper transition-[background-color,transform] duration-300 hover:bg-[color-mix(in_oklab,var(--fh-ink)_82%,var(--fh-mute))] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40";
 
 /** The outlined counterpart, for the second action beside a solid one. */
 export const LINE_BUTTON =

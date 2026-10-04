@@ -86,7 +86,7 @@ export function ScrollTop() {
           cy="24"
           r={R}
           fill="none"
-          stroke="var(--fh-sulfur-mark)"
+          stroke="var(--fh-ink)"
           strokeWidth="2"
           strokeLinecap="round"
           strokeDasharray={LENGTH}

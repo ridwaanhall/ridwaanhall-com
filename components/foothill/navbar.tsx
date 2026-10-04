@@ -164,7 +164,7 @@ function NavbarAt({
               <span
                 ref={indicator}
                 aria-hidden="true"
-                className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-0 rounded-full bg-sulfur-mark opacity-0"
+                className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-0 rounded-full bg-ink opacity-0"
               />
             </ul>
           </nav>
@@ -228,8 +228,8 @@ function StatusLink({
   const body = (
     <>
       <span aria-hidden="true" className="relative flex h-2 w-2">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sulfur-mark opacity-60 motion-reduce:hidden" />
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-sulfur-mark" />
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ink opacity-60 motion-reduce:hidden" />
+        <span className="relative inline-flex h-2 w-2 rounded-full bg-ink" />
       </span>
       {line.label}
     </>
@@ -318,7 +318,7 @@ function MobileMenu({
                 <Link
                   href={item.href}
                   aria-current={(item.href === "/" ? pathname === "/" : isActive(item, pathname)) ? "page" : undefined}
-                  className="group flex items-center justify-between py-3.5 font-display text-[clamp(1.9rem,1.4rem+3vw,2.75rem)] leading-none font-medium tracking-[-0.03em] text-ink aria-[current=page]:text-sulfur"
+                  className="group flex items-center justify-between py-3.5 font-display text-[clamp(1.9rem,1.4rem+3vw,2.75rem)] leading-none font-medium tracking-[-0.03em] text-mute transition-colors hover:text-ink aria-[current=page]:text-ink"
                 >
                   <Roll>{item.label}</Roll>
                   <Icon

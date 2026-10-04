@@ -40,7 +40,7 @@ export function ActionLink({
     variant === "solid" && SOLID_BUTTON,
     variant === "line" && LINE_BUTTON,
     variant === "text" &&
-      "group inline-flex items-center gap-2 text-[15px] font-medium text-ink transition-colors hover:text-sulfur",
+      "group inline-flex items-center gap-2 text-[15px] font-medium text-ink",
     className,
   );
   const back = glyph === "arrow-left";
@@ -242,10 +242,7 @@ export function Fact({ label, children }: { label: string; children: React.React
  * Logos are shown in grey and take their colour back on hover.
  */
 export function Logo({ src, name, className }: { src: string; name: string; className?: string }) {
-  const box = cn(
-    "relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-[10px] border border-line bg-raise",
-    className,
-  );
+  const box = cn("relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-[10px]", className);
   if (!src) {
     const initials = name
       .split(/\s+/)
@@ -254,20 +251,18 @@ export function Logo({ src, name, className }: { src: string; name: string; clas
       .map((word) => word[0].toUpperCase())
       .join("");
     return (
-      <span aria-hidden="true" className={cn(box, "font-display text-[13px] font-semibold text-mute")}>
+      <span aria-hidden="true" className={cn(box, "border border-line bg-raise font-display text-[13px] font-semibold text-mute")}>
         {initials || "·"}
       </span>
     );
   }
   return (
+    // The logo fills its rounded square edge to edge, with no border and no
+    // inset: a mark set inside a second box reads as a card within a card.
+    // The light plate only shows through a logo drawn on transparency, which
+    // would otherwise vanish against the dark theme.
     <span className={cn(box, "fh-print")}>
-      <Image
-        src={src}
-        alt={`${name} logo`}
-        fill
-        sizes="44px"
-        className="fh-logo object-contain p-1.5"
-      />
+      <Image src={src} alt={`${name} logo`} fill sizes="44px" className="fh-logo object-contain" />
     </span>
   );
 }

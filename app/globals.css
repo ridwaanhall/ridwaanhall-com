@@ -151,8 +151,6 @@
     --color-ink: var(--fh-ink);
     --color-mute: var(--fh-mute);
     --color-line: var(--fh-line);
-    --color-sulfur: var(--fh-sulfur);
-    --color-sulfur-mark: var(--fh-sulfur-mark);
     --font-display: var(--font-funnel-display), ui-sans-serif, system-ui, sans-serif;
     --font-text: var(--font-funnel-sans), ui-sans-serif, system-ui, sans-serif;
     --font-mono: var(--font-jetbrains), ui-monospace, monospace;

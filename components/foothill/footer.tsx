@@ -56,11 +56,11 @@ export function Footer({ about }: { about: AboutData }) {
                   href={`mailto:${email}`}
                   className="group mt-6 inline-flex items-center gap-3 font-display text-[clamp(1.4rem,1rem+1.8vw,2.25rem)] font-medium tracking-[-0.025em] text-ink"
                 >
-                  <Brand name="email" className="h-[0.9em] w-[0.9em] text-mute transition-colors group-hover:text-sulfur" />
+                  <Brand name="email" className="h-[0.9em] w-[0.9em] text-mute transition-colors group-hover:text-ink" />
                   <Roll>{email}</Roll>
                   <Icon
                     name="arrow-up-right"
-                    className="h-[0.8em] w-[0.8em] text-mute transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-sulfur"
+                    className="h-[0.8em] w-[0.8em] text-mute transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-ink"
                   />
                 </a>
               </Reveal>

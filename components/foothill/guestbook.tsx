@@ -295,7 +295,7 @@ function Entry({
               <span className="rounded-full bg-raise px-2 py-0.5 text-[12px] text-ink">{ROLE_LABEL[message.role]}</span>
             )}
             {message.isPinned && (
-              <span className="inline-flex items-center gap-1 text-[12px] text-sulfur">
+              <span className="inline-flex items-center gap-1 text-[12px] font-medium text-ink">
                 <Icon name="pin" className="h-3 w-3" />
                 Pinned
               </span>

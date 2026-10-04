@@ -60,7 +60,7 @@ export default async function ContactPage() {
                   <Roll>{email}</Roll>
                   <Icon
                     name="arrow-up-right"
-                    className="h-5 w-5 text-mute transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-sulfur"
+                    className="h-5 w-5 text-mute transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-ink"
                   />
                 </a>
               </Reveal>

@@ -100,8 +100,8 @@ export default async function HomePage() {
                 {status.map((line) => (
                   <li key={line.key} className="flex items-center gap-3">
                     <span aria-hidden="true" className="relative flex h-2 w-2">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sulfur-mark opacity-60 motion-reduce:hidden" />
-                      <span className="relative inline-flex h-2 w-2 rounded-full bg-sulfur-mark" />
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ink opacity-60 motion-reduce:hidden" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-ink" />
                     </span>
                     {line.href ? (
                       <Link href={line.href} className="group text-ink">

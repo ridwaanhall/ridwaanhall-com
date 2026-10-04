@@ -146,8 +146,9 @@ the about page. The rest is image-led: projects and posts are pictures set
 straight on the paper, with no box around any of them. Light is the default
 theme.
 
-- **Six tokens paint everything.** `--fh-paper`, `raise`, `ink`, `mute`,
-  `line` and `sulfur` live in `styles/site.css`, redefined under
+- **Five tokens paint everything, and none of them is an accent.**
+  `--fh-paper`, `raise`, `ink`, `mute` and `line` live in `styles/site.css`,
+  redefined under
   `[data-theme="dark"]`, and reach Tailwind as `bg-paper`, `text-ink` and so on
   through `@theme inline` in `app/globals.css`. Never a `dark:` variant, never
   a zinc class on a public page -- those are the admin's vocabulary, though
@@ -1206,12 +1207,13 @@ seen.
   surfaces, lines and text, indigo for focus and accent -- and
   `styles/theme-light.css` defines zinc, black, white and indigo *from the
   site's tokens*, which already change with the theme. So both themes, and
-  the shared toast, dialog and tooltip, are the site's paper, ink, line and
-  sulfur from one table; only the status hues (green, red, amber and the
+  the shared toast, dialog and tooltip, are the site's paper, ink and line
+  from one table; only the status hues (green, red, amber and the
   rest) keep a light table of their own. Two consequences worth knowing:
   `white` is ink, so it is dark in light mode -- a surface that must stay
   light in both themes is `fh-print`, never `bg-white` -- and `indigo` is
-  sulfur. Stay inside that vocabulary or a colour silently misses a theme.
+  ink, since the site has no accent colour. Stay inside that vocabulary or a
+  colour silently misses a theme.
   The admin's repeated class strings (the title, the primary and quiet
   buttons, the group label, the save bar) live in
   `components/admin/control-classes.ts`; a new screen uses them rather than

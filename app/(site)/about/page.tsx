@@ -305,7 +305,7 @@ function ExperienceGroup({ company, roles }: { company: string; roles: Experienc
                 aria-hidden="true"
                 className={cn(
                   "absolute top-[0.55em] -left-[29px] h-[9px] w-[9px] rounded-full border-2 border-paper",
-                  role.is_current ? "bg-sulfur-mark" : "bg-line",
+                  role.is_current ? "bg-ink" : "bg-line",
                 )}
               />
               <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
@@ -378,12 +378,13 @@ function Certifications({ items }: { items: Certification[] }) {
           className="border-t border-line"
           summaryClassName="py-5"
           summary={
-            <span className="flex flex-1 items-baseline justify-between gap-4">
-              <span className="font-display text-[clamp(1.6rem,1.3rem+1.2vw,2.25rem)] font-medium tracking-[-0.03em] text-ink tabular-nums">
-                {year || "Undated"}
-              </span>
-              <span className="text-[14px] text-mute">
-                {list.length} {list.length === 1 ? "certificate" : "certificates"}
+            // The count set small beside the year, as a section's title carries
+            // its own (`Heading`), rather than out at the far edge.
+            <span className="flex flex-1 items-start gap-[0.25em] font-display text-[clamp(1.6rem,1.3rem+1.2vw,2.25rem)] font-medium tracking-[-0.03em] text-ink tabular-nums">
+              {year || "Undated"}
+              <span className="mt-[0.1em] font-text text-[0.42em] font-normal tracking-normal text-mute">
+                {list.length}
+                <span className="sr-only"> {list.length === 1 ? "certificate" : "certificates"}</span>
               </span>
             </span>
           }
@@ -422,7 +423,7 @@ function Certifications({ items }: { items: Certification[] }) {
 /** Accepted first, then the two ways an application ends without one. */
 const OUTCOME_ORDER = ["accepted", "rejected", "ghosted"];
 const OUTCOME_TONE: Record<string, string> = {
-  accepted: "bg-sulfur-mark",
+  accepted: "bg-ink",
   rejected: "bg-mute",
   ghosted: "bg-mute/35",
 };
@@ -549,7 +550,7 @@ function ApplicationRow({ app }: { app: Application }) {
             ))}
         </dl>
         {app.lessons_learned && (
-          <blockquote className="border-l-2 border-sulfur-mark pl-5 text-[18px] leading-relaxed text-ink md:col-span-2">
+          <blockquote className="border-l-2 border-ink pl-5 text-[18px] leading-relaxed text-ink md:col-span-2">
             {app.lessons_learned}
           </blockquote>
         )}

@@ -5,6 +5,7 @@ import { useEffect, useId, useRef, useState } from "react";
 
 import { Icon } from "@/components/foothill/icons";
 import { ROLE_BLURB, ROLE_LABEL, type SiteRole } from "@/lib/auth/roles";
+import { sizedAvatar } from "@/lib/site/display";
 import { usePresence } from "@/lib/motion/use-presence";
 import { cn } from "@/lib/utils/cn";
 
@@ -94,7 +95,7 @@ export function AccountMenu({
       >
         {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element -- provider avatars, any host
-          <img src={imageUrl} alt="" width={24} height={24} className="h-6 w-6 rounded-full object-cover" />
+          <img src={sizedAvatar(imageUrl, 48)} alt="" width={24} height={24} className="h-6 w-6 rounded-full object-cover" />
         ) : (
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-raise text-[11px] text-ink">
             {name.slice(0, 1).toUpperCase()}

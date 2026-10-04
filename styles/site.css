@@ -350,10 +350,24 @@ html:has(.fh-site)::-webkit-scrollbar-thumb:hover,
   border: 1px solid var(--fh-line);
 }
 
+/* A heading the contents list links to lands below the sticky navbar. */
+.fh-prose.prose-content :is(h2, h3)[id] {
+  scroll-margin-top: 7rem;
+}
+
 .fh-prose.prose-content table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
+  /* A table wider than a phone scrolls sideways, and says so: a shadow sits
+     on whichever edge has more table behind it. The paper-coloured covers
+     scroll with the content (`local`) and hide the shadows (`scroll`) once
+     an edge is reached. */
+  background:
+    linear-gradient(to right, var(--fh-paper) 30%, transparent) left / 2.5rem 100% no-repeat local,
+    linear-gradient(to left, var(--fh-paper) 30%, transparent) right / 2.5rem 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, color-mix(in oklab, var(--fh-ink) 30%, transparent), transparent) left / 0.9rem 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, color-mix(in oklab, var(--fh-ink) 30%, transparent), transparent) right / 0.9rem 100% no-repeat scroll;
 }
 
 .fh-prose.prose-content th,

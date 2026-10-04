@@ -10,6 +10,7 @@ import { Gallery } from "@/components/foothill/gallery";
 import { MAIN, MEASURE, WRAP } from "@/components/foothill/layout";
 import {PageMotion, ReadingProgress } from "@/components/foothill/motion";
 import { postCard } from "@/components/foothill/rows";
+import { SectionIndex } from "@/components/foothill/section-index";
 import { Share } from "@/components/foothill/share";
 import { ActionLink, Heading } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
@@ -24,6 +25,8 @@ import { buildMetadata } from "@/lib/seo/metadata";
 import { blogDetailSchemas } from "@/lib/seo/schemas-for-page";
 import { postCategory, readingMinutes, shortDate } from "@/lib/site/display";
 import { isoDateTime } from "@/lib/utils/format";
+import { outlineHtml } from "@/lib/utils/outline";
+import { sanitizeRichText } from "@/lib/utils/sanitize";
 
 export async function generateStaticParams() {
   const posts = await getBlogs();
@@ -50,6 +53,12 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
   const at = posts.findIndex((entry) => entry.slug === post.slug);
   const earlier = posts.slice(at + 1, at + 3);
   const more = earlier.length ? earlier : posts.filter((entry) => entry.slug !== post.slug).slice(0, 2);
+  // The post's own sections, for the contents list beside it. The top level
+  // only when there are enough of them; a post too short for three is read
+  // straight through.
+  const { headings } = outlineHtml(sanitizeRichText(post.content_html));
+  const top = headings.filter((heading) => heading.level === 2);
+  const contents = (top.length >= 3 ? top : headings).map(({ id, label }) => ({ id, label }));
 
   return (
     <main className={MAIN}>
@@ -96,26 +105,37 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
             </div>
           )}
 
-          <div id="post-body" className={`mx-auto mt-16 ${MEASURE}`}>
-            <RichText html={post.content_html} className="fh-prose" />
-
-            {post.tags.length > 0 && (
-              <ul className="mt-14 flex flex-wrap gap-2" aria-label="Tags">
-                {post.tags.map((tag) => (
-                  <li key={tag}>
-                    <Link
-                      href={`/blog?q=${encodeURIComponent(tag)}`}
-                      className="inline-block rounded-full bg-raise px-3.5 py-1.5 text-[13px] text-mute transition-colors hover:bg-ink hover:text-paper"
-                    >
-                      #{tag}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+          <div className="relative mt-16">
+            {contents.length >= 3 && (
+              // In the margin the measure leaves on a wide screen, so it takes
+              // nothing from the column it indexes.
+              <aside className="absolute inset-y-0 left-0 hidden w-[13rem] xl:block">
+                <div className="sticky top-28">
+                  <SectionIndex sections={contents} label="In this post" />
+                </div>
+              </aside>
             )}
+            <div id="post-body" className={`mx-auto ${MEASURE}`}>
+              <RichText html={post.content_html} className="fh-prose" outline />
 
-            <div className="mt-10 border-t border-line pt-6">
-              <Share url={url} title={post.title} />
+              {post.tags.length > 0 && (
+                <ul className="mt-14 flex flex-wrap gap-2" aria-label="Tags">
+                  {post.tags.map((tag) => (
+                    <li key={tag}>
+                      <Link
+                        href={`/blog?q=${encodeURIComponent(tag)}`}
+                        className="inline-block rounded-full bg-raise px-3.5 py-1.5 text-[13px] text-mute transition-colors hover:bg-ink hover:text-paper"
+                      >
+                        #{tag}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <div className="mt-10 border-t border-line pt-6">
+                <Share url={url} title={post.title} />
+              </div>
             </div>
           </div>
         </article>

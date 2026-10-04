@@ -11,7 +11,7 @@ import { deleteComment, postComment } from "@/lib/actions/comments";
 import { ROLE_LABEL } from "@/lib/auth/roles";
 import { MAX_COMMENT_LENGTH, type CommentNode, type CommentSection } from "@/lib/data/comment-shapes";
 import { notify } from "@/lib/notify";
-import { shortDate } from "@/lib/site/display";
+import { shortDate, sizedAvatar } from "@/lib/site/display";
 import { cn } from "@/lib/utils/cn";
 
 /**
@@ -218,10 +218,12 @@ export function Avatar({ src, name, size = 28 }: { src: string | null; name: str
   return src ? (
     // eslint-disable-next-line @next/next/no-img-element -- provider avatars, any host
     <img
-      src={src}
+      src={sizedAvatar(src, size * 2)}
       alt=""
       width={size}
       height={size}
+      loading="lazy"
+      decoding="async"
       className="shrink-0 rounded-full object-cover"
       style={{ width: size, height: size }}
     />

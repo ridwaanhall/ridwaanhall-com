@@ -39,7 +39,7 @@ export const ACCOUNT_ROW =
 
 /** The quiet text-only button: a word and an icon, underline on hover. */
 export const TEXT_BUTTON =
-  "inline-flex cursor-pointer items-center gap-2 text-[14px] font-medium text-mute transition-colors hover:text-ink disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex min-h-6 cursor-pointer items-center gap-2 text-[14px] font-medium text-mute transition-colors hover:text-ink disabled:cursor-not-allowed disabled:opacity-50";
 
 /** The one solid button style: ink on paper, inverted. */
 export const SOLID_BUTTON =

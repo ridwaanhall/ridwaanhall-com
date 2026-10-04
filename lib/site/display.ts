@@ -162,3 +162,28 @@ export function newest<T extends { created_at: Date | null }>(projects: T[]): T 
     .filter((project) => project.created_at)
     .reduce<T | undefined>((best, project) => (!best || project.created_at! > best.created_at! ? project : best), undefined);
 }
+
+/**
+ * A sign-in provider's avatar at `px` pixels, asked of the provider itself.
+ *
+ * GitHub serves the full upload (460px and more) unless the URL names a size,
+ * and the guestbook draws a few dozen of them at 28px -- most of a megabyte of
+ * pictures nobody sees at that scale. Google and Gravatar take a size too. Any
+ * other host, or a URL that does not parse, is passed through unchanged.
+ */
+export function sizedAvatar(src: string, px: number): string {
+  let url: URL;
+  try {
+    url = new URL(src);
+  } catch {
+    return src;
+  }
+  const size = String(Math.round(px));
+  if (url.hostname === "avatars.githubusercontent.com") url.searchParams.set("s", size);
+  else if (url.hostname === "www.gravatar.com") url.searchParams.set("s", size);
+  else if (url.hostname === "lh3.googleusercontent.com") {
+    // Google puts the size after an `=` at the end of the path: `=s96-c`.
+    url.pathname = url.pathname.replace(/=s\d+(-c)?$/, "") + `=s${size}-c`;
+  } else return src;
+  return url.toString();
+}

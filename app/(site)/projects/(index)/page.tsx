@@ -58,6 +58,9 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Lis
           }
         />
         <div className="mt-16 md:mt-24">
+          {/* The cards are titled at the third level, so the list needs a
+              second-level heading above them for the outline not to skip. */}
+          <h2 className="sr-only">All projects</h2>
           {/* `searchParams` makes this half dynamic; the heading above stays
               in the static shell. */}
           <Suspense fallback={<ResultsSkeleton />}>

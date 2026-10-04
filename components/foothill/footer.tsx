@@ -107,10 +107,10 @@ export function Footer({ about }: { about: AboutData }) {
             </span>
           </div>
           <div className="flex items-center gap-6">
-            <Link href="/privacy-policy" className="transition-colors hover:text-ink">
+            <Link href="/privacy-policy" className="-my-1.5 py-1.5 transition-colors hover:text-ink">
               <Roll>Privacy</Roll>
             </Link>
-            <Link href="/terms" className="transition-colors hover:text-ink">
+            <Link href="/terms" className="-my-1.5 py-1.5 transition-colors hover:text-ink">
               <Roll>Terms</Roll>
             </Link>
           </div>

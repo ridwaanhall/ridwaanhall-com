@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { availability, displayLabel, groupBy, postCategory, readingMinutes, yearOf } from "./display";
+import { availability, displayLabel, groupBy, postCategory, readingMinutes, sizedAvatar, yearOf } from "./display";
 
 describe("displayLabel", () => {
   it("title-cases a label that is plainly a slug", () => {
@@ -70,5 +70,25 @@ describe("availability", () => {
 
   it("says nothing when no flag is set", () => {
     assert.deepEqual(availability({ is_open_to_work: false, is_hiring: false, is_sick: false }), []);
+  });
+});
+
+describe("sizedAvatar", () => {
+  it("asks GitHub for the size, keeping its other parameters", () => {
+    assert.equal(
+      sizedAvatar("https://avatars.githubusercontent.com/u/1?v=4", 56),
+      "https://avatars.githubusercontent.com/u/1?v=4&s=56",
+    );
+  });
+  it("replaces Google's size rather than appending a second", () => {
+    assert.equal(
+      sizedAvatar("https://lh3.googleusercontent.com/a/abc=s96-c", 56),
+      "https://lh3.googleusercontent.com/a/abc=s56-c",
+    );
+    assert.equal(sizedAvatar("https://lh3.googleusercontent.com/a/abc", 56), "https://lh3.googleusercontent.com/a/abc=s56-c");
+  });
+  it("leaves any other host, and anything that is not a URL, alone", () => {
+    assert.equal(sizedAvatar("https://example.com/me.png", 56), "https://example.com/me.png");
+    assert.equal(sizedAvatar("/static/me.png", 56), "/static/me.png");
   });
 });

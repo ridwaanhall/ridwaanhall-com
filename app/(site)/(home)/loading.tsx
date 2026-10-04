@@ -6,10 +6,10 @@ export default function Loading() {
     <PageSkeleton>
       <div className="grid items-end gap-12 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-8">
-          <Bar className="h-[clamp(2.6rem,1.2rem+5.6vw,6.1rem)] w-[70%]" />
-          <Bar className="mt-1 h-[clamp(2.6rem,1.2rem+5.6vw,6.1rem)] w-[62%]" />
-          <Bar className="mt-8 h-6 w-full max-w-[30ch]" />
-          <Bar className="mt-2 h-6 w-[70%] max-w-[22ch]" />
+          <Bar className="h-[clamp(2.3rem,1.35rem+3.45vw,4.3rem)] w-[75%] max-w-[16ch]" />
+          <Bar className="mt-7 h-7 w-[80%] max-w-[30ch]" />
+          <Bar className="mt-3 h-5 w-full max-w-[46ch]" />
+          <Bar className="mt-2 h-5 w-[60%] max-w-[30ch]" />
           <div className="mt-10 flex gap-3">
             <Bar className="h-12 w-40 rounded-full" />
             <Bar className="h-12 w-36 rounded-full" />

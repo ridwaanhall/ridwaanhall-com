@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { CardGrid } from "@/components/foothill/cards";
-import {H3, META } from "@/components/foothill/classes";
+import { H1, H3, LEAD, META } from "@/components/foothill/classes";
 import { MAIN, WRAP } from "@/components/foothill/layout";
 import { PageMotion, Reveal } from "@/components/foothill/motion";
 import { featuredProjects, monthYearLabel, postCard, projectCard } from "@/components/foothill/rows";
@@ -68,22 +68,23 @@ export default async function HomePage() {
       <div className={WRAP}>
         <div className="fh-frame grid items-end gap-12 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-8">
-            <h1
-              data-fh-split
-              data-fh-hold
-              className="font-display text-[clamp(3rem,1.4rem+6.4vw,7rem)] leading-[0.88] font-semibold tracking-[-0.055em] text-ink"
-            >
-              {first}
-              <br />
-              {last}
+            {/* The same size as every other page's title: the name is the
+                page's heading, not a poster. */}
+            <h1 data-fh-split data-fh-hold className={H1}>
+              {[first, last].filter(Boolean).join(" ")}
             </h1>
             <p
               data-fh-enter
               data-fh-hold
-              className="mt-8 max-w-[30ch] text-[clamp(1.2rem,1.05rem+0.6vw,1.55rem)] leading-[1.35] tracking-[-0.01em] text-ink"
+              className="mt-7 text-[clamp(1.2rem,1.05rem+0.6vw,1.55rem)] leading-[1.35] tracking-[-0.01em] text-ink"
             >
-              {about.role}. {sentence(about.short_description)}
+              {about.role}.
             </p>
+            {about.short_description && (
+              <p data-fh-enter data-fh-hold className={`${LEAD} mt-3 max-w-[46ch]`}>
+                {sentence(about.short_description)}
+              </p>
+            )}
 
             <div data-fh-enter data-fh-hold className="mt-10 flex flex-wrap items-center gap-3">
               <ActionLink href="/projects" variant="solid">

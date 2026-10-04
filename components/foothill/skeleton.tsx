@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils/cn";
 /**
  * The public site's loading furniture.
  *
- * Its own rather than the shared primitives in `components/skeleton.tsx`,
- * which the admin draws in its own palette. The contract is the same one
+ * Its own rather than the admin's bar in `components/skeleton.tsx`, because
+ * it is shaped to the site's frame. The contract is the same one
  * `scripts/check-page-loading.mjs` and `check-skeleton-shape.mjs` hold every
  * skeleton to: a `role="status"` box whose text starts with "Loading", the
  * `skeleton-pulse` class, an `aria-hidden` inner box, and no `<main>` --

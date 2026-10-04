@@ -17,6 +17,7 @@ import {
 import { ADMIN_GROUPS, navItemsInGroup, type AdminGroup } from "@/lib/admin/registry";
 import { hasAnyAccess, permittedKeys } from "@/lib/auth/permissions";
 import { requireStaff } from "@/lib/auth/staff";
+import { TITLE } from "@/components/admin/control-classes";
 
 /**
  * The admin index: every screen, grouped as the sidebar groups them.
@@ -76,7 +77,7 @@ export default async function AdminIndexPage() {
   return (
     <div className="admin-fade space-y-9">
       <div className="border-b border-zinc-800 pb-5">
-        <h1 className="text-2xl font-medium text-zinc-100">Admin</h1>
+        <h1 className={TITLE}>Admin</h1>
         <p className="mt-1.5 max-w-2xl text-sm text-zinc-400">
           Content for ridwaanhall.com, read from and written to the live database.
         </p>
@@ -137,8 +138,8 @@ export default async function AdminIndexPage() {
                         {item.label}
                       </span>
                       {item.singleton && (
-                        <span className="shrink-0 rounded-full border border-zinc-800 px-1.5 py-0.5 text-[0.625rem] tracking-wide text-zinc-500 uppercase">
-                          single row
+                        <span className="shrink-0 rounded-full border border-zinc-800 px-2 py-0.5 text-[11px] text-zinc-500">
+                          Single row
                         </span>
                       )}
                       <ChevronIcon

@@ -17,7 +17,7 @@ import { onPageLoadingStart } from "@/lib/utils/page-loading";
  * **It must be mounted outside `#page-content`.** That element animates a
  * transform, and a transformed ancestor becomes the containing block for its
  * `position: fixed` descendants -- a bar rendered inside it would be pinned to
- * the content column rather than the viewport. The tooltips, the spark canvas,
+ * the content column rather than the viewport. The tooltips,
  * the toast stack and the confirm dialog are all body-level siblings for the
  * same reason.
  *
@@ -333,7 +333,7 @@ export function PageLoadingBar() {
       aria-hidden="true"
       data-state="idle"
       style={{ width: "0%" }}
-      className="fixed top-0 left-0 h-0.5 z-[70] bg-gradient-to-r from-teal-400 via-teal-300 to-teal-500"
+      className="fixed top-0 left-0 z-[70] h-0.5 bg-sulfur-mark"
     />
   );
 }

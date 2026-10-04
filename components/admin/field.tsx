@@ -120,7 +120,7 @@ export function Field({
     const chosen = new Set((Array.isArray(value) ? value : []).map(String));
     return (
       <Row field={field} id={id} describedBy={describedBy} error={error}>
-        <div className="custom-scroll max-h-56 overflow-y-auto rounded-md border border-zinc-800 bg-zinc-900 px-2.5 py-2">
+        <div className="max-h-56 overflow-y-auto rounded-md border border-zinc-800 bg-zinc-900 px-2.5 py-2">
           <div className="grid gap-x-4 gap-y-1 sm:grid-cols-2">
             {(field.options ?? []).map((option) => (
               <label key={option.value} className={cn(BOXED_LABEL, "text-sm text-zinc-300")}>

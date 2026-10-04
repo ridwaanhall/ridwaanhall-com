@@ -231,7 +231,7 @@ export function AdminSelect({
         createPortal(
           <div
             ref={panelRef}
-            className="admin-popover custom-scroll fixed z-50 overflow-y-auto"
+            className="admin-popover fixed z-50 overflow-y-auto"
             style={{
               top: placement?.top ?? -9999,
               left: placement?.left ?? -9999,
@@ -278,7 +278,7 @@ export function AdminSelect({
                   {option.group && option.group !== visible[index - 1]?.group && (
                     <div
                       role="presentation"
-                      className="px-3 pt-2 pb-1 text-[0.625rem] font-medium tracking-wide text-zinc-500 uppercase"
+                      className="px-3 pt-2 pb-1 text-[12px] font-medium text-zinc-500"
                     >
                       {option.group}
                     </div>

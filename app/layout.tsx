@@ -8,7 +8,7 @@ import { ThemeColorSync } from "@/components/providers/theme-color-sync";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Tooltips } from "@/components/providers/tooltips";
 
-import { funnelDisplay, funnelSans, jetbrains, onest } from "./fonts";
+import { funnelDisplay, funnelSans, jetbrains } from "./fonts";
 
 import "./globals.css";
 
@@ -47,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     // client markup legitimately differ on that one attribute.
     <html
       lang="en"
-      className={`${onest.variable} ${funnelDisplay.variable} ${funnelSans.variable} ${jetbrains.variable}`}
+      className={`${funnelDisplay.variable} ${funnelSans.variable} ${jetbrains.variable}`}
       suppressHydrationWarning
     >
       <body className="bg-black text-zinc-300 transition-colors duration-200">

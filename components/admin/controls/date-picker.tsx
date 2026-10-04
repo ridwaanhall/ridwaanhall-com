@@ -214,7 +214,7 @@ export function AdminDatePicker({
               {DAYS.map((day) => (
                 <div
                   key={day}
-                  className="py-1 text-center text-[0.625rem] font-medium tracking-wide text-zinc-500 uppercase"
+                  className="py-1 text-center text-[11px] font-medium text-zinc-500"
                 >
                   {day}
                 </div>

@@ -260,7 +260,7 @@ export function Logo({ src, name, className }: { src: string; name: string; clas
     );
   }
   return (
-    <span className={cn(box, "bg-white")}>
+    <span className={cn(box, "fh-print")}>
       <Image
         src={src}
         alt={`${name} logo`}

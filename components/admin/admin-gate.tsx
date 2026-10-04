@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import { SquaresIcon } from "@/components/admin/admin-icons";
+import { TITLE } from "@/components/admin/control-classes";
+import { Mark } from "@/components/foothill/mark";
 import { ProviderButtons } from "@/components/auth/provider-buttons";
 import { signOutHere } from "@/lib/actions/auth";
 
@@ -12,7 +13,8 @@ import { signOutHere } from "@/lib/actions/auth";
  * public `/sign-in` page with a different `redirectTo`: that one sits inside
  * the site's chrome, which is exactly what must not appear here.
  *
- * The mark at the top is the rail's, and it is the only thing borrowed. It says
+ * The mark at the top is the site's, as the rail carries it, and it is the
+ * only thing borrowed. It says
  * which door this is without naming a single screen behind it --
  * `check-admin.mjs` reads these bodies whole and fails if the model index shows
  * up in one.
@@ -22,8 +24,8 @@ function Frame({ title, children }: { title: string; children: React.ReactNode }
   return (
     <main className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-sm rounded-xl border border-zinc-800 bg-zinc-950/40 p-6">
-        <SquaresIcon aria-hidden="true" className="text-indigo-400" height={20} width={20} />
-        <h1 className="mt-4 text-lg font-medium text-zinc-200">{title}</h1>
+        <Mark className="h-5 w-9 text-zinc-100" />
+        <h1 className={`${TITLE} mt-5`}>{title}</h1>
         {children}
       </div>
     </main>

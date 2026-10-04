@@ -115,15 +115,6 @@ export async function loadInlineRows(
   return mapped;
 }
 
-/** One blank row, for the editor's "add" button. */
-export function blankInlineRow(inline: AdminInline): InlineRow {
-  const values: InlineRow = { __id: null };
-  for (const field of inline.fields) {
-    values[field.name] = field.kind === "checkbox" ? false : field.kind === "string-list" ? [] : null;
-  }
-  return values;
-}
-
 function toFormValue(field: FormField, raw: unknown): FormValues[string] {
   if (raw === null || raw === undefined) return field.kind === "checkbox" ? false : null;
   if (field.kind === "checkbox") return Boolean(raw);

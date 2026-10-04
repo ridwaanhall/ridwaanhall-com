@@ -12,6 +12,7 @@ import { deleteRecord, saveRecord, type SaveResult } from "@/lib/actions/admin";
 import type { ClientFieldset, FormValues } from "@/lib/admin/form";
 import { notify } from "@/lib/notify";
 import { startPageLoading } from "@/lib/utils/page-loading";
+import { ERROR_NOTE, GROUP_LABEL, PRIMARY_BUTTON, QUIET_BUTTON, SAVE_BAR } from "@/components/admin/control-classes";
 
 /**
  * The change form.
@@ -205,7 +206,7 @@ export function RecordForm({
         places for a border that gains nothing.
       */}
       {fieldset.title && (
-        <legend className="mb-1.5 text-xs font-medium tracking-wide text-zinc-400 uppercase">
+        <legend className={GROUP_LABEL}>
           {fieldset.title}
         </legend>
       )}
@@ -270,7 +271,7 @@ export function RecordForm({
           or removing your own staff access. Field-level problems are shown at
           the field and summarised here as one line. */}
       {state && !state.ok && (
-        <p role="alert" className="rounded-md border border-red-900 bg-red-500/5 px-3 py-2 text-sm text-red-400">
+        <p role="alert" className={ERROR_NOTE}>
           {state.error}
         </p>
       )}
@@ -286,12 +287,12 @@ export function RecordForm({
         a repaint of the whole strip on every frame, and the palette has a solid
         background that reads just as well.
       */}
-      <div className="sticky bottom-0 -mx-4 flex items-center gap-3 border-t border-zinc-800 bg-black px-4 py-3 lg:-mx-6 lg:px-6">
+      <div className={SAVE_BAR}>
         {canSave ? (
           <button
             type="submit"
             disabled={busy}
-            className="cursor-pointer rounded-full border border-indigo-800 bg-indigo-500/10 px-5 py-1.5 text-sm font-medium text-indigo-300 transition-colors hover:bg-indigo-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:cursor-default disabled:opacity-60"
+            className={PRIMARY_BUTTON}
           >
             {saving ? "Saving…" : id === null ? "Create" : "Save"}
           </button>
@@ -309,7 +310,7 @@ export function RecordForm({
 
         <Link
           href={listHref}
-          className="rounded-full px-2 py-1.5 text-sm text-zinc-500 transition-colors hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+          className={QUIET_BUTTON}
         >
           {canSave ? "Cancel" : "Back"}
         </Link>

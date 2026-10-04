@@ -58,11 +58,10 @@ describe("visibleNavItems", () => {
     for (const item of independent) assert.ok(visibleNavItems().includes(item), item.label);
   });
 
-  it("every item has a label, an href and an icon", () => {
+  it("every item has a label and an href", () => {
     for (const item of NAV_ITEMS) {
       assert.ok(item.label, "missing label");
       assert.ok(item.href.startsWith("/"), `${item.label}: href must be a path`);
-      assert.equal(typeof item.icon, "function", `${item.label}: missing icon`);
     }
   });
 

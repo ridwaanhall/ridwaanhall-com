@@ -20,7 +20,6 @@ import {
   RailIcon,
   ScaleIcon,
   SlidersIcon,
-  SquaresIcon,
   UsersIcon,
 } from "@/components/admin/admin-icons";
 import {
@@ -30,6 +29,7 @@ import {
   navItemsInGroup,
   type AdminGroup,
 } from "@/lib/admin/registry";
+import { Mark } from "@/components/foothill/mark";
 import { ROLE_LABEL, adminRole } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils/cn";
 import { useOutsidePointer, usePopoverPosition } from "@/lib/utils/use-popover";
@@ -113,9 +113,7 @@ function GroupEntries({
             >
               <span className="truncate">{item.label}</span>
               {item.singleton && (
-                <span className="ml-auto shrink-0 text-[0.625rem] tracking-wide text-zinc-600 uppercase">
-                  one
-                </span>
+                <span className="ml-auto shrink-0 text-[11px] text-zinc-600">Single</span>
               )}
             </Link>
           </li>
@@ -215,7 +213,7 @@ function GroupFlyout({
         without the hook having to know anything about the rail's gutter.
       */
       className={cn(
-        "admin-popover custom-scroll fixed z-50 w-56 overflow-y-auto p-1.5",
+        "admin-popover fixed z-50 w-56 overflow-y-auto p-1.5",
         placement?.side === "left" ? "mr-2" : "ml-2",
       )}
       style={{
@@ -233,7 +231,7 @@ function GroupFlyout({
         onHoverOut();
       }}
     >
-      <p className="px-2 pb-1.5 text-[0.6875rem] font-medium tracking-wide text-zinc-500 uppercase">
+      <p className="px-2 pb-1.5 text-[13px] font-medium text-zinc-500">
         {group}
       </p>
       <GroupEntries
@@ -433,9 +431,9 @@ export function AdminSidebar({
             onClick={() => setDrawer(false)}
             className="flex min-w-0 items-center gap-2.5 rounded-md text-zinc-200 transition-colors hover:text-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
           >
-            <SquaresIcon className="shrink-0 text-indigo-400" height={17} width={17} />
+            <Mark className="h-4 w-7 shrink-0" />
             <span
-              className="admin-rail-label truncate text-sm font-medium whitespace-nowrap"
+              className="admin-rail-label truncate font-display text-[15px] font-medium tracking-[-0.01em] whitespace-nowrap"
               data-hidden={mini}
             >
               Admin
@@ -452,7 +450,7 @@ export function AdminSidebar({
           </button>
         </div>
 
-        <div className="custom-scroll flex-1 overflow-x-hidden overflow-y-auto px-2 py-3">
+        <div className="flex-1 overflow-x-hidden overflow-y-auto px-2 py-3">
           <ul className="space-y-0.5">
             {groups.map((group) => {
               const Icon = GROUP_ICON[group];

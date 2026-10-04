@@ -11,6 +11,7 @@ import {
   SortIcon,
 } from "@/components/admin/admin-icons";
 import { FilterSelect } from "@/components/admin/filter-select";
+import { ADD_BUTTON } from "@/components/admin/control-classes";
 import { adminDate, adminDateTime } from "@/lib/admin/format";
 import { listHref, sortHref } from "@/lib/admin/href";
 import {
@@ -154,7 +155,7 @@ export function Changelist<Row>({
           {canCreate && (
             <Link
               href={`${adminPath(entry)}/new` as Route}
-              className="inline-flex items-center gap-1.5 rounded-full border border-indigo-800 bg-indigo-500/10 px-3 py-1.5 text-xs font-medium text-indigo-300 transition-colors hover:bg-indigo-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+              className={ADD_BUTTON}
             >
               <PlusIcon height={13} width={13} />
               Add
@@ -205,7 +206,7 @@ export function Changelist<Row>({
         itself to a box that never scrolls. It would look like a header that
         simply does nothing.
       */}
-      <div className="custom-scroll [contain:layout] overflow-x-auto overflow-y-hidden rounded-lg border border-zinc-800">
+      <div className="[contain:layout] overflow-x-auto overflow-y-hidden rounded-lg border border-zinc-800">
         <table className="w-full text-left text-sm max-lg:min-w-[45rem]">
           <thead>
             <tr className="border-b border-zinc-800 bg-zinc-900/60">
@@ -216,7 +217,7 @@ export function Changelist<Row>({
                     key={column.key}
                     scope="col"
                     className={cn(
-                      "px-3 py-2.5 text-xs font-medium tracking-wide text-zinc-400 uppercase",
+                      "px-3 py-2.5 text-[13px] font-medium text-zinc-500",
                       isNumeric(column.kind) && "text-right",
                     )}
                     aria-sort={active ? (params.dir === "asc" ? "ascending" : "descending") : undefined}
@@ -324,7 +325,7 @@ export function Changelist<Row>({
                     canCreate && (
                       <Link
                         href={`${adminPath(entry)}/new` as Route}
-                        className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-indigo-800 bg-indigo-500/10 px-3 py-1.5 text-xs font-medium text-indigo-300 transition-colors hover:bg-indigo-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                        className={`mt-3 ${ADD_BUTTON}`}
                       >
                         <PlusIcon height={13} width={13} />
                         Add the first one

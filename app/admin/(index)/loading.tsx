@@ -25,8 +25,8 @@ import { SkeletonBar } from "@/components/skeleton";
  * is filled to roughly the height the page arrives at rather than collapsing
  * by half of it.
  *
- * No `SkeletonPage` -- the admin has its own chrome and its own gutters, which
- * `AdminMain` supplies.
+ * No page frame of its own -- the admin has its own chrome and its own
+ * gutters, which `AdminMain` supplies.
  */
 export default function Loading() {
   return (

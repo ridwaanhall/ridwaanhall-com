@@ -3,10 +3,10 @@ import type { SVGProps } from "react";
 /**
  * One glyph per sidebar group, plus the handful the changelist needs.
  *
- * Drawn in the same feather-stroked style as `components/icons/nav-icons.tsx`
- * rather than pulled from an icon package: the public site inlines its own,
- * and a second, differently-drawn set in the admin would read as another
- * product bolted on.
+ * Drawn stroked on a 24 grid with round caps, the way the public site's own
+ * set in `components/foothill/icons.tsx` is, rather than pulled from an icon
+ * package: a differently-drawn set in the admin would read as another product
+ * bolted on.
  */
 
 type IconProps = SVGProps<SVGSVGElement>;
@@ -236,18 +236,6 @@ export function RailIcon(props: IconProps) {
     <Stroked {...props}>
       <rect x="3" y="4" width="18" height="16" rx="2" />
       <path d="M9 4v16" />
-    </Stroked>
-  );
-}
-
-/** The admin's own mark, in the rail's header. */
-export function SquaresIcon(props: IconProps) {
-  return (
-    <Stroked {...props}>
-      <rect x="3" y="3" width="7.5" height="7.5" rx="1.5" />
-      <rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5" />
-      <rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5" />
-      <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5" />
     </Stroked>
   );
 }

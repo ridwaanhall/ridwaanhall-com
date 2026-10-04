@@ -11,6 +11,7 @@ import { blankFormValues, loadReferenceOptions } from "@/lib/admin/record";
 import { adminPath, ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
 import { permits } from "@/lib/auth/permissions";
 import { getStaffUser, requireStaff } from "@/lib/auth/staff";
+import { TITLE } from "@/components/admin/control-classes";
 
 /**
  * The add form.
@@ -79,7 +80,7 @@ export default async function AdminCreatePage({ params }: Params) {
       </Link>
 
       <div>
-        <h1 className="text-xl font-medium text-zinc-100">Add {entry.label.toLowerCase()}</h1>
+        <h1 className={TITLE}>Add {entry.label.toLowerCase()}</h1>
         <p className="mt-1 text-sm text-zinc-500">{entry.blurb}</p>
       </div>
 

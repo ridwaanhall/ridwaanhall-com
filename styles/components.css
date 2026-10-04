@@ -25,13 +25,6 @@
 
 @layer components {
 
-    /* Filled surface card: the comment form shell and sign-in prompt.
-       Padding and the hover/focus-within border pseudo differ per
-       instance. */
-    .surface-card {
-        @apply rounded-xl border border-zinc-800 bg-zinc-900/40 transition-all duration-300;
-    }
-
     /* Every loading skeleton breathes together.
 
        A named class rather than the bare utility because the utility has no

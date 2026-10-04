@@ -18,6 +18,7 @@ import {
 } from "@/lib/admin/registry";
 import { can, permits } from "@/lib/auth/permissions";
 import { requireStaff } from "@/lib/auth/staff";
+import { TITLE } from "@/components/admin/control-classes";
 
 /**
  * One route for every changelist.
@@ -103,7 +104,7 @@ async function SingletonScreen({ entryKey, canSave }: { entryKey: string; canSav
   return (
     <div className="admin-fade space-y-5">
       <div>
-        <h1 className="text-xl font-medium text-zinc-100">{entry.labelPlural}</h1>
+        <h1 className={TITLE}>{entry.labelPlural}</h1>
         <p className="mt-1 text-sm text-zinc-400">{entry.blurb}</p>
       </div>
       <RecordForm
@@ -197,7 +198,7 @@ export default async function AdminListPage({ params, searchParams }: Params) {
   return (
     <div className="admin-fade space-y-4">
       <div>
-        <h1 className="text-xl font-medium text-zinc-100">{entry.labelPlural}</h1>
+        <h1 className={TITLE}>{entry.labelPlural}</h1>
         <p className="mt-1 text-sm text-zinc-400">{entry.blurb}</p>
       </div>
 

@@ -26,3 +26,36 @@ export const INVALID = "border-red-800 hover:border-red-700";
  * checkbox. "Featured" was 477px wide around 83px of text.
  */
 export const BOXED_LABEL = "flex w-fit items-center gap-2 self-start";
+
+/** A screen's title: the site's display face, a step below the public H1. */
+export const TITLE = "font-display text-[1.75rem] leading-tight font-medium tracking-[-0.03em] text-zinc-100";
+
+/**
+ * The heading over a group of fields, an inline or a matrix block. Sentence
+ * case at reading size, as the public site sets its own: small tracked
+ * capitals are what every generated admin puts here.
+ */
+export const GROUP_LABEL = "mb-2 text-[13px] font-medium text-zinc-300";
+
+/** The one solid action on a screen -- Save, Create -- as the site draws it. */
+export const PRIMARY_BUTTON =
+  "cursor-pointer rounded-full bg-zinc-100 px-5 py-2 text-sm font-medium text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:cursor-default disabled:opacity-50";
+
+/** The same action at a list's scale: Add, beside the search and filters. */
+export const ADD_BUTTON =
+  "inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-3.5 py-1.5 text-xs font-medium text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+
+/** The quiet action beside it -- Cancel, Back. */
+export const QUIET_BUTTON =
+  "rounded-full px-2 py-1.5 text-sm text-zinc-500 transition-colors hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+
+/** A small text link that acts on its row: view on site, open, copy. */
+export const ROW_LINK =
+  "inline-flex items-center gap-1.5 rounded text-xs text-zinc-500 transition-colors hover:text-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
+
+/** What the server said went wrong with a save, above the form. */
+export const ERROR_NOTE = "rounded-md border border-red-900 bg-red-500/5 px-3 py-2 text-sm text-red-400";
+
+/** The bar Save and Cancel sit in, held to the bottom of the screen. */
+export const SAVE_BAR =
+  "sticky bottom-0 -mx-4 flex items-center gap-3 border-t border-zinc-800 bg-black px-4 py-3 lg:-mx-6 lg:px-6";

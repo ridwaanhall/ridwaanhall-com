@@ -14,6 +14,7 @@ import { loadFormValues, loadReferenceOptions } from "@/lib/admin/record";
 import { adminPath, type AdminEntry } from "@/lib/admin/registry";
 import { permits } from "@/lib/auth/permissions";
 import { requireStaff } from "@/lib/auth/staff";
+import { ROW_LINK, TITLE } from "@/components/admin/control-classes";
 
 /**
  * One record: the change form for it.
@@ -107,7 +108,7 @@ function Crumb({ label, href }: { label: string; href: Route }) {
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-1.5 rounded text-xs text-zinc-500 transition-colors hover:text-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+      className={ROW_LINK}
     >
       <BackIcon height={14} width={14} />
       {label}
@@ -126,7 +127,7 @@ function Crumb({ label, href }: { label: string; href: Route }) {
 function Heading({ title, type, id }: { title: string; type: string; id: string }) {
   return (
     <div>
-      <h1 className="text-xl font-medium text-zinc-100">{title}</h1>
+      <h1 className={TITLE}>{title}</h1>
       <p className="mt-1.5 flex flex-wrap items-center gap-2 text-sm text-zinc-500">
         {type}
         <code className="rounded bg-zinc-900 px-1.5 py-0.5 text-xs break-all text-zinc-500">

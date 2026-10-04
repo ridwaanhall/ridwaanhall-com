@@ -2,8 +2,8 @@
    Shared motion
 
    What is left here is what the admin and the public site both draw: the
-   theme toggle's icon on hover, the navigation progress bar, and the skeleton
-   pulse. The public site's own motion is GSAP's, in `lib/motion/` and the
+   theme toggle's icon on hover, the navigation progress bar, the skeleton
+   pulse, and a toast's running time. The public site's own motion is GSAP's, in `lib/motion/` and the
    components that use it, with its CSS halves in `site.css`.
 
    Every one carries a `prefers-reduced-motion` branch. Adding another without
@@ -122,5 +122,37 @@
        one class against three and would lose. */
     .group:hover .icon-shake {
         animation: none;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   A toast's time
+
+   The hairline along a toast's foot runs out over exactly as long as the toast
+   stays (`--notify-ms`, set from `AUTO_DISMISS_MS`), and holds wherever sonner
+   holds the timer: while the stack is pointed at or has focus. Under reduced
+   motion it is simply not drawn -- the toast still leaves on time.
+   --------------------------------------------------------------------------- */
+@keyframes notify-time {
+    from {
+        transform: scaleX(1);
+    }
+    to {
+        transform: scaleX(0);
+    }
+}
+
+.notify-time {
+    animation: notify-time var(--notify-ms, 6000ms) linear forwards;
+}
+
+[data-sonner-toaster]:hover .notify-time,
+[data-sonner-toaster]:focus-within .notify-time {
+    animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .notify-time {
+        display: none;
     }
 }

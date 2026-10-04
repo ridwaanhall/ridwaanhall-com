@@ -28,9 +28,9 @@
    Anything added here goes at the end, for the same reason -- which is where
    the public site's own sheet sits, after all of them.
 
-   Several of the first group carry their own `html[data-theme="light"]` blocks;
-   globalScrollbar.css also exports the shared `--scrollbar-*` tokens the
-   others reuse.
+   Colours in all of them come from the site's tokens or the palette variables
+   theme-light.css defines from them, so none carries a theme block of its own
+   for the neutrals.
    --------------------------------------------------------------------------- */
 @import "../styles/globalScrollbar.css";
 @import "../styles/tooltip.css";
@@ -111,23 +111,30 @@
    --------------------------------------------------------------------------- */
 
 /* ---------------------------------------------------------------------------
-   Onest
+   Funnel Sans, for everything
 
    The faces themselves come from `next/font/google`, which downloads them at
    build time, serves them from this origin under /_next/static/media, and
    writes one `@font-face` per subset with the `unicode-range` that selects it.
-   The call and the reasoning for its options are in `app/fonts.ts`.
+   The calls and the reasoning for their options are in `app/fonts.ts`.
 
-   What is left here is the wiring: `--font-onest` is the variable that call
-   declares, and it carries next/font's size-adjusted fallback face after the
-   real one, so text laid out before the download finishes is close enough in
-   metrics not to reflow when it arrives. Naming it through Tailwind's
-   `--font-sans` is what makes `font-sans` and the inherited body font both
-   resolve to Onest.
+   What is left here is the wiring: `--font-funnel-sans` is the variable that
+   call declares, and it carries next/font's size-adjusted fallback face after
+   the real one, so text laid out before the download finishes is close enough
+   in metrics not to reflow when it arrives. Naming it through Tailwind's
+   `--font-sans` is what makes `font-sans` and the inherited body font -- the
+   admin's, and every shared piece's -- resolve to the site's own face.
    --------------------------------------------------------------------------- */
 
 @theme {
-    --font-sans: var(--font-onest), ui-sans-serif, system-ui, sans-serif;
+    --font-sans: var(--font-funnel-sans), ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+
+    /* A step softer than Tailwind's own, to sit beside the site's 18px plates
+       and full-round buttons: the admin's inputs, cards and panels and the
+       dialogs both sides share take their corners from these. */
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
 }
 
 /* ---------------------------------------------------------------------------

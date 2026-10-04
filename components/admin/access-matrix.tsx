@@ -10,6 +10,7 @@ import { ADMIN_ACTIONS, withImpliedView, type AdminAction, type Grant } from "@/
 import { ACCESS_PRESETS, grantsForPreset, type AccessPreset } from "@/lib/auth/presets";
 import { notify } from "@/lib/notify";
 import { cn } from "@/lib/utils/cn";
+import { ERROR_NOTE, GROUP_LABEL, PRIMARY_BUTTON, QUIET_BUTTON, SAVE_BAR } from "@/components/admin/control-classes";
 
 /**
  * One account's role and its grants, as a grid.
@@ -238,7 +239,7 @@ export function AccessMatrix({
         row in it: a superuser's answers do not come from these boxes at all.
       */}
       <fieldset disabled={saving} className="min-w-0">
-        <legend className="mb-1.5 text-xs font-medium tracking-wide text-zinc-400 uppercase">
+        <legend className={GROUP_LABEL}>
           Role
         </legend>
         <div className="rounded-lg border border-zinc-800 bg-zinc-950/40 px-3.5 py-3">
@@ -272,7 +273,7 @@ export function AccessMatrix({
         they are, so taking the role away later restores what was there.
       */}
       <fieldset disabled={saving || superuser} className="min-w-0 space-y-4">
-        <legend className="mb-1.5 text-xs font-medium tracking-wide text-zinc-400 uppercase">
+        <legend className={GROUP_LABEL}>
           Screens
         </legend>
 
@@ -307,7 +308,7 @@ export function AccessMatrix({
         {groups.map(([group, rowsInGroup]) => (
           <div key={group} className="overflow-hidden rounded-lg border border-zinc-800">
             <div className="flex items-center gap-2.5 border-b border-zinc-800 bg-zinc-950/60 px-3 py-2">
-              <h2 className="text-xs font-medium tracking-wide text-zinc-300 uppercase">
+              <h2 className="text-[13px] font-medium text-zinc-200">
                 {group}
               </h2>
               <span className="text-[0.6875rem] text-zinc-600 tabular-nums">
@@ -403,7 +404,7 @@ export function AccessMatrix({
       {state && !state.ok && (
         <p
           role="alert"
-          className="rounded-md border border-red-900 bg-red-500/5 px-3 py-2 text-sm text-red-400"
+          className={ERROR_NOTE}
         >
           {state.error}
         </p>
@@ -411,18 +412,18 @@ export function AccessMatrix({
 
       {/* The record form's bar, to the pixel: this is a save button on an admin
           form, and it should be in the same place with the same weight. */}
-      <div className="sticky bottom-0 -mx-4 flex items-center gap-3 border-t border-zinc-800 bg-black px-4 py-3 lg:-mx-6 lg:px-6">
+      <div className={SAVE_BAR}>
         <button
           type="submit"
           disabled={saving}
-          className="cursor-pointer rounded-full border border-indigo-800 bg-indigo-500/10 px-5 py-1.5 text-sm font-medium text-indigo-300 transition-colors hover:bg-indigo-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:cursor-default disabled:opacity-60"
+          className={PRIMARY_BUTTON}
         >
           {saving ? "Saving…" : "Save"}
         </button>
 
         <Link
           href={listHref}
-          className="rounded-full px-2 py-1.5 text-sm text-zinc-500 transition-colors hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+          className={QUIET_BUTTON}
         >
           Cancel
         </Link>

@@ -27,8 +27,8 @@
    bare element selector here.
 
    Colours come from the ramp variables rather than from literals, for the same
-   reason the rest of the admin does: `--color-zinc-800` is remapped in light
-   mode and `#27272a` is not. Scrollbar and motion tokens are reused from
+   reason the rest of the admin does: `--color-zinc-800` follows the theme and
+   a literal does not. Scrollbar and motion tokens are reused from
    globalScrollbar.css and admin-motion.css rather than restated.
    =========================================================================== */
 
@@ -40,7 +40,7 @@
  * a custom property that nothing reads paints nothing. The site is unaffected.
  */
 :root {
-    --admin-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.5l3.5 3.5L13 4.5'/%3E%3C/svg%3E");
+    --admin-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2314201b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.5l3.5 3.5L13 4.5'/%3E%3C/svg%3E");
     --admin-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2371717a' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
 }
 
@@ -306,17 +306,17 @@
  * because a day cell is a toggle button and carries `aria-pressed` -- a bare
  * button may not claim `aria-selected`, which belongs to a listbox or a grid.
  *
- * White on indigo, both pinned: the label's contrast target is the fill under
- * it, which does not follow the theme.
+ * Paper on ink, as the site draws its one solid button: the two swap with the
+ * theme together, so the label keeps its contrast against the fill in both.
  */
 .admin-option[aria-pressed="true"] {
-    background: var(--color-indigo-500);
-    color: #fff;
+    background: var(--color-zinc-100);
+    color: var(--color-black);
 }
 
 .admin-option[aria-pressed="true"]:hover {
-    background: var(--color-indigo-500);
-    color: #fff;
+    background: var(--color-zinc-100);
+    color: var(--color-black);
 }
 
 @media (prefers-reduced-motion: reduce) {

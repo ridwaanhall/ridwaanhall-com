@@ -19,6 +19,7 @@ import { db } from "@/lib/db/client";
 import { account, adminAccess } from "@/lib/db/app-schema";
 import { isUuid } from "@/lib/utils/uuid";
 import { eq } from "drizzle-orm";
+import { ROW_LINK, TITLE } from "@/components/admin/control-classes";
 
 /**
  * One account's role and grants.
@@ -143,14 +144,14 @@ export default async function AdminAccessRecordPage({
     <div className="admin-fade space-y-5">
       <Link
         href={listHref}
-        className="inline-flex items-center gap-1.5 rounded text-xs text-zinc-500 transition-colors hover:text-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        className={ROW_LINK}
       >
         <BackIcon height={14} width={14} />
         Access
       </Link>
 
       <div>
-        <h1 className="text-xl font-medium text-zinc-100">{target.username}</h1>
+        <h1 className={TITLE}>{target.username}</h1>
         <p className="mt-1.5 flex flex-wrap items-center gap-2 text-sm text-zinc-500">
           {fullName || target.email || "Account"}
           <code className="rounded bg-zinc-900 px-1.5 py-0.5 text-xs break-all text-zinc-500">

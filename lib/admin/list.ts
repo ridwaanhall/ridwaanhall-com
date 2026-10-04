@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, asc, desc, eq, gte, ilike, inArray, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, desc, gte, ilike, inArray, or, sql, type SQL } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 
 import {
@@ -10,7 +10,6 @@ import {
 } from "@/lib/admin/form";
 import { pageRange } from "@/lib/api/pagination";
 import { db } from "@/lib/db/client";
-import { isUuid } from "@/lib/utils/uuid";
 
 /**
  * One generic changelist, driven by a per-model descriptor.
@@ -470,20 +469,4 @@ export type LookupFilter = Extract<ListFilter, { kind: "choice"; column: PgColum
 
 export function needsLookup(filter: ListFilter): filter is LookupFilter {
   return filter.kind === "choice" && !Array.isArray(filter.choices);
-}
-
-/**
- * One row by primary key, in the same shape the changelist shows.
- *
- * Reusing the descriptor's `select` rather than reading the whole table row is
- * what keeps a detail screen honest: it can only show what the list declared,
- * so the two cannot drift into disagreeing about what a record is.
- */
-export async function fetchAdminRow<Row>(
-  model: AdminListModel<Row>,
-  id: string,
-): Promise<Row | null> {
-  if (!isUuid(id)) return null;
-  const [row] = await db.select(model.select).from(model.from).where(eq(model.pk, id)).limit(1);
-  return (row as Row) ?? null;
 }

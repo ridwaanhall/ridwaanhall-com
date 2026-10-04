@@ -102,47 +102,6 @@ body:has(.fh-site) {
 }
 
 /* ---------------------------------------------------------------------------
-   Scrollbars
-
-   Every scrolling surface on the site -- the page, the palette's results, the
-   menu, a gallery strip, a code block -- wears the same thin thumb in the
-   page's own grey, so a scrollbar reads as part of the paper rather than as
-   the operating system's furniture. `scrollbar-*` for the engines that know
-   it; the `::-webkit-` pair for the ones that only know that.
-   --------------------------------------------------------------------------- */
-
-html:has(.fh-site),
-.fh-site,
-.fh-site * {
-  scrollbar-width: thin;
-  scrollbar-color: var(--fh-thumb) transparent;
-}
-
-html:has(.fh-site)::-webkit-scrollbar,
-.fh-site ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-html:has(.fh-site)::-webkit-scrollbar-track,
-.fh-site ::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-html:has(.fh-site)::-webkit-scrollbar-thumb,
-.fh-site ::-webkit-scrollbar-thumb {
-  background-color: var(--fh-thumb);
-  border: 3px solid transparent;
-  border-radius: 999px;
-  background-clip: padding-box;
-}
-
-html:has(.fh-site)::-webkit-scrollbar-thumb:hover,
-.fh-site ::-webkit-scrollbar-thumb:hover {
-  background-color: var(--fh-mute);
-}
-
-/* ---------------------------------------------------------------------------
    Rolling labels
 
    `Roll` splits a label into characters and lifts each one by its own height

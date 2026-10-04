@@ -4,6 +4,7 @@ import { ChangelistScreen } from "@/components/admin/changelist-screen";
 import { accessList } from "@/lib/admin/models/access";
 import { ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
 import { requireSuperuser } from "@/lib/auth/staff";
+import { TITLE } from "@/components/admin/control-classes";
 
 /**
  * Who can reach this admin, and how much of it.
@@ -59,7 +60,7 @@ export default async function AdminAccessPage({
   return (
     <div className="admin-fade space-y-4">
       <div>
-        <h1 className="text-xl font-medium text-zinc-100">{entry.labelPlural}</h1>
+        <h1 className={TITLE}>{entry.labelPlural}</h1>
         <p className="mt-1 text-sm text-zinc-400">{entry.blurb}</p>
       </div>
 

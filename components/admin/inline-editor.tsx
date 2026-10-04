@@ -5,6 +5,7 @@ import { useState } from "react";
 import { CloseIcon, PlusIcon } from "@/components/admin/admin-icons";
 import { Field } from "@/components/admin/field";
 import { inlineCountName, INLINE_ID, type ClientField, type FormValues } from "@/lib/admin/form";
+import { GROUP_LABEL } from "@/components/admin/control-classes";
 
 /**
  * The child rows of a record, edited on the record's own screen.
@@ -68,7 +69,7 @@ export function InlineEditor({
 
   return (
     <fieldset className="min-w-0">
-      <legend className="mb-1.5 text-xs font-medium tracking-wide text-zinc-400 uppercase">
+      <legend className={GROUP_LABEL}>
         {inline.title}
       </legend>
       {inline.help && <p className="mb-2 text-xs text-zinc-500">{inline.help}</p>}

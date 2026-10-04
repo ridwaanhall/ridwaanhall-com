@@ -150,7 +150,9 @@ theme.
   `line` and `sulfur` live in `styles/site.css`, redefined under
   `[data-theme="dark"]`, and reach Tailwind as `bg-paper`, `text-ink` and so on
   through `@theme inline` in `app/globals.css`. Never a `dark:` variant, never
-  a zinc class on a public page -- those belong to the admin's remap. The
+  a zinc class on a public page -- those are the admin's vocabulary, though
+  they resolve to these same tokens (see "The admin wears the site's palette"
+  below). The
   dashboard's five chart slots and heat ramp sit beside them and were checked
   for colour-vision separation in both themes; re-run the dataviz validator
   before changing one. `--fh-print` is the portrait's plate, light in both
@@ -172,7 +174,8 @@ theme.
   Funnel Sans for everything read, JetBrains Mono (`.fh-mono`) for the
   dashboard's figures and code only. The type scale is five constants in
   `components/foothill/classes.ts` (`H1`, `H2`, `H3`, `LEAD`, `META`); a new
-  heading is one of them. Onest stays for the admin.
+  heading is one of them. The admin and every shared piece inherit Funnel
+  Sans as Tailwind's `font-sans`; nothing loads a second family.
 - **No kicker labels, no em dashes in copy.** Small tracked capitals above
   every heading and a sentence broken by a dash are the two marks of a
   generated page; a section says what it is in its own title (`Heading`, with
@@ -1198,12 +1201,21 @@ seen.
   block is a *block*, not a transaction, so dollar-quoted bodies are blanked
   before that check runs. Scanning the raw text refuses every migration that
   enables RLS in a loop, which is to say the schema itself.
-- **No shadows, and the admin's light mode is a palette remap.** The admin is
-  written entirely in dark-mode Tailwind classes with no `dark:` variants; light
-  mode redefines the palette variables under `html[data-theme="light"]`. Stay
-  inside the existing colour vocabulary there or light mode breaks silently.
-  The public site does not use that remap at all -- see "The public site is
-  Foothill" above.
+- **No shadows, and the admin wears the site's palette.** The admin is
+  written in stock Tailwind colour classes with no `dark:` variants -- zinc for
+  surfaces, lines and text, indigo for focus and accent -- and
+  `styles/theme-light.css` defines zinc, black, white and indigo *from the
+  site's tokens*, which already change with the theme. So both themes, and
+  the shared toast, dialog and tooltip, are the site's paper, ink, line and
+  sulfur from one table; only the status hues (green, red, amber and the
+  rest) keep a light table of their own. Two consequences worth knowing:
+  `white` is ink, so it is dark in light mode -- a surface that must stay
+  light in both themes is `fh-print`, never `bg-white` -- and `indigo` is
+  sulfur. Stay inside that vocabulary or a colour silently misses a theme.
+  The admin's repeated class strings (the title, the primary and quiet
+  buttons, the group label, the save bar) live in
+  `components/admin/control-classes.ts`; a new screen uses them rather than
+  writing its own.
 - **A label activates its control from anywhere inside its box, and a grid item
   is stretched to its cell.** The admin's field rows put the label in one column
   and the control in the next, so every label's box was as wide as the column

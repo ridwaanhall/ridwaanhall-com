@@ -1,20 +1,8 @@
 import type { Route } from "next";
-import type { ComponentType, SVGProps } from "react";
-
-import {
-  AboutIcon,
-  BlogIcon,
-  ContactIcon,
-  DashboardIcon,
-  GuestbookIcon,
-  HomeIcon,
-  ProjectsIcon,
-} from "@/components/icons/nav-icons";
 
 export type NavItem = {
   label: string;
   href: Route;
-  icon: ComponentType<SVGProps<SVGSVGElement>>;
   /**
    * Whether a nested path counts as this item being active. `/blog/<slug>/`
    * highlights Blog, and `/projects/<slug>/` highlights Projects -- which is
@@ -35,13 +23,13 @@ export type NavItem = {
  * route; the hrefs are the routes and do not move.
  */
 export const NAV_ITEMS: NavItem[] = [
-  { label: "Home", href: "/", icon: HomeIcon },
-  { label: "Work", href: "/projects", icon: ProjectsIcon, matchNested: true },
-  { label: "Writing", href: "/blog", icon: BlogIcon, matchNested: true },
-  { label: "About", href: "/about", icon: AboutIcon },
-  { label: "Dashboard", href: "/dashboard", icon: DashboardIcon },
-  { label: "Guestbook", href: "/guestbook", icon: GuestbookIcon, requiresGuestbook: true },
-  { label: "Contact", href: "/contact", icon: ContactIcon },
+  { label: "Home", href: "/" },
+  { label: "Work", href: "/projects", matchNested: true },
+  { label: "Writing", href: "/blog", matchNested: true },
+  { label: "About", href: "/about" },
+  { label: "Dashboard", href: "/dashboard" },
+  { label: "Guestbook", href: "/guestbook", requiresGuestbook: true },
+  { label: "Contact", href: "/contact" },
 ];
 
 /**

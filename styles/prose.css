@@ -28,9 +28,9 @@
  * output rather than the intent keeps the pages identical today; the commented
  * values below record what the author meant, for when it is worth revisiting.
  *
- * Colours go through the palette variables, which is what makes light mode
- * work -- `globals.css` redefines those under `html[data-theme="light"]`, and
- * anything written as a raw hex would keep its dark value on a white page.
+ * Colours go through the palette variables, which is what makes both themes
+ * work -- `theme-light.css` defines those from the site's tokens, and anything
+ * written as a raw hex would keep one theme's value in the other.
  *
  * Deliberately *not* @tailwindcss/typography: its defaults are a different
  * design, so adopting it would restyle every existing post.

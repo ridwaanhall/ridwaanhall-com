@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { ErrorPage } from "@/components/site/error-page";
 
-import { funnelDisplay, funnelSans, jetbrains, onest } from "./fonts";
+import { funnelDisplay, funnelSans, jetbrains } from "./fonts";
 
 import "./globals.css";
 
@@ -23,14 +23,14 @@ import "./globals.css";
  * - `<html>` and `<body>` -- nothing else renders them at this point.
  * - `globals.css` -- the root layout's import is not in effect, so without
  *   this the palette and every utility class below are simply absent.
- * - the font variable -- same reason; `--font-onest` is declared by the class
+ * - the font variables -- same reason; each is declared by the class
  *   `next/font` generates, and that class is applied per element tree.
  *
  * What it deliberately does *not* repeat is the theme provider. There is no
  * `data-theme` here, so the palette falls to the `:root` branch, which is
- * dark -- the site's own default and the value in every prerendered document.
- * A reader who chose light gets a dark error page; that is the honest trade
- * against mounting a provider whose own module may be what failed.
+ * light -- the site's own default. A reader who chose dark gets a light error
+ * page; that is the honest trade against mounting a provider whose own module
+ * may be what failed.
  *
  * `metadata` cannot be exported from a Client Component, and an error boundary
  * has to be one, so the tab title is React's `<title>`.
@@ -41,7 +41,7 @@ export default function GlobalError({ error }: { error: Error & { digest?: strin
   }, [error]);
 
   return (
-    <html lang="en" className={`${onest.variable} ${funnelDisplay.variable} ${funnelSans.variable} ${jetbrains.variable}`}>
+    <html lang="en" className={`${funnelDisplay.variable} ${funnelSans.variable} ${jetbrains.variable}`}>
       <body>
         <title>Something broke &middot; Ridwan Halim</title>
         <ErrorPage

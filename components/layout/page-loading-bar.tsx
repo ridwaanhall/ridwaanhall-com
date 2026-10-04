@@ -272,11 +272,17 @@ export function PageLoadingBar() {
       The listing search box is a real GET form with no JavaScript behind it, so
       it navigates by unloading the page. Nothing will call `finish()` for it --
       the document goes away instead -- which is exactly right.
-      Server-action forms are POST and are not navigations, so they are skipped.
+      Server-action forms -- every save in the admin -- are not navigations, so
+      they are skipped. Not by their method: once React hydrates a form whose
+      action is a function it removes the `method` attribute and points
+      `action` at a `javascript:` placeholder, so `form.method` reads "get"
+      and every save started a bar that no navigation would ever finish. The
+      placeholder is what marks them.
     */
     function onSubmit(event: Event) {
       const form = event.target;
       if (!(form instanceof HTMLFormElement)) return;
+      if ((form.getAttribute("action") ?? "").startsWith("javascript:")) return;
       if (form.method.toLowerCase() !== "get") return;
       start();
     }

@@ -12,7 +12,7 @@ import { deleteRecord, saveRecord, type SaveResult } from "@/lib/actions/admin";
 import type { ClientFieldset, FormValues } from "@/lib/admin/form";
 import { notify } from "@/lib/notify";
 import { startPageLoading } from "@/lib/utils/page-loading";
-import { ERROR_NOTE, GROUP_LABEL, PRIMARY_BUTTON, QUIET_BUTTON, SAVE_BAR } from "@/components/admin/control-classes";
+import { ERROR_NOTE, PRIMARY_BUTTON, QUIET_BUTTON, SAVE_BAR, SECTION_TITLE } from "@/components/admin/control-classes";
 
 /**
  * The change form.
@@ -199,19 +199,13 @@ export function RecordForm({
     <fieldset key={fieldset.title ?? index} disabled={locked} className="min-w-0">
       {/*
         A real `<legend>`, first child of its `<fieldset>`, which is what names
-        the group for a screen reader. It stays above the card rather than
-        becoming a header strip inside it: a legend moved into a wrapper is no
-        longer a legend, and the alternatives -- a visually hidden one beside a
-        heading, or `aria-labelledby` -- both put the section's name in two
-        places for a border that gains nothing.
+        the group for a screen reader -- set in the display face, as a section
+        of a public page is titled. The fields under it are ruled rows rather
+        than a box: the hairlines carry the grouping a border would.
       */}
-      {fieldset.title && (
-        <legend className={GROUP_LABEL}>
-          {fieldset.title}
-        </legend>
-      )}
-      {fieldset.help && <p className="mb-2 text-xs text-zinc-500">{fieldset.help}</p>}
-      <div className="divide-y divide-zinc-900 rounded-lg border border-zinc-800 bg-zinc-950/40 px-3.5 py-2">
+      {fieldset.title && <legend className={`${SECTION_TITLE} mb-3`}>{fieldset.title}</legend>}
+      {fieldset.help && <p className="-mt-1 mb-3 max-w-2xl text-[13px] leading-relaxed text-zinc-500">{fieldset.help}</p>}
+      <div className="divide-y divide-zinc-800 border-y border-zinc-800">
         {fieldset.fields.map((field) => (
           <Field
             key={field.name}
@@ -227,30 +221,30 @@ export function RecordForm({
   );
 
   return (
-    <form action={action} className="space-y-6">
+    <form action={action} className="space-y-12">
       {shape === "editor" ? (
         /*
           `items-start` so the details column is only as tall as its contents --
           without it a grid item stretches to the row, and `sticky` inside a
           full-height item has nothing to move against and never sticks.
         */
-        <div className="grid items-start gap-6 xl:grid-cols-3">
-          <div className="min-w-0 space-y-6 xl:col-span-2">{main.map(renderFieldset)}</div>
+        <div className="grid items-start gap-12 xl:grid-cols-3 xl:gap-10">
+          <div className="min-w-0 space-y-12 xl:col-span-2">{main.map(renderFieldset)}</div>
           {aside.length > 0 && (
-            <div className="min-w-0 space-y-6 xl:sticky xl:top-6">{aside.map(renderFieldset)}</div>
+            <div className="min-w-0 space-y-12 xl:sticky xl:top-6">{aside.map(renderFieldset)}</div>
           )}
         </div>
       ) : shape === "split" ? (
-        <div className="grid items-start gap-6 lg:grid-cols-2">{main.map(renderFieldset)}</div>
+        <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-10">{main.map(renderFieldset)}</div>
       ) : (
-        <div className="max-w-3xl space-y-6">{main.map(renderFieldset)}</div>
+        <div className="max-w-3xl space-y-12">{main.map(renderFieldset)}</div>
       )}
 
       {/* Inlines are tables of child rows and are the widest thing on the page,
           so they take the whole width whatever the fieldsets above them did.
 
           Each in its own `<fieldset>` rather than all of them in one, so the
-          form's `space-y-6` still sees one element per inline -- a single
+          form's `space-y-12` still sees one element per inline -- a single
           wrapper would collapse the gaps between them into one. The fieldset is
           here for `disabled`: an inline editor is outside the fieldsets above
           and would otherwise stay live on a record somebody may only read, and

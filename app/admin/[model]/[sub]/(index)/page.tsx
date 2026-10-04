@@ -12,7 +12,7 @@ import type { AdminEntry } from "@/lib/admin/registry";
 import { resolveAdminRoute } from "@/lib/admin/route";
 import { can } from "@/lib/auth/permissions";
 import { requireStaff } from "@/lib/auth/staff";
-import { TITLE } from "@/components/admin/control-classes";
+import { ScreenHead } from "@/components/admin/screen-head";
 
 export async function generateMetadata({
   params,
@@ -102,17 +102,14 @@ async function Sub({
   const { section, entry } = route;
 
   return (
-    <div className="space-y-4">
-      <div>
-        {/*
-          The section's name, not the tab's. Heading the page with the tab
-          would redraw the h1 on every click and make six tabs read as six
-          pages that happen to share a strip; the section is the thing that
-          does not change while you are here.
-        */}
-        <h1 className={TITLE}>{section.label}</h1>
-        <p className="mt-1 text-sm text-zinc-400">{entry.blurb}</p>
-      </div>
+    <div className="space-y-8">
+      {/*
+        The section's name, not the tab's. Heading the page with the tab
+        would redraw the h1 on every click and make six tabs read as six
+        pages that happen to share a strip; the section is the thing that
+        does not change while you are here.
+      */}
+      <ScreenHead title={section.label} lead={entry.blurb} />
 
       <SectionTabs section={section} activeKey={entry.key} />
 

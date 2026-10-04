@@ -343,6 +343,10 @@ try {
       await page.goto(`${BASE}${route.from}`, { waitUntil: "load" });
       // Hydration, so the click is a client-side navigation and not a reload.
       await page.waitForTimeout(2500);
+      // The dev server's own badge sits in the bottom-left corner, which on a
+      // phone is exactly where the menu ends with its sign-in link -- so it
+      // took the click and the link timed out. It exists only under `next dev`.
+      await page.addStyleTag({ content: "nextjs-portal { display: none !important; }" });
 
       /*
         Below `lg` the navbar's links live in the full-screen menu, which is

@@ -12,7 +12,7 @@ import { adminPath } from "@/lib/admin/registry";
 import { resolveAdminRoute } from "@/lib/admin/route";
 import { permits } from "@/lib/auth/permissions";
 import { getStaffUser, requireStaff } from "@/lib/auth/staff";
-import { TITLE } from "@/components/admin/control-classes";
+import { ScreenHead } from "@/components/admin/screen-head";
 
 export async function generateMetadata(
   props: PageProps<"/admin/[model]/[sub]/new">,
@@ -66,7 +66,7 @@ export default async function AdminSectionCreatePage(
   const listHref = adminPath(entry) as Route;
 
   return (
-    <div className="admin-fade space-y-5">
+    <div className="admin-fade space-y-8">
       <Link
         href={listHref}
         className="inline-flex items-center gap-1.5 text-xs text-zinc-500 transition-colors hover:text-indigo-400"
@@ -75,10 +75,7 @@ export default async function AdminSectionCreatePage(
         {entry.labelPlural}
       </Link>
 
-      <div>
-        <h1 className={TITLE}>Add {entry.label.toLowerCase()}</h1>
-        <p className="mt-1 text-sm text-zinc-500">{entry.blurb}</p>
-      </div>
+      <ScreenHead title={`Add ${entry.label.toLowerCase()}`} lead={entry.blurb} />
 
       <RecordForm
         modelKey={entry.key}

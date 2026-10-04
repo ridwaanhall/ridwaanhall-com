@@ -4,7 +4,7 @@ import { ChangelistScreen } from "@/components/admin/changelist-screen";
 import { accessList } from "@/lib/admin/models/access";
 import { ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
 import { requireSuperuser } from "@/lib/auth/staff";
-import { TITLE } from "@/components/admin/control-classes";
+import { ScreenHead } from "@/components/admin/screen-head";
 
 /**
  * Who can reach this admin, and how much of it.
@@ -58,11 +58,8 @@ export default async function AdminAccessPage({
   const entry = ADMIN_ENTRIES_BY_KEY.get("access")!;
 
   return (
-    <div className="admin-fade space-y-4">
-      <div>
-        <h1 className={TITLE}>{entry.labelPlural}</h1>
-        <p className="mt-1 text-sm text-zinc-400">{entry.blurb}</p>
-      </div>
+    <div className="admin-fade space-y-8">
+      <ScreenHead title={entry.labelPlural} lead={entry.blurb} />
 
       <ChangelistScreen entry={entry} model={accessList} searchParams={searchParams} />
     </div>

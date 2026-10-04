@@ -19,7 +19,8 @@ import { db } from "@/lib/db/client";
 import { account, adminAccess } from "@/lib/db/app-schema";
 import { isUuid } from "@/lib/utils/uuid";
 import { eq } from "drizzle-orm";
-import { ROW_LINK, TITLE } from "@/components/admin/control-classes";
+import { ROW_LINK } from "@/components/admin/control-classes";
+import { KeyChip, ScreenHead } from "@/components/admin/screen-head";
 
 /**
  * One account's role and grants.
@@ -141,7 +142,7 @@ export default async function AdminAccessRecordPage({
   const fullName = `${target.firstName} ${target.lastName}`.trim();
 
   return (
-    <div className="admin-fade space-y-5">
+    <div className="admin-fade space-y-8">
       <Link
         href={listHref}
         className={ROW_LINK}
@@ -151,13 +152,15 @@ export default async function AdminAccessRecordPage({
       </Link>
 
       <div>
-        <h1 className={TITLE}>{target.username}</h1>
-        <p className="mt-1.5 flex flex-wrap items-center gap-2 text-sm text-zinc-500">
-          {fullName || target.email || "Account"}
-          <code className="rounded bg-zinc-900 px-1.5 py-0.5 text-xs break-all text-zinc-500">
-            {target.id}
-          </code>
-        </p>
+        <ScreenHead
+          title={target.username}
+          meta={
+            <>
+              {fullName || target.email || "Account"}
+              <KeyChip>{target.id}</KeyChip>
+            </>
+          }
+        />
         {/*
           There is no "not staff" banner beside this one any more: the list this
           screen is reached from is staff only, and `account_superuser_is_staff`
@@ -166,7 +169,7 @@ export default async function AdminAccessRecordPage({
           saying -- and it is set on Users, not here.
         */}
         {!target.isActive && (
-          <p className="mt-3 rounded-md border border-amber-900/60 bg-amber-500/5 px-3 py-2 text-sm text-amber-500/90">
+          <p className="mt-4 text-[14px] font-medium text-zinc-200">
             This account is inactive, so it cannot sign in. Also set on Users.
           </p>
         )}

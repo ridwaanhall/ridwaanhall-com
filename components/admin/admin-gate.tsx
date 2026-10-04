@@ -23,7 +23,7 @@ import { signOutHere } from "@/lib/actions/auth";
 function Frame({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <main className="flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-sm rounded-xl border border-zinc-800 bg-zinc-950/40 p-6">
+      <div className="w-full max-w-sm">
         <Mark className="h-5 w-9 text-zinc-100" />
         <h1 className={`${TITLE} mt-5`}>{title}</h1>
         {children}

@@ -107,8 +107,8 @@ function GroupEntries({
               className={cn(
                 "admin-nav-item flex items-center gap-2 rounded-md py-1.5 pr-2 pl-3 text-sm",
                 active
-                  ? "bg-zinc-800/70 text-zinc-100"
-                  : "text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200",
+                  ? "bg-zinc-900 text-zinc-100"
+                  : "text-zinc-400 hover:bg-zinc-900/60 hover:text-zinc-100",
               )}
             >
               <span className="truncate">{item.label}</span>
@@ -395,7 +395,7 @@ export function AdminSidebar({
       <button
         type="button"
         onClick={() => setDrawer(true)}
-        className="lg:hidden fixed top-3 left-3 z-40 inline-flex items-center justify-center rounded-md border border-zinc-800 bg-zinc-900 p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        className="lg:hidden fixed top-2.5 left-3 z-40 inline-flex h-9 w-9 items-center justify-center rounded-full text-zinc-300 transition-colors hover:bg-zinc-900 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
         aria-label="Open admin navigation"
       >
         <MenuIcon height={18} width={18} />
@@ -406,7 +406,7 @@ export function AdminSidebar({
           type="button"
           aria-label="Close admin navigation"
           onClick={() => setDrawer(false)}
-          className="admin-fade lg:hidden fixed inset-0 z-40 bg-black/70"
+          className="admin-fade lg:hidden fixed inset-0 z-40 bg-[var(--fh-scrim)] backdrop-blur-sm"
         />
       )}
 
@@ -419,7 +419,7 @@ export function AdminSidebar({
           collapse must not do -- they are the landmark being tracked.
         */
         className={cn(
-          "admin-rail-shift fixed inset-y-0 left-0 z-50 flex w-64 flex-col overflow-hidden border-r border-zinc-800 bg-zinc-950 lg:translate-x-0",
+          "admin-rail-shift fixed inset-y-0 left-0 z-50 flex w-64 flex-col overflow-hidden border-r border-zinc-800 bg-black lg:translate-x-0",
           mini ? "lg:w-18" : "lg:w-64",
           drawer ? "translate-x-0" : "-translate-x-full",
         )}
@@ -443,7 +443,7 @@ export function AdminSidebar({
           <button
             type="button"
             onClick={() => setDrawer(false)}
-            className="lg:hidden ml-auto rounded-md p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300"
+            className="lg:hidden ml-auto flex h-8 w-8 items-center justify-center rounded-full text-zinc-500 transition-colors hover:bg-zinc-900 hover:text-zinc-100"
             aria-label="Close admin navigation"
           >
             <CloseIcon height={16} width={16} />
@@ -483,9 +483,8 @@ export function AdminSidebar({
                       if (flyout) closeFlyoutSoon();
                     }}
                     className={cn(
-                      "admin-group-toggle flex w-full cursor-pointer items-center gap-2.5 rounded-md py-2 pr-2 pl-2.5 text-left text-sm transition-colors hover:bg-zinc-800/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
+                      "admin-group-toggle flex w-full cursor-pointer items-center gap-2.5 rounded-md py-2 pr-2 pl-2.5 text-left text-sm transition-colors hover:bg-zinc-900/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
                       holdsActive ? "text-zinc-100" : "text-zinc-400 hover:text-zinc-200",
-                      open && "bg-zinc-900/70",
                     )}
                   >
                     <Icon
@@ -561,7 +560,7 @@ export function AdminSidebar({
             onClick={onToggleMini}
             aria-expanded={!mini}
             aria-label={mini ? "Expand the sidebar" : "Collapse the sidebar"}
-            className="flex w-full cursor-pointer items-center gap-2.5 rounded-md py-2 pr-2 pl-2.5 text-left text-sm text-zinc-500 transition-colors hover:bg-zinc-800/50 hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+            className="flex w-full cursor-pointer items-center gap-2.5 rounded-md py-2 pr-2 pl-2.5 text-left text-sm text-zinc-500 transition-colors hover:bg-zinc-900/60 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
           >
             <RailIcon className="shrink-0" height={16} width={16} />
             <span

@@ -10,7 +10,7 @@ import { ADMIN_ACTIONS, withImpliedView, type AdminAction, type Grant } from "@/
 import { ACCESS_PRESETS, grantsForPreset, type AccessPreset } from "@/lib/auth/presets";
 import { notify } from "@/lib/notify";
 import { cn } from "@/lib/utils/cn";
-import { ERROR_NOTE, GROUP_LABEL, PRIMARY_BUTTON, QUIET_BUTTON, SAVE_BAR } from "@/components/admin/control-classes";
+import { ERROR_NOTE, PRIMARY_BUTTON, QUIET_BUTTON, SAVE_BAR, SECTION_TITLE } from "@/components/admin/control-classes";
 
 /**
  * One account's role and its grants, as a grid.
@@ -239,10 +239,8 @@ export function AccessMatrix({
         row in it: a superuser's answers do not come from these boxes at all.
       */}
       <fieldset disabled={saving} className="min-w-0">
-        <legend className={GROUP_LABEL}>
-          Role
-        </legend>
-        <div className="rounded-lg border border-zinc-800 bg-zinc-950/40 px-3.5 py-3">
+        <legend className={`${SECTION_TITLE} mb-3`}>Role</legend>
+        <div className="border-y border-zinc-800 py-4">
           <label className="flex w-fit items-center gap-2.5 text-sm text-zinc-200">
             <input
               type="checkbox"
@@ -253,13 +251,13 @@ export function AccessMatrix({
             />
             Superuser
           </label>
-          <p className="mt-2 text-xs text-zinc-500">
+          <p className="mt-2 max-w-2xl text-[13px] leading-relaxed text-zinc-500">
             {superuser
-              ? "Every screen and every action, including this one and the ones no grant can reach. The boxes below show that, and are not what is stored — untick this to see the grants that would come back."
+              ? "Every screen and every action, including this one and the ones no grant can reach. The boxes below show that, and are not what is stored. Untick this to see the grants that would come back."
               : "A superuser answers yes to every screen, and is the only role that can open this page."}
           </p>
           {isSelf && (
-            <p className="mt-1.5 text-xs text-amber-500/80">
+            <p className="mt-1.5 text-[13px] font-medium text-zinc-300">
               This is your own account. You cannot remove your own superuser access.
             </p>
           )}
@@ -273,9 +271,7 @@ export function AccessMatrix({
         they are, so taking the role away later restores what was there.
       */}
       <fieldset disabled={saving || superuser} className="min-w-0 space-y-4">
-        <legend className={GROUP_LABEL}>
-          Screens
-        </legend>
+        <legend className={`${SECTION_TITLE} mb-3`}>Screens</legend>
 
         {/*
           Starting points, not roles. Nothing here is stored: a preset fills the
@@ -284,40 +280,38 @@ export function AccessMatrix({
           them is what makes a hundred and twenty checkboxes approachable
           without inventing a second permission model to keep in step.
         */}
-        <div className="rounded-lg border border-zinc-800 bg-zinc-950/40 px-3.5 py-3">
+        <div className="border-y border-zinc-800 py-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs text-zinc-500">Start from</span>
+            <span className="text-[13px] text-zinc-500">Start from</span>
             {ACCESS_PRESETS.map((preset) => (
               <button
                 key={preset.key}
                 type="button"
                 title={preset.blurb}
                 onClick={() => applyPreset(preset)}
-                className="cursor-pointer rounded-md border border-zinc-800 px-2.5 py-1 text-xs text-zinc-400 transition-colors hover:border-indigo-700/60 hover:bg-zinc-800 hover:text-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                className="cursor-pointer rounded-full border border-zinc-800 px-3 py-1 text-xs font-medium text-zinc-200 transition-colors hover:border-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
               >
                 {preset.label}
               </button>
             ))}
           </div>
-          <p className="mt-2 text-xs text-zinc-500">
+          <p className="mt-2 text-[13px] text-zinc-500">
             Each one ticks the boxes below and changes nothing until you save.
             None of them grants anything on Users.
           </p>
         </div>
 
         {groups.map(([group, rowsInGroup]) => (
-          <div key={group} className="overflow-hidden rounded-lg border border-zinc-800">
-            <div className="flex items-center gap-2.5 border-b border-zinc-800 bg-zinc-950/60 px-3 py-2">
-              <h2 className="text-[13px] font-medium text-zinc-200">
-                {group}
-              </h2>
-              <span className="text-[0.6875rem] text-zinc-600 tabular-nums">
+          <div key={group} className="pt-4">
+            <div className="flex items-center gap-2 border-b border-zinc-800 pb-2.5">
+              <h2 className="font-display text-[1.05rem] font-medium tracking-[-0.015em] text-zinc-100">{group}</h2>
+              <span className="text-[11px] text-zinc-500 tabular-nums">
                 {rowsInGroup.length}
               </span>
               <button
                 type="button"
                 onClick={() => toggleGroup(rowsInGroup, !allOn(rowsInGroup))}
-                className="ml-auto cursor-pointer rounded-md border border-zinc-800 px-2 py-1 text-[0.6875rem] text-zinc-400 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                className="ml-auto cursor-pointer rounded-full border border-zinc-800 px-3 py-1 text-[11px] font-medium text-zinc-300 transition-colors hover:border-zinc-100 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
               >
                 {allOn(rowsInGroup) ? "Clear all" : "Grant all"}
               </button>
@@ -346,7 +340,7 @@ export function AccessMatrix({
                 <tbody>
                   {rowsInGroup.map((row) => {
                     return (
-                      <tr key={row.key} className="border-b border-zinc-900 last:border-b-0">
+                      <tr key={row.key} className="border-b border-zinc-800/60 last:border-b-0">
                         <th
                           scope="row"
                           className="px-3 py-2 text-left font-normal whitespace-nowrap text-zinc-300"

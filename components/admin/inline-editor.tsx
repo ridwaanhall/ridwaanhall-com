@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 
-import { CloseIcon, PlusIcon } from "@/components/admin/admin-icons";
+import { PILL_BUTTON, ROW_ICON_BUTTON, SECTION_TITLE } from "@/components/admin/control-classes";
 import { Field } from "@/components/admin/field";
+import { Icon } from "@/components/foothill/icons";
 import { inlineCountName, INLINE_ID, type ClientField, type FormValues } from "@/lib/admin/form";
-import { GROUP_LABEL } from "@/components/admin/control-classes";
+
 
 /**
  * The child rows of a record, edited on the record's own screen.
@@ -31,9 +32,6 @@ export type ClientInline = {
 };
 
 export type InlineRow = FormValues & { __id: string | null };
-
-const ICON_BUTTON =
-  "rounded-md border border-zinc-800 px-1.5 py-1 text-xs text-zinc-500 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-300 disabled:opacity-30 disabled:hover:bg-transparent";
 
 export function InlineEditor({
   imageUrls,
@@ -69,19 +67,19 @@ export function InlineEditor({
 
   return (
     <fieldset className="min-w-0">
-      <legend className={GROUP_LABEL}>
-        {inline.title}
-      </legend>
-      {inline.help && <p className="mb-2 text-xs text-zinc-500">{inline.help}</p>}
+      <legend className={`${SECTION_TITLE} mb-3`}>{inline.title}</legend>
+      {inline.help && <p className="-mt-1 mb-3 max-w-2xl text-[13px] leading-relaxed text-zinc-500">{inline.help}</p>}
 
       <input type="hidden" name={inlineCountName(inline.name)} value={rows.length} />
 
-      <div className="space-y-2">
+      {/* Each row opens on a hairline with its number, as a list on the public
+          site does, rather than sitting in a box of its own. */}
+      <div className="border-b border-zinc-800">
         {rows.map(({ key, row }, index) => (
-          <div key={key} className="rounded-lg border border-zinc-800 bg-zinc-950/40 px-3.5 py-2">
-            <div className="flex items-center gap-2 border-b border-zinc-900 pb-1.5">
-              <span className="text-xs text-zinc-600 tabular-nums">
-                {inline.itemLabel} {index + 1}
+          <div key={key} className="border-t border-zinc-800 pt-3">
+            <div className="flex items-center gap-2">
+              <span className="text-[13px] font-medium text-zinc-400 tabular-nums">
+                {inline.itemLabel.charAt(0).toUpperCase() + inline.itemLabel.slice(1)} {index + 1}
               </span>
               <div className="ml-auto flex gap-1">
                 {inline.ordered && (
@@ -90,29 +88,29 @@ export function InlineEditor({
                       type="button"
                       onClick={() => move(index, -1)}
                       disabled={index === 0}
-                      className={ICON_BUTTON}
+                      className={ROW_ICON_BUTTON}
                       aria-label={`Move ${inline.itemLabel} ${index + 1} up`}
                     >
-                      ↑
+                      <Icon name="arrow-up" className="h-3.5 w-3.5" />
                     </button>
                     <button
                       type="button"
                       onClick={() => move(index, 1)}
                       disabled={index === rows.length - 1}
-                      className={ICON_BUTTON}
+                      className={ROW_ICON_BUTTON}
                       aria-label={`Move ${inline.itemLabel} ${index + 1} down`}
                     >
-                      ↓
+                      <Icon name="arrow-down" className="h-3.5 w-3.5" />
                     </button>
                   </>
                 )}
                 <button
                   type="button"
                   onClick={() => setRows(rows.filter((_, position) => position !== index))}
-                  className={ICON_BUTTON}
+                  className={ROW_ICON_BUTTON}
                   aria-label={`Remove ${inline.itemLabel} ${index + 1}`}
                 >
-                  <CloseIcon height={12} width={12} />
+                  <Icon name="close" className="h-3.5 w-3.5" />
                 </button>
               </div>
             </div>
@@ -126,7 +124,7 @@ export function InlineEditor({
               value={row.__id ?? ""}
             />
 
-            <div className="divide-y divide-zinc-900">
+            <div className="divide-y divide-zinc-800/60 pb-2">
               {inline.fields.map((field) => (
                 <Field
                   imageUrls={imageUrls}
@@ -144,7 +142,7 @@ export function InlineEditor({
       </div>
 
       {rows.length === 0 && (
-        <p className="rounded-lg border border-dashed border-zinc-800 px-3.5 py-4 text-center text-xs text-zinc-500">
+        <p className="py-5 text-[13px] text-zinc-500">
           No {inline.itemLabel} rows yet.
         </p>
       )}
@@ -155,9 +153,9 @@ export function InlineEditor({
           setRows([...rows, { key: `new-${nextKey}`, row: blankRow(inline) }]);
           setNextKey(nextKey + 1);
         }}
-        className="mt-2.5 inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-zinc-800 px-3 py-1.5 text-xs text-zinc-400 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        className={`mt-4 ${PILL_BUTTON}`}
       >
-        <PlusIcon height={12} width={12} />
+        <Icon name="plus" className="h-3.5 w-3.5" />
         Add {inline.itemLabel}
       </button>
     </fieldset>

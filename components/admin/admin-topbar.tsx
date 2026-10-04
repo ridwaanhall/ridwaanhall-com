@@ -65,7 +65,7 @@ export function AdminTopbar({ user }: { user: StaffUser }) {
         >
           <SignOutButton
             message="You'll need to sign in again to reach the admin."
-            className="cursor-pointer rounded-full border border-zinc-800 px-3 py-1 text-xs text-zinc-400 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+            className="cursor-pointer rounded-full border border-zinc-800 px-3.5 py-1 text-xs font-medium text-zinc-300 transition-colors hover:border-zinc-100 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
           />
         </form>
       </div>

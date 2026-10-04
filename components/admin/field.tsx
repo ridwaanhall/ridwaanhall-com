@@ -120,7 +120,7 @@ export function Field({
     const chosen = new Set((Array.isArray(value) ? value : []).map(String));
     return (
       <Row field={field} id={id} describedBy={describedBy} error={error}>
-        <div className="max-h-56 overflow-y-auto rounded-md border border-zinc-800 bg-zinc-900 px-2.5 py-2">
+        <div className="max-h-56 overflow-y-auto rounded-md border border-zinc-800 px-3 py-2.5">
           <div className="grid gap-x-4 gap-y-1 sm:grid-cols-2">
             {(field.options ?? []).map((option) => (
               <label key={option.value} className={cn(BOXED_LABEL, "text-sm text-zinc-300")}>
@@ -228,7 +228,7 @@ export function Field({
 
   if (field.kind === "checkbox") {
     return (
-      <div className="grid gap-1 py-1 sm:grid-cols-3 sm:gap-4">
+      <div className="grid gap-1.5 py-3.5 sm:grid-cols-3 sm:gap-6">
         <span className="hidden sm:block" aria-hidden="true" />
         <div className="min-w-0 sm:col-span-2">
           <label className={cn(BOXED_LABEL, "text-sm text-zinc-300")}>
@@ -341,7 +341,7 @@ function Row({
   children: React.ReactNode;
 }) {
   return (
-    <div className="grid gap-1 py-1 sm:grid-cols-3 sm:gap-4">
+    <div className="grid gap-1.5 py-3.5 sm:grid-cols-3 sm:gap-6">
       {/*
         `justify-self-start self-start` keeps the label's box around its word.
         A grid item is stretched to its cell unless told otherwise, and this one
@@ -351,7 +351,7 @@ function Row({
         rich-text field that was a 230x1257 rectangle of apparently blank page;
         beside an image field, 95% of the cell opened a file picker.
       */}
-      <label htmlFor={id} className="justify-self-start self-start pt-1.5 text-sm text-zinc-400">
+      <label htmlFor={id} className="justify-self-start self-start pt-2 text-[14px] text-zinc-300">
         {field.label}
         {field.required && (
           <span className="ml-1 text-red-400" title="Required">
@@ -379,14 +379,14 @@ function Notes({ id, field, error }: { id: string; field: ClientField; error?: s
   return (
     <>
       {field.help && (
-        <p id={`${id}-help`} className="mt-1 text-xs text-zinc-500">
+        <p id={`${id}-help`} className="mt-1.5 text-[12px] leading-relaxed text-zinc-500">
           {field.help}
         </p>
       )}
       {/* `role="alert"` so a validation message is announced when it appears,
           rather than only being visible. */}
       {error && (
-        <p id={`${id}-error`} role="alert" className="mt-1 text-xs text-red-400">
+        <p id={`${id}-error`} role="alert" className="mt-1.5 text-[12px] text-red-400">
           {error}
         </p>
       )}

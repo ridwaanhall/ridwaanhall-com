@@ -89,8 +89,8 @@ export function FilterSelect({
          * nothing: the full text is still there when the list is open, and the
          * list is no longer bound to the trigger's width.
          */
-        className="admin-select max-w-56 rounded-md border border-zinc-800 bg-zinc-900 px-2 py-1.5 text-xs text-zinc-300 transition-colors hover:border-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-        triggerClassName="admin-select w-full max-w-56 rounded-md border border-zinc-800 bg-zinc-900 py-1.5 pl-2 text-xs text-zinc-300 transition-colors hover:border-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        className="admin-select max-w-56 rounded-full border border-zinc-800 bg-transparent px-3 py-1.5 text-xs text-zinc-200 transition-colors hover:border-zinc-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        triggerClassName="admin-select w-full max-w-56 rounded-full border border-zinc-800 bg-transparent py-1.5 pl-3 text-xs text-zinc-200 transition-colors hover:border-zinc-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
       />
     </div>
   );

@@ -2,7 +2,8 @@ import type { Route } from "next";
 import Link from "next/link";
 
 import { BackIcon } from "@/components/admin/admin-icons";
-import { ROW_LINK } from "@/components/admin/control-classes";
+import { PILL_BUTTON, ROW_LINK } from "@/components/admin/control-classes";
+import { ScreenHead } from "@/components/admin/screen-head";
 
 /**
  * "That is not here", inside the admin rather than on the public 404 page.
@@ -38,17 +39,11 @@ export function NothingHere({
         {backLabel}
       </Link>
 
-      <div className="rounded-lg border border-dashed border-zinc-800 bg-zinc-950/40 px-6 py-10 text-center">
-        <h1 className="font-display text-xl font-medium tracking-[-0.02em] text-zinc-100">Nothing here</h1>
-        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-zinc-400">{message}</p>
-        <Link
-          href={backHref}
-          className="mt-5 inline-flex items-center gap-1.5 rounded-full border border-zinc-800 px-4 py-1.5 text-xs text-zinc-300 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-        >
-          <BackIcon height={13} width={13} />
-          Back to {backLabel}
-        </Link>
-      </div>
+      <ScreenHead title="Nothing here" lead={message} />
+      <Link href={backHref} className={PILL_BUTTON}>
+        <BackIcon height={13} width={13} />
+        Back to {backLabel}
+      </Link>
     </div>
   );
 }

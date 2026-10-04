@@ -62,15 +62,11 @@ export function Changelist<Row>({
     <div className="space-y-4">
       {/* --- toolbar ------------------------------------------------------- */}
       {/*
-        One bordered strip rather than controls floating on the page. The
-        toolbar and the table are two halves of the same object, and giving the
-        toolbar a surface of its own is what stops the filters reading as page
-        furniture that happens to sit above a table.
+        The search and filters sit straight on the page, as the public listings
+        set theirs, directly over the rule that opens the table -- so they read
+        as the table's own controls without a panel to say so.
       */}
-      <form
-        method="get"
-        className="flex flex-wrap items-center gap-x-2 gap-y-2.5 rounded-lg border border-zinc-800 bg-zinc-950/40 p-2.5"
-      >
+      <form method="get" className="flex flex-wrap items-center gap-x-3 gap-y-3">
         {/* Sorting is not a form control, so it has to ride along as hidden
             fields or every search would silently reset the order. `page` is
             deliberately absent: a new search starts at page 1. */}
@@ -96,12 +92,12 @@ export function Changelist<Row>({
                 defaultValue={params.q}
                 placeholder={model.search.placeholder}
                 aria-label={model.search.placeholder}
-                className="admin-search w-56 rounded-md border border-zinc-800 bg-zinc-900 py-1.5 pr-3 pl-8 text-sm text-zinc-200 placeholder-zinc-500 transition-colors hover:border-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 sm:w-72"
+                className="admin-search w-56 rounded-full border border-zinc-800 bg-transparent py-1.5 pr-3.5 pl-8 text-sm text-zinc-100 placeholder-zinc-500 transition-colors hover:border-zinc-600 focus-visible:border-zinc-100 focus-visible:outline-none sm:w-72"
               />
             </div>
             <button
               type="submit"
-              className="cursor-pointer rounded-md border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-300 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+              className="cursor-pointer rounded-full border border-zinc-800 px-3.5 py-1.5 text-xs font-medium text-zinc-200 transition-colors hover:border-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
             >
               Search
             </button>
@@ -206,10 +202,10 @@ export function Changelist<Row>({
         itself to a box that never scrolls. It would look like a header that
         simply does nothing.
       */}
-      <div className="[contain:layout] overflow-x-auto overflow-y-hidden rounded-lg border border-zinc-800">
+      <div className="[contain:layout] overflow-x-auto overflow-y-hidden border-t border-zinc-800">
         <table className="w-full text-left text-sm max-lg:min-w-[45rem]">
           <thead>
-            <tr className="border-b border-zinc-800 bg-zinc-900/60">
+            <tr className="border-b border-zinc-800">
               {model.columns.map((column) => {
                 const active = params.sort === column.key;
                 return (
@@ -364,10 +360,10 @@ export function Changelist<Row>({
                 href={listHref(entry, params, defaultSort, { page: entryPage })}
                 aria-current={entryPage === page.page ? "page" : undefined}
                 className={cn(
-                  "min-w-8 rounded-md border px-2 py-1 text-center text-xs tabular-nums transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
+                  "min-w-8 rounded-full border px-2.5 py-1 text-center text-xs tabular-nums transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
                   entryPage === page.page
-                    ? "border-indigo-800 bg-indigo-500/10 text-indigo-400"
-                    : "border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-200",
+                    ? "border-zinc-100 bg-zinc-100 text-black"
+                    : "border-zinc-800 text-zinc-400 hover:border-zinc-600 hover:text-zinc-100",
                 )}
               >
                 {entryPage}
@@ -421,7 +417,7 @@ function Step({
   children: React.ReactNode;
 }) {
   const className =
-    "inline-flex min-w-8 items-center justify-center rounded-md border border-zinc-800 px-2 py-1 text-xs";
+    "inline-flex min-w-8 items-center justify-center rounded-full border border-zinc-800 px-2.5 py-1 text-xs";
 
   if (disabled) {
     return (

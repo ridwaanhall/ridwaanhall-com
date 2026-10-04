@@ -1214,10 +1214,16 @@ seen.
   light in both themes is `fh-print`, never `bg-white` -- and `indigo` is
   ink, since the site has no accent colour. Stay inside that vocabulary or a
   colour silently misses a theme.
-  The admin's repeated class strings (the title, the primary and quiet
-  buttons, the group label, the save bar) live in
-  `components/admin/control-classes.ts`; a new screen uses them rather than
-  writing its own.
+  The admin is laid out as the public pages are, without cards: every screen
+  opens with `ScreenHead` (`components/admin/screen-head.tsx`, the admin's
+  `PageHead`), and an area, a fieldset or an inline is a display-face title
+  over hairline-ruled rows rather than a bordered box. A box is kept only
+  where it frames something that scrolls or floats -- the rich-text editor, a
+  scrolling checkbox list, a popover, the dialog. The repeated class strings
+  (the title, the section title, the input, the primary, quiet, pill and
+  row-icon buttons, the save bar) live in `components/admin/control-classes.ts`;
+  a new screen uses them rather than writing its own, and its skeleton opens
+  with `ScreenHeadSkeleton`.
 - **A label activates its control from anywhere inside its box, and a grid item
   is stretched to its cell.** The admin's field rows put the label in one column
   and the control in the next, so every label's box was as wide as the column

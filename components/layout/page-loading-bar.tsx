@@ -276,14 +276,22 @@ export function PageLoadingBar() {
       they are skipped. Not by their method: once React hydrates a form whose
       action is a function it removes the `method` attribute and points
       `action` at a `javascript:` placeholder, so `form.method` reads "get"
-      and every save started a bar that no navigation would ever finish. The
-      placeholder is what marks them.
+      and every save started a bar that no navigation would ever finish. So
+      the test is where the form goes rather than how: only a GET to a real
+      http(s) address of this site is a page being loaded.
     */
     function onSubmit(event: Event) {
       const form = event.target;
       if (!(form instanceof HTMLFormElement)) return;
-      if ((form.getAttribute("action") ?? "").startsWith("javascript:")) return;
       if (form.method.toLowerCase() !== "get") return;
+      let target: URL;
+      try {
+        target = new URL(form.action, window.location.href);
+      } catch {
+        return;
+      }
+      if (target.protocol !== "http:" && target.protocol !== "https:") return;
+      if (target.origin !== window.location.origin) return;
       start();
     }
 

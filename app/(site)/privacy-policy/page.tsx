@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { JsonLdScript } from "@/components/seo/json-ld";
-import { LegalDocumentPage } from "@/components/site/legal-document";
+import { LegalDocumentPage } from "@/components/foothill/legal";
 import { getAboutData } from "@/lib/data/about";
 import { getLegalDocument, getLegalDocuments } from "@/lib/data/legal";
 import { privacyPolicySeo } from "@/lib/seo/data";

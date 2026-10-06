@@ -48,8 +48,9 @@ export type Tag = (typeof TAGS)[keyof typeof TAGS];
  * different sections, so renaming one has to expire all four.
  */
 export const MODEL_TAGS: Record<string, readonly Tag[]> = {
-  // Profile, and the rows that hang off it.
-  profile: [TAGS.profile],
+  // Profile, and the rows that hang off it. Its portrait choice also decides
+  // the byline photo on every post that shares the profile's photo.
+  profile: [TAGS.profile, TAGS.blog],
   profile_link: [TAGS.profile],
   profile_skill_highlight: [TAGS.profile],
 

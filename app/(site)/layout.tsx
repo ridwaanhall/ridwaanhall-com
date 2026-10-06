@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { Footer } from "@/components/foothill/footer";
+import { SiteShell } from "@/components/foothill/site-shell";
 import { AccountPanel, AccountPanelSkeleton } from "@/components/layout/account-panel";
-import { SiteShell } from "@/components/layout/site-shell";
 import { getAboutData } from "@/lib/data/about";
 
 /**
@@ -17,17 +18,15 @@ import { getAboutData } from "@/lib/data/about";
  * stays fully cacheable and the panel streams into the shell. Awaiting the
  * session here instead would make every page on the site dynamic.
  *
- * The key is not decoration, and it is not there because anything reorders.
- * This element is created here and rendered as one of several siblings inside
- * the rail and the drawer, which is a children array as far as React's
- * validation is concerned. Without a key it warns about a list child on every
- * page of the site and names this line as the owner.
+ * The key is there because the navbar renders this element in two places --
+ * the bar and the mobile menu -- each inside a children array, and React
+ * warns about an unkeyed list child on every page without it.
  */
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const about = await getAboutData();
-  // Every page in this group renders the profile block, so without a Profile
-  // row there is no site to show. `notFound()` rather than an empty shell:
-  // half a layout around a page that cannot be right is worse than saying so.
+  // Every page in this group renders the profile, so without a Profile row
+  // there is no site to show. `notFound()` rather than an empty shell: half a
+  // layout around a page that cannot be right is worse than saying so.
   if (!about) notFound();
 
   return (
@@ -38,6 +37,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
           <AccountPanel />
         </Suspense>
       }
+      footer={<Footer about={about} />}
     >
       {children}
     </SiteShell>

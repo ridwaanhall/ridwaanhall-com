@@ -1,4 +1,4 @@
-import { SkeletonBar } from "@/components/skeleton";
+import { ScreenHeadSkeleton, SkeletonBar } from "@/components/skeleton";
 
 /**
  * The access matrix's frame, with nothing in it.
@@ -20,55 +20,52 @@ import { SkeletonBar } from "@/components/skeleton";
  */
 export function AccessSkeleton() {
   return (
-    <div className="skeleton-pulse space-y-5" role="status" aria-busy="true">
+    <div className="skeleton-pulse" role="status" aria-busy="true">
       <span className="sr-only">Loading…</span>
-      <div className="space-y-5" aria-hidden="true">
-        {/* Breadcrumb, then the account's username and its subtitle. */}
+      <div className="space-y-8" aria-hidden="true">
+        {/* Breadcrumb, then the account's username and the line under it. */}
         <SkeletonBar className="h-3 w-16" />
-        <div className="space-y-2">
-          <SkeletonBar className="h-6 w-48" />
-          <SkeletonBar className="h-3 w-72 max-w-full" />
-        </div>
+        <ScreenHeadSkeleton lead={false} meta />
 
-        {/* The role card: a legend above it, one checkbox row, one note. */}
+        {/* The role: its title, then one checkbox row and a note between rules. */}
         <div>
-          <SkeletonBar className="mb-1.5 h-3 w-12" />
-          <div className="space-y-2.5 rounded-lg border border-zinc-800 px-3.5 py-3">
+          <SkeletonBar className="mb-3 h-6 w-14" />
+          <div className="space-y-2.5 border-y border-zinc-800 py-4">
             <SkeletonBar className="h-4 w-28" />
-            <SkeletonBar className="h-3 w-96 max-w-full" />
+            <SkeletonBar className="h-3.5 w-96 max-w-full" />
           </div>
         </div>
 
         {/* Three of the eight groups, which is what fits above the fold. The
             rest arrive below it and cost nothing to be wrong about. */}
         <div>
-          <SkeletonBar className="mb-1.5 h-3 w-16" />
+          <SkeletonBar className="mb-3 h-6 w-20" />
           <div className="space-y-4">
-            {/* The preset card, above the groups: a label, three buttons and
-                a note. Same box as the role card, and it stands between the
-                legend and the first group -- so it is drawn here rather than
-                left out, which is how a page settles by jumping. */}
-            <div className="space-y-2.5 rounded-lg border border-zinc-800 px-3.5 py-3">
+            {/* The presets, between rules above the groups: a label, three
+                pills and a note. Drawn rather than left out, because it stands
+                between the title and the first group -- leaving it out is how a
+                page settles by jumping. */}
+            <div className="space-y-2.5 border-y border-zinc-800 py-4">
               <div className="flex items-center gap-2">
-                <SkeletonBar className="h-3 w-16" />
-                <SkeletonBar className="h-6 w-14 rounded-md" />
-                <SkeletonBar className="h-6 w-20 rounded-md" />
-                <SkeletonBar className="h-6 w-20 rounded-md" />
+                <SkeletonBar className="h-3.5 w-16" />
+                <SkeletonBar className="h-6 w-16 rounded-full" />
+                <SkeletonBar className="h-6 w-20 rounded-full" />
+                <SkeletonBar className="h-6 w-20 rounded-full" />
               </div>
-              <SkeletonBar className="h-3 w-80 max-w-full" />
+              <SkeletonBar className="h-3.5 w-80 max-w-full" />
             </div>
 
             {[0, 1, 2].map((group) => (
-              <div key={group} className="overflow-hidden rounded-lg border border-zinc-800">
-                <div className="flex items-center gap-2.5 border-b border-zinc-800 px-3 py-2">
-                  <SkeletonBar className="h-3 w-20" />
-                  <SkeletonBar className="ml-auto h-6 w-16 rounded-md" />
+              <div key={group} className="pt-4">
+                <div className="flex items-center gap-2 border-b border-zinc-800 pb-2.5">
+                  <SkeletonBar className="h-5 w-24" />
+                  <SkeletonBar className="ml-auto h-6 w-16 rounded-full" />
                 </div>
-                <div className="border-b border-zinc-900 px-3 py-2">
+                <div className="border-b border-zinc-800/60 px-3 py-2">
                   <SkeletonBar className="h-3 w-full max-w-md" />
                 </div>
                 {[0, 1, 2].map((row) => (
-                  <div key={row} className="border-b border-zinc-900 px-3 py-2 last:border-b-0">
+                  <div key={row} className="border-b border-zinc-800/60 px-3 py-2 last:border-b-0">
                     <SkeletonBar className="h-4 w-full max-w-md" />
                   </div>
                 ))}
@@ -79,7 +76,7 @@ export function AccessSkeleton() {
 
         {/* The save bar. */}
         <div className="flex items-center gap-3">
-          <SkeletonBar className="h-8 w-20 rounded-full" />
+          <SkeletonBar className="h-9 w-20 rounded-full" />
           <SkeletonBar className="h-8 w-16 rounded-full" />
         </div>
       </div>

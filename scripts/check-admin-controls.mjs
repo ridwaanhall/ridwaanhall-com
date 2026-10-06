@@ -14,12 +14,12 @@
  *     is imported globally, so a rule written as `input[type="checkbox"] { … }`
  *     silently restyles the contact form, the comment box and the guestbook
  *     composer. Nothing else in the tree would notice.
- *   - **The drawn surfaces have to follow the theme.** They are new colours in
- *     a codebase where light mode is a palette remap, and a value outside the
- *     ramps simply stays dark on a white page.
- *   - **Two of them must deliberately NOT follow it**: a checkbox's tick and a
- *     calendar's chosen day are white on indigo, and their contrast target is
- *     that fill rather than the page behind it.
+ *   - **The drawn surfaces have to follow the theme.** Their colours come from
+ *     the palette variables, which follow it; a literal outside them simply
+ *     keeps one theme's value in the other.
+ *   - **A calendar's chosen day is measured against its own fill**, not the
+ *     page behind it: paper on ink, the two swapping together, so its label
+ *     has to clear contrast against that fill in each theme.
  *
  * Almost read-only: the last section creates one marked skill through an
  * unhydrated form and removes it again, because "it still saves without the
@@ -111,9 +111,9 @@ const check = (name, pass, detail = "") => {
 
   check(
     "colours come from the ramps, not from literals",
-    // Two pinned whites are deliberate and are commented as such; anything
-    // else hex-coded would not follow the theme.
-    (code.match(/#[0-9a-f]{3,8}/gi) ?? []).every((hex) => hex.toLowerCase() === "#fff"),
+    // None at all: a hex-coded colour would not follow the theme. (The tick
+    // and the chevron are data URIs, whose `%23` is not a literal here.)
+    (code.match(/#[0-9a-f]{3,8}/gi) ?? []).length === 0,
     (code.match(/#[0-9a-f]{3,8}/gi) ?? []).join(" ") || "none",
   );
 }
@@ -361,25 +361,46 @@ try {
   }
 
   {
-    // The two pinned ones. A tick or a chosen day sits on indigo in both
-    // themes, so a value that moved with the theme would be the bug.
-    const pinned = await page.evaluate(() => {
+    // A chosen day's label against its own fill, in each theme. The pair is
+    // painted onto a canvas and read back, so oklab and color-mix values come
+    // out as plain channels the contrast formula can use.
+    const chosen = await page.evaluate(() => {
       const probe = document.createElement("div");
       probe.className = "admin-option";
       probe.setAttribute("aria-pressed", "true");
+      // The theme cross-fades its colours; a read mid-fade measures neither.
+      probe.style.transition = "none";
       document.body.appendChild(probe);
-      const read = () => getComputedStyle(probe).color;
+      const ctx = document.createElement("canvas").getContext("2d", { willReadFrequently: true });
+      const rgb = (color) => {
+        ctx.clearRect(0, 0, 1, 1);
+        ctx.fillStyle = color;
+        ctx.fillRect(0, 0, 1, 1);
+        return [...ctx.getImageData(0, 0, 1, 1).data].slice(0, 3);
+      };
+      const lum = (c) => {
+        const [r, g, b] = c.map((v) => {
+          v /= 255;
+          return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+        });
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      };
+      const ratio = () => {
+        const style = getComputedStyle(probe);
+        const [a, b] = [lum(rgb(style.color)), lum(rgb(style.backgroundColor))].sort((x, y) => y - x);
+        return (a + 0.05) / (b + 0.05);
+      };
       document.documentElement.setAttribute("data-theme", "dark");
-      const dark = read();
+      const dark = ratio();
       document.documentElement.setAttribute("data-theme", "light");
-      const light = read();
+      const light = ratio();
       probe.remove();
       return { dark, light };
     });
     check(
-      "a chosen day's label stays white in both themes",
-      pinned.dark === pinned.light,
-      `${pinned.dark} / ${pinned.light}`,
+      "a chosen day's label clears contrast against its fill in both themes",
+      chosen.dark >= 4.5 && chosen.light >= 4.5,
+      `${chosen.dark.toFixed(1)}:1 dark, ${chosen.light.toFixed(1)}:1 light`,
     );
   }
   /* -----------------------------------------------------------------------

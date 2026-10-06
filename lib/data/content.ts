@@ -1,4 +1,5 @@
-import { asc, desc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { db } from "@/lib/db/client";
@@ -8,6 +9,7 @@ import {
   blogTag,
   category,
   mediaAsset,
+  profile,
   project,
   projectFeature,
   projectImage,
@@ -22,6 +24,10 @@ import { plainText } from "@/lib/utils/plain-text";
 
 import type { Skill } from "./about";
 import { TAGS } from "./tags";
+
+/** The profile's avatar or blur, for a byline that shares the profile's photo. */
+const avatarAsset = alias(mediaAsset, "avatar_asset");
+const blurAsset = alias(mediaAsset, "blur_asset");
 
 /**
  * Blog posts and projects.
@@ -170,7 +176,9 @@ export type Project = ImageCompat & {
  */
 export async function getBlogs(): Promise<BlogPost[]> {
   "use cache";
-  cacheTag(TAGS.blog);
+  // The profile too: a byline that shares the profile's photo follows its
+  // choice between the photo and the avatar.
+  cacheTag(TAGS.blog, TAGS.profile);
   cacheLife("days");
 
   const [posts, images, tagRows] = await Promise.all([
@@ -191,10 +199,17 @@ export async function getBlogs(): Promise<BlogPost[]> {
         category: category.label,
         authorImageKey: mediaAsset.storageKey,
         authorImageSource: mediaAsset.source,
+        avatarKey: avatarAsset.storageKey,
+        avatarSource: avatarAsset.source,
+        blurKey: blurAsset.storageKey,
+        blurSource: blurAsset.source,
       })
       .from(blogPost)
       .leftJoin(category, eq(category.id, blogPost.categoryId))
       .leftJoin(mediaAsset, eq(mediaAsset.id, blogPost.authorImageId))
+      .leftJoin(profile, eq(profile.imageId, blogPost.authorImageId))
+      .leftJoin(avatarAsset, and(eq(avatarAsset.id, profile.avatarId), eq(profile.portrait, "avatar")))
+      .leftJoin(blurAsset, and(eq(blurAsset.id, profile.blurId), eq(profile.portrait, "blur")))
       .where(eq(blogPost.isPublished, true))
       .orderBy(desc(blogPost.publishedAt), desc(blogPost.id)),
     db
@@ -231,9 +246,13 @@ export async function getBlogs(): Promise<BlogPost[]> {
       author: post.authorName,
       username: post.authorUsername,
       author_image: assetUrl(
-        post.authorImageKey
-          ? { storageKey: post.authorImageKey, source: post.authorImageSource ?? "storage" }
-          : null,
+        post.avatarKey
+          ? { storageKey: post.avatarKey, source: post.avatarSource ?? "storage" }
+          : post.blurKey
+            ? { storageKey: post.blurKey, source: post.blurSource ?? "storage" }
+            : post.authorImageKey
+              ? { storageKey: post.authorImageKey, source: post.authorImageSource ?? "storage" }
+              : null,
       ),
       images: imagesByPost.get(post.id) ?? {},
       created_at: new Date(post.publishedAt),

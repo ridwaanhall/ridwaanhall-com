@@ -1,102 +1,87 @@
 /* ===========================================================================
-   Light theme
+   The admin's palette, and the light theme for everything else it uses
 
-   Split out of `app/globals.css`, which had grown to 1231 lines carrying this
-   palette, the motion vocabulary and Tailwind's own wiring in one file. The
-   import order in globals.css reproduces the order these rules had there, so
-   the cascade is unchanged -- which matters more here than anywhere, because
-   this sheet is unlayered and beats every Tailwind utility touching the same
-   property.
-   =========================================================================== */
-
-/* ===========================================================================
-   Light theme
-   ===========================================================================
-
-   The site is written entirely in dark-mode Tailwind classes -- there are no
-   `dark:` variants anywhere. Light mode is produced by *remapping the palette*
-   rather than by rewriting those ~1,500 class occurrences.
-
-   This works because Tailwind v4 compiles every theme color utility to a
-   variable reference:
+   The admin is written in stock Tailwind colour utilities -- the zinc ramp for
+   surfaces, lines and text, indigo for focus and the one accent, a handful of
+   hues for status badges -- with no `dark:` variants anywhere. Tailwind v4
+   compiles every one of them to a variable reference:
 
        .bg-zinc-800  { background-color: var(--color-zinc-800) }
-       .text-zinc-400 { color: var(--color-zinc-400) }
 
-   so redefining the ramps below re-skins the whole site. Dark mode is the
-   untouched `:root` branch and cannot regress from changes made here.
+   so redefining a ramp re-skins every screen that uses it.
 
-   HOW THE VALUES WERE CHOSEN
-   --------------------------
-   zinc's text shades mirror around 500:
+   THE NEUTRALS AND THE ACCENT ARE THE PUBLIC SITE'S
+   -------------------------------------------------
+   zinc, black, white and indigo are defined below from the site's own tokens
+   (`--fh-paper`, `raise`, `ink`, `mute`, `line` in styles/site.css), which
+   already change with the theme. So the admin is the same paper and ink as
+   the pages it edits, in both themes, from one table rather than two -- the
+   50-odd hand-tuned light values these replaced are gone.
 
-       50 <-> 950   100 <-> 900   200 <-> 800   300 <-> 700   400 <-> 600
+       black      the canvas        paper
+       zinc-950   a faint panel     raise, half strength
+       zinc-900   inputs, cards     raise
+       zinc-800   lines, hover      line
+       zinc-700   a firmer line     between line and mute
+       zinc-500   the dimmest text  mute
+       zinc-400 .. 200              mute stepping toward ink
+       zinc-100, 50, white          ink
+       indigo     focus, accent     ink: the site has no accent colour, so
+                                    what the admin marks out it marks in the
+                                    text's own colour, and mixes ink into the
+                                    line for the borders and washes
 
-   Mirroring preserves contrast against the canvas, which is the right model
-   for foreground colors and only for those. Three groups depart from it, each
-   because a measurement said so -- the numbers are in the design notes:
-
-   1. zinc's SURFACE shades (700-950) are hand-set. Dark spreads them across
-      the wide dark end above a black canvas; light has only a few points of
-      room below white. Mirroring makes the card a gray slab, but the obvious
-      correction -- a very tight near-white ramp -- is the worse error: it kept
-      just 7-35% of dark's surface separation, and since bg-zinc-800 is also
-      the sidebar's active and hover state, the nav highlight all but vanished.
-      These values spread the ramp back out while staying recognisably light.
-
-   2. ACCENTS use their own table entirely (see below). A mirror preserves
-      distance from the end of a ramp, not perceived contrast, and the bright
-      hues could not survive it -- the green badge measured 2.92:1.
-
-   3. zinc-500, the dimmest text, is nudged darker to hold AA against the
-      darker card rather than only against the canvas.
+   THE STATUS HUES STILL NEED A LIGHT TABLE
+   ----------------------------------------
+   Green, red, amber and the rest carry state on badges and messages, and have
+   no counterpart among the site's tokens. Dark mode uses Tailwind's own
+   values; the light block further down remaps them, from a table of its own
+   rather than a mirror -- a mirror preserves distance from the end of a ramp,
+   not perceived contrast, and the green badge measured 2.92:1 through one.
 
    ADDING NEW UI
    -------------
-   Keep to the zinc ramp and the accent families below and light mode comes
-   for free. Arbitrary values (`bg-[#18181b]`) and unlisted color families
-   will silently stay dark. See CLAUDE.md.
-
+   Keep to the zinc ramp, indigo and the status hues and both themes come for
+   free. Arbitrary values (`bg-[#18181b]`) and unlisted colour families will
+   silently miss both. See CLAUDE.md.
    =========================================================================== */
 
 :root {
+    color-scheme: light;
+
+    --color-black: var(--fh-paper);
+    --color-white: var(--fh-ink);
+
+    --color-zinc-50: var(--fh-ink);
+    --color-zinc-100: var(--fh-ink);
+    --color-zinc-200: color-mix(in oklab, var(--fh-mute) 12%, var(--fh-ink));
+    --color-zinc-300: color-mix(in oklab, var(--fh-mute) 28%, var(--fh-ink));
+    --color-zinc-400: color-mix(in oklab, var(--fh-mute) 58%, var(--fh-ink));
+    --color-zinc-500: var(--fh-mute);
+    --color-zinc-600: color-mix(in oklab, var(--fh-mute) 72%, var(--fh-line));
+    --color-zinc-700: color-mix(in oklab, var(--fh-line) 58%, var(--fh-mute));
+    --color-zinc-800: var(--fh-line);
+    --color-zinc-900: var(--fh-raise);
+    --color-zinc-950: color-mix(in oklab, var(--fh-raise) 50%, var(--fh-paper));
+
+    --color-indigo-50: var(--fh-ink);
+    --color-indigo-100: var(--fh-ink);
+    --color-indigo-200: var(--fh-ink);
+    --color-indigo-300: var(--fh-ink);
+    --color-indigo-400: var(--fh-ink);
+    --color-indigo-500: var(--fh-ink);
+    --color-indigo-600: var(--fh-ink);
+    --color-indigo-700: color-mix(in oklab, var(--fh-ink) 45%, var(--fh-line));
+    --color-indigo-800: color-mix(in oklab, var(--fh-ink) 30%, var(--fh-line));
+    --color-indigo-900: color-mix(in oklab, var(--fh-ink) 14%, var(--fh-paper));
+    --color-indigo-950: color-mix(in oklab, var(--fh-ink) 8%, var(--fh-paper));
+}
+
+html[data-theme="dark"] {
     color-scheme: dark;
 }
 
 html[data-theme="light"] {
-    color-scheme: light;
-
-    /* Canvas and the strongest foreground swap outright. `--color-black` is
-       the page canvas (19 uses); `--color-white` is the strongest heading
-       color (23 uses), so in light it must become near-black, not stay white. */
-    --color-black: oklch(100% 0 0);
-    --color-white: oklch(21% 0.006 285.885);
-
-    /* zinc */
-    --color-zinc-50: oklch(14.1% 0.005 285.823);
-    --color-zinc-100: oklch(21% 0.006 285.885);
-    --color-zinc-200: oklch(27.4% 0.006 286.033);
-    --color-zinc-300: oklch(37% 0.013 285.805);
-    --color-zinc-400: oklch(44.2% 0.017 285.786);
-    --color-zinc-500: oklch(50% 0.016 285.938);  /* tuned surface, not mirror(500) */
-    --color-zinc-600: oklch(70.5% 0.015 286.067);
-    --color-zinc-700: oklch(86% 0.004 286.286);  /* tuned surface, not mirror(300) */
-    --color-zinc-800: oklch(93% 0.002 286.375);  /* tuned surface, not mirror(200) */
-    --color-zinc-900: oklch(95.5% 0.001 286.375);  /* tuned surface, not mirror(100) */
-    --color-zinc-950: oklch(97.5% 0.001 286.375);  /* tuned surface, not mirror(50) */
-
-    /* indigo */
-    --color-indigo-50: oklch(25.7% 0.09 281.288);
-    --color-indigo-100: oklch(25.7% 0.09 281.288);
-    --color-indigo-200: oklch(35.9% 0.144 278.697);
-    --color-indigo-300: oklch(35.9% 0.144 278.697);
-    --color-indigo-400: oklch(39.8% 0.195 277.366);
-    --color-indigo-500: oklch(51.1% 0.262 276.966);
-    --color-indigo-600: oklch(58.5% 0.233 277.117);
-    --color-indigo-700: oklch(78.5% 0.115 274.713);
-    --color-indigo-800: oklch(87% 0.065 274.039);
-    --color-indigo-900: oklch(93% 0.034 272.788);
-    --color-indigo-950: oklch(96.2% 0.018 272.314);
 
     /* green */
     --color-green-50: oklch(26.6% 0.065 152.934);
@@ -266,27 +251,4 @@ html[data-theme="light"] {
     --color-orange-800: oklch(90.1% 0.076 70.697);
     --color-orange-900: oklch(95.4% 0.038 75.164);
     --color-orange-950: oklch(98% 0.016 73.684);
-}
-
-/* ===========================================================================
-   Cases the palette remap cannot reach
-   ===========================================================================
-
-   The site carries no cast depth: every such utility was removed because the
-   effect is black-on-black in dark mode, so it paid for its
-   paint cost while being invisible on the theme the site is designed around.
-   Depth is carried by the border and surface ramps instead, which both themes
-   render. Don't reintroduce them -- see CLAUDE.md.
-
-   What is left here is a ring, which is a hairline border rather than a
-   one: `ring-black/5` resolves through `--color-black`, and light mode
-   swaps that to white, so it would silently vanish.
-   =========================================================================== */
-
-/* `ring-1 ring-black/5` on the two floating panels. Overriding the color
-   variable rather than `box-shadow` keeps Tailwind's own ring composition
-   intact. */
-html[data-theme="light"] #confirm-dialog-content,
-html[data-theme="light"] #search-modal-content {
-    --tw-ring-color: rgb(0 0 0 / 0.06);
 }

@@ -1,79 +1,26 @@
-import { SkeletonBar, SkeletonBlock, SkeletonPage } from "@/components/skeleton";
+import { Bar, CardsSkeleton, GlanceSkeleton, PageSkeleton } from "@/components/foothill/skeleton";
 
-/**
- * The home page, while it loads.
- *
- * **`(home)` is why this sits in a group of its own, and it is not cosmetic.**
- * A segment's loading module is applied to that segment's child slots, so while
- * this file lived at `app/(site)/` it was the fallback for every route in the
- * group -- and it won, because on a navigation the target's own skeleton is
- * still inside the payload being waited for. A click on Dashboard drew a hero,
- * a card rail and a skills marquee. The group is a router segment but not a
- * path, so it moves this down to a node with no routes under it and leaves the
- * group's own slot with no loading data at all.
- * `scripts/check-skeleton-scope.mjs` is what keeps it there.
- *
- * Mirrors the hero, the latest-blogs rail and the skills marquee with their
- * dividers, so the page settles into the same rhythm it will keep.
- */
+/** The home page while it loads: the name and what is newest, then the work. */
 export default function Loading() {
   return (
-    <SkeletonPage>
-      {/* Hero: heading, the location/status line, the lead, the action pills. */}
-      <section>
-        <SkeletonBar className="h-8 w-3/4 max-w-md mb-3" />
-        <SkeletonBar className="h-4 w-56 my-3" />
-        <SkeletonBar className="h-4 w-full max-w-2xl mb-2" />
-        <SkeletonBar className="h-4 w-2/3 max-w-xl mb-4" />
-        <div className="flex flex-row gap-2 sm:gap-3 mb-6 sm:mb-6 md:mb-8">
-          {[0, 1, 2, 3].map((i) => (
-            <SkeletonBar key={i} className="h-10 w-28 rounded-full" />
-          ))}
-        </div>
-      </section>
-
-      <Divider />
-
-      {/* Latest blogs: a heading with its "see all" link, then the card rail. */}
-      <section>
-        <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
-          <SkeletonBar className="h-7 w-44" />
-          <SkeletonBar className="h-4 w-20" />
-        </div>
-        <div className="relative mb-6 sm:mb-6 md:mb-8 lg:mb-8">
-          {/* The real rail scrolls horizontally; here it simply clips. */}
-          <div className="flex gap-3 sm:gap-4 overflow-hidden">
-            {[0, 1, 2, 3].map((i) => (
-              <SkeletonBlock key={i} className="flex-none w-80" style={{ height: 350 }} />
-            ))}
+    <PageSkeleton>
+      <div className="grid items-end gap-12 lg:grid-cols-12 lg:gap-10">
+        <div className="lg:col-span-8">
+          <Bar className="h-[clamp(2.3rem,1.35rem+3.45vw,4.3rem)] w-[75%] max-w-[16ch]" />
+          <Bar className="mt-7 h-7 w-[80%] max-w-[30ch]" />
+          <Bar className="mt-3 h-5 w-full max-w-[46ch]" />
+          <Bar className="mt-2 h-5 w-[60%] max-w-[30ch]" />
+          <div className="mt-10 flex gap-3">
+            <Bar className="h-12 w-40 rounded-full" />
+            <Bar className="h-12 w-36 rounded-full" />
           </div>
         </div>
-      </section>
-
-      <Divider />
-
-      {/* Skills: a heading over three marquee rows of pills. */}
-      <section>
-        <div className="flex flex-row items-center justify-between gap-2 mb-3 md:mb-4">
-          <SkeletonBar className="h-7 w-36" />
+        <div className="lg:col-span-4 lg:col-start-9">
+          <GlanceSkeleton rows={4} />
         </div>
-        {[0, 1, 2].map((row) => (
-          <div key={row} className="flex gap-3 py-2 overflow-hidden">
-            {[0, 1, 2, 3, 4, 5].map((i) => (
-              <SkeletonBar key={i} className="h-10 w-32 flex-none rounded-full" />
-            ))}
-          </div>
-        ))}
-      </section>
-
-      <Divider />
-
-      {/* The sponsor banner. */}
-      <SkeletonBlock className="mt-4 sm:mt-6 h-48 rounded-2xl" />
-    </SkeletonPage>
+      </div>
+      <Bar className="mt-32 h-11 w-56 md:mt-44" />
+      <CardsSkeleton className="mt-12" />
+    </PageSkeleton>
   );
-}
-
-function Divider() {
-  return <div className="w-full mx-auto border-t border-zinc-800 my-4 md:my-6 lg:my-6" />;
 }

@@ -28,7 +28,7 @@ export default function AdminSectionRecordPage(
   props: PageProps<"/admin/[model]/[sub]/[id]">,
 ) {
   return (
-    <div className="admin-fade space-y-5">
+    <div className="admin-fade space-y-8">
       <Suspense fallback={<RecordSkeleton />}>
         <SectionRecord params={props.params} />
       </Suspense>

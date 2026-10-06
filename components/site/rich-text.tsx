@@ -1,3 +1,4 @@
+import { outlineHtml } from "@/lib/utils/outline";
 import { sanitizeRichText } from "@/lib/utils/sanitize";
 
 /**
@@ -10,14 +11,18 @@ import { sanitizeRichText } from "@/lib/utils/sanitize";
  * `.prose-content` supplies all the styling -- see styles/prose.css. The
  * content itself carries no classes; that separation is the point of the move
  * away from stored Tailwind strings.
+ *
+ * `outline` gives the second- and third-level headings ids, so a table of
+ * contents built from the same `outlineHtml` call can link to them.
  */
-export function RichText({ html, className }: { html: string; className?: string }) {
+export function RichText({ html, className, outline = false }: { html: string; className?: string; outline?: boolean }) {
   if (!html?.trim()) return null;
+  const clean = sanitizeRichText(html);
 
   return (
     <div
       className={className ? `prose-content ${className}` : "prose-content"}
-      dangerouslySetInnerHTML={{ __html: sanitizeRichText(html) }}
+      dangerouslySetInnerHTML={{ __html: outline ? outlineHtml(clean).html : clean }}
     />
   );
 }

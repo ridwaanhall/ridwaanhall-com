@@ -20,7 +20,6 @@ import {
   RailIcon,
   ScaleIcon,
   SlidersIcon,
-  SquaresIcon,
   UsersIcon,
 } from "@/components/admin/admin-icons";
 import {
@@ -30,6 +29,7 @@ import {
   navItemsInGroup,
   type AdminGroup,
 } from "@/lib/admin/registry";
+import { Mark } from "@/components/foothill/mark";
 import { ROLE_LABEL, adminRole } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils/cn";
 import { useOutsidePointer, usePopoverPosition } from "@/lib/utils/use-popover";
@@ -107,15 +107,13 @@ function GroupEntries({
               className={cn(
                 "admin-nav-item flex items-center gap-2 rounded-md py-1.5 pr-2 pl-3 text-sm",
                 active
-                  ? "bg-zinc-800/70 text-zinc-100"
-                  : "text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200",
+                  ? "bg-zinc-900 text-zinc-100"
+                  : "text-zinc-400 hover:bg-zinc-900/60 hover:text-zinc-100",
               )}
             >
               <span className="truncate">{item.label}</span>
               {item.singleton && (
-                <span className="ml-auto shrink-0 text-[0.625rem] tracking-wide text-zinc-600 uppercase">
-                  one
-                </span>
+                <span className="ml-auto shrink-0 text-[11px] text-zinc-600">Single</span>
               )}
             </Link>
           </li>
@@ -215,7 +213,7 @@ function GroupFlyout({
         without the hook having to know anything about the rail's gutter.
       */
       className={cn(
-        "admin-popover custom-scroll fixed z-50 w-56 overflow-y-auto p-1.5",
+        "admin-popover fixed z-50 w-56 overflow-y-auto p-1.5",
         placement?.side === "left" ? "mr-2" : "ml-2",
       )}
       style={{
@@ -233,7 +231,7 @@ function GroupFlyout({
         onHoverOut();
       }}
     >
-      <p className="px-2 pb-1.5 text-[0.6875rem] font-medium tracking-wide text-zinc-500 uppercase">
+      <p className="px-2 pb-1.5 text-[13px] font-medium text-zinc-500">
         {group}
       </p>
       <GroupEntries
@@ -397,7 +395,7 @@ export function AdminSidebar({
       <button
         type="button"
         onClick={() => setDrawer(true)}
-        className="lg:hidden fixed top-3 left-3 z-40 inline-flex items-center justify-center rounded-md border border-zinc-800 bg-zinc-900 p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        className="lg:hidden fixed top-2.5 left-3 z-40 inline-flex h-9 w-9 items-center justify-center rounded-full text-zinc-300 transition-colors hover:bg-zinc-900 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
         aria-label="Open admin navigation"
       >
         <MenuIcon height={18} width={18} />
@@ -408,7 +406,7 @@ export function AdminSidebar({
           type="button"
           aria-label="Close admin navigation"
           onClick={() => setDrawer(false)}
-          className="admin-fade lg:hidden fixed inset-0 z-40 bg-black/70"
+          className="admin-fade lg:hidden fixed inset-0 z-40 bg-[var(--fh-scrim)] backdrop-blur-sm"
         />
       )}
 
@@ -421,7 +419,7 @@ export function AdminSidebar({
           collapse must not do -- they are the landmark being tracked.
         */
         className={cn(
-          "admin-rail-shift fixed inset-y-0 left-0 z-50 flex w-64 flex-col overflow-hidden border-r border-zinc-800 bg-zinc-950 lg:translate-x-0",
+          "admin-rail-shift fixed inset-y-0 left-0 z-50 flex w-64 flex-col overflow-hidden border-r border-zinc-800 bg-black lg:translate-x-0",
           mini ? "lg:w-18" : "lg:w-64",
           drawer ? "translate-x-0" : "-translate-x-full",
         )}
@@ -433,9 +431,9 @@ export function AdminSidebar({
             onClick={() => setDrawer(false)}
             className="flex min-w-0 items-center gap-2.5 rounded-md text-zinc-200 transition-colors hover:text-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
           >
-            <SquaresIcon className="shrink-0 text-indigo-400" height={17} width={17} />
+            <Mark className="h-4 w-7 shrink-0" />
             <span
-              className="admin-rail-label truncate text-sm font-medium whitespace-nowrap"
+              className="admin-rail-label truncate font-display text-[15px] font-medium tracking-[-0.01em] whitespace-nowrap"
               data-hidden={mini}
             >
               Admin
@@ -445,14 +443,14 @@ export function AdminSidebar({
           <button
             type="button"
             onClick={() => setDrawer(false)}
-            className="lg:hidden ml-auto rounded-md p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300"
+            className="lg:hidden ml-auto flex h-8 w-8 items-center justify-center rounded-full text-zinc-500 transition-colors hover:bg-zinc-900 hover:text-zinc-100"
             aria-label="Close admin navigation"
           >
             <CloseIcon height={16} width={16} />
           </button>
         </div>
 
-        <div className="custom-scroll flex-1 overflow-x-hidden overflow-y-auto px-2 py-3">
+        <div className="flex-1 overflow-x-hidden overflow-y-auto px-2 py-3">
           <ul className="space-y-0.5">
             {groups.map((group) => {
               const Icon = GROUP_ICON[group];
@@ -485,9 +483,8 @@ export function AdminSidebar({
                       if (flyout) closeFlyoutSoon();
                     }}
                     className={cn(
-                      "admin-group-toggle flex w-full cursor-pointer items-center gap-2.5 rounded-md py-2 pr-2 pl-2.5 text-left text-sm transition-colors hover:bg-zinc-800/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
+                      "admin-group-toggle flex w-full cursor-pointer items-center gap-2.5 rounded-md py-2 pr-2 pl-2.5 text-left text-sm transition-colors hover:bg-zinc-900/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
                       holdsActive ? "text-zinc-100" : "text-zinc-400 hover:text-zinc-200",
-                      open && "bg-zinc-900/70",
                     )}
                   >
                     <Icon
@@ -563,7 +560,7 @@ export function AdminSidebar({
             onClick={onToggleMini}
             aria-expanded={!mini}
             aria-label={mini ? "Expand the sidebar" : "Collapse the sidebar"}
-            className="flex w-full cursor-pointer items-center gap-2.5 rounded-md py-2 pr-2 pl-2.5 text-left text-sm text-zinc-500 transition-colors hover:bg-zinc-800/50 hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+            className="flex w-full cursor-pointer items-center gap-2.5 rounded-md py-2 pr-2 pl-2.5 text-left text-sm text-zinc-500 transition-colors hover:bg-zinc-900/60 hover:text-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
           >
             <RailIcon className="shrink-0" height={16} width={16} />
             <span

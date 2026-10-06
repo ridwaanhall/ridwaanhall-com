@@ -1,55 +1,28 @@
 import type { Route } from "next";
 import Link from "next/link";
 
-import {
-  ArticleIcon,
-  BriefcaseIcon,
-  ChatIcon,
-  ChevronIcon,
-  KeyIcon,
-  CommentIcon,
-  CubeIcon,
-  PersonIcon,
-  ScaleIcon,
-  SlidersIcon,
-  UsersIcon,
-} from "@/components/admin/admin-icons";
-import { ADMIN_GROUPS, navItemsInGroup, type AdminGroup } from "@/lib/admin/registry";
+import { SECTION_TITLE } from "@/components/admin/control-classes";
+import { ScreenHead } from "@/components/admin/screen-head";
+import { Icon } from "@/components/foothill/icons";
+import { ADMIN_GROUPS, navItemsInGroup } from "@/lib/admin/registry";
 import { hasAnyAccess, permittedKeys } from "@/lib/auth/permissions";
 import { requireStaff } from "@/lib/auth/staff";
 
 /**
  * The admin index: every screen, grouped as the sidebar groups them.
  *
- * A Settings section is one card standing in for its tabs, exactly as it is one
- * row in the rail. The card names them underneath, so collapsing seventeen
+ * A Settings section is one row standing in for its tabs, exactly as it is one
+ * row in the rail. The row names them underneath, so collapsing seventeen
  * vocabularies into six pages hides none of them from somebody scanning for one.
  *
  * It shows what *this account* may open, which is not the same as what the
- * admin holds. A card leading to a screen that answers not-found is worse than
- * no card, and a card that names a screen somebody is being kept out of hands
+ * admin holds. A row leading to a screen that answers not-found is worse than
+ * no row, and a row that names a screen somebody is being kept out of hands
  * them a map of the place instead of an explanation.
  *
- * The counts under each heading follow, so the page never claims an area holds
- * more than it lists.
- *
- * The group icons are the rail's, from one table. Somebody arriving here and
- * then using the rail is looking at the same nine marks in the same nine
- * places, which is the whole of what makes an index and a nav feel like one
- * thing rather than two lists that happen to agree.
+ * The counts beside each heading follow, so the page never claims an area
+ * holds more than it lists.
  */
-const GROUP_ICON: Record<AdminGroup, typeof PersonIcon> = {
-  About: PersonIcon,
-  Blog: ArticleIcon,
-  Projects: CubeIcon,
-  "Open to work": BriefcaseIcon,
-  Legal: ScaleIcon,
-  Guestbook: ChatIcon,
-  Comments: CommentIcon,
-  Users: UsersIcon,
-  Access: KeyIcon,
-  Settings: SlidersIcon,
-};
 
 /**
  * Never prerendered, for the same reason as the layout and the changelist
@@ -74,17 +47,12 @@ export default async function AdminIndexPage() {
   const screens = groups.reduce((total, { items }) => total + items.length, 0);
 
   return (
-    <div className="admin-fade space-y-9">
-      <div className="border-b border-zinc-800 pb-5">
-        <h1 className="text-2xl font-medium text-zinc-100">Admin</h1>
-        <p className="mt-1.5 max-w-2xl text-sm text-zinc-400">
-          Content for ridwaanhall.com, read from and written to the live database.
-        </p>
-        <p className="mt-3 text-xs text-zinc-600">
-          {screens} {screens === 1 ? "screen" : "screens"} across {groups.length}{" "}
-          {groups.length === 1 ? "area" : "areas"}
-        </p>
-      </div>
+    <div className="admin-fade space-y-14">
+      <ScreenHead
+        title="Admin"
+        lead="Content for ridwaanhall.com, read from and written to the live database."
+        meta={`${screens} ${screens === 1 ? "screen" : "screens"} across ${groups.length} ${groups.length === 1 ? "area" : "areas"}`}
+      />
 
       {/*
         A staff account with no grants yet is a real state, not a fault: the
@@ -94,89 +62,65 @@ export default async function AdminIndexPage() {
         see the Access screen to find out.
       */}
       {!hasAnyAccess(actor) && (
-        <p className="max-w-2xl rounded-lg border border-zinc-800 bg-zinc-950/40 p-4 text-sm text-zinc-400">
+        <p className="max-w-2xl text-[15px] leading-relaxed text-zinc-400">
           This account can sign in to the admin, but has not been given access to
           any screen yet. A superuser sets that on the Access screen.
         </p>
       )}
 
-      {groups.map(({ group, items }) => {
-        const Icon = GROUP_ICON[group];
+      {/*
+        Each area as the public site sets a section: its name in the display
+        face with the count beside it, and the screens under it as ruled rows
+        rather than cards -- the hairlines carry the structure a box would.
+      */}
+      {groups.map(({ group, items }) => (
+        <section key={group} aria-labelledby={`area-${group}`} className="grid gap-5 lg:grid-cols-12 lg:gap-10">
+          <h2 id={`area-${group}`} className={`${SECTION_TITLE} flex items-start gap-1.5 lg:col-span-3`}>
+            {group}
+            <span className="mt-0.5 font-sans text-[11px] font-normal tracking-normal text-zinc-500 tabular-nums">
+              {items.length}
+            </span>
+          </h2>
 
-        return (
-          <section key={group}>
-            <div className="mb-3 flex items-center gap-2.5">
-              <span
-                aria-hidden="true"
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900 text-zinc-400"
-              >
-                <Icon height={15} width={15} />
-              </span>
-              <h2 className="text-sm font-medium text-zinc-300">{group}</h2>
-              <span className="text-xs text-zinc-600 tabular-nums">{items.length}</span>
-              {/* A rule that starts where the heading ends, so eight sections
-                  read as one column rather than eight separate boxes. */}
-              <span aria-hidden="true" className="ml-1 h-px flex-1 bg-zinc-800" />
-            </div>
-
-            <ul className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
-              {items.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href as Route}
-                    /*
-                      Border and background only. This site has no shadows
-                      anywhere, so a card that lifted on hover would be the one
-                      surface in the admin announcing it came from somewhere
-                      else.
-                    */
-                    className="admin-card group block h-full rounded-lg border border-zinc-800 bg-zinc-950/40 p-3.5 hover:border-zinc-700 hover:bg-zinc-900/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="truncate text-sm font-medium text-zinc-200">
-                        {item.label}
-                      </span>
-                      {item.singleton && (
-                        <span className="shrink-0 rounded-full border border-zinc-800 px-1.5 py-0.5 text-[0.625rem] tracking-wide text-zinc-500 uppercase">
-                          single row
-                        </span>
-                      )}
-                      <ChevronIcon
-                        aria-hidden="true"
-                        className="ml-auto shrink-0 text-zinc-700 transition-colors group-hover:text-indigo-400"
-                      />
-                    </div>
-                    <p className="mt-1.5 text-xs leading-relaxed text-zinc-500">{item.blurb}</p>
+          <ul className="grid gap-x-10 border-t border-zinc-800 sm:grid-cols-2 lg:col-span-9">
+            {items.map((item) => (
+              <li key={item.href} className="border-b border-zinc-800">
+                <Link
+                  href={item.href as Route}
+                  className="group flex h-full items-start gap-4 py-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-baseline gap-2">
+                      <span className="text-[15px] font-medium text-zinc-100">{item.label}</span>
+                      {item.singleton && <span className="text-[12px] text-zinc-500">Single row</span>}
+                    </span>
+                    <span className="mt-1 block text-[13px] leading-relaxed text-zinc-500">{item.blurb}</span>
                     {/*
                       A section's tabs, named. The rail lists the section rather
-                      than its tabs now, so this is the only place a vocabulary is
+                      than its tabs, so this is the only place a vocabulary is
                       written out at all -- without it Settings offers six names
                       for seventeen screens, and somebody looking for work modes
-                      has nowhere left to find the word.
-
-                      It wraps, and nothing caps it. Job preferences joins six
-                      labels into 117 characters, and the narrowest box this
-                      paragraph gets is 289px -- three columns at exactly 1280,
-                      which is narrower than the single column at 390. Clipping
-                      to one line showed two of the six names there; capping at
-                      two still cut the last one, measured. Any cap is a number
-                      that holds until somebody adds a tab, and a cap that cuts a
-                      name is this paragraph failing at the one thing it is for.
-                      The cards stretch to their row, so a taller one costs only
-                      the row's height.
+                      has nowhere left to find the word. It wraps and nothing
+                      caps it: any cap is a number that holds until somebody
+                      adds a tab, and a cap that cuts a name fails at the one
+                      thing this line is for.
                     */}
                     {item.tabs && (
-                      <p className="mt-2 text-[0.6875rem] text-zinc-600">
-                        {item.tabs.map((tab) => tab.labelPlural).join(" · ")}
-                      </p>
+                      <span className="mt-1.5 block text-[12px] text-zinc-600">
+                        {item.tabs.map((tab) => tab.labelPlural).join(", ")}
+                      </span>
                     )}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        );
-      })}
+                  </span>
+                  <Icon
+                    name="arrow-right"
+                    className="mt-1 h-4 w-4 text-zinc-600 transition-[color,transform] duration-300 group-hover:translate-x-0.5 group-hover:text-zinc-100"
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
     </div>
   );
 }

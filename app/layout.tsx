@@ -2,23 +2,24 @@ import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 
 import { PageLoadingBar } from "@/components/layout/page-loading-bar";
-import { ClickSpark } from "@/components/providers/click-spark";
 import { ConfirmDialogProvider } from "@/components/providers/confirm-dialog";
 import { Notifications } from "@/components/providers/notifications";
 import { ThemeColorSync } from "@/components/providers/theme-color-sync";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Tooltips } from "@/components/providers/tooltips";
 
-import { onest } from "./fonts";
+import { funnelDisplay, funnelSans, jetbrains } from "./fonts";
 
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? "https://ridwaanhall.com"),
   // Favicons are hand-placed under public/favicon/ rather than generated, so
-  // they are declared here rather than discovered by file convention.
+  // they are declared here rather than discovered by file convention. They are
+  // the navbar's mark on a paper tile; the SVG follows the browser's theme.
   icons: {
     icon: [
+      { url: "/favicon/icon.svg", type: "image/svg+xml" },
       { url: "/favicon/favicon.ico", type: "image/x-icon" },
       { url: "/favicon/favicon-16x16.png", type: "image/png", sizes: "16x16" },
       { url: "/favicon/favicon-32x32.png", type: "image/png", sizes: "32x32" },
@@ -44,23 +45,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     // suppressHydrationWarning is required by next-themes: its pre-paint script
     // writes data-theme on <html> before React hydrates, so the server and
     // client markup legitimately differ on that one attribute.
-    <html lang="en" className={onest.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${funnelDisplay.variable} ${funnelSans.variable} ${jetbrains.variable}`}
+      suppressHydrationWarning
+    >
       <body className="bg-black text-zinc-300 transition-colors duration-200">
         <ThemeProvider>
           <ThemeColorSync />
           {/*
-            Two document-wide behaviours, mounted once. Both render nothing and
-            append their own element to `document.body` -- the tooltip chip and
-            the spark canvas are `position: fixed`, and `#page-content` carries
-            a transform, which would otherwise become their containing block.
+            A document-wide behaviour, mounted once. It renders nothing and
+            appends its own chip to `document.body` -- the chip is
+            `position: fixed`, and `#page-content` carries a transform, which
+            would otherwise become its containing block.
 
-            They are delegated from `document` rather than attached per
-            element, which is what lets them cover markup that appears later
-            (gallery controls, lightbox buttons, a panel that was hidden) with
-            no observer and no re-scan.
+            It is delegated from `document` rather than attached per element,
+            which is what lets it cover markup that appears later (gallery
+            controls, lightbox buttons, a panel that was hidden) with no
+            observer and no re-scan.
           */}
           <Tooltips />
-          <ClickSpark />
           {/*
             The toast stack and the confirm dialog, both at body level and both
             for the same reason as the two above: `#page-content` animates a

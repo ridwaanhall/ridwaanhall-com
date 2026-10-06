@@ -1,4 +1,4 @@
-import { SkeletonBar } from "@/components/skeleton";
+import { ScreenHeadSkeleton, SkeletonBar } from "@/components/skeleton";
 
 /**
  * The admin index, while it loads.
@@ -21,36 +21,28 @@ import { SkeletonBar } from "@/components/skeleton";
  * `check-admin.mjs` treats the model index as something an anonymous reader
  * must not receive. The shape is copied from the page; the words are not.
  *
- * The card counts are the first three groups' real sizes, so the first screen
+ * The row counts are the first three groups' real sizes, so the first screen
  * is filled to roughly the height the page arrives at rather than collapsing
  * by half of it.
  *
- * No `SkeletonPage` -- the admin has its own chrome and its own gutters, which
- * `AdminMain` supplies.
+ * No page frame of its own -- the admin has its own chrome and its own
+ * gutters, which `AdminMain` supplies.
  */
 export default function Loading() {
   return (
-    <div className="skeleton-pulse space-y-9" role="status" aria-busy="true">
+    <div className="skeleton-pulse space-y-14" role="status" aria-busy="true">
       <span className="sr-only">Loading…</span>
-      <div className="space-y-9" aria-hidden="true">
-        <div className="border-b border-zinc-800 pb-5">
-          <SkeletonBar className="h-8 w-28" />
-          <SkeletonBar className="mt-2 h-4 w-96 max-w-full" />
-          <SkeletonBar className="mt-3 h-3 w-40" />
-        </div>
+      <div className="space-y-14" aria-hidden="true">
+        <ScreenHeadSkeleton meta />
 
-        {[9, 1, 1].map((cards, group) => (
-          <section key={group}>
-            <div className="mb-3 flex items-center gap-2.5">
-              <SkeletonBar className="h-7 w-7 rounded-md" />
-              <SkeletonBar className="h-3.5 w-24" />
-              <span aria-hidden="true" className="ml-1 h-px flex-1 bg-zinc-800" />
-            </div>
-            <div className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
-              {Array.from({ length: cards }, (_, card) => (
-                <div key={card} className="rounded-lg border border-zinc-800 p-3.5">
-                  <SkeletonBar className="h-4 w-32" />
-                  <SkeletonBar className="mt-2.5 h-3 w-full" />
+        {[6, 1, 1].map((rows, group) => (
+          <section key={group} className="grid gap-5 lg:grid-cols-12 lg:gap-10">
+            <SkeletonBar className="h-6 w-24 lg:col-span-3" />
+            <div className="grid gap-x-10 border-t border-zinc-800 sm:grid-cols-2 lg:col-span-9">
+              {Array.from({ length: rows }, (_, row) => (
+                <div key={row} className="border-b border-zinc-800 py-4">
+                  <SkeletonBar className="h-[18px] w-32" />
+                  <SkeletonBar className="mt-2 h-4 w-full max-w-xs" />
                 </div>
               ))}
             </div>

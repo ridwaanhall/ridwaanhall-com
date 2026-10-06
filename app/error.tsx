@@ -24,7 +24,7 @@ export default function Error({ error }: { error: Error & { digest?: string } })
   return (
     <ErrorPage
       code={500}
-      title="Something Went Wrong"
+      title="Something broke."
       message="An unexpected error occurred while loading this page. It has been logged; please try again in a moment."
     />
   );

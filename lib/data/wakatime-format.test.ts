@@ -14,10 +14,10 @@ import {
 
 describe("formatTime", () => {
   it("writes hours and minutes the way the cards read them", () => {
-    assert.equal(formatTime(7384), "2 hours 3 minutes");
-    assert.equal(formatTime(3600), "1 hour");
-    assert.equal(formatTime(2700), "45 minutes");
-    assert.equal(formatTime(60), "1 minute");
+    assert.equal(formatTime(7384), "2 hrs 3 mins");
+    assert.equal(formatTime(3600), "1 hr");
+    assert.equal(formatTime(2700), "45 mins");
+    assert.equal(formatTime(60), "1 min");
   });
 
   it("drops to seconds only below a minute, so a card is never blank", () => {
@@ -28,7 +28,7 @@ describe("formatTime", () => {
   /*
    * A day WakaTime has not finished computing arrives as `undefined`, and the
    * caller's `?? 0` is not the only guard: a negative would otherwise render as
-   * "-1 hours".
+   * "-1 hrs".
    */
   it("refuses a value that is not a duration", () => {
     assert.equal(formatTime(-5), "0 mins");
@@ -40,7 +40,7 @@ describe("formatTime", () => {
 describe("shortTime", () => {
   /*
    * The reason it exists: the axis gutter beside the weekday chart is 56px, and
-   * `formatTime` writes the same duration as "2 hours 42 minutes", which wraps
+   * `formatTime` writes the same duration as "2 hrs 42 mins", which wraps
    * to three lines and lands on top of the panel title above it.
    */
   it("writes a duration narrow enough for a chart axis", () => {

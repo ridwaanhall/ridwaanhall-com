@@ -18,6 +18,7 @@ import {
 } from "@/lib/admin/registry";
 import { can, permits } from "@/lib/auth/permissions";
 import { requireStaff } from "@/lib/auth/staff";
+import { ScreenHead } from "@/components/admin/screen-head";
 
 /**
  * One route for every changelist.
@@ -101,11 +102,8 @@ async function SingletonScreen({ entryKey, canSave }: { entryKey: string; canSav
   );
 
   return (
-    <div className="admin-fade space-y-5">
-      <div>
-        <h1 className="text-xl font-medium text-zinc-100">{entry.labelPlural}</h1>
-        <p className="mt-1 text-sm text-zinc-400">{entry.blurb}</p>
-      </div>
+    <div className="admin-fade space-y-8">
+      <ScreenHead title={entry.labelPlural} lead={entry.blurb} />
       <RecordForm
         modelKey={entryKey}
         id={recordId}
@@ -195,11 +193,8 @@ export default async function AdminListPage({ params, searchParams }: Params) {
   if (!model) notFound();
 
   return (
-    <div className="admin-fade space-y-4">
-      <div>
-        <h1 className="text-xl font-medium text-zinc-100">{entry.labelPlural}</h1>
-        <p className="mt-1 text-sm text-zinc-400">{entry.blurb}</p>
-      </div>
+    <div className="admin-fade space-y-8">
+      <ScreenHead title={entry.labelPlural} lead={entry.blurb} />
 
       {/*
         The query and the table, shared with the tab route -- see

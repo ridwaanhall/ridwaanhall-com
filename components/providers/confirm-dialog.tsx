@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
+import { Icon } from "@/components/foothill/icons";
 import { useBodyScrollLock, useEscape, useModalTransition } from "@/lib/utils/use-modal";
 
 /**
@@ -98,15 +99,13 @@ export function ConfirmDialogProvider({ children }: { children: React.ReactNode 
   );
 }
 
+// The site's own buttons: Cancel is the outlined one, Confirm the solid one --
+// or, for something that cannot be undone, the same red the error toast uses.
 const CONFIRM_BUTTON = {
-  neutral: "border-zinc-700 bg-zinc-900 text-zinc-100 hover:bg-zinc-800",
-  danger: "border-red-800 bg-red-950/60 text-red-200 hover:border-red-500 hover:bg-red-900/50",
+  neutral: "bg-ink text-paper hover:opacity-85",
+  danger: "border border-red-500/40 bg-red-500/10 text-red-400 hover:bg-red-500/20",
 };
-const ICON_SHELL = {
-  neutral: "border-zinc-700 bg-zinc-900",
-  danger: "border-red-900/60 bg-red-950/40",
-};
-const ICON_GLYPH = { neutral: "text-zinc-300", danger: "text-red-400" };
+const ICON_MARK = { neutral: "bg-line text-ink", danger: "bg-red-500/15 text-red-400" };
 
 function ConfirmDialog({
   isOpen,
@@ -146,7 +145,7 @@ function ConfirmDialog({
     <div
       id="confirm-dialog"
       className={`fixed inset-0 z-50 transition-all duration-300 ease-out ${
-        shown ? "backdrop-blur-md" : "backdrop-blur-none pointer-events-none"
+        shown ? "bg-[var(--fh-scrim)] backdrop-blur-sm" : "backdrop-blur-none pointer-events-none"
       }`}
     >
       {/* Backdrop dismissal, as the search palette does it. Escape covers the
@@ -156,57 +155,47 @@ function ConfirmDialog({
           role="dialog"
           aria-modal="true"
           aria-labelledby="confirm-dialog-title"
-          className={`relative mx-auto max-w-md w-full overflow-hidden rounded-xl border-2 border-zinc-800 bg-black ring-1 ring-black/5 p-5 transition-all duration-300 ease-out ${
+          className={`relative mx-auto w-full max-w-md overflow-hidden rounded-[18px] border border-line bg-paper p-6 font-text transition-all duration-300 ease-out ${
             shown ? "scale-100 opacity-100" : "scale-95 opacity-0"
           }`}
           onClick={(event) => event.stopPropagation()}
         >
           <div className="flex items-start gap-3">
-            <div
-              className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border ${ICON_SHELL[variant]}`}
+            <span
+              className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full ${ICON_MARK[variant]}`}
             >
-              <svg
-                className={`h-5 w-5 ${ICON_GLYPH[variant]}`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
+              <Icon name="alert" strokeWidth={1.8} className="h-[18px] w-[18px]" />
+            </span>
+            <div className="min-w-0 pt-0.5">
+              <h3
+                id="confirm-dialog-title"
+                className="font-display text-[19px] leading-snug font-medium tracking-[-0.015em] text-ink"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 9v2m0 4h.01M5.07 19h13.86a2 2 0 001.74-3L13.74 4a2 2 0 00-3.48 0L3.33 16a2 2 0 001.74 3z"
-                />
-              </svg>
-            </div>
-            <div className="min-w-0">
-              <h3 id="confirm-dialog-title" className="text-base font-semibold text-zinc-100">
                 {options.title ?? "Are you sure?"}
               </h3>
-              {options.message && <p className="mt-1 text-sm text-zinc-400">{options.message}</p>}
+              {options.message && <p className="mt-1.5 text-[14px] leading-relaxed text-mute">{options.message}</p>}
             </div>
           </div>
 
           {detail && (
-            <blockquote className="mt-4 max-h-24 overflow-y-auto rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-400 italic break-words whitespace-pre-line">
+            <blockquote className="mt-4 max-h-24 overflow-y-auto rounded-lg border border-line bg-raise px-3 py-2 text-sm text-mute italic break-words whitespace-pre-line">
               {detail}
             </blockquote>
           )}
 
-          <div className="mt-5 flex justify-end gap-2">
+          <div className="mt-6 flex justify-end gap-2">
             <button
               ref={cancelRef}
               type="button"
               onClick={onCancel}
-              className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-800 transition-all duration-300"
+              className="cursor-pointer rounded-full border border-line px-4 py-2 text-sm font-medium text-ink transition-colors hover:border-ink"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={onConfirm}
-              className={`rounded-lg border px-4 py-2 text-sm transition-all duration-300 ${CONFIRM_BUTTON[variant]}`}
+              className={`cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition-[opacity,background-color] ${CONFIRM_BUTTON[variant]}`}
             >
               {options.label ?? "Confirm"}
             </button>

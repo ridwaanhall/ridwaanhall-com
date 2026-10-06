@@ -240,14 +240,6 @@
     transition: background-color 160ms ease-out;
 }
 
-/* A card that lifts on hover -- border and background only, because this site
-   has no shadows anywhere and one here would read as another product. */
-.admin-card {
-    transition:
-        background-color 200ms ease-out,
-        border-color 200ms ease-out;
-}
-
 @media (prefers-reduced-motion: reduce) {
     .admin-rise,
     .admin-fade,
@@ -261,7 +253,6 @@
     .admin-tab,
     .admin-tab::after,
     .admin-hover-row,
-    .admin-card,
     .admin-accordion,
     .admin-chevron,
     .admin-rail-shift,

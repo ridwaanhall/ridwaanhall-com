@@ -10,7 +10,7 @@
  *  1. **The bar is outside `#page-content`.** That element animates a
  *     transform, and a transformed ancestor becomes the containing block for
  *     its `position: fixed` descendants -- the same trap the toast stack, the
- *     tooltips, the spark canvas and the confirm dialog are all placed to
+ *     tooltips and the confirm dialog are all placed to
  *     avoid. `check-notifications.mjs` asserts it for the toasts; this is the
  *     same assertion for the bar, plus the measurement that catches it: pinned
  *     to the viewport, the bar starts at the viewport's own corner.
@@ -27,11 +27,10 @@
  *     them, so there is no threshold any more -- what removes the flash is
  *     finishing the gesture rather than declining to start it.
  *
- *  3. **The teal survives the light-mode remap.** The site carries no `dark:`
- *     variants -- light mode redefines the palette variables -- so a colour
- *     family with no remap silently stays dark. Teal has one; this measures
- *     that the gradient resolves to something still teal and still visible
- *     against the canvas, in both themes.
+ *  3. **The bar is ink, and visible, in both themes.** The site has no accent
+ *     colour, so the bar is drawn in the text's own, from a token that
+ *     changes with the theme -- this measures that it stands well off the
+ *     canvas in each, which a value left over from one theme would not.
  *
  *  4. **A skeleton renders no `<main>`.** The content-entrance fade in
  *     `styles/animations.css` keys on that element precisely because a
@@ -61,8 +60,8 @@ const check = (name, pass, detail = "") => {
  * Resolve any CSS colour to an [r,g,b] triple, in the page.
  *
  * `getComputedStyle` hands back whatever space the value was authored in --
- * Tailwind v4's palette is `oklch`, and a gradient's stops come back as
- * `lab(...)`. Rather than implement three colour spaces here, paint each one
+ * Tailwind v4's palette is `oklch`, and a colour mixed from the site's tokens
+ * comes back as `oklab(...)`. Rather than implement three colour spaces here, paint each one
  * onto a canvas and read the pixel: the browser already knows how.
  */
 const TO_RGB = (colors) => {
@@ -390,11 +389,8 @@ try {
     const measured = await page.evaluate((toRgb) => {
       const convert = new Function(`return ${toRgb}`)();
       const el = document.getElementById("page-loading-bar");
-      const image = getComputedStyle(el).backgroundImage;
-      // Any function-form colour: the stops arrive as lab(), the canvas as rgb().
-      const found = image.match(/(?:lab|lch|oklab|oklch|rgba?|hsla?|color)\([^)]*\)/g) ?? [];
       return {
-        stops: convert(found),
+        stops: convert([getComputedStyle(el).backgroundColor]),
         canvas: convert([getComputedStyle(document.body).backgroundColor])[0],
         theme: document.documentElement.dataset.theme,
       };
@@ -402,17 +398,11 @@ try {
 
     check(`${theme}: the page is in that theme`, measured.theme === theme, measured.theme);
 
-    const stops = measured.stops;
-    const canvas = measured.canvas;
+    const { stops, canvas } = measured;
 
-    check(`${theme}: the gradient resolves to real colours`, stops.length >= 3,
-      `${stops.length} stop(s)`);
-    check(`${theme}: every stop is still teal, not grey`,
-      stops.length > 0 && stops.every(([r, g, b]) => g > r && b > r),
-      stops.map((s) => s.join(",")).join(" | "));
-
+    check(`${theme}: the bar resolves to a real colour`, stops.length === 1, `${stops.length} colour(s)`);
     const worst = stops.length && canvas ? Math.min(...stops.map((s) => contrast(s, canvas))) : 0;
-    check(`${theme}: it is visible against the canvas`, worst >= 1.6, `contrast ${worst.toFixed(2)}:1`);
+    check(`${theme}: it stands off the canvas as text does`, worst >= 7, `contrast ${worst.toFixed(2)}:1`);
 
     await page.close();
   }
@@ -565,8 +555,10 @@ try {
     await page.unroute("**/*");
     await page.waitForURL("**/about", { timeout: 15000 }).catch(() => {});
     await page.waitForSelector("main", { timeout: 15000 }).catch(() => {});
-    const mains = await page.locator("main").count();
-    check("and the real page arrives with its <main>", mains === 1, `${mains} main element(s)`);
+    // Visible ones: under Cache Components the page navigated away from stays
+    // in the document inside a hidden `<Activity>`, `<main>` and all.
+    const mains = await page.locator("main:visible").count();
+    check("and the real page arrives with its <main>", mains === 1, `${mains} visible main element(s)`);
 
     await page.close();
   }

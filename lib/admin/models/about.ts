@@ -1169,11 +1169,41 @@ export const profileForm: AdminFormModel = {
           // which is still in the bucket because it is still referenced.
           help: "Shared with every blog post's author photo. Replacing it here changes only the profile.",
         },
+        {
+          name: "avatar",
+          column: profile.avatarId,
+          label: "Avatar",
+          kind: "image",
+          prefix: "profile",
+          help: "Shown instead of the photo when chosen below. Engraved in the same lines.",
+        },
+        {
+          name: "blur",
+          column: profile.blurId,
+          label: "Blur",
+          kind: "image",
+          prefix: "profile",
+          help: "The photo with its face smoothed away, line for line the same everywhere else.",
+        },
+        {
+          name: "portrait",
+          column: profile.portrait,
+          label: "Show on the site",
+          kind: "select",
+          required: true,
+          // The column's own CHECK constraint, spelled out.
+          choices: [
+            { value: "photo", label: "Photo" },
+            { value: "avatar", label: "Avatar" },
+            { value: "blur", label: "Blur" },
+          ],
+          help: "What the about page and every post byline show. A choice whose image is not set falls back to the photo.",
+        },
       ],
     },
     {
       title: "Status",
-      help: "All three can be true at once, and the sidebar stacks the badges when they are.",
+      help: "All three can be true at once, and the site lists each of them when they are.",
       fields: [
         { name: "isOpenToWork", column: profile.isOpenToWork, label: "Open to work", kind: "checkbox" },
         { name: "isHiring", column: profile.isHiring, label: "Hiring", kind: "checkbox" },

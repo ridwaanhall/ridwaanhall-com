@@ -2,130 +2,69 @@
 
 import Link from "next/link";
 
-import { useCurrentYear } from "@/lib/utils/use-current-year";
+import { LINE_BUTTON, SOLID_BUTTON } from "@/components/foothill/classes";
+import { Icon } from "@/components/foothill/icons";
+import { Mark } from "@/components/foothill/mark";
+import { PageMotion, Roll } from "@/components/foothill/motion";
 
 /**
- * The shared error page.
+ * The page shown when there is no page: a 404, or an error boundary.
  *
- * `not-found.tsx` and `error.tsx` both render it, and both sit inside the root
- * layout, so the palette, fonts and theme script come from one place.
- *
- * It deliberately renders *outside* the site shell -- no sidebar, no nav. An
- * error page that reproduces the whole chrome invites the reader to keep
- * browsing from a broken state; the link row near the bottom gives them the
- * same destinations without the pretence that the page loaded. It also takes
- * nothing from the database, which matters because the failure this app
- * actually has is a database it cannot reach.
- *
- * **Built out of the site's own parts.** It used to be its own visual world: a
- * red-to-pink gradient behind the status code, a pulsing ring around a warning
- * triangle, `font-bold` and `font-semibold` in a site that uses neither. It
- * reads as a page of this site now -- the heading and description of any other
- * page, the home hero's `action-btn` pair, the sidebar footer's bulleted link
- * row -- and the status code is a quiet chip rather than the loudest thing on
- * screen. What the reader needs to know is what went wrong and where to go,
- * and the title says the first.
+ * It renders outside every layout but the root one -- the admin's missing
+ * routes land here too -- so it carries its own frame and says nothing that
+ * is only true of the public site.
  */
 export function ErrorPage({
   code = 404,
-  title = "Page Not Found",
-  message = "Sorry, the page you are looking for doesn't seem to exist or may have been moved.",
+  title = "This trail ends here.",
+  message = "Page not found. The address may be mistyped, or the page has moved somewhere else.",
 }: {
   code?: number | string;
   title?: string;
   message?: string;
 }) {
-  const year = useCurrentYear();
-
   return (
-    <main className="px-3 py-4 sm:px-4 md:px-6 lg:px-8">
-      <div className="mx-auto flex min-h-screen max-w-xl flex-col justify-center py-12">
-        <span className="pill-badge self-start border border-zinc-700 px-2 py-0.5 text-xs text-zinc-400">
-          Error {code}
-        </span>
-
-        <h1 className="mt-3 text-2xl lg:text-3xl font-medium tracking-tight">{title}</h1>
-        <p className="mt-2 text-base sm:text-lg leading-relaxed text-zinc-300">{message}</p>
-
-        <div className="mt-6 flex flex-row justify-start gap-2 sm:gap-3">
-          <Link href="/" className="action-btn group bg-indigo-800 hover:bg-indigo-700">
-            <HomeIcon />
-            Homepage
+    <div className="fh-site fh-error flex min-h-dvh flex-col bg-paper px-4 text-ink md:px-8">
+      <header className="fh-error-chrome mx-auto flex h-16 w-full max-w-[1200px] items-center">
+        <Link href="/" className="flex items-center gap-2.5 font-display text-[18px] font-semibold tracking-[-0.025em]">
+          <Mark className="h-4 w-7" />
+          <span>ridwaanhall</span>
+        </Link>
+      </header>
+      <main className="mx-auto flex w-full max-w-[1200px] flex-1 flex-col justify-center py-20">
+        <p
+          data-fh-enter
+          aria-hidden="true"
+          className="font-display text-[clamp(4.5rem,3rem+7vw,8rem)] leading-[0.8] font-semibold tracking-[-0.06em] text-line"
+        >
+          {code}
+        </p>
+        <h1
+          data-fh-split
+          className="mt-8 max-w-[16ch] font-display text-[clamp(2.2rem,1.5rem+3vw,4rem)] leading-[1] font-medium tracking-[-0.04em]"
+        >
+          {title}
+        </h1>
+        <p className="mt-6 max-w-[48ch] text-[clamp(1.125rem,1rem+0.5vw,1.375rem)] leading-[1.5] text-mute">
+          <span className="sr-only">Error {code}. </span>
+          {message}
+        </p>
+        <div data-fh-enter className="mt-10 flex flex-wrap gap-3">
+          <Link href="/" className={SOLID_BUTTON}>
+            <Roll>Back to the start</Roll>
+            <Icon name="arrow-right" className="transition-transform duration-500 group-hover:translate-x-1" />
           </Link>
           {/* `window.history.back()` rather than the error boundary's `retry`.
               Retrying re-renders the segment, which helps only for a transient
               failure -- offered here it would look like a retry that does
               nothing. */}
-          <button
-            type="button"
-            onClick={() => window.history.back()}
-            className="action-btn group cursor-pointer bg-zinc-800 hover:bg-zinc-700"
-          >
-            <BackIcon />
-            Go back
+          <button type="button" onClick={() => window.history.back()} className={LINE_BUTTON}>
+            <Icon name="arrow-left" className="transition-transform duration-500 group-hover:-translate-x-1" />
+            <Roll>Go back</Roll>
           </button>
         </div>
-
-        <div className="mt-10 border-t border-zinc-800/50 pt-4 text-xs text-zinc-400">
-          <div className="flex flex-wrap items-center gap-1">
-            {(
-              [
-                ["/", "Home"],
-                ["/about", "About"],
-                ["/projects", "Projects"],
-                ["/blog", "Blog"],
-                ["/contact", "Contact"],
-              ] as const
-            ).map(([href, label], index) => (
-              <span key={href} className="contents">
-                {index > 0 && <span className="text-zinc-600">&bull;</span>}
-                <Link href={href} className="transition-colors hover:text-zinc-300">
-                  {label}
-                </Link>
-              </span>
-            ))}
-          </div>
-
-          <p className="mt-2 text-zinc-500">&copy; 2025 - {year} Ridwan Halim</p>
-        </div>
-      </div>
-    </main>
-  );
-}
-
-const ICON = "w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 transition-transform duration-300";
-
-function HomeIcon() {
-  return (
-    <svg
-      className={`${ICON} group-hover:-rotate-12`}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-      />
-    </svg>
-  );
-}
-
-function BackIcon() {
-  return (
-    <svg
-      className={`${ICON} group-hover:-translate-x-1`}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-    </svg>
+        <PageMotion />
+      </main>
+    </div>
   );
 }

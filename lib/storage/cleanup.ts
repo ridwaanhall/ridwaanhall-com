@@ -25,7 +25,7 @@ import {
  * organisations, `logo/linkedin.webp` by two. Deleting because *one* referring
  * row went away would break the live images on all the others.
  *
- * Nothing is removed until no row on any of the five columns still names it.
+ * Nothing is removed until no row on any of these columns still names it.
  * The check runs after the write, so the row being edited already reflects its
  * new value and needs no special case.
  */
@@ -45,6 +45,8 @@ import {
  */
 export const FILE_COLUMNS: PgColumn[] = [
   profile.imageId,
+  profile.avatarId,
+  profile.blurId,
   organization.logoId,
   blogPost.authorImageId,
   blogImage.mediaId,
@@ -82,7 +84,7 @@ export async function isReferenced(key: string): Promise<boolean> {
   /*
    * The key is resolved to its asset once, and the columns are then asked about
    * that id. Comparing each column to the key directly is no longer possible --
-   * they hold ids -- and resolving per column would repeat the same lookup six
+   * they hold ids -- and resolving per column would repeat the same lookup eight
    * times in a statement that runs once per file in a cascade.
    *
    * A key with no asset row is a file nothing could be pointing at, which is an

@@ -362,7 +362,15 @@ CREATE TABLE "app"."profile" (
     "short_cta" text NOT NULL DEFAULT '',
     "long_description" text NOT NULL DEFAULT '',
     "stories_html" text NOT NULL DEFAULT '',
-    "personal_website" text NOT NULL DEFAULT ''
+    "personal_website" text NOT NULL DEFAULT '',
+    -- Two stand-ins drawn in the same lines, and which of the three images
+    -- the site shows. The photo stays stored either way, so switching is one
+    -- choice rather than an upload. The blur is the photo with its face
+    -- smoothed away; the avatar is a mark with no face at all.
+    "avatar_id" uuid REFERENCES "app"."media_asset"("id") ON DELETE SET NULL,
+    "portrait" text NOT NULL DEFAULT 'photo',
+    "blur_id" uuid REFERENCES "app"."media_asset"("id") ON DELETE SET NULL,
+    CONSTRAINT "profile_portrait_check" CHECK ("portrait" IN ('photo', 'avatar', 'blur'))
 );--> statement-breakpoint
 
 CREATE TABLE "app"."profile_link" (

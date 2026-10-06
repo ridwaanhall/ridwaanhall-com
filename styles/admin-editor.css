@@ -7,6 +7,28 @@
  */
 
 /*
+ * At the size of every other field rather than the article's. `prose.css`
+ * grows the body to 18px on a wide screen, which is right for reading a post
+ * and wrong for editing one inside a form whose inputs are 15px: the stories
+ * box looked like it belonged to another page. This sheet is imported after
+ * `prose.css`, so these win at every width.
+ */
+.admin-editor {
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+.admin-editor h2 {
+    font-size: 1.125rem;
+    line-height: 1.4;
+}
+
+.admin-editor h3 {
+    font-size: 1rem;
+    line-height: 1.45;
+}
+
+/*
  * Tiptap wraps every table in a `div.tableWrapper` and provides no styles for
  * it, so a table wider than the form pushed the whole page sideways at 360px.
  * `prose.css` solves the same problem on the article page by making the table

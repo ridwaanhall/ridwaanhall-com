@@ -1,81 +1,40 @@
-/* Global Custom Scrollbar */
+/* ---------------------------------------------------------------------------
+   Scrollbars
 
-/*
- * Scrollbar pseudo-elements sit outside Tailwind, so the palette remap in
- * input.css cannot reach them -- they need their own theme swap. Values follow
- * the same mirror rule as the main palette (zinc-900 -> zinc-100, and so on).
- */
-:root {
-    --scrollbar-track: #18181b;
-    --scrollbar-thumb: #3f3f46;
-    --scrollbar-thumb-hover: #52525b;
-    --scrollbar-thumb-border: #27272a;
-}
+   One scrollbar for everything that scrolls -- the page, the admin's rail and
+   tables, a dropdown, the palette's results, a gallery strip -- in either
+   half of the site: a thin thumb in the page's own grey on no track at all,
+   so it reads as part of the paper rather than as the operating system's
+   furniture. Pseudo-elements sit outside Tailwind, so the colours come
+   straight from the site's tokens, which already follow the theme.
 
-html[data-theme="light"] {
-    --scrollbar-track: #f4f4f5;
-    --scrollbar-thumb: #d4d4d8;
-    --scrollbar-thumb-hover: #a1a1aa;
-    --scrollbar-thumb-border: #e4e4e7;
-}
+   `scrollbar-*` for the engines that know it; the `::-webkit-` set for the
+   ones that only know that.
+   --------------------------------------------------------------------------- */
 
-/* Firefox */
-html {
+html,
+html * {
     scrollbar-width: thin;
-    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    scrollbar-color: var(--fh-thumb) transparent;
 }
 
-/* WebKit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
 }
 
-::-webkit-scrollbar-track {
-    background: var(--scrollbar-track);
-    border-radius: 4px;
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb);
-    border-radius: 4px;
-    border: 1px solid var(--scrollbar-thumb-border);
+    background-color: var(--fh-thumb);
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--scrollbar-thumb-hover);
-}
-
-::-webkit-scrollbar-corner {
-    background: var(--scrollbar-track);
-}
-
-/* Custom scrollbar for any scrollable container */
-.custom-scroll {
-    scrollbar-width: thin;
-    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
-}
-
-.custom-scroll::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-.custom-scroll::-webkit-scrollbar-track {
-    background: var(--scrollbar-track);
-    border-radius: 4px;
-}
-
-.custom-scroll::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb);
-    border-radius: 4px;
-    border: 1px solid var(--scrollbar-thumb-border);
-}
-
-.custom-scroll::-webkit-scrollbar-thumb:hover {
-    background: var(--scrollbar-thumb-hover);
-}
-
-.custom-scroll::-webkit-scrollbar-corner {
-    background: var(--scrollbar-track);
+    background-color: var(--fh-mute);
 }

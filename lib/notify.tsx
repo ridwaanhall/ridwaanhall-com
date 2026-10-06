@@ -24,7 +24,7 @@ import { Toast, type ToastVariant } from "@/components/site/toast";
 export function notify(content: React.ReactNode, variant: ToastVariant = "info") {
   return sonner.custom(
     (id) => (
-      <Toast variant={variant} onDismiss={() => sonner.dismiss(id)}>
+      <Toast variant={variant} duration={AUTO_DISMISS_MS} onDismiss={() => sonner.dismiss(id)}>
         {content}
       </Toast>
     ),
@@ -33,11 +33,6 @@ export function notify(content: React.ReactNode, variant: ToastVariant = "info")
     // the close button is inside the very element that is about to disappear.
     { duration: AUTO_DISMISS_MS },
   );
-}
-
-/** Retire a toast this caller owns, by the id `notify` returned. */
-export function dismissNotification(id: string | number) {
-  sonner.dismiss(id);
 }
 
 export const AUTO_DISMISS_MS = 6000;

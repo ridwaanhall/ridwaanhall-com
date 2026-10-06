@@ -1,11 +1,11 @@
 /**
  * Verify the one-visible-theme-toggle invariant across breakpoints.
  *
- * The toggle is rendered twice -- mobile navbar below `md`, desktop rail from
- * `md` up -- and exactly one must be on screen at any width. A breakpoint band
- * with none, or with two, is invisible to tsc, eslint and the build, so this
- * checks it directly in a real browser. The widths bracket every boundary that
- * matters.
+ * The toggle lives in the navbar at every width, and the full-screen menu
+ * below `lg` deliberately does not carry a second one -- exactly one must be
+ * on screen at any width. A breakpoint band with none, or with two, is
+ * invisible to tsc, eslint and the build, so this checks it directly in a real
+ * browser. The widths bracket every boundary that matters.
  *
  *   node scripts/check-breakpoints.mjs [url]
  */
@@ -37,12 +37,8 @@ for (const width of WIDTHS) {
     const seen = (sel) => [...document.querySelectorAll(sel)].filter(visible).length;
     return {
       toggles: seen("[data-theme-toggle]"),
-      // Attribute-substring selectors so the Tailwind class's colon needs no
-      // escaping through however many layers of quoting this file travels.
-      rails: seen('div[class*="w-62"]'),
-      navbars: seen("header"),
-      hamburgers: seen('[aria-label="Open Sidebar"]'),
-      searchBoxes: seen('button[class*="border-zinc-700"]'),
+      navLinks: seen('nav[aria-label="Primary"] a'),
+      menuButtons: seen('[aria-label="Open menu"]'),
     };
   });
 
@@ -50,8 +46,7 @@ for (const width of WIDTHS) {
   if (!ok) failures++;
   console.log(
     `  ${ok ? "ok  " : "FAIL"} ${String(width).padStart(4)}px  ` +
-      `toggles=${counts.toggles} rail=${counts.rails} navbar=${counts.navbars} ` +
-      `hamburger=${counts.hamburgers} search=${counts.searchBoxes}`,
+      `toggles=${counts.toggles} links=${counts.navLinks} menu=${counts.menuButtons}`,
   );
 }
 

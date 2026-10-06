@@ -34,8 +34,8 @@ const check = (name, pass, detail = "") => {
 };
 
 const marked = () => page.locator("#search-modal li.highlighted").count();
-// The rail's button, not the drawer's -- both exist in the DOM at this width.
-const openPalette = () => page.locator('button:has-text("Search")').last().click();
+// The navbar's search is a magnifier with an accessible name and no text.
+const openPalette = () => page.locator('button[aria-label="Search"]').last().click();
 
 // --- the search palette ------------------------------------------------------
 await page.goto(`${BASE}/about`, { waitUntil: "load" });
@@ -128,11 +128,11 @@ await page.waitForTimeout(1500);
 
 const first = await widgetId();
 check("a widget is rendered", Boolean(first), first ?? "");
-check("the site starts dark", (await page.getAttribute("html", "data-theme")) === "dark");
+check("the site starts light", (await page.getAttribute("html", "data-theme")) === "light");
 
 await page.locator("[data-theme-toggle]").last().click();
 await page.waitForTimeout(2500);
-check("the site switches to light", (await page.getAttribute("html", "data-theme")) === "light");
+check("the site switches to dark", (await page.getAttribute("html", "data-theme")) === "dark");
 
 const second = await widgetId();
 check("the widget is recreated for the new theme", Boolean(second) && second !== first, `${first} -> ${second}`);

@@ -17,7 +17,7 @@ import { onPageLoadingStart } from "@/lib/utils/page-loading";
  * **It must be mounted outside `#page-content`.** That element animates a
  * transform, and a transformed ancestor becomes the containing block for its
  * `position: fixed` descendants -- a bar rendered inside it would be pinned to
- * the content column rather than the viewport. The tooltips, the spark canvas,
+ * the content column rather than the viewport. The tooltips,
  * the toast stack and the confirm dialog are all body-level siblings for the
  * same reason.
  *
@@ -120,6 +120,8 @@ export function PageLoadingBar() {
   const pending = useRef(false);
   /** When it began, so the bar can be held for `MIN_VISIBLE_MS`. */
   const startedAt = useRef(0);
+  /** The path and query on screen, so a history step within it is no navigation. */
+  const committed = useRef("");
 
   const clearTimers = useCallback(() => {
     const t = timers.current;
@@ -270,22 +272,47 @@ export function PageLoadingBar() {
       The listing search box is a real GET form with no JavaScript behind it, so
       it navigates by unloading the page. Nothing will call `finish()` for it --
       the document goes away instead -- which is exactly right.
-      Server-action forms are POST and are not navigations, so they are skipped.
+      Server-action forms -- every save in the admin -- are not navigations, so
+      they are skipped. Not by their method: once React hydrates a form whose
+      action is a function it removes the `method` attribute and points
+      `action` at a `javascript:` placeholder, so `form.method` reads "get"
+      and every save started a bar that no navigation would ever finish. So
+      the test is where the form goes rather than how: only a GET to a real
+      http(s) address of this site is a page being loaded.
     */
     function onSubmit(event: Event) {
       const form = event.target;
       if (!(form instanceof HTMLFormElement)) return;
       if (form.method.toLowerCase() !== "get") return;
+      let target: URL;
+      try {
+        target = new URL(form.action, window.location.href);
+      } catch {
+        return;
+      }
+      if (target.protocol !== "http:" && target.protocol !== "https:") return;
+      if (target.origin !== window.location.origin) return;
+      start();
+    }
+
+    /*
+      Following an in-page `#anchor` fires `popstate` too, and so does Back
+      across one. The route has not changed, so nothing would ever call
+      `finish()` and the bar crept for `MAX_WAIT_MS` over a page that had
+      already scrolled. Only a history step that lands on another URL counts.
+    */
+    function onPopState() {
+      if (window.location.pathname + window.location.search === committed.current) return;
       start();
     }
 
     document.addEventListener("click", onClick, true);
     document.addEventListener("submit", onSubmit, true);
-    window.addEventListener("popstate", start);
+    window.addEventListener("popstate", onPopState);
     return () => {
       document.removeEventListener("click", onClick, true);
       document.removeEventListener("submit", onSubmit, true);
-      window.removeEventListener("popstate", start);
+      window.removeEventListener("popstate", onPopState);
     };
   }, [start]);
 
@@ -297,6 +324,7 @@ export function PageLoadingBar() {
   const settled = `${pathname}?${searchParams}`;
   const mounted = useRef(false);
   useEffect(() => {
+    committed.current = window.location.pathname + window.location.search;
     if (!mounted.current) {
       mounted.current = true;
       return;
@@ -319,7 +347,7 @@ export function PageLoadingBar() {
       aria-hidden="true"
       data-state="idle"
       style={{ width: "0%" }}
-      className="fixed top-0 left-0 h-0.5 z-[70] bg-gradient-to-r from-teal-400 via-teal-300 to-teal-500"
+      className="fixed top-0 left-0 z-[70] h-0.5 bg-ink"
     />
   );
 }

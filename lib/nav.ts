@@ -1,20 +1,8 @@
 import type { Route } from "next";
-import type { ComponentType, SVGProps } from "react";
-
-import {
-  AboutIcon,
-  BlogIcon,
-  ContactIcon,
-  DashboardIcon,
-  GuestbookIcon,
-  HomeIcon,
-  ProjectsIcon,
-} from "@/components/icons/nav-icons";
 
 export type NavItem = {
   label: string;
   href: Route;
-  icon: ComponentType<SVGProps<SVGSVGElement>>;
   /**
    * Whether a nested path counts as this item being active. `/blog/<slug>/`
    * highlights Blog, and `/projects/<slug>/` highlights Projects -- which is
@@ -29,17 +17,19 @@ export type NavItem = {
 /**
  * The primary navigation, in order.
  *
- * One definition, rendered by both the desktop rail and the mobile drawer --
- * not two hand-maintained copies of the same seven links.
+ * One definition, rendered by the navbar, the mobile menu and the command
+ * palette -- not three hand-maintained copies of the same seven links. The
+ * labels name what a reader finds there (work, writing) rather than the
+ * route; the hrefs are the routes and do not move.
  */
 export const NAV_ITEMS: NavItem[] = [
-  { label: "Home", href: "/", icon: HomeIcon },
-  { label: "Dashboard", href: "/dashboard", icon: DashboardIcon },
-  { label: "Projects", href: "/projects", icon: ProjectsIcon, matchNested: true },
-  { label: "Blog", href: "/blog", icon: BlogIcon, matchNested: true },
-  { label: "About", href: "/about", icon: AboutIcon },
-  { label: "Contact", href: "/contact", icon: ContactIcon },
-  { label: "Guestbook", href: "/guestbook", icon: GuestbookIcon, requiresGuestbook: true },
+  { label: "Home", href: "/" },
+  { label: "Work", href: "/projects", matchNested: true },
+  { label: "Writing", href: "/blog", matchNested: true },
+  { label: "About", href: "/about" },
+  { label: "Dashboard", href: "/dashboard" },
+  { label: "Guestbook", href: "/guestbook", requiresGuestbook: true },
+  { label: "Contact", href: "/contact" },
 ];
 
 /**

@@ -26,9 +26,9 @@ import { cn } from "@/lib/utils/cn";
  * the server keeps them in step for everyone.
  */
 const TOOLBAR_BUTTON =
-  "rounded px-2 py-1 text-xs text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-200 disabled:opacity-30 disabled:hover:bg-transparent";
+  "rounded-md px-2 py-1 text-xs text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-100 disabled:opacity-30 disabled:hover:bg-transparent";
 
-const ACTIVE = "bg-zinc-800 text-indigo-400";
+const ACTIVE = "bg-zinc-900 text-zinc-100";
 
 /** Never changes after hydration, so there is nothing to subscribe to. */
 const subscribeNever = () => () => {};
@@ -85,7 +85,7 @@ export function RichTextEditor({
          * CSS, since `styles/prose.css` is already in the bundle.
          */
         class:
-          "prose-content admin-editor min-h-64 rounded-b-md border border-t-0 border-zinc-800 bg-zinc-900 px-3 py-2 focus:outline-none",
+          "prose-content admin-editor min-h-64 rounded-b-md border border-t-0 border-zinc-800 px-3.5 py-3 transition-colors focus:border-zinc-100 focus:outline-none",
       },
     },
   });
@@ -104,7 +104,7 @@ export function RichTextEditor({
           <EditorContent editor={editor} />
         </>
       ) : (
-        <div className="min-h-64 rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-500">
+        <div className="min-h-64 rounded-md border border-zinc-800 px-3.5 py-3 text-[15px] text-zinc-500">
           Loading the editor…
         </div>
       )}
@@ -140,7 +140,7 @@ function Toolbar({ editor }: { editor: Editor }) {
   );
 
   return (
-    <div className="flex flex-wrap items-center gap-0.5 rounded-t-md border border-zinc-800 bg-zinc-900/60 px-1.5 py-1">
+    <div className="flex flex-wrap items-center gap-0.5 rounded-t-md border border-zinc-800 px-1.5 py-1">
       {button("H2", "Heading 2", () => editor.chain().focus().toggleHeading({ level: 2 }).run(), editor.isActive("heading", { level: 2 }))}
       {button("H3", "Heading 3", () => editor.chain().focus().toggleHeading({ level: 3 }).run(), editor.isActive("heading", { level: 3 }))}
       {button("H4", "Heading 4", () => editor.chain().focus().toggleHeading({ level: 4 }).run(), editor.isActive("heading", { level: 4 }))}

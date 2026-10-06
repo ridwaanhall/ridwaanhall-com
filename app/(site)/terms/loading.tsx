@@ -1,1 +1,1 @@
-export { LegalSkeleton as default } from "@/components/site/legal-skeleton";
+export { LegalSkeleton as default } from "@/components/foothill/legal-skeleton";

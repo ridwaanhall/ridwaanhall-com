@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 
-import { CloseIcon, PlusIcon } from "@/components/admin/admin-icons";
+import { CONTROL, PILL_BUTTON, ROW_ICON_BUTTON } from "@/components/admin/control-classes";
+import { Icon } from "@/components/foothill/icons";
 import type { ClientField } from "@/lib/admin/form";
 
 /**
@@ -22,15 +23,6 @@ import type { ClientField } from "@/lib/admin/form";
  * control carries the stored value -- editing does nothing, but saving the
  * record does not blank the field.
  */
-
-const CONTROL =
-  "w-full rounded-md border border-zinc-800 bg-zinc-900 px-2.5 py-1.5 text-sm text-zinc-200 placeholder-zinc-500 transition-colors hover:border-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400";
-
-const ICON_BUTTON =
-  "rounded-md border border-zinc-800 px-1.5 py-1 text-xs text-zinc-500 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-300 disabled:opacity-30 disabled:hover:bg-transparent";
-
-const ADD_BUTTON =
-  "inline-flex items-center gap-1 rounded-full border border-zinc-800 px-3 py-1 text-xs text-zinc-400 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-200";
 
 export function StringListEditor({
   name,
@@ -96,27 +88,27 @@ export function StringListEditor({
               type="button"
               onClick={() => move(index, -1)}
               disabled={index === 0}
-              className={ICON_BUTTON}
+              className={ROW_ICON_BUTTON}
               aria-label={`Move ${noun} ${index + 1} up`}
             >
-              ↑
+              <Icon name="arrow-up" className="h-3.5 w-3.5" />
             </button>
             <button
               type="button"
               onClick={() => move(index, 1)}
               disabled={index === items.length - 1}
-              className={ICON_BUTTON}
+              className={ROW_ICON_BUTTON}
               aria-label={`Move ${noun} ${index + 1} down`}
             >
-              ↓
+              <Icon name="arrow-down" className="h-3.5 w-3.5" />
             </button>
             <button
               type="button"
               onClick={() => setItems(items.filter((_, position) => position !== index))}
-              className={ICON_BUTTON}
+              className={ROW_ICON_BUTTON}
               aria-label={`Remove ${noun} ${index + 1}`}
             >
-              <CloseIcon height={12} width={12} />
+              <Icon name="close" className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>
@@ -125,13 +117,13 @@ export function StringListEditor({
       {items.length === 0 && <p className="text-xs text-zinc-500">No {noun} entries yet.</p>}
 
       <div className="flex items-center gap-3">
-        <button type="button" onClick={() => setItems([...items, ""])} className={ADD_BUTTON}>
-          <PlusIcon height={12} width={12} />
+        <button type="button" onClick={() => setItems([...items, ""])} className={PILL_BUTTON}>
+          <Icon name="plus" className="h-3.5 w-3.5" />
           Add {noun}
         </button>
         {field.allowsHtml && (
           <span className="text-xs text-zinc-500">
-            Rendered as raw HTML — tags like &lt;strong&gt; work here.
+            Rendered as raw HTML, so tags like &lt;strong&gt; work here.
           </span>
         )}
       </div>
@@ -185,10 +177,10 @@ export function KeyValueEditor({
           <button
             type="button"
             onClick={() => setPairs(pairs.filter((_, position) => position !== index))}
-            className={`${ICON_BUTTON} mt-0.5 shrink-0`}
+            className={`${ROW_ICON_BUTTON} mt-0.5`}
             aria-label={`Remove entry ${index + 1}`}
           >
-            <CloseIcon height={12} width={12} />
+            <Icon name="close" className="h-3.5 w-3.5" />
           </button>
         </div>
       ))}
@@ -202,8 +194,8 @@ export function KeyValueEditor({
         no-op live. List order *is* preserved, which is why the string list above
         does offer it.
       */}
-      <button type="button" onClick={() => setPairs([...pairs, ["", ""]])} className={ADD_BUTTON}>
-        <PlusIcon height={12} width={12} />
+      <button type="button" onClick={() => setPairs([...pairs, ["", ""]])} className={PILL_BUTTON}>
+        <Icon name="plus" className="h-3.5 w-3.5" />
         Add entry
       </button>
     </div>

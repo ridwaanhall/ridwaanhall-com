@@ -12,6 +12,7 @@ import { deleteRecord, saveRecord, type SaveResult } from "@/lib/actions/admin";
 import type { ClientFieldset, FormValues } from "@/lib/admin/form";
 import { notify } from "@/lib/notify";
 import { startPageLoading } from "@/lib/utils/page-loading";
+import { ERROR_NOTE, PRIMARY_BUTTON, QUIET_BUTTON, SAVE_BAR, SECTION_TITLE } from "@/components/admin/control-classes";
 
 /**
  * The change form.
@@ -198,19 +199,13 @@ export function RecordForm({
     <fieldset key={fieldset.title ?? index} disabled={locked} className="min-w-0">
       {/*
         A real `<legend>`, first child of its `<fieldset>`, which is what names
-        the group for a screen reader. It stays above the card rather than
-        becoming a header strip inside it: a legend moved into a wrapper is no
-        longer a legend, and the alternatives -- a visually hidden one beside a
-        heading, or `aria-labelledby` -- both put the section's name in two
-        places for a border that gains nothing.
+        the group for a screen reader -- set in the display face, as a section
+        of a public page is titled. The fields under it are ruled rows rather
+        than a box: the hairlines carry the grouping a border would.
       */}
-      {fieldset.title && (
-        <legend className="mb-1.5 text-xs font-medium tracking-wide text-zinc-400 uppercase">
-          {fieldset.title}
-        </legend>
-      )}
-      {fieldset.help && <p className="mb-2 text-xs text-zinc-500">{fieldset.help}</p>}
-      <div className="divide-y divide-zinc-900 rounded-lg border border-zinc-800 bg-zinc-950/40 px-3.5 py-2">
+      {fieldset.title && <legend className={`${SECTION_TITLE} mb-3`}>{fieldset.title}</legend>}
+      {fieldset.help && <p className="-mt-1 mb-3 max-w-2xl text-[13px] leading-relaxed text-zinc-500">{fieldset.help}</p>}
+      <div className="divide-y divide-zinc-800 border-y border-zinc-800">
         {fieldset.fields.map((field) => (
           <Field
             key={field.name}
@@ -226,30 +221,30 @@ export function RecordForm({
   );
 
   return (
-    <form action={action} className="space-y-6">
+    <form action={action} className="space-y-12">
       {shape === "editor" ? (
         /*
           `items-start` so the details column is only as tall as its contents --
           without it a grid item stretches to the row, and `sticky` inside a
           full-height item has nothing to move against and never sticks.
         */
-        <div className="grid items-start gap-6 xl:grid-cols-3">
-          <div className="min-w-0 space-y-6 xl:col-span-2">{main.map(renderFieldset)}</div>
+        <div className="grid items-start gap-12 xl:grid-cols-3 xl:gap-10">
+          <div className="min-w-0 space-y-12 xl:col-span-2">{main.map(renderFieldset)}</div>
           {aside.length > 0 && (
-            <div className="min-w-0 space-y-6 xl:sticky xl:top-6">{aside.map(renderFieldset)}</div>
+            <div className="min-w-0 space-y-12 xl:sticky xl:top-6">{aside.map(renderFieldset)}</div>
           )}
         </div>
       ) : shape === "split" ? (
-        <div className="grid items-start gap-6 lg:grid-cols-2">{main.map(renderFieldset)}</div>
+        <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-10">{main.map(renderFieldset)}</div>
       ) : (
-        <div className="max-w-3xl space-y-6">{main.map(renderFieldset)}</div>
+        <div className="max-w-3xl space-y-12">{main.map(renderFieldset)}</div>
       )}
 
       {/* Inlines are tables of child rows and are the widest thing on the page,
           so they take the whole width whatever the fieldsets above them did.
 
           Each in its own `<fieldset>` rather than all of them in one, so the
-          form's `space-y-6` still sees one element per inline -- a single
+          form's `space-y-12` still sees one element per inline -- a single
           wrapper would collapse the gaps between them into one. The fieldset is
           here for `disabled`: an inline editor is outside the fieldsets above
           and would otherwise stay live on a record somebody may only read, and
@@ -270,7 +265,7 @@ export function RecordForm({
           or removing your own staff access. Field-level problems are shown at
           the field and summarised here as one line. */}
       {state && !state.ok && (
-        <p role="alert" className="rounded-md border border-red-900 bg-red-500/5 px-3 py-2 text-sm text-red-400">
+        <p role="alert" className={ERROR_NOTE}>
           {state.error}
         </p>
       )}
@@ -286,12 +281,12 @@ export function RecordForm({
         a repaint of the whole strip on every frame, and the palette has a solid
         background that reads just as well.
       */}
-      <div className="sticky bottom-0 -mx-4 flex items-center gap-3 border-t border-zinc-800 bg-black px-4 py-3 lg:-mx-6 lg:px-6">
+      <div className={SAVE_BAR}>
         {canSave ? (
           <button
             type="submit"
             disabled={busy}
-            className="cursor-pointer rounded-full border border-indigo-800 bg-indigo-500/10 px-5 py-1.5 text-sm font-medium text-indigo-300 transition-colors hover:bg-indigo-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:cursor-default disabled:opacity-60"
+            className={PRIMARY_BUTTON}
           >
             {saving ? "Saving…" : id === null ? "Create" : "Save"}
           </button>
@@ -309,7 +304,7 @@ export function RecordForm({
 
         <Link
           href={listHref}
-          className="rounded-full px-2 py-1.5 text-sm text-zinc-500 transition-colors hover:text-zinc-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+          className={QUIET_BUTTON}
         >
           {canSave ? "Cancel" : "Back"}
         </Link>

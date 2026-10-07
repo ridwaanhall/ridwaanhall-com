@@ -24,6 +24,11 @@ describe("outlineHtml", () => {
     );
   });
 
+  it("leaves no markup in a label built from nested fragments", () => {
+    const { headings } = outlineHtml("<h2>Before <scr<b>ipt>alert(1)<</b>/script></h2>");
+    assert.equal(headings[0].label.includes("<"), false);
+  });
+
   it("leaves other levels, and empty headings, alone", () => {
     const source = "<h4>Small</h4><h2> </h2>";
     assert.deepEqual(outlineHtml(source), { html: source, headings: [] });

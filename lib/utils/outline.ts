@@ -14,9 +14,23 @@ const HEADING = /<(h[23])>([\s\S]*?)<\/\1>/g;
 
 const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'", nbsp: " " };
 
+/*
+ * Repeated until nothing changes. One pass of this pattern happens to leave no
+ * tag behind, but that is an argument about the regex; a loop to a fixed point
+ * is complete by construction, and survives somebody changing the pattern.
+ */
+function stripTags(html: string): string {
+  let previous: string;
+  let current = html;
+  do {
+    previous = current;
+    current = current.replace(/<[^>]*>/g, "");
+  } while (current !== previous);
+  return current;
+}
+
 function text(html: string): string {
-  return html
-    .replace(/<[^>]+>/g, "")
+  return stripTags(html)
     .replace(/&(amp|lt|gt|quot|#39|nbsp);/g, (_, name: string) => ENTITIES[name])
     .replace(/\s+/g, " ")
     .trim();

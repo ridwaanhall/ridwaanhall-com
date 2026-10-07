@@ -685,8 +685,7 @@ body:has(.fh-site) {
   z-index: 90;
   width: 14px;
   height: 14px;
-  margin: -7px 0 0 -7px;
-  border-radius: 999px;
+  border-radius: 50%;
   background: #fff;
   mix-blend-mode: difference;
   pointer-events: none;

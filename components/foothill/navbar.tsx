@@ -125,87 +125,96 @@ function NavbarAt({
   );
 
   return (
-    <header ref={header} className="fixed inset-x-0 top-0 z-50">
-      <div
-        className={cn(
-          "border-b bg-paper/80 backdrop-blur-md transition-colors duration-300",
-          scrolled || menuOpen ? "border-line" : "border-transparent",
-        )}
-      >
-        <div className="mx-auto flex h-16 w-full max-w-[1200px] items-center justify-between gap-6 px-4 md:px-8 xl:px-12">
-          <Link
-            href="/"
-            className="group flex items-center gap-2.5 font-display text-[18px] font-semibold tracking-[-0.025em] text-ink"
-            aria-label={`${about.username}, home`}
-          >
-            <Mark className="h-4 w-7 transition-transform duration-500 group-hover:-translate-y-0.5" />
-            <Roll>{about.username}</Roll>
-          </Link>
-
-          <nav aria-label="Primary" className="hidden lg:block">
-            <ul ref={list} className="relative flex items-center gap-7">
-              {items.map((item) => {
-                const current = isActive(item, pathname);
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      aria-current={current ? "page" : undefined}
-                      className={cn(
-                        "block py-2 text-[15px] transition-colors",
-                        current ? "text-ink" : "text-mute hover:text-ink",
-                      )}
-                    >
-                      <Roll>{item.label}</Roll>
-                    </Link>
-                  </li>
-                );
-              })}
-              <span
-                ref={indicator}
-                aria-hidden="true"
-                className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-0 rounded-full bg-ink opacity-0"
-              />
-            </ul>
-          </nav>
-
-          <div className="flex items-center gap-1 md:gap-1.5">
-            {headline && <StatusLink line={headline} className="mr-3 hidden xl:inline-flex" />}
-            <button
-              type="button"
-                onClick={palette.open}
-              aria-label="Search"
-              title="Search (Ctrl K)"
-              className={ICON_BUTTON}
+    <>
+      <header ref={header} className="fixed inset-x-0 top-0 z-50">
+        <div
+          className={cn(
+            "border-b bg-paper/80 backdrop-blur-md transition-colors duration-300",
+            scrolled || menuOpen ? "border-line" : "border-transparent",
+          )}
+        >
+          <div className="mx-auto flex h-16 w-full max-w-[1200px] items-center justify-between gap-6 px-4 md:px-8 xl:px-12">
+            <Link
+              href="/"
+              className="group flex items-center gap-2.5 font-display text-[18px] font-semibold tracking-[-0.025em] text-ink"
+              aria-label={`${about.username}, home`}
             >
-              <Icon name="search" className="h-[18px] w-[18px] transition-transform duration-500 group-hover:-rotate-12" />
-            </button>
-            <span className="inline-flex">
-              <ThemeToggle className={ICON_BUTTON} iconSize="h-[18px] w-[18px]" />
-            </span>
-            <div className="ml-2 hidden items-center lg:flex">
-              {account}
+              <Mark className="h-4 w-7 transition-transform duration-500 group-hover:-translate-y-0.5" />
+              <Roll>{about.username}</Roll>
+            </Link>
+
+            <nav aria-label="Primary" className="hidden lg:block">
+              <ul ref={list} className="relative flex items-center gap-7">
+                {items.map((item) => {
+                  const current = isActive(item, pathname);
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        aria-current={current ? "page" : undefined}
+                        className={cn(
+                          "block py-2 text-[15px] transition-colors",
+                          current ? "text-ink" : "text-mute hover:text-ink",
+                        )}
+                      >
+                        <Roll>{item.label}</Roll>
+                      </Link>
+                    </li>
+                  );
+                })}
+                <span
+                  ref={indicator}
+                  aria-hidden="true"
+                  className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-0 rounded-full bg-ink opacity-0"
+                />
+              </ul>
+            </nav>
+
+            <div className="flex items-center gap-1 md:gap-1.5">
+              {headline && <StatusLink line={headline} className="mr-3 hidden xl:inline-flex" />}
+              <button
+                type="button"
+                  onClick={palette.open}
+                aria-label="Search"
+                title="Search (Ctrl K)"
+                className={ICON_BUTTON}
+              >
+                <Icon name="search" className="h-[18px] w-[18px] transition-transform duration-500 group-hover:-rotate-12" />
+              </button>
+              <span className="inline-flex">
+                <ThemeToggle className={ICON_BUTTON} iconSize="h-[18px] w-[18px]" />
+              </span>
+              <div className="ml-2 hidden items-center lg:flex">
+                {account}
+              </div>
+              <button
+                type="button"
+                  aria-label={menuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={menuOpen}
+                aria-controls="fh-menu"
+                onClick={() => {
+                  setMenuAt(pathname);
+                  setMenuOpen((open) => !open);
+                }}
+                className={cn(ICON_BUTTON, "lg:hidden")}
+              >
+                <svg viewBox="0 0 24 24" className="fh-burger h-[18px] w-[18px]" aria-hidden="true">
+                  <path d="M3.5 9h17" />
+                  <path d="M3.5 15h17" />
+                </svg>
+              </button>
             </div>
-            <button
-              type="button"
-                aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={menuOpen}
-              aria-controls="fh-menu"
-              onClick={() => {
-                setMenuAt(pathname);
-                setMenuOpen((open) => !open);
-              }}
-              className={cn(ICON_BUTTON, "lg:hidden")}
-            >
-              <svg viewBox="0 0 24 24" className="fh-burger h-[18px] w-[18px]" aria-hidden="true">
-                <path d="M3.5 9h17" />
-                <path d="M3.5 15h17" />
-              </svg>
-            </button>
           </div>
         </div>
-      </div>
+      </header>
 
+      {/*
+        Beside the header, never inside it. The header slides away on scroll by
+        a transform, and GSAP leaves one on it even at rest -- and a transformed
+        ancestor is what a `position: fixed` child is laid out against. Inside,
+        the menu's `top-16 bottom-0` resolved against a 64px header and opened
+        one pixel tall, so it worked until the first scroll and never after.
+      */}
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
@@ -214,7 +223,7 @@ function NavbarAt({
         account={account}
         status={status}
       />
-    </header>
+    </>
   );
 }
 
@@ -308,7 +317,7 @@ function MobileMenu({
       id="fh-menu"
       ref={panel}
       hidden={!shown}
-      className="fixed inset-x-0 top-16 bottom-0 overflow-y-auto bg-paper lg:hidden"
+      className="fixed inset-x-0 top-16 bottom-0 z-50 overflow-y-auto bg-paper lg:hidden"
     >
       <div className="mx-auto flex min-h-full w-full max-w-[1200px] flex-col px-4 pt-6 pb-10 md:px-8">
         <nav aria-label="Menu">

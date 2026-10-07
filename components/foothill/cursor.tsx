@@ -8,6 +8,8 @@ const CLICKABLE = "a, button, summary, label, [role='button'], #search-modal li"
 const TYPING = "input, textarea, select, [contenteditable='true'], iframe";
 /** Larger than this and the disc hides the words it sits on. */
 const MAX_SCALE = 6;
+/** The disc's diameter at a scale of 1, in pixels. */
+const BASE = 14;
 
 /**
  * A disc that trails a fine pointer (`.fh-cursor` in styles/site.css).
@@ -27,6 +29,9 @@ export function Cursor() {
     mm.add(`${MOTION_OK} and (pointer: fine) and (hover: hover)`, () => {
       // Short enough to feel attached to the hand, long enough to read as a
       // glide rather than a second pointer.
+      // Centred on the pointer by percentage, so it stays centred whatever
+      // size it has grown to.
+      gsap.set(el, { xPercent: -50, yPercent: -50 });
       const toX = gsap.quickTo(el, "x", { duration: 0.16, ease: "power3.out" });
       const toY = gsap.quickTo(el, "y", { duration: 0.16, ease: "power3.out" });
       let size = 1;
@@ -42,10 +47,18 @@ export function Cursor() {
         shown = visible;
         gsap.to(el, { autoAlpha: visible ? 1 : 0, duration: 0.25, overwrite: "auto" });
       };
+      /*
+       * The disc grows by its real width and height, never by `scale`. A
+       * scaled element is painted once at its own size and then magnified, so
+       * at six times over a page title its edge was a 14px circle blown up --
+       * soft all the way round. Resizing repaints it, and a circle painted at
+       * the size it is shown has a hard edge at every size.
+       */
+      const diameter = (scale: number) => ({ width: BASE * scale, height: BASE * scale });
       const resize = (scale: number) => {
         if (scale === size) return;
         size = scale;
-        gsap.to(el, { scale, duration: 0.3, ease: "power3.out", overwrite: "auto" });
+        gsap.to(el, { ...diameter(scale), duration: 0.3, ease: "power3.out", overwrite: "auto" });
       };
 
       // Over text the disc takes the size of the letters under it -- a caption
@@ -94,8 +107,8 @@ export function Cursor() {
           settle(document.elementFromPoint(x, y));
         });
       };
-      const onDown = () => gsap.to(el, { scale: size * 0.75, duration: 0.12, overwrite: "auto" });
-      const onUp = () => gsap.to(el, { scale: size, duration: 0.35, ease: "back.out(3)", overwrite: "auto" });
+      const onDown = () => gsap.to(el, { ...diameter(size * 0.75), duration: 0.12, overwrite: "auto" });
+      const onUp = () => gsap.to(el, { ...diameter(size), duration: 0.35, ease: "back.out(3)", overwrite: "auto" });
       const onLeave = () => show(false);
 
       window.addEventListener("pointermove", onMove, { passive: true });

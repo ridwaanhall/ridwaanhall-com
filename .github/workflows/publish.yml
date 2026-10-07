@@ -33,19 +33,12 @@ jobs:
     steps:
       - name: Ask the site to publish anything due
         env:
-          # Set both as repository secrets. `CRON_SECRET` has to match the one
-          # in the Vercel project, or the endpoint answers 401 and every run
-          # here fails -- which is the intended way to find that out.
+          # A repository secret only so a fork or a staging copy can point it
+          # elsewhere; it is not sensitive. The endpoint needs no credentials:
+          # it publishes nothing that is not already due.
           SITE_URL: ${{ secrets.SITE_URL }}
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
           set -euo pipefail
-
-          if [ -z "${CRON_SECRET:-}" ]; then
-            echo "CRON_SECRET is not set on this repository."
-            echo "Scheduled posts will never be published until it is."
-            exit 1
-          fi
 
           # The body is worth printing: it names the slugs that went live, so a
           # run that published nothing and a run that published four are told
@@ -53,18 +46,14 @@ jobs:
           response=$(mktemp)
           status=$(curl -sS -o "$response" -w "%{http_code}" \
             --max-time 60 --retry 2 --retry-connrefused \
-            -H "Authorization: Bearer ${CRON_SECRET}" \
+\
             "${SITE_URL:-https://ridwaanhall.com}/api/cron/publish")
 
           echo "HTTP ${status}"
           cat "$response"
           echo
 
-          # 503 means the site has no CRON_SECRET of its own, which is a
-          # different repair from 401 and worth failing separately for.
           case "$status" in
             200) ;;
-            401) echo "The site refused the secret this workflow sent."; exit 1 ;;
-            503) echo "The site has no CRON_SECRET set; it cannot publish anything."; exit 1 ;;
             *) echo "Unexpected status."; exit 1 ;;
           esac

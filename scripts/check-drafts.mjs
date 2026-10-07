@@ -1,8 +1,7 @@
 /**
  * A draft is a row the public site cannot reach.
  *
- *   node scripts/check-drafts.mjs                 # the rules
- *   npm run dev && node scripts/check-drafts.mjs  # and the publish endpoint
+ *   node scripts/check-drafts.mjs
  *
  * Two rules, both in `lib/data/content.ts`: the public read paths select only
  * `is_published`, and `app/api/cron/publish` is the only thing that turns it
@@ -22,16 +21,13 @@
  *
  * So the rules are checked where they are decidable: the same predicates the
  * read paths and the job use, run against the real tables inside a transaction
- * that is rolled back. The one thing worth asking over HTTP is the endpoint's
- * refusal, which is a status and not a payload, so no cache stands in front of
- * it.
+ * that is rolled back.
  */
 import { config } from "dotenv";
 import pg from "pg";
 
 config({ path: ".env.local", quiet: true });
 
-const BASE = (process.argv[2] ?? "http://localhost:3000").replace(/\/$/, "");
 const STAMP = Date.now();
 
 let failures = 0;
@@ -128,18 +124,6 @@ try {
   check(left.length === 0, "the rollback left nothing behind", `${left.length} row(s) survived`);
 } finally {
   client.release();
-}
-
-/* ------------------------------------------------------------ the endpoint */
-try {
-  const response = await fetch(`${BASE}/api/cron/publish`, { redirect: "manual" });
-  check(
-    response.status === 401 || response.status === 503,
-    "the publish job refuses a request with no bearer token",
-    `expected 401 (secret set) or 503 (secret unset), got ${response.status}`,
-  );
-} catch {
-  console.log(`  --    the publish endpoint was not asked (nothing serving ${BASE})`);
 }
 
 /*

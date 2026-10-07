@@ -1,8 +1,7 @@
 import { revalidateTag } from "next/cache";
 import { and, eq, lte, sql } from "drizzle-orm";
-import type { NextRequest } from "next/server";
 
-import { fail, handle, ok } from "@/lib/api/response";
+import { handle, ok } from "@/lib/api/response";
 import { TAGS } from "@/lib/data/tags";
 import { db } from "@/lib/db/client";
 import { blogPost } from "@/lib/db/app-schema";
@@ -29,19 +28,19 @@ import { blogPost } from "@/lib/db/app-schema";
  * refresh runs behind it, so the post appears on the request after the first
  * one rather than on the first. Seconds, against a schedule measured in days.
  */
-export const GET = handle(async (request: NextRequest) => {
+export const GET = handle(async () => {
   /*
-   * Fails closed when unset, unlike the other secret with this shape.
-   * `verifyTurnstile` passes when its key is missing, which is defensible for a
-   * spam gate nobody has configured yet and is not defensible here: an open
-   * endpoint that writes to `blog_post` publishes drafts for anybody who finds
-   * the path.
+   * Open on purpose. What it publishes is exactly the set of posts whose
+   * `published_at` has already passed -- the set the scheduled run publishes
+   * anyway -- so a request from anybody can bring a post forward by at most one
+   * interval of the workflow, and can never reach one dated in the future. A
+   * secret guarded nothing a stranger could not get by waiting fifteen minutes,
+   * and cost a value that had to be set, and match, in two places.
+   *
+   * The corollary is the one thing to know: unpublishing a post whose date is
+   * in the past does not keep it down -- the next run puts it back. Move the
+   * date forward to take one off the schedule.
    */
-  const secret = process.env.CRON_SECRET;
-  if (!secret) return fail("This endpoint needs CRON_SECRET to be set.", 503);
-  if (request.headers.get("authorization") !== `Bearer ${secret}`) {
-    return fail("Not authorised.", 401);
-  }
 
   // `now()` is the database's clock, which is the same one `published_at` was
   // written against. Comparing here against the server's would make the moment

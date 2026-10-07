@@ -423,7 +423,7 @@ that made the post most prominent.
 cached function with a lifetime of days, so a clock comparison inside it is
 evaluated once when the entry is filled and frozen with it: a post scheduled
 for tomorrow would stay hidden for days after its moment. The flag moves
-instead, and `app/api/cron/publish` moves it, guarded by `CRON_SECRET`.
+instead, and `app/api/cron/publish` moves it.
 
 **The schedule is a GitHub workflow rather than a Vercel cron**, and that is a
 plan limit rather than a preference. `vercel.json` carried a `crons` entry for
@@ -436,13 +436,13 @@ hours. `.github/workflows/publish.yml` calls the same endpoint every fifteen
 minutes; moving back is deleting that file and restoring the key, on a plan that
 allows it.
 
-That endpoint **fails closed when the secret is unset** -- unlike
-`verifyTurnstile`, which passes. The asymmetry is deliberate: an unconfigured
-spam gate is a gate nobody set up, while an unauthenticated route that flips
-`is_published` publishes drafts for anyone who finds the path. What it costs is
-the usual quiet failure, so `CRON_SECRET` is in `docs/cutover.md`'s table and
-`check-live-config.mjs` asks the endpoint for its refusal: 401 means a secret is
-set, 503 means there is none.
+That endpoint **takes no credentials**, on purpose. It publishes exactly the
+posts whose `published_at` has passed -- the set the next scheduled run
+publishes anyway -- so a stranger calling it can bring a post forward by one
+interval at most and can never reach one dated in the future. A secret guarded
+nothing waiting would not, and cost a value set and matched in two places. The
+consequence worth knowing: **unpublishing a post dated in the past does not keep
+it down**; the next run puts it back. Move the date forward instead.
 
 **Only posts can be scheduled.** `project` carries the same flag but no column
 saying when it should go live, and that is the honest shape -- a project goes

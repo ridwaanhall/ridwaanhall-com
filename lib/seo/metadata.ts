@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { twinOf } from "@/lib/site/twins";
 import type { AboutData } from "@/lib/data/about";
 
 import { DEFAULT_IMAGE, DEFAULT_OG_TYPE, DEFAULT_TWITTER_CARD, DEFAULT_TWITTER_SITE, SITE_NAME } from "./config";
@@ -17,6 +18,13 @@ import type { SeoData } from "./data";
  * canonical tag exists to prevent. They come from `SeoData`, where the list
  * pages already compute a page-aware value.
  */
+/** `https://host/about/` to `https://host/about.md`; the home page is `/index.md`. */
+function markdownAddress(canonical: string): string {
+  const url = new URL(canonical);
+  url.pathname = twinOf(url.pathname);
+  return url.toString();
+}
+
 export function buildMetadata(seo: SeoData, about: AboutData): Metadata {
   const ogType = seo.og_type || DEFAULT_OG_TYPE;
   const image = seo.og_image || DEFAULT_IMAGE;
@@ -34,6 +42,10 @@ export function buildMetadata(seo: SeoData, about: AboutData): Metadata {
         en: seo.canonical_url,
         "x-default": seo.canonical_url,
       },
+      // The page's Markdown twin, for a crawler that reads the head to find it.
+      // Derived from the canonical address, so a filtered listing -- whose
+      // canonical is the unfiltered page -- names that page's twin.
+      types: { "text/markdown": markdownAddress(seo.canonical_url) },
     },
     robots: {
       index: true,

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+import { hasTwin, normalise } from "@/lib/site/twins";
+
 /**
  * Marks pages that must never appear in search results.
  *
@@ -34,7 +36,36 @@ const NOINDEX_PREFIXES = [
   "/admin/",
 ];
 
+/**
+ * Where a request for a page's Markdown is sent: `/md/<path>`, the one handler
+ * that renders every twin. `/about.md` and `/about` asked for with
+ * `Accept: text/markdown` both land there; `/index.md` and `/` are the home
+ * page. Anything else is left alone, so a page that has no twin still answers
+ * an Accept header with itself.
+ */
+function twinRewrite(request: NextRequest): URL | null {
+  const path = request.nextUrl.pathname;
+  const url = request.nextUrl.clone();
+  if (path.endsWith(".md")) {
+    const page = path.slice(0, -3);
+    if (path === "/index.md") url.pathname = "/md/index";
+    else if (hasTwin(page)) url.pathname = `/md${normalise(page)}`;
+    else return null;
+    return url;
+  }
+  const accept = request.headers.get("accept") ?? "";
+  if (/text\/markdown/.test(accept) && hasTwin(path)) {
+    const here = normalise(path);
+    url.pathname = here === "/" ? "/md/index" : `/md${here}`;
+    return url;
+  }
+  return null;
+}
+
 export function proxy(request: NextRequest) {
+  const twin = twinRewrite(request);
+  if (twin) return NextResponse.rewrite(twin);
+
   const response = NextResponse.next();
   if (NOINDEX_PREFIXES.some((prefix) => request.nextUrl.pathname.startsWith(prefix))) {
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
@@ -43,9 +74,18 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Only the prefixes above can ever match, so everything else skips the proxy
-  // entirely rather than paying for a pass-through on every request.
+  // Only the prefixes above, and the two ways of asking for Markdown, can ever
+  // match, so everything else skips the proxy entirely rather than paying for a
+  // pass-through on every request.
   matcher: [
+    // A page's Markdown twin: its own path plus `.md`...
+    "/((?!_next|api|md/).*)\\.md",
+    // ...or the page itself, when the request prefers Markdown. The header test
+    // keeps an ordinary page view out of the proxy entirely.
+    {
+      source: "/((?!_next|api|md|admin|llms).*)",
+      has: [{ type: "header", key: "accept", value: "(.*)text/markdown(.*)" }],
+    },
     "/api/auth/:path*",
     "/sign-in",
     "/guestbook/accounts/:path*",

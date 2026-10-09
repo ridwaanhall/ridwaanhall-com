@@ -31,3 +31,6 @@ export function hasTwin(path: string): boolean {
   const here = normalise(path);
   return STATIC.has(here) || DETAIL.test(here);
 }
+
+/** A page's path to its twin's: `/` to `/index.md`, `/about` to `/about.md`. */
+export const twinOf = (path: string) => (path === "/" ? "/index.md" : `${normalise(path)}.md`);

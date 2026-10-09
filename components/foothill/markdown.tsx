@@ -8,6 +8,7 @@ import { Icon } from "@/components/foothill/icons";
 import { Bar } from "@/components/foothill/skeleton";
 import { useLockedPage } from "@/lib/motion/use-locked-page";
 import { notify } from "@/lib/notify";
+import { twinOf } from "@/lib/site/twins";
 
 /*
  * Every page has a Markdown twin at its own path plus ".md" -- `/about` is
@@ -18,9 +19,6 @@ import { notify } from "@/lib/notify";
 
 const SITE = process.env.NEXT_PUBLIC_BASE_URL ?? "https://ridwaanhall.com";
 const OPEN = "fh-markdown";
-
-/** A page's path to its twin's: `/` to `/index.md`, `/about` to `/about.md`. */
-export const twinOf = (path: string) => (path === "/" ? "/index.md" : `${path.replace(/\/$/, "")}.md`);
 
 export const openMarkdown = (file: string) => window.dispatchEvent(new CustomEvent(OPEN, { detail: file }));
 

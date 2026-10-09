@@ -4,9 +4,9 @@ import { usePathname } from "next/navigation";
 import { useLayoutEffect, useRef } from "react";
 
 import { Icon } from "@/components/foothill/icons";
-import { openMarkdown, twinOf } from "@/components/foothill/markdown";
+import { openMarkdown } from "@/components/foothill/markdown";
 import { gsap, MOTION_OK, useGSAP } from "@/lib/motion/gsap";
-import { hasTwin } from "@/lib/site/twins";
+import { hasTwin, twinOf } from "@/lib/site/twins";
 
 /**
  * The username, set as large as the page is wide and cropped at the foot,

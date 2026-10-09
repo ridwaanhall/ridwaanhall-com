@@ -9,13 +9,13 @@ import { createContext, Fragment, useCallback, useContext, useEffect, useMemo, u
 import { SPRING } from "@/components/foothill/controls";
 import { openCv } from "@/components/foothill/cv";
 import { Brand, Icon, type IconName } from "@/components/foothill/icons";
-import { copyMarkdown, openMarkdown, twinOf } from "@/components/foothill/markdown";
+import { copyMarkdown, openMarkdown } from "@/components/foothill/markdown";
 import { PAGE_ICON } from "@/components/foothill/navbar";
 import type { AboutData } from "@/lib/data/about";
 import { useLockedPage } from "@/lib/motion/use-locked-page";
 import { visibleNavItems } from "@/lib/nav";
 import { socialLinks } from "@/lib/site/display";
-import { hasTwin } from "@/lib/site/twins";
+import { hasTwin, twinOf } from "@/lib/site/twins";
 import { notify } from "@/lib/notify";
 import { cn } from "@/lib/utils/cn";
 import { startPageLoading } from "@/lib/utils/page-loading";

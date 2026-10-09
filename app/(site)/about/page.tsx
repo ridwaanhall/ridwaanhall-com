@@ -27,6 +27,7 @@ import { aboutSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { aboutSchemas } from "@/lib/seo/schemas-for-page";
 import { CV_FILE } from "@/lib/site/cv";
+import { htmlToText } from "@/lib/markdown/html";
 import { groupBy } from "@/lib/site/display";
 import { skillIcon } from "@/lib/site/skills";
 
@@ -54,7 +55,7 @@ function periodLabel(role: Experience): string {
 }
 
 /** Stored lessons once carried coloured spans; what is read is the words. */
-const plain = (html: string) => html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+const plain = htmlToText;
 
 const dated = (value: Date | null) =>
   value ? value.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric", timeZone: "UTC" }) : "";

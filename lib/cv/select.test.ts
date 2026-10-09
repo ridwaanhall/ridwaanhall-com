@@ -59,7 +59,8 @@ describe("the CV's rules", () => {
 
   it("writes addresses in full and folds skills into eight lines", () => {
     const cv = buildCv({ ...base, skills: Array.from({ length: 12 }, (_, i) => [`G${i}`, [`s${i}`]] as [string, string[]]) });
-    assert.ok(cv.contact.includes("github.com/ridwaanhall") && cv.contact.includes("linkedin.com/in/ridwaanhall"));
+    assert.ok(cv.contact.some((c) => c.text === "github.com/ridwaanhall" && c.href === "https://github.com/ridwaanhall"));
+    assert.ok(cv.contact.some((c) => c.text === "linkedin.com/in/ridwaanhall"));
     assert.equal(cv.skills.length, 8);
     assert.match(cv.skills[7], /^Also: s7, s8/);
   });

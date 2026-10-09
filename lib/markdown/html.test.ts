@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { htmlToMarkdown } from "./html";
+import { htmlToMarkdown, htmlToText } from "./html";
 
 describe("htmlToMarkdown", () => {
   it("turns headings, paragraphs and emphasis into Markdown", () => {
@@ -37,5 +37,15 @@ describe("htmlToMarkdown", () => {
   it("returns an empty string for nothing", () => {
     assert.equal(htmlToMarkdown(""), "");
     assert.equal(htmlToMarkdown(null), "");
+  });
+
+  it("reduces markup to its words even when removing a tag would assemble another", () => {
+    // Taking out the inner tag of `<scr<b>ipt>` leaves `<script>` behind, so
+    // one pass is not enough; stripping runs until nothing changes.
+    for (const html of ["<scr<b>ipt>alert(1)</scr<b>ipt>", "<<b>script>x<</b>/script>", "a <span class='x'>b</span> &amp; c"]) {
+      const text = htmlToText(html);
+      assert.doesNotMatch(text, /<\/?[a-z]/i, html);
+    }
+    assert.equal(htmlToText("a <span class='x'>b</span> &amp; c"), "a b & c");
   });
 });

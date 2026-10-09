@@ -34,7 +34,7 @@ export type CvInput = {
 export type Cv = {
   name: string;
   headline: string;
-  contact: string[];
+  contact: { text: string; href?: string }[];
   summary: string;
   skills: string[];
   experience: { title: string; company: string; period: string; points: string[] }[];
@@ -79,7 +79,13 @@ export function buildCv(input: CvInput): Cv {
   return {
     name: input.name,
     headline: roles.join(" · "),
-    contact: [input.email, `github.com/${input.username}`, `linkedin.com/in/${input.username}`, input.location, input.availability ? `Available ${input.availability}` : ""].filter(Boolean),
+    contact: [
+      { text: input.email },
+      { text: `github.com/${input.username}`, href: `https://github.com/${input.username}` },
+      { text: `linkedin.com/in/${input.username}`, href: `https://www.linkedin.com/in/${input.username}` },
+      { text: input.location },
+      { text: input.availability ? `Available ${input.availability}` : "" },
+    ].filter((line) => line.text),
     summary: summaryOf(input.notes, input.longDescription),
     // Eight lines at most: the first seven groups, then the rest folded into one.
     skills: foldSkills(input.skills),

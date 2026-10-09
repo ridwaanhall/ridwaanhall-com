@@ -58,9 +58,15 @@ export function CvDocument({ cv, username }: { cv: Cv; username: string }) {
         <Text style={s.headline}>{cv.headline}</Text>
         <Text style={s.contact}>
           {cv.contact.map((line, i) => (
-            <Text key={line}>
+            <Text key={line.text}>
               {i > 0 ? "  |  " : ""}
-              {line.startsWith("github.com") || line.startsWith("linkedin.com") ? <Link src={`https://${line}`} style={s.link}>{line}</Link> : line}
+              {line.href ? (
+                <Link src={line.href} style={s.link}>
+                  {line.text}
+                </Link>
+              ) : (
+                line.text
+              )}
             </Text>
           ))}
         </Text>

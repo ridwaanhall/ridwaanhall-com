@@ -38,6 +38,11 @@ function stripTags(html: string): string {
 
 const inline = (html: string) => stripTags(html).replace(/\s+/g, " ").trim();
 
+/** Stored HTML as the words in it, on one line. */
+export function htmlToText(html: string | null | undefined): string {
+  return decode(stripTags(html ?? "")).replace(/\s+/g, " ").trim();
+}
+
 export function htmlToMarkdown(html: string | null | undefined): string {
   if (!html) return "";
   let s = html.replace(/\r/g, "");

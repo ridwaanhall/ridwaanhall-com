@@ -68,6 +68,16 @@ const resolve = (from: string, to: string) => {
   return at.join("/") || "/";
 };
 
+/** The path of an address on this site, or null for anywhere else. Compared by origin: a prefix test passes ridwaanhall.com.evil.example. */
+function sameSite(href: string): string | null {
+  try {
+    const url = new URL(href);
+    return url.origin === new URL(SITE).origin ? url.pathname : null;
+  } catch {
+    return null;
+  }
+}
+
 const LINK = /(\[[^\]]+\]\([^)\s]+\))/g;
 const ONE_LINK = /^\[([^\]]+)\]\(([^)\s]+)\)$/;
 
@@ -79,7 +89,7 @@ function Line({ text, kind, file, go }: { text: string; kind: string; file: stri
         if (!link) return part;
         const [, , href] = link;
         if (/^https?:/.test(href)) {
-          const local = href.startsWith(SITE) ? href.slice(SITE.length) : null;
+          const local = sameSite(href);
           if (local && /\.(md|txt)$/.test(local))
             return (
               <button key={index} type="button" className="lk" onClick={() => go(local)}>

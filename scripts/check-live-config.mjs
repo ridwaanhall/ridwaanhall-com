@@ -67,12 +67,12 @@ try {
   /* --------------------------------------------------------- dashboard */
   const dashboard = await body("/dashboard");
   check(
-    dashboard.text.includes("WakaTime Statistics"),
+    dashboard.text.includes("aria-label=\"In the editor\""),
     "the dashboard's WakaTime panel renders",
     "WAKATIME_API_KEY (runtime) -- the panel is absent rather than broken",
   );
   check(
-    dashboard.text.includes("GitHub Statistics"),
+    dashboard.text.includes("aria-label=\"On GitHub\""),
     "the dashboard's GitHub panel renders",
     "GITHUB_ACCESS_TOKEN (runtime) -- the panel is absent rather than broken",
   );

@@ -1,0 +1,694 @@
+/* ---------------------------------------------------------------------------
+   The public site: tokens, base type, and the few things utilities cannot say
+
+   Everything the public site paints comes from the five `--fh-*` tokens below,
+   exposed to Tailwind as `paper`, `raise`, `ink`, `mute` and `line` through
+   `@theme inline` in app/globals.css. Light is the default; dark is a
+   redefinition of the same five, so no element anywhere carries a theme
+   variant. There is no accent colour: where a page needs emphasis -- a
+   focus ring, a progress line, an active mark -- it uses ink, the colour of
+   the text itself, and a chart's own hues are the only colour on the site.
+
+   The admin reads the same tokens, through the palette theme-light.css
+   defines from them. Every rule below is anchored to `.fh-site` or to an
+   `fh-` class except the text selection, which is the whole site's.
+
+   Like the other sheets this is unlayered, so a property set here beats any
+   utility on the same element. Nothing in this file sets a property that a
+   component also sets with a utility.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --fh-paper: #edefea;
+  --fh-raise: #e2e6e0;
+  --fh-ink: #14201b;
+  --fh-mute: #5b6963;
+  --fh-line: #cdd4cd;
+  --fh-scrim: rgb(20 32 27 / 0.42);
+  /* The portrait's plate. It stays light in both themes: the engraving's line
+     weight *is* its shading, so inverting it would print a negative. */
+  --fh-print: #e6eae4;
+  --fh-thumb: rgb(91 105 99 / 0.45);
+}
+
+:root[data-theme="dark"] {
+  --fh-paper: #0f1412;
+  --fh-raise: #161d1a;
+  --fh-ink: #e4e9e3;
+  --fh-mute: #8b9891;
+  --fh-line: #25302b;
+  --fh-scrim: rgb(5 8 7 / 0.66);
+  --fh-print: #d5dbd3;
+  --fh-thumb: rgb(139 152 145 / 0.4);
+}
+
+/* The body is shared with the admin and carries the admin's colours as
+   utilities; on a page the site shell wraps, the page behind an overscroll
+   bounce is the site's paper instead. */
+body:has(.fh-site) {
+  background-color: var(--fh-paper);
+  color: var(--fh-ink);
+}
+
+.fh-site {
+  font-family: var(--font-funnel-sans), ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  font-kerning: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Headings are the display cut and set their own size by utility; what they
+   share is how they break. `balance` keeps a two-line title from leaving one
+   word on its own, `pretty` does the same for the last line of a paragraph. */
+.fh-site :is(h1, h2, h3, h4),
+.fh-display {
+  font-family: var(--font-funnel-display), var(--font-funnel-sans), ui-sans-serif, system-ui, sans-serif;
+  text-wrap: balance;
+  font-optical-sizing: auto;
+}
+
+.fh-site p {
+  text-wrap: pretty;
+}
+
+/* Selected text is the theme turned over: ink behind, paper in front. The
+   whole site's, the admin included, so a selection looks the same anywhere. */
+::selection {
+  background-color: var(--fh-ink);
+  color: var(--fh-paper);
+}
+
+/* One focus ring for the whole site: ink, offset, never removed.
+   In the base layer so its 2px corner is only a default: unlayered, it beat
+   every rounding utility and squared a field or a plate the moment it took
+   focus. */
+@layer base {
+  .fh-site :focus-visible {
+    outline: 2px solid var(--fh-ink);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+/* Data only: the dashboard's figures, code. Never a label or a caption. */
+.fh-mono {
+  font-family: var(--font-jetbrains), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-feature-settings: "zero";
+}
+
+/* ---------------------------------------------------------------------------
+   Rolling labels
+
+   `Roll` splits a label into characters and lifts each one by its own height
+   on hover. The copy that rises in underneath is the character's own shadow,
+   one line down, so there is never a second copy of the text in the document.
+   The box clips at exactly one line.
+   --------------------------------------------------------------------------- */
+
+.fh-roll {
+  display: inline-block;
+  overflow: hidden;
+  line-height: 1.25;
+  vertical-align: bottom;
+}
+
+.fh-roll-char {
+  /* A whole button-height down when `Roll` sits in a filled or outlined button. */
+  text-shadow: 0 var(--fh-roll-gap, 1.25em) currentColor;
+}
+
+/* SplitText masks heading lines; a descender must not be clipped by its own
+   mask, so the line box gets a little room below. */
+.fh-site .fh-line {
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+/* ---------------------------------------------------------------------------
+   Links in running text
+
+   An underline that thickens and darkens to ink on hover. Drawn with
+   text-decoration rather than a pseudo-element so it wraps with the text.
+   --------------------------------------------------------------------------- */
+
+.fh-link {
+  text-decoration-line: underline;
+  text-decoration-color: var(--fh-line);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition:
+    text-decoration-color 160ms ease,
+    text-decoration-thickness 160ms ease;
+}
+
+.fh-link:hover {
+  text-decoration-color: var(--fh-ink);
+  text-decoration-thickness: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+   Rich text: post bodies, project write-ups, the about story
+
+   Scoped to `.fh-prose`, which `RichText` receives beside its own
+   `prose-content`. The admin editor styles `.prose-content` alone and never
+   carries this class, so these rules only ever meet the public site.
+   Specificity is one class higher than prose.css on purpose -- that sheet is
+   shared, and these must win wherever both apply.
+   --------------------------------------------------------------------------- */
+
+.fh-prose.prose-content {
+  font-size: 1.125rem;
+  line-height: 1.72;
+  color: var(--fh-ink);
+}
+
+.fh-prose.prose-content > * + * {
+  margin-top: 1.1em;
+}
+
+.fh-prose.prose-content p {
+  margin: 0;
+  color: inherit;
+}
+
+.fh-prose.prose-content * + p {
+  margin-top: 1.1em;
+}
+
+.fh-prose.prose-content h2,
+.fh-prose.prose-content h3,
+.fh-prose.prose-content h4 {
+  font-family: var(--font-funnel-display), ui-sans-serif, system-ui, sans-serif;
+  color: var(--fh-ink);
+  letter-spacing: -0.02em;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-top: 2.2em;
+  margin-bottom: 0.6em;
+}
+
+.fh-prose.prose-content h2 {
+  font-size: 1.875rem;
+}
+
+.fh-prose.prose-content h3 {
+  font-size: 1.4rem;
+}
+
+.fh-prose.prose-content h4 {
+  font-size: 1.15rem;
+}
+
+.fh-prose.prose-content a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--fh-ink);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.fh-prose.prose-content a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.fh-prose.prose-content strong {
+  color: var(--fh-ink);
+  font-weight: 600;
+}
+
+.fh-prose.prose-content em {
+  font-style: italic;
+}
+
+.fh-prose.prose-content ul,
+.fh-prose.prose-content ol {
+  padding-left: 1.4em;
+}
+
+.fh-prose.prose-content ul {
+  list-style: none;
+}
+
+.fh-prose.prose-content ul > li {
+  position: relative;
+}
+
+.fh-prose.prose-content ul > li::before {
+  content: "";
+  position: absolute;
+  left: -1.05em;
+  top: 0.78em;
+  width: 0.45em;
+  height: 1px;
+  background-color: var(--fh-mute);
+}
+
+.fh-prose.prose-content ol {
+  list-style: decimal;
+}
+
+.fh-prose.prose-content ol > li::marker {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 0.8em;
+  color: var(--fh-mute);
+}
+
+.fh-prose.prose-content li + li {
+  margin-top: 0.35em;
+}
+
+.fh-prose.prose-content blockquote {
+  margin-left: 0;
+  padding-left: 1.2em;
+  border-left: 2px solid var(--fh-ink);
+  color: var(--fh-mute);
+}
+
+.fh-prose.prose-content hr {
+  border: 0;
+  border-top: 1px solid var(--fh-line);
+  margin: 2.5em 0;
+}
+
+.fh-prose.prose-content :not(pre) > code {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 0.82em;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  background-color: var(--fh-raise);
+  color: var(--fh-ink);
+}
+
+.fh-prose.prose-content pre {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  padding: 1.1rem 1.25rem;
+  border-radius: 6px;
+  border: 1px solid var(--fh-line);
+  background-color: var(--fh-raise);
+  color: var(--fh-ink);
+  overflow-x: auto;
+}
+
+.fh-prose.prose-content pre code {
+  font-family: inherit;
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+.fh-prose.prose-content img {
+  border-radius: 6px;
+  border: 1px solid var(--fh-line);
+}
+
+/* A heading the contents list links to lands below the sticky navbar. */
+.fh-prose.prose-content :is(h2, h3)[id] {
+  scroll-margin-top: 7rem;
+}
+
+.fh-prose.prose-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  /* A table wider than a phone scrolls sideways, and says so: a shadow sits
+     on whichever edge has more table behind it. The paper-coloured covers
+     scroll with the content (`local`) and hide the shadows (`scroll`) once
+     an edge is reached. */
+  background:
+    linear-gradient(to right, var(--fh-paper) 30%, transparent) left / 2.5rem 100% no-repeat local,
+    linear-gradient(to left, var(--fh-paper) 30%, transparent) right / 2.5rem 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, color-mix(in oklab, var(--fh-ink) 30%, transparent), transparent) left / 0.9rem 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, color-mix(in oklab, var(--fh-ink) 30%, transparent), transparent) right / 0.9rem 100% no-repeat scroll;
+}
+
+.fh-prose.prose-content th,
+.fh-prose.prose-content td {
+  text-align: left;
+  padding: 0.55em 0.75em 0.55em 0;
+  border-bottom: 1px solid var(--fh-line);
+  background: none;
+}
+
+.fh-prose.prose-content th {
+  font-weight: 600;
+  color: var(--fh-ink);
+}
+
+.fh-prose.prose-content thead tr,
+.fh-prose.prose-content tbody tr,
+.fh-prose.prose-content tbody tr:nth-child(even) {
+  background: none;
+}
+
+/* ---------------------------------------------------------------------------
+   The portrait plate
+
+   The engraving is black line on transparency, so it is printed on a plate
+   that keeps one light paper in both themes -- a print hung on the wall,
+   rather than a negative.
+   --------------------------------------------------------------------------- */
+
+.fh-print {
+  background-color: var(--fh-print);
+}
+
+/* ---------------------------------------------------------------------------
+   The skill marquee
+
+   Pure CSS: an infinite translate is exactly what keyframes are for, and it
+   needs no script to keep running. It stops on hover so a name can be read.
+   --------------------------------------------------------------------------- */
+
+.fh-marquee-track {
+  animation: fh-marquee 150s linear infinite;
+}
+
+.fh-marquee-track[data-reverse] {
+  animation-direction: reverse;
+  animation-duration: 180s;
+}
+
+.fh-marquee:hover .fh-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes fh-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Skill icons are single-colour SVGs drawn for a dark ground; in light mode
+   they are pulled toward the ink so none of them disappears into the mist. */
+:root:not([data-theme="dark"]) .fh-icon-adapt {
+  filter: grayscale(1) brightness(0.35);
+}
+
+:root[data-theme="dark"] .fh-icon-adapt {
+  filter: grayscale(1) brightness(1.6);
+}
+
+/* Its own colour back on hover. Here rather than as a utility on the image,
+   since the filter above is unlayered and would beat it. */
+.fh-icon-adapt {
+  transition: filter 300ms ease;
+}
+
+:root .group:hover .fh-icon-adapt {
+  filter: none;
+}
+
+/* Organisation logos sit in grey until pointed at, so a page of them reads as
+   one list rather than a wall of brand colours. */
+.fh-logo {
+  filter: grayscale(1);
+  opacity: 0.85;
+  transition:
+    filter 400ms ease,
+    opacity 400ms ease;
+}
+
+.group:hover .fh-logo {
+  filter: none;
+  opacity: 1;
+}
+
+/* ---------------------------------------------------------------------------
+   Horizontal strips (the gallery): snap to each image, thin thumb below
+   --------------------------------------------------------------------------- */
+
+.fh-strip {
+  scroll-snap-type: x mandatory;
+  padding-bottom: 12px;
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion
+
+   GSAP is gated by matchMedia; these are the CSS halves of the same promise.
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .fh-marquee-track {
+    animation: none;
+  }
+}
+
+/* The page entrance is GSAP's on this site, not the shared fade. */
+.fh-site #page-content,
+.fh-site #page-content main {
+  animation: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Held entrances
+
+   An element marked `data-fh-hold` animates in on the document's first page,
+   where everything else is simply painted. It starts hidden so the server's
+   copy never flashes before the animation hides it again; `PageMotion` sets
+   `animation: none` and takes over. If it never runs, this reveals the
+   element on its own a moment later.
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .fh-site [data-fh-hold] {
+    visibility: hidden;
+    animation: fh-unhold 0s linear 1.2s forwards;
+  }
+}
+
+@keyframes fh-unhold {
+  to {
+    visibility: visible;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Chart colours
+
+   Five categorical slots for the dashboard's languages and categories, in a
+   fixed order that follows the entity (`slot` is decided in lib/data and is
+   the entity's rank there, never repainted here). Validated with the dataviz
+   checks against both surfaces: every adjacent pair stays apart under the
+   three colour-vision deficiencies, and the dark column is its own stepping
+   rather than a flip. No yellow and no orange: the site has no warm accent,
+   so a chart does not borrow one. All five clear 3:1 on both surfaces.
+
+   The heat ramp is one hue, pine, light to dark -- magnitude, not identity.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --fh-s1: #14896b;
+  --fh-s2: #4f74c4;
+  --fh-s3: #c23b4f;
+  --fh-s4: #8d6cc0;
+  --fh-s5: #5d8a2a;
+  --fh-s0: #a3aea8;
+  --fh-heat-0: #e0e5df;
+  --fh-heat-1: #b5d2c5;
+  --fh-heat-2: #7cb49e;
+  --fh-heat-3: #3d9579;
+  --fh-heat-4: #146b55;
+}
+
+:root[data-theme="dark"] {
+  --fh-s1: #1f9c7c;
+  --fh-s2: #5f84d6;
+  --fh-s3: #d9566a;
+  --fh-s4: #9479d6;
+  --fh-s5: #76a43a;
+  --fh-s0: #4a5651;
+  --fh-heat-0: #19211e;
+  --fh-heat-1: #1c4639;
+  --fh-heat-2: #1f6b56;
+  --fh-heat-3: #2a9677;
+  --fh-heat-4: #5cc7a4;
+}
+
+/* ---------------------------------------------------------------------------
+   The error page inside the site shell
+
+   `ErrorPage` brings its own bar for the routes no layout wraps; a missing
+   post renders it inside the site shell, which already has one.
+   --------------------------------------------------------------------------- */
+
+.fh-site .fh-error {
+  min-height: 70vh;
+  padding-top: 4rem;
+}
+
+.fh-site .fh-error .fh-error-chrome {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   The menu button
+
+   Two strokes that cross into a close mark while the menu is open. Drawn here
+   rather than as two icons so the strokes travel between the two states
+   instead of swapping.
+   --------------------------------------------------------------------------- */
+
+.fh-burger path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+  transition: transform 450ms cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+[aria-expanded="true"] > .fh-burger path:first-child {
+  transform: translateY(3px) rotate(45deg);
+}
+
+[aria-expanded="true"] > .fh-burger path:last-child {
+  transform: translateY(-3px) rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fh-burger path {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   A card title's underline
+
+   Drawn as a background so it follows the title onto a second line, and grows
+   from the left while the card is pointed at.
+   --------------------------------------------------------------------------- */
+
+.fh-underline {
+  background-image: linear-gradient(var(--fh-ink), var(--fh-ink));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  transition: background-size 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  padding-bottom: 0.06em;
+}
+
+.group:hover .fh-underline,
+.group:focus-visible .fh-underline {
+  background-size: 100% 2px;
+}
+
+/* The small turning arc beside "Showing 9 of 64" while more are on the way. */
+.fh-loader {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--fh-line);
+  border-top-color: var(--fh-ink);
+  animation: fh-spin 900ms linear infinite;
+}
+
+@keyframes fh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fh-underline {
+    transition: none;
+  }
+
+  .fh-loader {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   The frame round a page's opening
+
+   A rounded hairline drawn behind the title block that is only really there
+   along the top: it fades out down the sides and away towards the corners,
+   with a faint dot grid inside fading the same way. Drawn on a pseudo-element
+   with negative insets, so the heading's own box -- what its skeleton is
+   measured against -- does not move by a pixel. The insets stay inside the
+   page gutter at every width, or the frame would push the page sideways.
+   --------------------------------------------------------------------------- */
+
+.fh-frame {
+  position: relative;
+  isolation: isolate;
+}
+
+.fh-frame::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -28px -12px -36px;
+  border: 1px solid var(--fh-line);
+  border-radius: 28px;
+  background-image: radial-gradient(var(--fh-line) 1px, transparent 1.5px);
+  background-size: 22px 22px;
+  background-position: 11px 11px;
+  pointer-events: none;
+  -webkit-mask-image:
+    linear-gradient(to bottom, #000, rgb(0 0 0 / 0.55) 50%, transparent 96%),
+    linear-gradient(to right, rgb(0 0 0 / 0.35), #000 14%, #000 86%, rgb(0 0 0 / 0.35));
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, #000, rgb(0 0 0 / 0.55) 50%, transparent 96%),
+    linear-gradient(to right, rgb(0 0 0 / 0.35), #000 14%, #000 86%, rgb(0 0 0 / 0.35));
+  mask-composite: intersect;
+}
+
+@media (min-width: 768px) {
+  .fh-frame::before {
+    inset: -44px -24px -48px;
+    border-radius: 36px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .fh-frame::before {
+    inset: -48px -40px -56px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   The heatmap's sweep
+
+   One mask over the whole grid, its soft edge moved across by a single tween
+   on `--fh-sweep`. At rest the edge sits past the far side, so the grid is
+   simply whole -- without a script, and after the sweep.
+   --------------------------------------------------------------------------- */
+
+[data-fh-sweep] {
+  -webkit-mask-image: linear-gradient(90deg, #000 var(--fh-sweep, 120%), transparent calc(var(--fh-sweep, 120%) + 18%));
+  mask-image: linear-gradient(90deg, #000 var(--fh-sweep, 120%), transparent calc(var(--fh-sweep, 120%) + 18%));
+}
+
+/* ---------------------------------------------------------------------------
+   The cursor
+
+   A disc that follows a fine pointer and inverts whatever it passes over, so
+   a word under it stays readable whatever colour either of them is. It grows
+   over anything clickable and gives on a press. The system cursor stays: this
+   is a companion to it, not a replacement for something people rely on.
+   --------------------------------------------------------------------------- */
+
+.fh-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  will-change: transform, opacity;
+  opacity: 0;
+}

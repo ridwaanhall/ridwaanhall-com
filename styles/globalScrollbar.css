@@ -12,6 +12,16 @@
    ones that only know that.
    --------------------------------------------------------------------------- */
 
+/* The bar always keeps its room, so locking the page for search, the menu or
+   a dialog never shifts the layout sideways. */
+html {
+    scrollbar-gutter: stable;
+}
+
+html.locked {
+    overflow: hidden;
+}
+
 html,
 html * {
     scrollbar-width: thin;
@@ -19,8 +29,8 @@ html * {
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
 }
 
 ::-webkit-scrollbar-track,
@@ -30,8 +40,8 @@ html * {
 
 ::-webkit-scrollbar-thumb {
     background-color: var(--fh-thumb);
-    border: 3px solid transparent;
-    border-radius: 999px;
+    border: 2px solid transparent;
+    border-radius: 8px;
     background-clip: padding-box;
 }
 

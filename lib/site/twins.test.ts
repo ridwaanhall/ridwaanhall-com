@@ -12,9 +12,9 @@ describe("twins", () => {
   });
 
   it("gives every content page a twin, and nothing else", () => {
-    for (const path of ["/", "/projects", "/blog", "/about", "/dashboard", "/guestbook", "/contact", "/openhire", "/privacy-policy", "/terms", "/projects/mlbb-api", "/blog/python-101"])
+    for (const path of ["/", "/projects", "/blog", "/about", "/cv", "/dashboard", "/guestbook", "/contact", "/openhire", "/privacy-policy", "/terms", "/projects/mlbb-api", "/blog/python-101"])
       assert.ok(hasTwin(path), path);
-    for (const path of ["/sign-in", "/admin", "/admin/blog-post", "/api/projects", "/cv", "/md/about", "/projects/a/b"])
+    for (const path of ["/sign-in", "/admin", "/admin/blog-post", "/api/projects", "/md/about", "/projects/a/b"])
       assert.ok(!hasTwin(path), path);
   });
 

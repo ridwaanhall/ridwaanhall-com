@@ -46,7 +46,6 @@ jobs:
           response=$(mktemp)
           status=$(curl -sS -o "$response" -w "%{http_code}" \
             --max-time 60 --retry 2 --retry-connrefused \
-\
             "${SITE_URL:-https://ridwaanhall.com}/api/cron/publish")
 
           echo "HTTP ${status}"

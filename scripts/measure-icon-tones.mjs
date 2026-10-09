@@ -4,7 +4,7 @@
  *   node scripts/measure-icon-tones.mjs            # dry run: print what it found
  *   node scripts/measure-icon-tones.mjs --apply    # write `media_asset.tone`
  *
- * Many skill icons are drawn in one colour: Next.js, Django and Pandas in
+ * Many skill icons are drawn in one colour: Next.js, MDX and SQLAlchemy in
  * near-black, Flask, Vercel and ChatGPT in near-white. On a page of the
  * opposite shade they disappear, so a single-tone icon is inverted on the
  * theme it would vanish against -- and every icon in its own colours is left

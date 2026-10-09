@@ -18,7 +18,7 @@ const base: CvInput = {
   ],
   education: [{ degree: "S.Kom.", institution: "UTY", years: "2021 - 2025", achievements: [] }],
   skills: [["Languages", ["Python", "PHP"]]],
-  projects: [{ title: "P", headline: "H", stack: ["Django"] }],
+  projects: [{ title: "P", headline: "H", stack: ["FastAPI"] }],
   certifications: [
     { title: "Digital Marketing Basics", institution: "X", year: 2026, month: 5 },
     { title: "Applied Machine Learning", institution: "Dicoding", year: 2025, month: 2 },

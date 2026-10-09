@@ -15,7 +15,7 @@ import { featuredBlogs, getBlogs, searchBlogs, type BlogPost } from "@/lib/data/
 import { blogListSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { blogListSchemas } from "@/lib/seo/schemas-for-page";
-import { readListingParams, type ListingSearchParams } from "@/lib/site/listing";
+import { parseWritingFilters } from "@/lib/site/writing-filters";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [about, blogs] = await Promise.all([getAboutData(), getBlogs()]);
@@ -23,19 +23,21 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(blogListSeo(about, blogs, 1), about);
 }
 
-/** The request-dependent half: reading `?q=` makes this part dynamic. */
-async function Index({ posts, searchParams }: { posts: BlogPost[]; searchParams: ListingSearchParams }) {
-  const { query } = await readListingParams(searchParams);
+type WritingParams = Promise<Record<string, string | string[] | undefined>>;
+
+/** The request-dependent half: reading the filters makes this part dynamic. */
+async function Index({ posts, searchParams }: { posts: BlogPost[]; searchParams: WritingParams }) {
+  const initial = parseWritingFilters(await searchParams);
   return (
     <WritingIndex
       posts={posts.map(postView)}
-      initialQuery={query}
-      serverMatches={query ? searchBlogs(posts, query).map((post) => post.slug) : null}
+      initial={initial}
+      serverMatches={initial.q ? searchBlogs(posts, initial.q).map((post) => post.slug) : null}
     />
   );
 }
 
-export default async function BlogPage({ searchParams }: { searchParams: ListingSearchParams }) {
+export default async function BlogPage({ searchParams }: { searchParams: WritingParams }) {
   const [about, posts] = await Promise.all([getAboutData(), getBlogs()]);
   if (!about) return null;
 

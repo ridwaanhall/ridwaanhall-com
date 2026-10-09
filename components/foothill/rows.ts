@@ -43,6 +43,8 @@ export type PostView = {
   image: string | null;
   imageAlt: string;
   date: string;
+  /** When it was written, as a timestamp, for ordering; `date` is only a label. */
+  time: number;
   category: string;
   minutes: number;
   views: number;
@@ -87,6 +89,7 @@ export function postView(post: BlogPost): PostView {
     image: post.image_list?.[0] ?? null,
     imageAlt: post.image_alts?.[0] || `${post.title}, the cover`,
     date: shortDate(post.created_at),
+    time: post.created_at?.getTime() ?? 0,
     category: postCategory(post.category),
     minutes: readingMinutes(post.read_time, post.content_html),
     views: post.views,

@@ -67,8 +67,8 @@ check(!bad.accept.length, "asking by Accept header returns the same text", bad.a
 check(!bad.headers.length, "each is noindex, canonical to its page, and varies on Accept", bad.headers.slice(0, 3).join("; "));
 check(!bad.unlisted.length, "llms.txt lists every one of them", bad.unlisted.slice(0, 3).join("; "));
 
-// Pages the sitemap leaves out on purpose but that are real pages with a twin.
-const EXTRA = new Set(["/openhire.md", "/guestbook.md"]);
+// Pages the sitemap leaves out on purpose but that have a twin: two real pages, and the CV, whose page is the PDF.
+const EXTRA = new Set(["/openhire.md", "/guestbook.md", "/cv.md"]);
 const stray = [...listed].filter((twin) => !unique.some((p) => twinOf(p) === twin) && !EXTRA.has(twin));
 check(!stray.length, "and nothing the sitemap does not", stray.slice(0, 3).join("; "));
 

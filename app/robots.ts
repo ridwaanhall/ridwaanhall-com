@@ -32,10 +32,13 @@ export default function robots(): MetadataRoute.Robots {
         "/guestbook/pin-message/",
         "/comments/",
         "/api/",
-        // Redirects to externally hosted CV files.
-        "/cv/",
-        "/cv-latest/",
-        "/cv-copy/",
+        // Redirects to externally hosted CV files. Anchored with `$` because a bare
+        // "/cv" would also block /cv.pdf and /cv.md, which are the CV itself.
+        "/cv$",
+        "/cv-latest$",
+        "/cv-copy$",
+        // The internal path the .md twins are served from; the twins are at /<page>.md.
+        "/md/",
       ],
     },
     sitemap: [

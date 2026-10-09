@@ -769,9 +769,12 @@ body:has(.fh-site) {
 
 /* The heatmap's sweep: one mask over the whole grid, its soft edge moved
    across by a single tween on `--fh-sweep` -- a tween per square (a year is
-   371 of them) is what made the dashboard stutter. At rest the edge sits past
-   the far side, so the grid is simply whole, without a script and after. */
-[data-fh-sweep] {
+   371 of them) is what made the dashboard stutter. The mask exists only while
+   the tween is writing `--fh-sweep` onto the element: a mask that stayed on
+   after it, even one that reveals everything, clips whatever is painted outside
+   a square's own box, so the hover ring on the outermost squares was cut off on
+   every side of the grid. Without the script the grid is simply whole. */
+[data-fh-sweep][style*="--fh-sweep"] {
   -webkit-mask-image: linear-gradient(90deg, #000 var(--fh-sweep, 120%), transparent calc(var(--fh-sweep, 120%) + 18%));
   mask-image: linear-gradient(90deg, #000 var(--fh-sweep, 120%), transparent calc(var(--fh-sweep, 120%) + 18%));
 }

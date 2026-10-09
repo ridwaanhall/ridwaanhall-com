@@ -114,13 +114,22 @@ try {
    * is how a deploy takes its own scripts down; what matters here is that a
    * policy exists and is right.
    */
-  const raw =
-    headers.get("content-security-policy") ?? headers.get("content-security-policy-report-only");
+  const enforced = headers.get("content-security-policy");
+  const raw = headers.get("content-security-policy-report-only") ?? enforced;
   check(raw !== null, "a content security policy is set", "neither enforcing nor report-only");
 
+  /*
+   * What is enforced today is the part that cannot take a script down: no
+   * framing, no base element, no plugins. The full policy is still being
+   * watched, report-only.
+   */
+  const hard = parsePolicy(enforced ?? "");
+  check(hard["frame-ancestors"]?.includes("'none'"), "the enforced policy forbids framing", `got ${enforced ?? "nothing"}`);
+  check(hard["base-uri"]?.includes("'self'"), "the enforced policy pins base-uri", `got ${enforced ?? "nothing"}`);
+  check(hard["object-src"]?.includes("'none'"), "the enforced policy forbids plugins", `got ${enforced ?? "nothing"}`);
+
   if (raw) {
-    const enforcing = headers.get("content-security-policy") !== null;
-    console.log(`        (${enforcing ? "enforcing" : "report-only"})`);
+    console.log(`        (full policy: ${headers.get("content-security-policy-report-only") ? "report-only" : "enforcing"})`);
 
     const policy = parsePolicy(raw);
 
@@ -154,7 +163,7 @@ try {
      * So the reporting half is only required while the policy is report-only --
      * an enforcing one is doing its job whether or not anybody is listening.
      */
-    if (!enforcing) {
+    if (headers.get("content-security-policy-report-only")) {
       const group = policy["report-to"]?.[0];
       const endpoints = headers.get("reporting-endpoints") ?? "";
       check(

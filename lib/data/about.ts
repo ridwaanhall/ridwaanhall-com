@@ -1,3 +1,4 @@
+import { toTone } from "@/lib/site/skills";
 import { asc, desc, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { cacheLife, cacheTag } from "next/cache";
@@ -582,6 +583,7 @@ export async function getSkillsByCategory(): Promise<Record<string, Skill[]>> {
 const SKILL_ICON = {
   storageKey: mediaAsset.storageKey,
   source: mediaAsset.source,
+  tone: mediaAsset.tone,
 };
 
 function toSkill(row: {
@@ -589,13 +591,14 @@ function toSkill(row: {
   category: string | null;
   storageKey: string | null;
   source: string | null;
+  tone: string | null;
 }): Skill {
   return {
     name: row.s.name,
     description: row.s.description,
     icon_svg: logoUrl(row),
     category: row.category ?? "",
-    tone: null,
+    tone: toTone(row.tone),
   };
 }
 

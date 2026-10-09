@@ -19,7 +19,7 @@ describe("twins", () => {
   });
 
   it("ignores a query, a hash and a trailing slash", () => {
-    assert.equal(normalise("/projects/?q=django#top"), "/projects");
+    assert.equal(normalise("/projects/?q=python#top"), "/projects");
     assert.ok(hasTwin("/blog/?page=2"));
   });
 });

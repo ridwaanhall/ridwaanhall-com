@@ -20,7 +20,7 @@ import { guestbookSchemas } from "@/lib/seo/schemas-for-page";
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutData();
   if (!about) return {};
-  return buildMetadata(guestbookSeo(about), about);
+  return buildMetadata(guestbookSeo(), about);
 }
 
 /**
@@ -126,7 +126,9 @@ function GuestbookSkeleton() {
           <Bar w="100%" h={48} r="var(--fh-r-m)" />
         </div>
         <div>
-          {Array.from({ length: 6 }, (_, i) => (
+          {/* Twelve: the thread lands twelve at a time and fills the screen, and a
+              placeholder that fills less leaves the page to jump when it does. */}
+          {Array.from({ length: 12 }, (_, i) => (
             <RowSkeleton key={i} avatar />
           ))}
         </div>

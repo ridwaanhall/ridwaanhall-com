@@ -103,7 +103,7 @@ export function WritingIndex({
           <Empty
             icon="search"
             title={query ? `No post matches “${query}”` : "No post in this topic"}
-            note="Try a shorter word, or a topic like Django."
+            note="Try a shorter word, or a topic like Python."
             action={
               <button
                 type="button"

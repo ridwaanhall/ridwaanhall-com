@@ -222,7 +222,7 @@ export function WorkExplorer({
         <Empty
           icon="search"
           title={filters.q ? `Nothing matches “${filters.q}”` : "No project fits these filters"}
-          note="Try a technology, like Django or FastAPI, or loosen a filter."
+          note="Try a technology, like Python or FastAPI, or loosen a filter."
           action={
             <button type="button" className="btn ghost sm" onClick={clear}>
               <Icon name="x" />

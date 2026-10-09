@@ -152,7 +152,7 @@ body:has(.fh-site) {
 .fh-site .kbtn kbd { margin-left: auto; font-family: var(--fh-mono); font-size: 11px; border: 1px solid var(--fh-line-2); border-radius: var(--fh-r-s); padding: 1px 5px; }
 .fh-site .otw { display: none; align-items: center; gap: 8px; height: 30px; padding: 0 10px; border: 1px solid var(--fh-line-2); border-radius: var(--fh-r-s); font-size: 12.5px; color: var(--fh-ink-2); margin-right: 6px; }
 .fh-site .otw:hover { border-color: var(--fh-ink); color: var(--fh-ink); }
-.fh-site .signin { display: none; font-size: 14px; padding: 8px 12px; border-radius: var(--fh-r-m); white-space: nowrap; }
+.fh-site .signin { display: none; font-size: 14px; padding: 8px 0; margin-inline: 6px; border-radius: var(--fh-r-m); white-space: nowrap; }
 .fh-site .signin:hover { color: var(--fh-ink-2); }
 .fh-site .only-s { display: inline-grid; }
 @media (min-width: 1024px) { .fh-site .links { display: flex; } .fh-site .only-s { display: none; } .fh-site .kbtn { display: inline-flex; } .fh-site .signin { display: inline-block; } }
@@ -834,6 +834,7 @@ body:has(.fh-site) {
 .fh-site .wrow.social-row { grid-template-columns: 24px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 0; }
 .fh-site .turnstile-slot { min-height: 65px; }
 .fh-site .stack { display: grid; gap: 22px; align-content: start; }
+@media (max-width: 639px) { .fh-site .skb-phone { height: var(--phone) !important; } }
 
 /* Sign in: one card in the middle of the page. */
 .fh-site .sign-in { min-height: 72vh; display: grid; place-items: center; padding-block: 64px; }

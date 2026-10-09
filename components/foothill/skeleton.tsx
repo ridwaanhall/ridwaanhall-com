@@ -111,15 +111,19 @@ export function RowSkeleton({ avatar }: { avatar?: boolean }) {
   );
 }
 
-/** A dashboard panel: its titled bar and a block for the chart. */
-export function PanelSkeleton({ h }: { h: number }) {
+/**
+ * A dashboard panel: its titled bar and a block for the chart. On a phone its
+ * figures wrap to two columns and the panel stands much taller than on a wide
+ * screen, so `phone` is the block's height there.
+ */
+export function PanelSkeleton({ h, phone }: { h: number; phone?: number }) {
   return (
     <div className="panel">
       <div className="panel-h">
         <Bar w={180} h={18} />
       </div>
       <div className="panel-b">
-        <Bar w="100%" h={h} />
+        <span className={phone ? "skb skb-phone" : "skb"} style={{ width: "100%", height: h, ...(phone ? ({ "--phone": `${phone}px` } as React.CSSProperties) : {}) }} />
       </div>
     </div>
   );

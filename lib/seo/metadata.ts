@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { twinOf } from "@/lib/site/twins";
 import type { AboutData } from "@/lib/data/about";
 
-import { DEFAULT_IMAGE, DEFAULT_OG_TYPE, DEFAULT_TWITTER_CARD, DEFAULT_TWITTER_SITE, SITE_NAME } from "./config";
+import { DEFAULT_OG_TYPE, DEFAULT_TWITTER_CARD, DEFAULT_TWITTER_SITE, SITE_NAME } from "./config";
 import type { SeoData } from "./data";
 
 /**
@@ -27,7 +27,7 @@ function markdownAddress(canonical: string): string {
 
 export function buildMetadata(seo: SeoData, about: AboutData): Metadata {
   const ogType = seo.og_type || DEFAULT_OG_TYPE;
-  const image = seo.og_image || DEFAULT_IMAGE;
+  const image = seo.og_image;
 
   const metadata: Metadata = {
     title: seo.title,
@@ -61,7 +61,7 @@ export function buildMetadata(seo: SeoData, about: AboutData): Metadata {
       description: seo.description,
       siteName: SITE_NAME,
       locale: "en_US",
-      images: [{ url: image, width: 1200, height: 630, alt: seo.twitter_image_alt ?? seo.title }],
+      ...(image ? { images: [{ url: image, width: 1200, height: 630, alt: seo.twitter_image_alt ?? seo.title }] } : {}),
       ...(ogType === "article"
         ? {
             publishedTime: toIso(seo.published_date),
@@ -75,7 +75,7 @@ export function buildMetadata(seo: SeoData, about: AboutData): Metadata {
       card: (seo.twitter_card || DEFAULT_TWITTER_CARD) as "summary_large_image",
       title: seo.title,
       description: seo.description,
-      images: [{ url: image, alt: seo.twitter_image_alt ?? seo.title }],
+      ...(image ? { images: [{ url: image, alt: seo.twitter_image_alt ?? seo.title }] } : {}),
       site: seo.twitter_site ?? DEFAULT_TWITTER_SITE,
       creator: seo.twitter_creator ?? `@${about.username}`,
     },

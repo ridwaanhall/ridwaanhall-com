@@ -16,7 +16,7 @@ import { bareUrl, basedIn, socialLinks } from "@/lib/site/display";
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutData();
   if (!about) return {};
-  return buildMetadata(contactSeo(about), about);
+  return buildMetadata(contactSeo(), about);
 }
 
 const SOCIAL_ICON: Record<string, IconName> = {

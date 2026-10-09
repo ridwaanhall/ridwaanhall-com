@@ -16,3 +16,7 @@ export function wholeHours(text: string | null | undefined): number {
   const match = (text ?? "").match(/([\d,]+)\s*hr/);
   return match ? Number(match[1].replace(/,/g, "")) : 0;
 }
+
+/** A stored tone, as the type: the database only allows these two, but a column is a string. */
+export const toTone = (value: string | null | undefined): "dark" | "light" | null =>
+  value === "dark" || value === "light" ? value : null;

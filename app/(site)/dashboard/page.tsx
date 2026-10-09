@@ -65,7 +65,7 @@ export default async function DashboardPage() {
           ]}
         />
         <div className="wrap dash">
-          <Suspense fallback={<Waiting heights={[150]} />}>
+          <Suspense fallback={<Waiting heights={[150]} phone={560} />}>
             <TodayPanel />
           </Suspense>
           <Suspense fallback={<Waiting heights={[260]} />}>
@@ -92,8 +92,8 @@ export default async function DashboardPage() {
 }
 
 /** A panel's frame while its source answers. */
-function Waiting({ heights, two }: { heights: number[]; two?: boolean }) {
-  const panels = heights.map((h, i) => <PanelSkeleton key={i} h={h} />);
+function Waiting({ heights, two, phone }: { heights: number[]; two?: boolean; phone?: number }) {
+  const panels = heights.map((h, i) => <PanelSkeleton key={i} h={h} phone={phone} />);
   return <InlineSkeleton label="Loading a panel">{two ? <div className="dgrid two">{panels}</div> : panels}</InlineSkeleton>;
 }
 

@@ -83,7 +83,7 @@ export function Footer({
             <Button href="/contact" icon="pen">
               Write to me
             </Button>
-            {email && <CopyButton text={email} label={email} message="Email address copied" />}
+            {email && <CopyButton text={email} label={email} doneLabel="Address copied" message="Email address copied" />}
           </div>
         </div>
         <Facts

@@ -151,7 +151,7 @@ body:has(.fh-site) {
 .fh-site .tools { margin-left: auto; display: flex; align-items: center; gap: 4px; }
 .fh-site .ib { width: 40px; height: 40px; display: inline-grid; place-items: center; border-radius: var(--fh-r-m); border: 0; background: none; cursor: pointer; color: var(--fh-ink); }
 .fh-site .ib:hover { color: var(--fh-ink-2); }
-.fh-site .kbtn { display: none; align-items: center; gap: 10px; height: 38px; padding: 0 8px 0 12px; border: 1px solid var(--fh-line); border-radius: var(--fh-r-m); background: var(--fh-surface); color: var(--fh-mute); font-size: 13.5px; cursor: pointer; min-width: 168px; white-space: nowrap; margin-right: 4px; }
+.fh-site .kbtn { display: none; align-items: center; gap: 10px; height: 38px; padding: 0 8px 0 12px; border: 1px solid var(--fh-line); border-radius: var(--fh-r-m); background: none; color: var(--fh-mute); font-size: 13.5px; cursor: pointer; min-width: 168px; white-space: nowrap; margin-right: 4px; }
 .fh-site .kbtn:hover { border-color: var(--fh-line-2); color: var(--fh-ink); }
 .fh-site .kbtn kbd { margin-left: auto; font-family: var(--fh-mono); font-size: 11px; border: 1px solid var(--fh-line-2); border-radius: var(--fh-r-s); padding: 1px 5px; }
 .fh-site .otw { display: none; align-items: center; gap: 8px; height: 30px; padding: 0 10px; border: 1px solid var(--fh-line-2); border-radius: var(--fh-r-s); font-size: 12.5px; color: var(--fh-ink-2); margin-right: 6px; }
@@ -501,7 +501,7 @@ body:has(.fh-site) {
 .fh-site .reply-box textarea.input { min-height: 90px; }
 .fh-site .compose .who .av { width: 28px; height: 28px; font-size: 10.5px; }
 .fh-site .btn:disabled { opacity: .4; cursor: not-allowed; }
-.fh-site .sent { display: grid; gap: 16px; align-content: start; padding: 28px; border: 1px solid var(--fh-line); border-radius: var(--fh-r-m); background: var(--fh-surface); }
+.fh-site .sent { display: grid; gap: 16px; align-content: start; padding: 28px 0; border-block: 1px solid var(--fh-line); }
 .fh-site .skb { display: block; background: var(--fh-raise); border-radius: var(--fh-r-s); position: relative; overflow: hidden; max-width: 100%; }
 .fh-site .skb::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--fh-ink) 7%, transparent), transparent); animation: shim 1.4s ease-in-out infinite; }
 @keyframes shim { to { transform: translateX(100%); } }
@@ -528,7 +528,7 @@ body:has(.fh-site) {
 .fh-site .yr { padding: 22px 0 8px; font-size: 12px; border-bottom: 1px solid var(--fh-line); }
 .fh-site .proj-body { display: grid; gap: 40px; }
 @media (min-width: 1024px) { .fh-site .proj-body { grid-template-columns: minmax(0, 1fr) 320px; gap: 56px; } }
-.fh-site .side-card { align-self: start; display: grid; gap: 22px; padding: 20px; border: 1px solid var(--fh-line); border-radius: var(--fh-r-m); background: var(--fh-surface); }
+.fh-site .side-card { align-self: start; display: grid; gap: 22px; padding: 0; border: 0; background: none; }
 @media (min-width: 1024px) { .fh-site .side-card { position: sticky; top: calc(var(--fh-nav) + 24px); } }
 .fh-site .side-card .btn { width: 100%; }
 .fh-site .pn { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-block: 8px 24px; }
@@ -636,9 +636,9 @@ body:has(.fh-site) {
 @media (hover: none) { .fh-site .cv-thumb-cta { opacity: 1; } }
 .fh-site .toc-act { display: flex; gap: 8px; align-items: center; padding: 4px 12px; font-size: 14px; border: 0; background: none; color: var(--fh-ink-2); cursor: pointer; text-align: left; transition: color .2s; }
 .fh-site .toc-act:hover { color: var(--fh-ink); }
-.fh-site .building { border: 1px solid var(--fh-line); border-radius: var(--fh-r-m); background: var(--fh-surface); }
-.fh-site .building-h { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--fh-line); }
-.fh-site .b-row { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; padding: 16px; align-items: start; }
+.fh-site .building { border-block: 1px solid var(--fh-line); }
+.fh-site .building-h { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--fh-line); }
+.fh-site .b-row { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; padding: 16px 0; align-items: start; }
 .fh-site .b-row + .b-row { border-top: 1px solid var(--fh-line); }
 .fh-site .b-row .mini { display: block; width: 120px; aspect-ratio: 16 / 10; border-radius: var(--fh-r-s); overflow: hidden; border: 1px solid var(--fh-line); background: var(--fh-raise); }
 .fh-site .b-row .mini img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
@@ -674,7 +674,7 @@ body:has(.fh-site) {
 .fh-site .replies { grid-column: 2; margin-top: 8px; border-left: 1px solid var(--fh-line-2); }
 .fh-site .replies .msg { border: 0; padding: 8px 0 8px 14px; grid-template-columns: 28px minmax(0, 1fr); }
 .fh-site .replies .av { width: 28px; height: 28px; font-size: 10.5px; }
-.fh-site .msg.pinned { background: var(--fh-surface); border: 1px solid var(--fh-line); border-radius: var(--fh-r-m); padding: 16px; margin-bottom: 8px; }
+.fh-site .msg.pinned { border-left: 2px solid var(--fh-ink); padding-left: 14px; }
 
 /* forms */
 .fh-site label.f { display: grid; gap: 8px; font-size: 14px; font-weight: 500; }
@@ -693,12 +693,12 @@ body:has(.fh-site) {
 .fh-site .article h2 { font-size: 1.8rem; letter-spacing: -.03em; } .fh-site .article h3 { font-size: 1.35rem; letter-spacing: -.02em; }
 .fh-site .article a { color: var(--fh-ink); text-decoration: underline; text-underline-offset: 3px; }
 .fh-site .article code { font-family: var(--fh-mono); font-size: .82em; background: var(--fh-raise); border: 1px solid var(--fh-line); padding: 1px 5px; border-radius: var(--fh-r-s); color: var(--fh-ink); }
-.fh-site .article pre { overflow-x: auto; border: 1px solid var(--fh-line); border-radius: var(--fh-r-m); padding: 14px; background: var(--fh-surface); }
+.fh-site .article pre { overflow-x: auto; border: 1px solid var(--fh-line); border-radius: var(--fh-r-m); padding: 14px; background: none; }
 .fh-site .article pre code { border: 0; background: none; padding: 0; }
 .fh-site .article ul, .fh-site .article ol { padding-left: 1.2em; list-style: revert; display: grid; gap: 6px; }
 .fh-site .article table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.5; }
 .fh-site .article th, .fh-site .article td { border: 1px solid var(--fh-line); padding: 8px 10px; text-align: left; vertical-align: top; }
-.fh-site .article th { background: var(--fh-surface); color: var(--fh-ink); }
+.fh-site .article th { color: var(--fh-ink); }
 .fh-site .article img { border-radius: var(--fh-r-img); }
 /* Legal sections are term -> definition pairs, not prose. */
 .fh-site .terms { margin: 0; border-top: 1px solid var(--fh-line); font-size: 15.5px; line-height: 1.55; }
@@ -741,7 +741,7 @@ body:has(.fh-site) {
 .fh-site .palette li a .ico { color: var(--fh-mute); }
 .fh-site .palette .foot-hint { display: flex; gap: 18px; padding: 12px 20px; border-top: 1px solid var(--fh-line); font-size: 12px; color: var(--fh-mute); }
 .fh-site .palette kbd { font-family: var(--fh-mono); font-size: 11px; border: 1px solid var(--fh-line-2); border-radius: var(--fh-r-s); padding: 0 4px; margin-right: 4px; }
-.fh-site .totop { position: fixed; right: calc(var(--fh-gut) - 4px); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 40; width: 48px; height: 48px; border-radius: 50%; border: 0; background: color-mix(in srgb, var(--fh-bg) 85%, transparent); backdrop-filter: blur(8px); display: grid; place-items: center; cursor: pointer; color: var(--fh-ink); }
+.fh-site .totop { position: fixed; right: calc(var(--fh-gut) - 4px); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 40; width: 48px; height: 48px; border-radius: 50%; border: 0; padding: 0; background: none; -webkit-tap-highlight-color: transparent; display: grid; place-items: center; cursor: pointer; color: var(--fh-ink); }
 .fh-site .totop svg.ring { position: absolute; inset: -1px; width: 48px; height: 48px; transform: rotate(-90deg); }
 .fh-site .cursor { position: fixed; left: 0; top: 0; z-index: 90; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #fff; mix-blend-mode: difference; pointer-events: none; }
 @media (hover: none), (pointer: coarse) { .fh-site .cursor { display: none; } }
@@ -832,7 +832,7 @@ body:has(.fh-site) {
 .fh-site .post-foot { max-width: 70ch; width: 100%; margin-top: 32px; display: grid; gap: 20px; }
 .fh-site .share { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding-top: 18px; border-top: 1px solid var(--fh-line); }
 @media (min-width: 1200px) { .fh-site .post-grid > .ptoc-d, .fh-site .post-grid > div:not(.ptoc-m) { grid-row: 1; } }
-.fh-site .sign-panel { border: 1px solid var(--fh-line); border-radius: var(--fh-r-m); background: var(--fh-surface); padding: 20px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
+.fh-site .sign-panel { border-block: 1px solid var(--fh-line); padding: 20px 0; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
 .fh-site .msg-acts button:disabled { opacity: .5; cursor: not-allowed; }
 .fh-site .compose-h { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--fh-line); }
 
@@ -865,3 +865,38 @@ body:has(.fh-site) {
 .fh-site .msg .reply-to { grid-column: 2; display: flex; gap: 6px; align-items: center; min-width: 0; }
 .fh-site .msg .reply-to span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fh-site .msg .av { object-fit: cover; }
+
+/* A hover underline is as long as its words. Each of these titles is a grid
+   item, and a grid item stretches to its column, so the line drawn under it
+   ran the width of the row however short the title was. Sized to their own
+   text instead, and still clipped with an ellipsis where the column ends. */
+.fh-site .wrow .t, .fh-site .prow .t, .fh-site .pcard h3, .fh-site .pn-a .t3 { justify-self: start; max-width: 100%; }
+.fh-site .pn-a.r .t3 { justify-self: end; }
+@media (max-width: 639px) { .fh-site .pn-a.r .t3 { justify-self: start; } }
+.fh-site .pn-a .t3 { overflow-wrap: anywhere; }
+
+/* The Markdown viewer is as tall as what it holds. It shared the CV's frame,
+   which is pinned to every edge because a CV page is always tall, so a
+   twin of eight lines sat at the top of a screen-sized empty panel. A column
+   whose body shrinks and scrolls stops at the viewport instead, and on a
+   phone it rises from the bottom edge as a sheet. */
+.fh-site .md-view { inset: max(16px, 7vh) 16px auto; max-height: calc(100dvh - max(16px, 7vh) - 16px); display: flex; flex-direction: column; }
+.fh-site .md-view .md-body { flex: 0 1 auto; min-height: 0; background: none; padding: 16px 18px 20px; }
+.fh-site .md-view .cv-bar { flex: none; }
+@media (max-width: 639px) {
+  .fh-site .md-view { inset: auto 0 0; max-height: calc(100dvh - 40px); border: 0; border-top: 1px solid var(--fh-line-2); border-radius: 14px 14px 0 0; }
+  .fh-site .md-view .md-body { padding: 10px 10px calc(14px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* A list that pages: the button and the count under it, centred. */
+.fh-site .more-row { display: grid; justify-items: center; gap: 12px; margin-top: 32px; }
+
+/* The job hunt by year: each year a disclosure, as the certificates are, with
+   its outcomes tallied in the chart's own fills beside it. */
+.fh-site .year-group { border-bottom: 1px solid var(--fh-line); }
+.fh-site .year-label { display: flex; align-items: baseline; gap: 10px; }
+.fh-site .year-tally { display: flex; gap: 14px; align-items: center; margin-right: 14px; font-family: var(--fh-mono); font-size: 12px; }
+.fh-site .year-tally span { display: inline-flex; align-items: center; gap: 6px; }
+.fh-site .year-tally i { display: block; width: 10px; height: 10px; border-radius: 2px; }
+.fh-site .app-row { border-top: 1px solid var(--fh-line); }
+@media (max-width: 479px) { .fh-site .year-tally { display: none; } }

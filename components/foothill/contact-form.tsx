@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 
 import { ActionButton, EASE } from "@/components/foothill/controls";
 import { Icon } from "@/components/foothill/icons";
@@ -38,6 +38,19 @@ export function ContactForm() {
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
   const [note, setNote] = useState("");
   const [sent, setSent] = useState<{ name: string; email: string } | null>(null);
+
+  // Leaving the page clears what the last visit complained about. A visited
+  // route stays mounted, hidden, so coming back to Contact would otherwise
+  // greet the reader with the errors from an attempt they had abandoned.
+  // What they typed is kept; only the verdicts on it go. Effects are torn
+  // down when the route is hidden, which is the moment to forget.
+  useEffect(
+    () => () => {
+      setErrors({});
+      setNote("");
+    },
+    [],
+  );
 
   const onBlur = (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const field = event.target.name as Field;

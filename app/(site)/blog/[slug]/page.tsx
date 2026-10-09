@@ -42,6 +42,12 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
   if (!post || !about) notFound();
 
   const view = postView(post);
+  // The posts either side of this one, as the projects carry theirs, so a
+  // reader finishing one has somewhere to go besides the index. `getBlogs` is
+  // newest first, so the one before in the list is the newer post.
+  const at = posts.findIndex((entry) => entry.slug === post.slug);
+  const newer = at > 0 ? postView(posts[at - 1]) : null;
+  const older = at < posts.length - 1 ? postView(posts[at + 1]) : null;
   const url = `${SITE_URL}/blog/${post.slug}`;
   // Posts that share a tag with this one, most shared first, then the newest.
   const related = posts
@@ -100,7 +106,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                 <span className="meta" style={{ marginRight: 6 }}>
                   Share
                 </span>
-                <CopyButton sm text={url} label="Copy link" message="Link copied" />
+                <CopyButton sm text={url} label="Copy link" doneLabel="Link copied" message="Link copied" />
                 <Button sm ghost icon="xlogo" href={`https://x.com/intent/post?url=${share}&text=${said}`}>
                   X
                 </Button>
@@ -114,6 +120,31 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
             </div>
           </div>
         </article>
+
+        {(newer || older) && (
+          <nav className="wrap pn" aria-label="More posts">
+            {older ? (
+              <Link href={`/blog/${older.slug}`} className="pn-a">
+                <span className="mono mute">Older post</span>
+                <span className="t3">{older.title}</span>
+                <span className="meta">
+                  {older.category} · {older.date}
+                </span>
+              </Link>
+            ) : (
+              <span />
+            )}
+            {newer && (
+              <Link href={`/blog/${newer.slug}`} className="pn-a r">
+                <span className="mono mute">Newer post</span>
+                <span className="t3">{newer.title}</span>
+                <span className="meta">
+                  {newer.category} · {newer.date}
+                </span>
+              </Link>
+            )}
+          </nav>
+        )}
 
         <section className="wrap sec">
           <Suspense fallback={<CommentSectionSkeleton />}>

@@ -292,7 +292,14 @@ export function PageLoadingBar() {
       }
       if (target.protocol !== "http:" && target.protocol !== "https:") return;
       if (target.origin !== window.location.origin) return;
-      start();
+      // A form with a script of its own -- the contact form validating before
+      // it sends -- cancels the submit, and nothing navigates. This listener
+      // runs in the capture phase, before React's, so the verdict is read once
+      // the event has finished: a bar started for a cancelled submit crept
+      // across the top of a page that never left.
+      setTimeout(() => {
+        if (!event.defaultPrevented) start();
+      }, 0);
     }
 
     /*

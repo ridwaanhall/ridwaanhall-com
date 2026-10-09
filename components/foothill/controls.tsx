@@ -201,15 +201,21 @@ export function Disclosure({
   );
 }
 
-/** Copy something; the copy icon becomes a tick for a moment. */
+/**
+ * Copy something; for a moment the label says it worked and the copy icon
+ * becomes a tick. The label changes as well as the icon because a tick alone
+ * beside an unchanged "Copy address" reads as nothing having happened.
+ */
 export function CopyButton({
   text,
   label,
+  doneLabel = "Copied",
   sm,
   message = "Copied to the clipboard",
 }: {
   text: string;
   label: React.ReactNode;
+  doneLabel?: React.ReactNode;
   sm?: boolean;
   message?: string;
 }) {
@@ -235,7 +241,17 @@ export function CopyButton({
       whileTap={{ scale: 0.97 }}
       aria-live="polite"
     >
-      <span>{label}</span>
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.span
+          key={done ? "label-done" : "label"}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -6 }}
+          transition={{ duration: 0.18 }}
+        >
+          {done ? doneLabel : label}
+        </motion.span>
+      </AnimatePresence>
       <AnimatePresence mode="wait" initial={false}>
         <motion.span
           key={done ? "done" : "copy"}

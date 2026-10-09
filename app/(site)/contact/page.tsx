@@ -73,7 +73,7 @@ export default async function ContactPage() {
                   </a>
                 </p>
                 <div style={{ marginTop: 10 }}>
-                  <CopyButton sm text={email} label="Copy address" message="Email address copied" />
+                  <CopyButton sm text={email} label="Copy address" doneLabel="Address copied" message="Email address copied" />
                 </div>
               </div>
             )}

@@ -1,18 +1,17 @@
 import { Bar, PageSkeleton } from "@/components/foothill/skeleton";
 
-/** Sign-in while it loads: one narrow column. */
+/** Sign in while it loads: the card and its two buttons. */
 export default function Loading() {
   return (
     <PageSkeleton>
-      <div className="mx-auto max-w-[440px] py-8 md:py-16">
-        <Bar className="h-5 w-9" />
-        <Bar className="mt-10 h-3 w-16" />
-        <Bar className="mt-4 h-12 w-[85%]" />
-        <Bar className="mt-5 h-4 w-full" />
-        <Bar className="mt-2 h-4 w-[70%]" />
-        <Bar className="mt-10 h-12 w-full rounded-full" />
-        <Bar className="mt-2 h-12 w-full rounded-full" />
-      </div>
+      <section className="wrap sign-in">
+        <div className="panel sign-card">
+          <Bar w="40%" h={36} />
+          <Bar w="90%" h={16} />
+          <Bar w="100%" h={48} r="var(--fh-r-m)" />
+          <Bar w="100%" h={48} r="var(--fh-r-m)" />
+        </div>
+      </section>
     </PageSkeleton>
   );
 }

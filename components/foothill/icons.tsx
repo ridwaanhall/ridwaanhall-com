@@ -1,70 +1,119 @@
 /**
  * Every glyph the public site draws, in one place.
  *
- * `Icon` is the interface set: arrows, search, menu, close and the handful of
- * actions. One stroke weight and one grid (24, round caps), so an arrow beside
- * a button label and an arrow in the gallery are visibly the same arrow.
+ * `Icon` is the interface set: one 24 grid, one 1.75 stroke, round caps. Each
+ * button and link carries the icon for what it does -- a grid for work, a
+ * book for posts, a pen for writing to me, a paper plane for send -- and an
+ * arrow only where a link leaves the site. Icons never grow, turn or move on
+ * hover; they take the ink colour with their label and nothing else.
  *
- * `Brand` is somebody else's mark -- a provider, a network, a way to support
- * the work -- keyed by the platform name the database stores, so a footer, a
- * share row and a contact page all ask for "github" and draw the same thing.
- * A platform with no mark of its own falls back to a neutral glyph rather than
- * to nothing.
+ * Sizing is the `.ico` rule in styles/site.css (16px), or `size` when a place
+ * needs another. `size` is an inline style on purpose: that rule is unlayered
+ * and would beat a sizing utility.
+ *
+ * `Brand` is somebody else's mark -- a sign-in provider, a network, a way to
+ * support the work -- keyed by the platform name the database stores. Google
+ * keeps its own four colours: a monochrome G is a different, unofficial mark.
  *
  * No `"use client"` and no `process.env`: pure markup, safe on either side.
  */
 import { cn } from "@/lib/utils/cn";
 
 const STROKES = {
-  "arrow-right": "M4.5 12h15M13.5 6l6 6-6 6",
-  "arrow-left": "M19.5 12h-15M10.5 6l-6 6 6 6",
-  "arrow-up-right": "M7 17 17 7M8.5 7H17v8.5",
-  "arrow-up": "M12 19.5v-15M6 10.5l6-6 6 6",
-  "arrow-down": "M12 4.5v15M6 13.5l6 6 6-6",
-  "corner-down-right": "M5 4.5v6.5a4 4 0 0 0 4 4h10.5M15 11l4.5 4L15 19",
-  search: "M10.75 17.5a6.75 6.75 0 1 0 0-13.5 6.75 6.75 0 0 0 0 13.5ZM15.75 15.75 20 20",
-  menu: "M3.5 8.5h17M3.5 15.5h17",
-  close: "M6 6l12 12M18 6 6 18",
+  right: "M5 12h14M13 6l6 6-6 6",
+  left: "M19 12H5M11 6l-6 6 6 6",
+  out: "M7 17 17 7M8 7h9v9",
+  up: "M12 19V5M6 11l6-6 6 6",
+  down: "M12 5v14M6 13l6 6 6-6",
+  search: "M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM20 20l-4-4",
+  menu: "M4 8h16M4 16h16",
+  x: "M6 6l12 12M18 6 6 18",
   plus: "M12 5v14M5 12h14",
   minus: "M5 12h14",
-  "chevron-down": "M6 9.5l6 6 6-6",
-  copy: "M8.5 8.5V5.75c0-.69.56-1.25 1.25-1.25h8.5c.69 0 1.25.56 1.25 1.25v8.5c0 .69-.56 1.25-1.25 1.25H15.5M5.75 8.5h8.5c.69 0 1.25.56 1.25 1.25v8.5c0 .69-.56 1.25-1.25 1.25h-8.5c-.69 0-1.25-.56-1.25-1.25v-8.5c0-.69.56-1.25 1.25-1.25Z",
-  check: "M5 12.5l4.5 4.5L19 7.5",
+  mail: "M4 6h16v12H4zM4 7l8 6 8-6",
+  copy: "M9 9h11v11H9zM5 15H4V4h11v1",
+  check: "M5 12l5 5 9-10",
+  grid: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z",
+  list: "M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01",
+  sun: "M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4",
+  moon: "M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z",
+  file: "M14 3H6v18h12V7zM14 3v4h4M9 13h6M9 17h6",
+  pin: "M12 17v5M9 3h6l-1 6 3 3v2H7v-2l3-3z",
+  heart: "M19 14c1.5-1.5 3-3.3 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z",
+  coffee: "M17 8h1a4 4 0 1 1 0 8h-1M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4ZM6 2v2M10 2v2M14 2v2",
+  gift: "M3 8h18v4H3zM12 8v13M19 12v9H5v-9M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5",
+  globe: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20ZM2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20",
+  github:
+    "M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.1-1.3-.3-2.5-1-3.5.3-1.2.3-2.4 0-3.5 0 0-1 0-3 1.5-2.6-.5-5.4-.5-8 0C6 2 5 2 5 2c-.3 1.2-.3 2.4 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.4.5-.7 1-.9 1.6-.2.6-.2 1.3-.1 1.9v4M9 18c-4.5 2-5-2-7-2",
+  linkedin: "M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6ZM2 9h4v12H2zM4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z",
+  xlogo: "M4 4l11.7 16H20L8.3 4zM4 20l6.8-6.8M13.2 10.8 20 4",
+  instagram:
+    "M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5ZM16 11.4A4 4 0 1 1 12.6 8a4 4 0 0 1 3.4 3.4ZM17.5 6.5h.01",
+  medium:
+    "M7 7a5 5 0 1 0 0 10A5 5 0 0 0 7 7ZM16.5 7.5c-1.4 0-2.5 2-2.5 4.5s1.1 4.5 2.5 4.5S19 14.5 19 12s-1.1-4.5-2.5-4.5ZM21.5 8v8",
+  chev: "M6 9l6 6 6-6",
+  clock: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20ZM12 6v6l4 2",
+  map: "M12 22s7-6.3 7-12a7 7 0 1 0-14 0c0 5.7 7 12 7 12ZM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z",
+  msg: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
+  briefcase: "M4 7h16v13H4zM9 7V4h6v3M4 12h16",
+  send: "M22 2 11 13M22 2l-7 20-4-9-9-4z",
+  home: "M3 11l9-8 9 8M5 9.5V21h14V9.5M10 21v-6h4v6",
+  pen: "M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z",
+  book: "M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5zM4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5",
+  layers: "M12 2 2 7l10 5 10-5zM2 17l10 5 10-5M2 12l10 5 10-5",
+  user: "M20 21a8 8 0 0 0-16 0M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z",
+  eye: "M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z",
+  login: "M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3",
+  chart: "M3 3v18h18M7 15v2M11 11v6M15 7v10M19 12v5",
+  back: "M15 18l-6-6 6-6",
+  link: "M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7",
+  cloud: "M17.5 19H8a6 6 0 1 1 5.7-8h1.8a4.5 4.5 0 0 1 2 8.5M3 3l18 18",
+  code: "M16 18l6-6-6-6M8 6l-6 6 6 6",
+  spark: "M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6",
+  calendar: "M4 5h16v16H4zM4 10h16M9 3v4M15 3v4",
+  inbox: "M3 13h5l1.5 3h5L16 13h5M5 5h14l2 8v6H3v-6z",
+  refresh: "M21 12a9 9 0 1 1-2.6-6.4M21 4v5h-5",
+  award: "M12 15a6 6 0 1 0 0-12 6 6 0 0 0 0 12ZM8.5 14 7 22l5-3 5 3-1.5-8",
+  school: "M2 9l10-5 10 5-10 5zM6 11v5c3 2 9 2 12 0v-5",
+  tool: "M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z",
+  md: "M3 6h18v12H3zM6.5 15V9l2.5 3 2.5-3v6M16.5 9v6M14 12.5l2.5 2.5 2.5-2.5",
   alert: "M12 4.5 20.5 19.5h-17ZM12 10v4M12 16.75v.25",
   info: "M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17ZM12 11v5.5M12 7.75v.25",
-  send: "M20.5 3.5 10 14M20.5 3.5l-6.5 17-4-6.5-6.5-4 17-6.5Z",
   reply: "M9.5 14.5 4.5 9.5l5-5M4.5 9.5h9.75A5.75 5.75 0 0 1 20 15.25V19.5",
-  pin: "M9 4h6M10 4v6l-3 3.5h10L14 10V4M12 13.5V20",
   trash: "M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 12.5h9l1-12.5",
   download: "M12 4v11M7 10.5l5 5 5-5M5 19.5h14",
-  doc: "M7 3.5h7l4 4V20.5H7ZM14 3.5V7.5h4M9.5 12h5M9.5 15.5h5",
-  mail: "M3.5 6.5h17v11h-17ZM4 7l8 6 8-6",
-  globe: "M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17ZM3.5 12h17M12 3.5c2.3 2.3 3.5 5.2 3.5 8.5s-1.2 6.2-3.5 8.5c-2.3-2.3-3.5-5.2-3.5-8.5S9.7 5.8 12 3.5Z",
-  heart: "M12 19.5s-7.5-4.4-7.5-10A4.25 4.25 0 0 1 12 6.8a4.25 4.25 0 0 1 7.5 2.7c0 5.6-7.5 10-7.5 10Z",
-  coffee: "M5 9h11v5.5A4.5 4.5 0 0 1 11.5 19h-2A4.5 4.5 0 0 1 5 14.5ZM16 10.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2.5M11 3.5v2.5",
-  gift: "M4.5 9.5h15v3h-15ZM6 12.5v8h12v-8M12 9.5v11M12 9.5S10.5 5 8.25 5a2.25 2.25 0 0 0 0 4.5M12 9.5S13.5 5 15.75 5a2.25 2.25 0 0 1 0 4.5",
   pulse: "M3.5 12h4l2-5 4 10 2-5h5",
-  home: "M4 10.5 12 4l8 6.5V20h-5.5v-5.5h-5V20H4Z",
-  grid: "M4.5 4.5h6.5v6.5H4.5ZM13 4.5h6.5v6.5H13ZM4.5 13h6.5v6.5H4.5ZM13 13h6.5v6.5H13Z",
-  pen: "M15.5 4.5l4 4L9 19H5v-4ZM13.5 6.5l4 4",
-  user: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.5 20a7.5 7.5 0 0 1 15 0",
-  chart: "M4.5 19.5h15M7.5 16.5v-5M12 16.5v-9M16.5 16.5v-6",
-  book: "M5 5.5A1.5 1.5 0 0 1 6.5 4H19v14H6.5A1.5 1.5 0 0 0 5 19.5ZM5 19.5A1.5 1.5 0 0 0 6.5 21H19M9 8h6",
-  briefcase: "M4 8h16v11H4ZM9 8V5.5h6V8M4 13h16",
   shield: "M12 3.5 19 6v6c0 4.5-3 7.5-7 8.5-4-1-7-4-7-8.5V6Z",
 } as const;
 
-export type IconName = keyof typeof STROKES;
+/** The names the previous set used, kept so nothing that still says them breaks. */
+const ALIASES = {
+  "arrow-right": "right",
+  "arrow-left": "left",
+  "arrow-up-right": "out",
+  "arrow-up": "up",
+  "arrow-down": "down",
+  "corner-down-right": "reply",
+  close: "x",
+  "chevron-down": "chev",
+  doc: "file",
+} as const satisfies Record<string, keyof typeof STROKES>;
+
+export type IconName = keyof typeof STROKES | keyof typeof ALIASES;
+
+const pathOf = (name: IconName): string =>
+  name in ALIASES ? STROKES[ALIASES[name as keyof typeof ALIASES]] : STROKES[name as keyof typeof STROKES];
 
 export function Icon({
   name,
+  size,
   className,
-  strokeWidth = 1.6,
   title,
 }: {
   name: IconName;
+  /** Pixels, when the place needs other than the default 16. */
+  size?: number;
   className?: string;
-  strokeWidth?: number;
   /** Only for an icon that stands alone with no label beside it. */
   title?: string;
 }) {
@@ -73,52 +122,31 @@ export function Icon({
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={strokeWidth}
+      strokeWidth={1.75}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={cn("h-4 w-4 shrink-0", className)}
+      className={cn("ico", className)}
+      style={size ? { width: size, height: size } : undefined}
       aria-hidden={title ? undefined : true}
       role={title ? "img" : undefined}
     >
       {title && <title>{title}</title>}
-      <path d={STROKES[name]} />
+      <path d={pathOf(name)} />
     </svg>
   );
 }
 
-/* Filled marks, drawn on a 24 grid in currentColor. Google keeps its own four
-   colours: a monochrome G is a different, unofficial mark. */
-const MARKS: Record<string, string> = {
-  github:
-    "M12 .3a12 12 0 0 0-3.8 23.38c.6.12.82-.26.82-.57v-2.03c-3.34.73-4.04-1.6-4.04-1.6-.55-1.4-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.21.7.82.58A12 12 0 0 0 12 .3Z",
-  linkedin:
-    "M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z",
-  x: "M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.4l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.15h7.6l5.24 6.93 6.06-6.93Zm-1.29 19.5h2.04L6.49 3.24H4.3l13.31 17.41Z",
-  medium:
-    "M13.54 12a6.8 6.8 0 0 1-6.77 6.82A6.8 6.8 0 0 1 0 12a6.8 6.8 0 0 1 6.77-6.82A6.8 6.8 0 0 1 13.54 12Zm7.42 0c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42ZM24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12Z",
-  facebook:
-    "M9.1 23.69v-7.98H6.63v-3.67H9.1v-1.58c0-4.08 1.85-5.98 5.86-5.98.76 0 2.07.15 2.61.3v3.32c-.28-.03-.78-.04-1.39-.04-1.97 0-2.73.75-2.73 2.69v1.29h3.92l-.67 3.67h-3.25v8.25A12 12 0 1 0 9.1 23.69Z",
-};
+const GITHUB_MARK =
+  "M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z";
 
-const INSTAGRAM = (
-  <>
-    <rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" strokeWidth="1.8" />
-    <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" strokeWidth="1.8" />
-    <circle cx="17.4" cy="6.6" r="1.15" fill="currentColor" />
-  </>
-);
-
-const GOOGLE = (
-  <>
-    <path fill="#FFC107" d="M21.8 10.04h-.8V10H12v4h5.65A6 6 0 1 1 15.98 7.5l2.83-2.83A10 10 0 1 0 22 12c0-.67-.07-1.32-.2-1.96Z" />
-    <path fill="#FF3D00" d="M3.15 7.35 6.44 9.76A6 6 0 0 1 15.98 7.5l2.83-2.83A10 10 0 0 0 3.15 7.35Z" />
-    <path fill="#4CAF50" d="M12 22a10 10 0 0 0 6.7-2.6l-3.1-2.62A6 6 0 0 1 6.36 14l-3.26 2.52A10 10 0 0 0 12 22Z" />
-    <path fill="#1976D2" d="M21.8 10.04h-.8V10H12v4h5.65a6 6 0 0 1-2.04 2.79l3.1 2.62C18.48 19.6 22 17 22 12c0-.67-.07-1.32-.2-1.96Z" />
-  </>
-);
-
-/** A platform name as stored, to the glyph that stands for it. */
-const FALLBACK: Record<string, IconName> = {
+/** A platform name as stored, to the stroke glyph that stands for it. */
+const PLATFORM: Record<string, keyof typeof STROKES> = {
+  linkedin: "linkedin",
+  follow_linkedin: "linkedin",
+  x: "xlogo",
+  twitter: "xlogo",
+  instagram: "instagram",
+  medium: "medium",
   email: "mail",
   mail: "mail",
   website: "globe",
@@ -129,28 +157,27 @@ const FALLBACK: Record<string, IconName> = {
   sociabuzz: "gift",
 };
 
-export function Brand({ name, className }: { name: string; className?: string }) {
+/**
+ * Somebody else's mark. GitHub and Google are drawn as themselves -- the two
+ * a reader signs in with, where the real mark is what they look for -- and
+ * every other platform as a stroke glyph in the interface's own weight.
+ */
+export function Brand({ name, size = 16, className }: { name: string; size?: number; className?: string }) {
   const key = name.toLowerCase();
-  const classes = cn("h-4 w-4 shrink-0", className);
-
   if (key === "google")
     return (
-      <svg viewBox="0 0 24 24" className={classes} aria-hidden="true">
-        {GOOGLE}
+      <svg viewBox="0 0 24 24" width={size} height={size} className={cn("brandmark", className)} aria-hidden="true">
+        <path fill="#4285F4" d="M23.5 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.45a5.5 5.5 0 0 1-2.39 3.61v3h3.87c2.26-2.09 3.57-5.17 3.57-8.8z" />
+        <path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.94-2.9l-3.87-3c-1.07.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.95H1.27v3.1A12 12 0 0 0 12 24z" />
+        <path fill="#FBBC05" d="M5.27 14.3a7.2 7.2 0 0 1 0-4.6V6.6H1.27a12 12 0 0 0 0 10.8z" />
+        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.43-3.43A11.5 11.5 0 0 0 12 0 12 12 0 0 0 1.27 6.6l4 3.1C6.22 6.86 8.87 4.75 12 4.75z" />
       </svg>
     );
-  if (key === "instagram")
+  if (key === "github")
     return (
-      <svg viewBox="0 0 24 24" className={classes} aria-hidden="true">
-        {INSTAGRAM}
+      <svg viewBox="0 0 16 16" width={size} height={size} className={cn("brandmark", className)} aria-hidden="true">
+        <path fill="currentColor" d={GITHUB_MARK} />
       </svg>
     );
-  const mark = MARKS[key === "follow_linkedin" ? "linkedin" : key];
-  if (mark)
-    return (
-      <svg viewBox="0 0 24 24" fill="currentColor" className={classes} aria-hidden="true">
-        <path d={mark} />
-      </svg>
-    );
-  return <Icon name={FALLBACK[key] ?? "arrow-up-right"} className={className} />;
+  return <Icon name={PLATFORM[key] ?? "out"} size={size} className={className} />;
 }

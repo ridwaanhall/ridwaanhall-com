@@ -3,15 +3,16 @@ import { Suspense } from "react";
 
 import { auth } from "@/auth";
 import { Guestbook } from "@/components/foothill/guestbook";
-import { MAIN, WRAP } from "@/components/foothill/layout";
+import { MAIN } from "@/components/foothill/layout";
+import { MarkdownChips } from "@/components/foothill/markdown";
 import { PageMotion } from "@/components/foothill/motion";
-import { Bar } from "@/components/foothill/skeleton";
-import { PageHead } from "@/components/foothill/ui";
+import { Bar, InlineSkeleton, RowSkeleton } from "@/components/foothill/skeleton";
+import { Facts } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { getUserProfile } from "@/lib/auth/profile";
 import { getAboutData } from "@/lib/data/about";
 import { getThread } from "@/lib/data/guestbook";
-import { maskEmail } from "@/lib/data/guestbook-tree";
+import type { Thread, ThreadMessage } from "@/lib/data/guestbook-tree";
 import { guestbookSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { guestbookSchemas } from "@/lib/seo/schemas-for-page";
@@ -19,49 +20,73 @@ import { guestbookSchemas } from "@/lib/seo/schemas-for-page";
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutData();
   if (!about) return {};
-  return buildMetadata(guestbookSeo(about), about);
+  return buildMetadata(guestbookSeo(), about);
 }
 
+/**
+ * The heading is static and prerenders; the facts beside it and everything
+ * below read the live thread and the session cookie, neither of which is
+ * cached. Under `cacheComponents` an uncached read outside a boundary stops
+ * the route prerendering, so each streams behind its own `<Suspense>`.
+ */
 export default function GuestbookPage() {
   return (
     <main className={MAIN}>
       <JsonLdScript schemas={guestbookSchemas()} />
-      <div className={WRAP}>
-        <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-4">
-            <div className="lg:sticky lg:top-28">
-              <PageHead
-                title="Leave a line."
-                lead="Say hello, ask a question, or tell me one of the APIs is down. I read every message."
-              />
-            </div>
+      <div>
+        <section className="head wrap">
+          <div>
+            <h1 className="t1" data-fh-split="">
+              Leave a line.
+            </h1>
+            <p className="lead">Say hello, ask a question, or tell me one of the APIs is down. I read every message.</p>
+            <MarkdownChips path="/guestbook" />
           </div>
-          <div className="min-w-0 lg:col-span-8">
-            {/*
-              The heading above is static and prerenders; everything below
-              reads the session cookie and the live thread, neither of which is
-              cached. Under `cacheComponents` an uncached read outside a
-              boundary stops the route prerendering.
-            */}
-            <Suspense fallback={<GuestbookSkeleton />}>
-              <Panel />
-            </Suspense>
-          </div>
-        </div>
+          <Suspense fallback={<FactsSkeleton />}>
+            <ThreadFacts />
+          </Suspense>
+        </section>
+        <Suspense fallback={<GuestbookSkeleton />}>
+          <Panel />
+        </Suspense>
       </div>
       <PageMotion />
     </main>
   );
 }
 
+function everyone(thread: Thread): ThreadMessage[] {
+  const out: ThreadMessage[] = [];
+  const walk = (list: ThreadMessage[]) =>
+    list.forEach((message) => {
+      out.push(message);
+      walk(message.replies);
+    });
+  walk(thread.roots);
+  return out;
+}
+
+async function ThreadFacts() {
+  const thread = await getThread();
+  const all = everyone(thread);
+  return (
+    <div>
+      <Facts
+        rows={[
+          ["Messages", thread.messageCount],
+          ["Threads", thread.roots.length],
+          ["People", new Set(all.map((message) => message.userId)).size],
+          ["Pinned", all.filter((message) => message.isPinned).length],
+        ]}
+      />
+    </div>
+  );
+}
+
 async function Panel() {
   const session = await auth();
   const viewerId = session?.user?.id;
-
-  const [thread, profile] = await Promise.all([
-    getThread(),
-    viewerId ? getUserProfile(viewerId) : Promise.resolve(null),
-  ]);
+  const [thread, profile] = await Promise.all([getThread(), viewerId ? getUserProfile(viewerId) : Promise.resolve(null)]);
 
   return (
     <Guestbook
@@ -72,34 +97,42 @@ async function Panel() {
         canPin: profile?.can.pin ?? false,
         canDelete: profile?.can.deleteMessages ?? false,
       }}
-      signedInAs={profile ? { name: profile.fullName, email: maskEmail(profile.email) } : null}
+      signedInAs={profile ? { name: profile.fullName, image: profile.profileImage ?? null } : null}
     />
+  );
+}
+
+function FactsSkeleton() {
+  return (
+    <div className="facts" aria-hidden="true">
+      {Array.from({ length: 4 }, (_, i) => (
+        <div key={i}>
+          <Bar w="38%" />
+          <Bar w="20%" />
+        </div>
+      ))}
+    </div>
   );
 }
 
 function GuestbookSkeleton() {
   return (
-    <div role="status" aria-busy="true" className="skeleton-pulse">
-      <span className="sr-only">Loading…</span>
-      <div aria-hidden="true" className="overflow-hidden rounded-[20px] border border-line">
-        <div className="border-b border-line px-5 py-4">
-          <Bar className="h-5 w-28" />
+    <InlineSkeleton label="Loading the guestbook">
+      <div className="wrap gbwrap gb" style={{ paddingBottom: 72 }}>
+        <div className="compose">
+          <Bar w="60%" h={20} />
+          <Bar w="100%" h={200} r="var(--fh-r-m)" />
+          <Bar w="100%" h={48} r="var(--fh-r-m)" />
+          <Bar w="100%" h={48} r="var(--fh-r-m)" />
         </div>
-        <div className="h-[min(68vh,720px)] px-5 py-6">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="mb-8 flex gap-3">
-              <Bar className="h-[30px] w-[30px] rounded-full" />
-              <div className="flex-1">
-                <Bar className="h-3.5 w-40" />
-                <Bar className="mt-3 h-4 w-[80%]" />
-              </div>
-            </div>
+        <div>
+          {/* Twelve: the thread lands twelve at a time and fills the screen, and a
+              placeholder that fills less leaves the page to jump when it does. */}
+          {Array.from({ length: 12 }, (_, i) => (
+            <RowSkeleton key={i} avatar />
           ))}
         </div>
-        <div className="border-t border-line px-5 py-4">
-          <Bar className="h-[58px] w-full" />
-        </div>
       </div>
-    </div>
+    </InlineSkeleton>
   );
 }

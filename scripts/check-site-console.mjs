@@ -186,7 +186,7 @@ for (const state of STATES) {
     const status = response?.status() ?? 0;
     const missing = EXPECT_MISSING.has(path);
     const saysMissing = missing
-      ? /not found|does not exist|no such/i.test(await page.evaluate(() => document.body.innerText))
+      ? /not found|does not exist|no such|not out yet|nothing lives/i.test(await page.evaluate(() => document.body.innerText))
       : true;
 
     const problems = [

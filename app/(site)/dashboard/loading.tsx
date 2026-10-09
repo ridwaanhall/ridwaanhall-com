@@ -1,19 +1,18 @@
-import { Bar, HeadSkeleton, PageSkeleton } from "@/components/foothill/skeleton";
+import { HeadSkeleton, PageSkeleton, PanelSkeleton } from "@/components/foothill/skeleton";
 
-/** The dashboard while it loads: heading, then the first two panels' frames. */
+/** The dashboard while it loads: the heading and facts, then the panels' frames. */
 export default function Loading() {
   return (
     <PageSkeleton>
-      <HeadSkeleton aside={3} />
-      <div className="mt-20 space-y-28 md:mt-24">
-        {["h-[400px] lg:h-[200px]", "h-[1100px] md:h-[620px]"].map((height) => (
-          <div key={height}>
-            <div className="border-t border-line pt-4">
-              <Bar className="h-3 w-32" />
-            </div>
-            <Bar className={`mt-8 w-full ${height}`} />
-          </div>
-        ))}
+      <HeadSkeleton facts={3} />
+      <div className="wrap dash">
+        <PanelSkeleton h={150} />
+        <PanelSkeleton h={260} />
+        <div className="dgrid two">
+          <PanelSkeleton h={200} />
+          <PanelSkeleton h={200} />
+        </div>
+        <PanelSkeleton h={320} />
       </div>
     </PageSkeleton>
   );

@@ -1,120 +1,166 @@
 import Link from "next/link";
+import { Suspense } from "react";
 
-import { H2, META } from "@/components/foothill/classes";
-import { Brand, Icon } from "@/components/foothill/icons";
-import { WRAP } from "@/components/foothill/layout";
-import { Mark } from "@/components/foothill/mark";
-import { Reveal, Roll } from "@/components/foothill/motion";
+import { CopyButton } from "@/components/foothill/controls";
+import { FooterTwin, GiantWord, LlmsLink } from "@/components/foothill/footer-parts";
+import { Icon, type IconName } from "@/components/foothill/icons";
+import { Button, Facts } from "@/components/foothill/ui";
 import type { AboutData } from "@/lib/data/about";
-import { socialLinks } from "@/lib/site/display";
+import { basedIn, socialLinks } from "@/lib/site/display";
 
 // The year the build ran, not the year the page is read in: reading the clock
 // inside a prerendered tree would make every page dynamic.
 const YEAR = Number(process.env.NEXT_PUBLIC_BUILD_YEAR) || 2026;
 
-/** A footer column's link: the network's mark, its name, and an arrow on hover. */
-function OutLink({ href, label, mark, me = false }: { href: string; label: string; mark: string; me?: boolean }) {
+const SOCIAL_ICON: Record<string, IconName> = {
+  GitHub: "github",
+  LinkedIn: "linkedin",
+  X: "xlogo",
+  Instagram: "instagram",
+  Medium: "medium",
+  RoneAI: "globe",
+};
+
+const DONATE_ICON: Record<string, IconName> = {
+  "GitHub Sponsors": "heart",
+  "Buy Me a Coffee": "coffee",
+  Sociabuzz: "gift",
+  Saweria: "gift",
+};
+
+const SITE_LINKS = [
+  ["/openhire", "Open-hire"],
+  ["/dashboard", "Dashboard"],
+  ["/guestbook", "Guestbook"],
+  ["/privacy-policy", "Privacy"],
+  ["/terms", "Terms"],
+] as const;
+
+/** A footer link: the label rolls up to a copy of itself, the icon darkens. */
+function Roll({ children }: { children: string }) {
   return (
-    <a
-      href={href}
-      target="_blank"
-      rel={me ? "noopener noreferrer me" : "noopener noreferrer"}
-      className="group flex items-center gap-3 py-1.5 text-[15px] text-mute transition-colors hover:text-ink"
-    >
-      <Brand name={mark} className="h-[18px] w-[18px] transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110" />
-      <Roll>{label}</Roll>
-      <Icon
-        name="arrow-up-right"
-        className="h-3.5 w-3.5 -translate-x-1 opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100"
-      />
-    </a>
+    <span className="roll">
+      <span>{children}</span>
+    </span>
   );
 }
 
 /**
- * The foot of every page: how to reach him, where else he is, and the small
- * print.
+ * The foot of every page: an invitation to write, where else he is, how to
+ * support the work, and the small print, with the username set huge and
+ * cropped beneath it all.
  *
- * The address leads because the footer is where a reader who has made it to
- * the bottom of a page decides whether to get in touch.
+ * The invitation band steps aside on a page that is already the way to get in
+ * touch (`main[data-quiet]`, in styles/site.css), so Contact does not end by
+ * asking the reader to contact.
  */
-export function Footer({ about }: { about: AboutData }) {
+export function Footer({
+  about,
+  availability,
+  hiringStatus,
+}: {
+  about: AboutData;
+  /** "Within 1 month", from the open-to-work profile. */
+  availability: string | null;
+  /** "Currently Hiring", from RoneAI's profile. */
+  hiringStatus: string | null;
+}) {
   const email = about.social_media.email;
   const socials = socialLinks(about);
+  const where = about.location.residency || about.location.regency;
 
   return (
-    <footer className="mt-auto border-t border-line">
-      <div className={`${WRAP} pt-16 pb-10 md:pt-24`}>
-        <div className="grid gap-14 md:grid-cols-12">
-          <div className="md:col-span-7">
-            <Reveal as="h2" lines className={H2}>
-              Have something in mind?
-            </Reveal>
-            {email && (
-              <Reveal delay={0.15}>
-                <a
-                  href={`mailto:${email}`}
-                  className="group mt-6 inline-flex items-center gap-3 font-display text-[clamp(1.4rem,1rem+1.8vw,2.25rem)] font-medium tracking-[-0.025em] text-ink"
-                >
-                  <Brand name="email" className="h-[0.9em] w-[0.9em] text-mute transition-colors group-hover:text-ink" />
-                  <Roll>{email}</Roll>
-                  <Icon
-                    name="arrow-up-right"
-                    className="h-[0.8em] w-[0.8em] text-mute transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-ink"
-                  />
-                </a>
-              </Reveal>
-            )}
-            <p className={`${META} mt-5 max-w-md text-[15px] leading-relaxed`}>
-              Work, a question about one of the APIs, or a note to say hello. If you would rather not
-              open your mail app,{" "}
-              <Link href="/contact" className="fh-link text-ink">
-                the contact form
-              </Link>{" "}
-              reaches the same inbox.
+    <footer className="fh-footer">
+      <section className="wrap cta-band">
+        <div>
+          <h2 className="t2" style={{ maxWidth: "14ch" }}>
+            Have something in mind?
+          </h2>
+          <p className="lead" style={{ marginTop: 14, maxWidth: "46ch" }}>
+            Work, a question about one of the APIs, or a note to say hello. {about.short_cta}
+          </p>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 26 }}>
+            <Button href="/contact" icon="pen">
+              Write to me
+            </Button>
+            {email && <CopyButton text={email} label={email} message="Email address copied" />}
+          </div>
+        </div>
+        <Facts
+          rows={[
+            ["Replies", "In 1 to 2 hours"],
+            ["Hours", "Weekdays, GMT+7"],
+            ...(about.is_open_to_work && availability ? [["Open to work", availability] as [string, string]] : []),
+            ...(about.is_hiring && hiringStatus ? [["RoneAI", hiringStatus] as [string, string]] : []),
+          ]}
+        />
+      </section>
+      <div className="wrap">
+        <div className="foot">
+          <div>
+            <Link className="brand" href="/" aria-label={`${about.username}, home`}>
+              <Roll>{about.username}</Roll>
+            </Link>
+            <p className="meta" style={{ marginTop: 12, maxWidth: "30ch" }}>
+              {about.role}, building from {basedIn(about) || where}.
             </p>
           </div>
-
-          <div className="grid grid-cols-2 gap-10 md:col-span-5">
-            <div>
-              <p className="text-[14px] font-medium text-ink">Elsewhere</p>
-              <Reveal as="ul" stagger className="mt-3">
-                {socials.map((social) => (
-                  <li key={social.label}>
-                    <OutLink href={social.href} label={social.label} mark={social.label === "RoneAI" ? "website" : social.label} me />
-                  </li>
-                ))}
-              </Reveal>
-            </div>
-            <div>
-              <p className="text-[14px] font-medium text-ink">Support the work</p>
-              <Reveal as="ul" stagger className="mt-3">
-                {about.donate.map((option) => (
-                  <li key={option.platform}>
-                    <OutLink href={option.url} label={option.platform} mark={option.platform} />
-                  </li>
-                ))}
-              </Reveal>
-            </div>
+          <div>
+            <h4>Elsewhere</h4>
+            <ul>
+              {socials.map((social) => (
+                <li key={social.label}>
+                  <a href={social.href} target="_blank" rel="noopener noreferrer me">
+                    <Icon name={SOCIAL_ICON[social.label] ?? "out"} />
+                    <Roll>{social.label}</Roll>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h4>Support the work</h4>
+            <ul>
+              {about.donate.map((option) => (
+                <li key={option.platform}>
+                  <a href={option.url} target="_blank" rel="noopener noreferrer">
+                    <Icon name={DONATE_ICON[option.platform] ?? "gift"} />
+                    <Roll>{option.platform}</Roll>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h4>Site</h4>
+            <ul>
+              {SITE_LINKS.map(([href, label]) => (
+                <li key={href}>
+                  <Link href={href}>
+                    <Roll>{label}</Roll>
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <LlmsLink />
+              </li>
+            </ul>
           </div>
         </div>
-
-        <div className="mt-20 flex flex-col gap-4 border-t border-line pt-6 text-[14px] text-mute md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-3">
-            <Mark className="h-3 w-5 text-ink" />
-            <span>
-              © {YEAR} {about.name}. Built in {about.location.residency || about.location.regency}, Indonesia.
-            </span>
-          </div>
-          <div className="flex items-center gap-6">
-            <Link href="/privacy-policy" className="-my-1.5 py-1.5 transition-colors hover:text-ink">
-              <Roll>Privacy</Roll>
-            </Link>
-            <Link href="/terms" className="-my-1.5 py-1.5 transition-colors hover:text-ink">
-              <Roll>Terms</Roll>
-            </Link>
-          </div>
+        <div className="base">
+          <span>
+            © {YEAR} {about.name}. Built in {where}, Indonesia.
+          </span>
+          {/* It reads the pathname, which suspends while a route whose params
+              were not listed in advance is prerendered. */}
+          <Suspense fallback={null}>
+            <FooterTwin />
+          </Suspense>
+          {about.aka && <span>Also known as {about.aka}</span>}
         </div>
+      </div>
+      <div className="giant" aria-hidden="true">
+        <GiantWord word={about.username} />
       </div>
     </footer>
   );

@@ -1,23 +1,21 @@
-import { Bar, HeadSkeleton, PageSkeleton } from "@/components/foothill/skeleton";
+import { Bar, HeadSkeleton, PageSkeleton, RowSkeleton } from "@/components/foothill/skeleton";
 
-/** The guestbook while it loads: the heading beside the conversation's frame. */
+/** The guestbook while it loads: the heading, the composer beside the thread. */
 export default function Loading() {
   return (
     <PageSkeleton>
-      <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
-        <div className="lg:col-span-4">
-          <HeadSkeleton />
+      <HeadSkeleton facts={4} />
+      <div className="wrap gbwrap gb" style={{ paddingBottom: 72 }}>
+        <div className="compose">
+          <Bar w="60%" h={20} />
+          <Bar w="100%" h={200} r="var(--fh-r-m)" />
+          <Bar w="100%" h={48} r="var(--fh-r-m)" />
+          <Bar w="100%" h={48} r="var(--fh-r-m)" />
         </div>
-        <div className="lg:col-span-8">
-          <div className="overflow-hidden rounded-lg border border-line">
-            <div className="border-b border-line px-5 py-3.5">
-              <Bar className="h-3 w-24" />
-            </div>
-            <div className="h-[min(68vh,720px)]" />
-            <div className="border-t border-line px-5 py-4">
-              <Bar className="h-[58px] w-full" />
-            </div>
-          </div>
+        <div>
+          {Array.from({ length: 6 }, (_, i) => (
+            <RowSkeleton key={i} avatar />
+          ))}
         </div>
       </div>
     </PageSkeleton>

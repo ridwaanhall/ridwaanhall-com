@@ -1,105 +1,154 @@
-import { MAIN, WRAP } from "@/components/foothill/layout";
 import { cn } from "@/lib/utils/cn";
 
 /**
- * The public site's loading furniture.
+ * The public site's loading furniture: the same frame as the page, in grey
+ * blocks with a soft shimmer, so nothing jumps when the content lands.
  *
- * Its own rather than the admin's bar in `components/skeleton.tsx`, because
- * it is shaped to the site's frame. The contract is the same one
+ * Its own rather than the admin's in `components/skeleton.tsx`, because it is
+ * shaped to the site's frame. The contract is the one
  * `scripts/check-page-loading.mjs` and `check-skeleton-shape.mjs` hold every
  * skeleton to: a `role="status"` box whose text starts with "Loading", the
- * `skeleton-pulse` class, an `aria-hidden` inner box, and no `<main>` --
- * with `MAIN` and `WRAP` shared with the page so the two start in the same
- * place.
+ * `skeleton-pulse` class, an `aria-hidden` inner box, and no `<main>`. The
+ * shimmer is on each block (`.skb` in styles/site.css) and stops for reduced
+ * motion.
  */
-export function PageSkeleton({ children, bleed = false }: { children: React.ReactNode; bleed?: boolean }) {
+export function PageSkeleton({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div role="status" aria-busy="true" className={cn("skeleton-pulse", MAIN)}>
-      <span className="sr-only">Loading…</span>
-      <div aria-hidden="true" className={bleed ? undefined : WRAP}>
-        {children}
-      </div>
+    <div role="status" aria-busy="true" className={cn("skeleton-pulse skeleton", className)}>
+      <span className="sr">Loading the page</span>
+      <div aria-hidden="true">{children}</div>
     </div>
   );
 }
 
 /** One grey shape. */
-export function Bar({ className, style }: { className?: string; style?: React.CSSProperties }) {
-  return <div className={cn("rounded-[4px] bg-raise", className)} style={style} />;
+export function Bar({
+  w = "100%",
+  h = 14,
+  r,
+  style,
+}: {
+  w?: number | string;
+  h?: number | string;
+  r?: string;
+  style?: React.CSSProperties;
+}) {
+  return <span className="skb" style={{ width: w, height: h, borderRadius: r, ...style }} />;
 }
 
-/**
- * A page heading as `PageHead` draws it: two title lines and a lead, and the
- * `Glance` beside them, `aside` ruled rows long.
- */
-export function HeadSkeleton({ lead = true, aside }: { lead?: boolean; aside?: number }) {
-  const text = (
-    <>
-      <Bar className="h-[clamp(2.3rem,1.35rem+3.45vw,4.3rem)] w-[85%]" />
-      <Bar className="mt-1 h-[clamp(2.3rem,1.35rem+3.45vw,4.3rem)] w-[55%]" />
-      {lead && (
-        <>
-          <Bar className="mt-7 h-5 w-full max-w-[56ch]" />
-          <Bar className="mt-2.5 h-5 w-[70%] max-w-[40ch]" />
-        </>
-      )}
-    </>
-  );
-  if (aside === undefined) return <div className="max-w-[980px]">{text}</div>;
+/** A page heading as `PageHead` draws it: two title lines, a lead, and the facts. */
+export function HeadSkeleton({ facts = 4, lines = 2 }: { facts?: number; lines?: number }) {
   return (
-    <div className="grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-10">
-      <div className="lg:col-span-8">{text}</div>
-      <div className="lg:col-span-4">
-        <GlanceSkeleton rows={aside} />
+    <section className="head wrap">
+      <div style={{ display: "grid", gap: 12 }}>
+        <Bar w="80%" h="clamp(40px, 6vw, 72px)" />
+        <Bar w="52%" h="clamp(40px, 6vw, 72px)" />
+        <div style={{ display: "grid", gap: 10, marginTop: 14 }}>
+          {Array.from({ length: lines }, (_, i) => (
+            <Bar key={i} w={i === lines - 1 ? "58%" : "90%"} h={16} />
+          ))}
+        </div>
+      </div>
+      {facts > 0 && (
+        <div className="facts">
+          {Array.from({ length: facts }, (_, i) => (
+            <div key={i}>
+              <Bar w="38%" />
+              <Bar w="20%" />
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+/** A project or post card: the picture, the title, two lines and the meta row. */
+export function CardSkeleton() {
+  return (
+    <div style={{ display: "grid", gap: 12 }}>
+      <Bar w="100%" h="auto" r="var(--fh-r-img)" style={{ aspectRatio: "16 / 10" }} />
+      <Bar w="70%" h={20} />
+      <Bar w="95%" />
+      <Bar w="60%" />
+      <div style={{ display: "flex", gap: 10 }}>
+        <Bar w={78} h={22} />
+        <Bar w={60} />
+        <Bar w={36} />
       </div>
     </div>
   );
 }
 
-/** `Glance` while it loads: its ruled rows. */
-export function GlanceSkeleton({ rows }: { rows: number }) {
+export function CardsSkeleton({ count = 3 }: { count?: number }) {
   return (
-    <div className="border-t border-line">
-      {Array.from({ length: rows }, (_, i) => (
-        <div key={i} className="flex items-center justify-between gap-6 border-b border-line py-3">
-          <Bar className="h-[18px] w-20" />
-          <Bar className="h-[18px] w-28" />
-        </div>
+    <div className="pgrid three">
+      {Array.from({ length: count }, (_, i) => (
+        <CardSkeleton key={i} />
       ))}
     </div>
   );
 }
 
-/** Cards as `CardGrid` lays out its first rows: a wide one, then a narrow one. */
-export function CardsSkeleton({ count = 2, className }: { count?: number; className?: string }) {
-  const spans = ["lg:col-span-7", "lg:col-span-5", "lg:col-span-5", "lg:col-span-7"];
-  const ratios = ["lg:aspect-[7/5]", "lg:aspect-square", "lg:aspect-square", "lg:aspect-[7/5]"];
+/** A ruled row, with an avatar when it is somebody's message. */
+export function RowSkeleton({ avatar }: { avatar?: boolean }) {
   return (
-    <div className={cn("grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-12 lg:gap-x-8", className)}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: avatar ? "36px minmax(0,1fr)" : "minmax(0,1fr)",
+        gap: 12,
+        padding: "16px 0",
+        borderBottom: "1px solid var(--fh-line)",
+      }}
+    >
+      {avatar && <Bar w={36} h={36} r="50%" />}
+      <div style={{ display: "grid", gap: 8 }}>
+        <Bar w="40%" />
+        <Bar w="85%" />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * A dashboard panel: its titled bar and a block for the chart. On a phone its
+ * figures wrap to two columns and the panel stands much taller than on a wide
+ * screen, so `phone` is the block's height there.
+ */
+export function PanelSkeleton({ h, phone }: { h: number; phone?: number }) {
+  return (
+    <div className="panel">
+      <div className="panel-h">
+        <Bar w={180} h={18} />
+      </div>
+      <div className="panel-b">
+        <span className={phone ? "skb skb-phone" : "skb"} style={{ width: "100%", height: h, ...(phone ? ({ "--phone": `${phone}px` } as React.CSSProperties) : {}) }} />
+      </div>
+    </div>
+  );
+}
+
+/** Running text: full lines with every fourth one short. */
+export function LinesSkeleton({ count }: { count: number }) {
+  return (
+    <div style={{ display: "grid", gap: 12, maxWidth: "70ch" }}>
       {Array.from({ length: count }, (_, i) => (
-        <div key={i} className={spans[i % 4]}>
-          <Bar className={cn("aspect-[4/3] w-full rounded-[16px]", ratios[i % 4])} />
-          <Bar className="mt-5 h-7 w-[70%]" />
-          <Bar className="mt-3 h-4 w-[90%]" />
-        </div>
+        <Bar key={i} w={i % 4 === 3 ? "64%" : "100%"} />
       ))}
     </div>
   );
 }
 
 /**
- * A listing's results while `searchParams` is read: the search line and the
- * first cards. Here rather than beside the results so a route's
- * `loading.tsx` can draw it without importing the client grid.
+ * A streaming panel's own fallback, inside a page: the same contract as a
+ * page's skeleton, at the size of the panel it stands in for.
  */
-export function ResultsSkeleton() {
+export function InlineSkeleton({ children, label = "Loading" }: { children: React.ReactNode; label?: string }) {
   return (
     <div role="status" aria-busy="true" className="skeleton-pulse">
-      <span className="sr-only">Loading…</span>
-      <div aria-hidden="true">
-        <Bar className="h-12 w-full" />
-        <CardsSkeleton count={4} className="mt-14" />
-      </div>
+      <span className="sr">{label}</span>
+      <div aria-hidden="true">{children}</div>
     </div>
   );
 }

@@ -14,13 +14,14 @@
 .app-tooltip {
     position: fixed;
     z-index: 1000000; /* above everything, the dialogs and toasts included */
-    max-width: 16rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
+    max-width: 260px;
+    padding: 6px 10px;
+    border-radius: 4px;
     background: var(--color-zinc-100);
     color: var(--color-black);
-    font-size: 0.75rem;
-    line-height: 1.4;
+    font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+    font-size: 12.5px;
+    line-height: 1.35;
     text-align: center;
     pointer-events: none; /* must never sit between the cursor and its trigger */
     opacity: 0;

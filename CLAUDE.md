@@ -5,7 +5,7 @@ Guidance for Claude Code (claude.ai/code) working in this repository.
 ## Stack
 
 Next.js 16 (App Router, Turbopack, `cacheComponents`), React 19, TypeScript,
-Tailwind CSS v4. Data comes from Supabase Postgres through Drizzle ORM over
+Tailwind CSS v4, Framer Motion (`motion`) and GSAP. Data comes from Supabase Postgres through Drizzle ORM over
 `node-postgres`; uploaded media lives in Supabase Storage. Auth is Auth.js v5
 with Google and GitHub. Deployed to Vercel.
 
@@ -137,102 +137,130 @@ prefix so a leftover is obviously a harness's and not real content.
   `site/`, `layout/`, `auth/` and `providers/` hold the few pieces both use
   (the theme toggle, toasts, rich text, the comment mount, the error page).
 
-### The public site is "Foothill"
+### The public site is black, white and the greys between
 
-A design built from the data alone. The home page leads with the owner's
-name; his portrait -- an engraving in horizontal lines, generated from his
-photograph and stored as his profile image like any other upload -- sits on
-the about page. The rest is image-led: projects and posts are pictures set
-straight on the paper, with no box around any of them. Light is the default
-theme.
+A design built from the data alone, in eight greys. Colour belongs to the work
+itself -- screenshots, covers, organisation logos and skill icons keep their
+own -- and the interface never adds any. Dark is the default theme, on true
+black; light is one click away and remembered. The home page opens on type
+alone: the name, the role, two actions and four facts. The portrait is small,
+above the About heading.
 
-- **Five tokens paint everything, and none of them is an accent.**
-  `--fh-paper`, `raise`, `ink`, `mute` and `line` live in `styles/site.css`,
-  redefined under
-  `[data-theme="dark"]`, and reach Tailwind as `bg-paper`, `text-ink` and so on
-  through `@theme inline` in `app/globals.css`. Never a `dark:` variant, never
-  a zinc class on a public page -- those are the admin's vocabulary, though
-  they resolve to these same tokens (see "The admin wears the site's palette"
-  below). The
-  dashboard's five chart slots and heat ramp sit beside them and were checked
-  for colour-vision separation in both themes; re-run the dataviz validator
-  before changing one. `--fh-print` is the portrait's plate, light in both
-  themes: the engraving's line weight is its shading, so inverting it prints a
-  negative.
-- **The portrait is a choice, and it reaches the bylines.** The profile stores
-  three images: the photo (`image_id`), the blur (`blur_id`, the same
-  engraving with the face smoothed away) and the avatar (`avatar_id`, a
-  question mark). `portrait` picks one, and a choice whose image is not set
-  falls back to the photo. A post whose author image *is* the profile's photo
-  follows that choice too, which is why `getBlogs` carries the profile tag and
-  a profile save expires the blog. The alt text is the asset's own.
-- **A page heading has something beside it.** A heading and its lead fill a
-  little over half the frame; `PageHead`'s `aside` takes the rest, usually a
-  `Glance` -- three or four ruled facts drawn from what the page already
-  loaded, never copy written to fill the space. Its skeleton is
-  `HeadSkeleton`'s `aside`, with the same number of rows.
-- **One family, two cuts**, from `app/fonts.ts`: Funnel Display for headings,
-  Funnel Sans for everything read, JetBrains Mono (`.fh-mono`) for the
-  dashboard's figures and code only. The type scale is five constants in
-  `components/foothill/classes.ts` (`H1`, `H2`, `H3`, `LEAD`, `META`); a new
-  heading is one of them. The admin and every shared piece inherit Funnel
-  Sans as Tailwind's `font-sans`; nothing loads a second family.
-- **No kicker labels, no em dashes in copy.** Small tracked capitals above
-  every heading and a sentence broken by a dash are the two marks of a
-  generated page; a section says what it is in its own title (`Heading`, with
-  its count set small beside it), and copy uses a comma or a full stop.
-- **Every glyph is an SVG from `components/foothill/icons.tsx`.** `Icon` for
-  arrows and actions, `Brand` for a provider or a network, keyed by the
-  platform name the database stores. Never a text arrow. An action that is a
-  link is `ActionLink`, which owns the arrow, the rolling label and whether the
-  link leaves the site.
-- **Motion is GSAP, in `components/foothill/motion.tsx`.** `PageMotion`, once
-  per page, runs `data-fh-split` and `data-fh-enter` on the heading block;
-  anything below is a component wrapped round its own content -- `Reveal` for
-  blocks and headings, `Animate` for charts (marks labelled `data-fh-bar`,
-  `-col`, `-cell`, `-draw`), `CountUp` for figures, `Roll` for a label that
-  rolls on hover. Never animate from a page-wide script into a `<Suspense>`
-  boundary: the script runs before that boundary hydrates, and styling markup
-  React has not claimed is a hydration mismatch.
-  `useMountedByHydration` decides whether an entrance may play: markup the
-  server painted must not be hidden and shown again, so only client-mounted
-  pages enter, plus anything marked `data-fh-hold` (hidden by CSS until GSAP
-  or a fallback animation reveals it). **Never hold a control** -- a held
-  element is invisible until its script runs, which for a theme toggle is a
-  page without one, and `check-breakpoints.mjs` counts it as missing. A tween
-  that animates a held element must leave `visibility` inline when it clears
-  its props, or the stylesheet hides it again. Everything is gated on
-  `prefers-reduced-motion: no-preference`.
-- **`Roll` splits its label into characters.** SplitText replaces the text
-  node React wrote, so a label that changes ("Send" to "Sending…") is a new
-  span, keyed on the text, never an update to the old one. The rolling copy is
-  a text-shadow, so the label's text is exactly what was passed in.
+- **Eight greys paint everything, and none of them is an accent.**
+  `--fh-bg`, `surface`, `raise`, `line`, `line-2`, `mute`, `ink-2` and `ink`
+  live in `styles/site.css` with their jobs written beside them, redefined
+  under `[data-theme="dark"]`. `--fh-paper` and the other names the admin's
+  palette and Tailwind's `bg-paper` were built on are aliases of them, which is
+  how the admin follows the site. Never a `dark:` variant, never a zinc class on
+  a public page. Every rule below the tokens is anchored to `.fh-site`, so none
+  reaches the admin; `--fh-print` is the portrait's plate, light in both themes.
+- **The sheet is unlayered, so a class here beats any utility.** The public
+  pages are written in the class vocabulary of `styles/site.css` (`.btn`, `.tag`,
+  `.pcard`, `.panel`, `.sec`, `.wrap`) rather than in utilities; a utility on the
+  same element and property loses. Add rules at the end, under `.fh-site`.
+- **Status is a shape, never a colour.** `PHASE` in `components/foothill/ui.tsx`
+  maps a status *slug* to a tag: filled for done, outlined for in progress,
+  dashed for planned or waiting, struck for stopped. The label is editorial and
+  only ever rendered. Charts tell series apart by fill pattern (`.f1` to `.f6`),
+  checked in greys alone.
+- **Three faces, one job each**, from `app/fonts.ts`: Funnel Display for
+  headings, Geist for everything read, Geist Mono for figures, dates and code.
+  The scale is `.t1`, `.t2`, `.t3`, `.lead` and `.meta` in `site.css`. Geist is
+  Tailwind's `font-sans`, so the admin inherits it.
+- **A single-tone icon is inverted on the theme it would vanish on,** and every
+  other icon is shown in its own colours. Which is `media_asset.tone` (`dark` or
+  `light`), measured from the icon's pixels by `scripts/measure-icon-tones.mjs`
+  -- guessing from the file's colour values misses half of them. **Run it with
+  `--apply` after uploading a skill's icon in the admin;** a new icon starts
+  unmeasured and a black one is invisible on the dark theme until it is.
+- **No kicker labels, no em dashes in copy.** A section says what it is in its
+  own title (`Heading`, its count set small beside it), and copy uses a comma or
+  a full stop.
+- **Every glyph is an SVG from `components/foothill/icons.tsx`,** each carrying
+  the icon for what it does. An arrow only where a link leaves the site. Icons
+  never grow, turn or move on hover; they take the ink colour with their label.
+- **Two motion libraries, divided by what they do.** Framer Motion owns what
+  responds to a press or a state: the sliding pills (`layoutId`), disclosures,
+  dialogs, the palette, toasts, the CV and Markdown viewers, the drawer. GSAP
+  owns what follows the scroll or splits text: `PageMotion` (once per page,
+  running `data-fh-split`, `-chars`, `-enter`, `-blur` and section titles),
+  `Reveal`, `Animate` for charts (`data-fh-bar`, `-col`, `-draw`, `-sweep`,
+  `-fade`), `CountUp`, `TiltedRow`, and the skills marquee. `MotionConfig
+  reducedMotion="user"` in the shell and `MOTION_OK` in GSAP gate both.
+- **Never animate server-painted markup into a `<Suspense>` boundary.** A
+  page-wide script runs before that boundary hydrates, and styling markup React
+  has not claimed is a hydration mismatch. Anything that streams carries
+  `data-fh-scope`, which `PageMotion` skips, and brings its own motion;
+  `AnimatePresence` over server-painted content takes `initial={false}`.
+  `useMountedByHydration` decides whether an entrance may play, and
+  `data-fh-hold` hides an element until GSAP or a fallback reveals it. **Never
+  hold a control** -- `check-breakpoints.mjs` counts it as missing.
 - **An entrance waits on an IntersectionObserver, never a ScrollTrigger.**
-  `onSeen` in `motion.tsx` is the one trigger every reveal uses. A
-  ScrollTrigger works out its start against the scroll offset of the moment
-  it is created, and on a client navigation that is still the previous
-  page's: a block already on screen counted as "scrolled past" and never
-  entered, so the projects index arrived blank until the reader scrolled.
-  ScrollTrigger stays for what scrubs (the reading line, the portrait's
-  drift).
-- **What opens also closes.** `usePresence` (`lib/motion/use-presence.ts`)
-  keeps a menu, a dialog or a panel mounted for the length of its exit, so
-  nothing on the site vanishes; `Expand` and `Collapsible`
-  (`components/foothill/expand.tsx`) are the disclosure built on it and
-  replace `<details>`, which can only snap. A collapsible's controls read
-  their own `group/trigger`, never a bare `group` -- a `<details class="group">`
-  lit every logo and underline inside it when any one was pointed at.
-- **A chart of many marks moves as one.** A tween per heatmap cell (371 of
-  them) is what made the dashboard stutter; `data-fh-sweep` uncovers the
-  whole grid behind one soft-edged mask instead.
-- **A long index loads as it is scrolled.** `CardGrid` shows a batch and the
-  next when its end nears the viewport; search stays a server-side GET, so a
-  filtered list is still a URL.
+  `onSeen` in `motion.tsx` is the one trigger every reveal uses: a ScrollTrigger
+  works out its start against the scroll offset of the moment it is created, and
+  on a client navigation that is still the previous page's. ScrollTrigger stays
+  for what scrubs.
+- **A constant exported from a `"use client"` module is not that constant.**
+  `DEFAULT_FILTERS.sort` read from a server page was `undefined`, and the first
+  filter change wrote `?sort=undefined`; `CV_FILE` is the same trap. Shared
+  constants live in plain modules (`lib/site/work-filters.ts`, `lib/site/cv.ts`,
+  `lib/site/twins.ts`).
+- **A render function, not a component, inside a component.** A component
+  declared in a render is a new type each time, so an open reply box loses its
+  focus on every keystroke. The guestbook and the contact form use functions.
+- **A filtered list is a URL.** Work and Writing write their filters to the
+  address with `history.replaceState` (back still means the page before), the
+  server reads them on arrival, and `serverMatches` is its answer for `?q=`,
+  which searches each body as well as the fields the client holds.
 - **A page's frame is `MAIN` and `WRAP`** from `components/foothill/layout.ts`,
-  and its skeleton uses the same two through `components/foothill/skeleton.tsx`
-  -- which is what `check-skeleton-shape.mjs` measures. The first `div` inside
-  a page's `<main>` is what a skeleton is compared against, so nothing that
-  draws elsewhere (the reading-progress line, the view counter) may come first.
+  and its skeleton uses `PageSkeleton` and the blocks in
+  `components/foothill/skeleton.tsx` -- which is what `check-skeleton-shape.mjs`
+  measures. A page drops the footer's invitation band with `data-quiet` on
+  `<main>` where it is already the way to get in touch (Contact, Sign in, the
+  error pages).
+- **The overlays all lock the page the same way.** `useLockedPage`
+  (`lib/motion/use-locked-page.ts`) counts holders and puts `locked` on
+  `<html>`; the scrollbar keeps its gutter, so opening one never shifts the
+  layout sideways.
+
+### Every page has a Markdown twin
+
+A page's address plus `.md` (the home page is `/index.md`), or the page asked
+for with `Accept: text/markdown`, returns the same content as Markdown.
+`/llms.txt` lists every twin in the llmstxt.org shape and `/llms-full.txt` joins
+them. `proxy.ts` rewrites both ways of asking to `/md/<path>`, whose one handler
+(`app/md/[[...path]]/route.ts`) renders them from `lib/markdown/pages.ts`.
+
+- **A twin is drawn from the same cached read as its page,** so it cannot say
+  what the page does not, and a draft has none for the same reason it has no
+  page: `getBlogs` and `getProjects` are the only two places that ask.
+- **What is left out is left out on purpose.** The guestbook's messages were
+  written for the page, not for a dataset, so its twin counts them. The
+  dashboard's figures are live and a copy in a cached file is wrong by the time
+  it is read, so its twin names the sources.
+- **The headers matter.** A twin is `noindex` with a canonical `Link` to its
+  page, and everything varies on `Accept`, or a CDN serves the first format it
+  cached to everybody. Each page's head names its twin through
+  `alternates.types`.
+- **`lib/markdown/html.ts` converts only what the sanitiser allows,** and
+  strips the rest. It is pure and tested offline.
+- `lib/site/twins.ts` is the one answer to "does this path have a twin", read
+  by the footer, the palette, the proxy and the metadata. `check-markdown.mjs`
+  walks the sitemap and holds all of it.
+
+### The CV is generated from About
+
+`/cv.pdf` is rendered on the server with `@react-pdf/renderer` from the rows the
+About page shows, cached against the tag of every table it reads, so an edit in
+the admin produces a new CV on the next request. What goes on it is chosen by
+rule in `lib/cv/select.ts` (pure, tested): the roles being looked for are the
+headline; the summary is the open-to-work note plus the sentences that count
+work; a role with no technical title is left out; certificates are the five
+newest technical ones; and a word matches whole, because `git` must not match
+inside "Digital". The layout is built for applicant tracking systems -- one
+column, real text, no hyphenation (a parser reads "oppor" and "tunities"), no
+images. The viewer is pdf.js, imported on first use with its worker served from
+this origin, and the CV links in About and the palette open it.
 
 ### The admin is declarative
 
@@ -1266,6 +1294,7 @@ npx tsx --conditions=react-server scripts/check-skeleton-shape.mjs # each skelet
 npx tsx scripts/check-auth-adapter.mjs                 # Auth.js vs the live schema
 npx tsx scripts/check-comments.mjs                     # comment rules, rolled back
 node scripts/check-drafts.mjs                           # a draft stays a draft
+node scripts/check-markdown.mjs                         # every page has a .md twin, no draft does
 npx tsx scripts/check-public-access.mjs                # who may post, and what is_active means
 npx tsx scripts/check-emails.mjs                       # all five templates
 npx tsx scripts/check-db-classes.mjs                   # no classes in stored content

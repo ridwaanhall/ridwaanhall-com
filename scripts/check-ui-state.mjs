@@ -80,8 +80,9 @@ check("clearing the query unmarks again", (await marked()) === 0);
  * row beneath it including the next section's.
  */
 const paletteText = await page.locator("#search-modal").innerText();
-check("the palette lists posts", paletteText.includes("POSTS"));
-check("and projects", paletteText.includes("PROJECTS"));
+// The section names are set in sentence case, not tracked capitals.
+check("the palette lists posts", /^Posts$/m.test(paletteText));
+check("and projects", /^Projects$/m.test(paletteText));
 
 /*
  * The title is read from the endpoint the palette itself reads, so this does
@@ -128,11 +129,11 @@ await page.waitForTimeout(1500);
 
 const first = await widgetId();
 check("a widget is rendered", Boolean(first), first ?? "");
-check("the site starts light", (await page.getAttribute("html", "data-theme")) === "light");
+check("the site starts dark", (await page.getAttribute("html", "data-theme")) === "dark");
 
 await page.locator("[data-theme-toggle]").last().click();
 await page.waitForTimeout(2500);
-check("the site switches to dark", (await page.getAttribute("html", "data-theme")) === "dark");
+check("the site switches to light", (await page.getAttribute("html", "data-theme")) === "light");
 
 const second = await widgetId();
 check("the widget is recreated for the new theme", Boolean(second) && second !== first, `${first} -> ${second}`);

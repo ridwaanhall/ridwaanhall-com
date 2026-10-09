@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
-import {H3, META } from "@/components/foothill/classes";
-import { Collapsible } from "@/components/foothill/expand";
-import { MAIN, WRAP } from "@/components/foothill/layout";
-import { Animate, CountUp, PageMotion, Reveal } from "@/components/foothill/motion";
-import { Portrait } from "@/components/foothill/portrait";
-import { monthYearLabel } from "@/components/foothill/rows";
+import { Certifications, JobHunt, SkillGroups, type ApplicationView, type CertView } from "@/components/foothill/about";
+import { Disclosure } from "@/components/foothill/controls";
+import { CvButton, CvThumb, CvTocAction } from "@/components/foothill/cv";
+import { Icon } from "@/components/foothill/icons";
+import { MAIN } from "@/components/foothill/layout";
+import { PageMotion } from "@/components/foothill/motion";
+import { monthYearLabel, projectView } from "@/components/foothill/rows";
 import { SectionIndex } from "@/components/foothill/section-index";
-import { ShowMore } from "@/components/foothill/show-more";
-import { ActionLink, Fact, Glance, Heading, Logo, PageHead } from "@/components/foothill/ui";
+import { Button, Empty, Facts, Heading, Logo, PageHead, Tag, TextLink } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { RichText } from "@/components/site/rich-text";
-import type { Application, Certification, Education, Experience } from "@/lib/data/about";
+import type { Application, Certification, Experience } from "@/lib/data/about";
 import {
   getAboutData,
   getApplications,
@@ -21,11 +22,14 @@ import {
   getExperiences,
   getSkillsByCategory,
 } from "@/lib/data/about";
+import { getProjects } from "@/lib/data/content";
 import { aboutSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { aboutSchemas } from "@/lib/seo/schemas-for-page";
-import { bareUrl, groupBy } from "@/lib/site/display";
-import { cn } from "@/lib/utils/cn";
+import { CV_FILE } from "@/lib/site/cv";
+import { htmlToText } from "@/lib/markdown/html";
+import { groupBy } from "@/lib/site/display";
+import { skillIcon } from "@/lib/site/skills";
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutData();
@@ -35,6 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const SECTIONS = [
   { id: "story", label: "Story" },
+  { id: "cv", label: "CV" },
   { id: "experience", label: "Experience" },
   { id: "education", label: "Education" },
   { id: "skills", label: "Skills" },
@@ -43,531 +48,345 @@ const SECTIONS = [
   { id: "job-hunt", label: "The job hunt" },
 ];
 
-/** A section's title, with how many entries sit under it. */
-function Title({ id, children, count }: { id: string; children: string; count?: number }) {
-  return (
-    <Heading id={`${id}-title`} count={count}>
-      {children}
-    </Heading>
-  );
+function periodLabel(role: Experience): string {
+  const start = monthYearLabel(role.period.start);
+  const end = role.period.end === "Present" ? "now" : monthYearLabel(role.period.end);
+  return start === end ? start : `${start} – ${end}`;
+}
+
+/** Stored lessons once carried coloured spans; what is read is the words. */
+const plain = htmlToText;
+
+const dated = (value: Date | null) =>
+  value ? value.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric", timeZone: "UTC" }) : "";
+
+function certView(cert: Certification): CertView {
+  return {
+    id: cert.id,
+    title: cert.title,
+    issuer: cert.institution,
+    logo: cert.logo,
+    year: cert.issued?.year ?? null,
+    month: cert.issued?.month.slice(0, 3) ?? "",
+    url: cert.credential_url,
+    featured: cert.is_featured,
+    achievements: cert.achievements,
+  };
+}
+
+function applicationView(app: Application): ApplicationView {
+  return {
+    id: app.id,
+    position: app.position,
+    company: app.company_name,
+    logo: app.company_logo || null,
+    status: app.status,
+    slug: app.status_slug,
+    mode: app.location_type,
+    type: app.employment_type,
+    where: app.location,
+    via: app.applied_via ?? "",
+    salary: app.salary_range ?? "",
+    lessons: plain(app.lessons_learned),
+    steps: app.journey.map((step) => ({ title: step.title, date: dated(step.timestamp), details: step.details, notes: step.notes })),
+  };
 }
 
 export default async function AboutPage() {
-  const [about, experiences, education, awards, certifications, applications, skills] =
-    await Promise.all([
-      getAboutData(),
-      getExperiences(),
-      getEducation(),
-      getAwards(),
-      getCertifications(),
-      getApplications(),
-      getSkillsByCategory(),
-    ]);
+  const [about, experiences, education, awards, certifications, applications, skills, projects] = await Promise.all([
+    getAboutData(),
+    getExperiences(),
+    getEducation(),
+    getAwards(),
+    getCertifications(),
+    getApplications(),
+    getSkillsByCategory(),
+    getProjects(),
+  ]);
   if (!about) return null;
 
-  const sections = SECTIONS.filter(({ id }) => {
-    if (id === "experience") return experiences.length > 0;
-    if (id === "education") return education.length > 0;
-    if (id === "skills") return Object.keys(skills).length > 0;
-    if (id === "recognition") return awards.length > 0;
-    if (id === "certifications") return certifications.length > 0;
-    if (id === "job-hunt") return applications.length > 0;
-    return true;
-  });
+  const companies = groupBy(experiences, (role) => role.company);
+  const skillCount = Object.values(skills).flat().length;
+  const years = new Set(certifications.map((cert) => cert.issued?.year ?? null)).size;
+  const where = [about.location.residency || about.location.regency, about.location.province].filter(Boolean).join(", ");
+  const cvLinks = (
+    <>
+      <span className="mono mute" style={{ padding: "0 12px" }}>
+        CV
+      </span>
+      <CvTocAction />
+      <a className="toc-act" href={CV_FILE} target="_blank" rel="noopener">
+        <Icon name="out" size={14} />
+        Open the PDF
+      </a>
+      {about.cv.latest && (
+        <a className="toc-act" href={about.cv.latest} target="_blank" rel="noopener noreferrer">
+          <Icon name="file" size={14} />
+          Google Docs version
+        </a>
+      )}
+    </>
+  );
 
   return (
     <main className={MAIN}>
       <JsonLdScript schemas={await aboutSchemas(about)} />
-      <div className={WRAP}>
+      <div>
         <PageHead
-          title={
-            <>
-              {about.first_name || about.name}, known online as{" "}
-              <span className="text-mute">{about.username}</span>.
-            </>
-          }
-          lead={about.long_description.split(". ").slice(0, 2).join(". ") + "."}
-          aside={
-            <Glance
-              items={(
-                [
-                  ["Roles held", experiences.length],
-                  ["Skills", Object.values(skills).flat().length],
-                  ["Certifications", certifications.length],
-                  ["Awards", awards.length],
-                ] as const
-              )
-                .filter(([, count]) => count > 0)
-                .map(([label, count]) => ({ label, value: <CountUp value={count} /> }))}
-            />
-          }
-        />
-
-        <div className="mt-20 grid gap-14 lg:grid-cols-12 lg:gap-10">
-          <aside className="hidden lg:col-span-3 lg:block">
-            <div className="sticky top-28">
-              <SectionIndex sections={sections} />
-              <CvLinks cv={about.cv} className="mt-10" />
-            </div>
-          </aside>
-
-          <div className="min-w-0 space-y-32 lg:col-span-9">
-            <section id="story" aria-labelledby="story-title" className="scroll-mt-28">
-              <h2 id="story-title" className="sr-only">
-                Story
-              </h2>
-              <div className="grid gap-12 md:grid-cols-[minmax(0,1fr)_15rem]">
-                <Reveal>
-                  <RichText html={about.stories_html} className="fh-prose" />
-                </Reveal>
-                <div className="md:col-start-2 md:row-start-1">
-                  {about.image_url && (
-                    <Portrait
-                      src={about.image_url}
-                      alt={about.image_alt || `${about.name}, drawn in horizontal lines`}
-                      className="w-48 md:w-full"
-                    />
-                  )}
-                  <dl className="mt-6 border-t border-line">
-                    <Fact label="Based in">
-                      {[about.location.residency || about.location.regency, about.location.province]
-                        .filter(Boolean)
-                        .join(", ")}
-                    </Fact>
-                    {about.personal_website && (
-                      <Fact label="Site">
-                        <a href={about.personal_website} className="fh-link">
-                          {bareUrl(about.personal_website)}
-                        </a>
-                      </Fact>
-                    )}
-                  </dl>
-                </div>
+          crumb={
+            <div className="who-head" data-fh-enter="">
+              {about.image_url ? (
+                <figure className="ph">
+                  <Image src={about.image_url} alt={about.image_alt || `${about.name}, drawn in horizontal lines`} width={76} height={76} priority />
+                </figure>
+              ) : (
+                <span className="ph none" aria-hidden="true">
+                  <Icon name="user" size={22} />
+                </span>
+              )}
+              <div>
+                <b>{about.name}</b>
+                <span className="mono mute">
+                  {where}
+                  {about.aka && ` · ${about.aka}`}
+                </span>
               </div>
-              <CvLinks cv={about.cv} className="mt-12 lg:hidden" />
+            </div>
+          }
+          title={`${about.first_name || about.name}, known online as ${about.username}.`}
+          lead={about.long_description}
+          markdown="/about"
+          facts={[
+            ["Roles held", experiences.length],
+            ["Skills", skillCount],
+            ["Certifications", certifications.length],
+            ["Awards", awards.length],
+            ["Applications", applications.length],
+          ]}
+        >
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 28 }}>
+            <CvButton />
+            <Button ghost href="/contact" icon="pen">
+              Write to me
+            </Button>
+          </div>
+        </PageHead>
+
+        <div className="wrap about" style={{ paddingBottom: 40 }}>
+          <SectionIndex sections={SECTIONS}>{cvLinks}</SectionIndex>
+          <div style={{ minWidth: 0 }}>
+            <div className="resume-m">
+              <CvButton sm />
+              <a className="btn ghost sm" href={CV_FILE} target="_blank" rel="noopener">
+                <Icon name="out" />
+                Open the PDF
+              </a>
+            </div>
+
+            <section id="story" className="sec" style={{ borderTop: 0, paddingTop: 0 }}>
+              <Heading title="Story" note="In my own words." />
+              <RichText html={about.stories_html} className="article" />
             </section>
 
-            {experiences.length > 0 && (
-              <section id="experience" aria-labelledby="experience-title" className="scroll-mt-28">
-                <Title id="experience" count={experiences.length}>
-                  Where I have worked
-                </Title>
-                <ol className="mt-12 space-y-14">
-                  {groupBy(experiences, (role) => role.company).map(([company, roles]) => (
-                    <ExperienceGroup key={company} company={company} roles={roles} />
-                  ))}
-                </ol>
-              </section>
-            )}
+            <section id="cv" className="sec">
+              <Heading title="The CV, from this page" note="Generated from everything below, so it is never behind." />
+              <div className="cv-sec">
+                <CvThumb />
+                <div style={{ display: "grid", gap: 18, alignContent: "start" }}>
+                  <p className="lead" style={{ maxWidth: "52ch" }}>
+                    Two pages built from the roles, schools, skills, projects and awards on this page. When something here changes, the CV changes with it.
+                  </p>
+                  <ul className="bul" style={{ paddingBottom: 0 }}>
+                    <li>Written for applicant tracking systems: one column, standard section names, real selectable text, no tables or images.</li>
+                    <li>The roles I am looking for, my availability and the strongest numbers sit in the first third of page one.</li>
+                    <li>Contact details are in the text and every link is clickable.</li>
+                  </ul>
+                  <Facts
+                    rows={[
+                      ["Pages", "2, A4"],
+                      ["Format", "PDF"],
+                      ["Address", "ridwaanhall.com/cv.pdf"],
+                    ]}
+                  />
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+                    <CvButton icon="eye" label="Read it here" />
+                    <a className="btn ghost" href={CV_FILE} target="_blank" rel="noopener">
+                      <Icon name="out" />
+                      Open the PDF
+                    </a>
+                    {about.cv.latest && (
+                      <TextLink href={about.cv.latest} icon="file">
+                        Google Docs version
+                      </TextLink>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </section>
 
-            {education.length > 0 && (
-              <section id="education" aria-labelledby="education-title" className="scroll-mt-28">
-                <Title id="education">Where I studied</Title>
-                <Reveal as="ol" stagger className="mt-12 space-y-10">
-                  {education.map((item) => (
-                    <EducationRow key={`${item.institution}-${item.degree}`} item={item} />
-                  ))}
-                </Reveal>
-              </section>
-            )}
-
-            {Object.keys(skills).length > 0 && (
-              <section id="skills" aria-labelledby="skills-title" className="scroll-mt-28">
-                <Title id="skills" count={Object.values(skills).reduce((sum, list) => sum + list.length, 0)}>
-                  What I work with
-                </Title>
-                <Reveal as="dl" stagger className="mt-12 grid gap-x-10 gap-y-8 md:grid-cols-2">
-                  {Object.entries(skills).map(([category, list]) => (
-                    <div key={category}>
-                      <dt className="text-[14px] text-mute">{category}</dt>
-                      <dd className="mt-2 text-[17px] leading-relaxed text-ink">
-                        {list.map((skill) => skill.name).join(", ")}
-                      </dd>
+            <section id="experience" className="sec">
+              <Heading title="Where I have worked" count={experiences.length} note={`${companies.length} organisations, newest first.`} />
+              {experiences.length === 0 && (
+                <Empty small icon="briefcase" title="No roles listed yet" note="Each role appears with its organisation, dates and what the work involved." />
+              )}
+              {companies.map(([company, roles]) => {
+                const logo = roles.find((role) => role.logo)?.logo ?? "";
+                const website = roles.find((role) => role.website)?.website;
+                return (
+                  <div key={company} className="org">
+                    <Logo src={logo} name={company} />
+                    <div style={{ minWidth: 0 }}>
+                      <h3 className="t3">
+                        {website ? (
+                          <a className="ul" href={website} target="_blank" rel="noopener noreferrer">
+                            {company}
+                          </a>
+                        ) : (
+                          company
+                        )}
+                      </h3>
+                      {roles.length > 1 && <p className="meta">{roles.length} roles</p>}
+                      {roles.map((role) => (
+                        <div key={role.id} className="role">
+                          <div>
+                            <b>{role.title}</b> {role.is_current && <Tag kind="solid">Current</Tag>}
+                          </div>
+                          <span className="when mono mute">{periodLabel(role)}</span>
+                          <span className="meta">{[role.employment_type, role.location_type, role.location].filter(Boolean).join(" · ")}</span>
+                          {role.responsibilities.length > 0 && (
+                            <div style={{ gridColumn: "1 / -1" }}>
+                              <Disclosure inline label="What I did">
+                                <ul className="bul">
+                                  {role.responsibilities.map((line) => (
+                                    <li key={line}>{line}</li>
+                                  ))}
+                                </ul>
+                              </Disclosure>
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </Reveal>
-              </section>
-            )}
+                  </div>
+                );
+              })}
+            </section>
 
-            {awards.length > 0 && (
-              <section id="recognition" aria-labelledby="recognition-title" className="scroll-mt-28">
-                <Title id="recognition" count={awards.length}>
-                  Recognition
-                </Title>
-                <Reveal as="ol" stagger className="mt-12 space-y-10">
-                  {awards.map((award) => (
-                    <li key={award.id} className="group flex gap-5">
-                      <Logo src={award.logo} name={award.institution} />
-                      <div className="min-w-0">
-                        <p className={H3}>
+            <section id="education" className="sec">
+              <Heading title="Where I studied" count={education.length} />
+              {education.length === 0 && (
+                <Empty small icon="school" title="No schools listed yet" note="Schools appear with their logos, years and what was taken from each." />
+              )}
+              {education.map((item) => {
+                const span =
+                  item.years ||
+                  (item.date ? [monthYearLabel(item.date.start), monthYearLabel(item.date.end)].filter(Boolean).join(" – ") : "");
+                return (
+                  <div key={`${item.institution}-${item.degree}`} className="org">
+                    <Logo src={item.logo} name={item.institution} />
+                    <div style={{ minWidth: 0 }}>
+                      <div className="role" style={{ paddingTop: 0 }}>
+                        <h3 className="t3">
+                          {item.website ? (
+                            <a className="ul" href={item.website} target="_blank" rel="noopener noreferrer">
+                              {item.institution}
+                            </a>
+                          ) : (
+                            item.institution
+                          )}
+                        </h3>
+                        <span className="when mono mute">{span}</span>
+                        <span className="meta">
+                          {item.degree}
+                          {item.alias && ` (${item.alias})`}
+                          {[item.location?.regency, item.location?.country].filter(Boolean).length > 0 &&
+                            ` · ${[item.location?.regency, item.location?.country].filter(Boolean).join(", ")}`}
+                        </span>
+                      </div>
+                      {item.achievements.length > 0 && (
+                        <Disclosure inline label="What I took from it">
+                          <ul className="bul">
+                            {item.achievements.map((line) => (
+                              <li key={line}>{line}</li>
+                            ))}
+                          </ul>
+                        </Disclosure>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </section>
+
+            <section id="skills" className="sec">
+              <Heading title="What I work with" count={skillCount} note={`${Object.keys(skills).length} groups.`} />
+              {skillCount === 0 ? (
+                <Empty small icon="tool" title="No skills listed yet" note="Skills appear in their groups, each with its own icon." />
+              ) : (
+                <SkillGroups
+                  groups={Object.entries(skills).map(([category, list]) => [category, list.map(skillIcon)])}
+                  projects={projects.map(projectView).map(({ slug, title, kind, year, image, stack }) => ({ slug, title, kind, year, image, stack }))}
+                />
+              )}
+            </section>
+
+            <section id="recognition" className="sec">
+              <Heading title="Recognition" count={awards.length} />
+              {awards.length === 0 && <Empty small icon="award" title="No awards yet" note="Awards appear with the issuer, the date and what they were for." />}
+              <div className="rows" style={{ borderTop: 0 }}>
+                {awards.map((award) => (
+                  <div key={award.id} className="org" style={{ borderTop: 0 }}>
+                    <Logo src={award.logo} name={award.institution} />
+                    <div>
+                      <div className="role" style={{ paddingTop: 0 }}>
+                        <b style={{ fontWeight: 500, fontSize: "1.05rem" }}>
                           {award.credential_url ? (
-                            <a href={award.credential_url} target="_blank" rel="noopener noreferrer" className="fh-underline">
+                            <a className="ul" href={award.credential_url} target="_blank" rel="noopener noreferrer">
                               {award.title}
                             </a>
                           ) : (
                             award.title
                           )}
-                        </p>
-                        <p className={`${META} mt-2`}>
-                          {award.institution}, {monthYearLabel(award.issued)}
-                        </p>
-                        {award.description && award.description !== award.title && (
-                          <p className="mt-3 max-w-[62ch] text-[16px] leading-relaxed text-mute">{award.description}</p>
-                        )}
+                        </b>
+                        <span className="when mono mute">{monthYearLabel(award.issued)}</span>
+                        <span className="meta">{award.institution}</span>
                       </div>
-                    </li>
-                  ))}
-                </Reveal>
-              </section>
-            )}
+                      {award.description && award.description !== award.title && (
+                        <p className="meta" style={{ marginTop: 8, fontSize: 14.5 }}>
+                          {award.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
 
-            {certifications.length > 0 && (
-              <section id="certifications" aria-labelledby="certifications-title" className="scroll-mt-28">
-                <div className="flex flex-wrap items-end justify-between gap-6">
-                  <Title id="certifications" count={certifications.length}>
-                    Certifications
-                  </Title>
-                  <ActionLink href={`https://www.linkedin.com/in/${about.username}/details/certifications/`}>
-                    All of them on LinkedIn
-                  </ActionLink>
-                </div>
-                <Certifications items={certifications} />
-              </section>
-            )}
+            <section id="certifications" className="sec">
+              <Heading title="Certifications" count={certifications.length} note={`${years} years · newest first`}>
+                <TextLink href={`https://www.linkedin.com/in/${about.username}/details/certifications/`} brand="linkedin">
+                  All on LinkedIn
+                </TextLink>
+              </Heading>
+              {certifications.length === 0 ? (
+                <Empty small icon="file" title="No certifications yet" note="They are grouped by year, newest first, with the issuer's logo." />
+              ) : (
+                <Certifications items={certifications.map(certView)} />
+              )}
+            </section>
 
-            {applications.length > 0 && (
-              <section id="job-hunt" aria-labelledby="job-hunt-title" className="scroll-mt-28">
-                <Title id="job-hunt" count={applications.length}>
-                  The job hunt, in public
-                </Title>
-                <JobHunt applications={applications} />
-              </section>
-            )}
+            <section id="job-hunt" className="sec">
+              <Heading title="The job hunt, in public" count={applications.length} note="Every application, how it went, and what it taught me." />
+              {applications.length === 0 ? (
+                <Empty small icon="inbox" title="No applications logged" note="Each application appears with its steps, its outcome and what it taught me." />
+              ) : (
+                <JobHunt items={applications.map(applicationView)} />
+              )}
+            </section>
           </div>
         </div>
       </div>
       <PageMotion />
     </main>
-  );
-}
-
-function CvLinks({ cv, className }: { cv: { main: string; latest: string; copy: string }; className?: string }) {
-  const links = [
-    { href: "/cv", label: "Read the CV", show: cv.main },
-    { href: "/cv-latest", label: "The latest edit", show: cv.latest },
-    { href: "/cv-copy", label: "Make a copy", show: cv.copy },
-  ].filter((link) => link.show);
-  if (!links.length) return null;
-  return (
-    <div className={className}>
-      <p className="text-[14px] font-medium text-ink">Résumé</p>
-      <ul className="mt-3 space-y-2">
-        {links.map((link) => (
-          <li key={link.href}>
-            {/* External: these are redirects to documents, not pages. */}
-            <ActionLink href={link.href} external icon="doc" className="text-[15px] text-mute hover:text-ink">
-              {link.label}
-            </ActionLink>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function periodLabel(role: Experience): string {
-  const start = monthYearLabel(role.period.start);
-  const end = role.period.end === "Present" ? "now" : monthYearLabel(role.period.end);
-  return start === end ? start : `${start} to ${end}`;
-}
-
-function ExperienceGroup({ company, roles }: { company: string; roles: Experience[] }) {
-  const website = roles.find((role) => role.website)?.website;
-  const logo = roles.find((role) => role.logo)?.logo ?? "";
-  return (
-    <Reveal as="li" className="group grid gap-6 md:grid-cols-[3.5rem_minmax(0,1fr)]">
-      <Logo src={logo} name={company} className="h-14 w-14 rounded-[14px]" />
-      <div className="min-w-0">
-        <p className="font-display text-[clamp(1.5rem,1.25rem+1vw,2rem)] leading-tight font-medium tracking-[-0.025em] text-ink">
-          {website ? (
-            <a href={website} target="_blank" rel="noopener noreferrer" className="fh-underline">
-              {company}
-            </a>
-          ) : (
-            company
-          )}
-        </p>
-        {roles.length > 1 && <p className={`${META} mt-1`}>{roles.length} roles</p>}
-        <ol className="mt-6 space-y-7 border-l border-line pl-6">
-          {roles.map((role) => (
-            <li key={role.id} className="relative">
-              <span
-                aria-hidden="true"
-                className={cn(
-                  "absolute top-[0.55em] -left-[29px] h-[9px] w-[9px] rounded-full border-2 border-paper",
-                  role.is_current ? "bg-ink" : "bg-line",
-                )}
-              />
-              <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-                <p className="text-[18px] font-medium text-ink">
-                  {role.title}
-                  {role.is_current && (
-                    <span className="ml-3 rounded-full bg-raise px-2 py-0.5 align-middle text-[12px] font-normal text-ink">
-                      Current
-                    </span>
-                  )}
-                </p>
-                <p className={META}>{periodLabel(role)}</p>
-              </div>
-              <p className={`${META} mt-1`}>
-                {[role.employment_type, role.location_type, role.location].filter(Boolean).join(", ")}
-              </p>
-              {role.responsibilities.length > 0 && (
-                <Collapsible plain summary="What I did" className="mt-3">
-                  <Points items={role.responsibilities} />
-                </Collapsible>
-              )}
-            </li>
-          ))}
-        </ol>
-      </div>
-    </Reveal>
-  );
-}
-
-function EducationRow({ item }: { item: Education }) {
-  const span =
-    item.years ||
-    (item.date ? [monthYearLabel(item.date.start), monthYearLabel(item.date.end)].filter(Boolean).join(" to ") : "");
-  return (
-    <li className="group flex gap-5">
-      <Logo src={item.logo} name={item.institution} className="h-14 w-14 rounded-[14px]" />
-      <div className="min-w-0">
-        <p className={H3}>
-          {item.website ? (
-            <a href={item.website} target="_blank" rel="noopener noreferrer" className="fh-underline">
-              {item.institution}
-            </a>
-          ) : (
-            item.institution
-          )}
-        </p>
-        <p className={`${META} mt-2`}>
-          {item.degree}
-          {item.alias && `, ${item.alias}`}
-          {span && `, ${span}`}
-        </p>
-        {item.achievements.length > 0 && (
-          <Collapsible plain summary="What I took from it" className="mt-3">
-            <Points items={item.achievements} />
-          </Collapsible>
-        )}
-      </div>
-    </li>
-  );
-}
-
-function Certifications({ items }: { items: Certification[] }) {
-  const byYear = groupBy(items, (item) => item.issued?.year ?? 0);
-  return (
-    <div className="mt-12 border-b border-line">
-      {byYear.map(([year, list], index) => (
-        <Collapsible
-          key={year}
-          defaultOpen={index === 0}
-          className="border-t border-line"
-          summaryClassName="py-5"
-          summary={
-            // The count set small beside the year, as a section's title carries
-            // its own (`Heading`), rather than out at the far edge.
-            <span className="flex flex-1 items-start gap-[0.25em] font-display text-[clamp(1.6rem,1.3rem+1.2vw,2.25rem)] font-medium tracking-[-0.03em] text-ink tabular-nums">
-              {year || "Undated"}
-              <span className="mt-[0.1em] font-text text-[0.42em] font-normal tracking-normal text-mute">
-                {list.length}
-                <span className="sr-only"> {list.length === 1 ? "certificate" : "certificates"}</span>
-              </span>
-            </span>
-          }
-        >
-          <ul className="grid gap-x-8 gap-y-5 pb-8 md:grid-cols-2">
-            {list.map((cert) => (
-              <li key={cert.id} className="group flex min-w-0 gap-4">
-                <Logo src={cert.logo} name={cert.institution} className="h-9 w-9 rounded-[8px]" />
-                <span className="min-w-0">
-                  {cert.credential_url ? (
-                    <a
-                      href={cert.credential_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[16px] leading-snug text-ink"
-                    >
-                      <span className="fh-underline">{cert.title}</span>
-                    </a>
-                  ) : (
-                    <span className="text-[16px] leading-snug text-ink">{cert.title}</span>
-                  )}
-                  <span className={`${META} mt-1 block`}>
-                    {cert.institution}
-                    {cert.issued && `, ${cert.issued.month.slice(0, 3)}`}
-                  </span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Collapsible>
-      ))}
-    </div>
-  );
-}
-
-/** Accepted first, then the two ways an application ends without one. */
-const OUTCOME_ORDER = ["accepted", "rejected", "ghosted"];
-const OUTCOME_TONE: Record<string, string> = {
-  accepted: "bg-ink",
-  rejected: "bg-mute",
-  ghosted: "bg-mute/35",
-};
-
-function JobHunt({ applications }: { applications: Application[] }) {
-  const outcomes = groupBy(applications, (app) => app.status_slug || "unknown").sort(
-    ([a], [b]) => rank(a) - rank(b),
-  );
-  const total = applications.length;
-
-  return (
-    <div className="mt-8">
-      <Reveal as="p" className="max-w-[52ch] text-[19px] leading-relaxed text-mute">
-        Every application, kept rather than tidied away: who, for what, how far it got, and what it
-        taught me.
-      </Reveal>
-
-      <Animate className="mt-12">
-        <dl className="grid grid-cols-3 gap-6">
-          {outcomes.map(([slug, list]) => (
-            <div key={slug}>
-              <dt className="flex items-center gap-2 text-[14px] text-mute">
-                <span aria-hidden="true" className={cn("h-2 w-2 rounded-full", OUTCOME_TONE[slug] ?? "bg-mute")} />
-                {label(slug, list)}
-              </dt>
-              <dd className="mt-2 font-display text-[clamp(2.25rem,1.6rem+2.6vw,3.75rem)] leading-none font-medium tracking-[-0.04em] text-ink">
-                <CountUp value={list.length} />
-                <span className="ml-2 font-text text-[15px] font-normal tracking-normal text-mute">
-                  {Math.round((list.length / total) * 100)}%
-                </span>
-              </dd>
-            </div>
-          ))}
-        </dl>
-        <div
-          className="mt-8 flex h-3 w-full gap-[3px] overflow-hidden rounded-full"
-          role="img"
-          aria-label={outcomes.map(([slug, list]) => `${list.length} ${label(slug, list)}`).join(", ")}
-        >
-          {outcomes.map(([slug, list]) => (
-            <span
-              key={slug}
-              data-fh-bar
-              className={cn("h-full first:rounded-l-full last:rounded-r-full", OUTCOME_TONE[slug] ?? "bg-mute")}
-              style={{ width: `${(list.length / total) * 100}%` }}
-            />
-          ))}
-        </div>
-      </Animate>
-
-      <ShowMore noun="applications" className="mt-14 border-b border-line">
-        {applications.map((app) => (
-          <ApplicationRow key={app.id} app={app} />
-        ))}
-      </ShowMore>
-    </div>
-  );
-}
-
-function rank(slug: string): number {
-  const at = OUTCOME_ORDER.indexOf(slug);
-  return at < 0 ? OUTCOME_ORDER.length : at;
-}
-
-function label(slug: string, list: Application[]): string {
-  return list[0]?.status || slug;
-}
-
-function ApplicationRow({ app }: { app: Application }) {
-  return (
-    <Collapsible
-      className="border-t border-line"
-      summaryClassName="py-5"
-      summary={
-        <span className="flex min-w-0 flex-1 items-center justify-between gap-6">
-          <span className="min-w-0">
-            <span className="block truncate text-[17px] font-medium text-ink">{app.position}</span>
-            <span className={`${META} mt-0.5 block truncate`}>
-              {app.company_name}
-              {app.location_type && `, ${app.location_type.toLowerCase()}`}
-            </span>
-          </span>
-          <span className="hidden shrink-0 items-center gap-2 text-[14px] text-mute sm:flex">
-            <span aria-hidden="true" className={cn("h-2 w-2 rounded-full", OUTCOME_TONE[app.status_slug] ?? "bg-mute")} />
-            {app.status}
-          </span>
-        </span>
-      }
-    >
-      <div className="grid gap-8 pb-8 md:grid-cols-[minmax(0,1fr)_15rem] md:gap-10">
-        {app.journey.length > 0 ? (
-          <ol className="relative ml-1 space-y-5 border-l border-line pl-6">
-            {app.journey.map((step, index) => (
-              <li key={index} className="relative">
-                <span aria-hidden="true" className="absolute top-[0.5em] -left-[29.5px] h-[9px] w-[9px] rounded-full border-2 border-paper bg-mute" />
-                <p className="text-[16px] font-medium text-ink">{step.title}</p>
-                {step.timestamp && (
-                  <p className={`${META} mt-0.5`}>
-                    {step.timestamp.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })}
-                  </p>
-                )}
-                {step.details && <p className="mt-1.5 text-[15px] leading-relaxed text-mute">{step.details}</p>}
-                {step.notes && <p className="mt-1.5 text-[15px] leading-relaxed text-mute">{step.notes}</p>}
-              </li>
-            ))}
-          </ol>
-        ) : (
-          <p className="text-[15px] text-mute">No steps were recorded for this one.</p>
-        )}
-        <dl className="border-t border-line text-[14px]">
-          {[
-            ["Status", app.status],
-            ["Type", app.employment_type],
-            ["Where", app.location],
-            ["Via", app.applied_via],
-            ["Salary", app.salary_range],
-          ]
-            .filter(([, value]) => value)
-            .map(([key, value]) => (
-              <div key={key} className="flex justify-between gap-4 border-b border-line py-2.5">
-                <dt className="text-mute">{key}</dt>
-                <dd className="text-right text-ink">{value}</dd>
-              </div>
-            ))}
-        </dl>
-        {app.lessons_learned && (
-          <blockquote className="border-l-2 border-ink pl-5 text-[18px] leading-relaxed text-ink md:col-span-2">
-            {app.lessons_learned}
-          </blockquote>
-        )}
-      </div>
-    </Collapsible>
-  );
-}
-
-/** A short list of plain points, ruled with a dash rather than a bullet. */
-function Points({ items }: { items: string[] }) {
-  return (
-    <ul className="max-w-[64ch] space-y-2 pt-3 text-[16px] leading-relaxed text-mute">
-      {items.map((item) => (
-        <li key={item} className="relative pl-5 before:absolute before:top-[0.75em] before:left-0 before:h-px before:w-2.5 before:bg-mute">
-          {item}
-        </li>
-      ))}
-    </ul>
   );
 }

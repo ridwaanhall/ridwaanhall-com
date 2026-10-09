@@ -23,6 +23,11 @@ export type SeoData = {
   title: string;
   description: string;
   keywords: string;
+  /**
+   * The image a share shows. Empty for a page with a card of its own (an
+   * `opengraph-image.tsx` beside it), which Next only uses when the metadata
+   * names none: explicit images win over the file convention.
+   */
   og_image: string;
   og_type: string;
   twitter_card: string;
@@ -82,7 +87,7 @@ export function homepageSeo(about: AboutData): SeoData {
     // The typographic apostrophe is deliberate -- it is what ships today.
     description: `${about.name}’s personal site—${about.short_description || "A place where I share my projects, ideas, and journey."}`,
     keywords: keywords.join(", "),
-    og_image: resolveImage(about),
+    og_image: "",
     og_type: CONTENT_TYPES.homepage.og_type,
     twitter_card: CONTENT_TYPES.homepage.twitter_card,
     canonical_url: SITE_URL,
@@ -104,7 +109,7 @@ export function dashboardSeo(about: AboutData): SeoData {
       `Focused hours and quiet commits. This is where ${about.first_name || about.name}'s coding traces unfold.`,
     ),
     keywords: keywords.join(", "),
-    og_image: resolveImage(about),
+    og_image: "",
     og_type: CONTENT_TYPES.dashboard.og_type,
     twitter_card: CONTENT_TYPES.dashboard.twitter_card,
     canonical_url: `${SITE_URL}/dashboard`,
@@ -133,7 +138,7 @@ export function projectsListSeo(
       "Projects built from curiosity and care. Practical explorations through machine learning and the web.",
     ),
     keywords: keywords.slice(0, 15).join(", "),
-    og_image: resolveImage(about, projects?.[0]),
+    og_image: "",
     og_type: CONTENT_TYPES.project_list.og_type,
     twitter_card: CONTENT_TYPES.project_list.twitter_card,
     canonical_url: `${SITE_URL}/projects`,
@@ -192,7 +197,7 @@ export function blogListSeo(
       "Reflections beyond syntax. Thoughts, questions and quiet technical discoveries.",
     ),
     keywords: keywords.slice(0, 15).join(", "),
-    og_image: resolveImage(about),
+    og_image: "",
     og_type: CONTENT_TYPES.blog_list.og_type,
     twitter_card: CONTENT_TYPES.blog_list.twitter_card,
     canonical_url: `${SITE_URL}/blog`,
@@ -239,7 +244,7 @@ export function aboutSeo(about: AboutData): SeoData {
     title: "In Code, Curiosity, and Care - The Story So Far",
     description: `In between ${locationStr} and Bash scripts. A path shaped by code, community and contemplation.`,
     keywords: keywords.slice(0, 15).join(", "),
-    og_image: resolveImage(about),
+    og_image: "",
     og_type: CONTENT_TYPES.about.og_type,
     twitter_card: CONTENT_TYPES.about.twitter_card,
     canonical_url: `${SITE_URL}/about`,
@@ -247,7 +252,7 @@ export function aboutSeo(about: AboutData): SeoData {
   };
 }
 
-export function contactSeo(about: AboutData): SeoData {
+export function contactSeo(): SeoData {
   const keywords = [
     ...COMMON_KEYWORDS.personal.slice(0, 5),
     "contact", "hire", "freelance", "collaboration", "get in touch",
@@ -256,7 +261,7 @@ export function contactSeo(about: AboutData): SeoData {
     title: "Reach Out - Conversations that Begin Beyond Code",
     description: "Some conversations begin with code. Others start with a quiet hello.",
     keywords: keywords.join(", "),
-    og_image: resolveImage(about),
+    og_image: "",
     og_type: CONTENT_TYPES.contact.og_type,
     twitter_card: CONTENT_TYPES.contact.twitter_card,
     canonical_url: `${SITE_URL}/contact`,
@@ -264,7 +269,7 @@ export function contactSeo(about: AboutData): SeoData {
   };
 }
 
-export function guestbookSeo(about: AboutData): SeoData {
+export function guestbookSeo(): SeoData {
   const keywords = [
     ...COMMON_KEYWORDS.personal.slice(0, 3),
     "guestbook", "chat", "live chat", "messages", "community",
@@ -273,7 +278,7 @@ export function guestbookSeo(about: AboutData): SeoData {
     title: "Guestbook - Leave a Thought, Leave a Trace",
     description: "Before you go, leave a trace. This quiet corner is open to your words.",
     keywords: keywords.join(", "),
-    og_image: resolveImage(about),
+    og_image: "",
     og_type: CONTENT_TYPES.guestbook.og_type,
     twitter_card: CONTENT_TYPES.guestbook.twitter_card,
     canonical_url: `${SITE_URL}/guestbook`,
@@ -344,7 +349,7 @@ export function openhireSeo(about: AboutData): SeoData {
     title: `${title} - Connecting Talent with Opportunity`,
     description,
     keywords: keywords.join(", "),
-    og_image: resolveImage(about),
+    og_image: "",
     og_type: "website",
     twitter_card: "summary_large_image",
     canonical_url: `${SITE_URL}/openhire`,

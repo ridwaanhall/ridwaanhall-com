@@ -88,8 +88,16 @@ CREATE TABLE "app"."media_asset" (
     -- resolver turns either into a URL and the admin renders both the same way.
     -- `storage_key` is the bucket key for one and the public path for the other.
     "source" text NOT NULL DEFAULT 'storage',
+    -- Which theme a single-colour icon vanishes on, measured once from its
+    -- pixels by `scripts/measure-icon-tones.mjs`: `dark` is drawn in near-black
+    -- (inverted on the dark theme), `light` in near-white (inverted on the
+    -- light one). Null for an icon in its own colours, which is left exactly as
+    -- its makers drew it, and for any image nobody has measured. A property of
+    -- the file rather than of a skill, because one file is named by many rows.
+    "tone" text,
     CONSTRAINT "media_asset_storage_key_key" UNIQUE ("storage_key"),
-    CONSTRAINT "media_asset_source_check" CHECK ("source" IN ('storage', 'static'))
+    CONSTRAINT "media_asset_source_check" CHECK ("source" IN ('storage', 'static')),
+    CONSTRAINT "media_asset_tone_check" CHECK ("tone" IS NULL OR "tone" IN ('dark', 'light'))
 );--> statement-breakpoint
 
 CREATE TABLE "app"."tag" (

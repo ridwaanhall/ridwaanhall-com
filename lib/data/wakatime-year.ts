@@ -109,8 +109,14 @@ type YearDays = { data?: { days?: { date?: string; total?: number }[] } };
  * rather than shown, because that is the point where the row prints "0%" beside
  * a bar with no width, and a reader takes that for a broken row rather than a
  * small one. The rows that survive are the ones the panel can actually draw.
+ *
+ * The denominator is the breakdown's own total, never the year's. WakaTime's
+ * `total_seconds` leaves out time it files under "Other", while the systems
+ * breakdown counts all of it -- so Windows was drawn at 101% of a year it was
+ * only part of. A breakdown's rows always add up to the whole they share.
  */
-function topThree(rows: NamedTotal[] | undefined, whole: number): WakatimeEntry[] {
+export function topThree(rows: NamedTotal[] | undefined): WakatimeEntry[] {
+  const whole = (rows ?? []).reduce((sum, row) => sum + (row.total_seconds ?? 0), 0);
   return (rows ?? [])
     .map((row) => ({
       name: row.name ?? "Unknown",
@@ -174,9 +180,9 @@ async function fetchWakatimeYear(apiKey: string): Promise<WakatimeYear | null> {
     tokens: compactNumber(tokensIn + (data.ai_output_tokens ?? 0)),
     tokens_exact: `${count(tokensIn)} in + ${count(data.ai_output_tokens ?? 0)} out`,
 
-    languages: topThree(data.languages, total),
-    projects: topThree(data.projects, total),
-    systems: topThree(data.operating_systems, total),
+    languages: topThree(data.languages),
+    projects: topThree(data.projects),
+    systems: topThree(data.operating_systems),
 
     weeks,
     months,

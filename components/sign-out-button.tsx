@@ -27,9 +27,14 @@ import { useConfirm } from "@/components/providers/confirm-dialog";
 export function SignOutButton({
   className,
   message,
+  icon,
+  role,
 }: {
-  className: string;
+  className?: string;
   message: string;
+  /** Drawn before the words, where the menu it sits in gives every row one. */
+  icon?: React.ReactNode;
+  role?: string;
 }) {
   const confirm = useConfirm();
 
@@ -49,7 +54,9 @@ export function SignOutButton({
         if (accepted) form.requestSubmit();
       }}
       className={className}
+      role={role}
     >
+      {icon}
       Sign out
     </button>
   );

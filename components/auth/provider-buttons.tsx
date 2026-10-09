@@ -24,36 +24,39 @@ const PROVIDER_CLASS =
 
 export function ProviderButtons({
   redirectTo,
-  buttonClassName = PROVIDER_CLASS,
+  site = false,
 }: {
   redirectTo: string;
-  /** The public site draws these in its own palette; the admin keeps the default. */
-  buttonClassName?: string;
+  /** The public site's buttons: GitHub filled, Google outlined. The admin keeps its own. */
+  site?: boolean;
 }) {
-  return (
-    <div className="space-y-2">
-      <form
-        action={async () => {
-          "use server";
-          await signInWith("google", redirectTo);
-        }}
-      >
-        <button type="submit" className={buttonClassName}>
-          <Brand name="google" className="h-[18px] w-[18px]" />
-          Continue with Google
-        </button>
-      </form>
-      <form
-        action={async () => {
-          "use server";
-          await signInWith("github", redirectTo);
-        }}
-      >
-        <button type="submit" className={buttonClassName}>
-          <Brand name="github" className="h-[18px] w-[18px]" />
-          Continue with GitHub
-        </button>
-      </form>
-    </div>
+  const github = (
+    <form
+      key="github"
+      action={async () => {
+        "use server";
+        await signInWith("github", redirectTo);
+      }}
+    >
+      <button type="submit" className={site ? "btn wide" : PROVIDER_CLASS}>
+        <Brand name="github" size={18} />
+        Continue with GitHub
+      </button>
+    </form>
   );
+  const google = (
+    <form
+      key="google"
+      action={async () => {
+        "use server";
+        await signInWith("google", redirectTo);
+      }}
+    >
+      <button type="submit" className={site ? "btn ghost wide" : PROVIDER_CLASS}>
+        <Brand name="google" size={18} />
+        Continue with Google
+      </button>
+    </form>
+  );
+  return <div className={site ? "provider-buttons" : "space-y-2"}>{site ? [github, google] : [google, github]}</div>;
 }

@@ -1,26 +1,34 @@
-import { Bar, CardsSkeleton, GlanceSkeleton, PageSkeleton } from "@/components/foothill/skeleton";
+import { Bar, CardsSkeleton, PageSkeleton } from "@/components/foothill/skeleton";
 
-/** The home page while it loads: the name and what is newest, then the work. */
+/** Home while it loads: the name and the role, the ticker, then the work. */
 export default function Loading() {
   return (
     <PageSkeleton>
-      <div className="grid items-end gap-12 lg:grid-cols-12 lg:gap-10">
-        <div className="lg:col-span-8">
-          <Bar className="h-[clamp(2.3rem,1.35rem+3.45vw,4.3rem)] w-[75%] max-w-[16ch]" />
-          <Bar className="mt-7 h-7 w-[80%] max-w-[30ch]" />
-          <Bar className="mt-3 h-5 w-full max-w-[46ch]" />
-          <Bar className="mt-2 h-5 w-[60%] max-w-[30ch]" />
-          <div className="mt-10 flex gap-3">
-            <Bar className="h-12 w-40 rounded-full" />
-            <Bar className="h-12 w-36 rounded-full" />
+      <section className="wrap hero">
+        <div style={{ display: "grid", gap: 16, alignContent: "end" }}>
+          <Bar w={220} h={30} />
+          <Bar w="72%" h="clamp(48px, 8vw, 84px)" />
+          <Bar w="44%" h={24} />
+          <Bar w="58%" h={18} />
+          <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
+            <Bar w={150} h={44} r="var(--fh-r-m)" />
+            <Bar w={140} h={44} r="var(--fh-r-m)" />
           </div>
         </div>
-        <div className="lg:col-span-4 lg:col-start-9">
-          <GlanceSkeleton rows={4} />
+      </section>
+      <div className="wrap">
+        <div className="ticker">
+          {Array.from({ length: 4 }, (_, i) => (
+            <div key={i}>
+              <Bar w={70} h={12} />
+              <Bar w="70%" h={16} />
+            </div>
+          ))}
         </div>
       </div>
-      <Bar className="mt-32 h-11 w-56 md:mt-44" />
-      <CardsSkeleton className="mt-12" />
+      <section className="wrap sec" style={{ borderTop: 0 }}>
+        <CardsSkeleton count={3} />
+      </section>
     </PageSkeleton>
   );
 }

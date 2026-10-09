@@ -2,267 +2,415 @@ import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import { H1, H2, LEAD, LINE_BUTTON, SOLID_BUTTON } from "@/components/foothill/classes";
-import { Icon, type IconName } from "@/components/foothill/icons";
-import { CountUp, Reveal, Roll } from "@/components/foothill/motion";
-import { statusDot } from "@/lib/site/status-colors";
+import { Brand, Icon, type IconName } from "@/components/foothill/icons";
+import { MarkdownChips } from "@/components/foothill/markdown";
 import { cn } from "@/lib/utils/cn";
 
-/**
- * Every link that is an action rather than a word in a sentence: a button
- * shaped link, or a quiet one with an arrow.
+/*
+ * The public site's vocabulary of small parts: tags, the facts beside a
+ * title, section headings, buttons, links, thumbnails, logos and the empty
+ * state. Pure markup, so a page stays a server component while using them;
+ * anything that keeps state lives in `controls.tsx`.
  *
- * One component so the three shapes cannot drift: the label rolls on hover,
- * the arrow is the same SVG everywhere and moves the way its direction says
- * -- forward for a page on this site, up and out for somewhere else.
+ * Class names are the ones styles/site.css defines under `.fh-site`.
  */
-export function ActionLink({
-  href,
-  children,
-  variant = "text",
-  icon,
-  external,
-  download,
-  className,
-}: {
-  href: string;
-  children: string;
-  variant?: "solid" | "line" | "text";
-  icon?: IconName | null;
-  /** Opens elsewhere: a new tab, and the up-and-out arrow. Inferred from the href. */
-  external?: boolean;
-  download?: boolean;
-  className?: string;
-}) {
-  const away = external ?? /^(https?:|mailto:)/.test(href);
-  const glyph = icon === null ? null : (icon ?? (away ? "arrow-up-right" : "arrow-right"));
-  const classes = cn(
-    variant === "solid" && SOLID_BUTTON,
-    variant === "line" && LINE_BUTTON,
-    variant === "text" &&
-      "group inline-flex items-center gap-2 text-[15px] font-medium text-ink",
-    className,
-  );
-  const back = glyph === "arrow-left";
-  const body = (
-    <>
-      {!back && <Roll>{children}</Roll>}
-      {glyph && (
-        <Icon
-          name={glyph}
-          className={cn(
-            "transition-transform duration-500 ease-[cubic-bezier(.2,.8,.2,1)]",
-            glyph === "arrow-up-right"
-              ? "group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              : glyph === "arrow-left"
-                ? "group-hover:-translate-x-1"
-                : glyph === "arrow-down"
-                  ? "group-hover:translate-y-0.5"
-                  : "group-hover:translate-x-1",
-          )}
-        />
-      )}
-      {back && <Roll>{children}</Roll>}
-    </>
-  );
 
-  if (away || download)
-    return (
-      <a
-        href={href}
-        className={classes}
-        {...(away ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-        {...(download ? { download: true } : {})}
-      >
-        {body}
-      </a>
-    );
-  return (
-    <Link href={href as Route} className={classes}>
-      {body}
-    </Link>
-  );
-}
+/* ------------------------------------------------------------------ status */
+
+type TagKind = "solid" | "" | "dashed" | "strike";
 
 /**
- * A section's title, rising into place line by line as it is reached, with
- * how many entries sit under it set small against its first line -- "Writing
- * 20" tells a reader how much the few shown are drawn from, without a kicker
- * above the title saying so.
+ * A project's lifecycle as a tag's line, never as a colour: filled when it is
+ * done, outlined while in progress, dashed while planned or waiting, struck
+ * when it stopped. Keyed on the status slug, which is the identifier; the
+ * label beside it is editorial and is only ever rendered.
  */
-export function Heading({
-  id,
-  children,
-  count,
-  className,
-}: {
-  id?: string;
-  children: string;
-  count?: number;
-  className?: string;
-}) {
+export const PHASE: Record<string, TagKind> = {
+  "planning-requirements": "dashed",
+  design: "dashed",
+  "development-in-progress": "",
+  "code-review": "",
+  "testing-qa": "",
+  reopened: "",
+  "update-required": "",
+  "deployment-released": "solid",
+  "maintenance-support": "solid",
+  completed: "solid",
+  "on-hold": "dashed",
+  cancelled: "strike",
+};
+
+const PHASE_TIP: Record<TagKind, string> = {
+  solid: "finished, and live or delivered",
+  "": "in progress",
+  dashed: "planned, or on hold",
+  strike: "stopped",
+};
+
+export function Tag({ kind = "", className, children, title }: { kind?: TagKind; className?: string; children: React.ReactNode; title?: string }) {
   return (
-    <h2 id={id} className={cn(H2, "flex items-start gap-[0.25em]", className)}>
-      <Reveal as="span" lines className="block">
-        {children}
-      </Reveal>
-      {count !== undefined && (
-        <span className="mt-[0.1em] shrink-0 font-text text-[0.32em] font-normal tracking-normal text-mute">
-          <CountUp value={count} />
-        </span>
-      )}
-    </h2>
+    <span className={cn("tag", kind, className)} title={title}>
+      {children}
+    </span>
   );
 }
 
-/** The opening of a section: its title and count, and the way to the rest. */
-export function SectionHead({
-  title,
-  count,
-  href,
-  linkLabel,
-  id,
-  className,
-}: {
-  title: string;
-  count?: number;
-  href?: string;
-  linkLabel?: string;
-  id?: string;
-  className?: string;
-}) {
+/** A status says what it means on hover, and to a screen reader as "Status: Completed". */
+export function ProjectStatus({ slug, label }: { slug: string; label: string }) {
+  const kind = PHASE[slug] ?? "dashed";
   return (
-    <div className={cn("flex flex-wrap items-end justify-between gap-x-8 gap-y-4", className)}>
-      <Heading id={id} count={count}>
-        {title}
-      </Heading>
-      {href && linkLabel && <ActionLink href={href}>{linkLabel}</ActionLink>}
-    </div>
-  );
-}
-
-/** A project status: a coloured dot and its label. */
-export function StatusDot({
-  label,
-  color,
-  className,
-}: {
-  label: string;
-  color: string;
-  className?: string;
-}) {
-  if (!label) return null;
-  return (
-    <span className={cn("inline-flex items-center gap-2", className)}>
-      <span
-        aria-hidden="true"
-        className="h-[7px] w-[7px] shrink-0 rounded-full"
-        style={{ backgroundColor: statusDot(color) }}
-      />
+    <span className={cn("tag", kind)} title={`${label}: ${PHASE_TIP[kind]}`}>
+      <span className="sr">Status: </span>
       {label}
     </span>
   );
 }
 
-/**
- * A page's heading block: the title, a lead, and whatever the page puts under
- * them. What kind of page this is lives in the navbar's current link and the
- * document title, so there is no label above it.
- */
-export function PageHead({
-  title,
-  lead,
-  aside,
-  children,
-  className,
-}: {
-  title: React.ReactNode;
-  lead?: React.ReactNode;
-  /**
-   * What sits to the right of the heading on a wide screen, and under it on a
-   * narrow one: a few facts about the page (`Glance`), or the portrait. A
-   * heading alone used a third of the frame and left the rest of it empty.
-   */
-  aside?: React.ReactNode;
-  children?: React.ReactNode;
-  className?: string;
-}) {
-  const text = (
-    <>
-      <h1 data-fh-split className={H1}>
-        {title}
-      </h1>
-      {lead && (
-        <p data-fh-enter className={cn(LEAD, "mt-7 max-w-[56ch]")}>
-          {lead}
-        </p>
-      )}
-      {children}
-    </>
-  );
-  if (!aside) return <header className={cn("fh-frame max-w-[980px]", className)}>{text}</header>;
+/** The four tag shapes, explained once beside the filters that use them. */
+export function StatusKey() {
   return (
-    <header className={cn("fh-frame grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-10", className)}>
-      <div className="lg:col-span-8">{text}</div>
-      <div data-fh-enter className="lg:col-span-4">
-        {aside}
-      </div>
-    </header>
+    <div className="status-key" aria-label="What the status tags mean">
+      <span className="meta">Status</span>
+      <Tag kind="solid">Finished</Tag>
+      <Tag>In progress</Tag>
+      <Tag kind="dashed">Planned or on hold</Tag>
+      <Tag kind="strike">Stopped</Tag>
+    </div>
   );
 }
 
-/** A few facts about a page, ruled, for the right of its heading. */
-export function Glance({ items }: { items: { label: string; value: React.ReactNode }[] }) {
+/* --------------------------------------------------------------- the frame */
+
+/** Ruled facts beside a page title, drawn from what the page already loaded. */
+export function Facts({ rows }: { rows: [React.ReactNode, React.ReactNode][] }) {
   return (
-    <dl className="border-t border-line">
-      {items.map((item) => (
-        <Fact key={item.label} label={item.label}>
-          {item.value}
-        </Fact>
+    <dl className="facts">
+      {rows.map(([term, value], index) => (
+        <div key={index}>
+          <dt>{term}</dt>
+          <dd>{value}</dd>
+        </div>
       ))}
     </dl>
   );
 }
 
-/** A key and its value, for the ruled fact lists on detail pages. */
-export function Fact({ label, children }: { label: string; children: React.ReactNode }) {
+/**
+ * A page's opening: the title and its lead on the left, a few ruled facts on
+ * the right, and under the title the page's Markdown twin. The title rises
+ * by line (`data-fh-split`), the facts arrive just after (`data-fh-enter`).
+ */
+export function PageHead({
+  title,
+  lead,
+  facts,
+  crumb,
+  markdown,
+  children,
+}: {
+  title: React.ReactNode;
+  lead?: React.ReactNode;
+  facts?: [React.ReactNode, React.ReactNode][];
+  crumb?: React.ReactNode;
+  /** The page's path, whose `.md` twin the chips under the title open. */
+  markdown?: string;
+  children?: React.ReactNode;
+}) {
   return (
-    <div className="flex items-baseline justify-between gap-6 border-b border-line py-3 text-[15px]">
-      <dt className="shrink-0 text-mute">{label}</dt>
-      <dd className="text-right text-ink">{children}</dd>
+    <section className="head wrap">
+      <div>
+        {crumb}
+        <h1 className="t1" data-fh-split="">
+          {title}
+        </h1>
+        {lead && <p className="lead">{lead}</p>}
+        {children}
+        {markdown && <MarkdownChips path={markdown} />}
+      </div>
+      {facts && facts.length > 0 && (
+        <div data-fh-enter="">
+          <Facts rows={facts} />
+        </div>
+      )}
+    </section>
+  );
+}
+
+/** The way back from a detail page to its index. */
+export function Crumb({ href, children }: { href: Route; children: React.ReactNode }) {
+  return (
+    <Link className="crumb" href={href}>
+      <Icon name="back" />
+      {children}
+    </Link>
+  );
+}
+
+/** A section's title with its count set small beside it, and a note under it. */
+export function Heading({
+  title,
+  count,
+  note,
+  id,
+  children,
+}: {
+  title: React.ReactNode;
+  count?: number | string | null;
+  note?: React.ReactNode;
+  id?: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="sec-h">
+      <div>
+        <h2 className="t2" id={id}>
+          {title}
+          {count != null && <sup>{count}</sup>}
+        </h2>
+        {note && <p>{note}</p>}
+      </div>
+      {children}
     </div>
   );
 }
 
+/* --------------------------------------------------------- links, buttons */
+
+const isAway = (href: string) => /^(https?:|mailto:)/.test(href);
+
 /**
- * An organisation's logo, or its initials when it has none.
- *
- * Most organisations have no logo on file, so the fallback is the common case
- * and is drawn to sit beside a real logo without looking like a missing image.
- * Logos are shown in grey and take their colour back on hover.
+ * A link that is an action rather than a word in a sentence: an icon for what
+ * it does, and an underline that draws in on hover. A link that leaves the
+ * site gets the up-and-out arrow and opens in a new tab.
  */
-export function Logo({ src, name, className }: { src: string; name: string; className?: string }) {
-  const box = cn("relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-[10px]", className);
-  if (!src) {
-    const initials = name
-      .split(/\s+/)
-      .filter((word) => /^[A-Za-z0-9]/.test(word))
-      .slice(0, 2)
-      .map((word) => word[0].toUpperCase())
-      .join("");
+export function TextLink({
+  href,
+  icon,
+  brand,
+  children,
+  className,
+}: {
+  href: string;
+  icon?: IconName;
+  brand?: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const away = isAway(href);
+  const glyph = brand ? <Brand name={brand} size={15} /> : <Icon name={icon ?? (away ? "out" : "layers")} />;
+  const body = (
+    <>
+      {glyph}
+      <span>{children}</span>
+    </>
+  );
+  return away ? (
+    <a className={cn("tl", className)} href={href} target="_blank" rel="noopener noreferrer">
+      {body}
+    </a>
+  ) : (
+    <Link className={cn("tl", className)} href={href as Route}>
+      {body}
+    </Link>
+  );
+}
+
+/** The filled and outlined buttons, as links. A button that runs code is `ActionButton`. */
+export function Button({
+  href,
+  icon,
+  brand,
+  ghost,
+  sm,
+  wide,
+  download,
+  children,
+  className,
+}: {
+  href: string;
+  icon?: IconName;
+  brand?: string;
+  ghost?: boolean;
+  sm?: boolean;
+  wide?: boolean;
+  download?: boolean;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const classes = cn("btn", ghost && "ghost", sm && "sm", wide && "wide", className);
+  const body = (
+    <>
+      {brand ? <Brand name={brand} /> : icon ? <Icon name={icon} /> : null}
+      {children}
+    </>
+  );
+  if (isAway(href) || download)
     return (
-      <span aria-hidden="true" className={cn(box, "border border-line bg-raise font-display text-[13px] font-semibold text-mute")}>
-        {initials || "·"}
+      <a className={classes} href={href} {...(download ? { download: true } : { target: "_blank", rel: "noopener noreferrer" })}>
+        {body}
+      </a>
+    );
+  return (
+    <Link className={classes} href={href as Route}>
+      {body}
+    </Link>
+  );
+}
+
+/* ------------------------------------------------------------ pictures */
+
+/**
+ * A screenshot or a cover, in its own colour, in a 6px frame. Without an
+ * image the frame keeps its shape and carries the title instead, so a card
+ * with nothing to show still lines up with its neighbours.
+ */
+export function Thumb({
+  src,
+  alt,
+  title,
+  sizes = "(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw",
+  priority = false,
+  ratio,
+  eye = true,
+}: {
+  src: string | null | undefined;
+  alt: string;
+  title: string;
+  sizes?: string;
+  priority?: boolean;
+  ratio?: string;
+  eye?: boolean;
+}) {
+  return (
+    <div className="thumb" style={ratio ? { aspectRatio: ratio } : undefined}>
+      {src ? (
+        <Image src={src} alt={alt} fill sizes={sizes} priority={priority} />
+      ) : (
+        <div className="noimg">{title}</div>
+      )}
+      {eye && (
+        <span className="go" aria-hidden="true">
+          <Icon name="eye" />
+        </span>
+      )}
+    </div>
+  );
+}
+
+export const initials = (name: string) =>
+  (name || "?")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+
+/** An organisation's logo on a white tile, or its initials when there is none. */
+export function Logo({ src, name, size }: { src?: string | null; name: string; size?: number }) {
+  const box = size ? { width: size, height: size } : undefined;
+  if (!src)
+    return (
+      <span className="logo mono-tile" style={size ? { ...box, fontSize: size / 3 } : undefined} aria-hidden="true">
+        {initials(name)}
       </span>
     );
-  }
   return (
-    // The logo fills its rounded square edge to edge, with no border and no
-    // inset: a mark set inside a second box reads as a card within a card.
-    // The light plate only shows through a logo drawn on transparency, which
-    // would otherwise vanish against the dark theme.
-    <span className={cn(box, "fh-print")}>
-      <Image src={src} alt={`${name} logo`} fill sizes="44px" className="fh-logo object-contain" />
+    <span className="logo" style={box}>
+      {/* eslint-disable-next-line @next/next/no-img-element -- a small logo from the bucket, any aspect */}
+      <img src={src} alt="" loading="lazy" />
+    </span>
+  );
+}
+
+/* ------------------------------------------------------------- empty state */
+
+/**
+ * What a list or a panel says when there is nothing to show: that nothing is
+ * wrong, when it will fill in, and where to go meanwhile. A dashed box with an
+ * icon that draws itself in -- never a blank gap, never a spinner that does
+ * not stop.
+ */
+export function Empty({
+  icon = "inbox",
+  title,
+  note,
+  action,
+  small,
+  className,
+}: {
+  icon?: IconName;
+  title: React.ReactNode;
+  note?: React.ReactNode;
+  action?: React.ReactNode;
+  small?: boolean;
+  className?: string;
+}) {
+  return (
+    <div className={cn("empty", small && "small", className)}>
+      <span className="empty-ic">
+        <Icon name={icon} className="draw" />
+      </span>
+      <div style={{ display: "grid", gap: 4, minWidth: 0 }}>
+        <b>{title}</b>
+        {note && <span className="meta">{note}</span>}
+      </div>
+      {action && <div className="empty-act">{action}</div>}
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- skills */
+
+export type SkillIcon = {
+  name: string;
+  /** The icon's URL, from the bucket. */
+  icon: string | null;
+  /** Measured once: drawn in near-black (inverted on dark) or near-white (inverted on light). */
+  tone?: "dark" | "light" | null;
+};
+
+/** The icon alone, inverted on the theme it would vanish against. */
+export function SkillGlyph({ skill }: { skill: SkillIcon }) {
+  if (!skill.icon) return <span className="ic">{skill.name.slice(0, 2)}</span>;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- an SVG from the bucket, drawn at 18px
+    <img
+      src={skill.icon}
+      alt=""
+      width={18}
+      height={18}
+      loading="lazy"
+      className={skill.tone === "dark" ? "inv-dark" : skill.tone === "light" ? "inv-light" : undefined}
+    />
+  );
+}
+
+/** A skill with its own icon in its own colour. */
+export function SkillChip({ skill }: { skill: SkillIcon }) {
+  return (
+    <span className="sk">
+      <SkillGlyph skill={skill} />
+      {skill.name}
+    </span>
+  );
+}
+
+/** Live and source, as two small marks with their meaning on hover or tap. */
+export function Avail({ demo, source }: { demo: boolean; source: boolean }) {
+  if (!demo && !source) return null;
+  return (
+    <span className="avail">
+      {demo && (
+        <span title="A live version to try" tabIndex={0} aria-label="Live to try">
+          <Icon name="globe" size={14} />
+        </span>
+      )}
+      {source && (
+        <span title="Source on GitHub" tabIndex={0} aria-label="Source on GitHub">
+          <Brand name="github" size={14} />
+        </span>
+      )}
     </span>
   );
 }

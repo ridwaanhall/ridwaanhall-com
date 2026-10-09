@@ -319,6 +319,7 @@ export const mediaAsset = app.table("media_asset", {
   alt: text().notNull().default(''),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
   source: text().notNull().default('storage'),
+  tone: text(),
 });
 
 export const noticePeriod = app.table("notice_period", {

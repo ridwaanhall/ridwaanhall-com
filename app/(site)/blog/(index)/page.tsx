@@ -1,104 +1,113 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 
-import { META } from "@/components/foothill/classes";
-import { Icon } from "@/components/foothill/icons";
-import { MAIN, WRAP } from "@/components/foothill/layout";
-import { BlogResults } from "@/components/foothill/listing";
-import { CountUp, PageMotion, Reveal } from "@/components/foothill/motion";
-import { postCard } from "@/components/foothill/rows";
-import { ResultsSkeleton } from "@/components/foothill/skeleton";
-import { Glance, PageHead } from "@/components/foothill/ui";
+import { PostCard } from "@/components/foothill/cards";
+import { MAIN } from "@/components/foothill/layout";
+import { PageMotion, Reveal } from "@/components/foothill/motion";
+import { postView } from "@/components/foothill/rows";
+import { InlineSkeleton, RowSkeleton } from "@/components/foothill/skeleton";
+import { Button, Empty, Heading, PageHead } from "@/components/foothill/ui";
+import { WritingIndex } from "@/components/foothill/writing";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { getAboutData } from "@/lib/data/about";
-import { getBlogs } from "@/lib/data/content";
+import { featuredBlogs, getBlogs, searchBlogs, type BlogPost } from "@/lib/data/content";
 import { blogListSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { blogListSchemas } from "@/lib/seo/schemas-for-page";
-import { readingMinutes, shortDate } from "@/lib/site/display";
 import { readListingParams, type ListingSearchParams } from "@/lib/site/listing";
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: ListingSearchParams;
-}): Promise<Metadata> {
-  const [{ page }, about, blogs] = await Promise.all([
-    readListingParams(searchParams),
-    getAboutData(),
-    getBlogs(),
-  ]);
+export async function generateMetadata(): Promise<Metadata> {
+  const [about, blogs] = await Promise.all([getAboutData(), getBlogs()]);
   if (!about) return {};
-  return buildMetadata(blogListSeo(about, blogs, page), about);
+  return buildMetadata(blogListSeo(about, blogs, 1), about);
+}
+
+/** The request-dependent half: reading `?q=` makes this part dynamic. */
+async function Index({ posts, searchParams }: { posts: BlogPost[]; searchParams: ListingSearchParams }) {
+  const { query } = await readListingParams(searchParams);
+  return (
+    <WritingIndex
+      posts={posts.map(postView)}
+      initialQuery={query}
+      serverMatches={query ? searchBlogs(posts, query).map((post) => post.slug) : null}
+    />
+  );
 }
 
 export default async function BlogPage({ searchParams }: { searchParams: ListingSearchParams }) {
   const [about, posts] = await Promise.all([getAboutData(), getBlogs()]);
   if (!about) return null;
 
-  // The post to start with: the newest one the owner has marked as featured,
-  // or simply the newest.
-  const lead = postCard(posts.find((post) => post.is_featured) ?? posts[0]);
-  const minutes = posts.reduce((sum, post) => sum + readingMinutes(post.read_time, post.content_html), 0);
-  const latest = posts[0];
+  const mostRead = [...posts].sort((a, b) => b.views - a.views)[0];
+  const reads = posts.reduce((sum, post) => sum + post.views, 0);
+  const featured = featuredBlogs(posts).slice(0, 3).map(postView);
 
   return (
     <main className={MAIN}>
       <JsonLdScript schemas={blogListSchemas(about, posts)} />
-      <div className={WRAP}>
+      <div>
         <PageHead
           title="Mostly about code, sometimes about everything else."
-          lead="Building software, keeping open APIs alive, and what I think about away from the keyboard."
-          aside={
-            <Glance
-              items={[
-                { label: "Posts", value: <CountUp value={posts.length} /> },
-                { label: "To read them all", value: <><CountUp value={Math.round(minutes / 6) / 10} decimals={1} /> hrs</> },
-                ...(latest ? [{ label: "Last written", value: shortDate(latest.created_at) }] : []),
-              ]}
-            />
-          }
+          lead="Notes on building APIs and models, guides I wished existed, and things I wanted to think through in writing."
+          markdown="/blog"
+          facts={[
+            ["Posts", posts.length],
+            ["Read", `${reads.toLocaleString("en-US")} times`],
+            [
+              "Most read",
+              mostRead ? (
+                <Link className="ul" href={`/blog/${mostRead.slug}`}>
+                  {mostRead.title}
+                </Link>
+              ) : (
+                "–"
+              ),
+            ],
+            ["Latest", posts[0] ? postView(posts[0]).date : "–"],
+          ]}
         />
-
-        {posts.length > 0 && (
-          <Reveal as="section" aria-label="Start here" className="mt-16 md:mt-24">
-            <Link href={lead.href as `/blog/${string}`} className="group grid items-end gap-8 lg:grid-cols-12 lg:gap-10">
-              <div className="relative aspect-[16/10] overflow-hidden rounded-[18px] bg-raise lg:col-span-7">
-                {lead.image && (
-                  <Image
-                    src={lead.image}
-                    alt={lead.imageAlt}
-                    fill
-                    priority
-                    sizes="(min-width: 1024px) 700px, 100vw"
-                    className="object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(.2,.8,.2,1)] group-hover:scale-[1.04]"
-                  />
-                )}
-              </div>
-              <div className="lg:col-span-5 lg:pb-2">
-                <p className={META}>
-                  <span className="text-ink">Start here.</span> {lead.meta.join(", ")}
-                </p>
-                <h2 className="mt-4 font-display text-[clamp(1.6rem,1.25rem+1.6vw,2.5rem)] leading-[1.06] font-medium tracking-[-0.035em] text-ink">
-                  <span className="fh-underline">{lead.title}</span>
-                </h2>
-                <p className="mt-5 line-clamp-3 text-[17px] leading-relaxed text-mute">{lead.summary}</p>
-                <span className="mt-7 inline-flex items-center gap-2 text-[15px] font-medium text-ink">
-                  Read it
-                  <Icon name="arrow-right" className="transition-transform duration-500 group-hover:translate-x-1" />
-                </span>
-              </div>
-            </Link>
-          </Reveal>
+        {posts.length === 0 ? (
+          <section className="wrap" style={{ paddingBottom: 72 }}>
+            <Empty
+              icon="pen"
+              title="Nothing published yet"
+              note="Posts appear here newest first, with a search and a filter by topic, once the first one goes out."
+              action={
+                <Button sm ghost href="/contact" icon="mail">
+                  Suggest a topic
+                </Button>
+              }
+            />
+          </section>
+        ) : (
+          <>
+            {featured.length > 0 && (
+              <section className="wrap sec" style={{ borderTop: 0, paddingTop: 0 }}>
+                <Heading title="Start here" count={featured.length} note="Picked as the best way in." />
+                <Reveal stagger className="pgrid three">
+                  {featured.map((post) => (
+                    <PostCard key={post.slug} post={post} />
+                  ))}
+                </Reveal>
+              </section>
+            )}
+            <section className="wrap sec">
+              <Heading title="All writing" count={posts.length} note="Newest first." />
+              <Suspense
+                fallback={
+                  <InlineSkeleton label="Loading the posts">
+                    {Array.from({ length: 6 }, (_, i) => (
+                      <RowSkeleton key={i} />
+                    ))}
+                  </InlineSkeleton>
+                }
+              >
+                <Index posts={posts} searchParams={searchParams} />
+              </Suspense>
+            </section>
+          </>
         )}
-
-        <section aria-label="All writing" className="mt-24 md:mt-32">
-          <Suspense fallback={<ResultsSkeleton />}>
-            <BlogResults posts={posts} searchParams={searchParams} />
-          </Suspense>
-        </section>
       </div>
       <PageMotion />
     </main>

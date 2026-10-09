@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { signIn, signOut } from "@/auth";
+import { samePath as sameSitePath } from "@/lib/utils/same-path";
 
 /**
  * Sign-in and sign-out as server actions.
@@ -22,16 +23,10 @@ import { signIn, signOut } from "@/auth";
  * naive check and as another origin to a browser. Only a plain same-site path
  * is accepted; anything else falls back to the guestbook.
  */
-const FALLBACK = "/guestbook" as Route;
+const FALLBACK = "/guestbook";
 
-function samePath(target: string | undefined): Route {
-  if (!target || !target.startsWith("/")) return FALLBACK;
-  // A second leading `/` or `\` makes it protocol-relative, i.e. another host.
-  if (/^\/[/\\]/.test(target)) return FALLBACK;
-  // A runtime-checked path cannot be a `Route` literal, and `typedRoutes`
-  // is right to say so. The check above is what stands in for the type.
-  return target as Route;
-}
+/** A runtime-checked path cannot be a `Route` literal; the check in `samePath` stands in for the type. */
+const samePath = (target: string | undefined) => sameSitePath(target, FALLBACK) as Route;
 
 export async function signInWith(provider: "google" | "github", redirectTo?: string) {
   // Auth.js keeps this redirect: it goes to the provider, which is another

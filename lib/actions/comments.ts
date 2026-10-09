@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 
 import { auth } from "@/auth";
 import { getUserProfile } from "@/lib/auth/profile";
+import { commentsTooFast, SLOW_DOWN } from "@/lib/auth/throttle";
 import {
   canDeleteComment,
   isCommentable,
@@ -64,6 +65,8 @@ export async function postComment(formData: FormData): Promise<CommentResult> {
   if (!who.post) {
     return { ok: false, error: "This account cannot post comments." };
   }
+
+  if (await commentsTooFast(who.userId)) return { ok: false, error: SLOW_DOWN };
 
   const label = String(formData.get("content_type") ?? "");
   const targetId = String(formData.get("object_id") ?? "");

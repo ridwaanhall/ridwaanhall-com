@@ -6,6 +6,7 @@ import { after } from "next/server";
 
 import { auth } from "@/auth";
 import { getUserProfile } from "@/lib/auth/profile";
+import { guestbookTooFast, SLOW_DOWN } from "@/lib/auth/throttle";
 import { db } from "@/lib/db/client";
 import { notifyNewGuestbookMessage } from "@/lib/email/guestbook-notify";
 import { guestMessage } from "@/lib/db/app-schema";
@@ -74,6 +75,8 @@ export async function sendMessage(formData: FormData): Promise<ActionResult> {
    * with carriage returns that were never typed -- and the length checked below
    * counts one character per line that nobody wrote.
    */
+  if (await guestbookTooFast(profile.id)) return { ok: false, error: SLOW_DOWN };
+
   const text = normaliseNewlines(String(formData.get("message") ?? "")).trim();
   if (!text) return { ok: false, error: "Message cannot be empty" };
   if (text.length < MIN_MESSAGE_LENGTH) {

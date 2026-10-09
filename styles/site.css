@@ -253,7 +253,9 @@ body:has(.fh-site) {
 .fh-site .pcard:hover .thumb img { transform: scale(1.035); }
 .fh-site .thumb .go { position: absolute; right: 10px; top: 10px; width: 34px; height: 34px; border-radius: var(--fh-r-m); background: var(--fh-bg); color: var(--fh-ink); display: grid; place-items: center; opacity: 0; transition: opacity .25s; }
 .fh-site .pcard:hover .thumb .go { opacity: 1; }
-.fh-site .noimg { width: 100%; height: 100%; display: grid; place-items: center; font-family: var(--fh-display); font-size: clamp(1.2rem, 2.4vw, 1.8rem); color: var(--fh-mute); text-align: center; padding: 16px; letter-spacing: -.02em; }
+.fh-site .noimg { position: relative; width: 100%; height: 100%; display: grid; place-items: center; align-content: center; gap: 10px; font-family: var(--fh-display); font-size: clamp(1.1rem, 2.2vw, 1.6rem); line-height: 1.15; color: var(--fh-ink-2); text-align: center; padding: 20px 24px; letter-spacing: -.02em; overflow: hidden; background: repeating-linear-gradient(135deg, transparent 0 11px, var(--fh-line) 11px 12px), var(--fh-surface); }
+.fh-site .noimg::before { content: ""; width: 34px; height: 34px; border: 1px solid var(--fh-line-2); border-radius: 50%; background: var(--fh-bg); box-shadow: inset 0 0 0 9px var(--fh-bg), inset 0 0 0 10px var(--fh-line-2); }
+.fh-site .noimg > span { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; background: var(--fh-surface); padding: 2px 8px; }
 .fh-site .pcard h3 { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fh-site .pcard p { font-size: 14.5px; color: var(--fh-mute); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 3em; }
 .fh-site .prow .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

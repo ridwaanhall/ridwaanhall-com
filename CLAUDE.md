@@ -173,6 +173,17 @@ above the About heading.
   -- guessing from the file's colour values misses half of them. **Run it with
   `--apply` after uploading a skill's icon in the admin;** a new icon starts
   unmeasured and a black one is invisible on the dark theme until it is.
+- **A project's first image is its live address.** `scripts/capture-project-previews.mjs`
+  photographs each `demo_url` (dry run by default; look at the files before
+  `--apply`) and files the capture first in the gallery. A project or post with
+  no image at all draws `.noimg`, a hatched tile carrying its title, so a card
+  is never blank. A `demo_url` that stops answering should be cleared rather than
+  left to show a dead link.
+- **A band sized by the viewport crops its content differently at every width.**
+  The footer's word is fitted to the page's width by `GiantWord`, and the band
+  holding it takes its height from the same measurement; a CSS height from `vw`
+  cropped the word to a different slice at each resolution, and a scrub that
+  never completed left it half hidden. `ScrollTrigger.refresh()` follows every fit.
 - **No kicker labels, no em dashes in copy.** A section says what it is in its
   own title (`Heading`, its count set small beside it), and copy uses a comma or
   a full stop.

@@ -1007,6 +1007,18 @@ it gone is `lib/utils/sanitize.ts`, which allows `class` on one element and only
 matching `language-*`. **Never store CSS classes in the database.**
 `scripts/check-db-classes.mjs` is the guard.
 
+### A class that is also a Tailwind utility inherits the utility
+
+The back-to-top ring was `<svg className="ring">`, and `ring` is a Tailwind
+utility that sets `box-shadow: 0 0 0 1px currentColor`. Utilities live in a
+layer, so a site class beats them only on the properties it sets itself; the
+ring's rule never set `box-shadow`, so the utility applied and drew a square
+around the SVG's box. Nothing in the button's own styles showed it, which is
+why removing its fill and border twice changed nothing. Renamed `totop-ring`.
+`scripts/check-class-collisions.mjs` (offline, after a build) lists any class
+used in the public site that is also an emitted utility; `fill-ink` and
+`container` are the intended ones.
+
 ### `.gitignore` no longer blanket-ignores JSON
 
 It used to, so a database dump could not be committed by accident, and the cost

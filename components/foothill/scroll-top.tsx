@@ -36,7 +36,7 @@ export function ScrollTop() {
           whileTap={{ scale: 0.92 }}
           transition={SPRING}
         >
-          <svg className="ring" viewBox="0 0 48 48" aria-hidden="true">
+          <svg className="totop-ring" viewBox="0 0 48 48" aria-hidden="true">
             <circle cx="24" cy="24" r="23" fill="none" stroke="var(--fh-line)" strokeWidth="1" />
             <motion.circle cx="24" cy="24" r="23" fill="none" stroke="var(--fh-ink)" strokeWidth="1.5" strokeDasharray={RING} style={{ strokeDashoffset: offset }} />
           </svg>

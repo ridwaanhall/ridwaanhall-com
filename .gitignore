@@ -1,3 +1,6 @@
+*.zip
+artifacts
+
 # Dependencies
 /node_modules
 /.pnp

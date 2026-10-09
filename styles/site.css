@@ -124,7 +124,7 @@ body:has(.fh-site) {
 /* The back-to-top button is a circle already drawn by its ring; the keyboard
    focus is the ring thickening, never a box around it. */
 .fh-site .totop:focus, .fh-site .totop:focus-visible { outline: none; }
-.fh-site .totop:focus-visible svg.ring circle:last-child { stroke-width: 3; }
+.fh-site .totop:focus-visible svg.totop-ring circle:last-child { stroke-width: 3; }
 .fh-site .mono { font-family: var(--fh-mono); font-size: 12px; letter-spacing: 0; font-feature-settings: "zero", "ss01"; }
 .fh-site .num { font-variant-numeric: tabular-nums; }
 .fh-site .mute { color: var(--fh-mute); }
@@ -742,7 +742,8 @@ body:has(.fh-site) {
 .fh-site .palette .foot-hint { display: flex; gap: 18px; padding: 12px 20px; border-top: 1px solid var(--fh-line); font-size: 12px; color: var(--fh-mute); }
 .fh-site .palette kbd { font-family: var(--fh-mono); font-size: 11px; border: 1px solid var(--fh-line-2); border-radius: var(--fh-r-s); padding: 0 4px; margin-right: 4px; }
 .fh-site .totop { position: fixed; right: calc(var(--fh-gut) - 4px); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 40; width: 48px; height: 48px; border-radius: 50%; border: 0; padding: 0; background: none; -webkit-tap-highlight-color: transparent; display: grid; place-items: center; cursor: pointer; color: var(--fh-ink); }
-.fh-site .totop svg.ring { position: absolute; inset: -1px; width: 48px; height: 48px; transform: rotate(-90deg); }
+/* Named totop-ring, not ring: ring is also a Tailwind utility, and its box-shadow drew a square around this SVG. */
+.fh-site .totop svg.totop-ring { box-shadow: none; position: absolute; inset: -1px; width: 48px; height: 48px; transform: rotate(-90deg); }
 .fh-site .cursor { position: fixed; left: 0; top: 0; z-index: 90; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #fff; mix-blend-mode: difference; pointer-events: none; }
 @media (hover: none), (pointer: coarse) { .fh-site .cursor { display: none; } }
 @media (prefers-reduced-motion: reduce) { .fh-site, .fh-site *, .fh-site *::before, .fh-site *::after { transition-duration: .01ms !important; } }

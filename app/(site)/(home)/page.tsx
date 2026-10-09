@@ -1,21 +1,26 @@
-import type { Metadata } from "next";
+import type { Metadata, Route } from "next";
+import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 
-import { CardGrid } from "@/components/foothill/cards";
-import { H1, H3, LEAD, META } from "@/components/foothill/classes";
-import { MAIN, WRAP } from "@/components/foothill/layout";
-import { PageMotion, Reveal } from "@/components/foothill/motion";
-import { featuredProjects, monthYearLabel, postCard, projectCard } from "@/components/foothill/rows";
+import { PostCard, ProjectCard } from "@/components/foothill/cards";
+import { LocalClock } from "@/components/foothill/controls";
+import { Icon } from "@/components/foothill/icons";
+import { MAIN } from "@/components/foothill/layout";
+import { CountUp, PageMotion, Reveal, TiltedRow } from "@/components/foothill/motion";
+import { featuredProjects, inProgress, monthYearLabel, postView, projectView, type ProjectView } from "@/components/foothill/rows";
 import { SkillMarquee } from "@/components/foothill/skill-marquee";
-import { ActionLink, Glance, Heading, Logo, SectionHead } from "@/components/foothill/ui";
+import { Button, Empty, Heading, Logo, ProjectStatus, TextLink } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
-import { getAboutData, getExperiences, getSkills } from "@/lib/data/about";
+import { getAboutData, getCertifications, getExperiences, getSkills } from "@/lib/data/about";
 import { getBlogs, getProjects, sortProjects } from "@/lib/data/content";
+import { getGitHubStats } from "@/lib/data/github";
+import { getOpenToWorkData } from "@/lib/data/openhire";
+import { getWakatimeStats } from "@/lib/data/wakatime";
 import { homepageSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { homepageSchemas } from "@/lib/seo/schemas-for-page";
-import { availability, basedIn, newest } from "@/lib/site/display";
-import { MARQUEE_SEEDS, shuffle } from "@/lib/utils/shuffle";
+import { skillIcon, wholeHours } from "@/lib/site/skills";
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutData();
@@ -26,224 +31,304 @@ export async function generateMetadata(): Promise<Metadata> {
 const sentence = (text: string) => (text ? text[0].toUpperCase() + text.slice(1) : text);
 const listed = (names: string[]) =>
   names.length > 1 ? `${names.slice(0, -1).join(", ")} and ${names.at(-1)}` : (names[0] ?? "");
-// Lower-case a sentence's first letter to run it on after a comma -- but not
-// a name: "RoneAI" stays as it is.
-const lower = (text: string) => {
-  const word = text.split(" ")[0] ?? "";
-  return word.slice(1) === word.slice(1).toLowerCase() ? text.charAt(0).toLowerCase() + text.slice(1) : text;
-};
+
+/** The lifecycle as five stages, and the status slugs that sit in each. */
+const STAGES: [string, string[]][] = [
+  ["Planning", ["planning-requirements", "on-hold"]],
+  ["Design", ["design"]],
+  ["Building", ["development-in-progress", "code-review", "reopened", "update-required"]],
+  ["Testing", ["testing-qa"]],
+  ["Released", ["deployment-released", "maintenance-support", "completed"]],
+];
+
+/** What is in progress, from the projects themselves; gone when nothing is. */
+function Building({ projects }: { projects: ProjectView[] }) {
+  const list = inProgress(projects).slice(0, 2);
+  if (!list.length) return null;
+  return (
+    <section className="wrap" style={{ paddingTop: 28 }} aria-labelledby="building-h">
+      <div className="building">
+        <div className="building-h">
+          <span id="building-h" className="mono mute">
+            Currently building
+          </span>
+          <span className="meta">{list.length === 1 ? "One project in progress" : `${list.length} projects in progress`}</span>
+        </div>
+        {list.map((project) => {
+          const at = Math.max(0, STAGES.findIndex(([, slugs]) => slugs.includes(project.status)));
+          return (
+            <Link key={project.slug} href={`/projects/${project.slug}` as Route} className="b-row">
+              <span className="mini">{project.image && <Image src={project.image} alt="" width={120} height={75} />}</span>
+              <span className="b-main">
+                <span className="b-t">
+                  <b>{project.title}</b>
+                  <ProjectStatus slug={project.status} label={project.statusLabel} />
+                </span>
+                <span className="meta b-s">{project.headline}</span>
+                <span className="phases" aria-label={`Stage ${at + 1} of ${STAGES.length}: ${STAGES[at][0]}`}>
+                  {STAGES.map(([label], i) => (
+                    <span key={label} className={i < at ? "ph done" : i === at ? "ph now" : "ph"}>
+                      <i />
+                      <span className="mono">{label}</span>
+                    </span>
+                  ))}
+                </span>
+                <span className="mono mute b-d">
+                  Started {project.started} · updated {project.updated}
+                  {project.stack.length > 0 && ` · ${project.stack.join(", ")}`}
+                </span>
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+type Counted = { value: number | null; label: string };
+
+/** The four capsules. A figure not yet known reads as a dash, never as zero. */
+function Caps({ figures }: { figures: Counted[] }) {
+  return (
+    <TiltedRow className="caps">
+      {figures.map(({ value, label }) => (
+        <div key={label} className="cap">
+          <b className={value == null ? "num mute" : "num"}>{value == null ? "–" : <CountUp value={value} />}</b>
+          <span>{label}</span>
+        </div>
+      ))}
+    </TiltedRow>
+  );
+}
+
+/**
+ * The row with its two live figures, streamed: an upstream that is slow holds
+ * up only these, and the fallback is the same row with dashes where they go.
+ */
+async function LiveCaps({ username, fixed }: { username: string; fixed: Counted[] }) {
+  const [stats, github] = await Promise.all([
+    getWakatimeStats(process.env.WAKATIME_API_KEY ?? ""),
+    getGitHubStats(username, process.env.GITHUB_ACCESS_TOKEN ?? ""),
+  ]);
+  return (
+    <Caps
+      figures={[
+        ...fixed,
+        { value: stats ? wholeHours(stats.all_time_coding) : null, label: "hours in the editor" },
+        { value: github ? github.total_contributions : null, label: "contributions this year" },
+      ]}
+    />
+  );
+}
 
 export default async function HomePage() {
-  const [about, blogs, projects, skills, current] = await Promise.all([
+  const [about, blogs, projects, skills, current, certifications, openToWork] = await Promise.all([
     getAboutData(),
     getBlogs(),
     getProjects(),
     getSkills(),
     getExperiences(true),
+    getCertifications(),
+    getOpenToWorkData(),
   ]);
   if (!about) return null;
 
-  const sorted = sortProjects(projects);
-  const featured = featuredProjects(sorted);
-  const selected = (featured.length ? featured : sorted).slice(0, 4);
-  const status = availability(about);
-  const highlighted = new Set(about.skills);
-  const rest = shuffle(
-    skills.filter((skill) => !highlighted.has(skill.name)),
-    MARQUEE_SEEDS[0],
-  );
-  const half = Math.ceil(rest.length / 2);
-  const sponsor = about.donate[2];
-  const first = about.first_name || about.name.split(" ")[0];
-  const last = about.last_name || about.name.split(" ").slice(1).join(" ");
-  const newestWork = newest(projects);
-  const latestPost = blogs[0];
+  const views = sortProjects(projects).map(projectView);
+  const featured = featuredProjects(views).slice(0, 4);
+  const selected = featured.length ? featured : views.slice(0, 4);
+  const newest = [...views].sort((a, b) => b.updatedAt - a.updatedAt)[0];
+  const latest = blogs[0];
+  const posts = blogs.slice(0, 3).map(postView);
+  const certYears = certifications.map((c) => c.issued?.year).filter((year): year is number => Boolean(year));
+  const since = certYears.length ? Math.min(...certYears) : null;
+  const fixedCaps: Counted[] = [
+    { value: projects.length, label: "projects published" },
+    { value: certifications.length, label: since ? `certificates since ${since}` : "certificates" },
+  ];
 
   return (
     <main className={MAIN}>
       <JsonLdScript schemas={await homepageSchemas(about)} />
-      {/* The hero: who he is and what he does, with what is newest beside it.
-          First in `<main>` and a plain wrapper: the route's skeleton is
-          measured against the page's first block. */}
-      <div className={WRAP}>
-        <div className="fh-frame grid items-end gap-12 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-8">
-            {/* The same size as every other page's title: the name is the
-                page's heading, not a poster. */}
-            <h1 data-fh-split data-fh-hold className={H1}>
-              {[first, last].filter(Boolean).join(" ")}
+      <div>
+        <section className="wrap hero">
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "end" }}>
+            {about.is_open_to_work && (
+              <Link className="badge" href="/openhire" data-fh-enter="" style={{ alignSelf: "start" }}>
+                <Icon name="briefcase" size={14} />
+                Open to work{openToWork?.availability ? `, ${openToWork.availability.toLowerCase()}` : ""}
+              </Link>
+            )}
+            <h1 className="t1" data-fh-chars="" data-fh-hold="">
+              {about.name}
             </h1>
-            <p
-              data-fh-enter
-              data-fh-hold
-              className="mt-7 text-[clamp(1.2rem,1.05rem+0.6vw,1.55rem)] leading-[1.35] tracking-[-0.01em] text-ink"
-            >
+            <p className="role" data-fh-enter="" data-fh-hold="">
               {about.role}.
             </p>
             {about.short_description && (
-              <p data-fh-enter data-fh-hold className={`${LEAD} mt-3 max-w-[46ch]`}>
+              <p className="lead" data-fh-enter="" data-fh-hold="">
                 {sentence(about.short_description)}
               </p>
             )}
-
-            <div data-fh-enter data-fh-hold className="mt-10 flex flex-wrap items-center gap-3">
-              <ActionLink href="/projects" variant="solid">
+            <div className="acts" data-fh-enter="" data-fh-hold="">
+              <Button href="/projects" icon="grid">
                 See the work
-              </ActionLink>
-              <ActionLink href="/contact" variant="line" icon="mail">
+              </Button>
+              <Button href="/contact" ghost icon="mail">
                 Write to me
-              </ActionLink>
+              </Button>
             </div>
-
-            {status.length > 0 && (
-              <ul data-fh-enter data-fh-hold className="mt-10 flex flex-col gap-2 text-[15px]">
-                {status.map((line) => (
-                  <li key={line.key} className="flex items-center gap-3">
-                    <span aria-hidden="true" className="relative flex h-2 w-2">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ink opacity-60 motion-reduce:hidden" />
-                      <span className="relative inline-flex h-2 w-2 rounded-full bg-ink" />
-                    </span>
-                    {line.href ? (
-                      <Link href={line.href} className="group text-ink">
-                        <span className="fh-underline">{line.label}</span>
-                        <span className="text-mute">, {lower(line.detail)}</span>
-                      </Link>
-                    ) : (
-                      <span className="text-ink">
-                        {line.label}
-                        <span className="text-mute">, {lower(line.detail)}</span>
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
           </div>
+        </section>
 
-          <div data-fh-enter data-fh-hold className="lg:col-span-4 lg:col-start-9">
-            <Glance
-              items={[
-                ...(newestWork
-                  ? [{ label: "Newest work", value: <Link href={`/projects/${newestWork.slug}`} className="fh-link">{newestWork.title}</Link> }]
-                  : []),
-                ...(latestPost
-                  ? [{ label: "Latest writing", value: <Link href={`/blog/${latestPost.slug}`} className="fh-link">{latestPost.title}</Link> }]
-                  : []),
-                { label: "Based in", value: basedIn(about) },
-                { label: "Projects", value: projects.length },
-              ]}
-            />
+        <div className="wrap">
+          <div className="ticker">
+            <div>
+              <span className="mono mute">Based in</span>
+              <span className="v">{[about.location.residency || about.location.regency, about.location.province].filter(Boolean).join(", ")}</span>
+            </div>
+            <div>
+              <span className="mono mute">Local time</span>
+              <span className="v">
+                <LocalClock /> <span className="mute">GMT+7</span>
+              </span>
+            </div>
+            <div>
+              <span className="mono mute">Newest work</span>
+              {newest ? (
+                <Link className="v ul" href={`/projects/${newest.slug}` as Route}>
+                  {newest.title}
+                </Link>
+              ) : (
+                <span className="v mute">Nothing yet</span>
+              )}
+            </div>
+            <div>
+              <span className="mono mute">Latest writing</span>
+              {latest ? (
+                <Link className="v ul" href={`/blog/${latest.slug}` as Route}>
+                  {latest.title}
+                </Link>
+              ) : (
+                <span className="v mute">Nothing yet</span>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className={WRAP}>
-        {selected.length > 0 && (
-          <section aria-labelledby="home-work" className="mt-32 md:mt-44">
-            <SectionHead
-              id="home-work"
-              title={featured.length ? "Selected work" : "Recent work"}
-              count={projects.length}
-              href="/projects"
-              linkLabel="All the work"
-            />
-            <CardGrid cards={selected.map(projectCard)} batch={selected.length} className="mt-12" />
-          </section>
-        )}
+        <Building projects={views} />
 
-        {current.length > 0 && (
-          <section aria-labelledby="home-now" className="mt-32 md:mt-44">
-            <div className="grid gap-12 lg:grid-cols-12">
-              <div className="lg:col-span-5">
-                <Heading id="home-now">Right now</Heading>
-                <Reveal as="p" className="mt-6 max-w-[40ch] text-[18px] leading-relaxed text-mute">
-                  {sentence(about.short_bio.split(". ")[0])}.
-                </Reveal>
-                <ActionLink href="/about" className="mt-8">
-                  The longer story
-                </ActionLink>
-              </div>
-              <Reveal as="ul" stagger className="grid gap-10 sm:grid-cols-2 lg:col-span-7 lg:gap-y-12">
-                {current.map((role) => (
-                  <li key={role.id} className="group">
-                    <Logo src={role.logo} name={role.company} />
-                    <p className={`${H3} mt-5`}>{role.title}</p>
-                    <p className={`${META} mt-2`}>
-                      {role.website ? (
-                        <a href={role.website} target="_blank" rel="noopener noreferrer" className="fh-link text-ink">
-                          {role.company}
-                        </a>
-                      ) : (
-                        <span className="text-ink">{role.company}</span>
-                      )}
-                      {role.location_type && `, ${role.location_type.toLowerCase()}`}
-                    </p>
-                    <p className={`${META} mt-1`}>Since {monthYearLabel(role.period.start)}</p>
-                  </li>
-                ))}
-              </Reveal>
+        {about.short_bio && (
+          <section className="wrap sec" style={{ borderTop: 0 }}>
+            <p className="mono mute" style={{ marginBottom: 18 }}>
+              Right now
+            </p>
+            <p className="statement" data-fh-blur="">
+              {about.short_bio}
+            </p>
+            <div style={{ marginTop: 28 }}>
+              <TextLink href="/about" icon="user">
+                The longer story
+              </TextLink>
             </div>
           </section>
         )}
 
-        {blogs.length > 0 && (
-          <section aria-labelledby="home-writing" className="mt-32 md:mt-44">
-            <SectionHead
-              id="home-writing"
-              title="Writing"
-              count={blogs.length}
-              href="/blog"
-              linkLabel="All the writing"
-            />
-            <CardGrid cards={blogs.slice(0, 3).map(postCard)} batch={3} rhythm={false} className="mt-12" />
-          </section>
-        )}
-
-        {about.skills.length > 0 && (
-          <section aria-labelledby="home-toolkit" className="mt-32 md:mt-44">
-            <h2 id="home-toolkit" className="sr-only">
-              Toolkit
-            </h2>
-            <Reveal
-              as="p"
-              lines
-              className="max-w-[24ch] font-display text-[clamp(1.75rem,1.3rem+2vw,3rem)] leading-[1.05] font-medium tracking-[-0.035em] text-ink"
-            >
-              {`Most days it is ${listed(about.skills)}. The other ${rest.length} drift past below.`}
-            </Reveal>
-          </section>
-        )}
-      </div>
-
-      {rest.length > 0 && (
-        <div className="mt-12 space-y-0">
-          <SkillMarquee skills={rest.slice(0, half)} />
-          <SkillMarquee skills={rest.slice(half)} reverse className="-mt-px" />
-        </div>
-      )}
-
-      <div className={WRAP}>
-        <section className="mt-32 md:mt-44">
-          <Reveal
-            as="p"
-            lines
-            className="max-w-[20ch] font-display text-[clamp(1.9rem,1.3rem+2.6vw,3.5rem)] leading-[1.04] font-medium tracking-[-0.04em] text-ink"
+        <section className="wrap sec" aria-label="In numbers">
+          <Suspense
+            fallback={
+              <Caps
+                figures={[
+                  ...fixedCaps,
+                  { value: null, label: "hours in the editor" },
+                  { value: null, label: "contributions this year" },
+                ]}
+              />
+            }
           >
-            {sentence(about.short_cta)}
-          </Reveal>
-          <Reveal className="mt-10 flex flex-wrap items-center gap-3">
-            <ActionLink href="/about" variant="solid">
-              Read about me
-            </ActionLink>
-            <ActionLink href="/guestbook" variant="line" icon="reply">
-              Sign the guestbook
-            </ActionLink>
-            {sponsor?.url && (
-              <ActionLink href={sponsor.url} className="ml-2 text-mute">
-                {`Support on ${sponsor.platform}`}
-              </ActionLink>
-            )}
-          </Reveal>
+            <LiveCaps username={about.username} fixed={fixedCaps} />
+          </Suspense>
+        </section>
+
+        <section className="wrap sec">
+          <Heading title="Selected work" count={projects.length} note="Four projects worth starting with.">
+            <TextLink href="/projects" icon="grid">
+              {`All ${projects.length} projects`}
+            </TextLink>
+          </Heading>
+          {selected.length ? (
+            <Reveal stagger className="pgrid">
+              {selected.map((project) => (
+                <ProjectCard key={project.slug} project={project} />
+              ))}
+            </Reveal>
+          ) : (
+            <Empty icon="grid" title="No projects to show yet" note="The first published project appears here, with its screenshot and status." />
+          )}
+        </section>
+
+        <section className="wrap sec">
+          <Heading title="Where I am now" count={current.length} note="Roles that are still running.">
+            <TextLink href="/about" icon="briefcase">
+              Everything I have done
+            </TextLink>
+          </Heading>
+          {current.length ? (
+            <Reveal stagger className="pgrid three">
+              {current.map((role) => (
+                <div key={role.id} className="now-role">
+                  <Logo src={role.logo} name={role.company} />
+                  <div>
+                    <h3 className="t3">{role.title}</h3>
+                    <p className="meta">
+                      {role.company}
+                      {role.location_type && ` · ${role.location_type}`}
+                    </p>
+                  </div>
+                  <span className="mono mute">Since {monthYearLabel(role.period.start)}</span>
+                </div>
+              ))}
+            </Reveal>
+          ) : (
+            <Empty
+              icon="briefcase"
+              title="Between roles right now"
+              note="Open to work. The next role is listed here the day it starts."
+              action={
+                <Button sm ghost href="/openhire" icon="briefcase">
+                  What I am looking for
+                </Button>
+              }
+            />
+          )}
+        </section>
+
+        <section className="wrap sec">
+          <Heading title="Writing" count={blogs.length} note="The newest three.">
+            <TextLink href="/blog" icon="book">
+              {`All ${blogs.length} posts`}
+            </TextLink>
+          </Heading>
+          {posts.length ? (
+            <Reveal stagger className="pgrid three">
+              {posts.map((post) => (
+                <PostCard key={post.slug} post={post} />
+              ))}
+            </Reveal>
+          ) : (
+            <Empty icon="pen" title="Nothing published yet" note="The newest three posts sit here once the first goes out." />
+          )}
+        </section>
+
+        <section className="sec" style={{ overflow: "hidden" }}>
+          <div className="wrap">
+            <Heading
+              title={about.skills.length ? `Most days it is ${listed(about.skills)}.` : "The tools come next."}
+              count={skills.length}
+              note={skills.length ? "The rest drift past below." : "No skills listed yet."}
+            />
+          </div>
+          {skills.length > 0 && <SkillMarquee skills={skills.map(skillIcon)} />}
         </section>
       </div>
       <PageMotion />

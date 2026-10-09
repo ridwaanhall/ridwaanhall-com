@@ -218,13 +218,13 @@ body:has(.fh-site) {
 .fh-site .hero .lead { margin-top: 12px; max-width: 46ch; }
 .fh-site .hero .acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px; }
 /* About: a small portrait above the heading, never a hero */
-.fh-site .who { display: flex; align-items: center; gap: 14px; margin-bottom: 26px; }
-.fh-site .who .ph { flex: none; width: 64px; height: 64px; border-radius: var(--fh-r-s); border: 1px solid var(--fh-line); overflow: hidden; background: #e9ebe6; margin: 0; }
-.fh-site .who .ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.fh-site .who .ph.none { display: grid; place-items: center; color: #6b6d68; }
-.fh-site .who div { display: grid; gap: 2px; min-width: 0; }
-.fh-site .who b { font-weight: 500; font-size: 15px; }
-@media (min-width: 768px) { .fh-site .who .ph { width: 76px; height: 76px; } }
+.fh-site .who-head { display: flex; align-items: center; gap: 14px; margin-bottom: 26px; }
+.fh-site .who-head .ph { flex: none; width: 64px; height: 64px; border-radius: var(--fh-r-s); border: 1px solid var(--fh-line); overflow: hidden; background: var(--fh-print); margin: 0; }
+.fh-site .who-head .ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.fh-site .who-head .ph.none { display: grid; place-items: center; color: #6b6d68; }
+.fh-site .who-head div { display: grid; gap: 2px; min-width: 0; }
+.fh-site .who-head b { font-weight: 500; font-size: 15px; }
+@media (min-width: 768px) { .fh-site .who-head .ph { width: 76px; height: 76px; } }
 .fh-site .ticker { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--fh-line); border-bottom: 1px solid var(--fh-line); }
 .fh-site .ticker > div { padding: 14px 0; display: grid; gap: 2px; min-width: 0; }
 .fh-site .ticker > div:nth-child(even) { padding-left: 16px; border-left: 1px solid var(--fh-line); }
@@ -397,7 +397,8 @@ body:has(.fh-site) {
 .fh-site .hk { display: inline-block; width: 11px; height: 11px; border-radius: 2px; }
 .fh-site [data-l="0"] { box-shadow: inset 0 0 0 1px var(--fh-line-2); }
 .fh-site [data-l="1"] { background: var(--fh-c4); } .fh-site [data-l="2"] { background: var(--fh-c3); } .fh-site [data-l="3"] { background: var(--fh-c2); } .fh-site [data-l="4"] { background: var(--fh-c1); }
-.fh-site .heat-axis { display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); margin: 0 0 6px; min-width: 0; }
+.fh-site .heat-axis { display: grid; grid-template-columns: repeat(53, minmax(0, 1fr)); margin: 0 0 6px; min-width: 0; }
+.fh-site .heat-axis span { white-space: nowrap; }
 .fh-site .week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; height: 220px; align-items: end; border-bottom: 1px solid var(--fh-line-2); background-image: linear-gradient(var(--fh-line) 1px, transparent 1px); background-size: 100% 25%; }
 .fh-site .week > div { display: flex; flex-direction: column-reverse; height: 100%; gap: 2px; }
 .fh-site .week i { display: block; border-radius: 2px; transform-origin: bottom; }
@@ -678,7 +679,7 @@ body:has(.fh-site) {
 
 /* article */
 .fh-site .article { font-size: 17.5px; line-height: 1.75; color: var(--fh-ink-2); display: grid; gap: 18px; max-width: 70ch; }
-.fh-site .article > * { min-width: 0; max-width: 100%; }
+.fh-site .article > * { min-width: 0; max-width: 100%; margin-block: 0; }
 .fh-site .article p, .fh-site .article li, .fh-site .article td { overflow-wrap: anywhere; }
 .fh-site .article h2, .fh-site .article h3 { color: var(--fh-ink); margin-top: 16px; }
 .fh-site .article h2 { font-size: 1.8rem; letter-spacing: -.03em; } .fh-site .article h3 { font-size: 1.35rem; letter-spacing: -.02em; }
@@ -737,3 +738,118 @@ body:has(.fh-site) {
 .fh-site .cursor { position: fixed; left: 0; top: 0; z-index: 90; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #fff; mix-blend-mode: difference; pointer-events: none; }
 @media (hover: none), (pointer: coarse) { .fh-site .cursor { display: none; } }
 @media (prefers-reduced-motion: reduce) { .fh-site, .fh-site *, .fh-site *::before, .fh-site *::after { transition-duration: .01ms !important; } }
+
+/* ---------------------------------------------------------------------------
+   What the motion in components/foothill/motion.tsx relies on
+   --------------------------------------------------------------------------- */
+
+/* SplitText masks a heading's lines, and a name's letters; a descender (g, y,
+   p, a comma) must not be clipped by its own mask, so each box gets a little
+   room below that a negative margin takes back. */
+.fh-site .fh-line { padding-bottom: 0.2em; margin-bottom: -0.2em; padding-top: 0.06em; margin-top: -0.06em; }
+.fh-site .fh-char { padding-bottom: 0.2em; margin-bottom: -0.2em; padding-top: 0.06em; margin-top: -0.06em; }
+
+/* An element marked `data-fh-hold` animates in on the document's first page,
+   where everything else is simply painted. It starts hidden so the server's
+   copy never flashes before the animation hides it again; `PageMotion` sets
+   `animation: none` and takes over. If it never runs, this reveals the
+   element on its own a moment later. */
+@media (prefers-reduced-motion: no-preference) {
+  .fh-site [data-fh-hold] { visibility: hidden; animation: fh-unhold 0s linear 1.2s forwards; }
+}
+@keyframes fh-unhold { to { visibility: visible; } }
+
+/* The heatmap's sweep: one mask over the whole grid, its soft edge moved
+   across by a single tween on `--fh-sweep` -- a tween per square (a year is
+   371 of them) is what made the dashboard stutter. At rest the edge sits past
+   the far side, so the grid is simply whole, without a script and after. */
+[data-fh-sweep] {
+  -webkit-mask-image: linear-gradient(90deg, #000 var(--fh-sweep, 120%), transparent calc(var(--fh-sweep, 120%) + 18%));
+  mask-image: linear-gradient(90deg, #000 var(--fh-sweep, 120%), transparent calc(var(--fh-sweep, 120%) + 18%));
+}
+
+/* Figures and code, on both sides of the site: the admin's keys and slugs use
+   it too, which is why it is not anchored to the public shell. */
+.fh-mono { font-family: var(--fh-mono); font-feature-settings: "zero"; }
+
+/* ---------------------------------------------------------------------------
+   The live site's additions to the design
+
+   What the mockup did not need: a skip link, the account slot that holds a
+   server-rendered link or menu, a page that ends without the invitation band,
+   and the dialog the shortcuts and the confirm prompt share.
+   --------------------------------------------------------------------------- */
+
+.fh-site .skip { position: absolute; left: -9999px; top: 8px; z-index: 60; padding: 8px 14px; border-radius: var(--fh-r-m); background: var(--fh-ink); color: var(--fh-bg); }
+.fh-site .skip:focus { left: var(--fh-gut); }
+.fh-site #page-content { outline: none; }
+
+/* Buttons give under a press; a link-shaped button cannot use whileTap. */
+.fh-site .btn { transition: background .2s, border-color .2s, color .2s, transform .18s; }
+.fh-site .btn:active:not(:disabled) { transform: scale(.97); }
+
+/* The account slot: the Sign in link from lg up, the avatar at every width. */
+.fh-site .acct-slot { display: flex; align-items: center; }
+.fh-site .sheet-acct-slot { display: flex; align-items: center; }
+.fh-site .sheet-acct-slot .signin { display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border: 1px solid var(--fh-line-2); border-radius: var(--fh-r-m); font-size: 14.5px; }
+.fh-site .sheet-acct-slot .menu-pop { left: 0; right: auto; top: auto; bottom: calc(100% + 8px); transform-origin: bottom left; }
+
+/* Contact, Sign in and the error pages are already the way to get in touch. */
+.fh-site:has(main[data-quiet]) .cta-band { display: none; }
+.fh-site:has(main[data-quiet]) .foot { border-top: 1px solid var(--fh-line); }
+
+.fh-site .palette li a .out-mark { display: inline; margin-left: 4px; vertical-align: -1px; }
+.fh-site .palette li { cursor: pointer; }
+
+/* A dialog over a dimmed page: the shortcuts, and the confirm prompt. */
+.fh-site .dialog { position: fixed; z-index: 81; left: 0; right: 0; top: max(16px, 26vh); margin: 0 auto; width: min(440px, calc(100vw - 2 * var(--fh-gut))); background: var(--fh-bg); border: 1px solid var(--fh-line-2); border-radius: 10px; padding: 24px; display: grid; gap: 10px; }
+.fh-site .dlg-acts { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; margin-top: 10px; }
+.fh-site .now-role { display: grid; gap: 12px; align-content: start; padding-top: 16px; border-top: 1px solid var(--fh-line); }
+@media (prefers-reduced-motion: reduce) { .fh-site .marq { overflow-x: auto; } }
+
+/* A project's gallery strip, its features and the row of links it repeats. */
+.fh-site .gal-strip { display: grid; gap: 8px; margin-top: 8px; }
+.fh-site .thumb-btn { position: relative; padding: 0; border: 0; background: none; cursor: pointer; }
+.fh-site .gal-mark { position: absolute; left: 0; right: 0; bottom: -6px; height: 2px; background: var(--fh-ink); border-radius: 2px; }
+.fh-site .feature { display: grid; gap: 8px; align-content: start; padding-top: 16px; border-top: 1px solid var(--fh-line); }
+.fh-site .feature .meta { font-size: 14.5px; }
+.fh-site .link-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--fh-line); }
+.fh-site .head .link-row { margin-top: 28px; padding-top: 0; border-top: 0; }
+
+/* A post: the tags and the share row after the text, and the contents list,
+   which comes first in the markup, kept on the text's row beside it. */
+.fh-site .post-foot { max-width: 70ch; width: 100%; margin-top: 32px; display: grid; gap: 20px; }
+.fh-site .share { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding-top: 18px; border-top: 1px solid var(--fh-line); }
+@media (min-width: 1200px) { .fh-site .post-grid > .ptoc-d, .fh-site .post-grid > div:not(.ptoc-m) { grid-row: 1; } }
+.fh-site .sign-panel { padding: 20px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
+.fh-site .msg-acts button:disabled { opacity: .5; cursor: not-allowed; }
+.fh-site .compose-h { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+
+/* Contact: the ways to reach me beside the form, the form first on a phone. */
+.fh-site .contact .contact-main { order: 2; min-width: 0; }
+.fh-site .contact .contact-side { order: 1; display: grid; gap: 28px; align-content: start; }
+@media (max-width: 1023px) { .fh-site .contact .contact-main { order: 1; } .fh-site .contact .contact-side { order: 2; } }
+.fh-site .contact-form { display: grid; gap: 18px; align-content: start; }
+.fh-site .contact-pair { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.fh-site .wrow.social-row { grid-template-columns: 24px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 0; }
+.fh-site .turnstile-slot { min-height: 65px; }
+.fh-site .stack { display: grid; gap: 22px; align-content: start; }
+
+/* Sign in: one card in the middle of the page. */
+.fh-site .sign-in { min-height: 72vh; display: grid; place-items: center; padding-block: 64px; }
+.fh-site .sign-card { width: min(420px, 100%); padding: 28px; display: grid; gap: 14px; }
+.fh-site .provider-buttons { display: grid; gap: 8px; }
+.fh-site .sign-error { border-left: 2px solid var(--fh-ink); padding-left: 12px; font-size: 14.5px; }
+
+/* A page that says there is nothing here, or that something broke. */
+.fh-site .nothing { min-height: 64vh; display: grid; align-content: center; gap: 18px; padding-block: 80px; }
+.fh-site .nothing .acts { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* A legal document's sections, numbered, with room above each for the navbar. */
+.fh-site .legal-sec { display: grid; gap: 14px; scroll-margin-top: 90px; }
+.fh-site .legal-sec + .legal-sec { margin-top: 24px; }
+.fh-site .legal-sec h2 .mono { font-size: .55em; vertical-align: .35em; margin-right: 4px; }
+.fh-site .legal-sub { display: grid; gap: 12px; margin-top: 8px; }
+.fh-site .msg .reply-to { grid-column: 2; display: flex; gap: 6px; align-items: center; min-width: 0; }
+.fh-site .msg .reply-to span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fh-site .msg .av { object-fit: cover; }

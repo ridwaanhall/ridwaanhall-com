@@ -1,72 +1,86 @@
-import type { Metadata } from "next";
+import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 
-import { MAIN, WRAP } from "@/components/foothill/layout";
-import { ProjectResults } from "@/components/foothill/listing";
-import { CountUp, PageMotion } from "@/components/foothill/motion";
-import { ResultsSkeleton } from "@/components/foothill/skeleton";
-import { Glance, PageHead } from "@/components/foothill/ui";
+import { MAIN } from "@/components/foothill/layout";
+import { PageMotion } from "@/components/foothill/motion";
+import { projectView } from "@/components/foothill/rows";
+import { CardsSkeleton, InlineSkeleton } from "@/components/foothill/skeleton";
+import { PageHead } from "@/components/foothill/ui";
+import { WorkExplorer } from "@/components/foothill/work";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { getAboutData } from "@/lib/data/about";
-import { getProjects, sortProjects } from "@/lib/data/content";
+import { getProjects, searchProjects, sortProjects, type Project } from "@/lib/data/content";
 import { projectsListSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { projectsListSchemas } from "@/lib/seo/schemas-for-page";
-import { newest } from "@/lib/site/display";
-import { readListingParams, type ListingSearchParams } from "@/lib/site/listing";
+import { parseFilters } from "@/lib/site/work-filters";
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: ListingSearchParams;
-}): Promise<Metadata> {
-  const [{ page }, about, projects] = await Promise.all([
-    readListingParams(searchParams),
-    getAboutData(),
-    getProjects(),
-  ]);
+type WorkParams = Promise<Record<string, string | string[] | undefined>>;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const [about, projects] = await Promise.all([getAboutData(), getProjects()]);
   if (!about) return {};
-  return buildMetadata(projectsListSeo(about, sortProjects(projects), page), about);
+  return buildMetadata(projectsListSeo(about, sortProjects(projects), 1), about);
 }
 
-export default async function ProjectsPage({ searchParams }: { searchParams: ListingSearchParams }) {
+/** The request-dependent half: reading the address makes this part dynamic. */
+async function Explorer({ projects, searchParams }: { projects: Project[]; searchParams: WorkParams }) {
+  const initial = parseFilters(await searchParams);
+  return (
+    <WorkExplorer
+      projects={projects.map(projectView)}
+      initial={initial}
+      serverMatches={initial.q ? searchProjects(projects, initial.q).map((project) => project.slug) : null}
+    />
+  );
+}
+
+export default async function ProjectsPage({ searchParams }: { searchParams: WorkParams }) {
   const [about, all] = await Promise.all([getAboutData(), getProjects()]);
   if (!about) return null;
 
   const sorted = sortProjects(all);
-  const live = sorted.filter((project) => project.demo_url).length;
-  const latest = newest(sorted);
+  const newest = [...sorted].sort((a, b) => (b.created_at?.getTime() ?? 0) - (a.created_at?.getTime() ?? 0))[0];
 
   return (
     <main className={MAIN}>
       <JsonLdScript schemas={projectsListSchemas(about, sorted)} />
-      <div className={WRAP}>
+      <div>
         <PageHead
           title="Things I have built, and keep building."
           lead="APIs other developers lean on, dashboards, machine-learning models, a few stores and the occasional experiment."
-          aside={
-            <Glance
-              items={[
-                { label: "Projects", value: <CountUp value={sorted.length} /> },
-                { label: "Live to try", value: <CountUp value={live} /> },
-                ...(latest
-                  ? [{ label: "Newest", value: <Link href={`/projects/${latest.slug}`} className="fh-link">{latest.title}</Link> }]
-                  : []),
-              ]}
-            />
-          }
+          markdown="/projects"
+          facts={[
+            ["Projects", sorted.length],
+            ["Live to try", sorted.filter((project) => project.demo_url).length],
+            ["With source", sorted.filter((project) => project.github_url).length],
+            [
+              "Newest",
+              newest ? (
+                <Link className="ul" href={`/projects/${newest.slug}` as Route}>
+                  {newest.title}
+                </Link>
+              ) : (
+                "None yet"
+              ),
+            ],
+          ]}
         />
-        <div className="mt-16 md:mt-24">
+        <section className="wrap" style={{ paddingBottom: 72 }}>
           {/* The cards are titled at the third level, so the list needs a
               second-level heading above them for the outline not to skip. */}
-          <h2 className="sr-only">All projects</h2>
-          {/* `searchParams` makes this half dynamic; the heading above stays
-              in the static shell. */}
-          <Suspense fallback={<ResultsSkeleton />}>
-            <ProjectResults projects={sorted} searchParams={searchParams} />
+          <h2 className="sr">All projects</h2>
+          <Suspense
+            fallback={
+              <InlineSkeleton label="Loading the projects">
+                <CardsSkeleton count={6} />
+              </InlineSkeleton>
+            }
+          >
+            <Explorer projects={sorted} searchParams={searchParams} />
           </Suspense>
-        </div>
+        </section>
       </div>
       <PageMotion />
     </main>

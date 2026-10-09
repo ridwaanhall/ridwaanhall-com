@@ -87,6 +87,13 @@ export type Skill = {
   description: string;
   icon_svg: string;
   category: string;
+  /**
+   * Whether the icon is drawn in near-black (`dark`, inverted on the dark
+   * theme) or near-white (`light`, inverted on the light theme), measured
+   * once from its pixels. Null for an icon in its own colours, which is left
+   * exactly as its makers drew it.
+   */
+  tone: "dark" | "light" | null;
 };
 
 export type AboutData = {
@@ -588,6 +595,7 @@ function toSkill(row: {
     description: row.s.description,
     icon_svg: logoUrl(row),
     category: row.category ?? "",
+    tone: null,
   };
 }
 
@@ -651,6 +659,8 @@ export type Application = {
   status: string;
   status_slug: string;
   company_name: string;
+  /** The organisation's logo, as every other row naming one carries it. */
+  company_logo: string;
   position: string;
   employment_type: string;
   location_type: string;
@@ -663,7 +673,7 @@ export type Application = {
 
 export async function getApplications(): Promise<Application[]> {
   "use cache";
-  cacheTag(TAGS.application);
+  cacheTag(TAGS.application, TAGS.organization);
   cacheLife("days");
 
   const [apps, steps] = await Promise.all([
@@ -671,6 +681,7 @@ export async function getApplications(): Promise<Application[]> {
       .select({
         a: application,
         company: organization.name,
+        ...ORG_LOGO,
         status: applicationStatus.label,
         statusSlug: applicationStatus.slug,
         employmentType: employmentType.label,
@@ -683,6 +694,7 @@ export async function getApplications(): Promise<Application[]> {
       })
       .from(application)
       .innerJoin(organization, eq(organization.id, application.organizationId))
+      .leftJoin(mediaAsset, eq(mediaAsset.id, organization.logoId))
       .leftJoin(applicationStatus, eq(applicationStatus.id, application.statusId))
       .leftJoin(employmentType, eq(employmentType.id, application.employmentTypeId))
       .leftJoin(workMode, eq(workMode.id, application.workModeId))
@@ -723,6 +735,7 @@ export async function getApplications(): Promise<Application[]> {
     status: row.status ?? "",
     status_slug: row.statusSlug ?? "",
     company_name: row.company,
+    company_logo: logoUrl(row),
     position: row.a.title,
     employment_type: row.employmentType ?? "",
     location_type: row.workMode ?? "",

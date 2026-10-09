@@ -364,6 +364,7 @@ export async function getProjects(): Promise<Project[]> {
     // back when every icon was a bundled file, which is now exactly backwards.
     icon_svg: assetUrl(row.iconKey ? { storageKey: row.iconKey, source: row.iconSource ?? "storage" } : null),
     category: row.category ?? "",
+    tone: null,
   }));
 
   return projects.map((row) =>

@@ -45,9 +45,6 @@
 @import "../styles/theme-motion.css";
 @import "../styles/components.css";
 @import "../styles/animations.css";
-/* The public site's previous sheet, kept only while components that still use
-   its classes are being replaced, and before site.css so the new tokens win. */
-@import "../styles/foothill-legacy.css";
 /* The public site. Last, so its tokens and its scoped rules settle any tie with
    the shared sheets above. Every rule in it is anchored to the site shell. */
 @import "../styles/site.css";

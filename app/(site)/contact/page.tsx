@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 
 import { ContactForm } from "@/components/foothill/contact-form";
-import { Brand, Icon } from "@/components/foothill/icons";
-import { MAIN, WRAP } from "@/components/foothill/layout";
-import { PageMotion, Reveal, Roll } from "@/components/foothill/motion";
-import { Glance, PageHead } from "@/components/foothill/ui";
+import { CopyButton } from "@/components/foothill/controls";
+import { Icon, type IconName } from "@/components/foothill/icons";
+import { MAIN } from "@/components/foothill/layout";
+import { PageMotion } from "@/components/foothill/motion";
+import { PageHead } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { getAboutData } from "@/lib/data/about";
 import { contactSeo } from "@/lib/seo/data";
@@ -18,15 +19,32 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(contactSeo(about), about);
 }
 
+const SOCIAL_ICON: Record<string, IconName> = {
+  GitHub: "github",
+  LinkedIn: "linkedin",
+  X: "xlogo",
+  Instagram: "instagram",
+  Medium: "medium",
+  RoneAI: "globe",
+};
+
+const DONATE_ICON: Record<string, IconName> = {
+  "GitHub Sponsors": "heart",
+  "Buy Me a Coffee": "coffee",
+  Sociabuzz: "gift",
+  Saweria: "gift",
+};
+
 export default async function ContactPage() {
   const about = await getAboutData();
   if (!about) return null;
   const email = about.social_media.email;
 
   return (
-    <main className={MAIN}>
+    // Quiet: the footer's invitation to write steps aside on the page that is it.
+    <main className={MAIN} data-quiet="">
       <JsonLdScript schemas={contactSchemas(about)} />
-      <div className={WRAP}>
+      <div>
         <PageHead
           title="Write to me."
           lead={
@@ -34,65 +52,64 @@ export default async function ContactPage() {
               ? "I'm recovering at the moment, so replies may be slower than usual, but every message is read."
               : "Work, a question about one of the APIs, or just a note. Every message is read."
           }
-          aside={
-            <Glance
-              items={[
-                { label: "Replies", value: about.is_sick ? "Slower than usual" : "In 1 to 2 hours" },
-                { label: "Hours", value: "Weekdays, GMT+7" },
-                { label: "Based in", value: basedIn(about) },
-              ]}
-            />
-          }
+          markdown="/contact"
+          facts={[
+            ["Replies", about.is_sick ? "Slower than usual" : "In 1 to 2 hours"],
+            ["Hours", "Weekdays, GMT+7"],
+            ["Based in", basedIn(about)],
+          ]}
         />
-
-        <div className="mt-16 grid gap-16 md:mt-24 lg:grid-cols-12 lg:gap-10">
-          <Reveal className="lg:col-span-7">
+        <div className="wrap gbwrap contact" style={{ paddingBottom: 80 }}>
+          <div className="contact-main">
             <ContactForm />
-          </Reveal>
-          <aside className="lg:col-span-4 lg:col-start-9">
+          </div>
+          <div className="contact-side">
             {email && (
-              <Reveal>
-                <p className="text-[14px] font-medium text-ink">Or email directly</p>
-                <a
-                  href={`mailto:${email}`}
-                  className="group mt-3 inline-flex items-center gap-2 font-display text-[24px] font-medium tracking-[-0.02em] text-ink"
-                >
-                  <Roll>{email}</Roll>
-                  <Icon
-                    name="arrow-up-right"
-                    className="h-5 w-5 text-mute transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-ink"
-                  />
-                </a>
-              </Reveal>
+              <div>
+                <span className="meta">Or email directly</span>
+                <p className="t3" style={{ marginTop: 6 }}>
+                  <a className="ul" href={`mailto:${email}`}>
+                    {email}
+                  </a>
+                </p>
+                <div style={{ marginTop: 10 }}>
+                  <CopyButton sm text={email} label="Copy address" message="Email address copied" />
+                </div>
+              </div>
             )}
-            <div className="mt-12">
-              <p className="text-[14px] font-medium text-ink">Elsewhere</p>
-              <Reveal as="ul" stagger className="mt-3">
+            <div>
+              <span className="meta">Elsewhere</span>
+              <div className="rows" style={{ marginTop: 8 }}>
                 {socialLinks(about).map((social) => (
-                  <li key={social.label}>
-                    <a
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer me"
-                      className="group flex items-center gap-4 border-b border-line py-3.5 text-[16px]"
-                    >
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-raise text-ink transition-colors duration-300 group-hover:bg-ink group-hover:text-paper">
-                        <Brand name={social.label} className="h-4 w-4" />
+                  <a key={social.label} className="wrow social-row" href={social.href} target="_blank" rel="noopener noreferrer me">
+                    <Icon name={SOCIAL_ICON[social.label] ?? "out"} size={18} />
+                    <span>
+                      <span style={{ fontWeight: 500 }}>{social.label}</span>
+                      <span className="meta mono" style={{ display: "block" }}>
+                        {bareUrl(social.href)}
                       </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="block text-ink">{social.label}</span>
-                        <span className="block truncate text-[13px] text-mute">{bareUrl(social.href)}</span>
-                      </span>
-                      <Icon
-                        name="arrow-up-right"
-                        className="text-mute transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-ink"
-                      />
-                    </a>
-                  </li>
+                    </span>
+                    <span className="mono mute visit" style={{ fontSize: 12 }}>
+                      Visit
+                    </span>
+                  </a>
                 ))}
-              </Reveal>
+              </div>
             </div>
-          </aside>
+            {about.donate.length > 0 && (
+              <div>
+                <span className="meta">Support the work</span>
+                <div className="sk-list" style={{ marginTop: 10 }}>
+                  {about.donate.map((option) => (
+                    <a key={option.platform} className="sk" href={option.url} target="_blank" rel="noopener noreferrer">
+                      <Icon name={DONATE_ICON[option.platform] ?? "gift"} />
+                      {option.platform}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <PageMotion />

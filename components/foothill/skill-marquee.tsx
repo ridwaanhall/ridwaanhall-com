@@ -1,60 +1,63 @@
-import type { Skill } from "@/lib/data/about";
-import { cn } from "@/lib/utils/cn";
+"use client";
+
+import { useRef } from "react";
+
+import { SkillChip, type SkillIcon } from "@/components/foothill/ui";
+import { gsap, MOTION_OK, ScrollTrigger, useGSAP } from "@/lib/motion/gsap";
 
 /**
- * Every other skill, drifting past in one line.
+ * Every skill with its icon, drifting past in two rows that run opposite ways
+ * and quicken with the speed of the scroll.
  *
- * The list is drawn twice and the track slides by exactly half its width, so
- * the seam never shows. Pure CSS (`.fh-marquee-track` in styles/site.css),
- * paused on hover and still under reduced motion -- where it becomes a row a
- * reader can scroll sideways instead.
+ * Each row is drawn twice and slides by exactly half its width, so the seam
+ * never shows. Under reduced motion the rows stand still and scroll sideways
+ * by hand instead.
  */
-export function SkillMarquee({
-  skills,
-  reverse = false,
-  className,
-}: {
-  skills: Skill[];
-  /** Runs the other way: two rows passing each other read as one band. */
-  reverse?: boolean;
-  className?: string;
-}) {
+export function SkillMarquee({ skills }: { skills: SkillIcon[] }) {
+  const root = useRef<HTMLDivElement>(null);
+  const half = Math.ceil(skills.length / 2);
+  const rows = [skills.slice(0, half), skills.slice(half)];
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add(MOTION_OK, () => {
+        root.current?.querySelectorAll<HTMLElement>(".marq-row").forEach((row, index) => {
+          const loop = gsap.fromTo(
+            row,
+            { xPercent: index % 2 ? -50 : 0 },
+            { xPercent: index % 2 ? 0 : -50, duration: 80, ease: "none", repeat: -1 },
+          );
+          ScrollTrigger.create({
+            trigger: row,
+            start: "top bottom",
+            end: "bottom top",
+            onUpdate: (self) => {
+              const boost = Math.min(Math.abs(self.getVelocity()) / 300, 5);
+              gsap.to(loop, { timeScale: 1 + boost, duration: 0.25, overwrite: true });
+              gsap.to(loop, { timeScale: 1, duration: 1.2, delay: 0.25 });
+            },
+          });
+        });
+      });
+      return () => mm.revert();
+    },
+    { scope: root },
+  );
+
   return (
-    <div
-      className={cn(
-        "fh-marquee overflow-x-auto overflow-y-hidden border-y border-line motion-safe:overflow-x-hidden",
-        className,
-      )}
-      aria-label="Other tools I use"
-      role="region"
-    >
-      <ul className="fh-marquee-track flex w-max" data-reverse={reverse || undefined}>
-        {[0, 1].map((copy) =>
-          skills.map((skill) => (
-            <li
-              key={`${copy}-${skill.name}`}
-              aria-hidden={copy === 1 ? "true" : undefined}
-              className="group flex items-center gap-2.5 border-r border-line px-6 py-4"
-              title={skill.description || skill.category}
-            >
-              {skill.icon_svg && (
-                // eslint-disable-next-line @next/next/no-img-element -- tiny SVG icons, no optimisation to gain
-                <img
-                  src={skill.icon_svg}
-                  alt=""
-                  width={18}
-                  height={18}
-                  loading="lazy"
-                  className="fh-icon-adapt h-[18px] w-[18px]"
-                />
-              )}
-              <span className="text-[16px] whitespace-nowrap text-mute transition-colors group-hover:text-ink">
-                {skill.name}
+    <div ref={root} className="marq" role="region" aria-label="Every skill">
+      {rows.map((row, index) => (
+        <div key={index} className="marq-row">
+          {[0, 1].map((copy) =>
+            row.map((skill) => (
+              <span key={`${copy}-${skill.name}`} aria-hidden={copy === 1 ? true : undefined}>
+                <SkillChip skill={skill} />
               </span>
-            </li>
-          )),
-        )}
-      </ul>
+            )),
+          )}
+        </div>
+      ))}
     </div>
   );
 }

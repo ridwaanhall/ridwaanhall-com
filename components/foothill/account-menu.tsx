@@ -1,23 +1,20 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 
-import { Icon } from "@/components/foothill/icons";
+import { initials } from "@/components/foothill/ui";
 import { ROLE_BLURB, ROLE_LABEL, type SiteRole } from "@/lib/auth/roles";
 import { sizedAvatar } from "@/lib/site/display";
-import { usePresence } from "@/lib/motion/use-presence";
-import { cn } from "@/lib/utils/cn";
 
 /**
- * The signed-in reader's menu: who they are, and the two things they can do
- * from here -- open the admin if they are staff, and sign out.
+ * The signed-in reader's avatar and the menu under it: who they are, their
+ * messages, the admin if they are staff, and signing out.
  *
- * The trigger carries the handle with its `@`, which is what tells a reader at
- * a glance which account this browser is signed in as (and what
- * `scripts/check-account-panel.mjs` looks for). The panel opens on demand
- * rather than showing sign-out in the bar, because ending a session should
- * take a deliberate second step.
+ * The button is the avatar alone; the handle with its `@` is in it as text for
+ * a screen reader (and for `scripts/check-account-panel.mjs`), so the bar
+ * stays one circle wide. Ending a session takes a deliberate second step.
  */
 export function AccountMenu({
   name,
@@ -47,21 +44,9 @@ export function AccountMenu({
     setOpenedAt(pathname);
   }
 
-  const shown = usePresence(open, panel, {
-    enter: (tl, el) =>
-      tl.fromTo(
-        el,
-        { y: -8, scale: 0.97, autoAlpha: 0, transformOrigin: "100% 0%" },
-        { y: 0, scale: 1, autoAlpha: 1, duration: 0.35, ease: "expo.out", clearProps: "transform,opacity,visibility" },
-      ),
-    exit: (tl, el) =>
-      tl.to(el, { y: -6, scale: 0.97, autoAlpha: 0, duration: 0.22, ease: "power2.in" }),
-  });
-
   useEffect(() => {
     if (!open) return;
     panel.current?.querySelector<HTMLElement>("a, button")?.focus();
-
     const onPointer = (event: PointerEvent) => {
       if (!root.current?.contains(event.target as Node)) setOpen(false);
     };
@@ -79,50 +64,64 @@ export function AccountMenu({
   }, [open]);
 
   return (
-    <div ref={root} className="relative">
+    <div ref={root} className="acct">
       <button
         ref={trigger}
         type="button"
+        className="av-btn"
         data-account-menu
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={id}
+        aria-label={`Account menu, ${name} @${username}`}
         onClick={() => {
           setOpenedAt(pathname);
           setOpen((value) => !value);
         }}
-        className="flex cursor-pointer items-center gap-2 rounded-full py-1 pr-1 pl-1 text-[14px] text-mute transition-colors hover:text-ink"
       >
-        {imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element -- provider avatars, any host
-          <img src={sizedAvatar(imageUrl, 48)} alt="" width={24} height={24} className="h-6 w-6 rounded-full object-cover" />
-        ) : (
-          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-raise text-[11px] text-ink">
-            {name.slice(0, 1).toUpperCase()}
-          </span>
-        )}
-        <span className="max-w-[9rem] truncate text-[14px]">@{username}</span>
-        <Icon name="chevron-down" className={cn("h-3.5 w-3.5 transition-transform duration-500", open && "rotate-180")} />
+        <Avatar name={name} src={imageUrl} size={32} />
+        <span className="sr">@{username}</span>
       </button>
 
-      <div
-        id={id}
-        ref={panel}
-        role="menu"
-        hidden={!shown}
-        className={cn(
-          "absolute right-0 top-[calc(100%+10px)] z-50 w-64 rounded-[16px] border border-line bg-paper p-2 text-ink",
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="menu"
+            id={id}
+            ref={panel}
+            role="menu"
+            className="menu-pop"
+            initial={{ opacity: 0, y: -6, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.16 }}
+          >
+            <div className="mp-head">
+              <b>{name}</b>
+              <span className="mono mute">@{username}</span>
+              <span style={{ marginTop: 6 }} title={ROLE_BLURB[role]}>
+                <span className={role === "public" ? "tag" : "tag solid"}>{ROLE_LABEL[role]}</span>
+              </span>
+            </div>
+            {children}
+          </motion.div>
         )}
-      >
-        <div className="border-b border-line px-3 pt-2 pb-3">
-          <p className="truncate text-[15px] font-medium">{name}</p>
-          <p className="mt-1 text-[13px] text-mute" title={ROLE_BLURB[role]}>
-            {ROLE_LABEL[role]}
-          </p>
-        </div>
-        <div className="flex flex-col pt-1.5">{children}</div>
-      </div>
+      </AnimatePresence>
     </div>
   );
 }
 
+/** A provider's picture, or the initials on a grey disc when there is none. */
+export function Avatar({ name, src, size = 36 }: { name: string; src: string | null; size?: number }) {
+  const box = { width: size, height: size, fontSize: Math.round(size / 3) };
+  if (!src)
+    return (
+      <span className="av" style={box} aria-hidden="true">
+        {initials(name)}
+      </span>
+    );
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- provider avatars, any host
+    <img className="av" src={sizedAvatar(src, size * 2)} alt="" width={size} height={size} style={{ ...box, objectFit: "cover" }} />
+  );
+}

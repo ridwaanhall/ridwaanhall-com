@@ -105,6 +105,18 @@ export function PageMotion() {
         });
       });
 
+      // A name rises letter by letter, out of a mask one line tall.
+      arriving("[data-fh-chars]").forEach((heading) => {
+        SplitText.create(heading, {
+          type: "chars",
+          mask: "chars",
+          charsClass: "fh-char",
+          autoSplit: true,
+          onSplit: (self) =>
+            gsap.from(self.chars, { yPercent: 105, duration: 1.1, ease: "expo.out", stagger: 0.035, delay: 0.1 }),
+        });
+      });
+
       const enter = arriving("[data-fh-enter]");
       if (enter.length) {
         gsap.from(enter, {
@@ -117,6 +129,36 @@ export function PageMotion() {
           clearProps: "transform,opacity",
         });
       }
+
+      // Section titles rise by line the first time they scroll into view --
+      // only those below the fold when the page arrived, so nothing the
+      // server painted on screen is hidden and shown again.
+      const stops: (() => void)[] = [];
+      scope.querySelectorAll<HTMLElement>(".sec-h h2").forEach((heading) => {
+        if (heading.closest("[data-fh-scope]")) return;
+        if (fresh && heading.getBoundingClientRect().top < window.innerHeight) return;
+        const split = SplitText.create(heading, { type: "lines", mask: "lines", linesClass: "fh-line" });
+        const tween = gsap.from(split.lines, { yPercent: 105, duration: 0.9, ease: "expo.out", paused: true, onComplete: () => split.revert() });
+        stops.push(onSeen(heading, () => tween.play()));
+      });
+
+      // A statement sharpens word by word from a blur, tied to the scroll.
+      scope.querySelectorAll<HTMLElement>("[data-fh-blur]").forEach((paragraph) => {
+        const split = SplitText.create(paragraph, { type: "words" });
+        gsap.fromTo(
+          split.words,
+          { opacity: 0.12, filter: "blur(5px)" },
+          {
+            opacity: 1,
+            filter: "blur(0px)",
+            stagger: 0.08,
+            ease: "none",
+            scrollTrigger: { trigger: paragraph, start: "top 82%", end: "bottom 50%", scrub: true },
+          },
+        );
+      });
+
+      return () => stops.forEach((stop) => stop());
     });
 
     return () => mm.revert();
@@ -433,3 +475,35 @@ export function ReadingProgress({ target }: { target: string }) {
   );
 }
 
+
+/**
+ * A row of capsules that sit tilted and straighten as the row arrives, tied to
+ * the scroll -- a third as much on a phone, where they would otherwise pile on
+ * each other. Its own component rather than a selector in `PageMotion`,
+ * because the row streams in behind a `<Suspense>`, and styling markup React
+ * has not hydrated yet is a hydration mismatch.
+ */
+export function TiltedRow({ className, children }: { className?: string; children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    const row = ref.current;
+    if (!row) return;
+    const mm = gsap.matchMedia();
+    mm.add(MOTION_OK, () => {
+      const k = window.innerWidth < 768 ? 0.35 : 1;
+      gsap.fromTo(
+        Array.from(row.children),
+        { rotate: (i) => [-22, 16, -12, 20][i % 4] * k, y: (i) => [60, 110, 40, 90][i % 4] * k },
+        { rotate: 0, y: 0, ease: "none", scrollTrigger: { trigger: row, start: "top 92%", end: "center 60%", scrub: true } },
+      );
+    });
+    return () => mm.revert();
+  });
+
+  return (
+    <div ref={ref} className={className}>
+      {children}
+    </div>
+  );
+}

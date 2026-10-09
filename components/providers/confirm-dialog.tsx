@@ -99,13 +99,10 @@ export function ConfirmDialogProvider({ children }: { children: React.ReactNode 
   );
 }
 
-// The site's own buttons: Cancel is the outlined one, Confirm the solid one --
-// or, for something that cannot be undone, the same red the error toast uses.
-const CONFIRM_BUTTON = {
-  neutral: "bg-ink text-paper hover:opacity-85",
-  danger: "border border-red-500/40 bg-red-500/10 text-red-400 hover:bg-red-500/20",
-};
-const ICON_MARK = { neutral: "bg-line text-ink", danger: "bg-red-500/15 text-red-400" };
+// The site's own buttons: Cancel is the outlined one, Confirm the solid one.
+// Something that cannot be undone says so in its label and carries the
+// trash glyph rather than a colour -- the interface adds no hue of its own.
+const CONFIRM_ICON = { neutral: null, danger: "trash" } as const;
 
 function ConfirmDialog({
   isOpen,
@@ -145,58 +142,50 @@ function ConfirmDialog({
     <div
       id="confirm-dialog"
       className={`fixed inset-0 z-50 transition-all duration-300 ease-out ${
-        shown ? "bg-[var(--fh-scrim)] backdrop-blur-sm" : "backdrop-blur-none pointer-events-none"
+        shown ? "bg-[var(--fh-scrim)] backdrop-blur-[4px]" : "backdrop-blur-none pointer-events-none"
       }`}
     >
       {/* Backdrop dismissal, as the search palette does it. Escape covers the
           keyboard, so this needs no key handler of its own. */}
-      <div className="flex min-h-full items-center justify-center p-4" onClick={onCancel}>
+      <div className="flex min-h-full items-start justify-center p-4 pt-[max(16px,26vh)]" onClick={onCancel}>
         <div
           role="dialog"
           aria-modal="true"
           aria-labelledby="confirm-dialog-title"
-          className={`relative mx-auto w-full max-w-md overflow-hidden rounded-[18px] border border-line bg-paper p-6 font-text transition-all duration-300 ease-out ${
-            shown ? "scale-100 opacity-100" : "scale-95 opacity-0"
+          className={`relative mx-auto grid w-full max-w-[440px] gap-2.5 overflow-hidden rounded-[10px] border border-zinc-700 bg-paper p-6 font-text transition-all duration-300 ease-out ${
+            shown ? "translate-y-0 scale-100 opacity-100" : "translate-y-2.5 scale-[0.97] opacity-0"
           }`}
           onClick={(event) => event.stopPropagation()}
         >
-          <div className="flex items-start gap-3">
-            <span
-              className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full ${ICON_MARK[variant]}`}
-            >
-              <Icon name="alert" strokeWidth={1.8} className="h-[18px] w-[18px]" />
-            </span>
-            <div className="min-w-0 pt-0.5">
-              <h3
-                id="confirm-dialog-title"
-                className="font-display text-[19px] leading-snug font-medium tracking-[-0.015em] text-ink"
-              >
-                {options.title ?? "Are you sure?"}
-              </h3>
-              {options.message && <p className="mt-1.5 text-[14px] leading-relaxed text-mute">{options.message}</p>}
-            </div>
-          </div>
+          <h3
+            id="confirm-dialog-title"
+            className="font-display text-[1.3rem] leading-tight font-medium tracking-[-0.02em] text-ink"
+          >
+            {options.title ?? "Are you sure?"}
+          </h3>
+          {options.message && <p className="text-[15px] leading-relaxed text-mute">{options.message}</p>}
 
           {detail && (
-            <blockquote className="mt-4 max-h-24 overflow-y-auto rounded-lg border border-line bg-raise px-3 py-2 text-sm text-mute italic break-words whitespace-pre-line">
+            <blockquote className="mt-2 max-h-24 overflow-y-auto rounded-md border border-line bg-raise px-3 py-2 text-sm text-mute italic break-words whitespace-pre-line">
               {detail}
             </blockquote>
           )}
 
-          <div className="mt-6 flex justify-end gap-2">
+          <div className="mt-2.5 flex flex-wrap justify-end gap-2">
             <button
               ref={cancelRef}
               type="button"
               onClick={onCancel}
-              className="cursor-pointer rounded-full border border-line px-4 py-2 text-sm font-medium text-ink transition-colors hover:border-ink"
+              className="inline-flex h-11 cursor-pointer items-center rounded-lg border border-zinc-700 px-[18px] text-[14.5px] font-medium text-ink transition-colors hover:border-ink"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={onConfirm}
-              className={`cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition-[opacity,background-color] ${CONFIRM_BUTTON[variant]}`}
+              className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-lg border border-ink bg-ink px-[18px] text-[14.5px] font-medium text-paper transition-opacity hover:opacity-85"
             >
+              {CONFIRM_ICON[variant] && <Icon name={CONFIRM_ICON[variant]} size={16} />}
               {options.label ?? "Confirm"}
             </button>
           </div>

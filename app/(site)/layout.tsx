@@ -5,6 +5,7 @@ import { Footer } from "@/components/foothill/footer";
 import { SiteShell } from "@/components/foothill/site-shell";
 import { AccountPanel, AccountPanelSkeleton } from "@/components/layout/account-panel";
 import { getAboutData } from "@/lib/data/about";
+import { getHiringData, getOpenToWorkData } from "@/lib/data/openhire";
 
 /**
  * The public site's chrome.
@@ -23,7 +24,7 @@ import { getAboutData } from "@/lib/data/about";
  * warns about an unkeyed list child on every page without it.
  */
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
-  const about = await getAboutData();
+  const [about, openToWork, hiring] = await Promise.all([getAboutData(), getOpenToWorkData(), getHiringData()]);
   // Every page in this group renders the profile, so without a Profile row
   // there is no site to show. `notFound()` rather than an empty shell: half a
   // layout around a page that cannot be right is worse than saying so.
@@ -37,7 +38,13 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
           <AccountPanel />
         </Suspense>
       }
-      footer={<Footer about={about} />}
+      footer={
+        <Footer
+          about={about}
+          availability={openToWork?.availability || null}
+          hiringStatus={hiring?.hiring_status || null}
+        />
+      }
     >
       {children}
     </SiteShell>

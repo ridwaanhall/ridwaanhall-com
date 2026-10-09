@@ -1,134 +1,43 @@
 "use client";
 
-import { useRef } from "react";
-
-import { gsap, MOTION_OK, useGSAP } from "@/lib/motion/gsap";
-
-const CLICKABLE = "a, button, summary, label, [role='button'], #search-modal li";
-const TYPING = "input, textarea, select, [contenteditable='true'], iframe";
-/** Larger than this and the disc hides the words it sits on. */
-const MAX_SCALE = 6;
-/** The disc's diameter at a scale of 1, in pixels. */
-const BASE = 14;
+import { motion, useMotionValue, useSpring } from "motion/react";
+import { useEffect } from "react";
 
 /**
- * A disc that trails a fine pointer (`.fh-cursor` in styles/site.css).
+ * A small disc that follows a mouse, inverting what it passes over.
  *
- * It inverts what it passes over, grows over anything that can be clicked,
- * gives a little on a press and steps aside wherever a text caret is the
- * better guide. Only for a mouse or a trackpad, and only when motion is
- * welcome: on touch there is no pointer to follow.
+ * It grows over anything that can be pressed or explained, and steps aside
+ * over pictures -- a screenshot, a cover, the portrait, the heatmap -- where
+ * its difference blend would turn the colours inside out. Never on a touch
+ * screen, and never for a reader who asks for reduced motion.
  */
 export function Cursor() {
-  const dot = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(-100);
+  const y = useMotionValue(-100);
+  const scale = useMotionValue(1);
+  const sx = useSpring(x, { stiffness: 700, damping: 45, mass: 0.4 });
+  const sy = useSpring(y, { stiffness: 700, damping: 45, mass: 0.4 });
+  const ss = useSpring(scale, { stiffness: 400, damping: 28 });
 
-  useGSAP(() => {
-    const el = dot.current;
-    if (!el) return;
-    const mm = gsap.matchMedia();
-    mm.add(`${MOTION_OK} and (pointer: fine) and (hover: hover)`, () => {
-      // Short enough to feel attached to the hand, long enough to read as a
-      // glide rather than a second pointer.
-      // Centred on the pointer by percentage, so it stays centred whatever
-      // size it has grown to.
-      gsap.set(el, { xPercent: -50, yPercent: -50 });
-      const toX = gsap.quickTo(el, "x", { duration: 0.16, ease: "power3.out" });
-      const toY = gsap.quickTo(el, "y", { duration: 0.16, ease: "power3.out" });
-      let size = 1;
-      let shown = false;
-      let x = 0;
-      let y = 0;
-      // A size is read from computed style, which is not free; the answer for
-      // an element does not change while it is pointed at.
-      const sizes = new WeakMap<Element, number>();
+  useEffect(() => {
+    if (window.matchMedia("(hover: none), (prefers-reduced-motion: reduce)").matches) return;
+    const move = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse") return;
+      x.set(event.clientX);
+      y.set(event.clientY);
+      const target = event.target as Element | null;
+      const picture = target?.closest?.("input, textarea, select, img, video, canvas, iframe, .thumb, .heat, .who .ph, .mini, .cv-page");
+      const pressable = target?.closest?.("a, button, label, summary, [role=button], [role=option], [title]");
+      scale.set(picture ? 0 : pressable ? 3 : 1);
+    };
+    const leave = () => scale.set(0);
+    window.addEventListener("pointermove", move, { passive: true });
+    document.documentElement.addEventListener("pointerleave", leave);
+    return () => {
+      window.removeEventListener("pointermove", move);
+      document.documentElement.removeEventListener("pointerleave", leave);
+    };
+  }, [x, y, scale]);
 
-      const show = (visible: boolean) => {
-        if (visible === shown) return;
-        shown = visible;
-        gsap.to(el, { autoAlpha: visible ? 1 : 0, duration: 0.25, overwrite: "auto" });
-      };
-      /*
-       * The disc grows by its real width and height, never by `scale`. A
-       * scaled element is painted once at its own size and then magnified, so
-       * at six times over a page title its edge was a 14px circle blown up --
-       * soft all the way round. Resizing repaints it, and a circle painted at
-       * the size it is shown has a hard edge at every size.
-       */
-      const diameter = (scale: number) => ({ width: BASE * scale, height: BASE * scale });
-      const resize = (scale: number) => {
-        if (scale === size) return;
-        size = scale;
-        gsap.to(el, { ...diameter(scale), duration: 0.3, ease: "power3.out", overwrite: "auto" });
-      };
-
-      // Over text the disc takes the size of the letters under it -- a caption
-      // gets a small one, a page title a large one -- so it covers about one
-      // line of whatever is being read. Clickable things get a little more.
-      const scaleFor = (target: Element) => {
-        const known = sizes.get(target);
-        if (known !== undefined) return known;
-        const clickable = target.closest(CLICKABLE);
-        const holdsText = Array.from(target.childNodes).some(
-          (node) => node.nodeType === Node.TEXT_NODE && node.textContent?.trim(),
-        );
-        const textBox = holdsText ? target : clickable;
-        let scale = 1;
-        if (textBox) {
-          const letters = parseFloat(getComputedStyle(textBox).fontSize) || 16;
-          scale = Math.round(Math.min(MAX_SCALE, Math.max(1, (letters * (clickable ? 1.9 : 1.4)) / 14)) * 10) / 10;
-        }
-        sizes.set(target, scale);
-        return scale;
-      };
-      const settle = (target: Element | null) => {
-        if (!target || target.closest(TYPING)) return show(false);
-        show(true);
-        resize(scaleFor(target));
-      };
-
-      const onMove = (event: PointerEvent) => {
-        if (event.pointerType !== "mouse") return show(false);
-        x = event.clientX;
-        y = event.clientY;
-        // The first move places the disc where the pointer is, rather than
-        // gliding in from the corner of the page.
-        if (!shown && gsap.getProperty(el, "opacity") === 0) gsap.set(el, { x, y });
-        toX(x);
-        toY(y);
-        settle(event.target as Element | null);
-      };
-      // Scrolling moves the page under a pointer that stays put, and fires no
-      // pointer event: ask again what is under it, once a frame at most.
-      let frame = 0;
-      const onScroll = () => {
-        if (!shown || frame) return;
-        frame = requestAnimationFrame(() => {
-          frame = 0;
-          settle(document.elementFromPoint(x, y));
-        });
-      };
-      const onDown = () => gsap.to(el, { ...diameter(size * 0.75), duration: 0.12, overwrite: "auto" });
-      const onUp = () => gsap.to(el, { ...diameter(size), duration: 0.35, ease: "back.out(3)", overwrite: "auto" });
-      const onLeave = () => show(false);
-
-      window.addEventListener("pointermove", onMove, { passive: true });
-      window.addEventListener("scroll", onScroll, { passive: true, capture: true });
-      window.addEventListener("pointerdown", onDown);
-      window.addEventListener("pointerup", onUp);
-      window.addEventListener("blur", onLeave);
-      document.documentElement.addEventListener("pointerleave", onLeave);
-      return () => {
-        cancelAnimationFrame(frame);
-        window.removeEventListener("pointermove", onMove);
-        window.removeEventListener("scroll", onScroll, { capture: true });
-        window.removeEventListener("pointerdown", onDown);
-        window.removeEventListener("pointerup", onUp);
-        window.removeEventListener("blur", onLeave);
-        document.documentElement.removeEventListener("pointerleave", onLeave);
-      };
-    });
-    return () => mm.revert();
-  });
-
-  return <div ref={dot} aria-hidden="true" className="fh-cursor" />;
+  return <motion.div className="cursor" aria-hidden="true" style={{ x: sx, y: sy, scale: ss }} />;
 }

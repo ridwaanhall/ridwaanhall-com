@@ -1,26 +1,22 @@
 import { Bar, HeadSkeleton, PageSkeleton } from "@/components/foothill/skeleton";
 
-/** Open-hire while it loads: heading, then the roles list beside its facts. */
+/** Open-hire while it loads: the heading and status, then three columns of lists. */
 export default function Loading() {
   return (
     <PageSkeleton>
-      <HeadSkeleton aside={4} />
-      <div className="mt-24 border-t border-line pt-4 md:mt-32">
-        <Bar className="h-3 w-28" />
-      </div>
-      <div className="mt-10 grid gap-14 lg:grid-cols-12 lg:gap-10">
-        <div className="space-y-4 lg:col-span-7">
-          <Bar className="h-4 w-64" />
-          {[0, 1, 2, 3].map((i) => (
-            <Bar key={i} className="mt-6 h-9 w-[80%]" />
+      <HeadSkeleton facts={4} />
+      <section className="wrap" style={{ paddingBottom: 72 }}>
+        <Bar w={340} h={36} />
+        <div className="pgrid three" style={{ gap: 32, marginTop: 32 }}>
+          {Array.from({ length: 3 }, (_, column) => (
+            <div key={column} style={{ display: "grid", gap: 12, alignContent: "start" }}>
+              {Array.from({ length: 6 }, (_, i) => (
+                <Bar key={i} w={i % 3 === 0 ? "40%" : "85%"} />
+              ))}
+            </div>
           ))}
         </div>
-        <div className="space-y-5 lg:col-span-4 lg:col-start-9">
-          {Array.from({ length: 9 }, (_, i) => (
-            <Bar key={i} className="h-5 w-full" />
-          ))}
-        </div>
-      </div>
+      </section>
     </PageSkeleton>
   );
 }

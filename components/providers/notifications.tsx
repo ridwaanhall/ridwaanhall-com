@@ -12,10 +12,9 @@ import { Toaster } from "sonner";
  * `scripts/check-notifications.mjs` asserts exactly this structurally, because
  * nothing else would catch it.
  *
- * Geometry: 4px in from the top, centred and full
- * width on a phone, right-aligned and 384px (`sm:w-96`) from `sm` up, at most
- * four at once, oldest dropped first so a burst of errors cannot push the
- * newest off-screen.
+ * Geometry: centred at the foot of the screen, 24px up, full width on a
+ * phone and 384px from `sm` up, at most four at once, oldest dropped first so
+ * a burst of errors cannot push the newest off-screen.
  *
  * `z-[60]`, above the confirm dialog's `z-50`: a toast raised while the dialog
  * is open -- a failed action, say -- has to be readable over it.
@@ -28,9 +27,9 @@ import { Toaster } from "sonner";
 export function Notifications() {
   return (
     <Toaster
-      position="top-right"
+      position="bottom-center"
       visibleToasts={4}
-      offset={16}
+      offset={24}
       mobileOffset={16}
       gap={8}
       // `expand`, because the original showed every toast at full size in a

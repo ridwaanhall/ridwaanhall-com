@@ -1,18 +1,21 @@
 /**
- * The page frame, as utility strings.
+ * The page frame, as class strings.
  *
- * A page's `<main>` and its skeleton's status box both take `MAIN`, and the
- * inner wrapper of each takes `WRAP`, so the two cannot disagree about where
- * the content starts -- `scripts/check-skeleton-shape.mjs` measures exactly
- * that. A plain module rather than a component, so a skeleton can use it
- * without pulling any client code into its fallback.
+ * Every page renders `<main className={MAIN}>` with one `<div>` inside it
+ * holding its sections, and each section carries `WRAP` itself -- the 1200px
+ * column inside the 16 / 32 / 48px gutter -- so a band that bleeds to the
+ * edge (the skills rows, the footer's word) can simply leave it off.
+ *
+ * A skeleton's `aria-hidden` box stands where that `<div>` stands, which is
+ * what `scripts/check-skeleton-shape.mjs` measures. The navbar is sticky and
+ * in the flow, so neither needs room for it: the page head's own padding is
+ * the space above a title.
+ *
+ * A plain module rather than a component, so a skeleton can use it without
+ * pulling any client code into its fallback.
  */
 
-/** Room for the fixed navbar above, and a long settle below. */
-export const MAIN = "pt-28 pb-24 md:pt-36 md:pb-32";
+export const MAIN = "fh-main";
 
-/** 1200px of content inside 16 / 32 / 48px gutters. */
-export const WRAP = "mx-auto w-full max-w-[1200px] px-4 md:px-8 xl:px-12";
-
-/** The reading column: posts, project write-ups, legal text. */
-export const MEASURE = "max-w-[68ch]";
+/** 1200px of content inside the site's gutter (`--fh-gut`). */
+export const WRAP = "wrap";

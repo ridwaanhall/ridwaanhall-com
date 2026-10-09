@@ -18,6 +18,8 @@ import {
   employmentType,
   experience,
   experienceTask,
+  membership,
+  membershipTask,
   location,
   mediaAsset,
   organization,
@@ -389,6 +391,68 @@ export async function getExperiences(currentOnly = false): Promise<Experience[]>
       responsibilities: (tasksFor.get(row.e.id) ?? []).map((task) => task.body),
       website: row.org.website,
     }));
+}
+
+/**
+ * A role in an organisation that was not a job -- an alumni association, a
+ * student body. Shown on About beneath the experience and nowhere else: the CV
+ * reads `getExperiences` alone, so none of these reach it.
+ */
+export type Membership = {
+  id: string;
+  title: string;
+  organization: string;
+  logo: string;
+  website: string;
+  period: { start: MonthYear | null; end: MonthYear | "Present" };
+  location: string;
+  is_current: boolean;
+  responsibilities: string[];
+};
+
+export async function getMemberships(): Promise<Membership[]> {
+  "use cache";
+  cacheTag(TAGS.membership, TAGS.organization);
+  cacheLife("days");
+
+  const [rows, tasks] = await Promise.all([
+    db
+      .select({
+        m: membership,
+        org: organization,
+        city: location.city,
+        region: location.region,
+        country: location.country,
+        flag: location.flag,
+        ...ORG_LOGO,
+      })
+      .from(membership)
+      .innerJoin(organization, eq(membership.organizationId, organization.id))
+      .leftJoin(location, eq(location.id, membership.locationId))
+      .leftJoin(mediaAsset, eq(mediaAsset.id, organization.logoId))
+      .orderBy(asc(membership.position), desc(membership.periodStart)),
+    db
+      .select({ membershipId: membershipTask.membershipId, body: membershipTask.body })
+      .from(membershipTask)
+      .orderBy(asc(membershipTask.position)),
+  ]);
+
+  const tasksFor = groupBy(tasks, (task) => task.membershipId);
+
+  return rows.map((row) => ({
+    id: row.m.id,
+    title: row.m.title,
+    organization: row.org.name,
+    logo: logoUrl(row),
+    website: row.org.website,
+    period: {
+      start: monthYear(row.m.periodStart),
+      end: monthYear(row.m.periodEnd) ?? ("Present" as const),
+    },
+    location: locationLabel(row),
+    is_current: row.m.isCurrent,
+    responsibilities: (tasksFor.get(row.m.id) ?? []).map((task) => task.body),
+  }));
 }
 
 export type Education = {

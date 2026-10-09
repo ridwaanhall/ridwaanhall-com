@@ -327,7 +327,7 @@ try {
   check("you cannot remove your own staff access", self?.isStaff === true);
   check(
     "and you are told why",
-    (await page.locator('[role="alert"]').first().textContent())?.includes("your own staff access"),
+    (await page.locator('[role="alert"]').first().textContent())?.includes("your own editor access"),
   );
 
   // --- read-only fields are not writable ------------------------------------

@@ -30,7 +30,7 @@ it is not somewhere to add anything. This is.
 
 ## The schema
 
-Everything reads and writes the **`app`** schema: 53 tables, uuid keys, real
+Everything reads and writes the **`app`** schema: 55 tables, uuid keys, real
 foreign keys with real referential actions, row-level security on every one.
 
 `drizzle/0000_init.sql` is the whole of it, in one file, and it runs against an
@@ -53,7 +53,7 @@ npx tsx scripts/check-baseline-schema.mjs      # the file still builds this sche
 npx tsx scripts/check-app-schema.mjs           # the mapping still matches it
 ```
 
-`lib/db/app-schema.ts` is **generated**, never edited by hand: 53 tables of
+`lib/db/app-schema.ts` is **generated**, never edited by hand: 55 tables of
 column names is exactly the transcription that fails silently, because a
 mistyped SQL name is a column the app writes to and never reads back.
 `drizzle-kit pull` cannot produce it — with `schemaFilter: ["app"]` it fetches

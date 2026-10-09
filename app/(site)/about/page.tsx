@@ -12,7 +12,7 @@ import { SectionIndex } from "@/components/foothill/section-index";
 import { Button, Empty, Facts, Heading, Logo, PageHead, Tag, TextLink } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { RichText } from "@/components/site/rich-text";
-import type { Application, Certification, Experience } from "@/lib/data/about";
+import type { Application, Certification, Experience, Membership } from "@/lib/data/about";
 import {
   getAboutData,
   getApplications,
@@ -20,6 +20,7 @@ import {
   getCertifications,
   getEducation,
   getExperiences,
+  getMemberships,
   getSkillsByCategory,
 } from "@/lib/data/about";
 import { getProjects } from "@/lib/data/content";
@@ -41,6 +42,7 @@ const SECTIONS = [
   { id: "story", label: "Story" },
   { id: "cv", label: "CV" },
   { id: "experience", label: "Experience" },
+  { id: "organizations", label: "Organizations" },
   { id: "education", label: "Education" },
   { id: "skills", label: "Skills" },
   { id: "recognition", label: "Recognition" },
@@ -48,7 +50,7 @@ const SECTIONS = [
   { id: "job-hunt", label: "The job hunt" },
 ];
 
-function periodLabel(role: Experience): string {
+function periodLabel(role: Pick<Experience | Membership, "period">): string {
   const start = monthYearLabel(role.period.start);
   const end = role.period.end === "Present" ? "now" : monthYearLabel(role.period.end);
   return start === end ? start : `${start} – ${end}`;
@@ -75,8 +77,10 @@ function certView(cert: Certification): CertView {
 }
 
 function applicationView(app: Application): ApplicationView {
+  const years = app.journey.flatMap((step) => (step.timestamp ? [step.timestamp.getUTCFullYear()] : []));
   return {
     id: app.id,
+    year: years.length ? Math.min(...years) : null,
     position: app.position,
     company: app.company_name,
     logo: app.company_logo || null,
@@ -93,9 +97,10 @@ function applicationView(app: Application): ApplicationView {
 }
 
 export default async function AboutPage() {
-  const [about, experiences, education, awards, certifications, applications, skills, projects] = await Promise.all([
+  const [about, experiences, memberships, education, awards, certifications, applications, skills, projects] = await Promise.all([
     getAboutData(),
     getExperiences(),
+    getMemberships(),
     getEducation(),
     getAwards(),
     getCertifications(),
@@ -271,6 +276,50 @@ export default async function AboutPage() {
                 );
               })}
             </section>
+
+            {memberships.length > 0 && (
+              <section id="organizations" className="sec">
+                <Heading
+                  title="Organizations"
+                  count={memberships.length}
+                  note="Roles held outside work: associations and the communities I helped run."
+                />
+                {memberships.map((role) => (
+                  <div key={role.id} className="org">
+                    <Logo src={role.logo} name={role.organization} />
+                    <div style={{ minWidth: 0 }}>
+                      <h3 className="t3">
+                        {role.website ? (
+                          <a className="ul" href={role.website} target="_blank" rel="noopener noreferrer">
+                            {role.organization}
+                          </a>
+                        ) : (
+                          role.organization
+                        )}
+                      </h3>
+                      <div className="role">
+                        <div>
+                          <b>{role.title}</b> {role.is_current && <Tag kind="solid">Current</Tag>}
+                        </div>
+                        <span className="when mono mute">{periodLabel(role)}</span>
+                        {role.location && <span className="meta">{role.location}</span>}
+                        {role.responsibilities.length > 0 && (
+                          <div style={{ gridColumn: "1 / -1" }}>
+                            <Disclosure inline label="What I did">
+                              <ul className="bul">
+                                {role.responsibilities.map((line) => (
+                                  <li key={line}>{line}</li>
+                                ))}
+                              </ul>
+                            </Disclosure>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </section>
+            )}
 
             <section id="education" className="sec">
               <Heading title="Where I studied" count={education.length} />

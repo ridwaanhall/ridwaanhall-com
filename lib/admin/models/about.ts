@@ -15,6 +15,8 @@ import {
   employmentType,
   experience,
   experienceTask,
+  membership,
+  membershipTask,
   jobOpening,
   location,
   openToWorkListItem,
@@ -547,6 +549,64 @@ export const applicationList: AdminListModel<ApplicationRow> = {
   rowId: (row) => row.id,
 };
 
+// --- Membership --------------------------------------------------------------
+
+export type MembershipRow = {
+  id: string;
+  title: string;
+  organization: string;
+  periodStart: string;
+  periodEnd: string | null;
+  position: number;
+  isCurrent: boolean;
+};
+
+const membershipOrganization = organizationName(membership.organizationId);
+
+/**
+ * Roles in organisations that were not employment. The about page lists them
+ * under the experience; the CV leaves them out, which is the reason they are
+ * not rows of `experience` with a flag.
+ */
+export const membershipList: AdminListModel<MembershipRow> = {
+  key: "membership",
+  from: membership,
+  pk: membership.id,
+  select: {
+    id: membership.id,
+    title: membership.title,
+    organization: membershipOrganization,
+    periodStart: membership.periodStart,
+    periodEnd: membership.periodEnd,
+    position: membership.position,
+    isCurrent: membership.isCurrent,
+  },
+  columns: [
+    { key: "title", label: "Role", sort: membership.title, value: (row) => row.title },
+    {
+      key: "organization",
+      label: "Organization",
+      kind: "muted",
+      sort: membershipOrganization,
+      value: (row) => row.organization,
+    },
+    { key: "period_start", label: "From", kind: "date", sort: membership.periodStart, value: (row) => row.periodStart },
+    { key: "period_end", label: "To", kind: "date", sort: membership.periodEnd, value: (row) => row.periodEnd },
+    { key: "sort_order", label: "Order", kind: "number", sort: membership.position, value: (row) => row.position },
+    { key: "is_current", label: "Current", kind: "bool", sort: membership.isCurrent, value: (row) => row.isCurrent },
+  ],
+  filters: [
+    { key: "is_current", label: "Current", kind: "boolean", column: membership.isCurrent },
+    { key: "period_start", label: "Started", kind: "date", column: membership.periodStart },
+  ],
+  search: {
+    fields: [membership.title, membershipOrganization],
+    placeholder: "Search role or organization",
+  },
+  defaultSort: { key: "sort_order", dir: "asc" },
+  rowId: (row) => row.id,
+};
+
 // --- Organization ------------------------------------------------------------
 
 export type OrganizationRow = {
@@ -554,6 +614,7 @@ export type OrganizationRow = {
   name: string;
   website: string;
   experiences: number;
+  memberships: number;
   education: number;
   certifications: number;
   awards: number;
@@ -575,6 +636,7 @@ export type OrganizationRow = {
  */
 export const ORGANIZATION_USAGE: UsageRelation[] = [
   { column: experience.organizationId, noun: "experience" },
+  { column: membership.organizationId, noun: "membership" },
   { column: education.organizationId, noun: "education" },
   { column: certification.organizationId, noun: "certification" },
   { column: award.organizationId, noun: "award" },
@@ -593,6 +655,7 @@ export const organizationList: AdminListModel<OrganizationRow> = {
     name: organization.name,
     website: organization.website,
     experiences: usedBy(experience.organizationId),
+    memberships: usedBy(membership.organizationId),
     education: usedBy(education.organizationId),
     certifications: usedBy(certification.organizationId),
     awards: usedBy(award.organizationId),
@@ -618,6 +681,7 @@ export const organizationList: AdminListModel<OrganizationRow> = {
       value: (row) =>
         usageSentence([
           [row.experiences, "experience"],
+          [row.memberships, "membership"],
           [row.education, "education"],
           [row.certifications, "certification"],
           [row.awards, "award"],
@@ -710,7 +774,7 @@ export const organizationForm: AdminFormModel = {
   // nothing references is genuinely deletable, and the Used by column says
   // which those are.
   deleteWarning:
-    "An organization still used by an experience, degree, award, certification or application cannot be removed.",
+    "An organization still used by an experience, membership, degree, award, certification or application cannot be removed.",
   fieldsets: [
     {
       fields: [
@@ -849,6 +913,65 @@ export const experienceForm: AdminFormModel = {
       fields: [
         { name: "body", column: experienceTask.body, label: "Text", kind: "textarea" },
       ],
+    },
+  ],
+};
+
+export const membershipForm: AdminFormModel = {
+  key: "membership",
+  from: membership,
+  pk: membership.id,
+  label: (values) => String(values.title ?? "Membership"),
+  deleteWarning: "The responsibilities listed under this role are deleted with it.",
+  fieldsets: [
+    {
+      fields: [
+        {
+          name: "title",
+          column: membership.title,
+          label: "Role",
+          kind: "text",
+          required: true,
+          maxLength: 255,
+        },
+        organizationField(membership.organizationId),
+        locationField(membership.locationId),
+      ],
+    },
+    {
+      title: "Period",
+      fields: [
+        { name: "periodStart", column: membership.periodStart, label: "From", kind: "date", required: true },
+        {
+          name: "periodEnd",
+          column: membership.periodEnd,
+          label: "To",
+          kind: "date",
+          help: "Leave blank while the role is held.",
+        },
+        { name: "isCurrent", column: membership.isCurrent, label: "Current", kind: "checkbox" },
+        {
+          name: "sortOrder",
+          column: membership.position,
+          label: "Order",
+          kind: "number",
+          min: 0,
+          help: "The sequence the about page lists these in.",
+        },
+      ],
+    },
+  ],
+  inlines: [
+    {
+      name: "tasks",
+      table: membershipTask,
+      pk: membershipTask.id,
+      parent: membershipTask.membershipId,
+      title: "Responsibilities",
+      help: "Shown in this order under the role.",
+      itemLabel: "responsibility",
+      orderColumn: membershipTask.position,
+      fields: [{ name: "body", column: membershipTask.body, label: "Text", kind: "textarea" }],
     },
   ],
 };
@@ -1344,6 +1467,7 @@ export type LocationRow = {
   applications: number;
   education: number;
   experiences: number;
+  memberships: number;
   openings: number;
   listItems: number;
   profiles: number;
@@ -1362,6 +1486,7 @@ export type LocationRow = {
  */
 export const LOCATION_USAGE: UsageRelation[] = [
   { column: experience.locationId, noun: "experience" },
+  { column: membership.locationId, noun: "membership" },
   { column: education.locationId, noun: "degree" },
   { column: application.locationId, noun: "application" },
   { column: jobOpening.locationId, noun: "opening" },
@@ -1394,6 +1519,7 @@ export const locationList: AdminListModel<LocationRow> = {
     applications: placesUsedBy(application.locationId),
     education: placesUsedBy(education.locationId),
     experiences: placesUsedBy(experience.locationId),
+    memberships: placesUsedBy(membership.locationId),
     openings: placesUsedBy(jobOpening.locationId),
     listItems: placesUsedBy(openToWorkListItem.locationId),
     profiles: placesUsedBy(profile.locationId),
@@ -1425,6 +1551,7 @@ export const locationList: AdminListModel<LocationRow> = {
       value: (row) =>
         usageSentence([
           [row.experiences, "experience"],
+          [row.memberships, "membership"],
           [row.education, "degree"],
           [row.applications, "application"],
           [row.openings, "opening"],
@@ -1457,7 +1584,7 @@ export const locationForm: AdminFormModel = {
   // refused. That is a different warning from the organization's, which is
   // restricted and cannot be deleted while anything points at it.
   deleteWarning:
-    "Any experience, degree, application, opening, list entry or profile using this place is left with no location.",
+    "Any experience, membership, degree, application, opening, list entry or profile using this place is left with no location.",
   fieldsets: [
     {
       help: "City, region and country together identify a place -- two rows cannot share all three. Leave the parts that do not apply empty: a country on its own is a real place.",

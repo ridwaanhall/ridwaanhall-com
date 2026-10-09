@@ -7,6 +7,7 @@ import {
   getCertifications,
   getEducation,
   getExperiences,
+  getMemberships,
   getSkillsByCategory,
   type AboutData,
 } from "@/lib/data/about";
@@ -129,8 +130,9 @@ export async function postTwin(slug: string, about: AboutData): Promise<Twin | n
 }
 
 export async function aboutTwin(about: AboutData): Promise<Twin> {
-  const [experiences, education, awards, certifications, applications, skills] = await Promise.all([
+  const [experiences, memberships, education, awards, certifications, applications, skills] = await Promise.all([
     getExperiences(),
+    getMemberships(),
     getEducation(),
     getAwards(),
     getCertifications(),
@@ -149,6 +151,9 @@ export async function aboutTwin(about: AboutData): Promise<Twin> {
       htmlToMarkdown(about.stories_html),
       experiences.length
         ? `## Experience\n\n${experiences.map((role) => `### ${role.title}, ${role.company}\n\n${span(role)} · ${[role.employment_type, role.location_type, role.location].filter(Boolean).join(" · ")}\n\n${list(role.responsibilities)}`).join("\n\n")}`
+        : "",
+      memberships.length
+        ? `## Organizations\n\n${memberships.map((role) => `### ${role.title}, ${role.organization}\n\n${span(role)}${role.location ? ` · ${role.location}` : ""}\n\n${list(role.responsibilities)}`).join("\n\n")}`
         : "",
       education.length ? `## Education\n\n${education.map((e) => `### ${e.degree}, ${e.institution}\n\n${list(e.achievements)}`).join("\n\n")}` : "",
       Object.keys(skills).length ? `## Skills\n\n${list(Object.entries(skills).map(([category, items]) => `${category}: ${items.map((s) => s.name).join(", ")}`))}` : "",

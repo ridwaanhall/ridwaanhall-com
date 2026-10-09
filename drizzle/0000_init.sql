@@ -442,6 +442,29 @@ CREATE TABLE "app"."experience_task" (
     "position" integer NOT NULL DEFAULT 0
 );--> statement-breakpoint
 
+-- A role held in an organisation that is not employment: an alumni
+-- association, a student body. Its own table rather than a flag on
+-- `experience`, because it has neither an employment type nor a work mode,
+-- and because the CV is built from `experience` alone -- a volunteer post must
+-- not arrive on an applicant tracking system as a job.
+CREATE TABLE "app"."membership" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "organization_id" uuid NOT NULL REFERENCES "app"."organization"("id") ON DELETE RESTRICT,
+    "title" text NOT NULL,
+    "location_id" uuid REFERENCES "app"."location"("id") ON DELETE SET NULL,
+    "is_current" boolean NOT NULL DEFAULT false,
+    "period_start" date NOT NULL,
+    "period_end" date,
+    "position" integer NOT NULL DEFAULT 0
+);--> statement-breakpoint
+
+CREATE TABLE "app"."membership_task" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "membership_id" uuid NOT NULL REFERENCES "app"."membership"("id") ON DELETE CASCADE,
+    "body" text NOT NULL,
+    "position" integer NOT NULL DEFAULT 0
+);--> statement-breakpoint
+
 CREATE TABLE "app"."education" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "organization_id" uuid NOT NULL REFERENCES "app"."organization"("id") ON DELETE RESTRICT,
@@ -812,6 +835,7 @@ CREATE INDEX "guest_message_posted_idx" ON "app"."guest_message" ("posted_at" DE
 CREATE INDEX "guest_message_pinned_idx" ON "app"."guest_message" ("is_pinned", "pinned_at" DESC);--> statement-breakpoint
 CREATE INDEX "comment_target_idx" ON "app"."comment" ("target_kind", "target_id", "created_at");--> statement-breakpoint
 CREATE INDEX "experience_position_idx" ON "app"."experience" ("position");--> statement-breakpoint
+CREATE INDEX "membership_position_idx" ON "app"."membership" ("position");--> statement-breakpoint
 CREATE INDEX "application_status_idx" ON "app"."application" ("status_id");--> statement-breakpoint
 -- Every request by a staff account reads that account's whole grant set, so
 -- this is the one lookup on the table that happens on every admin page.

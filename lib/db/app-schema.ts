@@ -322,6 +322,24 @@ export const mediaAsset = app.table("media_asset", {
   tone: text(),
 });
 
+export const membership = app.table("membership", {
+  id: uuid().primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").references((): AnyPgColumn => organization.id).notNull(),
+  title: text().notNull(),
+  locationId: uuid("location_id").references((): AnyPgColumn => location.id),
+  isCurrent: boolean("is_current").notNull().default(false),
+  periodStart: date("period_start").notNull(),
+  periodEnd: date("period_end"),
+  position: integer().notNull().default(0),
+});
+
+export const membershipTask = app.table("membership_task", {
+  id: uuid().primaryKey().defaultRandom(),
+  membershipId: uuid("membership_id").references((): AnyPgColumn => membership.id).notNull(),
+  body: text().notNull(),
+  position: integer().notNull().default(0),
+});
+
 export const noticePeriod = app.table("notice_period", {
   id: uuid().primaryKey().defaultRandom(),
   slug: text().notNull(),

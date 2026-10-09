@@ -14,6 +14,8 @@ import {
   experienceList,
   locationForm,
   locationList,
+  membershipForm,
+  membershipList,
   organizationForm,
   organizationList,
   profileForm,
@@ -102,6 +104,7 @@ import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 const MODELS: AdminListModel<never>[] = [
   // about
   experienceList,
+  membershipList,
   educationList,
   certificationList,
   awardList,
@@ -170,6 +173,7 @@ const FORMS: AdminFormModel[] = [
   // about
   profileForm,
   experienceForm,
+  membershipForm,
   educationForm,
   certificationForm,
   awardForm,

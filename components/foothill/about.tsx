@@ -20,8 +20,17 @@ export type ProjectLink = { slug: string; title: string; kind: string; year: num
  * were built with is a button: it opens a drawer of those projects, from the
  * side (from below on a phone), and See all goes to Work filtered by it.
  */
+/** Groups shown before "Show more", and how many each press adds. */
+const SKILL_BATCH = 6;
+
 export function SkillGroups({ groups, projects }: { groups: [string, SkillIcon[]][]; projects: ProjectLink[] }) {
   const [open, setOpen] = useState<string | null>(null);
+  // Twenty-odd groups drawn at once made Skills the longest section on the
+  // page by a distance, ahead of everything below it. The busiest groups lead
+  // and the rest are a press away, the way Work pages through its projects.
+  const [shown, setShown] = useState(SKILL_BATCH);
+  const visible = groups.slice(0, shown);
+  const left = groups.length - visible.length;
   // Read when the drawer opens: it slides up from the bottom on a phone.
   const [phone, setPhone] = useState(false);
   const using = (name: string) => projects.filter((project) => project.stack.includes(name));
@@ -33,7 +42,7 @@ export function SkillGroups({ groups, projects }: { groups: [string, SkillIcon[]
   return (
     <>
       <div className="skills-grid">
-        {groups.map(([category, skills]) => (
+        {visible.map(([category, skills]) => (
           <div key={category} className="sk-row">
             <span className="meta">
               {category || "Other"} · {skills.length}
@@ -60,6 +69,24 @@ export function SkillGroups({ groups, projects }: { groups: [string, SkillIcon[]
           </div>
         ))}
       </div>
+      {groups.length > SKILL_BATCH && (
+        <div className="more-row">
+          {left > 0 ? (
+            <button type="button" className="btn ghost" onClick={() => setShown(shown + SKILL_BATCH)}>
+              <Icon name="plus" />
+              {left > SKILL_BATCH ? `Show ${SKILL_BATCH} more groups` : `Show the last ${left === 1 ? "group" : `${left} groups`}`}
+            </button>
+          ) : (
+            <button type="button" className="btn ghost" onClick={() => setShown(SKILL_BATCH)}>
+              <Icon name="minus" />
+              Show fewer
+            </button>
+          )}
+          <span className="mono mute" aria-live="polite">
+            Showing {visible.length} of {groups.length} groups
+          </span>
+        </div>
+      )}
       <SkillDrawer name={open} phone={phone} projects={open ? using(open) : []} close={() => setOpen(null)} />
     </>
   );
@@ -238,6 +265,8 @@ export function Certifications({ items }: { items: CertView[] }) {
 
 export type ApplicationView = {
   id: string;
+  /** The year of the first recorded step; null when no step was dated. */
+  year: number | null;
   position: string;
   company: string;
   logo: string | null;
@@ -260,6 +289,13 @@ const OUTCOME: Record<string, { tag: "solid" | "strike" | "dashed" | ""; fill: s
 };
 const ORDER = ["accepted", "rejected", "ghosted"];
 
+/** Each outcome's count within one group, in the summary's order. */
+const tally = (list: ApplicationView[]) => {
+  const counts = new Map<string, number>();
+  list.forEach((item) => counts.set(item.slug, (counts.get(item.slug) ?? 0) + 1));
+  return [...counts.entries()].sort(([a], [b]) => ((ORDER.indexOf(a) + 99) % 99) - ((ORDER.indexOf(b) + 99) % 99));
+};
+
 export function JobHunt({ items }: { items: ApplicationView[] }) {
   const [status, setStatus] = useState("");
   const outcomes = useMemo(() => {
@@ -272,6 +308,16 @@ export function JobHunt({ items }: { items: ApplicationView[] }) {
     return [...groups.entries()].sort(([a], [b]) => (ORDER.indexOf(a) + 99) % 99 - (ORDER.indexOf(b) + 99) % 99);
   }, [items]);
   const total = items.length;
+  // Grouped by the year the application started, newest first, as the
+  // certificates are: sixty rows in one list read as a wall, and the year is
+  // what a reader scanning a job hunt asks first. Undated ones go last.
+  const years = useMemo(() => {
+    const groups = new Map<number | null, ApplicationView[]>();
+    items
+      .filter((item) => !status || item.slug === status)
+      .forEach((item) => groups.set(item.year, [...(groups.get(item.year) ?? []), item]));
+    return [...groups.entries()].sort(([a], [b]) => (b ?? -1) - (a ?? -1));
+  }, [items, status]);
 
   return (
     <>
@@ -297,85 +343,121 @@ export function JobHunt({ items }: { items: ApplicationView[] }) {
         <Chips id="app" label="Outcome" value={status} onChange={setStatus} items={[["", "All", total], ...outcomes.map(([slug, group]) => [slug, group.label, group.count] as [string, string, number])]} />
       </div>
       <div className="rows">
-        {items
-          .filter((item) => !status || item.slug === status)
-          .map((item) => (
-            <div key={item.id} style={{ borderBottom: "1px solid var(--fh-line)" }}>
-              <Disclosure
-                label={
-                  <span style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                    <Logo src={item.logo} name={item.company} size={32} />
-                    <span style={{ display: "grid", minWidth: 0 }}>
-                      <b style={{ fontWeight: 600 }}>{item.position}</b>
-                      <span className="meta">
-                        {item.company}
-                        {item.mode && `, ${item.mode.toLowerCase()}`}
-                      </span>
+        {years.map(([year, list], index) => (
+          <div key={`${year}|${status}`} className="year-group">
+            <Disclosure
+              open={index === 0 || Boolean(status)}
+              label={
+                <span className="year-label">
+                  <span className="t2" style={{ fontFamily: "var(--fh-display)" }}>
+                    {year ?? "Undated"}
+                  </span>
+                  <span className="mono mute">
+                    {list.length}
+                    <span className="sr"> {list.length === 1 ? "application" : "applications"}</span>
+                  </span>
+                </span>
+              }
+              right={
+                <span className="year-tally meta" aria-hidden="true">
+                  {tally(list).map(([slug, count]) => (
+                    <span key={slug} title={`${outcomes.find(([key]) => key === slug)?.[1].label ?? slug}: ${count}`}>
+                      <i className={OUTCOME[slug]?.fill ?? "f6"} />
+                      {count}
                     </span>
-                  </span>
-                }
-                right={
-                  <span style={{ marginRight: 12 }}>
-                    <Tag kind={OUTCOME[item.slug]?.tag ?? ""}>{item.status}</Tag>
-                  </span>
-                }
-              >
-                <div className="app-in" style={{ paddingBottom: 20 }}>
-                  {item.steps.length ? (
-                    <ol className="steps">
-                      {item.steps.map((step, i) => (
-                        <li key={i}>
-                          <b style={{ fontWeight: 600 }}>{step.title}</b>
-                          {step.date && (
-                            <span className="mono mute" style={{ display: "block", margin: "2px 0 4px" }}>
-                              {step.date}
-                            </span>
-                          )}
-                          {step.details && <p style={{ fontSize: 14.5 }}>{step.details}</p>}
-                          {step.notes && (
-                            <p className="meta" style={{ whiteSpace: "pre-line" }}>
-                              {step.notes}
-                            </p>
-                          )}
-                        </li>
-                      ))}
-                    </ol>
-                  ) : (
-                    <p className="meta">No steps were recorded for this one.</p>
-                  )}
-                  <div>
-                    <div className="kv">
-                      {(
-                        [
-                          ["Status", <Tag key="t" kind={OUTCOME[item.slug]?.tag ?? ""}>{item.status}</Tag>],
-                          ["Type", item.type],
-                          ["Where", item.where],
-                          ["Via", item.via],
-                          ["Salary", item.salary],
-                        ] as [string, React.ReactNode][]
-                      )
-                        .filter(([, value]) => value)
-                        .map(([key, value]) => (
-                          <div key={key}>
-                            <span className="mute">{key}</span>
-                            <span>{value}</span>
-                          </div>
-                        ))}
-                    </div>
-                    {item.lessons && (
-                      <p style={{ marginTop: 14, fontSize: 14 }}>
-                        <span className="mono mute" style={{ display: "block", marginBottom: 4 }}>
-                          What I learned
-                        </span>
-                        {item.lessons}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </Disclosure>
-            </div>
-          ))}
+                  ))}
+                </span>
+              }
+            >
+              <div style={{ paddingBottom: 16 }}>
+                {list.map((item) => (
+                  <Application key={item.id} item={item} />
+                ))}
+              </div>
+            </Disclosure>
+          </div>
+        ))}
       </div>
     </>
+  );
+}
+
+/** One application: who and what, the outcome, and the steps it went through. */
+function Application({ item }: { item: ApplicationView }) {
+  return (
+    <div className="app-row">
+      <Disclosure
+        label={
+          <span style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            <Logo src={item.logo} name={item.company} size={32} />
+            <span style={{ display: "grid", minWidth: 0 }}>
+              <b style={{ fontWeight: 600 }}>{item.position}</b>
+              <span className="meta">
+                {item.company}
+                {item.mode && `, ${item.mode.toLowerCase()}`}
+              </span>
+            </span>
+          </span>
+        }
+        right={
+          <span style={{ marginRight: 12 }}>
+            <Tag kind={OUTCOME[item.slug]?.tag ?? ""}>{item.status}</Tag>
+          </span>
+        }
+      >
+        <div className="app-in" style={{ paddingBottom: 20 }}>
+          {item.steps.length ? (
+            <ol className="steps">
+              {item.steps.map((step, i) => (
+                <li key={i}>
+                  <b style={{ fontWeight: 600 }}>{step.title}</b>
+                  {step.date && (
+                    <span className="mono mute" style={{ display: "block", margin: "2px 0 4px" }}>
+                      {step.date}
+                    </span>
+                  )}
+                  {step.details && <p style={{ fontSize: 14.5 }}>{step.details}</p>}
+                  {step.notes && (
+                    <p className="meta" style={{ whiteSpace: "pre-line" }}>
+                      {step.notes}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="meta">No steps were recorded for this one.</p>
+          )}
+          <div>
+            <div className="kv">
+              {(
+                [
+                  ["Status", <Tag key="t" kind={OUTCOME[item.slug]?.tag ?? ""}>{item.status}</Tag>],
+                  ["Type", item.type],
+                  ["Where", item.where],
+                  ["Via", item.via],
+                  ["Salary", item.salary],
+                ] as [string, React.ReactNode][]
+              )
+                .filter(([, value]) => value)
+                .map(([key, value]) => (
+                  <div key={key}>
+                    <span className="mute">{key}</span>
+                    <span>{value}</span>
+                  </div>
+                ))}
+            </div>
+            {item.lessons && (
+              <p style={{ marginTop: 14, fontSize: 14 }}>
+                <span className="mono mute" style={{ display: "block", marginBottom: 4 }}>
+                  What I learned
+                </span>
+                {item.lessons}
+              </p>
+            )}
+          </div>
+        </div>
+      </Disclosure>
+    </div>
   );
 }

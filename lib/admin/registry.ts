@@ -217,6 +217,13 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     blurb: "Roles, ordered by the sort column the about page follows.",
   },
   {
+    key: "membership",
+    label: "Membership",
+    labelPlural: "Memberships",
+    group: "About",
+    blurb: "Roles in organisations that were not jobs. Listed on About, left off the CV.",
+  },
+  {
     key: "education",
     label: "Education",
     labelPlural: "Education",

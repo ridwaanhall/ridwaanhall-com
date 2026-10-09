@@ -14,6 +14,7 @@
 export const TAGS = {
   profile: "profile",
   experience: "experience",
+  membership: "membership",
   education: "education",
   certification: "certification",
   award: "award",
@@ -57,6 +58,8 @@ export const MODEL_TAGS: Record<string, readonly Tag[]> = {
   // About.
   experience: [TAGS.experience],
   experience_task: [TAGS.experience],
+  membership: [TAGS.membership],
+  membership_task: [TAGS.membership],
   education: [TAGS.education],
   education_achievement: [TAGS.education],
   certification: [TAGS.certification],
@@ -106,6 +109,7 @@ export const MODEL_TAGS: Record<string, readonly Tag[]> = {
   organization: [
     TAGS.organization,
     TAGS.experience,
+    TAGS.membership,
     TAGS.education,
     TAGS.certification,
     TAGS.award,
@@ -113,7 +117,7 @@ export const MODEL_TAGS: Record<string, readonly Tag[]> = {
   ],
   tag: [TAGS.blog, TAGS.project],
   category: [TAGS.skill, TAGS.blog, TAGS.project],
-  location: [TAGS.profile, TAGS.experience, TAGS.education, TAGS.application, TAGS.hiring, TAGS.opentowork],
+  location: [TAGS.profile, TAGS.experience, TAGS.membership, TAGS.education, TAGS.application, TAGS.hiring, TAGS.opentowork],
   project_status: [TAGS.project],
   // An application card names both of these, which the two lines below missed
   // until the vocabularies got a screen and renaming one stopped being

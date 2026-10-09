@@ -41,13 +41,25 @@ describe("the CV's rules", () => {
   });
 
   it("leads with the roles looked for, four at most", () => {
-    assert.equal(buildCv(base).headline, "AI Engineer · ML Engineer · Python Developer · Data Analyst");
+    assert.equal(buildCv(base).headline, "AI Engineer | ML Engineer | Python Developer | Data Analyst");
   });
 
   it("leaves out a role with no technical title, and caps points at three", () => {
     const { experience } = buildCv(base);
     assert.deepEqual(experience.map((role) => role.company), ["RoneAI"]);
     assert.equal(experience[0].points.length, 3);
+  });
+
+  it("keeps only the latest education", () => {
+    const cv = buildCv({
+      ...base,
+      education: [
+        { degree: "SMA", institution: "Boarding School", years: "2015 - 2018", achievements: [] },
+        { degree: "S.Kom.", institution: "UTY", years: "2021 - 2025", achievements: [] },
+        { degree: "Bootcamp", institution: "X", years: "2019 - 2020", achievements: [] },
+      ],
+    });
+    assert.deepEqual(cv.education.map((e) => e.institution), ["UTY"]);
   });
 
   it("lists the newest technical certificates only", () => {

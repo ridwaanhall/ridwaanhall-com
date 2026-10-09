@@ -5,7 +5,7 @@ import { useLayoutEffect, useRef } from "react";
 
 import { Icon } from "@/components/foothill/icons";
 import { openMarkdown } from "@/components/foothill/markdown";
-import { gsap, MOTION_OK, useGSAP } from "@/lib/motion/gsap";
+import { gsap, MOTION_OK, ScrollTrigger, useGSAP } from "@/lib/motion/gsap";
 import { hasTwin, twinOf } from "@/lib/site/twins";
 
 /**
@@ -23,7 +23,13 @@ export function GiantWord({ word }: { word: string }) {
     const fit = () => {
       el.style.fontSize = "100px";
       const width = el.getBoundingClientRect().width;
-      if (width) el.style.fontSize = `${(100 * el.parentElement!.clientWidth * 0.96) / width}px`;
+      if (!width) return;
+      const size = (100 * el.parentElement!.clientWidth * 0.96) / width;
+      el.style.fontSize = `${size}px`;
+      // The band is as tall as the letters are, at any width: a height set by
+      // the viewport alone crops the word differently at every resolution.
+      el.parentElement!.style.height = `${size * 0.8}px`;
+      ScrollTrigger.refresh();
     };
     fit();
     document.fonts?.ready.then(fit);
@@ -38,7 +44,7 @@ export function GiantWord({ word }: { word: string }) {
     mm.add(MOTION_OK, () => {
       gsap.fromTo(
         el,
-        { yPercent: 45 },
+        { yPercent: 25 },
         {
           yPercent: 0,
           ease: "none",

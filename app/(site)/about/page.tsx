@@ -153,7 +153,7 @@ export default async function AboutPage() {
               </div>
             </div>
           }
-          title={`${about.first_name || about.name}, known online as ${about.username}.`}
+          title={`Hi, I’m ${about.first_name || about.name}.`}
           lead={about.long_description}
           markdown="/about"
           facts={[

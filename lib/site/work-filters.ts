@@ -11,6 +11,8 @@ export type WorkFilters = {
   q: string;
   kind: string;
   skill: string;
+  /** A `project_status.slug`; empty is every status. */
+  status: string;
   live: boolean;
   source: boolean;
   sort: "featured" | "new" | "az";
@@ -21,6 +23,7 @@ export const DEFAULT_FILTERS: WorkFilters = {
   q: "",
   kind: "",
   skill: "",
+  status: "",
   live: false,
   source: false,
   sort: "featured",
@@ -36,6 +39,7 @@ export function parseFilters(raw: Record<string, string | string[] | undefined>)
     q: one(raw.q).trim(),
     kind: one(raw.kind),
     skill: one(raw.skill),
+    status: one(raw.status),
     live: one(raw.live) === "1",
     source: one(raw.source) === "1",
     sort: sort === "new" || sort === "az" ? sort : DEFAULT_FILTERS.sort,
@@ -49,6 +53,7 @@ export function filtersToSearch(filters: WorkFilters): string {
   if (filters.q) params.set("q", filters.q);
   if (filters.kind) params.set("kind", filters.kind);
   if (filters.skill) params.set("skill", filters.skill);
+  if (filters.status) params.set("status", filters.status);
   if (filters.live) params.set("live", "1");
   if (filters.source) params.set("source", "1");
   if (filters.sort !== DEFAULT_FILTERS.sort) params.set("sort", filters.sort);

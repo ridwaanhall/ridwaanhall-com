@@ -901,3 +901,7 @@ body:has(.fh-site) {
 .fh-site .year-tally i { display: block; width: 10px; height: 10px; border-radius: 2px; }
 .fh-site .app-row { border-top: 1px solid var(--fh-line); }
 @media (max-width: 479px) { .fh-site .year-tally { display: none; } }
+
+/* A status nobody holds yet stays in the row, dimmed, and cannot be chosen. */
+.fh-site .chip.none { opacity: .45; cursor: default; }
+.fh-site .chip.none:hover { color: inherit; border-color: var(--fh-line); }

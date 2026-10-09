@@ -10,7 +10,7 @@ import { PageHead } from "@/components/foothill/ui";
 import { WorkExplorer } from "@/components/foothill/work";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { getAboutData } from "@/lib/data/about";
-import { getProjects, searchProjects, sortProjects, type Project } from "@/lib/data/content";
+import { getProjects, getProjectStatuses, searchProjects, sortProjects, type Project } from "@/lib/data/content";
 import { projectsListSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { projectsListSchemas } from "@/lib/seo/schemas-for-page";
@@ -26,10 +26,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** The request-dependent half: reading the address makes this part dynamic. */
 async function Explorer({ projects, searchParams }: { projects: Project[]; searchParams: WorkParams }) {
-  const initial = parseFilters(await searchParams);
+  const [initial, statuses] = await Promise.all([searchParams.then(parseFilters), getProjectStatuses()]);
   return (
     <WorkExplorer
       projects={projects.map(projectView)}
+      statuses={statuses}
       initial={initial}
       serverMatches={initial.q ? searchProjects(projects, initial.q).map((project) => project.slug) : null}
     />

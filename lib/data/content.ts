@@ -277,6 +277,25 @@ export async function getBlogs(): Promise<BlogPost[]> {
  * recency. Sorting by a column the rows agree on -- and tie-breaking on `id` --
  * is what keeps that base from shifting under a rewrite.
  */
+export type ProjectStatusOption = { slug: string; label: string };
+
+/**
+ * Every status a project can have, in lifecycle order, whether or not any
+ * project holds it yet. The Work filter offers all of them: a status nobody
+ * has is still part of the vocabulary, and hiding it made the row look as
+ * though statuses were missing. Slug is the identifier, label is rendered.
+ */
+export async function getProjectStatuses(): Promise<ProjectStatusOption[]> {
+  "use cache";
+  cacheTag(TAGS.project);
+  cacheLife("days");
+
+  return db
+    .select({ slug: projectStatus.slug, label: projectStatus.label })
+    .from(projectStatus)
+    .orderBy(asc(projectStatus.position), asc(projectStatus.id));
+}
+
 export async function getProjects(): Promise<Project[]> {
   "use cache";
   // `skill` is a real dependency: each project dict embeds whole tech-stack

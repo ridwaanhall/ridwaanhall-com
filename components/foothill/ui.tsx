@@ -66,19 +66,6 @@ export function ProjectStatus({ slug, label }: { slug: string; label: string }) 
   );
 }
 
-/** The four tag shapes, explained once beside the filters that use them. */
-export function StatusKey() {
-  return (
-    <div className="status-key" aria-label="What the status tags mean">
-      <span className="meta">Status</span>
-      <Tag kind="solid">Finished</Tag>
-      <Tag>In progress</Tag>
-      <Tag kind="dashed">Planned or on hold</Tag>
-      <Tag kind="strike">Stopped</Tag>
-    </div>
-  );
-}
-
 /* --------------------------------------------------------------- the frame */
 
 /** Ruled facts beside a page title, drawn from what the page already loaded. */

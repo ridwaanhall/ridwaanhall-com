@@ -5,10 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
-import { Chips, EASE, Seg, ToggleChip } from "@/components/foothill/controls";
+import { Chips, EASE, SPRING, Seg, ToggleChip } from "@/components/foothill/controls";
+import type { ProjectStatusOption } from "@/lib/data/content";
 import { Brand, Icon } from "@/components/foothill/icons";
 import type { ProjectView } from "@/components/foothill/rows";
-import { Avail, Empty, ProjectStatus, StatusKey, Thumb } from "@/components/foothill/ui";
+import { Avail, Empty, ProjectStatus, Thumb } from "@/components/foothill/ui";
 import { DEFAULT_FILTERS, filtersToSearch, type WorkFilters } from "@/lib/site/work-filters";
 
 const BATCH = 12;
@@ -32,10 +33,12 @@ const matches = (project: ProjectView, q: string) =>
  */
 export function WorkExplorer({
   projects,
+  statuses,
   initial,
   serverMatches,
 }: {
   projects: ProjectView[];
+  statuses: ProjectStatusOption[];
   initial: WorkFilters;
   serverMatches: string[] | null;
 }) {
@@ -57,11 +60,21 @@ export function WorkExplorer({
     return [...counts.entries()].sort((a, b) => b[1] - a[1]);
   }, [projects]);
 
+  // Every status the vocabulary has, in lifecycle order, with how many
+  // projects hold it. A status with none is listed and dimmed rather than left
+  // out, so the row shows what exists. Matched on the slug, never the label.
+  const statusCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    projects.forEach((project) => counts.set(project.status, (counts.get(project.status) ?? 0) + 1));
+    return counts;
+  }, [projects]);
+
   const fromServer = serverMatches && filters.q === initial.q ? new Set(serverMatches) : null;
   let list = projects.filter(
     (project) =>
       (!filters.kind || project.kind === filters.kind) &&
       (!filters.skill || project.stack.includes(filters.skill)) &&
+      (!filters.status || project.status === filters.status) &&
       (!filters.live || project.demo) &&
       (!filters.source || project.source) &&
       (!filters.q || (fromServer ? fromServer.has(project.slug) : matches(project, filters.q))),
@@ -194,7 +207,28 @@ export function WorkExplorer({
             </motion.button>
           )}
         </AnimatePresence>
-        <StatusKey />
+        <div className="status-key" role="toolbar" aria-label="Status">
+          <span className="meta">Status</span>
+          {[{ slug: "", label: "All" }, ...statuses].map(({ slug, label }) => {
+            const count = slug ? (statusCounts.get(slug) ?? 0) : projects.length;
+            const on = filters.status === slug;
+            return (
+              <button
+                key={slug || "all"}
+                type="button"
+                className={`chip${on ? " on" : ""}${count === 0 && !on ? " none" : ""}`}
+                aria-pressed={on}
+                aria-disabled={count === 0 && !on ? true : undefined}
+                onClick={() => (count === 0 && !on ? undefined : set({ status: slug }))}
+                title={count === 0 ? `${label}: no project is at this stage yet` : undefined}
+              >
+                {on && <motion.span className="bgpill" layoutId="chip-status" transition={SPRING} />}
+                <span>{label}</span>
+                <span className="n">{count}</span>
+              </button>
+            );
+          })}
+        </div>
         <span className="sort">
           <span className="meta">Sort</span>
           <Seg

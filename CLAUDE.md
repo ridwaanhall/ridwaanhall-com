@@ -234,6 +234,17 @@ above the About heading.
   `<html>`; the scrollbar keeps its gutter, so opening one never shifts the
   layout sideways.
 
+### Abuse limits
+
+`lib/auth/throttle.ts` allows one account five guestbook messages or comments a
+minute, counted from the rows themselves because a serverless function remembers
+nothing between requests. A guestbook message can send three emails, so this is
+the limit that matters before an account has to be switched off by hand. Redirect
+targets from the browser go through `lib/utils/same-path.ts`, which also refuses
+a tab or newline (a URL parser drops them, so `/<tab>/host` is `//host`).
+`frame-ancestors`, `base-uri` and `object-src` are an enforced
+`Content-Security-Policy`; the full policy is still report-only beside it.
+
 ### Every page has a Markdown twin
 
 A page's address plus `.md` (the home page is `/index.md`), or the page asked
@@ -255,6 +266,10 @@ them. `proxy.ts` rewrites both ways of asking to `/md/<path>`, whose one handler
   `alternates.types`.
 - **`lib/markdown/html.ts` converts only what the sanitiser allows,** and
   strips the rest. It is pure and tested offline.
+- **The CV has a twin too, at `/cv.md`,** though its page for people is the PDF
+  (`Twin.page`). `lib/cv/load.ts` is the one cached read behind both formats and
+  `lib/cv/markdown.ts` turns it into text, so the two cannot disagree. The CV
+  viewer offers "View as Markdown" beside "Open the PDF".
 - `lib/site/twins.ts` is the one answer to "does this path have a twin", read
   by the footer, the palette, the proxy and the metadata. `check-markdown.mjs`
   walks the sitemap and holds all of it.
@@ -321,6 +336,12 @@ model already refuses.
 ### Three roles, and they nest
 
     public  ⊂  staff  ⊂  superuser
+
+**On screen they are Public, Editor and Owner.** `ROLE_LABEL` in
+`lib/auth/roles.ts` is the one place that says so, and every label, message and
+email badge reads it or repeats it; the columns and identifiers (`is_staff`,
+`is_superuser`, `"superuser"` in a descriptor) keep the longer names, because
+renaming a column is a migration and the words in the interface are a choice.
 
 There used to be four, over two tables: `is_staff` and `is_superuser` on
 `account`, `is_author` and `is_co_author` on `guest_profile`. The second pair

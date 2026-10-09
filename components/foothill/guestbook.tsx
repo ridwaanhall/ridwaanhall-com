@@ -260,7 +260,7 @@ export function Guestbook({
             <textarea
               id="guestbook-input"
               className="input"
-              placeholder="Say hello, ask about a project, or leave a note for the next visitor."
+              placeholder={signedIn ? "Posting is turned off for this account." : "Sign in to write a message."}
               disabled
             />
           </label>

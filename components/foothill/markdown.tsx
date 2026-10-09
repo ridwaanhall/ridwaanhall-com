@@ -27,17 +27,30 @@ const fetchText = (file: string) =>
     response.ok ? response.text() : Promise.reject(new Error(String(response.status))),
   );
 
+/** Resolves true once the text is on the clipboard, so a button can say so. */
 export const copyMarkdown = (file: string) =>
   fetchText(file)
     .then((text) => navigator.clipboard.writeText(text))
     .then(
-      () => notify("Page copied as Markdown", "success"),
-      () => notify("The page could not be copied", "error"),
+      () => {
+        notify("Page copied as Markdown", "success");
+        return true;
+      },
+      () => {
+        notify("The page could not be copied", "error");
+        return false;
+      },
     );
 
 /** The twin's path, which opens it, and Copy as Markdown, for pasting a page into a chat. */
 export function MarkdownChips({ path }: { path: string }) {
   const file = twinOf(path);
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    if (!copied) return;
+    const timer = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(timer);
+  }, [copied]);
   return (
     <div className="page-md">
       <button
@@ -49,9 +62,9 @@ export function MarkdownChips({ path }: { path: string }) {
         <Icon name="md" size={15} />
         <span className="mono">{file}</span>
       </button>
-      <button type="button" className="md-chip" onClick={() => copyMarkdown(file)}>
-        <Icon name="copy" size={14} />
-        Copy as Markdown
+      <button type="button" className="md-chip" onClick={() => copyMarkdown(file).then(setCopied)} aria-live="polite">
+        <Icon name={copied ? "check" : "copy"} size={14} />
+        {copied ? "Copied as Markdown" : "Copy as Markdown"}
       </button>
     </div>
   );

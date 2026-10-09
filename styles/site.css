@@ -120,7 +120,11 @@ body:has(.fh-site) {
 .fh-site p { margin: 0; text-wrap: pretty; }
 .fh-site ul, .fh-site ol { margin: 0; padding: 0; list-style: none; }
 .fh-site ::selection { background: var(--fh-ink); color: var(--fh-bg); }
-.fh-site :focus-visible { outline: 2px solid var(--fh-ink); outline-offset: 3px; border-radius: 2px; }
+.fh-site :focus-visible { outline: 2px solid var(--fh-ink); outline-offset: 3px; }
+/* The back-to-top button is a circle already drawn by its ring; the keyboard
+   focus is the ring thickening, never a box around it. */
+.fh-site .totop:focus, .fh-site .totop:focus-visible { outline: none; }
+.fh-site .totop:focus-visible svg.ring circle:last-child { stroke-width: 3; }
 .fh-site .mono { font-family: var(--fh-mono); font-size: 12px; letter-spacing: 0; font-feature-settings: "zero", "ss01"; }
 .fh-site .num { font-variant-numeric: tabular-nums; }
 .fh-site .mute { color: var(--fh-mute); }
@@ -393,7 +397,8 @@ body:has(.fh-site) {
    a wide panel never spreads the squares apart. Below 9px a cell scrolls. */
 /* The month labels sit inside the same scroller as the squares, so on a
    phone they move together and a label always names the week under it. */
-.fh-site .heat-scroll { overflow-x: auto; padding-bottom: 6px; }
+.fh-site .heat-scroll { overflow-x: auto; padding: 3px; margin: -3px; scrollbar-width: none; }
+.fh-site .heat-scroll::-webkit-scrollbar { display: none; }
 .fh-site .heat-scroll > * { min-width: 640px; }
 .fh-site .heat { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, auto); grid-template-columns: repeat(53, minmax(9px, 1fr)); gap: 3px; }
 .fh-site .heat i { width: 100%; aspect-ratio: 1; display: block; border-radius: 2px; }
@@ -657,8 +662,8 @@ body:has(.fh-site) {
 /* guestbook */
 .fh-site .gbwrap { display: grid; gap: 32px; }
 @media (min-width: 1024px) { .fh-site .gbwrap { grid-template-columns: 300px minmax(0, 1fr); gap: 56px; } }
-.fh-site .compose { border: 1px solid var(--fh-line); border-radius: var(--fh-r-m); padding: clamp(18px, 2.4vw, 24px); display: grid; gap: 16px; background: var(--fh-surface); align-self: start; }
-.fh-site .compose textarea.input { min-height: 200px; background: var(--fh-bg); }
+.fh-site .compose { display: grid; gap: 16px; align-self: start; }
+.fh-site .compose textarea.input { min-height: 200px; }
 .fh-site .compose-acts { display: grid; gap: 8px; }
 @media (min-width: 640px) and (max-width: 1023px) { .fh-site .compose-acts { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 1024px) { .fh-site .gbwrap.gb { grid-template-columns: 420px minmax(0, 1fr); } .fh-site .compose { position: sticky; top: calc(var(--fh-nav) + 24px); } }
@@ -673,7 +678,7 @@ body:has(.fh-site) {
 
 /* forms */
 .fh-site label.f { display: grid; gap: 8px; font-size: 14px; font-weight: 500; }
-.fh-site .input { width: 100%; border: 1px solid var(--fh-line); background: var(--fh-surface); border-radius: var(--fh-r-m); padding: 12px 14px; font-size: 16px; }
+.fh-site .input { width: 100%; border: 1px solid var(--fh-line); background: transparent; border-radius: var(--fh-r-m); padding: 12px 14px; font-size: 16px; }
 .fh-site .input:hover { border-color: var(--fh-line-2); }
 .fh-site .input:focus { outline: none; border-color: var(--fh-ink); }
 .fh-site .input::placeholder { color: var(--fh-mute); }
@@ -826,7 +831,7 @@ body:has(.fh-site) {
 @media (min-width: 1200px) { .fh-site .post-grid > .ptoc-d, .fh-site .post-grid > div:not(.ptoc-m) { grid-row: 1; } }
 .fh-site .sign-panel { border: 1px solid var(--fh-line); border-radius: var(--fh-r-m); background: var(--fh-surface); padding: 20px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
 .fh-site .msg-acts button:disabled { opacity: .5; cursor: not-allowed; }
-.fh-site .compose-h { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.fh-site .compose-h { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--fh-line); }
 
 /* Contact: the ways to reach me beside the form, the form first on a phone. */
 .fh-site .contact .contact-main { order: 2; min-width: 0; }

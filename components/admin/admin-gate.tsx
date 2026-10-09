@@ -36,7 +36,7 @@ export function AdminSignIn() {
   return (
     <Frame title="Sign in">
       <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-        The admin is for staff accounts. Signing in returns you here.
+        The admin is for the site’s editors. Signing in returns you here.
       </p>
       {/*
         `/admin` rather than the home page, which is where the public sign-in
@@ -61,7 +61,7 @@ export function AdminForbidden({ username }: { username: string }) {
   return (
     <Frame title="Not permitted">
       <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-        You are signed in as <span className="text-zinc-200">{username}</span>, which is not a staff
+        You are signed in as <span className="text-zinc-200">{username}</span>, which is not an editor
         account. Signing in again with the same account will not change that.
       </p>
       <div className="mt-5 flex flex-wrap items-center gap-3">

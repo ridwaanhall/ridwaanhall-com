@@ -394,7 +394,7 @@ export function Animate({
       release(scope);
       const q = <T extends Element>(selector: string) => Array.from(scope.querySelectorAll<T>(selector));
       const tl = gsap.timeline({ defaults: { ease: EASE }, paused: true });
-      tl.from(scope, { autoAlpha: 0, y: 16, duration: 0.6, clearProps: "transform,opacity" });
+      tl.from(scope, { autoAlpha: 0, y: 12, duration: 0.45, clearProps: "transform,opacity" });
       const bars = q("[data-fh-bar]");
       if (bars.length)
         tl.from(bars, { scaleX: 0, transformOrigin: "0% 50%", duration: 1.1, ease: "expo.out", stagger: 0.04 }, 0.1);
@@ -418,12 +418,12 @@ export function Animate({
         tl.fromTo(
           path,
           { strokeDasharray: length, strokeDashoffset: length },
-          { strokeDashoffset: 0, duration: 1.6, ease: "power2.inOut", clearProps: "strokeDasharray,strokeDashoffset" },
-          0.15,
+          { strokeDashoffset: 0, duration: 1.1, ease: "power2.out", clearProps: "strokeDasharray,strokeDashoffset" },
+          0,
         );
       });
       const fades = q("[data-fh-fade]");
-      if (fades.length) tl.from(fades, { autoAlpha: 0, duration: 1.2, ease: "power1.out" }, 0.6);
+      if (fades.length) tl.from(fades, { autoAlpha: 0, duration: 0.7, ease: "power1.out" }, 0.2);
       return onSeen(scope, () => tl.play());
     });
     return () => mm.revert();

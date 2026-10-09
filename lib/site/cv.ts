@@ -4,3 +4,4 @@
  * module reaches a server component as a client reference, not as the string.
  */
 export const CV_FILE = "/cv.pdf";
+export const CV_MARKDOWN = "/cv.md";

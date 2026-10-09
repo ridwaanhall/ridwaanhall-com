@@ -94,7 +94,7 @@ export const accessList: AdminListModel<AccessRow> = {
     { key: "email", label: "Email", kind: "muted", sort: account.email, value: (row) => row.email },
     {
       key: "is_superuser",
-      label: "Superuser",
+      label: "Owner",
       kind: "bool",
       sort: account.isSuperuser,
       value: (row) => row.isSuperuser,
@@ -124,7 +124,7 @@ export const accessList: AdminListModel<AccessRow> = {
     },
   ],
   filters: [
-    { key: "is_superuser", label: "Superuser", kind: "boolean", column: account.isSuperuser },
+    { key: "is_superuser", label: "Owner", kind: "boolean", column: account.isSuperuser },
     { key: "is_active", label: "Active", kind: "boolean", column: account.isActive },
   ],
   search: {

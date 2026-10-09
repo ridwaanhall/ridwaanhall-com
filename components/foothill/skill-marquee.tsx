@@ -26,14 +26,14 @@ export function SkillMarquee({ skills }: { skills: SkillIcon[] }) {
           const loop = gsap.fromTo(
             row,
             { xPercent: index % 2 ? -50 : 0 },
-            { xPercent: index % 2 ? 0 : -50, duration: 80, ease: "none", repeat: -1 },
+            { xPercent: index % 2 ? 0 : -50, duration: 220, ease: "none", repeat: -1 },
           );
           ScrollTrigger.create({
             trigger: row,
             start: "top bottom",
             end: "bottom top",
             onUpdate: (self) => {
-              const boost = Math.min(Math.abs(self.getVelocity()) / 300, 5);
+              const boost = Math.min(Math.abs(self.getVelocity()) / 600, 2);
               gsap.to(loop, { timeScale: 1 + boost, duration: 0.25, overwrite: true });
               gsap.to(loop, { timeScale: 1, duration: 1.2, delay: 0.25 });
             },

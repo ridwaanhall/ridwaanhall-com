@@ -136,7 +136,7 @@ export async function deleteMessage(messageId: string): Promise<ActionResult> {
   // -- and it earns its keep: a guestbook delete is a recursive hard delete
   // with no tombstone, so it is the one public act nothing can undo.
   if (!profile.can.deleteMessages) {
-    return { ok: false, error: "Only a superuser can delete a guestbook message." };
+    return { ok: false, error: "Only the owner can delete a guestbook message." };
   }
 
   /*
@@ -182,7 +182,7 @@ export async function togglePin(messageId: string): Promise<ActionResult> {
   const profile = await currentProfile();
   if (!profile) return { ok: false, error: "Sign in to manage messages." };
   if (!profile.can.pin) {
-    return { ok: false, error: "Only staff can pin a guestbook message." };
+    return { ok: false, error: "Only an editor can pin a guestbook message." };
   }
 
   const [message] = await db

@@ -101,8 +101,8 @@ export const publicAccessList: AdminListModel<PublicAccessRow> = {
   filters: [
     { key: "can_comment", label: "Comment", kind: "boolean", column: publicAccess.canComment },
     { key: "can_guestbook", label: "Guestbook", kind: "boolean", column: publicAccess.canGuestbook },
-    { key: "is_superuser", label: "Superuser", kind: "boolean", column: accountRole },
-    { key: "is_staff", label: "Staff", kind: "boolean", column: accountStaff },
+    { key: "is_superuser", label: "Owner", kind: "boolean", column: accountRole },
+    { key: "is_staff", label: "Editor", kind: "boolean", column: accountStaff },
     { key: "is_active", label: "Active", kind: "boolean", column: accountActive },
   ],
   search: {

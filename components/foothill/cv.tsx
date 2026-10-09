@@ -6,8 +6,9 @@ import { useEffect, useRef, useState } from "react";
 
 import { RetryButton } from "@/components/foothill/controls";
 import { Icon } from "@/components/foothill/icons";
+import { openMarkdown } from "@/components/foothill/markdown";
 import { useLockedPage } from "@/lib/motion/use-locked-page";
-import { CV_FILE } from "@/lib/site/cv";
+import { CV_FILE, CV_MARKDOWN } from "@/lib/site/cv";
 
 /*
  * The CV, shown inside the page.
@@ -190,6 +191,17 @@ export function CvViewer({ generated }: { generated?: string }) {
                 <span className="mono mute cv-pg" aria-live="polite">
                   {current} / {pages}
                 </span>
+                <button
+                  type="button"
+                  className="btn ghost sm"
+                  onClick={() => {
+                    setOpen(false);
+                    openMarkdown(CV_MARKDOWN);
+                  }}
+                >
+                  <Icon name="md" />
+                  View as Markdown
+                </button>
                 <a className="btn ghost sm" href={CV_FILE} target="_blank" rel="noopener">
                   <Icon name="out" />
                   Open the PDF

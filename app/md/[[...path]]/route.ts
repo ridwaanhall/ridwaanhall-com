@@ -3,6 +3,7 @@ import {
   aboutTwin,
   blogTwin,
   contactTwin,
+  cvTwin,
   dashboardTwin,
   guestbookTwin,
   homeTwin,
@@ -37,6 +38,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pat
     if (first === "projects") twin = await projectsTwin();
     else if (first === "blog") twin = await blogTwin();
     else if (first === "about") twin = await aboutTwin(about);
+    else if (first === "cv") twin = await cvTwin();
     else if (first === "dashboard") twin = dashboardTwin(about);
     else if (first === "guestbook") twin = await guestbookTwin();
     else if (first === "contact") twin = contactTwin(about);
@@ -49,5 +51,5 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pat
     else if (first === "legal") twin = await legalTwin(second);
   }
 
-  return twin ? markdown(render(twin), twin.path) : missing();
+  return twin ? markdown(render(twin), twin.page ?? twin.path) : missing();
 }

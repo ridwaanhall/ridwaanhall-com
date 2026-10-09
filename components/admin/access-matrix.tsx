@@ -249,12 +249,12 @@ export function AccessMatrix({
               checked={superuser}
               onChange={(event) => setSuperuser(event.target.checked)}
             />
-            Superuser
+            Owner
           </label>
           <p className="mt-2 max-w-2xl text-[13px] leading-relaxed text-zinc-500">
             {superuser
               ? "Every screen and every action, including this one and the ones no grant can reach. The boxes below show that, and are not what is stored. Untick this to see the grants that would come back."
-              : "A superuser answers yes to every screen, and is the only role that can open this page."}
+              : "An owner answers yes to every screen, and is the only role that can open this page."}
           </p>
           {isSelf && (
             <p className="mt-1.5 text-[13px] font-medium text-zinc-300">
@@ -375,7 +375,7 @@ export function AccessMatrix({
                                 aria-hidden="true"
                                 title={
                                   row.superuserOnly.includes(act)
-                                    ? `${ACTION_LABEL[act]} on ${row.label} is a superuser action. Give this account the superuser role to grant it.`
+                                    ? `${ACTION_LABEL[act]} on ${row.label} is an owner action. Give this account the owner role to grant it.`
                                     : `${row.label} has no ${ACTION_LABEL[act].toLowerCase()}, for anybody.`
                                 }
                                 className={cn("text-zinc-700")}

@@ -106,7 +106,7 @@ export async function saveAccess(
    * they have in common is the sentence, not the code.
    */
   if (accountId === actor.id && !isSuperuser) {
-    return { ok: false, error: "You cannot remove your own superuser access." };
+    return { ok: false, error: "You cannot remove your own owner access." };
   }
 
   /*

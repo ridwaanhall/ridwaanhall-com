@@ -6,6 +6,7 @@ import { after } from "next/server";
 
 import { auth } from "@/auth";
 import { getUserProfile } from "@/lib/auth/profile";
+import { guestbookTooFast, SLOW_DOWN } from "@/lib/auth/throttle";
 import { db } from "@/lib/db/client";
 import { notifyNewGuestbookMessage } from "@/lib/email/guestbook-notify";
 import { guestMessage } from "@/lib/db/app-schema";
@@ -74,6 +75,8 @@ export async function sendMessage(formData: FormData): Promise<ActionResult> {
    * with carriage returns that were never typed -- and the length checked below
    * counts one character per line that nobody wrote.
    */
+  if (await guestbookTooFast(profile.id)) return { ok: false, error: SLOW_DOWN };
+
   const text = normaliseNewlines(String(formData.get("message") ?? "")).trim();
   if (!text) return { ok: false, error: "Message cannot be empty" };
   if (text.length < MIN_MESSAGE_LENGTH) {
@@ -136,7 +139,7 @@ export async function deleteMessage(messageId: string): Promise<ActionResult> {
   // -- and it earns its keep: a guestbook delete is a recursive hard delete
   // with no tombstone, so it is the one public act nothing can undo.
   if (!profile.can.deleteMessages) {
-    return { ok: false, error: "Only a superuser can delete a guestbook message." };
+    return { ok: false, error: "Only the owner can delete a guestbook message." };
   }
 
   /*
@@ -182,7 +185,7 @@ export async function togglePin(messageId: string): Promise<ActionResult> {
   const profile = await currentProfile();
   if (!profile) return { ok: false, error: "Sign in to manage messages." };
   if (!profile.can.pin) {
-    return { ok: false, error: "Only staff can pin a guestbook message." };
+    return { ok: false, error: "Only an editor can pin a guestbook message." };
   }
 
   const [message] = await db

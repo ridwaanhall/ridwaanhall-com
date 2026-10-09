@@ -125,7 +125,7 @@ export const userList: AdminListModel<UserRow> = {
     },
     {
       key: "is_staff",
-      label: "Staff",
+      label: "Editor",
       kind: "bool",
       sort: account.isStaff,
       value: (row) => row.isStaff,
@@ -134,7 +134,7 @@ export const userList: AdminListModel<UserRow> = {
     // edited on the Access screen, which is also where its grants are.
     {
       key: "is_superuser",
-      label: "Superuser",
+      label: "Owner",
       kind: "bool",
       sort: account.isSuperuser,
       value: (row) => row.isSuperuser,
@@ -184,8 +184,8 @@ export const userList: AdminListModel<UserRow> = {
       column: providers,
       choices: Object.entries(PROVIDER_LABELS).map(([value, label]) => ({ value, label })),
     },
-    { key: "is_staff", label: "Staff", kind: "boolean", column: account.isStaff },
-    { key: "is_superuser", label: "Superuser", kind: "boolean", column: account.isSuperuser },
+    { key: "is_staff", label: "Editor", kind: "boolean", column: account.isStaff },
+    { key: "is_superuser", label: "Owner", kind: "boolean", column: account.isSuperuser },
     { key: "is_active", label: "Active", kind: "boolean", column: account.isActive },
     { key: "can_comment", label: "Comment", kind: "boolean", column: canComment },
     { key: "can_guestbook", label: "Guestbook", kind: "boolean", column: canGuestbook },
@@ -261,7 +261,7 @@ export const userForm: AdminFormModel = {
         {
           name: "isStaff",
           column: account.isStaff,
-          label: "Staff",
+          label: "Editor",
           kind: "checkbox",
           help: "Opens this admin. An account given it for the first time starts on the default screens; Access is where they are narrowed. Read from the database on every request, so clearing it takes effect at once.",
         },
@@ -270,7 +270,7 @@ export const userForm: AdminFormModel = {
           column: account.isActive,
           label: "Active",
           kind: "checkbox",
-          help: "An inactive account cannot sign in, and cannot reach this admin even as staff.",
+          help: "An inactive account cannot sign in, and cannot reach this admin even as an editor.",
         },
         /*
          * Shown, never written here. Read-only fields are dropped from the
@@ -285,7 +285,7 @@ export const userForm: AdminFormModel = {
         {
           name: "isSuperuser",
           column: account.isSuperuser,
-          label: "Superuser",
+          label: "Owner",
           kind: "checkbox",
           readOnly: true,
           help: "Every screen and every action. Set on the Access screen, which is also where this account's per-screen grants live.",
@@ -326,11 +326,11 @@ export const userForm: AdminFormModel = {
      * not-staff is to take the role away first, on the screen that grants it.
      */
     if (values.isSuperuser && !values.isStaff) {
-      return "A superuser is always staff. Remove the superuser role on the Access screen first.";
+      return "An owner is always an editor. Remove the owner role on the Access screen first.";
     }
 
     if (id === actorId) {
-      if (!values.isStaff) return "You cannot remove your own staff access.";
+      if (!values.isStaff) return "You cannot remove your own editor access.";
       if (!values.isActive) return "You cannot deactivate your own account.";
       return null;
     }
@@ -349,7 +349,7 @@ export const userForm: AdminFormModel = {
      * *outranking*: a superuser may still do it to another superuser.
      */
     if (values.isSuperuser && !actorIsSuperuser && (!values.isStaff || !values.isActive)) {
-      return "Only a superuser can take away a superuser's access.";
+      return "Only an owner can take away an owner’s access.";
     }
     return null;
   },

@@ -11,6 +11,8 @@ import {
   type AboutData,
 } from "@/lib/data/about";
 import { findBySlug, getBlogs, getProjects, sortProjects, type BlogPost, type Project } from "@/lib/data/content";
+import { getCv } from "@/lib/cv/load";
+import { cvToMarkdown } from "@/lib/cv/markdown";
 import { getLegalDocument, getLegalDocuments } from "@/lib/data/legal";
 import { getHiringData, getOpenToWorkData } from "@/lib/data/openhire";
 import { SITE_URL } from "@/lib/seo/config";
@@ -33,7 +35,8 @@ import { htmlToMarkdown } from "./html";
  * file is wrong by the time it is read, so its twin names the sources.
  */
 
-export type Twin = { path: string; title: string; summary: string; body: string };
+/** `page` is where people read it when that is not `path`: the CV's twin is `/cv.md`, its page is the PDF. */
+export type Twin = { path: string; page?: string; title: string; summary: string; body: string };
 
 const list = (items: string[]) => items.filter(Boolean).map((item) => `- ${item}`).join("\n");
 const link = (title: string, path: string) => `[${title}](${twinOf(path)})`;
@@ -161,6 +164,18 @@ export async function aboutTwin(about: AboutData): Promise<Twin> {
   };
 }
 
+export async function cvTwin(): Promise<Twin | null> {
+  const loaded = await getCv();
+  if (!loaded) return null;
+  return {
+    path: "/cv",
+    page: "/cv.pdf",
+    title: `${loaded.cv.name}, CV`,
+    summary: loaded.cv.headline,
+    body: cvToMarkdown(loaded.cv),
+  };
+}
+
 export function dashboardTwin(about: AboutData): Twin {
   return {
     path: "/dashboard",
@@ -240,11 +255,12 @@ export async function legalTwin(slug: string): Promise<Twin | null> {
 export async function everyTwin(): Promise<{ pages: Twin[]; projects: Twin[]; writing: Twin[]; optional: Twin[] }> {
   const about = await getAboutData();
   if (!about) return { pages: [], projects: [], writing: [], optional: [] };
-  const [home, work, writing, aboutPage, openhire, projects, blogs, legal] = await Promise.all([
+  const [home, work, writing, aboutPage, cv, openhire, projects, blogs, legal] = await Promise.all([
     homeTwin(about),
     projectsTwin(),
     blogTwin(),
     aboutTwin(about),
+    cvTwin(),
     openhireTwin(about),
     getProjects(),
     getBlogs(),
@@ -258,7 +274,7 @@ export async function everyTwin(): Promise<{ pages: Twin[]; projects: Twin[]; wr
   ]);
   const found = <T>(items: (T | null)[]) => items.filter((item): item is T => item !== null);
   return {
-    pages: [home, work, writing, aboutPage, contactTwin(about), ...(openhire ? [openhire] : [])],
+    pages: [home, work, writing, aboutPage, ...(cv ? [cv] : []), contactTwin(about), ...(openhire ? [openhire] : [])],
     projects: found(projectPages),
     writing: found(postPages),
     optional: [dashboardTwin(about), guestbook, ...found(legalPages)],
@@ -266,6 +282,6 @@ export async function everyTwin(): Promise<{ pages: Twin[]; projects: Twin[]; wr
 }
 
 export const frontMatter = (twin: Twin) =>
-  `---\ntitle: ${JSON.stringify(twin.title)}\nurl: ${JSON.stringify(SITE_URL + (twin.path === "/" ? "" : twin.path))}\nmarkdown: ${JSON.stringify(SITE_URL + twinOf(twin.path))}\nsummary: ${JSON.stringify(twin.summary)}\n---\n\n`;
+  `---\ntitle: ${JSON.stringify(twin.title)}\nurl: ${JSON.stringify(SITE_URL + (twin.page ?? (twin.path === "/" ? "" : twin.path)))}\nmarkdown: ${JSON.stringify(SITE_URL + twinOf(twin.path))}\nsummary: ${JSON.stringify(twin.summary)}\n---\n\n`;
 
-export const render = (twin: Twin) => `${frontMatter(twin)}# ${twin.title}\n\n> ${twin.summary}\n\n${twin.body.trim()}\n\n## Elsewhere\n\n- This page for people: ${SITE_URL}${twin.path === "/" ? "/" : twin.path}\n- Index of every page as Markdown: [llms.txt](${SITE_URL}/llms.txt)\n`;
+export const render = (twin: Twin) => `${frontMatter(twin)}# ${twin.title}\n\n> ${twin.summary}\n\n${twin.body.trim()}\n\n## Elsewhere\n\n- This page for people: ${SITE_URL}${twin.page ?? (twin.path === "/" ? "/" : twin.path)}\n- Index of every page as Markdown: [llms.txt](${SITE_URL}/llms.txt)\n`;

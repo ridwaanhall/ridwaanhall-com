@@ -286,7 +286,9 @@ export function Thumb({
       {src ? (
         <Image src={src} alt={alt} fill sizes={sizes} priority={priority} />
       ) : (
-        <div className="noimg">{title}</div>
+        <div className="noimg" role="img" aria-label={`${title}, no preview yet`}>
+          <span>{title}</span>
+        </div>
       )}
       {eye && (
         <span className="go" aria-hidden="true">

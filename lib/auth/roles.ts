@@ -33,8 +33,8 @@
 export type SiteRole = "superuser" | "staff" | "public";
 
 export const ROLE_LABEL: Record<SiteRole, string> = {
-  superuser: "Superuser",
-  staff: "Staff",
+  superuser: "Owner",
+  staff: "Editor",
   public: "Public",
 };
 

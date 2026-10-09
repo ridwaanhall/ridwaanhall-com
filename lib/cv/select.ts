@@ -78,7 +78,7 @@ export function buildCv(input: CvInput): Cv {
 
   return {
     name: input.name,
-    headline: roles.join(" · "),
+    headline: roles.join(" | "),
     contact: [
       { text: input.email },
       { text: `github.com/${input.username}`, href: `https://github.com/${input.username}` },
@@ -96,7 +96,7 @@ export function buildCv(input: CvInput): Cv {
       points: list.flatMap((role) => role.responsibilities).slice(0, 3),
     })),
     projects: input.projects.slice(0, 4).map((project) => ({ title: project.title, line: `${project.headline}${project.stack.length ? ` (${project.stack.slice(0, 5).join(", ")})` : ""}` })),
-    education: input.education.map((e) => ({ degree: e.degree, institution: e.institution, years: e.years })),
+    education: latestEducation(input.education),
     certifications: newestCerts.map((cert) => `${cert.title}, ${cert.institution}${cert.year ? ` (${cert.year})` : ""}`),
   };
 }
@@ -108,4 +108,11 @@ function foldSkills(groups: [string, string[]][]): string[] {
   // Capped: ninety names on one line is a wall, and the About page has them all.
   const rest = groups.slice(7).flatMap(([, names]) => names).slice(0, 16);
   return [...head, `Also: ${rest.join(", ")}`];
+}
+
+/** Only the most recent study: the year that ends last, so a master's outranks the bachelor's it followed. */
+function latestEducation(list: CvInput["education"]): Cv["education"] {
+  const end = (years: string) => Math.max(0, ...(years.match(/\d{4}/g) ?? []).map(Number));
+  const [latest] = [...list].sort((a, b) => end(b.years) - end(a.years));
+  return latest ? [{ degree: latest.degree, institution: latest.institution, years: latest.years }] : [];
 }

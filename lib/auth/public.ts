@@ -25,7 +25,6 @@
  * able to read -- and the switch exists to stop the writing, not the reading.
  */
 
-import { roleFor, type SiteRole } from "@/lib/auth/roles";
 
 /** The stored flags, from `account` and `public_access`. */
 export type PublicFlags = {
@@ -85,9 +84,4 @@ export function publicCapabilities(flags: PublicFlags): PublicCapabilities {
     pin: flags.isStaff,
     deleteMessages: flags.isSuperuser,
   };
-}
-
-/** The role those same flags describe. Re-exported so callers need one import. */
-export function publicRole(flags: Pick<PublicFlags, "isStaff" | "isSuperuser">): SiteRole {
-  return roleFor(flags);
 }

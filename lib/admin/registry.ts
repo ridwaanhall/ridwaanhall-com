@@ -324,7 +324,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     group: "Access",
     custom: true,
     superuserOnly: true,
-    blurb: "What each staff account may view, add, change and delete in here.",
+    blurb: "What each editor may view, add, change and delete in here.",
   },
   /*
    * The other half of the group, and deliberately not `superuserOnly`.

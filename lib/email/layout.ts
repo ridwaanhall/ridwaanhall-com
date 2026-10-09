@@ -92,8 +92,8 @@ export const DARK = {
  * either palette, so neither needs a dark override.
  */
 const BADGE = {
-  superuser: { bg: "#4c1d95", fg: "#f5f3ff", label: "Superuser" },
-  staff: { bg: "#a16207", fg: "#fffbeb", label: "Staff" },
+  superuser: { bg: "#4c1d95", fg: "#f5f3ff", label: "Owner" },
+  staff: { bg: "#a16207", fg: "#fffbeb", label: "Editor" },
 } as const;
 
 export type BadgeTone = keyof typeof BADGE;

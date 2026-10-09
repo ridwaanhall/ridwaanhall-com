@@ -2,6 +2,7 @@ import type { Route } from "next";
 import { redirect } from "next/navigation";
 
 import { getAboutData } from "@/lib/data/about";
+import { CV_FILE } from "@/lib/site/cv";
 
 /**
  * Redirect to one of the CV links stored on the profile.
@@ -10,8 +11,8 @@ import { getAboutData } from "@/lib/data/about";
  * are stable public URLs that point at documents hosted elsewhere, so the
  * destination can change in the admin without the shared link breaking.
  *
- * An unset link falls back to the homepage rather than 404ing: a stale CV link
- * in someone's inbox should land somewhere useful.
+ * An unset link falls back to the CV generated from the About page rather than
+ * 404ing: a stale CV link in someone's inbox should land on a CV.
  */
 export async function cvRedirect(key: "main" | "latest" | "copy"): Promise<never> {
   const about = await getAboutData();
@@ -20,5 +21,5 @@ export async function cvRedirect(key: "main" | "latest" | "copy"): Promise<never
   // typically), which `typedRoutes` cannot know about -- its `Route` type only
   // covers this app's own paths. The cast is the narrow escape hatch for that;
   // `redirect()` handles absolute URLs correctly at runtime.
-  redirect((url || "/") as Route);
+  redirect((url || CV_FILE) as Route);
 }

@@ -394,7 +394,7 @@ export function Animate({
       release(scope);
       const q = <T extends Element>(selector: string) => Array.from(scope.querySelectorAll<T>(selector));
       const tl = gsap.timeline({ defaults: { ease: EASE }, paused: true });
-      tl.from(scope, { autoAlpha: 0, y: 16, duration: 0.6, clearProps: "transform,opacity" });
+      tl.from(scope, { autoAlpha: 0, y: 12, duration: 0.45, clearProps: "transform,opacity" });
       const bars = q("[data-fh-bar]");
       if (bars.length)
         tl.from(bars, { scaleX: 0, transformOrigin: "0% 50%", duration: 1.1, ease: "expo.out", stagger: 0.04 }, 0.1);
@@ -418,12 +418,12 @@ export function Animate({
         tl.fromTo(
           path,
           { strokeDasharray: length, strokeDashoffset: length },
-          { strokeDashoffset: 0, duration: 1.6, ease: "power2.inOut", clearProps: "strokeDasharray,strokeDashoffset" },
-          0.15,
+          { strokeDashoffset: 0, duration: 1.1, ease: "power2.out", clearProps: "strokeDasharray,strokeDashoffset" },
+          0,
         );
       });
       const fades = q("[data-fh-fade]");
-      if (fades.length) tl.from(fades, { autoAlpha: 0, duration: 1.2, ease: "power1.out" }, 0.6);
+      if (fades.length) tl.from(fades, { autoAlpha: 0, duration: 0.7, ease: "power1.out" }, 0.2);
       return onSeen(scope, () => tl.play());
     });
     return () => mm.revert();
@@ -438,40 +438,6 @@ export function Animate({
     >
       {children}
     </Component>
-  );
-}
-
-/**
- * A hairline in ink across the top that fills as an article is read.
- *
- * It measures the element named by `target`, not the page, so the comments
- * under a post do not count as reading it. Under reduced motion it still
- * tracks -- it is information, not decoration -- just without easing.
- */
-export function ReadingProgress({ target }: { target: string }) {
-  const bar = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    const article = document.querySelector(target);
-    if (!article || !bar.current) return;
-    const smooth = window.matchMedia(MOTION_OK).matches;
-    gsap.fromTo(
-      bar.current,
-      { scaleX: 0 },
-      {
-        scaleX: 1,
-        ease: "none",
-        scrollTrigger: { trigger: article, start: "top 20%", end: "bottom 80%", scrub: smooth ? 0.3 : true },
-      },
-    );
-  });
-
-  return (
-    <div
-      ref={bar}
-      aria-hidden="true"
-      className="fixed inset-x-0 top-0 z-[55] h-[2px] origin-left scale-x-0 bg-ink"
-    />
   );
 }
 

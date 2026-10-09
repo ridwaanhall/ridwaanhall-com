@@ -1,5 +1,4 @@
 import type { Route } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
 import type { PostView, ProjectView } from "@/components/foothill/rows";
@@ -47,24 +46,6 @@ export function PostCard({ post, priority = false }: { post: PostView; priority?
         <span>{post.minutes} min read</span>
         <span>{post.category}</span>
       </div>
-    </Link>
-  );
-}
-
-/** A project as a ruled row in the Work index: thumbnail, title, summary, kind, year, status. */
-export function ProjectRow({ project }: { project: ProjectView }) {
-  return (
-    <Link className="prow" href={`/projects/${project.slug}` as Route}>
-      <span className="mini">
-        {project.image && <Image src={project.image} alt="" width={112} height={70} />}
-      </span>
-      <span className="t">{project.title}</span>
-      <span className="s">{project.headline}</span>
-      <span className="side">
-        <span className="k">{project.kind}</span>
-        <span className="y mono mute">{project.year}</span>
-        <ProjectStatus slug={project.status} label={project.statusLabel} />
-      </span>
     </Link>
   );
 }

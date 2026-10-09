@@ -193,6 +193,14 @@ const nextConfig: NextConfig = {
            * belongs in its own change once the reports are quiet.
            */
           { key: "Content-Security-Policy-Report-Only", value: csp },
+          /*
+           * The part of the policy that cannot take a script or a style down is
+           * enforced now: nothing may embed the site in a frame, add a base
+           * element that redirects relative URLs, or load a plugin. form-action
+           * is left to the report-only policy, because browsers apply it to the
+           * redirect after a form post and sign-in redirects to a provider.
+           */
+          { key: "Content-Security-Policy", value: "base-uri 'self'; object-src 'none'; frame-ancestors 'none'" },
 
           /*
            * Names the endpoint `report-to` refers to. Omitted rather than sent

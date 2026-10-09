@@ -7,7 +7,6 @@ import { cache } from "react";
 import { auth } from "@/auth";
 import {
   can,
-  permits,
   type AdminAction,
   type AdminActor,
   type Grants,
@@ -203,23 +202,6 @@ export async function requireStaff(): Promise<StaffUser> {
 export async function requirePermission(key: string, action: AdminAction): Promise<StaffUser> {
   const user = await requireStaff();
   if (!can(user, key, action)) notFound();
-  return user;
-}
-
-/**
- * The same, for an action a model descriptor can also refuse.
- *
- * `add` and `delete` are the two, and a grant may not widen either -- see
- * `permits`. The model is passed in rather than looked up here so this module
- * stays clear of `lib/admin/models/`, which imports half the schema.
- */
-export async function requireModelPermission(
-  key: string,
-  action: AdminAction,
-  model: { canCreate?: boolean | "superuser"; canDelete?: boolean | "superuser" } | null,
-): Promise<StaffUser> {
-  const user = await requireStaff();
-  if (!permits(user, key, action, model)) notFound();
   return user;
 }
 

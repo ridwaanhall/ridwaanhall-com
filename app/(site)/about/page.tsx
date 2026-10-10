@@ -86,6 +86,7 @@ function applicationView(app: Application): ApplicationView {
     logo: app.company_logo || null,
     status: app.status,
     slug: app.status_slug,
+    note: app.status_description,
     mode: app.location_type,
     type: app.employment_type,
     where: app.location,
@@ -374,7 +375,7 @@ export default async function AboutPage() {
               ) : (
                 <SkillGroups
                   groups={Object.entries(skills).map(([category, list]) => [category, list.map(skillIcon)])}
-                  projects={projects.map(projectView).map(({ slug, title, kind, year, image, stack }) => ({ slug, title, kind, year, image, stack }))}
+                  projects={projects.map(projectView).map(({ slug, title, kind, kindSlug, year, image, stack }) => ({ slug, title, kind, kindSlug, year, image, stack }))}
                 />
               )}
             </section>

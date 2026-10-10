@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Chips, EASE, SPRING, Seg, ToggleChip } from "@/components/foothill/controls";
 import type { ProjectStatusOption } from "@/lib/data/content";
 import { Brand, Icon } from "@/components/foothill/icons";
+import { NoImage } from "@/components/foothill/noimg";
 import type { ProjectView } from "@/components/foothill/rows";
 import { Avail, Empty, ProjectStatus, Thumb } from "@/components/foothill/ui";
 import { DEFAULT_FILTERS, filtersToSearch, type WorkFilters } from "@/lib/site/work-filters";
@@ -110,7 +111,7 @@ export function WorkExplorer({
           transition={{ duration: 0.35, ease: EASE }}
         >
           <Link className="pcard" href={`/projects/${project.slug}`}>
-            <Thumb src={project.image} alt={project.imageAlt} title={project.title} />
+            <Thumb src={project.image} alt={project.imageAlt} title={project.title} kind={project.kindSlug} />
             <div style={{ display: "grid", gap: 6 }}>
               <h3 className="t3" title={project.title}>
                 {project.title}
@@ -118,7 +119,7 @@ export function WorkExplorer({
               <p>{project.headline}</p>
             </div>
             <div className="row-meta">
-              <ProjectStatus slug={project.status} label={project.statusLabel} />
+              <ProjectStatus slug={project.status} label={project.statusLabel} description={project.statusDescription} />
               <span>{project.kind}</span>
               {project.year && <span className="mono">{project.year}</span>}
               <Avail demo={Boolean(project.demo)} source={Boolean(project.source)} />
@@ -128,19 +129,23 @@ export function WorkExplorer({
       ) : (
         <motion.div layout key={project.slug} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
           <Link className="prow" href={`/projects/${project.slug}`}>
-            <span className="mini">{project.image && <SiteImage src={project.image} alt="" width={112} height={70} />}</span>
+            <span className="mini">{project.image ? <SiteImage src={project.image} alt="" width={112} height={70} /> : <NoImage title={project.title} kind={project.kindSlug} />}</span>
             <span className="t">{project.title}</span>
             <span className="s">{project.headline}</span>
             <span className="side">
               <span className="k">{project.kind}</span>
               <span className="y mono mute">{project.year}</span>
-              <ProjectStatus slug={project.status} label={project.statusLabel} />
+              <ProjectStatus slug={project.status} label={project.statusLabel} description={project.statusDescription} />
             </span>
           </Link>
         </motion.div>
       ),
     );
   }
+
+  // What the chosen status means, said once under the controls: a tooltip is
+  // not something a phone can open, and the chips alone only name the stage.
+  const chosenStatus = filters.status ? statuses.find((status) => status.slug === filters.status) : undefined;
 
   if (!projects.length)
     return <Empty icon="grid" title="No projects published yet" note="Each project appears here with its screenshot, status, kind and year as soon as it is published." />;
@@ -209,7 +214,7 @@ export function WorkExplorer({
         </AnimatePresence>
         <div className="status-key" role="toolbar" aria-label="Status">
           <span className="meta">Status</span>
-          {[{ slug: "", label: "All" }, ...statuses].map(({ slug, label }) => {
+          {[{ slug: "", label: "All", description: "" }, ...statuses].map(({ slug, label, description }) => {
             const count = slug ? (statusCounts.get(slug) ?? 0) : projects.length;
             const on = filters.status === slug;
             return (
@@ -220,7 +225,7 @@ export function WorkExplorer({
                 aria-pressed={on}
                 aria-disabled={count === 0 && !on ? true : undefined}
                 onClick={() => (count === 0 && !on ? undefined : set({ status: slug }))}
-                title={count === 0 ? `${label}: no project is at this stage yet` : undefined}
+                title={slug ? `${label}: ${[count === 0 && !on ? "no project is at this stage yet." : null, description].filter(Boolean).join(" ")}` : undefined}
               >
                 {on && <motion.span className="bgpill" layoutId="chip-status" transition={SPRING} />}
                 <span>{label}</span>
@@ -244,6 +249,11 @@ export function WorkExplorer({
           />
         </span>
       </div>
+      {chosenStatus?.description && (
+        <p className="status-note" role="status">
+          <b>{chosenStatus.label}.</b> {chosenStatus.description}
+        </p>
+      )}
       <LayoutGroup>
         <motion.div layout className={filters.view === "grid" ? "pgrid three" : "rows"}>
           {/* `initial={false}`: the cards the server painted are not hidden and shown again. */}

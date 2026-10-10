@@ -175,10 +175,23 @@ above the About heading.
   unmeasured and a black one is invisible on the dark theme until it is.
 - **A project's first image is its live address.** `scripts/capture-project-previews.mjs`
   photographs each `demo_url` (dry run by default; look at the files before
-  `--apply`) and files the capture first in the gallery. A project or post with
-  no image at all draws `.noimg`, a hatched tile carrying its title, so a card
-  is never blank. A `demo_url` that stops answering should be cleared rather than
-  left to show a dead link.
+  `--apply`) and files the capture first in the gallery. A `demo_url` that stops
+  answering should be cleared rather than left to show a dead link.
+- **No picture is a drawing, and it is drawn everywhere a picture would be.**
+  `NoImage` (`components/foothill/noimg.tsx`) sketches the kind of work in the
+  page's greys -- a web page, a terminal, a chart, a network, a flow, a board, an
+  article -- over a dotted ground, chosen by the category *slug*
+  (`lib/site/noimg.ts`, pure and tested) and varied by a seed taken from the
+  title, so two web projects are not one tile repeated. It fills a card through
+  `Thumb`, and it fills each `.mini` thumbnail (home's "Currently building", the
+  Work list, the skill drawer): a `.mini` that wrote `{image && <SiteImage/>}`
+  was an empty box. The title is hidden by a container query under 200px and in
+  every `.mini`, which always sits beside its own title. Its classes are `ni-`
+  prefixed for the collision reason below. **A new place that shows a project's
+  picture renders `NoImage` when there is none.**
+- **A gallery's strip is six columns whatever the count.** It was as many columns
+  as images up to six, so a project with two screenshots drew thumbnails half the
+  page wide beside another's sixth. `.gal-strip` in `site.css` owns the count.
 - **A band sized by the viewport crops its content differently at every width.**
   The footer's word is fitted to the page's width by `GiantWord`, and the band
   holding it takes its height from the same measurement; a CSS height from `vw`

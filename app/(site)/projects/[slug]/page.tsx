@@ -68,7 +68,13 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const usedBy = (name: string) => views.filter((entry) => entry.stack.includes(name)).length;
   const linked = Boolean(project.demo_url || project.github_url);
   const facts: [string, React.ReactNode][] = [
-    ["Status", <ProjectStatus key="status" slug={project.status} label={project.status_label} />],
+    [
+      "Status",
+      <span key="status">
+        <ProjectStatus slug={project.status} label={project.status_label} description={project.status_description} />
+        {project.status_description && <span className="why">{project.status_description}</span>}
+      </span>,
+    ],
     ["Kind", view.kind],
     ...(view.started ? [["Started", view.started] as [string, string]] : []),
     ...(view.updated && view.updated !== view.started ? [["Updated", view.updated] as [string, string]] : []),

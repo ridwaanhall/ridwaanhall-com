@@ -120,6 +120,8 @@ export type Project = ImageCompat & {
   github_url: string | null;
   demo_url: string | null;
   category: string;
+  /** The category's slug: the identifier, where `category` is the label a person may reword. */
+  category_slug: string;
   tags: string[];
   is_featured: boolean;
   featured_priority: number | null;
@@ -141,6 +143,8 @@ export type Project = ImageCompat & {
    */
   status: string;
   status_label: string;
+  /** One sentence on what the status means, written on its row. */
+  status_description: string;
   status_rank: number;
   status_color: string;
   created_at: Date | null;
@@ -277,7 +281,7 @@ export async function getBlogs(): Promise<BlogPost[]> {
  * recency. Sorting by a column the rows agree on -- and tie-breaking on `id` --
  * is what keeps that base from shifting under a rewrite.
  */
-export type ProjectStatusOption = { slug: string; label: string };
+export type ProjectStatusOption = { slug: string; label: string; description: string };
 
 /**
  * Every status a project can have, in lifecycle order, whether or not any
@@ -291,7 +295,7 @@ export async function getProjectStatuses(): Promise<ProjectStatusOption[]> {
   cacheLife("days");
 
   return db
-    .select({ slug: projectStatus.slug, label: projectStatus.label })
+    .select({ slug: projectStatus.slug, label: projectStatus.label, description: projectStatus.description })
     .from(projectStatus)
     .orderBy(asc(projectStatus.position), asc(projectStatus.id));
 }
@@ -318,8 +322,10 @@ export async function getProjects(): Promise<Project[]> {
         createdAt: project.createdAt,
         updatedAt: project.updatedAt,
         category: category.label,
+        categorySlug: category.slug,
         status: projectStatus.slug,
         statusLabel: projectStatus.label,
+        statusDescription: projectStatus.description,
         statusRank: projectStatus.position,
         statusColor: projectStatus.color,
       })
@@ -401,11 +407,13 @@ export async function getProjects(): Promise<Project[]> {
       github_url: row.githubUrl,
       demo_url: row.demoUrl,
       category: row.category ?? "",
+      category_slug: row.categorySlug ?? "",
       tags: tagsByProject.get(row.id) ?? [],
       is_featured: row.isFeatured,
       featured_priority: row.featuredPriority,
       status: row.status ?? "",
       status_label: row.statusLabel ?? "",
+      status_description: row.statusDescription ?? "",
       // Empty, not `zinc`, for a project with no status row at all: that is the
       // case `projectStatusColor`'s own fallback is for, and it is a different
       // grey from the one a status can deliberately choose.

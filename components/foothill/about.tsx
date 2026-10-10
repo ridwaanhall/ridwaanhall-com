@@ -8,12 +8,13 @@ import { useMemo, useState } from "react";
 
 import { ActionButton, Chips, Disclosure, EASE } from "@/components/foothill/controls";
 import { Icon } from "@/components/foothill/icons";
+import { NoImage } from "@/components/foothill/noimg";
 import { Empty, Logo, SkillGlyph, Tag, type SkillIcon } from "@/components/foothill/ui";
 import { useLockedPage } from "@/lib/motion/use-locked-page";
 
 /* -------------------------------------------------------------- the skills */
 
-export type ProjectLink = { slug: string; title: string; kind: string; year: number | null; image: string | null; stack: string[] };
+export type ProjectLink = { slug: string; title: string; kind: string; kindSlug: string; year: number | null; image: string | null; stack: string[] };
 
 /**
  * Every skill in its group, each with its own icon. A skill some projects
@@ -133,7 +134,7 @@ function SkillDrawer({ name, phone, projects, close }: { name: string | null; ph
                 >
                   <Link className="prow" href={`/projects/${project.slug}` as Route} onClick={close}>
                     <span className="mini" style={{ display: "block" }}>
-                      {project.image && <SiteImage src={project.image} alt="" width={96} height={60} />}
+                      {project.image ? <SiteImage src={project.image} alt="" width={96} height={60} /> : <NoImage title={project.title} kind={project.kindSlug} />}
                     </span>
                     <span className="t">{project.title}</span>
                     <span className="s">
@@ -272,6 +273,8 @@ export type ApplicationView = {
   logo: string | null;
   status: string;
   slug: string;
+  /** What the outcome means, for a tooltip and for the line under the Outcome filter. */
+  note: string;
   mode: string;
   type: string;
   where: string;
@@ -299,15 +302,16 @@ const tally = (list: ApplicationView[]) => {
 export function JobHunt({ items }: { items: ApplicationView[] }) {
   const [status, setStatus] = useState("");
   const outcomes = useMemo(() => {
-    const groups = new Map<string, { label: string; count: number }>();
+    const groups = new Map<string, { label: string; count: number; note: string }>();
     items.forEach((item) => {
-      const group = groups.get(item.slug) ?? { label: item.status, count: 0 };
+      const group = groups.get(item.slug) ?? { label: item.status, count: 0, note: item.note };
       group.count += 1;
       groups.set(item.slug, group);
     });
     return [...groups.entries()].sort(([a], [b]) => (ORDER.indexOf(a) + 99) % 99 - (ORDER.indexOf(b) + 99) % 99);
   }, [items]);
   const total = items.length;
+  const chosen = status ? outcomes.find(([slug]) => slug === status)?.[1] : undefined;
   // Grouped by the year the application started, newest first, as the
   // certificates are: sixty rows in one list read as a wall, and the year is
   // what a reader scanning a job hunt asks first. Undated ones go last.
@@ -334,13 +338,18 @@ export function JobHunt({ items }: { items: ApplicationView[] }) {
         </div>
         <div className="legend">
           {outcomes.map(([slug, group]) => (
-            <span key={slug}>
+            <span key={slug} title={group.note ? `${group.label}: ${group.note}` : undefined}>
               <i className={OUTCOME[slug]?.fill ?? "f6"} />
               {group.label} {group.count}
             </span>
           ))}
         </div>
         <Chips id="app" label="Outcome" value={status} onChange={setStatus} items={[["", "All", total], ...outcomes.map(([slug, group]) => [slug, group.label, group.count] as [string, string, number])]} />
+        {chosen?.note && (
+          <p className="status-note" role="status">
+            <b>{chosen.label}.</b> {chosen.note}
+          </p>
+        )}
       </div>
       <div className="rows">
         {years.map(([year, list], index) => (
@@ -401,7 +410,9 @@ function Application({ item }: { item: ApplicationView }) {
         }
         right={
           <span style={{ marginRight: 12 }}>
-            <Tag kind={OUTCOME[item.slug]?.tag ?? ""}>{item.status}</Tag>
+            <Tag kind={OUTCOME[item.slug]?.tag ?? ""} title={item.note ? `${item.status}: ${item.note}` : undefined}>
+              {item.status}
+            </Tag>
           </span>
         }
       >
@@ -432,7 +443,7 @@ function Application({ item }: { item: ApplicationView }) {
             <div className="kv">
               {(
                 [
-                  ["Status", <Tag key="t" kind={OUTCOME[item.slug]?.tag ?? ""}>{item.status}</Tag>],
+                  ["Status", <Tag key="t" kind={OUTCOME[item.slug]?.tag ?? ""} title={item.note ? `${item.status}: ${item.note}` : undefined}>{item.status}</Tag>],
                   ["Type", item.type],
                   ["Where", item.where],
                   ["Via", item.via],

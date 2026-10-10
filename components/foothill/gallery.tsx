@@ -9,9 +9,8 @@ import { useState } from "react";
  * and a strip of thumbnails under it whose underline slides to the one shown.
  *
  * The strip is six columns however many images there are (`.gal-strip` in
- * `site.css`). It used to be as many columns as images, up to six, so a project
- * with two screenshots drew two thumbnails half the page wide while one with
- * six drew them a sixth of it -- the same strip at three different sizes.
+ * `site.css`), so a thumbnail is the same size on every project: sized by the
+ * count, two screenshots would be drawn half the page wide.
  *
  * Each image says what it is from `media_asset.alt` when somebody has written
  * one, and otherwise from the record -- "<title>, image 2 of 5" -- which is

@@ -7,6 +7,7 @@ import { PostCard, ProjectCard } from "@/components/foothill/cards";
 import { LocalClock } from "@/components/foothill/controls";
 import { Icon } from "@/components/foothill/icons";
 import { MAIN } from "@/components/foothill/layout";
+import { NoImage } from "@/components/foothill/noimg";
 import { CountUp, PageMotion, Reveal, TiltedRow } from "@/components/foothill/motion";
 import { featuredProjects, inProgress, monthYearLabel, postView, projectView, type ProjectView } from "@/components/foothill/rows";
 import { SkillMarquee } from "@/components/foothill/skill-marquee";
@@ -58,11 +59,11 @@ function Building({ projects }: { projects: ProjectView[] }) {
           const at = Math.max(0, STAGES.findIndex(([, slugs]) => slugs.includes(project.status)));
           return (
             <Link key={project.slug} href={`/projects/${project.slug}` as Route} className="b-row">
-              <span className="mini">{project.image && <SiteImage src={project.image} alt="" width={120} height={75} />}</span>
+              <span className="mini">{project.image ? <SiteImage src={project.image} alt="" width={120} height={75} /> : <NoImage title={project.title} kind={project.kindSlug} />}</span>
               <span className="b-main">
                 <span className="b-t">
                   <b>{project.title}</b>
-                  <ProjectStatus slug={project.status} label={project.statusLabel} />
+                  <ProjectStatus slug={project.status} label={project.statusLabel} description={project.statusDescription} />
                 </span>
                 <span className="meta b-s">{project.headline}</span>
                 <span className="phases" aria-label={`Stage ${at + 1} of ${STAGES.length}: ${STAGES[at][0]}`}>

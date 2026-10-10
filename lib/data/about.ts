@@ -725,6 +725,8 @@ export type Application = {
    */
   status: string;
   status_slug: string;
+  /** What the status means, in the sentence written on its row. */
+  status_description: string;
   company_name: string;
   /** The organisation's logo, as every other row naming one carries it. */
   company_logo: string;
@@ -751,6 +753,7 @@ export async function getApplications(): Promise<Application[]> {
         ...ORG_LOGO,
         status: applicationStatus.label,
         statusSlug: applicationStatus.slug,
+        statusDescription: applicationStatus.description,
         employmentType: employmentType.label,
         workMode: workMode.label,
         source: applicationSource.label,
@@ -801,6 +804,7 @@ export async function getApplications(): Promise<Application[]> {
     id: row.a.id,
     status: row.status ?? "",
     status_slug: row.statusSlug ?? "",
+    status_description: row.statusDescription ?? "",
     company_name: row.company,
     company_logo: logoUrl(row),
     position: row.a.title,

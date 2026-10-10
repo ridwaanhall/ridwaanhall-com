@@ -20,8 +20,11 @@ export type ProjectView = {
   /** The status slug (the identifier) and its label (editorial). */
   status: string;
   statusLabel: string;
+  statusDescription: string;
   statusRank: number;
   kind: string;
+  /** `kind`'s slug, which picks the drawing a project with no picture gets. */
+  kindSlug: string;
   year: number | null;
   /** "Jul 2025": when it began and when it last changed. */
   started: string;
@@ -66,8 +69,10 @@ export function projectView(project: Project): ProjectView {
     imageAlt: project.image_alts?.[0] || `${project.title}, a screenshot`,
     status: project.status,
     statusLabel: project.status_label,
+    statusDescription: project.status_description,
     statusRank: project.status_rank,
     kind: displayLabel(project.category),
+    kindSlug: project.category_slug,
     year: yearOf(project.created_at),
     started: monthOf(project.created_at),
     updated: monthOf(project.updated_at ?? project.created_at),

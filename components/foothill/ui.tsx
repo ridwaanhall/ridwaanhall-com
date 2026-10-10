@@ -4,6 +4,8 @@ import Link from "next/link";
 
 import { Brand, Icon, type IconName } from "@/components/foothill/icons";
 import { MarkdownChips } from "@/components/foothill/markdown";
+import { NoImage } from "@/components/foothill/noimg";
+import type { Motif } from "@/lib/site/noimg";
 import { cn } from "@/lib/utils/cn";
 
 /*
@@ -55,11 +57,15 @@ export function Tag({ kind = "", className, children, title }: { kind?: TagKind;
   );
 }
 
-/** A status says what it means on hover, and to a screen reader as "Status: Completed". */
-export function ProjectStatus({ slug, label }: { slug: string; label: string }) {
+/**
+ * A status says what it means on hover, and to a screen reader as "Status:
+ * Completed". What it means is the sentence written on its row; the shape's own
+ * gloss is only the fallback for a status nobody has described yet.
+ */
+export function ProjectStatus({ slug, label, description }: { slug: string; label: string; description?: string }) {
   const kind = PHASE[slug] ?? "dashed";
   return (
-    <span className={cn("tag", kind)} title={`${label}: ${PHASE_TIP[kind]}`}>
+    <span className={cn("tag", kind)} title={`${label}: ${description || PHASE_TIP[kind]}`}>
       <span className="sr">Status: </span>
       {label}
     </span>
@@ -259,6 +265,8 @@ export function Thumb({
   priority = false,
   ratio,
   eye = true,
+  kind,
+  motif,
 }: {
   src: string | null | undefined;
   alt: string;
@@ -267,15 +275,17 @@ export function Thumb({
   priority?: boolean;
   ratio?: string;
   eye?: boolean;
+  /** A project's category slug, which chooses the sketch drawn when there is no picture. */
+  kind?: string | null;
+  /** Overrides `kind`: a post has no category slug of its own to draw by. */
+  motif?: Motif;
 }) {
   return (
     <div className="thumb" style={ratio ? { aspectRatio: ratio } : undefined}>
       {src ? (
         <SiteImage src={src} alt={alt} fill sizes={sizes} priority={priority} />
       ) : (
-        <div className="noimg" role="img" aria-label={`${title}, no preview yet`}>
-          <span>{title}</span>
-        </div>
+        <NoImage title={title} kind={kind} motif={motif} />
       )}
       {eye && (
         <span className="go" aria-hidden="true">

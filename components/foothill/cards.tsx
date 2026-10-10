@@ -14,7 +14,7 @@ import { Avail, ProjectStatus, Thumb } from "@/components/foothill/ui";
 export function ProjectCard({ project, priority = false }: { project: ProjectView; priority?: boolean }) {
   return (
     <Link className="pcard" href={`/projects/${project.slug}` as Route}>
-      <Thumb src={project.image} alt={project.imageAlt} title={project.title} priority={priority} />
+      <Thumb src={project.image} alt={project.imageAlt} title={project.title} kind={project.kindSlug} priority={priority} />
       <div style={{ display: "grid", gap: 6 }}>
         <h3 className="t3" title={project.title}>
           {project.title}
@@ -22,7 +22,7 @@ export function ProjectCard({ project, priority = false }: { project: ProjectVie
         <p>{project.headline}</p>
       </div>
       <div className="row-meta">
-        <ProjectStatus slug={project.status} label={project.statusLabel} />
+        <ProjectStatus slug={project.status} label={project.statusLabel} description={project.statusDescription} />
         <span>{project.kind}</span>
         {project.year && <span className="mono">{project.year}</span>}
         <Avail demo={Boolean(project.demo)} source={Boolean(project.source)} />
@@ -34,7 +34,7 @@ export function ProjectCard({ project, priority = false }: { project: ProjectVie
 export function PostCard({ post, priority = false }: { post: PostView; priority?: boolean }) {
   return (
     <Link className="pcard" href={`/blog/${post.slug}` as Route}>
-      <Thumb src={post.image} alt={post.imageAlt} title={post.title} priority={priority} />
+      <Thumb src={post.image} alt={post.imageAlt} title={post.title} motif="page" priority={priority} />
       <div style={{ display: "grid", gap: 6 }}>
         <h3 className="t3" title={post.title}>
           {post.title}

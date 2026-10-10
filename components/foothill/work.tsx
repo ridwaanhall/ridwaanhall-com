@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { Chips, EASE, SPRING, Seg, ToggleChip } from "@/components/foothill/controls";
 import type { ProjectStatusOption } from "@/lib/data/content";
+import { FilterBar, FilterGroup, type ActiveFilter } from "@/components/foothill/filter-bar";
 import { Brand, Icon } from "@/components/foothill/icons";
 import { NoImage } from "@/components/foothill/noimg";
 import type { ProjectView } from "@/components/foothill/rows";
@@ -147,95 +148,39 @@ export function WorkExplorer({
   // not something a phone can open, and the chips alone only name the stage.
   const chosenStatus = filters.status ? statuses.find((status) => status.slug === filters.status) : undefined;
 
+  // What is applied, for the chips under the bar. The search text is not here:
+  // it is already in the box, and "Clear all" clears the chips and leaves it.
+  const active: ActiveFilter[] = [
+    ...(filters.kind ? [{ key: "kind", label: `Kind: ${filters.kind}`, onRemove: () => set({ kind: "" }) }] : []),
+    ...(filters.status ? [{ key: "status", label: `Status: ${chosenStatus?.label ?? filters.status}`, onRemove: () => set({ status: "" }) }] : []),
+    ...(filters.live ? [{ key: "live", label: "Live to try", onRemove: () => set({ live: false }) }] : []),
+    ...(filters.source ? [{ key: "source", label: "Has source", onRemove: () => set({ source: false }) }] : []),
+    ...(filters.skill ? [{ key: "skill", label: `Built with ${filters.skill}`, onRemove: () => set({ skill: "" }) }] : []),
+  ];
+  const clearFilters = () => set({ kind: "", status: "", live: false, source: false, skill: "" });
+
   if (!projects.length)
     return <Empty icon="grid" title="No projects published yet" note="Each project appears here with its screenshot, status, kind and year as soon as it is published." />;
 
   return (
     <>
-      <div className="controls">
-        <form
-          role="search"
-          className="field"
-          action="/projects"
-          onSubmit={(event) => event.preventDefault()}
-        >
-          <Icon name="search" />
-          <input
-            name="q"
-            type="search"
-            placeholder="Search by name, stack or kind"
-            value={filters.q}
-            onChange={(event) => set({ q: event.target.value })}
-            aria-label="Search projects"
-          />
-        </form>
-        <Chips
-          id="work"
-          label="Kind"
-          value={filters.kind}
-          onChange={(kind) => set({ kind })}
-          items={[["", "All", projects.length], ...kinds.map(([kind, count]) => [kind, kind, count] as [string, string, number])]}
-        />
-        <Seg
-          id="view"
-          label="View"
-          value={filters.view}
-          onChange={(view) => set({ view })}
-          items={[
-            ["grid", "Grid", "grid"],
-            ["rows", "Index", "list"],
-          ]}
-        />
-      </div>
-      <div className="controls2">
-        <ToggleChip on={filters.live} onChange={(live) => set({ live })} icon={<Icon name="globe" size={14} />}>
-          Live to try
-        </ToggleChip>
-        <ToggleChip on={filters.source} onChange={(source) => set({ source })} icon={<Brand name="github" size={13} />}>
-          Has source
-        </ToggleChip>
-        <AnimatePresence initial={false}>
-          {filters.skill && (
-            <motion.button
-              key="skill"
-              type="button"
-              className="chip on"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              onClick={() => set({ skill: "" })}
-              aria-label={`Remove the filter for ${filters.skill}`}
-            >
-              <span className="bgpill" />
-              <span>Built with {filters.skill}</span>
-              <Icon name="x" size={13} />
-            </motion.button>
-          )}
-        </AnimatePresence>
-        <div className="status-key" role="toolbar" aria-label="Status">
-          <span className="meta">Status</span>
-          {[{ slug: "", label: "All", description: "" }, ...statuses].map(({ slug, label, description }) => {
-            const count = slug ? (statusCounts.get(slug) ?? 0) : projects.length;
-            const on = filters.status === slug;
-            return (
-              <button
-                key={slug || "all"}
-                type="button"
-                className={`chip${on ? " on" : ""}${count === 0 && !on ? " none" : ""}`}
-                aria-pressed={on}
-                aria-disabled={count === 0 && !on ? true : undefined}
-                onClick={() => (count === 0 && !on ? undefined : set({ status: slug }))}
-                title={slug ? `${label}: ${[count === 0 && !on ? "no project is at this stage yet." : null, description].filter(Boolean).join(" ")}` : undefined}
-              >
-                {on && <motion.span className="bgpill" layoutId="chip-status" transition={SPRING} />}
-                <span>{label}</span>
-                <span className="n">{count}</span>
-              </button>
-            );
-          })}
-        </div>
-        <span className="sort">
-          <span className="meta">Sort</span>
+      <FilterBar
+        active={active}
+        onClear={clearFilters}
+        search={
+          <form role="search" className="field" action="/projects" onSubmit={(event) => event.preventDefault()}>
+            <Icon name="search" />
+            <input
+              name="q"
+              type="search"
+              placeholder="Search by name, stack or kind"
+              value={filters.q}
+              onChange={(event) => set({ q: event.target.value })}
+              aria-label="Search projects"
+            />
+          </form>
+        }
+        sort={
           <Seg
             id="sort"
             label="Sort"
@@ -247,8 +192,61 @@ export function WorkExplorer({
               ["az", "A to Z"],
             ]}
           />
-        </span>
-      </div>
+        }
+        view={
+          <Seg
+            id="view"
+            label="View"
+            value={filters.view}
+            onChange={(view) => set({ view })}
+            items={[
+              ["grid", "Grid", "grid"],
+              ["rows", "Index", "list"],
+            ]}
+          />
+        }
+      >
+        <FilterGroup label="Kind">
+          <Chips
+            id="work"
+            label="Kind"
+            value={filters.kind}
+            onChange={(kind) => set({ kind })}
+            items={[["", "All", projects.length], ...kinds.map(([kind, count]) => [kind, kind, count] as [string, string, number])]}
+          />
+        </FilterGroup>
+        <FilterGroup label="Status">
+          <div className="chips" role="toolbar" aria-label="Status">
+            {[{ slug: "", label: "All", description: "" }, ...statuses].map(({ slug, label, description }) => {
+              const count = slug ? (statusCounts.get(slug) ?? 0) : projects.length;
+              const on = filters.status === slug;
+              return (
+                <button
+                  key={slug || "all"}
+                  type="button"
+                  className={`chip${on ? " on" : ""}${count === 0 && !on ? " none" : ""}`}
+                  aria-pressed={on}
+                  aria-disabled={count === 0 && !on ? true : undefined}
+                  onClick={() => (count === 0 && !on ? undefined : set({ status: slug }))}
+                  title={slug ? `${label}: ${[count === 0 && !on ? "no project is at this stage yet." : null, description].filter(Boolean).join(" ")}` : undefined}
+                >
+                  {on && <motion.span className="bgpill" layoutId="chip-status" transition={SPRING} />}
+                  <span>{label}</span>
+                  <span className="n">{count}</span>
+                </button>
+              );
+            })}
+          </div>
+        </FilterGroup>
+        <FilterGroup label="Show only">
+          <ToggleChip on={filters.live} onChange={(live) => set({ live })} icon={<Icon name="globe" size={13} />}>
+            Live to try
+          </ToggleChip>
+          <ToggleChip on={filters.source} onChange={(source) => set({ source })} icon={<Brand name="github" size={12} />}>
+            Has source
+          </ToggleChip>
+        </FilterGroup>
+      </FilterBar>
       {chosenStatus?.description && (
         <p className="status-note" role="status">
           <b>{chosenStatus.label}.</b> {chosenStatus.description}

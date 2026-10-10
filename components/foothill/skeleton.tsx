@@ -36,6 +36,22 @@ export function Bar({
   return <span className="skb" style={{ width: w, height: h, borderRadius: r, ...style }} />;
 }
 
+/**
+ * The filter bar as `FilterBar` draws it: the search, the Filters button, and
+ * sort and view at the far end. `.fbar-sk` in `site.css` reflows it the way the
+ * real bar reflows on a phone.
+ */
+export function FilterBarSkeleton({ sort = 200, view = 108 }: { sort?: number; view?: number }) {
+  return (
+    <div className="fbar fbar-sk">
+      <Bar w="100%" h={34} r="var(--fh-r-m)" />
+      <Bar w={92} h={34} r="var(--fh-r-m)" />
+      <Bar w={sort} h={34} r="var(--fh-r-m)" />
+      <Bar w={view} h={34} r="var(--fh-r-m)" />
+    </div>
+  );
+}
+
 /** A page heading as `PageHead` draws it: two title lines, a lead, and the facts. */
 export function HeadSkeleton({ facts = 4, lines = 2 }: { facts?: number; lines?: number }) {
   return (

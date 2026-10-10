@@ -84,6 +84,7 @@ const STROKES = {
   download: "M12 4v11M7 10.5l5 5 5-5M5 19.5h14",
   pulse: "M3.5 12h4l2-5 4 10 2-5h5",
   shield: "M12 3.5 19 6v6c0 4.5-3 7.5-7 8.5-4-1-7-4-7-8.5V6Z",
+  sliders: "M4 7h16M15 4.5v5M4 17h16M9 14.5v5",
 } as const;
 
 /** The names the previous set used, kept so nothing that still says them breaks. */

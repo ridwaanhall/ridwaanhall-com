@@ -236,6 +236,17 @@ above the About heading.
   address with `history.replaceState` (back still means the page before), the
   server reads them on arrival, and `serverMatches` is its answer for `?q=`,
   which searches each body as well as the fields the client holds.
+- **Filters live behind a button.** `FilterBar` (`components/foothill/filter-bar.tsx`)
+  is one line -- search, **Filters** with a count of what is applied, sort and
+  view -- with every group that narrows the list (`FilterGroup`) in a panel that
+  opens below it, and what is applied drawn outside the panel as removable chips
+  with Clear all. Five rows of chips sat between Work's heading and its first
+  project, 610px of them on a phone. The panel starts closed on the server and
+  the client alike: opening itself for a filter in the address would paint
+  differently from the page the server sent. A new filtered list is a
+  `FilterBar` and its skeleton is `FilterBarSkeleton`, not a row of chips. A
+  chip is 28px and a segmented control 34px; on touch they keep that look and
+  `::after` carries the 44px tap.
 - **A page's frame is `MAIN` and `WRAP`** from `components/foothill/layout.ts`,
   and its skeleton uses `PageSkeleton` and the blocks in
   `components/foothill/skeleton.tsx` -- which is what `check-skeleton-shape.mjs`

@@ -1,4 +1,4 @@
-import { CardsSkeleton, HeadSkeleton, PageSkeleton, RowSkeleton } from "@/components/foothill/skeleton";
+import { CardsSkeleton, FilterBarSkeleton, HeadSkeleton, PageSkeleton, RowSkeleton } from "@/components/foothill/skeleton";
 
 /** Writing while it loads: heading, the three picked posts, the first rows. */
 export default function Loading() {
@@ -9,6 +9,7 @@ export default function Loading() {
         <CardsSkeleton count={3} />
       </section>
       <section className="wrap" style={{ paddingBottom: 72 }}>
+        <FilterBarSkeleton sort={320} view={108} />
         {Array.from({ length: 5 }, (_, i) => (
           <RowSkeleton key={i} />
         ))}

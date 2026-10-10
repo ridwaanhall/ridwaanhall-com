@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import { MAIN } from "@/components/foothill/layout";
 import { PageMotion } from "@/components/foothill/motion";
 import { projectView } from "@/components/foothill/rows";
-import { CardsSkeleton, InlineSkeleton } from "@/components/foothill/skeleton";
+import { CardsSkeleton, FilterBarSkeleton, InlineSkeleton } from "@/components/foothill/skeleton";
 import { PageHead } from "@/components/foothill/ui";
 import { WorkExplorer } from "@/components/foothill/work";
 import { JsonLdScript } from "@/components/seo/json-ld";
@@ -75,6 +75,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Wor
           <Suspense
             fallback={
               <InlineSkeleton label="Loading the projects">
+                <FilterBarSkeleton sort={200} view={108} />
                 <CardsSkeleton count={6} />
               </InlineSkeleton>
             }

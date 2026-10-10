@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { PostCard } from "@/components/foothill/cards";
 import { Chips, Seg } from "@/components/foothill/controls";
+import { FilterBar, FilterGroup, type ActiveFilter } from "@/components/foothill/filter-bar";
 import { Icon } from "@/components/foothill/icons";
 import type { PostView } from "@/components/foothill/rows";
 import { Empty } from "@/components/foothill/ui";
@@ -56,6 +57,7 @@ export function WritingIndex({
     filters.sort,
   );
   const clear = () => setFilters({ ...initial, q: "", topic: "", sort: filters.sort, view: filters.view });
+  const active: ActiveFilter[] = filters.topic ? [{ key: "topic", label: `Topic: ${filters.topic}`, onRemove: () => set({ topic: "" }) }] : [];
 
   // The index groups by year when it is ordered by date, so a long list has landmarks.
   const byDate = filters.sort === "new" || filters.sort === "old";
@@ -102,39 +104,23 @@ export function WritingIndex({
 
   return (
     <>
-      <div className="controls">
-        <form role="search" className="field" action="/blog" onSubmit={(event) => event.preventDefault()}>
-          <Icon name="search" />
-          <input
-            name="q"
-            type="search"
-            placeholder="Search titles, tags and topics"
-            value={filters.q}
-            onChange={(event) => set({ q: event.target.value })}
-            aria-label="Search posts"
-          />
-        </form>
-        <Chips
-          id="cat"
-          label="Topic"
-          value={filters.topic}
-          onChange={(topic) => set({ topic })}
-          items={[["", "All", posts.length], ...categories.map(([name, count]) => [name, name, count] as [string, string, number])]}
-        />
-        <Seg
-          id="writing-view"
-          label="View"
-          value={filters.view}
-          onChange={(view) => set({ view })}
-          items={[
-            ["grid", "Grid", "grid"],
-            ["rows", "Index", "list"],
-          ]}
-        />
-      </div>
-      <div className="controls2">
-        <span className="sort">
-          <span className="meta">Sort</span>
+      <FilterBar
+        active={active}
+        onClear={() => set({ topic: "" })}
+        search={
+          <form role="search" className="field" action="/blog" onSubmit={(event) => event.preventDefault()}>
+            <Icon name="search" />
+            <input
+              name="q"
+              type="search"
+              placeholder="Search titles, tags and topics"
+              value={filters.q}
+              onChange={(event) => set({ q: event.target.value })}
+              aria-label="Search posts"
+            />
+          </form>
+        }
+        sort={
           <Seg
             id="writing-sort"
             label="Sort"
@@ -147,8 +133,30 @@ export function WritingIndex({
               ["read", "Most read"],
             ]}
           />
-        </span>
-      </div>
+        }
+        view={
+          <Seg
+            id="writing-view"
+            label="View"
+            value={filters.view}
+            onChange={(view) => set({ view })}
+            items={[
+              ["grid", "Grid", "grid"],
+              ["rows", "Index", "list"],
+            ]}
+          />
+        }
+      >
+        <FilterGroup label="Topic">
+          <Chips
+            id="cat"
+            label="Topic"
+            value={filters.topic}
+            onChange={(topic) => set({ topic })}
+            items={[["", "All", posts.length], ...categories.map(([name, count]) => [name, name, count] as [string, string, number])]}
+          />
+        </FilterGroup>
+      </FilterBar>
       <LayoutGroup>
         <motion.div layout className={filters.view === "grid" ? "pgrid three" : "rows"}>
           <AnimatePresence mode="popLayout" initial={false}>

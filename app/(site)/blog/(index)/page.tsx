@@ -6,7 +6,7 @@ import { PostCard } from "@/components/foothill/cards";
 import { MAIN } from "@/components/foothill/layout";
 import { PageMotion, Reveal } from "@/components/foothill/motion";
 import { postView } from "@/components/foothill/rows";
-import { InlineSkeleton, RowSkeleton } from "@/components/foothill/skeleton";
+import { FilterBarSkeleton, InlineSkeleton, RowSkeleton } from "@/components/foothill/skeleton";
 import { Button, Empty, Heading, PageHead } from "@/components/foothill/ui";
 import { WritingIndex } from "@/components/foothill/writing";
 import { JsonLdScript } from "@/components/seo/json-ld";
@@ -99,6 +99,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Writing
               <Suspense
                 fallback={
                   <InlineSkeleton label="Loading the posts">
+                    <FilterBarSkeleton sort={320} view={108} />
                     {Array.from({ length: 6 }, (_, i) => (
                       <RowSkeleton key={i} />
                     ))}

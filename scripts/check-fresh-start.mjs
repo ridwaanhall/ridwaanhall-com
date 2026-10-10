@@ -136,6 +136,7 @@ const CONTENT_MENTIONS = {
   "lib/seo/config.ts": 1, // `technical` keywords -- a skill, listed beside Python
   "lib/seo/schema.ts": 1, // the same list again, in the JSON-LD `keywords`
   "lib/cv/select.ts": 1, // the CV's technical terms: a certificate may be named for it
+  "scripts/generate-blog-covers.mjs": 2, // a post is about it: its slug and the description of its drawing
   "CODE_OF_CONDUCT.md": 1, // the Contributor Covenant's own URL, which ends in .html
 
   /*

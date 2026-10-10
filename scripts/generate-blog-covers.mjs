@@ -3,10 +3,8 @@
  * image.
  *
  * A cover is the first thing a card, a share preview and the top of a post
- * show, and the old ones were each made somewhere else in a different style --
- * glowing neon, stock renders, a different face on every one -- so the
- * writing index read as a collage rather than as one site. These are drawn
- * from the same rules the pages are: true black, the eight greys and no
+ * show, so covers drawn in one rule set make the writing index read as one
+ * site. They follow the pages' own rules: true black, the eight greys and no
  * accent, Funnel Display for the title, Geist for the lead and Geist Mono for
  * the facts, and a line drawing that says what the post is about.
  *
@@ -24,7 +22,7 @@
  * Uploading goes through the same content-addressed key and `media_asset`
  * row an admin upload gets, so a cover is an ordinary image afterwards:
  * replaceable from the post's form, counted by `lib/storage/cleanup.ts`, and
- * deleted with the last row that names it. The images it replaces are handed
+ * deleted with the last row that names it. The images a post held before are handed
  * to `deleteUnreferenced`, which keeps any that something else still uses.
  */
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -421,7 +419,7 @@ try {
 
 if (APPLY && replaced.length) {
   const result = await deleteUnreferenced(replaced, { budgetMs: 120_000 });
-  console.log(`old images: ${result.deleted.length} deleted, ${result.kept.length} kept (still used elsewhere), ${result.failed.length} failed`);
+  console.log(`replaced images: ${result.deleted.length} deleted, ${result.kept.length} kept (still used elsewhere), ${result.failed.length} failed`);
   if (result.failed.length) console.log(result.failed.join("\n"));
 }
 if (APPLY) {

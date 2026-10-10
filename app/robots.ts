@@ -11,7 +11,8 @@ import { SITE_URL } from "@/lib/seo/config";
  *   logged as "Not found".
  * - The CV routes redirect to externally hosted files, logged as "Page with
  *   redirect".
- * - `/static/` is served directly and adds nothing to the index.
+ * - `/static/` is deliberately **not** listed: the default share image lives there,
+ * and a crawler that cannot fetch it shows a link preview with no picture.
  *
  * The sign-in paths are deliberately **not** listed. Blocking them stops the
  * crawl, which also stops Google seeing a `noindex`, so they linger in the
@@ -25,7 +26,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: [
         "/admin/",
-        "/static/",
         // POST-only endpoints: a crawler following them gets an error, not a page.
         "/guestbook/send-message/",
         "/guestbook/delete-message/",

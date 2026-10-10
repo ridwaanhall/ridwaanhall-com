@@ -836,7 +836,7 @@ body:has(.fh-site) {
 @media (prefers-reduced-motion: reduce) { .fh-site .marq { overflow-x: auto; } }
 
 /* A project's gallery strip, its features and the row of links it repeats. */
-.fh-site .gal-strip { display: grid; gap: 8px; margin-top: 8px; }
+.fh-site .gal-strip { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
 .fh-site .thumb-btn { position: relative; padding: 0; border: 0; background: none; cursor: pointer; }
 .fh-site .gal-mark { position: absolute; left: 0; right: 0; bottom: -6px; height: 2px; background: var(--fh-ink); border-radius: 2px; }
 .fh-site .feature { display: grid; gap: 8px; align-content: start; padding-top: 16px; border-top: 1px solid var(--fh-line); }

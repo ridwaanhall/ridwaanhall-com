@@ -375,10 +375,26 @@ body:has(.fh-site) {
 .fh-site .panel-h { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 0 0 14px; border-bottom: 1px solid var(--fh-line); flex-wrap: wrap; }
 .fh-site .panel-h h3 { font-size: 1.15rem; letter-spacing: -.02em; }
 .fh-site .panel-b { padding: 20px 0 0; }
+/* A figure grid ruled into cells. Every cell has padding on both sides so its
+   text never touches a rule; the first column alone starts flush with the
+   page edge, since nothing is drawn to its left. Two columns until the width
+   allows three or four, and the rules follow the columns, not the cells. */
 .fh-site .kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.fh-site .kpis > div { padding: 16px 18px 16px 0; display: grid; gap: 4px; align-content: start; border-bottom: 1px solid var(--fh-line); }
-.fh-site .kpis > div:nth-child(odd) { border-right: 1px solid var(--fh-line); }
-@media (min-width: 1024px) { .fh-site .kpis.k4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } .fh-site .kpis.k4 > div { border-right: 1px solid var(--fh-line); } .fh-site .kpis.k4 > div:nth-child(4n) { border-right: 0; } .fh-site .kpis.k3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } .fh-site .kpis.k3 > div { border-right: 1px solid var(--fh-line); } .fh-site .kpis.k3 > div:nth-child(3n) { border-right: 0; } }
+.fh-site .kpis > div { padding: 16px 18px; display: grid; gap: 4px; align-content: start; min-width: 0; border-bottom: 1px solid var(--fh-line); border-right: 1px solid var(--fh-line); }
+.fh-site .kpis > div:nth-child(2n) { border-right: 0; }
+.fh-site .kpis > div:nth-child(2n+1) { padding-left: 0; }
+@media (min-width: 1024px) {
+  .fh-site .kpis.k4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .fh-site .kpis.k4 > div { border-right: 1px solid var(--fh-line); }
+  .fh-site .kpis.k4 > div:nth-child(4n) { border-right: 0; }
+  .fh-site .kpis.k4 > div:nth-child(2n+1) { padding-left: 18px; }
+  .fh-site .kpis.k4 > div:nth-child(4n+1) { padding-left: 0; }
+  .fh-site .kpis.k3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .fh-site .kpis.k3 > div { border-right: 1px solid var(--fh-line); }
+  .fh-site .kpis.k3 > div:nth-child(3n) { border-right: 0; }
+  .fh-site .kpis.k3 > div:nth-child(2n+1) { padding-left: 18px; }
+  .fh-site .kpis.k3 > div:nth-child(3n+1) { padding-left: 0; }
+}
 .fh-site .kpis b { font-family: var(--fh-display); font-weight: 500; font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.3rem); letter-spacing: -.035em; line-height: 1.05; }
 .fh-site .f1 { background: var(--fh-c1); } .fh-site .f2 { background: var(--fh-c2); } .fh-site .f3 { background: var(--fh-c3); }
 .fh-site .f4 { background: repeating-linear-gradient(45deg, var(--fh-c1) 0 1.5px, transparent 1.5px 5px); }

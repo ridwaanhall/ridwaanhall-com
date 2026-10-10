@@ -1,7 +1,7 @@
 /**
  * The structured `jsonb` editors, checked for fidelity against the live rows.
  *
- * `CLAUDE.md` names the combination that matters here: a round-trip test plus
+ * The combination that matters here is a round-trip test plus
  * **a GET-then-POST-unchanged pass over the change forms**, because that pair is
  * what catches CRLF corruption, silently dropped fields and change-detection
  * regressions -- none of which a unit test on the parser alone would see.

@@ -174,4 +174,4 @@ npx tsx --conditions=react-server scripts/check-site-console.mjs
 npx tsx --conditions=react-server scripts/check-admin-console.mjs
 ```
 
-`CLAUDE.md` lists the rest.
+`scripts/CLAUDE.md` lists the rest.

@@ -43,7 +43,7 @@
    -------------
    Keep to the zinc ramp, indigo and the status hues and both themes come for
    free. Arbitrary values (`bg-[#18181b]`) and unlisted colour families will
-   silently miss both. See CLAUDE.md.
+   silently miss both. See components/admin/CLAUDE.md.
    =========================================================================== */
 
 :root {

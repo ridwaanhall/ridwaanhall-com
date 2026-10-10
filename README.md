@@ -70,7 +70,7 @@ lib/
   site/, motion/     Pure helpers the public site shares
   storage/           Supabase Storage: upload, delete, reference-counted cleanup
 drizzle/             0000_init.sql — the whole schema, in one file
-scripts/             Verification harnesses — see CLAUDE.md
+scripts/             Verification harnesses — see scripts/CLAUDE.md
 styles/              The hand-written stylesheets app/globals.css imports
 public/              Favicons, fonts, static images
 ```
@@ -217,7 +217,7 @@ npx tsx scripts/check-rls.mjs                     # row-level security is on
 npx tsx scripts/check-admin.mjs                   # the admin gate and changelists
 ```
 
-`CLAUDE.md` lists all of them and says which need `--conditions=react-server`.
+`scripts/CLAUDE.md` lists all of them and says which need `--conditions=react-server`.
 
 CI runs types, lint, the unit tests and the build. The harnesses deliberately do
 not run there: they drive a browser against a running app and write to the live

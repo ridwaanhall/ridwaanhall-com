@@ -70,6 +70,11 @@
                 parse as class-name candidates.
      ../docs    the design notes, which discuss utilities by name.
      ../*.md    README, CLAUDE, MIGRATION, AGENTS -- same reason.
+     any CLAUDE.md or README.md below the root
+                the guidance files beside the code they govern, which name
+                utilities in prose exactly as the root one does. (Written
+                out in words: a glob's double star followed by a slash would
+                close this comment.)
      ../.claude the plan files, same reason again.
      ../scripts the check harnesses. They *query* class names rather than
                 authoring them, and one of them names a utility the site does
@@ -86,6 +91,8 @@
 @source not "../styles";
 @source not "../docs";
 @source not "../*.md";
+@source not "../**/CLAUDE.md";
+@source not "../**/README.md";
 @source not "../.claude";
 @source not "../scripts";
 @source not "**/*.test.ts";

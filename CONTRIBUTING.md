@@ -382,8 +382,10 @@ Any other context or screenshots.
   item's min-width defaults to min-content, and a wide table pushed the column
   to 889px in a 360px viewport" is useful. "Set min-width to zero" is not
 - **Types over prose.** If a type can say it, let it
-- **Update `CLAUDE.md`** when you find a trap that cost you an hour. That file is
-  a list of things that have actually gone wrong here, and it earns its length
+- **Update `CLAUDE.md`** when you find a trap that cost you an hour: the root file
+  for what applies everywhere, or the nested one beside the code it concerns
+  (`lib/admin/CLAUDE.md`, `components/foothill/CLAUDE.md` and so on). They are a
+  list of things that have actually gone wrong here, and they earn their length
 
 ### When you change something documented
 
@@ -420,7 +422,7 @@ npx tsx scripts/check-rls.mjs
 npx tsx scripts/check-admin.mjs
 ```
 
-`CLAUDE.md` lists all of them and says which need `--conditions=react-server`.
+`scripts/CLAUDE.md` lists all of them and says which need `--conditions=react-server`.
 
 ### Writing a harness
 

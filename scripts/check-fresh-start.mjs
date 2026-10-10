@@ -140,15 +140,15 @@ const CONTENT_MENTIONS = {
   "CODE_OF_CONDUCT.md": 1, // the Contributor Covenant's own URL, which ends in .html
 
   /*
-   * CLAUDE.md is the trap log. It records a correlated subquery that bound to
-   * the wrong table, and a lock that named a table in the schema this project
-   * used to share a database with -- neither story survives having the name
-   * taken out of it.
+   * The CLAUDE.md files are the trap log, and `lib/admin/CLAUDE.md` records a
+   * correlated subquery that bound to the wrong table in the schema this
+   * project used to share a database with -- the story does not survive having
+   * the name taken out of it.
    *
    * The two harnesses that used to be listed beside it read that schema for a
    * living, and were deleted with it.
    */
-  "CLAUDE.md": 1,
+  "lib/admin/CLAUDE.md": 1,
 };
 
 const tracked = execFileSync("git", ["ls-files"], { encoding: "utf8" })

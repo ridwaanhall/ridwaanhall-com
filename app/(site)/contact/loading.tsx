@@ -12,7 +12,7 @@ export default function Loading() {
             <Bar h={48} r="var(--fh-r-m)" />
           </div>
           <Bar h={160} r="var(--fh-r-m)" />
-          <Bar w={170} h={44} r="var(--fh-r-m)" />
+          <Bar w={142} h={34} r="var(--fh-r-m)" />
         </div>
         <div className="contact-side">
           <Bar w="70%" h={24} />

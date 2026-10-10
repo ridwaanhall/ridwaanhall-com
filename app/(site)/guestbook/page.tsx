@@ -122,8 +122,8 @@ function GuestbookSkeleton() {
         <div className="compose">
           <Bar w="60%" h={20} />
           <Bar w="100%" h={200} r="var(--fh-r-m)" />
-          <Bar w="100%" h={48} r="var(--fh-r-m)" />
-          <Bar w="100%" h={48} r="var(--fh-r-m)" />
+          <Bar w="100%" h={34} r="var(--fh-r-m)" />
+          <Bar w="100%" h={34} r="var(--fh-r-m)" />
         </div>
         <div>
           {/* Twelve: the thread lands twelve at a time and fills the screen, and a

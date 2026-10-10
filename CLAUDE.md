@@ -247,6 +247,13 @@ above the About heading.
   `FilterBar` and its skeleton is `FilterBarSkeleton`, not a row of chips. A
   chip is 28px and a segmented control 34px; on touch they keep that look and
   `::after` carries the 44px tap.
+- **Controls come in two heights, and a button is the Filters button's.**
+  `.btn`, the Filters button, the search field and a segmented control are 34px
+  with 13px type; `.btn.sm` and a chip are 28px with 12.5px. Under a coarse
+  pointer they are 40px and 32px with the invisible `::after` keeping the 44px
+  tap, so a button never has to be big to be reachable. The sign-in buttons
+  (`.btn.wide`) were 48px beside a 34px search; a skeleton that stands in for a
+  button draws the same 34px, or the page jumps when it lands.
 - **A page's frame is `MAIN` and `WRAP`** from `components/foothill/layout.ts`,
   and its skeleton uses `PageSkeleton` and the blocks in
   `components/foothill/skeleton.tsx` -- which is what `check-skeleton-shape.mjs`

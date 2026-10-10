@@ -39,7 +39,7 @@ export function ProviderButtons({
       }}
     >
       <button type="submit" className={site ? "btn wide" : PROVIDER_CLASS}>
-        <Brand name="github" size={18} />
+        <Brand name="github" size={site ? 16 : 18} />
         Continue with GitHub
       </button>
     </form>
@@ -53,7 +53,7 @@ export function ProviderButtons({
       }}
     >
       <button type="submit" className={site ? "btn ghost wide" : PROVIDER_CLASS}>
-        <Brand name="google" size={18} />
+        <Brand name="google" size={site ? 16 : 18} />
         Continue with Google
       </button>
     </form>

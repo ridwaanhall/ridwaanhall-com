@@ -11,8 +11,8 @@ export default function Loading() {
           <Bar w="44%" h={24} />
           <Bar w="58%" h={18} />
           <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
-            <Bar w={150} h={44} r="var(--fh-r-m)" />
-            <Bar w={140} h={44} r="var(--fh-r-m)" />
+            <Bar w={133} h={34} r="var(--fh-r-m)" />
+            <Bar w={122} h={34} r="var(--fh-r-m)" />
           </div>
         </div>
       </section>

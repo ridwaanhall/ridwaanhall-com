@@ -8,8 +8,8 @@ export default function Loading() {
         <div className="panel sign-card">
           <Bar w="40%" h={36} />
           <Bar w="90%" h={16} />
-          <Bar w="100%" h={48} r="var(--fh-r-m)" />
-          <Bar w="100%" h={48} r="var(--fh-r-m)" />
+          <Bar w="100%" h={34} r="var(--fh-r-m)" />
+          <Bar w="100%" h={34} r="var(--fh-r-m)" />
         </div>
       </section>
     </PageSkeleton>

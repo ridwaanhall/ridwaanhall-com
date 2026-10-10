@@ -244,9 +244,8 @@ above the About heading.
   project, 610px of them on a phone. The panel starts closed on the server and
   the client alike: opening itself for a filter in the address would paint
   differently from the page the server sent. A new filtered list is a
-  `FilterBar` and its skeleton is `FilterBarSkeleton`, not a row of chips. A
-  chip is 28px and a segmented control 34px; on touch they keep that look and
-  `::after` carries the 44px tap.
+  `FilterBar` and its skeleton is `FilterBarSkeleton`, not a row of chips. The
+  heights of its controls are the next entry's.
 - **Controls come in two heights, and a button is the Filters button's.**
   `.btn`, the Filters button, the search field and a segmented control are 34px
   with 13px type; `.btn.sm` and a chip are 28px with 12.5px. Under a coarse
@@ -493,7 +492,7 @@ privilege, so a badge every staff account carries would mark nobody out"),
 which was true while `is_staff` was the whole system and stopped being true the
 day this section describes.
 
-### Every model has full CRUD, with three exceptions
+### Every model has full CRUD, with a few exceptions
 
 `canCreate` and `canDelete` are `boolean | "superuser"`, and the third state is
 the one to be careful with -- see the trap below.
@@ -506,8 +505,8 @@ question of consequence rather than of possibility, and refusing it to everyone
 meant the only way to remove an account was SQL, with no confirmation and no
 warning.
 
-`project-status`: **created and deleted like every other vocabulary**, which it
-could not be until the colour moved onto the row. The refusal was never about
+`project-status` **is created and deleted like every other vocabulary**, which
+it could not be until the colour moved onto the row. The refusal was never about
 the lifecycle being sacred: a badge colour is a pair of Tailwind classes,
 **classes are never stored in the database**, and `lib/data/project-status.ts`
 therefore keyed them on the slug -- so a status created here had no colour and
@@ -524,12 +523,15 @@ compared in the unit suite -- one is an object literal, the other a constraint
 in Postgres. `scripts/check-db-classes.mjs` compares them against the live
 database, which is the only place both are visible.
 
-`profile`, `hiring-profile` and `open-to-work-profile`: **both refused to
-everybody, superuser included**, and this is the one place that role is not the
-answer. Each is one row by definition -- `/admin/<key>` *is* that record's form,
-there is no list and no create route -- and every page in the public layout
-renders the profile block, so deleting one takes the site down with nothing in
-the admin able to recreate it.
+`profile`, `hiring-profile`, `open-to-work-profile` and `site-setting`: **both
+refused to everybody, superuser included**, and this is the one place that role
+is not the answer. Each is one row by definition -- `/admin/<key>` *is* that
+record's form, there is no list and no create route. Deleting one of the first
+three takes the site down, since every page in the public layout renders the
+profile block, with nothing in the admin able to recreate it; `site-setting` is
+held to one row by a unique index on a constant, and a missing row only means
+the defaults (`getImageSettings`), but the screen has no reason to offer a
+delete either.
 
 Everything else creates, reads, updates and deletes, subject to the grant.
 `scripts/check-admin-forms.mjs` asserts both directions; "no add form" on its
@@ -593,7 +595,7 @@ when a row actually moved**: marking the tag every run would discard the blog
 payload hourly, which is the opposite of what `cacheLife("days")` is for.
 
 There is **no preview of a draft yet**. Seeing one rendered means publishing it,
-looking, and unpublishing -- the article page is 194 lines of inline JSX rather
+looking, and unpublishing -- the article page is one file of inline JSX rather
 than a component something else could render, and `draftMode()` is not the way
 round it: reading it in `/blog/[slug]` makes that route dynamic for every
 reader, not only for staff.
@@ -632,8 +634,8 @@ On the way out it is `image_alts`, a **parallel array** rather than a richer
 `images` map. That map is published as-is by `/api/blog` and `/api/projects`;
 turning its values into objects would change that JSON for every reader to add
 a field most of them do not want. An entry is `""` where nothing has been
-written, which is most of them, and `MediaGallery` falls back to the built
-description there -- the two are asserted separately in
+written, which is most of them, and `Gallery`
+(`components/foothill/gallery.tsx`) falls back to the built description there -- the two are asserted separately in
 `scripts/check-image-alt.mjs`, because preferring the stored one and keeping the
 fallback are different bugs and a check that conflates them passes while most of
 the site's images say nothing.
@@ -811,8 +813,9 @@ a "Used by" composed in TypeScript offers a number the database cannot order by.
 `lib/admin/sql.ts` exists because Drizzle renders a column interpolated into a
 raw `sql` template with its *bare* name, not `"table"."column"` — and a
 correlated subquery is precisely where that decides which table a name binds to.
-Its header tells that story about `guestbook_userprofile`. It happened again
-anyway.
+An earlier raw template over `guestbook_userprofile` showed it once; it happened
+again anyway, in the case below, which is the worked example in the module's
+header.
 
 The access list counts the screens an account may open, which is `count(*)` over
 `admin_access` **with a condition on the inner table** — something `countWhere`
@@ -846,8 +849,8 @@ should write twice.
 
 ### A cascade declared in application code is not a cascade
 
-`app` declares its referential actions in SQL: 29 `CASCADE` where a child has no
-meaning without its parent, 21 `SET NULL` where it does, 7 `RESTRICT` where the
+`app` declares its referential actions in SQL: 31 `CASCADE` where a child has no
+meaning without its parent, 30 `SET NULL` where it does, 9 `RESTRICT` where the
 reference is somebody else's (an organization an experience still names). None
 are deferrable, so a violation is raised by the statement that caused it rather
 than at commit.
@@ -911,13 +914,13 @@ Both halves of this were live:
   (`development_in_progress`), while the read path selects the slug. Every
   lookup missed. (The colour is keyed on `project_status.color` now, a token
   the row carries -- which is also what lets a status be created at all.) Every badge on the site rendered in the grey fallback with a
-  mangled `Development-In-Progress` beside it, and `projectStatusRank` returned
-  "unknown" for all of them, so the first of the two sort keys in `sortProjects`
+  mangled `Development-In-Progress` beside it, and the rank lookup (now the row's `position`, read as
+  `status_rank`) returned "unknown" for all of them, so the first of the two sort keys in `sortProjects`
   did nothing whatsoever. It survived because the test compared the module's two
   maps against each other — a tautology, and nothing a row participates in.
-- `application-card.tsx` keyed its status colours on the *label* (`In Progress`).
+- The job-hunt card keyed its status colours on the *label* (`In Progress`).
   That worked only by coincidence, and would have gone grey on the first
-  rewording.
+  rewording; `OUTCOME` in `components/foothill/about.tsx` is keyed on the slug.
 
 So: the label and the lifecycle order come from the row and are rendered, never
 matched; the slug is the key and does not move. Where code must key on a
@@ -1397,6 +1400,7 @@ them before a release.
 ```bash
 npm test                                               # the unit suite, offline
 npm run build && node scripts/check-css-sources.mjs   # no stray utilities
+node scripts/check-class-collisions.mjs                # (after a build) no public class is also a utility
 node scripts/check-headers.mjs                         # every security header, every origin
 node scripts/check-auth-config.mjs                     # sign-in is configured, wherever it points
 node scripts/check-live-config.mjs https://<domain>    # what a deployment is silently doing without
@@ -1441,6 +1445,15 @@ npx tsx --conditions=react-server scripts/check-admin-controls.mjs
 
 A harness that imports a `server-only` module needs `--conditions=react-server`.
 The browser-driven ones need `npm run dev` running.
+
+`scripts/mint-session.mjs` and `scripts/fixture-ids.mjs` are what the
+browser-driven harnesses stand on, not checks: the first issues an Auth.js
+session cookie for an account id, the second resolves the staff and reader
+accounts and the rows a harness drives instead of writing keys down.
+`scripts/db-probe.mjs` is a connectivity and inventory check against whichever
+database `.env.local` names, and `scripts/generate-blog-covers.mjs` draws every
+post's cover in the site's own design -- a dry run that writes PNGs unless given
+`--apply`, which uploads them and repoints the posts.
 
 `scripts/audit-storage.mjs` is not a check either, and it is the one that looks
 at the bucket rather than at the rows. Everything else here reasons outwards
@@ -1495,8 +1508,7 @@ run unless given `--apply`.
 
 - Commits: emoji-prefixed conventional commits, `<emoji><type>(<scope>): <Description>`
   with no space after the emoji — `✨feat(admin): …`, `🐛fix(blog): …`.
-  `CONTRIBUTING.md` documents the plain form; the emoji prefix is the real
-  convention.
+  `CONTRIBUTING.md` documents the same form and the emoji for each type.
 - Branches: `feature/your-feature-name`.
 - Comments explain *why*, and are worth writing when the reason is not evident
   from the code. Most of this file started as one.

@@ -96,13 +96,14 @@ Visit `http://localhost:3000`.
 ridwaanhall-com/
 ├── app/                    # Routes
 │   ├── (site)/             # The public pages
-│   ├── admin/              # The admin — two dynamic routes, 18 screens
+│   ├── admin/              # The admin — two dynamic routes and the Access screen
 │   └── api/                # The few JSON endpoints
 ├── components/
-│   ├── site/               # Page components
+│   ├── foothill/           # The public site: pages, cards, filters, charts, motion
 │   ├── admin/              # Generic changelist, form, field, inline
-│   ├── layout/             # Sidebar, drawer, search palette, theme toggle
-│   └── providers/          # Toasts, confirm dialog, tooltips, theme
+│   ├── site/, layout/      # The few pieces both halves use
+│   ├── auth/, seo/         # Sign-in buttons, structured data
+│   └── providers/          # Confirm dialog, notifications, tooltips, theme
 ├── lib/
 │   ├── data/               # Read paths, each behind `use cache`
 │   ├── actions/            # Server actions
@@ -110,6 +111,8 @@ ridwaanhall-com/
 │   ├── auth/               # Auth.js adapter over the account tables
 │   ├── db/                 # The generated Drizzle mapping and the connection pool
 │   ├── email/              # Templates and the Resend client
+│   ├── markdown/, cv/      # The Markdown twins and the generated CV
+│   ├── site/, motion/      # Pure helpers the public site shares
 │   ├── seo/                # Metadata, JSON-LD, sitemaps
 │   └── storage/            # Supabase Storage and reference-counted cleanup
 ├── drizzle/                # 0000_init.sql — the whole schema, in one file
@@ -193,13 +196,17 @@ names classes. Read it before changing anything in those areas.
 - **Semantic HTML**: use the element that means the thing
 - **Accessibility**: label every control; anything interactive must work from a
   keyboard, and anything hover-only must also work on touch
-- **Images**: `next/image`, with dimensions and sensible `sizes`
+- **Images**: on the public site, `SiteImage` (`components/foothill/site-image.tsx`) and never `next/image` directly, because the wrapper is what makes the resize setting apply. Give it dimensions and sensible `sizes`
 
 #### CSS / Tailwind
 
-- The site is written entirely in **dark-mode classes with no `dark:` variants**.
-  Light mode is produced by redefining the palette variables under
-  `html[data-theme="light"]` in `app/globals.css`
+- The **public site** is written in the class vocabulary of `styles/site.css`
+  (`.btn`, `.chip`, `.pcard`, `.wrap`) over eight grey tokens, every rule
+  anchored to `.fh-site`; add new rules at the end of that sheet. The **admin**
+  is written in stock Tailwind classes, and `styles/theme-light.css` remaps its
+  zinc ramp from the site's tokens. Neither uses a `dark:` variant
+- **A class in `styles/` beats any utility** on the same property: those sheets
+  are unlayered. Do not set one property both ways on one element
 - **Stay inside the existing colour vocabulary.** A new colour family, or an
   arbitrary value like `bg-[#18181b]`, renders its dark value on a white page
   with no error anywhere
@@ -214,46 +221,48 @@ names classes. Read it before changing anything in those areas.
 
 ## Commit Message Guidelines
 
-Use conventional commit format:
+Commits are emoji-prefixed conventional commits. The emoji is part of the type,
+with no space after it:
 
 ```txt
-<type>(<scope>): <description>
+<emoji><type>(<scope>): <Description>
 
-[optional body]
-
-[optional footer]
+[optional body: what changed, and why]
 ```
 
-### Commit Types
-
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting, etc.)
-- `refactor`: Code refactoring
-- `test`: Adding or updating tests
-- `chore`: Maintenance tasks
+| Emoji | Type | Use |
+|---|---|---|
+| ✨ | `feat` | A new feature |
+| 🐛 | `fix` | A bug fix |
+| 💄 | `style` | UI, CSS and design changes |
+| 📝 | `docs` | Documentation |
+| ✅ | `test` | Adding or updating tests |
+| ♻️ | `refactor` | A refactor with no change in behaviour |
+| ⚡ | `perf` | Performance |
+| 🔒 | `security` | Security changes |
+| 🔧 | `chore` | Maintenance and tooling |
+| 🔥 | `chore` | Deleting code or files |
+| 🚀 | `chore(deploy)` | A rebuild or deploy commit |
+| 👷 | `ci` | CI workflows |
+| ⏪ | `revert` | Reverting an earlier commit |
 
 ### Examples
 
 ```bash
-feat(dashboard): add GitHub contribution graph integration
+🐛fix(gallery): Keep the thumbnail strip six columns wide whatever the image count
 
-- Implement GitHub API client for fetching contribution data
-- Add interactive contribution graph component
-- Include responsive design for mobile devices
-
-Closes #45
+The strip was as many columns as there were images, so a project with two
+screenshots drew thumbnails half the page wide while one with six drew them a
+sixth of it.
 ```
 
 ```bash
-fix(blog): resolve pagination issue on mobile devices
+✨feat(filters): Put the Work and Writing filters behind a Filters button
 
-- Fix pagination component overflow on small screens
-- Improve touch interactions for pagination buttons
-- Add proper spacing for mobile navigation
+The list now opens with one line: search, a Filters button with the number
+applied, sort and view. What is applied shows as removable chips.
 
-Fixes #123
+Closes #45
 ```
 
 ## Pull Request Process
@@ -277,6 +286,7 @@ Fixes #123
 3. **Test your changes**:
 
    ```bash
+   npm test
    npx tsc --noEmit
    npm run lint
    npm run build
@@ -298,43 +308,7 @@ Brief description of changes made.
 - [ ] Other (please describe)
 
 ## Testing
-
-**There is no test runner, and that is a deliberate choice rather than a gap.**
-Everything worth checking here involves a real browser, a real database or both:
-whether a gate leaks data in a payload nobody looks at, whether saving a record
-untouched changes its bytes, whether a table pushes the page sideways at 360px.
-A unit test sees none of that.
-
-So verification is a set of harnesses under `scripts/`, each covering one
-mechanism, each driving the running application against the live database.
-
-```bash
-npm run dev                     # in one terminal
-
-npx tsc --noEmit
-npm run lint
-npm run build && node scripts/check-css-sources.mjs
-npx tsx scripts/check-rls.mjs
-npx tsx scripts/check-admin.mjs
-```
-
-`CLAUDE.md` lists all of them and says which need `--conditions=react-server`.
-
-### Writing one
-
-Three rules, learned the hard way:
-
-1. **Snapshot and restore.** Anything that writes must put back what it touched,
-   in a `finally`, and then assert the restore worked. The database is live.
-2. **Mark what you create.** Rows a harness creates carry a `zz-` prefix, so a
-   leftover is obviously a harness's and not real content.
-3. **Prove the check can fail.** Break the thing deliberately, watch the check
-   go red, then fix it. A check that has never failed is not known to work —
-   two in this repo were passing against bugs until that was done.
-
-CI runs types, lint and the build only. The harnesses drive a browser and write
-to the live database, which is right for a developer checking a change before
-pushing it and wrong for a pull request from a fork.
+Which checks you ran, and what you looked at in the browser.
 
 ## Screenshots (if applicable)
 Include screenshots for UI changes.
@@ -378,7 +352,6 @@ If applicable, add screenshots.
 **Environment:**
 - OS: [e.g. Windows 11]
 - Browser: [e.g. Chrome 91]
-- Python Version: [e.g. 3.12]
 - Node Version: [e.g. 22.11.0]
 ```
 
@@ -418,6 +391,54 @@ Any other context or screenshots.
 change makes one of them wrong, fix it in the same commit — a stale instruction
 costs more than a missing one.
 
+## Testing
+
+There are two layers, and the split is deliberate.
+
+**Unit tests** cover the pure logic -- permissions, filters, sanitising, parsing,
+the pieces that decide things -- and run anywhere: no database, no browser, no
+network. Node's built-in runner over `tsx`; there is no test framework.
+
+```bash
+npm test
+npm run test:watch
+```
+
+**Harnesses** cover everything that only means something against the real thing:
+whether a gate leaks data in a payload nobody looks at, whether saving a record
+untouched changes its bytes, whether a table pushes the page sideways at 360px.
+A unit test sees none of that. Each harness under `scripts/` covers one
+mechanism and drives the running application against the live database.
+
+```bash
+npm run dev                     # in one terminal
+
+npx tsc --noEmit
+npm run lint
+npm run build && node scripts/check-css-sources.mjs
+npx tsx scripts/check-rls.mjs
+npx tsx scripts/check-admin.mjs
+```
+
+`CLAUDE.md` lists all of them and says which need `--conditions=react-server`.
+
+### Writing a harness
+
+Three rules, learned the hard way:
+
+1. **Snapshot and restore.** Anything that writes must put back what it touched,
+   in a `finally`, and then assert the restore worked. The database is live.
+2. **Mark what you create.** Rows a harness creates carry a `zz-` prefix, so a
+   leftover is obviously a harness's and not real content.
+3. **Prove the check can fail.** Break the thing deliberately, watch the check
+   go red, then fix it. A check that has never failed is not known to work --
+   two in this repo were passing against bugs until that was done.
+
+CI runs the route types, `tsc`, lint, the unit tests and the build. The
+harnesses drive a browser and write to the live database, which is right for a
+developer checking a change before pushing it and wrong for a pull request from
+a fork.
+
 ## Security
 
 ### Security Guidelines
@@ -448,7 +469,8 @@ costs more than a missing one.
 
 - [Next.js Documentation](https://nextjs.org/docs)
 - [TailwindCSS Documentation](https://tailwindcss.com/docs)
-- [Python Style Guide (PEP 8)](https://pep8.org/)
+- [Drizzle ORM Documentation](https://orm.drizzle.team/docs/overview)
+- [Auth.js Documentation](https://authjs.dev/)
 - [GitHub Flow](https://guides.github.com/introduction/flow/)
 
 ## Recognition
@@ -461,7 +483,7 @@ Contributors will be recognized in the following ways:
 
 ## License
 
-By contributing to this project, you agree that your contributions will be licensed under the same license as the project (MIT License).
+By contributing to this project, you agree that your contributions will be licensed under the same license as the project (Apache License 2.0).
 
 ---
 

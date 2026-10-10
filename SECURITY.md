@@ -132,7 +132,7 @@ action body runs. There is no CSRF token to manage, and no state-changing GET.
 The contact form is behind Cloudflare Turnstile, and it **fails closed** — a
 missing, empty or forged token is rejected. `scripts/check-turnstile.mjs`
 proves that against the real Cloudflare endpoint. Guestbook messages are length
-limited and posted only by signed-in accounts.
+limited, posted only by signed-in accounts, and rate limited per account.
 
 ### Secrets
 
@@ -152,23 +152,29 @@ one of them stopped pointing at it would break the other nineteen.
 
 ## HTTP security headers
 
-`next.config.ts` sets seven, on every path: `Strict-Transport-Security`
+`next.config.ts` sets nine, on every path: `Strict-Transport-Security`
 (two years, `includeSubDomains`, `preload`), `X-Content-Type-Options`,
 `X-Frame-Options`, `Referrer-Policy`, `Cross-Origin-Opener-Policy`,
-`Permissions-Policy` denying every powerful feature, and a content security
-policy. `scripts/check-headers.mjs` asserts all of them against a running app.
+`Permissions-Policy` denying every powerful feature, two content security
+policies (a short enforced one and the full one in report-only mode, below),
+and `Reporting-Endpoints`, which names where reports go and is left out when
+there is no base URL to build the address from. `scripts/check-headers.mjs`
+asserts all of them against a running app.
 
 Each origin in the policy is one the application actually loads from, and
 nothing else: the Turnstile widget and its frame, the Supabase host that serves
-uploaded media, and the three avatar hosts the guestbook and comments render
-from. The one exception is `static.cloudflareinsights.com`, which is listed
+uploaded media, `wsrv.nl` for the pictures the resize setting sends there, and
+the three avatar hosts the guestbook and comments render from. The one exception is `static.cloudflareinsights.com`, which is listed
 because Cloudflare injects that script at its proxy whether or not the app asks
 for it. Widening a CSP is free and silent, so keep it to what breaks without it.
 
-### Known gap: the policy is report-only
+### Known gap: most of the policy is report-only
 
-The header is `Content-Security-Policy-Report-Only`, so **nothing is blocked**.
-That is the state to fix rather than the state to keep.
+A short policy is enforced: `Content-Security-Policy` carries `base-uri 'self'`,
+`object-src 'none'` and `frame-ancestors 'none'`, which no page here needs to
+relax. The full policy is still `Content-Security-Policy-Report-Only`, so
+**nothing else is blocked**. That is the state to fix rather than the state to
+keep.
 
 Reports now go somewhere, which is what promoting it waits on. `report-to` and
 the deprecated `report-uri` both point at `/api/csp-report`, which parses the
@@ -218,9 +224,12 @@ Two things are worth knowing before you promote it:
    anyone with the anon key.
 5. **Restrict the service-role key.** It bypasses RLS by design. It belongs in
    server environment variables and nowhere else.
-6. **Rate limiting.** Not implemented. Vercel's firewall or a Cloudflare rule in
-   front of `/api/` and the server actions is the straightforward option if you
-   expect abuse.
+6. **Rate limiting.** Partial. One signed-in account may post five guestbook
+   messages or comments a minute (`lib/auth/throttle.ts`, counted from the rows
+   themselves, since a serverless function remembers nothing between requests).
+   Nothing limits the contact form beyond Turnstile, or anonymous requests to
+   `/api/`. Vercel's firewall or a Cloudflare rule in front of them is the
+   straightforward option if you expect abuse.
 
 ## Verification
 

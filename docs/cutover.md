@@ -103,8 +103,9 @@ configuration. Each of these has failed for somebody at a cutover:
   change immediately. If it does not, cache invalidation is not reaching the
   tag — see `lib/data/tags.ts`, which is keyed by table name and fails silently
   when a key does not match.
-- **Read the CSP reports.** The policy ships as `Content-Security-Policy-Report-Only`
-  (`next.config.ts`), so a mistake logs rather than breaking the page. Once the
+- **Read the CSP reports.** The full policy ships as `Content-Security-Policy-Report-Only`
+  (`next.config.ts`, beside a short enforced one for `frame-ancestors`,
+  `base-uri` and `object-src`), so a mistake logs rather than breaking the page. Once the
   reports are quiet, promoting it to `Content-Security-Policy` is renaming the
   header — and belongs in its own change.
 
@@ -145,14 +146,19 @@ the old schema.
 
 ## Verification
 
-Offline, and what CI runs:
+What CI runs, and the checks that need no running app:
 
 ```bash
-npm test
-npx tsc --noEmit
-npm run lint
-npm run build && node scripts/check-css-sources.mjs
+npm test                                              # CI
+npx tsc --noEmit                                      # CI
+npm run lint                                          # CI
+npm run build && node scripts/check-css-sources.mjs   # the build is CI; the check is not
 node scripts/check-fresh-start.mjs
+```
+
+These read the database but need no running app, and CI does not run them:
+
+```bash
 npx tsx scripts/check-baseline-schema.mjs
 npx tsx scripts/check-app-schema.mjs
 npx tsx scripts/check-rls.mjs

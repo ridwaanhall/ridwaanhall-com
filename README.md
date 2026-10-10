@@ -13,20 +13,24 @@
 
 - **Database-backed content**: Blog posts, projects, bio, experience, skills, awards, legal documents and more live as real tables — manage all of it from the `/admin` panel, with no deploy needed to change content
 - **Supabase-powered**: Postgres and Storage (blog and project images, logos, the profile photo) both on Supabase, reached through Drizzle ORM and a small storage client rather than an SDK
-- **Light and dark themes**: Dark by default, with a toggle in the sidebar and mobile navbar. Light mode is produced by remapping the Tailwind palette rather than by adding `dark:` variants, so both themes stay in sync automatically — see [Theming](#theming)
+- **Light and dark themes**: Dark by default, with a toggle in the navbar. The public site is eight greys defined once per theme, and the admin's Tailwind palette is remapped from those same greys rather than by adding `dark:` variants, so both themes stay in sync automatically — see [Theming](#theming)
 - **Content caching**: Every read path is behind `use cache` with a tag per content area, so an edit invalidates only what it touched. Tag revalidation is cross-instance by construction, which matters on serverless where an edit handled by one instance must not leave the others stale
 - **Real-time dashboard**: Live GitHub contribution graph, WakaTime coding-activity stats, and a seven-day AI breakdown — tokens, estimated spend and cost by model — cut on Jakarta time and refreshed every 15 minutes
 - **Interactive guestbook**: Google/GitHub OAuth login, threaded replies, pinning by staff (up to 3 at a time), deletion by a superuser, automatic link detection, email notifications routed on role — or disable it entirely with one env var
-- **Blog and projects**: Paginated, searchable listings with multi-image support, tags, categories, threaded comments, and a project lifecycle status system
+- **Blog and projects**: Searchable listings with multi-image support, tags, categories, threaded comments, and a project lifecycle status system whose every status carries a one-sentence description
+- **Filters behind a button**: Work and Writing open with one line — search, a Filters button with a count, sort and view — and the filter groups open below it, with what is applied shown as removable chips
 - **SEO built in**: Per-page meta tags, Open Graph, Twitter Cards, JSON-LD schema, and auto-generated sitemaps/robots.txt
-- **Security-first**: row-level security on every Supabase table, an admin gated per screen — three roles and a view/add/change/delete grant on each of the thirty-five screens, all read from the database on every request and never carried in the session token — and Cloudflare Turnstile on the contact form
-- **Image optimization**: `next/image` over the Supabase Storage origin, with the size ladder trimmed to what the layouts actually request
+- **A Markdown twin of every page**: add `.md` to an address, or ask with `Accept: text/markdown`; `/llms.txt` lists them all
+- **A CV generated from your About page**: `/cv.pdf`, rendered on the server in a layout applicant tracking systems can read, with an in-page viewer
+- **Security-first**: row-level security on every Supabase table, an admin gated per screen — three roles and a view/add/change/delete grant on each screen, all read from the database on every request and never carried in the session token — and Cloudflare Turnstile on the contact form
+- **Image optimization**: every picture on the public site goes through one wrapper, and *how* it is resized is a setting in the admin — Next.js's optimizer, [wsrv.nl](https://wsrv.nl) or none — so the host's image-transformation quota can be left alone
 - **Built for touch as well as pointer**: mobile-first Tailwind CSS v4, with as little client JavaScript as the feature allows. Tooltips work on tap as well as hover, and every animation respects `prefers-reduced-motion`
 
 ## Tech Stack
 
 - **Framework**: Next.js 16 (App Router, Turbopack, Cache Components), React 19, TypeScript
-- **Styling**: Tailwind CSS v4
+- **Styling**: Tailwind CSS v4, and a hand-written class vocabulary for the public site (`styles/site.css`)
+- **Motion**: Motion (Framer Motion) for what responds to a press, GSAP for what follows the scroll
 - **Database**: Supabase Postgres via Drizzle ORM over `node-postgres`
 - **Media**: Supabase Storage, through a small REST client (`lib/storage/`)
 - **Auth**: Auth.js v5 with Google and GitHub, over the existing account tables
@@ -41,22 +45,29 @@
 ```text
 app/
   (site)/            The public pages: home, about, blog, projects, dashboard,
-                     contact, guestbook, openhire, legal
-  admin/             The admin. Two dynamic routes render all 35 screens
+                     contact, guestbook, openhire, legal, sign-in
+  admin/             The admin: two dynamic routes and the Access screen render
+                     every screen the registry names
   api/               The few JSON endpoints the client actually calls
+  md/, llms*.txt     The Markdown twin of every page, and the index of them
+  cv.pdf/, cv/       The generated CV and its viewer
 components/
-  site/              Page components
+  foothill/          The public site: pages, cards, filters, charts, motion
   admin/             The generic changelist, form, field and inline renderers
-  layout/            Sidebar, drawer, search palette, theme toggle
-  providers/         Toasts, confirm dialog, tooltips, theme, click spark
+  site/, layout/     The few pieces both halves use: toasts, rich text, comments,
+                     the account panel, the loading bar, the theme toggle
+  auth/, seo/        Sign-in buttons, structured data
+  providers/         Confirm dialog, notifications, tooltips, theme
 lib/
   data/              Read paths, each behind `use cache` with a tag
   actions/           Server actions: contact, comments, guestbook, admin
   admin/             The descriptors that drive every admin screen
-  auth/              The Auth.js adapter over the existing account tables
+  auth/              Roles, grants and the Auth.js adapter over the account tables
   db/                The generated Drizzle mapping and the connection pool
   email/             Templates and the Resend client
-  seo/               Metadata, JSON-LD, sitemaps
+  markdown/, cv/     The Markdown twins and the generated CV
+  seo/, og/          Metadata, JSON-LD, sitemaps, share images
+  site/, motion/     Pure helpers the public site shares
   storage/           Supabase Storage: upload, delete, reference-counted cleanup
 drizzle/             0000_init.sql — the whole schema, in one file
 scripts/             Verification harnesses — see CLAUDE.md
@@ -71,7 +82,7 @@ certifications, awards, skills, applications, projects, blog posts, legal
 documents, and the hiring / open-to-work status. Changing any of it is an edit
 in `/admin`, never a deploy.
 
-The schema is `drizzle/0000_init.sql` — 53 tables in their own `app` schema,
+The schema is `drizzle/0000_init.sql` — every table, in its own `app` schema,
 keyed by uuid, with real foreign keys and real referential actions. Run it once
 against an empty database and you have the whole thing. `lib/db/app-schema.ts`
 is the Drizzle mapping, generated from the live schema by
@@ -86,23 +97,21 @@ components render all of them. Adding a screen is adding a descriptor.
 
 ## Theming
 
-The site ships dark by default, with a light theme behind a toggle beside `@username` in the sidebar and, on small screens, next to the menu button. The choice is stored in `localStorage`; the OS `prefers-color-scheme` is deliberately not consulted, because dark is the default rather than a fallback.
+The site ships dark by default, with a light theme behind a toggle in the navbar (and in the admin's top bar). The choice is stored in `localStorage`; the OS `prefers-color-scheme` is deliberately not consulted, because dark is the default rather than a fallback.
 
-Light mode is **not** built from `dark:` variants. Templates are written in ordinary dark-mode Tailwind classes, and light mode redefines the palette itself under `html[data-theme="light"]` in `app/globals.css`. Tailwind v4 compiles every theme color utility to a variable reference (`.bg-zinc-800` becomes `background-color: var(--color-zinc-800)`), so remapping the ramps re-skins the whole site without touching a single template.
+There are two layers, and neither uses `dark:` variants:
+
+- **The public site is eight greys.** `--fh-bg`, `surface`, `raise`, `line`, `line-2`, `mute`, `ink-2` and `ink` are defined once for light on `:root` and redefined under `:root[data-theme="dark"]`, in `styles/site.css`. Every public rule is written in that sheet's class vocabulary and refers to those tokens, so a theme is one table. Colour belongs to the work itself (screenshots, covers, logos); the interface never adds any.
+- **The admin wears the same greys.** It is written in stock Tailwind classes (`zinc` for surfaces, lines and text), and `styles/theme-light.css` defines zinc, black, white and indigo *from the site's tokens*, so the admin follows the site in both themes. Only the status hues (green, red, amber and the rest) keep a light table of their own, tuned by measurement because a plain mirror of a ramp preserves distance from its end rather than perceived contrast.
 
 Two consequences worth knowing before you edit anything:
 
-- **Dark mode is the untouched `:root` branch**, so palette work can only affect light mode.
-- **Stay inside the palette.** The remap covers the `zinc` ramp, fourteen accent families, and `black`/`white`. An arbitrary value like `bg-[#18181b]`, or a color family that isn't in the list, will render its dark value on a white page with no error.
+- **Stay inside the vocabulary.** On the public site that is the tokens and classes in `styles/site.css`; in the admin it is the zinc ramp, indigo and the status hues. An arbitrary value like `bg-[#18181b]`, or a colour family that isn't defined, will render its dark value on a white page with no error.
+- **Unlayered sheets beat utilities.** The stylesheets under `styles/` are imported outside every layer, so a plain class there wins over any Tailwind utility on the same property, whatever the selector. `CLAUDE.md` has the details.
 
-Foreground shades mirror around 500 (`300` swaps with `700`, and so on); surface and accent shades use hand-tuned tables instead, because a plain mirror preserves contrast against the canvas rather than perceived contrast. Applying it blindly to accents drops the badge text to about 2.9:1. Every text pair and all ten badge hues currently clear WCAG AA in both themes.
+Switching themes crossfades the whole page as one View Transition (or, without that API, puts every element on one shared 320ms colour transition), so nothing changes in a visible cascade even though elements declare different durations. Under `prefers-reduced-motion` the swap is instant.
 
-Switching themes suppresses CSS transitions for the frame in which the swap happens. Without that, each element animates the color change over whatever duration it declares — 200ms on `<body>`, 700ms on the content column — and the page changes in a visible cascade instead of all at once.
-
-Two related front-end details:
-
-- **Tooltips work on touch.** A native `title` only appears on hover, so on a phone every one of them was unreachable. `components/providers/tooltips.tsx` upgrades them to show on hover, on keyboard focus, and on tap. Tapping never blocks the trigger, so a tooltip on a link or a button still follows through on the same tap.
-- **The click effect respects motion preferences.** Clicking or tapping throws a short spark burst, drawn on a single canvas overlay. It is skipped entirely under `prefers-reduced-motion: reduce`.
+One related front-end detail: **tooltips work on touch.** A native `title` only appears on hover, so on a phone every one of them was unreachable. `components/providers/tooltips.tsx` upgrades them to show on hover, on keyboard focus, and on tap. Tapping never blocks the trigger, so a tooltip on a link or a button still follows through on the same tap.
 
 ## PageSpeed Insights
 
@@ -145,7 +154,7 @@ node scripts/apply-migration.mjs drizzle/0000_init.sql           # dry run first
 node scripts/apply-migration.mjs drizzle/0000_init.sql --apply
 ```
 
-That creates 53 tables and enables row-level security on every one of them.
+That creates every table and enables row-level security on each of them.
 `npx tsx scripts/check-baseline-schema.mjs` proves the file and the database
 agree, and `node scripts/db-probe.mjs` shows you what is there.
 
@@ -276,10 +285,11 @@ Ridwan Halim. To adopt it as your own portfolio:
    Storage, not committed.
 6. **Your emails** — `lib/email/` holds the five templates and one shared shell.
    They are plain string substitution, styled to match the site.
-7. **Your colours** — the palette is the `html[data-theme="light"]` block in
-   `app/globals.css`, plus Tailwind's own defaults for dark. Changing a ramp
-   re-skins every page at once. If you move the accents, re-measure contrast:
-   those tables were tuned by measurement, not by eye (see [Theming](#theming)).
+7. **Your colours** — the public palette is the eight `--fh-*` greys at the top
+   of `styles/site.css`, once for light and once for dark, and the admin follows
+   them through `styles/theme-light.css`. Changing a grey re-skins every page at
+   once. If you add a colour, re-measure contrast: the status-hue tables were
+   tuned by measurement, not by eye (see [Theming](#theming)).
 8. **Optional features** — `NEXT_PUBLIC_GUESTBOOK_ENABLED=false` hides the
    guestbook entirely; leaving the Turnstile keys empty skips spam verification.
 
@@ -300,7 +310,7 @@ Ridwan Halim. To adopt it as your own portfolio:
 
 1. Fork the repository
 2. Create feature branch: `git checkout -b feature/name`
-3. Commit changes: `git commit -m 'Add feature'`
+3. Commit changes in the repo's [commit format](CONTRIBUTING.md#commit-message-guidelines)
 4. Push branch: `git push origin feature/name`
 5. Open pull request
 

@@ -1,16 +1,21 @@
-# /static/ is load-bearing — do not move or rename this directory
+# What is in `/static/`
 
-`about_skill.icon_svg` stores **absolute URLs** for all 78 skill icons, in the
-form `https://ridwaanhall.com/static/svg/icon/<name>.svg`. Those values live in
-the database, not in any file, so nothing in this codebase references them and
-no build step, type check or lint can notice if the path stops resolving.
+Three things use this directory, and none of them is a database row any more.
 
-If this directory moves, every skill icon on the homepage marquee, the about
-page and every project card silently 404s.
+- **`img/ridwaanhall.webp`** is the share image a page falls back to when it has
+  none of its own (`DEFAULT_IMAGE` in `lib/seo/config.ts`), served at
+  `https://ridwaanhall.com/static/img/ridwaanhall.webp`. Moving it breaks every
+  link preview that relies on the fallback.
+- **`svg/icon/`** holds the skill icons as files, and the site does not serve
+  them from here. `scripts/migrate-icons-to-storage.mjs` uploaded them to
+  Supabase Storage and repointed each skill's `icon_id`, and every
+  `media_asset` now has `source: "storage"`. The directory is what that script
+  re-seeds from if somebody unlinks an icon, so its path is written into the
+  script.
+- **The `static` source** is still understood. `media_asset.source` may say
+  `static`, which makes the key a path under `public/` served from here
+  (`assetUrl` in `lib/storage/media.ts`); nothing uses it today.
 
-(Some stored URLs are absolute, so in local development they still resolve
-against the live site rather than against localhost. That is the shape of the
-data, not a bug.)
-
-Verified complete: a scan of every JSONB content column, plus `icon_svg`, found
-`/static/svg/icon/` to be the only `/static/` path referenced from the database.
+No column in the `app` schema holds a `/static/` address: a scan of every text
+and `jsonb` column found none. `app/robots.ts` disallows `/static/`, so none of
+this is crawled in its own right.

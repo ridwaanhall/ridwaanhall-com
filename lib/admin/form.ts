@@ -191,6 +191,10 @@ export type ReferenceSource = {
    * several sources, since one source needs no heading to tell it apart.
    */
   groupLabel?: string;
+  /** A column of one sentence on what each row means, drawn under its label. */
+  hint?: PgColumn;
+  /** The column the rows are read in, where the table is a sequence rather than an alphabet. */
+  order?: PgColumn;
   /**
    * Narrows the rows offered, for a table holding more than one vocabulary.
    *

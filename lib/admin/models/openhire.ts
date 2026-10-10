@@ -19,6 +19,7 @@ import {
 import { locationField } from "@/lib/admin/models/about";
 import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
+import { vocabularyOptions } from "@/lib/admin/vocab";
 
 /**
  * The two `openhire` singletons.
@@ -197,48 +198,28 @@ export const openToWorkProfileForm: AdminFormModel = {
           column: openToWorkProfile.statusId,
           label: "Status",
           kind: "reference",
-          reference: {
-            table: openToWorkStatus,
-            value: openToWorkStatus.id,
-            label: openToWorkStatus.label,
-            emptyLabel: "Not set",
-          },
+          reference: { ...vocabularyOptions(openToWorkStatus), emptyLabel: "Not set" },
         },
         {
           name: "availabilityId",
           column: openToWorkProfile.availabilityId,
           label: "Availability",
           kind: "reference",
-          reference: {
-            table: availability,
-            value: availability.id,
-            label: availability.label,
-            emptyLabel: "Not set",
-          },
+          reference: { ...vocabularyOptions(availability), emptyLabel: "Not set" },
         },
         {
           name: "experienceLevelId",
           column: openToWorkProfile.experienceLevelId,
           label: "Experience level",
           kind: "reference",
-          reference: {
-            table: experienceLevel,
-            value: experienceLevel.id,
-            label: experienceLevel.label,
-            emptyLabel: "Not set",
-          },
+          reference: { ...vocabularyOptions(experienceLevel), emptyLabel: "Not set" },
         },
         {
           name: "noticePeriodId",
           column: openToWorkProfile.noticePeriodId,
           label: "Notice period",
           kind: "reference",
-          reference: {
-            table: noticePeriod,
-            value: noticePeriod.id,
-            label: noticePeriod.label,
-            emptyLabel: "Not set",
-          },
+          reference: { ...vocabularyOptions(noticePeriod), emptyLabel: "Not set" },
         },
         {
           // Free text, deliberately: a range with a currency and a qualifier is
@@ -254,12 +235,7 @@ export const openToWorkProfileForm: AdminFormModel = {
           column: openToWorkProfile.workAuthorizationId,
           label: "Work authorization",
           kind: "reference",
-          reference: {
-            table: workAuthorization,
-            value: workAuthorization.id,
-            label: workAuthorization.label,
-            emptyLabel: "Not set",
-          },
+          reference: { ...vocabularyOptions(workAuthorization), emptyLabel: "Not set" },
         },
       ],
     },
@@ -294,12 +270,7 @@ export const openToWorkProfileForm: AdminFormModel = {
           column: openToWorkProfile.contactPreferenceId,
           label: "Preferred contact",
           kind: "reference",
-          reference: {
-            table: contactPreference,
-            value: contactPreference.id,
-            label: contactPreference.label,
-            emptyLabel: "Not set",
-          },
+          reference: { ...vocabularyOptions(contactPreference), emptyLabel: "Not set" },
         },
         {
           name: "interviewAvailability",
@@ -529,7 +500,7 @@ export const jobOpeningForm: AdminFormModel = {
           column: jobOpening.employmentTypeId,
           label: "Employment",
           kind: "reference",
-          reference: { table: employmentType, value: employmentType.id, label: employmentType.label },
+          reference: vocabularyOptions(employmentType),
         },
         locationField(jobOpening.locationId),
         {

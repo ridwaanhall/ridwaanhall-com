@@ -51,6 +51,12 @@ export type ListColumn<Row> = {
    * the database cannot see.
    */
   sort?: SQL | PgColumn;
+  /**
+   * A sentence rather than a token. The cell wraps at its spaces and is held to
+   * a readable width, so the short columns beside it keep theirs: an unbounded
+   * sentence takes the whole table and a slug next to it breaks mid-word.
+   */
+  prose?: boolean;
   /** The cell's value. Primitives only, so a descriptor needs no JSX. */
   value: (row: Row) => string | number | boolean | null;
 };
@@ -61,7 +67,13 @@ export type ListColumn<Row> = {
  * `<optgroup>` heading. Two vocabularies flattened into one list of 84 rows is
  * a list nobody can scan; with the headings it is two short ones.
  */
-export type FilterChoice = { value: string; label: string; group?: string };
+export type FilterChoice = {
+  value: string;
+  label: string;
+  group?: string;
+  /** One sentence on what the option means, drawn under its label and under the control once chosen. */
+  hint?: string;
+};
 
 /**
  * A filter whose options are rows of another table, labelled by a column of it.
@@ -71,7 +83,13 @@ export type FilterChoice = { value: string; label: string; group?: string };
  * gap can be wide: the legal sections point at 2 documents out of however many
  * exist, and offering the rest invites a click that returns an empty page.
  */
-export type RelatedChoices = { table: PgTable; value: PgColumn; label: ReferenceLabel };
+export type RelatedChoices = {
+  table: PgTable;
+  value: PgColumn;
+  label: ReferenceLabel;
+  /** The column the rows are meant to be read in, where there is one. See `labelledRows`. */
+  order?: PgColumn;
+};
 
 /**
  * A `list_filter` entry.
@@ -417,29 +435,61 @@ export async function distinctChoices(
  * These lists are small by construction -- 19 organizations, 2 legal documents
  * -- and a model referencing something large wants a search box rather than a
  * longer select, which is the point at which to build one.
+ *
+ * **Unless the table says what order it is read in.** A vocabulary with a
+ * `position` is a sequence, not an alphabet: sorted by label, "Availability"
+ * offered "Within 1 month" before "Within 2 weeks" and the notice periods ran
+ * "1 month, 2 months, 2 weeks, 3 months, None". `order` is that column and
+ * wins; the label only breaks a tie.
+ *
+ * `hint` is a column of one sentence on what each row means. An empty one is
+ * left off the option rather than drawn as a blank line.
  */
 export async function labelledRows(
   table: PgTable,
   value: PgColumn,
   label: ReferenceLabel,
   where?: SQL,
+  extra: { hint?: PgColumn; order?: PgColumn } = {},
 ): Promise<FilterChoice[]> {
+  // Spread after the label parts and under keys no table here uses, so a column
+  // cannot take the key's place. `__hint` and `__order` are not column names.
+  const tail = {
+    ...(extra.hint ? { __hint: extra.hint } : {}),
+    ...(extra.order ? { __order: extra.order } : {}),
+  };
   const rows = isComposedLabel(label)
     ? // The key is spread first so a part cannot overwrite it. No table here
       // names a column `value`, and one that did would collide loudly rather
       // than quietly taking the key's place.
-      await db.selectDistinct({ value, ...label.parts }).from(table).where(where)
-    : await db.selectDistinct({ value, label }).from(table).where(where);
+      await db.selectDistinct({ value, ...label.parts, ...tail }).from(table).where(where)
+    : await db.selectDistinct({ value, label, ...tail }).from(table).where(where);
 
   return rows
     .map((row) => {
-      const { value: key, ...rest } = row as Record<string, unknown> & { value: unknown };
+      const { value: key, __hint, __order, ...rest } = row as Record<string, unknown> & {
+        value: unknown;
+        __hint?: unknown;
+        __order?: unknown;
+      };
       const text = isComposedLabel(label)
         ? label.format(rest as Parameters<typeof label.format>[0])
         : (rest as { label: unknown }).label;
-      return { value: String(key), label: optionLabel(text, key) };
+      const hint = typeof __hint === "string" ? __hint.trim() : "";
+      return {
+        option: {
+          value: String(key),
+          label: optionLabel(text, key),
+          ...(hint ? { hint } : {}),
+        } satisfies FilterChoice,
+        order: typeof __order === "number" ? __order : null,
+      };
     })
-    .sort((a, b) => a.label.localeCompare(b.label));
+    .sort((a, b) => {
+      if (a.order !== null && b.order !== null && a.order !== b.order) return a.order - b.order;
+      return a.option.label.localeCompare(b.option.label);
+    })
+    .map(({ option }) => option);
 }
 
 /** The options for a foreign-key filter -- see `RelatedChoices`. */
@@ -453,6 +503,7 @@ export async function relatedChoices(
     related.value,
     related.label,
     inArray(related.value, db.select({ value: column }).from(from)),
+    { order: related.order },
   );
 }
 

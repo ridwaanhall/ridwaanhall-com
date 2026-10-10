@@ -15,6 +15,7 @@ import {
 
 import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
+import { vocabularyOptions } from "@/lib/admin/vocab";
 
 /**
  * The `projects` changelist and form.
@@ -93,7 +94,7 @@ export const projectList: AdminListModel<ProjectRow> = {
       label: "Status",
       kind: "choice",
       column: project.statusId,
-      choices: { table: projectStatus, value: projectStatus.id, label: projectStatus.label },
+      choices: vocabularyOptions(projectStatus),
     },
     { key: "is_published", label: "Published", kind: "boolean", column: project.isPublished },
     { key: "is_featured", label: "Featured", kind: "boolean", column: project.isFeatured },
@@ -165,7 +166,7 @@ export const projectForm: AdminFormModel = {
           label: "Status",
           kind: "reference",
           required: true,
-          reference: { table: projectStatus, value: projectStatus.id, label: projectStatus.label },
+          reference: vocabularyOptions(projectStatus),
         },
         {
           name: "tags",

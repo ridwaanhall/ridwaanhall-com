@@ -295,6 +295,17 @@
     color: var(--color-indigo-400);
 }
 
+/* The sentence under an option's label. Muted against the label, and one step
+   lighter while the row is under the pointer so it never sinks into the wash. */
+.admin-option-hint {
+    color: var(--color-zinc-500);
+}
+
+.admin-option:hover .admin-option-hint,
+.admin-option[data-highlighted="true"] .admin-option-hint {
+    color: var(--color-zinc-400);
+}
+
 .admin-option[aria-disabled="true"] {
     color: var(--color-zinc-600);
     cursor: default;

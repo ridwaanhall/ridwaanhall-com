@@ -46,6 +46,7 @@ export function AdminSelect({
   required,
   describedBy,
   invalid,
+  showHint = false,
   className,
   triggerClassName,
 }: {
@@ -60,6 +61,12 @@ export function AdminSelect({
   required?: boolean;
   describedBy?: string;
   invalid?: boolean;
+  /**
+   * Draw the chosen option's `hint` under the control. A form field wants it; a
+   * changelist filter sits in a toolbar, where a sentence under it would push
+   * the row apart.
+   */
+  showHint?: boolean;
   /** Applied to the native select, so both look the same before the swap. */
   className?: string;
   /** Applied to the drawn trigger. Defaults to `className`. */
@@ -88,6 +95,8 @@ export function AdminSelect({
   }, [options, query, filtering]);
 
   const selected = options.find((option) => option.value === value) ?? null;
+  const hintId = showHint && id && selected?.hint ? `${id}-hint` : undefined;
+  const described = [describedBy, hintId].filter(Boolean).join(" ") || undefined;
 
   const close = useCallback(() => {
     // `setQuery("")` is not here: closing is what clears it, and that is done
@@ -194,7 +203,7 @@ export function AdminSelect({
         id={hydrated ? undefined : id}
         hidden={hydrated}
         required={required}
-        aria-describedby={describedBy || undefined}
+        aria-describedby={described}
         aria-invalid={invalid ? true : undefined}
         className={className}
       >
@@ -211,7 +220,7 @@ export function AdminSelect({
           aria-expanded={open}
           aria-controls={open ? listId : undefined}
           aria-haspopup="listbox"
-          aria-describedby={describedBy || undefined}
+          aria-describedby={described}
           aria-invalid={invalid ? true : undefined}
           onClick={() => setOpen((current) => !current)}
           onKeyDown={onKeyDown}
@@ -224,6 +233,14 @@ export function AdminSelect({
             {selected ? selected.label : emptyLabel}
           </span>
         </button>
+      )}
+
+      {/* Under the control and outside the hydration branch: it is a sentence
+          about the value, which the server already knows. */}
+      {showHint && selected?.hint && (
+        <p id={hintId} className="mt-1.5 text-[12px] leading-relaxed text-zinc-500">
+          {selected.hint}
+        </p>
       )}
 
       {hydrated &&
@@ -285,6 +302,7 @@ export function AdminSelect({
                   )}
                   <Option
                     label={option.label}
+                    hint={option.hint}
                     selected={option.value === value}
                     highlighted={index === highlighted}
                     onPick={() => choose(option.value)}
@@ -305,16 +323,20 @@ export function AdminSelect({
 
 function Option({
   label,
+  hint,
   selected,
   highlighted,
   onPick,
 }: {
   label: string;
+  /** What the option means, in one sentence, under its label. */
+  hint?: string;
   selected: boolean;
   highlighted: boolean;
   onPick: () => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const key = useId();
 
   // Keep the highlight in view when the arrows walk past the edge of the panel.
   useEffect(() => {
@@ -325,6 +347,11 @@ function Option({
     <div
       ref={ref}
       role="option"
+      // The label names the option and the hint describes it. Left to content,
+      // the name is both run together -- "Applied The application is sent..." --
+      // which is what a screen reader announces and what a test finds by name.
+      aria-labelledby={`${key}-label`}
+      aria-describedby={hint ? `${key}-hint` : undefined}
       aria-selected={selected}
       data-highlighted={highlighted ? "true" : undefined}
       /*
@@ -339,7 +366,16 @@ function Option({
       }}
       className="admin-option flex items-center justify-between gap-2 px-3 py-1.5 text-sm"
     >
-      <span className="truncate">{label}</span>
+      <span className="min-w-0">
+        <span id={`${key}-label`} className="block truncate">
+          {label}
+        </span>
+        {hint && (
+          <span id={`${key}-hint`} className="admin-option-hint mt-0.5 block text-[12px] leading-snug">
+            {hint}
+          </span>
+        )}
+      </span>
     </div>
   );
 }
@@ -350,7 +386,7 @@ function Grouped({ options }: { options: FilterChoice[] }) {
     return (
       <>
         {options.map((option) => (
-          <option key={option.value} value={option.value}>
+          <option key={option.value} value={option.value} title={option.hint}>
             {option.label}
           </option>
         ))}
@@ -371,7 +407,7 @@ function Grouped({ options }: { options: FilterChoice[] }) {
       {groups.map((group) => (
         <optgroup key={group.label} label={group.label}>
           {group.options.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option key={option.value} value={option.value} title={option.hint}>
               {option.label}
             </option>
           ))}

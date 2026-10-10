@@ -60,6 +60,8 @@ export type VocabRow = {
   id: string;
   slug: string;
   label: string;
+  /** What the value means, in a sentence. Empty for a vocabulary that has no such column. */
+  description: string;
   position: number;
   used: number;
 };
@@ -71,6 +73,12 @@ type VocabSpec = {
   id: PgColumn;
   slug: PgColumn;
   label: PgColumn;
+  /**
+   * One sentence on what each value means, offered beside it wherever it is
+   * chosen. Every vocabulary has one except `tag`, which is a free subject
+   * rather than a set of answers somebody has to choose between.
+   */
+  description?: PgColumn;
   /** `application_source` and `tag` have no ordering column. */
   position?: PgColumn;
   /**
@@ -103,7 +111,7 @@ function vocabulary(spec: VocabSpec): {
   list: AdminListModel<VocabRow>;
   form: AdminFormModel;
 } {
-  const { key, table, id, slug, label, position, usedBy } = spec;
+  const { key, table, id, slug, label, description, position, usedBy } = spec;
   const used = usageTotalOf(usedBy, id);
 
   VOCABULARY_USAGE.set(key, { table, columns: usedBy });
@@ -116,6 +124,7 @@ function vocabulary(spec: VocabSpec): {
       id,
       slug,
       label,
+      description: description ?? sql<string>`''`,
       // A list without a position column still has to answer for the field,
       // so it reports the constant the ordering would have used.
       position: position ?? sql<number>`0`,
@@ -124,6 +133,18 @@ function vocabulary(spec: VocabSpec): {
     columns: [
       { key: "label", label: "Label", sort: label, value: (row) => row.label },
       { key: "slug", label: "Slug", kind: "code", sort: slug, value: (row) => row.slug },
+      ...(description
+        ? [
+            {
+              key: "description",
+              label: "Description",
+              kind: "muted" as const,
+              prose: true,
+              sort: description,
+              value: (row: VocabRow) => row.description,
+            },
+          ]
+        : []),
       ...(position
         ? [
             {
@@ -164,6 +185,16 @@ function vocabulary(spec: VocabSpec): {
       help: "Left blank, this is derived from the label.",
     },
   ];
+  if (description) {
+    fields.push({
+      name: "description",
+      column: description,
+      label: "Description",
+      kind: "text",
+      maxLength: 240,
+      help: "One short sentence on what this value means. Shown under it in the dropdowns that offer it.",
+    });
+  }
   if (position) {
     fields.push({
       name: "position",
@@ -195,6 +226,7 @@ const applicationStatusVocab = vocabulary({
   id: applicationStatus.id,
   slug: applicationStatus.slug,
   label: applicationStatus.label,
+  description: applicationStatus.description,
   position: applicationStatus.position,
   usedBy: [application.statusId],
   help: "Shown on the application card. Its colour is keyed on the slug, not on this.",
@@ -207,6 +239,7 @@ const applicationSourceVocab = vocabulary({
   id: applicationSource.id,
   slug: applicationSource.slug,
   label: applicationSource.label,
+  description: applicationSource.description,
   usedBy: [application.sourceId],
   deleteWarning: "Every application submitted through this is left with no source.",
 });
@@ -217,6 +250,7 @@ const employmentTypeVocab = vocabulary({
   id: employmentType.id,
   slug: employmentType.slug,
   label: employmentType.label,
+  description: employmentType.description,
   position: employmentType.position,
   usedBy: [experience.employmentTypeId, application.employmentTypeId, jobOpening.employmentTypeId],
   deleteWarning: "Every role, application and open position on this type is left with none.",
@@ -228,6 +262,7 @@ const workModeVocab = vocabulary({
   id: workMode.id,
   slug: workMode.slug,
   label: workMode.label,
+  description: workMode.description,
   position: workMode.position,
   usedBy: [experience.workModeId, application.workModeId],
   deleteWarning: "Every role and application on this work mode is left with none.",
@@ -250,6 +285,7 @@ const legalDocumentTypeVocab = vocabulary({
   id: legalDocumentType.id,
   slug: legalDocumentType.slug,
   label: legalDocumentType.label,
+  description: legalDocumentType.description,
   position: legalDocumentType.position,
   usedBy: [legalDocument.typeId],
   // `RESTRICT` on this one, unlike every other vocabulary here: the column is
@@ -264,6 +300,7 @@ const openToWorkStatusVocab = vocabulary({
   id: openToWorkStatus.id,
   slug: openToWorkStatus.slug,
   label: openToWorkStatus.label,
+  description: openToWorkStatus.description,
   position: openToWorkStatus.position,
   usedBy: [openToWorkProfile.statusId],
   deleteWarning: "The open-to-work page shows no status until another is chosen.",
@@ -275,6 +312,7 @@ const availabilityVocab = vocabulary({
   id: availability.id,
   slug: availability.slug,
   label: availability.label,
+  description: availability.description,
   position: availability.position,
   usedBy: [openToWorkProfile.availabilityId],
   deleteWarning: "The open-to-work page shows no availability until another is chosen.",
@@ -286,6 +324,7 @@ const experienceLevelVocab = vocabulary({
   id: experienceLevel.id,
   slug: experienceLevel.slug,
   label: experienceLevel.label,
+  description: experienceLevel.description,
   position: experienceLevel.position,
   usedBy: [openToWorkProfile.experienceLevelId],
   deleteWarning: "The open-to-work page shows no experience level until another is chosen.",
@@ -297,6 +336,7 @@ const noticePeriodVocab = vocabulary({
   id: noticePeriod.id,
   slug: noticePeriod.slug,
   label: noticePeriod.label,
+  description: noticePeriod.description,
   position: noticePeriod.position,
   usedBy: [openToWorkProfile.noticePeriodId],
   deleteWarning: "The open-to-work page shows no notice period until another is chosen.",
@@ -308,6 +348,7 @@ const workAuthorizationVocab = vocabulary({
   id: workAuthorization.id,
   slug: workAuthorization.slug,
   label: workAuthorization.label,
+  description: workAuthorization.description,
   position: workAuthorization.position,
   usedBy: [openToWorkProfile.workAuthorizationId],
   deleteWarning: "The open-to-work page shows no work authorization until another is chosen.",
@@ -319,6 +360,7 @@ const contactPreferenceVocab = vocabulary({
   id: contactPreference.id,
   slug: contactPreference.slug,
   label: contactPreference.label,
+  description: contactPreference.description,
   position: contactPreference.position,
   usedBy: [openToWorkProfile.contactPreferenceId],
   deleteWarning: "The open-to-work page shows no contact preference until another is chosen.",
@@ -372,7 +414,7 @@ VOCABULARY_USAGE.set("project-status", {
   columns: [project.statusId],
 });
 
-export const projectStatusList: AdminListModel<VocabRow & { color: string }> = {
+export const projectStatusList: AdminListModel<Omit<VocabRow, "description"> & { color: string; description: string }> = {
   key: "project-status",
   from: projectStatus,
   pk: projectStatus.id,
@@ -380,6 +422,7 @@ export const projectStatusList: AdminListModel<VocabRow & { color: string }> = {
     id: projectStatus.id,
     slug: projectStatus.slug,
     label: projectStatus.label,
+    description: projectStatus.description,
     position: projectStatus.position,
     color: projectStatus.color,
     used: projectStatusUsed,
@@ -387,6 +430,14 @@ export const projectStatusList: AdminListModel<VocabRow & { color: string }> = {
   columns: [
     { key: "label", label: "Label", sort: projectStatus.label, value: (row) => row.label },
     { key: "slug", label: "Slug", kind: "code", sort: projectStatus.slug, value: (row) => row.slug },
+    {
+      key: "description",
+      label: "Description",
+      kind: "muted",
+      prose: true,
+      sort: projectStatus.description,
+      value: (row) => row.description,
+    },
     {
       key: "position",
       label: "Order",
@@ -463,6 +514,14 @@ export const projectStatusForm: AdminFormModel = {
           kind: "text",
           required: true,
           maxLength: 100,
+        },
+        {
+          name: "description",
+          column: projectStatus.description,
+          label: "Description",
+          kind: "text",
+          maxLength: 240,
+          help: "One short sentence on what this status means. Shown to readers on the projects page and beside a project's status, and under the status in the admin's dropdown.",
         },
         {
           /*

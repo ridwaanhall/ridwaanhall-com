@@ -328,12 +328,25 @@ fields, ordering) and a form descriptor (fieldsets, field kinds, inlines).
 
 `lib/admin/models/settings.ts` is the exception to "one module per area": the
 **Settings** group is the vocabularies every other screen's dropdowns are drawn
-from, and fourteen of them are the same four columns (`slug`, `label`,
-`position`, and a count of what points at them). They come from one `vocabulary`
-factory rather than fourteen transcriptions, because fourteen hand-written
-copies of the same descriptor is precisely the shape that drifts. `category` and
-`project-status` are written out longhand beside it, each needing something the
-factory deliberately does not offer.
+from, and fourteen of them are the same few columns (`slug`, `label`,
+`description`, `position`, and a count of what points at them). They come from
+one `vocabulary` factory rather than fourteen transcriptions, because fourteen
+hand-written copies of the same descriptor is precisely the shape that drifts.
+`category` and `project-status` are written out longhand beside it, each needing
+something the factory deliberately does not offer.
+
+**A vocabulary says what each value means.** Twelve of them carry `description`
+(every one but `tag` and `category`): one short sentence, edited on the row,
+drawn under the option in every dropdown that offers it and under the control
+once chosen. A project status's is shown to readers as well, as the tooltip on
+its tag, the line under the Work filter and beside the status on a project's
+page; an application status's, on the job hunt. Every place that offers a
+vocabulary does it through `vocabularyOptions` (`lib/admin/vocab.ts`), which
+states the two things a hand-written `{ table, value, label }` left out: the hint
+column, and the `position` the table is read in. Without that second one
+`labelledRows` sorts by label, and Availability offered "Within 1 month" before
+"Within 2 weeks" while the notice periods ran "1 month, 2 months, 2 weeks, 3
+months, None".
 `components/admin/changelist.tsx` and `record-form.tsx` render any of them.
 **Add a screen by adding a descriptor, not by writing a page.**
 `scripts/check-admin.mjs` fails if the registry and the descriptors disagree —

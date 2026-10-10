@@ -278,6 +278,7 @@ export function Changelist<Row>({
                           ordinary titles wrap at their spaces as before.
                         */
                         !atomic(column.kind) && "wrap-anywhere",
+                        column.prose && "max-w-[22rem]",
                       )}
                     >
                       {columnIndex === 0 ? (

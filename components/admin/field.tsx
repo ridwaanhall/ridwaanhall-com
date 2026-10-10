@@ -178,6 +178,7 @@ export function Field({
               required={field.required}
               describedBy={describedBy}
               invalid={Boolean(error)}
+              showHint
               className={cn(CONTROL, "admin-select", error && INVALID)}
             />
           )}
@@ -278,6 +279,7 @@ export function Field({
               required={field.required}
               describedBy={describedBy}
               invalid={Boolean(error)}
+              showHint
               className={cn(common.className, "admin-select")}
             />
           )}

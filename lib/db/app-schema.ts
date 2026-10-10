@@ -63,6 +63,7 @@ export const applicationSource = app.table("application_source", {
   id: uuid().primaryKey().defaultRandom(),
   slug: text().notNull(),
   label: text().notNull(),
+  description: text().notNull().default(''),
 });
 
 export const applicationStatus = app.table("application_status", {
@@ -70,6 +71,7 @@ export const applicationStatus = app.table("application_status", {
   slug: text().notNull(),
   label: text().notNull(),
   position: integer().notNull().default(0),
+  description: text().notNull().default(''),
 });
 
 export const applicationStep = app.table("application_step", {
@@ -87,6 +89,7 @@ export const availability = app.table("availability", {
   slug: text().notNull(),
   label: text().notNull(),
   position: integer().notNull().default(0),
+  description: text().notNull().default(''),
 });
 
 export const award = app.table("award", {
@@ -169,6 +172,7 @@ export const contactPreference = app.table("contact_preference", {
   slug: text().notNull(),
   label: text().notNull(),
   position: integer().notNull().default(0),
+  description: text().notNull().default(''),
 });
 
 export const education = app.table("education", {
@@ -196,6 +200,7 @@ export const employmentType = app.table("employment_type", {
   slug: text().notNull(),
   label: text().notNull(),
   position: integer().notNull().default(0),
+  description: text().notNull().default(''),
 });
 
 export const experience = app.table("experience", {
@@ -216,6 +221,7 @@ export const experienceLevel = app.table("experience_level", {
   slug: text().notNull(),
   label: text().notNull(),
   position: integer().notNull().default(0),
+  description: text().notNull().default(''),
 });
 
 export const experienceTask = app.table("experience_task", {
@@ -291,6 +297,7 @@ export const legalDocumentType = app.table("legal_document_type", {
   slug: text().notNull(),
   label: text().notNull(),
   position: integer().notNull().default(0),
+  description: text().notNull().default(''),
 });
 
 export const legalSection = app.table("legal_section", {
@@ -345,6 +352,7 @@ export const noticePeriod = app.table("notice_period", {
   slug: text().notNull(),
   label: text().notNull(),
   position: integer().notNull().default(0),
+  description: text().notNull().default(''),
 });
 
 export const openToWorkListItem = app.table("open_to_work_list_item", {
@@ -377,6 +385,7 @@ export const openToWorkStatus = app.table("open_to_work_status", {
   slug: text().notNull(),
   label: text().notNull(),
   position: integer().notNull().default(0),
+  description: text().notNull().default(''),
 });
 
 export const organization = app.table("organization", {
@@ -480,6 +489,7 @@ export const projectStatus = app.table("project_status", {
   label: text().notNull(),
   position: integer().notNull().default(0),
   color: text().notNull().default('zinc'),
+  description: text().notNull().default(''),
 });
 
 export const projectTag = app.table("project_tag", {
@@ -523,6 +533,7 @@ export const workAuthorization = app.table("work_authorization", {
   slug: text().notNull(),
   label: text().notNull(),
   position: integer().notNull().default(0),
+  description: text().notNull().default(''),
 });
 
 export const workMode = app.table("work_mode", {
@@ -530,4 +541,5 @@ export const workMode = app.table("work_mode", {
   slug: text().notNull(),
   label: text().notNull(),
   position: integer().notNull().default(0),
+  description: text().notNull().default(''),
 });

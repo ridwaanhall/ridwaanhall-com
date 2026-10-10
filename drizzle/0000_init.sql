@@ -146,6 +146,7 @@ CREATE TABLE "app"."employment_type" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "slug" text NOT NULL,
     "label" text NOT NULL,
+    "description" text NOT NULL DEFAULT '',
     "position" integer NOT NULL DEFAULT 0,
     CONSTRAINT "employment_type_slug_key" UNIQUE ("slug")
 );--> statement-breakpoint
@@ -154,6 +155,7 @@ CREATE TABLE "app"."work_mode" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "slug" text NOT NULL,
     "label" text NOT NULL,
+    "description" text NOT NULL DEFAULT '',
     "position" integer NOT NULL DEFAULT 0,
     CONSTRAINT "work_mode_slug_key" UNIQUE ("slug")
 );--> statement-breakpoint
@@ -162,6 +164,7 @@ CREATE TABLE "app"."application_source" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "slug" text NOT NULL,
     "label" text NOT NULL,
+    "description" text NOT NULL DEFAULT '',
     CONSTRAINT "application_source_slug_key" UNIQUE ("slug")
 );--> statement-breakpoint
 
@@ -169,14 +172,19 @@ CREATE TABLE "app"."application_status" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "slug" text NOT NULL,
     "label" text NOT NULL,
+    "description" text NOT NULL DEFAULT '',
     "position" integer NOT NULL DEFAULT 0,
     CONSTRAINT "application_status_slug_key" UNIQUE ("slug")
 );--> statement-breakpoint
 
+-- A short sentence on what each value means, shown beside it wherever it is
+-- chosen in the admin and, for a project's status, to readers as well. Empty is
+-- allowed and means "nothing written yet", never "no meaning".
 CREATE TABLE "app"."project_status" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "slug" text NOT NULL,
     "label" text NOT NULL,
+    "description" text NOT NULL DEFAULT '',
     -- The lifecycle order the projects list sorts by. `lib/data/content.ts`
     -- reads it, so reordering these rows reorders the projects page.
     "position" integer NOT NULL DEFAULT 0,
@@ -211,6 +219,7 @@ CREATE TABLE "app"."legal_document_type" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "slug" text NOT NULL,
     "label" text NOT NULL,
+    "description" text NOT NULL DEFAULT '',
     "position" integer NOT NULL DEFAULT 0,
     CONSTRAINT "legal_document_type_slug_key" UNIQUE ("slug")
 );--> statement-breakpoint
@@ -224,6 +233,7 @@ CREATE TABLE "app"."open_to_work_status" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "slug" text NOT NULL,
     "label" text NOT NULL,
+    "description" text NOT NULL DEFAULT '',
     "position" integer NOT NULL DEFAULT 0,
     CONSTRAINT "open_to_work_status_slug_key" UNIQUE ("slug")
 );--> statement-breakpoint
@@ -232,6 +242,7 @@ CREATE TABLE "app"."availability" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "slug" text NOT NULL,
     "label" text NOT NULL,
+    "description" text NOT NULL DEFAULT '',
     "position" integer NOT NULL DEFAULT 0,
     CONSTRAINT "availability_slug_key" UNIQUE ("slug")
 );--> statement-breakpoint
@@ -240,6 +251,7 @@ CREATE TABLE "app"."experience_level" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "slug" text NOT NULL,
     "label" text NOT NULL,
+    "description" text NOT NULL DEFAULT '',
     "position" integer NOT NULL DEFAULT 0,
     CONSTRAINT "experience_level_slug_key" UNIQUE ("slug")
 );--> statement-breakpoint
@@ -248,6 +260,7 @@ CREATE TABLE "app"."notice_period" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "slug" text NOT NULL,
     "label" text NOT NULL,
+    "description" text NOT NULL DEFAULT '',
     "position" integer NOT NULL DEFAULT 0,
     CONSTRAINT "notice_period_slug_key" UNIQUE ("slug")
 );--> statement-breakpoint
@@ -256,6 +269,7 @@ CREATE TABLE "app"."work_authorization" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "slug" text NOT NULL,
     "label" text NOT NULL,
+    "description" text NOT NULL DEFAULT '',
     "position" integer NOT NULL DEFAULT 0,
     CONSTRAINT "work_authorization_slug_key" UNIQUE ("slug")
 );--> statement-breakpoint
@@ -264,6 +278,7 @@ CREATE TABLE "app"."contact_preference" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "slug" text NOT NULL,
     "label" text NOT NULL,
+    "description" text NOT NULL DEFAULT '',
     "position" integer NOT NULL DEFAULT 0,
     CONSTRAINT "contact_preference_slug_key" UNIQUE ("slug")
 );--> statement-breakpoint

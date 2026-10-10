@@ -180,6 +180,7 @@ export async function loadReferenceOptions(
             source.value,
             source.label,
             source.where,
+            { hint: source.hint, order: source.order },
           );
           return rows.map((row) => ({
             ...row,

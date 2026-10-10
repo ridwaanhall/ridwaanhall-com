@@ -36,6 +36,7 @@ import { usageSentence, usageTotal, type UsageRelation } from "@/lib/admin/usage
 import { composedLabel, type AdminFormModel, type FormField } from "@/lib/admin/form";
 import { locationLabel } from "@/lib/data/location";
 import type { AdminListModel } from "@/lib/admin/list";
+import { vocabularyOptions } from "@/lib/admin/vocab";
 
 /**
  * The seven `about` changelists.
@@ -81,7 +82,7 @@ const employmentField = (column: PgColumn) => ({
   column,
   label: "Employment",
   kind: "reference" as const,
-  reference: { table: employmentType, value: employmentType.id, label: employmentType.label },
+  reference: vocabularyOptions(employmentType),
 });
 
 const workModeField = (column: PgColumn) => ({
@@ -89,7 +90,7 @@ const workModeField = (column: PgColumn) => ({
   column,
   label: "Arrangement",
   kind: "reference" as const,
-  reference: { table: workMode, value: workMode.id, label: workMode.label },
+  reference: vocabularyOptions(workMode),
 });
 
 /**
@@ -199,14 +200,14 @@ export const experienceList: AdminListModel<ExperienceRow> = {
       label: "Employment",
       kind: "choice",
       column: experience.employmentTypeId,
-      choices: { table: employmentType, value: employmentType.id, label: employmentType.label },
+      choices: vocabularyOptions(employmentType),
     },
     {
       key: "location_type",
       label: "Arrangement",
       kind: "choice",
       column: experience.workModeId,
-      choices: { table: workMode, value: workMode.id, label: workMode.label },
+      choices: vocabularyOptions(workMode),
     },
     { key: "period_start", label: "Started", kind: "date", column: experience.periodStart },
   ],
@@ -522,21 +523,21 @@ export const applicationList: AdminListModel<ApplicationRow> = {
       label: "Status",
       kind: "choice",
       column: application.statusId,
-      choices: { table: applicationStatusTable, value: applicationStatusTable.id, label: applicationStatusTable.label },
+      choices: vocabularyOptions(applicationStatusTable),
     },
     {
       key: "employment_type",
       label: "Employment",
       kind: "choice",
       column: application.employmentTypeId,
-      choices: { table: employmentType, value: employmentType.id, label: employmentType.label },
+      choices: vocabularyOptions(employmentType),
     },
     {
       key: "location_type",
       label: "Arrangement",
       kind: "choice",
       column: application.workModeId,
-      choices: { table: workMode, value: workMode.id, label: workMode.label },
+      choices: vocabularyOptions(workMode),
     },
   ],
   search: {
@@ -1174,22 +1175,14 @@ export const applicationForm: AdminFormModel = {
           label: "Status",
           kind: "reference",
           required: true,
-          reference: {
-            table: applicationStatusTable,
-            value: applicationStatusTable.id,
-            label: applicationStatusTable.label,
-          },
+          reference: vocabularyOptions(applicationStatusTable),
         },
         {
           name: "sourceId",
           column: application.sourceId,
           label: "Applied via",
           kind: "reference",
-          reference: {
-            table: applicationSource,
-            value: applicationSource.id,
-            label: applicationSource.label,
-          },
+          reference: vocabularyOptions(applicationSource),
         },
       ],
     },

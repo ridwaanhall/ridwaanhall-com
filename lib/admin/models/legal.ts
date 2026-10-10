@@ -6,6 +6,7 @@ import { countWhere, lookup } from "@/lib/admin/sql";
 
 import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
+import { vocabularyOptions } from "@/lib/admin/vocab";
 
 /** The two `legal` changelists: documents, and the sections inside them. */
 
@@ -95,11 +96,7 @@ export const legalDocumentList: AdminListModel<LegalDocumentRow> = {
       column: legalDocument.typeId,
       // Only the types some document actually is, so the filter offers no
       // option that returns an empty page.
-      choices: {
-        table: legalDocumentType,
-        value: legalDocumentType.id,
-        label: legalDocumentType.label,
-      },
+      choices: vocabularyOptions(legalDocumentType),
     },
     { key: "is_published", label: "Published", kind: "boolean", column: legalDocument.isPublished },
   ],
@@ -217,11 +214,7 @@ export const legalDocumentForm: AdminFormModel = {
           label: "Type",
           kind: "reference",
           required: true,
-          reference: {
-            table: legalDocumentType,
-            value: legalDocumentType.id,
-            label: legalDocumentType.label,
-          },
+          reference: vocabularyOptions(legalDocumentType),
         },
         {
           name: "sortOrder",

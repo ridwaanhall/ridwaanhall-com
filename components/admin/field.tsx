@@ -293,6 +293,7 @@ export function Field({
           className={cn(common.className, field.kind === "number" && "admin-number")}
           maxLength={field.maxLength}
           min={field.min}
+          max={field.max}
           required={field.required}
         />
       )}

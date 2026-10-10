@@ -496,6 +496,12 @@ export const publicAccess = app.table("public_access", {
   canGuestbook: boolean("can_guestbook").notNull().default(true),
 });
 
+export const siteSetting = app.table("site_setting", {
+  id: uuid().primaryKey().defaultRandom(),
+  imageService: text("image_service").notNull().default('next'),
+  imageQuality: integer("image_quality").notNull().default(80),
+});
+
 export const skill = app.table("skill", {
   id: uuid().primaryKey().defaultRandom(),
   slug: text().notNull(),

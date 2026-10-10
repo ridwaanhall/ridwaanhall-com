@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { blogPost } from "@/lib/db/app-schema";
+import { blogPost, siteSetting } from "@/lib/db/app-schema";
 
 import { parseFields, slugify, type FormField } from "./form";
 
@@ -104,6 +104,20 @@ describe("newlines", () => {
     assert.deepEqual(parsed([body], form({ description: "one\r\ntwo\rthree" })), {
       description: "one\ntwo\nthree",
     });
+  });
+});
+
+describe("number bounds", () => {
+  const quality = field({ name: "imageQuality", column: siteSetting.imageQuality, label: "Quality", kind: "number", min: 40, max: 100 });
+
+  it("accepts a value inside the range, ends included", () => {
+    assert.equal(parsed([quality], form({ imageQuality: "40" })).imageQuality, 40);
+    assert.equal(parsed([quality], form({ imageQuality: "100" })).imageQuality, 100);
+  });
+
+  it("refuses one below the minimum and one above the maximum, naming the field", () => {
+    assert.match(errors([quality], form({ imageQuality: "39" })).imageQuality, /Quality cannot be below 40/);
+    assert.match(errors([quality], form({ imageQuality: "101" })).imageQuality, /Quality cannot be above 100/);
   });
 });
 

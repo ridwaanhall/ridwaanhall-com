@@ -30,7 +30,7 @@ it is not somewhere to add anything. This is.
 
 ## The schema
 
-Everything reads and writes the **`app`** schema: 55 tables, uuid keys, real
+Everything reads and writes the **`app`** schema: 56 tables, uuid keys, real
 foreign keys with real referential actions, row-level security on every one.
 
 `drizzle/0000_init.sql` is the whole of it, in one file, and it runs against an
@@ -53,7 +53,7 @@ npx tsx scripts/check-baseline-schema.mjs      # the file still builds this sche
 npx tsx scripts/check-app-schema.mjs           # the mapping still matches it
 ```
 
-`lib/db/app-schema.ts` is **generated**, never edited by hand: 55 tables of
+`lib/db/app-schema.ts` is **generated**, never edited by hand: 56 tables of
 column names is exactly the transcription that fails silently, because a
 mistyped SQL name is a column the app writes to and never reads back.
 `drizzle-kit pull` cannot produce it — with `schemaFilter: ["app"]` it fetches
@@ -287,6 +287,38 @@ inside "Digital". The layout is built for applicant tracking systems -- one
 column, real text, no hyphenation (a parser reads "oppor" and "tunities"), no
 images. The viewer is pdf.js, imported on first use with its worker served from
 this origin, and the CV links in About and the palette open it.
+
+### How pictures are resized is a setting
+
+`site_setting` is one row (a unique index on a constant refuses a second) with
+`image_service` -- `none`, `next` or `wsrv` -- and `image_quality`. The default
+row is what the site did before the setting existed: Next's optimizer at 80.
+Next's optimizer spends the host's image-transformation quota, which is the
+reason the choice exists; `wsrv` sends each width to wsrv.nl instead, which
+fetches the original from storage and answers with a resized WebP, and `none`
+serves the stored file as it is.
+
+- **`SiteImage` is the only way the public site renders a picture.**
+  `components/foothill/site-image.tsx` wraps `next/image` and reads the choice
+  from `ImageServiceProvider`, mounted once in `SiteShell` from the layout's
+  cached read (`getImageSettings`, tagged `settings`). A component that imports
+  `next/image` itself bypasses the setting and nothing else will say so. The
+  admin's own previews are plain `img` for a different reason, in
+  `image-field.tsx`.
+- **A path on this site has nothing for wsrv to fetch.** `wsrvUrl` returns
+  `null` for anything that is not an absolute http(s) address and the loader
+  falls back to the source as it is. Every uploaded picture is an absolute
+  storage address, so this only matters for a local path.
+- **Next 16 serves only the qualities it is told about.** `images.qualities`
+  in `next.config.ts` and `NEXT_QUALITIES` in `lib/site/image-service.ts` are
+  the same list, because the config cannot import the module; the setting is
+  snapped to the nearest before it is passed.
+- **`img-src` names wsrv.nl** in the report-only policy. Promote the policy
+  with it still there or wsrv pictures are blocked.
+- **The screen is in its own `Site` group and the editor preset leaves that
+  group out**, so changing what the site costs is the owner's unless somebody
+  is granted it on the Access screen. `scripts/check-image-service.mjs` saves
+  each choice through the real form and reads what a signed-out reader gets.
 
 ### The admin is declarative
 
@@ -1349,6 +1381,7 @@ npx tsx --conditions=react-server scripts/check-storage.mjs
 npx tsx --conditions=react-server scripts/check-admin-media.mjs   # the id/key seam
 npx tsx --conditions=react-server scripts/check-image-alt.mjs      # an image says what it is
 npx tsx --conditions=react-server scripts/check-admin-image-link.mjs # upload and link, one bucket
+npx tsx --conditions=react-server scripts/check-image-service.mjs # the resize setting reaches the reader
 npx tsx scripts/check-admin-usage.mjs                   # every FK into a lookup table is counted
 npx tsx scripts/check-admin.mjs
 npx tsx --conditions=react-server scripts/check-admin-access.mjs   # roles, grants, and no leaked rows

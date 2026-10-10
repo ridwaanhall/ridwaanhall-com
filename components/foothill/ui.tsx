@@ -1,5 +1,5 @@
 import type { Route } from "next";
-import Image from "next/image";
+import { SiteImage } from "@/components/foothill/site-image";
 import Link from "next/link";
 
 import { Brand, Icon, type IconName } from "@/components/foothill/icons";
@@ -271,7 +271,7 @@ export function Thumb({
   return (
     <div className="thumb" style={ratio ? { aspectRatio: ratio } : undefined}>
       {src ? (
-        <Image src={src} alt={alt} fill sizes={sizes} priority={priority} />
+        <SiteImage src={src} alt={alt} fill sizes={sizes} priority={priority} />
       ) : (
         <div className="noimg" role="img" aria-label={`${title}, no preview yet`}>
           <span>{title}</span>

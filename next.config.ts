@@ -77,6 +77,11 @@ const nextConfig: NextConfig = {
     // avatars. Trimming the default ladder keeps the optimizer from generating
     // sizes nothing ever requests.
     deviceSizes: [375, 640, 768, 1024, 1280, 1536],
+    // Next 16 serves only these qualities and rounds any other to the closest.
+    // The Site settings screen's quality is snapped to this list by
+    // `nearestNextQuality` in lib/site/image-service.ts, which holds the same
+    // numbers; this file cannot import it.
+    qualities: [50, 60, 70, 75, 80, 85, 90, 100],
     // 16 is absent because Next 16 dropped it from the default ladder, and
     // nothing here would pick it anyway: the smallest rendered image is the
     // 40px sidebar avatar.
@@ -159,6 +164,8 @@ const nextConfig: NextConfig = {
         "https://lh3.googleusercontent.com",
         "https://avatars.githubusercontent.com",
         "https://www.gravatar.com",
+        // Pictures resized by wsrv.nl, when the Site settings screen says so.
+        "https://wsrv.nl",
       ]
         .filter(Boolean)
         .join(" "),

@@ -42,6 +42,7 @@ import {
   openToWorkProfileForm,
 } from "@/lib/admin/models/openhire";
 import { projectForm, projectList } from "@/lib/admin/models/projects";
+import { siteSettingForm } from "@/lib/admin/models/site";
 import {
   VOCABULARY_USAGE,
   applicationSourceForm,
@@ -185,6 +186,8 @@ const FORMS: AdminFormModel[] = [
   blogPostForm,
   // projects
   projectForm,
+  // site
+  siteSettingForm,
   // openhire
   hiringProfileForm,
   jobOpeningForm,

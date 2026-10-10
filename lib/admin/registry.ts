@@ -31,6 +31,7 @@ export type AdminGroup =
   | "Legal"
   | "Guestbook"
   | "Comments"
+  | "Site"
   | "Users"
   | "Access"
   | "Settings";
@@ -56,6 +57,10 @@ export const ADMIN_GROUPS: AdminGroup[] = [
   "Legal",
   "Guestbook",
   "Comments",
+  // Switches that change what the whole site costs or how it behaves, rather
+  // than what it says. Left out of the editor preset on purpose: nobody gets
+  // these by being an editor, and the Access screen can grant one.
+  "Site",
   "Users",
   // Above Settings rather than beside Users, and its own group rather than a
   // row in that one: Users answers "who exists", this answers "who may do
@@ -350,6 +355,15 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     labelPlural: "Public access",
     group: "Access",
     blurb: "Who may comment and post to the guestbook. Every account has a row.",
+  },
+
+  {
+    key: "site-setting",
+    label: "Site settings",
+    labelPlural: "Site settings",
+    group: "Site",
+    singleton: true,
+    blurb: "How the public site resizes its pictures.",
   },
 
   /*

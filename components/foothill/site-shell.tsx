@@ -9,7 +9,9 @@ import { MarkdownViewer } from "@/components/foothill/markdown";
 import { Navbar, NavbarFallback } from "@/components/foothill/navbar";
 import { PaletteProvider } from "@/components/foothill/palette";
 import { ScrollTop } from "@/components/foothill/scroll-top";
+import { ImageServiceProvider } from "@/components/foothill/site-image";
 import type { AboutData } from "@/lib/data/about";
+import type { ImageSettings } from "@/lib/site/image-service";
 
 /**
  * The public site's frame: the navbar, the page, the footer, the way back to
@@ -38,35 +40,40 @@ import type { AboutData } from "@/lib/data/about";
  */
 export function SiteShell({
   about,
+  images,
   account,
   footer,
   children,
 }: {
   about: AboutData;
+  /** How pictures are resized: the Site settings screen's answer. */
+  images: ImageSettings;
   account: React.ReactNode;
   footer: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
     <MotionConfig reducedMotion="user">
-      <PaletteProvider about={about}>
-        <div className="fh-site">
-          <a href="#page-content" className="skip">
-            Skip to content
-          </a>
-          <Suspense fallback={<NavbarFallback about={about} account={account} />}>
-            <Navbar about={about} account={account} />
-          </Suspense>
-          <div id="page-content" tabIndex={-1}>
-            <div>{children}</div>
+      <ImageServiceProvider settings={images}>
+        <PaletteProvider about={about}>
+          <div className="fh-site">
+            <a href="#page-content" className="skip">
+              Skip to content
+            </a>
+            <Suspense fallback={<NavbarFallback about={about} account={account} />}>
+              <Navbar about={about} account={account} />
+            </Suspense>
+            <div id="page-content" tabIndex={-1}>
+              <div>{children}</div>
+            </div>
+            {footer}
+            <ScrollTop />
+            <Cursor />
+            <CvViewer />
+            <MarkdownViewer />
           </div>
-          {footer}
-          <ScrollTop />
-          <Cursor />
-          <CvViewer />
-          <MarkdownViewer />
-        </div>
-      </PaletteProvider>
+        </PaletteProvider>
+      </ImageServiceProvider>
     </MotionConfig>
   );
 }

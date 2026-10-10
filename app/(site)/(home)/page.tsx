@@ -1,5 +1,5 @@
 import type { Metadata, Route } from "next";
-import Image from "next/image";
+import { SiteImage } from "@/components/foothill/site-image";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -58,7 +58,7 @@ function Building({ projects }: { projects: ProjectView[] }) {
           const at = Math.max(0, STAGES.findIndex(([, slugs]) => slugs.includes(project.status)));
           return (
             <Link key={project.slug} href={`/projects/${project.slug}` as Route} className="b-row">
-              <span className="mini">{project.image && <Image src={project.image} alt="" width={120} height={75} />}</span>
+              <span className="mini">{project.image && <SiteImage src={project.image} alt="" width={120} height={75} />}</span>
               <span className="b-main">
                 <span className="b-t">
                   <b>{project.title}</b>

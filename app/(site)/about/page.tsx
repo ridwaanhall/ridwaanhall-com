@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { SiteImage } from "@/components/foothill/site-image";
 
 import { Certifications, JobHunt, SkillGroups, type ApplicationView, type CertView } from "@/components/foothill/about";
 import { Disclosure } from "@/components/foothill/controls";
@@ -142,7 +142,7 @@ export default async function AboutPage() {
             <div className="who-head" data-fh-enter="">
               {about.image_url ? (
                 <figure className="ph">
-                  <Image src={about.image_url} alt={about.image_alt || `${about.name}, drawn in horizontal lines`} width={76} height={76} priority />
+                  <SiteImage src={about.image_url} alt={about.image_alt || `${about.name}, drawn in horizontal lines`} width={76} height={76} priority />
                 </figure>
               ) : (
                 <span className="ph none" aria-hidden="true">

@@ -60,6 +60,8 @@ export type FormField = {
   maxLength?: number;
   choices?: FilterChoice[];
   min?: number;
+  /** The upper bound of a `number` field, held by the column's own CHECK as well. */
+  max?: number;
   /** Which `upload_to` folder an `image` field writes into. */
   prefix?: UploadPrefix;
   /** Multi-line inputs, for a `string-list` whose entries are prose. */
@@ -329,6 +331,7 @@ export function toClientFieldsets(
       maxLength: field.maxLength,
       choices: field.choices,
       min: field.min,
+      max: field.max,
       prefix: field.prefix,
       multiline: field.multiline,
       allowsHtml: field.allowsHtml,
@@ -722,6 +725,8 @@ export function parseFields(
           errors[field.name] = `${field.label} must be a whole number.`;
         } else if (field.min !== undefined && parsed < field.min) {
           errors[field.name] = `${field.label} cannot be below ${field.min}.`;
+        } else if (field.max !== undefined && parsed > field.max) {
+          errors[field.name] = `${field.label} cannot be above ${field.max}.`;
         } else {
           values[field.name] = parsed;
         }
@@ -909,6 +914,7 @@ export function toClientInlines(
       maxLength: field.maxLength,
       choices: field.choices,
       min: field.min,
+      max: field.max,
       prefix: field.prefix,
       multiline: field.multiline,
       allowsHtml: field.allowsHtml,

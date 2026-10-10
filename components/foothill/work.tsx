@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
-import Image from "next/image";
+import { SiteImage } from "@/components/foothill/site-image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -128,7 +128,7 @@ export function WorkExplorer({
       ) : (
         <motion.div layout key={project.slug} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
           <Link className="prow" href={`/projects/${project.slug}`}>
-            <span className="mini">{project.image && <Image src={project.image} alt="" width={112} height={70} />}</span>
+            <span className="mini">{project.image && <SiteImage src={project.image} alt="" width={112} height={70} />}</span>
             <span className="t">{project.title}</span>
             <span className="s">{project.headline}</span>
             <span className="side">

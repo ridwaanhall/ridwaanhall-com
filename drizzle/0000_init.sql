@@ -539,6 +539,27 @@ CREATE TABLE "app"."application_step" (
 );--> statement-breakpoint
 
 -- ---------------------------------------------------------------------------
+-- Site settings
+-- ---------------------------------------------------------------------------
+
+-- How the public site's pictures are resized: not at all, by Next's own
+-- optimizer (which spends the host's image-transformation quota), or by the
+-- wsrv.nl service. One row by construction: the unique index on a constant
+-- expression refuses a second, so the admin screen that edits "the row" has
+-- exactly one to find. The default is what the site did before the setting
+-- existed.
+CREATE TABLE "app"."site_setting" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "image_service" text NOT NULL DEFAULT 'next',
+    "image_quality" integer NOT NULL DEFAULT 80,
+    CONSTRAINT "site_setting_image_service_check" CHECK ("image_service" IN ('none', 'next', 'wsrv')),
+    CONSTRAINT "site_setting_image_quality_check" CHECK ("image_quality" BETWEEN 40 AND 100)
+);--> statement-breakpoint
+
+CREATE UNIQUE INDEX "site_setting_single_row" ON "app"."site_setting" ((true));--> statement-breakpoint
+INSERT INTO "app"."site_setting" DEFAULT VALUES;--> statement-breakpoint
+
+-- ---------------------------------------------------------------------------
 -- Content
 -- ---------------------------------------------------------------------------
 

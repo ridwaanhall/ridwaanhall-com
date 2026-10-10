@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import type { Route } from "next";
-import Image from "next/image";
+import { SiteImage } from "@/components/foothill/site-image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
@@ -133,7 +133,7 @@ function SkillDrawer({ name, phone, projects, close }: { name: string | null; ph
                 >
                   <Link className="prow" href={`/projects/${project.slug}` as Route} onClick={close}>
                     <span className="mini" style={{ display: "block" }}>
-                      {project.image && <Image src={project.image} alt="" width={96} height={60} />}
+                      {project.image && <SiteImage src={project.image} alt="" width={96} height={60} />}
                     </span>
                     <span className="t">{project.title}</span>
                     <span className="s">

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import Image from "next/image";
+import { SiteImage } from "@/components/foothill/site-image";
 import { useState } from "react";
 
 /**
@@ -30,7 +30,7 @@ export function Gallery({ images, alts = [], title }: { images: string[]; alts?:
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <Image src={images[current]} alt={altFor(current)} fill sizes="(min-width: 1200px) 1104px, 100vw" priority={current === 0} />
+            <SiteImage src={images[current]} alt={altFor(current)} fill sizes="(min-width: 1200px) 1104px, 100vw" priority={current === 0} />
           </motion.div>
         </AnimatePresence>
       </div>
@@ -46,7 +46,7 @@ export function Gallery({ images, alts = [], title }: { images: string[]; alts?:
               className="thumb-btn"
             >
               <div className="thumb" style={{ borderColor: i === current ? "var(--fh-ink)" : undefined }}>
-                <Image src={src} alt="" fill sizes="180px" />
+                <SiteImage src={src} alt="" fill sizes="180px" />
               </div>
               {i === current && <motion.span className="gal-mark" layoutId="gal" />}
             </button>

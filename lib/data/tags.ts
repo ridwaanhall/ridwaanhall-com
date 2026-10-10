@@ -26,6 +26,7 @@ export const TAGS = {
   hiring: "hiring",
   opentowork: "opentowork",
   legal: "legal",
+  settings: "settings",
 } as const;
 
 export type Tag = (typeof TAGS)[keyof typeof TAGS];
@@ -87,6 +88,9 @@ export const MODEL_TAGS: Record<string, readonly Tag[]> = {
   open_to_work_profile: [TAGS.opentowork],
   open_to_work_list_item: [TAGS.opentowork],
   portfolio_highlight: [TAGS.opentowork],
+
+  // Site-wide settings, read by the public layout.
+  site_setting: [TAGS.settings],
 
   // Legal.
   legal_document: [TAGS.legal],

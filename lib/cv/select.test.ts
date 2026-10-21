@@ -50,6 +50,30 @@ describe("the CV's rules", () => {
     assert.equal(experience[0].points.length, 3);
   });
 
+  it("spans an organisation's roles by their dates, not by the order they are listed in", () => {
+    // Listed editorially: the ongoing role is not first and the earliest is not last.
+    const cv = buildCv({
+      ...base,
+      experiences: [
+        { title: "Machine Learning Intern", company: "Camp", start: "Feb 2024", end: "Mar 2024", responsibilities: [] },
+        { title: "Machine Learning Mentor", company: "Camp", start: "Feb 2025", end: "Present", responsibilities: [] },
+        { title: "Web Developer Intern", company: "Camp", start: "Jan 2024", end: "Jan 2024", responsibilities: [] },
+      ],
+    });
+    assert.equal(cv.experience[0].period, "Jan 2024 - Present");
+  });
+
+  it("ends a span on the latest end when no role is ongoing", () => {
+    const cv = buildCv({
+      ...base,
+      experiences: [
+        { title: "Web Developer Intern", company: "Co", start: "Apr 2024", end: "May 2024", responsibilities: [] },
+        { title: "Software Intern", company: "Co", start: "Feb 2024", end: "Nov 2024", responsibilities: [] },
+      ],
+    });
+    assert.equal(cv.experience[0].period, "Feb 2024 - Nov 2024");
+  });
+
   it("keeps only the latest education", () => {
     const cv = buildCv({
       ...base,

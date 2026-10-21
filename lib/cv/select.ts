@@ -92,13 +92,43 @@ export function buildCv(input: CvInput): Cv {
     experience: [...byCompany.values()].map((list) => ({
       title: list.map((role) => role.title).slice(0, 2).join(" / "),
       company: list[0].company,
-      period: `${list[list.length - 1].start} - ${list[0].end}`,
+      period: span(list),
       points: list.flatMap((role) => role.responsibilities).slice(0, 3),
     })),
     projects: input.projects.slice(0, 4).map((project) => ({ title: project.title, line: `${project.headline}${project.stack.length ? ` (${project.stack.slice(0, 5).join(", ")})` : ""}` })),
     education: latestEducation(input.education),
     certifications: newestCerts.map((cert) => `${cert.title}, ${cert.institution}${cert.year ? ` (${cert.year})` : ""}`),
   };
+}
+
+const MONTH_INDEX = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+
+/** "Jan 2024" as a number that sorts, or null for anything else ("Present"). */
+function monthOf(label: string): number | null {
+  const match = /^([a-z]{3})[a-z]*\s+(\d{4})$/i.exec(label.trim());
+  const month = match ? MONTH_INDEX.indexOf(match[1].toLowerCase()) : -1;
+  return match && month >= 0 ? Number(match[2]) * 12 + month : null;
+}
+
+/**
+ * The dates one organisation's roles cover: the earliest start to the latest
+ * end, or to "Present" when any of them is ongoing.
+ *
+ * Read from the dates rather than the list. This took the last role's start
+ * and the first role's end, which is right only while the roles are listed
+ * newest first -- and their order is editorial (`position`), so a current role
+ * listed second printed the organisation as finished, and a later end listed
+ * further down was ignored.
+ */
+function span(list: { start: string; end: string }[]): string {
+  const earliest = (labels: string[]) =>
+    labels.reduce((best, label) => ((monthOf(label) ?? Infinity) < (monthOf(best) ?? Infinity) ? label : best));
+  const latest = (labels: string[]) =>
+    labels.reduce((best, label) => ((monthOf(label) ?? -Infinity) > (monthOf(best) ?? -Infinity) ? label : best));
+  const start = earliest(list.map((role) => role.start));
+  const ends = list.map((role) => role.end);
+  const end = ends.includes("Present") ? "Present" : latest(ends);
+  return `${start} - ${end}`;
 }
 
 function foldSkills(groups: [string, string[]][]): string[] {

@@ -195,7 +195,7 @@ export const projectForm: AdminFormModel = {
     },
     {
       title: "Tech stack",
-      help: "A plain many-to-many: unlike the profile's highlighted skills, the order here does not matter.",
+      help: "The stack is shown in the order the skills were added; one added here goes at the end.",
       fields: [
         {
           name: "techStack",

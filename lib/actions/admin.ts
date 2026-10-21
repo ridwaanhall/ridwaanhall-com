@@ -459,29 +459,47 @@ export async function saveRecord(
 /**
  * Replace the rows of a join table for one record.
  *
- * Deleting and re-inserting rather than diffing: the table carries nothing but
- * the two keys, so a row has no identity worth preserving and no order to keep
- * -- which is exactly the difference between this and
- * `Profile.skills_highlight`, whose sequence became the JSON-LD `knowsAbout`
- * array and therefore needed a through model.
+ * Deleting and re-inserting rather than diffing: a pair has no identity worth
+ * preserving. **Its order can be**, which is the one thing this used to drop.
+ * `project_skill` carries a `position` that the public site and the CV sort the
+ * tech stack by, and the re-insert wrote the column's default of 0 into every
+ * row -- so saving a project for any reason turned its curated stack into a
+ * tie broken by heap order. Where the join table has a `position`, a pair that
+ * survives the save keeps the place it had, and a new one goes after them in
+ * the order it was ticked.
  */
 async function saveManyToMany(
   source: NonNullable<FormField["manyToMany"]>,
   ownerId: string,
   targetIds: string[],
 ): Promise<void> {
+  const columns = Object.entries(getTableColumns(source.join));
+  const ownerKey = columns.find(([, column]) => column === source.ownerFk)?.[0];
+  const targetKey = columns.find(([, column]) => column === source.targetFk)?.[0];
+  const position = columns.find(([name]) => name === "position");
+  if (!ownerKey || !targetKey) return;
+
   await db.transaction(async (tx) => {
+    const before = position
+      ? await tx
+          .select({ target: source.targetFk, position: position[1] })
+          .from(source.join)
+          .where(eq(source.ownerFk, ownerId))
+      : [];
     await tx.delete(source.join).where(eq(source.ownerFk, ownerId));
     if (targetIds.length === 0) return;
 
-    const columns = Object.entries(getTableColumns(source.join));
-    const ownerKey = columns.find(([, column]) => column === source.ownerFk)?.[0];
-    const targetKey = columns.find(([, column]) => column === source.targetFk)?.[0];
-    if (!ownerKey || !targetKey) return;
-
-    await tx
-      .insert(source.join)
-      .values([...new Set(targetIds)].map((id) => ({ [ownerKey]: ownerId, [targetKey]: id })));
+    const placed = new Map(before.map((row) => [String(row.target), Number(row.position)]));
+    const kept = [...new Set(targetIds)].sort(
+      (a, b) => (placed.get(a) ?? Infinity) - (placed.get(b) ?? Infinity),
+    );
+    await tx.insert(source.join).values(
+      kept.map((id, index) => ({
+        [ownerKey]: ownerId,
+        [targetKey]: id,
+        ...(position ? { [position[0]]: index } : {}),
+      })),
+    );
   });
 }
 

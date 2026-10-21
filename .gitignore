@@ -71,10 +71,12 @@ yarn-error.log*
 # Design specs and plans written while working on a change: the reasoning that
 # matters ends up in the commit messages, CLAUDE.md and MIGRATION.md, and
 # leaving these here put a directory in the repo with nothing in it for anyone
-# browsing the project. `.claude/` also carries per-machine settings.
+# browsing the project. `.claude/` also carries per-machine settings, so only
+# the shared `settings.json` is tracked; `settings.local.json` stays out.
 docs/superpowers/
 plan/
-.claude/
+.claude/*
+!.claude/settings.json
 .vscode/
 text.txt
 

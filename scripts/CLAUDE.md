@@ -47,6 +47,7 @@ npx tsx --conditions=react-server scripts/check-admin-access.mjs   # roles, gran
 npx tsx scripts/check-admin-nav.mjs                     # one group open, and a rail that remembers
 npx tsx --conditions=react-server scripts/check-admin-console.mjs
 npx tsx --conditions=react-server scripts/check-admin-forms.mjs
+npx tsx --conditions=react-server scripts/check-admin-noop-save.mjs   # an untouched save writes nothing
 npx tsx --conditions=react-server scripts/check-admin-json.mjs
 npx tsx --conditions=react-server scripts/check-admin-inlines.mjs
 npx tsx --conditions=react-server scripts/check-admin-richtext.mjs

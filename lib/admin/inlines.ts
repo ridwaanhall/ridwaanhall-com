@@ -13,6 +13,7 @@ import {
 } from "@/lib/admin/form";
 import { applyImageFields, imageFields } from "@/lib/admin/images";
 import { keyForMediaId, keysForMediaIds, mediaIdForKey } from "@/lib/admin/media";
+import { keepStoredTime } from "@/lib/admin/same-value";
 import { db } from "@/lib/db/client";
 import { isUuid } from "@/lib/utils/uuid";
 
@@ -192,7 +193,17 @@ export async function saveInlines(
    * each with a link of its own, so a limit that reset per row would bound
    * nothing at all.
    */
-  { deadline }: { deadline?: number } = {},
+  {
+    deadline,
+    stored,
+  }: {
+    deadline?: number;
+    /**
+     * The rows as they were loaded, by inline name, so a timestamp on a row
+     * keeps the seconds its control could not show -- see `keepStoredTime`.
+     */
+    stored?: Record<string, InlineRow[]>;
+  } = {},
 ): Promise<InlineResult> {
   const errors: Record<string, string> = {};
   const stale: string[] = [];
@@ -237,6 +248,14 @@ export async function saveInlines(
         images = applied.values;
         stale.push(...applied.stale);
         Object.assign(alts, applied.alts);
+      }
+
+      const before = id === null ? undefined : stored?.[inline.name]?.find((row) => row.__id === id);
+      if (before) {
+        for (const field of inline.fields) {
+          if (field.kind !== "datetime" || !(field.name in parsed.values)) continue;
+          parsed.values[field.name] = keepStoredTime(before[field.name], parsed.values[field.name]) ?? null;
+        }
       }
 
       rows.push({ id, values: { ...parsed.values, ...images } });

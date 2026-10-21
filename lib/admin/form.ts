@@ -1,5 +1,6 @@
 import type { SQL } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
+import { fromAdminLocalInput } from "@/lib/admin/format";
 import { normaliseNewlines } from "@/lib/utils/newlines";
 import { isUuid } from "@/lib/utils/uuid";
 
@@ -811,9 +812,11 @@ export function parseFields(
         break;
       }
       case "datetime": {
-        const when = new Date(text);
-        if (Number.isNaN(when.getTime())) errors[field.name] = `${field.label} must be a date and time.`;
-        else values[field.name] = when.toISOString();
+        // Read as Jakarta time, the zone the control was drawn in -- never the
+        // server's. See `toAdminLocalInput`.
+        const when = fromAdminLocalInput(text);
+        if (when === null) errors[field.name] = `${field.label} must be a date and time.`;
+        else values[field.name] = when;
         break;
       }
       default:

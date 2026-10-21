@@ -17,6 +17,8 @@ import {
   type FormValues,
 } from "@/lib/admin/form";
 import { inlineImageKeys, saveInlines } from "@/lib/admin/inlines";
+import { keepStoredTime } from "@/lib/admin/same-value";
+import { changesNothing, loadStoredRecord } from "@/lib/admin/unchanged";
 import { formModelFor } from "@/lib/admin/models";
 import { blockedDeleteMessage } from "@/lib/admin/blockers";
 import { seedDefaultGrants } from "@/lib/auth/grants";
@@ -293,6 +295,29 @@ export async function saveRecord(
   }
 
   const values = { ...parsed.values, ...images.values };
+
+  /*
+   * An update is compared with what is stored before anything is written.
+   *
+   * Two things come of it. A timestamp keeps the seconds its minute-precision
+   * control could not show, so saving a record never moves one. And a form
+   * that says exactly what the record already holds writes nothing at all and
+   * says so, rather than rewriting every column and claiming "Saved." -- see
+   * `lib/admin/unchanged.ts`. An image that was uploaded, linked or cleared is
+   * a change by definition, so that case is never asked.
+   */
+  const stored = id !== null && isUuid(id) ? await loadStoredRecord(model, id) : null;
+  if (stored && id !== null) {
+    for (const field of formFieldsFor(model, id)) {
+      if (field.kind !== "datetime" || !(field.name in values)) continue;
+      values[field.name] = keepStoredTime(stored.values[field.name], values[field.name]) ?? null;
+    }
+    const imagesUntouched = Object.keys(images.values).length === 0 && images.stale.length === 0;
+    if (imagesUntouched && (await changesNothing(model, id, stored, values, data, images.alts))) {
+      return { ok: true, notice: "No changes to save." };
+    }
+  }
+
   const problem = await model.validate?.(values, {
     id,
     actorId: actor.id,
@@ -373,7 +398,7 @@ export async function saveRecord(
   const staleFromInlines: string[] = [];
   const alts = { ...images.alts };
   if (model.inlines?.length && parentId !== null) {
-    const inlined = await saveInlines(model.inlines, data, parentId, { deadline });
+    const inlined = await saveInlines(model.inlines, data, parentId, { deadline, stored: stored?.inlines });
     if (!inlined.ok) {
       return { ok: false, error: "Some fields need attention.", fieldErrors: inlined.errors };
     }

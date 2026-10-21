@@ -52,10 +52,32 @@ export function InlineEditor({
    * with its row when the row moves. Keying on the index instead would move the
    * *values* between nodes and take focus and cursor position with them.
    */
-  const [rows, setRows] = useState(() =>
-    initial.map((row, index) => ({ key: `existing-${row.__id ?? index}`, row })),
-  );
+  const fromServer = (list: InlineRow[]) =>
+    list.map((row, index) => ({ key: `existing-${row.__id ?? index}`, row }));
+  const [rows, setRows] = useState(() => fromServer(initial));
   const [nextKey, setNextKey] = useState(0);
+
+  /*
+   * Take the server's rows whenever a save brings new ones.
+   *
+   * The initialiser above runs once, so a row added here kept `__id: null`
+   * after the save that inserted it -- and the next Save, with nothing edited,
+   * posted it as new again and inserted a duplicate. Every press of Save added
+   * another copy of whatever had been added last. The save revalidates this
+   * page, so the stored rows arrive with their ids; adopting them is what makes
+   * the second save an update. A failed save revalidates nothing, so whatever
+   * was typed survives to be corrected.
+   *
+   * Compared by content rather than identity: every server render is a new
+   * array, and adjusted during render rather than in an effect, as the rail's
+   * open group is, so the stale rows never paint.
+   */
+  const signature = JSON.stringify(initial);
+  const [seen, setSeen] = useState(signature);
+  if (seen !== signature) {
+    setSeen(signature);
+    setRows(fromServer(initial));
+  }
 
   const move = (index: number, by: number) => {
     const target = index + by;

@@ -4,6 +4,8 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { CalendarIcon, ChevronIcon } from "@/components/admin/admin-icons";
+import { toAdminLocalInput } from "@/lib/admin/format";
+import { useClosedWhenHidden } from "@/lib/motion/use-closed-when-hidden";
 import { useEscape } from "@/lib/utils/use-modal";
 import { useHydrated, useOutsidePointer, usePopoverPosition } from "@/lib/utils/use-popover";
 import { cn } from "@/lib/utils/cn";
@@ -27,13 +29,12 @@ import { cn } from "@/lib/utils/cn";
  *
  * ## Time zones
  *
- * The column is `timestamptz`. It arrives as a UTC ISO string and
- * `parseFormValues` puts it back through `new Date(text).toISOString()`, which
- * reads a bare `YYYY-MM-DDTHH:mm` as **local** time -- so the round trip is
- * correct as long as what is displayed is local too. `toLocalInput` below is
- * that conversion, and it is deliberately not `toISOString().slice(0, 16)`,
- * which is the same string in the *wrong* zone and silently shifts every
- * timestamp by the reader's offset on the first save that touches the record.
+ * The column is `timestamptz` and the control has no zone, so one has to be
+ * chosen, and it is **Asia/Jakarta on both sides** -- `toAdminLocalInput` to
+ * draw it, `fromAdminLocalInput` in `parseFormValues` to read it back. It used
+ * to be "local", which meant the server's zone while rendering and parsing and
+ * the reader's while hydrating, so a save from Jakarta against a UTC server
+ * moved every timestamp by seven hours, untouched saves included.
  */
 
 const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
@@ -59,13 +60,6 @@ function toDateInput(date: Date): string {
   return `${date.getFullYear()}-${month}-${day}`;
 }
 
-/** `YYYY-MM-DDTHH:mm` in local time -- what `datetime-local` accepts. */
-function toLocalInput(date: Date): string {
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  return `${toDateInput(date)}T${hours}:${minutes}`;
-}
-
 /**
  * The stored value as the native input wants it.
  *
@@ -76,8 +70,7 @@ function toLocalInput(date: Date): string {
 export function toInputValue(stored: string, withTime: boolean): string {
   if (!stored) return "";
   if (!withTime) return stored.slice(0, 10);
-  const parsed = new Date(stored);
-  return Number.isNaN(parsed.getTime()) ? "" : toLocalInput(parsed);
+  return toAdminLocalInput(stored);
 }
 
 /** The calendar's own idea of a day, free of any time or zone. */
@@ -125,6 +118,7 @@ export function AdminDatePicker({
   }, []);
 
   useEscape(open, close);
+  useClosedWhenHidden(() => setOpen(false));
   useOutsidePointer(open, () => setOpen(false), triggerRef, panelRef);
   const placement = usePopoverPosition(open, triggerRef, panelRef);
 

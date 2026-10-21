@@ -32,7 +32,7 @@ export default function robots(): MetadataRoute.Robots {
         "/guestbook/pin-message/",
         "/comments/",
         "/api/",
-        // Redirects to externally hosted CV files. Anchored with `$` because a bare
+        // Old addresses that redirect to /cv.pdf. Anchored with `$` because a bare
         // "/cv" would also block /cv.pdf and /cv.md, which are the CV itself.
         "/cv$",
         "/cv-latest$",

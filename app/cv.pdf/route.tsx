@@ -31,7 +31,15 @@ export async function GET() {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": 'inline; filename="ridwan-halim-cv.pdf"',
-      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+      /*
+       * Revalidated on every request, never held by the CDN. This said
+       * `s-maxage=3600, stale-while-revalidate=86400`, so after an edit in the
+       * admin the edge kept serving the old file for up to a day: `updateTag`
+       * expires Next's cache, and a CDN copy is out of its reach. The PDF is
+       * still built once per edit -- `build` is the cached part, and a request
+       * that finds it warm costs one cache read.
+       */
+      "Cache-Control": "public, max-age=0, must-revalidate",
     },
   });
 }

@@ -1,5 +1,5 @@
 import { cvRedirect } from "@/lib/api/cv-redirect";
 
-export async function GET() {
-  return cvRedirect("copy");
+export function GET() {
+  return cvRedirect();
 }

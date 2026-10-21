@@ -172,7 +172,6 @@ function staticRows(about: AboutData): Row[] {
 
   const links: Row[] = [
     { label: "The CV, as a PDF", href: "/cv.pdf", hint: "Generated from About" },
-    { label: "The CV in Google Docs", href: about.cv.latest || "/cv-latest", hint: "The editable version" },
   ].map((entry) => ({
     id: `link:${entry.href}`,
     group: "Links",

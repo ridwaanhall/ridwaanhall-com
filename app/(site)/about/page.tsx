@@ -125,12 +125,6 @@ export default async function AboutPage() {
         <Icon name="out" size={14} />
         Open the PDF
       </a>
-      {about.cv.latest && (
-        <a className="toc-act" href={about.cv.latest} target="_blank" rel="noopener noreferrer">
-          <Icon name="file" size={14} />
-          Google Docs version
-        </a>
-      )}
     </>
   );
 
@@ -220,11 +214,6 @@ export default async function AboutPage() {
                       <Icon name="out" />
                       Open the PDF
                     </a>
-                    {about.cv.latest && (
-                      <TextLink href={about.cv.latest} icon="file">
-                        Google Docs version
-                      </TextLink>
-                    )}
                   </div>
                 </div>
               </div>

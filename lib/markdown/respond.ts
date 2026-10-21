@@ -3,6 +3,15 @@ import "server-only";
 import { SITE_URL } from "@/lib/seo/config";
 
 /**
+ * Revalidated on every request rather than held at the edge. An hour of
+ * `s-maxage` and a day of `stale-while-revalidate` meant a twin -- `/cv.md`
+ * above all -- went on saying what the page said before an edit for up to a
+ * day, since `updateTag` cannot reach a CDN's copy. The content underneath is
+ * the pages' own cached read, so a warm request is cheap.
+ */
+const CACHE = "public, max-age=0, must-revalidate";
+
+/**
  * How a Markdown response is sent.
  *
  * `noindex` and a canonical `Link` to the page: the twin is a copy for
@@ -16,7 +25,7 @@ export function markdown(body: string, canonical?: string, status = 200): Respon
     status,
     headers: {
       "Content-Type": "text/markdown; charset=utf-8",
-      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+      "Cache-Control": CACHE,
       Vary: "Accept",
       "X-Robots-Tag": "noindex",
       ...(canonical ? { Link: `<${SITE_URL}${canonical}>; rel="canonical"` } : {}),
@@ -28,7 +37,7 @@ export function plain(body: string): Response {
   return new Response(body, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
-      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+      "Cache-Control": CACHE,
     },
   });
 }

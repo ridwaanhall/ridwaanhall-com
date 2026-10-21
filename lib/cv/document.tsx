@@ -25,10 +25,25 @@ const s = StyleSheet.create({
   head: { borderBottomWidth: 2, borderBottomColor: INK, borderBottomStyle: "solid", paddingBottom: 10, marginBottom: 4 },
   name: { fontFamily: "Helvetica-Bold", fontSize: 27, lineHeight: 1.1, marginBottom: 5 },
   headline: { fontSize: 11.5, color: MUTE, marginBottom: 7 },
-  contact: { fontSize: 9, color: INK },
+  // A row that wraps between items, never inside one: "Available within 1
+  // month" used to break before its last word and leave it alone on a line.
+  contact: { flexDirection: "row", flexWrap: "wrap", fontSize: 9, color: INK },
+  contactItem: { marginRight: 4 },
   section: { marginTop: 14 },
   h: { fontFamily: "Helvetica-Bold", fontSize: 10, textTransform: "uppercase", marginBottom: 6, paddingBottom: 3, borderBottomWidth: 0.75, borderBottomColor: RULE, borderBottomStyle: "solid" },
-  row: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
+  /*
+   * An entry's heading: what and where on the left, when on the right.
+   *
+   * The left side is `flex: 1` and the right side does not shrink. Before, both
+   * were plain children of a `space-between` row, so a long title and company --
+   * "Machine Learning Mentor / Machine Learning Ops Cohort, Coding Camp powered
+   * by DBS Foundation" -- took the full width, the dates were drawn on top of
+   * its last words and pushed past the margin.
+   */
+  row: { flexDirection: "row", alignItems: "flex-start" },
+  rowMain: { flex: 1, paddingRight: 12 },
+  when: { flexShrink: 0, color: MUTE, textAlign: "right" },
+  org: { color: MUTE, marginTop: 1 },
   role: { marginBottom: 8 },
   strong: { fontFamily: "Helvetica-Bold" },
   mute: { color: MUTE },
@@ -72,10 +87,9 @@ export function CvDocument({ cv, username }: { cv: Cv; username: string }) {
         <View style={s.head}>
           <Text style={s.name}>{cv.name}</Text>
           <Text style={s.headline}>{cv.headline}</Text>
-          <Text style={s.contact}>
+          <View style={s.contact}>
             {cv.contact.map((line, i) => (
-              <Text key={line.text}>
-                {i > 0 ? "   |   " : ""}
+              <Text key={line.text} style={s.contactItem} wrap={false}>
                 {line.href ? (
                   <Link src={line.href} style={s.link}>
                     {line.text}
@@ -83,9 +97,10 @@ export function CvDocument({ cv, username }: { cv: Cv; username: string }) {
                 ) : (
                   line.text
                 )}
+                {i < cv.contact.length - 1 ? "  |" : ""}
               </Text>
             ))}
-          </Text>
+          </View>
         </View>
 
         {cv.summary && (
@@ -111,13 +126,16 @@ export function CvDocument({ cv, username }: { cv: Cv; username: string }) {
         <View style={s.section}>
           <Text style={s.h}>Experience</Text>
           {cv.experience.map((role) => (
-            <View key={role.company + role.period} style={s.role} wrap={false}>
-              <View style={s.row}>
-                <Text>
+            // An entry may run onto the next page, but its heading never ends one:
+            // `minPresenceAhead` moves it over unless a bullet fits beneath it.
+            // Holding the whole entry together left a third of page one blank.
+            <View key={role.company + role.period} style={s.role}>
+              <View style={s.row} minPresenceAhead={36}>
+                <View style={s.rowMain}>
                   <Text style={s.strong}>{role.title}</Text>
-                  <Text style={s.mute}>{`, ${role.company}`}</Text>
-                </Text>
-                <Text style={s.mute}>{role.period}</Text>
+                  <Text style={s.org}>{role.company}</Text>
+                </View>
+                <Text style={s.when}>{role.period}</Text>
               </View>
               <Points items={role.points} />
             </View>
@@ -140,11 +158,11 @@ export function CvDocument({ cv, username }: { cv: Cv; username: string }) {
           <Text style={s.h}>Education</Text>
           {cv.education.map((e) => (
             <View key={e.institution + e.degree} style={s.row} wrap={false}>
-              <Text>
+              <View style={s.rowMain}>
                 <Text style={s.strong}>{e.degree}</Text>
-                <Text style={s.mute}>{`, ${e.institution}`}</Text>
-              </Text>
-              <Text style={s.mute}>{e.years}</Text>
+                <Text style={s.org}>{e.institution}</Text>
+              </View>
+              <Text style={s.when}>{e.years}</Text>
             </View>
           ))}
         </View>

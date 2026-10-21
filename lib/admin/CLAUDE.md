@@ -298,3 +298,26 @@ should write twice.
   list that says it is ordered by Title while eight rows sit above the As reads
   as a fault, not a feature. Every other model leaves it unset and its query is
   unchanged.
+- **An untouched save writes nothing, and says so.** `saveRecord` compares an
+  update with the stored record first (`lib/admin/unchanged.ts`, rules in
+  `same-value.ts`) and answers "No changes to save." without writing when the
+  form says what the row already holds. Before that, pressing Save on an
+  unedited experience reported "Saved." and changed it: the inline editor
+  seeded its rows from props once, so a responsibility added on one save kept
+  an empty id and was inserted again by every later Save, and a timestamp lost
+  the seconds its minute-precision control could not show. `InlineEditor` now
+  adopts the server's rows when a save brings them, and `keepStoredTime` keeps
+  the seconds. A harness that saves to *prove a round trip* still exercises the
+  parser, because a parser that changes a value makes the comparison fail and
+  the write happen; a harness that waits for "Saved." must change something
+  first. `scripts/check-admin-noop-save.mjs` saves every form untouched and
+  diffs the record, its inlines, its join rows and every image description.
+- **The datetime control is Jakarta time on both sides**, drawn by
+  `toAdminLocalInput` and read back by `fromAdminLocalInput`. "Local" meant the
+  server's zone while rendering and parsing and the reader's while hydrating,
+  so a save from Jakarta against a UTC deployment moved every timestamp seven
+  hours.
+- **A many-to-many keeps its order where the join table has one.**
+  `saveManyToMany` re-inserts pairs, and `project_skill.position` is what the
+  stack is sorted by on the site and the CV; a surviving pair keeps its place
+  and a new one goes last.

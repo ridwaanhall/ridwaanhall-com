@@ -67,11 +67,17 @@ async function pictures() {
 }
 
 try {
-  const wsrv = await save("wsrv", 70);
+  /*
+   * A quality the row does not already hold. An untouched save writes nothing
+   * and says "No changes to save." rather than "Saved.", so a first save that
+   * happened to match the stored setting would read as a failed one.
+   */
+  const first = before[0].image_service === "wsrv" && before[0].image_quality === 70 ? 75 : 70;
+  const wsrv = await save("wsrv", first);
   check("saving wsrv is confirmed in words", wsrv.includes("Saved"), wsrv);
-  check("and it is stored", (await read())[0].image_service === "wsrv" && (await read())[0].image_quality === 70);
+  check("and it is stored", (await read())[0].image_service === "wsrv" && (await read())[0].image_quality === first);
   let srcs = await pictures();
-  check("pictures are addressed to wsrv.nl at the chosen quality", srcs.length > 0 && srcs.every((s) => s.startsWith("https://wsrv.nl/") && s.includes("q=70") && s.includes("output=webp")), srcs[0]);
+  check("pictures are addressed to wsrv.nl at the chosen quality", srcs.length > 0 && srcs.every((s) => s.startsWith("https://wsrv.nl/") && s.includes(`q=${first}`) && s.includes("output=webp")), srcs[0]);
 
   await save("none", 70);
   srcs = await pictures();

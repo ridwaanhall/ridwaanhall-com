@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { useClosedWhenHidden } from "@/lib/motion/use-closed-when-hidden";
 import { useEscape } from "@/lib/utils/use-modal";
 import { useHydrated, useOutsidePointer, usePopoverPosition } from "@/lib/utils/use-popover";
 import type { FilterChoice } from "@/lib/admin/list";
@@ -76,6 +77,7 @@ export function AdminSelect({
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [highlighted, setHighlighted] = useState(0);
+  useClosedWhenHidden(() => setOpen(false));
 
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);

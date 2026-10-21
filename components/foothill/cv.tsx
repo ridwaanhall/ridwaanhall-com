@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { RetryButton } from "@/components/foothill/controls";
 import { Icon } from "@/components/foothill/icons";
 import { openMarkdown } from "@/components/foothill/markdown";
+import { useClosedWhenHidden } from "@/lib/motion/use-closed-when-hidden";
 import { useLockedPage } from "@/lib/motion/use-locked-page";
 import { CV_FILE, CV_MARKDOWN } from "@/lib/site/cv";
 
@@ -80,6 +81,7 @@ export function CvViewer({ generated }: { generated?: string }) {
   }, []);
 
   useLockedPage(open, () => setOpen(false));
+  useClosedWhenHidden(() => setOpen(false));
 
   useEffect(() => {
     if (!open) return;

@@ -6,6 +6,7 @@ import { useEffect, useId, useRef, useState } from "react";
 
 import { initials } from "@/components/foothill/ui";
 import { ROLE_BLURB, ROLE_LABEL, type SiteRole } from "@/lib/auth/roles";
+import { useClosedWhenHidden } from "@/lib/motion/use-closed-when-hidden";
 import { sizedAvatar } from "@/lib/site/display";
 
 /**
@@ -36,6 +37,10 @@ export function AccountMenu({
   const id = useId();
   const pathname = usePathname();
   const [openedAt, setOpenedAt] = useState(pathname);
+
+  // Following Admin hides this route rather than unmounting it, so without
+  // this the menu came back open on View site.
+  useClosedWhenHidden(() => setOpen(false));
 
   // A navigation closes the menu. Adjusted during render rather than in an
   // effect, so the panel never paints open over the page it led to.

@@ -10,6 +10,7 @@ import { Icon, type IconName } from "@/components/foothill/icons";
 import { usePalette } from "@/components/foothill/palette";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import type { AboutData } from "@/lib/data/about";
+import { useClosedWhenHidden } from "@/lib/motion/use-closed-when-hidden";
 import { useLockedPage } from "@/lib/motion/use-locked-page";
 import { isActive, visibleNavItems } from "@/lib/nav";
 import { hasOpenhire } from "@/lib/site/display";
@@ -88,6 +89,7 @@ function NavbarAt({ about, account, pathname }: { about: AboutData; account: Rea
   }, []);
 
   useLockedPage(menu, () => setMenu(false));
+  useClosedWhenHidden(() => setMenu(false));
 
   const sheet = [
     { label: "Home", href: "/" as const, matchNested: false },

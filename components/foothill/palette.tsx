@@ -12,6 +12,7 @@ import { Brand, Icon, type IconName } from "@/components/foothill/icons";
 import { copyMarkdown, openMarkdown } from "@/components/foothill/markdown";
 import { PAGE_ICON } from "@/components/foothill/navbar";
 import type { AboutData } from "@/lib/data/about";
+import { useClosedWhenHidden } from "@/lib/motion/use-closed-when-hidden";
 import { useLockedPage } from "@/lib/motion/use-locked-page";
 import { visibleNavItems } from "@/lib/nav";
 import { socialLinks } from "@/lib/site/display";
@@ -120,6 +121,13 @@ export function PaletteProvider({ about, children }: { about: AboutData; childre
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [isOpen, open, close, showHelp]);
+
+  // The palette and the shortcuts sheet are overlays: neither should be
+  // waiting, open, when the reader comes back from the admin.
+  useClosedWhenHidden(() => {
+    setOpen(false);
+    setHelp(false);
+  });
 
   const api = useMemo(() => ({ open, close, help: showHelp }), [open, close, showHelp]);
 

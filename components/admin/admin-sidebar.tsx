@@ -31,6 +31,7 @@ import {
   type AdminGroup,
 } from "@/lib/admin/registry";
 import { Mark } from "@/components/foothill/mark";
+import { useClosedWhenHidden } from "@/lib/motion/use-closed-when-hidden";
 import { ROLE_LABEL, adminRole } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils/cn";
 import { useOutsidePointer, usePopoverPosition } from "@/lib/utils/use-popover";
@@ -332,6 +333,13 @@ export function AdminSidebar({
     anchor: HTMLElement;
     keyboard: boolean;
   } | null>(null);
+
+  // View site hides the admin rather than unmounting it; the drawer and the
+  // flyout must not be open over it when the reader comes back.
+  useClosedWhenHidden(() => {
+    setDrawer(false);
+    setFlyout(null);
+  });
 
   /*
    * A grace period between the icon and the panel.

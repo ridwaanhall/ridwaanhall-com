@@ -131,6 +131,19 @@ against the file rather than trusting either — **any delta that creates a tabl
 has to enable RLS itself**, and re-running the loop is the way to do it, since
 enabling it twice is a no-op.
 
+**There is now a safety net under that rule, and it is not a replacement for
+it.** Supabase installs an event trigger, `ensure_rls`, whose function
+`public.rls_auto_enable()` enables RLS on every table created in the schemas it
+lists -- and it listed only `public`, where nothing here lives, so it had been
+watching an empty schema the whole time. It lists `app` as well now, and a table
+created in `app` arrives with RLS on (proved by creating one in a transaction
+and rolling back). It is a platform object rather than part of `0000_init.sql`,
+so a project reset or a change on Supabase's side can put it back to `public`
+alone: keep enabling RLS in every delta, and keep trusting
+`check-baseline-schema.mjs` over either. Its `EXECUTE` is revoked from `anon`
+and `authenticated`, which the security advisor flagged; an event trigger does
+not need it to fire.
+
 `drizzle-kit generate` does not model RLS, reads every table as "should be
 disabled", and emits `DISABLE ROW LEVEL SECURITY` for all of them. It is not
 used here, and **any generated SQL gets read line by line before it runs.**

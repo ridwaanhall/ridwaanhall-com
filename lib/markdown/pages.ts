@@ -16,6 +16,8 @@ import { getCv } from "@/lib/cv/load";
 import { cvToMarkdown } from "@/lib/cv/markdown";
 import { getLegalDocument, getLegalDocuments } from "@/lib/data/legal";
 import { getHiringData, getOpenToWorkData } from "@/lib/data/openhire";
+import { getPatchNotes, releaseUrl } from "@/lib/data/patch-notes";
+import { releaseMarkdown } from "@/lib/patch-notes/commits";
 import { SITE_URL } from "@/lib/seo/config";
 import { postCategory, readingMinutes, shortDate, socialLinks } from "@/lib/site/display";
 import { twinOf } from "@/lib/site/twins";
@@ -256,6 +258,24 @@ export async function legalTwin(slug: string): Promise<Twin | null> {
   };
 }
 
+export async function patchNotesTwin(): Promise<Twin> {
+  const notes = await getPatchNotes();
+  const [latest] = notes;
+  return {
+    path: "/patch-notes",
+    title: "Patch notes",
+    summary: latest ? `${notes.length} releases; the latest is v${latest.version}, ${longDate(latest.released_at)}.` : "No releases yet.",
+    body: notes
+      .map((note) =>
+        // A release's own sections become level three here, under its version.
+        [`## v${note.version}${note.title ? `: ${note.title}` : ""}`, `${longDate(note.released_at)}. [GitHub release](${releaseUrl(note.version)})`, releaseMarkdown(note).replace(/^## /gm, "### ")]
+          .filter(Boolean)
+          .join("\n\n"),
+      )
+      .join("\n\n"),
+  };
+}
+
 /** What `/llms.txt` lists, in order: every twin that has a path of its own. */
 export async function everyTwin(): Promise<{ pages: Twin[]; projects: Twin[]; writing: Twin[]; optional: Twin[] }> {
   const about = await getAboutData();
@@ -271,18 +291,19 @@ export async function everyTwin(): Promise<{ pages: Twin[]; projects: Twin[]; wr
     getBlogs(),
     getLegalDocuments(),
   ]);
-  const [projectPages, postPages, legalPages, guestbook] = await Promise.all([
+  const [projectPages, postPages, legalPages, guestbook, patchNotes] = await Promise.all([
     Promise.all(sortProjects(projects).map((p) => projectTwin(p.slug))),
     Promise.all(blogs.map((p) => postTwin(p.slug, about))),
     Promise.all(legal.map((d) => legalTwin(d.slug))),
     guestbookTwin(),
+    patchNotesTwin(),
   ]);
   const found = <T>(items: (T | null)[]) => items.filter((item): item is T => item !== null);
   return {
     pages: [home, work, writing, aboutPage, ...(cv ? [cv] : []), contactTwin(about), ...(openhire ? [openhire] : [])],
     projects: found(projectPages),
     writing: found(postPages),
-    optional: [dashboardTwin(about), guestbook, ...found(legalPages)],
+    optional: [dashboardTwin(about), guestbook, patchNotes, ...found(legalPages)],
   };
 }
 

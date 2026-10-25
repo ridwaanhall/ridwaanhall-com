@@ -16,7 +16,7 @@ import {
   type FormField,
   type FormValues,
 } from "@/lib/admin/form";
-import { inlineImageKeys, saveInlines } from "@/lib/admin/inlines";
+import { inlineImageKeys, prepareInlines, writeInlines, type PreparedInlines } from "@/lib/admin/inlines";
 import { keepStoredTime } from "@/lib/admin/same-value";
 import { changesNothing, loadStoredRecord } from "@/lib/admin/unchanged";
 import { formModelFor } from "@/lib/admin/models";
@@ -26,7 +26,7 @@ import { adminPath, ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
 import { permits } from "@/lib/auth/permissions";
 import { getStaffUser } from "@/lib/auth/staff";
 import { MODEL_TAGS } from "@/lib/data/tags";
-import { db } from "@/lib/db/client";
+import { db, type Executor } from "@/lib/db/client";
 import { applyImageFields, imageFields } from "@/lib/admin/images";
 import { keyForMediaId, mediaIdForKey, setImageAlts } from "@/lib/admin/media";
 import { deleteUnreferenced } from "@/lib/storage/cleanup";
@@ -318,6 +318,18 @@ export async function saveRecord(
     }
   }
 
+  /*
+   * The child rows are checked -- and their linked images fetched -- before
+   * anything is written, so a mistake in a gallery row cannot leave a new
+   * record saved behind an error that invites saving it again.
+   */
+  let prepared: PreparedInlines | null = null;
+  if (model.inlines?.length) {
+    const inlines = await prepareInlines(model.inlines, data, { deadline, stored: stored?.inlines });
+    if (!inlines.ok) return { ok: false, error: "Some fields need attention.", fieldErrors: inlines.errors };
+    prepared = inlines.prepared;
+  }
+
   const problem = await model.validate?.(values, {
     id,
     actorId: actor.id,
@@ -335,37 +347,85 @@ export async function saveRecord(
   if (problem) return { ok: false, error: problem };
 
   /*
-   * An image field's value is a storage key coming out of the upload control
-   * and an asset id going into the column. Converting here, once, keeps both
-   * halves unaware of the other.
+   * **Every write of this save is one transaction**: the record, its join
+   * tables, its child rows, the asset rows its images need and their
+   * descriptions. They were separate statements, so a database failure part
+   * way through left a record saved with half its children, under an error
+   * that said nothing had been. Now it all lands or none of it does.
+   *
+   * What stays outside is what a rollback cannot take back: the files were
+   * uploaded to Storage before this (and are orphans at worst, which the
+   * storage audit finds), and the cleanup of files the record stopped naming
+   * runs only after the commit, so a rolled-back save never deletes one.
    */
-  for (const field of imageFields(formFieldsFor(model, id))) {
-    /*
-     * Only a field that was actually edited. `applyImageFields` returns a value
-     * for an upload and for a clear, and nothing at all for an untouched one --
-     * an empty file input means "not edited", never "make it empty". Converting
-     * unconditionally put the name into `values` with `null` behind it, and
-     * `toColumns` writes whatever it finds there: saving any other field on the
-     * record blanked the image.
-     */
-    if (!(field.name in values)) continue;
-    const key = values[field.name];
-    values[field.name] = typeof key === "string" && key ? await mediaIdForKey(key) : null;
-  }
-
-  const row = toColumns(model, values, id);
-  // Columns the form does not carry that the database still demands. Only on
-  // insert: an update must not reset a creation timestamp or a view counter.
-  if (id === null && model.insertDefaults) Object.assign(row, model.insertDefaults());
   let created: string | null = null;
+  const staleFromInlines: string[] = [];
+  const alts = { ...images.alts };
 
   try {
-    if (id === null) {
-      const [inserted] = await db.insert(model.from).values(row).returning({ id: model.pk });
-      created = inserted ? String(inserted.id) : null;
-    } else {
-      await db.update(model.from).set(row).where(eq(model.pk, id));
-    }
+    await db.transaction(async (tx) => {
+      /*
+       * An image field's value is a storage key coming out of the upload
+       * control and an asset id going into the column. Converting here, once,
+       * keeps both halves unaware of the other.
+       */
+      for (const field of imageFields(formFieldsFor(model, id))) {
+        /*
+         * Only a field that was actually edited. `applyImageFields` returns a
+         * value for an upload and for a clear, and nothing at all for an
+         * untouched one -- an empty file input means "not edited", never "make
+         * it empty". Converting unconditionally put the name into `values` with
+         * `null` behind it, and `toColumns` writes whatever it finds there:
+         * saving any other field on the record blanked the image.
+         */
+        if (!(field.name in values)) continue;
+        const key = values[field.name];
+        values[field.name] = typeof key === "string" && key ? await mediaIdForKey(key, tx) : null;
+      }
+
+      const row = toColumns(model, values, id);
+      // Columns the form does not carry that the database still demands. Only
+      // on insert: an update must not reset a creation timestamp or a counter.
+      if (id === null && model.insertDefaults) Object.assign(row, model.insertDefaults());
+
+      if (id === null) {
+        const [inserted] = await tx.insert(model.from).values(row).returning({ id: model.pk });
+        created = inserted ? String(inserted.id) : null;
+      } else {
+        await tx.update(model.from).set(row).where(eq(model.pk, id));
+      }
+
+      // Child rows go after the parent, and for a create they have no choice:
+      // an inline row carries the parent's id, which the insert just returned.
+      const parentId = id ?? created;
+      if (parentId === null) return;
+
+      // A many-to-many lives in a join table, not in a column, so it is written
+      // once the record exists -- and on a create it cannot be written before.
+      for (const field of manyToManyFields(model)) {
+        const source = field.manyToMany;
+        const chosen = values[field.name];
+        if (!source || !Array.isArray(chosen)) continue;
+        await saveManyToMany(source, parentId, chosen.map(String), tx);
+      }
+
+      if (prepared) {
+        const inlined = await writeInlines(prepared, parentId, tx);
+        if (inlined.ok) {
+          staleFromInlines.push(...inlined.stale);
+          Object.assign(alts, inlined.alts);
+        }
+      }
+
+      /*
+       * The descriptions, after the rows and before the cleanup. After, because
+       * a file uploaded on this save has no `media_asset` row until
+       * `mediaIdForKey` made one; before, because the cleanup is what removes
+       * an asset the record stopped naming, and describing it then would
+       * silently update nothing.
+       */
+      await setImageAlts(alts, tx);
+    });
   } catch (error) {
     if (isUniqueViolation(error)) {
       const field = uniqueField(model, error);
@@ -377,45 +437,7 @@ export async function saveRecord(
     throw error;
   }
 
-  /*
-   * Child rows go after the parent, and for a create they have no choice: an
-   * inline row carries the parent's id, which does not exist until the insert
-   * returns. A failure here leaves the parent saved and its children not, which
-   * is why the fields are validated before anything is written -- what can
-   * still fail at this point is the database, not the input.
-   */
   const parentId = id ?? created;
-
-  // A many-to-many lives in a join table, not in a column, so it is written
-  // after the record exists -- and on a create it cannot be written before.
-  for (const field of manyToManyFields(model)) {
-    const source = field.manyToMany;
-    const chosen = values[field.name];
-    if (!source || !Array.isArray(chosen) || parentId === null) continue;
-    await saveManyToMany(source, parentId, chosen.map(String));
-  }
-
-  const staleFromInlines: string[] = [];
-  const alts = { ...images.alts };
-  if (model.inlines?.length && parentId !== null) {
-    const inlined = await saveInlines(model.inlines, data, parentId, { deadline, stored: stored?.inlines });
-    if (!inlined.ok) {
-      return { ok: false, error: "Some fields need attention.", fieldErrors: inlined.errors };
-    }
-    staleFromInlines.push(...inlined.stale);
-    Object.assign(alts, inlined.alts);
-  }
-
-  /*
-   * The descriptions, after the rows and before the cleanup.
-   *
-   * After, because a file uploaded on this save has no `media_asset` row until
-   * `mediaIdForKey` made one, and there is nothing to describe before that.
-   * Before the cleanup, because that is what removes an asset the record has
-   * stopped naming -- describing a row that is about to be deleted is wasted,
-   * and describing one after it is gone silently updates nothing.
-   */
-  await setImageAlts(alts);
 
   // Only now that the write has landed. A file the record no longer names is
   // still not removed if any other row names it -- one author photo is shared by
@@ -472,6 +494,8 @@ async function saveManyToMany(
   source: NonNullable<FormField["manyToMany"]>,
   ownerId: string,
   targetIds: string[],
+  // The save's own transaction: the pairs land or roll back with the record.
+  tx: Executor,
 ): Promise<void> {
   const columns = Object.entries(getTableColumns(source.join));
   const ownerKey = columns.find(([, column]) => column === source.ownerFk)?.[0];
@@ -479,28 +503,26 @@ async function saveManyToMany(
   const position = columns.find(([name]) => name === "position");
   if (!ownerKey || !targetKey) return;
 
-  await db.transaction(async (tx) => {
-    const before = position
-      ? await tx
-          .select({ target: source.targetFk, position: position[1] })
-          .from(source.join)
-          .where(eq(source.ownerFk, ownerId))
-      : [];
-    await tx.delete(source.join).where(eq(source.ownerFk, ownerId));
-    if (targetIds.length === 0) return;
+  const before = position
+    ? await tx
+        .select({ target: source.targetFk, position: position[1] })
+        .from(source.join)
+        .where(eq(source.ownerFk, ownerId))
+    : [];
+  await tx.delete(source.join).where(eq(source.ownerFk, ownerId));
+  if (targetIds.length === 0) return;
 
-    const placed = new Map(before.map((row) => [String(row.target), Number(row.position)]));
-    const kept = [...new Set(targetIds)].sort(
-      (a, b) => (placed.get(a) ?? Infinity) - (placed.get(b) ?? Infinity),
-    );
-    await tx.insert(source.join).values(
-      kept.map((id, index) => ({
-        [ownerKey]: ownerId,
-        [targetKey]: id,
-        ...(position ? { [position[0]]: index } : {}),
-      })),
-    );
-  });
+  const placed = new Map(before.map((row) => [String(row.target), Number(row.position)]));
+  const kept = [...new Set(targetIds)].sort(
+    (a, b) => (placed.get(a) ?? Infinity) - (placed.get(b) ?? Infinity),
+  );
+  await tx.insert(source.join).values(
+    kept.map((id, index) => ({
+      [ownerKey]: ownerId,
+      [targetKey]: id,
+      ...(position ? { [position[0]]: index } : {}),
+    })),
+  );
 }
 
 /** Postgres foreign-key violation, so "still in use" reads as a message. */

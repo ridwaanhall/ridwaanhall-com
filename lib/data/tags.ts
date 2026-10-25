@@ -27,6 +27,7 @@ export const TAGS = {
   opentowork: "opentowork",
   legal: "legal",
   settings: "settings",
+  patchNotes: "patchNotes",
 } as const;
 
 export type Tag = (typeof TAGS)[keyof typeof TAGS];
@@ -95,6 +96,10 @@ export const MODEL_TAGS: Record<string, readonly Tag[]> = {
   // Legal.
   legal_document: [TAGS.legal],
   legal_section: [TAGS.legal],
+
+  // Patch notes, written by the release workflow and corrected in the admin.
+  patch_note: [TAGS.patchNotes],
+  patch_note_entry: [TAGS.patchNotes],
 
   /*
    * Shared lookups, which is where the "err towards listing it" rule earns its

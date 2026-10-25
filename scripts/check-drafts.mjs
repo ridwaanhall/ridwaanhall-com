@@ -3,9 +3,9 @@
  *
  *   node scripts/check-drafts.mjs
  *
- * Two rules, both in `lib/data/content.ts`: the public read paths select only
- * `is_published`, and `app/api/cron/publish` is the only thing that turns it
- * on by itself. Everything a reader can reach resolves through `getBlogs` and
+ * The rule is in `lib/data/content.ts`: the public read paths select only
+ * `is_published`, and nothing turns it on but a save through the admin.
+ * Everything a reader can reach resolves through `getBlogs` and
  * `getProjects` -- the listing, the detail pages, `generateStaticParams`, the
  * sitemap, the JSON API and search -- so the `where` is the whole surface.
  *
@@ -20,7 +20,7 @@
  * be cold.
  *
  * So the rules are checked where they are decidable: the same predicates the
- * read paths and the job use, run against the real tables inside a transaction
+ * read paths use, run against the real tables inside a transaction
  * that is rolled back.
  */
 import { config } from "dotenv";
@@ -98,22 +98,6 @@ try {
     );
     check(rows[0]?.d === "false", `${table}.is_published defaults to off`, `default is ${rows[0]?.d}`);
   }
-
-  /* ------------------------------------------------------- the publish job */
-  /*
-   * Due means `published_at` has passed *and* the flag is still off. A row
-   * dated forward must not be caught, and one already published must not be
-   * rewritten on every run for no reason.
-   */
-  const future = await post(`zz-future-${STAMP}`, false, "1 day");
-  const { rows: due } = await client.query(
-    `update app.blog_post set is_published = true
-     where is_published = false and published_at <= now() returning id`,
-  );
-  const published = new Set(due.map((r) => r.id));
-  check(published.has(draft), "the job publishes a post whose time has passed");
-  check(!published.has(future), "and leaves one dated forward alone");
-  check(!published.has(live), "and does not touch one already published");
 
   await client.query("rollback");
 

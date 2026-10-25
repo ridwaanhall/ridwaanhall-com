@@ -19,6 +19,7 @@ const STATIC = new Set([
   "/openhire",
   "/privacy-policy",
   "/terms",
+  "/patch-notes",
 ]);
 
 const DETAIL = /^\/(projects|blog|legal)\/[a-z0-9][a-z0-9-]*$/;

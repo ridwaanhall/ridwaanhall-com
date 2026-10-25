@@ -7,7 +7,7 @@ import {
   type AdminFormModel,
   type FormValues,
 } from "@/lib/admin/form";
-import { db } from "@/lib/db/client";
+import { db, type Executor } from "@/lib/db/client";
 import { mediaAsset } from "@/lib/db/app-schema";
 import { assetUrl, mediaUrl } from "@/lib/storage/media";
 
@@ -30,17 +30,17 @@ import { assetUrl, mediaUrl } from "@/lib/storage/media";
  */
 
 /** The id for a storage key, creating the asset row the first time it is seen. */
-export async function mediaIdForKey(key: string): Promise<string | null> {
+export async function mediaIdForKey(key: string, executor: Executor = db): Promise<string | null> {
   if (!key) return null;
 
-  const [existing] = await db
+  const [existing] = await executor
     .select({ id: mediaAsset.id })
     .from(mediaAsset)
     .where(eq(mediaAsset.storageKey, key))
     .limit(1);
   if (existing) return existing.id;
 
-  const [created] = await db
+  const [created] = await executor
     .insert(mediaAsset)
     .values({
       storageKey: key,
@@ -177,13 +177,13 @@ async function assetsForKeys(keys: string[]): Promise<Map<string, { source: stri
  * the honest value for a decorative image -- a screen reader skips an `alt=""`
  * and announces the filename of a missing one.
  */
-export async function setImageAlts(alts: Record<string, string>): Promise<void> {
+export async function setImageAlts(alts: Record<string, string>, executor: Executor = db): Promise<void> {
   const entries = Object.entries(alts).filter(([key]) => key);
   if (entries.length === 0) return;
 
   await Promise.all(
     entries.map(([key, alt]) =>
-      db.update(mediaAsset).set({ alt }).where(eq(mediaAsset.storageKey, key)),
+      executor.update(mediaAsset).set({ alt }).where(eq(mediaAsset.storageKey, key)),
     ),
   );
 }

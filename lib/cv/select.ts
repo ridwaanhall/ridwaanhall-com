@@ -24,7 +24,16 @@ export type CvInput = {
   availability: string;
   notes: string;
   longDescription: string;
-  experiences: { title: string; company: string; start: string; end: string; responsibilities: string[] }[];
+  experiences: {
+    title: string;
+    company: string;
+    start: string;
+    end: string;
+    employmentType: string;
+    workMode: string;
+    place: string;
+    responsibilities: string[];
+  }[];
   education: { degree: string; institution: string; years: string; achievements: string[] }[];
   skills: [string, string[]][];
   projects: { title: string; headline: string; stack: string[] }[];
@@ -37,7 +46,7 @@ export type Cv = {
   contact: { text: string; href?: string }[];
   summary: string;
   skills: string[];
-  experience: { title: string; company: string; period: string; points: string[] }[];
+  experience: { title: string; company: string; details: string; period: string; points: string[] }[];
   projects: { title: string; line: string }[];
   education: { degree: string; institution: string; years: string }[];
   certifications: string[];
@@ -92,6 +101,7 @@ export function buildCv(input: CvInput): Cv {
     experience: [...byCompany.values()].map((list) => ({
       title: list.map((role) => role.title).slice(0, 2).join(" / "),
       company: list[0].company,
+      details: details(list),
       period: span(list),
       points: list.flatMap((role) => role.responsibilities).slice(0, 3),
     })),
@@ -129,6 +139,25 @@ function span(list: { start: string; end: string }[]): string {
   const ends = list.map((role) => role.end);
   const end = ends.includes("Present") ? "Present" : latest(ends);
   return `${start} - ${end}`;
+}
+
+/**
+ * How and where one organisation's roles were held: "Full-time | Hybrid |
+ * Bandung, West Java, Indonesia".
+ *
+ * Each part is the distinct values across the grouped roles, so a freelance
+ * role and a full-time one at the same place read "Freelance / Full-time"
+ * rather than either one being silently dropped. Empty parts are left out.
+ */
+function details(list: CvInput["experiences"]): string {
+  const distinct = (values: string[]) => [...new Set(values.map((value) => value.trim()).filter(Boolean))].join(" / ");
+  return [
+    distinct(list.map((role) => role.employmentType)),
+    distinct(list.map((role) => role.workMode)),
+    distinct(list.map((role) => role.place)),
+  ]
+    .filter(Boolean)
+    .join(" | ");
 }
 
 function foldSkills(groups: [string, string[]][]): string[] {

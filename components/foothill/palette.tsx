@@ -147,6 +147,7 @@ function staticRows(about: AboutData): Row[] {
   const pages: Row[] = [
     ...visibleNavItems().map(({ label, href }) => ({ label, href: href as string })),
     ...(about.is_open_to_work || about.is_hiring ? [{ label: "Open-hire", href: "/openhire" }] : []),
+    { label: "Patch notes", href: "/patch-notes" },
     { label: "Privacy Policy", href: "/privacy-policy" },
     { label: "Terms & Conditions", href: "/terms" },
   ].map(({ label, href }) => ({

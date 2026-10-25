@@ -22,48 +22,55 @@ sorted the unfinished draft **above everything finished** and prerendered it
 into the sitemap. The one control that read like "publish later" was the one
 that made the post most prominent.
 
-**The schedule cannot be `published_at <= now()` in the read path.** That is a
+**There is no scheduled publishing.** A post goes live when somebody switches
+`is_published` on in the admin, and a future `published_at` does nothing on its
+own. It cannot be done in the read path with `published_at <= now()`: that is a
 cached function with a lifetime of days, so a clock comparison inside it is
-evaluated once when the entry is filled and frozen with it: a post scheduled
-for tomorrow would stay hidden for days after its moment. The flag moves
-instead, and `app/api/cron/publish` moves it.
-
-**The schedule is a GitHub workflow rather than a Vercel cron**, and that is a
-plan limit rather than a preference. `vercel.json` carried a `crons` entry for
-about an hour: Hobby allows a cron job to run **once a day**, and a schedule it
-will not accept **fails the deployment** rather than the job -- so the site does
-not ship at all until the entry is removed, and the failure names a pricing page
-rather than a build error. A daily run would have been accepted and is not worth
-having, since a post due at nine could appear any time in the next twenty-four
-hours. `.github/workflows/publish.yml` calls the same endpoint every fifteen
-minutes; moving back is deleting that file and restoring the key, on a plan that
-allows it.
-
-That endpoint **takes no credentials**, on purpose. It publishes exactly the
-posts whose `published_at` has passed -- the set the next scheduled run
-publishes anyway -- so a stranger calling it can bring a post forward by one
-interval at most and can never reach one dated in the future. A secret guarded
-nothing waiting would not, and cost a value set and matched in two places. The
-consequence worth knowing: **unpublishing a post dated in the past does not keep
-it down**; the next run puts it back. Move the date forward instead.
-
-**Only posts can be scheduled.** `project` carries the same flag but no column
-saying when it should go live, and that is the honest shape -- a project goes
-public when there is something to link to, which is not a date known in advance.
-
-**`updateTag` is refused in a route handler.** It is Server Actions only; the
-API reference says so outright and the error names the restriction. So the job
-uses `revalidateTag(TAGS.blog, "max")`, which marks the tag stale rather than
-expiring it -- the post appears on the request after the first rather than on
-the first. Seconds, against a schedule measured in days. It is called **only
-when a row actually moved**: marking the tag every run would discard the blog
-payload hourly, which is the opposite of what `cacheLife("days")` is for.
+evaluated once when the entry is filled and frozen with it, and a post dated
+tomorrow would stay hidden for days after its moment. Scheduling means a job
+that flips the flag. One existed -- an open `app/api/cron/publish` route that a
+GitHub workflow called every fifteen minutes -- and both were removed as unused.
+A Vercel cron is not the way back on Hobby: a `crons` entry that runs more than
+**once a day** **fails the deployment** rather than the job, and the failure
+names a pricing page rather than a build error. Note too that `updateTag` is
+refused outside a Server Action, so a route handler doing that job would need
+`revalidateTag(TAGS.blog, "max")`, called only when a row actually moved.
 
 There is **no preview of a draft yet**. Seeing one rendered means publishing it,
 looking, and unpublishing -- the article page is one file of inline JSX rather
 than a component something else could render, and `draftMode()` is not the way
 round it: reading it in `/blog/[slug]` makes that route dynamic for every
 reader, not only for staff.
+
+## Patch notes are written by the release workflow
+
+Every push to main runs `.github/workflows/release.yml`, with nobody doing
+anything. It sends **every commit since the newest `v*` tag** (not only the
+push's) to `POST /api/patch-notes`, so nothing falls between releases;
+`lib/patch-notes/commits.ts` (pure, tested) files each commit by its type and
+picks the version: a breaking change is a major, a `feat` a minor, anything
+else a patch. The workflow then tags `v<version>` and publishes the GitHub
+Release with the Markdown the endpoint returns. Before that it tags any release
+the site holds that GitHub lacks, so a run that died half way, or a note added
+in the admin with a commit sha, is published by the next one. Edit a release's
+wording, summary or visibility in the admin (**Site > Patch notes**).
+
+- **The first run makes 4.0.0.** With no release on the site, the range is
+  everything since `v3.0.0`: the redesign and whatever followed it.
+- **`Release-Title:` and `Release-Summary:` lines in a commit message name the
+  release** it lands in, the newest winning. Without one, the title is the
+  most important line.
+- **The endpoint takes `PATCH_NOTES_TOKEN`**, set on Vercel and as a repository
+  secret. It writes text onto a public page, so unlike the cron route it
+  replaced in spirit, it is not open. Unset, it refuses everything.
+- **It is idempotent on the pushed sha.** A re-run workflow gets the release it
+  already made, never a second version. Concurrent pushes queue on an advisory
+  lock (`8_471_003`), so two cannot both claim the same number.
+- **A hidden release keeps its number.** The next version is read from every
+  row, published or not.
+- **`[skip release]` in a commit message leaves it out**, and a push of
+  nothing but skipped commits and merges records nothing.
+- The repository is public, so the workflow costs no Actions minutes.
 
 ## Other things worth knowing here
 

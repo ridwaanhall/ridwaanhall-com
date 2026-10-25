@@ -44,6 +44,9 @@ const s = StyleSheet.create({
   rowMain: { flex: 1, paddingRight: 12 },
   when: { flexShrink: 0, color: MUTE, textAlign: "right" },
   org: { color: MUTE, marginTop: 1 },
+  // How and where: smaller than the organisation, so the heading still reads
+  // title, then company, and this is the detail beneath them.
+  details: { color: MUTE, fontSize: 8.5, marginTop: 1 },
   role: { marginBottom: 8 },
   strong: { fontFamily: "Helvetica-Bold" },
   mute: { color: MUTE },
@@ -134,6 +137,7 @@ export function CvDocument({ cv, username }: { cv: Cv; username: string }) {
                 <View style={s.rowMain}>
                   <Text style={s.strong}>{role.title}</Text>
                   <Text style={s.org}>{role.company}</Text>
+                  {role.details ? <Text style={s.details}>{role.details}</Text> : null}
                 </View>
                 <Text style={s.when}>{role.period}</Text>
               </View>

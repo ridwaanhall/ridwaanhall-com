@@ -33,6 +33,18 @@ describe("locationLabel", () => {
 
   it("returns an empty string when there is no location at all", () => {
     assert.equal(locationLabel(null), "");
+  });
+
+  it("says a city named after its region once", () => {
+    assert.equal(
+      locationLabel({ city: "New York", region: "New York", country: "United States", flag: "🇺🇸" }),
+      "New York, United States 🇺🇸",
+    );
+  });
+
+  it("leaves the flag out when asked, and never answers with a flag alone", () => {
+    assert.equal(locationLabel({ city: "Sleman", region: null, country: "Indonesia", flag: "🇮🇩" }, { flag: false }), "Sleman, Indonesia");
+    assert.equal(locationLabel({ city: null, region: null, country: null, flag: "🇮🇩" }, { flag: false }), "");
     assert.equal(locationLabel(undefined), "");
     assert.equal(locationLabel({ city: null, region: null, country: null, flag: null }), "");
   });

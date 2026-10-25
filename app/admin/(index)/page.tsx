@@ -73,6 +73,20 @@ export default async function AdminIndexPage() {
         face with the count beside it, and the screens under it as ruled rows
         rather than cards -- the hairlines carry the structure a box would.
       */}
+      {/*
+        Backup is not a registry screen -- there are no rows to list -- so it
+        is linked here rather than drawn by the loop below, and only for the
+        role its route admits.
+      */}
+      {actor.isSuperuser && (
+        <p className="text-[15px] text-zinc-400">
+          <Link href="/admin/backup" className="text-zinc-100 underline underline-offset-4 hover:text-indigo-400">
+            Back up or restore the database
+          </Link>
+          , as one JSON file.
+        </p>
+      )}
+
       {groups.map(({ group, items }) => (
         <section key={group} aria-labelledby={`area-${group}`} className="grid gap-5 lg:grid-cols-12 lg:gap-10">
           <h2 id={`area-${group}`} className={`${SECTION_TITLE} flex items-start gap-1.5 lg:col-span-3`}>

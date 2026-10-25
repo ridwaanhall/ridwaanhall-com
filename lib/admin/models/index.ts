@@ -74,6 +74,7 @@ import {
   workModeForm,
   workModeList,
 } from "@/lib/admin/models/settings";
+import { patchNoteForm, patchNoteList } from "@/lib/admin/models/patch-notes";
 import { publicAccessForm, publicAccessList } from "@/lib/admin/models/public-access";
 import { userForm, userList } from "@/lib/admin/models/users";
 
@@ -122,6 +123,8 @@ const MODELS: AdminListModel<never>[] = [
   // legal
   legalDocumentList,
   legalSectionList,
+  // site
+  patchNoteList,
   // guestbook
   chatMessageList,
   // comments
@@ -195,6 +198,8 @@ const FORMS: AdminFormModel[] = [
   // legal
   legalDocumentForm,
   legalSectionForm,
+  // site
+  patchNoteForm,
   // guestbook
   chatMessageForm,
   // comments

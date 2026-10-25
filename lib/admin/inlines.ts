@@ -14,7 +14,7 @@ import {
 import { applyImageFields, imageFields } from "@/lib/admin/images";
 import { keyForMediaId, keysForMediaIds, mediaIdForKey } from "@/lib/admin/media";
 import { keepStoredTime } from "@/lib/admin/same-value";
-import { db } from "@/lib/db/client";
+import { db, type Executor } from "@/lib/db/client";
 import { isUuid } from "@/lib/utils/uuid";
 
 /**
@@ -175,18 +175,27 @@ export async function inlineImageKeys(
   return keys;
 }
 
+/** Every submitted child row, parsed and with its images in place, ready to write. */
+export type PreparedInlines = {
+  work: { inline: AdminInline; rows: { id: string | null; values: FormValues }[] }[];
+  stale: string[];
+  alts: Record<string, string>;
+};
+
 /**
- * Reconcile every inline of a record against what was submitted.
+ * Everything about a record's child rows that can fail on the reader's input:
+ * required fields, and images fetched from a link. Writes nothing to the
+ * database.
  *
- * Deletes go first so a row removed in the same save cannot collide with a new
- * one on a unique constraint -- `ProfileSkillHighlight` is unique on
- * `(profile, skill)`, so swapping which skill sits in a slot would otherwise
- * fail against the row being replaced.
+ * **Split from the write, and called before the parent is saved.** This used
+ * to run after it, so a gallery link that failed to fetch on a *new* project
+ * returned "Some fields need attention" with the project already inserted --
+ * and the form, still a create form, inserted a second one on the next press
+ * of Create (or refused it as a duplicate slug, naming nothing useful).
  */
-export async function saveInlines(
+export async function prepareInlines(
   inlines: AdminInline[],
   data: FormData,
-  parentId: string,
   /**
    * The save's own deadline for fetching linked images, opened by `saveRecord`
    * and shared with the record's own fields. A gallery can carry seven rows,
@@ -204,11 +213,11 @@ export async function saveInlines(
      */
     stored?: Record<string, InlineRow[]>;
   } = {},
-): Promise<InlineResult> {
+): Promise<{ ok: true; prepared: PreparedInlines } | { ok: false; errors: Record<string, string> }> {
   const errors: Record<string, string> = {};
   const stale: string[] = [];
   const alts: Record<string, string> = {};
-  const work: { inline: AdminInline; rows: { id: string | null; values: FormValues }[] }[] = [];
+  const work: PreparedInlines["work"] = [];
 
   for (const inline of inlines) {
     const count = Number(data.get(inlineCountName(inline.name)) ?? 0);
@@ -265,9 +274,28 @@ export async function saveInlines(
   }
 
   if (Object.keys(errors).length > 0) return { ok: false, errors };
+  return { ok: true, prepared: { work, stale, alts } };
+}
+
+/**
+ * Reconcile every inline of a record against what was submitted, from rows
+ * `prepareInlines` has already accepted.
+ *
+ * Deletes go first so a row removed in the same save cannot collide with a new
+ * one on a unique constraint -- `ProfileSkillHighlight` is unique on
+ * `(profile, skill)`, so swapping which skill sits in a slot would otherwise
+ * fail against the row being replaced.
+ */
+export async function writeInlines(
+  prepared: PreparedInlines,
+  parentId: string,
+  executor: Executor = db,
+): Promise<InlineResult> {
+  const { work, alts } = prepared;
+  const stale = [...prepared.stale];
 
   for (const { inline, rows } of work) {
-    const existing = await db
+    const existing = await executor
       .select({ id: inline.pk })
       .from(inline.table)
       .where(inlineWhere(inline, parentId));
@@ -279,14 +307,14 @@ export async function saveInlines(
       const pictures = imageFields(inline.fields);
       if (pictures.length > 0) {
         const shape = Object.fromEntries(pictures.map((field) => [field.name, field.column]));
-        const going = await db.select(shape).from(inline.table).where(inArray(inline.pk, removed));
+        const going = await executor.select(shape).from(inline.table).where(inArray(inline.pk, removed));
         // Asset ids on the way out; `deleteUnreferenced` counts storage keys.
         const ids = going.flatMap((row) =>
           Object.values(row).filter((value): value is string => typeof value === "string" && value !== ""),
         );
         stale.push(...(await keysForMediaIds(ids)).values());
       }
-      await db.delete(inline.table).where(inArray(inline.pk, removed));
+      await executor.delete(inline.table).where(inArray(inline.pk, removed));
     }
 
     const columns = Object.entries(getTableColumns(inline.table));
@@ -330,7 +358,7 @@ export async function saveInlines(
          */
         if (field.kind === "image") {
           const key = row.values[field.name];
-          payload[keyFor(field)] = typeof key === "string" && key ? await mediaIdForKey(key) : null;
+          payload[keyFor(field)] = typeof key === "string" && key ? await mediaIdForKey(key, executor) : null;
           continue;
         }
         payload[keyFor(field)] = row.values[field.name];
@@ -347,9 +375,12 @@ export async function saveInlines(
           const key = columns.find(([, column]) => column === inline.scope?.column)?.[0];
           if (key) payload[key] = inline.scope.value;
         }
-        await db.insert(inline.table).values(payload);
+        await executor.insert(inline.table).values(payload);
       } else {
-        await db.update(inline.table).set(payload).where(eq(inline.pk, row.id));
+        // Scoped to this record as well as to the row: the row id is form input,
+        // and without the parent a hand-edited id would rewrite another
+        // record's child.
+        await executor.update(inline.table).set(payload).where(and(eq(inline.pk, row.id), inlineWhere(inline, parentId)));
       }
     }
   }

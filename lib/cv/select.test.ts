@@ -13,8 +13,8 @@ const base: CvInput = {
   notes: "Passionate about building web apps. Seeking growth in machine learning.",
   longDescription: "I like quiet mornings. I mentored 50+ coders at a coding camp. I shipped 45+ projects with Python. My favourite colour is green.",
   experiences: [
-    { title: "Founder", company: "RoneAI", start: "Jan 2023", end: "now", responsibilities: ["a", "b", "c", "d"] },
-    { title: "Chief Secretary", company: "IKA", start: "Sep 2021", end: "Jan 2022", responsibilities: ["x"] },
+    { title: "Founder", company: "RoneAI", start: "Jan 2023", end: "now", employmentType: "Full-time", workMode: "Remote", place: "Boyolali, Indonesia", responsibilities: ["a", "b", "c", "d"] },
+    { title: "Chief Secretary", company: "IKA", start: "Sep 2021", end: "Jan 2022", employmentType: "", workMode: "", place: "", responsibilities: ["x"] },
   ],
   education: [{ degree: "S.Kom.", institution: "UTY", years: "2021 - 2025", achievements: [] }],
   skills: [["Languages", ["Python", "PHP"]]],
@@ -55,9 +55,9 @@ describe("the CV's rules", () => {
     const cv = buildCv({
       ...base,
       experiences: [
-        { title: "Machine Learning Intern", company: "Camp", start: "Feb 2024", end: "Mar 2024", responsibilities: [] },
-        { title: "Machine Learning Mentor", company: "Camp", start: "Feb 2025", end: "Present", responsibilities: [] },
-        { title: "Web Developer Intern", company: "Camp", start: "Jan 2024", end: "Jan 2024", responsibilities: [] },
+        { title: "Machine Learning Intern", company: "Camp", start: "Feb 2024", end: "Mar 2024", employmentType: "", workMode: "", place: "", responsibilities: [] },
+        { title: "Machine Learning Mentor", company: "Camp", start: "Feb 2025", end: "Present", employmentType: "", workMode: "", place: "", responsibilities: [] },
+        { title: "Web Developer Intern", company: "Camp", start: "Jan 2024", end: "Jan 2024", employmentType: "", workMode: "", place: "", responsibilities: [] },
       ],
     });
     assert.equal(cv.experience[0].period, "Jan 2024 - Present");
@@ -67,11 +67,36 @@ describe("the CV's rules", () => {
     const cv = buildCv({
       ...base,
       experiences: [
-        { title: "Web Developer Intern", company: "Co", start: "Apr 2024", end: "May 2024", responsibilities: [] },
-        { title: "Software Intern", company: "Co", start: "Feb 2024", end: "Nov 2024", responsibilities: [] },
+        { title: "Web Developer Intern", company: "Co", start: "Apr 2024", end: "May 2024", employmentType: "", workMode: "", place: "", responsibilities: [] },
+        { title: "Software Intern", company: "Co", start: "Feb 2024", end: "Nov 2024", employmentType: "", workMode: "", place: "", responsibilities: [] },
       ],
     });
     assert.equal(cv.experience[0].period, "Feb 2024 - Nov 2024");
+  });
+
+  it("says how and where a role was held, beneath the organisation", () => {
+    assert.equal(buildCv(base).experience[0].details, "Full-time | Remote | Boyolali, Indonesia");
+  });
+
+  it("keeps every distinct kind of role at one organisation, and drops empty parts", () => {
+    const role = { start: "Jan 2024", end: "Present", workMode: "", responsibilities: [] };
+    const cv = buildCv({
+      ...base,
+      experiences: [
+        { ...role, title: "Freelance Developer", company: "Co", employmentType: "Freelance", place: "Bandung, West Java, Indonesia" },
+        { ...role, title: "Software Engineer", company: "Co", employmentType: "Full-time", place: "Bandung, West Java, Indonesia" },
+        { ...role, title: "Backend Developer", company: "Co", employmentType: "Full-time", place: "" },
+      ],
+    });
+    assert.equal(cv.experience[0].details, "Freelance / Full-time | Bandung, West Java, Indonesia");
+  });
+
+  it("has no details line when nothing is known", () => {
+    const cv = buildCv({
+      ...base,
+      experiences: [{ title: "Developer", company: "Co", start: "Jan 2024", end: "Present", employmentType: "", workMode: "", place: "", responsibilities: [] }],
+    });
+    assert.equal(cv.experience[0].details, "");
   });
 
   it("keeps only the latest education", () => {

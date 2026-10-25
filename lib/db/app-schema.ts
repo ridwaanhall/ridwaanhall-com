@@ -396,6 +396,26 @@ export const organization = app.table("organization", {
   logoId: uuid("logo_id").references((): AnyPgColumn => mediaAsset.id),
 });
 
+export const patchNote = app.table("patch_note", {
+  id: uuid().primaryKey().defaultRandom(),
+  version: text().notNull(),
+  title: text().notNull().default(''),
+  summary: text().notNull().default(''),
+  commitSha: text("commit_sha"),
+  releasedAt: timestamp("released_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  isPublished: boolean("is_published").notNull().default(true),
+});
+
+export const patchNoteEntry = app.table("patch_note_entry", {
+  id: uuid().primaryKey().defaultRandom(),
+  patchNoteId: uuid("patch_note_id").references((): AnyPgColumn => patchNote.id).notNull(),
+  kind: text().notNull().default('other'),
+  scope: text().notNull().default(''),
+  body: text().notNull(),
+  commitSha: text("commit_sha").notNull().default(''),
+  position: integer().notNull().default(0),
+});
+
 export const portfolioHighlight = app.table("portfolio_highlight", {
   id: uuid().primaryKey().defaultRandom(),
   openToWorkProfileId: uuid("open_to_work_profile_id").references((): AnyPgColumn => openToWorkProfile.id).notNull(),

@@ -65,6 +65,8 @@ yarn-error.log*
 *.dump.json
 *.dumpdata.json
 *.dump.sql
+# A backup from the admin or scripts/backup.mjs: every row, every account's email.
+*.backup.json
 
 # Working notes, not the record.
 #

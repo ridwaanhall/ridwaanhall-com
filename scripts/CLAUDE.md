@@ -116,6 +116,19 @@ file's contents, so re-running rewrites identical bytes and skips rows already
 moved. That makes it the way to restore an icon somebody unlinked. It is a dry
 run unless given `--apply`.
 
+`scripts/backup.mjs` is not a check either. It runs the same code as the
+admin's Backup screen (`lib/backup/core.ts`): `export` writes every row of
+`app` to one `*.backup.json` (gitignored -- it holds every account's email),
+and `restore <file>` replaces every row in one transaction, as a dry run
+unless given `--apply`. It is the way into a **new** database, which has no
+staff account to sign in to the admin with: apply `drizzle/0000_init.sql`, set
+`BACKUP_DATABASE_URL`, restore. The table list and insert order are read from
+the catalogue each run, so a new table is covered without being named; a backup
+holding a table or column the target lacks is refused rather than half
+restored. Proved by restoring into a local Postgres 16 and comparing every
+table's contents: 58 of 58 identical, replies arriving before their parents
+included. Add `?sslmode=disable` to the URL for a database without TLS.
+
 ## Other things worth knowing here
 
 - **A certificate's identity is its credential URL, not its title.** The 104

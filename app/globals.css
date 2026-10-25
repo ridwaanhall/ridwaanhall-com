@@ -80,6 +80,10 @@
                 authoring them, and one of them names a utility the site does
                 not use in order to assert it is absent -- which was enough, on
                 its own, to make that assertion fail.
+     lib/patch-notes/history.json
+                the release history: prose about the site's past, which
+                names a removed visual effect in an ordinary sentence and
+                would bring its utility back.
      *.test.ts  the unit tests, for the same reason: a test asserting on what
                 `projectStatusColor` returns has to name the classes it returns,
                 and a test for a class the site *stopped* using would keep it
@@ -96,6 +100,7 @@
 @source not "../.claude";
 @source not "../scripts";
 @source not "**/*.test.ts";
+@source not "../lib/patch-notes/history.json";
 
 /* ---------------------------------------------------------------------------
    No classes come from the database

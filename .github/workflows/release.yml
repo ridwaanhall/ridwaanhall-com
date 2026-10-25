@@ -68,6 +68,33 @@ jobs:
             exit 1
           fi
 
+      # The releases from before this workflow existed (0.1.0 to 3.0.0) live
+      # in the repository; the site adds the ones it lacks and ignores the
+      # rest, so this is a no-op on every run after the first.
+      #
+      # This run starts as the merge lands, but the endpoint it calls is
+      # whatever production is serving, which may still be the deployment
+      # from before the merge. A 404 or 405 means that deployment does not
+      # have the import yet, so it waits for Vercel rather than failing.
+      - name: Import the release history
+        run: |
+          set -euo pipefail
+          jq '{releases: .}' lib/patch-notes/history.json > history-body.json
+          for attempt in $(seq 1 30); do
+            status=$(curl -sS -o import.json -w "%{http_code}" --max-time 60 -X PUT \
+              -H "Authorization: Bearer ${PATCH_NOTES_TOKEN}" \
+              -H "x-vercel-protection-bypass: ${VERCEL_BYPASS}" \
+              -H "Content-Type: application/json" \
+              --data @history-body.json "${API_URL}/api/patch-notes") || status=000
+            case "$status" in
+              200) cat import.json; echo; exit 0 ;;
+              404|405|000) echo "Production cannot import yet (HTTP $status); waiting for the deployment ($attempt/30)."; sleep 20 ;;
+              *) cat import.json; echo; echo "::error::Importing the release history failed with HTTP $status."; exit 1 ;;
+            esac
+          done
+          echo "::error::Production never offered the history import."
+          exit 1
+
       - name: Tag any release the site has and GitHub does not
         run: |
           set -euo pipefail
@@ -85,7 +112,10 @@ jobs:
             # into a trailing space ("v4.0.0: New UI ").
             title=$(jq -r '(.data.title // "") | gsub("\\s+"; " ") | sub("^ "; "") | sub(" $"; "")' note.json)
             name="$tag"; if [ -n "$title" ]; then name="$tag: $title"; fi
-            gh release create "$tag" --target "$sha" --title "$name" --notes-file notes.md
+            # Never "Latest": these are older than the release this run is
+            # about to make, and GitHub would otherwise crown whichever was
+            # created last -- 0.1.0, on the first run after the history import.
+            gh release create "$tag" --target "$sha" --title "$name" --notes-file notes.md --latest=false
             echo "Published $tag, which the site had recorded."
           done
           git fetch --tags --force --quiet

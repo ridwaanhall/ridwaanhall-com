@@ -55,6 +55,16 @@ the site holds that GitHub lacks, so a run that died half way, or a note added
 in the admin with a commit sha, is published by the next one. Edit a release's
 wording, summary or visibility in the admin (**Site > Patch notes**).
 
+- **Everything before 4.0.0 is `lib/patch-notes/history.json`**: 0.1.0 (the
+  Django scaffold) to 3.0.0 (the Next.js rebuild), written by hand from the git
+  history. One release per month of the Django era, which was mostly pushed
+  straight to main; majors at its turning points: 1.0.0 the first deploy, 2.0.0
+  the move into Supabase, 2.2.1 the last Django code, 3.0.0 Next.js. Each
+  names the last commit of its window, and its lines are highlights tied to
+  real commits (`history.test.ts` holds the shape). The workflow sends it to
+  `PUT /api/patch-notes` on every run; the site **only adds** versions it
+  lacks, so an admin edit is never undone, and the backfill then tags them
+  with `--latest=false` so an old release never takes "Latest".
 - **The first run makes 4.0.0.** With no release on the site, the range is
   everything since `v3.0.0`: the redesign and whatever followed it.
 - **`Release-Title:` and `Release-Summary:` lines in a commit message name the

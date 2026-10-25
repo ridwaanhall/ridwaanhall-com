@@ -16,6 +16,7 @@ import {
   type Entry,
   type Version,
 } from "./commits";
+import type { HistoryRelease } from "./history";
 
 /**
  * The version the first automatic release takes when the table is empty.
@@ -77,5 +78,54 @@ export async function recordRelease(sha: string, commits: { sha: string; message
     );
 
     return { version, markdown: releaseMarkdown({ summary: meta.summary, entries }), created: true };
+  });
+}
+
+/**
+ * Add the releases in `history.json` that the site does not have yet.
+ *
+ * Insert-only: a version already recorded is left exactly as it is, so a
+ * release reworded in the admin is never put back, and the file can be sent
+ * on every run at no cost. A release whose commit already names another
+ * version is skipped too, since a commit is one release. Under the same lock
+ * as `recordRelease`, so an import and a push cannot race for a number.
+ */
+export async function importHistory(releases: HistoryRelease[]): Promise<{ inserted: string[] }> {
+  return db.transaction(async (tx) => {
+    await tx.execute(sql`select pg_advisory_xact_lock(${PATCH_NOTE_LOCK}::bigint)`);
+
+    const existing = await tx.select({ version: patchNote.version, sha: patchNote.commitSha }).from(patchNote);
+    const versions = new Set(existing.map((row) => row.version));
+    const shas = new Set(existing.map((row) => row.sha).filter(Boolean));
+
+    const inserted: string[] = [];
+    for (const release of releases) {
+      if (versions.has(release.version) || shas.has(release.commit_sha)) continue;
+      const [note] = await tx
+        .insert(patchNote)
+        .values({
+          version: release.version,
+          title: release.title,
+          summary: release.summary,
+          commitSha: release.commit_sha,
+          releasedAt: release.released_at,
+          isPublished: true,
+        })
+        .returning({ id: patchNote.id });
+      await tx.insert(patchNoteEntry).values(
+        release.entries.map((entry, position) => ({
+          patchNoteId: note.id,
+          kind: entry.kind,
+          scope: entry.scope,
+          body: entry.body,
+          commitSha: entry.sha,
+          position,
+        })),
+      );
+      versions.add(release.version);
+      shas.add(release.commit_sha);
+      inserted.push(release.version);
+    }
+    return { inserted };
   });
 }

@@ -81,7 +81,9 @@ jobs:
             curl -sS --fail-with-body --max-time 60 -H "x-vercel-protection-bypass: ${VERCEL_BYPASS}" \
               -o note.json "${API_URL}/api/patch-notes/${version}"
             jq -r '.data.markdown' note.json > notes.md
-            title=$(jq -r '.data.title' note.json | tr '\n' ' ')
+            # One line, trimmed: `tr` on jq's output turned its closing newline
+            # into a trailing space ("v4.0.0: New UI ").
+            title=$(jq -r '(.data.title // "") | gsub("\\s+"; " ") | sub("^ "; "") | sub(" $"; "")' note.json)
             name="$tag"; if [ -n "$title" ]; then name="$tag: $title"; fi
             gh release create "$tag" --target "$sha" --title "$name" --notes-file notes.md
             echo "Published $tag, which the site had recorded."
@@ -139,6 +141,6 @@ jobs:
           # even in shell comments, so this one names none.)
           curl -sS --fail-with-body --max-time 60 -H "x-vercel-protection-bypass: ${VERCEL_BYPASS}" \
             -o release.json "${API_URL}/api/patch-notes/${VERSION}" || true
-          title=$(jq -r '.data.title // ""' release.json 2>/dev/null | tr '\n' ' ' || true)
+          title=$(jq -r '(.data.title // "") | gsub("\\s+"; " ") | sub("^ "; "") | sub(" $"; "")' release.json 2>/dev/null || true)
           name="$tag"; if [ -n "$title" ]; then name="$tag: $title"; fi
           gh release create "$tag" --target "$(git rev-parse HEAD)" --title "$name" --notes-file notes.md

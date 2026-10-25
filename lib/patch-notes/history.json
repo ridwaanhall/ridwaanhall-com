@@ -1,0 +1,974 @@
+[
+  {
+    "version": "0.1.0",
+    "title": "The Django scaffold",
+    "summary": "The Django project behind ridwaanhall.com, set up before anything was public: one settings module, a core app, and the apps the site would grow into. 21 commits.",
+    "released_at": "2025-03-20T00:35:24+07:00",
+    "commit_sha": "3c235b76461763d21c76bf0fbc9ab84e103a67e4",
+    "previous_sha": "",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "core",
+        "body": "Start the Django project with a core app and shared settings",
+        "sha": "8a3cec58f116c1dc8580be8234d076312b05fe00"
+      },
+      {
+        "kind": "feature",
+        "scope": "apps",
+        "body": "Add the blog, career, dashboard, certificates and projects apps",
+        "sha": "bcabcf9dd9bc302cace3024e6628c8818dd916a4"
+      },
+      {
+        "kind": "feature",
+        "scope": "templates",
+        "body": "Add the first page templates for the blog and home",
+        "sha": "4562fd95efa8436071a400cb7c8a5b496580a50e"
+      },
+      {
+        "kind": "feature",
+        "scope": "config",
+        "body": "Consolidate the settings into one module, with WhiteNoise for static files",
+        "sha": "3c235b76461763d21c76bf0fbc9ab84e103a67e4"
+      }
+    ]
+  },
+  {
+    "version": "1.0.0",
+    "title": "The site goes live",
+    "summary": "The first public version of the portfolio, deployed on Vercel: a home page, about, blog and projects with detail pages, a contact page, and a dashboard reading live GitHub and WakaTime activity. 260 commits.",
+    "released_at": "2025-03-31T23:22:14+07:00",
+    "commit_sha": "7caf22a15f3caf34f037dc36861204a891ac7713",
+    "previous_sha": "3c235b76461763d21c76bf0fbc9ab84e103a67e4",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "pages",
+        "body": "Add the about, contact, blog, projects and dashboard pages",
+        "sha": "ed202be10ef2d1987acde6dac4952e16dd6dcfbf"
+      },
+      {
+        "kind": "feature",
+        "scope": "blog",
+        "body": "List posts and render each one on its own page",
+        "sha": "306e9f895b9dcc95d8f16aba1f31bdac37459892"
+      },
+      {
+        "kind": "feature",
+        "scope": "projects",
+        "body": "Give every project a detail page at its own slug",
+        "sha": "04e52ef840c3b3dd1e34bfb3ec87c67a998ee0c1"
+      },
+      {
+        "kind": "feature",
+        "scope": "dashboard",
+        "body": "Show GitHub contribution statistics on the dashboard",
+        "sha": "8bb460735df5791685f9cd6af00d29615966b2e9"
+      },
+      {
+        "kind": "feature",
+        "scope": "dashboard",
+        "body": "Add WakaTime coding activity beside them",
+        "sha": "c111d2bb540e4fcb4842590acbf902f1d5387fb4"
+      },
+      {
+        "kind": "feature",
+        "scope": "deploy",
+        "body": "Deploy on Vercel",
+        "sha": "2eea60378aa5296fe9979353a1d4017f7926e988"
+      },
+      {
+        "kind": "feature",
+        "scope": "seo",
+        "body": "Add the favicon, meta tags, a sitemap and robots.txt",
+        "sha": "5d2bfeb50a5f58c421c3c7185aaaaf022174da39"
+      },
+      {
+        "kind": "feature",
+        "scope": "layout",
+        "body": "Add a responsive header and mobile sidebar",
+        "sha": "10039331fed9469c59e3a98ba1d1187ab4a27349"
+      },
+      {
+        "kind": "feature",
+        "scope": "a11y",
+        "body": "Improve accessibility across the templates",
+        "sha": "a73169fda9c25625bbf5d65f994b436effe981be"
+      }
+    ]
+  },
+  {
+    "version": "1.1.0",
+    "title": "Career, services and Django 5.2",
+    "summary": "A month of filling the site in: the career page gained tabs, toggles and an interviews section, the home page gained services and featured posts, and the project moved to Django 5.2. 373 commits.",
+    "released_at": "2025-04-30T23:21:43+07:00",
+    "commit_sha": "b761f598949e9de3605d0fbdac0fc5267cdfa484",
+    "previous_sha": "7caf22a15f3caf34f037dc36861204a891ac7713",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "career",
+        "body": "Organise experience, education and certifications into tabs",
+        "sha": "f3b167ce2bd2176516ed745a033783090eccbaa4"
+      },
+      {
+        "kind": "feature",
+        "scope": "career",
+        "body": "Add an interviews section, with what each one taught",
+        "sha": "8e86863c6a4071afd2c7b7ade6fbc4ee460b6ec2"
+      },
+      {
+        "kind": "feature",
+        "scope": "career",
+        "body": "Expand and collapse responsibilities and achievements, animated",
+        "sha": "ce808dfbbf0552881198013eca9fc8250a9ba154"
+      },
+      {
+        "kind": "feature",
+        "scope": "home",
+        "body": "Add a services section and featured posts",
+        "sha": "9677ae41cde1faedd4547378edb54671f081038e"
+      },
+      {
+        "kind": "feature",
+        "scope": "home",
+        "body": "Add a section supporting Palestine",
+        "sha": "c00cada14a430399b9ec18d814939de78040e390"
+      },
+      {
+        "kind": "feature",
+        "scope": "blog",
+        "body": "Colour each post's tags",
+        "sha": "ef3f6c26d72d7668af162a39b2334babaa328659"
+      },
+      {
+        "kind": "feature",
+        "scope": "support",
+        "body": "Add sponsorship links and issue templates",
+        "sha": "8a454d14b1722b1d54a43152753dfb40ae8d3ed0"
+      },
+      {
+        "kind": "chore",
+        "scope": "deps",
+        "body": "Upgrade to Django 5.2",
+        "sha": "bd54eb52d95abf118038ae7ec2354e40d738dcdc"
+      }
+    ]
+  },
+  {
+    "version": "1.2.0",
+    "title": "Privacy policy, awards and the contribution graph",
+    "summary": "The site gained a privacy policy, an awards tab, an interactive GitHub contributions graph and a stricter set of security headers, and every page moved to the Onest typeface. 201 commits.",
+    "released_at": "2025-05-31T22:00:04+07:00",
+    "commit_sha": "09a6b329b15327bafe878d03a816cb3abb3fb7a2",
+    "previous_sha": "b761f598949e9de3605d0fbdac0fc5267cdfa484",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "privacy",
+        "body": "Publish a privacy policy page",
+        "sha": "4b57677566ffdc26b028b4b279502136e963cc97"
+      },
+      {
+        "kind": "feature",
+        "scope": "career",
+        "body": "Add an awards tab with credentials",
+        "sha": "4f699ca6993d2306e21a3de91ab9e18fc3148cfd"
+      },
+      {
+        "kind": "feature",
+        "scope": "dashboard",
+        "body": "Draw an interactive GitHub contributions graph",
+        "sha": "b4368f6aa8e0280e18933f6a58a097019486f0d5"
+      },
+      {
+        "kind": "security",
+        "scope": "settings",
+        "body": "Add a content security policy and production-only security settings",
+        "sha": "7c6e53fde0128dfdf447da7fef1f5c2130fd4243"
+      },
+      {
+        "kind": "feature",
+        "scope": "fonts",
+        "body": "Set the site in Onest",
+        "sha": "ba57b644ff256df7865b1214f67ac02ae6f0e56d"
+      },
+      {
+        "kind": "feature",
+        "scope": "education",
+        "body": "Show each school's location with a map link",
+        "sha": "6a0c2e498e931fdd35e1e4cad43f4cb0c6d25478"
+      },
+      {
+        "kind": "refactor",
+        "scope": "apps",
+        "body": "Give every area its own Django app structure",
+        "sha": "6c7713e169be9396003c09838bd5968a995b23f7"
+      }
+    ]
+  },
+  {
+    "version": "1.3.0",
+    "title": "Guestbook",
+    "summary": "The biggest addition of the year: a guestbook where visitors sign in with Google and leave a message. The dashboard learned top languages, editors and systems from WakaTime, and the sidebar gained search. 396 commits.",
+    "released_at": "2025-06-30T10:05:43+07:00",
+    "commit_sha": "1622bce148e130f694946e14e15ed819581fe091",
+    "previous_sha": "09a6b329b15327bafe878d03a816cb3abb3fb7a2",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "guestbook",
+        "body": "Add a guestbook with Google sign-in",
+        "sha": "ccd6bb20eee6234923ae47c3d59e2671f659ebe6"
+      },
+      {
+        "kind": "feature",
+        "scope": "search",
+        "body": "Search the site from the sidebar, on mobile and desktop",
+        "sha": "43f850a7160222c031fe36829e22414348433d98"
+      },
+      {
+        "kind": "feature",
+        "scope": "dashboard",
+        "body": "Show top languages, categories and systems from WakaTime",
+        "sha": "50cf994eb04a1294e06179e01a7447dd2eb5c28c"
+      },
+      {
+        "kind": "feature",
+        "scope": "dashboard",
+        "body": "Animate the progress bars and counters",
+        "sha": "7e55e8295431bcaf292111581af47c06b8b1d483"
+      },
+      {
+        "kind": "feature",
+        "scope": "about",
+        "body": "Merge about and journey into one page with an introduction tab",
+        "sha": "c3ef9e21471746df1972064f09f91246033131d8"
+      },
+      {
+        "kind": "feature",
+        "scope": "projects",
+        "body": "Add GitHub and demo buttons, and a way back to the list",
+        "sha": "9034e0b67c99fa721361b833c3e41c11103b1ae4"
+      },
+      {
+        "kind": "feature",
+        "scope": "support",
+        "body": "Add a sponsor section",
+        "sha": "adb257aa11fee86732246c6db71f3da299fe4f86"
+      },
+      {
+        "kind": "security",
+        "scope": "deps",
+        "body": "Update Django to 5.2.2",
+        "sha": "160ba7be3a022e0e6ee5d89e9cfa8fc9a5ca2ec5"
+      }
+    ]
+  },
+  {
+    "version": "1.4.0",
+    "title": "Contact form and guestbook replies",
+    "summary": "Visitors could now send a message from the contact page, and the guestbook grew up: replies, masked email addresses, Jakarta time and dismissible alerts. Images began to load through a resizing service. 203 commits.",
+    "released_at": "2025-07-31T22:44:42+07:00",
+    "commit_sha": "ac9bd2ecc4e044a0eb605c4eebfeb4426043d773",
+    "previous_sha": "1622bce148e130f694946e14e15ed819581fe091",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "contact",
+        "body": "Send a message from the contact page",
+        "sha": "42ec82d1ff0d937218910660dd2e3c3c92679224"
+      },
+      {
+        "kind": "feature",
+        "scope": "guestbook",
+        "body": "Show replies, including replies to yourself",
+        "sha": "e1554dd18527de879452fb984cc378af3fdef442"
+      },
+      {
+        "kind": "feature",
+        "scope": "guestbook",
+        "body": "Mask email addresses in messages",
+        "sha": "31d8128307748be511e5841a8e32a843d30d36c3"
+      },
+      {
+        "kind": "feature",
+        "scope": "guestbook",
+        "body": "Show every timestamp in Jakarta time",
+        "sha": "3c50c669c13224778264b70440b7310780100221"
+      },
+      {
+        "kind": "feature",
+        "scope": "guestbook",
+        "body": "Add alerts that dismiss themselves",
+        "sha": "7fdc6026ababf078dee93f32f5414d7fb8ed82ef"
+      },
+      {
+        "kind": "feature",
+        "scope": "images",
+        "body": "Serve profile and logo images through a resizing service",
+        "sha": "c3efc6a76a95a76c169c946804ac213eb7221708"
+      },
+      {
+        "kind": "feature",
+        "scope": "seo",
+        "body": "Rewrite every page's title and description",
+        "sha": "69ff280e51ac53b2bffa5eebcfcfc4d154320d4f"
+      }
+    ]
+  },
+  {
+    "version": "1.5.0",
+    "title": "Blog search and image optimisation",
+    "summary": "The blog became searchable, every image on the site could be resized on the fly through wsrv.nl behind a feature flag, and the dashboard explained its streaks. 88 commits.",
+    "released_at": "2025-08-23T21:26:12+07:00",
+    "commit_sha": "d6ed65acce265c71a00d29d8c3f5d16364db5ee0",
+    "previous_sha": "ac9bd2ecc4e044a0eb605c4eebfeb4426043d773",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "blog",
+        "body": "Search the blog listing",
+        "sha": "01bef18451b089c6fb2a6fed6df55535296be7b1"
+      },
+      {
+        "kind": "feature",
+        "scope": "images",
+        "body": "Optimise images through wsrv.nl, behind a feature flag",
+        "sha": "3cf261855e5ce9e7545e4f22470e22aa2156fe4b"
+      },
+      {
+        "kind": "feature",
+        "scope": "images",
+        "body": "Apply it to the blog and project templates",
+        "sha": "5e2dc2c014c710d5646524a3c941d2be9b960b66"
+      },
+      {
+        "kind": "feature",
+        "scope": "dashboard",
+        "body": "Explain the current and longest streak in a tooltip",
+        "sha": "5b4184faf10d024575d7b3d13bc265f4cfee6916"
+      },
+      {
+        "kind": "fix",
+        "scope": "career",
+        "body": "Store dates as month and year, and show them that way",
+        "sha": "f389c8e8822b0bd11728693c3196a57c5a2aaba5"
+      },
+      {
+        "kind": "security",
+        "scope": "deps",
+        "body": "Update Django to 5.2.5",
+        "sha": "7ec2e97dfb99e422f89ad0e3540a2f8afd8feb66"
+      }
+    ]
+  },
+  {
+    "version": "1.6.0",
+    "title": "Open-hire",
+    "summary": "A new open-hire page says whether I am open to work and what I am hiring for, linked from a status in the sidebar. 190 commits.",
+    "released_at": "2025-09-30T19:19:33+07:00",
+    "commit_sha": "ca608666a5e9feaaafa2db4a0562e8fe75727b28",
+    "previous_sha": "d6ed65acce265c71a00d29d8c3f5d16364db5ee0",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "openhire",
+        "body": "Add the open-hire page: open to work, and hiring",
+        "sha": "ada70663a8961fe83d90cbf2ca32bbf44fb26b60"
+      },
+      {
+        "kind": "feature",
+        "scope": "openhire",
+        "body": "Describe roles, skills, locations and how to get in touch",
+        "sha": "c0a6c25db10a7140e8ced0509147847a6fefab0c"
+      },
+      {
+        "kind": "feature",
+        "scope": "sidebar",
+        "body": "Link the hiring and open-to-work status to the page",
+        "sha": "c7c2bd7d36abb7327d01eacc135765921db4a186"
+      },
+      {
+        "kind": "feature",
+        "scope": "skills",
+        "body": "Load skill icons through the image service",
+        "sha": "cccf281e18737f7ac2f7961afa0f295408280c5f"
+      },
+      {
+        "kind": "fix",
+        "scope": "seo",
+        "body": "Fix the SEO configuration and meta tags",
+        "sha": "0dc59a5f58388ff5412aeda5df4b4109ba7278d7"
+      }
+    ]
+  },
+  {
+    "version": "1.7.0",
+    "title": "Image lightbox",
+    "summary": "Project images open full size in a lightbox, and job applications show their salary range and a withdrawn status. 83 commits.",
+    "released_at": "2025-10-28T19:44:33+07:00",
+    "commit_sha": "e724d9a94d5d373ac7b0acc6bc2e2e9f8e7c8f69",
+    "previous_sha": "ca608666a5e9feaaafa2db4a0562e8fe75727b28",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "projects",
+        "body": "Open project images in a lightbox",
+        "sha": "79af76715ba7684518e80c5992be67fe8b0ff986"
+      },
+      {
+        "kind": "feature",
+        "scope": "applications",
+        "body": "Show each application's salary range",
+        "sha": "030e1b67a5f44faf078e9732f000efa02d4cbf25"
+      },
+      {
+        "kind": "feature",
+        "scope": "applications",
+        "body": "Add a withdrawn status",
+        "sha": "8c441964264ab953d8c99ddeb98b9e2951c7880f"
+      },
+      {
+        "kind": "feature",
+        "scope": "applications",
+        "body": "Sort applications by their latest step",
+        "sha": "58b5a8b4c19ed50366df3059caeeaa8f5b539407"
+      },
+      {
+        "kind": "fix",
+        "scope": "skills",
+        "body": "Smooth the skills carousel",
+        "sha": "2f053bfb4fb0b3cb18da756b6de72c13efa2d81e"
+      }
+    ]
+  },
+  {
+    "version": "1.7.1",
+    "title": "Maintenance",
+    "summary": "Dependency updates and a shorter dashboard cache, so the GitHub and WakaTime numbers stay fresher. 19 commits.",
+    "released_at": "2025-11-29T19:35:51+07:00",
+    "commit_sha": "99f0c6192e3242758ab328db44fcb3aa65ba2359",
+    "previous_sha": "e724d9a94d5d373ac7b0acc6bc2e2e9f8e7c8f69",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "dashboard",
+        "body": "Refresh the dashboard every 15 minutes instead of every 3 hours",
+        "sha": "19c3012e1dc3926dffe2f80063ce32fe83e76c37"
+      },
+      {
+        "kind": "security",
+        "scope": "deps",
+        "body": "Update Django",
+        "sha": "d6a54f800dbebac6365b728d3202c635a21159f5"
+      }
+    ]
+  },
+  {
+    "version": "1.7.2",
+    "title": "Maintenance",
+    "summary": "Dependency updates, a fixed web manifest, and a credits section in the privacy policy. 13 commits.",
+    "released_at": "2025-12-28T15:45:21+07:00",
+    "commit_sha": "d3c018f27f36c9df7b4a31fa08cce4e3101a7501",
+    "previous_sha": "99f0c6192e3242758ab328db44fcb3aa65ba2359",
+    "entries": [
+      {
+        "kind": "fix",
+        "scope": "manifest",
+        "body": "Serve the favicons in the web manifest from the site's own address",
+        "sha": "bf242733c3f3be94639a4e01669b9dd0e4237d4d"
+      },
+      {
+        "kind": "feature",
+        "scope": "privacy",
+        "body": "Add copyright and credits to the privacy policy",
+        "sha": "ae4bfbc096db6a1f6342d447abf6a5c3fa90e7f2"
+      },
+      {
+        "kind": "security",
+        "scope": "deps",
+        "body": "Update Django to 5.2.9",
+        "sha": "a28a77f3028eeee7f21b7a560d10444ef2686a35"
+      }
+    ]
+  },
+  {
+    "version": "1.8.0",
+    "title": "Email",
+    "summary": "The contact form sends real email, protected by Cloudflare Turnstile, with an automatic reply to the sender, and new guestbook messages notify me by email. 53 commits.",
+    "released_at": "2026-01-26T22:29:24+07:00",
+    "commit_sha": "7ebaea039ad4a0b10a5515d27480f4453eafc527",
+    "previous_sha": "d3c018f27f36c9df7b4a31fa08cce4e3101a7501",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "contact",
+        "body": "Deliver contact messages by email",
+        "sha": "b446af1ecf036b4d0ac251e5f2347cc2584010b1"
+      },
+      {
+        "kind": "security",
+        "scope": "contact",
+        "body": "Protect the form with Cloudflare Turnstile",
+        "sha": "22a719917b7b680a2d97e4b6a14e5f84118c99dc"
+      },
+      {
+        "kind": "feature",
+        "scope": "contact",
+        "body": "Send the sender an automatic reply",
+        "sha": "a53e6827a785734be9174efa9f5ac2fe7f9cc66a"
+      },
+      {
+        "kind": "feature",
+        "scope": "email",
+        "body": "Notify me of new guestbook messages",
+        "sha": "1e5a9a882691095a19db140f4e2e6c0607719a44"
+      },
+      {
+        "kind": "feature",
+        "scope": "lightbox",
+        "body": "Open the full-resolution image",
+        "sha": "449df467cc928817262ba92557f61fd36cccec85"
+      },
+      {
+        "kind": "feature",
+        "scope": "privacy",
+        "body": "Describe the emails the site sends",
+        "sha": "f93a0945f5ded52aab222567681dbe5d908314ad"
+      }
+    ]
+  },
+  {
+    "version": "1.9.0",
+    "title": "Typed content",
+    "summary": "Every post, project and profile record became a typed Python dataclass, and each app took ownership of its own data and tests. Guestbook notifications learned to tell a new message from a reply. 74 commits.",
+    "released_at": "2026-02-28T17:49:25+07:00",
+    "commit_sha": "6411a8d0bdc99e6609060e0aca0b5d6fb137d89b",
+    "previous_sha": "7ebaea039ad4a0b10a5515d27480f4453eafc527",
+    "entries": [
+      {
+        "kind": "refactor",
+        "scope": "data",
+        "body": "Make every blog post, project and profile record a typed dataclass",
+        "sha": "dcfd193ebdf460058397d3868d8fdd67d607b389"
+      },
+      {
+        "kind": "refactor",
+        "scope": "apps",
+        "body": "Move each app's data into the app, with tests",
+        "sha": "4c08a1d6de6b045056e9c7bf7e482f20c40249b4"
+      },
+      {
+        "kind": "feature",
+        "scope": "guestbook",
+        "body": "Notify differently for a new message and a reply",
+        "sha": "206e0663cf68e89a08e64066fab922c34b393c6a"
+      },
+      {
+        "kind": "feature",
+        "scope": "openhire",
+        "body": "Expand each role's details, animated",
+        "sha": "59b66122c01aaf2c920cdec9d2090c472cc63934"
+      },
+      {
+        "kind": "feature",
+        "scope": "applications",
+        "body": "Record where each application was sent from",
+        "sha": "5a9a67e0f89ceee9b5adbfc3c5ea32db7973d27a"
+      }
+    ]
+  },
+  {
+    "version": "1.10.0",
+    "title": "Security pass and a new mobile menu",
+    "summary": "A security review closed a GraphQL injection, an exposed API key and two XSS paths, the mobile menu became a bottom sheet, and project pages gained a status badge. 73 commits.",
+    "released_at": "2026-03-29T16:46:15+07:00",
+    "commit_sha": "684f0381e502ad66e80c0ab3735c4242af82e4dc",
+    "previous_sha": "6411a8d0bdc99e6609060e0aca0b5d6fb137d89b",
+    "entries": [
+      {
+        "kind": "security",
+        "scope": "security",
+        "body": "Fix a GraphQL injection, an API key exposure and an XSS",
+        "sha": "553f1731fc2f980d2a5d31b8687dc84200ec51c6"
+      },
+      {
+        "kind": "security",
+        "scope": "wakatime",
+        "body": "Send the API key in a header",
+        "sha": "bc6f1c27b83327d00cb5fae6bc1c439cea09865b"
+      },
+      {
+        "kind": "feature",
+        "scope": "sidebar",
+        "body": "Turn the mobile menu into a bottom sheet",
+        "sha": "4576e86924fe2e233f21193be4961106145c4f80"
+      },
+      {
+        "kind": "feature",
+        "scope": "projects",
+        "body": "Show each project's status and dates on its page",
+        "sha": "45d593ff415bd8719fb8290136716ad9803dc5e4"
+      },
+      {
+        "kind": "feature",
+        "scope": "openhire",
+        "body": "List the tools and skills I use",
+        "sha": "59869d3fb63348e5105bc6abbdc1c0282c3677d9"
+      },
+      {
+        "kind": "fix",
+        "scope": "seo",
+        "body": "Correct the JSON-LD description and breadcrumb URL",
+        "sha": "1f67a89905a70bd28a9f13975228e6b3741a326f"
+      }
+    ]
+  },
+  {
+    "version": "1.11.0",
+    "title": "A quieter home page",
+    "summary": "The home page shows its sponsor, skills and blog sections only when there is something to show. 20 commits.",
+    "released_at": "2026-04-23T00:11:20+07:00",
+    "commit_sha": "fb30b0699bd6cf7ef505c92255a31c3329b6150f",
+    "previous_sha": "684f0381e502ad66e80c0ab3735c4242af82e4dc",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "home",
+        "body": "Show the sponsor and blog sections only when they have content",
+        "sha": "2d3dd5924d39fdb30a1a0a3189a317d28dec3672"
+      },
+      {
+        "kind": "feature",
+        "scope": "home",
+        "body": "Do the same for the skills section",
+        "sha": "ff901a7f2a8dec977f6a21cf432711a8934d52fa"
+      },
+      {
+        "kind": "feature",
+        "scope": "skills",
+        "body": "Add uv to the skills",
+        "sha": "324e50b09458589ae175a3fca8a3745ddcfe034f"
+      }
+    ]
+  },
+  {
+    "version": "1.11.1",
+    "title": "Maintenance",
+    "summary": "Dependency updates and refreshed project images. 5 commits.",
+    "released_at": "2026-05-20T22:01:52+07:00",
+    "commit_sha": "e09cdb9ad050f98c17d0e1608553e7968dc64b0b",
+    "previous_sha": "fb30b0699bd6cf7ef505c92255a31c3329b6150f",
+    "entries": [
+      {
+        "kind": "chore",
+        "scope": "deps",
+        "body": "Update dependencies",
+        "sha": "e09cdb9ad050f98c17d0e1608553e7968dc64b0b"
+      },
+      {
+        "kind": "feature",
+        "scope": "projects",
+        "body": "Refresh the MLBB identity card images",
+        "sha": "6ca07bb86e84ebc6d7b5dc11232694e89c66c7c4"
+      }
+    ]
+  },
+  {
+    "version": "1.11.2",
+    "title": "Maintenance",
+    "summary": "A fixed test setup, refreshed experience, and dependency updates. 22 commits.",
+    "released_at": "2026-06-28T21:30:58+07:00",
+    "commit_sha": "cde3c0d7be99e3782d502119c80e40ed0fedcdd9",
+    "previous_sha": "e09cdb9ad050f98c17d0e1608553e7968dc64b0b",
+    "entries": [
+      {
+        "kind": "fix",
+        "scope": "tests",
+        "body": "Make pytest find and run the tests locally",
+        "sha": "bac09c4597c4b11fc6fc9bf0a0ad2836f8c98695"
+      },
+      {
+        "kind": "feature",
+        "scope": "profile",
+        "body": "Refresh the introduction and responsibilities",
+        "sha": "d8753557e19c080adb9c0d3235d7a1f8475d7d98"
+      }
+    ]
+  },
+  {
+    "version": "1.12.0",
+    "title": "Status",
+    "summary": "The sidebar can say when I am unwell, with an amber badge beside my name. 2 commits.",
+    "released_at": "2026-07-29T23:12:12+07:00",
+    "commit_sha": "bd7da048af1c2d25a18d1413dd810e8084732041",
+    "previous_sha": "cde3c0d7be99e3782d502119c80e40ed0fedcdd9",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "about",
+        "body": "Show an amber status badge when I am unwell",
+        "sha": "f08e7032a6a2f527e6f0304e58e2bcab0d60f0a9"
+      }
+    ]
+  },
+  {
+    "version": "1.13.0",
+    "title": "Pinned messages",
+    "summary": "Guestbook messages can be pinned and links in them become clickable, with the races and XSS that came with it fixed before release. 20 commits.",
+    "released_at": "2026-08-05T21:57:33+07:00",
+    "commit_sha": "67291917ae3d16c34fa1c7c7b6da7e37fb5a0e7f",
+    "previous_sha": "bd7da048af1c2d25a18d1413dd810e8084732041",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "guestbook",
+        "body": "Pin messages, and detect links automatically",
+        "sha": "96601ff3642fddaf8ab248b5d140922053ed4956"
+      },
+      {
+        "kind": "security",
+        "scope": "guestbook",
+        "body": "Fix an XSS and a race in pinning",
+        "sha": "a7aaa4239a3c3a2572400a3a0b1354040af538b7"
+      },
+      {
+        "kind": "fix",
+        "scope": "guestbook",
+        "body": "Serialise concurrent pins",
+        "sha": "86c977743d67acacc9688229390d08b185884927"
+      }
+    ]
+  },
+  {
+    "version": "2.0.0",
+    "title": "A database and an admin",
+    "summary": "The content moved out of Python files and into a Supabase Postgres database, edited through the Django admin with structured editors instead of raw JSON. Everything readers see is cached and invalidated per area, and images are cleaned up once nothing uses them. 26 commits.",
+    "released_at": "2026-08-15T22:22:22+07:00",
+    "commit_sha": "fabeb354c8e7e9e56d22103e5e82fa103dc066f0",
+    "previous_sha": "67291917ae3d16c34fa1c7c7b6da7e37fb5a0e7f",
+    "entries": [
+      {
+        "kind": "breaking",
+        "scope": "data",
+        "body": "Move the content from code into a Supabase database",
+        "sha": "e7d09ecae7aacef2a7cca55f4346510260415e57"
+      },
+      {
+        "kind": "security",
+        "scope": "db",
+        "body": "Enable row-level security on every table",
+        "sha": "9212ba06b834a2bd67381c8666a3368580493e23"
+      },
+      {
+        "kind": "feature",
+        "scope": "admin",
+        "body": "Edit lists and blocks with structured editors instead of JSON",
+        "sha": "7faa50898ded722a6bcbba183fb0864b9a019881"
+      },
+      {
+        "kind": "feature",
+        "scope": "blog",
+        "body": "Write posts with a structured content block editor",
+        "sha": "c4e9dd88b7e06ccf8289262160d71edf7e29aca1"
+      },
+      {
+        "kind": "feature",
+        "scope": "storage",
+        "body": "Delete stored images once nothing references them",
+        "sha": "0f8c8fb206f3d3323238b7d7ce73a26d9e8cadc3"
+      },
+      {
+        "kind": "performance",
+        "scope": "core",
+        "body": "Cache every read, invalidated per area",
+        "sha": "14d24af8fa2f1027e79d0de478a34e0e3adde1a7"
+      },
+      {
+        "kind": "feature",
+        "scope": "guestbook",
+        "body": "Merge guestbook history across databases",
+        "sha": "0d7ac24383e4321ea8cc3da0bc40f74b860a198d"
+      }
+    ]
+  },
+  {
+    "version": "2.1.0",
+    "title": "Comments",
+    "summary": "Readers can comment on posts and projects, the privacy policy and terms became editable documents, and destructive actions ask first. 13 commits.",
+    "released_at": "2026-08-16T20:37:53+07:00",
+    "commit_sha": "d06b036fc8a14f5cb03c2fac587ac58b46fcb6c4",
+    "previous_sha": "fabeb354c8e7e9e56d22103e5e82fa103dc066f0",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "comments",
+        "body": "Comment on blog posts and projects",
+        "sha": "7b2116f1a425b90c2335d23fabafbe27f419c861"
+      },
+      {
+        "kind": "feature",
+        "scope": "legal",
+        "body": "Make the privacy policy and terms editable documents",
+        "sha": "88897af109b5951e2ffd8e4849d906f0a5795b10"
+      },
+      {
+        "kind": "feature",
+        "scope": "core",
+        "body": "Ask before destructive actions, site-wide",
+        "sha": "696f7c065fb6a4e859cb8230ba57141f6c5da990"
+      },
+      {
+        "kind": "security",
+        "scope": "comments",
+        "body": "Redirect only to paths on this site after posting",
+        "sha": "44d818969dbb0c5db9d9ef3d522a0526e1dfcb4e"
+      }
+    ]
+  },
+  {
+    "version": "2.2.0",
+    "title": "Light and dark",
+    "summary": "A light theme beside the dark one, animated, with every shadow removed; the guestbook became a threaded conversation; and tooltips started working on touch screens. 25 commits.",
+    "released_at": "2026-08-19T11:58:56+07:00",
+    "commit_sha": "7aa8eb566a6f61afaf8c48e3c14b24f62a5ddd36",
+    "previous_sha": "d06b036fc8a14f5cb03c2fac587ac58b46fcb6c4",
+    "entries": [
+      {
+        "kind": "feature",
+        "scope": "theme",
+        "body": "Add a light/dark theme switch",
+        "sha": "2d48d92d95d58872c71b9806f7d3d7776938950e"
+      },
+      {
+        "kind": "feature",
+        "scope": "theme",
+        "body": "Animate the switch and remove every shadow",
+        "sha": "bef90866b5041600f88dbfcdea896a28568a5a88"
+      },
+      {
+        "kind": "feature",
+        "scope": "guestbook",
+        "body": "Thread the guestbook and unify the site's notifications",
+        "sha": "8b85afd544b0786aafb0e870a084ebaf87073783"
+      },
+      {
+        "kind": "feature",
+        "scope": "sidebar",
+        "body": "Swipe the mobile drawer shut",
+        "sha": "bb1b783ca7ffa427143472fea9209ace30254083"
+      },
+      {
+        "kind": "feature",
+        "scope": "ui",
+        "body": "Replace the click ripple with a spark",
+        "sha": "441debadcc4a3c83d7aeb6b473b89b1b24fe4b7f"
+      },
+      {
+        "kind": "fix",
+        "scope": "ui",
+        "body": "Make tooltips reachable on touch screens",
+        "sha": "96f19e047d9b23c1c9e09bfd6336a2f3699d6c26"
+      },
+      {
+        "kind": "fix",
+        "scope": "seo",
+        "body": "Fix the structured data Search Console flagged",
+        "sha": "a373b975bb359b0c676771a033ce80582a3b3afe"
+      }
+    ]
+  },
+  {
+    "version": "2.2.1",
+    "title": "The last Django release",
+    "summary": "Tailwind 4.3, one cache-busted stylesheet, and fonts served from the site itself. The final release of the Django site. 4 commits.",
+    "released_at": "2026-08-20T00:23:33+07:00",
+    "commit_sha": "49e62a43c314e77fc927a021334ca50dd22b7dc6",
+    "previous_sha": "7aa8eb566a6f61afaf8c48e3c14b24f62a5ddd36",
+    "entries": [
+      {
+        "kind": "performance",
+        "scope": "css",
+        "body": "Bundle every stylesheet into one cache-busted build",
+        "sha": "3a5aa1a611b78bed37627c7e4391fa77a81cf5ad"
+      },
+      {
+        "kind": "fix",
+        "scope": "core",
+        "body": "Serve fonts and icons from the site's own address",
+        "sha": "78b9cbc903a7113748aced032f0a5d6bb6671add"
+      },
+      {
+        "kind": "chore",
+        "scope": "deps",
+        "body": "Upgrade to Tailwind 4.3",
+        "sha": "49e62a43c314e77fc927a021334ca50dd22b7dc6"
+      }
+    ]
+  },
+  {
+    "version": "3.0.0",
+    "title": "Rebuilt in Next.js",
+    "summary": "The whole site rebuilt in Next.js on the same Supabase data, then the Django code removed. Every page was ported, the admin was rebuilt from scratch, sign-in moved to Auth.js, and the database was remodelled in its own schema keyed by UUID. 205 commits.",
+    "released_at": "2026-09-24T14:44:35+07:00",
+    "commit_sha": "b1b67d1c7b6bf0c1f54756283d27b05bdc3408dc",
+    "previous_sha": "49e62a43c314e77fc927a021334ca50dd22b7dc6",
+    "entries": [
+      {
+        "kind": "breaking",
+        "scope": "site",
+        "body": "Rebuild the site in Next.js and remove Django",
+        "sha": "bdc6f78365a25fdc1d46150d4db3f60307a9674e"
+      },
+      {
+        "kind": "feature",
+        "scope": "api",
+        "body": "Port the data layer to a typed API",
+        "sha": "ca4becdef0b1c44d770d73977e7f59408ab6eb9c"
+      },
+      {
+        "kind": "feature",
+        "scope": "pages",
+        "body": "Port every page: home, about, blog, projects, dashboard, open-hire, legal",
+        "sha": "87cbee6ec435d11eb302265b28afd16ae728ec35"
+      },
+      {
+        "kind": "feature",
+        "scope": "auth",
+        "body": "Sign in with Auth.js",
+        "sha": "5719a92745efe30e7e31ed6f206eae43bd59730a"
+      },
+      {
+        "kind": "feature",
+        "scope": "guestbook",
+        "body": "Port the threaded guestbook and comments",
+        "sha": "0e4c6f046331fe868fcd9a979966e3520caa9da4"
+      },
+      {
+        "kind": "feature",
+        "scope": "admin",
+        "body": "Build a new admin with forms, inlines and a rich-text editor",
+        "sha": "a045f73cc20a4efc1c77bb75b79bcb048732b715"
+      },
+      {
+        "kind": "feature",
+        "scope": "admin",
+        "body": "Upload images to Supabase Storage with reference counting",
+        "sha": "2a2266651644db2e62146720c55b47cb344a45f5"
+      },
+      {
+        "kind": "feature",
+        "scope": "db",
+        "body": "Remodel the data in its own schema, keyed by UUID",
+        "sha": "d0aec16febea1d5cc08221e7715241ed5dce5b4b"
+      },
+      {
+        "kind": "security",
+        "scope": "db",
+        "body": "Keep row-level security on, and check it",
+        "sha": "15220f39bfc2cf96b45380b47df9b0eb487f62a1"
+      }
+    ]
+  }
+]

@@ -6,7 +6,8 @@ import { z } from "zod";
 import { fail, handle, ok } from "@/lib/api/response";
 import { getPatchNotes } from "@/lib/data/patch-notes";
 import { TAGS } from "@/lib/data/tags";
-import { recordRelease } from "@/lib/patch-notes/record";
+import { History } from "@/lib/patch-notes/history";
+import { importHistory, recordRelease } from "@/lib/patch-notes/record";
 
 /** The published release history, newest first. */
 export const GET = handle(async () => ok(await getPatchNotes()));
@@ -50,5 +51,22 @@ export const POST = handle(async (request: Request) => {
 
   const result = await recordRelease(parsed.data.sha, parsed.data.commits);
   if ("version" in result && result.created) revalidateTag(TAGS.patchNotes, { expire: 0 });
+  return ok(result);
+});
+
+/**
+ * Add the releases from `lib/patch-notes/history.json` the site lacks; called
+ * by the release workflow before it tags anything. Insert-only, so sending
+ * the file on every run changes nothing once it is in, and a release reworded
+ * in the admin keeps its wording.
+ */
+export const PUT = handle(async (request: Request) => {
+  if (!authorised(request.headers.get("authorization"))) return fail("Unauthorized", 401);
+
+  const parsed = History.safeParse((await request.json().catch(() => null))?.releases);
+  if (!parsed.success) return fail("Expected { releases: [...] } in the shape of lib/patch-notes/history.json", 400);
+
+  const result = await importHistory(parsed.data);
+  if (result.inserted.length > 0) revalidateTag(TAGS.patchNotes, { expire: 0 });
   return ok(result);
 });

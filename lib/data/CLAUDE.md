@@ -28,24 +28,20 @@ evaluated once when the entry is filled and frozen with it: a post scheduled
 for tomorrow would stay hidden for days after its moment. The flag moves
 instead, and `app/api/cron/publish` moves it.
 
-**The schedule is a GitHub workflow rather than a Vercel cron**, and that is a
-plan limit rather than a preference. `vercel.json` carried a `crons` entry for
-about an hour: Hobby allows a cron job to run **once a day**, and a schedule it
-will not accept **fails the deployment** rather than the job -- so the site does
-not ship at all until the entry is removed, and the failure names a pricing page
-rather than a build error. A daily run would have been accepted and is not worth
-having, since a post due at nine could appear any time in the next twenty-four
-hours. `.github/workflows/publish.yml` calls the same endpoint every fifteen
-minutes; moving back is deleting that file and restoring the key, on a plan that
-allows it.
+**Nothing calls that endpoint on a schedule.** A GitHub workflow used to hit it
+every fifteen minutes and was removed as unused, so a post whose date passes
+stays a draft until somebody requests `/api/cron/publish` or publishes it by
+hand. A Vercel cron is not the way back on Hobby: a `crons` entry that runs
+more than **once a day** **fails the deployment** rather than the job, and the
+failure names a pricing page rather than a build error.
 
 That endpoint **takes no credentials**, on purpose. It publishes exactly the
-posts whose `published_at` has passed -- the set the next scheduled run
-publishes anyway -- so a stranger calling it can bring a post forward by one
-interval at most and can never reach one dated in the future. A secret guarded
-nothing waiting would not, and cost a value set and matched in two places. The
+posts whose `published_at` has passed, so a stranger calling it can only publish
+what is already due and can never reach a post dated in the future. A secret
+would have cost a value set and matched in two places to guard nothing. The
 consequence worth knowing: **unpublishing a post dated in the past does not keep
-it down**; the next run puts it back. Move the date forward instead.
+it down**; the next call to the endpoint puts it back. Move the date forward
+instead.
 
 **Only posts can be scheduled.** `project` carries the same flag but no column
 saying when it should go live, and that is the honest shape -- a project goes

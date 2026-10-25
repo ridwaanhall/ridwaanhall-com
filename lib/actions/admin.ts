@@ -16,7 +16,7 @@ import {
   type FormField,
   type FormValues,
 } from "@/lib/admin/form";
-import { inlineImageKeys, saveInlines } from "@/lib/admin/inlines";
+import { inlineImageKeys, prepareInlines, writeInlines, type PreparedInlines } from "@/lib/admin/inlines";
 import { keepStoredTime } from "@/lib/admin/same-value";
 import { changesNothing, loadStoredRecord } from "@/lib/admin/unchanged";
 import { formModelFor } from "@/lib/admin/models";
@@ -318,6 +318,18 @@ export async function saveRecord(
     }
   }
 
+  /*
+   * The child rows are checked -- and their linked images fetched -- before
+   * anything is written, so a mistake in a gallery row cannot leave a new
+   * record saved behind an error that invites saving it again.
+   */
+  let prepared: PreparedInlines | null = null;
+  if (model.inlines?.length) {
+    const inlines = await prepareInlines(model.inlines, data, { deadline, stored: stored?.inlines });
+    if (!inlines.ok) return { ok: false, error: "Some fields need attention.", fieldErrors: inlines.errors };
+    prepared = inlines.prepared;
+  }
+
   const problem = await model.validate?.(values, {
     id,
     actorId: actor.id,
@@ -397,8 +409,8 @@ export async function saveRecord(
 
   const staleFromInlines: string[] = [];
   const alts = { ...images.alts };
-  if (model.inlines?.length && parentId !== null) {
-    const inlined = await saveInlines(model.inlines, data, parentId, { deadline, stored: stored?.inlines });
+  if (prepared && parentId !== null) {
+    const inlined = await writeInlines(prepared, parentId);
     if (!inlined.ok) {
       return { ok: false, error: "Some fields need attention.", fieldErrors: inlined.errors };
     }

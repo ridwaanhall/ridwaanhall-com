@@ -119,7 +119,7 @@ it. Two things about the write are easy to get wrong and invisible when you do:
   existing one.
 - **Inline rows count.** A gallery *is* inlines, so an implementation that
   handled only the record's own fields would work on the author photo and
-  silently do nothing on every image the feature exists for. `saveInlines`
+  silently do nothing on every image the feature exists for. `writeInlines`
   returns its alts the way it returns `stale`, and `saveRecord` writes both maps
   at once.
 

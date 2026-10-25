@@ -85,4 +85,11 @@ if (process.env.NODE_ENV !== "production") {
  */
 export const db = drizzle(pool);
 
+/**
+ * The pool or one transaction on it. A helper that writes takes this, defaulting
+ * to `db`, so a caller holding a transaction can pass it in and have the write
+ * land inside it -- see `saveRecord`.
+ */
+export type Executor = Pick<typeof db, "select" | "insert" | "update" | "delete" | "execute">;
+
 export { pool };

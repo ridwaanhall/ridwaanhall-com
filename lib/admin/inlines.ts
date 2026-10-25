@@ -14,7 +14,7 @@ import {
 import { applyImageFields, imageFields } from "@/lib/admin/images";
 import { keyForMediaId, keysForMediaIds, mediaIdForKey } from "@/lib/admin/media";
 import { keepStoredTime } from "@/lib/admin/same-value";
-import { db } from "@/lib/db/client";
+import { db, type Executor } from "@/lib/db/client";
 import { isUuid } from "@/lib/utils/uuid";
 
 /**
@@ -286,12 +286,16 @@ export async function prepareInlines(
  * `(profile, skill)`, so swapping which skill sits in a slot would otherwise
  * fail against the row being replaced.
  */
-export async function writeInlines(prepared: PreparedInlines, parentId: string): Promise<InlineResult> {
+export async function writeInlines(
+  prepared: PreparedInlines,
+  parentId: string,
+  executor: Executor = db,
+): Promise<InlineResult> {
   const { work, alts } = prepared;
   const stale = [...prepared.stale];
 
   for (const { inline, rows } of work) {
-    const existing = await db
+    const existing = await executor
       .select({ id: inline.pk })
       .from(inline.table)
       .where(inlineWhere(inline, parentId));
@@ -303,14 +307,14 @@ export async function writeInlines(prepared: PreparedInlines, parentId: string):
       const pictures = imageFields(inline.fields);
       if (pictures.length > 0) {
         const shape = Object.fromEntries(pictures.map((field) => [field.name, field.column]));
-        const going = await db.select(shape).from(inline.table).where(inArray(inline.pk, removed));
+        const going = await executor.select(shape).from(inline.table).where(inArray(inline.pk, removed));
         // Asset ids on the way out; `deleteUnreferenced` counts storage keys.
         const ids = going.flatMap((row) =>
           Object.values(row).filter((value): value is string => typeof value === "string" && value !== ""),
         );
         stale.push(...(await keysForMediaIds(ids)).values());
       }
-      await db.delete(inline.table).where(inArray(inline.pk, removed));
+      await executor.delete(inline.table).where(inArray(inline.pk, removed));
     }
 
     const columns = Object.entries(getTableColumns(inline.table));
@@ -354,7 +358,7 @@ export async function writeInlines(prepared: PreparedInlines, parentId: string):
          */
         if (field.kind === "image") {
           const key = row.values[field.name];
-          payload[keyFor(field)] = typeof key === "string" && key ? await mediaIdForKey(key) : null;
+          payload[keyFor(field)] = typeof key === "string" && key ? await mediaIdForKey(key, executor) : null;
           continue;
         }
         payload[keyFor(field)] = row.values[field.name];
@@ -371,12 +375,12 @@ export async function writeInlines(prepared: PreparedInlines, parentId: string):
           const key = columns.find(([, column]) => column === inline.scope?.column)?.[0];
           if (key) payload[key] = inline.scope.value;
         }
-        await db.insert(inline.table).values(payload);
+        await executor.insert(inline.table).values(payload);
       } else {
         // Scoped to this record as well as to the row: the row id is form input,
         // and without the parent a hand-edited id would rewrite another
         // record's child.
-        await db.update(inline.table).set(payload).where(and(eq(inline.pk, row.id), inlineWhere(inline, parentId)));
+        await executor.update(inline.table).set(payload).where(and(eq(inline.pk, row.id), inlineWhere(inline, parentId)));
       }
     }
   }

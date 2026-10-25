@@ -13,6 +13,13 @@ name: Release
 # between releases: the very first run after the redesign finds no release on
 # the site, sends everything since v3.0.0, and records it as 4.0.0.
 #
+# **It talks to the site's own Vercel address, never to ridwaanhall.com.** The
+# domain is behind Cloudflare, which answers GitHub's runners with a "Just a
+# moment..." challenge (403) that no script can pass -- the cron workflow this
+# replaced failed that way on every run for its whole life. The Vercel address
+# is behind Vercel Authentication instead, which a Protection Bypass for
+# Automation secret opens; PATCH_NOTES_TOKEN still guards the write itself.
+#
 # A commit carrying `[skip release]` is left out, and a push of nothing else
 # records nothing. A `Release-Title:` or `Release-Summary:` line in a commit
 # message names the release it lands in. The repository is public, so this costs no Actions minutes;
@@ -37,7 +44,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      SITE_URL: ${{ secrets.SITE_URL || 'https://ridwaanhall.com' }}
+      # The production deployment's own address; a repository secret can point
+      # it elsewhere.
+      API_URL: ${{ secrets.PATCH_NOTES_URL || 'https://ridwaanhall-com-roneha.vercel.app' }}
+      VERCEL_BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
       PATCH_NOTES_TOKEN: ${{ secrets.PATCH_NOTES_TOKEN }}
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
@@ -48,16 +58,28 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check the secrets are set
+        run: |
+          missing=""
+          [ -n "$VERCEL_BYPASS" ] || missing="$missing VERCEL_AUTOMATION_BYPASS_SECRET"
+          [ -n "$PATCH_NOTES_TOKEN" ] || missing="$missing PATCH_NOTES_TOKEN"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secrets:$missing (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+
       - name: Tag any release the site has and GitHub does not
         run: |
           set -euo pipefail
-          curl -sS --fail-with-body --max-time 60 --retry 2 -o notes.json "${SITE_URL}/api/patch-notes"
+          curl -sS --fail-with-body --max-time 60 --retry 2 -H "x-vercel-protection-bypass: ${VERCEL_BYPASS}" \
+            -o notes.json "${API_URL}/api/patch-notes"
           # Oldest first, so tags are created in the order the releases happened.
           jq -r '.data | reverse | .[] | select(.commit_sha != "") | "\(.version) \(.commit_sha)"' notes.json |
           while read -r version sha; do
             tag="v${version}"
             if gh release view "$tag" >/dev/null 2>&1; then continue; fi
-            curl -sS --fail-with-body --max-time 60 -o note.json "${SITE_URL}/api/patch-notes/${version}"
+            curl -sS --fail-with-body --max-time 60 -H "x-vercel-protection-bypass: ${VERCEL_BYPASS}" \
+              -o note.json "${API_URL}/api/patch-notes/${version}"
             jq -r '.data.markdown' note.json > notes.md
             title=$(jq -r '.data.title' note.json | tr '\n' ' ')
             name="$tag"; if [ -n "$title" ]; then name="$tag: $title"; fi
@@ -86,8 +108,9 @@ jobs:
 
           curl -sS --fail-with-body --max-time 60 --retry 2 --retry-connrefused \
             -H "Authorization: Bearer ${PATCH_NOTES_TOKEN}" \
+            -H "x-vercel-protection-bypass: ${VERCEL_BYPASS}" \
             -H "Content-Type: application/json" \
-            --data @push.json -o note.json "${SITE_URL}/api/patch-notes"
+            --data @push.json -o note.json "${API_URL}/api/patch-notes"
           cat note.json; echo
 
           if [ "$(jq -r '.data.skipped // false' note.json)" = "true" ]; then
@@ -114,7 +137,8 @@ jobs:
           # shell: it is text, and an expression spliced into this script would
           # run it as a command. (GitHub evaluates expressions inside `run:`
           # even in shell comments, so this one names none.)
-          curl -sS --fail-with-body --max-time 60 -o release.json "${SITE_URL}/api/patch-notes/${VERSION}" || true
+          curl -sS --fail-with-body --max-time 60 -H "x-vercel-protection-bypass: ${VERCEL_BYPASS}" \
+            -o release.json "${API_URL}/api/patch-notes/${VERSION}" || true
           title=$(jq -r '.data.title // ""' release.json 2>/dev/null | tr '\n' ' ' || true)
           name="$tag"; if [ -n "$title" ]; then name="$tag: $title"; fi
           gh release create "$tag" --target "$(git rev-parse HEAD)" --title "$name" --notes-file notes.md

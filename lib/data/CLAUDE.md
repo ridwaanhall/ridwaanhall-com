@@ -64,7 +64,11 @@ wording, summary or visibility in the admin (**Site > Patch notes**).
   real commits (`history.test.ts` holds the shape). The workflow sends it to
   `PUT /api/patch-notes` on every run; the site **only adds** versions it
   lacks, so an admin edit is never undone, and the backfill then tags them
-  with `--latest=false` so an old release never takes "Latest".
+  with `--latest=false` so an old release never takes "Latest". **The Actions
+  token cannot create those tags from 1.1.0 on**: GitHub refuses a ref to a
+  commit whose workflow files differ from main's (the Django era carried
+  `django.yml`), as writing a workflow. The step warns with the `git push`
+  that creates each one; once a tag exists, the next run adds its release.
 - **The first run makes 4.0.0.** With no release on the site, the range is
   everything since `v3.0.0`: the redesign and whatever followed it.
 - **`Release-Title:` and `Release-Summary:` lines in a commit message name the

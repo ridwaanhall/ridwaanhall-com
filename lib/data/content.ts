@@ -162,9 +162,9 @@ export type Project = ImageCompat & {
  *
  * Deliberately not `published_at <= now()`. This is a cached read with a
  * lifetime of days, so a clock comparison inside it is evaluated once when the
- * entry is filled and then frozen: a post scheduled for tomorrow would stay
- * hidden for days after its moment. The flag moves instead, and
- * `app/api/cron/publish` is what moves it.
+ * entry is filled and then frozen: a post dated tomorrow would stay hidden for
+ * days after its moment. There is no scheduled publishing; the flag is set by
+ * hand in the admin.
  *
  * Newest first by `published_at`, **with `id` as a tiebreak**.
  *

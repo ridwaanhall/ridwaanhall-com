@@ -172,7 +172,7 @@ export const blogPostForm: AdminFormModel = {
           column: blogPost.isPublished,
           label: "Published",
           kind: "checkbox",
-          help: "Off, the post exists only here -- absent from the blog, the sitemap, the API and search, and 404 at its own URL. To schedule one, set Published below to a future time and leave this off; it is switched on for you when that time passes.",
+          help: "Off, the post exists only here -- absent from the blog, the sitemap, the API and search, and 404 at its own URL. Nothing switches it on for you: a future date below does not schedule the post.",
         },
         {
           name: "isFeatured",
@@ -251,7 +251,7 @@ export const blogPostForm: AdminFormModel = {
           column: blogPost.publishedAt,
           label: "Published",
           kind: "datetime",
-          help: "When, not whether -- it orders the blog page and it is the time the schedule waits for. Published above is what decides visibility.",
+          help: "When, not whether -- it orders the blog page and is shown as the post's date. Published above is what decides visibility.",
         },
         {
           name: "updatedAt",

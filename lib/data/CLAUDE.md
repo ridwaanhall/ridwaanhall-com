@@ -22,38 +22,19 @@ sorted the unfinished draft **above everything finished** and prerendered it
 into the sitemap. The one control that read like "publish later" was the one
 that made the post most prominent.
 
-**The schedule cannot be `published_at <= now()` in the read path.** That is a
+**There is no scheduled publishing.** A post goes live when somebody switches
+`is_published` on in the admin, and a future `published_at` does nothing on its
+own. It cannot be done in the read path with `published_at <= now()`: that is a
 cached function with a lifetime of days, so a clock comparison inside it is
-evaluated once when the entry is filled and frozen with it: a post scheduled
-for tomorrow would stay hidden for days after its moment. The flag moves
-instead, and `app/api/cron/publish` moves it.
-
-**Nothing calls that endpoint on a schedule.** A GitHub workflow used to hit it
-every fifteen minutes and was removed as unused, so a post whose date passes
-stays a draft until somebody requests `/api/cron/publish` or publishes it by
-hand. A Vercel cron is not the way back on Hobby: a `crons` entry that runs
-more than **once a day** **fails the deployment** rather than the job, and the
-failure names a pricing page rather than a build error.
-
-That endpoint **takes no credentials**, on purpose. It publishes exactly the
-posts whose `published_at` has passed, so a stranger calling it can only publish
-what is already due and can never reach a post dated in the future. A secret
-would have cost a value set and matched in two places to guard nothing. The
-consequence worth knowing: **unpublishing a post dated in the past does not keep
-it down**; the next call to the endpoint puts it back. Move the date forward
-instead.
-
-**Only posts can be scheduled.** `project` carries the same flag but no column
-saying when it should go live, and that is the honest shape -- a project goes
-public when there is something to link to, which is not a date known in advance.
-
-**`updateTag` is refused in a route handler.** It is Server Actions only; the
-API reference says so outright and the error names the restriction. So the job
-uses `revalidateTag(TAGS.blog, "max")`, which marks the tag stale rather than
-expiring it -- the post appears on the request after the first rather than on
-the first. Seconds, against a schedule measured in days. It is called **only
-when a row actually moved**: marking the tag every run would discard the blog
-payload hourly, which is the opposite of what `cacheLife("days")` is for.
+evaluated once when the entry is filled and frozen with it, and a post dated
+tomorrow would stay hidden for days after its moment. Scheduling means a job
+that flips the flag. One existed -- an open `app/api/cron/publish` route that a
+GitHub workflow called every fifteen minutes -- and both were removed as unused.
+A Vercel cron is not the way back on Hobby: a `crons` entry that runs more than
+**once a day** **fails the deployment** rather than the job, and the failure
+names a pricing page rather than a build error. Note too that `updateTag` is
+refused outside a Server Action, so a route handler doing that job would need
+`revalidateTag(TAGS.blog, "max")`, called only when a row actually moved.
 
 There is **no preview of a draft yet**. Seeing one rendered means publishing it,
 looking, and unpublishing -- the article page is one file of inline JSX rather

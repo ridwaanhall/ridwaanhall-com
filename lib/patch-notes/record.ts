@@ -10,6 +10,7 @@ import {
   formatVersion,
   latestVersion,
   nextVersion,
+  releaseMeta,
   parseCommit,
   releaseMarkdown,
   type Entry,
@@ -59,9 +60,10 @@ export async function recordRelease(sha: string, commits: { sha: string; message
     const versions = await tx.select({ version: patchNote.version }).from(patchNote);
     const version = formatVersion(nextVersion(latestVersion(versions.map((row) => row.version)), entries, FIRST));
 
+    const meta = releaseMeta(commits.map((commit) => commit.message));
     const [note] = await tx
       .insert(patchNote)
-      .values({ version, title: defaultTitle(entries), summary: "", commitSha: sha })
+      .values({ version, title: meta.title || defaultTitle(entries), summary: meta.summary, commitSha: sha })
       .returning({ id: patchNote.id });
     await tx.insert(patchNoteEntry).values(
       entries.map((entry, position) => ({
@@ -74,6 +76,6 @@ export async function recordRelease(sha: string, commits: { sha: string; message
       })),
     );
 
-    return { version, markdown: releaseMarkdown({ summary: "", entries }), created: true };
+    return { version, markdown: releaseMarkdown({ summary: meta.summary, entries }), created: true };
   });
 }

@@ -1,22 +1,27 @@
 name: Release
 
-# Every push to main becomes a release: a patch note on the site (stored in
-# Supabase through POST /api/patch-notes) and a matching git tag and GitHub
-# Release. The site decides the version, from the commit types in the push:
-# a breaking change is a major, a ✨feat a minor, anything else a patch. A
-# commit carrying `[skip release]` is left out, and a push of nothing else
-# records nothing.
+# Every push to main becomes a release, with nobody doing anything:
 #
-# The manual run publishes the GitHub Release for a note that already exists,
-# which is how the hand-written v4.0.0 gets its tag.
+#   1. Any release the site has recorded that GitHub has no tag for gets one --
+#      a run that failed half way, or a note added by hand in the admin.
+#   2. Every commit since the newest `v*` tag is sent to POST /api/patch-notes,
+#      which files them by type, picks the version (a breaking change is a
+#      major, a ✨feat a minor, anything else a patch) and stores the note.
+#   3. That version is tagged and published as a GitHub Release.
+#
+# The commits come from the tag rather than from the push, so nothing is lost
+# between releases: the very first run after the redesign finds no release on
+# the site, sends everything since v3.0.0, and records it as 4.0.0.
+#
+# A commit carrying `[skip release]` is left out, and a push of nothing else
+# records nothing. A `Release-Title:` or `Release-Summary:` line in a commit
+# message names the release it lands in. The repository is public, so this costs no Actions minutes;
+# a run takes well under one.
 on:
   push:
     branches: [main]
+  # A re-run by hand, for when the site was down during a push.
   workflow_dispatch:
-    inputs:
-      version:
-        description: "An existing patch note to publish as a GitHub Release, e.g. 4.0.0"
-        required: true
 
 # Writing a tag and a release is the whole of what it needs from the repository.
 permissions:
@@ -30,59 +35,73 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       SITE_URL: ${{ secrets.SITE_URL || 'https://ridwaanhall.com' }}
       PATCH_NOTES_TOKEN: ${{ secrets.PATCH_NOTES_TOKEN }}
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
     steps:
-      - name: Record the release on the site
-        id: record
-        env:
-          INPUT_VERSION: ${{ inputs.version }}
+      # Full history and every tag: the commits since the last release are
+      # read from git, not from the push event.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Tag any release the site has and GitHub does not
         run: |
           set -euo pipefail
-
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            version="${INPUT_VERSION#v}"
-            if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo "Not a version: $version"; exit 1; fi
+          curl -sS --fail-with-body --max-time 60 --retry 2 -o notes.json "${SITE_URL}/api/patch-notes"
+          # Oldest first, so tags are created in the order the releases happened.
+          jq -r '.data | reverse | .[] | select(.commit_sha != "") | "\(.version) \(.commit_sha)"' notes.json |
+          while read -r version sha; do
+            tag="v${version}"
+            if gh release view "$tag" >/dev/null 2>&1; then continue; fi
             curl -sS --fail-with-body --max-time 60 -o note.json "${SITE_URL}/api/patch-notes/${version}"
             jq -r '.data.markdown' note.json > notes.md
-            sha=$(jq -r '.data.commit_sha // empty' note.json)
-            title=$(jq -r '.data.title' note.json)
-          else
-            # The commits GitHub lists for this push, as the endpoint wants them.
-            jq '{sha: .after, commits: [.commits[] | {sha: .id, message: .message}]}' "$GITHUB_EVENT_PATH" > push.json
-            curl -sS --fail-with-body --max-time 60 --retry 2 --retry-connrefused \
-              -H "Authorization: Bearer ${PATCH_NOTES_TOKEN}" \
-              -H "Content-Type: application/json" \
-              --data @push.json -o note.json "${SITE_URL}/api/patch-notes"
-            cat note.json; echo
+            title=$(jq -r '.data.title' note.json | tr '\n' ' ')
+            name="$tag"; if [ -n "$title" ]; then name="$tag: $title"; fi
+            gh release create "$tag" --target "$sha" --title "$name" --notes-file notes.md
+            echo "Published $tag, which the site had recorded."
+          done
+          git fetch --tags --force --quiet
 
-            if [ "$(jq -r '.data.skipped // false' note.json)" = "true" ]; then
-              echo "Nothing in this push to release."
-              echo "version=" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-            version=$(jq -r '.data.version' note.json)
-            jq -r '.data.markdown' note.json > notes.md
-            sha="${{ github.sha }}"
-            title=""
+      - name: Record this push on the site
+        id: record
+        run: |
+          set -euo pipefail
+          last=$(git describe --tags --abbrev=0 --match 'v[0-9]*' HEAD 2>/dev/null || true)
+          range="${last:+${last}..}HEAD"
+          echo "Commits in ${range}"
+
+          # One record per commit: its sha and whole message, split on control
+          # characters no message contains.
+          # Oldest first, so a release reads in the order things happened.
+          git log --reverse --no-merges --format='%H%x1f%B%x1e' "$range" |
+            jq -Rs --arg sha "$(git rev-parse HEAD)" '{
+              sha: $sha,
+              commits: [split("\u001e")[] | ltrimstr("\n") | select(length > 0) | split("\u001f") | {sha: .[0], message: (.[1] // "")}]
+            }' > push.json
+          echo "$(jq '.commits | length' push.json) commits to send."
+
+          curl -sS --fail-with-body --max-time 60 --retry 2 --retry-connrefused \
+            -H "Authorization: Bearer ${PATCH_NOTES_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data @push.json -o note.json "${SITE_URL}/api/patch-notes"
+          cat note.json; echo
+
+          if [ "$(jq -r '.data.skipped // false' note.json)" = "true" ]; then
+            echo "Nothing in this push to release."
+            echo "version=" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
-
-          echo "version=${version}" >> "$GITHUB_OUTPUT"
-          echo "sha=${sha:-${{ github.sha }}}" >> "$GITHUB_OUTPUT"
-          # One line: a newline in a title would end the output early.
-          echo "title=$(printf '%s' "$title" | tr '\n' ' ')" >> "$GITHUB_OUTPUT"
+          jq -r '.data.markdown' note.json > notes.md
+          echo "version=$(jq -r '.data.version' note.json)" >> "$GITHUB_OUTPUT"
 
       - name: Tag it and publish the GitHub Release
         if: steps.record.outputs.version != ''
-        # Through the environment, never spliced into the script: the title is
-        # text somebody typed, and `${{ }}` would paste it in as shell.
         env:
           VERSION: ${{ steps.record.outputs.version }}
-          TARGET: ${{ steps.record.outputs.sha }}
-          TITLE: ${{ steps.record.outputs.title }}
         run: |
           set -euo pipefail
           tag="v${VERSION}"
@@ -91,6 +110,9 @@ jobs:
             echo "$tag already published."
             exit 0
           fi
-          name="$tag"
-          if [ -n "$TITLE" ]; then name="$tag: $TITLE"; fi
-          gh release create "$tag" --target "$TARGET" --title "$name" --notes-file notes.md
+          # The title the site gave it, read back rather than passed through the
+          # shell: it is text, and `${{ }}` would paste it in as a command.
+          curl -sS --fail-with-body --max-time 60 -o release.json "${SITE_URL}/api/patch-notes/${VERSION}" || true
+          title=$(jq -r '.data.title // ""' release.json 2>/dev/null | tr '\n' ' ' || true)
+          name="$tag"; if [ -n "$title" ]; then name="$tag: $title"; fi
+          gh release create "$tag" --target "$(git rev-parse HEAD)" --title "$name" --notes-file notes.md

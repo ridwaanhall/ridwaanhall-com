@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 
 import {
   defaultTitle,
+  releaseMeta,
   formatVersion,
   groupByKind,
   latestVersion,
@@ -73,6 +74,18 @@ describe("versions", () => {
 });
 
 describe("a release's text", () => {
+  it("takes its title and summary from a commit's trailers, the newest winning", () => {
+    assert.deepEqual(
+      releaseMeta([
+        "✨feat: A\n\nRelease-Title: Old\nRelease-Summary: First.",
+        "🐛fix: B",
+        "✨feat: C\n\nRelease-Title: New UI",
+      ]),
+      { title: "New UI", summary: "First." },
+    );
+    assert.deepEqual(releaseMeta(["🐛fix: B"]), { title: "", summary: "" });
+  });
+
   it("titles itself from its most important line", () => {
     assert.equal(defaultTitle([entry("fix", "keep it"), entry("feature", "add patch notes")]), "Add patch notes, and 1 more");
     assert.equal(defaultTitle([entry("fix", "keep it")]), "Keep it");

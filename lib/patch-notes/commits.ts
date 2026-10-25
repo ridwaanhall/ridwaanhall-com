@@ -126,6 +126,26 @@ export function nextVersion(last: Version | null, entries: Entry[], first: Versi
 }
 
 /**
+ * A title and summary a commit gives its release, as trailers in its message:
+ *
+ *     Release-Title: New UI
+ *     Release-Summary: A redesign of the whole site.
+ *
+ * So naming a release is part of writing the commit, not a visit to the admin
+ * afterwards. When several commits in one release carry one, the newest wins;
+ * the commits arrive oldest first, so that is the last.
+ */
+export function releaseMeta(messages: string[]): { title: string; summary: string } {
+  let title = "";
+  let summary = "";
+  for (const message of messages) {
+    title = /^Release-Title:\s*(.+)$/m.exec(message)?.[1].trim() || title;
+    summary = /^Release-Summary:\s*(.+)$/m.exec(message)?.[1].trim() || summary;
+  }
+  return { title, summary };
+}
+
+/**
  * A release's title when nobody has written one: its most important line.
  * Breaking first, then new, then fixed -- the same order the release lists.
  */

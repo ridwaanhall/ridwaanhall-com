@@ -44,14 +44,22 @@ reader, not only for staff.
 
 ## Patch notes are written by the release workflow
 
-Every push to main runs `.github/workflows/release.yml`, which posts the
-push's commits to `POST /api/patch-notes`. `lib/patch-notes/commits.ts` (pure,
-tested) files each commit by its type and picks the version: a breaking change
-is a major, a `feat` a minor, anything else a patch. The workflow then tags
-`v<version>` and publishes the GitHub Release with the Markdown the endpoint
-returns. Edit a release's wording, summary or visibility in the admin
-(**Site > Patch notes**); its tag and GitHub Release are not touched.
+Every push to main runs `.github/workflows/release.yml`, with nobody doing
+anything. It sends **every commit since the newest `v*` tag** (not only the
+push's) to `POST /api/patch-notes`, so nothing falls between releases;
+`lib/patch-notes/commits.ts` (pure, tested) files each commit by its type and
+picks the version: a breaking change is a major, a `feat` a minor, anything
+else a patch. The workflow then tags `v<version>` and publishes the GitHub
+Release with the Markdown the endpoint returns. Before that it tags any release
+the site holds that GitHub lacks, so a run that died half way, or a note added
+in the admin with a commit sha, is published by the next one. Edit a release's
+wording, summary or visibility in the admin (**Site > Patch notes**).
 
+- **The first run makes 4.0.0.** With no release on the site, the range is
+  everything since `v3.0.0`: the redesign and whatever followed it.
+- **`Release-Title:` and `Release-Summary:` lines in a commit message name the
+  release** it lands in, the newest winning. Without one, the title is the
+  most important line.
 - **The endpoint takes `PATCH_NOTES_TOKEN`**, set on Vercel and as a repository
   secret. It writes text onto a public page, so unlike the cron route it
   replaced in spirit, it is not open. Unset, it refuses everything.
@@ -62,9 +70,7 @@ returns. Edit a release's wording, summary or visibility in the admin
   row, published or not.
 - **`[skip release]` in a commit message leaves it out**, and a push of
   nothing but skipped commits and merges records nothing.
-- The workflow's manual run (`version` input) publishes the GitHub Release for
-  a note recorded some other way. That is how v4.0.0, seeded by hand from
-  `git log v3.0.0..main`, got its tag.
+- The repository is public, so the workflow costs no Actions minutes.
 
 ## Other things worth knowing here
 

@@ -32,6 +32,7 @@ const SITE_LINKS = [
   ["/openhire", "Open-hire"],
   ["/dashboard", "Dashboard"],
   ["/guestbook", "Guestbook"],
+  ["/patch-notes", "Patch notes"],
   ["/privacy-policy", "Privacy"],
   ["/terms", "Terms"],
 ] as const;

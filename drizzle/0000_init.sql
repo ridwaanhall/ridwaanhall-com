@@ -855,6 +855,43 @@ CREATE TABLE "app"."comment" (
 );--> statement-breakpoint
 
 -- ---------------------------------------------------------------------------
+-- Patch notes
+-- ---------------------------------------------------------------------------
+--
+-- One row per release, written by `.github/workflows/release.yml` through
+-- `POST /api/patch-notes` on every push to main, and editable in the admin
+-- afterwards. `version` is bare semver ("4.1.0"); the git tag adds the "v".
+-- `commit_sha` is what makes the endpoint idempotent: a re-run workflow finds
+-- its own push already recorded instead of bumping the version a second time.
+
+CREATE TABLE "app"."patch_note" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "version" text NOT NULL,
+    "title" text NOT NULL DEFAULT '',
+    "summary" text NOT NULL DEFAULT '',
+    "commit_sha" text,
+    "released_at" timestamptz NOT NULL DEFAULT now(),
+    "is_published" boolean NOT NULL DEFAULT true,
+    CONSTRAINT "patch_note_version_key" UNIQUE ("version"),
+    CONSTRAINT "patch_note_commit_sha_key" UNIQUE ("commit_sha"),
+    CONSTRAINT "patch_note_version_check" CHECK ("version" ~ '^[0-9]+\.[0-9]+\.[0-9]+$')
+);--> statement-breakpoint
+
+-- One line of a release, from one commit. `kind` is a fixed vocabulary rather
+-- than a lookup table: the page and the release body group on it, and the
+-- commit convention it is parsed from is code, not something edited on a screen.
+CREATE TABLE "app"."patch_note_entry" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "patch_note_id" uuid NOT NULL REFERENCES "app"."patch_note"("id") ON DELETE CASCADE,
+    "kind" text NOT NULL DEFAULT 'other',
+    "scope" text NOT NULL DEFAULT '',
+    "body" text NOT NULL,
+    "commit_sha" text NOT NULL DEFAULT '',
+    "position" integer NOT NULL DEFAULT 0,
+    CONSTRAINT "patch_note_entry_kind_check" CHECK ("kind" IN ('breaking', 'feature', 'fix', 'security', 'performance', 'refactor', 'docs', 'style', 'test', 'chore', 'other'))
+);--> statement-breakpoint
+
+-- ---------------------------------------------------------------------------
 -- Indexes on the columns the site actually filters and orders by
 -- ---------------------------------------------------------------------------
 
@@ -876,6 +913,8 @@ CREATE INDEX "application_status_idx" ON "app"."application" ("status_id");--> s
 -- Every request by a staff account reads that account's whole grant set, so
 -- this is the one lookup on the table that happens on every admin page.
 CREATE INDEX "admin_access_account_idx" ON "app"."admin_access" ("account_id");--> statement-breakpoint
+CREATE INDEX "patch_note_released_idx" ON "app"."patch_note" ("is_published", "released_at" DESC);--> statement-breakpoint
+CREATE INDEX "patch_note_entry_note_idx" ON "app"."patch_note_entry" ("patch_note_id", "position");--> statement-breakpoint
 
 -- ---------------------------------------------------------------------------
 -- Row Level Security, on every table, with no policies

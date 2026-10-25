@@ -42,6 +42,30 @@ than a component something else could render, and `draftMode()` is not the way
 round it: reading it in `/blog/[slug]` makes that route dynamic for every
 reader, not only for staff.
 
+## Patch notes are written by the release workflow
+
+Every push to main runs `.github/workflows/release.yml`, which posts the
+push's commits to `POST /api/patch-notes`. `lib/patch-notes/commits.ts` (pure,
+tested) files each commit by its type and picks the version: a breaking change
+is a major, a `feat` a minor, anything else a patch. The workflow then tags
+`v<version>` and publishes the GitHub Release with the Markdown the endpoint
+returns. Edit a release's wording, summary or visibility in the admin
+(**Site > Patch notes**); its tag and GitHub Release are not touched.
+
+- **The endpoint takes `PATCH_NOTES_TOKEN`**, set on Vercel and as a repository
+  secret. It writes text onto a public page, so unlike the cron route it
+  replaced in spirit, it is not open. Unset, it refuses everything.
+- **It is idempotent on the pushed sha.** A re-run workflow gets the release it
+  already made, never a second version. Concurrent pushes queue on an advisory
+  lock (`8_471_003`), so two cannot both claim the same number.
+- **A hidden release keeps its number.** The next version is read from every
+  row, published or not.
+- **`[skip release]` in a commit message leaves it out**, and a push of
+  nothing but skipped commits and merges records nothing.
+- The workflow's manual run (`version` input) publishes the GitHub Release for
+  a note recorded some other way. That is how v4.0.0, seeded by hand from
+  `git log v3.0.0..main`, got its tag.
+
 ## Other things worth knowing here
 
 - **The command palette reaches the content, and the listing search reads the

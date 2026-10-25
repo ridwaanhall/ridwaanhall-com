@@ -1,0 +1,96 @@
+name: Release
+
+# Every push to main becomes a release: a patch note on the site (stored in
+# Supabase through POST /api/patch-notes) and a matching git tag and GitHub
+# Release. The site decides the version, from the commit types in the push:
+# a breaking change is a major, a ✨feat a minor, anything else a patch. A
+# commit carrying `[skip release]` is left out, and a push of nothing else
+# records nothing.
+#
+# The manual run publishes the GitHub Release for a note that already exists,
+# which is how the hand-written v4.0.0 gets its tag.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "An existing patch note to publish as a GitHub Release, e.g. 4.0.0"
+        required: true
+
+# Writing a tag and a release is the whole of what it needs from the repository.
+permissions:
+  contents: write
+
+# Versions are handed out in order, so runs queue rather than race or cancel.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: ${{ secrets.SITE_URL || 'https://ridwaanhall.com' }}
+      PATCH_NOTES_TOKEN: ${{ secrets.PATCH_NOTES_TOKEN }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Record the release on the site
+        id: record
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            version="${INPUT_VERSION#v}"
+            if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo "Not a version: $version"; exit 1; fi
+            curl -sS --fail-with-body --max-time 60 -o note.json "${SITE_URL}/api/patch-notes/${version}"
+            jq -r '.data.markdown' note.json > notes.md
+            sha=$(jq -r '.data.commit_sha // empty' note.json)
+            title=$(jq -r '.data.title' note.json)
+          else
+            # The commits GitHub lists for this push, as the endpoint wants them.
+            jq '{sha: .after, commits: [.commits[] | {sha: .id, message: .message}]}' "$GITHUB_EVENT_PATH" > push.json
+            curl -sS --fail-with-body --max-time 60 --retry 2 --retry-connrefused \
+              -H "Authorization: Bearer ${PATCH_NOTES_TOKEN}" \
+              -H "Content-Type: application/json" \
+              --data @push.json -o note.json "${SITE_URL}/api/patch-notes"
+            cat note.json; echo
+
+            if [ "$(jq -r '.data.skipped // false' note.json)" = "true" ]; then
+              echo "Nothing in this push to release."
+              echo "version=" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            version=$(jq -r '.data.version' note.json)
+            jq -r '.data.markdown' note.json > notes.md
+            sha="${{ github.sha }}"
+            title=""
+          fi
+
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "sha=${sha:-${{ github.sha }}}" >> "$GITHUB_OUTPUT"
+          # One line: a newline in a title would end the output early.
+          echo "title=$(printf '%s' "$title" | tr '\n' ' ')" >> "$GITHUB_OUTPUT"
+
+      - name: Tag it and publish the GitHub Release
+        if: steps.record.outputs.version != ''
+        # Through the environment, never spliced into the script: the title is
+        # text somebody typed, and `${{ }}` would paste it in as shell.
+        env:
+          VERSION: ${{ steps.record.outputs.version }}
+          TARGET: ${{ steps.record.outputs.sha }}
+          TITLE: ${{ steps.record.outputs.title }}
+        run: |
+          set -euo pipefail
+          tag="v${VERSION}"
+          # A re-run finds its own release already there; that is success.
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "$tag already published."
+            exit 0
+          fi
+          name="$tag"
+          if [ -n "$TITLE" ]; then name="$tag: $TITLE"; fi
+          gh release create "$tag" --target "$TARGET" --title "$name" --notes-file notes.md

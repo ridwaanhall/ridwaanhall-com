@@ -9,6 +9,7 @@ import {
   homeTwin,
   legalTwin,
   openhireTwin,
+  patchNotesTwin,
   postTwin,
   projectTwin,
   projectsTwin,
@@ -45,6 +46,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pat
     else if (first === "openhire") twin = await openhireTwin(about);
     else if (first === "privacy-policy") twin = await legalTwin("privacy-policy");
     else if (first === "terms") twin = await legalTwin("terms-and-conditions");
+    else if (first === "patch-notes") twin = await patchNotesTwin();
   } else if (path.length === 2) {
     if (first === "projects") twin = await projectTwin(second);
     else if (first === "blog") twin = await postTwin(second, about);

@@ -365,6 +365,13 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     singleton: true,
     blurb: "How the public site resizes its pictures.",
   },
+  {
+    key: "patch-note",
+    label: "Patch note",
+    labelPlural: "Patch notes",
+    group: "Site",
+    blurb: "One per push to main, written by the release workflow. Reword or hide one here.",
+  },
 
   /*
    * Settings: every vocabulary a dropdown elsewhere in this admin offers.

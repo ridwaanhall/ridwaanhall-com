@@ -1,6 +1,7 @@
 import { ITEMS_PER_PAGE } from "@/lib/api/pagination";
 import { getBlogs, getProjects } from "@/lib/data/content";
 import { getLegalDocuments } from "@/lib/data/legal";
+import { getPatchNotes } from "@/lib/data/patch-notes";
 
 import { SITE_URL } from "./config";
 
@@ -40,10 +41,11 @@ const latest = (dates: (Date | null | undefined)[]): Date => {
 };
 
 export async function staticEntries(): Promise<SitemapEntry[]> {
-  const [blogs, projects, legal] = await Promise.all([
+  const [blogs, projects, legal, notes] = await Promise.all([
     getBlogs(),
     getProjects(),
     getLegalDocuments(),
+    getPatchNotes(),
   ]);
 
   const blogUpdated = latest(blogs.map((b) => b.updated_at));
@@ -73,6 +75,12 @@ export async function staticEntries(): Promise<SitemapEntry[]> {
       lastModified: terms?.last_updated ?? FALLBACK,
       changeFrequency: "monthly",
       priority: 1.0,
+    },
+    {
+      url: `${SITE_URL}/patch-notes`,
+      lastModified: notes[0] ? new Date(notes[0].released_at) : FALLBACK,
+      changeFrequency: "weekly",
+      priority: 0.5,
     },
     // The guestbook is excluded until the feature lands in phase 2; adding it
     // now would advertise a page that is still a stub.

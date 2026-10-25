@@ -269,6 +269,20 @@ export function contactSeo(): SeoData {
   };
 }
 
+export function patchNotesSeo(): SeoData {
+  const keywords = [...COMMON_KEYWORDS.personal.slice(0, 3), "patch notes", "changelog", "releases", "what's new"];
+  return {
+    title: "Patch Notes - What Changed, Release by Release",
+    description: "Every change to this site, grouped by release: what is new, what was fixed, and what moved underneath.",
+    keywords: keywords.join(", "),
+    og_image: "",
+    og_type: CONTENT_TYPES.patch_notes.og_type,
+    twitter_card: CONTENT_TYPES.patch_notes.twitter_card,
+    canonical_url: `${SITE_URL}/patch-notes`,
+    content_type: "patch_notes",
+  };
+}
+
 export function guestbookSeo(): SeoData {
   const keywords = [
     ...COMMON_KEYWORDS.personal.slice(0, 3),

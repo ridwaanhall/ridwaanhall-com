@@ -111,7 +111,9 @@ jobs:
             exit 0
           fi
           # The title the site gave it, read back rather than passed through the
-          # shell: it is text, and `${{ }}` would paste it in as a command.
+          # shell: it is text, and an expression spliced into this script would
+          # run it as a command. (GitHub evaluates expressions inside `run:`
+          # even in shell comments, so this one names none.)
           curl -sS --fail-with-body --max-time 60 -o release.json "${SITE_URL}/api/patch-notes/${VERSION}" || true
           title=$(jq -r '.data.title // ""' release.json 2>/dev/null | tr '\n' ' ' || true)
           name="$tag"; if [ -n "$title" ]; then name="$tag: $title"; fi

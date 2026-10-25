@@ -60,6 +60,12 @@ wording, summary or visibility in the admin (**Site > Patch notes**).
 - **`Release-Title:` and `Release-Summary:` lines in a commit message name the
   release** it lands in, the newest winning. Without one, the title is the
   most important line.
+- **The workflow never calls `ridwaanhall.com`.** That domain is behind
+  Cloudflare, which answers GitHub's runners with a bot challenge (403) no
+  script passes; the old cron workflow failed that way on every run. It calls
+  the production deployment's Vercel address with a Protection Bypass for
+  Automation secret (`VERCEL_AUTOMATION_BYPASS_SECRET`, a repository secret)
+  in the `x-vercel-protection-bypass` header.
 - **The endpoint takes `PATCH_NOTES_TOKEN`**, set on Vercel and as a repository
   secret. It writes text onto a public page, so unlike the cron route it
   replaced in spirit, it is not open. Unset, it refuses everything.

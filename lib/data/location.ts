@@ -25,10 +25,18 @@ export type LocationParts = {
   flag: string | null;
 };
 
-export function locationLabel(location: LocationParts | null | undefined): string {
+/**
+ * `{ flag: false }` is for the CV: its PDF is set in Helvetica, which has no
+ * emoji glyphs, so a flag there prints as a box rather than a flag.
+ */
+export function locationLabel(location: LocationParts | null | undefined, { flag = true } = {}): string {
   if (!location) return "";
-  const parts = [location.city, location.region, location.country].filter(Boolean);
+  // A city named after its region ("New York, New York") is said once.
+  const parts = [location.city, location.region, location.country]
+    .filter((part): part is string => Boolean(part))
+    .filter((part, i, all) => i === 0 || part.toLowerCase() !== all[i - 1].toLowerCase());
   const named = parts.join(", ");
+  if (!flag) return named;
   if (!named) return location.flag ?? "";
   return location.flag ? `${named} ${location.flag}` : named;
 }

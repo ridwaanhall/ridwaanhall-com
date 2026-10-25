@@ -17,7 +17,7 @@ export function cvToMarkdown(cv: Cv): string {
     cv.skills.length > 0 && `## Skills\n\n${cv.skills.map(skill).join("\n")}`,
     cv.experience.length > 0 &&
       `## Experience\n\n${cv.experience
-        .map((role) => `### ${role.title}, ${role.company}\n\n${role.period}\n\n${role.points.map((point) => `- ${point}`).join("\n")}`)
+        .map((role) => `### ${role.title}, ${role.company}\n\n${[role.details, role.period].filter(Boolean).join("  \n")}\n\n${role.points.map((point) => `- ${point}`).join("\n")}`)
         .join("\n\n")}`,
     cv.projects.length > 0 && `## Projects\n\n${cv.projects.map((project) => `- **${project.title}**: ${project.line}`).join("\n")}`,
     cv.education.length > 0 && `## Education\n\n${cv.education.map((e) => `- **${e.degree}**, ${e.institution} (${e.years})`).join("\n")}`,

@@ -330,6 +330,8 @@ export type Experience = {
   employment_type: string;
   location_type: string;
   location: string;
+  /** `location` without the flag, for the CV's PDF, whose face has no emoji. */
+  place: string;
   is_current: boolean;
   responsibilities: string[];
   website: string;
@@ -387,6 +389,7 @@ export async function getExperiences(currentOnly = false): Promise<Experience[]>
       employment_type: row.employmentType ?? "",
       location_type: row.workMode ?? "",
       location: locationLabel(row),
+      place: locationLabel(row, { flag: false }),
       is_current: row.e.isCurrent,
       responsibilities: (tasksFor.get(row.e.id) ?? []).map((task) => task.body),
       website: row.org.website,

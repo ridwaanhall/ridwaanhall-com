@@ -51,6 +51,9 @@ export async function getCv(): Promise<{ cv: Cv; username: string } | null> {
       company: role.company,
       start: label(role.period.start),
       end: role.period.end === "Present" ? "Present" : label(role.period.end),
+      employmentType: role.employment_type,
+      workMode: role.location_type,
+      place: role.place,
       responsibilities: role.responsibilities,
     })),
     education: education.map((e) => ({

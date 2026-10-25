@@ -115,8 +115,18 @@ jobs:
             # Never "Latest": these are older than the release this run is
             # about to make, and GitHub would otherwise crown whichever was
             # created last -- 0.1.0, on the first run after the history import.
-            gh release create "$tag" --target "$sha" --title "$name" --notes-file notes.md --latest=false
-            echo "Published $tag, which the site had recorded."
+            #
+            # A warning rather than a failure when GitHub refuses: the Actions
+            # token may not create a tag on a commit whose workflow files differ
+            # from main's (every Django-era release has `django.yml`), since
+            # that counts as writing a workflow. One missing tag must not stop
+            # this run from recording the push it is for. Once the tag exists,
+            # creating its release is allowed, and the next run does it.
+            if gh release create "$tag" --target "$sha" --title "$name" --notes-file notes.md --latest=false; then
+              echo "Published $tag, which the site had recorded."
+            else
+              echo "::warning::Could not create $tag at $sha. If GitHub refused the tag itself, create it once with: git push origin $sha:refs/tags/$tag"
+            fi
           done
           git fetch --tags --force --quiet
 

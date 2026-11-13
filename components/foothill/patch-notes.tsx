@@ -17,7 +17,13 @@ export const releaseId = (version: string) => `v${version.replace(/\./g, "-")}`;
  */
 export function PatchNotesPage({ notes }: { notes: PatchNote[] }) {
   const [latest] = notes;
-  const sections = notes.map((note) => ({ id: releaseId(note.version), label: `v${note.version}` }));
+  // The title rides under the version, so the list says what each release
+  // was rather than only which number it got.
+  const sections = notes.map((note) => ({
+    id: releaseId(note.version),
+    label: `v${note.version}`,
+    sub: note.title || undefined,
+  }));
 
   return (
     <main className={MAIN}>

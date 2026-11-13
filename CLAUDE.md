@@ -86,7 +86,7 @@ answered a non-staff request with 72KB in which the visible HTML said "Not
 permitted" while the Flight payload below it carried every blog post, its slug
 and its edit URL. Every admin page calls `requireStaff()` as its first `await`;
 route handlers and server actions, which do not nest under a layout at all, call
-`isStaffRequest()`. `scripts/check-admin.mjs` reads whole response bodies,
+`getStaffUser()` and then `permits()`. `scripts/check-admin.mjs` reads whole response bodies,
 payload included, and fails if row data appears in one.
 
 `is_staff` is read from the database on every request and never carried in the

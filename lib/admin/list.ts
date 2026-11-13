@@ -11,6 +11,7 @@ import {
 import { pageRange } from "@/lib/api/pagination";
 import { db } from "@/lib/db/client";
 import { jakartaToday } from "@/lib/utils/format";
+import { isUuid } from "@/lib/utils/uuid";
 
 /**
  * One generic changelist, driven by a per-model descriptor.
@@ -184,10 +185,9 @@ export type AdminListModel<Row> = {
   /** The row's primary key, for the change-form link. */
   /** The row's uuid, used to build its edit URL. */
   rowId: (row: Row) => string;
-  perPage?: number;
 };
 
-export const ADMIN_PER_PAGE = 25;
+const ADMIN_PER_PAGE = 25;
 
 // --- request parameters ------------------------------------------------------
 
@@ -315,6 +315,13 @@ function filterConditions<Row>(model: AdminListModel<Row>, params: ListParams): 
       if (value !== "1" && value !== "0") continue;
       conditions.push(sql`${filter.column} = ${value === "1"}`);
     } else if (filter.kind === "choice") {
+      // The value is from the address. A fixed list takes only what it offers;
+      // a related one is a foreign key, and a key that is not a uuid makes
+      // Postgres raise (the whole list answered 500) rather than match nothing.
+      const { choices } = filter;
+      if (Array.isArray(choices) ? !choices.some((choice) => choice.value === value) : choices !== "distinct" && !isUuid(value)) {
+        continue;
+      }
       conditions.push(sql`${filter.column} = ${value}`);
     } else {
       const floor = dateFloor(value);
@@ -346,7 +353,7 @@ export async function fetchAdminList<Row>(
   model: AdminListModel<Row>,
   params: ListParams,
 ): Promise<AdminListPage<Row>> {
-  const perPage = model.perPage ?? ADMIN_PER_PAGE;
+  const perPage = ADMIN_PER_PAGE;
 
   const conditions = filterConditions(model, params);
   const search = searchCondition(model, params.q);

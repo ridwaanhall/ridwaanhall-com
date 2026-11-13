@@ -129,7 +129,6 @@ export function Comments({
           >
             <input type="hidden" name="content_type" value={section.targetLabel} />
             <input type="hidden" name="object_id" value={section.targetId} />
-            <input type="hidden" name="slug" value={slug} />
             <input type="hidden" name="reply_to" value={replyTo?.id ?? ""} />
             <div className="who">
               {replyTo ? (

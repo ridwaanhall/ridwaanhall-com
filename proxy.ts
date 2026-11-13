@@ -32,8 +32,9 @@ const NOINDEX_PREFIXES = [
   "/guestbook/accounts/",
   "/guestbook/logout/",
   // The admin is disallowed in robots.txt as well; this covers anything that
-  // reaches it through a link.
-  "/admin/",
+  // reaches it through a link. No trailing slash, for the reason above: the
+  // admin's index is `/admin` itself.
+  "/admin",
 ];
 
 /**

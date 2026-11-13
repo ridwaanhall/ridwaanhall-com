@@ -20,7 +20,7 @@ import { staffGate } from "@/lib/auth/staff";
  * exactly what happened, and is written up on `requireStaff` in
  * `lib/auth/staff.ts`. Every page under this segment calls `requireStaff()`
  * itself, as its first `await`. Route handlers and server actions, which do
- * not nest under a layout at all, call `isStaffRequest()`.
+ * not nest under a layout at all, call `getStaffUser()` and `permits()`.
  *
  * The gate is not in `proxy.ts` either, though the plan called for middleware:
  * `is_staff` is read from the database per request and never carried in the

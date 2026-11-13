@@ -82,7 +82,7 @@ export function Field({
             : labelled(String(value));
 
     return (
-      <Row field={field} id={id} describedBy={describedBy} error={error}>
+      <Row field={field} id={id} error={error}>
         {/* No hidden input alongside it: a read-only field is not submitted at
             all, and `parseFormValues` skips it, so there is nothing a crafted
             POST could put back. Rendering the value as text rather than a
@@ -94,7 +94,7 @@ export function Field({
 
   if (field.kind === "string-list" || field.kind === "key-value") {
     return (
-      <Row field={field} id={id} describedBy={describedBy} error={error}>
+      <Row field={field} id={id} error={error}>
         {field.kind === "string-list" ? (
           <StringListEditor name={name} field={field} value={Array.isArray(value) ? value : []} />
         ) : (
@@ -110,7 +110,7 @@ export function Field({
 
   if (field.kind === "rich-text") {
     return (
-      <Row field={field} id={id} describedBy={describedBy} error={error}>
+      <Row field={field} id={id} error={error}>
         <RichTextEditor name={name} value={typeof value === "string" ? value : ""} />
       </Row>
     );
@@ -119,7 +119,7 @@ export function Field({
   if (field.kind === "many-to-many") {
     const chosen = new Set((Array.isArray(value) ? value : []).map(String));
     return (
-      <Row field={field} id={id} describedBy={describedBy} error={error}>
+      <Row field={field} id={id} error={error}>
         <div className="max-h-56 overflow-y-auto rounded-md border border-zinc-800 px-3 py-2.5">
           <div className="grid gap-x-4 gap-y-1 sm:grid-cols-2">
             {(field.options ?? []).map((option) => (
@@ -145,7 +145,7 @@ export function Field({
     // needs to be held in state for that to work.
     const chosen = new Set(Array.isArray(value) ? value : []);
     return (
-      <Row field={field} id={id} describedBy={describedBy} error={error}>
+      <Row field={field} id={id} error={error}>
         <div className="flex flex-wrap gap-x-4 gap-y-1.5">
           {(field.choices ?? []).map((choice) => (
             <label key={choice.value} className={cn(BOXED_LABEL, "text-sm text-zinc-300")}>
@@ -166,7 +166,7 @@ export function Field({
 
   if (field.kind === "reference") {
     return (
-      <Row field={field} id={id} describedBy={describedBy} error={error}>
+      <Row field={field} id={id} error={error}>
         <ValueHolder value={value}>
           {(current, set) => (
             <AdminSelect
@@ -175,6 +175,7 @@ export function Field({
               value={current}
               onValueChange={set}
               options={field.options ?? []}
+              emptyLabel={field.emptyLabel}
               required={field.required}
               describedBy={describedBy}
               invalid={Boolean(error)}
@@ -190,7 +191,7 @@ export function Field({
   if (field.kind === "date" || field.kind === "datetime") {
     const withTime = field.kind === "datetime";
     return (
-      <Row field={field} id={id} describedBy={describedBy} error={error}>
+      <Row field={field} id={id} error={error}>
         <ValueHolder value={value} format={(raw) => toInputValue(raw, withTime)}>
           {(current, set) => (
             <AdminDatePicker
@@ -212,7 +213,7 @@ export function Field({
 
   if (field.kind === "image") {
     return (
-      <Row field={field} id={id} describedBy={describedBy} error={error}>
+      <Row field={field} id={id} error={error}>
         <ImageField
           field={field}
           name={name}
@@ -259,7 +260,7 @@ export function Field({
   };
 
   return (
-    <Row field={field} id={id} describedBy={describedBy} error={error}>
+    <Row field={field} id={id} error={error}>
       {field.kind === "textarea" ? (
         <textarea
           {...common}
@@ -339,7 +340,6 @@ function Row({
 }: {
   field: ClientField;
   id: string;
-  describedBy: string;
   error?: string;
   children: React.ReactNode;
 }) {

@@ -24,12 +24,6 @@ export function longDate(value: Date | string): string {
   }).format(date);
 }
 
-/** ISO 8601, for a `<time datetime=…>` attribute. */
-export function isoDateTime(value: Date | string): string {
-  const date = value instanceof Date ? value : new Date(value);
-  return date.toISOString();
-}
-
 /**
  * A URL-safe slug.
  *

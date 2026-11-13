@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 
 import { auth } from "@/auth";
 import { getUserProfile } from "@/lib/auth/profile";
-import { commentsTooFast, SLOW_DOWN } from "@/lib/auth/throttle";
+import { commentsTooFast, lockPosting, SLOW_DOWN } from "@/lib/auth/throttle";
 import {
   canDeleteComment,
   isCommentable,
@@ -13,7 +13,7 @@ import {
 } from "@/lib/data/comment-shapes";
 import { commentIdsOnTarget, getComment } from "@/lib/data/comments";
 import { db } from "@/lib/db/client";
-import { comment as commentTable } from "@/lib/db/app-schema";
+import { blogPost, comment as commentTable, project } from "@/lib/db/app-schema";
 import { isUuid } from "@/lib/utils/uuid";
 
 /**
@@ -67,17 +67,25 @@ export async function postComment(formData: FormData): Promise<CommentResult> {
     return { ok: false, error: "This account cannot post comments." };
   }
 
-  if (await commentsTooFast(who.userId)) return { ok: false, error: SLOW_DOWN };
-
   const label = String(formData.get("content_type") ?? "");
   const targetId = String(formData.get("object_id") ?? "");
-  const slug = String(formData.get("slug") ?? "");
 
   // Without the allowlist, `content_type` is attacker-chosen and comments could
   // be attached to any table in the database.
   if (!isCommentable(label)) return { ok: false, error: "Not commentable" };
   // A key that is not a uuid makes Postgres raise rather than find nothing.
   if (!isUuid(targetId)) return { ok: false, error: "Unknown object" };
+  // No foreign key can cover a polymorphic target, so the action is what
+  // refuses one that names nothing or a draft: such a comment is shown
+  // nowhere, and on a draft it appears the moment the draft is published. The
+  // slug comes from the row, not the form, since it names the page to refresh.
+  const targetTable = label === "blog_post" ? blogPost : project;
+  const [target] = await db
+    .select({ slug: targetTable.slug })
+    .from(targetTable)
+    .where(and(eq(targetTable.id, targetId), eq(targetTable.isPublished, true)))
+    .limit(1);
+  if (!target) return { ok: false, error: "Unknown object" };
 
   const body = String(formData.get("body") ?? "").trim();
   // A body of only whitespace passes a `required` check but is not a comment.
@@ -107,17 +115,25 @@ export async function postComment(formData: FormData): Promise<CommentResult> {
     replyToId = parent.replyToId ?? parent.id;
   }
 
-  await db.insert(commentTable).values({
-    targetKind: label,
-    targetId,
-    accountId: who.userId,
-    body,
-    replyToId,
-    isDeleted: false,
-    createdAt: new Date().toISOString(),
+  // Counted and written under one lock, or posts sent at once all read a count
+  // under the limit (see `lockPosting`).
+  const posted = await db.transaction(async (tx) => {
+    await lockPosting(tx, who.userId);
+    if (await commentsTooFast(who.userId, tx)) return false;
+    await tx.insert(commentTable).values({
+      targetKind: label,
+      targetId,
+      accountId: who.userId,
+      body,
+      replyToId,
+      isDeleted: false,
+      createdAt: new Date().toISOString(),
+    });
+    return true;
   });
+  if (!posted) return { ok: false, error: SLOW_DOWN };
 
-  if (slug) revalidatePath(pathFor(label, slug));
+  revalidatePath(pathFor(label, target.slug));
   return { ok: true, notice: replyToId ? "Reply posted." : "Comment posted." };
 }
 

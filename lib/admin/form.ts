@@ -65,10 +65,6 @@ export type FormField = {
   max?: number;
   /** Which `upload_to` folder an `image` field writes into. */
   prefix?: UploadPrefix;
-  /** Multi-line inputs, for a `string-list` whose entries are prose. */
-  multiline?: boolean;
-  /** Says so in the UI: the entries are rendered as raw HTML, unescaped. */
-  allowsHtml?: boolean;
   /** What one entry is called -- "story", "responsibility", "step". */
   itemLabel?: string;
   /** Column headings for a `key-value` editor. */
@@ -311,6 +307,8 @@ export type ClientField = Omit<
   readOnly?: boolean;
   /** Resolved options for a `reference` field, loaded by the page. */
   options?: FilterChoice[];
+  /** What a `reference` field's empty choice says; see `ReferenceSource.emptyLabel`. */
+  emptyLabel?: string;
 };
 export type ClientFieldset = { title?: string; help?: string; fields: ClientField[] };
 
@@ -338,14 +336,13 @@ export function toClientFieldsets(
       min: field.min,
       max: field.max,
       prefix: field.prefix,
-      multiline: field.multiline,
-      allowsHtml: field.allowsHtml,
       itemLabel: field.itemLabel,
       keyLabel: field.keyLabel,
       valueLabel: field.valueLabel,
       // Already a boolean: `resolveReadOnly` ran above.
       readOnly: field.readOnly === true,
       options: options[field.name],
+      emptyLabel: field.reference && "emptyLabel" in field.reference ? field.reference.emptyLabel : undefined,
     })),
   }));
 }
@@ -923,8 +920,6 @@ export function toClientInlines(
       min: field.min,
       max: field.max,
       prefix: field.prefix,
-      multiline: field.multiline,
-      allowsHtml: field.allowsHtml,
       itemLabel: field.itemLabel,
       keyLabel: field.keyLabel,
       valueLabel: field.valueLabel,

@@ -220,17 +220,6 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Panels and cards
-
-   `translateZ(0)` is not a performance incantation here: it promotes the
-   element so the transform animation does not repaint the table under it.
-   --------------------------------------------------------------------------- */
-.admin-panel {
-    animation: admin-rise 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
-    will-change: transform, opacity;
-}
-
-/* ---------------------------------------------------------------------------
    A row the pointer is over
 
    Colour only. The admin's tables are dense and a row that moved under the
@@ -243,8 +232,7 @@
 @media (prefers-reduced-motion: reduce) {
     .admin-rise,
     .admin-fade,
-    .admin-row,
-    .admin-panel {
+    .admin-row {
         animation: none;
     }
 

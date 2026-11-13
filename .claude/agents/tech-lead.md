@@ -56,7 +56,7 @@ For each request, produce:
 
 - Admin page: `requireStaff()` is the first `await`, then
   `can(actor, key, "view")`, before `params` reaches a query. Route handlers and
-  server actions call `isStaffRequest()`. A layout is not a gate.
+  server actions call `getStaffUser()` then `permits()`. A layout is not a gate.
 - Roles and grants read from the database per request, never from the JWT.
 - `readOnly: "afterCreate"` and `canDelete: "superuser"` are truthy strings:
   read through `formFieldsFor` and `permits()`/`roleAllows()`, never the property.

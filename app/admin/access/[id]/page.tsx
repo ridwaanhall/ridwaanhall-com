@@ -14,7 +14,7 @@ import {
   type AdminAction,
   type Grant,
 } from "@/lib/auth/permissions";
-import { requireSuperuser } from "@/lib/auth/staff";
+import { getStaffUser, requireSuperuser } from "@/lib/auth/staff";
 import { db } from "@/lib/db/client";
 import { account, adminAccess } from "@/lib/db/app-schema";
 import { isUuid } from "@/lib/utils/uuid";
@@ -47,6 +47,10 @@ import { KeyChip, ScreenHead } from "@/components/admin/screen-head";
 export async function generateMetadata({
   params,
 }: PageProps<"/admin/access/[id]">): Promise<Metadata> {
+  // Metadata is resolved apart from the page, so the page's gate does not cover
+  // it: without this a signed-out request had the username in its <title>.
+  const actor = await getStaffUser();
+  if (!actor?.isSuperuser) return { title: "Access · Admin" };
   const { id } = await params;
   if (!isUuid(id)) return { title: "Access · Admin" };
 

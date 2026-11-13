@@ -149,9 +149,9 @@ export default async function AdminListPage({ params, searchParams }: Params) {
     // one function for the job, so the cast stands in for the check `typedRoutes`
     // cannot run over a value it cannot see at compile time.
     if (first) redirect(adminPath(first) as Route);
-    // Every tab refused. Not-found rather than an explanation, for the reason
-    // `requirePermission` gives: a staff account is already inside, and what
-    // it must not be handed is a list of the screens it is being kept out of.
+    // Every tab refused. Not-found rather than an explanation: a staff account
+    // is already inside, and what it must not be handed is a list of the
+    // screens it is being kept out of.
     notFound();
   }
 

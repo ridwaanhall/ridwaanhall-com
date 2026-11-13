@@ -71,7 +71,7 @@ already refuses.
 
 Every admin page calls `requireStaff()` as its first `await` and its screen's
 `view` check as its second, before any query runs. Route handlers and server
-actions do not nest under a layout at all, so they call `isStaffRequest()` and
+actions do not nest under a layout at all, so they call `getStaffUser()` and
 `permits()` themselves.
 
 **No role gets past a foreign key.** `ON DELETE RESTRICT` is a property of the

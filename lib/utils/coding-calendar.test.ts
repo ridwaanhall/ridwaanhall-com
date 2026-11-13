@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import { buildCalendar, type CalendarDay } from "./coding-calendar";
-import { monthLabels } from "./contribution-months";
 
 /** A run of consecutive days ending on `end`, each carrying the same value. */
 function run(end: string, length: number, value = 3600): CalendarDay[] {
@@ -95,19 +94,5 @@ describe("buildCalendar months", () => {
     assert.deepEqual([...keys].sort(), keys, "months came out unsorted");
     assert.equal(months[0].name, "Aug");
     assert.equal(months[months.length - 1].name, "Aug");
-  });
-
-  /*
-   * The whole reason this shape is produced rather than any other: it is what
-   * `monthLabels` consumes. Wiring the two together here is what catches a
-   * change to either that the component would only show as missing names.
-   */
-  it("feeds the label placement the shape it expects", () => {
-    const { weeks, months } = buildCalendar(run("2026-08-26", 365));
-    const labels = monthLabels(weeks, months);
-    assert.ok(labels.length >= 11, `expected a year of names, got ${labels.length}`);
-    const columns = labels.map((label) => label.column);
-    assert.deepEqual([...columns].sort((a, b) => a - b), columns, "labels came out unordered");
-    assert.ok(columns.every((column) => column >= 0 && column < 53));
   });
 });

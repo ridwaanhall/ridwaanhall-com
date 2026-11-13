@@ -66,23 +66,13 @@ export function StringListEditor({
           <span className="w-5 pt-1.5 text-right text-xs text-zinc-600 tabular-nums">
             {index + 1}
           </span>
-          {field.multiline ? (
-            <textarea
-              value={item}
-              rows={2}
-              onChange={(event) => update(index, event.target.value)}
-              aria-label={`${noun} ${index + 1}`}
-              className={`${CONTROL} admin-textarea`}
-            />
-          ) : (
-            <input
-              type="text"
-              value={item}
-              onChange={(event) => update(index, event.target.value)}
-              aria-label={`${noun} ${index + 1}`}
-              className={CONTROL}
-            />
-          )}
+          <input
+            type="text"
+            value={item}
+            onChange={(event) => update(index, event.target.value)}
+            aria-label={`${noun} ${index + 1}`}
+            className={CONTROL}
+          />
           <div className="flex shrink-0 gap-1 pt-0.5">
             <button
               type="button"
@@ -121,11 +111,6 @@ export function StringListEditor({
           <Icon name="plus" className="h-3.5 w-3.5" />
           Add {noun}
         </button>
-        {field.allowsHtml && (
-          <span className="text-xs text-zinc-500">
-            Rendered as raw HTML, so tags like &lt;strong&gt; work here.
-          </span>
-        )}
       </div>
     </div>
   );

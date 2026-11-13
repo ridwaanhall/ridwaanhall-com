@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { isoDateTime, longDate, longDateTime, slugify } from "./format";
+import { longDate, longDateTime, slugify } from "./format";
 
 describe("longDate", () => {
   it("renders the editorial date", () => {
@@ -21,13 +21,6 @@ describe("longDate", () => {
 
   it("accepts a Date as readily as a string", () => {
     assert.equal(longDate(new Date("2026-08-01T09:00:00Z")), "August 1, 2026");
-  });
-});
-
-describe("isoDateTime", () => {
-  it("round-trips an instant for a <time datetime=…> attribute", () => {
-    assert.equal(isoDateTime("2026-01-23T12:34:56.000Z"), "2026-01-23T12:34:56.000Z");
-    assert.equal(isoDateTime(new Date(0)), "1970-01-01T00:00:00.000Z");
   });
 });
 

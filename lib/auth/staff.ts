@@ -140,22 +140,6 @@ async function grantsFor(accountId: string): Promise<Grants> {
 }
 
 /**
- * Whether the request may act on admin data at all.
- *
- * Route handlers and server actions must call this themselves. A layout gate
- * does not cover them -- `app/admin/layout.tsx` runs for pages under its
- * segment and for nothing else, so an unprotected `POST /api/admin/...` would
- * be reachable by anyone who knows the path.
- *
- * It answers the *staff* question only. Anything that reads or writes one
- * model's rows must go on to ask `permits`, which is what `lib/actions/admin.ts`
- * does.
- */
-export async function isStaffRequest(): Promise<boolean> {
-  return (await getStaffUser()) !== null;
-}
-
-/**
  * The gate every admin **page** must call, before it reads anything.
  *
  * **A layout gate is not enough, and this was measured rather than assumed.**
@@ -171,10 +155,15 @@ export async function isStaffRequest(): Promise<boolean> {
  * whether the work happens at all. Called as the first `await` in a page, it
  * throws before any query is issued, so there is no payload to leak.
  *
- * The same reasoning now applies one level down, which is why
- * `requirePermission` exists: the layout cannot know which screen a page is
- * about, so a staff account without `view` on a model would otherwise be sent
- * a rail that omits the screen and a payload that carries all of its rows.
+ * The same reasoning applies one level down, which is why every model page asks
+ * `can(actor, key, "view")` straight after this: the layout cannot know which
+ * screen a page is about, so a staff account without `view` on a model would
+ * otherwise be sent a rail that omits the screen and a payload that carries all
+ * of its rows. That refusal is `notFound()` too -- a staff account is already
+ * inside, and what it must not learn is which screens it is kept out of.
+ *
+ * Route handlers and server actions are not under any layout, so they call
+ * `getStaffUser()` and then `permits()` (or check `isSuperuser`) themselves.
  *
  * `notFound()` rather than a redirect: a redirect from a page that a layout is
  * already answering produces two different responses for one request, and the
@@ -184,24 +173,6 @@ export async function isStaffRequest(): Promise<boolean> {
 export async function requireStaff(): Promise<StaffUser> {
   const user = await getStaffUser();
   if (!user) notFound();
-  return user;
-}
-
-/**
- * The gate a **model's** page must call, immediately after `requireStaff` and
- * before `params` becomes a query.
- *
- * Refusing with `notFound()` rather than a "not permitted" screen is
- * deliberate, and it is the opposite choice from the one the layout makes for a
- * non-staff reader. That reader is told the admin exists, because `robots.txt`
- * already names `/admin/` and the path was never the secret. This reader is
- * staff and is already inside; what they must not learn is *which screens they
- * are being kept out of* -- a "you may not open Users" is a map of the admin
- * drawn for somebody who was not given one.
- */
-export async function requirePermission(key: string, action: AdminAction): Promise<StaffUser> {
-  const user = await requireStaff();
-  if (!can(user, key, action)) notFound();
   return user;
 }
 

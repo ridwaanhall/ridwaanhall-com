@@ -23,7 +23,7 @@ and `drizzle/CLAUDE.md` are the rules; this is the procedure.
    column you will touch. Count them. If the count surprises you, stop.
 2. **Snapshot** to a gitignored file: `<what>-before.dump.json` (the
    `*.dump.json` rule covers it). For a whole-database safety net,
-   `node scripts/backup.mjs export` writes `*.backup.json`.
+   `npx tsx scripts/backup.mjs export` writes `*.backup.json`.
 3. **Write in one transaction**, keyed by id, never by label. Use
    `node-postgres` with TLS configured in code (see `lib/db/client.ts`), or
    `scripts/apply-migration.mjs` for SQL files (dry run first; `--apply` to

@@ -5,7 +5,10 @@ import { useEffect, useRef, useState } from "react";
 
 import { SPRING } from "@/components/foothill/controls";
 
-export type Section = { id: string; label: string };
+/** `sub` is a second, quieter line under the label in the wide list -- a
+ *  release's title under its version. The narrow strip is one line of pills
+ *  and leaves it out. */
+export type Section = { id: string; label: string; sub?: string };
 
 /**
  * A page's contents: on a wide screen a list beside the text, sticky under
@@ -47,12 +50,19 @@ export function SectionIndex({
     return () => observer.disconnect();
   }, [sections]);
 
-  // Keep the current section's link in view when the strip scrolls sideways.
+  // Keep the current section's link in view: sideways in the narrow strip,
+  // and down the wide list once it is taller than the window and scrolls (the
+  // patch notes' versions with their titles are, several times over).
   useEffect(() => {
-    const strip = nav.current;
-    const link = strip?.querySelector<HTMLElement>("a.on");
-    if (!strip || !link || strip.scrollWidth <= strip.clientWidth) return;
-    strip.scrollTo({ left: link.offsetLeft - (strip.clientWidth - link.offsetWidth) / 2, behavior: reduce ? "auto" : "smooth" });
+    const list = nav.current;
+    const link = list?.querySelector<HTMLElement>("a.on");
+    if (!list || !link) return;
+    const behavior = reduce ? "auto" : "smooth";
+    if (list.scrollWidth > list.clientWidth) {
+      list.scrollTo({ left: link.offsetLeft - (list.clientWidth - link.offsetWidth) / 2, behavior });
+    } else if (list.scrollHeight > list.clientHeight) {
+      list.scrollTo({ top: link.offsetTop - (list.clientHeight - link.offsetHeight) / 2, behavior });
+    }
   }, [current, reduce]);
 
   const jump = (id: string) => (event: React.MouseEvent) => {
@@ -74,10 +84,11 @@ export function SectionIndex({
       >
         <span className="mono mute toc-label">{label}</span>
         <LayoutGroup id="toc">
-          {sections.map(({ id, label: text }) => (
+          {sections.map(({ id, label: text, sub }) => (
             <a key={id} href={`#${id}`} className={current === id ? "on" : undefined} onClick={jump(id)}>
               {current === id && <motion.span className="mark" layoutId="toc-mark" transition={SPRING} />}
               {text}
+              {sub && <span className="toc-sub">{sub}</span>}
             </a>
           ))}
         </LayoutGroup>

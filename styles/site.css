@@ -964,3 +964,15 @@ body:has(.fh-site) {
 .fh-site .fgroup-body { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
 .fh-site .fgroup .chips { flex-wrap: wrap; overflow: visible; padding: 0; margin: 0; }
 .fh-site .mini-controls .field { height: 34px; }
+
+/* A section index entry's second line: a release's title under its version.
+   Only the wide list shows it; the narrow strip is one line of pills. */
+.fh-site .toc .toc-sub { display: none; }
+@media (min-width: 1024px) {
+  .fh-site .toc .toc-sub { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; margin-top: 2px; font-size: 12.5px; line-height: 1.4; color: var(--fh-mute); }
+  .fh-site .toc a.on .toc-sub, .fh-site .toc a:hover .toc-sub { color: var(--fh-ink-2); }
+  /* A list taller than the window would leave its later entries, and the
+     marker on them, below the fold for good while it sticks; it scrolls on its
+     own instead, and SectionIndex keeps the current entry in view. */
+  .fh-site .toc nav { max-height: calc(100vh - var(--fh-nav) - 64px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+}

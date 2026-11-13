@@ -350,6 +350,41 @@ Run `npm test`, `npx tsc --noEmit` and `npm run lint` for any change. The rest a
 every one, says which need `--conditions=react-server` and which need `npm run dev`, and is what to
 read before choosing which to run.
 
+## Team
+
+`.claude/agents/` holds a subagent per role and `.claude/skills/` the workflows
+they share. Each one names the `CLAUDE.md` files it depends on and encodes their
+traps; those files stay the source of truth, so when they move, fix the agent.
+
+| Agent | Use it for |
+|---|---|
+| `tech-lead` | Planning a change that crosses areas, deciding owners and proof, reviewing a diff against the traps above. Read-only. |
+| `frontend-engineer` | The public site: `components/foothill/`, `styles/site.css`, `app/(site)/`, skeletons, motion, the eight greys. |
+| `admin-engineer` | `/admin`: descriptors, registry, server actions, the two-question gate, drawn controls, the rail. |
+| `data-engineer` | `drizzle/`, `lib/db/`, `lib/data/`, `lib/storage/`, RLS, any write to live rows. |
+| `security-engineer` | Auth, grants, RLS, sanitising, the image-link fetch, headers, secrets, dependency alerts. Reviews. |
+| `qa-engineer` | `npm test`, the harnesses, browser QA and reports with evidence. |
+| `perf-seo-engineer` | Metadata, sitemaps, Markdown twins and `llms.txt`, image delivery, caching, bundle size. |
+| `release-engineer` | Branches, commits, PRs, CI, `release.yml` and patch notes, Vercel. |
+
+| Skill | Use it when |
+|---|---|
+| `verify-change` | Before calling any change done: maps the paths touched to the harnesses that prove them. |
+| `live-db-write` | Before any data edit or a harness that writes: snapshot, write, restore, prove. |
+| `schema-delta` | Any DDL: `0000_init.sql`, the throwaway delta, RLS, the regenerated mapping. |
+| `add-admin-screen` | A new admin screen or field, through the descriptor system and grants. |
+| `qa-pass` | A full sweep of every public route and admin screen, ending in a report. |
+| `ship-change` | Committing and offering a PR in the house format. |
+
+The usual handoff: `tech-lead` plans, the owning engineer builds,
+`security-engineer` reviews anything touching auth or the schema, `qa-engineer`
+proves it with `verify-change`, `release-engineer` ships it.
+
+**UI checks run only when UI code changes.** `verify-change` names the UI paths;
+a diff that touches none of them (docs, scripts, schema, server logic) skips
+the browser pass and every UI harness and says so, rather than spending minutes
+proving nothing.
+
 ## Conventions
 
 - Commits: emoji-prefixed conventional commits, `<emoji><type>(<scope>): <Description>`

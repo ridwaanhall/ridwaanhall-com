@@ -74,11 +74,15 @@ yarn-error.log*
 # matters ends up in the commit messages, CLAUDE.md and MIGRATION.md, and
 # leaving these here put a directory in the repo with nothing in it for anyone
 # browsing the project. `.claude/` also carries per-machine settings, so only
-# the shared `settings.json` is tracked; `settings.local.json` stays out.
+# the shared `settings.json` is tracked; `settings.local.json` stays out. The
+# project's agents and skills are shared the same way: they are the team's
+# working agreements, not one machine's preferences.
 docs/superpowers/
 plan/
 .claude/*
 !.claude/settings.json
+!.claude/agents/
+!.claude/skills/
 .vscode/
 text.txt
 

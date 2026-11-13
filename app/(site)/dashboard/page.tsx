@@ -65,22 +65,27 @@ export default async function DashboardPage() {
           ]}
         />
         <div className="wrap dash">
-          <Suspense fallback={<Waiting heights={[150]} phone={560} />}>
+          {/* Each height is the panel's body as it renders with real data, at
+              1280px and at 375px (`phone`); the frame around it adds 53px.
+              Measured from the landed page, so re-measure after a panel
+              changes shape: `scripts/check-skeleton-shape.mjs` reports the
+              first one that drifts. */}
+          <Suspense fallback={<Waiting heights={[336]} phone={[418]} />}>
             <TodayPanel />
           </Suspense>
-          <Suspense fallback={<Waiting heights={[260]} />}>
+          <Suspense fallback={<Waiting heights={[368]} phone={[823]} />}>
             <EditorPanels />
           </Suspense>
-          <Suspense fallback={<Waiting heights={[200, 200]} two />}>
+          <Suspense fallback={<Waiting heights={[386, 386]} phone={[325, 325]} two />}>
             <AiPanels />
           </Suspense>
-          <Suspense fallback={<Waiting heights={[320]} />}>
+          <Suspense fallback={<Waiting heights={[545]} phone={[902]} />}>
             <YearPanel />
           </Suspense>
-          <Suspense fallback={<Waiting heights={[300]} />}>
+          <Suspense fallback={<Waiting heights={[311, 315]} phone={[527, 613]} />}>
             <RhythmPanels />
           </Suspense>
-          <Suspense fallback={<Waiting heights={[260]} />}>
+          <Suspense fallback={<Waiting heights={[329]} phone={[357]} />}>
             <GitHubPanel username={about.username} />
           </Suspense>
           <p className="meta">Every figure here is read from WakaTime and GitHub as they report it; nothing is typed in by hand.</p>
@@ -92,8 +97,8 @@ export default async function DashboardPage() {
 }
 
 /** A panel's frame while its source answers. */
-function Waiting({ heights, two, phone }: { heights: number[]; two?: boolean; phone?: number }) {
-  const panels = heights.map((h, i) => <PanelSkeleton key={i} h={h} phone={phone} />);
+function Waiting({ heights, two, phone }: { heights: number[]; two?: boolean; phone?: number[] }) {
+  const panels = heights.map((h, i) => <PanelSkeleton key={i} h={h} phone={phone?.[i]} />);
   return <InlineSkeleton label="Loading a panel">{two ? <div className="dgrid two">{panels}</div> : panels}</InlineSkeleton>;
 }
 
@@ -344,8 +349,12 @@ async function YearPanel() {
 async function RhythmPanels() {
   const rhythm = await getWakatimeRhythm(WAKATIME());
   if (!rhythm) return <Down title="The shape of a week" source="WakaTime" />;
+  // One element in place of its one fallback, laid out exactly as `.dash`
+  // would lay out the two panels loose: a panel that streams in as two
+  // siblings grows the column by a node, and the skeleton check then reads the
+  // panel above it as having landed twice its height.
   return (
-    <>
+    <div className="dgrid">
       <Panel
         title="The shape of a week"
         sub="Average day of the week · via WakaTime"
@@ -437,7 +446,7 @@ async function RhythmPanels() {
           )}
         </div>
       )}
-    </>
+    </div>
   );
 }
 

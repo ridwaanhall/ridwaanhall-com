@@ -6,13 +6,14 @@ export default function Loading() {
     <PageSkeleton>
       <HeadSkeleton facts={3} />
       <div className="wrap dash">
-        <PanelSkeleton h={150} />
-        <PanelSkeleton h={260} />
+        {/* The first four of the page's own fallbacks, at the same heights. */}
+        <PanelSkeleton h={336} phone={418} />
+        <PanelSkeleton h={368} phone={823} />
         <div className="dgrid two">
-          <PanelSkeleton h={200} />
-          <PanelSkeleton h={200} />
+          <PanelSkeleton h={386} phone={325} />
+          <PanelSkeleton h={386} phone={325} />
         </div>
-        <PanelSkeleton h={320} />
+        <PanelSkeleton h={545} phone={902} />
       </div>
     </PageSkeleton>
   );

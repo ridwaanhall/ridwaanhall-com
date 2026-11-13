@@ -21,7 +21,7 @@ type WorkParams = Promise<Record<string, string | string[] | undefined>>;
 export async function generateMetadata(): Promise<Metadata> {
   const [about, projects] = await Promise.all([getAboutData(), getProjects()]);
   if (!about) return {};
-  return buildMetadata(projectsListSeo(about, sortProjects(projects), 1), about);
+  return buildMetadata(projectsListSeo(sortProjects(projects)), about);
 }
 
 /** The request-dependent half: reading the address makes this part dynamic. */

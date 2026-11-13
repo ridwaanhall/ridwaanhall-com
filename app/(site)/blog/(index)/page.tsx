@@ -20,7 +20,7 @@ import { parseWritingFilters } from "@/lib/site/writing-filters";
 export async function generateMetadata(): Promise<Metadata> {
   const [about, blogs] = await Promise.all([getAboutData(), getBlogs()]);
   if (!about) return {};
-  return buildMetadata(blogListSeo(about, blogs, 1), about);
+  return buildMetadata(blogListSeo(blogs), about);
 }
 
 type WritingParams = Promise<Record<string, string | string[] | undefined>>;

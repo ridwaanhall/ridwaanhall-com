@@ -119,7 +119,7 @@ above the About heading.
   tap, so a button never has to be big to be reachable. The sign-in buttons
   (`.btn.wide`) were 48px beside a 34px search; a skeleton that stands in for a
   button draws the same 34px, or the page jumps when it lands.
-- **A page's frame is `MAIN` and `WRAP`** from `components/foothill/layout.ts`,
+- **A page's frame is `MAIN`** from `components/foothill/layout.ts` and `.wrap`,
   and its skeleton uses `PageSkeleton` and the blocks in
   `components/foothill/skeleton.tsx` -- which is what `check-skeleton-shape.mjs`
   measures. A page drops the footer's invitation band with `data-quiet` on

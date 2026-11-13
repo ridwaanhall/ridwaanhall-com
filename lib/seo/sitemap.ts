@@ -1,4 +1,3 @@
-import { ITEMS_PER_PAGE } from "@/lib/api/pagination";
 import { getBlogs, getProjects } from "@/lib/data/content";
 import { getLegalDocuments } from "@/lib/data/legal";
 import { getPatchNotes } from "@/lib/data/patch-notes";
@@ -18,11 +17,10 @@ import { SITE_URL } from "./config";
  * claiming the same date for two years. A sitemap that lies about freshness is
  * worse than one that omits the field.
  *
- * **Paginated URLs were generated at six per page while the site paginates at
- * ten.** That advertised `/blog/?page=3` and `?page=4` when only two pages
- * exist, and eleven project pages when there are seven. An out-of-range page
- * clamps to the last one rather than 404ing, so each phantom URL returned 200
- * with duplicate content. Fixed by using the real page size.
+ * **A listing is one URL.** Work and Writing show every entry on one page and
+ * keep their filters in the address, and nothing reads `?page`, so a
+ * `?page=2` would render page one again: duplicate content under a second URL.
+ * Only the bare listing is listed.
  */
 
 export type SitemapEntry = {
@@ -82,25 +80,12 @@ export async function staticEntries(): Promise<SitemapEntry[]> {
       changeFrequency: "weekly",
       priority: 0.5,
     },
-    // The guestbook is excluded until the feature lands in phase 2; adding it
-    // now would advertise a page that is still a stub.
   ];
-
-  // Paginated listing pages, at the size the site actually uses.
-  const pageEntries = (base: string, count: number, updated: Date): SitemapEntry[] => {
-    const pages = Math.max(1, Math.ceil(count / ITEMS_PER_PAGE));
-    return Array.from({ length: pages }, (_, i) => ({
-      url: i === 0 ? `${SITE_URL}${base}` : `${SITE_URL}${base}?page=${i + 1}`,
-      lastModified: updated,
-      changeFrequency: "monthly" as const,
-      priority: i === 0 ? 1.0 : 0.9,
-    }));
-  };
 
   return [
     ...entries,
-    ...pageEntries("/blog", blogs.length, blogUpdated),
-    ...pageEntries("/projects", projects.length, projectUpdated),
+    { url: `${SITE_URL}/blog`, lastModified: blogUpdated, changeFrequency: "monthly", priority: 1.0 },
+    { url: `${SITE_URL}/projects`, lastModified: projectUpdated, changeFrequency: "monthly", priority: 1.0 },
   ];
 }
 

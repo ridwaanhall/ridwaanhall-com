@@ -13,7 +13,7 @@
 /* ---------------------------------------------------------------------------
    The nav icon on hover
 
-   An icon inside a `group` -- the theme toggle's, and the admin's rows --
+   An icon inside a `group` -- the theme toggle's --
    answers a pointer the same way: it shakes once as it arrives, and settles.
 
    It used to *hold* a tilt -- `-rotate-12` for as long as the pointer stayed.

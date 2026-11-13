@@ -6,6 +6,7 @@ import { FooterTwin, GiantWord, LlmsLink } from "@/components/foothill/footer-pa
 import { Icon, type IconName } from "@/components/foothill/icons";
 import { Button, Facts } from "@/components/foothill/ui";
 import type { AboutData } from "@/lib/data/about";
+import { GUESTBOOK_ENABLED } from "@/lib/nav";
 import { basedIn, hasOpenhire, socialLinks } from "@/lib/site/display";
 
 // The year the build ran, not the year the page is read in: reading the clock
@@ -135,9 +136,11 @@ export function Footer({
           <div>
             <h4>Site</h4>
             <ul>
-              {/* `/openhire` answers "not found" while neither profile is open,
-                  so it is offered here on the same terms as in the navbar. */}
-              {SITE_LINKS.filter(([href]) => href !== "/openhire" || hasOpenhire(about)).map(([href, label]) => (
+              {/* Offered on the navbar's terms: `/openhire` answers "not found"
+                  while neither profile is open, and the guestbook can be off. */}
+              {SITE_LINKS.filter(
+                ([href]) => (href !== "/openhire" || hasOpenhire(about)) && (href !== "/guestbook" || GUESTBOOK_ENABLED),
+              ).map(([href, label]) => (
                 <li key={href}>
                   <Link href={href}>
                     <Roll>{label}</Roll>

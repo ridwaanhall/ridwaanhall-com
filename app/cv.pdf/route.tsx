@@ -2,8 +2,7 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { CvDocument } from "@/lib/cv/document";
-import { getCv } from "@/lib/cv/load";
-import { TAGS } from "@/lib/data/tags";
+import { CV_TAGS, getCv } from "@/lib/cv/load";
 
 /**
  * The CV as a PDF, generated from the About page.
@@ -15,7 +14,7 @@ import { TAGS } from "@/lib/data/tags";
  */
 async function build(): Promise<string | null> {
   "use cache";
-  cacheTag(TAGS.profile, TAGS.experience, TAGS.education, TAGS.certification, TAGS.skill, TAGS.project, TAGS.opentowork, TAGS.organization);
+  cacheTag(...CV_TAGS);
   cacheLife("days");
 
   const loaded = await getCv();

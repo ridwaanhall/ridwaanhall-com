@@ -118,11 +118,7 @@ export function dashboardSeo(about: AboutData): SeoData {
   };
 }
 
-export function projectsListSeo(
-  about: AboutData,
-  projects?: (Project | ProjectSummary)[],
-  page = 1,
-): SeoData {
+export function projectsListSeo(projects?: (Project | ProjectSummary)[]): SeoData {
   const techKeywords = projects
     ? [...new Set(projects.slice(0, 10).flatMap((p) => p.tech_stack.map((t) => t.name)))].slice(0, 8)
     : [];
@@ -132,7 +128,7 @@ export function projectsListSeo(
     ...techKeywords,
     ...COMMON_KEYWORDS.technical.slice(0, 5),
   ];
-  const base: SeoData = {
+  return {
     title: "Where Code Meets Purpose - Projects That Persist",
     description: optimizeDescription(
       "Projects built from curiosity and care. Practical explorations through machine learning and the web.",
@@ -145,11 +141,6 @@ export function projectsListSeo(
     content_type: "project_list",
     ...baseSeo(),
   };
-  // Paginated views get their own title and canonical, so page 2 is not a
-  // duplicate of page 1 in the index.
-  return page > 1
-    ? { ...base, title: `${base.title} - Page ${page}`, canonical_url: `${SITE_URL}/projects?page=${page}` }
-    : base;
 }
 
 export function projectDetailSeo(project: Project, about: AboutData): SeoData {
@@ -178,11 +169,7 @@ export function projectDetailSeo(project: Project, about: AboutData): SeoData {
   };
 }
 
-export function blogListSeo(
-  about: AboutData,
-  blogs?: (BlogPost | BlogSummary)[],
-  page = 1,
-): SeoData {
+export function blogListSeo(blogs?: (BlogPost | BlogSummary)[]): SeoData {
   const topicKeywords = blogs
     ? [...new Set(blogs.slice(0, 10).flatMap((b) => b.tags.map(String)))].slice(0, 8)
     : [];
@@ -191,7 +178,7 @@ export function blogListSeo(
     ...COMMON_KEYWORDS.content.slice(0, 5),
     ...topicKeywords,
   ];
-  const base: SeoData = {
+  return {
     title: "Beyond Syntax - Reflections in Thought and Trace",
     description: optimizeDescription(
       "Reflections beyond syntax. Thoughts, questions and quiet technical discoveries.",
@@ -204,9 +191,6 @@ export function blogListSeo(
     content_type: "blog_list",
     ...baseSeo(),
   };
-  return page > 1
-    ? { ...base, title: `${base.title} - Page ${page}`, canonical_url: `${SITE_URL}/blog?page=${page}` }
-    : base;
 }
 
 export function blogDetailSeo(blog: BlogPost, about: AboutData): SeoData {

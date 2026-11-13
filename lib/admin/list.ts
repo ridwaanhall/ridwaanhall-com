@@ -10,6 +10,7 @@ import {
 } from "@/lib/admin/form";
 import { pageRange } from "@/lib/api/pagination";
 import { db } from "@/lib/db/client";
+import { jakartaToday } from "@/lib/utils/format";
 
 /**
  * One generic changelist, driven by a per-model descriptor.
@@ -263,11 +264,6 @@ export const DATE_FILTER_CHOICES: FilterChoice[] = [
 ];
 
 const JAKARTA_OFFSET = "+07:00";
-
-/** `YYYY-MM-DD` for the current Jakarta day. */
-function jakartaToday(): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta" }).format(new Date());
-}
 
 /** The instant a Jakarta calendar day begins, as a string Postgres reads. */
 function jakartaStart(date: string): string {

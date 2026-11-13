@@ -6,7 +6,7 @@ import { useRef, useState, useTransition } from "react";
 import { Avatar } from "@/components/foothill/account-menu";
 import { ActionButton } from "@/components/foothill/controls";
 import { Brand, Icon } from "@/components/foothill/icons";
-import { Button, Heading } from "@/components/foothill/ui";
+import { Heading } from "@/components/foothill/ui";
 import { useConfirm } from "@/components/providers/confirm-dialog";
 import { signInWith } from "@/lib/actions/auth";
 import { deleteComment, postComment } from "@/lib/actions/comments";
@@ -108,11 +108,13 @@ export function Comments({
         {!signedInAs ? (
           <div className="panel sign-panel">
             <span className="mute">
-              {section.comments.length ? `Sign in to add to the conversation on this ${noun}.` : "No comments yet."}
+              {section.comments.length
+                ? `Sign in to add to the conversation on this ${noun}.`
+                : "No comments yet. Sign in to write the first."}
             </span>
-            <Button sm icon="pen" href="/sign-in">
-              {section.comments.length ? "Sign in" : "Sign in to write the first"}
-            </Button>
+            {/* Signs in from here and comes back to this page; the sign-in
+                page returns everyone to the home page. */}
+            <SignInButtons />
           </div>
         ) : !canPost ? (
           <p className="meta">This account can&rsquo;t post comments right now.</p>

@@ -132,8 +132,8 @@ async function fetchWakatimeYear(apiKey: string): Promise<WakatimeYear | null> {
   if (!apiKey) return null;
 
   const [stats, series] = await Promise.all([
-    fetchJson<YearStats>(insightsUrl("stats", apiKey), "year stats"),
-    fetchJson<YearDays>(insightsUrl("days", apiKey), "year days"),
+    fetchJson<YearStats>(insightsUrl("stats"), apiKey, "year stats"),
+    fetchJson<YearDays>(insightsUrl("days"), apiKey, "year days"),
   ]);
 
   // The whole panel is about the year's totals. Without them there is nothing

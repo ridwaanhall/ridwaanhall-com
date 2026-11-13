@@ -29,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(dashboardSeo(about), about);
 }
 
-const WAKATIME = () => process.env.WAKATIME_API_KEY ?? "";
+const WAKATIME = () => process.env.WAKATIME_ACCESS_TOKEN ?? "";
 
 /**
  * The work, measured: nine panels, each streamed on its own.

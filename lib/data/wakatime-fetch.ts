@@ -13,9 +13,27 @@ import { BASE, TIMEZONE } from "./wakatime-format";
  * an encoder, which is three places for one of them to be wrong in.
  */
 
-export async function fetchJson<T>(url: string, label: string): Promise<T | null> {
+/**
+ * The request options every WakaTime call sends: a timeout, and the personal
+ * OAuth token as a bearer header.
+ *
+ * A header rather than the `api_key` query parameter WakaTime also accepts,
+ * because a URL ends up in access logs, fetch-cache keys and error messages and
+ * a header does not. Since November 2026 an API key is refused here outright --
+ * WakaTime keeps those for editor plugins -- so the token has to be an OAuth
+ * one: the personal token on wakatime.com/oauth, which reads summaries, stats
+ * and coding activity -- everything the dashboard asks for.
+ */
+export function wakatimeInit(token: string): RequestInit {
+  return {
+    headers: { Authorization: `Bearer ${token}` },
+    signal: AbortSignal.timeout(10_000),
+  };
+}
+
+export async function fetchJson<T>(url: string, token: string, label: string): Promise<T | null> {
   try {
-    const response = await fetch(url, { signal: AbortSignal.timeout(10_000) });
+    const response = await fetch(url, wakatimeInit(token));
     /*
      * 202 rather than 200 whenever WakaTime is still recomputing an aggregate,
      * with usable numbers in the body regardless. `ok` covers both; narrowing
@@ -42,9 +60,9 @@ export async function fetchJson<T>(url: string, label: string): Promise<T | null
  * profile field means somebody editing that field silently moves what a day
  * means here.
  */
-export function insightsUrl(path: string, apiKey: string): string {
+export function insightsUrl(path: string): string {
   return (
     `${BASE}/users/current/insights/${path}/last_year?paywalled=true` +
-    `&timezone=${encodeURIComponent(TIMEZONE)}&api_key=${encodeURIComponent(apiKey)}`
+    `&timezone=${encodeURIComponent(TIMEZONE)}`
   );
 }

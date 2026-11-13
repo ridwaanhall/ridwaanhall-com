@@ -247,7 +247,7 @@ than loudly — no key means no email, no spam check, no dashboard panel.
 | `DEFAULT_FROM_EMAIL` | For email | **Must be on a domain verified at resend.com/domains**, or every send fails with a 403 naming the domain |
 | `CONTACT_EMAIL_RECIPIENT` | For email | Where the contact form lands |
 | `GITHUB_ACCESS_TOKEN` | For dashboard | Personal access token for the contribution graph |
-| `WAKATIME_API_KEY` | For dashboard | Coding stats. Absent, the panel is hidden |
+| `WAKATIME_ACCESS_TOKEN` | For dashboard | Personal OAuth token from wakatime.com/oauth (`waka_tok_…`; an API key is refused). Absent, the panel is hidden |
 | `NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY` | For the contact form | Turnstile site key |
 | `CF_TURNSTILE_SECRET_KEY` | For the contact form | Turnstile secret. Absent, verification passes by design |
 | `NEXT_PUBLIC_BASE_URL` | Recommended | Canonical URLs, Open Graph, sitemaps |

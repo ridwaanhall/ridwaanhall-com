@@ -69,7 +69,7 @@ try {
   check(
     dashboard.text.includes("aria-label=\"In the editor\""),
     "the dashboard's WakaTime panel renders",
-    "WAKATIME_API_KEY (runtime) -- the panel is absent rather than broken",
+    "WAKATIME_ACCESS_TOKEN (runtime) -- the panel is absent rather than broken",
   );
   check(
     dashboard.text.includes("aria-label=\"On GitHub\""),

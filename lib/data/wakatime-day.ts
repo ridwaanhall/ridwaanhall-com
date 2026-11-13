@@ -80,7 +80,8 @@ async function fetchWakatimeDay(apiKey: string): Promise<WakatimeDay | null> {
   const date = jakartaToday();
   const durations = await fetchJson<Durations>(
     `${BASE}/users/current/durations?date=${date}&slice_by=language&paywalled=true` +
-      `&timezone=${encodeURIComponent(TIMEZONE)}&api_key=${encodeURIComponent(apiKey)}`,
+      `&timezone=${encodeURIComponent(TIMEZONE)}`,
+    apiKey,
     "durations",
   );
 

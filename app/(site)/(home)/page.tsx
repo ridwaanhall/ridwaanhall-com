@@ -109,7 +109,7 @@ function Caps({ figures }: { figures: Counted[] }) {
  */
 async function LiveCaps({ username, fixed }: { username: string; fixed: Counted[] }) {
   const [stats, github] = await Promise.all([
-    getWakatimeStats(process.env.WAKATIME_API_KEY ?? ""),
+    getWakatimeStats(process.env.WAKATIME_ACCESS_TOKEN ?? ""),
     getGitHubStats(username, process.env.GITHUB_ACCESS_TOKEN ?? ""),
   ]);
   return (

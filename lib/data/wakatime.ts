@@ -12,6 +12,7 @@ import {
   share,
   usd,
 } from "./wakatime-format";
+import { wakatimeInit } from "./wakatime-fetch";
 
 /**
  * WakaTime coding activity for the dashboard.
@@ -180,10 +181,10 @@ async function fetchAiHeuristics(
 ): Promise<NonNullable<Heuristics["data"]> | null> {
   const url =
     `${BASE}/users/current/ai/heuristics?start=${start}&end=${end}` +
-    `&timezone=${encodeURIComponent(TIMEZONE)}&api_key=${encodeURIComponent(apiKey)}`;
+    `&timezone=${encodeURIComponent(TIMEZONE)}`;
 
   try {
-    const response = await fetch(url, { signal: AbortSignal.timeout(10_000) });
+    const response = await fetch(url, wakatimeInit(apiKey));
 
     /*
      * 202, not 200, whenever WakaTime is still recomputing the aggregate --
@@ -222,12 +223,10 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
     const [summaryResponse, allTimeResponse, heuristicsData] = await Promise.all([
       fetch(
         `${BASE}/users/current/summaries?start=${start}&end=${today}` +
-          `&timezone=${encodeURIComponent(TIMEZONE)}&api_key=${encodeURIComponent(apiKey)}`,
-        { signal: AbortSignal.timeout(10_000) },
+          `&timezone=${encodeURIComponent(TIMEZONE)}`,
+        wakatimeInit(apiKey),
       ),
-      fetch(`${BASE}/users/current/all_time_since_today?api_key=${encodeURIComponent(apiKey)}`, {
-        signal: AbortSignal.timeout(10_000),
-      }),
+      fetch(`${BASE}/users/current/all_time_since_today`, wakatimeInit(apiKey)),
       fetchAiHeuristics(apiKey, start, today),
     ]);
 

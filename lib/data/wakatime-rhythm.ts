@@ -134,9 +134,9 @@ async function fetchWakatimeRhythm(apiKey: string): Promise<WakatimeRhythm | nul
   if (!apiKey) return null;
 
   const [weekdays, aiDays, average] = await Promise.all([
-    fetchJson<Weekdays>(insightsUrl("weekdays", apiKey), "weekdays"),
-    fetchJson<AiDays>(insightsUrl("ai_days", apiKey), "ai days"),
-    fetchJson<DailyAverage>(insightsUrl("daily_average", apiKey), "daily average"),
+    fetchJson<Weekdays>(insightsUrl("weekdays"), apiKey, "weekdays"),
+    fetchJson<AiDays>(insightsUrl("ai_days"), apiKey, "ai days"),
+    fetchJson<DailyAverage>(insightsUrl("daily_average"), apiKey, "daily average"),
   ]);
 
   /*

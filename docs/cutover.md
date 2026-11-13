@@ -23,7 +23,7 @@ exactly why an unset one is easy to miss:
 | `RESEND_API_KEY` | The contact form says it sent; no mail arrives |
 | `DEFAULT_FROM_EMAIL` on an unverified domain | Every send 403s, naming the domain |
 | `CF_TURNSTILE_SECRET_KEY` | **Spam verification passes by design.** The form works and the gate is open |
-| `GITHUB_ACCESS_TOKEN` / `WAKATIME_API_KEY` | The dashboard panel is simply absent |
+| `GITHUB_ACCESS_TOKEN` / `WAKATIME_ACCESS_TOKEN` | The dashboard panel is simply absent |
 | `STORAGE_SUPABASE_SERVICE_ROLE_KEY` | Admin uploads fail |
 
 **OAuth redirect URIs.** Both providers need

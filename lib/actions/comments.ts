@@ -14,6 +14,7 @@ import {
 import { commentIdsOnTarget, getComment } from "@/lib/data/comments";
 import { db } from "@/lib/db/client";
 import { comment as commentTable } from "@/lib/db/app-schema";
+import { isUuid } from "@/lib/utils/uuid";
 
 /**
  * Posting and deleting comments.
@@ -75,9 +76,8 @@ export async function postComment(formData: FormData): Promise<CommentResult> {
   // Without the allowlist, `content_type` is attacker-chosen and comments could
   // be attached to any table in the database.
   if (!isCommentable(label)) return { ok: false, error: "Not commentable" };
-  // A uuid or nothing. The old guard parsed it as an integer, which is what
-  // a sequential id used to be.
-  if (!targetId) return { ok: false, error: "Unknown object" };
+  // A key that is not a uuid makes Postgres raise rather than find nothing.
+  if (!isUuid(targetId)) return { ok: false, error: "Unknown object" };
 
   const body = String(formData.get("body") ?? "").trim();
   // A body of only whitespace passes a `required` check but is not a comment.
@@ -101,6 +101,7 @@ export async function postComment(formData: FormData): Promise<CommentResult> {
   let replyToId: string | null = null;
   const requested = String(formData.get("reply_to") ?? "");
   if (requested) {
+    if (!isUuid(requested)) return { ok: false, error: "That comment is no longer available." };
     const [parent] = await commentIdsOnTarget(label, targetId, [requested]);
     if (!parent) return { ok: false, error: "That comment is no longer available." };
     replyToId = parent.replyToId ?? parent.id;
@@ -124,7 +125,7 @@ export async function deleteComment(id: string, slug: string): Promise<CommentRe
   const who = await viewer();
   if (!who) return { ok: false, error: "Sign in to manage comments." };
 
-  const comment = await getComment(id);
+  const comment = isUuid(id) ? await getComment(id) : null;
   if (!comment) return { ok: false, error: "That comment is no longer available." };
   if (!canDeleteComment({ userId: comment.userId, isDeleted: comment.isDeleted }, who)) {
     return { ok: false, error: "You can only delete your own comments." };

@@ -12,6 +12,7 @@ import { notifyNewGuestbookMessage } from "@/lib/email/guestbook-notify";
 import { guestMessage } from "@/lib/db/app-schema";
 import { MAX_MESSAGE_LENGTH, MAX_PINNED, MIN_MESSAGE_LENGTH } from "@/lib/data/guestbook-tree";
 import { normaliseNewlines } from "@/lib/utils/newlines";
+import { isUuid } from "@/lib/utils/uuid";
 
 /**
  * The guestbook's mutations.
@@ -87,14 +88,14 @@ export async function sendMessage(formData: FormData): Promise<ActionResult> {
   }
 
   /*
-   * An unknown or non-numeric `reply_to` posts the message anyway, just not as
-   * a reply -- which is what the original did, where a `ValueError` from a
-   * non-numeric id and a `DoesNotExist` were caught together. Rejecting the
-   * whole post would lose what someone typed over a stale button.
+   * An unknown or malformed `reply_to` posts the message anyway, just not as a
+   * reply: rejecting the whole post would lose what someone typed over a stale
+   * button. Malformed is checked first, because a key that is not a uuid makes
+   * Postgres raise rather than find nothing.
    */
   const replyToId = String(formData.get("reply_to") ?? "");
   let replyTo: string | null = null;
-  if (replyToId) {
+  if (isUuid(replyToId)) {
     const [parent] = await db
       .select({ id: guestMessage.id })
       .from(guestMessage)
@@ -134,13 +135,12 @@ export async function sendMessage(formData: FormData): Promise<ActionResult> {
 export async function deleteMessage(messageId: string): Promise<ActionResult> {
   const profile = await currentProfile();
   if (!profile) return { ok: false, error: "Sign in to manage messages." };
-  // Superuser, where pinning below is staff. The asymmetry is inherited rather
-  // than invented -- this was author-only while pinning was author-or-co-author
-  // -- and it earns its keep: a guestbook delete is a recursive hard delete
-  // with no tombstone, so it is the one public act nothing can undo.
+  // Superuser, where pinning below is staff: a guestbook delete is a recursive
+  // hard delete with no tombstone, so it is the one public act nothing can undo.
   if (!profile.can.deleteMessages) {
     return { ok: false, error: "Only the owner can delete a guestbook message." };
   }
+  if (!isUuid(messageId)) return { ok: false, error: "Message not found" };
 
   /*
    * The whole branch goes with the node, and the branch has to be gathered
@@ -187,6 +187,7 @@ export async function togglePin(messageId: string): Promise<ActionResult> {
   if (!profile.can.pin) {
     return { ok: false, error: "Only an editor can pin a guestbook message." };
   }
+  if (!isUuid(messageId)) return { ok: false, error: "Message not found" };
 
   const [message] = await db
     .select({ id: guestMessage.id, isPinned: guestMessage.isPinned })

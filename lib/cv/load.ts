@@ -9,9 +9,11 @@ import { TAGS } from "@/lib/data/tags";
 
 import { buildCv, type Cv } from "./select";
 
-const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const label = (m: { month: string; year: number } | null | "Present") =>
   m === "Present" ? "Present" : m ? `${m.month.slice(0, 3)} ${m.year}` : "";
+
+/** Every table the CV reads; the PDF route is cached against the same list. */
+export const CV_TAGS = [TAGS.profile, TAGS.experience, TAGS.education, TAGS.certification, TAGS.skill, TAGS.project, TAGS.opentowork, TAGS.organization];
 
 /**
  * The CV, chosen from the rows the About page shows.
@@ -23,7 +25,7 @@ const label = (m: { month: string; year: number } | null | "Present") =>
  */
 export async function getCv(): Promise<{ cv: Cv; username: string } | null> {
   "use cache";
-  cacheTag(TAGS.profile, TAGS.experience, TAGS.education, TAGS.certification, TAGS.skill, TAGS.project, TAGS.opentowork, TAGS.organization);
+  cacheTag(...CV_TAGS);
   cacheLife("days");
 
   const [about, work, experiences, education, skills, projects, certifications] = await Promise.all([
@@ -70,7 +72,10 @@ export async function getCv(): Promise<{ cv: Cv; username: string } | null> {
       title: cert.title,
       institution: cert.institution,
       year: cert.issued?.year ?? null,
-      month: cert.issued ? MONTHS.indexOf(cert.issued.month) : 0,
+      // From the ISO form, `YYYY-MM`: the display pair carries "Jan", and a
+      // lookup against full names put every certificate at month -1, so
+      // certificates within a year were never ordered by month.
+      month: cert.issued_iso ? Number(cert.issued_iso.slice(5, 7)) : 0,
     })),
   });
 

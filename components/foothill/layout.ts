@@ -2,7 +2,7 @@
  * The page frame, as class strings.
  *
  * Every page renders `<main className={MAIN}>` with one `<div>` inside it
- * holding its sections, and each section carries `WRAP` itself -- the 1200px
+ * holding its sections, and each section carries the `wrap` class itself -- the 1200px
  * column inside the 16 / 32 / 48px gutter -- so a band that bleeds to the
  * edge (the skills rows, the footer's word) can simply leave it off.
  *
@@ -17,5 +17,3 @@
 
 export const MAIN = "fh-main";
 
-/** 1200px of content inside the site's gutter (`--fh-gut`). */
-export const WRAP = "wrap";

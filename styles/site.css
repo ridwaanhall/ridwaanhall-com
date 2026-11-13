@@ -154,13 +154,10 @@ body:has(.fh-site) {
 .fh-site .kbtn { display: none; align-items: center; gap: 10px; height: 34px; padding: 0 8px 0 12px; border: 1px solid var(--fh-line); border-radius: var(--fh-r-m); background: none; color: var(--fh-mute); font-size: 13px; cursor: pointer; min-width: 160px; white-space: nowrap; margin-right: 4px; }
 .fh-site .kbtn:hover { border-color: var(--fh-line-2); color: var(--fh-ink); }
 .fh-site .kbtn kbd { margin-left: auto; font-family: var(--fh-mono); font-size: 11px; border: 1px solid var(--fh-line-2); border-radius: var(--fh-r-s); padding: 1px 5px; }
-.fh-site .otw { display: none; align-items: center; gap: 8px; height: 30px; padding: 0 10px; border: 1px solid var(--fh-line-2); border-radius: var(--fh-r-s); font-size: 12.5px; color: var(--fh-ink-2); margin-right: 6px; }
-.fh-site .otw:hover { border-color: var(--fh-ink); color: var(--fh-ink); }
 .fh-site .signin { display: none; font-size: 14px; padding: 8px 0; margin-inline: 6px; border-radius: var(--fh-r-m); white-space: nowrap; }
 .fh-site .signin:hover { color: var(--fh-ink-2); }
 .fh-site .only-s { display: inline-grid; }
 @media (min-width: 1024px) { .fh-site .links { display: flex; } .fh-site .only-s { display: none; } .fh-site .kbtn { display: inline-flex; } .fh-site .signin { display: inline-block; } }
-@media (min-width: 1240px) { .fh-site .otw { display: inline-flex; } }
 .fh-site .progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: var(--fh-ink); transform-origin: 0 50%; }
 
 /* mobile menu */
@@ -519,7 +516,6 @@ body:has(.fh-site) {
 .fh-site .menu-pop a, .fh-site .menu-pop button { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--fh-r-s); font-size: 14px; border: 0; background: none; color: var(--fh-ink-2); cursor: pointer; text-align: left; width: 100%; transition: color .15s, background .15s; }
 .fh-site .menu-pop a:hover, .fh-site .menu-pop button:hover, .fh-site .menu-pop a:focus-visible, .fh-site .menu-pop button:focus-visible { color: var(--fh-ink); background: var(--fh-raise); }
 .fh-site .mp-head { display: grid; gap: 2px; padding: 10px 10px 12px; border-bottom: 1px solid var(--fh-line); margin-bottom: 6px; justify-items: start; }
-.fh-site .sheet-acct { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px; border: 1px solid var(--fh-line); border-radius: var(--fh-r-m); }
 .fh-site .msg-acts { grid-column: 2; display: flex; gap: 4px; margin-top: 6px; }
 .fh-site .msg-acts button { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 8px; border: 0; background: none; color: var(--fh-mute); font-size: 13px; cursor: pointer; border-radius: var(--fh-r-s); transition: color .15s; }
 .fh-site .msg-acts button:hover, .fh-site .msg-acts button[aria-expanded="true"] { color: var(--fh-ink); }
@@ -836,9 +832,8 @@ body:has(.fh-site) {
 .fh-site .palette li a .out-mark { display: inline; margin-left: 4px; vertical-align: -1px; }
 .fh-site .palette li { cursor: pointer; }
 
-/* A dialog over a dimmed page: the shortcuts, and the confirm prompt. */
+/* A dialog over a dimmed page: the palette's keyboard shortcuts. */
 .fh-site .dialog { position: fixed; z-index: 81; left: 0; right: 0; top: max(16px, 26vh); margin: 0 auto; width: min(440px, calc(100vw - 2 * var(--fh-gut))); background: var(--fh-bg); border: 1px solid var(--fh-line-2); border-radius: 10px; padding: 24px; display: grid; gap: 10px; }
-.fh-site .dlg-acts { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; margin-top: 10px; }
 .fh-site .now-role { display: grid; gap: 12px; align-content: start; padding-top: 16px; border-top: 1px solid var(--fh-line); }
 @media (prefers-reduced-motion: reduce) { .fh-site .marq { overflow-x: auto; } }
 

@@ -15,7 +15,7 @@ import type { AboutData } from "@/lib/data/about";
 import { useClosedWhenHidden } from "@/lib/motion/use-closed-when-hidden";
 import { useLockedPage } from "@/lib/motion/use-locked-page";
 import { visibleNavItems } from "@/lib/nav";
-import { socialLinks } from "@/lib/site/display";
+import { hasOpenhire, socialLinks } from "@/lib/site/display";
 import { hasTwin, twinOf } from "@/lib/site/twins";
 import { notify } from "@/lib/notify";
 import { cn } from "@/lib/utils/cn";
@@ -146,7 +146,7 @@ let contentCache: Row[] | null = null;
 function staticRows(about: AboutData): Row[] {
   const pages: Row[] = [
     ...visibleNavItems().map(({ label, href }) => ({ label, href: href as string })),
-    ...(about.is_open_to_work || about.is_hiring ? [{ label: "Open-hire", href: "/openhire" }] : []),
+    ...(hasOpenhire(about) ? [{ label: "Open-hire", href: "/openhire" }] : []),
     { label: "Patch notes", href: "/patch-notes" },
     { label: "Privacy Policy", href: "/privacy-policy" },
     { label: "Terms & Conditions", href: "/terms" },

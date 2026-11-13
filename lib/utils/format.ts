@@ -73,3 +73,8 @@ export function longDateTime(value: Date | string): string {
 
   return `${get("hour")}:${get("minute")} ${get("dayPeriod")} WIB, ${get("weekday")} ${get("month")} ${get("day")}, ${get("year")}`;
 }
+
+/** `YYYY-MM-DD` for the current day in Asia/Jakarta, the site's one timezone. */
+export function jakartaToday(): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta" }).format(new Date());
+}

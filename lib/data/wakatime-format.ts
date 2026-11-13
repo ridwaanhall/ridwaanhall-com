@@ -17,9 +17,7 @@ export const BASE = "https://wakatime.com/api/v1";
 export const TIMEZONE = "Asia/Jakarta";
 
 /** Today in Asia/Jakarta as `YYYY-MM-DD`, which is what the API's range expects. */
-export function jakartaToday(): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: TIMEZONE }).format(new Date());
-}
+export { jakartaToday } from "@/lib/utils/format";
 
 export function daysAgo(isoDate: string, days: number): string {
   const date = new Date(`${isoDate}T00:00:00Z`);

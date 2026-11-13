@@ -6,9 +6,9 @@ import { useEffect, useLayoutEffect, useState, useSyncExternalStore } from "reac
  * An anchored panel: a dropdown's list, a date field's calendar, the collapsed
  * admin rail's group menu.
  *
- * **A popover is not a modal, and the difference is the point.** The dialog and
- * the search palette in `lib/utils/use-modal.ts` cover the page: they lock the
- * body, dim what is behind them, and sit in the middle of the viewport. A
+ * **A popover is not a modal, and the difference is the point.** A modal (the
+ * confirm dialog, `lib/utils/use-modal.ts`) covers the page: it locks the
+ * body, dims what is behind it, and sits in the middle of the viewport. A
  * popover belongs to one control, leaves the page usable, and has to be *put*
  * somewhere -- beside its anchor, on whichever side there is room. So the
  * timing and the Escape handling are reused from that module and only the

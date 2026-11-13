@@ -4,8 +4,8 @@
  * Imported only from client components. Every plugin the site uses is
  * registered here so no component registers its own, and `useGSAP` is
  * registered with them because it is what scopes a component's tweens to a
- * context that reverts on unmount -- which, with `#page-content` keyed on the
- * pathname, happens on every navigation.
+ * context that reverts on unmount -- which happens whenever a navigation
+ * replaces the page's segment.
  */
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";

@@ -6,7 +6,7 @@ import { useConfirm } from "@/components/providers/confirm-dialog";
  * Sign out, confirmed through the shared dialog.
  *
  * Top level of `components/` for the same reason `skeleton.tsx` is: the admin's
- * topbar and the site's sidebar both use it, and two copies of a control that
+ * topbar and the site's account menu both use it, and two copies of a control that
  * ends a session would drift.
  *
  * **It is still a submit button inside a real form.** Its form posts a server

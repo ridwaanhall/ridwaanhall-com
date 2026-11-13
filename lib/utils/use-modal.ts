@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 /**
  * Mount and reveal timing for a modal that animates in and out.
  *
- * Shared by the search palette and the confirm dialog, so the two cannot drift
- * into different timing.
+ * Used by the confirm dialog; a second modal should take its timing from here
+ * rather than inventing its own.
  *
  * `mounted` keeps the modal in the tree for the length of its exit; `shown` is
  * what the transition classes read. Both entry points are adjustments *during

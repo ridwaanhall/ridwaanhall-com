@@ -37,15 +37,28 @@ export function AccountMenu({
   const id = useId();
   const pathname = usePathname();
   const [openedAt, setOpenedAt] = useState(pathname);
+  /*
+   * Bumped to close the menu *without* its exit animation, by remounting the
+   * AnimatePresence below. A close caused by leaving the page has to be
+   * instant: Activity hides this tree mid-exit, the animation never reports
+   * that it finished, and AnimatePresence keeps the panel in the DOM at full
+   * opacity forever -- back on the page after View site, with `open` already
+   * false, so nothing listened for the outside click that should dismiss it.
+   */
+  const [epoch, setEpoch] = useState(0);
+  const closeNow = () => {
+    setOpen(false);
+    setEpoch((value) => value + 1);
+  };
 
   // Following Admin hides this route rather than unmounting it, so without
   // this the menu came back open on View site.
-  useClosedWhenHidden(() => setOpen(false));
+  useClosedWhenHidden(closeNow);
 
   // A navigation closes the menu. Adjusted during render rather than in an
   // effect, so the panel never paints open over the page it led to.
   if (open && openedAt !== pathname) {
-    setOpen(false);
+    closeNow();
     setOpenedAt(pathname);
   }
 
@@ -88,7 +101,7 @@ export function AccountMenu({
         <span className="sr">@{username}</span>
       </button>
 
-      <AnimatePresence>
+      <AnimatePresence key={epoch}>
         {open && (
           <motion.div
             key="menu"

@@ -18,6 +18,16 @@ Owner: `qa-engineer`; findings go to the owning engineer. Read
   `next` dev server from `.claude/launch.json`.
 - Evidence for every verdict: a console excerpt, a network status, a DOM fact
   or a screenshot.
+- **This is the whole-site sweep**, for a release or a change to the shell every
+  page shares. An ordinary change uses `verify-change`, which skips UI checks
+  entirely when no UI path changed.
+- **One load at a time.** Harnesses and a browser pass against the same
+  `next dev` starve each other: goto timeouts and a cold-compile 500 that never
+  reproduces. Run the harness batch, then browse.
+- **A hidden browser measures nothing.** A minimized window or a hidden pane
+  throttles the frames React uses to reveal streamed content, so `<main>` reads
+  as empty and widths as 0. Measure layout with headless Playwright (as the
+  harnesses do) and use the visible browser for looking.
 
 ## 1. Offline
 

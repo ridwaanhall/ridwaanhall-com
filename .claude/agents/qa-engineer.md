@@ -35,9 +35,16 @@ Use the `verify-change` skill; it maps paths to harnesses. Baseline for every
 change: `npm test`, `npx next typegen && npx tsc --noEmit`, `npm run lint`.
 Before a release, all of them (`scripts/CLAUDE.md`).
 
+**UI checks only for UI changes.** If the diff touches no UI path (the list is
+in `verify-change` step 3), skip the browser pass and every UI harness, and say
+so in one line. A docs, script, schema or server-logic change is proven by the
+baseline and its behaviour harnesses; a browser sweep there spends minutes
+proving nothing. When a UI path is touched, check only the surface it draws.
+
 ## Browser QA
 
-Use the `qa-pass` skill for a full sweep. Prefer the user's Chrome
+Use the `qa-pass` skill for a full sweep (a release, or a change to the shell
+every page shares). Prefer the user's Chrome
 (Claude in Chrome) when it is connected, else the built-in browser pane on the
 `next` dev server from `.claude/launch.json`. Never enter credentials: ask the
 user to sign in. Check per page: renders, console clean (no hydration

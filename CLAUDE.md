@@ -380,6 +380,11 @@ The usual handoff: `tech-lead` plans, the owning engineer builds,
 `security-engineer` reviews anything touching auth or the schema, `qa-engineer`
 proves it with `verify-change`, `release-engineer` ships it.
 
+**UI checks run only when UI code changes.** `verify-change` names the UI paths;
+a diff that touches none of them (docs, scripts, schema, server logic) skips
+the browser pass and every UI harness and says so, rather than spending minutes
+proving nothing.
+
 ## Conventions
 
 - Commits: emoji-prefixed conventional commits, `<emoji><type>(<scope>): <Description>`

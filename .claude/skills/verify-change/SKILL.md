@@ -23,7 +23,35 @@ npm run lint
 git diff --name-only main...HEAD; git status --short
 ```
 
-## 3. Add the harnesses for each path
+## 3. Decide whether UI checks apply at all
+
+UI checks prove what a reader *sees*; they cost a dev server, a browser and
+minutes each, and prove nothing about a change that draws nothing. Run them
+only when the diff touches a **UI path**:
+
+- `components/**` (any `.tsx`), `app/**/{page,layout,loading,error,not-found,template}.tsx`
+- `styles/**`, `app/globals.css`, `app/fonts.ts`, `public/**`
+- `lib/site/**`, `lib/motion/**` (client display and motion helpers)
+- a server read whose *shape* a page renders differently (a new field drawn, a
+  list that gets longer or shorter) -- say so when you claim this one
+
+**UI checks**: `check-breakpoints`, `check-ui-state`, `check-notifications`,
+`check-site-console`, `check-page-loading`, `check-skeleton-shape`,
+`check-admin-nav`, `check-admin-console`, `check-admin-controls`,
+`check-admin-labels`, `check-account-panel`, the CSS build checks, and any
+browser look (themes, widths, screenshots).
+
+No UI path in the diff (docs, `.claude/`, `scripts/`, `drizzle/`, `lib/` logic,
+route handlers, server actions, config): **skip every UI check** and say so in
+one line ("no UI paths changed; UI checks skipped"). Behaviour harnesses for
+the paths touched still run from the table below.
+
+A UI path in the diff: run the UI checks for *that surface only* -- the public
+site's for `components/foothill/` and `app/(site)/`, the admin's for
+`components/admin/` and `app/admin/`, skeleton checks only for a skeleton or the
+page it mirrors -- and look at it in both themes at 375px and desktop.
+
+## 4. Add the harnesses for each path
 
 `[dev]` = needs `npm run dev` running. `[rs]` = run as
 `npx tsx --conditions=react-server scripts/<name>` (imports `server-only`).
@@ -54,11 +82,12 @@ written in `scripts/CLAUDE.md`.
 | `next.config.ts` headers/CSP | `check-headers`, `check-live-config https://<deployment>` |
 | comments and docs anywhere | `check-fresh-start` |
 
-## 4. Before a release
+## 5. Before a release
 
-Every harness in `scripts/CLAUDE.md`, in its order.
+Every harness in `scripts/CLAUDE.md`, in its order -- UI checks included,
+because a release is the one time the whole surface is claimed to work.
 
-## 5. Read results honestly
+## 6. Read results honestly
 
 - A harness that writes restores in `finally` and proves it; if it reports a
   failed restore, stop and tell the user with what it printed.

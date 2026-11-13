@@ -126,7 +126,18 @@ export function Avatar({ name, src, size = 36 }: { name: string; src: string | n
       </span>
     );
   return (
+    // `no-referrer`: Google's avatar host refuses some referring origins (every
+    // avatar on the guestbook was broken from localhost), and the reader's page
+    // address is none of its business anyway.
     // eslint-disable-next-line @next/next/no-img-element -- provider avatars, any host
-    <img className="av" src={sizedAvatar(src, size * 2)} alt="" width={size} height={size} style={{ ...box, objectFit: "cover" }} />
+    <img
+      className="av"
+      src={sizedAvatar(src, size * 2)}
+      alt=""
+      width={size}
+      height={size}
+      referrerPolicy="no-referrer"
+      style={{ ...box, objectFit: "cover" }}
+    />
   );
 }

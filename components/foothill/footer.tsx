@@ -6,7 +6,7 @@ import { FooterTwin, GiantWord, LlmsLink } from "@/components/foothill/footer-pa
 import { Icon, type IconName } from "@/components/foothill/icons";
 import { Button, Facts } from "@/components/foothill/ui";
 import type { AboutData } from "@/lib/data/about";
-import { basedIn, socialLinks } from "@/lib/site/display";
+import { basedIn, hasOpenhire, socialLinks } from "@/lib/site/display";
 
 // The year the build ran, not the year the page is read in: reading the clock
 // inside a prerendered tree would make every page dynamic.
@@ -135,7 +135,9 @@ export function Footer({
           <div>
             <h4>Site</h4>
             <ul>
-              {SITE_LINKS.map(([href, label]) => (
+              {/* `/openhire` answers "not found" while neither profile is open,
+                  so it is offered here on the same terms as in the navbar. */}
+              {SITE_LINKS.filter(([href]) => href !== "/openhire" || hasOpenhire(about)).map(([href, label]) => (
                 <li key={href}>
                   <Link href={href}>
                     <Roll>{label}</Roll>

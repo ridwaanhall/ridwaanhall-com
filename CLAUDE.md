@@ -379,7 +379,7 @@ traps; those files stay the source of truth, so when they move, fix the agent.
 
 The usual handoff: `tech-lead` plans, the owning engineer builds,
 `security-engineer` reviews anything touching auth or the schema, `qa-engineer`
-proves it with `verify-change`, `release-engineer` ships it.
+proves it with `verify-change`, `release-engineer` ships it when the owner asks.
 
 ### Every request goes through the team
 
@@ -402,8 +402,8 @@ runs the `team-discussion` skill:
    `security-engineer` anything touching auth, data exposure or the schema, and
    `qa-engineer` proves it with `verify-change`.
 5. **Report.** Tell the owner who was consulted, what each said, what was
-   decided, who built what and what proves it. With every review clean,
-   `release-engineer` ships it (see below).
+   decided, who built what and what proves it. `release-engineer` commits,
+   pushes, opens a PR or merges only when the owner asks.
 
 A small request is still discussed, just briefly. Skipping the team is a
 departure from this rule, so if it ever happens, say so in the report.
@@ -416,12 +416,6 @@ debugging, or a second failed review. Never an older model version. The main
 session spends its Opus on decisions and on briefs complete enough for Sonnet
 to succeed first time. The triggers, effort levels and what a brief must carry
 are in step 0 of the `team-discussion` skill.
-
-**After the reviews pass, the work ships without asking.** The owner's standing
-instruction: once tech-lead, security (where relevant) and QA report no issues,
-`release-engineer` commits, pushes the branch, opens the PR, waits for CI and
-merges it. A red check or an unresolved finding stops it and goes back to the
-owner.
 
 **UI checks run only when UI code changes.** `verify-change` names the UI paths;
 a diff that touches none of them (docs, scripts, schema, server logic) skips

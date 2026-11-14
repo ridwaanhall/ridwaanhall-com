@@ -7,8 +7,9 @@ import type { AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 
 /**
- * Patch notes: written by the release workflow on every push to main, and
- * opened here to reword a line, add a summary, or hide a release.
+ * Patch notes: written by the release workflow for every push to main that
+ * passes CI, and opened here to reword a line, add a summary, or hide a
+ * release.
  *
  * Created here as well, for a release cut by hand -- but the version is the
  * git tag's name once published, so it is fixed after creation.

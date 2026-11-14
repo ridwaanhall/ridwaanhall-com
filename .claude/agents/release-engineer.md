@@ -28,7 +28,8 @@ before shipping anything. `CONTRIBUTING.md` has the emoji table.
 
 - `ci.yml`: `npm ci`, `npx next typegen`, `npx tsc --noEmit`, `npm run lint`,
   `npm test`, `npm run build`. Read-only token. Reproduce locally in that order.
-- `release.yml` runs on every push to main: imports `history.json`, tags
+- `release.yml` runs when CI passes on a push to main (`workflow_run`, on the
+  commit CI checked): imports `history.json`, tags
   releases the site has and GitHub lacks (it warns, not fails, when GitHub
   refuses a historical tag), records the push via `POST /api/patch-notes`
   (idempotent on sha, advisory lock `8_471_003`), then tags `v<version>` and

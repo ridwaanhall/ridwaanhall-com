@@ -104,8 +104,6 @@ Fix what they find through the owning agent, then review again.
 ## 5. Report
 
 Say who was consulted and what each said, what was decided and why, who built
-what, and what proves it. Once tech-lead, security (where relevant) and QA
-report no issues,
-`release-engineer` ships it with `ship-change`: commit, push the branch, open
-the PR, wait for CI, merge. That is the owner's standing instruction; a red
-check or an unresolved finding stops it and goes back to the owner.
+what, and what proves it. Nothing is committed, pushed, opened as a PR or
+merged until the owner asks; then `release-engineer` does it with
+`ship-change`.

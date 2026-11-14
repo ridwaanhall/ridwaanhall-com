@@ -14,7 +14,7 @@ link fetch) before reviewing.
 1. **The gate.** Every admin page: `requireStaff()` first, then
    `can(actor, key, "view")` before any query that uses `params`. Every server
    action and route handler that writes or reads private rows:
-   `isStaffRequest()` / `requirePermission()` itself. A response body
+   `getStaffUser()` then `permits()` itself. A response body
    (including the Flight payload) must carry no row data for a non-staff or
    unpermitted request.
 2. **No privilege in the token.** `is_staff`, `is_superuser`, `is_active` and

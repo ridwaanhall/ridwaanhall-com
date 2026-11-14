@@ -4,10 +4,10 @@ import { KINDS, parseVersion } from "./commits";
 
 /**
  * The releases before automatic ones existed, as `history.json` holds them:
- * 0.1.0 (the Django scaffold, March 2025) to 3.0.0 (the Next.js rebuild).
+ * 0.1.0 (the first scaffold, March 2025) to 3.0.0 (the current codebase).
  *
- * Written by hand from the git history rather than generated, because the
- * Django era was pushed straight to main -- about 2,200 commits, most of them
+ * Written by hand from the git history rather than generated, because those
+ * releases were pushed straight to main -- about 2,200 commits, most of them
  * content edits -- and a release that lists every one is unreadable. Each
  * release names the last commit of its window on main, so its tag lands where
  * the code actually was; its lines are the highlights, each tied to a real

@@ -1,4 +1,4 @@
-import { timingSafeEqual } from "node:crypto";
+import { createHash, timingSafeEqual } from "node:crypto";
 
 import { revalidateTag } from "next/cache";
 import { z } from "zod";
@@ -21,23 +21,24 @@ const Push = z.object({
 
 /**
  * Compared in constant time so the answer's timing says nothing about how much
- * of a guess was right. An unset token refuses everything rather than
- * accepting an empty bearer.
+ * of a guess was right -- or how long the token is: both sides are hashed to
+ * the same length first, since `timingSafeEqual` refuses unequal lengths and
+ * checking them beforehand answers that question early. An unset token
+ * refuses everything rather than accepting an empty bearer.
  */
+const digest = (value: string) => createHash("sha256").update(value).digest();
+
 function authorised(header: string | null): boolean {
   const token = process.env.PATCH_NOTES_TOKEN;
   if (!token || !header?.startsWith("Bearer ")) return false;
-  const given = Buffer.from(header.slice("Bearer ".length));
-  const expected = Buffer.from(token);
-  return given.length === expected.length && timingSafeEqual(given, expected);
+  return timingSafeEqual(digest(header.slice("Bearer ".length)), digest(token));
 }
 
 /**
  * Record a push to main as a release; called by `.github/workflows/release.yml`.
  *
- * **Guarded, unlike the cron route this replaced in spirit.** That one could
- * only flip a flag on rows whose time had come; this writes text a stranger
- * chose onto a public page, so it takes a secret shared with the workflow.
+ * **Guarded**: it writes text onto a public page, so it takes a secret shared
+ * with the workflow.
  *
  * `revalidateTag` rather than `updateTag`, which is refused outside a Server
  * Action, and with `expire: 0` rather than `"max"`: a release should be on the

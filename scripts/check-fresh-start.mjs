@@ -149,6 +149,14 @@ const CONTENT_MENTIONS = {
    * living, and were deleted with it.
    */
   "lib/admin/CLAUDE.md": 1,
+
+  /*
+   * The published release notes before 4.0.0: a record shown to readers, which
+   * names the stacks those releases were built on because that is what they
+   * were. Frozen -- `history.test.ts` holds every version below 4.0.0 -- so the
+   * count is exact, and a new mention anywhere else still fails.
+   */
+  "lib/patch-notes/history.json": 16,
 };
 
 const tracked = execFileSync("git", ["ls-files"], { encoding: "utf8" })

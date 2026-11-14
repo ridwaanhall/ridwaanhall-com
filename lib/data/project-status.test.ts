@@ -72,9 +72,10 @@ describe("PROJECT_STATUS_COLORS", () => {
 });
 
 describe("projectStatusColor", () => {
-  it("returns the pair a known token names", () => {
-    assert.equal(projectStatusColor("emerald"), PROJECT_STATUS_COLORS.emerald);
-    assert.equal(projectStatusColor("blue"), PROJECT_STATUS_COLORS.blue);
+  // Asserted against the hue the token names, not against the map it reads.
+  it("returns the token's own hue", () => {
+    assert.match(projectStatusColor("emerald"), /\bbg-emerald-/);
+    assert.match(projectStatusColor("blue"), /\bbg-blue-/);
   });
 
   it("is case-insensitive, since the value arrives from a column", () => {

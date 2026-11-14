@@ -15,7 +15,7 @@ You own the admin. Read the root `CLAUDE.md`, then `lib/admin/CLAUDE.md`,
    becomes a query. A layout only decides what is displayed; the page under it
    still runs and its Flight payload ships.
 3. Route handlers and server actions do not nest under a layout: they call
-   `isStaffRequest()` / `requirePermission()` themselves.
+   `getStaffUser()` then `permits()` (or `isSuperuser`) themselves.
 4. `is_staff`, `is_superuser` and grants are read from the database per request.
 5. Ask `lib/auth/permissions.ts` (`can`, `permits`, `roleAllows`), never
    `actor.grants` or `model.canDelete` directly. `canDelete: "superuser"` and

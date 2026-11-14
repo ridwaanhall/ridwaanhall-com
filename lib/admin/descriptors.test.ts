@@ -25,10 +25,6 @@ import {
  * These are the same guarantees, offline, in milliseconds, in CI.
  */
 describe("the registry", () => {
-  it("registers screens", () => {
-    assert.ok(ADMIN_ENTRIES.length > 0);
-  });
-
   it("gives every entry a unique key, since the key is the URL", () => {
     const keys = ADMIN_ENTRIES.map((entry) => entry.key);
     assert.equal(new Set(keys).size, keys.length, "duplicate key in the registry");

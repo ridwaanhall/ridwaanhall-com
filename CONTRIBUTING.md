@@ -162,7 +162,7 @@ We welcome various types of contributions:
 #### Code Style
 
 - **Formatting**: no formatter is configured. Match the surrounding file
-- **Linting**: `npm run lint` must pass, and `npx tsc --noEmit` must be clean
+- **Linting**: `npm run lint` must pass, and `npx next typegen && npx tsc --noEmit` must be clean
 - **Types**: prefer inference; write a type where it documents something. `any`
   is not used anywhere in the codebase and should not start now
 - **Naming**: descriptive over short. A reader seeing this code for the first
@@ -287,7 +287,7 @@ Closes #45
 
    ```bash
    npm test
-   npx tsc --noEmit
+   npx next typegen && npx tsc --noEmit
    npm run lint
    npm run build
    ```
@@ -415,7 +415,7 @@ mechanism and drives the running application against the live database.
 ```bash
 npm run dev                     # in one terminal
 
-npx tsc --noEmit
+npx next typegen && npx tsc --noEmit
 npm run lint
 npm run build && node scripts/check-css-sources.mjs
 npx tsx scripts/check-rls.mjs

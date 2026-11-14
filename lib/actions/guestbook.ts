@@ -6,7 +6,7 @@ import { after } from "next/server";
 
 import { auth } from "@/auth";
 import { getUserProfile } from "@/lib/auth/profile";
-import { guestbookTooFast, SLOW_DOWN } from "@/lib/auth/throttle";
+import { guestbookTooFast, lockPosting, SLOW_DOWN } from "@/lib/auth/throttle";
 import { db } from "@/lib/db/client";
 import { notifyNewGuestbookMessage } from "@/lib/email/guestbook-notify";
 import { guestMessage } from "@/lib/db/app-schema";
@@ -76,8 +76,6 @@ export async function sendMessage(formData: FormData): Promise<ActionResult> {
    * with carriage returns that were never typed -- and the length checked below
    * counts one character per line that nobody wrote.
    */
-  if (await guestbookTooFast(profile.id)) return { ok: false, error: SLOW_DOWN };
-
   const text = normaliseNewlines(String(formData.get("message") ?? "")).trim();
   if (!text) return { ok: false, error: "Message cannot be empty" };
   if (text.length < MIN_MESSAGE_LENGTH) {
@@ -104,17 +102,25 @@ export async function sendMessage(formData: FormData): Promise<ActionResult> {
     replyTo = parent?.id ?? null;
   }
 
-  const [created] = await db
-    .insert(guestMessage)
-    .values({
-      accountId: profile.id,
-      body: text,
-      postedAt: new Date().toISOString(),
-      replyToId: replyTo,
-      isPinned: false,
-      pinnedAt: null,
-    })
-    .returning({ id: guestMessage.id });
+  // The limit is counted and the message written under one lock, or posts
+  // sent at once all read a count under it (see `lockPosting`).
+  const created = await db.transaction(async (tx) => {
+    await lockPosting(tx, profile.id);
+    if (await guestbookTooFast(profile.id, tx)) return "too-fast" as const;
+    const [row] = await tx
+      .insert(guestMessage)
+      .values({
+        accountId: profile.id,
+        body: text,
+        postedAt: new Date().toISOString(),
+        replyToId: replyTo,
+        isPinned: false,
+        pinnedAt: null,
+      })
+      .returning({ id: guestMessage.id });
+    return row;
+  });
+  if (created === "too-fast") return { ok: false, error: SLOW_DOWN };
 
   /*
    * Three notifications: the owner, the sender, and whoever is being replied
@@ -122,9 +128,8 @@ export async function sendMessage(formData: FormData): Promise<ActionResult> {
    *
    * `after` rather than `await`, so the reader is not kept waiting on three
    * SMTP round trips for a message that is already saved -- and `void` on top,
-   * because `notifyNewGuestbookMessage` never rejects. The receiver made the
-   * same promise with a bare `except`: a mail server having a bad day must not
-   * stop someone leaving a message.
+   * because `notifyNewGuestbookMessage` never rejects: a mail server having a
+   * bad day must not stop someone leaving a message.
    */
   if (created) after(() => void notifyNewGuestbookMessage(created.id));
 

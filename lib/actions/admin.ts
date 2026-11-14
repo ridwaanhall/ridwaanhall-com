@@ -41,7 +41,7 @@ import { isUuid } from "@/lib/utils/uuid";
  * is a POST endpoint with a generated id, not a function call from the page
  * that rendered the form -- it does not inherit `app/admin/layout.tsx`'s
  * screen, and neither does it inherit the page's `requireStaff()` or its
- * `requirePermission()`. Anyone who can reach the action id can invoke it, so
+ * `can()` check. Anyone who can reach the action id can invoke it, so
  * `getStaffUser()` is the first line of both and `permits()` is the second.
  *
  * The permission is asked with the model in hand, never as `can()` alone: a
@@ -246,7 +246,7 @@ export async function saveRecord(
    * against a uuid column raises `22P02` and throws out of the action instead
    * of returning a result the form can show.
    */
-  if (id !== null && id !== "" && !isUuid(id)) {
+  if (id !== null && !isUuid(id)) {
     return { ok: false, error: "That record no longer exists." };
   }
 

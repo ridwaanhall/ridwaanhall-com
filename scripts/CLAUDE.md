@@ -56,7 +56,8 @@ npx tsx --conditions=react-server scripts/check-admin-controls.mjs
 ```
 
 A harness that imports a `server-only` module needs `--conditions=react-server`.
-The browser-driven ones need `npm run dev` running.
+The browser-driven ones need `npm run dev` running, and once per machine
+`npx playwright install chromium` -- `npm ci` installs Playwright but not its browser.
 
 `scripts/mint-session.mjs` and `scripts/fixture-ids.mjs` are what the
 browser-driven harnesses stand on, not checks: the first issues an Auth.js

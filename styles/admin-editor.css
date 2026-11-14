@@ -49,15 +49,6 @@
     overflow: visible;
 }
 
-/* An empty document should still look like somewhere to type. */
-.admin-editor p.is-editor-empty:first-child::before {
-    content: attr(data-placeholder);
-    color: var(--color-zinc-600);
-    float: left;
-    height: 0;
-    pointer-events: none;
-}
-
 /* The cell being edited, so it is clear where the caret is in a table. */
 .admin-editor .selectedCell::after {
     background: var(--color-indigo-500);

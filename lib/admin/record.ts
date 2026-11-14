@@ -30,26 +30,15 @@ export async function loadFormValues(
   id: string,
 ): Promise<FormValues | null> {
   /*
-   * An empty id means "the one row", which is how the singleton screens ask.
-   * There is no id to hard-code against a uuid, so the screen asks for the row
-   * and the model is what says there is only ever one.
-   */
-  /*
    * A key that is not a uuid is "no such record", not an error. Postgres does
    * not agree -- comparing a uuid column to `1` raises `22P02 invalid input
    * syntax`, which surfaces as a 500 rather than the not-found screen -- so
    * the shape is checked here before the value reaches a query.
    */
-  if (id && !isUuid(id)) return null;
+  if (!isUuid(id)) return null;
 
-  const [row] = id
-    ? await db.select(formSelect(model)).from(model.from).where(eq(model.pk, id)).limit(1)
-    : await db.select(formSelect(model)).from(model.from).limit(1);
+  const [row] = await db.select(formSelect(model)).from(model.from).where(eq(model.pk, id)).limit(1);
   if (!row) return null;
-
-  // Whichever row that turned out to be is the one the inlines and the save
-  // path have to target.
-  const rowId = String((row as Record<string, unknown>)[model.pk.name] ?? id);
 
   const values = toFormValues(model, row as Record<string, unknown>);
 
@@ -68,7 +57,7 @@ export async function loadFormValues(
     const linked = await db
       .select({ id: source.targetFk })
       .from(source.join)
-      .where(eq(source.ownerFk, rowId));
+      .where(eq(source.ownerFk, id));
     values[field.name] = linked.map((entry) => String(entry.id));
   }
 

@@ -71,8 +71,10 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     [
       "Status",
       <span key="status">
-        <ProjectStatus slug={project.status} label={project.status_label} description={project.status_description} />
-        {project.is_featured && <Tag>Featured</Tag>}
+        <span className="fact-tags">
+          <ProjectStatus slug={project.status} label={project.status_label} description={project.status_description} />
+          {project.is_featured && <Tag>Featured</Tag>}
+        </span>
         {project.status_description && <span className="why">{project.status_description}</span>}
       </span>,
     ],

@@ -990,3 +990,6 @@ body:has(.fh-site) {
   .fh-site .nav { background: var(--fh-bg); backdrop-filter: none; -webkit-backdrop-filter: none; }
   .fh-site .totop { background: var(--fh-bg); }
 }
+
+/* The status tag and Featured sat edge to edge in a fact; they wrap right-aligned with the row-meta gap. */
+.fh-site .facts dd .fact-tags { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 6px 12px; }

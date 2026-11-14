@@ -27,6 +27,7 @@
  *   npx tsx --conditions=react-server scripts/check-admin-forms.mjs [base]
  */
 import { config } from "dotenv";
+import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
@@ -43,8 +44,8 @@ const { objectExists } = await import("../lib/storage/objects.ts");
 const { keyForMediaId } = await import("../lib/admin/media.ts");
 const { eq, ne, sql } = await import("drizzle-orm");
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
-const COOKIE = "authjs.session-token";
+const BASE = baseUrl();
+const COOKIE = sessionCookieName(BASE);
 
 const STAFF_ID = await staffAccountId();
 const READER_ID = await nonStaffAccountId();
@@ -85,7 +86,7 @@ const token = await encode({
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-await context.addCookies([{ name: COOKIE, value: token, domain: "localhost", path: "/" }]);
+await context.addCookies([{ name: COOKIE, value: token, ...cookieScope(BASE) }]);
 const page = await context.newPage();
 
 /** Rows this run created, removed in the `finally` whatever happens. */

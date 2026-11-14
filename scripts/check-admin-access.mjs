@@ -23,6 +23,7 @@
  *   npx tsx --conditions=react-server scripts/check-admin-access.mjs [base]
  */
 import { config } from "dotenv";
+import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
@@ -37,7 +38,7 @@ const { account, adminAccess } = await import("../lib/db/app-schema.ts");
 const { and, asc, eq, inArray, ne } = await import("drizzle-orm");
 const { idWhere } = await import("./fixture-ids.mjs");
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
+const BASE = baseUrl();
 
 const checks = [];
 const check = (name, pass, detail = "") => {
@@ -61,7 +62,7 @@ function rows(html) {
   );
 }
 
-const cookieName = "authjs.session-token";
+const cookieName = sessionCookieName(BASE);
 
 async function session(userId) {
   const token = await encode({
@@ -593,8 +594,7 @@ try {
         {
           name: cookieName,
           value: ownerCookie.split("=").slice(1).join("="),
-          domain: "localhost",
-          path: "/",
+          ...cookieScope(BASE),
         },
       ]);
       const page = await context.newPage();

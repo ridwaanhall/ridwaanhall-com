@@ -15,6 +15,7 @@
  * path a real change takes.
  */
 import { config } from "dotenv";
+import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
@@ -23,8 +24,8 @@ const { staffAccountId } = await import("./fixture-ids.mjs");
 const { encode } = await import("next-auth/jwt");
 const { pool } = await import("../lib/db/client.ts");
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
-const COOKIE = "authjs.session-token";
+const BASE = baseUrl();
+const COOKIE = sessionCookieName(BASE);
 
 let failures = 0;
 const check = (name, pass, detail = "") => {
@@ -40,7 +41,7 @@ const token = await encode({ token: { sub: await staffAccountId() }, secret: pro
 const browser = await chromium.launch();
 
 const owner = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-await owner.addCookies([{ name: COOKIE, value: token, domain: "localhost", path: "/" }]);
+await owner.addCookies([{ name: COOKIE, value: token, ...cookieScope(BASE) }]);
 const admin = await owner.newPage();
 const reader = await (await browser.newContext({ viewport: { width: 1280, height: 900 } })).newPage();
 

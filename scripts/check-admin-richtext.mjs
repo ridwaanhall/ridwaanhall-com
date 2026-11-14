@@ -19,6 +19,7 @@
  *   npx tsx --conditions=react-server scripts/check-admin-richtext.mjs [base]
  */
 import { config } from "dotenv";
+import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
@@ -31,8 +32,8 @@ const { blogPost } = await import("../lib/db/app-schema.ts");
 const { sanitizeRichText } = await import("../lib/utils/sanitize.ts");
 const { eq } = await import("drizzle-orm");
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
-const COOKIE = "authjs.session-token";
+const BASE = baseUrl();
+const COOKIE = sessionCookieName(BASE);
 /** A post with a table, a code block and emoji -- the awkward shapes together. */
 const POST_ID = await idWhere("blog_post", "slug", "commit-message-style-guide");
 
@@ -51,7 +52,7 @@ const token = await encode({
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1280, height: 1000 } });
-await context.addCookies([{ name: COOKIE, value: token, domain: "localhost", path: "/" }]);
+await context.addCookies([{ name: COOKIE, value: token, ...cookieScope(BASE) }]);
 const page = await context.newPage();
 
 const submit = async () => {

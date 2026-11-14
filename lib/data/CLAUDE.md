@@ -44,8 +44,9 @@ reader, not only for staff.
 
 ## Patch notes are written by the release workflow
 
-Every push to main runs `.github/workflows/release.yml`, with nobody doing
-anything. It sends **every commit since the newest `v*` tag** (not only the
+Every push to main that passes CI runs `.github/workflows/release.yml`, with
+nobody doing anything: it is triggered by the CI run finishing, not by the
+push, and checks out the exact commit CI passed. It sends **every commit since the newest `v*` tag** (not only the
 push's) to `POST /api/patch-notes`, so nothing falls between releases;
 `lib/patch-notes/commits.ts` (pure, tested) files each commit by its type and
 picks the version: a breaking change is a major, a `feat` a minor, anything

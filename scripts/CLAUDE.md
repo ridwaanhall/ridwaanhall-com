@@ -59,10 +59,16 @@ A harness that imports a `server-only` module needs `--conditions=react-server`.
 The browser-driven ones need `npm run dev` running, and once per machine
 `npx playwright install chromium` -- `npm ci` installs Playwright but not its browser.
 
-`scripts/mint-session.mjs` and `scripts/fixture-ids.mjs` are what the
-browser-driven harnesses stand on, not checks: the first issues an Auth.js
-session cookie for an account id, the second resolves the staff and reader
-accounts and the rows a harness drives instead of writing keys down.
+`scripts/harness.mjs` and `scripts/fixture-ids.mjs` are what the
+browser-driven harnesses stand on, not checks. The first derives everything a
+signed-in request needs from the base URL -- `baseUrl()`, the session cookie's
+name (`__Secure-` over https), a minted token salted with it, and a cookie scope
+for that host -- so every browser harness runs against a deployment as well as
+the dev server when given its address; **a new harness takes all of these from
+it rather than writing `localhost` or the cookie name down.** The second
+resolves the staff and reader accounts and the rows a harness drives instead of
+writing keys down. `scripts/mint-session.mjs <userId> [baseUrl]` prints a
+session cookie from the command line.
 `scripts/db-probe.mjs` is a connectivity and inventory check against whichever
 database `.env.local` names, and `scripts/generate-blog-covers.mjs` draws every
 post's cover in the site's own design -- a dry run that writes PNGs unless given

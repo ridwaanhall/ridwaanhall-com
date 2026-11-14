@@ -1,6 +1,7 @@
 name: Release
 
-# Every push to main becomes a release, with nobody doing anything:
+# Every push to main that passes CI becomes a release, with nobody doing
+# anything:
 #
 #   1. Any release the site has recorded that GitHub has no tag for gets one --
 #      a run that failed half way, or a note added by hand in the admin.
@@ -9,14 +10,13 @@ name: Release
 #      major, a ✨feat a minor, anything else a patch) and stores the note.
 #   3. That version is tagged and published as a GitHub Release.
 #
-# The commits come from the tag rather than from the push, so nothing is lost
-# between releases: the very first run after the redesign finds no release on
-# the site, sends everything since v3.0.0, and records it as 4.0.0.
+# The commits come from the newest tag rather than from the push, so nothing is
+# lost between releases -- including the commits of a push whose CI failed or
+# was superseded, which the next passing push carries.
 #
 # **It talks to the site's own Vercel address, never to ridwaanhall.com.** The
 # domain is behind Cloudflare, which answers GitHub's runners with a "Just a
-# moment..." challenge (403) that no script can pass -- the cron workflow this
-# replaced failed that way on every run for its whole life. The Vercel address
+# moment..." challenge (403) that no script can pass. The Vercel address
 # is behind Vercel Authentication instead, which a Protection Bypass for
 # Automation secret opens; PATCH_NOTES_TOKEN still guards the write itself.
 #
@@ -24,8 +24,14 @@ name: Release
 # records nothing. A `Release-Title:` or `Release-Summary:` line in a commit
 # message names the release it lands in. The repository is public, so this costs no Actions minutes;
 # a run takes well under one.
+# After CI rather than on the push: a release names what shipped, and a commit
+# that fails its types, tests or build is not something to tag and announce.
+# `workflow_run` fires for every CI run, pull requests included, so the job
+# below also requires a passing run of a push to main.
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
   # A re-run by hand, for when the site was down during a push.
   workflow_dispatch:
@@ -41,6 +47,9 @@ concurrency:
 
 jobs:
   release:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -53,9 +62,12 @@ jobs:
       GH_REPO: ${{ github.repository }}
     steps:
       # Full history and every tag: the commits since the last release are
-      # read from git, not from the push event.
+      # read from git, not from the push event. The commit CI passed, not
+      # main's tip: by the time CI finishes, main may already be ahead, and the
+      # tag has to land on what was checked.
       - uses: actions/checkout@v5
         with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
           fetch-depth: 0
 
       - name: Check the secrets are set
@@ -72,7 +84,7 @@ jobs:
       # in the repository; the site adds the ones it lacks and ignores the
       # rest, so this is a no-op on every run after the first.
       #
-      # This run starts as the merge lands, but the endpoint it calls is
+      # This run starts once CI has passed, but the endpoint it calls is
       # whatever production is serving, which may still be the deployment
       # from before the merge. A 404 or 405 means that deployment does not
       # have the import yet, so it waits for Vercel rather than failing.

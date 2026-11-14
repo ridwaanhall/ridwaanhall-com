@@ -17,6 +17,7 @@
  *   npx tsx scripts/check-app-schema.mjs
  */
 import { config } from "dotenv";
+import { reporter } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
@@ -24,11 +25,7 @@ const schema = await import("../lib/db/app-schema.ts");
 const { db, pool } = await import("../lib/db/client.ts");
 const { getTableColumns, sql } = await import("drizzle-orm");
 
-let failures = 0;
-const check = (ok, label, detail = "") => {
-  if (!ok) failures++;
-  console.log(`  ${ok ? "ok  " : "FAIL"}  ${label}${ok || !detail ? "" : `  ${detail}`}`);
-};
+const { check, finish } = reporter({ detailOnFailure: true });
 
 const tables = Object.entries(schema).filter(
   ([name, value]) => name !== "app" && value && typeof value === "object" && !!getTableColumns?.(value),
@@ -46,8 +43,8 @@ for (const [name, table] of tables) {
   }
 }
 check(
-  broken.length === 0,
   `every column of all ${tables.length} tables selects (${columnCount} columns)`,
+  broken.length === 0,
   broken.join("; "),
 );
 
@@ -58,22 +55,18 @@ const live = await db.execute(sql`
   group by 1`).then((r) => r.rows);
 const liveTotal = live.reduce((sum, r) => sum + r.n, 0);
 check(
-  liveTotal === columnCount,
   "and the mapping covers exactly what the schema holds",
+  liveTotal === columnCount,
   `${columnCount} mapped vs ${liveTotal} live -- re-run scripts/gen-app-schema.mjs`,
 );
 
 check(
-  live.length === tables.length,
   `no table is missing from the mapping`,
+  live.length === tables.length,
   `${tables.length} mapped vs ${live.length} live`,
 );
 
-console.log(
-  failures === 0
-    ? `\nThe mapping agrees with the database.`
-    : `\n${failures} check(s) FAILED.`,
-);
+const exitCode = finish("The mapping agrees with the database.");
 
 await pool.end();
-process.exit(failures === 0 ? 0 : 1);
+process.exit(exitCode);

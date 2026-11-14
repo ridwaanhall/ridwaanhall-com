@@ -10,13 +10,14 @@
  *   node scripts/check-breakpoints.mjs [url]
  */
 import { chromium } from "playwright";
+import { baseUrl, reporter } from "./harness.mjs";
 
-const URL = process.argv[2] ?? "http://localhost:3000/";
+const PAGE = `${baseUrl()}/`;
 const WIDTHS = [375, 767, 768, 900, 1023, 1024, 1440];
 
 const browser = await chromium.launch();
 const page = await browser.newPage();
-let failures = 0;
+const { check, finish } = reporter();
 
 for (const width of WIDTHS) {
   await page.setViewportSize({ width, height: 900 });
@@ -25,7 +26,7 @@ for (const width of WIDTHS) {
   // keeps a fresh batch of those in flight, so the network never goes idle --
   // the same reason the other harnesses in this directory wait on `load`. A
   // fixed settle afterwards covers fonts and layout.
-  await page.goto(URL, { waitUntil: "load", timeout: 60000 });
+  await page.goto(PAGE, { waitUntil: "load", timeout: 60000 });
   await page.waitForTimeout(600);
 
   const counts = await page.evaluate(() => {
@@ -42,18 +43,12 @@ for (const width of WIDTHS) {
     };
   });
 
-  const ok = counts.toggles === 1;
-  if (!ok) failures++;
-  console.log(
-    `  ${ok ? "ok  " : "FAIL"} ${String(width).padStart(4)}px  ` +
-      `toggles=${counts.toggles} links=${counts.navLinks} menu=${counts.menuButtons}`,
+  check(
+    `${String(width).padStart(4)}px has one visible toggle`,
+    counts.toggles === 1,
+    `toggles=${counts.toggles} links=${counts.navLinks} menu=${counts.menuButtons}`,
   );
 }
 
 await browser.close();
-console.log(
-  failures === 0
-    ? "\nExactly one visible toggle at every width."
-    : `\n${failures} width(s) wrong.`,
-);
-process.exit(failures === 0 ? 0 : 1);
+process.exit(finish("Exactly one visible toggle at every width."));

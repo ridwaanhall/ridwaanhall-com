@@ -20,14 +20,13 @@
  *   npx tsx --conditions=react-server scripts/check-admin-noop-save.mjs [base] [key…]
  */
 import { config } from "dotenv";
-import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
+import { baseUrl, cookieScope, mintSession, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
 const { staffAccountId } = await import("./fixture-ids.mjs");
-const { encode } = await import("next-auth/jwt");
 const { pool } = await import("../lib/db/client.ts");
 const { ADMIN_ENTRIES_BY_KEY, adminPath } = await import("../lib/admin/registry.ts");
 const { ADMIN_FORM_MODELS } = await import("../lib/admin/models/index.ts");
@@ -150,12 +149,7 @@ async function restore(model, id, shot) {
 }
 
 const STAFF_ID = await staffAccountId();
-const token = await encode({
-  token: { sub: STAFF_ID },
-  secret: process.env.AUTH_SECRET,
-  salt: COOKIE,
-  maxAge: 60 * 30,
-});
+const token = await mintSession(STAFF_ID, BASE, 60 * 30);
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });

@@ -19,14 +19,13 @@
  *   npx tsx --conditions=react-server scripts/check-admin-richtext.mjs [base]
  */
 import { config } from "dotenv";
-import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
+import { baseUrl, cookieScope, mintSession, reporter, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
 const { staffAccountId, idWhere } = await import("./fixture-ids.mjs");
-const { encode } = await import("next-auth/jwt");
 const { db, pool } = await import("../lib/db/client.ts");
 const { blogPost } = await import("../lib/db/app-schema.ts");
 const { sanitizeRichText } = await import("../lib/utils/sanitize.ts");
@@ -37,18 +36,9 @@ const COOKIE = sessionCookieName(BASE);
 /** A post with a table, a code block and emoji -- the awkward shapes together. */
 const POST_ID = await idWhere("blog_post", "slug", "commit-message-style-guide");
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push({ name, pass });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
-const token = await encode({
-  token: { sub: await staffAccountId() },
-  secret: process.env.AUTH_SECRET,
-  salt: COOKIE,
-  maxAge: 60 * 15,
-});
+const token = await mintSession(await staffAccountId(), BASE, 60 * 15);
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1280, height: 1000 } });
@@ -179,10 +169,4 @@ function stripTags(html) {
     .trim();
 }
 
-const failed = checks.filter((entry) => !entry.pass);
-console.log(
-  failed.length === 0
-    ? `\nAll ${checks.length} rich-text checks passed.`
-    : `\n${failed.length} of ${checks.length} checks FAILED.`,
-);
-process.exit(failed.length === 0 ? 0 : 1);
+process.exit(finish((n) => `All ${n} rich-text checks passed.`));

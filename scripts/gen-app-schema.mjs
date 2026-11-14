@@ -15,13 +15,11 @@
 import { writeFileSync } from "node:fs";
 
 import { config } from "dotenv";
-import pg from "pg";
+import { pgPool } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
-const url = new URL(process.env.STORAGE_POSTGRES_URL_NON_POOLING ?? process.env.STORAGE_POSTGRES_URL);
-url.searchParams.delete("sslmode");
-const pool = new pg.Pool({ connectionString: url.toString(), max: 5, ssl: { rejectUnauthorized: false } });
+const pool = pgPool(5, "STORAGE_POSTGRES_URL_NON_POOLING", "STORAGE_POSTGRES_URL");
 const q = (text, params = []) => pool.query(text, params).then((r) => r.rows);
 
 const camel = (s) => s.replace(/_([a-z0-9])/g, (_, c) => c.toUpperCase());

@@ -21,17 +21,14 @@
  *   node scripts/check-ui-state.mjs [base]
  */
 import { chromium } from "playwright";
+import { baseUrl, reporter } from "./harness.mjs";
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
+const BASE = baseUrl();
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
 
-const results = [];
-const check = (name, pass, detail = "") => {
-  results.push({ name, pass });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 const marked = () => page.locator("#search-modal li.highlighted").count();
 // The navbar's search is a magnifier with an accessible name and no text.
@@ -147,10 +144,4 @@ check("still only one", (await widgetCount()) === 1);
 
 await browser.close();
 
-const failed = results.filter((r) => !r.pass);
-console.log(
-  failed.length === 0
-    ? `\nAll ${results.length} interaction checks passed.`
-    : `\n${failed.length} of ${results.length} checks FAILED.`,
-);
-process.exit(failed.length === 0 ? 0 : 1);
+process.exit(finish((n) => `All ${n} interaction checks passed.`));

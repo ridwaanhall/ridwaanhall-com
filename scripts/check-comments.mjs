@@ -20,6 +20,7 @@
  *   npx tsx scripts/check-comments.mjs
  */
 import { config } from "dotenv";
+import { reporter } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
@@ -29,11 +30,7 @@ const { canDeleteComment } = await import("../lib/data/comment-shapes.ts");
 const { comment } = await import("../lib/db/app-schema.ts");
 const { sql } = await import("drizzle-orm");
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push({ name, pass });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 const count = async (database) =>
   (await database.execute(sql`select count(*)::int c from app.comment`)).rows[0].c;
@@ -191,10 +188,4 @@ check("the transaction was rolled back", after === before, `${before} -> ${after
 
 await pool.end();
 
-const failed = checks.filter((c) => !c.pass);
-console.log(
-  failed.length === 0
-    ? `\nAll ${checks.length} comment checks passed against the live schema.`
-    : `\n${failed.length} of ${checks.length} checks FAILED.`,
-);
-process.exit(failed.length === 0 ? 0 : 1);
+process.exit(finish((n) => `All ${n} comment checks passed against the live schema.`));

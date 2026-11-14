@@ -34,12 +34,9 @@
  */
 import { execFileSync } from "node:child_process";
 import { readFileSync, existsSync } from "node:fs";
+import { reporter } from "./harness.mjs";
 
-let failures = 0;
-const check = (ok, label, detail = "") => {
-  if (!ok) failures++;
-  console.log(`  ${ok ? "ok  " : "FAIL"}  ${label}${ok || !detail ? "" : `  ${detail}`}`);
-};
+const { check, finish } = reporter({ detailOnFailure: true });
 
 /** Built from pieces so this file does not match itself. */
 const word = (...parts) => parts.join("");
@@ -223,7 +220,7 @@ for (const file of CITABLE) {
   }
 }
 
-check(dangling.length === 0, "every file a comment points at is one this repository has",
+check("every file a comment points at is one this repository has", dangling.length === 0,
   dangling.slice(0, 12).join("; "));
 
 const byFile = new Map();
@@ -239,8 +236,8 @@ const worst = unexplained.sort((a, b) => b[1] - a[1]);
 const total = worst.reduce((sum, [, n]) => sum + n, 0);
 
 check(
-  worst.length === 0,
   `no tracked file explains itself by what came before (${tracked.length} tracked, ${worst.length} with hits)`,
+  worst.length === 0,
   worst.length ? `${total} line(s); worst: ${worst.slice(0, 6).map(([f, n]) => `${f} (${n})`).join(", ")}` : "",
 );
 
@@ -255,13 +252,13 @@ check(
  */
 const sql = tracked.filter((f) => f.startsWith("drizzle/") && f.endsWith(".sql"));
 check(
-  sql.length === 1 && sql[0] === "drizzle/0000_init.sql",
   "the schema is one file, not a ladder to replay",
+  sql.length === 1 && sql[0] === "drizzle/0000_init.sql",
   sql.join(", "),
 );
 
 const comparisons = tracked.filter((f) => /^scripts\/compare-/.test(f));
-check(comparisons.length === 0, "no harness diffs this site against another one", comparisons.join(", "));
+check("no harness diffs this site against another one", comparisons.length === 0, comparisons.join(", "));
 
 /*
  * The mapping is generated from the live schema by `gen-app-schema.mjs`. A
@@ -269,14 +266,9 @@ check(comparisons.length === 0, "no harness diffs this site against another one"
  * every server bundle for as long as it sat next to it.
  */
 const schemaModules = tracked.filter((f) => /^lib\/db\/(schema|relations)\.ts$/.test(f));
-check(schemaModules.length === 0, "only one schema mapping exists", schemaModules.join(", "));
+check("only one schema mapping exists", schemaModules.length === 0, schemaModules.join(", "));
 
 const notes = tracked.filter((f) => /^(MIGRATION|CHANGELOG-MIGRATION)\.md$/i.test(f));
-check(notes.length === 0, "no working notes from the port are still shipped", notes.join(", "));
+check("no working notes from the port are still shipped", notes.length === 0, notes.join(", "));
 
-console.log(
-  failures === 0
-    ? "\nThe repository reads as its own thing."
-    : `\n${failures} check(s) failed.`,
-);
-process.exit(failures === 0 ? 0 : 1);
+process.exit(finish("The repository reads as its own thing."));

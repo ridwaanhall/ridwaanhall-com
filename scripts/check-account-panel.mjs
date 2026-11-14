@@ -32,21 +32,16 @@
  *   npx tsx scripts/check-account-panel.mjs [base]
  */
 import { config } from "dotenv";
-import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
+import { baseUrl, cookieScope, mintSession, reporter, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
-const { encode } = await import("next-auth/jwt");
 const { nonStaffAccountId, staffAccountId } = await import("./fixture-ids.mjs");
 
 const BASE = baseUrl();
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push({ name, pass });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 const cookieName = sessionCookieName(BASE);
 
@@ -59,7 +54,7 @@ const cookieName = sessionCookieName(BASE);
  * appear beside it.
  */
 const mint = (sub) =>
-  encode({ token: { sub }, secret: process.env.AUTH_SECRET, salt: cookieName, maxAge: 60 * 10 });
+  mintSession(sub, BASE, 60 * 10);
 
 const token = await mint(await nonStaffAccountId());
 const staffToken = await mint(await staffAccountId());
@@ -440,10 +435,4 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
 
 await browser.close();
 
-const failed = checks.filter((entry) => !entry.pass);
-console.log(
-  failed.length === 0
-    ? `\nAll ${checks.length} account panel checks passed.`
-    : `\n${failed.length} of ${checks.length} checks FAILED.`,
-);
-process.exit(failed.length === 0 ? 0 : 1);
+process.exit(finish((n) => `All ${n} account panel checks passed.`));

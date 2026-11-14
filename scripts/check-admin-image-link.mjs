@@ -41,14 +41,13 @@
  *   npx tsx --conditions=react-server scripts/check-admin-image-link.mjs [base]
  */
 import { config } from "dotenv";
-import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
+import { baseUrl, cookieScope, mintSession, reporter, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
 const { staffAccountId } = await import("./fixture-ids.mjs");
-const { encode } = await import("next-auth/jwt");
 const { db, pool } = await import("../lib/db/client.ts");
 const { ADMIN_ENTRIES_BY_KEY, adminPath } = await import("../lib/admin/registry.ts");
 const { mediaAsset, organization } = await import("../lib/db/app-schema.ts");
@@ -73,11 +72,7 @@ const ORGANIZATION = adminPath(entry);
 /** Distinctive enough that a leftover row is obviously this script's. */
 const MARK = `zz-image-link-check-${Date.now()}`;
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push({ name, pass });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 /** A 1x1 PNG, for the one case that needs a file as well as a link. */
 const PNG = Buffer.from(
@@ -116,12 +111,7 @@ const LINK = mediaUrl(fixtures[0].storageKey);
 const LINK2 = mediaUrl(fixtures[1].storageKey);
 console.log(`\nlinking ${LINK}\n    and ${LINK2}\n`);
 
-const token = await encode({
-  token: { sub: await staffAccountId() },
-  secret: process.env.AUTH_SECRET,
-  salt: COOKIE,
-  maxAge: 60 * 15,
-});
+const token = await mintSession(await staffAccountId(), BASE, 60 * 15);
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
@@ -473,10 +463,4 @@ try {
   await pool.end();
 }
 
-const failed = checks.filter((entry) => !entry.pass).length;
-console.log(
-  failed === 0
-    ? `\nAll ${checks.length} image-link checks passed.`
-    : `\n${failed} of ${checks.length} image-link checks FAILED.`,
-);
-process.exit(failed === 0 ? 0 : 1);
+process.exit(finish((n) => `All ${n} image-link checks passed.`));

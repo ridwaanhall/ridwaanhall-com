@@ -24,26 +24,15 @@
 import { readFileSync } from "node:fs";
 
 import { config } from "dotenv";
-import pg from "pg";
+import { pgClient, reporter } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
 const FILE = "drizzle/0000_init.sql";
 const SCRATCH = "zz_baseline_check";
 
-const raw = process.env.STORAGE_POSTGRES_URL_NON_POOLING;
-if (!raw) {
-  console.error("STORAGE_POSTGRES_URL_NON_POOLING is not set (see .env.example)");
-  process.exit(1);
-}
-const url = new URL(raw);
-url.searchParams.delete("sslmode");
 
-let failures = 0;
-const check = (ok, label, detail = "") => {
-  if (!ok) failures++;
-  console.log(`  ${ok ? "ok  " : "FAIL"}  ${label}${ok || !detail ? "" : `  ${detail}`}`);
-};
+const { check, finish } = reporter({ detailOnFailure: true });
 
 /*
  * The file names its own schema throughout -- `"app"."table"` in the DDL and a
@@ -69,7 +58,7 @@ const statements = intoScratch(readFileSync(FILE, "utf8"))
   )
   .filter(Boolean);
 
-const client = new pg.Client({ connectionString: url.toString(), ssl: { rejectUnauthorized: false } });
+const client = pgClient("STORAGE_POSTGRES_URL_NON_POOLING");
 await client.connect();
 const q = (text, params = []) => client.query(text, params).then((r) => r.rows);
 
@@ -144,7 +133,7 @@ try {
     const built = await shapeOf(SCRATCH);
     const live = await shapeOf("app");
 
-    check(built.tables.length > 0, `the baseline builds tables`, `${built.tables.length}`);
+    check(`the baseline builds tables`, built.tables.length > 0, `${built.tables.length}`);
 
     for (const aspect of Object.keys(SHAPE)) {
       const missing = live[aspect].filter((x) => !built[aspect].includes(x));
@@ -155,11 +144,11 @@ try {
       ]
         .filter(Boolean)
         .join("  //  ");
-      check(!missing.length && !extra.length, `${aspect} match app (${live[aspect].length})`, detail);
+      check(`${aspect} match app (${live[aspect].length})`, !missing.length && !extra.length, detail);
     }
 
     const noRls = built.tables.filter((t) => !built.rls.includes(t));
-    check(noRls.length === 0, "every table the baseline creates has RLS enabled", noRls.join(", "));
+    check("every table the baseline creates has RLS enabled", noRls.length === 0, noRls.join(", "));
   } finally {
     await q("rollback");
   }
@@ -168,17 +157,11 @@ try {
     `select count(*)::int = 0 as gone from information_schema.schemata where schema_name = $1`,
     [SCRATCH],
   );
-  check(gone, "the scratch schema was rolled back, not left behind");
+  check("the scratch schema was rolled back, not left behind", gone);
 } catch (error) {
-  failures++;
-  console.log(`  FAIL  ${error.message.split("\n")[0]}`);
+  check(error.message.split("\n")[0], false);
 } finally {
   await client.end();
 }
 
-console.log(
-  failures === 0
-    ? `\n${FILE} reproduces the app schema exactly.`
-    : `\n${failures} check(s) failed.`,
-);
-process.exit(failures === 0 ? 0 : 1);
+process.exit(finish(`${FILE} reproduces the app schema exactly.`));

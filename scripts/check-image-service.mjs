@@ -15,29 +15,24 @@
  * path a real change takes.
  */
 import { config } from "dotenv";
-import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
+import { baseUrl, cookieScope, mintSession, reporter, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
 const { chromium } = await import("playwright");
 const { staffAccountId } = await import("./fixture-ids.mjs");
-const { encode } = await import("next-auth/jwt");
 const { pool } = await import("../lib/db/client.ts");
 
 const BASE = baseUrl();
 const COOKIE = sessionCookieName(BASE);
 
-let failures = 0;
-const check = (name, pass, detail = "") => {
-  if (!pass) failures++;
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${!pass && detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter({ detailOnFailure: true });
 
 const read = async () => (await pool.query("select image_service, image_quality from app.site_setting")).rows;
 const before = await read();
 check("exactly one settings row exists", before.length === 1);
 
-const token = await encode({ token: { sub: await staffAccountId() }, secret: process.env.AUTH_SECRET, salt: COOKIE, maxAge: 60 * 15 });
+const token = await mintSession(await staffAccountId(), BASE, 60 * 15);
 const browser = await chromium.launch();
 
 const owner = await browser.newContext({ viewport: { width: 1280, height: 900 } });
@@ -108,5 +103,4 @@ try {
   await pool.end();
 }
 
-console.log(failures ? `\n${failures} check(s) FAILED.` : "\nThe setting reaches the reader in every mode.");
-process.exit(failures ? 1 : 0);
+process.exit(finish("The setting reaches the reader in every mode."));

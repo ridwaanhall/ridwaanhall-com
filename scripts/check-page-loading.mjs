@@ -42,19 +42,16 @@
  *   npx tsx --conditions=react-server scripts/check-page-loading.mjs [base]
  */
 import { config } from "dotenv";
+import { baseUrl, reporter } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
+const BASE = baseUrl();
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push(pass);
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 /**
  * Resolve any CSS colour to an [r,g,b] triple, in the page.
@@ -566,10 +563,4 @@ try {
   await browser.close();
 }
 
-const failed = checks.filter((ok) => !ok).length;
-console.log(
-  failed === 0
-    ? `\nThe loading bar and the skeletons behave, across ${checks.length} checks.`
-    : `\n${failed} of ${checks.length} checks failed.`,
-);
-process.exit(failed === 0 ? 0 : 1);
+process.exit(finish((n) => `The loading bar and the skeletons behave, across ${n} checks.`));

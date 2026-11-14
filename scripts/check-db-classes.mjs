@@ -25,6 +25,7 @@
  *   npx tsx scripts/check-db-classes.mjs
  */
 import { config } from "dotenv";
+import { reporter } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
@@ -32,11 +33,7 @@ const { sanitizeRichText } = await import("../lib/utils/sanitize.ts");
 const { db, pool } = await import("../lib/db/client.ts");
 const { sql } = await import("drizzle-orm");
 
-let failures = 0;
-const check = (ok, label, detail = "") => {
-  if (!ok) failures++;
-  console.log(`  ${ok ? "ok  " : "FAIL"}  ${label}${ok || !detail ? "" : `  ${detail}`}`);
-};
+const { check, finish } = reporter({ detailOnFailure: true });
 
 /**
  * A utility to try to smuggle in, assembled rather than written out. A harness
@@ -49,15 +46,15 @@ const ALLOWED = `${"language"}-python`;
 
 // --- 1. The sanitiser strips a utility, and keeps the one class it allows ----
 const smuggled = sanitizeRichText(`<p class="${PROBE}">x</p>`);
-check(!smuggled.includes(PROBE), "a utility on a paragraph is stripped", smuggled);
+check("a utility on a paragraph is stripped", !smuggled.includes(PROBE), smuggled);
 
 const onCode = sanitizeRichText(`<pre><code class="${ALLOWED}">x</code></pre>`);
-check(onCode.includes(ALLOWED), "the syntax-highlighting class survives", onCode);
+check("the syntax-highlighting class survives", onCode.includes(ALLOWED), onCode);
 
 const onCodeToo = sanitizeRichText(`<pre><code class="${ALLOWED} ${PROBE}">x</code></pre>`);
 check(
-  onCodeToo.includes(ALLOWED) && !onCodeToo.includes(PROBE),
   "a utility alongside it on the same element is still stripped",
+  onCodeToo.includes(ALLOWED) && !onCodeToo.includes(PROBE),
   onCodeToo,
 );
 
@@ -102,8 +99,8 @@ for (const { table_name: table, column_name: column } of htmlColumns) {
 }
 
 check(
-  stray.size === 0,
   `no stored HTML carries a class the stylesheet would have to be told about (${htmlColumns.length} column(s))`,
+  stray.size === 0,
   [...stray].map(([c, where]) => `${c} (${where})`).join(", "),
 );
 
@@ -126,8 +123,8 @@ for (const { table_name: table, column_name: column } of jsonColumns) {
 }
 
 check(
-  keyed.size === 0,
   `no stored JSON carries a \`class\` key (${jsonColumns.length} column(s))`,
+  keyed.size === 0,
   [...keyed].map(([c, where]) => `${c} (${where})`).join(", "),
 );
 
@@ -157,7 +154,7 @@ const [constraint] = await db
   )
   .then((r) => r.rows);
 
-check(Boolean(constraint), "the colour column carries a check constraint at all");
+check("the colour column carries a check constraint at all", Boolean(constraint));
 
 if (constraint) {
   const allowed = new Set([...String(constraint.def).matchAll(/'([a-z]+)'/g)].map((m) => m[1]));
@@ -167,13 +164,13 @@ if (constraint) {
   const unallowed = [...mapped].filter((token) => !allowed.has(token));
 
   check(
-    unmapped.length === 0,
     `every colour the database accepts has classes written out (${allowed.size} token(s))`,
+    unmapped.length === 0,
     unmapped.join(", "),
   );
   check(
-    unallowed.length === 0,
     "and every colour the admin offers is one the database accepts",
+    unallowed.length === 0,
     unallowed.join(", "),
   );
 }
@@ -183,16 +180,15 @@ const inUse = await db
   .then((r) => r.rows.map((row) => row.color));
 const orphaned = inUse.filter((token) => !(token in PROJECT_STATUS_COLORS));
 check(
-  orphaned.length === 0,
   `every colour a status actually holds renders (${inUse.length} in use)`,
+  orphaned.length === 0,
   orphaned.join(", "),
 );
 
-console.log(
-  failures === 0
-    ? "\nNothing in the database names a CSS class. app/globals.css needs no inline source list."
-    : `\n${failures} check(s) FAILED. Something stored in the database names a class Tailwind cannot see — either fix the content or put an @source inline list back in app/globals.css.`,
+const exitCode = finish(
+  "Nothing in the database names a CSS class. app/globals.css needs no inline source list.",
+  "Something stored in the database names a class Tailwind cannot see — either fix the content or put an @source inline list back in app/globals.css.",
 );
 
 await pool.end();
-process.exit(failures === 0 ? 0 : 1);
+process.exit(exitCode);

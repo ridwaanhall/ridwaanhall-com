@@ -82,13 +82,14 @@
  * Needs the app running (`npm run dev`).
  */
 import { config } from "dotenv";
+import { baseUrl, reporter } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
+const BASE = baseUrl();
 
 /** A skeleton is a sketch, so its height is compared as a proportion. */
 const HEIGHT_TOLERANCE = 0.2;
@@ -102,11 +103,7 @@ const VIEWPORTS = [
   { label: "1280", width: 1280, height: 900 },
 ];
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push(pass);
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 /** Something observed rather than asserted. Not a pass and not a failure. */
 const note = (text) => console.log(`  ..    ${text}`);
@@ -456,10 +453,4 @@ const FLOOR = 8;
 check(`enough skeletons were actually observed to be worth asserting on`,
   measured >= FLOOR, `${measured} of ${ROUTES.length * VIEWPORTS.length}, floor ${FLOOR}`);
 
-const failed = checks.filter((ok) => !ok).length;
-console.log(
-  failed === 0
-    ? `\nEvery skeleton is the shape of its page, across ${checks.length} checks.`
-    : `\n${failed} of ${checks.length} checks failed.`,
-);
-process.exit(failed === 0 ? 0 : 1);
+process.exit(finish((n) => `Every skeleton is the shape of its page, across ${n} checks.`));

@@ -26,7 +26,7 @@
  */
 import { config } from "dotenv";
 import { chromium } from "playwright";
-import pg from "pg";
+import { pgPool } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
@@ -34,9 +34,7 @@ const APPLY = process.argv.includes("--apply");
 const SUPABASE = (process.env.STORAGE_SUPABASE_URL ?? "").replace(/\/+$/, "");
 const BUCKET = process.env.SUPABASE_STORAGE_BUCKET ?? "media";
 
-const url = new URL(process.env.STORAGE_POSTGRES_URL);
-url.searchParams.delete("sslmode");
-const pool = new pg.Pool({ connectionString: url.toString(), max: 2, ssl: { rejectUnauthorized: false } });
+const pool = pgPool(2);
 
 const { rows } = await pool.query(`
   select distinct m.id, m.storage_key, m.source, m.tone, string_agg(distinct s.name, ', ') as names

@@ -25,24 +25,19 @@
  * that then proves the restore.
  */
 import { config } from "dotenv";
-import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
+import { baseUrl, cookieScope, mintSession, reporter, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
 const { chromium } = await import("playwright");
 const { staffAccountId } = await import("./fixture-ids.mjs");
-const { encode } = await import("next-auth/jwt");
 const { pool } = await import("../lib/db/client.ts");
 
 const BASE = baseUrl();
 const COOKIE = sessionCookieName(BASE);
 const MARK = `zz alt check ${Date.now()}`;
 
-let failures = 0;
-const check = (ok, label, detail = "") => {
-  if (!ok) failures++;
-  console.log(`  ${ok ? "ok  " : "FAIL"}  ${label}${ok || !detail ? "" : `\n          ${detail}`}`);
-};
+const { check, finish } = reporter({ detailOnFailure: true });
 
 console.log(`Image alt text, against ${BASE}\n`);
 
@@ -70,12 +65,7 @@ const original = target.alt;
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
 try {
-  const token = await encode({
-    token: { sub: await staffAccountId() },
-    secret: process.env.AUTH_SECRET,
-    salt: COOKIE,
-    maxAge: 60 * 15,
-  });
+  const token = await mintSession(await staffAccountId(), BASE, 60 * 15);
   await context.addCookies([{ name: COOKIE, value: token, ...cookieScope(BASE) }]);
   const page = await context.newPage();
 
@@ -91,8 +81,8 @@ try {
   const beforeSave = await (await fetch(`${BASE}/blog/${target.slug}`)).text();
   const fragment = escapeRegExp(target.title.slice(0, 24));
   check(
-    new RegExp(`alt="[^"]*${fragment}`).test(beforeSave),
     "an image with no description falls back to one built from the record",
+    new RegExp(`alt="[^"]*${fragment}`).test(beforeSave),
     `no alt attribute mentions ${JSON.stringify(target.title.slice(0, 24))}`,
   );
 
@@ -101,7 +91,7 @@ try {
   // The gallery's first row, not the post's own author photo -- an inline is
   // the half a record-level implementation silently leaves out.
   const box = page.locator('input[name^="images:"][name$="__alt"]').first();
-  check((await box.count()) > 0, "an inline image row offers a description box");
+  check("an inline image row offers a description box", (await box.count()) > 0);
 
   await box.fill(MARK);
   await page.getByRole("button", { name: /^Save$/ }).first().click();
@@ -120,15 +110,15 @@ try {
     target.asset_id,
   ]);
   check(
-    after[0]?.alt === MARK,
     "saving without touching the image still writes the description",
+    after[0]?.alt === MARK,
     `media_asset.alt is ${JSON.stringify(after[0]?.alt)}`,
   );
 
   const article = await (await fetch(`${BASE}/blog/${target.slug}`)).text();
   check(
-    article.includes(MARK),
     "and the page renders it",
+    article.includes(MARK),
     "the description is stored and the article does not use it",
   );
 
@@ -141,12 +131,11 @@ try {
     target.asset_id,
   ]);
   check(
-    rows[0]?.alt === original,
     "the description this run changed is back as it was",
+    rows[0]?.alt === original,
     `expected ${JSON.stringify(original)}, found ${JSON.stringify(rows[0]?.alt)}`,
   );
   await pool.end();
 }
 
-console.log(failures ? `\n${failures} check(s) failed.` : "\nAn image says what it is.");
-process.exitCode = failures ? 1 : 0;
+process.exitCode = finish("An image says what it is.");

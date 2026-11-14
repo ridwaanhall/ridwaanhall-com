@@ -17,7 +17,7 @@
 import { readFileSync } from "node:fs";
 
 import { config } from "dotenv";
-import pg from "pg";
+import { pgClient } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
@@ -27,19 +27,6 @@ if (!file) {
   console.error("usage: node scripts/apply-migration.mjs <file.sql> [--apply]");
   process.exit(1);
 }
-
-// DDL goes over the direct connection. Neither DDL nor introspection is
-// reliable behind pgbouncer's transaction-mode pooling -- the same reason
-// any schema tool has to reach for this URL rather than the pooled one.
-const raw = process.env.STORAGE_POSTGRES_URL_NON_POOLING;
-if (!raw) {
-  console.error("STORAGE_POSTGRES_URL_NON_POOLING is not set (see .env.example)");
-  process.exit(1);
-}
-const url = new URL(raw);
-// `pg` reads sslmode=require as verify-full, which Supabase's certificate does
-// not satisfy. TLS is configured here instead, as it is in lib/db/client.ts.
-url.searchParams.delete("sslmode");
 
 const statements = readFileSync(file, "utf8")
   .split("--> statement-breakpoint")
@@ -104,7 +91,10 @@ for (const statement of statements) {
 
 console.log(`${file}: ${statements.length} statement(s)${APPLY ? "" : "  (dry run -- pass --apply to keep it)"}\n`);
 
-const client = new pg.Client({ connectionString: url.toString(), ssl: { rejectUnauthorized: false } });
+// DDL goes over the direct connection. Neither DDL nor introspection is
+// reliable behind pgbouncer's transaction-mode pooling -- the same reason
+// any schema tool has to reach for this URL rather than the pooled one.
+const client = pgClient("STORAGE_POSTGRES_URL_NON_POOLING");
 await client.connect();
 
 try {

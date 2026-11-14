@@ -27,12 +27,11 @@
  *   npx tsx scripts/check-admin.mjs [base]
  */
 import { config } from "dotenv";
-import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
+import { baseUrl, cookieScope, mintSession, reporter, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
-const { encode } = await import("next-auth/jwt");
 const { ADMIN_ENTRIES, ADMIN_SECTIONS, adminPath, sectionTabs } = await import(
   "../lib/admin/registry.ts"
 );
@@ -45,21 +44,12 @@ const BASE = baseUrl();
 const STAFF_ID = await staffAccountId();
 const NON_STAFF_ID = await nonStaffAccountId();
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push({ name, pass });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 const cookieName = sessionCookieName(BASE);
 
 async function session(userId) {
-  const token = await encode({
-    token: { sub: String(userId) },
-    secret: process.env.AUTH_SECRET,
-    salt: cookieName,
-    maxAge: 60 * 10,
-  });
+  const token = await mintSession(String(userId), BASE, 60 * 10);
   return `${cookieName}=${token}`;
 }
 
@@ -754,10 +744,4 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
   await browser.close();
 }
 
-const failed = checks.filter((entry) => !entry.pass);
-console.log(
-  failed.length === 0
-    ? `\nAll ${checks.length} admin checks passed.`
-    : `\n${failed.length} of ${checks.length} checks FAILED.`,
-);
-process.exit(failed.length === 0 ? 0 : 1);
+process.exit(finish((n) => `All ${n} admin checks passed.`));

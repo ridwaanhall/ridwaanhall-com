@@ -30,7 +30,7 @@ export function PatchNotesPage({ notes }: { notes: PatchNote[] }) {
       <div>
         <PageHead
           title="Patch notes"
-          lead="What changed on this site, release by release. Every push to main becomes one."
+          lead="What changed on this site, release by release. Every push to main that passes its checks becomes one."
           markdown="/patch-notes"
           facts={[
             ["Latest", latest ? `v${latest.version}` : "None yet"],
@@ -44,7 +44,7 @@ export function PatchNotesPage({ notes }: { notes: PatchNote[] }) {
             {notes.length > 0 ? (
               notes.map((note, index) => <Release key={note.version} note={note} latest={index === 0} />)
             ) : (
-              <Empty small icon="file" title="No releases yet" note="The next push to main is the first." />
+              <Empty small icon="file" title="No releases yet" note="The next push to main that passes its checks is the first." />
             )}
           </div>
         </div>

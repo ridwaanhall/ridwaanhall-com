@@ -51,6 +51,17 @@ site's for `components/foothill/` and `app/(site)/`, the admin's for
 `components/admin/` and `app/admin/`, skeleton checks only for a skeleton or the
 page it mirrors -- and look at it in both themes at 375px and desktop.
 
+**A UI change is not done until the owner has seen it.** The owner reviews
+every UI or UX change from screenshots, so after the checks pass, take them and
+send them in the conversation (`SendUserFile`, `display: "render"`) before
+calling the work finished. Shoot each surface the diff changed, in dark and
+light, at 375px and at desktop (1440px), at `deviceScaleFactor: 2`, scrolled or
+opened to the state that shows the change (a drawer open, a filter applied, the
+page scrolled so a sticky element sits over content). Name what each one shows
+in the caption. Save them under the scratchpad, never in the repo. Where the
+change cannot run here (no `.env`), shoot the branch's Vercel preview; if no
+preview is reachable either, say so plainly instead of sending stand-ins.
+
 ## 4. Add the harnesses for each path
 
 `[dev]` = needs `npm run dev` running. `[rs]` = run as

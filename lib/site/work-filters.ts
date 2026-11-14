@@ -47,6 +47,12 @@ export function parseFilters(raw: Record<string, string | string[] | undefined>)
   };
 }
 
+/** The filters an address asks for, from `useSearchParams()` or a raw query string. */
+export function searchToFilters(search: string | URLSearchParams): WorkFilters {
+  const params = typeof search === "string" ? new URLSearchParams(search) : search;
+  return parseFilters(Object.fromEntries(params));
+}
+
 /** The filters as a query string, defaults left out, so a filtered list is a URL. */
 export function filtersToSearch(filters: WorkFilters): string {
   const params = new URLSearchParams();

@@ -3,6 +3,7 @@
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { SiteImage } from "@/components/foothill/site-image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { Chips, EASE, SPRING, Seg, ToggleChip } from "@/components/foothill/controls";
@@ -11,8 +12,8 @@ import { FilterBar, FilterGroup, type ActiveFilter } from "@/components/foothill
 import { Brand, Icon } from "@/components/foothill/icons";
 import { NoImage } from "@/components/foothill/noimg";
 import type { ProjectView } from "@/components/foothill/rows";
-import { Avail, Empty, ProjectStatus, Thumb } from "@/components/foothill/ui";
-import { DEFAULT_FILTERS, filtersToSearch, type WorkFilters } from "@/lib/site/work-filters";
+import { Avail, Empty, ProjectStatus, Tag, Thumb } from "@/components/foothill/ui";
+import { DEFAULT_FILTERS, filtersToSearch, searchToFilters, type WorkFilters } from "@/lib/site/work-filters";
 
 const BATCH = 12;
 
@@ -46,8 +47,35 @@ export function WorkExplorer({
 }) {
   const [filters, setFilters] = useState(initial);
   const [shown, setShown] = useState(BATCH);
+  // Next keeps a visited route mounted in a hidden Activity, so a link to
+  // /projects?skill=X re-shows this instance with its old state, and the
+  // replaceState effect below then rewrote the address back, erasing the query.
+  // So the address is read again whenever it is not the one last seen, and
+  // `serverQ` is the query `serverMatches` was computed for (null once stale).
+  const params = useSearchParams();
+  const [seen, setSeen] = useState(() => params.toString());
+  const [serverQ, setServerQ] = useState<string | null>(initial.q);
+  // Our own replaceState comes back here as an address change, later than the
+  // keystroke that made it. Every address a change here will write is remembered (in `set`, where setting state is allowed) and
+  // skipped (only `seen` moves), so neither a normalised field, like a trimmed q,
+  // nor a fast "ab" then "abc" is typed over. An address is forgotten once it
+  // has come back, so a later link to the same query still resyncs.
+  const [wrote, setWrote] = useState<string[]>([]);
+  const search = params.toString();
+  if (search !== seen) {
+    setSeen(search);
+    if (wrote.includes(search)) setWrote(wrote.filter((entry) => entry !== search));
+    else {
+      const next = searchToFilters(params);
+      if (next.q !== filters.q && next.q !== serverQ) setServerQ(null);
+      setFilters(next);
+      setShown(BATCH);
+    }
+  }
   const set = (patch: Partial<WorkFilters>) => {
-    setFilters((current) => ({ ...current, ...patch }));
+    const next = { ...filters, ...patch };
+    setFilters(next);
+    setWrote((list) => [...list.filter((entry) => entry !== filtersToSearch(next).slice(1)), filtersToSearch(next).slice(1)].slice(-8));
     if (!("view" in patch) && !("sort" in patch)) setShown(BATCH);
   };
 
@@ -71,7 +99,7 @@ export function WorkExplorer({
     return counts;
   }, [projects]);
 
-  const fromServer = serverMatches && filters.q === initial.q ? new Set(serverMatches) : null;
+  const fromServer = serverMatches && filters.q === serverQ ? new Set(serverMatches) : null;
   let list = projects.filter(
     (project) =>
       (!filters.kind || project.kind === filters.kind) &&
@@ -121,6 +149,7 @@ export function WorkExplorer({
             </div>
             <div className="row-meta">
               <ProjectStatus slug={project.status} label={project.statusLabel} description={project.statusDescription} />
+              {project.featured && <Tag>Featured</Tag>}
               <span>{project.kind}</span>
               {project.year && <span className="mono">{project.year}</span>}
               <Avail demo={Boolean(project.demo)} source={Boolean(project.source)} />
@@ -137,6 +166,7 @@ export function WorkExplorer({
               <span className="k">{project.kind}</span>
               <span className="y mono mute">{project.year}</span>
               <ProjectStatus slug={project.status} label={project.statusLabel} description={project.statusDescription} />
+              {project.featured && <Tag>Featured</Tag>}
             </span>
           </Link>
         </motion.div>

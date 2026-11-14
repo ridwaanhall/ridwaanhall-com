@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { DEFAULT_WRITING_FILTERS, parseWritingFilters, sortPosts, writingFiltersToSearch } from "./writing-filters";
+import { DEFAULT_WRITING_FILTERS, parseWritingFilters, searchToWritingFilters, sortPosts, writingFiltersToSearch } from "./writing-filters";
 
 const posts = [
   { title: "Beta", views: 5, time: 2 },
@@ -39,5 +39,17 @@ describe("sortPosts", () => {
     const before = posts.map((p) => p.title);
     sortPosts(posts, "az");
     assert.deepEqual(posts.map((p) => p.title), before);
+  });
+});
+
+describe("writing filters: searchToWritingFilters", () => {
+  it("round-trips filters through writingFiltersToSearch", () => {
+    const filters = { q: "Commit Style", topic: "Python", sort: "read" as const, view: "grid" as const };
+    assert.deepEqual(searchToWritingFilters(writingFiltersToSearch(filters)), filters);
+    assert.deepEqual(searchToWritingFilters(new URLSearchParams(writingFiltersToSearch(filters))), filters);
+  });
+
+  it("reads an encoded query whole", () => {
+    assert.equal(searchToWritingFilters("?q=Commit%20Style").q, "Commit Style");
   });
 });

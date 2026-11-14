@@ -2,6 +2,7 @@
 
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { PostCard } from "@/components/foothill/cards";
@@ -10,7 +11,7 @@ import { FilterBar, FilterGroup, type ActiveFilter } from "@/components/foothill
 import { Icon } from "@/components/foothill/icons";
 import type { PostView } from "@/components/foothill/rows";
 import { Empty } from "@/components/foothill/ui";
-import { sortPosts, writingFiltersToSearch, type WritingFilters } from "@/lib/site/writing-filters";
+import { DEFAULT_WRITING_FILTERS, searchToWritingFilters, sortPosts, writingFiltersToSearch, type WritingFilters } from "@/lib/site/writing-filters";
 
 const matches = (post: PostView, q: string) =>
   [post.title, post.summary, post.category, ...post.tags].join(" ").toLowerCase().includes(q.toLowerCase());
@@ -34,7 +35,35 @@ export function WritingIndex({
   serverMatches: string[] | null;
 }) {
   const [filters, setFilters] = useState(initial);
-  const set = (patch: Partial<WritingFilters>) => setFilters((current) => ({ ...current, ...patch }));
+  // Next keeps a visited route mounted in a hidden Activity, so a link to
+  // /blog?q=X re-shows this instance with its old state, and the replaceState
+  // effect below then rewrote the address back, erasing the query. So the
+  // address is read again whenever it is not the one last seen, and `serverQ`
+  // is the query `serverMatches` was computed for (null once stale).
+  const params = useSearchParams();
+  const [seen, setSeen] = useState(() => params.toString());
+  const [serverQ, setServerQ] = useState<string | null>(initial.q);
+  // Our own replaceState comes back here as an address change, later than the
+  // keystroke that made it. Every address a change here will write is remembered (in `set`, where setting state is allowed) and
+  // skipped (only `seen` moves), so neither a normalised field, like a trimmed q,
+  // nor a fast "ab" then "abc" is typed over. An address is forgotten once it
+  // has come back, so a later link to the same query still resyncs.
+  const [wrote, setWrote] = useState<string[]>([]);
+  const search = params.toString();
+  if (search !== seen) {
+    setSeen(search);
+    if (wrote.includes(search)) setWrote(wrote.filter((entry) => entry !== search));
+    else {
+      const next = searchToWritingFilters(params);
+      if (next.q !== filters.q && next.q !== serverQ) setServerQ(null);
+      setFilters(next);
+    }
+  }
+  const set = (patch: Partial<WritingFilters>) => {
+    const next = { ...filters, ...patch };
+    setFilters(next);
+    setWrote((list) => [...list.filter((entry) => entry !== writingFiltersToSearch(next).slice(1)), writingFiltersToSearch(next).slice(1)].slice(-8));
+  };
 
   useEffect(() => {
     const next = `${window.location.pathname}${writingFiltersToSearch(filters)}`;
@@ -47,7 +76,7 @@ export function WritingIndex({
     return [...counts.entries()];
   }, [posts]);
 
-  const fromServer = serverMatches && filters.q === initial.q ? new Set(serverMatches) : null;
+  const fromServer = serverMatches && filters.q === serverQ ? new Set(serverMatches) : null;
   const rows = sortPosts(
     posts.filter(
       (post) =>
@@ -56,7 +85,7 @@ export function WritingIndex({
     ),
     filters.sort,
   );
-  const clear = () => setFilters({ ...initial, q: "", topic: "", sort: filters.sort, view: filters.view });
+  const clear = () => setFilters({ ...DEFAULT_WRITING_FILTERS, sort: filters.sort, view: filters.view });
   const active: ActiveFilter[] = filters.topic ? [{ key: "topic", label: `Topic: ${filters.topic}`, onRemove: () => set({ topic: "" }) }] : [];
 
   // The index groups by year when it is ordered by date, so a long list has landmarks.

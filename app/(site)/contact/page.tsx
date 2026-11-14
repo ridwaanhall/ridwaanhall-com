@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { ContactForm } from "@/components/foothill/contact-form";
 import { CopyButton } from "@/components/foothill/controls";
+import { EmailOff } from "@/components/foothill/email-off";
 import { Icon, type IconName } from "@/components/foothill/icons";
 import { MAIN } from "@/components/foothill/layout";
 import { PageMotion } from "@/components/foothill/motion";
@@ -68,9 +69,7 @@ export default async function ContactPage() {
               <div>
                 <span className="meta">Or email directly</span>
                 <p className="t3" style={{ marginTop: 6 }}>
-                  <a className="ul" href={`mailto:${email}`}>
-                    {email}
-                  </a>
+                  <EmailOff address={email} link />
                 </p>
                 <div style={{ marginTop: 10 }}>
                   <CopyButton sm text={email} label="Copy address" doneLabel="Address copied" message="Email address copied" />

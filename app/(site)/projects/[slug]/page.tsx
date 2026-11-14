@@ -9,7 +9,7 @@ import { MAIN } from "@/components/foothill/layout";
 import { MarkdownChips } from "@/components/foothill/markdown";
 import { PageMotion, Reveal } from "@/components/foothill/motion";
 import { featuredProjects, projectView } from "@/components/foothill/rows";
-import { Button, Crumb, Facts, Heading, ProjectStatus, SkillGlyph, TextLink } from "@/components/foothill/ui";
+import { Button, Crumb, Facts, Heading, ProjectStatus, SkillGlyph, Tag, TextLink } from "@/components/foothill/ui";
 import { JsonLdScript } from "@/components/seo/json-ld";
 import { CommentSectionFor, CommentSectionSkeleton } from "@/components/site/comments/mount";
 import { RichText } from "@/components/site/rich-text";
@@ -71,7 +71,10 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     [
       "Status",
       <span key="status">
-        <ProjectStatus slug={project.status} label={project.status_label} description={project.status_description} />
+        <span className="fact-tags">
+          <ProjectStatus slug={project.status} label={project.status_label} description={project.status_description} />
+          {project.is_featured && <Tag>Featured</Tag>}
+        </span>
         {project.status_description && <span className="why">{project.status_description}</span>}
       </span>,
     ],

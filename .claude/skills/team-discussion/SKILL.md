@@ -104,6 +104,9 @@ Fix what they find through the owning agent, then review again.
 ## 5. Report
 
 Say who was consulted and what each said, what was decided and why, who built
-what, and what proves it. Nothing is committed, pushed, opened as a PR or
+what, and what proves it. For any UI or UX change, the report carries
+screenshots of the changed screens (dark and light, 375px and desktop), sent
+with `SendUserFile` so the owner can review the look, as `verify-change`
+step 3 describes. Nothing is committed, pushed, opened as a PR or
 merged until the owner asks; then `release-engineer` does it with
 `ship-change`.

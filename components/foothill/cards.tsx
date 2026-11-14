@@ -2,7 +2,7 @@ import type { Route } from "next";
 import Link from "next/link";
 
 import type { PostView, ProjectView } from "@/components/foothill/rows";
-import { Avail, ProjectStatus, Thumb } from "@/components/foothill/ui";
+import { Avail, ProjectStatus, Tag, Thumb } from "@/components/foothill/ui";
 
 /*
  * Projects and posts as pictures on the page: the screenshot in its own
@@ -23,6 +23,7 @@ export function ProjectCard({ project, priority = false }: { project: ProjectVie
       </div>
       <div className="row-meta">
         <ProjectStatus slug={project.status} label={project.statusLabel} description={project.statusDescription} />
+        {project.featured && <Tag>Featured</Tag>}
         <span>{project.kind}</span>
         {project.year && <span className="mono">{project.year}</span>}
         <Avail demo={Boolean(project.demo)} source={Boolean(project.source)} />

@@ -60,3 +60,8 @@ status, screenshot or DOM fact). A failure names the file it comes from and
 whether it is a regression, a content issue (live data), or an environment
 issue (dev-only, missing secret). Clear bugs go to the owning engineer with a
 reproduction; you do not widen scope.
+
+For a UI or UX change, take review screenshots of each changed surface (dark
+and light, 375px and 1440px, `deviceScaleFactor: 2`, in the state that shows
+the change), save them under the scratchpad and list their absolute paths in
+the report, so the manager can send them to the owner (`verify-change` step 3).

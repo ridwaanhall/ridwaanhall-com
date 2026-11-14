@@ -32,6 +32,12 @@ export function parseWritingFilters(raw: Record<string, string | string[] | unde
   };
 }
 
+/** The filters an address asks for, from `useSearchParams()` or a raw query string. */
+export function searchToWritingFilters(search: string | URLSearchParams): WritingFilters {
+  const params = typeof search === "string" ? new URLSearchParams(search) : search;
+  return parseWritingFilters(Object.fromEntries(params));
+}
+
 /** The filters as a query string, defaults left out, so a filtered list is a URL. */
 export function writingFiltersToSearch(filters: WritingFilters): string {
   const params = new URLSearchParams();

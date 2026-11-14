@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { Disclosure } from "@/components/foothill/controls";
 import { CvButton } from "@/components/foothill/cv";
+import { EmailOff } from "@/components/foothill/email-off";
 import { MAIN } from "@/components/foothill/layout";
 import { PageMotion, Reveal } from "@/components/foothill/motion";
 import { Button, Empty, Facts, Heading, PageHead, SkillChip, Tag, TextLink } from "@/components/foothill/ui";
@@ -228,9 +229,9 @@ function Hiring({ data }: { data: HiringData }) {
           )}
           {data.contact_info.application_email && (
             <div style={{ marginTop: 18 }}>
-              <Button sm href={`mailto:${data.contact_info.application_email}`} icon="mail">
+              <EmailOff address={data.contact_info.application_email} link className="btn sm" icon="mail" newTab>
                 Apply by email
-              </Button>
+              </EmailOff>
             </div>
           )}
         </div>

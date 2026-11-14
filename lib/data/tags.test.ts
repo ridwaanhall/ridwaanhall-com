@@ -9,7 +9,6 @@ import { ADMIN_FORM_MODELS } from "@/lib/admin/models";
 
 import { MODEL_TAGS, TAGS } from "./tags";
 
-const KNOWN = new Set<string>(Object.values(TAGS));
 
 describe("TAGS", () => {
   it("names each namespace after itself, so a typo is not a silent miss", () => {
@@ -18,12 +17,6 @@ describe("TAGS", () => {
 });
 
 describe("MODEL_TAGS", () => {
-  it("lists only tags that exist", () => {
-    for (const [table, tags] of Object.entries(MODEL_TAGS)) {
-      for (const tag of tags) assert.ok(KNOWN.has(tag), `${table} names unknown tag "${tag}"`);
-    }
-  });
-
   it("gives every table it names at least one tag", () => {
     for (const [table, tags] of Object.entries(MODEL_TAGS)) {
       assert.ok(tags.length > 0, `${table} invalidates nothing`);

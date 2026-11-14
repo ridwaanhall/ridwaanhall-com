@@ -34,7 +34,7 @@ same): some files use route-type globals, `PageProps` and `RouteContext`, which 
 generates rather than names anything imports, so `tsc` alone fails on them until a dev
 server or a build has run.
 
-`npm test` is `node --import tsx --test` over `lib/**/*.test.ts` — the built-in
+`npm test` is `node --import tsx --import ./tests/setup.ts --test` over `lib/**/*.test.ts` — the built-in
 runner, no test framework. It covers the pure logic and needs neither a database
 nor a browser, which is what lets CI run it: `tests/setup.ts` points the database
 URL at nowhere before any module loads, so a test that tried to query fails at
@@ -345,7 +345,7 @@ seen.
   browser actually loaded before debugging its selector.
 ## Verification
 
-Run `npm test`, `npx tsc --noEmit` and `npm run lint` for any change. The rest are harnesses under
+Run `npm test`, `npx next typegen && npx tsc --noEmit` and `npm run lint` for any change. The rest are harnesses under
 `scripts/`, each covering one mechanism against the live application; `scripts/CLAUDE.md` lists
 every one, says which need `--conditions=react-server` and which need `npm run dev`, and is what to
 read before choosing which to run.

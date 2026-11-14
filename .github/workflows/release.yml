@@ -54,7 +54,7 @@ jobs:
     steps:
       # Full history and every tag: the commits since the last release are
       # read from git, not from the push event.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -118,7 +118,8 @@ jobs:
             #
             # A warning rather than a failure when GitHub refuses: the Actions
             # token may not create a tag on a commit whose workflow files differ
-            # from main's (every Django-era release has `django.yml`), since
+            # from main's (every release before 3.0.0 carries a workflow file
+            # main no longer has), since
             # that counts as writing a workflow. One missing tag must not stop
             # this run from recording the push it is for. Once the tag exists,
             # creating its release is allowed, and the next run does it.

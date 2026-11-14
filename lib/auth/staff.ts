@@ -5,12 +5,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 
 import { auth } from "@/auth";
-import {
-  can,
-  type AdminAction,
-  type AdminActor,
-  type Grants,
-} from "@/lib/auth/permissions";
+import type { AdminActor, Grants } from "@/lib/auth/permissions";
 import { db } from "@/lib/db/client";
 import { account, adminAccess } from "@/lib/db/app-schema";
 

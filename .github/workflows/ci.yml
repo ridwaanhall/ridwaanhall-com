@@ -39,7 +39,7 @@ jobs:
       - run: npm ci
 
       # `tsc` on its own cannot type-check this app, and the way it fails is
-      # confusing: six files use `PageProps` and `RouteContext`, which are
+      # confusing: some files use `PageProps` and `RouteContext`, which are
       # globals Next generates from the route tree rather than names anything
       # imports. A working copy always has them, because a dev server or a build
       # has already written them into `.next` -- a fresh checkout does not, so
@@ -62,6 +62,15 @@ jobs:
       - name: Tests
         run: npm test
 
+      # The harnesses that need nothing but the checkout: what the tree says
+      # (no comment explaining itself by an earlier stack, one schema file) and
+      # where the skeletons sit. Offline, so they belong here rather than in a
+      # developer's memory -- the first went red for three weeks unseen.
+      - name: Offline checks
+        run: |
+          node scripts/check-fresh-start.mjs
+          node scripts/check-skeleton-scope.mjs
+
       # The build needs the database URL: `generateStaticParams` reads the blog
       # and project slugs at build time, and the sitemap fans out further. The
       # rest of the keys are absent on purpose -- a build that needs a Resend key
@@ -77,11 +86,17 @@ jobs:
           # minted during a build, and the real secret lives in Vercel.
           AUTH_SECRET: build-only-not-a-real-secret
 
-# The `scripts/check-*.mjs` harnesses are deliberately not run here. They drive a
+      # These two read the build's CSS, so they follow it: no utility emitted
+      # because prose named it, and no public class that is also a utility.
+      - name: CSS checks
+        run: |
+          node scripts/check-css-sources.mjs
+          node scripts/check-class-collisions.mjs
+
+# The rest of `scripts/check-*.mjs` is deliberately not run here. Those drive a
 # real browser against the running app and write to the live database -- which is
 # right for a developer checking a change before pushing it, and wrong for
 # something that runs on every pull request from a fork.
 #
-# `npm test` is the half that can run anywhere: it covers the pure logic --
-# the sanitiser, the uuid guard, username collisions, storage keys, pagination,
-# the admin descriptors -- with no database and no browser behind it.
+# `npm test` is the half that can run anywhere: the pure logic under `lib/`
+# (`lib/**/*.test.ts`), with no database and no browser behind it.

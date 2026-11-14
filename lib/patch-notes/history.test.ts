@@ -24,9 +24,10 @@ describe("the release history", () => {
   });
 
   /*
-   * The eras the majors stand for: the scaffold, the Django site with its
-   * content in code, the same site on a database, and the Next.js rebuild.
-   * Each starts at .0.0 and the last Django release is a 2.x.
+   * The eras the majors stand for: the scaffold, the first site with its
+   * content in code, the same site on a database, and the current codebase.
+   * Each starts at .0.0, and the last release before the current codebase is
+   * a 2.x.
    */
   it("starts each era at its major", () => {
     const first = (major: number) => releases[versions.findIndex(([m]) => m === major)]?.version;

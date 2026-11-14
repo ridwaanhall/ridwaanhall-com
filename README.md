@@ -207,7 +207,7 @@ counting, the emails, the loading states. Each drives the live application and
 cleans up after itself in a `finally` that then proves the cleanup.
 
 ```bash
-npx tsc --noEmit                                  # types
+npx next typegen && npx tsc --noEmit              # types
 npm run lint                                      # eslint
 npm run build && node scripts/check-css-sources.mjs
 node scripts/check-headers.mjs                    # the security headers

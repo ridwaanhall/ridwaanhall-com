@@ -33,6 +33,18 @@ export function FilterSelect({
   anyLabel: string;
 }) {
   const [current, setCurrent] = useState(value);
+  /*
+   * The URL is the truth and `value` is its echo. Clear, Back, or a Next
+   * Activity kept mounted can change the prop under a live instance, and a
+   * seed taken once would leave the dropdown naming a filter the rows no longer
+   * have. Adjusted during render, as `inline-editor.tsx` does, so the stale
+   * value never paints.
+   */
+  const [seen, setSeen] = useState(value);
+  if (seen !== value) {
+    setSeen(value);
+    setCurrent(value);
+  }
   const wrapRef = useRef<HTMLDivElement>(null);
   const id = useId();
 

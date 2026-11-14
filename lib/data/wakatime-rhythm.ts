@@ -1,5 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 
+import { TAGS } from "./tags";
 import { count, formatTime, share, shortTime } from "./wakatime-format";
 import { fetchJson, insightsUrl } from "./wakatime-fetch";
 import { bulletAxis, rankSlots, weeklyAiTrend, type AiDay } from "./wakatime-shapes";
@@ -295,7 +296,7 @@ async function fetchWakatimeRhythm(apiKey: string): Promise<WakatimeRhythm | nul
  */
 export async function getWakatimeRhythm(apiKey: string): Promise<WakatimeRhythm | null> {
   "use cache";
-  cacheTag("wakatime");
+  cacheTag(TAGS.wakatime);
   cacheLife({ stale: 3600, revalidate: 3600, expire: 7200 });
 
   return fetchWakatimeRhythm(apiKey);

@@ -28,6 +28,12 @@ export const TAGS = {
   legal: "legal",
   settings: "settings",
   patchNotes: "patchNotes",
+  /*
+   * Not a table: every WakaTime read, which is fetched rather than queried.
+   * Nothing in `MODEL_TAGS` expires it and no write here changes it; it is
+   * listed so the reads name one constant rather than four copies of a string.
+   */
+  wakatime: "wakatime",
 } as const;
 
 export type Tag = (typeof TAGS)[keyof typeof TAGS];
@@ -169,3 +175,44 @@ export const MODEL_TAGS: Record<string, readonly Tag[]> = {
  * posted, and a permission taken away has to bite on the next request -- so
  * there is no tag to expire and listing one would suggest otherwise.
  */
+
+/**
+ * The tags each per-slug public route reads: its own area, plus everything the
+ * site layout around it reads (the profile, highlighted skills, the hiring and
+ * open-to-work banners, the image settings).
+ *
+ * **Expiring a tag does not reach every page that read it.** The build leaves
+ * one generic shell per route for every slug it did not prerender, and that
+ * shell carries a snapshot of the cached reads it was built with --
+ * `getProjects()` included, all 300KB of it. A slug rendered from the shell
+ * reads that snapshot rather than the live cache, and the shell is listed under
+ * the layout's tags only, never `project`. So expiring `project` moved the
+ * listing on and left every slug added since the deploy reading the deploy's
+ * list: five projects published that way answered "not out yet" in production
+ * through every save until the site was redeployed, and a project edited after
+ * the deploy would have kept its old text the same way.
+ *
+ * Revalidating the route itself does reach the shell, so a write that expires
+ * any of these tags also revalidates the route (`expire()` in
+ * `lib/data/expire.ts`), and the shell is rebuilt from current data.
+ * `scripts/check-publish-reaches-page.mjs` drives that against a production
+ * server.
+ *
+ * **Keyed by the file's path under `app/`, route group included.** The page
+ * carries the implicit tag `_N_T_/(site)/projects/[slug]/page`, and
+ * `revalidatePath("/projects/[slug]", "page")` expires
+ * `_N_T_/projects/[slug]/page` instead -- a perfectly valid call that matches
+ * nothing, which is exactly what the first version of this fix did.
+ */
+export const ROUTE_TAGS: Record<string, readonly Tag[]> = {
+  "/(site)/projects/[slug]": [TAGS.project, TAGS.profile, TAGS.skill, TAGS.hiring, TAGS.opentowork, TAGS.settings],
+  "/(site)/blog/[slug]": [TAGS.blog, TAGS.profile, TAGS.skill, TAGS.hiring, TAGS.opentowork, TAGS.settings],
+  "/(site)/legal/[slug]": [TAGS.legal, TAGS.profile, TAGS.skill, TAGS.hiring, TAGS.opentowork, TAGS.settings],
+};
+
+/** The routes that read any of `tags`, each once. */
+export function routesReading(tags: readonly Tag[]): string[] {
+  return Object.entries(ROUTE_TAGS)
+    .filter(([, read]) => read.some((tag) => tags.includes(tag)))
+    .map(([route]) => route);
+}

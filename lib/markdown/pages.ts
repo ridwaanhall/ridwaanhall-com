@@ -188,7 +188,7 @@ export function dashboardTwin(about: AboutData): Twin {
     path: "/dashboard",
     title: "Dashboard",
     summary: "The work, measured live: time in the editor, contributions and AI usage.",
-    body: `The figures on this page are read live: time in the editor from WakaTime, contributions from GitHub at github.com/${about.username}, and AI usage. Nothing is typed in by hand, and they change every few minutes, so a copy here would be wrong by the time it was read. Read them on the page: ${SITE_URL}/dashboard`,
+    body: `The figures on this page are read live: time in the editor from WakaTime, contributions from GitHub at github.com/${about.username}, and AI usage. Over the year it also shows AI use by language, measured in time, and by model, measured in lines, alongside the editors and the kinds of work. Nothing is typed in by hand: today's panels refresh every 15 minutes and the year's every hour, so a copy here would be wrong by the time it was read. Read them on the page: ${SITE_URL}/dashboard`,
   };
 }
 

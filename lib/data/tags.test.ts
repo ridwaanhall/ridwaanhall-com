@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
 
@@ -7,7 +7,7 @@ import { getTableName } from "drizzle-orm";
 
 import { ADMIN_FORM_MODELS } from "@/lib/admin/models";
 
-import { MODEL_TAGS, TAGS } from "./tags";
+import { MODEL_TAGS, ROUTE_TAGS, routesReading, TAGS } from "./tags";
 
 
 describe("TAGS", () => {
@@ -186,3 +186,40 @@ function binds(chunk: string, table: string): boolean {
 function camel(table: string): string {
   return table.replace(/_(\w)/g, (_, c: string) => c.toUpperCase());
 }
+
+describe("ROUTE_TAGS", () => {
+  const app = fileURLToPath(new URL("../../app", import.meta.url));
+
+  /*
+   * The key is handed to `revalidatePath` as a route pattern, and one that
+   * names no file is a valid call that revalidates nothing. Dropping the route
+   * group is the way that has already happened once.
+   */
+  it("names only page files that exist, route group included", () => {
+    for (const route of Object.keys(ROUTE_TAGS)) {
+      assert.ok(existsSync(`${app}${route}/page.tsx`), `${route} is not a page under app/`);
+    }
+  });
+
+  it("covers every per-slug page of the public site", () => {
+    const site = `${app}/(site)`;
+    for (const area of readdirSync(site)) {
+      if (!existsSync(`${site}/${area}/[slug]/page.tsx`)) continue;
+      assert.ok(`/(site)/${area}/[slug]` in ROUTE_TAGS, `/(site)/${area}/[slug] is missing, so saves never refresh it`);
+    }
+  });
+
+  it("includes what the site layout reads, since the layout is part of every page", () => {
+    for (const [route, tags] of Object.entries(ROUTE_TAGS)) {
+      for (const tag of [TAGS.profile, TAGS.skill, TAGS.hiring, TAGS.opentowork, TAGS.settings]) {
+        assert.ok(tags.includes(tag), `${route} does not list ${tag}`);
+      }
+    }
+  });
+
+  it("revalidates the project pages when a project changes, and not the posts", () => {
+    assert.deepEqual(routesReading([TAGS.project]), ["/(site)/projects/[slug]"]);
+    assert.deepEqual(routesReading([TAGS.blog]), ["/(site)/blog/[slug]"]);
+    assert.deepEqual(routesReading([TAGS.patchNotes]), []);
+  });
+});

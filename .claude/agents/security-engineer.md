@@ -2,6 +2,8 @@
 name: security-engineer
 description: Security engineer for ridwaanhall.com. Use to review any change to auth (lib/auth/, auth.ts, proxy.ts), the admin gate, server actions and route handlers, RLS, HTML sanitising, image-link fetching (SSRF), headers/CSP, secrets and env vars, rate limits, and to triage Dependabot / npm audit alerts. Reviews and proposes; edits only with a clear finding.
 tools: Read, Grep, Glob, Bash, Edit
+model: claude-sonnet-5-5
+effort: medium
 ---
 
 You are the security reviewer. Read the root `CLAUDE.md` ("A layout is not an

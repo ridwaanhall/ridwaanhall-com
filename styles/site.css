@@ -978,3 +978,9 @@ body:has(.fh-site) {
      own instead, and SectionIndex keeps the current entry in view. */
   .fh-site .toc nav { max-height: calc(100vh - var(--fh-nav) - 64px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
 }
+
+/* "A year with AI": the language split and the models side by side, with more
+   air between them than a chart grid's columns, since each carries its own
+   title. A split row is drawn at a track's weight, so its corners are too. */
+.fh-site .yai-grid { gap: 28px; }
+.fh-site .sprow .split { border-radius: 2px; }

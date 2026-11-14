@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
-import { Bars, Compare, EmptyTrack, fillOf, Kpi, Legend, Spark, Split, Timeline, WeekColumns } from "@/components/foothill/charts/boxes";
+import { Bars, Compare, EmptyTrack, fillOf, Kpi, Legend, Spark, Split, SplitRows, tight, Timeline, WeekColumns } from "@/components/foothill/charts/boxes";
 import { EditorPanel, type EditorRange } from "@/components/foothill/charts/editor-panel";
 import { FeedDown } from "@/components/foothill/charts/feed-down";
 import { Heatmap } from "@/components/foothill/charts/heatmap";
@@ -61,7 +61,7 @@ export default async function DashboardPage() {
             ],
             // The panels' cache lifetimes in lib/data: fifteen minutes for
             // today and GitHub, an hour for the year and the rhythm.
-            ["Refreshed", "Every 15 minutes"],
+            ["Refreshed", "Today every 15 minutes, the year hourly"],
           ]}
         />
         <div className="wrap dash">
@@ -76,8 +76,11 @@ export default async function DashboardPage() {
           <Suspense fallback={<Waiting heights={[368]} phone={[823]} />}>
             <EditorPanels />
           </Suspense>
-          <Suspense fallback={<Waiting heights={[386, 386]} phone={[325, 325]} two />}>
+          <Suspense fallback={<Waiting heights={[386, 386]} phone={[275, 325]} two />}>
             <AiPanels />
+          </Suspense>
+          <Suspense fallback={<Waiting heights={[465]} phone={[780]} />}>
+            <YearAiPanel />
           </Suspense>
           <Suspense fallback={<Waiting heights={[545]} phone={[902]} />}>
             <YearPanel />
@@ -135,14 +138,15 @@ function Panel({
   );
 }
 
-function Down({ title, source }: { title: string; source: string }) {
+/** `every` is how often the panel's read refreshes, from its `cacheLife`. */
+function Down({ title, source, every }: { title: string; source: string; every?: string }) {
   return (
     <section className="panel" aria-label={title}>
       <div className="panel-h">
         <h3>{title}</h3>
       </div>
       <div className="panel-b">
-        <FeedDown source={source} />
+        <FeedDown source={source} every={every} />
       </div>
     </section>
   );
@@ -231,8 +235,8 @@ function yearRange(year: WakatimeYear): EditorRange {
     ],
     bars: [
       { title: "Languages", entries: year.languages },
-      { title: "Projects", entries: year.projects },
-      { title: "Systems", entries: year.systems },
+      { title: "Doing", entries: year.categories },
+      { title: "Editors", entries: year.editors },
     ],
   };
 }
@@ -267,11 +271,12 @@ async function AiPanels() {
         }
       >
         {lines ? (
-          <div className="panel-b" style={{ display: "grid", gap: 22 }}>
-            <p className="t2" style={{ fontFamily: "var(--fh-display)", maxWidth: "18ch" }}>
+          <div className="panel-b" style={{ display: "grid", gap: 14 }}>
+            <p className="t3" style={{ fontFamily: "var(--fh-display)", maxWidth: "26ch" }}>
               {percent}% of the lines changed were written with an assistant.
             </p>
             <Split
+              height={14}
               parts={[
                 { value: ai.ai_lines, fill: "f1", tip: `With AI: ${ai.ai_lines.toLocaleString("en-US")} lines` },
                 { value: ai.human_lines, fill: "f4", tip: `By hand: ${ai.human_lines.toLocaleString("en-US")} lines` },
@@ -318,9 +323,84 @@ async function AiPanels() {
   );
 }
 
+/**
+ * The year's AI work, from the same cached read as "A year at the keyboard".
+ * Its own boundary, so it lands as one element beside the week's AI row; the
+ * read is shared, so the second boundary costs no second fetch. When that read
+ * fails it renders nothing and leaves the failure to the year panel.
+ */
+async function YearAiPanel() {
+  const year = await getWakatimeYear(WAKATIME());
+  // The same read as "A year at the keyboard", which already says when it
+  // failed; a second "did not answer" stacked above it would say it twice.
+  // The skeleton above still holds a panel's height, as it must while the read
+  // is in flight, and an outage is the one case where the page then closes up.
+  if (!year) return null;
+  const sub = "Last 12 months · via WakaTime";
+  const languages = year.has_ai_languages ? year.ai_languages : [];
+  if (!year.ai_sessions && !year.models.length && !languages.length)
+    return (
+      <Panel title="A year with AI" sub={sub} summary="No AI-assisted work recorded over the last twelve months.">
+        <div className="panel-b">
+          <Empty small icon="spark" title="No AI-assisted work this year" note="Prompts, models and the split by language appear after the first session with an assistant." />
+        </div>
+      </Panel>
+    );
+  const percent = Math.round(year.ai_line_percent);
+  const lead = languages[0];
+  return (
+    <Panel
+      title="A year with AI"
+      sub={sub}
+      summary={`Over the last twelve months: ${year.ai_prompts} prompts across ${year.ai_sessions.toLocaleString("en-US")} sessions, about ${year.ai_prompts_per_session} a session, and ${year.ai_lines} lines changed with an assistant, ${percent}% of all of them.${
+        lead ? ` In ${lead.name}, ${Math.round(lead.percent)}% of the coding time was spent with AI.` : ""
+      }${year.models[0] ? ` ${year.models[0].name} wrote the most lines.` : ""}`}
+    >
+      <div className="kpis k4">
+        <Kpi label="Prompts" value={year.ai_prompts} sub={`over ${year.ai_sessions.toLocaleString("en-US")} sessions`} />
+        <Kpi label="Median prompt" value={year.ai_prompt_median} tip={`The median length; the average, ${year.ai_prompt_avg}, is pulled up by pasted logs`} />
+        <Kpi label="Prompts per session" value={year.ai_prompts_per_session} />
+        <Kpi label="Lines with AI" value={year.ai_lines} sub={`${percent}% of lines changed`} />
+      </div>
+      {(languages.length > 0 || year.models.length > 0) && (
+        <div className="panel-b">
+          <div className={languages.length && year.models.length ? "dgrid two yai-grid" : "dgrid yai-grid"}>
+            {languages.length > 0 && (
+              <div>
+                <SplitRows
+                  title="By language, share of coding time"
+                  rows={languages.map((language) => ({
+                    name: language.name,
+                    share: `${Math.round(language.percent)}% of ${tight(language.time)}`,
+                    tip: `${language.name}: ${language.ai_time} with AI, ${language.manual_time} by hand`,
+                    parts: [
+                      { value: language.ai_seconds, fill: "f1", tip: `${language.name} with AI: ${language.ai_time}` },
+                      { value: language.manual_seconds, fill: "f4", tip: `${language.name} by hand: ${language.manual_time}` },
+                    ],
+                  }))}
+                />
+                <div style={{ marginTop: 16 }}>
+                  <Legend
+                    items={[
+                      { fill: "f1", label: "With AI" },
+                      { fill: "f4", label: "By hand" },
+                    ]}
+                  />
+                </div>
+              </div>
+            )}
+            {/* Every line a model changed is a line written with AI, so each bar takes that fill and the legend beside it stays true of it. */}
+            <Bars title="Models, by lines changed" entries={year.models} fills={["f1", "f1", "f1"]} />
+          </div>
+        </div>
+      )}
+    </Panel>
+  );
+}
+
 async function YearPanel() {
   const year = await getWakatimeYear(WAKATIME());
-  if (!year) return <Down title="A year at the keyboard" source="WakaTime" />;
+  if (!year) return <Down title="A year at the keyboard" source="WakaTime" every="every hour" />;
   const grid = heatGrid(year.weeks, year.months, year.peak_seconds, formatTime);
   return (
     <Panel
@@ -348,7 +428,7 @@ async function YearPanel() {
 
 async function RhythmPanels() {
   const rhythm = await getWakatimeRhythm(WAKATIME());
-  if (!rhythm) return <Down title="The shape of a week" source="WakaTime" />;
+  if (!rhythm) return <Down title="The shape of a week" source="WakaTime" every="every hour" />;
   // One element in place of its one fallback, laid out exactly as `.dash`
   // would lay out the two panels loose: a panel that streams in as two
   // siblings grows the column by a node, and the skeleton check then reads the

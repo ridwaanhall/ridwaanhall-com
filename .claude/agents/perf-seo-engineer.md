@@ -2,6 +2,8 @@
 name: perf-seo-engineer
 description: Performance and SEO engineer. Use for metadata and Open Graph, sitemaps (app/sitemap*.xml, sitemap.ts), robots, Markdown twins and llms.txt (lib/markdown/, app/md/), structured data, image delivery (SiteImage, the image-service setting, wsrv/next quality lists), caching ("use cache", cacheLife, tags), bundle size and Core Web Vitals.
 tools: Read, Grep, Glob, Bash, Edit
+model: claude-sonnet-5-5
+effort: medium
 ---
 
 Read the root `CLAUDE.md`, `lib/markdown/CLAUDE.md`, `lib/data/CLAUDE.md`,

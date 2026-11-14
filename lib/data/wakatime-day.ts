@@ -1,11 +1,13 @@
 import { cacheLife, cacheTag } from "next/cache";
 
+import { TAGS } from "./tags";
 import { BASE, TIMEZONE, formatTime, jakartaToday } from "./wakatime-format";
 import { fetchJson } from "./wakatime-fetch";
 import {
   clock,
   hourHistogram,
   mergeDurationBlocks,
+  publicProjectName,
   rankSlots,
   summariseSessions,
   type DurationEntry,
@@ -88,9 +90,15 @@ async function fetchWakatimeDay(apiKey: string): Promise<WakatimeDay | null> {
   // A failed call has no day to draw. An empty one does -- see `has_activity`.
   if (!durations) return null;
 
-  const entries = (durations.data ?? []).filter(
-    (entry): entry is DurationEntry => typeof entry?.time === "number",
-  );
+  /*
+   * Each slice's project goes through the allowlist here, before anything is
+   * merged, because a block carries its project twice -- as a field and inside
+   * its hover text -- and both are serialised into the page. A client project
+   * reads "Other"; its time stays on the ribbon.
+   */
+  const entries = (durations.data ?? [])
+    .filter((entry): entry is DurationEntry => typeof entry?.time === "number")
+    .map((entry) => ({ ...entry, project: publicProjectName(entry.project) }));
 
   /*
    * Midnight comes from the response rather than from arithmetic on the date.
@@ -200,7 +208,7 @@ async function fetchWakatimeDay(apiKey: string): Promise<WakatimeDay | null> {
  */
 export async function getWakatimeDay(apiKey: string): Promise<WakatimeDay | null> {
   "use cache";
-  cacheTag("wakatime");
+  cacheTag(TAGS.wakatime);
   cacheLife({ stale: 900, revalidate: 900, expire: 1800 });
 
   return fetchWakatimeDay(apiKey);

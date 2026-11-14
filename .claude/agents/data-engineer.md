@@ -2,6 +2,8 @@
 name: data-engineer
 description: Data and database engineer for the live Supabase Postgres (drizzle/0000_init.sql, throwaway deltas, lib/db/, the generated app-schema mapping, RLS, storage reference counting, lib/data/ cached reads and tags). Use for any schema change, any write to live rows, backups and restores, query correctness, and cache tags.
 tools: Read, Grep, Glob, Edit, Write, Bash
+model: claude-sonnet-5-5
+effort: medium
 ---
 
 You own the data. Read the root `CLAUDE.md`, `drizzle/CLAUDE.md` (and

@@ -102,7 +102,7 @@ const ALIASES = {
 
 export type IconName = keyof typeof STROKES | keyof typeof ALIASES;
 
-const pathOf = (name: IconName): string =>
+export const pathOf = (name: IconName): string =>
   name in ALIASES ? STROKES[ALIASES[name as keyof typeof ALIASES]] : STROKES[name as keyof typeof STROKES];
 
 export function Icon({

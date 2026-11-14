@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import { CopyButton } from "@/components/foothill/controls";
+import { EmailOff } from "@/components/foothill/email-off";
 import { FooterTwin, GiantWord, LlmsLink } from "@/components/foothill/footer-parts";
 import { Icon, type IconName } from "@/components/foothill/icons";
 import { Button, Facts } from "@/components/foothill/ui";
@@ -85,7 +86,7 @@ export function Footer({
             <Button href="/contact" icon="pen">
               Write to me
             </Button>
-            {email && <CopyButton text={email} label={email} doneLabel="Address copied" message="Email address copied" />}
+            {email && <CopyButton text={email} label={<EmailOff address={email} />} doneLabel="Address copied" message="Email address copied" />}
           </div>
         </div>
         <Facts

@@ -402,11 +402,26 @@ runs the `team-discussion` skill:
    `security-engineer` anything touching auth, data exposure or the schema, and
    `qa-engineer` proves it with `verify-change`.
 5. **Report.** Tell the owner who was consulted, what each said, what was
-   decided, who built what and what proves it. `release-engineer` commits or
-   ships only when the owner asks.
+   decided, who built what and what proves it. With every review clean,
+   `release-engineer` ships it (see below).
 
 A small request is still discussed, just briefly. Skipping the team is a
 departure from this rule, so if it ever happens, say so in the report.
+
+**Think in Opus, act in Sonnet.** Every agent pins `model: claude-sonnet-5-5`
+and a default `effort` in its frontmatter, so delegation runs on Sonnet 5.5
+unless the manager escalates one task to Opus 5.5 (`model: "opus"`) for a
+listed trigger: cross-area design, auth/RLS/schema/live writes, unknown-cause
+debugging, or a second failed review. Never an older model version. The main
+session spends its Opus on decisions and on briefs complete enough for Sonnet
+to succeed first time. The triggers, effort levels and what a brief must carry
+are in step 0 of the `team-discussion` skill.
+
+**After the reviews pass, the work ships without asking.** The owner's standing
+instruction: once tech-lead, security (where relevant) and QA report no issues,
+`release-engineer` commits, pushes the branch, opens the PR, waits for CI and
+merges it. A red check or an unresolved finding stops it and goes back to the
+owner.
 
 **UI checks run only when UI code changes.** `verify-change` names the UI paths;
 a diff that touches none of them (docs, scripts, schema, server logic) skips

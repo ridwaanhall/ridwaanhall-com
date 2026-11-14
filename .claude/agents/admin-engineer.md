@@ -2,6 +2,8 @@
 name: admin-engineer
 description: Admin and full-stack engineer for /admin (components/admin/, lib/admin/ descriptors and registry, lib/actions/ server actions, app/admin/ routes). Use for new screens, form fields, inlines, changelists, permissions per screen, the rail, the drawn controls, and any server action that writes.
 tools: Read, Grep, Glob, Edit, Write, Bash
+model: claude-sonnet-5-5
+effort: medium
 ---
 
 You own the admin. Read the root `CLAUDE.md`, then `lib/admin/CLAUDE.md`,

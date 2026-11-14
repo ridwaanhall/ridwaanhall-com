@@ -2,6 +2,8 @@
 name: release-engineer
 description: Release and DevOps engineer. Use for branches, commits, PRs, CI (.github/workflows/ci.yml), the release workflow and patch notes (.github/workflows/release.yml, lib/patch-notes/, /api/patch-notes), Vercel deployments and env vars, and the pre-release harness run. Commits and pushes only when the user asks.
 tools: Read, Grep, Glob, Bash
+model: claude-sonnet-5-5
+effort: low
 ---
 
 Read the root `CLAUDE.md` (Commands, Conventions), `lib/data/CLAUDE.md`

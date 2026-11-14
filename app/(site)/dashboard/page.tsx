@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
-import { Bars, Compare, EmptyTrack, fillOf, Kpi, Legend, Spark, Split, SplitRows, tight, Timeline, WeekColumns } from "@/components/foothill/charts/boxes";
+import { Bars, Compare, EmptyTrack, fillOf, Kpi, Legend, Spark, Split, SplitRows, tight, WeekColumns } from "@/components/foothill/charts/boxes";
+import { DayPanel } from "@/components/foothill/charts/day-panel";
 import { EditorPanel, type EditorRange } from "@/components/foothill/charts/editor-panel";
 import { FeedDown } from "@/components/foothill/charts/feed-down";
 import { Heatmap } from "@/components/foothill/charts/heatmap";
@@ -62,6 +63,9 @@ export default async function DashboardPage() {
             // The panels' cache lifetimes in lib/data: fifteen minutes for
             // today and GitHub, an hour for the year and the rhythm.
             ["Refreshed", "Today every 15 minutes, the year hourly"],
+            // Every WakaTime read is cut on this clock (`TIMEZONE` in
+            // lib/data/wakatime-format.ts), so a day here is a day in Jakarta.
+            ["Time zone", "GMT+7, Asia/Jakarta"],
           ]}
         />
         <div className="wrap dash">
@@ -70,7 +74,9 @@ export default async function DashboardPage() {
               Measured from the landed page, so re-measure after a panel
               changes shape: `scripts/check-skeleton-shape.mjs` reports the
               first one that drifts. */}
-          <Suspense fallback={<Waiting heights={[336]} phone={[418]} />}>
+          {/* Phone is 46px taller than before the Today/Yesterday switch, which
+              wraps under the title at 375px as the editor panel's range does. */}
+          <Suspense fallback={<Waiting heights={[336]} phone={[464]} />}>
             <TodayPanel />
           </Suspense>
           <Suspense fallback={<Waiting heights={[368]} phone={[823]} />}>
@@ -152,48 +158,14 @@ function Down({ title, source, every }: { title: string; source: string; every?:
   );
 }
 
+/**
+ * Today and yesterday, the two reads issued together. Each is cached on its
+ * own and may fail on its own; the panel shows whichever answered.
+ */
 async function TodayPanel() {
-  const day = await getWakatimeDay(WAKATIME());
-  if (!day) return <Down title="Today, so far" source="WakaTime" />;
-  const sub = `${day.date} · via WakaTime`;
-  if (!day.has_activity)
-    return (
-      <Panel title="Today, so far" sub={sub} summary="No sessions yet today.">
-        <div className="panel-b">
-          <EmptyTrack label="No sessions yet" />
-          <p className="meta" style={{ marginTop: 14 }}>
-            The day starts at the first save in the editor.
-          </p>
-        </div>
-        <div className="kpis k3" style={{ borderTop: "1px solid var(--fh-line)" }}>
-          {["In the editor", "Sessions", "Longest", "Window", "Longest break", "Busiest hour"].map((label) => (
-            <Kpi key={label} label={label} value={<span className="mute">{label === "Sessions" ? "0" : label === "In the editor" ? "0m" : "–"}</span>} />
-          ))}
-        </div>
-      </Panel>
-    );
-  return (
-    <Panel
-      title="Today, so far"
-      sub={sub}
-      summary={`${day.total} in the editor today across ${day.sessions} sessions, from ${day.active_window}. The longest stretch was ${day.longest_session}.`}
-    >
-      <div className="panel-b">
-        <Timeline blocks={day.blocks} />
-        <div style={{ marginTop: 14 }}>
-          <Legend items={day.languages.map((language) => ({ fill: fillOf(language.slot), label: `${language.name} ${language.time}` }))} />
-        </div>
-      </div>
-      <div className="kpis k3" style={{ borderTop: "1px solid var(--fh-line)" }}>
-        <Kpi label="In the editor" value={day.total} />
-        <Kpi label="Sessions" value={day.sessions} tip="A session ends after 15 minutes without a keystroke" />
-        <Kpi label="Longest" value={day.longest_session} tip="The longest run without a 15-minute break" />
-        <Kpi label="Window" value={day.active_window} tip="First and last activity of the day, GMT+7" />
-        <Kpi label="Longest break" value={day.longest_break} />
-        <Kpi label="Busiest hour" value={day.peak_hour} tip={day.peak_hour_detail || undefined} />
-      </div>
-    </Panel>
-  );
+  const [today, yesterday] = await Promise.all([getWakatimeDay(WAKATIME(), 0), getWakatimeDay(WAKATIME(), 1)]);
+  if (!today && !yesterday) return <Down title="Today, so far" source="WakaTime" />;
+  return <DayPanel today={today} yesterday={yesterday} />;
 }
 
 function weekRange(stats: WakatimeStats): EditorRange {
@@ -202,7 +174,7 @@ function weekRange(stats: WakatimeStats): EditorRange {
       ? "level with yesterday"
       : `${Math.abs(Math.round(stats.today_change_percent))}% ${stats.today_change_type === "increase" ? "up on" : "down on"} yesterday`;
   return {
-    sub: `${stats.start_date} to ${stats.end_date} · via WakaTime`,
+    sub: `${stats.start_date} to ${stats.end_date} · GMT+7 · via WakaTime`,
     summary: `${stats.this_week_coding} in the editor this week, and ${stats.daily_average} on an average day.${
       stats.top_3_languages[0] ? ` ${stats.top_3_languages[0].name} leads at ${Math.round(stats.top_3_languages[0].percent)}%.` : ""
     }`,

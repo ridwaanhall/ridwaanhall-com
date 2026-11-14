@@ -11,7 +11,14 @@ import { FilterBar, FilterGroup, type ActiveFilter } from "@/components/foothill
 import { Icon } from "@/components/foothill/icons";
 import type { PostView } from "@/components/foothill/rows";
 import { Empty } from "@/components/foothill/ui";
+import { resolveCategoryParam } from "@/lib/site/category-param";
 import { DEFAULT_WRITING_FILTERS, searchToWritingFilters, sortPosts, writingFiltersToSearch, type WritingFilters } from "@/lib/site/writing-filters";
+
+// `filters.topic` is a category slug; a link carrying the old label is mapped to it.
+const withTopicSlug = (filters: WritingFilters, posts: PostView[]): WritingFilters =>
+  filters.topic
+    ? { ...filters, topic: resolveCategoryParam(filters.topic, posts.map((post) => ({ slug: post.categorySlug, label: post.category }))) }
+    : filters;
 
 const matches = (post: PostView, q: string) =>
   [post.title, post.summary, post.category, ...post.tags].join(" ").toLowerCase().includes(q.toLowerCase());
@@ -34,7 +41,7 @@ export function WritingIndex({
   initial: WritingFilters;
   serverMatches: string[] | null;
 }) {
-  const [filters, setFilters] = useState(initial);
+  const [filters, setFilters] = useState(() => withTopicSlug(initial, posts));
   // Next keeps a visited route mounted in a hidden Activity, so a link to
   // /blog?q=X re-shows this instance with its old state, and the replaceState
   // effect below then rewrote the address back, erasing the query. So the
@@ -54,7 +61,7 @@ export function WritingIndex({
     setSeen(search);
     if (wrote.includes(search)) setWrote(wrote.filter((entry) => entry !== search));
     else {
-      const next = searchToWritingFilters(params);
+      const next = withTopicSlug(searchToWritingFilters(params), posts);
       if (next.q !== filters.q && next.q !== serverQ) setServerQ(null);
       setFilters(next);
     }
@@ -72,21 +79,25 @@ export function WritingIndex({
 
   const categories = useMemo(() => {
     const counts = new Map<string, number>();
-    posts.forEach((post) => counts.set(post.category, (counts.get(post.category) ?? 0) + 1));
-    return [...counts.entries()];
+    const labels = new Map<string, string>();
+    posts.forEach((post) => {
+      counts.set(post.categorySlug, (counts.get(post.categorySlug) ?? 0) + 1);
+      labels.set(post.categorySlug, post.category);
+    });
+    return [...counts.entries()].map(([slug, count]) => [slug, labels.get(slug) ?? slug, count] as [string, string, number]);
   }, [posts]);
 
   const fromServer = serverMatches && filters.q === serverQ ? new Set(serverMatches) : null;
   const rows = sortPosts(
     posts.filter(
       (post) =>
-        (!filters.topic || post.category === filters.topic) &&
+        (!filters.topic || post.categorySlug === filters.topic) &&
         (!filters.q || (fromServer ? fromServer.has(post.slug) : matches(post, filters.q))),
     ),
     filters.sort,
   );
   const clear = () => setFilters({ ...DEFAULT_WRITING_FILTERS, sort: filters.sort, view: filters.view });
-  const active: ActiveFilter[] = filters.topic ? [{ key: "topic", label: `Topic: ${filters.topic}`, onRemove: () => set({ topic: "" }) }] : [];
+  const active: ActiveFilter[] = filters.topic ? [{ key: "topic", label: `Topic: ${categories.find(([slug]) => slug === filters.topic)?.[1] ?? filters.topic}`, onRemove: () => set({ topic: "" }) }] : [];
 
   // The index groups by year when it is ordered by date, so a long list has landmarks.
   const byDate = filters.sort === "new" || filters.sort === "old";
@@ -182,7 +193,7 @@ export function WritingIndex({
             label="Topic"
             value={filters.topic}
             onChange={(topic) => set({ topic })}
-            items={[["", "All", posts.length], ...categories.map(([name, count]) => [name, name, count] as [string, string, number])]}
+            items={[["", "All", posts.length], ...categories]}
           />
         </FilterGroup>
       </FilterBar>

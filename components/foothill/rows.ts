@@ -49,6 +49,7 @@ export type PostView = {
   /** When it was written, as a timestamp, for ordering; `date` is only a label. */
   time: number;
   category: string;
+  categorySlug: string;
   minutes: number;
   views: number;
   tags: string[];
@@ -96,6 +97,7 @@ export function postView(post: BlogPost): PostView {
     date: shortDate(post.created_at),
     time: post.created_at?.getTime() ?? 0,
     category: postCategory(post.category),
+    categorySlug: post.category_slug,
     minutes: readingMinutes(post.read_time, post.content_html),
     views: post.views,
     tags: post.tags,

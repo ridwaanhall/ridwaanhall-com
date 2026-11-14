@@ -100,6 +100,8 @@ export type BlogPost = ImageCompat & {
   content_html: string;
   tags: string[];
   category: string;
+  /** The category's slug: the identifier, where `category` is the label a person may reword. */
+  category_slug: string;
   is_featured: boolean;
   read_time: number | null;
   views: number;
@@ -202,6 +204,7 @@ export async function getBlogs(): Promise<BlogPost[]> {
         publishedAt: blogPost.publishedAt,
         updatedAt: blogPost.updatedAt,
         category: category.label,
+        categorySlug: category.slug,
         authorImageKey: mediaAsset.storageKey,
         authorImageSource: mediaAsset.source,
         avatarKey: avatarAsset.storageKey,
@@ -265,6 +268,7 @@ export async function getBlogs(): Promise<BlogPost[]> {
       content_html: post.contentHtml,
       tags: tagsByPost.get(post.id) ?? [],
       category: post.category ?? "",
+      category_slug: post.categorySlug ?? "",
       is_featured: post.isFeatured,
       read_time: post.readTime,
       views: post.views,
@@ -572,8 +576,8 @@ export function searchProjects(projects: Project[], query: string): Project[] {
 export type BlogSummary = Pick<
   BlogPost,
   | "id" | "title" | "slug" | "description" | "author" | "author_image"
-  | "created_at" | "updated_at" | "tags" | "category" | "is_featured"
-  | "read_time" | "views" | "image_url" | "img_name"
+  | "created_at" | "updated_at" | "tags" | "category" | "category_slug"
+  | "is_featured" | "read_time" | "views" | "image_url" | "img_name"
 >;
 
 export function toBlogSummary(blog: BlogPost): BlogSummary {
@@ -588,6 +592,7 @@ export function toBlogSummary(blog: BlogPost): BlogSummary {
     updated_at: blog.updated_at,
     tags: blog.tags,
     category: blog.category,
+    category_slug: blog.category_slug,
     is_featured: blog.is_featured,
     read_time: blog.read_time,
     views: blog.views,
